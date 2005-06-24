@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/qtdesigner.qdoc -->
+<head>
+    <title>Qt 4.0: QDesignerLayoutDecorationExtension Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerLayoutDecorationExtension Class Reference</h1>
+<p>The QDesignerLayoutDecorationExtension class provides extensions for layouts in <i>Qt Designer</i>. <a href="#details">More...</a></p>
+<pre>#include &lt;QDesignerLayoutDecorationExtension&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
+<ul>
+<li><a href="qdesignerlayoutdecorationextension-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h3>Public Types</h3>
+<ul>
+<li><div class="fn"/>enum <b><a href="qdesignerlayoutdecorationextension.html#InsertMode-enum">InsertMode</a></b> { InsertWidgetMode, InsertRowMode, InsertColumnMode }</li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/>virtual <b><a href="qdesignerlayoutdecorationextension.html#dtor.QDesignerLayoutDecorationExtension">~QDesignerLayoutDecorationExtension</a></b> ()</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignerlayoutdecorationextension.html#adjustIndicator">adjustIndicator</a></b> ( const QPoint &amp; <i>position</i>, int <i>index</i> ) = 0</li>
+<li><div class="fn"/>virtual QPair&lt;int, int&gt; <b><a href="qdesignerlayoutdecorationextension.html#currentCell">currentCell</a></b> () const = 0</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignerlayoutdecorationextension.html#currentIndex">currentIndex</a></b> () const = 0</li>
+<li><div class="fn"/>virtual InsertMode <b><a href="qdesignerlayoutdecorationextension.html#currentInsertMode">currentInsertMode</a></b> () const = 0</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignerlayoutdecorationextension.html#findItemAt">findItemAt</a></b> ( const QPoint &amp; <i>position</i> ) const = 0</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignerlayoutdecorationextension.html#findItemAt-2">findItemAt</a></b> ( int <i>row</i>, int <i>column</i> ) const = 0</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignerlayoutdecorationextension.html#indexOf">indexOf</a></b> ( QWidget * <i>widget</i> ) const = 0</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignerlayoutdecorationextension.html#indexOf-2">indexOf</a></b> ( QLayoutItem * <i>item</i> ) const = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignerlayoutdecorationextension.html#insertColumn">insertColumn</a></b> ( int <i>column</i> ) = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignerlayoutdecorationextension.html#insertRow">insertRow</a></b> ( int <i>row</i> ) = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignerlayoutdecorationextension.html#insertWidget">insertWidget</a></b> ( QWidget * <i>widget</i>, const QPair&lt;int, int&gt; &amp; <i>cell</i> ) = 0</li>
+<li><div class="fn"/>virtual QRect <b><a href="qdesignerlayoutdecorationextension.html#itemInfo">itemInfo</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignerlayoutdecorationextension.html#removeWidget">removeWidget</a></b> ( QWidget * <i>widget</i> ) = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignerlayoutdecorationextension.html#simplify">simplify</a></b> () = 0</li>
+<li><div class="fn"/>virtual QList&lt;QWidget *&gt; <b><a href="qdesignerlayoutdecorationextension.html#widgets">widgets</a></b> ( QLayout * <i>layout</i> ) const = 0</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QDesignerLayoutDecorationExtension class provides extensions for layouts in <i>Qt Designer</i>.</p>
+<hr />
+<h2>Member Type Documentation</h2>
+<h3 class="fn"><a name="InsertMode-enum"></a>enum QDesignerLayoutDecorationExtension::InsertMode</h3>
+<p>This enum describes the modes that are used to insert items into a layout.</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QDesignerLayoutDecorationExtension::InsertWidgetMode</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Widgets are inserted into empty cells in a layout.</td></tr>
+<tr><td valign="top"><tt>QDesignerLayoutDecorationExtension::InsertRowMode</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Whole rows are inserted into a vertical or grid layout.</td></tr>
+<tr><td valign="top"><tt>QDesignerLayoutDecorationExtension::InsertColumnMode</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Whole columns are inserted into a horizontal or grid layout.</td></tr>
+</table>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="dtor.QDesignerLayoutDecorationExtension"></a>QDesignerLayoutDecorationExtension::~QDesignerLayoutDecorationExtension ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Destroys the extension.</p>
+<h3 class="fn"><a name="adjustIndicator"></a>void QDesignerLayoutDecorationExtension::adjustIndicator ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i>, int <i>index</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Adjusts the indicator for the specified <i>widget</i> so that it lies at the given <i>position</i> on the form.</p>
+<h3 class="fn"><a name="currentCell"></a><a href="qpair.html">QPair</a>&lt;int, int&gt; QDesignerLayoutDecorationExtension::currentCell () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns a pair containing the row and column of the current cell in the layout.</p>
+<h3 class="fn"><a name="currentIndex"></a>int QDesignerLayoutDecorationExtension::currentIndex () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the current index in the layout.</p>
+<h3 class="fn"><a name="currentInsertMode"></a><a href="qdesignerlayoutdecorationextension.html#InsertMode-enum">InsertMode</a> QDesignerLayoutDecorationExtension::currentInsertMode () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the current insertion mode.</p>
+<h3 class="fn"><a name="findItemAt"></a>int QDesignerLayoutDecorationExtension::findItemAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the index of the item in the layout that covers the given <i>position</i>.</p>
+<h3 class="fn"><a name="findItemAt-2"></a>int QDesignerLayoutDecorationExtension::findItemAt ( int <i>row</i>, int <i>column</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Returns the item in the layout that occupies the specified <i>row</i> and <i>column</i> in the layout.</p>
+<p>Currently, this only applies to grid layouts.</p>
+<h3 class="fn"><a name="indexOf"></a>int QDesignerLayoutDecorationExtension::indexOf ( <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the index of the specified <i>widget</i> in the layout.</p>
+<h3 class="fn"><a name="indexOf-2"></a>int QDesignerLayoutDecorationExtension::indexOf ( <a href="qlayoutitem.html">QLayoutItem</a> * <i>item</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Returns the index of the specified layout <i>item</i>.</p>
+<h3 class="fn"><a name="insertColumn"></a>void QDesignerLayoutDecorationExtension::insertColumn ( int <i>column</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Inserts a new column into the form at the position specified by <i>column</i>.</p>
+<h3 class="fn"><a name="insertRow"></a>void QDesignerLayoutDecorationExtension::insertRow ( int <i>row</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Inserts a new row into the form at the position specified by <i>row</i>.</p>
+<h3 class="fn"><a name="insertWidget"></a>void QDesignerLayoutDecorationExtension::insertWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, const <a href="qpair.html">QPair</a>&lt;int, int&gt; &amp; <i>cell</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Inserts the given <i>widget</i> into the specified <i>cell</i> in the layout.</p>
+<p>See also <a href="qdesignerlayoutdecorationextension.html#removeWidget">removeWidget</a>().</p>
+<h3 class="fn"><a name="itemInfo"></a><a href="qrect.html">QRect</a> QDesignerLayoutDecorationExtension::itemInfo ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the rectangle covered by the item at the given <i>index</i> in the layout.</p>
+<h3 class="fn"><a name="removeWidget"></a>void QDesignerLayoutDecorationExtension::removeWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Removes the specified <i>widget</i> from the layout.</p>
+<p>See also <a href="qdesignerlayoutdecorationextension.html#insertWidget">insertWidget</a>().</p>
+<h3 class="fn"><a name="simplify"></a>void QDesignerLayoutDecorationExtension::simplify ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Simplifies the layout by removing unnecessary empty rows and columns, and by changing the number of rows or columns spanned by widgets.</p>
+<h3 class="fn"><a name="widgets"></a><a href="qlist.html">QList</a>&lt;<a href="qwidget.html">QWidget</a> *&gt; QDesignerLayoutDecorationExtension::widgets ( <a href="qlayout.html">QLayout</a> * <i>layout</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the widgets that are managed by the given <i>layout</i>.</p>
+<p>See also <a href="qdesignerlayoutdecorationextension.html#insertWidget">insertWidget</a>() and <a href="qdesignerlayoutdecorationextension.html#removeWidget">removeWidget</a>().</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

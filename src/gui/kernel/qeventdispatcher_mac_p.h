@@ -1,0 +1,104 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the gui module of the Qt Toolkit.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QEVENTDISPATCHER_MAC_P_H
+#define QEVENTDISPATCHER_MAC_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qeventdispatcher_unix_p.h>
+#include "qwindowdefs.h"
+#include <private/qt_mac_p.h>
+
+class QEventDispatcherMacPrivate;
+
+class QEventDispatcherMac : public QEventDispatcherUNIX
+{
+    Q_OBJECT
+    Q_DECLARE_PRIVATE(QEventDispatcherMac)
+
+public:
+    explicit QEventDispatcherMac(QObject *parent = 0);
+    ~QEventDispatcherMac();
+
+    bool processEvents(QEventLoop::ProcessEventsFlags flags);
+    bool hasPendingEvents();
+
+    void registerSocketNotifier(QSocketNotifier *notifier);
+    void unregisterSocketNotifier(QSocketNotifier *notifier);
+
+    void registerTimer(int timerId, int interval, QObject *object);
+    bool unregisterTimer(int timerId);
+    bool unregisterTimers(QObject *object);
+    QList<TimerInfo> registeredTimers(QObject *object) const;
+
+    void wakeUp();
+    void flush();
+
+private:
+    friend void qt_mac_select_timer_callbk(__EventLoopTimer*, void*);
+    friend class QApplicationPrivate;
+};
+
+struct MacTimerInfo {
+    int id;
+    int interval;
+    QObject *obj;
+    bool pending;
+    EventLoopTimerRef mac_timer;
+};
+typedef QList<MacTimerInfo> MacTimerList;
+
+struct MacSocketInfo {
+    union {
+        CFReadStreamRef read_not;
+        CFWriteStreamRef write_not;
+    };
+};
+
+class QEventDispatcherMacPrivate : public QEventDispatcherUNIXPrivate
+{
+    Q_DECLARE_PUBLIC(QEventDispatcherMac)
+
+public:
+    QEventDispatcherMacPrivate();
+
+    int zero_timer_count;
+    EventLoopTimerRef select_timer;
+    MacTimerList *macTimerList;
+    int activateTimers();
+
+    QHash<QSocketNotifier *, MacSocketInfo *> *macSockets;
+    QList<EventRef> queuedUserInputEvents;
+};
+
+#endif // QEVENTDISPATCHER_MAC_P_H

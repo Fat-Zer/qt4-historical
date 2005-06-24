@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: licensewizard.cpp Example File (dialogs/complexwizard/licensewizard.cpp)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">licensewizard.cpp Example File<br /><small><small>dialogs/complexwizard/licensewizard.cpp</small></small></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #include &lt;QtGui&gt;
+
+    #include &quot;licensewizard.h&quot;
+
+    LicenseWizard::LicenseWizard(QWidget *parent)
+        : ComplexWizard(parent)
+    {
+        titlePage = new TitlePage(this);
+        evaluatePage = new EvaluatePage(this);
+        registerPage = new RegisterPage(this);
+        detailsPage = new DetailsPage(this);
+        finishPage = new FinishPage(this);
+
+        setFirstPage(titlePage);
+
+        setWindowTitle(tr(&quot;Complex Wizard&quot;));
+        resize(480, 200);
+    }
+
+    TitlePage::TitlePage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;font color=\&quot;blue\&quot; size=\&quot;5\&quot;&gt;&lt;b&gt;&lt;i&gt;&quot;
+                                 &quot;Super Product One&lt;/i&gt;&lt;/b&gt;&lt;/font&gt;&lt;/center&gt;&quot;));
+
+        registerRadioButton = new QRadioButton(tr(&quot;&amp;Register your copy&quot;));
+        evaluateRadioButton = new QRadioButton(tr(&quot;&amp;Evaluate our product&quot;));
+        setFocusProxy(registerRadioButton);
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout-&gt;addWidget(topLabel);
+        layout-&gt;addSpacing(10);
+        layout-&gt;addWidget(registerRadioButton);
+        layout-&gt;addWidget(evaluateRadioButton);
+        layout-&gt;addStretch(1);
+        setLayout(layout);
+    }
+
+    void TitlePage::resetPage()
+    {
+        registerRadioButton-&gt;setChecked(true);
+    }
+
+    WizardPage *TitlePage::nextPage()
+    {
+        if (evaluateRadioButton-&gt;isChecked())
+            return wizard-&gt;evaluatePage;
+        else
+            return wizard-&gt;registerPage;
+    }
+
+    EvaluatePage::EvaluatePage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;b&gt;Evaluate Super Product One&quot;
+                                 &quot;&lt;/b&gt;&lt;/center&gt;&quot;));
+
+        nameLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
+        nameLineEdit = new QLineEdit;
+        nameLabel-&gt;setBuddy(nameLineEdit);
+        setFocusProxy(nameLineEdit);
+
+        emailLabel = new QLabel(tr(&quot;&amp;Email address:&quot;));
+        emailLineEdit = new QLineEdit;
+        emailLabel-&gt;setBuddy(emailLineEdit);
+
+        bottomLabel = new QLabel(tr(&quot;Please fill in both fields.\nThis will &quot;
+                                    &quot;entitle you to a 30-day evaluation.&quot;));
+
+        connect(nameLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+        connect(emailLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+
+        QGridLayout *layout = new QGridLayout;
+        layout-&gt;addWidget(topLabel, 0, 0, 1, 2);
+        layout-&gt;setRowMinimumHeight(1, 10);
+        layout-&gt;addWidget(nameLabel, 2, 0);
+        layout-&gt;addWidget(nameLineEdit, 2, 1);
+        layout-&gt;addWidget(emailLabel, 3, 0);
+        layout-&gt;addWidget(emailLineEdit, 3, 1);
+        layout-&gt;setRowMinimumHeight(4, 10);
+        layout-&gt;addWidget(bottomLabel, 5, 0, 1, 2);
+        layout-&gt;setRowStretch(6, 1);
+        setLayout(layout);
+    }
+
+    void EvaluatePage::resetPage()
+    {
+        nameLineEdit-&gt;clear();
+        emailLineEdit-&gt;clear();
+    }
+
+    WizardPage *EvaluatePage::nextPage()
+    {
+        return wizard-&gt;finishPage;
+    }
+
+    bool EvaluatePage::isComplete()
+    {
+        return !nameLineEdit-&gt;text().isEmpty() &amp;&amp; !emailLineEdit-&gt;text().isEmpty();
+    }
+
+    RegisterPage::RegisterPage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;b&gt;Register your copy of Super Product &quot;
+                                 &quot;One&lt;/b&gt;&lt;/center&gt;&quot;));
+
+        nameLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
+        nameLineEdit = new QLineEdit;
+        nameLabel-&gt;setBuddy(nameLineEdit);
+        setFocusProxy(nameLineEdit);
+
+        upgradeKeyLabel = new QLabel(tr(&quot;&amp;Upgrade key:&quot;));
+        upgradeKeyLineEdit = new QLineEdit;
+        upgradeKeyLabel-&gt;setBuddy(upgradeKeyLineEdit);
+
+        bottomLabel = new QLabel(tr(&quot;If you have an upgrade key, please fill in &quot;
+                                    &quot;the appropriate field.&quot;));
+
+        connect(nameLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+
+        QGridLayout *layout = new QGridLayout;
+        layout-&gt;addWidget(topLabel, 0, 0, 1, 2);
+        layout-&gt;setRowMinimumHeight(1, 10);
+        layout-&gt;addWidget(nameLabel, 2, 0);
+        layout-&gt;addWidget(nameLineEdit, 2, 1);
+        layout-&gt;addWidget(upgradeKeyLabel, 3, 0);
+        layout-&gt;addWidget(upgradeKeyLineEdit, 3, 1);
+        layout-&gt;setRowMinimumHeight(4, 10);
+        layout-&gt;addWidget(bottomLabel, 5, 0, 1, 2);
+        layout-&gt;setRowStretch(6, 1);
+        setLayout(layout);
+    }
+
+    void RegisterPage::resetPage()
+    {
+        nameLineEdit-&gt;clear();
+        upgradeKeyLineEdit-&gt;clear();
+    }
+
+    WizardPage *RegisterPage::nextPage()
+    {
+        if (upgradeKeyLineEdit-&gt;text().isEmpty())
+            return wizard-&gt;detailsPage;
+        else
+            return wizard-&gt;finishPage;
+    }
+
+    bool RegisterPage::isComplete()
+    {
+        return !nameLineEdit-&gt;text().isEmpty();
+    }
+
+    DetailsPage::DetailsPage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;b&gt;Fill in your details&lt;/b&gt;&lt;/center&gt;&quot;));
+
+        companyLabel = new QLabel(tr(&quot;&amp;Company name:&quot;));
+        companyLineEdit = new QLineEdit;
+        companyLabel-&gt;setBuddy(companyLineEdit);
+        setFocusProxy(companyLineEdit);
+
+        emailLabel = new QLabel(tr(&quot;&amp;Email address:&quot;));
+        emailLineEdit = new QLineEdit;
+        emailLabel-&gt;setBuddy(emailLineEdit);
+
+        postalLabel = new QLabel(tr(&quot;&amp;Postal address:&quot;));
+        postalLineEdit = new QLineEdit;
+        postalLabel-&gt;setBuddy(postalLineEdit);
+
+        connect(companyLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+        connect(emailLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+        connect(postalLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+
+        QGridLayout *layout = new QGridLayout;
+        layout-&gt;addWidget(topLabel, 0, 0, 1, 2);
+        layout-&gt;setRowMinimumHeight(1, 10);
+        layout-&gt;addWidget(companyLabel, 2, 0);
+        layout-&gt;addWidget(companyLineEdit, 2, 1);
+        layout-&gt;addWidget(emailLabel, 3, 0);
+        layout-&gt;addWidget(emailLineEdit, 3, 1);
+        layout-&gt;addWidget(postalLabel, 4, 0);
+        layout-&gt;addWidget(postalLineEdit, 4, 1);
+        layout-&gt;setRowStretch(5, 1);
+        setLayout(layout);
+    }
+
+    void DetailsPage::resetPage()
+    {
+        companyLineEdit-&gt;clear();
+        emailLineEdit-&gt;clear();
+        postalLineEdit-&gt;clear();
+    }
+
+    WizardPage *DetailsPage::nextPage()
+    {
+        return wizard-&gt;finishPage;
+    }
+
+    bool DetailsPage::isComplete()
+    {
+        return !companyLineEdit-&gt;text().isEmpty()
+               &amp;&amp; !emailLineEdit-&gt;text().isEmpty()
+               &amp;&amp; !postalLineEdit-&gt;text().isEmpty();
+    }
+
+    FinishPage::FinishPage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;b&gt;Complete your registration&quot;
+                                 &quot;&lt;/b&gt;&lt;/center&gt;&quot;));
+
+        bottomLabel = new QLabel;
+        bottomLabel-&gt;setWordWrap(true);
+
+        agreeCheckBox = new QCheckBox(tr(&quot;I agree to the terms and conditions of &quot;
+                                         &quot;the license&quot;));
+        setFocusProxy(agreeCheckBox);
+
+        connect(agreeCheckBox, SIGNAL(toggled(bool)),
+                this, SIGNAL(completeStateChanged()));
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout-&gt;addWidget(topLabel);
+        layout-&gt;addSpacing(10);
+        layout-&gt;addWidget(bottomLabel);
+        layout-&gt;addWidget(agreeCheckBox);
+        layout-&gt;addStretch(1);
+        setLayout(layout);
+    }
+
+    void FinishPage::resetPage()
+    {
+        QString licenseText;
+
+        if (wizard-&gt;historyPages().contains(wizard-&gt;evaluatePage)) {
+            licenseText = tr(&quot;Evaluation License Agreement: &quot;
+                             &quot;You can use this software for 30 days and make one &quot;
+                             &quot;back up, but you are not allowed to distribute it.&quot;);
+        } else if (wizard-&gt;historyPages().contains(wizard-&gt;detailsPage)) {
+            licenseText = tr(&quot;First-Time License Agreement: &quot;
+                             &quot;You can use this software subject to the license &quot;
+                             &quot;you will receive by email.&quot;);
+        } else {
+            licenseText = tr(&quot;Upgrade License Agreement: &quot;
+                             &quot;This software is licensed under the terms of your &quot;
+                             &quot;current license.&quot;);
+        }
+        bottomLabel-&gt;setText(licenseText);
+        agreeCheckBox-&gt;setChecked(false);
+    }
+
+    bool FinishPage::isComplete()
+    {
+        return agreeCheckBox-&gt;isChecked();
+    }</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

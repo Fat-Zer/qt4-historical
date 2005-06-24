@@ -1,0 +1,84 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the designer application of the Qt Toolkit.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "qlayoutwidget_propertysheet.h"
+#include "qlayout_widget_p.h"
+#include "qdesigner_widget_p.h"
+#include "formwindow.h"
+#include "formeditor.h"
+
+#include <QtDesigner/QExtensionManager>
+
+#include <QLayout>
+#include <QMetaObject>
+#include <QMetaProperty>
+#include <QtCore/qdebug.h>
+
+using namespace qdesigner_internal;
+
+QLayoutWidgetPropertySheet::QLayoutWidgetPropertySheet(QLayoutWidget *object, QObject *parent)
+    : QDesignerPropertySheet(object, parent)
+{
+    m_fakeProperties.clear();
+
+    for (int index = 0; index < count(); ++index) {
+        QString pname = propertyName(index);
+        setVisible(index, false);
+        if (pname == QLatin1String("margin")
+                || pname == QLatin1String("spacing")
+                /*|| pname == QLatin1String("objectName") ### */ )
+            setVisible(index, true);
+    }
+}
+
+QLayoutWidgetPropertySheet::~QLayoutWidgetPropertySheet()
+{
+}
+
+void QLayoutWidgetPropertySheet::setProperty(int index, const QVariant &value)
+{
+    QDesignerPropertySheet::setProperty(index, value);
+
+    QLayoutWidget *l = static_cast<QLayoutWidget*>(m_object);
+    QDesignerFormEditorInterface *core = l->formWindow()->core();
+    if (QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core->extensionManager(), l->layout())) {
+        sheet->setChanged(sheet->indexOf(propertyName(index)), true);
+    }
+}
+
+
+QLayoutWidgetPropertySheetFactory::QLayoutWidgetPropertySheetFactory(QExtensionManager *parent)
+    : QExtensionFactory(parent)
+{
+}
+
+QObject *QLayoutWidgetPropertySheetFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
+{
+    if (iid != Q_TYPEID(QDesignerPropertySheetExtension))
+        return 0;
+
+    if (QLayoutWidget *o = qobject_cast<QLayoutWidget*>(object))
+        return new QLayoutWidgetPropertySheet(o, parent);
+
+    return 0;
+}

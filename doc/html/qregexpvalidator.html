@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/widgets/qvalidator.cpp -->
+<head>
+    <title>Qt 4.0: QRegExpValidator Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QRegExpValidator Class Reference</h1>
+<p>The QRegExpValidator class is used to check a string against a regular expression. <a href="#details">More...</a></p>
+<pre>#include &lt;QRegExpValidator&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
+<p>Inherits <a href="qvalidator.html">QValidator</a>.</p>
+<ul>
+<li><a href="qregexpvalidator-members.html">List of all members, including inherited members</a></li>
+<li><a href="qregexpvalidator-qt3.html">Qt 3 support members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qregexpvalidator.html#QRegExpValidator">QRegExpValidator</a></b> ( QObject * <i>parent</i> )</li>
+<li><div class="fn"/><b><a href="qregexpvalidator.html#QRegExpValidator-2">QRegExpValidator</a></b> ( const QRegExp &amp; <i>rx</i>, QObject * <i>parent</i> )</li>
+<li><div class="fn"/><b><a href="qregexpvalidator.html#dtor.QRegExpValidator">~QRegExpValidator</a></b> ()</li>
+<li><div class="fn"/>const QRegExp &amp; <b><a href="qregexpvalidator.html#regExp">regExp</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qregexpvalidator.html#setRegExp">setRegExp</a></b> ( const QRegExp &amp; <i>rx</i> )</li>
+<li><div class="fn"/>virtual QValidator::State <b><a href="qregexpvalidator.html#validate">validate</a></b> ( QString &amp; <i>input</i>, int &amp; <i>pos</i> ) const</li>
+</ul>
+<ul>
+<li><div class="fn"/>2 public functions inherited from <a href="qvalidator.html#public-functions">QValidator</a></li>
+<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+</ul>
+<h3>Additional Inherited Members</h3>
+<ul>
+<li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
+<li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
+<li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
+<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QRegExpValidator class is used to check a string against a regular expression.</p>
+<p>QRegExpValidator uses a regular expression (regexp) to determine whether an input string is <tt>Acceptable</tt>, <tt>Intermediate</tt>, or <tt>Invalid</tt>. The regexp can either be supplied when the QRegExpValidator is constructed, or at a later time.</p>
+<p>The regexp is treated as if it begins with the start of string assertion, <b>^</b>, and ends with the end of string assertion <b>$</b> so the match is against the entire input string, or from the given position if a start position greater than zero is given.</p>
+<p>For a brief introduction to Qt's regexp engine see <a href="qregexp.html">QRegExp</a>.</p>
+<p>Example of use:</p>
+<pre>&nbsp;   // regexp: optional '-' followed by between 1 and 3 digits
+    QRegExp rx(&quot;-?\\d{1,3}&quot;);
+    QValidator *validator = new QRegExpValidator(rx, this);
+
+    QLineEdit *edit = new QLineEdit(this);
+    edit-&gt;setValidator(validator);</pre>
+<p>Below we present some examples of validators. In practice they would normally be associated with a widget as in the example above.</p>
+<pre>&nbsp;   // integers 1 to 9999
+    QRegExp rx(&quot;[1-9]\\d{0,3}&quot;);
+    // the validator treats the regexp as &quot;^[1-9]\\d{0,3}$&quot;
+    QRegExpValidator v(rx, 0);
+    QString s;
+    int pos = 0;
+
+    s = &quot;0&quot;;     v.validate(s, pos);    // returns Invalid
+    s = &quot;12345&quot;; v.validate(s, pos);    // returns Invalid
+    s = &quot;1&quot;;     v.validate(s, pos);    // returns Acceptable
+
+    rx.setPattern(&quot;\\S+&quot;);            // one or more non-whitespace characters
+    v.setRegExp(rx);
+    s = &quot;myfile.txt&quot;;  v.validate(s, pos); // Returns Acceptable
+    s = &quot;my file.txt&quot;; v.validate(s, pos); // Returns Invalid
+
+    // A, B or C followed by exactly five digits followed by W, X, Y or Z
+    rx.setPattern(&quot;[A-C]\\d{5}[W-Z]&quot;);
+    v.setRegExp(rx);
+    s = &quot;a12345Z&quot;; v.validate(s, pos);        // Returns Invalid
+    s = &quot;A12345Z&quot;; v.validate(s, pos);        // Returns Acceptable
+    s = &quot;B12&quot;;     v.validate(s, pos);        // Returns Intermediate
+
+    // match most 'readme' files
+    rx.setPattern(&quot;read\\S?me(\.(txt|asc|1st))?&quot;);
+    rx.setCaseSensitive(false);
+    v.setRegExp(rx);
+    s = &quot;readme&quot;;      v.validate(s, pos); // Returns Acceptable
+    s = &quot;README.1ST&quot;;  v.validate(s, pos); // Returns Acceptable
+    s = &quot;read me.txt&quot;; v.validate(s, pos); // Returns Invalid
+    s = &quot;readm&quot;;       v.validate(s, pos); // Returns Intermediate</pre>
+<p>See also <a href="qregexp.html">QRegExp</a>, <a href="qintvalidator.html">QIntValidator</a>, and <a href="qdoublevalidator.html">QDoubleValidator</a>.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QRegExpValidator"></a>QRegExpValidator::QRegExpValidator ( <a href="qobject.html">QObject</a> * <i>parent</i> )</h3>
+<p>Constructs a validator with a <i>parent</i> object that accepts any string (including an empty one) as valid.</p>
+<h3 class="fn"><a name="QRegExpValidator-2"></a>QRegExpValidator::QRegExpValidator ( const <a href="qregexp.html">QRegExp</a> &amp; <i>rx</i>, <a href="qobject.html">QObject</a> * <i>parent</i> )</h3>
+<p>Constructs a validator with a <i>parent</i> object that accepts all strings that match the regular expression <i>rx</i>.</p>
+<p>The match is made against the entire string; e.g. if the regexp is <b>[A-Fa-f0-9]+</b> it will be treated as <b>^[A-Fa-f0-9]+$</b>.</p>
+<h3 class="fn"><a name="dtor.QRegExpValidator"></a>QRegExpValidator::~QRegExpValidator ()</h3>
+<p>Destroys the validator.</p>
+<h3 class="fn"><a name="regExp"></a>const <a href="qregexp.html">QRegExp</a> &amp; QRegExpValidator::regExp () const</h3>
+<p>Returns the regular expression used for validation.</p>
+<p>See also <a href="qregexpvalidator.html#setRegExp">setRegExp</a>().</p>
+<h3 class="fn"><a name="setRegExp"></a>void QRegExpValidator::setRegExp ( const <a href="qregexp.html">QRegExp</a> &amp; <i>rx</i> )</h3>
+<p>Sets the regular expression used for validation to <i>rx</i>.</p>
+<p>See also <a href="qregexpvalidator.html#regExp">regExp</a>().</p>
+<h3 class="fn"><a name="validate"></a><a href="qvalidator.html#State-enum">QValidator::State</a> QRegExpValidator::validate ( <a href="qstring.html">QString</a> &amp; <i>input</i>, int &amp; <i>pos</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns <tt>Acceptable</tt> if <i>input</i> is matched by the regular expression for this validator, <tt>Intermediate</tt> if it has matched partially (i.e. could be a valid match if additional valid characters are added), and <tt>Invalid</tt> if <i>input</i> is not matched.</p>
+<p>The <i>pos</i> parameter is set to the length of the <i>input</i> parameter.</p>
+<p>For example, if the regular expression is <b>\w\d\d</b> (word-character, digit, digit) then &quot;A57&quot; is <tt>Acceptable</tt>, &quot;E5&quot; is <tt>Intermediate</tt>, and &quot;+9&quot; is <tt>Invalid</tt>.</p>
+<p>Reimplemented from <a href="qvalidator.html#validate">QValidator</a>.</p>
+<p>See also <a href="qregexp.html#exactMatch">QRegExp::exactMatch</a>().</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

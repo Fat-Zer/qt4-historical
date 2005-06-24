@@ -1,0 +1,179 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the widgets module of the Qt Toolkit.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "qradiobutton.h"
+#ifndef QT_NO_RADIOBUTTON
+#include "qapplication.h"
+#include "qbitmap.h"
+#include "qbuttongroup.h"
+#include "qstylepainter.h"
+#include "qstyle.h"
+#include "qstyleoption.h"
+
+/*!
+    \class QRadioButton
+    \brief The QRadioButton widget provides a radio button with a text label.
+
+    \ingroup basic
+    \mainclass
+
+    A QRadioButton is an option button that can be switched on (checked) or
+    off (unchecked). Radio buttons typically present the user with a "one
+    of many" choice. In a group of radio buttons only one radio button at
+    a time can be checked; if the user selects another button, the
+    previously selected button is switched off.
+
+    Radio buttons are autoExclusive by default. If auto-exclusive is
+    enabled, radio buttons that belong to the same parent widget
+    behave as if they were part of the same exclusive button group. If
+    you need multiple exclusive button groups for radio buttons that
+    belong to the same parent widget, put them into a QButtonGroup.
+
+    Whenever a button is switched on or off it emits the toggled() signal.
+    Connect to this signal if you want to trigger an action each time the
+    button changes state. Otherwise, use isChecked() to see if a particular
+    button is selected.
+
+    Just like QPushButton, a radio button displays text, and
+    optionally a small icon. The text can be set in the constructor or
+    with setText(); the icon is set with setIcon().
+
+    Important inherited members: text(), setText(), text(),
+    setDown(), isDown(), autoRepeat(), group(), setAutoRepeat(),
+    toggle(), pressed(), released(), clicked(), and toggled().
+
+    \inlineimage macintosh-radiobutton.png Screenshot in Macintosh style
+    \inlineimage windows-radiobutton.png Screenshot in Windows style
+
+    \sa QPushButton, QToolButton, QCheckBox, {fowler}{GUI Design Handbook: Radio Button}
+*/
+
+
+/*
+    Initializes the radio button.
+*/
+static void qRadioButtonInit(QRadioButton *button)
+{
+    button->setCheckable(true);
+    button->setAutoExclusive(true);
+}
+
+
+/*!
+    Constructs a radio button with the given \a parent, but with no text or
+    pixmap.
+
+    The \a parent argument is passed on to the QAbstractButton constructor.
+*/
+
+QRadioButton::QRadioButton(QWidget *parent)
+        : QAbstractButton(parent)
+{
+    qRadioButtonInit(this);
+}
+
+/*!
+    Constructs a radio button with the given \a parent and a \a text string.
+
+    The \a parent argument is passed on to the QAbstractButton constructor.
+*/
+
+QRadioButton::QRadioButton(const QString &text, QWidget *parent)
+        : QAbstractButton(parent)
+{
+    qRadioButtonInit(this);
+    setText(text);
+}
+
+static QStyleOptionButton getStyleOption(const QRadioButton *btn)
+{
+    QStyleOptionButton opt;
+    opt.init(btn);
+    opt.text = btn->text();
+    opt.icon = btn->icon();
+    opt.iconSize = btn->iconSize();
+    if (btn->isDown())
+        opt.state |= QStyle::State_Sunken;
+    opt.state |= (btn->isChecked() ? QStyle::State_On : QStyle::State_Off);
+    return opt;
+}
+
+/*!
+    \reimp
+*/
+QSize QRadioButton::sizeHint() const
+{
+    ensurePolished();
+    QStyleOptionButton opt = getStyleOption(this);
+    QSize sz = style()->itemTextRect(fontMetrics(), QRect(0, 0, 1, 1), Qt::TextShowMnemonic,
+                                     false, text()).size();
+    if (!opt.icon.isNull())
+        sz = QSize(sz.width() + opt.iconSize.width() + 4, qMax(sz.height(), opt.iconSize.height()));
+    return (style()->sizeFromContents(QStyle::CT_RadioButton, &opt, sz, this).
+            expandedTo(QApplication::globalStrut()));
+}
+
+/*!
+    \reimp
+*/
+bool QRadioButton::hitButton(const QPoint &pos) const
+{
+    QStyleOptionButton opt = getStyleOption(this);
+    return style()->subElementRect(QStyle::SE_RadioButtonClickRect, &opt, this).contains(pos);
+}
+
+/*!\reimp
+ */
+void QRadioButton::paintEvent(QPaintEvent *)
+{
+    QStylePainter p(this);
+    QStyleOptionButton opt = getStyleOption(this);
+    p.drawControl(QStyle::CE_RadioButton, opt);
+}
+
+#ifdef QT3_SUPPORT
+/*!
+    Use one of the constructors that doesn't take the \a name
+    argument and then use setObjectName() instead.
+*/
+QRadioButton::QRadioButton(QWidget *parent, const char* name)
+    :QAbstractButton(parent)
+{
+    setObjectName(name);
+    qRadioButtonInit(this);
+}
+
+/*!
+    Use one of the constructors that doesn't take the \a name
+    argument and then use setObjectName() instead.
+*/
+QRadioButton::QRadioButton(const QString &text, QWidget *parent, const char* name)
+    :QAbstractButton(parent)
+{
+    setObjectName(name);
+    qRadioButtonInit(this);
+    setText(text);
+}
+
+#endif
+#endif

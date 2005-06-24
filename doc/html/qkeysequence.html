@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/kernel/qkeysequence.cpp -->
+<head>
+    <title>Qt 4.0: QKeySequence Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QKeySequence Class Reference</h1>
+<p>The QKeySequence class encapsulates a key sequence as used by shortcuts. <a href="#details">More...</a></p>
+<pre>#include &lt;QKeySequence&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
+<ul>
+<li><a href="qkeysequence-members.html">List of all members, including inherited members</a></li>
+<li><a href="qkeysequence-obsolete.html">Obsolete members</a></li>
+</ul>
+<a name="public-types"></a>
+<h3>Public Types</h3>
+<ul>
+<li><div class="fn"/>enum <b><a href="qkeysequence.html#SequenceMatch-enum">SequenceMatch</a></b> { NoMatch, PartialMatch, ExactMatch }</li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qkeysequence.html#QKeySequence">QKeySequence</a></b> ()</li>
+<li><div class="fn"/><b><a href="qkeysequence.html#QKeySequence-2">QKeySequence</a></b> ( const QString &amp; <i>key</i> )</li>
+<li><div class="fn"/><b><a href="qkeysequence.html#QKeySequence-3">QKeySequence</a></b> ( int <i>k1</i>, int <i>k2</i> = 0, int <i>k3</i> = 0, int <i>k4</i> = 0 )</li>
+<li><div class="fn"/><b><a href="qkeysequence.html#QKeySequence-4">QKeySequence</a></b> ( const QKeySequence &amp; <i>keysequence</i> )</li>
+<li><div class="fn"/><b><a href="qkeysequence.html#dtor.QKeySequence">~QKeySequence</a></b> ()</li>
+<li><div class="fn"/>uint <b><a href="qkeysequence.html#count">count</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#isEmpty">isEmpty</a></b> () const</li>
+<li><div class="fn"/>SequenceMatch <b><a href="qkeysequence.html#matches">matches</a></b> ( const QKeySequence &amp; <i>seq</i> ) const</li>
+<li><div class="fn"/><b><a href="qkeysequence.html#operator-QString">operator QString</a></b> () const</li>
+<li><div class="fn"/><b><a href="qkeysequence.html#operator-QVariant">operator QVariant</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#operator-not-eq">operator!=</a></b> ( const QKeySequence &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#operator-lt">operator&lt;</a></b> ( const QKeySequence &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#operator-lt-eq">operator&lt;=</a></b> ( const QKeySequence &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QKeySequence &amp; <b><a href="qkeysequence.html#operator-eq">operator=</a></b> ( const QKeySequence &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#operator-eq-eq">operator==</a></b> ( const QKeySequence &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#operator-gt">operator&gt;</a></b> ( const QKeySequence &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qkeysequence.html#operator-gt-eq">operator&gt;=</a></b> ( const QKeySequence &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>int <b><a href="qkeysequence.html#operator-5b-5d">operator[]</a></b> ( uint <i>index</i> ) const</li>
+</ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>QKeySequence <b><a href="qkeysequence.html#mnemonic">mnemonic</a></b> ( const QString &amp; <i>text</i> )</li>
+</ul>
+<a name="related-non-members"></a>
+<h3>Related Non-Members</h3>
+<ul>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qkeysequence.html#operator-lt-lt-63">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QKeySequence &amp; <i>sequence</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qkeysequence.html#operator-gt-gt-43">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QKeySequence &amp; <i>sequence</i> )</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QKeySequence class encapsulates a key sequence as used by shortcuts.</p>
+<p>A key sequence consists of up to four keyboard codes, each optionally combined with modifiers, such as <tt>Qt::SHIFT</tt>, <tt>Qt::CTRL</tt>, <tt>Qt::ALT</tt> or <tt>Qt::META</tt>. For example, <tt>Qt::CTRL + Qt::Key_P</tt> might be a sequence used as a shortcut for printing a document. Valid codes for keys and modifiers are listed in <a href="qt.html#Key-enum">Qt::Key</a> and <a href="qt.html#Modifier-enum">Qt::Modifier</a>. As an alternative, use the unicode code point of the character; for example, <tt>'A'</tt> gives the same key sequence as <tt>Qt::Key_A</tt>.</p>
+<p>Key sequences can be constructed either from an integer key code, or from a human readable translatable string such as &quot;Ctrl+X,Alt+Space&quot;. A key sequence can be cast to a <a href="qstring.html">QString</a> to obtain a human readable translated version of the sequence. Translations are done in the &quot;<a href="qshortcut.html">QShortcut</a>&quot; context.</p>
+<p>In code that does not inherit the Qt namespace class, you must include the namespace when writing keycodes; for example, instead of <a href="qt.html#Modifier-enum">Qt::ALT</a>+<a href="qt.html#Key-enum">Qt::Key_Q</a> you would write <a href="qt.html#Modifier-enum">Qt::ALT</a>+<a href="qt.html#Key-enum">Qt::Key_Q</a>.</p>
+<p>See also <a href="qshortcut.html">QShortcut</a>.</p>
+<hr />
+<h2>Member Type Documentation</h2>
+<h3 class="fn"><a name="SequenceMatch-enum"></a>enum QKeySequence::SequenceMatch</h3>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QKeySequence::NoMatch</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The key sequences are different; not even partially matching.</td></tr>
+<tr><td valign="top"><tt>QKeySequence::PartialMatch</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The key sequences match partially, but are not the same.</td></tr>
+<tr><td valign="top"><tt>QKeySequence::ExactMatch</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The key sequences are the same.</td></tr>
+</table>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QKeySequence"></a>QKeySequence::QKeySequence ()</h3>
+<p>Constructs an empty key sequence.</p>
+<h3 class="fn"><a name="QKeySequence-2"></a>QKeySequence::QKeySequence ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )</h3>
+<p>Creates a key sequence from the <i>key</i> string. For example &quot;Ctrl+O&quot; gives CTRL+'O'. The strings &quot;Ctrl&quot;, &quot;Shift&quot;, &quot;Alt&quot; and &quot;Meta&quot; are recognized, as well as their translated equivalents in the &quot;<a href="qshortcut.html">QShortcut</a>&quot; context (using <a href="qobject.html#tr">QObject::tr</a>()).</p>
+<p>Up to four key codes may be entered by separating them with commas, e.g. &quot;Alt+X,Ctrl+S,Q&quot;.</p>
+<p>This contructor is typically used with <a href="qobject.html#tr">tr</a>(), so that shortcut keys can be replaced in translations:</p>
+<pre>&nbsp;   QMenu *file = new QMenu(this);
+    file-&gt;addAction(tr(&quot;&amp;Open...&quot;), this, SLOT(open()),
+                      QKeySequence(tr(&quot;Ctrl+O&quot;, &quot;File|Open&quot;)));</pre>
+<p>Note the <tt>&quot;File|Open&quot;</tt> translator comment. It is by no means necessary, but it provides some context for the human translator.</p>
+<h3 class="fn"><a name="QKeySequence-3"></a>QKeySequence::QKeySequence ( int <i>k1</i>, int <i>k2</i> = 0, int <i>k3</i> = 0, int <i>k4</i> = 0 )</h3>
+<p>Constructs a key sequence with up to 4 keys <i>k1</i>, <i>k2</i>, <i>k3</i> and <i>k4</i>.</p>
+<p>The key codes are listed in <a href="qt.html#Key-enum">Qt::Key</a> and can be combined with modifiers (see <a href="qt.html#Modifier-enum">Qt::Modifier</a>) such as <tt>Qt::SHIFT</tt>, <tt>Qt::CTRL</tt>, <tt>Qt::ALT</tt> or <tt>Qt::META</tt>.</p>
+<h3 class="fn"><a name="QKeySequence-4"></a>QKeySequence::QKeySequence ( const QKeySequence &amp; <i>keysequence</i> )</h3>
+<p>Copy constructor. Makes a copy of <i>keysequence</i>.</p>
+<h3 class="fn"><a name="dtor.QKeySequence"></a>QKeySequence::~QKeySequence ()</h3>
+<p>Destroys the key sequence.</p>
+<h3 class="fn"><a name="count"></a><a href="qtglobal.html#uint-typedef">uint</a> QKeySequence::count () const</h3>
+<p>Returns the number of keys in the key sequence. The maximum is 4.</p>
+<h3 class="fn"><a name="isEmpty"></a>bool QKeySequence::isEmpty () const</h3>
+<p>Returns true if the key sequence is empty; otherwise returns false.</p>
+<h3 class="fn"><a name="matches"></a><a href="qkeysequence.html#SequenceMatch-enum">SequenceMatch</a> QKeySequence::matches ( const QKeySequence &amp; <i>seq</i> ) const</h3>
+<p>Matches the sequence with <i>seq</i>. Returns <tt>ExactMatch</tt> if successful, <tt>PartialMatch</tt> if <i>seq</i> matches incompletely, and <tt>NoMatch</tt> if the sequences have nothing in common. Returns <tt>NoMatch</tt> if <i>seq</i> is shorter.</p>
+<h3 class="fn"><a name="mnemonic"></a>QKeySequence QKeySequence::mnemonic ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the shortcut key sequence for the mnemonic in <i>text</i>, or an empty key sequence if no mnemonics are found.</p>
+<p>For example, mnemonic(&quot;E&amp;amp;xit&quot;) returns <a href="qt.html#Modifier-enum">Qt::ALT</a>+<a href="qt.html#Key-enum">Qt::Key_X</a>, mnemonic(&quot;&amp;amp;Quit&quot;) returns ALT+Key_Q, and mnemonic(&quot;Quit&quot;) returns an empty <a href="qkeysequence.html">QKeySequence</a>.</p>
+<p>We provide a <a href="accelerators.html">list of common mnemonics</a> in English. At the time of writing, Microsoft and Open Group do not appear to have issued equivalent recommendations for other languages.</p>
+<h3 class="fn"><a name="operator-QString"></a>QKeySequence::operator QString () const</h3>
+<p>Creates a shortcut string for the key sequence.</p>
+<p>For example, the value <a href="qt.html#Modifier-enum">Qt::CTRL</a>+<a href="qt.html#Key-enum">Qt::Key_O</a> results in &quot;Ctrl+O&quot;. If the key sequence has multiple key codes, each is separated by commas in the string returned, such as &quot;Alt+X, Ctrl+Y, Z&quot;. The strings, &quot;Ctrl&quot;, &quot;Shift&quot;, etc. are translated using <a href="qobject.html#tr">QObject::tr</a>() in the &quot;<a href="qshortcut.html">QShortcut</a>&quot; scope.</p>
+<p>If the key sequence has no keys, an empty string is returned.</p>
+<p>On Mac OS X, the string returned resembles the sequence that is shown in the menubar.</p>
+<h3 class="fn"><a name="operator-QVariant"></a>QKeySequence::operator QVariant () const</h3>
+<p>Returns the key sequence as a <a href="qvariant.html">QVariant</a></p>
+<h3 class="fn"><a name="operator-not-eq"></a>bool QKeySequence::operator!= ( const QKeySequence &amp; <i>other</i> ) const</h3>
+<p>Returns true if this key sequence is not equal to the <i>other</i> key sequence; otherwise returns false.</p>
+<h3 class="fn"><a name="operator-lt"></a>bool QKeySequence::operator&lt; ( const QKeySequence &amp; <i>other</i> ) const</h3>
+<p>Provides an arbitrary comparison of this key sequence and <i>other</i> key sequence. All that is guaranteed is that the operator returns false if both key sequences are equal and that (ks1 &lt; ks2) == !( ks2 &lt; ks1) if the key sequences are not equal.</p>
+<p>This function is useful in some circumstances, for example if you want to use <a href="qkeysequence.html">QKeySequence</a> objects as keys in a <a href="qmap.html">QMap</a>.</p>
+<p>See also <a href="qkeysequence.html#operator-eq-eq">operator==</a>(), <a href="qkeysequence.html#operator-not-eq">operator!=</a>(), <a href="qkeysequence.html#operator-gt">operator&gt;</a>(), <a href="qkeysequence.html#operator-lt-eq">operator&lt;=</a>(), and <a href="qkeysequence.html#operator-gt-eq">operator&gt;=</a>().</p>
+<h3 class="fn"><a name="operator-lt-eq"></a>bool QKeySequence::operator&lt;= ( const QKeySequence &amp; <i>other</i> ) const</h3>
+<p>Returns true if this key sequence is smaller or equal to the <i>other</i> key sequence; otherwise returns false.</p>
+<p>See also <a href="qkeysequence.html#operator-eq-eq">operator==</a>(), <a href="qkeysequence.html#operator-not-eq">operator!=</a>(), <a href="qkeysequence.html#operator-lt">operator&lt;</a>(), <a href="qkeysequence.html#operator-gt">operator&gt;</a>(), and <a href="qkeysequence.html#operator-gt-eq">operator&gt;=</a>().</p>
+<h3 class="fn"><a name="operator-eq"></a>QKeySequence &amp; QKeySequence::operator= ( const QKeySequence &amp; <i>other</i> )</h3>
+<p>Assignment operator. Assigns the <i>other</i> key sequence to this object.</p>
+<h3 class="fn"><a name="operator-eq-eq"></a>bool QKeySequence::operator== ( const QKeySequence &amp; <i>other</i> ) const</h3>
+<p>Returns true if this key sequence is equal to the <i>other</i> key sequence; otherwise returns false.</p>
+<h3 class="fn"><a name="operator-gt"></a>bool QKeySequence::operator&gt; ( const QKeySequence &amp; <i>other</i> ) const</h3>
+<p>Returns true if this key sequence is larger than the <i>other</i> key sequence; otherwise returns false.</p>
+<p>See also <a href="qkeysequence.html#operator-eq-eq">operator==</a>(), <a href="qkeysequence.html#operator-not-eq">operator!=</a>(), <a href="qkeysequence.html#operator-lt">operator&lt;</a>(), <a href="qkeysequence.html#operator-lt-eq">operator&lt;=</a>(), and <a href="qkeysequence.html#operator-gt-eq">operator&gt;=</a>().</p>
+<h3 class="fn"><a name="operator-gt-eq"></a>bool QKeySequence::operator&gt;= ( const QKeySequence &amp; <i>other</i> ) const</h3>
+<p>Returns true if this key sequence is larger or equal to the <i>other</i> key sequence; otherwise returns false.</p>
+<p>See also <a href="qkeysequence.html#operator-eq-eq">operator==</a>(), <a href="qkeysequence.html#operator-not-eq">operator!=</a>(), <a href="qkeysequence.html#operator-lt">operator&lt;</a>(), <a href="qkeysequence.html#operator-gt">operator&gt;</a>(), and <a href="qkeysequence.html#operator-lt-eq">operator&lt;=</a>().</p>
+<h3 class="fn"><a name="operator-5b-5d"></a>int QKeySequence::operator[] ( <a href="qtglobal.html#uint-typedef">uint</a> <i>index</i> ) const</h3>
+<p>Returns a reference to the element at position <i>index</i> in the key sequence. This can only be used to read an element.</p>
+<hr />
+<h2>Related Non-Members</h2>
+<h3 class="fn"><a name="operator-lt-lt-63"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QKeySequence &amp; <i>sequence</i> )</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Writes the key <i>sequence</i> to the <i>stream</i>.</p>
+<p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
+<h3 class="fn"><a name="operator-gt-gt-43"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QKeySequence &amp; <i>sequence</i> )</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Reads a key sequence from the <i>stream</i> into the key <i>sequence</i>.</p>
+<p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

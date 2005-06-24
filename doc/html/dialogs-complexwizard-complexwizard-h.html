@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: complexwizard.h Example File (dialogs/complexwizard/complexwizard.h)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">complexwizard.h Example File<br /><small><small>dialogs/complexwizard/complexwizard.h</small></small></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #ifndef COMPLEXWIZARD_H
+    #define COMPLEXWIZARD_H
+
+    #include &lt;QDialog&gt;
+    #include &lt;QList&gt;
+
+    class QHBoxLayout;
+    class QPushButton;
+    class QVBoxLayout;
+    class WizardPage;
+
+    class ComplexWizard : public QDialog
+    {
+        Q_OBJECT
+
+    public:
+        ComplexWizard(QWidget *parent = 0);
+
+        QList&lt;WizardPage *&gt; historyPages() const { return history; }
+
+    protected:
+        void setFirstPage(WizardPage *page);
+
+    private slots:
+        void backButtonClicked();
+        void nextButtonClicked();
+        void completeStateChanged();
+
+    private:
+        void switchPage(WizardPage *oldPage);
+
+        QList&lt;WizardPage *&gt; history;
+        QPushButton *cancelButton;
+        QPushButton *backButton;
+        QPushButton *nextButton;
+        QPushButton *finishButton;
+        QHBoxLayout *buttonLayout;
+        QVBoxLayout *mainLayout;
+    };
+
+    class WizardPage : public QWidget
+    {
+        Q_OBJECT
+
+    public:
+        WizardPage(QWidget *parent = 0);
+
+        virtual void resetPage();
+        virtual WizardPage *nextPage();
+        virtual bool isLastPage();
+        virtual bool isComplete();
+
+    signals:
+        void completeStateChanged();
+    };
+
+    #endif</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

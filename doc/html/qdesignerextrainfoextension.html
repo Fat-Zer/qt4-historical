@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/tools/designer/src/lib/sdk/extrainfo.cpp -->
+<head>
+    <title>Qt 4.0: QDesignerExtraInfoExtension Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerExtraInfoExtension Class Reference</h1>
+<p>The QDesignerExtraInfoExtension class provides extra information about a widget in <i>Qt Designer</i>. <a href="#details">More...</a></p>
+<pre>#include &lt;QDesignerExtraInfoExtension&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
+<ul>
+<li><a href="qdesignerextrainfoextension-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/>virtual <b><a href="qdesignerextrainfoextension.html#dtor.QDesignerExtraInfoExtension">~QDesignerExtraInfoExtension</a></b> ()</li>
+<li><div class="fn"/>virtual QDesignerFormEditorInterface * <b><a href="qdesignerextrainfoextension.html#core">core</a></b> () const = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignerextrainfoextension.html#loadUiExtraInfo">loadUiExtraInfo</a></b> ( DomUi * <i>ui</i> ) = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignerextrainfoextension.html#loadWidgetExtraInfo">loadWidgetExtraInfo</a></b> ( DomWidget * <i>widget</i> ) = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignerextrainfoextension.html#saveUiExtraInfo">saveUiExtraInfo</a></b> ( DomUi * <i>ui</i> ) = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignerextrainfoextension.html#saveWidgetExtraInfo">saveWidgetExtraInfo</a></b> ( DomWidget * <i>widget</i> ) = 0</li>
+<li><div class="fn"/>void <b><a href="qdesignerextrainfoextension.html#setWorkingDirectory">setWorkingDirectory</a></b> ( const QString &amp; <i>workingDirectory</i> )</li>
+<li><div class="fn"/>virtual QWidget * <b><a href="qdesignerextrainfoextension.html#widget">widget</a></b> () const = 0</li>
+<li><div class="fn"/>QString <b><a href="qdesignerextrainfoextension.html#workingDirectory">workingDirectory</a></b> () const</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QDesignerExtraInfoExtension class provides extra information about a widget in <i>Qt Designer</i>.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="dtor.QDesignerExtraInfoExtension"></a>QDesignerExtraInfoExtension::~QDesignerExtraInfoExtension ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Destroys the extension.</p>
+<h3 class="fn"><a name="core"></a><a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> * QDesignerExtraInfoExtension::core () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="loadUiExtraInfo"></a>bool QDesignerExtraInfoExtension::loadUiExtraInfo ( DomUi * <i>ui</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Loads extra information about the user interface specified by <i>ui</i>, and returns true if successful; otherwise returns false.</p>
+<h3 class="fn"><a name="loadWidgetExtraInfo"></a>bool QDesignerExtraInfoExtension::loadWidgetExtraInfo ( <a href="domwidget.html">DomWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Loads extra information about the specified <i>widget</i>, and returns true if successful; otherwise returns false.</p>
+<h3 class="fn"><a name="saveUiExtraInfo"></a>bool QDesignerExtraInfoExtension::saveUiExtraInfo ( DomUi * <i>ui</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Saves the information about the user interface specified by <i>ui</i>, and returns true if successful; otherwise returns false.</p>
+<h3 class="fn"><a name="saveWidgetExtraInfo"></a>bool QDesignerExtraInfoExtension::saveWidgetExtraInfo ( <a href="domwidget.html">DomWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Saves the information about the specified <i>widget</i>, and returns true if successful; otherwise returns false.</p>
+<h3 class="fn"><a name="setWorkingDirectory"></a>void QDesignerExtraInfoExtension::setWorkingDirectory ( const <a href="qstring.html">QString</a> &amp; <i>workingDirectory</i> )</h3>
+<p>Sets the path to the working directory used by the extension to <i>workingDirectory</i>.</p>
+<h3 class="fn"><a name="widget"></a><a href="qwidget.html">QWidget</a> * QDesignerExtraInfoExtension::widget () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns the widget described by this extension.</p>
+<h3 class="fn"><a name="workingDirectory"></a><a href="qstring.html">QString</a> QDesignerExtraInfoExtension::workingDirectory () const</h3>
+<p>Returns the path to the working directory used by this extension.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

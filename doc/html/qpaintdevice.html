@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/painting/qpaintdevice_x11.cpp -->
+<head>
+    <title>Qt 4.0: QPaintDevice Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPaintDevice Class Reference</h1>
+<p>The QPaintDevice class is the base class of objects that can be painted. <a href="#details">More...</a></p>
+<pre>#include &lt;QPaintDevice&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
+<p>Inherited by <a href="qimage.html">QImage</a>, <a href="qpicture.html">QPicture</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qprinter.html">QPrinter</a>, and <a href="qwidget.html">QWidget</a>.</p>
+<ul>
+<li><a href="qpaintdevice-members.html">List of all members, including inherited members</a></li>
+<li><a href="qpaintdevice-qt3.html">Qt 3 support members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/>virtual <b><a href="qpaintdevice.html#dtor.QPaintDevice">~QPaintDevice</a></b> ()</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#depth">depth</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#height">height</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#heightMM">heightMM</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#logicalDpiX">logicalDpiX</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#logicalDpiY">logicalDpiY</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#numColors">numColors</a></b> () const</li>
+<li><div class="fn"/>virtual QPaintEngine * <b><a href="qpaintdevice.html#paintEngine">paintEngine</a></b> () const = 0</li>
+<li><div class="fn"/>bool <b><a href="qpaintdevice.html#paintingActive">paintingActive</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#width">width</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qpaintdevice.html#widthMM">widthMM</a></b> () const</li>
+</ul>
+<a name="protected-functions"></a>
+<h3>Protected Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qpaintdevice.html#QPaintDevice">QPaintDevice</a></b> ()</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QPaintDevice class is the base class of objects that can be painted.</p>
+<p>A paint device is an abstraction of a two-dimensional space that can be drawn using a <a href="qpainter.html">QPainter</a>. The drawing capabilities are implemented by the subclasses <a href="qwidget.html">QWidget</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qpicture.html">QPicture</a>, <a href="qimage.html">QImage</a>, and <a href="qprinter.html">QPrinter</a>.</p>
+<p>The default coordinate system of a paint device has its origin located at the top-left position. X increases to the right and Y increases downward. The unit is one pixel. There are several ways to set up a user-defined coordinate system using the painter, for example, using <a href="qpainter.html#setMatrix">QPainter::setMatrix</a>().</p>
+<p><b>Warning:</b> Qt requires that a <a href="qapplication.html">QApplication</a> object exists before any paint devices can be created. Paint devices access window system resources, and these resources are not initialized before an application object is created.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QPaintDevice"></a>QPaintDevice::QPaintDevice ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>Constructs a paint device. This constructor can be invoked only from subclasses of <a href="qpaintdevice.html">QPaintDevice</a>.</p>
+<h3 class="fn"><a name="dtor.QPaintDevice"></a>QPaintDevice::~QPaintDevice ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Destroys the paint device and frees window system resources.</p>
+<h3 class="fn"><a name="depth"></a>int QPaintDevice::depth () const</h3>
+<p>Returns the bit depth (number of bit planes) of the paint device.</p>
+<h3 class="fn"><a name="height"></a>int QPaintDevice::height () const</h3>
+<p>Returns the height of the paint device in default coordinate system units (e.g. pixels for <a href="qpixmap.html">QPixmap</a> and <a href="qwidget.html">QWidget</a>).</p>
+<h3 class="fn"><a name="heightMM"></a>int QPaintDevice::heightMM () const</h3>
+<p>Returns the height of the paint device in millimeters.</p>
+<h3 class="fn"><a name="logicalDpiX"></a>int QPaintDevice::logicalDpiX () const</h3>
+<p>Returns the horizontal resolution of the device in dots per inch, which is used when computing font sizes. For <a href="winsystem.html#x11">X11</a>, this is usually the same as could be computed from <a href="qpaintdevice.html#widthMM">widthMM</a>(), but it varies on Windows.</p>
+<h3 class="fn"><a name="logicalDpiY"></a>int QPaintDevice::logicalDpiY () const</h3>
+<p>Returns the vertical resolution of the device in dots per inch, which is used when computing font sizes. For <a href="winsystem.html#x11">X11</a>, this is usually the same as could be computed from <a href="qpaintdevice.html#heightMM">heightMM</a>(), but it varies on Windows.</p>
+<h3 class="fn"><a name="numColors"></a>int QPaintDevice::numColors () const</h3>
+<p>Returns the number of different colors available for the paint device. Since this value is an int, it will not be sufficient to represent the number of colors on 32 bit displays, in this case INT_MAX is returned instead.</p>
+<h3 class="fn"><a name="paintEngine"></a><a href="qpaintengine.html">QPaintEngine</a> * QPaintDevice::paintEngine () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns a pointer to the paint engine used for drawing on the device.</p>
+<h3 class="fn"><a name="paintingActive"></a>bool QPaintDevice::paintingActive () const</h3>
+<p>Returns true if the device is currently being painted on, i.e. someone has called <a href="qpainter.html#begin">QPainter::begin</a>() but not yet called <a href="qpainter.html#end">QPainter::end</a>() for this device; otherwise returns false.</p>
+<p>See also <a href="qpainter.html#isActive">QPainter::isActive</a>().</p>
+<h3 class="fn"><a name="width"></a>int QPaintDevice::width () const</h3>
+<p>Returns the width of the paint device in default coordinate system units (e.g. pixels for <a href="qpixmap.html">QPixmap</a> and <a href="qwidget.html">QWidget</a>).</p>
+<h3 class="fn"><a name="widthMM"></a>int QPaintDevice::widthMM () const</h3>
+<p>Returns the width of the paint device in millimeters.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

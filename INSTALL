@@ -1,0 +1,75 @@
+                          INSTALLING Qt/Mac Version 4.0.0
+
+1.  If you have the commercial edition of Qt, install your license
+    file as $HOME/.qt-license.
+
+    For the open source version you do not need a license file.
+
+2.  Unpack the archive if you have not done so already:
+
+        cd /tmp
+        gunzip qt-mac-opensource-desktop-4.0.0.tar.gz        # uncompress the archive
+        tar xvf qt-mac-opensource-desktop-4.0.0.tar          # unpack it
+
+    This creates the directory /tmp/qt-mac-opensource-desktop-4.0.0 containing the files
+    from the archive.
+
+3.  Building
+
+    To configure the Qt library for your machine type:
+
+        cd /tmp/qt-mac-opensource-desktop-4.0.0
+        ./configure
+
+    Type "./configure -help" to get a list of all available options.
+
+    To create the library and compile all the demos, examples, tools,
+    and tutorials, type:
+
+        make
+
+    To install the library, demos, examples, tools, and tutorials,
+    type:
+
+        sudo make install
+
+    and enter your password, this requires that you have administrator access
+    to your machine. Qt is by default installed into
+    /usr/local/Trolltech/Qt-4.0.0 but this can be changed by using the
+    -prefix parameter.
+
+4.  Environment variables
+
+    In order to use Qt, some environment variables needs to be
+    extended.
+
+        PATH               - to locate qmake, moc and other Qt tools
+
+    This is done like this:
+
+    In .profile (if your shell is bash), add the following lines:
+
+        PATH=/usr/local/Trolltech/Qt-4.0.0/bin:$PATH
+        export PATH
+
+    In .login (in case your shell is csh or tcsh), add the following line:
+
+        setenv PATH /usr/local/Trolltech/Qt-4.0.0/bin:$PATH
+
+    If you use a different shell, please modify your environment
+    variables accordingly.
+
+5.  That's all. Qt is now installed.
+
+    If you are new to Qt, we suggest that you take a look at the demos
+    and examples to see Qt in action. Run the Qt Examples and Demos
+    either by typing 'qtdemo' on the command line or through the
+    desktop's Start menu.
+
+    You might also want to try the following links:
+
+        http://doc.trolltech.com/4.0/how-to-learn-qt.html
+        http://doc.trolltech.com/4.0/tutorial.html
+        http://www.trolltech.com/developer
+
+    We hope you will enjoy using Qt. Good luck!

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: bookwindow.cpp Example File (demos/books/bookwindow.cpp)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">bookwindow.cpp Example File<br /><small><small>demos/books/bookwindow.cpp</small></small></h1>
+<pre>&nbsp;   #include &lt;QtSql&gt;
+
+    #include &quot;bookdelegate.h&quot;
+    #include &quot;bookwindow.h&quot;
+    #include &quot;initdb.h&quot;
+
+    BookWindow::BookWindow()
+    {
+        ui.setupUi(this);
+
+        if (!QSqlDatabase::drivers().contains(&quot;QSQLITE&quot;))
+            QMessageBox::critical(this, &quot;Unable to load database&quot;, &quot;This demo needs the SQLITE driver&quot;);
+
+        // initialize the database
+        QSqlError err = initDb();
+        if (err.type() != QSqlError::NoError) {
+            showError(err);
+            return;
+        }
+
+        // Create the data model
+        model = new QSqlRelationalTableModel(ui.bookTable);
+        model-&gt;setTable(&quot;books&quot;);
+
+        // Remeber the indexes of the columns
+        authorIdx = model-&gt;fieldIndex(&quot;author&quot;);
+        genreIdx = model-&gt;fieldIndex(&quot;genre&quot;);
+
+        // Set the relations to the other database tables
+        model-&gt;setRelation(authorIdx, QSqlRelation(&quot;authors&quot;, &quot;id&quot;, &quot;name&quot;));
+        model-&gt;setRelation(genreIdx, QSqlRelation(&quot;genres&quot;, &quot;id&quot;, &quot;name&quot;));
+
+        // Set the localized header captions
+        model-&gt;setHeaderData(authorIdx, Qt::Horizontal, tr(&quot;Author Name&quot;));
+        model-&gt;setHeaderData(genreIdx, Qt::Horizontal, tr(&quot;Genre&quot;));
+        model-&gt;setHeaderData(model-&gt;fieldIndex(&quot;title&quot;), Qt::Horizontal, tr(&quot;Title&quot;));
+        model-&gt;setHeaderData(model-&gt;fieldIndex(&quot;year&quot;), Qt::Horizontal, tr(&quot;Year&quot;));
+        model-&gt;setHeaderData(model-&gt;fieldIndex(&quot;rating&quot;), Qt::Horizontal, tr(&quot;Rating&quot;));
+
+        // Populate the model
+        if (!model-&gt;select()) {
+            showError(model-&gt;lastError());
+            return;
+        }
+
+        // Set the model and hide the ID column
+        ui.bookTable-&gt;setModel(model);
+        ui.bookTable-&gt;setItemDelegate(new BookDelegate(ui.bookTable));
+        ui.bookTable-&gt;setColumnHidden(model-&gt;fieldIndex(&quot;id&quot;), true);
+
+        // Initialize the Author combo box
+        ui.authorEdit-&gt;setModel(model-&gt;relationModel(authorIdx));
+        ui.authorEdit-&gt;setModelColumn(model-&gt;relationModel(authorIdx)-&gt;fieldIndex(&quot;name&quot;));
+
+        ui.genreEdit-&gt;setModel(model-&gt;relationModel(genreIdx));
+        ui.genreEdit-&gt;setModelColumn(model-&gt;relationModel(genreIdx)-&gt;fieldIndex(&quot;name&quot;));
+
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+                this, SLOT(dataChanged(QModelIndex)));
+        connect(ui.bookTable-&gt;selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+                this, SLOT(currentBookChanged(QModelIndex)));
+    }
+
+    void BookWindow::showError(const QSqlError &amp;err)
+    {
+        QMessageBox::critical(this, &quot;Unable to initialize Database&quot;,
+                    &quot;Error initializing database: &quot; + err.text());
+    }
+
+    void BookWindow::currentBookChanged(const QModelIndex &amp;index)
+    {
+        bool enabled = index.isValid();
+        ui.titleEdit-&gt;setEnabled(enabled);
+        ui.yearEdit-&gt;setEnabled(enabled);
+        ui.authorEdit-&gt;setEnabled(enabled);
+        ui.genreEdit-&gt;setEnabled(enabled);
+        ui.ratingEdit-&gt;setEnabled(enabled);
+
+        QSqlRecord rec = model-&gt;record(index.row());
+        ui.titleEdit-&gt;setText(rec.value(&quot;title&quot;).toString());
+        ui.yearEdit-&gt;setValue(rec.value(&quot;year&quot;).toInt());
+        ui.authorEdit-&gt;setCurrentIndex(ui.authorEdit-&gt;findText(rec.value(authorIdx).toString()));
+        ui.genreEdit-&gt;setCurrentIndex(ui.genreEdit-&gt;findText(rec.value(genreIdx).toString()));
+        ui.ratingEdit-&gt;setCurrentIndex(rec.value(&quot;rating&quot;).toInt());
+    }
+
+    void BookWindow::on_authorEdit_activated(const QString &amp;text)
+    {
+        QModelIndex currentIndex = model-&gt;index(ui.bookTable-&gt;currentIndex().row(), authorIdx);
+        if (model-&gt;data(currentIndex).toString() != text)
+            ui.bookTable-&gt;itemDelegate()-&gt;setModelData(ui.authorEdit, model, currentIndex);
+    }
+
+    void BookWindow::on_genreEdit_activated(const QString &amp;text)
+    {
+        QModelIndex currentIndex = model-&gt;index(ui.bookTable-&gt;currentIndex().row(), genreIdx);
+        if (model-&gt;data(currentIndex).toString() != text)
+            ui.bookTable-&gt;itemDelegate()-&gt;setModelData(ui.genreEdit, model, currentIndex);
+    }
+
+    void BookWindow::on_ratingEdit_activated(int value)
+    {
+        QModelIndex currentIndex = model-&gt;index(ui.bookTable-&gt;currentIndex().row(),
+                model-&gt;fieldIndex(&quot;rating&quot;));
+        if (model-&gt;data(currentIndex).toInt() != value)
+            model-&gt;setData(currentIndex, value);
+    }
+
+    void BookWindow::on_titleEdit_textChanged(const QString &amp;text)
+    {
+        QModelIndex currentIndex = model-&gt;index(ui.bookTable-&gt;currentIndex().row(),
+                model-&gt;fieldIndex(&quot;title&quot;));
+        if (model-&gt;data(currentIndex).toString() != text)
+            model-&gt;setData(currentIndex, text);
+    }
+
+    void BookWindow::on_yearEdit_valueChanged(int value)
+    {
+        QModelIndex currentIndex = model-&gt;index(ui.bookTable-&gt;currentIndex().row(),
+                model-&gt;fieldIndex(&quot;year&quot;));
+        if (model-&gt;data(currentIndex).toInt() != value)
+            model-&gt;setData(currentIndex, value);
+    }
+
+    void BookWindow::dataChanged(const QModelIndex &amp;index)
+    {
+        if (index.row() == ui.bookTable-&gt;currentIndex().row())
+            currentBookChanged(index);
+    }</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

@@ -1,0 +1,157 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the designer application of the Qt Toolkit.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "qdesigner_integration_p.h"
+
+// sdk
+#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QExtensionManager>
+
+#include <QtCore/QVariant>
+
+#include <QtCore/qdebug.h>
+
+QDesignerIntegration::QDesignerIntegration(QDesignerFormEditorInterface *core, QObject *parent)
+    : QObject(parent),
+      m_core(core)
+{
+    initialize();
+}
+
+QDesignerIntegration::~QDesignerIntegration()
+{
+}
+
+void QDesignerIntegration::initialize()
+{
+    //
+    // integrate the `Form Editor component'
+    //
+    connect(core()->propertyEditor(), SIGNAL(propertyChanged(QString,QVariant)),
+            this, SLOT(updateProperty(QString,QVariant)));
+
+    connect(core()->formWindowManager(), SIGNAL(formWindowAdded(QDesignerFormWindowInterface*)),
+            this, SLOT(setupFormWindow(QDesignerFormWindowInterface*)));
+
+    connect(core()->formWindowManager(), SIGNAL(activeFormWindowChanged(QDesignerFormWindowInterface*)),
+            this, SLOT(updateActiveFormWindow(QDesignerFormWindowInterface*)));
+}
+
+void QDesignerIntegration::updateProperty(const QString &name, const QVariant &value)
+{
+    if (QDesignerFormWindowInterface *formWindow = core()->formWindowManager()->activeFormWindow()) {
+
+        QDesignerFormWindowCursorInterface *cursor = formWindow->cursor();
+
+        if (cursor->isWidgetSelected(formWindow->mainContainer())) {
+            if (name == QLatin1String("windowTitle")) {
+                QString filename = formWindow->fileName().isEmpty()
+                        ? QString::fromUtf8("Untitled")
+                        : formWindow->fileName();
+
+                formWindow->setWindowTitle(QString::fromUtf8("%1 - (%2)")
+                                           .arg(value.toString())
+                                           .arg(filename));
+
+            } else if (name == QLatin1String("geometry")) {
+                if (QWidget *container = containerWindow(formWindow)) {
+                    QRect r = containerWindow(formWindow)->geometry();
+                    r.setSize(value.toRect().size());
+                    container->setGeometry(r);
+                    emit propertyChanged(formWindow, name, value);
+                }
+
+                return;
+            }
+        }
+
+        cursor->setProperty(name, value);
+
+        if (name == QLatin1String("objectName") && core()->objectInspector()) {
+            core()->objectInspector()->setFormWindow(formWindow);
+        }
+
+        emit propertyChanged(formWindow, name, value);
+
+        if (core()->propertyEditor() && core()->propertyEditor()->object()) {
+            QObject *o = core()->propertyEditor()->object();
+            QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core()->extensionManager(), o);
+            int index = sheet->indexOf(name);
+            if (index != -1)
+                core()->propertyEditor()->setPropertyValue(name, sheet->property(index));
+        }
+    }
+}
+
+void QDesignerIntegration::updateActiveFormWindow(QDesignerFormWindowInterface *formWindow)
+{
+    Q_UNUSED(formWindow);
+    updateSelection();
+}
+
+void QDesignerIntegration::setupFormWindow(QDesignerFormWindowInterface *formWindow)
+{
+    connect(formWindow, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
+    connect(formWindow, SIGNAL(activated(QWidget*)), this, SLOT(activateWidget(QWidget*)));
+}
+
+void QDesignerIntegration::updateGeometry()
+{
+}
+
+void QDesignerIntegration::updateSelection()
+{
+    QDesignerFormWindowInterface *formWindow = core()->formWindowManager()->activeFormWindow();
+    QWidget *selection = 0;
+
+    if (formWindow)
+        selection = formWindow->cursor()->selectedWidget(0);
+
+    if (QDesignerObjectInspectorInterface *objectInspector = core()->objectInspector())
+        objectInspector->setFormWindow(formWindow);
+
+    if (QDesignerPropertyEditorInterface *propertyEditor = core()->propertyEditor()) {
+        propertyEditor->setObject(selection);
+        propertyEditor->setEnabled(formWindow && formWindow->cursor()->selectedWidgetCount() == 1);
+    }
+}
+
+void QDesignerIntegration::activateWidget(QWidget *widget)
+{
+    Q_UNUSED(widget);
+}
+
+QWidget *QDesignerIntegration::containerWindow(QWidget *widget)
+{
+    while (widget) {
+        if (widget->isWindow())
+            break;
+        if (widget->parentWidget() && !qstrcmp(widget->parentWidget()->metaObject()->className(), "QWorkspaceChild"))
+            break;
+
+        widget = widget->parentWidget();
+    }
+
+    return widget;
+}
+
