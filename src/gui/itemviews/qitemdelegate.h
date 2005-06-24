@@ -1,0 +1,97 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the item views module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QITEMDELEGATE_H
+#define QITEMDELEGATE_H
+
+#include <QtGui/qabstractitemdelegate.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qpixmap.h>
+#include <QtCore/qvariant.h>
+
+class QItemDelegatePrivate;
+class QItemEditorFactory;
+
+class Q_GUI_EXPORT QItemDelegate : public QAbstractItemDelegate
+{
+    Q_OBJECT
+
+public:
+    explicit QItemDelegate(QObject *parent = 0);
+    ~QItemDelegate();
+
+    // painting
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const;
+
+    // editing
+    QWidget *createEditor(QWidget *parent,
+                          const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    void updateEditorGeometry(QWidget *editor,
+                              const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const;
+
+    // editor factory
+    QItemEditorFactory *itemEditorFactory() const;
+    void setItemEditorFactory(QItemEditorFactory *factory);
+
+protected:
+    virtual void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
+                             const QRect &rect, const QString &text) const;
+    virtual void drawDecoration(QPainter *painter, const QStyleOptionViewItem &option,
+                                const QRect &rect, const QPixmap &pixmap) const;
+    virtual void drawFocus(QPainter *painter, const QStyleOptionViewItem &option,
+                           const QRect &rect) const;
+    virtual void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
+                           const QRect &rect, Qt::CheckState state) const;
+
+    void doLayout(const QStyleOptionViewItem &option,
+                  QRect *checkRect, QRect *iconRect, QRect *textRect, bool hint) const;
+    QPixmap decoration(const QStyleOptionViewItem &option, const QVariant &variant) const;
+    QPixmap *selected(const QPixmap &pixmap, const QPalette &palette, bool enabled) const;
+    QRect check(const QStyleOptionViewItem &option, const QRect &bounding,
+                const QVariant &variant) const;
+
+    bool eventFilter(QObject *object, QEvent *event);
+    bool editorEvent(QEvent *event, QAbstractItemModel *model,
+                     const QStyleOptionViewItem &option, const QModelIndex &index);
+
+private:
+    Q_DECLARE_PRIVATE(QItemDelegate)
+    Q_DISABLE_COPY(QItemDelegate)
+};
+
+#endif // QITEMDELEGATE_H

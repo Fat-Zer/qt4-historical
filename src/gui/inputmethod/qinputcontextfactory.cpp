@@ -1,0 +1,192 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the input methods of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
+**
+** Implementation of QInputContextFactory class
+**
+** Copyright (C) 2003-2004 immodule for Qt Project.  All rights reserved.
+**
+** This file is written to contribute to Trolltech AS under their own
+** licence. You may use this file under your Qt license. Following
+** description is copied from their original file headers. Contact
+** immodule-qt@freedesktop.org if any conditions of this licensing are
+** not clear to you.
+**
+****************************************************************************/
+
+#include "qinputcontextfactory.h"
+
+#ifndef QT_NO_IM
+
+#include "qcoreapplication.h"
+#include "qinputcontext.h"
+#include "qinputcontextplugin.h"
+
+#ifdef Q_WS_X11
+#include "private/qt_x11_p.h"
+#include "qximinputcontext_p.h"
+#endif
+#ifdef Q_WS_WIN
+#include "qwininputcontext_p.h"
+#endif
+#ifdef Q_WS_MAC
+#include "qmacinputcontext_p.h"
+#endif
+
+#include "private/qfactoryloader_p.h"
+#include "qmutex.h"
+
+#ifndef QT_NO_COMPONENT
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
+    (QInputContextFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/inputmethods")))
+#endif
+
+
+/*!
+    This function generates the input context that has the identifier
+    name which is in agreement with \a key. \a widget is the client
+    widget of QInputContext. \a widget may be null.
+*/
+QInputContext *QInputContextFactory::create( const QString& key, QObject *parent )
+{
+    QInputContext *result = 0;
+#if defined(Q_WS_X11) && !defined(QT_NO_XIM)
+    if (key == QLatin1String("xim")) {
+        result = new QXIMInputContext;
+    }
+#endif
+#if defined(Q_WS_WIN)
+    if (key == QLatin1String("win")) {
+        result = new QWinInputContext;
+    }
+#endif
+#if defined(Q_WS_MAC)
+    if (key == QLatin1String("mac")) {
+        result = new QMacInputContext;
+    }
+#endif
+#ifndef QT_NO_COMPONENT
+    if (QInputContextFactoryInterface *factory =
+        qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key))) {
+        result = factory->create(key);
+    }
+#endif
+    if (result)
+        result->setParent(parent);
+    return result;
+}
+
+
+/*!
+    This function returns the list of the names input methods.
+    Only input methods included in default and placed under
+    $QTDIR/plugins/inputmethods are listed.
+*/
+QStringList QInputContextFactory::keys()
+{
+    QStringList result;
+#if defined(Q_WS_X11) && !defined(QT_NO_XIM)
+    result << QLatin1String("xim");
+#endif
+#if defined(Q_WS_WIN) && !defined(QT_NO_XIM)
+    result << QLatin1String("win");
+#endif
+#if defined(Q_WS_MAC)
+    result << QLatin1String("mac");
+#endif
+#ifndef QT_NO_COMPONENT
+    result += loader()->keys();
+#endif // QT_NO_COMPONENT
+    return result;
+}
+
+
+QStringList QInputContextFactory::languages( const QString &key )
+{
+    QStringList result;
+#if defined(Q_WS_X11) && !defined(QT_NO_XIM)
+    if (key == QLatin1String("xim"))
+        return QStringList(QString());
+#endif
+#if defined(Q_WS_WIN)
+    if (key == QLatin1String("win"))
+        return QStringList(QString());
+#endif
+#if defined(Q_WS_MAC)
+    if (key == QLatin1String("mac"))
+        return QStringList(QString());
+#endif
+#ifndef QT_NO_COMPONENT
+    if (QInputContextFactoryInterface *factory =
+        qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key)))
+        result = factory->languages(key);
+#endif // QT_NO_COMPONENT
+    return result;
+}
+
+
+QString QInputContextFactory::displayName( const QString &key )
+{
+    QString result;
+#if defined(Q_WS_X11) && !defined(QT_NO_XIM)
+    if (key == QLatin1String("xim"))
+        return QInputContext::tr( "XIM" );
+#endif
+#ifndef QT_NO_COMPONENT
+    if (QInputContextFactoryInterface *factory =
+        qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key)))
+        return factory->displayName(key);
+#endif // QT_NO_COMPONENT
+    return QString();
+}
+
+
+QString QInputContextFactory::description( const QString &key )
+{
+#if defined(Q_WS_X11) && !defined(QT_NO_XIM)
+    if (key == QLatin1String("xim"))
+        return QInputContext::tr( "XIM input method" );
+#endif
+#if defined(Q_WS_WIN) && !defined(QT_NO_XIM)
+    if (key == QLatin1String("win"))
+        return QInputContext::tr( "Windows input method" );
+#endif
+#if defined(Q_WS_MAC)
+    if (key == QLatin1String("mac"))
+        return QInputContext::tr( "Mac OS X input method" );
+#endif
+#ifndef QT_NO_COMPONENT
+    if (QInputContextFactoryInterface *factory =
+        qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key)))
+        return factory->description(key);
+#endif // QT_NO_COMPONENT
+    return QString();
+}
+
+#endif // QT_NO_IM

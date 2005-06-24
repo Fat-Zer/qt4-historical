@@ -1,0 +1,93 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the designer application of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of Qt Designer.  This header
+// file may change from version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#ifndef QDESIGNER_TOOLBOX_H
+#define QDESIGNER_TOOLBOX_H
+
+#include "shared_global_p.h"
+
+#include <QToolBox>
+
+class QAction;
+
+class QT_SHARED_EXPORT QDesignerToolBox : public QToolBox
+{
+    Q_OBJECT
+    Q_PROPERTY(QString currentItemText READ currentItemText WRITE setCurrentItemText STORED false DESIGNABLE true)
+    Q_PROPERTY(QString currentItemName READ currentItemName WRITE setCurrentItemName STORED false DESIGNABLE true)
+    Q_PROPERTY(QIcon currentItemIcon READ currentItemIcon WRITE setCurrentItemIcon STORED false DESIGNABLE true)
+    Q_PROPERTY(QString currentItemToolTip READ currentItemToolTip WRITE setCurrentItemToolTip STORED false DESIGNABLE true)
+public:
+    QDesignerToolBox(QWidget *parent = 0);
+
+    QString currentItemText() const;
+    void setCurrentItemText(const QString &itemText);
+
+    QString currentItemName() const;
+    void setCurrentItemName(const QString &itemName);
+
+    QIcon currentItemIcon() const;
+    void setCurrentItemIcon(const QIcon &itemIcon);
+
+    QString currentItemToolTip() const;
+    void setCurrentItemToolTip(const QString &itemToolTip);
+
+    QPalette::ColorRole currentItemBackgroundRole() const;
+    void setCurrentItemBackgroundRole(QPalette::ColorRole role);
+
+    inline QAction *actionDeletePage() const
+    { return m_actionDeletePage; }
+
+    inline QAction *actionInsertPage() const
+    { return m_actionInsertPage; }
+
+private slots:
+    void removeCurrentPage();
+    void addPage();
+
+protected:
+    void itemInserted(int index);
+
+private:
+    QAction *m_actionDeletePage;
+    QAction *m_actionInsertPage;
+};
+
+
+#endif // QDESIGNER_TOOLBOX_H

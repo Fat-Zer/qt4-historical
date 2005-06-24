@@ -1,0 +1,122 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "q3grid.h"
+#include "qlayout.h"
+#include "qapplication.h"
+
+/*!
+    \class Q3Grid qgrid.h
+    \brief The Q3Grid widget provides simple geometry management of its children.
+
+    \compat
+
+    The grid places its widgets either in columns or in rows depending
+    on its orientation.
+
+    The number of rows \e or columns is defined in the constructor.
+    All the grid's children will be placed and sized in accordance
+    with their sizeHint() and sizePolicy().
+
+    Use setMargin() to add space around the grid itself, and
+    setSpacing() to add space between the widgets.
+
+    \img qgrid-m.png Q3Grid
+
+    \sa Q3VBox Q3HBox QGridLayout
+*/
+
+/*! \enum Q3Grid::Direction
+    \internal
+*/
+
+/*!
+    Constructs a grid widget with parent \a parent, called \a name.
+    If \a orient is \c Horizontal, \a n specifies the number of
+    columns. If \a orient is \c Vertical, \a n specifies the number of
+    rows. The widget flags \a f are passed to the Q3Frame constructor.
+*/
+Q3Grid::Q3Grid(int n, Qt::Orientation orient, QWidget *parent, const char *name,
+               Qt::WFlags f)
+    : Q3Frame(parent, name, f)
+{
+    int nCols, nRows;
+    if (orient == Qt::Horizontal) {
+        nCols = n;
+        nRows = -1;
+    } else {
+        nCols = -1;
+        nRows = n;
+    }
+    (new QGridLayout(this, nRows, nCols, 0, 0, name))->setAutoAdd(true);
+}
+
+
+
+/*!
+    Constructs a grid widget with parent \a parent, called \a name.
+    \a n specifies the number of columns. The widget flags \a f are
+    passed to the Q3Frame constructor.
+ */
+Q3Grid::Q3Grid(int n, QWidget *parent, const char *name, Qt::WFlags f)
+    : Q3Frame(parent, name, f)
+{
+    (new QGridLayout(this, -1, n, 0, 0, name))->setAutoAdd(true);
+}
+
+
+/*!
+    Sets the spacing between the child widgets to \a space.
+*/
+
+void Q3Grid::setSpacing(int space)
+{
+    if (layout())
+        layout()->setSpacing(space);
+}
+
+
+/*!\reimp
+ */
+void Q3Grid::frameChanged()
+{
+    if (layout())
+        layout()->setMargin(frameWidth());
+}
+
+
+/*!
+  \reimp
+*/
+
+QSize Q3Grid::sizeHint() const
+{
+    QWidget *mThis = (QWidget*)this;
+    QApplication::sendPostedEvents(mThis, QEvent::ChildInserted);
+    return Q3Frame::sizeHint();
+}

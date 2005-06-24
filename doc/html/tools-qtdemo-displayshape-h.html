@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: displayshape.h Example File (tools/qtdemo/displayshape.h)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">displayshape.h Example File<br /><small><small>tools/qtdemo/displayshape.h</small></small></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #ifndef DISPLAYSHAPE_H
+    #define DISPLAYSHAPE_H
+
+    #include &lt;QBrush&gt;
+    #include &lt;QFont&gt;
+    #include &lt;QHash&gt;
+    #include &lt;QPainterPath&gt;
+    #include &lt;QPen&gt;
+    #include &lt;QPointF&gt;
+    #include &lt;QSizeF&gt;
+    #include &lt;QWidget&gt;
+
+    class DisplayShape
+    {
+    public:
+        DisplayShape(const QPointF &amp;position, const QSizeF &amp;maxSize);
+        virtual ~DisplayShape() {};
+
+        virtual bool animate();
+        virtual bool contains(const QString &amp;key) const;
+        virtual bool isInteractive() const;
+        virtual QVariant metaData(const QString &amp;key) const;
+        virtual void paint(QPainter *painter) const;
+        virtual QPointF position() const;
+        virtual QPointF target() const;
+        virtual QRectF rect() const;
+        virtual QSizeF size() const;
+        virtual void removeMetaData(const QString &amp;key);
+        virtual void setInteractive(bool enable);
+        virtual void setMetaData(const QString &amp;key, const QVariant &amp;value);
+        virtual void setPosition(const QPointF &amp;point);
+        virtual void setTarget(const QPointF &amp;point);
+
+    protected:
+        QHash&lt;QString,QVariant&gt; meta;
+        QImage image;
+        QPointF pos;
+        QPointF targetPos;
+        QSizeF maxSize;
+        bool interactive;
+    };
+
+    class PanelShape : public DisplayShape
+    {
+    public:
+        PanelShape(const QPainterPath &amp;path, const QBrush &amp;normal,
+                  const QBrush &amp;highlighted, const QPen &amp;pen,
+                  const QPointF &amp;position, const QSizeF &amp;maxSize);
+
+        bool animate();
+        void paint(QPainter *painter) const;
+        QRectF rect() const;
+
+    private:
+        QBrush brush;
+        QBrush highlightedBrush;
+        QBrush normalBrush;
+        QPainterPath path;
+        QPen pen;
+    };
+
+    class TitleShape : public DisplayShape
+    {
+    public:
+        TitleShape(const QString &amp;text, const QFont &amp;font, const QPen &amp;pen,
+                   const QPointF &amp;position, const QSizeF &amp;maxSize,
+                   Qt::Alignment alignment = Qt::AlignVCenter | Qt::AlignLeft);
+
+        bool animate();
+        void paint(QPainter *painter) const;
+        QRectF rect() const;
+
+    private:
+        QFont font;
+        QString text;
+        QPen pen;
+        QRect textRect;
+        Qt::Alignment alignment;
+    };
+
+    class ImageShape : public DisplayShape
+    {
+    public:
+        ImageShape(const QImage &amp;original, const QPointF &amp;position,
+                   const QSizeF &amp;maxSize, int alpha = 0,
+                   Qt::Alignment alignment = Qt::AlignCenter);
+
+        bool animate();
+        void paint(QPainter *painter) const;
+        QRectF rect() const;
+
+    private:
+        void redraw();
+
+        int alpha;
+        QImage source;
+        QPointF offset;
+        Qt::Alignment alignment;
+        qreal scale;
+    };
+
+    class DocumentShape : public DisplayShape
+    {
+    public:
+        DocumentShape(const QString &amp;text, const QFont &amp;font, const QPen &amp;pen,
+                      const QPointF &amp;position, const QSizeF &amp;maxSize);
+        ~DocumentShape();
+
+        bool animate();
+        void paint(QPainter *painter) const;
+        QRectF rect() const;
+
+    private:
+        qreal formatText();
+
+        QFont font;
+        QStringList paragraphs;
+        QList&lt;QTextLayout*&gt; layouts;
+        QPen pen;
+    };
+
+    #endif</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

@@ -1,0 +1,86 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the painting module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QBITMAP_H
+#define QBITMAP_H
+
+#include "QtGui/qpixmap.h"
+
+class QVariant;
+
+class Q_GUI_EXPORT QBitmap : public QPixmap
+{
+public:
+    QBitmap();
+    QBitmap(const QPixmap &);
+    QBitmap(int w, int h);
+    explicit QBitmap(const QSize &);
+#ifndef QT_NO_IMAGEIO
+    explicit QBitmap(const QString &fileName, const char *format=0);
+#endif
+    ~QBitmap();
+
+    QBitmap &operator=(const QPixmap &);
+    operator QVariant() const;
+
+    inline void clear() { fill(Qt::color0); }
+
+    static QBitmap fromImage(const QImage &image, Qt::ImageConversionFlags flags = Qt::AutoColor);
+    static QBitmap fromData(const QSize &size, const uchar *bits,
+                            QImage::Format monoFormat = QImage::Format_MonoLSB);
+
+#ifndef QT_NO_PIXMAP_TRANSFORMATION
+    QBitmap transformed(const QMatrix &) const;
+#ifdef QT3_SUPPORT
+    inline QT3_SUPPORT_CONSTRUCTOR QBitmap(int w, int h, bool clear);
+    inline QT3_SUPPORT_CONSTRUCTOR QBitmap(const QSize &, bool clear);
+    QT3_SUPPORT_CONSTRUCTOR QBitmap(int w, int h, const uchar *bits, bool isXbitmap=false);
+    QT3_SUPPORT_CONSTRUCTOR QBitmap(const QSize &, const uchar *bits, bool isXbitmap=false);
+    inline QT3_SUPPORT QBitmap xForm(const QMatrix &matrix) const { return transformed(matrix); }
+    QT3_SUPPORT_CONSTRUCTOR QBitmap(const QImage &image) { *this = fromImage(image); }
+    QT3_SUPPORT QBitmap &operator=(const QImage &image) { *this = fromImage(image); return *this; }
+#endif
+#endif
+};
+Q_DECLARE_SHARED(QBitmap)
+
+#ifdef QT3_SUPPORT
+inline QBitmap::QBitmap(int w, int h, bool clear)
+    : QPixmap(QSize(w, h), BitmapType)
+{
+    if (clear) this->clear();
+}
+
+inline QBitmap::QBitmap(const QSize &size, bool clear)
+    : QPixmap(size, BitmapType)
+{
+    if (clear) this->clear();
+}
+#endif
+
+#endif // QBITMAP_H

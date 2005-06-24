@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/examples/simplewizard.qdoc -->
+<head>
+    <title>Qt 4.0: Simple Wizard Example</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Simple Wizard Example</h1>
+<p>Files:</p>
+<ul>
+<li><a href="dialogs-simplewizard-classwizard-cpp.html">dialogs/simplewizard/classwizard.cpp</a></li>
+<li><a href="dialogs-simplewizard-classwizard-h.html">dialogs/simplewizard/classwizard.h</a></li>
+<li><a href="dialogs-simplewizard-simplewizard-cpp.html">dialogs/simplewizard/simplewizard.cpp</a></li>
+<li><a href="dialogs-simplewizard-simplewizard-h.html">dialogs/simplewizard/simplewizard.h</a></li>
+<li><a href="dialogs-simplewizard-main-cpp.html">dialogs/simplewizard/main.cpp</a></li>
+</ul>
+<p>The Simple Wizard example shows how to implement simple wizards in Qt.</p>
+<p>A wizard is a special type of input dialog that consists of a sequence of dialog pages. A wizard's purpose is to walk the user through a process step by step. Wizards are useful for complex or infrequently occurring tasks that users may find difficult to learn or do.</p>
+<center><img src="images/simplewizard.png" alt="Screenshot of the Simple Wizard example" /></center><p>Most wizards have a linear structure, with step 1 followed by step 2 and so on until the last step. Some wizards are more complex in that they allow different traversal paths based on the information provided by the user. The <a href="dialogs-complexwizard.html">Complex Wizard</a> example shows how to create such wizards.</p>
+<p>The Simple Wizard example consists of the following classes:</p>
+<ul>
+<li><tt>SimpleWizard</tt> is an abstract base class that provides the basic framework for sequential wizards. You can use it in your own projects for implementing custom wizards.</li>
+<li><tt>ClassWizard</tt> inherits <tt>SimpleWizard</tt> and provides a three-step wizard that generates the skeleton of a C++ class based on the user's input.</li>
+<li><tt>FirstPage</tt>, <tt>SecondPage</tt>, and <tt>ThirdPage</tt> are <a href="qwidget.html">QWidget</a> subclasses that implement the wizard pages.</li>
+</ul>
+<a name="simplewizard-class-definition"></a>
+<h2>SimpleWizard Class Definition</h2>
+<p><tt>SimpleWizard</tt> offers a <b>Cancel</b>, a <b>Back</b>, a <b>Next</b>, and a <b>Finish</b> button. It takes care of enabling and disabling the buttons as the user advances through the pages. For example, if the user is viewing the first page, <b>Back</b> and <b>Finish</b> are disabled.</p>
+<p>Here's the class definition:</p>
+<pre>&nbsp;   class SimpleWizard : public QDialog
+    {
+        Q_OBJECT
+
+    public:
+        SimpleWizard(QWidget *parent = 0);
+
+        void setButtonEnabled(bool enable);
+
+    protected:
+        virtual QWidget *createPage(int index) = 0;
+        void setNumPages(int n);
+
+    private slots:
+        void backButtonClicked();
+        void nextButtonClicked();
+
+    private:
+        void switchPage(QWidget *oldPage);
+
+        QList&lt;QWidget *&gt; history;
+        int numPages;
+        QPushButton *cancelButton;
+        QPushButton *backButton;
+        QPushButton *nextButton;
+        QPushButton *finishButton;
+        QHBoxLayout *buttonLayout;
+        QVBoxLayout *mainLayout;
+    };</pre>
+<p>The <tt>SimpleWizard</tt> class inherits <a href="qdialog.html">QDialog</a>. Subclasses must reimplement the <tt>createPage()</tt> pure virtual function and call <tt>setNumPages()</tt> in their constructor. In addition, you can call <tt>setButtonEnabled()</tt> at any time to enable or disable the <b>Next</b> button (or the <b>Finish</b> button if the current page is the last page). This is useful to prevent the user from advancing to the next page before the current page is completed.</p>
+<p>The <tt>history</tt> member variable stores the list of wizard pages that the user has seen so far. When the user presses <b>Back</b>, the previous page in the history list is retrieved so that the user can adjust their input when required.</p>
+<a name="simplewizard-class-implementation"></a>
+<h2>SimpleWizard Class Implementation</h2>
+<p>First the constructor:</p>
+<pre>&nbsp;   SimpleWizard::SimpleWizard(QWidget *parent)
+        : QDialog(parent)
+    {
+        cancelButton = new QPushButton(tr(&quot;Cancel&quot;));
+        backButton = new QPushButton(tr(&quot;&lt; &amp;Back&quot;));
+        nextButton = new QPushButton(tr(&quot;Next &gt;&quot;));
+        finishButton = new QPushButton(tr(&quot;&amp;Finish&quot;));
+
+        connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(backButton, SIGNAL(clicked()), this, SLOT(backButtonClicked()));
+        connect(nextButton, SIGNAL(clicked()), this, SLOT(nextButtonClicked()));
+        connect(finishButton, SIGNAL(clicked()), this, SLOT(accept()));
+
+        buttonLayout = new QHBoxLayout;
+        buttonLayout-&gt;addStretch(1);
+        buttonLayout-&gt;addWidget(cancelButton);
+        buttonLayout-&gt;addWidget(backButton);
+        buttonLayout-&gt;addWidget(nextButton);
+        buttonLayout-&gt;addWidget(finishButton);
+
+        mainLayout = new QVBoxLayout;
+        mainLayout-&gt;addLayout(buttonLayout);
+        setLayout(mainLayout);
+    }</pre>
+<p>We start by creating the <b>Cancel</b>, <b>Back</b>, <b>Next</b>, and <b>Finish</b> buttons and connecting their <a href="qabstractbutton.html#clicked">clicked()</a> signals to <tt>SimpleWizard</tt> slots. The <a href="qdialog.html#accept">accept()</a> and <a href="qdialog.html#reject">reject()</a> slots are inherited from <a href="qdialog.html">QDialog</a>; they close the dialog and set the dialog's <a href="qdialog.html#result">return code</a> to <a href="qdialog.html#DialogCode-enum">QDialog::Accepted</a> or <a href="qdialog.html#DialogCode-enum">QDialog::Rejected</a>. The <tt>backButtonClicked()</tt> and <tt>nextButtonClicked()</tt> are defined in <tt>SimpleWizard</tt>.</p>
+<p>After establishing the signal-slot connections, we put the buttons in a horizontal layout. We put a stretch item on the left (using <a href="qboxlayout.html#addStretch">QBoxLayout::addStretch</a>()) to ensure that the buttons are pushed to the right side of the dialog.</p>
+<p>At the end, we nest the button's layout into a vertical layout called <tt>mainLayout</tt>. At this point, <tt>mainLayout</tt> isn't very useful, because it contains only one item, but we'll add one more item to it later on.</p>
+<pre>&nbsp;   void SimpleWizard::setButtonEnabled(bool enable)
+    {
+        if (history.size() == numPages)
+            finishButton-&gt;setEnabled(enable);
+        else
+            nextButton-&gt;setEnabled(enable);
+    }</pre>
+<p>The <tt>setButtonEnabled()</tt> function is called by subclasses to enable or disable the <b>Next</b> button. If the current page is the last page, we enable or disable the <b>Finish</b> button instead.</p>
+<p>To determine whether the current page is the last page, we check the number of pages the user has visited so far (<tt>history.size()</tt>). If that number is the same as the wizard's total number of pages (<tt>numPages</tt>), we know it's the last page.</p>
+<pre>&nbsp;   void SimpleWizard::setNumPages(int n)
+    {
+        numPages = n;
+        history.append(createPage(0));
+        switchPage(0);
+    }</pre>
+<p>The <tt>setNumPages()</tt> function must be called exactly once from the subclass's constructor. It initializes <tt>numPages</tt> and creates the first page using <tt>createPage()</tt>, which we will review in a moment.</p>
+<pre>&nbsp;   void SimpleWizard::backButtonClicked()
+    {
+        nextButton-&gt;setEnabled(true);
+        finishButton-&gt;setEnabled(true);
+
+        QWidget *oldPage = history.takeLast();
+        switchPage(oldPage);
+        delete oldPage;
+    }</pre>
+<p>When the user clicks the <b>Back</b> button, we update the enabled state of the other buttons, remove the last page from the history (the current page) and call <tt>switchPage()</tt> to change the page that is rendered.</p>
+<p>Strangely enough, the argument to <tt>switchPage()</tt> is the page that was the current page <i>before</i> the use clicked <b>Back</b> (<tt>oldPage</tt>), not the page that will become the current page. The reason for this behavior will become clear when we implement <tt>switchPage()</tt>.</p>
+<pre>&nbsp;   void SimpleWizard::nextButtonClicked()
+    {
+        nextButton-&gt;setEnabled(true);
+        finishButton-&gt;setEnabled(history.size() == numPages - 1);
+
+        QWidget *oldPage = history.last();
+        history.append(createPage(history.size()));
+        switchPage(oldPage);
+    }</pre>
+<p>When the user clicks the <b>Next</b> button, we create a new page using <tt>createPage()</tt>. The argument to <tt>createPage()</tt> is the number of the page. The rest of the code is similar to the previous function.</p>
+<pre>&nbsp;   void SimpleWizard::switchPage(QWidget *oldPage)
+    {
+        if (oldPage) {
+            oldPage-&gt;hide();
+            mainLayout-&gt;removeWidget(oldPage);
+        }
+
+        QWidget *newPage = history.last();
+        mainLayout-&gt;insertWidget(0, newPage);
+        newPage-&gt;show();
+        newPage-&gt;setFocus();
+
+        backButton-&gt;setEnabled(history.size() != 1);
+        if (history.size() == numPages) {
+            nextButton-&gt;setEnabled(false);
+            finishButton-&gt;setDefault(true);
+        } else {
+            nextButton-&gt;setDefault(true);
+            finishButton-&gt;setEnabled(false);
+        }
+
+        setWindowTitle(tr(&quot;Simple Wizard - Step %1 of %2&quot;)
+                       .arg(history.size())
+                       .arg(numPages));
+    }</pre>
+<p>In <tt>switchPage()</tt>, we hide the page that was current and remove it from the layout, assuming that there was a current page. (The first time <tt>switchPage()</tt> is called, from <tt>setNumPages()</tt>, the argument is a null pointer.)</p>
+<p>The new current page is always the last page in the history. We insert it into the vertical layout at position 0. This ensures that the page is displayed above the wizard buttons, which are grouped in a nested layout and occpy position 1 of the outer layout.</p>
+<p>We show the new current page and give it the focus. Then we update the state of the <b>Next</b> and <b>Finish</b> buttons based on whether the current page is the last page or not, and we update the window title.</p>
+<a name="classwizard-class-definition"></a>
+<h2>ClassWizard Class Definition</h2>
+<p>We will now see how to subclass <tt>SimpleWizard</tt> to implement our own wizard. The concrete wizard class is called <tt>ClassWizard</tt>. It has three page:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/simplewizard-page1.png" /> <img src="images/simplewizard-page2.png" /> <img src="images/simplewizard-page3.png" /></td></tr>
+</table>
+<p>The first page asks for a class name and a base class, and allows the user to specify whether the class should have a <tt>Q_OBJECT</tt> macro and what constructors it should provide. The second page allows the user to set some options related to the code style, such as the macro used to protect the header file from multiple inclusion (e.g., <tt>MYDIALOG_H</tt>). Finally, the third page allows the user to specify the names of the output files.</p>
+<p>Although the program is just an example, if you press <b>Finish</b>, C++ source files will actually be generated.</p>
+<p>Here's the class definition:</p>
+<pre>&nbsp;   class ClassWizard : public SimpleWizard
+    {
+        Q_OBJECT
+
+    public:
+        ClassWizard(QWidget *parent = 0);
+
+    protected:
+        QWidget *createPage(int index);
+        void accept();
+
+    private:
+        FirstPage *firstPage;
+        SecondPage *secondPage;
+        ThirdPage *thirdPage;
+
+        friend class FirstPage;
+        friend class SecondPage;
+        friend class ThirdPage;
+    };</pre>
+<p>The class reimplements the <tt>createPage()</tt> virtual function that we declared in <tt>SimpleWizard</tt>. It also reimplements <a href="qdialog.html">QDialog</a>'s <a href="qdialog.html#accept">accept()</a> slot.</p>
+<p>The private section of the class declares three data members: <tt>firstPage</tt>, <tt>secondPage</tt>, and <tt>thirdPage</tt>. In addition, the <tt>FirstPage</tt>, <tt>SecondPage</tt>, and <tt>ThirdPage</tt> widgets are declared friends of <tt>ClassWizard</tt>. This will make it possible for them to access the <tt>ClassWizard</tt>'s private members. In this case, we want every page to be able to access members in any other page, because the values set on one page may influence those on subsequent pages.</p>
+<p>An alternative design would have been to declare the <tt>firstPage</tt>, <tt>secondPage</tt>, and <tt>thirdPage</tt> members public, but that would have exposed them to the outside world.</p>
+<a name="classwizard-class-implementation"></a>
+<h2>ClassWizard Class Implementation</h2>
+<p>Here's the constructor:</p>
+<pre>&nbsp;   ClassWizard::ClassWizard(QWidget *parent)
+        : SimpleWizard(parent)
+    {
+        setNumPages(3);
+    }</pre>
+<p>We call <tt>setNumPages()</tt> to tell <tt>SimpleWizard</tt> that our wizard has three pages.</p>
+<pre>&nbsp;   QWidget *ClassWizard::createPage(int index)
+    {
+        switch (index) {
+        case 0:
+            firstPage = new FirstPage(this);
+            return firstPage;
+        case 1:
+            secondPage = new SecondPage(this);
+            return secondPage;
+        case 2:
+            thirdPage = new ThirdPage(this);
+            return thirdPage;
+        }
+        return 0;
+    }</pre>
+<p>In <tt>createPage()</tt>, we create the page requested by <tt>SimpleWizard</tt>. We also store the return value in a member variable, so we can access it later.</p>
+<p>We don't need to worry about deleting the page later. Whenever the user presses <b>Back</b>, the <tt>SimpleWizard</tt> deletes the page. The next time it needs the page, it will call <tt>createPage()</tt> again. This ensures that the page will be a fresh new page with correctly initialized values.</p>
+<pre>&nbsp;   void ClassWizard::accept()
+    {
+        QByteArray className = firstPage-&gt;classNameLineEdit-&gt;text().toAscii();
+        QByteArray baseClass = firstPage-&gt;baseClassLineEdit-&gt;text().toAscii();
+        bool qobjectMacro = firstPage-&gt;qobjectMacroCheckBox-&gt;isChecked();
+        bool qobjectCtor = firstPage-&gt;qobjectCtorRadioButton-&gt;isChecked();
+        bool qwidgetCtor = firstPage-&gt;qwidgetCtorRadioButton-&gt;isChecked();
+        bool defaultCtor = firstPage-&gt;defaultCtorRadioButton-&gt;isChecked();
+        bool copyCtor = firstPage-&gt;copyCtorCheckBox-&gt;isChecked();
+
+        bool comment = secondPage-&gt;commentCheckBox-&gt;isChecked();
+        bool protect = secondPage-&gt;protectCheckBox-&gt;isChecked();
+        QByteArray macroName = secondPage-&gt;macroNameLineEdit-&gt;text().toAscii();
+        bool includeBase = secondPage-&gt;includeBaseCheckBox-&gt;isChecked();
+        QByteArray baseInclude = secondPage-&gt;baseIncludeLineEdit-&gt;text().toAscii();
+
+        QString outputDir = thirdPage-&gt;outputDirLineEdit-&gt;text();
+        QString header = thirdPage-&gt;headerLineEdit-&gt;text();
+        QString implementation = thirdPage-&gt;implementationLineEdit-&gt;text();
+        ...
+        QDialog::accept();
+    }</pre>
+<p>If the user clicks <b>Finish</b>, we extract the information from the various pages and generate the files. The code is long and tedious (and unrelated to the noble art of designing wizards), so most of it is skipped here. See the actual example in the Qt distribution for the details if you're curious.</p>
+<a name="the-firstpage-secondpage-and-thirdpage-classes"></a>
+<h2>The FirstPage, SecondPage, and ThirdPage Classes</h2>
+<p>The pages are defined in <tt>classwizard.h</tt> and implemented in <tt>classwizard.cpp</tt>, together with <tt>ClassWizard</tt>.</p>
+<pre>&nbsp;   class FirstPage : public QWidget
+    {
+        Q_OBJECT
+
+    public:
+        FirstPage(ClassWizard *wizard);
+
+    private slots:
+        void classNameChanged();
+
+    private:
+        QLabel *topLabel;
+        QLabel *classNameLabel;
+        QLabel *baseClassLabel;
+        QLineEdit *classNameLineEdit;
+        QLineEdit *baseClassLineEdit;
+        QCheckBox *qobjectMacroCheckBox;
+        QGroupBox *groupBox;
+        QRadioButton *qobjectCtorRadioButton;
+        QRadioButton *qwidgetCtorRadioButton;
+        QRadioButton *defaultCtorRadioButton;
+        QCheckBox *copyCtorCheckBox;
+
+        friend class ClassWizard;
+        friend class SecondPage;
+        friend class ThirdPage;
+    };</pre>
+<p>The <tt>FirstPage</tt> class has a constructor that takes a <tt>ClassWizard</tt>, and a private slot called <tt>classNameChanged()</tt>.</p>
+<p>The other classes in the quadrumvirate (<tt>ClassWizard</tt>, <tt>SecondPage</tt>, and <tt>ThirdPage</tt>) are declared as friends so that they can access the page's child widgets.</p>
+<pre>&nbsp;   FirstPage::FirstPage(ClassWizard *wizard)
+        : QWidget(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;b&gt;Class information&lt;/b&gt;&lt;/center&gt;&quot;
+                                 &quot;&lt;p&gt;This wizard will generate a skeleton class &quot;
+                                 &quot;definition and member function definitions.&quot;));
+        topLabel-&gt;setWordWrap(false);
+
+        classNameLabel = new QLabel(tr(&quot;Class &amp;name:&quot;));
+        classNameLineEdit = new QLineEdit;
+        classNameLabel-&gt;setBuddy(classNameLineEdit);
+        setFocusProxy(classNameLineEdit);
+
+        baseClassLabel = new QLabel(tr(&quot;&amp;Base class:&quot;));
+        baseClassLineEdit = new QLineEdit;
+        baseClassLabel-&gt;setBuddy(baseClassLineEdit);
+        ...
+        connect(classNameLineEdit, SIGNAL(textChanged(const QString &amp;)),
+                this, SLOT(classNameChanged()));
+        ...
+    }</pre>
+<p>The constructor sets up the dialog. The <a href="qobject.html#connect">QObject::connect</a>() call ensures that the <tt>classNameChanged()</tt> slot is called whenever the user modifies the name of the current class. That slot is responsible for enabling or desabling the wizard's <b>Next</b> button.</p>
+<pre>&nbsp;   void FirstPage::classNameChanged()
+    {
+        ClassWizard *wizard = qobject_cast&lt;ClassWizard *&gt;(parent());
+        wizard-&gt;setButtonEnabled(!classNameLineEdit-&gt;text().isEmpty());
+    }</pre>
+<p>We set the <b>Next</b> button enabled if and only if the <b>Class name</b> editor has some contents.</p>
+<p>The <tt>SecondPage</tt> and <tt>ThirdPage</tt> classes are very similar to <tt>FirstPage</tt>, so we won't spend as much time reviewing them. One thing that's different with them is that they use values entered in the first page to initialize some of their fields.</p>
+<p>Let's have a look at <tt>SecondPage</tt>. In the constructor, we have the following code:</p>
+<pre>&nbsp;       QString className = wizard-&gt;firstPage-&gt;classNameLineEdit-&gt;text();
+        macroNameLineEdit-&gt;setText(className.toUpper() + &quot;_H&quot;);</pre>
+<p>The value of the second page's <b>Macro name</b> field on the first page's <b>Class name</b> field. For example, if the class name is <tt>SuperDuperWidget</tt>, the default macro name is <tt>SUPERDUPERWIDGET_H</tt>. This is possible because of all the friends.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

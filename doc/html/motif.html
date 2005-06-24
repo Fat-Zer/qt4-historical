@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/motif.qdoc -->
+<head>
+    <title>Qt 4.0: Qt Motif Extension</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt Motif Extension</h1>
+<a name="motif"></a><p>This module is part of the <a href="commercialedition.html">Qt Commercial Edition</a> and is <i>not</i> part of the Qt Open Source Edition.</p>
+<a name="introduction"></a>
+<h2>Introduction</h2>
+<p>The Qt Motif extension assists the migration of old Xt and Motif based applications to the more comfortable Qt toolkit. This extension replaces the older Xt/Motif Support Extension included with earlier versions of Qt.</p>
+<p>This extension is typically used by developers when incrementally migrating Motif-based applications to Qt. To take full advantage of Qt, we recommend that you ship complete Qt ports of your applications rather than rely on this extension in production software.</p>
+<p>The Qt Motif extension consists of the following classes:</p>
+<ul>
+<li>QMotif - Provides the basis of the Qt Motif extension.</li>
+<li>QMotifWidget - Provides the <a href="qwidget.html">QWidget</a> API for Motif widgets.</li>
+<li>QMotifDialog - Provides the <a href="qdialog.html">QDialog</a> API for Motif dialogs.</li>
+<li>QXtWidget - The Xt/Motif integration widget from the previous Xt/Motif extension. This class is unsupported and has many known problems and limitations. It is provided only to keep existing source working; it should not be used in new code.</li>
+</ul>
+<p>See also the Motif Examples.</p>
+<a name="common-problems"></a>
+<h2>Common Problems</h2>
+<a name="incorrect-cde-color-scheme"></a>
+<h3>Incorrect CDE Color Scheme</h3>
+<p>QMotifWidget and QMotifDialog will use the same Visual, Colormap and color depth that <a href="qapplication.html">QApplication</a> uses. When using CDE, the color scheme may be incorrect when using a Visual, Colormap and color depth that is not the default. To work around this problem, add the following resource string to your startup files (for example, <tt>$HOME/.dt/sessions/current/dt.resources</tt>):</p>
+<pre>&nbsp;   *userColorObj: false</pre>
+<a name="x11-header-conflicts"></a>
+<h3>X11 Header Conflicts</h3>
+<p>The <a href="winsystem.html#x11">X11</a> headers define some constants that conflict with the Qt headers. The solution is to include all Qt headers first, followed by headers from this extension, and all Xt/Motif and <a href="winsystem.html#x11">X11</a> headers last. For example:</p>
+<pre>&nbsp;   // Qt headers first
+    #include &lt;qapplication.h&gt;
+    #include &lt;qpushbutton.h&gt;
+    #include &lt;qsocket.h&gt;
+    ...
+
+    // QMotif* headers next
+    #include &lt;qmotif.h&gt;
+    #include &lt;qmotifdialog.h&gt;
+    #include &lt;qmotifwidget.h&gt;
+
+    // Xt/Motif and X11 headers last
+    #include &lt;X11/Xlib.h&gt;
+    #include &lt;Xt/Intrinsic.h&gt;
+    #include &lt;Xm/Xm.h&gt;
+    ...</pre>
+<a name="multiple-screen-support"></a>
+<h3>Multiple Screen Support</h3>
+<p>QMotifWidget can be used together with <a href="qdesktopwidget.html">QDesktopWidget</a> to create top-level windows on multiple screens. A common mistake is to create a QMotifWidget on a non-default screen while the Xt/Motif widgets are created on the default screen. The solution is to specify the screen to both QMotifWidget and the Xt/Motif child. For example:</p>
+<pre>&nbsp;   Display *dpy = QApplication::desktop()-&gt;x11Display();
+    Arg args[1];
+
+    // make sure both QMotifWidget and the XmMainWindow are on screen 1
+    XtSetArg(args[0], XtNscreen, ScreenOfDisplay(dpy, 1));
+    QMotifWidget *toplevel =
+        new QMotifWidget(QApplication::desktop()-&gt;screen(1),
+                         xmMainWindowWidgetClass, args, 1, &quot;mainwindow&quot;);</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

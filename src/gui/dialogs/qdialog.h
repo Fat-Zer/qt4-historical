@@ -1,0 +1,108 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the dialog module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QDIALOG_H
+#define QDIALOG_H
+
+#include "QtGui/qwidget.h"
+#ifndef QT_NO_DIALOG
+#if 0
+Q_OBJECT
+#endif
+
+class QPushButton;
+class QDialogPrivate;
+
+class Q_GUI_EXPORT QDialog : public QWidget
+{
+    Q_OBJECT
+    Q_DECLARE_PRIVATE(QDialog)
+    friend class QPushButton;
+
+    Q_PROPERTY(bool sizeGripEnabled READ isSizeGripEnabled WRITE setSizeGripEnabled)
+    Q_PROPERTY(bool modal READ isModal WRITE setModal)
+
+public:
+    explicit QDialog(QWidget *parent = 0, Qt::WFlags f = 0);
+#ifdef QT3_SUPPORT
+    QT3_SUPPORT_CONSTRUCTOR QDialog(QWidget *parent, const char *name, bool modal = false,
+                                  Qt::WFlags f = 0);
+#endif
+    ~QDialog();
+
+    enum DialogCode { Rejected, Accepted };
+
+    int result() const;
+
+    void setVisible(bool visible);
+
+    void setOrientation(Qt::Orientation orientation);
+    Qt::Orientation orientation() const;
+
+    void setExtension(QWidget* extension);
+    QWidget* extension() const;
+
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
+
+    void setSizeGripEnabled(bool);
+    bool isSizeGripEnabled() const;
+
+    void setModal(bool modal);
+#ifdef Q_OS_TEMP
+    bool event(QEvent *);
+#endif
+
+    void setResult(int r);
+
+public slots:
+    int exec();
+    virtual void done(int);
+    virtual void accept();
+    virtual void reject();
+
+    void showExtension(bool);
+
+protected:
+    QDialog(QDialogPrivate &, QWidget *parent, Qt::WFlags f = 0);
+
+    void keyPressEvent(QKeyEvent *);
+    void closeEvent(QCloseEvent *);
+    void showEvent(QShowEvent *);
+    void resizeEvent(QResizeEvent *);
+    void contextMenuEvent(QContextMenuEvent *);
+    bool eventFilter(QObject *, QEvent *);
+    void adjustPosition(QWidget*);
+
+private:
+    Q_DISABLE_COPY(QDialog)
+};
+
+#endif // QT_NO_DIALOG
+
+#endif // QDIALOG_H

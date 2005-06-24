@@ -1,0 +1,125 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef Q3BUTTONGROUP_H
+#define Q3BUTTONGROUP_H
+
+#include "QtGui/qbuttongroup.h"
+#include "Qt3Support/q3groupbox.h"
+#include "QtCore/qmap.h"
+
+
+class QAbstractButton;
+
+class Q_COMPAT_EXPORT Q3ButtonGroup : public Q3GroupBox
+{
+    Q_OBJECT
+    Q_PROPERTY(bool exclusive READ isExclusive WRITE setExclusive)
+    Q_PROPERTY(bool radioButtonExclusive READ isRadioButtonExclusive WRITE setRadioButtonExclusive)
+    Q_PROPERTY(int selectedId READ selectedId WRITE setButton)
+
+public:
+    Q3ButtonGroup(QWidget* parent=0, const char* name=0);
+    Q3ButtonGroup(const QString &title,
+                  QWidget* parent=0, const char* name=0);
+    Q3ButtonGroup(int columns, Qt::Orientation o,
+                  QWidget* parent=0, const char* name=0);
+    Q3ButtonGroup(int columns, Qt::Orientation o, const QString &title,
+                  QWidget* parent=0, const char* name=0);
+    ~Q3ButtonGroup();
+
+    bool isExclusive() const;
+    bool isRadioButtonExclusive() const { return radio_excl; }
+    void setExclusive(bool);
+    void setRadioButtonExclusive(bool);
+
+public:
+    int insert(QAbstractButton *, int id=-1);
+    void remove(QAbstractButton *);
+    QAbstractButton    *find(int id) const;
+    int id(QAbstractButton *) const;
+    int count() const;
+
+    void setButton(int id);
+
+    QAbstractButton *selected() const;
+    int selectedId() const;
+
+signals:
+    void pressed(int id);
+    void released(int id);
+    void clicked(int id);
+
+protected slots:
+    void buttonPressed();
+    void buttonReleased();
+    void buttonClicked();
+
+protected:
+    bool event(QEvent * e);
+
+private:
+    Q_DISABLE_COPY(Q3ButtonGroup)
+
+    void init();
+
+    bool excl_grp;
+    bool radio_excl;
+    QMap<int, QAbstractButton*> buttonIds;
+    QButtonGroup group;
+};
+
+class Q_COMPAT_EXPORT Q3VButtonGroup : public Q3ButtonGroup
+{
+    Q_OBJECT
+public:
+    inline Q3VButtonGroup(QWidget* parent=0, const char* name=0)
+        : Q3ButtonGroup(1, Qt::Horizontal /* sic! */, parent, name) {}
+    inline Q3VButtonGroup(const QString &title, QWidget* parent=0, const char* name=0)
+        : Q3ButtonGroup(1, Qt::Horizontal /* sic! */, title, parent, name) {}
+
+private:
+    Q_DISABLE_COPY(Q3VButtonGroup)
+};
+
+
+class Q_COMPAT_EXPORT Q3HButtonGroup : public Q3ButtonGroup
+{
+    Q_OBJECT
+public:
+    inline Q3HButtonGroup(QWidget* parent=0, const char* name=0)
+        : Q3ButtonGroup(1, Qt::Vertical /* sic! */, parent, name) {}
+    inline Q3HButtonGroup(const QString &title, QWidget* parent=0, const char* name=0)
+        : Q3ButtonGroup(1, Qt::Vertical /* sic! */, title, parent, name) {}
+
+private:
+    Q_DISABLE_COPY(Q3HButtonGroup)
+};
+
+
+#endif // Q3BUTTONGROUP_H

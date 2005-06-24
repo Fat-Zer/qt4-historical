@@ -1,0 +1,98 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef Q3MAINWINDOW_P_H
+#define Q3MAINWINDOW_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qwidget_p.h>
+
+class Q3MainWindowLayout;
+
+class Q3MainWindowPrivate : public QWidgetPrivate
+{
+    Q_DECLARE_PUBLIC(Q3MainWindow)
+public:
+    Q3MainWindowPrivate()
+        :  mb(0), sb(0), ttg(0), mc(0), tll(0), mwl(0), ubp(false), utl(false),
+           justify(false), movable(true), opaque(false), dockMenu(true)
+    {
+        docks.insert(Qt::DockTop, true);
+        docks.insert(Qt::DockBottom, true);
+        docks.insert(Qt::DockLeft, true);
+        docks.insert(Qt::DockRight, true);
+        docks.insert(Qt::DockMinimized, false);
+        docks.insert(Qt::DockTornOff, true);
+    }
+
+    ~Q3MainWindowPrivate()
+    {
+    }
+
+#ifndef QT_NO_MENUBAR
+    mutable QMenuBar * mb;
+#else
+    mutable QWidget * mb;
+#endif
+    QStatusBar * sb;
+    QToolTipGroup * ttg;
+
+    QWidget * mc;
+
+    QBoxLayout * tll;
+    Q3MainWindowLayout * mwl;
+
+    uint ubp :1;
+    uint utl :1;
+    uint justify :1;
+    uint movable :1;
+    uint opaque :1;
+    uint dockMenu :1;
+
+    Q3DockArea *topDock, *bottomDock, *leftDock, *rightDock;
+
+    QList<Q3DockWindow *> dockWindows;
+    QMap<Qt::Dock, bool> docks;
+    QStringList disabledDocks;
+    QHideDock *hideDock;
+
+    QPointer<Q3PopupMenu> rmbMenu, tbMenu, dwMenu;
+    QMap<Q3DockWindow*, bool> appropriate;
+};
+
+#endif // Q3MAINWINDOW_P_H

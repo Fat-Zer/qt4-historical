@@ -1,0 +1,148 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the assistant application of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+
+#include "finddialog.h"
+#include "mainwindow.h"
+#include "tabbedbrowser.h"
+#include "helpwindow.h"
+
+#include <qtextbrowser.h>
+#include <qtextcursor.h>
+#include <qstatusbar.h>
+#include <qlineedit.h>
+#include <qdatetime.h>
+#include <qgridlayout.h>
+#include <qdebug.h>
+
+FindDialog::FindDialog(MainWindow *parent)
+    : QDialog(parent)
+{
+    contentsWidget = new QWidget(this);
+    ui.setupUi(contentsWidget);
+
+    QVBoxLayout *l = new QVBoxLayout(this);
+    l->setMargin(0);
+    l->setSpacing(0);
+    l->addWidget(contentsWidget);
+
+    lastBrowser = 0;
+    onceFound = false;
+    findExpr.clear();
+
+    sb = new QStatusBar(this);
+    l->addWidget(sb);
+    
+    sb->showMessage(tr("Enter the text you are looking for."));
+
+    connect(ui.findButton, SIGNAL(clicked()), this, SLOT(findButtonClicked()));
+    connect(ui.closeButton, SIGNAL(clicked()), this, SLOT(reject()));
+}
+
+FindDialog::~FindDialog()
+{
+}
+
+void FindDialog::findButtonClicked()
+{
+    doFind(ui.radioForward->isChecked());
+}
+
+void FindDialog::doFind(bool forward)
+{
+    QTextBrowser *browser = static_cast<QTextBrowser*>(mainWindow()->browsers()->currentBrowser());
+    sb->clearMessage();
+
+    if (ui.comboFind->currentText() != findExpr || lastBrowser != browser)
+        onceFound = false;
+    findExpr = ui.comboFind->currentText();
+
+    QTextDocument::FindFlags flags = 0;
+
+    if (ui.checkCase->isChecked())
+        flags |= QTextDocument::FindCaseSensitively;
+
+    if (ui.checkWords->isChecked())
+        flags |= QTextDocument::FindWholeWords;
+
+    QTextCursor c = browser->textCursor();
+    if (!c.hasSelection()) {
+        if (forward)
+            c.movePosition(QTextCursor::Start);
+        else
+            c.movePosition(QTextCursor::End);
+
+        browser->setTextCursor(c);
+    }
+
+    QTextDocument::FindFlags options;
+    if (forward == false)
+        flags |= QTextDocument::FindBackward;
+
+    QTextCursor found = browser->document()->find(findExpr, c, flags);
+    if (found.isNull()) {
+        if (onceFound) {
+            if (forward)
+                statusMessage(tr("Search reached end of the document"));
+            else
+                statusMessage(tr("Search reached start of the document"));
+        } else {
+            statusMessage(tr( "Text not found" ));
+        }
+    } else {
+        browser->setTextCursor(found);
+    }
+    onceFound |= !found.isNull();
+    lastBrowser = browser;
+}
+
+bool FindDialog::hasFindExpression() const
+{
+    return !findExpr.isEmpty();
+}
+
+void FindDialog::statusMessage(const QString &message)
+{
+    if (isVisible())
+        sb->showMessage(message);
+    else
+        static_cast<MainWindow*>(parent())->statusBar()->showMessage(message, 2000);
+}
+
+MainWindow *FindDialog::mainWindow() const
+{
+    return static_cast<MainWindow*>(parentWidget());
+}
+
+void FindDialog::reset()
+{
+    ui.comboFind->setFocus();
+    ui.comboFind->lineEdit()->setSelection(
+        0, ui.comboFind->lineEdit()->text().length());
+}
+

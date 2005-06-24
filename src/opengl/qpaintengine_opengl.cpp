@@ -1,0 +1,927 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the opengl module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include <private/qpaintengine_p.h>
+#include "qapplication.h"
+#include "qbrush.h"
+#include "qgl.h"
+#include <private/qgl_p.h>
+#include "qmap.h"
+#include <private/qpaintengine_opengl_p.h>
+#include "qpen.h"
+#include "qvarlengtharray.h"
+#include <private/qpainter_p.h>
+#include <qdebug.h>
+
+#ifdef Q_OS_MAC
+# include <OpenGL/glu.h>
+#else
+# include <GL/glu.h>
+#endif
+
+#include <stdlib.h>
+
+#ifndef CALLBACK // for Windows
+#define CALLBACK
+#endif
+
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE  0x809D
+#endif
+#ifndef GL_MULTISAMPLE_FILTER_HINT_NV
+#define GL_MULTISAMPLE_FILTER_HINT_NV   0x8534
+#endif
+
+// define QT_GL_NO_CONCAVE_POLYGONS to remove support for drawing
+// concave polygons (for speedup purposes)
+
+//#define QT_GL_NO_CONCAVE_POLYGONS
+
+#define qToDouble(x) x
+
+class QOpenGLPaintEnginePrivate : public QPaintEnginePrivate {
+    Q_DECLARE_PUBLIC(QOpenGLPaintEngine)
+public:
+    QOpenGLPaintEnginePrivate()
+        : bgmode(Qt::TransparentMode)
+        , txop(QPainterPrivate::TxNone) {}
+
+    QPen cpen;
+    QBrush cbrush;
+    QBrush bgbrush;
+    Qt::BGMode bgmode;
+    QRegion crgn;
+    bool has_clipping : 1;
+    QMatrix matrix;
+    QPainterPrivate::TransformationCodes txop;
+};
+
+#define dgl ((QGLWidget *)(d_func()->pdev))
+
+QOpenGLPaintEngine::QOpenGLPaintEngine()
+    : QPaintEngine(*(new QOpenGLPaintEnginePrivate),
+                   PaintEngineFeatures(AllFeatures
+                                       & ~(LinearGradientFill
+                                           | RadialGradientFill
+                                           | ConicalGradientFill
+                                           | PatternBrush)))
+{
+}
+
+QOpenGLPaintEngine::~QOpenGLPaintEngine()
+{
+}
+
+bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
+{
+    Q_D(QOpenGLPaintEngine);
+    Q_ASSERT(static_cast<const QGLWidget *>(pdev));
+    d->pdev = pdev;
+    d->has_clipping = false;
+    dgl->setAutoBufferSwap(false);
+    setActive(true);
+    dgl->makeCurrent();
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    dgl->qglClearColor(dgl->palette().brush(QPalette::Background).color());
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glShadeModel(GL_FLAT);
+    glViewport(0, 0, dgl->width(), dgl->height());
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, dgl->width(), dgl->height(), 0, -999999, 999999);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    setDirty(QPaintEngine::DirtyPen);
+    setDirty(QPaintEngine::DirtyBrush);
+
+    return true;
+}
+
+bool QOpenGLPaintEngine::end()
+{
+    dgl->makeCurrent();
+    glPopAttrib();
+    glFlush();
+    dgl->swapBuffers();
+    setActive(false);
+    return true;
+}
+
+void QOpenGLPaintEngine::updateState(const QPaintEngineState &state)
+{
+    QPaintEngine::DirtyFlags flags = state.state();
+    if (flags & DirtyPen) updatePen(state.pen());
+    if (flags & DirtyBrush) updateBrush(state.brush(), state.brushOrigin());
+    if (flags & DirtyBackground) updateBackground(state.backgroundMode(), state.backgroundBrush());
+    if (flags & DirtyFont) updateFont(state.font());
+    if (flags & DirtyTransform) updateMatrix(state.matrix());
+    if (flags & DirtyClipPath) {
+        updateClipRegion(QRegion(state.clipPath().toFillPolygon().toPolygon(),
+                                 state.clipPath().fillRule()),
+                         state.clipOperation());
+    }
+    if (flags & DirtyClipRegion) updateClipRegion(state.clipRegion(), state.clipOperation());
+    if (flags & DirtyHints) updateRenderHints(state.renderHints());
+}
+
+void QOpenGLPaintEngine::updatePen(const QPen &pen)
+{
+    Q_D(QOpenGLPaintEngine);
+    dgl->makeCurrent();
+    dgl->qglColor(pen.color());
+    d->cpen = pen;
+    if (pen.color().alpha() != 255) {
+ 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+    }
+    if (pen.widthF() < 0.000001)
+        glLineWidth(1);
+    else
+        glLineWidth(pen.widthF());
+}
+
+void QOpenGLPaintEngine::updateBrush(const QBrush &brush, const QPointF &)
+{
+    Q_D(QOpenGLPaintEngine);
+    dgl->makeCurrent();
+    d->cbrush = brush;
+    if (!brush.isOpaque()) {
+ 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+    }
+
+#if 0 // doesnt work very well yet - use fallback for now
+    // all GL polygon stipple patterns needs to be specified as a
+    // 32x32 bit mask
+    static const GLubyte dense1_pat[] = {
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x77, 0x77, 0x77, 0x77, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+
+    static const GLubyte dense2_pat[] = {
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee,
+        0xff, 0xff, 0xff, 0xff, 0xbb, 0xbb, 0xbb, 0xbb,
+        0xff, 0xff, 0xff, 0xff, 0xee, 0xee, 0xee, 0xee };
+
+    static const GLubyte dense3_pat[] = {
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x77, 0x77, 0x77, 0x77, 0xaa, 0xaa, 0xaa, 0xaa,
+        0xdd, 0xdd, 0xdd, 0xdd, 0xaa, 0xaa, 0xaa, 0xaa };
+
+    static const GLubyte dense4_pat[] = {
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa,
+        0x55, 0x55, 0x55, 0x55, 0xaa, 0xaa, 0xaa, 0xaa };
+
+    static const GLubyte dense5_pat[] = {
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55,
+        0x88, 0x88, 0x88, 0x88, 0x55, 0x55, 0x55, 0x55,
+        0x22, 0x22, 0x22, 0x22, 0x55, 0x55, 0x55, 0x55 };
+
+    static const GLubyte dense6_pat[] = {
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x22, 0x22, 0x22, 0x22, 0x00, 0x00, 0x00, 0x00 };
+
+    static const GLubyte dense7_pat[] = {
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x88, 0x88, 0x88, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+    static const GLubyte hor_pat[] = {                      // horizontal pattern
+        0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+    static const GLubyte ver_pat[] = {                      // vertical pattern
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+        0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80 };
+
+    static const GLubyte cross_pat[] = {                    // cross pattern
+        0xff, 0xff, 0xff, 0xff, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0xff, 0xff, 0xff, 0xff, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0xff, 0xff, 0xff, 0xff, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0xff, 0xff, 0xff, 0xff, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+        0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10 };
+
+    static const GLubyte bdiag_pat[] = {                    // backward diagonal pattern
+        0x20, 0x20, 0x20, 0x20, 0x10, 0x10, 0x10, 0x10,
+        0x08, 0x08, 0x08, 0x08, 0x04, 0x04, 0x04, 0x04,
+        0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01,
+        0x80, 0x80, 0x80, 0x80, 0x40, 0x40, 0x40, 0x40,
+        0x20, 0x20, 0x20, 0x20, 0x10, 0x10, 0x10, 0x10,
+        0x08, 0x08, 0x08, 0x08, 0x04, 0x04, 0x04, 0x04,
+        0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01,
+        0x80, 0x80, 0x80, 0x80, 0x40, 0x40, 0x40, 0x40,
+        0x20, 0x20, 0x20, 0x20, 0x10, 0x10, 0x10, 0x10,
+        0x08, 0x08, 0x08, 0x08, 0x04, 0x04, 0x04, 0x04,
+        0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01,
+        0x80, 0x80, 0x80, 0x80, 0x40, 0x40, 0x40, 0x40,
+        0x20, 0x20, 0x20, 0x20, 0x10, 0x10, 0x10, 0x10,
+        0x08, 0x08, 0x08, 0x08, 0x04, 0x04, 0x04, 0x04,
+        0x02, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x01,
+        0x80, 0x80, 0x80, 0x80, 0x40, 0x40, 0x40, 0x40 };
+
+
+    static const GLubyte fdiag_pat[] = {                    // forward diagonal pattern
+        0x80, 0x80, 0x80, 0x80, 0x01, 0x01, 0x01, 0x01,
+        0x02, 0x02, 0x02, 0x02, 0x04, 0x04, 0x04, 0x04,
+        0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10,
+        0x20, 0x20, 0x20, 0x20, 0x40, 0x40, 0x40, 0x40,
+        0x80, 0x80, 0x80, 0x80, 0x01, 0x01, 0x01, 0x01,
+        0x02, 0x02, 0x02, 0x02, 0x04, 0x04, 0x04, 0x04,
+        0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10,
+        0x20, 0x20, 0x20, 0x20, 0x40, 0x40, 0x40, 0x40,
+        0x80, 0x80, 0x80, 0x80, 0x01, 0x01, 0x01, 0x01,
+        0x02, 0x02, 0x02, 0x02, 0x04, 0x04, 0x04, 0x04,
+        0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10,
+        0x20, 0x20, 0x20, 0x20, 0x40, 0x40, 0x40, 0x40,
+        0x80, 0x80, 0x80, 0x80, 0x01, 0x01, 0x01, 0x01,
+        0x02, 0x02, 0x02, 0x02, 0x04, 0x04, 0x04, 0x04,
+        0x08, 0x08, 0x08, 0x08, 0x10, 0x10, 0x10, 0x10,
+        0x20, 0x20, 0x20, 0x20, 0x40, 0x40, 0x40, 0x40 };
+
+    static const GLubyte dcross_pat[] = {                   // diagonal cross pattern
+        0x84, 0x84, 0x84, 0x84, 0x48, 0x48, 0x48, 0x48,
+        0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
+        0x48, 0x48, 0x48, 0x48, 0x84, 0x84, 0x84, 0x84,
+        0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+        0x84, 0x84, 0x84, 0x84, 0x48, 0x48, 0x48, 0x48,
+        0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
+        0x48, 0x48, 0x48, 0x48, 0x84, 0x84, 0x84, 0x84,
+        0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+        0x84, 0x84, 0x84, 0x84, 0x48, 0x48, 0x48, 0x48,
+        0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
+        0x48, 0x48, 0x48, 0x48, 0x84, 0x84, 0x84, 0x84,
+        0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+        0x84, 0x84, 0x84, 0x84, 0x48, 0x48, 0x48, 0x48,
+        0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
+        0x48, 0x48, 0x48, 0x48, 0x84, 0x84, 0x84, 0x84,
+        0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03 };
+
+    static const GLubyte * const pat_tbl[] = {
+        dense1_pat, dense2_pat, dense3_pat, dense4_pat, dense5_pat,
+        dense6_pat, dense7_pat, hor_pat, ver_pat, cross_pat, bdiag_pat,
+        fdiag_pat, dcross_pat };
+
+    int bs = d->cbrush.style();
+    if (bs >= Qt::Dense1Pattern && bs <= Qt::DiagCrossPattern) {
+        glEnable(GL_POLYGON_STIPPLE);
+        glPolygonStipple(pat_tbl[bs - Qt::Dense1Pattern]);
+    } else {
+        glDisable(GL_POLYGON_STIPPLE);
+    }
+#endif
+}
+
+void QOpenGLPaintEngine::updateFont(const QFont &)
+{
+}
+
+void QOpenGLPaintEngine::updateBackground(Qt::BGMode bgMode, const QBrush &bgBrush)
+{
+    Q_D(QOpenGLPaintEngine);
+    dgl->makeCurrent();
+    dgl->qglClearColor(bgBrush.color());
+    d->bgmode = bgMode;
+    d->bgbrush = bgBrush;
+}
+
+void QOpenGLPaintEngine::updateMatrix(const QMatrix &mtx)
+{
+    Q_D(QOpenGLPaintEngine);
+
+    d->matrix = mtx;
+    GLdouble mat[4][4];
+
+    mat[0][0] = qToDouble(mtx.m11());
+    mat[0][1] = qToDouble(mtx.m12());
+    mat[0][2] = 0;
+    mat[0][3] = 0;
+
+    mat[1][0] = qToDouble(mtx.m21());
+    mat[1][1] = qToDouble(mtx.m22());
+    mat[1][2] = 0;
+    mat[1][3] = 0;
+
+    mat[2][0] = 0;
+    mat[2][1] = 0;
+    mat[2][2] = 1;
+    mat[2][3] = 0;
+
+    mat[3][0] = qToDouble(mtx.dx());
+    mat[3][1] = qToDouble(mtx.dy());
+    mat[3][2] = 0;
+    mat[3][3] = 1;
+
+    if (mtx.m12() != 0 || mtx.m21() != 0)
+        d->txop = QPainterPrivate::TxRotShear;
+    else if (mtx.m11() != 1 || mtx.m22() != 1)
+        d->txop = QPainterPrivate::TxScale;
+    else if (mtx.dx() != 0 || mtx.dy() != 0)
+        d->txop = QPainterPrivate::TxTranslate;
+    else
+        d->txop = QPainterPrivate::TxNone;
+
+    dgl->makeCurrent();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixd(&mat[0][0]);
+}
+
+void QOpenGLPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOperation op)
+{
+    Q_D(QOpenGLPaintEngine);
+    bool useStencilBuffer = dgl->format().stencil();
+    bool useDepthBuffer = dgl->format().depth() && !useStencilBuffer;
+
+    // clipping is only supported when a stencil or depth buffer is
+    // available
+    if (!useStencilBuffer && !useDepthBuffer)
+	return;
+
+    dgl->makeCurrent();
+    if (op == Qt::NoClip) {
+        d->has_clipping = false;
+        d->crgn = QRegion();
+        glDisable(useStencilBuffer ? GL_STENCIL_TEST : GL_DEPTH_TEST);
+        return;
+    }
+
+    QRegion region = clipRegion * d->matrix;
+    switch (op) {
+    case Qt::IntersectClip:
+        if (d->has_clipping) {
+            d->crgn &= region;
+            break;
+        }
+        // fall through
+    case Qt::ReplaceClip:
+        d->crgn = region;
+        break;
+    case Qt::UniteClip:
+        d->crgn |= region;
+        break;
+    default:
+        break;
+    }
+
+    if (useStencilBuffer) {
+        glClearStencil(0x0);
+        glClear(GL_STENCIL_BUFFER_BIT);
+        glClearStencil(0x1);
+    } else {
+        glClearDepth(0x0);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glDepthMask(true);
+        glClearDepth(0x1);
+    }
+
+    const QVector<QRect> rects = d->crgn.rects();
+    glEnable(GL_SCISSOR_TEST);
+    for (int i = 0; i < rects.size(); ++i) {
+        glScissor(rects.at(i).left(), dgl->height() - rects.at(i).bottom(),
+                  rects.at(i).width(), rects.at(i).height());
+        glClear(useStencilBuffer ? GL_STENCIL_BUFFER_BIT : GL_DEPTH_BUFFER_BIT);
+    }
+    glDisable(GL_SCISSOR_TEST);
+
+    if (useStencilBuffer) {
+        glStencilFunc(GL_EQUAL, 0x1, 0x1);
+        glEnable(GL_STENCIL_TEST);
+    } else {
+        glDepthFunc(GL_LEQUAL);
+        glEnable(GL_DEPTH_TEST);
+    }
+    d->has_clipping = true;
+}
+
+void QOpenGLPaintEngine::updateRenderHints(QPainter::RenderHints hints)
+{
+    dgl->makeCurrent();
+    if (hints & QPainter::Antialiasing) {
+        glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+        glEnable(GL_MULTISAMPLE);
+    } else {
+        glDisable(GL_MULTISAMPLE);
+    }
+}
+
+void QOpenGLPaintEngine::drawRects(const QRectF *rects, int rectCount)
+{
+    Q_D(QOpenGLPaintEngine);
+    dgl->makeCurrent();
+
+    // ### this could be done faster I'm sure...
+    for (int i=0; i<rectCount; ++i) {
+        QRectF r = rects[i];
+        double x = qToDouble(r.x());
+        double y = qToDouble(r.y());
+        double w = qToDouble(r.width());
+        double h = qToDouble(r.height());
+        if (d->cbrush.style() != Qt::NoBrush) {
+            dgl->qglColor(d->cbrush.color());
+            glRectf(x, y, x+w, y+h);
+            if (d->cpen.style() == Qt::NoPen)
+                return;
+        }
+
+        if (d->cpen.style() != Qt::NoPen) {
+            // Specify the outline as 4 separate lines since a quad or a
+            // polygon won't give us exactly what we want
+            dgl->qglColor(d->cpen.color());
+            glBegin(GL_LINES);
+            {
+                glVertex2d(x, y);
+                glVertex2d(x+w, y);
+                glVertex2d(x+w, y-1);
+                glVertex2d(x+w, y+h);
+                glVertex2d(x+w, y+h);
+                glVertex2d(x, y+h);
+                glVertex2d(x, y+h);
+                glVertex2d(x, y);
+            }
+            glEnd();
+        }
+    }
+}
+
+void QOpenGLPaintEngine::drawPoints(const QPointF *p, int pointCount)
+{
+    dgl->makeCurrent();
+    glBegin(GL_POINTS);
+    {
+        for (int i=0; i<pointCount; ++i)
+            glVertex2d(qToDouble(p[i].x()), qToDouble(p[i].y()));
+    }
+    glEnd();
+}
+
+void QOpenGLPaintEngine::drawLines(const QLineF *lines, int lineCount)
+{
+    dgl->makeCurrent();
+    glBegin(GL_LINES);
+    {
+        for (int i = 0; i < lineCount; ++i) {
+            glVertex2d(qToDouble(lines[i].x1()), qToDouble(lines[i].y1()));
+            glVertex2d(qToDouble(lines[i].x2()), qToDouble(lines[i].y2()));
+        }
+    }
+    glEnd();
+}
+
+// Need to allocate space for new vertices on intersecting lines and
+// they need to be alive until gluTessEndPolygon() has returned
+static QList<GLdouble *> vertexStorage;
+static void CALLBACK qgl_tess_combine(GLdouble coords[3],
+				      GLdouble *[4],
+				      GLfloat [4], GLdouble **dataOut)
+{
+    GLdouble *vertex;
+    vertex = (GLdouble *) malloc(3 * sizeof(GLdouble));
+    vertex[0] = coords[0];
+    vertex[1] = coords[1];
+    vertex[2] = coords[2];
+    *dataOut = vertex;
+    vertexStorage.append(vertex);
+}
+
+static void CALLBACK qgl_tess_error(GLenum errorCode)
+{
+    qWarning("QOpenGLPaintEngine: tessellation error: %s", gluErrorString(errorCode));
+}
+
+static GLUtesselator *qgl_tess = 0;
+static void qgl_cleanup_tesselator()
+{
+    gluDeleteTess(qgl_tess);
+}
+
+static void qgl_draw_poly(const QPointF *points, int pointCount, bool winding = false)
+{
+#ifndef QT_GL_NO_CONCAVE_POLYGONS
+    if (!qgl_tess) {
+	qgl_tess = gluNewTess();
+	qAddPostRoutine(qgl_cleanup_tesselator);
+    }
+    gluTessProperty(qgl_tess, GLU_TESS_WINDING_RULE,
+                    winding ? GLU_TESS_WINDING_NONZERO : GLU_TESS_WINDING_ODD);
+    QVarLengthArray<GLdouble> v(pointCount*3);
+#ifdef Q_WS_MAC  // This removes warnings.
+    gluTessCallback(qgl_tess, GLU_TESS_BEGIN, reinterpret_cast<GLvoid (CALLBACK *)(...)>(&glBegin));
+    gluTessCallback(qgl_tess, GLU_TESS_VERTEX,
+                    reinterpret_cast<GLvoid (CALLBACK *)(...)>(&glVertex3dv));
+    gluTessCallback(qgl_tess, GLU_TESS_END, reinterpret_cast<GLvoid (CALLBACK *)(...)>(&glEnd));
+    gluTessCallback(qgl_tess, GLU_TESS_COMBINE,
+                    reinterpret_cast<GLvoid (CALLBACK *)(...)>(&qgl_tess_combine));
+    gluTessCallback(qgl_tess, GLU_TESS_ERROR,
+                    reinterpret_cast<GLvoid (CALLBACK *)(...)>(&qgl_tess_error));
+#else
+    gluTessCallback(qgl_tess, GLU_TESS_BEGIN, reinterpret_cast<GLvoid (CALLBACK *)()>(&glBegin));
+    gluTessCallback(qgl_tess, GLU_TESS_VERTEX,
+                    reinterpret_cast<GLvoid (CALLBACK *)()>(&glVertex3dv));
+    gluTessCallback(qgl_tess, GLU_TESS_END, reinterpret_cast<GLvoid (CALLBACK *)()>(&glEnd));
+    gluTessCallback(qgl_tess, GLU_TESS_COMBINE,
+                    reinterpret_cast<GLvoid (CALLBACK *)()>(&qgl_tess_combine));
+    gluTessCallback(qgl_tess, GLU_TESS_ERROR,
+                    reinterpret_cast<GLvoid (CALLBACK *) ()>(&qgl_tess_error));
+#endif
+    gluTessBeginPolygon(qgl_tess, NULL);
+    {
+	gluTessBeginContour(qgl_tess);
+	{
+	    for (int i = 0; i < pointCount; ++i) {
+		v[i*3] = qToDouble(points[i].x());
+		v[i*3+1] = qToDouble(points[i].y());
+		v[i*3+2] = 0.0;
+		gluTessVertex(qgl_tess, &v[i*3], &v[i*3]);
+	    }
+	}
+	gluTessEndContour(qgl_tess);
+    }
+    gluTessEndPolygon(qgl_tess);
+    // clean up after the qgl_tess_combine callback
+    for (int i=0; i < vertexStorage.size(); ++i)
+	free(vertexStorage[i]);
+    vertexStorage.clear();
+#else
+    glBegin(GL_POLYGON);
+    {
+        for (int i = 0; i < pointCount; ++i)
+	    glVertex2d(points[i].x(), points[i].y());
+    }
+    glEnd();
+#endif
+}
+
+void QOpenGLPaintEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
+{
+    Q_D(QOpenGLPaintEngine);
+    if(!pointCount)
+        return;
+    dgl->makeCurrent();
+    dgl->qglColor(d->cbrush.color());
+    if (d->cbrush.style() != Qt::NoBrush && mode != PolylineMode)
+        qgl_draw_poly(points, pointCount, mode == QPaintEngine::WindingMode);
+    if (d->cpen.style() != Qt::NoPen) {
+        dgl->qglColor(d->cpen.color());
+        double x1 = qToDouble(points[0].x());
+        double y1 = qToDouble(points[0].y());
+        double x2 = qToDouble(points[pointCount - 1].x());
+        double y2 = qToDouble(points[pointCount - 1].y());
+
+        glBegin(GL_LINE_STRIP);
+        {
+            for (int i = 0; i < pointCount; ++i)
+                glVertex2d(qToDouble(points[i].x()), qToDouble(points[i].y()));
+            if (mode != PolylineMode && !(x1 == x2 && y1 == y2))
+                glVertex2d(x1, y1);
+        }
+        glEnd();
+    }
+}
+
+void QOpenGLPaintEngine::drawPath(const QPainterPath &path)
+{
+    Q_D(QOpenGLPaintEngine);
+    if (path.isEmpty())
+        return;
+
+    if (d->cbrush.style() != Qt::NoBrush) {
+        QPolygonF poly = path.toFillPolygon();
+        QPen oldPen = d->cpen;
+        d->cpen.setStyle(Qt::NoPen);
+        drawPolygon(poly.data(), poly.size(),
+                    path.fillRule() == Qt::OddEvenFill ? OddEvenMode : WindingMode);
+        d->cpen = oldPen;
+    }
+
+    if (d->cpen.style() != Qt::NoPen) {
+        QPainterPathStroker stroker;
+        stroker.setDashPattern(d->cpen.style());
+        stroker.setCapStyle(d->cpen.capStyle());
+        stroker.setJoinStyle(d->cpen.joinStyle());
+        QPainterPath stroke;
+        qreal width = d->cpen.widthF();
+        QPolygonF poly;
+        if (width == 0) {
+            stroker.setWidth(1);
+            stroke = stroker.createStroke(path * d->matrix);
+            if (stroke.isEmpty())
+                return;
+            poly = stroke.toFillPolygon();
+        } else {
+            stroker.setWidth(width);
+            stroker.setCurveThreshold( 1 / (2 * 10 * d->matrix.m11() * d->matrix.m22()));
+            stroke = stroker.createStroke(path);
+            if (stroke.isEmpty())
+                return;
+            poly = stroke.toFillPolygon(d->matrix);
+        }
+        QPen oldPen = d->cpen;
+        QBrush oldBrush = d->cbrush;
+        d->cpen.setStyle(Qt::NoPen);
+        d->cbrush = d->cpen.brush();
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        drawPolygon(poly.data(), poly.size(), WindingMode);
+        glPopMatrix();
+
+        d->cpen = oldPen;
+        d->cbrush = oldBrush;
+    }
+}
+
+void QOpenGLPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
+{
+    Q_D(QOpenGLPaintEngine);
+    if (pm.depth() == 1) {
+	QPixmap tpx(pm.size());
+	tpx.fill(d->bgbrush.color());
+	QPainter p(&tpx);
+	p.setPen(d->cpen);
+	p.drawPixmap(0, 0, pm);
+	p.end();
+	drawPixmap(r, tpx, sr);
+	return;
+    }
+    GLenum target = QGLExtensions::glExtensions & QGLExtensions::TextureRectangle
+		    ? GL_TEXTURE_RECTANGLE_NV
+		    : GL_TEXTURE_2D;
+    if (r.size() != pm.size())
+        target = GL_TEXTURE_2D;
+    dgl->makeCurrent();
+    dgl->bindTexture(pm, target);
+
+    drawTextureRect(pm.width(), pm.height(), r, sr, target);
+}
+
+void QOpenGLPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &)
+{
+    dgl->makeCurrent();
+    dgl->bindTexture(pm);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glPushAttrib(GL_CURRENT_BIT);
+    glColor4f(1.0, 1.0, 1.0, 1.0);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+
+    GLdouble tc_w = qToDouble(qreal(r.width())/pm.width());
+    GLdouble tc_h = qToDouble(qreal(r.height())/pm.height());
+
+    // Rotate the texture so that it is aligned correctly and the
+    // wrapping is done correctly
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glRotated(180.0, 0.0, 1.0, 0.0);
+    glRotated(180.0, 0.0, 0.0, 1.0);
+    glBegin(GL_QUADS);
+    {
+	glTexCoord2d(0.0, 0.0);
+	glVertex2d(qToDouble(r.x()), qToDouble(r.y()));
+
+	glTexCoord2d(tc_w, 0.0);
+	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()));
+
+	glTexCoord2d(tc_w, tc_h);
+	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()+r.height()));
+
+	glTexCoord2d(0.0, tc_h);
+	glVertex2d(qToDouble(r.x()), qToDouble(r.y()+r.height()));
+    }
+    glEnd();
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+    glPopAttrib();
+}
+
+void QOpenGLPaintEngine::drawImage(const QRectF &r, const QImage &image, const QRectF &sr,
+                                   Qt::ImageConversionFlags)
+{
+    GLenum target = QGLExtensions::glExtensions & QGLExtensions::TextureRectangle
+		    ? GL_TEXTURE_RECTANGLE_NV
+		    : GL_TEXTURE_2D;
+    if (r.size() != image.size())
+        target = GL_TEXTURE_2D;
+    dgl->makeCurrent();
+    dgl->bindTexture(image, target);
+    drawTextureRect(image.width(), image.height(), r, sr, target);
+}
+
+void QOpenGLPaintEngine::drawTextureRect(int tx_width, int tx_height, const QRectF &r,
+					 const QRectF &sr, GLenum target)
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glPushAttrib(GL_CURRENT_BIT);
+    glColor4f(1.0, 1.0, 1.0, 1.0);
+    glEnable(target);
+    glEnable(GL_BLEND);
+
+    glBegin(GL_QUADS);
+    {
+	qreal x1, x2, y1, y2;
+	if (target == GL_TEXTURE_2D) {
+	    x1 = sr.x() / tx_width;
+	    x2 = x1 + sr.width() / tx_width;
+	    y1 = 1.0 - ((sr.y() / tx_height) + (sr.height() / tx_height));
+	    y2 = 1.0 - (sr.y() / tx_height);
+	} else {
+	    x1 = sr.x();
+	    x2 = sr.width();
+	    y1 = sr.y();
+	    y2 = sr.height();
+	}
+
+        glTexCoord2d(qToDouble(x1), qToDouble(y2));
+	glVertex2d(qToDouble(r.x()), qToDouble(r.y()));
+
+        glTexCoord2d(qToDouble(x2), qToDouble(y2));
+	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()));
+
+        glTexCoord2d(qToDouble(x2), qToDouble(y1));
+	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()+r.height()));
+
+        glTexCoord2d(qToDouble(x1), qToDouble(y1));
+	glVertex2d(qToDouble(r.x()), qToDouble(r.y()+r.height()));
+    }
+    glEnd();
+
+    glDisable(target);
+    glPopAttrib();
+}
+
+#ifdef Q_WS_WIN
+HDC
+#else
+Qt::HANDLE
+#endif
+QOpenGLPaintEngine::handle() const
+{
+    return 0;
+}
+
+void QOpenGLPaintEngine::drawTextItem(const QPointF &p, const QTextItem &ti)
+{
+    QPaintEngine::drawTextItem(p, ti);
+}

@@ -1,0 +1,189 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the qtconfig application of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "colorbutton.h"
+
+#include <qapplication.h>
+#include <qevent.h>
+#include <qcolordialog.h>
+#include <qpainter.h>
+#include <q3dragobject.h>
+#include <qstyle.h>
+#include <qstyleoption.h>
+
+ColorButton::ColorButton(QWidget *parent)
+    : QAbstractButton(parent), mousepressed(false)
+{
+    setAcceptDrops(true);
+    col = Qt::black;
+    connect(this, SIGNAL(clicked()), SLOT(changeColor()));
+}
+
+
+ColorButton::ColorButton(const QColor &c, QWidget *parent)
+    : QAbstractButton(parent)
+{
+    setAcceptDrops(true);
+    col = c;
+    connect(this, SIGNAL(clicked()), SLOT(changeColor()));
+}
+
+
+void ColorButton::setColor(const QColor &c)
+{
+    col = c;
+    update();
+}
+
+
+void ColorButton::changeColor()
+{
+    QColor c = QColorDialog::getColor(col, qApp->activeWindow());
+
+    if (c.isValid()) {
+        setColor(c);
+        emit colorChanged(color());
+    }
+}
+
+
+QSize ColorButton::sizeHint() const
+{
+    return QSize(40, 25);
+}
+
+
+QSize ColorButton::minimumSizeHint() const
+{
+    return QSize(40, 25);
+}
+
+
+void ColorButton::drawButton(QPainter *p)
+{
+    QStyleOptionButton buttonOptions;
+    buttonOptions.init(this);
+    buttonOptions.features = QStyleOptionButton::None;
+    buttonOptions.rect = rect();
+    buttonOptions.palette = palette();
+    buttonOptions.state = (isDown() ? QStyle::State_Sunken : QStyle::State_Raised);
+    style()->drawPrimitive(QStyle::PE_PanelButtonBevel, &buttonOptions, p, this);
+
+    p->save();
+    drawButtonLabel(p);
+    p->restore();
+
+    QStyleOptionFocusRect frectOptions;
+    frectOptions.init(this);
+    frectOptions.rect = style()->subElementRect(QStyle::SE_PushButtonFocusRect, &buttonOptions, this);
+    if (hasFocus())
+        style()->drawPrimitive(QStyle::PE_FrameFocusRect, &frectOptions, p, this);
+}
+
+
+void ColorButton::drawButtonLabel(QPainter *p)
+{
+    QPalette::ColorGroup cg =
+        (isEnabled() ? (hasFocus() ? QPalette::Active : QPalette::Inactive) : QPalette::Disabled);
+
+    p->setPen(palette().color(cg, QPalette::ButtonText));
+    p->setBrush(col);
+    p->drawRect(width() / 4, height() / 4, width() / 2 - 1, height() / 2 - 1);
+}
+
+
+void ColorButton::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (! Q3ColorDrag::canDecode(e)) {
+        e->ignore();
+        return;
+    }
+}
+
+
+void ColorButton::dragMoveEvent(QDragMoveEvent *e)
+{
+    if (! Q3ColorDrag::canDecode(e)) {
+        e->ignore();
+        return;
+    }
+
+    e->accept();
+}
+
+
+void ColorButton::dropEvent(QDropEvent *e)
+{
+    if (! Q3ColorDrag::canDecode(e)) {
+        e->ignore();
+        return;
+    }
+
+    QColor c;
+    Q3ColorDrag::decode(e, c);
+    setColor(c);
+    emit colorChanged(color());
+}
+
+
+void ColorButton::mousePressEvent(QMouseEvent *e)
+{
+    presspos = e->pos();
+    mousepressed = true;
+    QAbstractButton::mousePressEvent(e);
+}
+
+
+void ColorButton::mouseReleaseEvent(QMouseEvent *e)
+{
+    mousepressed = false;
+    QAbstractButton::mouseReleaseEvent(e);
+}
+
+
+void ColorButton::mouseMoveEvent(QMouseEvent *e)
+{
+    if (! mousepressed)
+        return;
+
+    if ((presspos - e->pos()).manhattanLength() > QApplication::startDragDistance()) {
+        mousepressed = false;
+        setDown(false);
+
+        Q3ColorDrag *cd = new Q3ColorDrag(color(), this);
+        cd->dragCopy();
+    }
+}
+
+void ColorButton::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    drawButton(&p);
+}
+
+

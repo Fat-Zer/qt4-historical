@@ -1,0 +1,170 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the gui module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "qeventdispatcher_x11_p.h"
+
+#include "qapplication.h"
+#include "qx11info_x11.h"
+
+#include "qt_x11_p.h"
+#include <private/qeventdispatcher_unix_p.h>
+
+class QEventDispatcherX11Private : public QEventDispatcherUNIXPrivate
+{
+    Q_DECLARE_PUBLIC(QEventDispatcherX11)
+public:
+    inline QEventDispatcherX11Private()
+        : xfd(-1)
+    { }
+    int xfd;
+    QList<XEvent> queuedUserInputEvents;
+};
+
+QEventDispatcherX11::QEventDispatcherX11(QObject *parent)
+    : QEventDispatcherUNIX(*new QEventDispatcherX11Private, parent)
+{ }
+
+QEventDispatcherX11::~QEventDispatcherX11()
+{ }
+
+bool QEventDispatcherX11::processEvents(QEventLoop::ProcessEventsFlags flags)
+{
+    Q_D(QEventDispatcherX11);
+
+    int nevents = 0;
+
+    QApplication::sendPostedEvents();
+
+    // Two loops so that posted events accumulate
+    do {
+        while (!d->interrupt) {
+            XEvent event;
+            if (!(flags & QEventLoop::ExcludeUserInputEvents)
+                && !d->queuedUserInputEvents.isEmpty()) {
+                // process a pending user input event
+                event = d->queuedUserInputEvents.takeFirst();
+            } else if (XEventsQueued(X11->display, QueuedAlready)) {
+                // process events from the X server
+                XNextEvent(X11->display, &event);
+
+                if (flags & QEventLoop::ExcludeUserInputEvents) {
+                    // queue user input events
+                    switch (event.type) {
+                    case ButtonPress:
+                    case ButtonRelease:
+                    case MotionNotify:
+                    case XKeyPress:
+                    case XKeyRelease:
+                    case EnterNotify:
+                    case LeaveNotify:
+                        d->queuedUserInputEvents.append(event);
+                        continue;
+
+                    case ClientMessage:
+                        // only keep the wm_take_focus and
+                        // _qt_scrolldone protocols, queue all other
+                        // client messages
+                        if (event.xclient.format == 32) {
+                            if (event.xclient.message_type == ATOM(WM_PROTOCOLS) ||
+                                (Atom) event.xclient.data.l[0] == ATOM(WM_TAKE_FOCUS)) {
+                                break;
+                            } else if (event.xclient.message_type == ATOM(_QT_SCROLL_DONE)) {
+                                break;
+                            }
+                        }
+                        d->queuedUserInputEvents.append(event);
+                        continue;
+
+                    default:
+                        break;
+                    }
+                }
+            } else {
+                // no event to process
+                break;
+            }
+
+            // send through event filter
+            if (filterEvent(&event))
+                continue;
+
+            nevents++;
+            if (qApp->x11ProcessEvent(&event) == 1)
+                return true;
+        }
+    } while (!d->interrupt && XEventsQueued(X11->display, QueuedAfterFlush));
+
+    if (!d->interrupt) {
+        // 0x08 == ExcludeTimers for X11 only
+        const uint exclude_all =
+            QEventLoop::ExcludeSocketNotifiers | 0x08 | QEventLoop::WaitForMoreEvents;
+        if (nevents > 0 && (flags & exclude_all) == exclude_all) {
+            QApplication::sendPostedEvents();
+            return nevents > 0;
+        }
+        // return true if we handled events, false otherwise
+        return QEventDispatcherUNIX::processEvents(flags) ||  (nevents > 0);
+    } else {
+        d->interrupt = false;
+    }
+    return nevents > 0;
+}
+
+bool QEventDispatcherX11::hasPendingEvents()
+{
+    extern uint qGlobalPostedEventsCount(); // from qapplication.cpp
+    return (qGlobalPostedEventsCount() || XPending(X11->display));
+}
+
+void QEventDispatcherX11::flush()
+{
+    XFlush(X11->display);
+}
+
+void QEventDispatcherX11::startingUp()
+{
+    Q_D(QEventDispatcherX11);
+    d->xfd = XConnectionNumber(X11->display);
+}
+
+void QEventDispatcherX11::closingDown()
+{
+    Q_D(QEventDispatcherX11);
+    d->xfd = -1;
+}
+
+int QEventDispatcherX11::select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
+                                timeval *timeout)
+{
+    Q_D(QEventDispatcherX11);
+    if (d->xfd > 0) {
+        nfds = qMax(nfds - 1, d->xfd) + 1;
+        FD_SET(d->xfd, readfds);
+    }
+    return QEventDispatcherUNIX::select(nfds, readfds, writefds, exceptfds, timeout);
+}

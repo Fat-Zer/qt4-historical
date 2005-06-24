@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: window.cpp Example File (dialogs/findfiles/window.cpp)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">window.cpp Example File<br /><small><small>dialogs/findfiles/window.cpp</small></small></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #include &lt;QtGui&gt;
+
+    #include &quot;window.h&quot;
+
+    Window::Window(QWidget *parent)
+        : QWidget(parent)
+    {
+        browseButton = createButton(tr(&quot;&amp;Browse...&quot;), SLOT(browse()));
+        findButton = createButton(tr(&quot;&amp;Find&quot;), SLOT(find()));
+        quitButton = createButton(tr(&quot;&amp;Quit&quot;), SLOT(close()));
+
+        fileComboBox = createComboBox(tr(&quot;*.txt&quot;));
+        textComboBox = createComboBox();
+        directoryComboBox = createComboBox(QDir::currentPath());
+
+        fileLabel = new QLabel(tr(&quot;Named:&quot;));
+        textLabel = new QLabel(tr(&quot;Containing text:&quot;));
+        directoryLabel = new QLabel(tr(&quot;In directory:&quot;));
+        filesFoundLabel = new QLabel;
+
+        createFilesTable();
+
+        QHBoxLayout *buttonsLayout = new QHBoxLayout;
+        buttonsLayout-&gt;addStretch();
+        buttonsLayout-&gt;addWidget(findButton);
+        buttonsLayout-&gt;addWidget(quitButton);
+
+        QGridLayout *mainLayout = new QGridLayout;
+        mainLayout-&gt;addWidget(fileLabel, 0, 0);
+        mainLayout-&gt;addWidget(fileComboBox, 0, 1, 1, 2);
+        mainLayout-&gt;addWidget(textLabel, 1, 0);
+        mainLayout-&gt;addWidget(textComboBox, 1, 1, 1, 2);
+        mainLayout-&gt;addWidget(directoryLabel, 2, 0);
+        mainLayout-&gt;addWidget(directoryComboBox, 2, 1);
+        mainLayout-&gt;addWidget(browseButton, 2, 2);
+        mainLayout-&gt;addWidget(filesTable, 3, 0, 1, 3);
+        mainLayout-&gt;addWidget(filesFoundLabel, 4, 0);
+        mainLayout-&gt;addLayout(buttonsLayout, 5, 0, 1, 3);
+        setLayout(mainLayout);
+
+        setWindowTitle(tr(&quot;Find Files&quot;));
+        resize(700, 300);
+    }
+
+    void Window::browse()
+    {
+        QString directory = QFileDialog::getExistingDirectory(this,
+                                   tr(&quot;Find Files&quot;), QDir::currentPath());
+        directoryComboBox-&gt;addItem(directory);
+        directoryComboBox-&gt;setCurrentIndex(directoryComboBox-&gt;currentIndex() + 1);
+    }
+
+    void Window::find()
+    {
+        filesTable-&gt;setRowCount(0);
+
+        QString fileName = fileComboBox-&gt;currentText();
+        QString text = textComboBox-&gt;currentText();
+        QString path = directoryComboBox-&gt;currentText();
+
+        QDir directory = QDir(path);
+        QStringList files;
+        if (fileName.isEmpty())
+            fileName = &quot;*&quot;;
+        files = directory.entryList(QStringList(fileName), QDir::Files);
+
+        if (!text.isEmpty())
+            files = findFiles(directory, files, text);
+        showFiles(directory, files);
+    }
+
+    QStringList Window::findFiles(const QDir &amp;directory, const QStringList &amp;files,
+                                  const QString &amp;text)
+    {
+        QProgressDialog progressDialog(this);
+        progressDialog.setCancelButtonText(tr(&quot;&amp;Cancel&quot;));
+        progressDialog.setRange(0, files.count());
+
+        QStringList foundFiles;
+
+        for (int i = 0; i &lt; files.count(); ++i) {
+            progressDialog.setValue(i);
+            progressDialog.setLabelText(tr(&quot;Searching file number %1 of %2...&quot;)
+                                  .arg(i).arg(files.count()));
+            qApp-&gt;processEvents();
+            if (progressDialog.wasCanceled())
+                break;
+
+            QFile file(directory.absoluteFilePath(files[i]));
+
+            if (file.open(QIODevice::ReadOnly)) {
+                QString line;
+                QTextStream in(&amp;file);
+                while (!in.atEnd()) {
+                    line = in.readLine();
+                    if (line.contains(text)) {
+                        foundFiles &lt;&lt; files[i];
+                        break;
+                    }
+                }
+            }
+        }
+        return foundFiles;
+    }
+
+    void Window::showFiles(const QDir &amp;directory, const QStringList &amp;files)
+    {
+        for (int i = 0; i &lt; files.count(); ++i) {
+            QFile file(directory.absoluteFilePath(files[i]));
+            qint64 size = QFileInfo(file).size();
+
+            QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
+            QTableWidgetItem *sizeItem = new QTableWidgetItem(QString(&quot;%1 KB&quot;)
+                                                 .arg(int((size + 1023) / 1024)));
+            sizeItem-&gt;setTextAlignment(Qt::AlignRight);
+
+            int row = filesTable-&gt;rowCount();
+            filesTable-&gt;insertRow(row);
+            filesTable-&gt;setItem(row, 0, fileNameItem);
+            filesTable-&gt;setItem(row, 1, sizeItem);
+        }
+        filesFoundLabel-&gt;setText(tr(&quot;%1 file(s) found&quot;).arg(files.count()));
+    }
+
+    QPushButton *Window::createButton(const QString &amp;text, const char *member)
+    {
+        QPushButton *button = new QPushButton(text);
+        connect(button, SIGNAL(clicked()), this, member);
+        return button;
+    }
+
+    QComboBox *Window::createComboBox(const QString &amp;text)
+    {
+        QComboBox *comboBox = new QComboBox;
+        comboBox-&gt;setEditable(true);
+        comboBox-&gt;addItem(text);
+        comboBox-&gt;setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        return comboBox;
+    }
+
+    void Window::createFilesTable()
+    {
+        filesTable = new QTableWidget(0, 2);
+        QStringList labels;
+        labels &lt;&lt; tr(&quot;File Name&quot;) &lt;&lt; tr(&quot;Size&quot;);
+        filesTable-&gt;setHorizontalHeaderLabels(labels);
+        filesTable-&gt;horizontalHeader()-&gt;setResizeMode(0, QHeaderView::Stretch);
+        filesTable-&gt;verticalHeader()-&gt;hide();
+        filesTable-&gt;setShowGrid(false);
+    }</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

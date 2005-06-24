@@ -1,0 +1,123 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the sql module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QSQLRESULT_H
+#define QSQLRESULT_H
+
+#include "QtSql/qsql.h"
+
+class QString;
+class QSqlRecord;
+template <typename T> class QVector;
+class QVariant;
+
+
+class QSqlDriver;
+class QSqlError;
+class QSqlResultPrivate;
+
+class Q_SQL_EXPORT QSqlResult
+{
+friend class QSqlQuery;
+friend class QSqlResultPrivate;
+public:
+    virtual ~QSqlResult();
+    virtual QVariant handle() const;
+
+protected:
+    enum BindingSyntax {
+        PositionalBinding,
+        NamedBinding
+#ifdef QT3_SUPPORT
+        , BindByPosition = PositionalBinding,
+        BindByName = NamedBinding
+#endif
+    };
+
+    explicit QSqlResult(const QSqlDriver * db);
+    int at() const;
+    QString lastQuery() const;
+    QSqlError lastError() const;
+    bool isValid() const;
+    bool isActive() const;
+    bool isSelect() const;
+    bool isForwardOnly() const;
+    const QSqlDriver* driver() const;
+    virtual void setAt(int at);
+    virtual void setActive(bool a);
+    virtual void setLastError(const QSqlError& e);
+    virtual void setQuery(const QString& query);
+    virtual void setSelect(bool s);
+    virtual void setForwardOnly(bool forward);
+
+    // prepared query support
+    virtual bool exec();
+    virtual bool prepare(const QString& query);
+    // ### TODO - find a much better name
+    virtual bool savePrepare(const QString& sqlquery);
+    virtual void bindValue(int pos, const QVariant& val, QSql::ParamType type);
+    virtual void bindValue(const QString& placeholder, const QVariant& val,
+                           QSql::ParamType type);
+    void addBindValue(const QVariant& val, QSql::ParamType type);
+    QVariant boundValue(const QString& placeholder) const;
+    QVariant boundValue(int pos) const;
+    QSql::ParamType bindValueType(const QString& placeholder) const;
+    QSql::ParamType bindValueType(int pos) const;
+    int boundValueCount() const;
+    QVector<QVariant>& boundValues() const;
+    QString executedQuery() const;
+    QString boundValueName(int pos) const;
+    void clear();
+    bool hasOutValues() const;
+
+    BindingSyntax bindingSyntax() const;
+
+    virtual QVariant data(int i) = 0;
+    virtual bool isNull(int i) = 0;
+    virtual bool reset(const QString& sqlquery) = 0;
+    virtual bool fetch(int i) = 0;
+    virtual bool fetchNext();
+    virtual bool fetchPrevious();
+    virtual bool fetchFirst() = 0;
+    virtual bool fetchLast() = 0;
+    virtual int size() = 0;
+    virtual int numRowsAffected() = 0;
+    virtual QSqlRecord record() const;
+    virtual QVariant lastInsertId() const;
+
+    virtual void virtual_hook(int id, void *data);
+
+private:
+    QSqlResultPrivate* d;
+    void resetBindCount(); // HACK
+
+private:
+    Q_DISABLE_COPY(QSqlResult)
+};
+
+#endif // QSQLRESULT_H

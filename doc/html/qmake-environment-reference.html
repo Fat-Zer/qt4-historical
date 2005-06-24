@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/qmake-manual.qdoc -->
+<head>
+    <title>Qt 4.0: Configuring qmake's Environment</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+    <link rel="prev" href="qmake-function-reference.html" />
+    <link rel="contents" href="qmake-manual.html" />
+    <link rel="next" href="qmake-advanced-usage.html" />
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+[Previous: <a href="qmake-function-reference.html">qmake Function Reference</a>]
+[<a href="qmake-manual.html">Contents</a>]
+[Next: <a href="qmake-advanced-usage.html">qmake Advanced Usage</a>]
+</p>
+<h1 align="center">Configuring qmake's Environment</h1>
+<ul><li><a href="#properties">Properties</a></li>
+<li><a href="#qmakespec">QMAKESPEC</a></li>
+<li><a href="#installs">INSTALLS</a></li>
+<li><a href="#cache-file">Cache File</a></li>
+<li><a href="#library-dependencies">Library Dependencies</a></li>
+<li><a href="#file-extensions">File Extensions</a></li>
+<li><a href="#customizing-makefile-output">Customizing Makefile Output</a></li>
+</ul>
+<a name="properties"></a><a name="properties"></a>
+<h2>Properties</h2>
+<p><tt>qmake</tt> has a system of persistant information, this allows you to <tt>set</tt> a variable in qmake once, and each time qmake is invoked this value can be queried. Use the following to set a property in qmake:</p>
+<pre>&nbsp;   qmake -set VARIABLE VALUE</pre>
+<p>To retrieve this information back from qmake you can do:</p>
+<pre>&nbsp;   qmake -query VARIABLE
+    qmake -query #queries all current VARIABLE/VALUE pairs..</pre>
+<p>This information will be saved into a <a href="qsettings.html">QSettings</a> object (meaning it will be stored in different places for different platforms). As VARIABLE is versioned as well, you can set one value in an older version of qmake, and newer versions will retrieve this value, however if you -set VARIABLE into a newer version of qmake the older version will not use this value. You can however query a specific version of a variable if you prefix that version of qmake to VARIABLE, as in:</p>
+<pre>&nbsp;   qmake -query &quot;1.06a/VARIABLE&quot;</pre>
+<p>qmake also has the notion of <tt>builtin</tt> properties, for example you can query the installation of Qt for this version of qmake with the QT_INSTALL_PREFIX property:</p>
+<pre>&nbsp;   qmake -query &quot;QT_INSTALL_PREFIX&quot;</pre>
+<p>These builtin properties cannot have a version prefixed to them as they are not versioned and each qmake will have its own notion of these values. The list below outlines the builtin properties:</p>
+<ul>
+<li>QT_INSTALL_PREFIX - Where the version of Qt this qmake is built for resides</li>
+<li>QT_INSTALL_DATA - Where data for this version of Qt resides</li>
+<li>QMAKE_VERSION - The current version of qmake</li>
+</ul>
+<p>Finally, these values can be queried in a project file with a special notation such as:</p>
+<pre>&nbsp;   QMAKE_VERS = $$[QMAKE_VERSION]</pre>
+<a name="qmakespec"></a><a name="qmakespec"></a>
+<h2>QMAKESPEC</h2>
+<p><tt>qmake</tt> requires a platform and compiler description file which contains many default values used to generate appropriate Makefiles. The standard Qt distribution comes with many of these files, located in the <tt>mkspecs</tt> subdirectory of the Qt installation.</p>
+<p>The <tt>QMAKESPEC</tt> environment variable can contain any of the following:</p>
+<ul>
+<li>A complete path to a directory containing a qmake.conf file. In this case <tt>qmake</tt> will open the qmake.conf file from within that directory. If the file does not exist, <tt>qmake</tt> will exit with an error.</li>
+<li>The name of a platform-compiler combination. In this case, <tt>qmake</tt> will search in the directory specified by the <tt>mkspecs</tt> subdirectory of the data path specified when Qt was compiled (see <a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::DataPath</a>).</li>
+</ul>
+<p>Note: the QMAKESPEC path will automatically be added to the <a href="qmake-variable-reference.html#includepath">INCLUDEPATH</a> system variable.</p>
+<a name="installs"></a><a name="installs"></a>
+<h2>INSTALLS</h2>
+<p>It is common on Unix to be able to install from the same utility as you build with (e.g make install). For this <tt>qmake</tt> has introduce the concept of an install set. The notation for this is quite simple, first you fill in an &quot;object&quot; in qmake for example:</p>
+<pre>&nbsp;   documentation.path = /usr/local/program/doc
+    documentation.files = docs/*</pre>
+<p>In this way you are telling <tt>qmake</tt> several things about this install, first that you plan to install to /usr/local/program/doc (the path member), second that you plan to copy everything in the docs directory. Once this is done you may insert it in the install list:</p>
+<pre>&nbsp;   INSTALLS += documentation</pre>
+<p>Now <tt>qmake</tt> will take over making sure the correct things are copied to the specified places. If however you require greater control you may use the <tt>extra</tt> member of the object:</p>
+<pre>&nbsp;   unix:documentation.extra = create_docs; mv master.doc toc.doc</pre>
+<p>Then qmake will run the things in extra (this is of course platform specific, so you may need to test for your platform first, this case we test for unix). Then it will do the normal processings of the files member. Finally if you appened a builtin install to INSTALLS <tt>qmake</tt> (and do not specify a files or extra member) will decide what needs to be copied for you, currently the only supported builtin is target:</p>
+<pre>&nbsp;   target.path = /usr/local/myprogram
+    INSTALLS += target</pre>
+<p>With this <tt>qmake</tt> will know what you plan need copied, and do this for you.</p>
+<a name="cache"></a><a name="cache-file"></a>
+<h2>Cache File</h2>
+<p>The cache file (mentioned above in the options) is a special file <tt>qmake</tt> will read to find settings not specified in the <tt>qmake.conf</tt> file, the .pro file, or the command line. If <tt>-nocache</tt> is not specified, <tt>qmake</tt> will try to find a file called <tt>.qmake.cache</tt> in parent directories. If it fails to find this file, it will silently ignore this step of processing.</p>
+<a name="libdepend"></a><a name="library-dependencies"></a>
+<h2>Library Dependencies</h2>
+<p>Often when linking against a library <tt>qmake</tt> relies on the underlying platform to know what other libraries this library links against, and lets the platform pull them in. In many cases, however, this is not sufficent. For example when statically linking a library there are no libraries linked against, and therefore no dependencies to those libraries are created - however an application that later links against this library will need to know where to find the symbols that the linked in library will require. To help with this situation <tt>qmake</tt> will follow a library's dependencies when it feels appropriate, however this behaviour must be enabled in <tt>qmake</tt>. To enable requires two steps. First, you must enable it in the library - to do this you must tell <tt>qmake</tt> to save information about this library:</p>
+<pre>&nbsp;   CONFIG += create_prl</pre>
+<p>This is only relevant to the lib template, and will be ignored for all others. When this option is enabled <tt>qmake</tt> will create a file (called a .prl file) which will save some meta information about the library. This metafile is itself just a qmake project file, but with all internal variables. You are free to view this file, and if deleted <tt>qmake</tt> will know to recreate it when necesary (either when the .pro file is later read, or if a dependent library (described below) has changed). When installing this library (by using target in INSTALLS, above) <tt>qmake</tt> will automatically copy the .prl file to your install path.</p>
+<p>The second step to enabling this processing is to turn on reading of the meta information created above:</p>
+<pre>&nbsp;   CONFIG += link_prl</pre>
+<p>When this is turned on <tt>qmake</tt> will process all libraries linked to, and find their meta information. With this meta information <tt>qmake</tt> will figure out what is relevant to linking, specifically it will add to your list of DEFINES as well as LIBS. Once <tt>qmake</tt> has processed this file, it will then look through the newly introduced LIBS and find their dependent .prl files, and continue until all libraries have been resolved. At this point the Makefile is created as usual, and the libraries are linked explicity against your program.</p>
+<p>The internals of the .prl file are left closed so they can easily change later. It is not designed to be changed by hand however, and should only be created by <tt>qmake</tt> - these .prl files should also not be transfered from operating system to operating system as they may be platform dependent (like a Makefile).</p>
+<a name="extensions"></a><a name="file-extensions"></a>
+<h2>File Extensions</h2>
+<p>Under normal circumstances <tt>qmake</tt> will try to use appropriate file extensions for your platform. There may be times, however, that you would like to override the behavior of these extensions. To do this, you must modify builtin variables in your .pro file, which will in turn changes <tt>qmake</tt>'s interpretation of these files. You may do this as:</p>
+<pre>&nbsp;   QMAKE_EXT_MOC = .mymoc</pre>
+<p>The variables are as follows:</p>
+<ul>
+<li><a href="qmake-variable-reference.html#qmake-ext-moc">QMAKE_EXT_MOC</a> - This modifies the extension placed on included moc files.</li>
+<li><a href="qmake-variable-reference.html#qmake-ext-ui">QMAKE_EXT_UI</a> - This modifies the extension used for designer UI files (usually in FORMS).</li>
+<li><a href="qmake-variable-reference.html#qmake-ext-prl">QMAKE_EXT_PRL</a> - This modifies the extension placed on <a href="#libdepend">library dependency files</a>.</li>
+<li><a href="qmake-variable-reference.html#qmake-ext-lex">QMAKE_EXT_LEX</a> - This changes the suffix used in files (usually in LEXSOURCES).</li>
+<li><a href="qmake-variable-reference.html#qmake-ext-yacc">QMAKE_EXT_YACC</a> - This changes the suffix used in files (usually in YACCSOURCES).</li>
+<li><a href="qmake-variable-reference.html#qmake-ext-obj">QMAKE_EXT_OBJ</a> - This changes the suffix used on generated object files.</li>
+</ul>
+<p>All the above accept just the first value, so you must assign to it one value that will be used through your Makefile. There are two variables that accept a list of values, they are:</p>
+<ul>
+<li><a href="qmake-variable-reference.html#qmake-ext-cpp">QMAKE_EXT_CPP</a> - Changes interpretation all files with these suffixes to be C++ source files.</li>
+<li><a href="qmake-variable-reference.html#qmake-ext-h">QMAKE_EXT_H</a> - Changes interpretation all files with these suffixes to be C header files.</li>
+</ul>
+<a name="customizing"></a><a name="customizing-makefile-output"></a>
+<h2>Customizing Makefile Output</h2>
+<p><tt>qmake</tt> often tries to be all things to all build tools, this is often less than ideal when you really need to run special platform dependent commands. This can be achieved with specific instructions to the different <tt>qmake</tt> backends (currently this is only supported by the Unix <a href="qmake-variable-reference.html#makefile-generator">generator</a>).</p>
+<p>The interfaces to customizing the Makefile are done through &quot;objects&quot; as in other places in qmake. The notation for this is quite simple, first you fill in an &quot;object&quot; in qmake for example:</p>
+<pre>&nbsp;   mytarget.target = .buildfile
+    mytarget.commands = touch $$mytarget.target
+    mytarget.depends = mytarget2
+
+    mytarget2.commands = @echo Building $$mytarget.target</pre>
+<p>The information above defines a qmake target called mytarget which contains a Makefile target called .buildfile, .buildfile is generated by 'touch .buildfile', and finally that this Makefile target depends on the qmake target mytarget2. Additionally we've defined the qmake target mytarget2 which simply echo's something to stdout.</p>
+<p>The final step to making use of the above is to instruct qmake that this is actually an object used by the target building parts of qmake by:</p>
+<pre>&nbsp;   QMAKE_EXTRA_UNIX_TARGETS += mytarget mytarget2</pre>
+<p>This is all you need to do to actually build custom targets in qmake, of course you may want to tie one of these targets to actually building the <a href="qmake-variable-reference.html#target">qmake build target</a>. To do this, you simply need to include your Makefile target in the list of <a href="qmake-variable-reference.html#pre-targetdeps">PRE_TARGETDEPS</a>.</p>
+<p>For convenience there is also a method of customizing (Unix) projects for generic new compilers (or even preprocessors).</p>
+<pre>&nbsp;   new_moc.output  = moc_${QMAKE_FILE_BASE}.cpp
+    new_moc.commands = moc ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+    new_moc.depend_command = g++ -E -M ${QMAKE_FILE_NAME} | sed &quot;s,^.*: ,,&quot;
+    new_moc.input = NEW_HEADERS
+    QMAKE_EXTRA_UNIX_COMPILERS += new_moc</pre>
+<p>With this you can create a new moc for qmake, the commands will be executed over all arguments given to a <tt>NEW_HEADERS</tt> variable (from the input variable), and write to output (and automatically hand this filename to the compiler to be linked into your target). Additionally <tt>qmake</tt> will execute depend_command to generate dependency information and place this in the project as well.</p>
+<p>These commands can easily be placed into a cache file, and subsequent .pro files can give several arguments to <tt>NEW_HEADERS</tt>.</p>
+<p>
+[Previous: <a href="qmake-function-reference.html">qmake Function Reference</a>]
+[<a href="qmake-manual.html">Contents</a>]
+[Next: <a href="qmake-advanced-usage.html">qmake Advanced Usage</a>]
+</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

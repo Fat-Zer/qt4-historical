@@ -1,0 +1,36 @@
+<!DOCTYPE DCF>
+<DCF ref="designer-manual.html" icon="designer.png" imagedir="../../gif" title="Qt Designer Manual">
+<section ref="designer-getting-started.html" title="Getting Started with Qt Designer">
+    <keyword ref="designer-getting-started.html">Getting Started with Qt Designer</keyword>
+</section>
+<section ref="designer-designing-a-component.html" title="Designing a Component with Qt Designer">
+    <keyword ref="designer-designing-a-component.html">Designing a Component with Qt Designer</keyword>
+</section>
+<section ref="designer-editing-mode.html" title="Qt Designer's Form Editing Mode">
+    <keyword ref="designer-editing-mode.html">Qt Designer's Form Editing Mode</keyword>
+</section>
+<section ref="designer-connection-mode.html" title="Editing Signals and Slots">
+    <keyword ref="designer-connection-mode.html">Editing Signals and Slots</keyword>
+</section>
+<section ref="designer-using-containers.html" title="Using Containers in Qt Designer">
+    <keyword ref="designer-using-containers.html">Using Containers in Qt Designer</keyword>
+</section>
+<section ref="designer-buddy-mode.html" title="Qt Designer's Buddy Editing Mode">
+    <keyword ref="designer-buddy-mode.html">Qt Designer's Buddy Editing Mode</keyword>
+</section>
+<section ref="designer-tab-order.html" title="Qt Designer's Tab Order Mode">
+    <keyword ref="designer-tab-order.html">Qt Designer's Tab Order Mode</keyword>
+</section>
+<section ref="designer-resources.html" title="Editing Resources with Qt Designer">
+    <keyword ref="designer-resources.html">Editing Resources with Qt Designer</keyword>
+</section>
+<section ref="designer-using-custom-widgets.html" title="Using Custom Widgets with Qt Designer">
+    <keyword ref="designer-using-custom-widgets.html">Using Custom Widgets with Qt Designer</keyword>
+</section>
+<section ref="designer-using-a-component.html" title="Using a Component in Your Application">
+    <keyword ref="designer-using-a-component.html">Using a Component in Your Application</keyword>
+</section>
+<section ref="designer-creating-custom-widgets.html" title="Creating Custom Widgets for Qt Designer">
+    <keyword ref="designer-creating-custom-widgets.html">Creating Custom Widgets for Qt Designer</keyword>
+</section>
+</DCF>

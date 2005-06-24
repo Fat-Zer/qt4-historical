@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/embedded/qdecorationfactory_qws.cpp -->
+<head>
+    <title>Qt 4.0: QDecorationFactory Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDecorationFactory Class Reference</h1>
+<p>The QDecorationFactory class creates <a href="qdecoration.html">QDecoration</a> objects. <a href="#details">More...</a></p>
+<pre>#include &lt;QDecorationFactory&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
+<ul>
+<li><a href="qdecorationfactory-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>QDecoration * <b><a href="qdecorationfactory.html#create">create</a></b> ( const QString &amp; <i>key</i> )</li>
+<li><div class="fn"/>QStringList <b><a href="qdecorationfactory.html#keys">keys</a></b> ()</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QDecorationFactory class creates <a href="qdecoration.html">QDecoration</a> objects.</p>
+<p>The decoration factory creates a <a href="qdecoration.html">QDecoration</a> object for a given key with QDecorationFactory::create(key).</p>
+<p>The decorations are either built-in or dynamically loaded from a decoration plugin (see <a href="qdecorationplugin.html">QDecorationPlugin</a>).</p>
+<p><a href="qdecorationfactory.html#keys">QDecorationFactory::keys</a>() returns a list of valid keys, typically including &quot;default&quot;, &quot;windows&quot;, &quot;styled&quot;.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="create"></a><a href="qdecoration.html">QDecoration</a> * QDecorationFactory::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Creates a <a href="qdecoration.html">QDecoration</a> object that matches <i>key</i>. This is either a built-in decoration, or a decoration from a decoration plugin.</p>
+<p>See also <a href="qdecorationfactory.html#keys">keys</a>().</p>
+<h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QDecorationFactory::keys ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the list of keys this factory can create decorations for.</p>
+<p>See also <a href="qdecorationfactory.html#create">create</a>().</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

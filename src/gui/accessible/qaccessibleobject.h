@@ -1,0 +1,90 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the accessibility module of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QACCESSIBLEOBJECT_H
+#define QACCESSIBLEOBJECT_H
+
+#include "QtGui/qaccessible.h"
+
+#ifndef QT_NO_ACCESSIBILITY
+
+class QAccessibleObjectPrivate;
+class QObject;
+
+class Q_GUI_EXPORT QAccessibleObject : public QAccessibleInterface
+{
+public:
+    explicit QAccessibleObject(QObject *object);
+
+    bool isValid() const;
+    QObject *object() const;
+
+    // properties
+    QRect rect(int child) const;
+    void setText(Text t, int child, const QString &text);
+
+    // actions
+    int userActionCount(int child) const;
+    bool doAction(int action, int child, const QVariantList &params);
+    QString actionText(int action, Text t, int child) const;
+
+protected:
+    virtual ~QAccessibleObject();
+
+private:
+    QAccessibleObjectPrivate *d;
+};
+
+class Q_GUI_EXPORT QAccessibleApplication : public QAccessibleObject
+{
+public:
+    QAccessibleApplication();
+
+    // relations
+    int childCount() const;
+    int indexOfChild(const QAccessibleInterface*) const;
+    Relation relationTo(int, const QAccessibleInterface *, int) const;
+
+    // navigation
+    int childAt(int x, int y) const;
+    int navigate(RelationFlag, int, QAccessibleInterface **) const;
+
+    // properties and state
+    QString text(Text t, int child) const;
+    Role role(int child) const;
+    State state(int child) const;
+
+    // actions
+    int userActionCount(int child) const;
+    bool doAction(int action, int child, const QVariantList &params);
+    QString actionText(int action, Text t, int child) const;
+};
+
+#endif // QT_NO_ACCESSIBILITY
+
+#endif // QACCESSIBLEOBJECT_H

@@ -1,0 +1,109 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef Q3INTCACHE_H
+#define Q3INTCACHE_H
+
+#include "Qt3Support/q3gcache.h"
+
+
+template<class type>
+class Q3IntCache
+#ifdef qdoc
+	: public Q3PtrCollection
+#else
+	: public Q3GCache
+#endif
+{
+public:
+    Q3IntCache( const Q3IntCache<type> &c ) : Q3GCache(c) {}
+    Q3IntCache( int maxCost=100, int size=17 )
+	: Q3GCache( maxCost, size, IntKey, false, false ) {}
+   ~Q3IntCache()		{ clear(); }
+    Q3IntCache<type> &operator=( const Q3IntCache<type> &c )
+			{ return (Q3IntCache<type>&)Q3GCache::operator=(c); }
+    int	  maxCost()   const	{ return Q3GCache::maxCost(); }
+    int	  totalCost() const	{ return Q3GCache::totalCost(); }
+    void  setMaxCost( int m)	{ Q3GCache::setMaxCost(m); }
+    uint  count()     const	{ return Q3GCache::count(); }
+    uint  size()      const	{ return Q3GCache::size(); }
+    bool  isEmpty()   const	{ return Q3GCache::count() == 0; }
+    bool  insert( long k, const type *d, int c=1, int p=0 )
+		{ return Q3GCache::insert_other((const char*)k,(Item)d,c,p); }
+    bool  remove( long k )
+		{ return Q3GCache::remove_other((const char*)k); }
+    type *take( long k )
+		{ return (type *)Q3GCache::take_other((const char*)k);}
+    void  clear()		{ Q3GCache::clear(); }
+    type *find( long k, bool ref=true ) const
+		{ return (type *)Q3GCache::find_other( (const char*)k,ref);}
+    type *operator[]( long k ) const
+		{ return (type *)Q3GCache::find_other( (const char*)k); }
+    void  statistics() const { Q3GCache::statistics(); }
+private:
+	void  deleteItem( Item d );
+};
+
+#if !defined(Q_BROKEN_TEMPLATE_SPECIALIZATION)
+template<> inline void Q3IntCache<void>::deleteItem( Q3PtrCollection::Item )
+{
+}
+#endif
+
+template<class type> inline void Q3IntCache<type>::deleteItem( Q3PtrCollection::Item d )
+{
+    if ( del_item ) delete (type *)d;
+}
+
+template<class type>
+class Q3IntCacheIterator : public Q3GCacheIterator
+{
+public:
+    Q3IntCacheIterator( const Q3IntCache<type> &c )
+	: Q3GCacheIterator( (Q3GCache &)c ) {}
+    Q3IntCacheIterator( const Q3IntCacheIterator<type> &ci )
+			      : Q3GCacheIterator((Q3GCacheIterator &)ci) {}
+    Q3IntCacheIterator<type> &operator=( const Q3IntCacheIterator<type>&ci )
+	{ return ( Q3IntCacheIterator<type>&)Q3GCacheIterator::operator=( ci );}
+    uint  count()   const     { return Q3GCacheIterator::count(); }
+    bool  isEmpty() const     { return Q3GCacheIterator::count() == 0; }
+    bool  atFirst() const     { return Q3GCacheIterator::atFirst(); }
+    bool  atLast()  const     { return Q3GCacheIterator::atLast(); }
+    type *toFirst()	      { return (type *)Q3GCacheIterator::toFirst(); }
+    type *toLast()	      { return (type *)Q3GCacheIterator::toLast(); }
+    operator type *()  const  { return (type *)Q3GCacheIterator::get(); }
+    type *current()    const  { return (type *)Q3GCacheIterator::get(); }
+    long  currentKey() const  { return (long)Q3GCacheIterator::getKeyInt();}
+    type *operator()()	      { return (type *)Q3GCacheIterator::operator()();}
+    type *operator++()	      { return (type *)Q3GCacheIterator::operator++(); }
+    type *operator+=(uint j)  { return (type *)Q3GCacheIterator::operator+=(j);}
+    type *operator--()	      { return (type *)Q3GCacheIterator::operator--(); }
+    type *operator-=(uint j)  { return (type *)Q3GCacheIterator::operator-=(j);}
+};
+
+#endif // Q3INTCACHE_H

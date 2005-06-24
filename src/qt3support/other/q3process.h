@@ -1,0 +1,165 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef Q3PROCESS_H
+#define Q3PROCESS_H
+
+#ifndef QT_H
+#include "QtCore/qobject.h"
+#include "QtCore/qstringlist.h"
+#include "QtCore/qdir.h"
+#endif // QT_H
+
+#ifndef QT_NO_PROCESS
+
+class Q3ProcessPrivate;
+class Q3Membuf;
+
+class Q_COMPAT_EXPORT Q3Process : public QObject
+{
+    Q_OBJECT
+public:
+    Q3Process( QObject *parent=0, const char *name=0 );
+    Q3Process( const QString& arg0, QObject *parent=0, const char *name=0 );
+    Q3Process( const QStringList& args, QObject *parent=0, const char *name=0 );
+    ~Q3Process();
+
+    // set and get the arguments and working directory
+    QStringList arguments() const;
+    void clearArguments();
+    virtual void setArguments( const QStringList& args );
+    virtual void addArgument( const QString& arg );
+#ifndef QT_NO_DIR
+    QDir workingDirectory() const;
+    virtual void setWorkingDirectory( const QDir& dir );
+#endif
+
+    // set and get the comms wanted
+    enum Communication { Stdin=0x01, Stdout=0x02, Stderr=0x04, DupStderr=0x08 };
+    void setCommunication( int c );
+    int communication() const;
+
+    // start the execution
+    virtual bool start( QStringList *env=0 );
+    virtual bool launch( const QString& buf, QStringList *env=0  );
+    virtual bool launch( const QByteArray& buf, QStringList *env=0  );
+
+    // inquire the status
+    bool isRunning() const;
+    bool normalExit() const;
+    int exitStatus() const;
+
+    // reading
+    virtual QByteArray readStdout();
+    virtual QByteArray readStderr();
+    bool canReadLineStdout() const;
+    bool canReadLineStderr() const;
+    virtual QString readLineStdout();
+    virtual QString readLineStderr();
+
+    // get platform dependent process information
+#if defined(Q_OS_WIN32)
+    typedef void* PID;
+#else
+    typedef Q_LONG PID;
+#endif
+    PID processIdentifier();
+
+    void flushStdin();
+
+signals:
+    void readyReadStdout();
+    void readyReadStderr();
+    void processExited();
+    void wroteToStdin();
+    void launchFinished();
+
+public slots:
+    // end the execution
+    void tryTerminate() const;
+    void kill() const;
+
+    // input
+    virtual void writeToStdin( const QByteArray& buf );
+    virtual void writeToStdin( const QString& buf );
+    virtual void closeStdin();
+
+protected: // ### or private?
+    void connectNotify( const char * signal );
+    void disconnectNotify( const char * signal );
+private:
+    void setIoRedirection( bool value );
+    void setNotifyOnExit( bool value );
+    void setWroteStdinConnected( bool value );
+
+    void init();
+    void reset();
+#if defined(Q_OS_WIN32)
+    uint readStddev( Qt::HANDLE dev, char *buf, uint bytes );
+#endif
+    Q3Membuf* membufStdout();
+    Q3Membuf* membufStderr();
+
+private slots:
+    void socketRead( int fd );
+    void socketWrite( int fd );
+    void timeout();
+    void closeStdinLaunch();
+
+private:
+    Q3ProcessPrivate *d;
+#ifndef QT_NO_DIR
+    QDir        workingDir;
+#endif
+    QStringList _arguments;
+
+    int  exitStat; // exit status
+    bool exitNormal; // normal exit?
+    bool ioRedirection; // automatically set be (dis)connectNotify
+    bool notifyOnExit; // automatically set be (dis)connectNotify
+    bool wroteToStdinConnected; // automatically set be (dis)connectNotify
+
+    bool readStdoutCalled;
+    bool readStderrCalled;
+    int comms;
+
+    friend class Q3ProcessPrivate;
+#if defined(Q_OS_UNIX)
+    friend class Q3ProcessManager;
+    friend class QProc;
+#endif
+
+#if defined(Q_DISABLE_COPY) // Disabled copy constructor and operator=
+    Q3Process( const Q3Process & );
+    Q3Process &operator=( const Q3Process & );
+#endif
+};
+
+#endif // QT_NO_PROCESS
+
+#endif // Q3PROCESS_H

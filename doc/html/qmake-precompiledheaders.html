@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/qmake-manual.qdoc -->
+<head>
+    <title>Qt 4.0: Using Precompiled Headers</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Using Precompiled Headers</h1>
+<a name="about"></a><p>Precompiled headers are a performance feature supported by some compilers to compile a stable body of code, and store the compiled state of the code in a binary file. During subsequent compilations, the compiler will load the stored state, and continue compiling the specified file. Each subsequent compilation is faster because the stable code does not need to be recompiled.</p>
+<p><tt>qmake</tt> supports the use of precompiled headers (PCH) on some platforms and build environments, including:</p>
+<ul>
+<li>Windows<ul>
+<li>nmake</li>
+<li>Dsp projects (VC 6.0)</li>
+<li>Vcproj projects (VC 7.0 &amp; 7.1)</li>
+</ul>
+</li>
+<li>Mac OS X<ul>
+<li>Makefile</li>
+<li>Xcode</li>
+</ul>
+</li>
+<li>Unix<ul>
+<li>GCC 3.3 and up</li>
+</ul>
+</li>
+</ul>
+<a name="add-pch"></a><a name="adding-precompiled-headers-to-your-project"></a>
+<h2>Adding Precompiled Headers to Your Project</h2>
+<a name="pch-contents"></a><a name="contents-of-the-precompiled-header-file"></a>
+<h3>Contents of the Precompiled Header File</h3>
+<p>The precompiled header must contain code which is <tt>stable</tt> and <tt>static</tt> throughout your project. A typical PCH might look like this:</p>
+<a name="example"></a>
+<h4>Example: <tt>stable.h</tt></h4>
+<pre>&nbsp;   // Add C includes here
+
+    #if defined __cplusplus
+    // Add C++ includes here
+    #include &lt;stdlib&gt;
+    #include &lt;iostream&gt;
+    #include &lt;vector&gt;
+    #include &lt;qapplication.h&gt; // Qt includes
+    #include &lt;qpushbutton.h&gt;
+    #include &lt;qlabel.h&gt;
+    #include &quot;thirdparty/include/libmain.h&quot;
+    #include &quot;my_stable_class.h&quot;
+    ...
+    #endif</pre>
+<p>Note that a precompiled header file needs to separate C includes from CPP includes, since the precompiled header file for C files may not contain C++ code.</p>
+<a name="project-options"></a><a name="project-options"></a>
+<h3>Project Options</h3>
+<p>To make your project use PCH, the only thing you need to change in your project settings (.pro), is to include the <a href="qmake-variable-reference.html#precompiled-header">PRECOMPILED_HEADER</a> option:</p>
+<pre>&nbsp;       PRECOMPILED_HEADER = stable.h</pre>
+<p><tt>qmake</tt> will handle the rest, to ensure the creation and use of the precompiled header file. You do not need to include the precompiled header file in HEADERS, as qmake will do this if the configuration supports PCH.</p>
+<p>All platforms that support precompiled headers have the configuration option <b>precompile_header</b> set. Using this option, you may trigger conditional blocks in your .pro file, to add settings when using PCH. For example:</p>
+<pre>&nbsp;       precompile_header:!isEmpty(PRECOMPILED_HEADER) {
+        DEFINES += USING_PCH
+        }</pre>
+<a name="example-project"></a><a name="example-project"></a>
+<h2>Example Project</h2>
+<p>You can find the following source code in the <tt>qt/qmake/examples/precompile</tt> directory:</p>
+<a name=""></a>
+<h3><tt>mydialog.ui</tt></h3>
+<pre>&nbsp;   &lt;!DOCTYPE UI&gt;&lt;UI version=&quot;3.3&quot; stdsetdef=&quot;1&quot;&gt;
+    &lt;class&gt;MyDialog&lt;/class&gt;
+    &lt;widget class=&quot;QDialog&quot;&gt;
+        &lt;property name=&quot;name&quot;&gt;
+            &lt;cstring&gt;MyDialog&lt;/cstring&gt;
+        &lt;/property&gt;
+        &lt;property name=&quot;caption&quot;&gt;
+            &lt;string&gt;Mach 2!&lt;/string&gt;
+        &lt;/property&gt;
+        &lt;vbox&gt;
+            &lt;widget class=&quot;QLabel&quot;&gt;
+                &lt;property name=&quot;name&quot;&gt;
+                    &lt;cstring&gt;aLabel&lt;/cstring&gt;
+                &lt;/property&gt;
+                &lt;property name=&quot;text&quot;&gt;
+                    &lt;string&gt;Join the life in the fastlane; - PCH enable your project today! -&lt;/string&gt;
+                &lt;/property&gt;
+            &lt;/widget&gt;
+            &lt;widget class=&quot;QPushButton&quot;&gt;
+                &lt;property name=&quot;name&quot;&gt;
+                    &lt;cstring&gt;aButton&lt;/cstring&gt;
+                &lt;/property&gt;
+                &lt;property name=&quot;text&quot;&gt;
+                    &lt;string&gt;&amp;amp;Quit&lt;/string&gt;
+                &lt;/property&gt;
+                &lt;property name=&quot;accel&quot;&gt;
+                    &lt;string&gt;Alt+Q&lt;/string&gt;
+                &lt;/property&gt;
+            &lt;/widget&gt;
+        &lt;/vbox&gt;
+    &lt;/widget&gt;
+    &lt;/UI&gt;</pre>
+<a name=""></a>
+<h3><tt>stable.h</tt></h3>
+<pre>&nbsp;   /* Add C includes here */
+
+    #if defined __cplusplus
+    /* Add C++ includes here */
+
+    # include &lt;iostream&gt;
+    # include &lt;qapplication.h&gt;
+    # include &lt;qpushbutton.h&gt;
+    # include &lt;qlabel.h&gt;
+    #endif</pre>
+<a name=""></a>
+<h3><tt>myobject.h</tt></h3>
+<pre>&nbsp;   #include &lt;qobject.h&gt;
+
+    class MyObject : public QObject
+    {
+    public:
+        MyObject();
+        ~MyObject();
+    };</pre>
+<a name=""></a>
+<h3><tt>myobject.cpp</tt></h3>
+<pre>&nbsp;   #include &lt;iostream&gt;
+    #include &lt;qobject.h&gt;
+    #include &quot;myobject.h&quot;
+
+    MyObject::MyObject()
+        : QObject()
+    {
+        std::cout &lt;&lt; &quot;MyObject::MyObject()\n&quot;;
+    }</pre>
+<a name=""></a>
+<h3><tt>util.cpp</tt></h3>
+<pre>&nbsp;   void util_function_does_nothing()
+    {
+        // Nothing here...
+        int x = 0;
+        ++x;
+    }</pre>
+<a name=""></a>
+<h3><tt>main.cpp</tt></h3>
+<pre>&nbsp;   #include &lt;qapplication.h&gt;
+    #include &lt;qpushbutton.h&gt;
+    #include &lt;qlabel.h&gt;
+    #include &quot;myobject.h&quot;
+    #include &quot;mydialog.h&quot;
+
+    int main(int argc, char **argv)
+    {
+        QApplication app(argc, argv);
+
+        MyObject obj;
+        MyDialog dia;
+        app.setMainWidget(&amp;dia);
+        dia.connect(dia.aButton, SIGNAL(clicked()), SLOT(close()));
+        dia.show();
+
+        return app.exec();
+    }</pre>
+<a name=""></a>
+<h3><tt>precompile.pro</tt></h3>
+<pre>&nbsp;   #############################################
+    #
+    # Example for using Precompiled Headers
+    #
+    #############################################
+    TEMPLATE  = app
+    LANGUAGE  = C++
+    CONFIG   += console precompile_header
+
+    # Use Precompiled headers (PCH)
+    PRECOMPILED_HEADER  = stable.h
+
+    HEADERS  += stable.h \
+                myobject.h
+    SOURCES  += main.cpp \
+                myobject.cpp \
+                util.cpp
+    FORMS     = mydialog.ui</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: displaywidget.cpp Example File (tools/qtdemo/displaywidget.cpp)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">displaywidget.cpp Example File<br /><small><small>tools/qtdemo/displaywidget.cpp</small></small></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #include &lt;QtGui&gt;
+
+    #include &quot;displayshape.h&quot;
+    #include &quot;displaywidget.h&quot;
+
+    DisplayWidget::DisplayWidget(QWidget *parent)
+        : QWidget(parent)
+    {
+        empty = true;
+        emptying = false;
+
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(updateShapes()));
+        timer-&gt;setSingleShot(false);
+        enableUpdates();
+
+        setBackgroundRole(QPalette::Base);
+        setMouseTracking(true);
+    }
+
+    void DisplayWidget::appendShape(DisplayShape *shape)
+    {
+        shapes.append(shape);
+        empty = false;
+        enableUpdates();
+    }
+
+    void DisplayWidget::insertShape(int position, DisplayShape *shape)
+    {
+        shapes.insert(position, shape);
+        empty = false;
+        enableUpdates();
+    }
+
+    QSize DisplayWidget::minimumSizeHint() const
+    {
+        return QSize(800, 600);
+    }
+
+    void DisplayWidget::mouseMoveEvent(QMouseEvent *event)
+    {
+        if (emptying)
+            return;
+
+        bool updated = false;
+
+        foreach (DisplayShape *shape, shapes) {
+            if (shape-&gt;isInteractive() &amp;&amp; shape-&gt;rect().contains(event-&gt;pos())
+                &amp;&amp; !shape-&gt;contains(&quot;fade&quot;)) {
+                shape-&gt;setMetaData(&quot;highlight&quot;, true);
+                updated = true;
+            } else if (shape-&gt;isInteractive() &amp;&amp; shape-&gt;contains(&quot;highlight&quot;)) {
+                shape-&gt;setMetaData(&quot;highlight&quot;, false);
+                updated = true;
+            }
+        }
+
+        if (updated)
+            enableUpdates();
+    }
+
+    void DisplayWidget::mousePressEvent(QMouseEvent *event)
+    {
+        if (event-&gt;button() != Qt::LeftButton)
+            return;
+
+        if (emptying)
+            return;
+
+        foreach (DisplayShape *shape, shapes) {
+            if (shape-&gt;rect().contains(event-&gt;pos()) &amp;&amp; !shape-&gt;contains(&quot;fade&quot;)) {
+                if (shape-&gt;contains(&quot;action&quot;))
+                    emit actionRequested(shape-&gt;metaData(&quot;action&quot;).toString());
+                else if (shape-&gt;contains(&quot;category&quot;))
+                    emit categoryRequested(shape-&gt;metaData(&quot;category&quot;).toString());
+                else if (shape-&gt;contains(&quot;example&quot;))
+                    emit exampleRequested(shape-&gt;metaData(&quot;example&quot;).toString());
+                else if (shape-&gt;contains(&quot;documentation&quot;)) {
+                    emit documentationRequested(
+                        shape-&gt;metaData(&quot;documentation&quot;).toString());
+                    shape-&gt;setMetaData(&quot;highlight&quot;, false);
+                    enableUpdates();
+                } else if (shape-&gt;contains(&quot;launch&quot;)) {
+                    emit launchRequested(shape-&gt;metaData(&quot;launch&quot;).toString());
+                    shape-&gt;setMetaData(&quot;fade&quot;, -5);
+                    enableUpdates();
+                }
+            }
+        }
+    }
+
+    void DisplayWidget::paintEvent(QPaintEvent *event)
+    {
+        QPainter painter;
+        painter.begin(this);
+        painter.fillRect(event-&gt;rect(), Qt::white);
+        foreach (DisplayShape *shape, shapes)
+            shape-&gt;paint(&amp;painter);
+        painter.end();
+    }
+
+    void DisplayWidget::reset()
+    {
+        if (emptying)
+            return;
+
+        if (shapes.size() == 0) {
+            empty = true;
+            timer-&gt;stop();
+            emit displayEmpty();    // Note: synchronous signal
+        } else {
+            enableUpdates();
+            emptying = true;
+            empty = false;
+            foreach (DisplayShape *shape, shapes) {
+                shape-&gt;setMetaData(&quot;fade&quot;, -15);
+                shape-&gt;setMetaData(&quot;fade minimum&quot;, 0);
+            }
+        }
+    }
+
+    DisplayShape *DisplayWidget::shape(int index) const
+    {
+        return shapes.value(index);
+    }
+
+    int DisplayWidget::shapesCount() const
+    {
+        return shapes.size();
+    }
+
+    void DisplayWidget::enableUpdates()
+    {
+        if (!timer-&gt;isActive())
+            timer-&gt;start(50);
+    }
+
+    void DisplayWidget::updateShapes()
+    {
+        QVector&lt;DisplayShape*&gt; discard;
+
+        int updated = 0;
+
+        foreach (DisplayShape *shape, shapes) {
+            QRect oldRect = shape-&gt;rect().toRect().adjusted(-1,-1,1,1);
+            if (shape-&gt;animate()) {
+
+                update(oldRect);
+                QRect newRect = shape-&gt;rect().toRect().adjusted(-1,-1,1,1);
+                ++updated;
+
+                if (shape-&gt;contains(&quot;destroy&quot;)) {
+                    discard.append(shape);
+                } else {
+                    update(newRect);
+                }
+            }
+        }
+
+        if (updated == 0)
+            timer-&gt;stop();
+
+        foreach (DisplayShape *shape, discard) {
+            shapes.removeAll(shape);
+            delete shape;
+        }
+
+        if (shapes.size() == 0 &amp;&amp; !empty) {
+            empty = true;
+            emptying = false;
+            timer-&gt;stop();
+            emit displayEmpty();    // Note: synchronous signal
+        }
+    }</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

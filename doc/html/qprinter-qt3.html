@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/painting/qprinter.cpp -->
+<head>
+    <title>Qt 4.0: Qt 3 Support Members for QPrinter</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QPrinter</h1>
+<p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
+<p><ul><li><a href="qprinter.html">QPrinter class reference</a></li></ul></p>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/>bool <b><a href="qprinter-qt3.html#aborted">aborted</a></b> ()</li>
+<li><div class="fn"/>int <b><a href="qprinter-qt3.html#fromPage">fromPage</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qprinter-qt3.html#isOptionEnabled">isOptionEnabled</a></b> ( PrinterOption <i>option</i> ) const</li>
+<li><div class="fn"/>void <b><a href="qprinter-qt3.html#margins">margins</a></b> ( uint * <i>top</i>, uint * <i>left</i>, uint * <i>bottom</i>, uint * <i>right</i> ) const</li>
+<li><div class="fn"/>QSize <b><a href="qprinter-qt3.html#margins-2">margins</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qprinter-qt3.html#maxPage">maxPage</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qprinter-qt3.html#minPage">minPage</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qprinter-qt3.html#outputToFile">outputToFile</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qprinter-qt3.html#pageSetup">pageSetup</a></b> ( QWidget * <i>parent</i> = 0 )</li>
+<li><div class="fn"/>PrintRange <b><a href="qprinter-qt3.html#printRange">printRange</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qprinter-qt3.html#printSetup">printSetup</a></b> ( QWidget * <i>parent</i> = 0 )</li>
+<li><div class="fn"/>void <b><a href="qprinter-qt3.html#setFromTo">setFromTo</a></b> ( int <i>from</i>, int <i>to</i> )</li>
+<li><div class="fn"/>void <b><a href="qprinter-qt3.html#setMinMax">setMinMax</a></b> ( int <i>minPage</i>, int <i>maxPage</i> )</li>
+<li><div class="fn"/>void <b><a href="qprinter-qt3.html#setOptionEnabled">setOptionEnabled</a></b> ( PrinterOption <i>option</i>, bool <i>enable</i> )</li>
+<li><div class="fn"/>void <b><a href="qprinter-qt3.html#setOutputToFile">setOutputToFile</a></b> ( bool <i>enable</i> )</li>
+<li><div class="fn"/>void <b><a href="qprinter-qt3.html#setPrintRange">setPrintRange</a></b> ( PrintRange <i>range</i> )</li>
+<li><div class="fn"/>bool <b><a href="qprinter-qt3.html#setup">setup</a></b> ( QWidget * <i>parent</i> = 0 )</li>
+<li><div class="fn"/>int <b><a href="qprinter-qt3.html#toPage">toPage</a></b> () const</li>
+</ul>
+<ul>
+<li><div class="fn"/>8 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+</ul>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="aborted"></a>bool QPrinter::aborted ()</h3>
+<p>Use <a href="qprinter.html#printerState">printerState</a>() == <a href="qprinter.html#PrinterState-enum">QPrinter::Aborted</a> instead.</p>
+<h3 class="fn"><a name="fromPage"></a>int QPrinter::fromPage () const</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Returns the from-page setting. The default value is 0.</p>
+<p>If fromPage() and <a href="qprinter-qt3.html#toPage">toPage</a>() both return 0 this signifies 'print the whole document'.</p>
+<p>The programmer is responsible for reading this setting and printing accordingly.</p>
+<p>See also <a href="qprinter-qt3.html#setFromTo">setFromTo</a>() and <a href="qprinter-qt3.html#toPage">toPage</a>().</p>
+<h3 class="fn"><a name="isOptionEnabled"></a>bool QPrinter::isOptionEnabled ( <a href="qprinter.html#PrinterOption-enum">PrinterOption</a> <i>option</i> ) const</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Returns true if the printer option with identifier <i>option</i> is enabled; otherwise returns false.</p>
+<p>See also <a href="qprinter-qt3.html#setOptionEnabled">setOptionEnabled</a>().</p>
+<h3 class="fn"><a name="margins"></a>void QPrinter::margins ( <a href="qtglobal.html#uint-typedef">uint</a> * <i>top</i>, <a href="qtglobal.html#uint-typedef">uint</a> * <i>left</i>, <a href="qtglobal.html#uint-typedef">uint</a> * <i>bottom</i>, <a href="qtglobal.html#uint-typedef">uint</a> * <i>right</i> ) const</h3>
+<p>Sets *<i>top</i>, *<i>left</i>, *<i>bottom</i>, *<i>right</i> to be the top, left, bottom, and right margins.</p>
+<p>This function has been superceded by <a href="qprinter.html#paperRect">paperRect</a>() and <a href="qprinter.html#pageRect">pageRect</a>(). Use <a href="qprinter.html#pageRect">pageRect</a>().top() - <a href="qprinter.html#paperRect">paperRect</a>().top() for the top margin, <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#left">left</a>() - <a href="qprinter.html#paperRect">paperRect</a>().<a href="qtextstream.html#left">left</a>() for the left margin, <a href="qprinter.html#pageRect">pageRect</a>().bottom() - <a href="qprinter.html#paperRect">paperRect</a>().bottom() for the bottom margin, and <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#right">right</a>() - <a href="qprinter.html#paperRect">paperRect</a>().<a href="qtextstream.html#right">right</a>() for the right margin.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">    uint rightMargin;
+    uint bottomMargin;
+    printer-&gt;margins(0, 0, &amp;bottomMargin, &amp;rightMargin);</font></pre>
+<p>you can rewrite it as</p>
+<pre>    int rightMargin = printer-&gt;pageRect().right() - printer-&gt;paperRect().right();
+    int bottomMargin = printer-&gt;pageRect().bottom() - printer-&gt;paperRect().bottom();</pre>
+<h3 class="fn"><a name="margins-2"></a><a href="qsize.html">QSize</a> QPrinter::margins () const</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Returns a <a href="qsize.html">QSize</a> containing the left margin and the top margin.</p>
+<p>This function has been superceded by <a href="qprinter.html#paperRect">paperRect</a>() and <a href="qprinter.html#pageRect">pageRect</a>(). Use <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#left">left</a>() - <a href="qprinter.html#paperRect">paperRect</a>().<a href="qtextstream.html#left">left</a>() for the left margin, and <a href="qprinter.html#pageRect">pageRect</a>().top() - <a href="qprinter.html#paperRect">paperRect</a>().top() for the top margin.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">    QSize margins = printer-&gt;margins();
+    int leftMargin = margins.width();
+    int topMargin = margins.height();</font></pre>
+<p>you can rewrite it as</p>
+<pre>    int leftMargin = printer-&gt;pageRect().left() - printer-&gt;paperRect().left();
+    int topMargin = printer-&gt;pageRect().top() - printer-&gt;paperRect().top();</pre>
+<h3 class="fn"><a name="maxPage"></a>int QPrinter::maxPage () const</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Returns the max-page setting. A user can't choose a higher page number than maxPage() when they select a print range. The default value is 0.</p>
+<p>See also <a href="qprinter-qt3.html#minPage">minPage</a>(), <a href="qprinter-qt3.html#setMinMax">setMinMax</a>(), and <a href="qprinter-qt3.html#setFromTo">setFromTo</a>().</p>
+<h3 class="fn"><a name="minPage"></a>int QPrinter::minPage () const</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Returns the min-page setting, i.e. the lowest page number a user is allowed to choose. The default value is 0.</p>
+<p>See also <a href="qprinter-qt3.html#maxPage">maxPage</a>(), <a href="qprinter-qt3.html#setMinMax">setMinMax</a>(), and <a href="qprinter-qt3.html#setFromTo">setFromTo</a>().</p>
+<h3 class="fn"><a name="outputToFile"></a>bool QPrinter::outputToFile () const</h3>
+<p>Returns true if the output should be written to a file, or false if the output should be sent directly to the printer. The default setting is false.</p>
+<p>See also <a href="qprinter-qt3.html#setOutputToFile">setOutputToFile</a>() and <a href="qprinter.html#setOutputFileName">setOutputFileName</a>().</p>
+<h3 class="fn"><a name="pageSetup"></a>bool QPrinter::pageSetup ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
+<p>Executes a page setup dialog so that the user can configure the type of page used for printing. Returns true if the contents of the dialog are accepted; returns false if the dialog is canceled.</p>
+<h3 class="fn"><a name="printRange"></a><a href="qprinter.html#PrintRange-enum">PrintRange</a> QPrinter::printRange () const</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Returns the <a href="qprinter.html#PrintRange-enum">PageRange</a> of the <a href="qprinter.html">QPrinter</a>. After the print setup dialog has been opened, this function returns the value selected by the user.</p>
+<p>See also <a href="qprinter-qt3.html#setPrintRange">setPrintRange</a>().</p>
+<h3 class="fn"><a name="printSetup"></a>bool QPrinter::printSetup ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
+<p>Executes a print setup dialog so that the user can configure the printing process. Returns true if the contents of the dialog are accepted; returns false if the dialog is canceled.</p>
+<h3 class="fn"><a name="setFromTo"></a>void QPrinter::setFromTo ( int <i>from</i>, int <i>to</i> )</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Sets the from-page and to-page settings to <i>from</i> and <i>to</i> respectively.</p>
+<p>The from-page and to-page settings specify what pages to print.</p>
+<p>If from and to both return 0 this signifies 'print the whole document'.</p>
+<p>This function is useful mostly to set a default value that the user can override in the print dialog when you call <a href="qprinter-qt3.html#setup">setup</a>().</p>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>See also <a href="qprinter-qt3.html#fromPage">fromPage</a>(), <a href="qprinter-qt3.html#toPage">toPage</a>(), <a href="qprinter-qt3.html#setMinMax">setMinMax</a>(), and <a href="qprinter-qt3.html#setup">setup</a>().</p>
+<h3 class="fn"><a name="setMinMax"></a>void QPrinter::setMinMax ( int <i>minPage</i>, int <i>maxPage</i> )</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Sets the min-page and max-page settings to <i>minPage</i> and <i>maxPage</i> respectively.</p>
+<p>The min-page and max-page restrict the from-page and to-page settings. When the printer setup dialog appears, the user cannot select a from page or a to page that are outside the range specified by min and max pages.</p>
+<p>See also <a href="qprinter-qt3.html#minPage">minPage</a>(), <a href="qprinter-qt3.html#maxPage">maxPage</a>(), <a href="qprinter-qt3.html#setFromTo">setFromTo</a>(), and <a href="qprinter-qt3.html#setup">setup</a>().</p>
+<h3 class="fn"><a name="setOptionEnabled"></a>void QPrinter::setOptionEnabled ( <a href="qprinter.html#PrinterOption-enum">PrinterOption</a> <i>option</i>, bool <i>enable</i> )</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Enables the printer option with the identifier <i>option</i> if <i>enable</i> is true, and disables option <i>option</i> if <i>enable</i> is false.</p>
+<p>See also <a href="qprinter-qt3.html#isOptionEnabled">isOptionEnabled</a>().</p>
+<h3 class="fn"><a name="setOutputToFile"></a>void QPrinter::setOutputToFile ( bool <i>enable</i> )</h3>
+<p>Specifies whether the output should be written to a file or sent directly to the printer.</p>
+<p>Will output to a file if <i>enable</i> is true, or will output directly to the printer if <i>enable</i> is false.</p>
+<p>See also <a href="qprinter-qt3.html#outputToFile">outputToFile</a>() and <a href="qprinter.html#setOutputFileName">setOutputFileName</a>().</p>
+<h3 class="fn"><a name="setPrintRange"></a>void QPrinter::setPrintRange ( <a href="qprinter.html#PrintRange-enum">PrintRange</a> <i>range</i> )</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Sets the default selected page range to be used when the print setup dialog is opened to <i>range</i>. If the <a href="qprinter.html#PrintRange-enum">PageRange</a> specified by <i>range</i> is currently disabled the function does nothing.</p>
+<p>See also <a href="qprinter-qt3.html#printRange">printRange</a>().</p>
+<h3 class="fn"><a name="setup"></a>bool QPrinter::setup ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">    if (printer-&gt;setup(parent))
+        ...</font></pre>
+<p>you can rewrite it as</p>
+<pre>    QPrintDialog dialog(printer, parent);
+    if (dialog.exec())
+        ...</pre>
+<h3 class="fn"><a name="toPage"></a>int QPrinter::toPage () const</h3>
+<p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
+<p>Returns the to-page setting. The default value is 0.</p>
+<p>If <a href="qprinter-qt3.html#fromPage">fromPage</a>() and toPage() both return 0 this signifies 'print the whole document'.</p>
+<p>The programmer is responsible for reading this setting and printing accordingly.</p>
+<p>See also <a href="qprinter-qt3.html#setFromTo">setFromTo</a>() and <a href="qprinter-qt3.html#fromPage">fromPage</a>().</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

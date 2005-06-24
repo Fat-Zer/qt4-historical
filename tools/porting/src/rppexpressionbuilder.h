@@ -1,0 +1,89 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the porting application of the Qt Toolkit.
+**
+** This file may be distributed under the terms of the Q Public License
+** as defined by Trolltech AS of Norway and appearing in the file
+** LICENSE.QPL included in the packaging of this file.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+**   information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/qpl/ for QPL licensing information.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+#ifndef RPPEXPRESSIONBUILDER_H
+#define RPPEXPRESSIONBUILDER_H
+
+#include <QByteArray>
+#include "tokens.h"
+#include "tokenengine.h"
+#include "smallobject.h"
+#include "rpp.h"
+
+namespace Rpp {
+
+class ExpressionBuilder
+{
+public:
+    ExpressionBuilder(const TokenEngine::TokenList &tokenList, const QVector<Type> &typeList, TypedPool<Item> *memoryPool);
+    Rpp::Expression *parse();
+private:
+
+    inline bool hasNext() const { return (i < m_tokenList.count()); }
+    Type next();
+    bool test(int);
+    bool moreTokens(int delta);
+    inline void prev() {--i;}
+    Type lookup(int k = 1);
+    inline Type token() { return typeAt(i-1);}
+    inline QByteArray lexem() { return m_tokenList.text(i-1);}
+    inline Type typeAt(int t) { return m_typeList.at(m_tokenList.containerIndex(t));}
+
+    Expression *conditional_expression();
+    Expression *logical_OR_expression();
+    Expression *logical_AND_expression();
+    Expression *inclusive_OR_expression();
+    Expression *exclusive_OR_expression();
+    Expression *AND_expression();
+    Expression *equality_expression();
+    Expression *relational_expression();
+    Expression *shift_expression();
+    Expression *additive_expression();
+    Expression *multiplicative_expression();
+    Expression *unary_expression();
+    Expression *primary_expression();
+
+    bool unary_expression_lookup();
+    bool primary_expression_lookup();
+
+    UnaryExpression *createUnaryExpression(int op, Expression *expression);
+    BinaryExpression *createBinaryExpression(int op, Expression *leftExpresson, Expression *rightExpression);
+    ConditionalExpression *createConditionalExpression(Expression *condition, Expression *leftExpression, Expression *rightExpression);
+    MacroReference *createMacroReference(MacroReference::Type type, TokenEngine::TokenList token);
+    IntLiteral *createIntLiteral(const int arg);
+
+    TokenEngine::TokenList createTokenList(int tokenIndex) const;
+
+    int i;
+    TokenEngine::TokenList m_tokenList;
+    QVector<Type> m_typeList;
+    TypedPool<Item> *m_memoryPool;
+};
+
+}
+
+#endif
