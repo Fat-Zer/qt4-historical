@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/thread/qmutex.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-win-opensource-src-4.3.1/src/corelib/thread/qmutex.cpp -->
 <head>
   <title>Qt 4.3: QMutexLocker Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QMutexLocker" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -120,22 +119,17 @@
 <p>See also <a href="qreadlocker.html">QReadLocker</a>, <a href="qwritelocker.html">QWriteLocker</a>, and <a href="qmutex.html">QMutex</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QMutexLocker/QMutexLocker" />
 <h3 class="fn"><a name="QMutexLocker"></a>QMutexLocker::QMutexLocker ( <a href="qmutex.html">QMutex</a> * <i>mutex</i> )</h3>
 <p>Constructs a <a href="qmutexlocker.html">QMutexLocker</a> and locks <i>mutex</i>. The mutex will be unlocked when the <a href="qmutexlocker.html">QMutexLocker</a> is destroyed. If <i>mutex</i> is zero, <a href="qmutexlocker.html">QMutexLocker</a> does nothing.</p>
 <p>See also <a href="qmutex.html#lock">QMutex::lock</a>().</p>
-<a name="//apple_ref/cpp/instm/QMutexLocker/~QMutexLocker" />
 <h3 class="fn"><a name="dtor.QMutexLocker"></a>QMutexLocker::~QMutexLocker ()</h3>
 <p>Destroys the <a href="qmutexlocker.html">QMutexLocker</a> and unlocks the mutex that was locked in the constructor.</p>
 <p>See also <a href="qmutex.html#unlock">QMutex::unlock</a>().</p>
-<a name="//apple_ref/cpp/instm/QMutexLocker/mutex" />
 <h3 class="fn"><a name="mutex"></a><a href="qmutex.html">QMutex</a> * QMutexLocker::mutex () const</h3>
 <p>Returns a pointer to the mutex that was locked in the constructor.</p>
-<a name="//apple_ref/cpp/instm/QMutexLocker/relock" />
 <h3 class="fn"><a name="relock"></a>void QMutexLocker::relock ()</h3>
 <p>Relocks an unlocked mutex locker.</p>
 <p>See also <a href="qmutexlocker.html#unlock">unlock</a>().</p>
-<a name="//apple_ref/cpp/instm/QMutexLocker/unlock" />
 <h3 class="fn"><a name="unlock"></a>void QMutexLocker::unlock ()</h3>
 <p>Unlocks this mutex locker. You can use <tt>relock()</tt> to lock it again. It does not need to be locked when destroyed.</p>
 <p>See also <a href="qmutexlocker.html#relock">relock</a>().</p>

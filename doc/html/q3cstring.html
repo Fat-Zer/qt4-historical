@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/tools/q3cstring.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-win-opensource-src-4.3.1/src/qt3support/tools/q3cstring.cpp -->
 <head>
   <title>Qt 4.3: Q3CString Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//Q3CString" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -111,7 +110,6 @@
 <p>Performance note: The Q3CString methods for <a href="qregexp.html">QRegExp</a> searching are implemented by converting the Q3CString to a <a href="qstring.html">QString</a> and performing the search on that. This implies a deep copy of the Q3CString data. If you are going to perform many <a href="qregexp.html">QRegExp</a> searches on a large Q3CString, you will get better performance by converting the Q3CString to a <a href="qstring.html">QString</a> yourself, and then searching in the <a href="qstring.html">QString</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3CString/Q3CString" />
 <h3 class="fn"><a name="Q3CString"></a>Q3CString::Q3CString ()</h3>
 <p>Constructs a null string.</p>
 <p>See also <a href="qbytearray.html#isNull">isNull</a>().</p>
@@ -133,13 +131,10 @@
 <pre> Q3CString str(&quot;helloworld&quot;, 6); <span class="comment">//</span> assigns &quot;hello&quot; to str</pre>
 <p>If <i>str</i> contains a 0 byte within the first <i>maxsize</i> bytes, the resulting <a href="q3cstring.html">Q3CString</a> will be terminated by this 0. If <i>str</i> is 0 a null string is created.</p>
 <p>See also <a href="qbytearray.html#isNull">isNull</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3CString/append" />
 <h3 class="fn"><a name="append"></a>Q3CString &amp; Q3CString::append ( const char * <i>str</i> )</h3>
 <p>Appends string <i>str</i> to the string and returns a reference to the string. Equivalent to operator+=().</p>
-<a name="//apple_ref/cpp/instm/Q3CString/copy" />
 <h3 class="fn"><a name="copy"></a>Q3CString Q3CString::copy () const</h3>
 <p>Returns a deep copy of this string.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/leftJustify" />
 <h3 class="fn"><a name="leftJustify"></a>Q3CString Q3CString::leftJustify ( <a href="qtglobal.html#uint-typedef">uint</a> <i>width</i>, char <i>fill</i> = ' ', bool <i>truncate</i> = false ) const</h3>
 <p>Returns a string of length <i>width</i> (plus one for the terminating '\0') that contains this string padded with the <i>fill</i> character.</p>
 <p>If the length of the string exceeds <i>width</i> and <i>truncate</i> is false (the default), then the returned string is a copy of the string. If the length of the string exceeds <i>width</i> and <i>truncate</i> is true, then the returned string is a left(<i>width</i>).</p>
@@ -147,10 +142,8 @@
 <pre> Q3CString s(&quot;apple&quot;);
  Q3CString t = s.leftJustify(8, '.');  <span class="comment">//</span> t == &quot;apple...&quot;</pre>
 <p>See also <a href="q3cstring.html#rightJustify">rightJustify</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3CString/lower" />
 <h3 class="fn"><a name="lower"></a>Q3CString Q3CString::lower () const</h3>
 <p>Use <a href="qbytearray.html#toLower">QByteArray::toLower</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/rightJustify" />
 <h3 class="fn"><a name="rightJustify"></a>Q3CString Q3CString::rightJustify ( <a href="qtglobal.html#uint-typedef">uint</a> <i>width</i>, char <i>fill</i> = ' ', bool <i>truncate</i> = false ) const</h3>
 <p>Returns a string of length <i>width</i> (plus one for the terminating '\0') that contains zero or more of the <i>fill</i> character followed by this string.</p>
 <p>If the length of the string exceeds <i>width</i> and <i>truncate</i> is false (the default), then the returned string is a copy of the string. If the length of the string exceeds <i>width</i> and <i>truncate</i> is true, then the returned string is a left(<i>width</i>).</p>
@@ -158,11 +151,9 @@
 <pre> Q3CString s(&quot;pie&quot;);
  Q3CString t = s.rightJustify(8, '.');  <span class="comment">//</span> t == &quot;.....pie&quot;</pre>
 <p>See also <a href="q3cstring.html#leftJustify">leftJustify</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3CString/setExpand" />
 <h3 class="fn"><a name="setExpand"></a>bool Q3CString::setExpand ( <a href="qtglobal.html#uint-typedef">uint</a> <i>index</i>, char <i>c</i> )</h3>
 <p>Sets the character at position <i>index</i> to <i>c</i> and expands the string if necessary, padding with spaces.</p>
 <p>Returns false if <i>index</i> was out of range and the string could not be expanded; otherwise returns true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/setNum" />
 <h3 class="fn"><a name="setNum"></a>Q3CString &amp; Q3CString::setNum ( double <i>n</i>, char <i>f</i> = 'g', int <i>prec</i> = 6 )</h3>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <p>The format of the string representation is specified by the format character <i>f</i>, and the precision (number of digits after the decimal point) is specified with <i>prec</i>.</p>
@@ -187,13 +178,10 @@
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-8"></a>Q3CString &amp; Q3CString::setNum ( float <i>n</i>, char <i>f</i> = 'g', int <i>prec</i> = 6 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/setStr" />
 <h3 class="fn"><a name="setStr"></a>Q3CString &amp; Q3CString::setStr ( const char * <i>str</i> )</h3>
 <p>Makes a deep copy of <i>str</i>. Returns a reference to the string.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/simplifyWhiteSpace" />
 <h3 class="fn"><a name="simplifyWhiteSpace"></a>Q3CString Q3CString::simplifyWhiteSpace () const</h3>
 <p>Use <a href="qbytearray.html#simplified">QByteArray::simplified</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/sprintf" />
 <h3 class="fn"><a name="sprintf"></a>Q3CString &amp; Q3CString::sprintf ( const char * <i>format</i>, ... )</h3>
 <p>Implemented as a call to the native vsprintf() (see the manual for your C library).</p>
 <p>If the string is shorter than 256 characters, this sprintf() calls resize(256) to decrease the chance of memory corruption. The string is resized back to its actual length before sprintf() returns.</p>
@@ -205,45 +193,34 @@
  big.sprintf(&quot;%d - %s&quot;, 2, longString);        <span class="comment">//</span> result &lt; 25000 chars</pre>
 <p><b>Warning:</b> All vsprintf() implementations will write past the end of the target string (*this) if the <i>format</i> specification and arguments happen to be longer than the target string, and some will also fail if the target string is longer than some arbitrary implementation limit.</p>
 <p>Giving user-supplied arguments to sprintf() is risky: Sooner or later someone will paste a huge line into your application.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/stripWhiteSpace" />
 <h3 class="fn"><a name="stripWhiteSpace"></a>Q3CString Q3CString::stripWhiteSpace () const</h3>
 <p>Use <a href="qbytearray.html#trimmed">QByteArray::trimmed</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toDouble" />
 <h3 class="fn"><a name="toDouble"></a>double Q3CString::toDouble ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to a <tt>double</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toFloat" />
 <h3 class="fn"><a name="toFloat"></a>float Q3CString::toFloat ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to a <tt>float</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toInt" />
 <h3 class="fn"><a name="toInt"></a>int Q3CString::toInt ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to a <tt>int</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toLong" />
 <h3 class="fn"><a name="toLong"></a>long Q3CString::toLong ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to a <tt>long</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toShort" />
 <h3 class="fn"><a name="toShort"></a>short Q3CString::toShort ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to a <tt>short</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, is out of range, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toUInt" />
 <h3 class="fn"><a name="toUInt"></a><a href="qtglobal.html#uint-typedef">uint</a> Q3CString::toUInt ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to an <tt>unsigned int</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toULong" />
 <h3 class="fn"><a name="toULong"></a><a href="qtglobal.html#ulong-typedef">ulong</a> Q3CString::toULong ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to an <tt>unsigned long</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/toUShort" />
 <h3 class="fn"><a name="toUShort"></a><a href="qtglobal.html#ushort-typedef">ushort</a> Q3CString::toUShort ( bool * <i>ok</i> = 0 ) const</h3>
 <p>Returns the string converted to an <tt>unsigned short</tt> value.</p>
 <p>If <i>ok</i> is not 0: *<i>ok</i> is set to false if the string is not a number, is out of range, or if it has trailing garbage; otherwise *<i>ok</i> is set to true.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/upper" />
 <h3 class="fn"><a name="upper"></a>Q3CString Q3CString::upper () const</h3>
 <p>Use <a href="qbytearray.html#toUpper">QByteArray::toUpper</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/Q3CString/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>Q3CString &amp; Q3CString::operator= ( const Q3CString &amp; <i>s</i> )</h3>
 <p>Assigns a shallow copy of <i>s</i> to this string and returns a reference to this string.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>Q3CString &amp; Q3CString::operator= ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>ba</i> )</h3>
