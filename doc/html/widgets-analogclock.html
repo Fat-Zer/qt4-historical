@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/analogclock.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-win-opensource-src-4.4.0/doc/src/examples/analogclock.qdoc -->
 <head>
   <title>Qt 4.4: Analog Clock Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -75,7 +75,7 @@
      painter.setRenderHint(QPainter::Antialiasing);
      painter.translate(width() / 2, height() / 2);
      painter.scale(side / 200.0, side / 200.0);</pre>
-<p>The contents of custom widgets are drawn with a <a href="qpainter.html">QPainter</a>. Painters can be used to draw on any <a href="qpaintdevice.html">QPaintDevice</a>, but they are usually used with widgets, so we pass the widget instance to the painter's constructor.</p>
+<p>The contents of custom widgets are drawn with a <a href="qpainter.html">QPainter</a>. Painters can be used to draw on any QPaintDevice, but they are usually used with widgets, so we pass the widget instance to the painter's constructor.</p>
 <p>We call <a href="qpainter.html#setRenderHint">QPainter::setRenderHint</a>() with <a href="qpainter.html#RenderHint-enum">QPainter::Antialiasing</a> to turn on antialiasing. This makes drawing of diagonal lines much smoother.</p>
 <p>The translation moves the origin to the center of the widget, and the scale operation ensures that the following drawing operations are scaled to fit within the widget. We use a scale factor that let's us use x and y coordinates between -100 and 100, and that ensures that these lie within the length of the widget's shortest side.</p>
 <p>To make our code simpler, we will draw a fixed size clock face that will be positioned and scaled so that it lies in the center of the widget.</p>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/threads.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-win-opensource-src-4.4.0/doc/src/threads.qdoc -->
 <head>
   <title>Qt 4.4: Thread Support in Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -50,7 +50,7 @@
 <li><a href="qreadwritelock.html">QReadWriteLock</a> provides a lock that allows simultaneous read access.</li>
 <li><a href="qreadlocker.html">QReadLocker</a> and <a href="qwritelocker.html">QWriteLocker</a> are convenience classes that automatically lock and unlock a <a href="qreadwritelock.html">QReadWriteLock</a>.</li>
 <li><a href="qsemaphore.html">QSemaphore</a> provides an integer semaphore (a generalization of a mutex).</li>
-<li><a href="qwaitcondition.html">QWaitCondition</a> provides a way for threads to go to sleep until woken up by another thread.</li>
+<li>QWaitCondition provides a way for threads to go to sleep until woken up by another thread.</li>
 <li><a href="qatomicint.html">QAtomicInt</a> provides atomic operations on integers.</li>
 <li><a href="qatomicpointer.html">QAtomicPointer</a> provides atomic operations on pointers.</li>
 </ul>
@@ -75,11 +75,11 @@
 <p>In addition, you must create the <a href="qapplication.html">QApplication</a> (or <a href="qcoreapplication.html">QCoreApplication</a>) object before you can create a <a href="qthread.html">QThread</a>.</p>
 <a name="synchronizing-threads"></a>
 <h4>Synchronizing Threads</h4>
-<p>The <a href="qmutex.html">QMutex</a>, <a href="qreadwritelock.html">QReadWriteLock</a>, <a href="qsemaphore.html">QSemaphore</a>, and <a href="qwaitcondition.html">QWaitCondition</a> classes provide means to synchronize threads. While the main idea with threads is that they should be as concurrent as possible, there are points where threads must stop and wait for other threads. For example, if two threads try to access the same global variable simultaneously, the results are usually undefined.</p>
+<p>The <a href="qmutex.html">QMutex</a>, <a href="qreadwritelock.html">QReadWriteLock</a>, <a href="qsemaphore.html">QSemaphore</a>, and QWaitCondition classes provide means to synchronize threads. While the main idea with threads is that they should be as concurrent as possible, there are points where threads must stop and wait for other threads. For example, if two threads try to access the same global variable simultaneously, the results are usually undefined.</p>
 <p><a href="qmutex.html">QMutex</a> provides a mutually exclusive lock, or mutex. At most one thread can hold the mutex at any time. If a thread tries to acquire the mutex while the mutex is already locked, the thread will be put to sleep until the thread that currently holds the mutex unlocks it. Mutexes are often used to protect accesses to shared data (i.e&#x2e;, data that can be accessed from multiple threads simultaneously). In the <a href="#reentrancy-and-thread-safety">Reentrancy and Thread-Safety</a> section below, we will use it to make a class thread-safe.</p>
 <p><a href="qreadwritelock.html">QReadWriteLock</a> is similar to <a href="qmutex.html">QMutex</a>, except that it distinguishes between &quot;read&quot; and &quot;write&quot; access to shared data and allows multiple readers to access the data simultaneously. Using <a href="qreadwritelock.html">QReadWriteLock</a> instead of <a href="qmutex.html">QMutex</a> when it is possible can make multithreaded programs more concurrent.</p>
 <p><a href="qsemaphore.html">QSemaphore</a> is a generalization of <a href="qmutex.html">QMutex</a> that protects a certain number of identical resources. In contrast, a mutex protects exactly one resource. The <a href="threads-semaphores.html">Semaphores</a> example shows a typical application of semaphores: synchronizing access to a circular buffer between a producer and a consumer.</p>
-<p><a href="qwaitcondition.html">QWaitCondition</a> allows a thread to wake up other threads when some condition has been met. One or many threads can block waiting for a <a href="qwaitcondition.html">QWaitCondition</a> to set a condition with <a href="qwaitcondition.html#wakeOne">wakeOne()</a> or <a href="qwaitcondition.html#wakeAll">wakeAll()</a>. Use <a href="qwaitcondition.html#wakeOne">wakeOne()</a> to wake one randomly selected event or <a href="qwaitcondition.html#wakeAll">wakeAll()</a> to wake them all. The <a href="threads-waitconditions.html">Wait Conditions</a> example shows how to solve the producer-consumer problem using <a href="qwaitcondition.html">QWaitCondition</a> instead of <a href="qsemaphore.html">QSemaphore</a>.</p>
+<p>QWaitCondition allows a thread to wake up other threads when some condition has been met. One or many threads can block waiting for a QWaitCondition to set a condition with <a href="qwaitcondition.html#wakeOne">wakeOne()</a> or <a href="qwaitcondition.html#wakeAll">wakeAll()</a>. Use <a href="qwaitcondition.html#wakeOne">wakeOne()</a> to wake one randomly selected event or <a href="qwaitcondition.html#wakeAll">wakeAll()</a> to wake them all. The <a href="threads-waitconditions.html">Wait Conditions</a> example shows how to solve the producer-consumer problem using QWaitCondition instead of <a href="qsemaphore.html">QSemaphore</a>.</p>
 <p>Note that Qt's synchronization classes rely on the use of properly aligned pointers. For instance, you cannot use packed classes with MSVC.</p>
 <a name="qtconcurrent-intro"></a><a name="qtconcurrent"></a>
 <h3>QtConcurrent</h3>

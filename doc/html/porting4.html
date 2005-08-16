@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-win-opensource-src-4.4.0/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4</title>
   <link rel="prev" href="porting.html" />
@@ -356,7 +356,7 @@
 <tr valign="top" class="odd"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Fixed</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetFixedSize</a></td></tr>
 <tr valign="top" class="even"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::FreeResize</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetNoConstraint</a></td></tr>
 <tr valign="top" class="odd"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Minimum</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetMinimumSize</a></td></tr>
-<tr valign="top" class="even"><td><a href="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeNone</a></td><td><a href="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeDefault</a></td></tr>
+<tr valign="top" class="even"><td>QMacStyle::SizeNone</td><td>QMacStyle::SizeDefault</td></tr>
 <tr valign="top" class="odd"><td><a href="qsettings.html#Scope-enum">QSettings::Global</a></td><td><a href="qsettings.html#Scope-enum">QSettings::SystemScope</a></td></tr>
 <tr valign="top" class="even"><td><a href="qsettings.html#Scope-enum">QSettings::User</a></td><td><a href="qsettings.html#Scope-enum">QSettings::UserScope</a></td></tr>
 <tr valign="top" class="odd"><td>QSize::ScaleFree</td><td><a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a></td></tr>
@@ -722,8 +722,8 @@
 </ol>
 <a name="qaquastyle"></a>
 <h3>QAquaStyle</h3>
-<p>The <tt>QAquaStyle</tt> class first appeared in Qt 3.0, when the Qt/Mac port was first released. It emulated Apple's &quot;Aqua&quot; theme. In Qt 3.1, <a href="#qaquastyle">QAquaStyle</a> was obsoleted by <a href="qmacstyle.html">QMacStyle</a>, which uses Appearance Manager to perform its drawing.</p>
-<p>The <tt>QAquaStyle</tt> class is no longer provided in Qt 4. Use <a href="qmacstyle.html">QMacStyle</a> instead.</p>
+<p>The <tt>QAquaStyle</tt> class first appeared in Qt 3.0, when the Qt/Mac port was first released. It emulated Apple's &quot;Aqua&quot; theme. In Qt 3.1, <a href="#qaquastyle">QAquaStyle</a> was obsoleted by QMacStyle, which uses Appearance Manager to perform its drawing.</p>
+<p>The <tt>QAquaStyle</tt> class is no longer provided in Qt 4. Use QMacStyle instead.</p>
 <a name="qasciidict-section"></a><a name="qasciicache-t"></a>
 <h3>QAsciiCache&lt;T&gt;</h3>
 <p><tt>QAsciiCache&lt;T&gt;</tt> has been renamed <a href="q3asciicache.html">Q3AsciiCache</a>&lt;T&gt; and moved to the <a href="qt3support.html">Qt3Support</a> library. It has been replaced by <a href="qcache.html">QCache</a>&lt;<a href="qbytearray.html">QByteArray</a>, T&gt;.</p>
@@ -877,7 +877,7 @@
 <p><a href="graphicsview.html">The Graphics View Framework</a> replaces <a href="#qcanvas">QCanvas</a>. For more on porting to Graphics View, see <a href="graphicsview-porting.html">Porting to Graphics View</a>.</p>
 <a name="qcolor"></a>
 <h3>QColor</h3>
-<p>In Qt 4, <a href="qcolor.html">QColor</a> is a value type like <a href="qpoint.html">QPoint</a> or <a href="qrect.html">QRect</a>. Graphics system-specific code has been implemented in <a href="qcolormap.html">QColormap</a>.</p>
+<p>In Qt 4, <a href="qcolor.html">QColor</a> is a value type like <a href="qpoint.html">QPoint</a> or <a href="qrect.html">QRect</a>. Graphics system-specific code has been implemented in QColormap.</p>
 <p>The <tt>QColor::maxColors()</tt> function has been replaced by <a href="qcolormap.html#size">QColormap::size</a>().</p>
 <p>The <tt>QColor::numBitPlanes()</tt> function has been replaced by <a href="qcolormap.html#depth">QColormap::depth</a>().</p>
 <p>The <tt>QColor::setNamedColor()</tt> function no longer supports the named color in the same way as Qt 3. Qt 4's <a href="qcolor.html#setNamedColor">setNamedColor()</a> uses the new W3C convention as stated <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">here</a>.</p>
@@ -1624,7 +1624,7 @@
 <p>bitBlt() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
 <a name="qpaintdevicemetrics"></a>
 <h3>QPaintDeviceMetrics</h3>
-<p>All functions that used to be provided by the <tt>QPaintDeviceMetrics</tt> class have now been moved to <a href="qpaintdevice.html">QPaintDevice</a>.</p>
+<p>All functions that used to be provided by the <tt>QPaintDeviceMetrics</tt> class have now been moved to QPaintDevice.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">     QPaintDeviceMetrics metrics(widget);
      int deviceDepth = metrics.depth();</font></pre>

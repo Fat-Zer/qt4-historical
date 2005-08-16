@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/image/qpixmap.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-win-opensource-src-4.4.0/src/gui/image/qpixmap.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QPixmap</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -35,15 +35,8 @@
 <li><div class="fn"/><b><a href="qpixmap-qt3.html#operator-QImage">operator QImage</a></b> () const</li>
 <li><div class="fn"/>QPixmap &amp; <b><a href="qpixmap-qt3.html#operator-eq-2">operator=</a></b> ( const QImage &amp; <i>image</i> )</li>
 </ul>
-<ul>
-<li><div class="fn"/>8 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
-</ul>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QPixmap/ColorMode" />
-<a name="//apple_ref/cpp/econst/QPixmap/Auto" />
-<a name="//apple_ref/cpp/econst/QPixmap/Color" />
-<a name="//apple_ref/cpp/econst/QPixmap/Mono" />
 <h3 class="fn"><a name="ColorMode-enum"></a>enum QPixmap::ColorMode</h3>
 <p>This enum type defines the color modes that exist for converting <a href="qimage.html">QImage</a> objects to <a href="qpixmap.html">QPixmap</a>. It is provided here for compatibility with earlier versions of Qt.</p>
 <p>Use <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> instead.</p>
@@ -60,13 +53,11 @@
 <h3 class="fn"><a name="QPixmap-8"></a>QPixmap::QPixmap ( const <a href="qimage.html">QImage</a> &amp; <i>image</i> )</h3>
 <p>Constructs a pixmap from the <a href="qimage.html">QImage</a> <i>image</i>.</p>
 <p>Use the static <a href="qpixmap.html#fromImage">fromImage</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QPixmap/convertFromImage" />
 <h3 class="fn"><a name="convertFromImage"></a>bool QPixmap::convertFromImage ( const <a href="qimage.html">QImage</a> &amp; <i>image</i>, <a href="qpixmap-qt3.html#ColorMode-enum">ColorMode</a> <i>mode</i> )</h3>
 <p>Use the static <a href="qpixmap.html#fromImage">fromImage</a>() function instead.</p>
 <h3 class="fn"><a name="convertFromImage-2"></a>bool QPixmap::convertFromImage ( const <a href="qimage.html">QImage</a> &amp; <i>image</i>, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the static <a href="qpixmap.html#fromImage">fromImage</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QPixmap/convertToImage" />
 <h3 class="fn"><a name="convertToImage"></a><a href="qimage.html">QImage</a> QPixmap::convertToImage () const</h3>
 <p>Use the <a href="qpixmap.html#toImage">toImage</a>() function instead.</p>
 <h3 class="fn"><a name="load-2"></a>bool QPixmap::load ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>format</i>, <a href="qpixmap-qt3.html#ColorMode-enum">ColorMode</a> <i>mode</i> )</h3>
@@ -75,7 +66,6 @@
 <h3 class="fn"><a name="loadFromData-2"></a>bool QPixmap::loadFromData ( const <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>buf</i>, <a href="qtglobal.html#uint-typedef">uint</a> <i>len</i>, const char * <i>format</i>, <a href="qpixmap-qt3.html#ColorMode-enum">ColorMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the <a href="qpixmap.html#loadFromData">loadFromData</a>() function that takes a <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlag</a> instead.</p>
-<a name="//apple_ref/cpp/instm/QPixmap/resize" />
 <h3 class="fn"><a name="resize"></a>void QPixmap::resize ( int <i>width</i>, int <i>height</i> )</h3>
 <p>Use the <a href="qpixmap.html">QPixmap</a> constructor that takes two <tt>int</tt>s (<i>width</i> and <i>height</i>) instead.</p>
 <p>For example, if you have code like</p>
@@ -89,14 +79,11 @@
 <pre><font color="#404040"> pixmap.resize(size);</font></pre>
 <p>you can rewrite it as</p>
 <pre> pixmap = QPixmap(size);</pre>
-<a name="//apple_ref/cpp/instm/QPixmap/selfMask" />
 <h3 class="fn"><a name="selfMask"></a>bool QPixmap::selfMask () const</h3>
 <p>Returns whether the pixmap is its own mask or not.</p>
 <p>This function is no longer relevant since the concept of self masking doesn't exists anymore.</p>
-<a name="//apple_ref/cpp/instm/QPixmap/xForm" />
 <h3 class="fn"><a name="xForm"></a>QPixmap QPixmap::xForm ( const <a href="qmatrix.html">QMatrix</a> &amp; <i>matrix</i> ) const</h3>
 <p>Use <a href="qpixmap.html#transformed">transformed</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QPixmap/operator QImage" />
 <h3 class="fn"><a name="operator-QImage"></a>QPixmap::operator QImage () const</h3>
 <p>Returns the pixmap as a <a href="qimage.html">QImage</a>.</p>
 <p>Use the <a href="qpixmap.html#toImage">toImage</a>() function instead.</p>
