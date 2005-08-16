@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/gui/kernel/qdesktopwidget_win.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-win-opensource-src-4.3.4/src/gui/kernel/qdesktopwidget_win.cpp -->
 <head>
   <title>Qt 4.3: QDesktopWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QDesktopWidget" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -77,15 +76,12 @@
 <p>See also <a href="qapplication.html">QApplication</a> and <a href="qx11info.html#appRootWindow">QX11Info::appRootWindow</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/QDesktopWidget" />
 <h3 class="fn"><a name="QDesktopWidget"></a>QDesktopWidget::QDesktopWidget ()</h3>
 <p>Creates the desktop widget.</p>
 <p>If the system supports a virtual desktop, this widget will have the size of the virtual desktop; otherwise this widget will have the size of the primary screen.</p>
 <p>Instead of using <a href="qdesktopwidget.html">QDesktopWidget</a> directly, use <a href="qapplication.html#desktop">QApplication::desktop</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/~QDesktopWidget" />
 <h3 class="fn"><a name="dtor.QDesktopWidget"></a>QDesktopWidget::~QDesktopWidget ()</h3>
 <p>Destroy the object and free allocated resources.</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/availableGeometry" />
 <h3 class="fn"><a name="availableGeometry"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::availableGeometry ( int <i>screen</i> = -1 ) const</h3>
 <p>Returns the available geometry of the screen with index <i>screen</i>. What is available will be subrect of <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>() based on what the platform decides is available (for example excludes the dock and menu bar on Mac OS X, or the task bar on Windows).</p>
 <p>See also <a href="qdesktopwidget.html#screenNumber">screenNumber</a>() and <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>().</p>
@@ -97,27 +93,21 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the available geometry of the screen which contains <i>p</i>.</p>
 <p>See also <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/isVirtualDesktop" />
 <h3 class="fn"><a name="isVirtualDesktop"></a>bool QDesktopWidget::isVirtualDesktop () const</h3>
 <p>Returns true if the system manages the available screens in a virtual desktop; otherwise returns false.</p>
 <p>For virtual desktops, <a href="qdesktopwidget.html#screen">screen</a>() will always return the same widget. The size of the virtual desktop is the size of this desktop widget.</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/numScreens" />
 <h3 class="fn"><a name="numScreens"></a>int QDesktopWidget::numScreens () const</h3>
 <p>Returns the number of available screens.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/primaryScreen" />
 <h3 class="fn"><a name="primaryScreen"></a>int QDesktopWidget::primaryScreen () const</h3>
 <p>Returns the index of the primary screen.</p>
 <p>See also <a href="qdesktopwidget.html#numScreens">numScreens</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/resized" />
 <h3 class="fn"><a name="resized"></a>void QDesktopWidget::resized ( int <i>screen</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the size of <i>screen</i> changes.</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/screen" />
 <h3 class="fn"><a name="screen"></a><a href="qwidget.html">QWidget</a> * QDesktopWidget::screen ( int <i>screen</i> = -1 )</h3>
 <p>Returns a widget that represents the screen with index <i>screen</i>.</p>
 <p>If the system uses a virtual desktop, the returned widget will have the geometry of the entire virtual desktop; i.e&#x2e;, bounding every <i>screen</i>.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>(), <a href="qdesktopwidget.html#numScreens">numScreens</a>(), and <a href="qdesktopwidget.html#isVirtualDesktop">isVirtualDesktop</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/screenGeometry" />
 <h3 class="fn"><a name="screenGeometry"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::screenGeometry ( int <i>screen</i> = -1 ) const</h3>
 <p>Returns the geometry of the screen with index <i>screen</i>.</p>
 <p>See also <a href="qdesktopwidget.html#screenNumber">screenNumber</a>().</p>
@@ -127,7 +117,6 @@
 <h3 class="fn"><a name="screenGeometry-3"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::screenGeometry ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the geometry of the screen which contains <i>p</i>.</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/screenNumber" />
 <h3 class="fn"><a name="screenNumber"></a>int QDesktopWidget::screenNumber ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const</h3>
 <p>Returns the index of the screen that contains the largest part of <i>widget</i>, or -1 if the widget not on a screen.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>().</p>
@@ -135,7 +124,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the index of the screen that contains the <i>point</i>, or the screen which is the shortest distance from the <i>point</i>.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesktopWidget/workAreaResized" />
 <h3 class="fn"><a name="workAreaResized"></a>void QDesktopWidget::workAreaResized ( int <i>screen</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the work area available on <i>screen</i> changes.</p>
 <p /><address><hr /><div align="center">

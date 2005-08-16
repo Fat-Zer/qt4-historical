@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/corelib/codecs/qtextcodec.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-win-opensource-src-4.3.4/src/corelib/codecs/qtextcodec.cpp -->
 <head>
   <title>Qt 4.3: Qt 3 Support Members for QTextCodec</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -30,10 +30,8 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/clm/QTextCodec/codecForContent" />
 <h3 class="fn"><a name="codecForContent"></a>QTextCodec * QTextCodec::codecForContent ( const char * <i>str</i>, int <i>size</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This functionality is no longer provided by Qt. This compatibility function always returns a null pointer.</p>
-<a name="//apple_ref/cpp/clm/QTextCodec/codecForIndex" />
 <h3 class="fn"><a name="codecForIndex"></a>QTextCodec * QTextCodec::codecForIndex ( int <i>i</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qtextcodec.html#availableCodecs">availableCodecs</a>() or <a href="qtextcodec.html#availableMibs">availableMibs</a>() instead and iterate through the resulting list.</p>
 <h3 class="fn"><a name="codecForName-3"></a>QTextCodec * QTextCodec::codecForName ( const char * <i>hint</i>, int <i>accuracy</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -41,11 +39,9 @@
 <p>Use the codecForName(const <a href="qbytearray.html">QByteArray</a> &amp;) overload instead.</p>
 <h3 class="fn"><a name="fromUnicode-3"></a><a href="qbytearray.html">QByteArray</a> QTextCodec::fromUnicode ( const <a href="qstring.html">QString</a> &amp; <i>uc</i>, int &amp; <i>lenInOut</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/clm/QTextCodec/locale" />
 <h3 class="fn"><a name="locale"></a>const char * QTextCodec::locale ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a string representing the current language and sublanguage, e.g&#x2e; &quot;pt&quot; for Portuguese, or &quot;pt_br&quot; for Portuguese/Brazil.</p>
 <p>See also <a href="qlocale.html">QLocale</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextCodec/mimeName" />
 <h3 class="fn"><a name="mimeName"></a><a href="qbytearray.html">QByteArray</a> QTextCodec::mimeName () const</h3>
 <p>Use <a href="qtextcodec.html#name">name</a>() instead.</p>
 <h3 class="fn"><a name="toUnicode-3"></a><a href="qstring.html">QString</a> QTextCodec::toUnicode ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>a</i>, int <i>len</i> ) const</h3>

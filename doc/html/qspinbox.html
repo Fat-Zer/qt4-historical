@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/gui/widgets/qspinbox.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-win-opensource-src-4.3.4/src/gui/widgets/qspinbox.cpp -->
 <head>
   <title>Qt 4.3: QSpinBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSpinBox" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -141,7 +140,6 @@
 <p>See also <a href="qdoublespinbox.html">QDoubleSpinBox</a>, <a href="qdatetimeedit.html">QDateTimeEdit</a>, <a href="qslider.html">QSlider</a>, and <a href="widgets-spinboxes.html">Spin Boxes Example</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSpinBox/cleanText" />
 <h3 class="fn"><a name="cleanText-prop"></a>cleanText : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the text of the spin box excluding any prefix, suffix, or leading or trailing whitespace.</p>
 <p>Access functions:</p>
@@ -149,8 +147,6 @@
 <li><div class="fn"/><b>QString cleanText () const</b></li>
 </ul>
 <p>See also <a href="qabstractspinbox.html#text-prop">text</a>, <a href="qspinbox.html#prefix-prop">QSpinBox::prefix</a>, and <a href="qspinbox.html#suffix-prop">QSpinBox::suffix</a>.</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/maximum" />
-<a name="//apple_ref/cpp/instm/QSpinBox/setMaximum" />
 <h3 class="fn"><a name="maximum-prop"></a>maximum : int</h3>
 <p>This property holds the maximum value of the spin box.</p>
 <p>When setting this property the <a href="qspinbox.html#minimum-prop">minimum</a> is adjusted if necessary, to ensure that the range remains valid.</p>
@@ -161,8 +157,6 @@
 <li><div class="fn"/><b>void setMaximum ( int <i>max</i> )</b></li>
 </ul>
 <p>See also <a href="qspinbox.html#setRange">setRange</a>() and <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>.</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/minimum" />
-<a name="//apple_ref/cpp/instm/QSpinBox/setMinimum" />
 <h3 class="fn"><a name="minimum-prop"></a>minimum : int</h3>
 <p>This property holds the minimum value of the spin box.</p>
 <p>When setting this property the <a href="qspinbox.html#maximum-prop">maximum</a> is adjusted if necessary to ensure that the range remains valid.</p>
@@ -173,8 +167,6 @@
 <li><div class="fn"/><b>void setMinimum ( int <i>min</i> )</b></li>
 </ul>
 <p>See also <a href="qspinbox.html#setRange">setRange</a>() and <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>.</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/prefix" />
-<a name="//apple_ref/cpp/instm/QSpinBox/setPrefix" />
 <h3 class="fn"><a name="prefix-prop"></a>prefix : <a href="qstring.html">QString</a></h3>
 <p>This property holds the spin box's prefix.</p>
 <p>The prefix is prepended to the start of the displayed value. Typical use is to display a unit of measurement or a currency symbol. For example:</p>
@@ -187,8 +179,6 @@
 <li><div class="fn"/><b>void setPrefix ( const QString &amp; <i>prefix</i> )</b></li>
 </ul>
 <p>See also <a href="qspinbox.html#suffix-prop">suffix</a>(), <a href="qspinbox.html#suffix-prop">setSuffix</a>(), <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>(), and <a href="qabstractspinbox.html#specialValueText-prop">setSpecialValueText</a>().</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/singleStep" />
-<a name="//apple_ref/cpp/instm/QSpinBox/setSingleStep" />
 <h3 class="fn"><a name="singleStep-prop"></a>singleStep : int</h3>
 <p>This property holds the step value.</p>
 <p>When the user uses the arrows to change the spin box's value the value will be incremented/decremented by the amount of the singleStep. The default value is 1. Setting a singleStep value of less than 0 does nothing.</p>
@@ -197,8 +187,6 @@
 <li><div class="fn"/><b>int singleStep () const</b></li>
 <li><div class="fn"/><b>void setSingleStep ( int <i>val</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QSpinBox/suffix" />
-<a name="//apple_ref/cpp/instm/QSpinBox/setSuffix" />
 <h3 class="fn"><a name="suffix-prop"></a>suffix : <a href="qstring.html">QString</a></h3>
 <p>This property holds the suffix of the spin box.</p>
 <p>The suffix is appended to the end of the displayed value. Typical use is to display a unit of measurement or a currency symbol. For example:</p>
@@ -211,8 +199,6 @@
 <li><div class="fn"/><b>void setSuffix ( const QString &amp; <i>suffix</i> )</b></li>
 </ul>
 <p>See also <a href="qspinbox.html#prefix-prop">prefix</a>(), <a href="qspinbox.html#prefix-prop">setPrefix</a>(), <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>(), and <a href="qabstractspinbox.html#specialValueText-prop">setSpecialValueText</a>().</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/value" />
-<a name="//apple_ref/cpp/instm/QSpinBox/setValue" />
 <h3 class="fn"><a name="value-prop"></a>value : int</h3>
 <p>This property holds the value of the spin box.</p>
 <p>setValue() will emit <a href="qspinbox.html#valueChanged">valueChanged</a>() if the new value is different from the old one.</p>
@@ -223,11 +209,9 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSpinBox/QSpinBox" />
 <h3 class="fn"><a name="QSpinBox"></a>QSpinBox::QSpinBox ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a spin box with 0 as minimum value and 99 as maximum value, a step value of 1. The value is initially set to 0. It is parented to <i>parent</i>.</p>
 <p>See also <a href="qspinbox.html#minimum-prop">setMinimum</a>(), <a href="qspinbox.html#maximum-prop">setMaximum</a>(), and <a href="qspinbox.html#singleStep-prop">setSingleStep</a>().</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/setRange" />
 <h3 class="fn"><a name="setRange"></a>void QSpinBox::setRange ( int <i>minimum</i>, int <i>maximum</i> )</h3>
 <p>Convenience function to set the <i>minimum</i>, and <i>maximum</i> values with a single function call.</p>
 <pre> setRange(minimum, maximum);</pre>
@@ -235,19 +219,16 @@
 <pre> setMinimum(minimum);
  setMaximum(maximum);</pre>
 <p>See also <a href="qspinbox.html#minimum-prop">minimum</a> and <a href="qspinbox.html#maximum-prop">maximum</a>.</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/textFromValue" />
 <h3 class="fn"><a name="textFromValue"></a><a href="qstring.html">QString</a> QSpinBox::textFromValue ( int <i>value</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This virtual function is used by the spin box whenever it needs to display the given <i>value</i>. The default implementation returns a string containing <i>value</i> printed in the standard way using QLocale().toString(). Reimplementations may return anything. (See the example in the detailed description.)</p>
 <p>Note: <a href="qspinbox.html">QSpinBox</a> does not call this function for <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() and that neither <a href="qspinbox.html#prefix-prop">prefix</a>() nor <a href="qspinbox.html#suffix-prop">suffix</a>() should be included in the return value.</p>
 <p>If you reimplement this, you may also need to reimplement <a href="qspinbox.html#valueFromText">valueFromText</a>() and <a href="qabstractspinbox.html#validate">validate</a>()</p>
 <p>See also <a href="qspinbox.html#valueFromText">valueFromText</a>() and <a href="qabstractspinbox.html#validate">validate</a>().</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/valueChanged" />
 <h3 class="fn"><a name="valueChanged"></a>void QSpinBox::valueChanged ( int <i>i</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the spin box's value is changed. The new value's integer value is passed in <i>i</i>.</p>
 <h3 class="fn"><a name="valueChanged-2"></a>void QSpinBox::valueChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>The new value is passed literally in <i>text</i> with no <a href="qspinbox.html#prefix-prop">prefix</a>() or <a href="qspinbox.html#suffix-prop">suffix</a>().</p>
-<a name="//apple_ref/cpp/instm/QSpinBox/valueFromText" />
 <h3 class="fn"><a name="valueFromText"></a>int QSpinBox::valueFromText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This virtual function is used by the spin box whenever it needs to interpret <i>text</i> entered by the user as a value.</p>
 <p>Subclasses that need to display spin box values in a non-numeric way need to reimplement this function.</p>

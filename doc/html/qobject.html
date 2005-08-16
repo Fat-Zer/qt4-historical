@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-win-opensource-src-4.3.4/src/corelib/kernel/qobject.cpp -->
 <head>
   <title>Qt 4.3: QObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QObject" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -135,8 +134,6 @@
 <p>See also <a href="qmetaobject.html">QMetaObject</a>, <a href="qpointer.html">QPointer</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, and <a href="objecttrees.html">Object Trees and Object Ownership</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QObject/objectName" />
-<a name="//apple_ref/cpp/instm/QObject/setObjectName" />
 <h3 class="fn"><a name="objectName-prop"></a>objectName : <a href="qstring.html">QString</a></h3>
 <p>This property holds the name of this object.</p>
 <p>You can find an object by name (and type) using <a href="qobject.html#findChild">findChild</a>(). You can find a set of objects with <a href="qobject.html#findChildren">findChildren</a>().</p>
@@ -150,27 +147,23 @@
 <p>See also <a href="qobject.html#metaObject">metaObject</a>() and <a href="qmetaobject.html#className">QMetaObject::className</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QObject/QObject" />
 <h3 class="fn"><a name="QObject"></a>QObject::QObject ( QObject * <i>parent</i> = 0 )</h3>
 <p>Constructs an object with parent object <i>parent</i>.</p>
 <p>The parent of an object may be viewed as the object's owner. For instance, a <a href="qdialog.html">dialog box</a> is the parent of the <b>OK</b> and <b>Cancel</b> buttons it contains.</p>
 <p>The destructor of a parent object destroys all child objects.</p>
 <p>Setting <i>parent</i> to 0 constructs an object with no parent. If the object is a widget, it will become a top-level window.</p>
 <p>See also <a href="qobject.html#parent">parent</a>(), <a href="qobject.html#findChild">findChild</a>(), and <a href="qobject.html#findChildren">findChildren</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/~QObject" />
 <h3 class="fn"><a name="dtor.QObject"></a>QObject::~QObject ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the object, deleting all its child objects.</p>
 <p>All signals to and from the object are automatically disconnected, and any pending posted events for the object are removed from the event queue. However, it is often safer to use <a href="qobject.html#deleteLater">deleteLater</a>() rather than deleting a <a href="qobject.html">QObject</a> subclass directly.</p>
 <p><b>Warning:</b> All child objects are deleted. If any of these objects are on the stack or global, sooner or later your program will crash. We do not recommend holding pointers to child objects from outside the parent. If you still do, the <a href="qobject.html#destroyed">destroyed</a>() signal gives you an opportunity to detect when an object is destroyed.</p>
 <p><b>Warning:</b> Deleting a <a href="qobject.html">QObject</a> while pending events are waiting to be delivered can cause a crash. You must not delete the <a href="qobject.html">QObject</a> directly if it exists in a different thread than the one currently executing. Use <a href="qobject.html#deleteLater">deleteLater</a>() instead, which will cause the event loop to delete the object after all pending events have been delivered to it.</p>
 <p>See also <a href="qobject.html#deleteLater">deleteLater</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/blockSignals" />
 <h3 class="fn"><a name="blockSignals"></a>bool QObject::blockSignals ( bool <i>block</i> )</h3>
 <p>If <i>block</i> is true, signals emitted by this object are blocked (i.e&#x2e;, emitted signals disappear into hyperspace). If <i>block</i> is false, no such blocking will occur.</p>
 <p>The return value is the previous value of <a href="qobject.html#signalsBlocked">signalsBlocked</a>().</p>
 <p>Note that the <a href="qobject.html#destroyed">destroyed</a>() signal will be emitted even if the signals for this object have been blocked.</p>
 <p>See also <a href="qobject.html#signalsBlocked">signalsBlocked</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/childEvent" />
 <h3 class="fn"><a name="childEvent"></a>void QObject::childEvent ( <a href="qchildevent.html">QChildEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler can be reimplemented in a subclass to receive child events. The event is passed in the <i>event</i> parameter.</p>
 <p><a href="qevent.html#Type-enum">QEvent::ChildAdded</a> and <a href="qevent.html#Type-enum">QEvent::ChildRemoved</a> events are sent to objects when children are added or removed. In both cases you can only rely on the child being a <a href="qobject.html">QObject</a>, or if <a href="qobject.html#isWidgetType">isWidgetType</a>() returns true, a <a href="qwidget.html">QWidget</a>. (This is because, in the <a href="qevent.html#Type-enum">ChildAdded</a> case, the child is not yet fully constructed, and in the <a href="qevent.html#Type-enum">ChildRemoved</a> case it might have been destructed already).</p>
@@ -178,14 +171,12 @@
 <p>For every child widget, you receive one <a href="qevent.html#Type-enum">ChildAdded</a> event, zero or more <a href="qevent.html#Type-enum">ChildPolished</a> events, and one <a href="qevent.html#Type-enum">ChildRemoved</a> event.</p>
 <p>The <a href="qevent.html#Type-enum">ChildPolished</a> event is omitted if a child is removed immediately after it is added. If a child is polished several times during construction and destruction, you may receive several child polished events for the same child, each time with a different virtual table.</p>
 <p>See also <a href="qobject.html#event">event</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/children" />
 <h3 class="fn"><a name="children"></a>const <a href="qobject.html#QObjectList-typedef">QObjectList</a> &amp; QObject::children () const</h3>
 <p>Returns a list of child objects. The <a href="qobject.html#QObjectList-typedef">QObjectList</a> class is defined in the <tt>&lt;QObject&gt;</tt> header file as the following:</p>
 <pre> typedef QList&lt;QObject*&gt; QObjectList;</pre>
 <p>The first child added is the <a href="qlist.html#first">first</a> object in the list and the last child added is the <a href="qlist.html#last">last</a> object in the list, i.e&#x2e; new children are appended at the end.</p>
 <p>Note that the list order changes when <a href="qwidget.html">QWidget</a> children are <a href="qwidget.html#raise">raised</a> or <a href="qwidget.html#lower">lowered</a>. A widget that is raised becomes the last object in the list, and a widget that is lowered becomes the first object in the list.</p>
 <p>See also <a href="qobject.html#findChild">findChild</a>(), <a href="qobject.html#findChildren">findChildren</a>(), <a href="qobject.html#parent">parent</a>(), and <a href="qobject.html#setParent">setParent</a>().</p>
-<a name="//apple_ref/cpp/clm/QObject/connect" />
 <h3 class="fn"><a name="connect"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoCompatConnection )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Creates a connection of the given <i>type</i> from the <i>signal</i> in the <i>sender</i> object to the <i>method</i> in the <i>receiver</i> object. Returns true if the connection succeeds; otherwise returns false.</p>
 <p>You must use the <tt>SIGNAL()</tt> and <tt>SLOT()</tt> macros when specifying the <i>signal</i> and the <i>method</i>, for example:</p>
@@ -236,7 +227,6 @@
 <p>Every connection you make emits a signal, so duplicate connections emit two signals. You can break a connection using <a href="qobject.html#disconnect">disconnect</a>().</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qobject.html#disconnect">disconnect</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/connectNotify" />
 <h3 class="fn"><a name="connectNotify"></a>void QObject::connectNotify ( const char * <i>signal</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This virtual function is called when something has been connected to <i>signal</i> in this object.</p>
 <p>If you want to compare <i>signal</i> with a specific signal, use <a href="qlatin1string.html">QLatin1String</a> and the <tt>SIGNAL()</tt> macro as follows:</p>
@@ -246,23 +236,19 @@
 <p>If the signal contains multiple parameters or parameters that contain spaces, call <a href="qmetaobject.html#normalizedSignature">QMetaObject::normalizedSignature</a>() on the result of the <tt>SIGNAL()</tt> macro.</p>
 <p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful when you need to perform expensive initialization only if something is connected to a signal.</p>
 <p>See also <a href="qobject.html#connect">connect</a>() and <a href="qobject.html#disconnectNotify">disconnectNotify</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/customEvent" />
 <h3 class="fn"><a name="customEvent"></a>void QObject::customEvent ( <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler can be reimplemented in a subclass to receive custom events. Custom events are user-defined events with a type value at least as large as the <a href="qevent.html#Type-enum">QEvent::User</a> item of the <a href="qevent.html#Type-enum">QEvent::Type</a> enum, and is typically a <a href="qevent.html">QEvent</a> subclass. The event is passed in the <i>event</i> parameter.</p>
 <p>See also <a href="qobject.html#event">event</a>() and <a href="qevent.html">QEvent</a>.</p>
-<a name="//apple_ref/cpp/instm/QObject/deleteLater" />
 <h3 class="fn"><a name="deleteLater"></a>void QObject::deleteLater ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Schedules this object for deletion.</p>
 <p>The object will be deleted when control returns to the event loop.</p>
 <p>Note that entering and leaving a new event loop (e.g&#x2e;, by opening a modal dialog) will <i>not</i> perform the deferred deletion; for the object to be deleted, the control must return to the event loop from which deleteLater() was called.</p>
 <p><b>Note:</b> It is safe to call this function more than once; when the first deferred deletion event is delivered, any pending events for the object are removed from the event queue.</p>
 <p>See also <a href="qobject.html#destroyed">destroyed</a>() and <a href="qpointer.html">QPointer</a>.</p>
-<a name="//apple_ref/cpp/instm/QObject/destroyed" />
 <h3 class="fn"><a name="destroyed"></a>void QObject::destroyed ( QObject * <i>obj</i> = 0 )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted immediately before the object <i>obj</i> is destroyed, and can not be blocked.</p>
 <p>All the objects's children are destroyed immediately after this signal is emitted.</p>
 <p>See also <a href="qobject.html#deleteLater">deleteLater</a>() and <a href="qpointer.html">QPointer</a>.</p>
-<a name="//apple_ref/cpp/clm/QObject/disconnect" />
 <h3 class="fn"><a name="disconnect"></a>bool QObject::disconnect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Disconnects <i>signal</i> in object <i>sender</i> from <i>method</i> in object <i>receiver</i>. Returns true if the connection is successfully broken; otherwise returns false.</p>
 <p>A signal-slot connection is removed when either of the objects involved are destroyed.</p>
@@ -297,32 +283,26 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Disconnects all signals in this object from <i>receiver</i>'s <i>method</i>.</p>
 <p>A signal-slot connection is removed when either of the objects involved are destroyed.</p>
-<a name="//apple_ref/cpp/instm/QObject/disconnectNotify" />
 <h3 class="fn"><a name="disconnectNotify"></a>void QObject::disconnectNotify ( const char * <i>signal</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This virtual function is called when something has been disconnected from <i>signal</i> in this object.</p>
 <p>See <a href="qobject.html#connectNotify">connectNotify</a>() for an example of how to compare <i>signal</i> with a specific signal.</p>
 <p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful for optimizing access to expensive resources.</p>
 <p>See also <a href="qobject.html#disconnect">disconnect</a>() and <a href="qobject.html#connectNotify">connectNotify</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/dumpObjectInfo" />
 <h3 class="fn"><a name="dumpObjectInfo"></a>void QObject::dumpObjectInfo ()</h3>
 <p>Dumps information about signal connections, etc. for this object to the debug output.</p>
 <p>This function is useful for debugging, but does nothing if the library has been compiled in release mode (i.e&#x2e; without debugging information).</p>
 <p>See also <a href="qobject.html#dumpObjectTree">dumpObjectTree</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/dumpObjectTree" />
 <h3 class="fn"><a name="dumpObjectTree"></a>void QObject::dumpObjectTree ()</h3>
 <p>Dumps a tree of children to the debug output.</p>
 <p>This function is useful for debugging, but does nothing if the library has been compiled in release mode (i.e&#x2e; without debugging information).</p>
 <p>See also <a href="qobject.html#dumpObjectInfo">dumpObjectInfo</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/dynamicPropertyNames" />
 <h3 class="fn"><a name="dynamicPropertyNames"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QObject::dynamicPropertyNames () const</h3>
 <p>Returns the names of all properties that were dynamically added to the object using <a href="qobject.html#setProperty">setProperty</a>().</p>
 <p>This function was introduced in Qt 4.2.</p>
-<a name="//apple_ref/cpp/instm/QObject/event" />
 <h3 class="fn"><a name="event"></a>bool QObject::event ( <a href="qevent.html">QEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function receives events to an object and should return true if the event <i>e</i> was recognized and processed.</p>
 <p>The event() function can be reimplemented to customize the behavior of an object.</p>
 <p>See also <a href="qobject.html#installEventFilter">installEventFilter</a>(), <a href="qobject.html#timerEvent">timerEvent</a>(), <a href="qcoreapplication.html#sendEvent">QApplication::sendEvent</a>(), <a href="qcoreapplication.html#postEvent">QApplication::postEvent</a>(), and <a href="qwidget.html#event">QWidget::event</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/eventFilter" />
 <h3 class="fn"><a name="eventFilter"></a>bool QObject::eventFilter ( QObject * <i>watched</i>, <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Filters events if this object has been installed as an event filter for the <i>watched</i> object.</p>
 <p>In your reimplementation of this function, if you want to filter the <i>event</i> out, i.e&#x2e; stop it being handled further, return true; otherwise return false.</p>
@@ -365,7 +345,6 @@
 <p>Notice in the example above that unhandled events are passed to the base class's eventFilter() function, since the base class might have reimplemented eventFilter() for its own internal purposes.</p>
 <p><b>Warning:</b> If you delete the receiver object in this function, be sure to return true. Otherwise, Qt will forward the event to the deleted object and the program might crash.</p>
 <p>See also <a href="qobject.html#installEventFilter">installEventFilter</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/findChild" />
 <h3 class="fn"><a name="findChild"></a>T QObject::findChild ( const <a href="qstring.html">QString</a> &amp; <i>name</i> = QString() ) const</h3>
 <p>Returns the child of this object that can be cast into type T and that is called <i>name</i>, or 0 if there is no such object. Omitting the <i>name</i> argument causes all object names to be matched. The search is performed recursively.</p>
 <p>If there is more than one child matching the search, the most direct ancestor is returned. If there are several direct ancestors, it is undefined which one will be returned. In that case, <a href="qobject.html#findChildren">findChildren</a>() should be used.</p>
@@ -375,7 +354,6 @@
 <pre> QListWidget *list = parentWidget-&gt;findChild&lt;QListWidget *&gt;();</pre>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qobject.html#qFindChild">qFindChild</a>() instead if you need to support that version of the compiler.</p>
 <p>See also <a href="qobject.html#findChildren">findChildren</a>() and <a href="qobject.html#qFindChild">qFindChild</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/findChildren" />
 <h3 class="fn"><a name="findChildren"></a><a href="qlist.html">QList</a>&lt;T&gt; QObject::findChildren ( const <a href="qstring.html">QString</a> &amp; <i>name</i> = QString() ) const</h3>
 <p>Returns all children of this object with the given <i>name</i> that can be cast to type T, or an empty list if there are no such objects. Omitting the <i>name</i> argument causes all object names to be matched. The search is performed recursively.</p>
 <p>The following example shows how to find a list of child <a href="qwidget.html">QWidget</a>s of the specified <tt>parentWidget</tt> named <tt>widgetname</tt>:</p>
@@ -388,7 +366,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the children of this object that can be cast to type T and that have names matching the regular expression <i>regExp</i>, or an empty list if there are no such objects. The search is performed recursively.</p>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qobject.html#qFindChildren">qFindChildren</a>() instead if you need to support that version of the compiler.</p>
-<a name="//apple_ref/cpp/instm/QObject/inherits" />
 <h3 class="fn"><a name="inherits"></a>bool QObject::inherits ( const char * <i>className</i> ) const</h3>
 <p>Returns true if this object is an instance of a class that inherits <i>className</i> or a <a href="qobject.html">QObject</a> subclass that inherits <i>className</i>; otherwise returns false.</p>
 <p>A class is considered to inherit itself.</p>
@@ -405,7 +382,6 @@
 <p>(<a href="qlayoutitem.html">QLayoutItem</a> is not a <a href="qobject.html">QObject</a>.)</p>
 <p>Consider using qobject_cast&lt;Type *&gt;(object) instead. The method is both faster and safer.</p>
 <p>See also <a href="qobject.html#metaObject">metaObject</a>() and <a href="qobject.html#qobject_cast">qobject_cast</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/installEventFilter" />
 <h3 class="fn"><a name="installEventFilter"></a>void QObject::installEventFilter ( QObject * <i>filterObj</i> )</h3>
 <p>Installs an event filter <i>filterObj</i> on this object. For example:</p>
 <pre> monitoredObj-&gt;installEventFilter(filterObj);</pre>
@@ -443,16 +419,13 @@
 <p><b>Warning:</b> If you delete the receiver object in your <a href="qobject.html#eventFilter">eventFilter</a>() function, be sure to return true. If you return false, Qt sends the event to the deleted object and the program will crash.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qobject.html#removeEventFilter">removeEventFilter</a>(), <a href="qobject.html#eventFilter">eventFilter</a>(), and <a href="qobject.html#event">event</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/isWidgetType" />
 <h3 class="fn"><a name="isWidgetType"></a>bool QObject::isWidgetType () const</h3>
 <p>Returns true if the object is a widget; otherwise returns false.</p>
 <p>Calling this function is equivalent to calling inherits(&quot;<a href="qwidget.html">QWidget</a>&quot;), except that it is much faster.</p>
-<a name="//apple_ref/cpp/instm/QObject/killTimer" />
 <h3 class="fn"><a name="killTimer"></a>void QObject::killTimer ( int <i>id</i> )</h3>
 <p>Kills the timer with timer identifier, <i>id</i>.</p>
 <p>The timer identifier is returned by <a href="qobject.html#startTimer">startTimer</a>() when a timer event is started.</p>
 <p>See also <a href="qobject.html#timerEvent">timerEvent</a>() and <a href="qobject.html#startTimer">startTimer</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/metaObject" />
 <h3 class="fn"><a name="metaObject"></a>const <a href="qmetaobject.html">QMetaObject</a> * QObject::metaObject () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a pointer to the meta-object of this object.</p>
 <p>A meta-object contains information about a class that inherits <a href="qobject.html">QObject</a>, e.g&#x2e; class name, superclass name, properties, signals and slots. Every class that contains the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro will also have a meta-object.</p>
@@ -464,7 +437,6 @@
 
  QPushButton::staticMetaObject.className();  <span class="comment">//</span> returns &quot;QPushButton&quot;</pre>
 <p>See also <a href="qobject.html#staticMetaObject-var">staticMetaObject</a>.</p>
-<a name="//apple_ref/cpp/instm/QObject/moveToThread" />
 <h3 class="fn"><a name="moveToThread"></a>void QObject::moveToThread ( <a href="qthread.html">QThread</a> * <i>targetThread</i> )</h3>
 <p>Changes the thread affinity for this object and its children. The object cannot be moved if it has a parent. Event processing will continue in the <i>targetThread</i>.</p>
 <p>To move an object to the main thread, use <a href="qcoreapplication.html#instance">QApplication::instance</a>() to retrieve a pointer to the current application, and then use <a href="qobject.html#thread">QApplication::thread</a>() to retrieve the thread in which the application lives. For example:</p>
@@ -474,17 +446,14 @@
 <p>A <a href="qevent.html#Type-enum">QEvent::ThreadChange</a> event is sent to this object just before the thread affinity is changed. You can handle this event to perform any special processing. Note that any new events that are posted to this object will be handled in the <i>targetThread</i>.</p>
 <p><b>Warning:</b> This function is <i>not</i> thread-safe; the current thread must be same as the current thread affinity. In other words, this function can only &quot;push&quot; an object from the current thread to another thread, it cannot &quot;pull&quot; an object from any arbitrary thread to the current thread.</p>
 <p>See also <a href="qobject.html#thread">thread</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/parent" />
 <h3 class="fn"><a name="parent"></a>QObject * QObject::parent () const</h3>
 <p>Returns a pointer to the parent object.</p>
 <p>See also <a href="qobject.html#setParent">setParent</a>() and <a href="qobject.html#children">children</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/property" />
 <h3 class="fn"><a name="property"></a><a href="qvariant.html">QVariant</a> QObject::property ( const char * <i>name</i> ) const</h3>
 <p>Returns the value of the object's <i>name</i> property.</p>
 <p>If no such property exists, the returned variant is invalid.</p>
 <p>Information about all available properties is provided through the <a href="qobject.html#metaObject">metaObject</a>() and <a href="qobject.html#dynamicPropertyNames">dynamicPropertyNames</a>().</p>
 <p>See also <a href="qobject.html#setProperty">setProperty</a>(), <a href="qvariant.html#isValid">QVariant::isValid</a>(), <a href="qobject.html#metaObject">metaObject</a>(), and <a href="qobject.html#dynamicPropertyNames">dynamicPropertyNames</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/receivers" />
 <h3 class="fn"><a name="receivers"></a>int QObject::receivers ( const char * <i>signal</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the number of receivers connected to the <i>signal</i>.</p>
 <p>Since both slots and signals can be used as receivers for signals, and the same connections can be made many times, the number of receivers is the same as the number of connections made from this signal.</p>
@@ -496,24 +465,20 @@
  }</pre>
 <p>As the code snippet above illustrates, you can use this function to avoid emitting a signal that nobody listens to.</p>
 <p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful when you need to perform expensive initialization only if something is connected to a signal.</p>
-<a name="//apple_ref/cpp/instm/QObject/removeEventFilter" />
 <h3 class="fn"><a name="removeEventFilter"></a>void QObject::removeEventFilter ( QObject * <i>obj</i> )</h3>
 <p>Removes an event filter object <i>obj</i> from this object. The request is ignored if such an event filter has not been installed.</p>
 <p>All event filters for this object are automatically removed when this object is destroyed.</p>
 <p>It is always safe to remove an event filter, even during event filter activation (i.e&#x2e; from the <a href="qobject.html#eventFilter">eventFilter</a>() function).</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qobject.html#installEventFilter">installEventFilter</a>(), <a href="qobject.html#eventFilter">eventFilter</a>(), and <a href="qobject.html#event">event</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/sender" />
 <h3 class="fn"><a name="sender"></a>QObject * QObject::sender () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns a pointer to the object that sent the signal, if called in a slot activated by a signal; otherwise it returns 0. The pointer is valid only during the execution of the slot that calls this function.</p>
 <p>The pointer returned by this function becomes invalid if the sender is destroyed, or if the slot is disconnected from the sender's signal.</p>
 <p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, getting access to the sender might be useful when many signals are connected to a single slot.</p>
 <p>See also <a href="qsignalmapper.html">QSignalMapper</a>.</p>
-<a name="//apple_ref/cpp/instm/QObject/setParent" />
 <h3 class="fn"><a name="setParent"></a>void QObject::setParent ( QObject * <i>parent</i> )</h3>
 <p>Makes the object a child of <i>parent</i>.</p>
 <p>See also <a href="qobject.html#parent">parent</a>() and <a href="qwidget.html#setParent">QWidget::setParent</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/setProperty" />
 <h3 class="fn"><a name="setProperty"></a>bool QObject::setProperty ( const char * <i>name</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i> )</h3>
 <p>Sets the value of the object's <i>name</i> property to <i>value</i>.</p>
 <p>If the property is defined in the class using Q_PROPERTY then true is returned on success and false otherwise. If the property is not defined using Q_PROPERTY, and therefore not listed in the meta-object, it is added as a dynamic property and false is returned.</p>
@@ -521,12 +486,10 @@
 <p>Dynamic properties can be queried again using <a href="qobject.html#property">property</a>() and can be removed by setting the property value to an invalid <a href="qvariant.html">QVariant</a>. Changing the value of a dynamic property causes a <a href="qdynamicpropertychangeevent.html">QDynamicPropertyChangeEvent</a> to be sent to the object.</p>
 <p><b>Note:</b> Dynamic properties starting with &quot;_q_&quot; are reserved for internal purposes.</p>
 <p>See also <a href="qobject.html#property">property</a>(), <a href="qobject.html#metaObject">metaObject</a>(), and <a href="qobject.html#dynamicPropertyNames">dynamicPropertyNames</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/signalsBlocked" />
 <h3 class="fn"><a name="signalsBlocked"></a>bool QObject::signalsBlocked () const</h3>
 <p>Returns true if signals are blocked; otherwise returns false.</p>
 <p>Signals are not blocked by default.</p>
 <p>See also <a href="qobject.html#blockSignals">blockSignals</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/startTimer" />
 <h3 class="fn"><a name="startTimer"></a>int QObject::startTimer ( int <i>interval</i> )</h3>
 <p>Starts a timer and returns a timer identifier, or returns zero if it could not start a timer.</p>
 <p>A timer event will occur every <i>interval</i> milliseconds until <a href="qobject.html#killTimer">killTimer</a>() is called. If <i>interval</i> is 0, then the timer event occurs once every time there are no more window system events to process.</p>
@@ -559,16 +522,13 @@
 <p>Note that <a href="qtimer.html">QTimer</a>'s accuracy depends on the underlying operating system and hardware. Most platforms support an accuracy of 20 milliseconds; some provide more. If Qt is unable to deliver the requested number of timer events, it will silently discard some.</p>
 <p>The <a href="qtimer.html">QTimer</a> class provides a high-level programming interface with single-shot timers and timer signals instead of events. There is also a <a href="qbasictimer.html">QBasicTimer</a> class that is more lightweight than <a href="qtimer.html">QTimer</a> and less clumsy than using timer IDs directly.</p>
 <p>See also <a href="qobject.html#timerEvent">timerEvent</a>(), <a href="qobject.html#killTimer">killTimer</a>(), and <a href="qtimer.html#singleShot">QTimer::singleShot</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/thread" />
 <h3 class="fn"><a name="thread"></a><a href="qthread.html">QThread</a> * QObject::thread () const</h3>
 <p>Returns the thread in which the object lives.</p>
 <p>See also <a href="qobject.html#moveToThread">moveToThread</a>().</p>
-<a name="//apple_ref/cpp/instm/QObject/timerEvent" />
 <h3 class="fn"><a name="timerEvent"></a>void QObject::timerEvent ( <a href="qtimerevent.html">QTimerEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler can be reimplemented in a subclass to receive timer events for the object.</p>
 <p><a href="qtimer.html">QTimer</a> provides a higher-level interface to the timer functionality, and also more general information about timers. The timer event is passed in the <i>event</i> parameter.</p>
 <p>See also <a href="qobject.html#startTimer">startTimer</a>(), <a href="qobject.html#killTimer">killTimer</a>(), and <a href="qobject.html#event">event</a>().</p>
-<a name="//apple_ref/cpp/clm/QObject/tr" />
 <h3 class="fn"><a name="tr"></a><a href="qstring.html">QString</a> QObject::tr ( const char * <i>sourceText</i>, const char * <i>comment</i> = 0, int <i>n</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a translated version of <i>sourceText</i>, or <i>sourceText</i> itself if there is no appropriate translated version. The translation context is Object with <i>comment</i> (0 by default). All <a href="qobject.html">QObject</a> subclasses using the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro automatically have a reimplementation of this function with the subclass name as context.</p>
 <p>You can set the encoding for <i>sourceText</i> by calling <a href="qtextcodec.html#setCodecForTr">QTextCodec::setCodecForTr</a>(). By default <i>sourceText</i> is assumed to be in Latin-1 encoding.</p>
@@ -598,7 +558,6 @@
 <p>Instead of <tt>%n</tt>, you can use <tt>%Ln</tt> to produce a localized representation of <i>n</i>. The conversion uses the default local, set using QLocal::setDefault(). (If no default locale was specified, the &quot;C&quot; locale is used.)</p>
 <p><b>Warning:</b> This method is reentrant only if all translators are installed <i>before</i> calling this method. Installing or removing translators while performing translations is not supported. Doing so will probably result in crashes or other undesirable behavior.</p>
 <p>See also <a href="qobject.html#trUtf8">trUtf8</a>(), <a href="qcoreapplication.html#translate">QApplication::translate</a>(), <a href="qtextcodec.html#setCodecForTr">QTextCodec::setCodecForTr</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
-<a name="//apple_ref/cpp/clm/QObject/trUtf8" />
 <h3 class="fn"><a name="trUtf8"></a><a href="qstring.html">QString</a> QObject::trUtf8 ( const char * <i>sourceText</i>, const char * <i>comment</i> = 0, int <i>n</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a translated version of <i>sourceText</i>, or QString::fromUtf8(<i>sourceText</i>) if there is no appropriate version. It is otherwise identical to tr(<i>sourceText</i>, <i>comment</i>, <i>n</i>).</p>
 <p><b>Warning:</b> This method is reentrant only if all translators are installed <i>before</i> calling this method. Installing or removing translators while performing translations is not supported. Doing so will probably result in crashes or other undesirable behavior.</p>
@@ -607,7 +566,6 @@
 <p>See also <a href="qobject.html#tr">tr</a>(), <a href="qcoreapplication.html#translate">QApplication::translate</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <hr />
 <h2>Member Variable Documentation</h2>
-<a name="//apple_ref/cpp/data/QObject/staticMetaObject" />
 <h3 class="fn"><a name="staticMetaObject-var"></a>const <a href="qmetaobject.html">QMetaObject</a> QObject::staticMetaObject</h3>
 <p>This variable stores the meta-object for the class.</p>
 <p>A meta-object contains information about a class that inherits <a href="qobject.html">QObject</a>, e.g&#x2e; class name, superclass name, properties, signals and slots. Every class that contains the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro will also have a meta-object.</p>
@@ -621,21 +579,17 @@
 <p>See also <a href="qobject.html#metaObject">metaObject</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<a name="//apple_ref/cpp/tdef//QObjectList" />
 <h3 class="fn"><a name="QObjectList-typedef"></a>typedef QObjectList</h3>
 <p>Synonym for <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a> *&gt;.</p>
-<a name="//apple_ref/cpp/func//qFindChild" />
 <h3 class="fn"><a name="qFindChild"></a>T qFindChild ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChild">findChild</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>See also <a href="qobject.html#findChild">QObject::findChild</a>().</p>
-<a name="//apple_ref/cpp/func//qFindChildren" />
 <h3 class="fn"><a name="qFindChildren"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChildren">findChildren</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>See also <a href="qobject.html#findChildren">QObject::findChildren</a>().</p>
 <h3 class="fn"><a name="qFindChildren-6"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qregexp.html">QRegExp</a> &amp; <i>regExp</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChildren">findChildren</a>&lt;T&gt;(<i>regExp</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
-<a name="//apple_ref/cpp/func//qobject_cast" />
 <h3 class="fn"><a name="qobject_cast"></a>T qobject_cast ( QObject * <i>object</i> )</h3>
 <p>Returns the given <i>object</i> cast to type T if the object is of type T (or of a subclass); otherwise returns 0.</p>
 <p>The class T must inherit (directly or indirectly) <a href="qobject.html">QObject</a> and be declared with the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro.</p>
@@ -654,7 +608,6 @@
 <p>See also <a href="qobject.html#inherits">QObject::inherits</a>().</p>
 <hr />
 <h2>Macro Documentation</h2>
-<a name="//apple_ref/cpp/macro//Q_CLASSINFO" />
 <h3 class="fn"><a name="Q_CLASSINFO"></a>Q_CLASSINFO (  <i>Name</i>,  <i>Value</i> )</h3>
 <p>This macro associates extra information to the class, which is available using <a href="qobject.html#metaObject">QObject::metaObject</a>(). Except for the <a href="activeqt.html#activeqt">ActiveQt</a> extension, Qt doesn't use this information.</p>
 <p>The extra information takes the form of a <i>Name</i> string and a <i>Value</i> literal string.</p>
@@ -669,7 +622,6 @@
      ...
  };</pre>
 <p>See also <a href="qmetaobject.html#classInfo">QMetaObject::classInfo</a>().</p>
-<a name="//apple_ref/cpp/macro//Q_ENUMS" />
 <h3 class="fn"><a name="Q_ENUMS"></a>Q_ENUMS ( ... )</h3>
 <p>This macro registers one or several enum types to the meta-object system.</p>
 <p>For example:</p>
@@ -688,13 +640,11 @@
  };</pre>
 <p>If you want to register an enum that is declared in another class, the enum must be fully qualified with the name of the class defining it. In addition, the class <i>defining</i> the enum has to inherit <a href="qobject.html">QObject</a> as well as declare the enum using Q_ENUMS().</p>
 <p>See also <a href="properties.html">Qt's Property System</a>.</p>
-<a name="//apple_ref/cpp/macro//Q_FLAGS" />
 <h3 class="fn"><a name="Q_FLAGS"></a>Q_FLAGS ( ... )</h3>
 <p>This macro registers one or several &quot;flags&quot; types to the meta-object system.</p>
 <p>Example:</p>
 <pre> Q_FLAGS(Options Alignment)</pre>
 <p>See also <a href="properties.html">Qt's Property System</a>.</p>
-<a name="//apple_ref/cpp/macro//Q_INTERFACES" />
 <h3 class="fn"><a name="Q_INTERFACES"></a>Q_INTERFACES ( ... )</h3>
 <p>This macro tells Qt which interfaces the class implements. This is used when implementing plugins.</p>
 <p>Example:</p>
@@ -711,7 +661,6 @@
  };</pre>
 <p>See the <a href="tools-plugandpaintplugins-basictools.html">Plug &amp; Paint Basic Tools</a> example for details.</p>
 <p>See also <a href="qtplugin.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>(), <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
-<a name="//apple_ref/cpp/macro//Q_OBJECT" />
 <h3 class="fn"><a name="Q_OBJECT"></a>Q_OBJECT</h3>
 <p>The Q_OBJECT macro must appear in the private section of a class definition that declares its own signals and slots or that uses other services provided by Qt's meta-object system.</p>
 <p>For example:</p>
@@ -736,7 +685,6 @@
      int m_value;
  };</pre>
 <p>See also <a href="metaobjects.html">Meta-Object System</a>, <a href="signalsandslots.html">Signals and Slots</a>, and <a href="properties.html">Qt's Property System</a>.</p>
-<a name="//apple_ref/cpp/macro//Q_PROPERTY" />
 <h3 class="fn"><a name="Q_PROPERTY"></a>Q_PROPERTY ( ... )</h3>
 <p>This macro declares a <a href="qobject.html">QObject</a> property. The syntax is:</p>
 <pre> Q_PROPERTY(type name

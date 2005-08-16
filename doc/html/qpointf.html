@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/corelib/tools/qpoint.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-win-opensource-src-4.3.4/src/corelib/tools/qpoint.cpp -->
 <head>
   <title>Qt 4.3: QPointF Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QPointF" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -67,7 +66,6 @@
 <p>See also <a href="qpoint.html">QPoint</a> and <a href="qpolygonf.html">QPolygonF</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QPointF/QPointF" />
 <h3 class="fn"><a name="QPointF"></a>QPointF::QPointF ()</h3>
 <p>Constructs a null point, i.e&#x2e; with coordinates (0.0, 0.0)</p>
 <p>See also <a href="qpointf.html#isNull">isNull</a>().</p>
@@ -77,64 +75,52 @@
 <h3 class="fn"><a name="QPointF-3"></a>QPointF::QPointF ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i> )</h3>
 <p>Constructs a point with the given coordinates (<i>x</i>, <i>y</i>).</p>
 <p>See also <a href="qpointf.html#setX">setX</a>() and <a href="qpointf.html#setY">setY</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/isNull" />
 <h3 class="fn"><a name="isNull"></a>bool QPointF::isNull () const</h3>
 <p>Returns true if both the x and y coordinates are set to 0.0, otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/QPointF/rx" />
 <h3 class="fn"><a name="rx"></a><a href="qtglobal.html#qreal-typedef">qreal</a> &amp; QPointF::rx ()</h3>
 <p>Returns a reference to the x coordinate of this point.</p>
 <p>Using a reference makes it possible to directly manipulate x. For example:</p>
 <pre> QPoint p(1.1, 2.5);
  p.rx()--;   <span class="comment">//</span> p becomes (0.1, 2.5)</pre>
 <p>See also <a href="qpointf.html#x">x</a>() and <a href="qpointf.html#setX">setX</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/ry" />
 <h3 class="fn"><a name="ry"></a><a href="qtglobal.html#qreal-typedef">qreal</a> &amp; QPointF::ry ()</h3>
 <p>Returns a reference to the y coordinate of this point.</p>
 <p>Using a reference makes it possible to directly manipulate y. For example:</p>
 <pre> QPoint p(1.1, 2.5);
  p.ry()++;   <span class="comment">//</span> p becomes (1.1, 3.5)</pre>
 <p>See also <a href="qpointf.html#y">y</a>() and <a href="qpointf.html#setY">setY</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/setX" />
 <h3 class="fn"><a name="setX"></a>void QPointF::setX ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i> )</h3>
 <p>Sets the x coordinate of this point to the given <i>x</i> coordinate.</p>
 <p>See also <a href="qpointf.html#x">x</a>() and <a href="qpointf.html#setY">setY</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/setY" />
 <h3 class="fn"><a name="setY"></a>void QPointF::setY ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i> )</h3>
 <p>Sets the y coordinate of this point to the given <i>y</i> coordinate.</p>
 <p>See also <a href="qpointf.html#y">y</a>() and <a href="qpointf.html#setX">setX</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/toPoint" />
 <h3 class="fn"><a name="toPoint"></a><a href="qpoint.html">QPoint</a> QPointF::toPoint () const</h3>
 <p>Rounds the coordinates of this point to the nearest integer, and returns a <a href="qpoint.html">QPoint</a> object with the rounded coordinates.</p>
 <p>See also <a href="qpointf.html#QPointF">QPointF</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/x" />
 <h3 class="fn"><a name="x"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QPointF::x () const</h3>
 <p>Returns the x-coordinate of this point.</p>
 <p>See also <a href="qpointf.html#setX">setX</a>() and <a href="qpointf.html#rx">rx</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/y" />
 <h3 class="fn"><a name="y"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QPointF::y () const</h3>
 <p>Returns the y-coordinate of this point.</p>
 <p>See also <a href="qpointf.html#setY">setY</a>() and <a href="qpointf.html#ry">ry</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/operator*=" />
 <h3 class="fn"><a name="operator-2a-eq"></a>QPointF &amp; QPointF::operator*= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i> )</h3>
 <p>Multiplies this point's coordinates by the given <i>factor</i>, and returns a reference to this point. For example:</p>
 <pre> QPoint p(-1.1, 4.1);
  p *= 2.5;    <span class="comment">//</span> p becomes (-2.75,10.25)</pre>
 <p>See also <a href="qpointf.html#operator-2f-eq">operator/=</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/operator+=" />
 <h3 class="fn"><a name="operator-2b-eq"></a>QPointF &amp; QPointF::operator+= ( const QPointF &amp; <i>point</i> )</h3>
 <p>Adds the given <i>point</i> to this point and returns a reference to this point. For example:</p>
 <pre> QPoint p( 3.1, 7.1);
  QPoint q(-1.0, 4.1);
  p += q;    <span class="comment">//</span> p becomes (2.1, 11.2)</pre>
 <p>See also <a href="qpointf.html#operator--eq">operator-=</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/operator-=" />
 <h3 class="fn"><a name="operator--eq"></a>QPointF &amp; QPointF::operator-= ( const QPointF &amp; <i>point</i> )</h3>
 <p>Subtracts the given <i>point</i> from this point and returns a reference to this point. For example:</p>
 <pre> QPoint p( 3.1, 7.1);
  QPoint q(-1.0, 4.1);
  p -= q;    <span class="comment">//</span> p becomes (4.1, 3.0)</pre>
 <p>See also <a href="qpointf.html#operator-2b-eq">operator+=</a>().</p>
-<a name="//apple_ref/cpp/instm/QPointF/operator/=" />
 <h3 class="fn"><a name="operator-2f-eq"></a>QPointF &amp; QPointF::operator/= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>divisor</i> )</h3>
 <p>Divides both x and y by the given <i>divisor</i>, and returns a reference to this point. For example:</p>
 <pre> QPoint p(-2.75, 10.25);
