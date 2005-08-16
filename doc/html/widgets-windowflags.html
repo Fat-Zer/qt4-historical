@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/examples/windowflags.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/examples/windowflags.qdoc -->
 <head>
     <title>Qt 4.0: Window Flags Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Window Flags Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Window Flags Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="widgets-windowflags-controllerwindow-cpp.html">widgets/windowflags/controllerwindow.cpp</a></li>
@@ -29,7 +29,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The Window Flags example shows how to use the window flags available in Qt.</p>
 <p>A window flag is either a type or a hint. A type is used to specify various window-system properties for the widget. A widget can only have one type, and the default is <a href="qt.html#WindowType-enum">Qt::Widget</a>. However, a widget can have zero or more hints. The hints are used to customize the appearance of top-level windows.</p>
 <p>A widget's flags are stored in a <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> type which stores an OR combination of the flags.</p>
-<center><img src="images/windowflags-example.png" alt="Screenshot of the Window Flags example" /></center><p>The example consists of two classes:</p>
+<p align="center"><img src="images/windowflags-example.png" alt="Screenshot of the Window Flags example" /></p><p>The example consists of two classes:</p>
 <ul>
 <li><tt>ControllerWindow</tt> is the main application widget that allows the user to choose among the available window flags, and displays the effect on a separate preview window.</li>
 <li><tt>PreviewWindow</tt> is a custom widget displaying the name of its currently set window flags in a read-only text editor.</li>
@@ -83,7 +83,7 @@ body { background: #ffffff; color: black; }</style>
 <p>We declare a private <tt>updatePreview()</tt> slot to refresh the preview window whenever the user changes the window flags.</p>
 <p>We also declare several private functions to simplify the constructor: We call the <tt>createTypeGroupBox()</tt> function to create a radio button for each available window type, using the private <tt>createButton()</tt> function, and gather them within a group box. In a similar way we use the <tt>createHintsGroupBox()</tt> function to create a check box for each available hint, using the private <tt>createCheckBox()</tt> function.</p>
 <p>In addition to the various radio buttons and checkboxes, we need an associated <tt>PreviewWindow</tt> to show the effect of the currently chosen window flags.</p>
-<center><img src="images/windowflags_controllerwindow.png" alt="Screenshot of the Controller Window" /></center><a name="controllerwindow-class-implementation"></a>
+<p align="center"><img src="images/windowflags_controllerwindow.png" alt="Screenshot of the Controller Window" /></p><a name="controllerwindow-class-implementation"></a>
 <h2>ControllerWindow Class Implementation</h2>
 <pre>&nbsp;   ControllerWindow::ControllerWindow()
     {
@@ -257,7 +257,7 @@ body { background: #ffffff; color: black; }</style>
     };</pre>
 <p>The <tt>PreviewWindow</tt> class inherits <a href="qwidget.html">QWidget</a>. It is a custom widget that displays the names of its currently set window flags in a read-only text editor. It is also provided with a <a href="porting4.html#qpushbutton">QPushbutton</a> that closes the window.</p>
 <p>We reimplement the constructor to create the <b>Close</b> button and the text editor, and the <a href="qwidget.html#windowFlags-prop">QWidget::setWindowFlags</a>() function to display the names of the window flags.</p>
-<center><img src="images/windowflags_previewwindow.png" alt="Screenshot of the Preview Window" /></center><a name="previewwindow-class-implementation"></a>
+<p align="center"><img src="images/windowflags_previewwindow.png" alt="Screenshot of the Preview Window" /></p><a name="previewwindow-class-implementation"></a>
 <h2>PreviewWindow Class Implementation</h2>
 <pre>&nbsp;   PreviewWindow::PreviewWindow(QWidget *parent)
         : QWidget(parent)
@@ -332,6 +332,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

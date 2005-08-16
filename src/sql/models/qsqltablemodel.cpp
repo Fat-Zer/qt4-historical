@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the sql module of the Qt Toolkit.
+** This file is part of the QtSql module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -43,6 +43,35 @@ QSqlRecord QSqlTableModelPrivate::record(const QVector<QVariant> &values) const
     for (int i = 0; i < r.count() && i < values.count(); ++i)
         r.setValue(i, values.at(i));
     return r;
+}
+
+/*! \internal
+    Set a record for OnFieldChange and OnRowChange.
+*/
+bool QSqlTableModelPrivate::setRecord(int row, const QSqlRecord &record)
+{
+    Q_Q(QSqlTableModel);
+    bool isOk = true;
+
+    QSqlTableModel::EditStrategy oldStrategy = strategy;
+
+    // FieldChange strategy makes no sense when setting an entire row
+    if (strategy == QSqlTableModel::OnFieldChange)
+        strategy = QSqlTableModel::OnRowChange;
+    for (int i = 0; i < record.count(); ++i) {
+        int idx = rec.indexOf(record.fieldName(i));
+        if (idx == -1)
+            continue;
+        QModelIndex cIndex = q->createIndex(row, idx);
+        QVariant value = record.value(i);
+        if (q->data(cIndex) != value)
+            isOk &= q->setData(cIndex, value, Qt::EditRole);
+    }
+    if (isOk && oldStrategy == QSqlTableModel::OnFieldChange)
+        q->submitAll();
+    strategy = oldStrategy;
+
+    return isOk;
 }
 
 void QSqlTableModelPrivate::clear()
@@ -457,10 +486,9 @@ bool QSqlTableModel::setData(const QModelIndex &index, const QVariant &value, in
             return true;
         }
         if (d->editIndex != index.row()) {
-            if (d->editBuffer.isEmpty())
-                d->clearEditBuffer();
-            else if (d->editIndex != -1)
+            if (d->editIndex != -1)
                 submit();
+            d->clearEditBuffer();
         }
         d->editBuffer.setValue(index.column(), value);
         d->editIndex = index.row();
@@ -1172,13 +1200,7 @@ bool QSqlTableModel::setRecord(int row, const QSqlRecord &record)
     switch (d->strategy) {
     case OnFieldChange:
     case OnRowChange:
-        for (int i = 0; i < record.count(); ++i) {
-            int idx = d->rec.indexOf(record.fieldName(i));
-            if (idx == -1)
-                continue;
-            isOk |= setData(createIndex(row, idx), record.value(i), Qt::EditRole);
-        }
-        return isOk;
+        return d->setRecord(row, record);
     case OnManualSubmit: {
         QSqlTableModelPrivate::ModifiedRow &mrow = d->cache[row];
         if (mrow.op == QSqlTableModelPrivate::None) {

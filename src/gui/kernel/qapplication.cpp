@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -32,6 +32,7 @@
 #include "qfile.h"
 #include "qfileinfo.h"
 #include "qhash.h"
+#include "qset.h"
 #include "qlayout.h"
 #include "qmessagebox.h"
 #include "qsessionmanager.h"
@@ -293,7 +294,7 @@ QApplicationPrivate::~QApplicationPrivate()
 
     \value Tty a console application
     \value GuiClient a GUI client application
-    \value GuiServer a GUI server application (on Qt/Embedded)
+    \value GuiServer a GUI server application (for Qt/Embedded)
 */
 
 /*!
@@ -418,7 +419,6 @@ QClipboard              *qt_clipboard = 0;        // global clipboard object
 #endif
 QWidgetList * qt_modal_stack=0;                // stack of modal widgets
 
-
 /*!
     \internal
 */
@@ -468,13 +468,11 @@ void QApplicationPrivate::process_cmdline()
         } else {
             argv[j++] = argv[i];
         }
-#ifndef QT_NO_STYLE
         if (!s.isEmpty()) {
             if (!styleOverride)
                 styleOverride = new QString;
             *styleOverride = s;
         }
-#endif
     }
 
     if(j < argc) {
@@ -545,7 +543,7 @@ void QApplicationPrivate::process_cmdline()
        on an 8-bit display.
   \o -ncols \e count, limits the number of colors allocated in the
        color cube on an 8-bit display, if the application is using the
-       \c QApplication::ManyColor color specification. If \e count is
+       QApplication::ManyColor color specification. If \e count is
        216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green,
        and 6 of blue); for other values, a cube
        approximately proportional to a 2x3x1 cube is used.
@@ -608,9 +606,9 @@ QApplication::QApplication(int &argc, char **argv, bool GUIenabled )
   Constructs an application object with \a argc command line arguments
   in \a argv.
 
-  For Qt/Embedded, passing \c QApplication::GuiServer for \a type
+  For Qt/Embedded, passing QApplication::GuiServer for \a type
   makes this application the server (equivalent to running with the
-  -qws option).
+  \c -qws option).
 */
 QApplication::QApplication(int &argc, char **argv, Type type)
     : QCoreApplication(*new QApplicationPrivate(argc, argv, type))
@@ -719,11 +717,9 @@ void QApplicationPrivate::initialize()
     QWidgetPrivate::mapper = new QWidgetMapper;
     if (qt_appType != QApplication::Tty)
         (void) QApplication::style();  // trigger creation of application style
-#ifndef QT_NO_VARIANT
     // trigger registering of QVariant's GUI types
     extern int qRegisterGuiVariant();
     qRegisterGuiVariant();
-#endif
 
     is_app_running = true; // no longer starting up
 
@@ -850,10 +846,8 @@ QApplication::~QApplication()
     delete QApplicationPrivate::app_font;
     QApplicationPrivate::app_font = 0;
     app_fonts()->clear();
-#ifndef QT_NO_STYLE
     delete QApplicationPrivate::app_style;
     QApplicationPrivate::app_style = 0;
-#endif
     delete QApplicationPrivate::app_icon;
     QApplicationPrivate::app_icon = 0;
 #ifndef QT_NO_CURSOR
@@ -990,8 +984,6 @@ bool QApplication::compressEvent(QEvent *event, QObject *receiver, QPostEventLis
     return QCoreApplication::compressEvent(event, receiver, postedEvents);
 }
 
-#ifndef QT_NO_STYLE
-
 /*!
   Returns the application's style object.
 
@@ -999,7 +991,6 @@ bool QApplication::compressEvent(QEvent *event, QObject *receiver, QPostEventLis
 */
 QStyle *QApplication::style()
 {
-#ifndef QT_NO_STYLE
     if (QApplicationPrivate::app_style)
         return QApplicationPrivate::app_style;
     if (!qt_is_gui_used)
@@ -1059,7 +1050,6 @@ QStyle *QApplication::style()
 
 
     QApplicationPrivate::app_style->polish(qApp);
-#endif
     return QApplicationPrivate::app_style;
 }
 
@@ -1067,6 +1057,10 @@ QStyle *QApplication::style()
     Sets the application's GUI style to \a style. Ownership of the style
     object is transferred to QApplication, so QApplication will delete
     the style object on application exit or when a new style is set.
+
+    \warning To ensure that the application's style is set correctly, it
+    is best to call this function before the QApplication constructor,
+    if possible.
 
     Example usage:
     \code
@@ -1105,8 +1099,11 @@ void QApplication::setStyle(QStyle *style)
     // take care of possible palette requirements of certain gui
     // styles. Do it before polishing the application since the style
     // might call QApplication::setStyle() itself
-    QApplication::setPalette(QApplicationPrivate::set_pal
-                             ? *QApplicationPrivate::set_pal : *QApplicationPrivate::sys_pal);
+    if (QApplicationPrivate::set_pal || QApplicationPrivate::sys_pal)
+        QApplication::setPalette(QApplicationPrivate::set_pal
+                                 ? *QApplicationPrivate::set_pal : *QApplicationPrivate::sys_pal);
+    else
+        qWarning("QApplication::setStyle(): Called before creating QApplication, palette undefined.");
 
     // initialize the application with the new style
     QApplicationPrivate::app_style->polish(qApp);
@@ -1148,6 +1145,10 @@ void QApplication::setStyle(QStyle *style)
 
   Returns 0 if an unknown \a style is passed, otherwise the QStyle object
   returned is set as the application's GUI style.
+
+  \warning To ensure that the application's style is set correctly, it is
+  best to call this function before the QApplication constructor, if
+  possible.
 */
 QStyle* QApplication::setStyle(const QString& style)
 {
@@ -1158,9 +1159,6 @@ QStyle* QApplication::setStyle(const QString& style)
     setStyle(s);
     return s;
 }
-
-#endif
-
 
 /*!
   Returns the color specification.
@@ -1656,7 +1654,7 @@ QFontMetrics QApplication::fontMetrics()
 
     The windows are closed in random order, until one window does not
     accept the close event. The application quits when the last window
-    was successfully closed. This can be turned of by setting \l
+    was successfully closed; this can be turned of by setting \l
     quitOnLastWindowClosed to false.
 
     \sa quitOnLastWindowClosed, lastWindowClosed()  QWidget::close(), QWidget::closeEvent(), lastWindowClosed(),
@@ -1672,7 +1670,7 @@ void QApplication::closeAllWindows()
         did_close = w->close();
     }
     QWidgetList list = QApplication::topLevelWidgets();
-    for (int i = 0; i < list.size(); ++i) {
+    for (int i = 0; did_close && i < list.size(); ++i) {
         w = list.at(i);
         if (w->isVisible() && w->windowType() != Qt::Desktop) {
             did_close = w->close();
@@ -1702,17 +1700,15 @@ void QApplication::aboutQt()
 /*!
   \fn void QApplication::lastWindowClosed()
 
-  This signal is emitted when the user has closed the last
-  top-level window.
+    This signal is emitted when the last visible primary window
+    (i.e. window with no parent) with the Qt::WA_QuitOnClose attribute
+    set is closed. By default this attribute is set for all widgets
+    except transient windows such as splash screens, tool windows, and
+    popup menus.
 
-  By default QApplication implicitely quits when this signal is
-  emitted. This feature be turned off by setting \l
-  quitOnLastWindowClosed to false.
-
-  Only top-level windows with the Qt::WA_QuitOnClose attribute set are
-  taken into account. For convenience, this attribute is not set for
-  transient top-level widgets such as splash screens, popup menus, and
-  dialogs.
+   By default, QApplication implicitly quits when this signal is
+   emitted. This feature be turned off by setting \l
+   quitOnLastWindowClosed to false.
 
   \sa QWidget::close()
 */
@@ -1829,7 +1825,6 @@ void QApplication::setActiveWindow(QWidget* act)
     QEvent ae(QEvent::ActivationChange);
     if (QApplicationPrivate::active_window) {
         QWidgetList deacts;
-#ifndef QT_NO_STYLE
         if (style()->styleHint(QStyle::SH_Widget_ShareActivation, 0, QApplicationPrivate::active_window)) {
             QWidgetList list = topLevelWidgets();
             for (int i = 0; i < list.size(); ++i) {
@@ -1838,7 +1833,6 @@ void QApplication::setActiveWindow(QWidget* act)
                     deacts.append(w);
             }
         } else
-#endif
             deacts.append(QApplicationPrivate::active_window);
         QApplicationPrivate::active_window = 0;
         QEvent e(QEvent::WindowDeactivate);
@@ -1853,7 +1847,6 @@ void QApplication::setActiveWindow(QWidget* act)
     if (QApplicationPrivate::active_window) {
         QEvent e(QEvent::WindowActivate);
         QWidgetList acts;
-#ifndef QT_NO_STYLE
         if (style()->styleHint(QStyle::SH_Widget_ShareActivation, 0, QApplicationPrivate::active_window)) {
             QWidgetList list = topLevelWidgets();
             for (int i = 0; i < list.size(); ++i) {
@@ -1862,7 +1855,6 @@ void QApplication::setActiveWindow(QWidget* act)
                     acts.append(w);
             }
         } else
-#endif
             acts.append(QApplicationPrivate::active_window);
         for (int i = 0; i < acts.size(); ++i) {
             QWidget *w = acts.at(i);
@@ -1999,6 +1991,75 @@ Q_GUI_EXPORT bool qt_tryModalHelper(QWidget *widget, QWidget **rettop)
 }
 
 /*!\internal
+ */
+bool QApplicationPrivate::isBlockedByModal(QWidget *widget)
+{
+    if (!modalState())
+        return false;
+    if (qApp->activePopupWidget())
+        return false;
+    if ((widget->windowType() == Qt::Tool))        // allow tool windows
+        return false;
+
+    QWidget *modal=0, *top=qt_modal_stack->first();
+
+    widget = widget->window();
+    if (widget->testAttribute(Qt::WA_ShowModal))        // widget is modal
+        modal = widget;
+    if (!top || modal == top)                                // don't block event
+        return false;
+    return true;
+}
+
+/*!\internal
+ */
+void QApplicationPrivate::enterModal(QWidget *widget)
+{
+    QSet<QWidget*> blocked;
+    QList<QWidget*> windows = qApp->topLevelWidgets();
+    for (int i = 0; i < windows.count(); ++i) {
+        QWidget *window = windows.at(i);
+        if (isBlockedByModal(window))
+            blocked.insert(window);
+    }
+
+    enterModal_sys(widget);
+
+    windows = qApp->topLevelWidgets();
+    QEvent e(QEvent::WindowBlocked);
+    for (int i = 0; i < windows.count(); ++i) {
+        QWidget *window = windows.at(i);
+        if (!blocked.contains(widget) && isBlockedByModal(window))
+            QApplication::sendEvent(window, &e);
+    }
+}
+
+/*!\internal
+ */
+void QApplicationPrivate::leaveModal(QWidget *widget)
+{
+    QSet<QWidget*> blocked;
+    QList<QWidget*> windows = qApp->topLevelWidgets();
+    for (int i = 0; i < windows.count(); ++i) {
+        QWidget *window = windows.at(i);
+        if (isBlockedByModal(window))
+            blocked.insert(window);
+    }
+
+    leaveModal_sys(widget);
+
+    windows = qApp->topLevelWidgets();
+    QEvent e(QEvent::WindowUnblocked);
+    for (int i = 0; i < windows.count(); ++i) {
+        QWidget *window = windows.at(i);
+        if(blocked.contains(window) && !isBlockedByModal(window))
+            QApplication::sendEvent(window, &e);
+    }
+}
+
+
+
+/*!\internal
 
   Called from qapplication_\e{platform}.cpp, returns true
   if the widget should accept the event.
@@ -2011,7 +2072,7 @@ bool QApplicationPrivate::tryModalHelper(QWidget *widget, QWidget **rettop) {
         return true;
 
 #ifdef Q_WS_MAC
-    top = QApplicationPrivate::tryModalHelperMac(top);
+    top = QApplicationPrivate::tryModalHelper_sys(top);
     if (rettop) *rettop = top;
 #endif
 
@@ -2604,7 +2665,7 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
     if (!receiver->isWidgetType()) {
         res = d->notify_helper(receiver, e);
     } else switch (e->type()) {
-#if defined QT3_SUPPORT && !defined(QT_NO_ACCEL)
+#if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
     case QEvent::Accel:
         {
             if (d->use_compat()) {
@@ -2621,21 +2682,23 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
             }
             break;
         }
-#endif //QT3_SUPPORT && !QT_NO_ACCEL
+#endif //QT3_SUPPORT && !QT_NO_SHORTCUT
     case QEvent::ShortcutOverride:
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
         {
             QWidget* w = static_cast<QWidget*>(receiver);
             QKeyEvent* key = static_cast<QKeyEvent*>(e);
-#if defined QT3_SUPPORT && !defined(QT_NO_ACCEL)
+#if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
             if (d->use_compat() && d->qt_tryComposeUnicode(w, key))
                 break;
 #endif
             if (key->type()==QEvent::KeyPress) {
+#ifndef QT_NO_SHORTCUT
                 // Try looking for a Shortcut before sending key events
                 if (res = qApp->d_func()->shortcutMap.tryShortcutEvent(w, key))
                     return res;
+#endif
                 qt_in_tab_key_event = (key->key() == Qt::Key_Backtab
                                        || key->key() == Qt::Key_Tab
                                        || key->key() == Qt::Key_Left
@@ -3525,10 +3588,11 @@ bool QApplicationPrivate::inPopupMode() const
 
     The default is true.
 
-    Only top-level windows with the Qt::WA_QuitOnClose attribute set
-    are taken into account. For convenience, this attribute is not set
-    for transient top-level widgets such as splash screens, popup
-    menus, and dialogs.
+    If this property is true, the applications quits when the last
+    visible primary window (i.e. window with no parent) with the
+    Qt::WA_QuitOnClose attribute set is closed. By default this
+    attribute is set for all widgets except transient windows such as
+    splash screens, tool windows, and popup menus.
 
     \sa quit(), QWidget::close()
  */

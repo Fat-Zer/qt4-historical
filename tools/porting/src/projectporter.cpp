@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the porting application of the Qt Toolkit.
+** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -72,7 +72,7 @@ void ProjectPorter::portFile(QString fileName)
         IncludeFiles includeFiles(basePath, includeDirectories);
 
         PreprocessorController preprocessor(includeFiles, preprocessorCache, qt3HeadersFilenames);
-        connect(&preprocessor, SIGNAL(error(QString, QString)), SLOT(error(QString, QString)));
+        connect(&preprocessor, SIGNAL(error(QString,QString)), SLOT(error(QString,QString)));
 
         Rpp::DefineMap definitionsCopy = *defaultDefinitions;
         // Preprocess
@@ -92,7 +92,7 @@ void ProjectPorter::portFile(QString fileName)
 void ProjectPorter::error(QString type, QString text)
 {
    if (warnings && type == "Error")
-        cout << "Warning: " << text.toLocal8Bit().constData() << endl;
+        printf("Warning: %s\n", text.toLocal8Bit().constData());
 }
 
 void ProjectPorter::portProject(QString basePath, QString proFileName)
@@ -100,7 +100,7 @@ void ProjectPorter::portProject(QString basePath, QString proFileName)
     QString fullInFileName = basePath + "/" + proFileName;
     QFileInfo infileInfo(fullInFileName);
     if (!infileInfo.exists()) {
-        cout << "Could not open file: " << QDir::convertSeparators(fullInFileName).toLocal8Bit().constData() << endl;
+        printf("Could not open file: %s\n", QDir::convertSeparators(fullInFileName).toLocal8Bit().constData());
         return;
     }
 
@@ -135,14 +135,14 @@ void ProjectPorter::portProject(QString basePath, QString proFileName)
     }
 
     if (analyze) {
-        cout << "Parsing";
+        printf("Parsing");
         // Get include paths from the pro file.
         QStringList includeProPaths = proFileMap["INCLUDEPATH"].split(" ", QString::SkipEmptyParts);
         QStringList dependProPaths = proFileMap["DEPENDPATH"].split(" ", QString::SkipEmptyParts);
         IncludeFiles includeFiles(basePath, includeDirectories + includeProPaths + dependProPaths);
 
         PreprocessorController preprocessorController(includeFiles, preprocessorCache, qt3HeadersFilenames);
-        connect(&preprocessorController, SIGNAL(error(QString, QString)), SLOT(error(QString, QString)));
+        connect(&preprocessorController, SIGNAL(error(QString,QString)), SLOT(error(QString,QString)));
 
         TranslationUnitAnalyzer translationUnitAnalyzer;
         CodeModelAttributes codeModelAttributes;
@@ -157,7 +157,8 @@ void ProjectPorter::portProject(QString basePath, QString proFileName)
 
         // Analyze each translation unit. (one per cpp file)
         foreach(QString sourceFile, sources) {
-            cout << "." << std::flush;
+            printf(".");
+            fflush(stdout);
             Rpp::DefineMap definitionsCopy = *defaultDefinitions;
             TokenSectionSequence translationUnit =
                 preprocessorController.evaluate(sourceFile, &definitionsCopy);
@@ -169,7 +170,7 @@ void ProjectPorter::portProject(QString basePath, QString proFileName)
 
             codeModelAttributes.createAttributes(translationUnitData);
         }
-        cout << endl;
+        puts("");
     }
 
 
@@ -201,8 +202,7 @@ void ProjectPorter::portFiles(QString basePath, QStringList fileNames)
 
         QFileInfo fullFilePathInfo(fullFilePath);
         if (!fullFilePathInfo.exists()) {
-            cout << "Could not find file:" <<
-                QDir::convertSeparators(fullFilePath).toLocal8Bit().constData() <<endl;
+            printf("Could not find file: %s\n", QDir::convertSeparators(fullFilePath).toLocal8Bit().constData());
             continue;
         }
 

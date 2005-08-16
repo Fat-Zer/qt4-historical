@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -43,6 +43,8 @@
 #include <qvalidator.h>
 #include <private/qwidget_p.h>
 
+#ifndef QT_NO_SPINBOX
+
 bool operator<(const QVariant &arg1, const QVariant &arg2);
 bool operator>(const QVariant &arg1, const QVariant &arg2);
 bool operator<=(const QVariant &arg1, const QVariant &arg2);
@@ -66,10 +68,6 @@ enum EmitPolicy {
     NeverEmit
 };
 
-enum Boundary {
-    Minimum,
-    Maximum
-};
 enum Button {
     None = 0x000,
     Keyboard = 0x001,
@@ -89,12 +87,12 @@ public:
     ~QAbstractSpinBoxPrivate();
 
     void init();
-    void resetState();
+    void reset();
     void updateState(bool up);
-    QString stripped(const QString &text) const;
+    QString stripped(const QString &text, int *pos = 0) const;
     bool specialValue() const;
     QVariant getZeroVariant() const;
-    void setBoundary(Boundary b, const QVariant &val);
+    void setRange(const QVariant &min, const QVariant &max);
     void setValue(const QVariant &val, EmitPolicy ep, bool updateEdit = true);
     virtual QVariant bound(const QVariant &val, const QVariant &old = QVariant(), int steps = 0) const;
     QLineEdit *lineEdit();
@@ -119,7 +117,7 @@ public:
     QString prefix, suffix, specialValueText;
     QVariant value, minimum, maximum, singleStep;
     QVariant::Type type;
-    int spinClickTimerId, spinClickTimerInterval;
+    int spinClickTimerId, spinClickTimerInterval, spinClickThresholdTimerId, spinClickThresholdTimerInterval;
     uint buttonState;
     mutable uint dirty : 1;
     mutable QString cachedText;
@@ -149,4 +147,5 @@ private:
     QAbstractSpinBoxPrivate *dptr;
 };
 
+#endif // QT_NO_SPINBOX
 #endif // QABSTRACTSPINBOX_P_H

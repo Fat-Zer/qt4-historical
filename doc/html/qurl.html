@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/corelib/io/qurl.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/io/qurl.cpp -->
 <head>
     <title>Qt 4.0: QUrl Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QUrl Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QUrl Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QUrl class provides a convenient interface for working with URLs. <a href="#details">More...</a></p>
-<pre>#include &lt;QUrl&gt;</pre><p>Part of the <a href="qtcore.html">QtCore</a> module.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre>#include &lt;QUrl&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qurl-members.html">List of all members, including inherited members</a></li>
 <li><a href="qurl-qt3.html">Qt 3 support members</a></li>
@@ -110,7 +109,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructing a query is particularily convenient through the use of <a href="qurl.html#setQueryItems">setQueryItems</a>(), <a href="qurl.html#addQueryItem">addQueryItem</a>() and <a href="qurl.html#removeQueryItem">removeQueryItem</a>(). Use <a href="qurl.html#setQueryDelimiters">setQueryDelimiters</a>() to customize the delimiters used for generating the query string.</p>
 <p>For the convenience of generating encoded URL strings or query strings, there are two static functions called <a href="qurl.html#fromPercentEncoding">fromPercentEncoding</a>() and <a href="qurl.html#toPercentEncoding">toPercentEncoding</a>() which deal with percent encoding and decoding of QStrings.</p>
 <p>Calling <a href="qurl.html#isRelative">isRelative</a>() will tell whether or not the URL is relative. A relative URL can be resolved by passing it as argument to <a href="qurl.html#resolved">resolved</a>(), which returns an absolute URL. <a href="qurl.html#isParentOf">isParentOf</a>() is used for determining whether one URL is a parent of another.</p>
-<p>isLocalFile() tells whether the URL represents the path to a local file or not. <a href="qurl.html#fromLocalFile">fromLocalFile</a>() constructs a QUrl by parsing a local file path. <a href="qurl.html#toLocalFile">toLocalFile</a>() converts a URL to a local file path.</p>
+<p><a href="qurl.html#fromLocalFile">fromLocalFile</a>() constructs a QUrl by parsing a local file path. <a href="qurl.html#toLocalFile">toLocalFile</a>() converts a URL to a local file path.</p>
 <p>The human readable representation of the URL is fetched with <a href="qurl.html#toString">toString</a>(). This representation is appropriate for displaying a URL to a user in unencoded form. The encoded form however, as returned by <a href="qurl.html#toEncoded">toEncoded</a>(), is for internal use, passing to web servers, mail clients and so on.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -155,6 +154,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Resets the content of the <a href="qurl.html">QUrl</a>. After calling this function, the <a href="qurl.html">QUrl</a> is equal to one that has been constructed with the default empty constructor.</p>
 <h3 class="fn"><a name="encodedQuery"></a><a href="qbytearray.html">QByteArray</a> QUrl::encodedQuery () const</h3>
 <p>Returns the query string of the URL in percent encoded form.</p>
+<p>See also <a href="qurl.html#setEncodedQuery">setEncodedQuery</a>().</p>
 <h3 class="fn"><a name="fragment"></a><a href="qstring.html">QString</a> QUrl::fragment () const</h3>
 <p>Returns the fragment of the URL.</p>
 <p>See also <a href="qurl.html#setFragment">setFragment</a>().</p>
@@ -171,6 +171,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if there is a query string pair whose key is equal to <i>key</i> from the URL.</p>
 <h3 class="fn"><a name="host"></a><a href="qstring.html">QString</a> QUrl::host () const</h3>
 <p>Returns the host of the URL if it is defined; otherwise an empty string is returned.</p>
+<p>See also <a href="qurl.html#setHost">setHost</a>().</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QUrl::isEmpty () const</h3>
 <p>Returns true if the URL has no data; otherwise returns false.</p>
 <h3 class="fn"><a name="isParentOf"></a>bool QUrl::isParentOf ( const QUrl &amp; <i>childUrl</i> ) const</h3>
@@ -190,12 +191,13 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <h3 class="fn"><a name="password"></a><a href="qstring.html">QString</a> QUrl::password () const</h3>
 <p>Returns the password of the URL if it is defined; otherwise an empty string is returned.</p>
-<p>See also <a href="qurl.html#setUserName">setUserName</a>().</p>
+<p>See also <a href="qurl.html#setPassword">setPassword</a>() and <a href="qurl.html#setUserName">setUserName</a>().</p>
 <h3 class="fn"><a name="path"></a><a href="qstring.html">QString</a> QUrl::path () const</h3>
 <p>Returns the path of the URL.</p>
 <p>See also <a href="qurl.html#setPath">setPath</a>().</p>
 <h3 class="fn"><a name="port"></a>int QUrl::port () const</h3>
 <p>Returns the port of the URL, or -1 if the port is undefined.</p>
+<p>See also <a href="qurl.html#setPort">setPort</a>().</p>
 <h3 class="fn"><a name="queryItemValue"></a><a href="qstring.html">QString</a> QUrl::queryItemValue ( const <a href="qstring.html">QString</a> &amp; <i>key</i> ) const</h3>
 <p>Returns the first query string value whose key is equal to <i>key</i> from the URL.</p>
 <p>See also <a href="qurl.html#allQueryItemValues">allQueryItemValues</a>().</p>
@@ -220,7 +222,6 @@ body { background: #ffffff; color: black; }</style>
     qDebug(baseUrl.resolved(relativeUrl).toString());
     // prints &quot;http://www.trolltech.com/products/solutions&quot;</pre>
 <p>Calling resolved() with &quot;..&quot; returns a <a href="qurl.html">QUrl</a> whose directory is one level higher than the original. Similarly, calling resolved() with &quot;../..&quot; removes two levels from the path. If <i>relative</i> is &quot;/&quot;, the path becomes &quot;/&quot;.</p>
-<p>The algorithm for this merge is described</p>
 <p>See also <a href="qurl.html#isRelative">isRelative</a>().</p>
 <h3 class="fn"><a name="scheme"></a><a href="qstring.html">QString</a> QUrl::scheme () const</h3>
 <p>Returns the scheme of the URL. If an empty string is returned, this means the scheme is undefined and the URL is then relative.</p>
@@ -230,9 +231,11 @@ body { background: #ffffff; color: black; }</style>
 <p>The authority of a URL is the combination of user info, a host name and a port. All of these elements are optional; an empty authority is therefore valid.</p>
 <p>The user info and host are separated by a '<a href="mailto:@">@</a>', and the host and port are separated by a ':'. If the user info is empty, the '<a href="mailto:@">@</a>' must be omitted; although a stray ':' is permitted if the port is empty.</p>
 <p>The following example shows a valid authority string:</p>
-<center><img src="images/qurl-authority.png" /></center><h3 class="fn"><a name="setEncodedQuery"></a>void QUrl::setEncodedQuery ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>query</i> )</h3>
+<p align="center"><img src="images/qurl-authority.png" /></p><p>See also <a href="qurl.html#authority">authority</a>().</p>
+<h3 class="fn"><a name="setEncodedQuery"></a>void QUrl::setEncodedQuery ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>query</i> )</h3>
 <p>Sets the query string of the URL to <i>query</i>. The string is inserted as-is, and no further encoding is performed when calling <a href="qurl.html#toEncoded">toEncoded</a>().</p>
 <p>This function is useful if you need to pass a query string that does not fit into the key-value pattern, or that uses a different scheme for encoding special characters than what is suggested by <a href="qurl.html">QUrl</a>.</p>
+<p>See also <a href="qurl.html#encodedQuery">encodedQuery</a>().</p>
 <h3 class="fn"><a name="setEncodedUrl"></a>void QUrl::setEncodedUrl ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>encodedUrl</i> )</h3>
 <p>Constructs a URL by parsing the contents of <i>encodedUrl</i>.</p>
 <p><i>encodedUrl</i> is assumed to be a URL string in percent encoded form, containing only ASCII characters.</p>
@@ -240,7 +243,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qurl.html#setUrl">setUrl</a>().</p>
 <h3 class="fn"><a name="setFragment"></a>void QUrl::setFragment ( const <a href="qstring.html">QString</a> &amp; <i>fragment</i> )</h3>
 <p>Sets the fragment of the URL to <i>fragment</i>. The fragment is the last part of the URL, represented by a '#' followed by a string of characters. It is typically used in HTTP for referring to a certain link or point on a page:</p>
-<center><img src="images/qurl-fragment.png" /></center><p>The fragment is sometimes also referred to as the URL &quot;reference&quot;.</p>
+<p align="center"><img src="images/qurl-fragment.png" /></p><p>The fragment is sometimes also referred to as the URL &quot;reference&quot;.</p>
 <p>See also <a href="qurl.html#fragment">fragment</a>().</p>
 <h3 class="fn"><a name="setHost"></a>void QUrl::setHost ( const <a href="qstring.html">QString</a> &amp; <i>host</i> )</h3>
 <p>Sets the host of the URL to <i>host</i>. The host is part of the authority.</p>
@@ -250,14 +253,15 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qurl.html#password">password</a>() and <a href="qurl.html#setUserInfo">setUserInfo</a>().</p>
 <h3 class="fn"><a name="setPath"></a>void QUrl::setPath ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )</h3>
 <p>Sets the path of the URL to <i>path</i>. The path is the part of the URL that comes after the authority but before the query string.</p>
-<center><img src="images/qurl-ftppath.png" /></center><p>For non-hierarchical schemes, the path will be everything following the scheme declaration, as in the following example:</p>
-<center><img src="images/qurl-mailtopath.png" /></center><p>See also <a href="qurl.html#path">path</a>().</p>
+<p align="center"><img src="images/qurl-ftppath.png" /></p><p>For non-hierarchical schemes, the path will be everything following the scheme declaration, as in the following example:</p>
+<p align="center"><img src="images/qurl-mailtopath.png" /></p><p>See also <a href="qurl.html#path">path</a>().</p>
 <h3 class="fn"><a name="setPort"></a>void QUrl::setPort ( int <i>port</i> )</h3>
 <p>Sets the port of the URL to <i>port</i>. The port is part of the authority of the URL, as described in <a href="qurl.html#setAuthority">setAuthority</a>().</p>
 <p>If <i>port</i> is negative or has a value larger than 65535, the port will be set to -1 indicating that the port is indefined.</p>
+<p>See also <a href="qurl.html#port">port</a>().</p>
 <h3 class="fn"><a name="setQueryDelimiters"></a>void QUrl::setQueryDelimiters ( char <i>valueDelimiter</i>, char <i>pairDelimiter</i> )</h3>
 <p>Sets the characters used for delimiting between keys and values, and between key-value pairs in the URL's query string. The default value delimiter is '=' and the default pair delimiter is '&amp;'.</p>
-<center><img src="images/qurl-querystring.png" /></center><p><i>valueDelimiter</i> will be used for separating keys from values, and <i>pairDelimiter</i> will be used to separate key-value pairs. Any occurrences of these delimiting characters in the encoded representation of the keys and values of the query string are percent encoded.</p>
+<p align="center"><img src="images/qurl-querystring.png" /></p><p><i>valueDelimiter</i> will be used for separating keys from values, and <i>pairDelimiter</i> will be used to separate key-value pairs. Any occurrences of these delimiting characters in the encoded representation of the keys and values of the query string are percent encoded.</p>
 <p>If <i>valueDelimiter</i> is set to '-' and <i>pairDelimiter</i> is '/', the above query string would instead be represented like this:</p>
 <pre>&nbsp;   http://www.example.com/cgi-bin/drawgraph.cgi?type-pie/color-green</pre>
 <p>Calling this function does not change the delimiters of the current query string. It only affects <a href="qurl.html#queryItems">queryItems</a>(), <a href="qurl.html#setQueryItems">setQueryItems</a>() and addQueryItems().</p>
@@ -267,7 +271,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setScheme"></a>void QUrl::setScheme ( const <a href="qstring.html">QString</a> &amp; <i>scheme</i> )</h3>
 <p>Sets the scheme of the URL to <i>scheme</i>. As a scheme can only contain ASCII characters, no conversion or encoding is done on the input.</p>
 <p>The scheme describes the type (or protocol) of the URL. It's represented by one or more ASCII characters at the start the URL, and is followed by a ':'. The following example shows a URL where the scheme is &quot;ftp&quot;:</p>
-<center><img src="images/qurl-authority2.png" /></center><p>The scheme can also be empty, in which case the URL is interpreted as relative.</p>
+<p align="center"><img src="images/qurl-authority2.png" /></p><p>The scheme can also be empty, in which case the URL is interpreted as relative.</p>
 <p>See also <a href="qurl.html#scheme">scheme</a>() and <a href="qurl.html#isRelative">isRelative</a>().</p>
 <h3 class="fn"><a name="setUrl"></a>void QUrl::setUrl ( const <a href="qstring.html">QString</a> &amp; <i>url</i> )</h3>
 <p>Constructs a URL by parsing the contents of <i>url</i>.</p>
@@ -277,7 +281,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setUserInfo"></a>void QUrl::setUserInfo ( const <a href="qstring.html">QString</a> &amp; <i>userInfo</i> )</h3>
 <p>Sets the user info of the URL to <i>userInfo</i>. The user info is an optional part of the authority of the URL, as described in <a href="qurl.html#setAuthority">setAuthority</a>().</p>
 <p>The user info consists of a user name and optionally a password, separated by a ':'. If the password is empty, the colon must be omitted. The following example shows a valid user info string:</p>
-<center><img src="images/qurl-authority3.png" /></center><p>See also <a href="qurl.html#userInfo">userInfo</a>(), <a href="qurl.html#setUserName">setUserName</a>(), <a href="qurl.html#setPassword">setPassword</a>(), and <a href="qurl.html#setAuthority">setAuthority</a>().</p>
+<p align="center"><img src="images/qurl-authority3.png" /></p><p>See also <a href="qurl.html#userInfo">userInfo</a>(), <a href="qurl.html#setUserName">setUserName</a>(), <a href="qurl.html#setPassword">setPassword</a>(), and <a href="qurl.html#setAuthority">setAuthority</a>().</p>
 <h3 class="fn"><a name="setUserName"></a>void QUrl::setUserName ( const <a href="qstring.html">QString</a> &amp; <i>userName</i> )</h3>
 <p>Sets the URL's user name to <i>userName</i>. The <i>userName</i> is part of the user info element in the authority of the URL, as described in <a href="qurl.html#setUserInfo">setUserInfo</a>().</p>
 <p>See also <a href="qurl.html#userName">userName</a>() and <a href="qurl.html#setUserInfo">setUserInfo</a>().</p>
@@ -300,6 +304,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qurl.html#FormattingOption-enum">FormattingOptions</a> and <a href="qurl.html#toEncoded">toEncoded</a>().</p>
 <h3 class="fn"><a name="userInfo"></a><a href="qstring.html">QString</a> QUrl::userInfo () const</h3>
 <p>Returns the user info of the URL, or an empty string if the user info is undefined.</p>
+<p>See also <a href="qurl.html#setUserInfo">setUserInfo</a>().</p>
 <h3 class="fn"><a name="userName"></a><a href="qstring.html">QString</a> QUrl::userName () const</h3>
 <p>Returns the user name of the URL if it is defined; otherwise an empty string is returned.</p>
 <p>See also <a href="qurl.html#setUserName">setUserName</a>().</p>
@@ -319,6 +324,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

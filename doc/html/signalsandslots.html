@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/signalsandslots.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/signalsandslots.qdoc -->
 <head>
     <title>Qt 4.0: Signals and Slots</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Signals and Slots</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Signals and Slots<br /><small></small></h1>
 <p>Signals and slots are used for communication between objects. The signals and slots mechanism is a central feature of Qt and probably the part that differs most from the features provided by other frameworks.</p>
 <ul><li><a href="#introduction">Introduction</a></li>
 <li><a href="#signals-and-slots">Signals and Slots</a></li>
@@ -35,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="signals-and-slots"></a>
 <h2>Signals and Slots</h2>
 <p>In Qt, we have an alternative to the callback technique: We use signals and slots. A signal is emitted when a particular event occurs. Qt's widgets have many predefined signals, but we can always subclass widgets to add our own signals to them. A slot is a function that is called in reponse to a particular signal. Qt's widgets have many pre-defined slots, but it is common practice to subclass widgets and add your own slots so that you can handle the signals that you are interested in.</p>
-<center><img src="images/abstract-connections.png" /></center><p>The signals and slots mechanism is type safe: The signature of a signal must match the signature of the receiving slot. (In fact a slot may have a shorter signature than the signal it receives because it can ignore extra arguments.) Since the signatures are compatible, the compiler can help us detect type mismatches. Signals and slots are loosely coupled: A class which emits a signal neither knows nor cares which slots receive the signal. Qt's signals and slots mechanism ensures that if you connect a signal to a slot, the slot will be called with the signal's parameters at the right time. Signals and slots can take any number of arguments of any type. They are completely type safe.</p>
+<p align="center"><img src="images/abstract-connections.png" /></p><p>The signals and slots mechanism is type safe: The signature of a signal must match the signature of the receiving slot. (In fact a slot may have a shorter signature than the signal it receives because it can ignore extra arguments.) Since the signatures are compatible, the compiler can help us detect type mismatches. Signals and slots are loosely coupled: A class which emits a signal neither knows nor cares which slots receive the signal. Qt's signals and slots mechanism ensures that if you connect a signal to a slot, the slot will be called with the signal's parameters at the right time. Signals and slots can take any number of arguments of any type. They are completely type safe.</p>
 <p>All classes that inherit from <a href="qobject.html">QObject</a> or one of its subclasses (e.g., <a href="qwidget.html">QWidget</a>) can contain signals and slots. Signals are emitted by objects when they change their state in a way that may be interesting to other objects. This is all the object does to communicate. It does not know or care whether anything is receiving the signals it emits. This is true information encapsulation, and ensures that the object can be used as a software component.</p>
 <p>Slots can be used for receiving signals, but they are also normal member functions. Just as an object does not know if anything receives its signals, a slot does not know if it has any signals connected to it. This ensures that truly independent components can be created with Qt.</p>
 <p>You can connect as many signals as you want to a single slot, and a signal can be connected to as many slots as you need. It is even possible to connect a signal directly to another signal. (This will emit the second signal immediately whenever the first is emitted.)</p>
@@ -76,7 +76,7 @@ body { background: #ffffff; color: black; }</style>
         int m_value;
     };</pre>
 <p>The <a href="qobject.html">QObject</a>-based version has the same internal state, and provides public methods to access the state, but in addition it has support for component programming using signals and slots. This class can tell the outside world that its state has changed by emitting a signal, <tt>valueChanged()</tt>, and it has a slot which other objects can send signals to.</p>
-<p>All classes that contain signals or slots must mention <tt>Q_OBJECT</tt> at the top of their declaration. They must also derive (directly or indirectly) from <a href="qobject.html">QObject</a>.</p>
+<p>All classes that contain signals or slots must mention <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> at the top of their declaration. They must also derive (directly or indirectly) from <a href="qobject.html">QObject</a>.</p>
 <p>Slots are implemented by the application programmer. Here is a possible implementation of the <tt>Counter::setValue()</tt> slot:</p>
 <pre>&nbsp;   void Counter::setValue(int value)
     {
@@ -145,7 +145,7 @@ body { background: #ffffff; color: black; }</style>
     {
         Q_OBJECT</pre>
 <p><tt>LcdNumber</tt> inherits <a href="qobject.html">QObject</a>, which has most of the signal-slot knowledge, via <a href="qframe.html">QFrame</a> and <a href="qwidget.html">QWidget</a>. It is somewhat similar to the built-in <a href="qlcdnumber.html">QLCDNumber</a> widget.</p>
-<p>The <tt>Q_OBJECT</tt> macro is expanded by the preprocessor to declare several member functions that are implemented by the <tt>moc</tt>; if you get compiler errors along the lines of &quot;undefined reference to vtable for <tt>LcdNumber</tt>&quot;, you have probably forgotten to <a href="moc.html#moc">run the moc</a> or to include the moc output in the link command.</p>
+<p>The <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro is expanded by the preprocessor to declare several member functions that are implemented by the <tt>moc</tt>; if you get compiler errors along the lines of &quot;undefined reference to vtable for <tt>LcdNumber</tt>&quot;, you have probably forgotten to <a href="moc.html#moc">run the moc</a> or to include the moc output in the link command.</p>
 <pre>&nbsp;   public:
         LcdNumber(QWidget *parent = 0);</pre>
 <p>It's not obviously relevant to the moc, but if you inherit <a href="qwidget.html">QWidget</a> you almost certainly want to have the <tt>parent</tt> argument in your constructor and pass it to the base class's constructor.</p>
@@ -176,6 +176,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

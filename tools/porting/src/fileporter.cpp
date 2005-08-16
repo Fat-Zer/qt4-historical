@@ -2,25 +2,24 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the porting application of the Qt Toolkit.
+** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#include <iostream>
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
@@ -34,12 +33,11 @@
 
 using namespace TokenEngine;
 using namespace Rpp;
-using std::cout;
-using std::endl;
 
 FilePorter::FilePorter(PreprocessorCache &preprocessorCache)
 :preprocessorCache(preprocessorCache)
 ,tokenReplacementRules(PortingRules::instance()->getTokenReplacementRules())
+,headerReplacements(PortingRules::instance()->getHeaderReplacements())
 ,replaceToken(tokenReplacementRules)
 {
     foreach(QString headerName, PortingRules::instance()->getHeaderList(PortingRules::Qt4)) {
@@ -48,26 +46,35 @@ FilePorter::FilePorter(PreprocessorCache &preprocessorCache)
 }
 
 /*
-    Ports a file given by fileName, which should be an aboslute file path.
+    Ports a file given by fileName, which should be an absolute file path.
 */
 void FilePorter::port(QString fileName)
 {
-    //Get file tokens from cache.
+    // Get file tokens from cache.
     TokenContainer sourceTokens = preprocessorCache.sourceTokens(fileName);
     if(sourceTokens.count() == 0)
         return;
 
     Logger::instance()->beginSection();
 
-    //Perform token replacements.
-    QByteArray portedContents =
-        replaceToken.getTokenTextReplacements(sourceTokens).apply(sourceTokens.fullText());
+    // Get include directive replacements.
+    const Rpp::Source * source = preprocessorCache.sourceTree(fileName);
+    IncludeDirectiveReplace includeDirectiveReplace(source, PortingRules::instance()->getHeaderReplacements());
+    TextReplacements sourceReplacements = includeDirectiveReplace.getReplacements();
 
-    //This step needs to be done after the token replacements, since
-    //we need to know which new class names that has been inserted in the source.
+    // Get token replacements.
+    sourceReplacements += replaceToken.getTokenTextReplacements(sourceTokens);
+
+    // Apply the replacements to the source text.
+    QByteArray portedContents = sourceReplacements.apply(sourceTokens.fullText());
+
+    // Add include directives for classes that are no longer implicitly
+    // included via other headers. This step needs to be done after the token
+    // replacements, since we need to know which new class names that has been
+    // inserted in the source.
     portedContents = includeAnalyse(portedContents);
 
-    //check if any changes has been made.
+    // Check if any changes has been made.
     if(portedContents == sourceTokens.fullText()) {
         Logger::instance()->addEntry(
             new PlainLogEntry("Info", "Porting",  QLatin1String("No changes made to file ") + fileName));
@@ -75,7 +82,7 @@ void FilePorter::port(QString fileName)
         return;
     }
 
-    //Write file, commit log if write was successful
+    // Write file, commit log if write was successful.
     FileWriter::WriteResult result = FileWriter::instance()->writeFileVerbously(fileName, portedContents);
     Logger *logger = Logger::instance();
     if (result == FileWriter::WriteSucceeded) {
@@ -99,6 +106,11 @@ void FilePorter::port(QString fileName)
 QSet<QByteArray> FilePorter::usedQtModules()
 {
     return m_usedQtModules;
+}
+
+TextReplacements FilePorter::includeDirectiveReplacements()
+{
+    return TextReplacements();
 }
 
 QByteArray FilePorter::includeAnalyse(QByteArray fileContents)
@@ -157,6 +169,51 @@ QByteArray FilePorter::includeAnalyse(QByteArray fileContents)
     }
 
     return fileContents;
+}
+
+IncludeDirectiveReplace::IncludeDirectiveReplace(const Rpp::Source *source, const QHash<QByteArray, QByteArray> &headerReplacements)
+:headerReplacements(headerReplacements)
+{
+    // Walk preprocessor tree.
+    evaluateItem(source);
+}
+
+TextReplacements IncludeDirectiveReplace::getReplacements()
+{
+    return replacements;
+}
+/*
+    Replaces headers no longer present with support headers.
+*/
+void IncludeDirectiveReplace::evaluateIncludeDirective(const Rpp::IncludeDirective *directive)
+{
+    const QByteArray headerPathName = directive->filename();
+    const TokenEngine::TokenList headerPathTokens = directive->filenameTokens();
+
+    // Get the file name part of the file path.
+    const QByteArray headerFileName = QFileInfo(headerPathName).fileName().toUtf8();
+
+    // Check if we should replace the filename.
+    QByteArray replacement = headerReplacements.value(headerFileName);
+
+    // Also check lower-case version to catch incorrectly capitalized file names on Windows.
+    if (replacement.isEmpty())
+        replacement = headerReplacements.value(headerFileName.toLower());
+
+    const int numTokens = headerPathTokens.count();
+    if (numTokens > 0 && !replacement.isEmpty()) {
+        // Here we assume that the last token contains a part of the file name.
+        const TokenEngine::Token lastToken = headerPathTokens.token(numTokens -1);
+        int endPos = lastToken.start + lastToken.length;
+        // If the file name is specified in quotes, then the quotes will be a part
+        // of the token. Decrement endpos to leave out the ending quote when replacing.
+        if (directive->includeType() == IncludeDirective::QuoteInclude)
+            --endPos;
+        const int length = headerFileName.count();
+        const int startPos = endPos - length;
+        replacements.insert(replacement, startPos, length);
+        addLogSourceEntry(headerFileName + " -> " + replacement, headerPathTokens.tokenContainer(0), headerPathTokens.containerIndex(0));
+    }
 }
 
 IncludeDirectiveAnalyzer::IncludeDirectiveAnalyzer(const TokenEngine::TokenContainer &fileContents)

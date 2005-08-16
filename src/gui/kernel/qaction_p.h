@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,6 +39,8 @@
 #include <private/qobject_p.h>
 #include "qmenu.h"
 
+#ifndef QT_NO_ACTION
+
 #ifdef QT3_SUPPORT
 class QMenuItemEmitter;
 #endif
@@ -59,10 +61,14 @@ public:
     QString tooltip;
     QString statustip;
     QString whatsthis;
+#ifndef QT_NO_SHORTCUT
     QKeySequence shortcut;
+#endif
     QVariant userData;
+#ifndef QT_NO_SHORTCUT
     int shortcutId;
     Qt::ShortcutContext shortcutContext;
+#endif
     QFont font;
     QPointer<QMenu> menu;
     uint enabled : 1, forceDisabled : 1;
@@ -72,12 +78,13 @@ public:
     uint separator : 1;
 
     QList<QWidget *> widgets;
-
+#ifndef QT_NO_SHORTCUT
     void redoGrab(QShortcutMap &map);
     void setShortcutEnabled(bool enable, QShortcutMap &map);
 
     static QShortcutMap *globalMap;
-
+#endif // QT_NO_SHORTCUT
+    
 #ifdef QT3_SUPPORT //for menubar/menu compat
     QMenuItemEmitter *act_signal;
     int id, param;
@@ -85,4 +92,5 @@ public:
     void sendDataChanged();
 };
 
+#endif // QT_NO_ACTION
 #endif // QACTION_P_H

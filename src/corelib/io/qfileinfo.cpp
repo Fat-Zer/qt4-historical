@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -178,7 +178,7 @@ QDateTime
     (path) in the file system, its access rights and whether it is a
     directory or symbolic link, etc. The file's size and last
     modified/read times are also available. QFileInfo can also be
-    used to optain information about a Qt \l{resource
+    used to obtain information about a Qt \l{resource
     system}{resource}.
 
     A QFileInfo can point to a file with either a relative or an
@@ -207,7 +207,7 @@ QDateTime
     isSymLink(). The readLink() function provides the name of the file
     the symlink points to.
 
-    Elements of the file's name can be extracted with dirPath() and
+    Elements of the file's name can be extracted with path() and
     fileName(). The fileName()'s parts can be extracted with
     baseName() and extension().
 
@@ -266,12 +266,10 @@ QFileInfo::QFileInfo(const QFile &file) : d_ptr(new QFileInfoPrivate())
     \sa isRelative()
 */
 
-#ifndef QT_NO_DIR
 QFileInfo::QFileInfo(const QDir &dir, const QString &file) : d_ptr(new QFileInfoPrivate())
 {
     d_ptr->initFileEngine(dir.filePath(file));
 }
-#endif
 
 /*!
     Constructs a new QFileInfo that is a copy of the given \a fileinfo.
@@ -405,7 +403,6 @@ QFileInfo::setFile(const QFile &file)
     d->initFileEngine(file.fileName());
 }
 
-#ifndef QT_NO_DIR
 /*!
     \overload
 
@@ -424,7 +421,6 @@ QFileInfo::setFile(const QDir &dir, const QString &file)
     Q_D(QFileInfo);
     d->initFileEngine(dir.filePath(file));
 }
-#endif
 
 /*!
     Returns the absolute path including the file name.
@@ -478,9 +474,8 @@ QFileInfo::canonicalFilePath() const
 
 
 /*!
-    Returns the file's path absolute path.
-
-    This does not include the file name.
+    Returns the file's path absolute path. This doesn't include the
+    file name.
 
     \sa dir(), filePath(), fileName(), isRelative(), path()
 */
@@ -517,7 +512,7 @@ QFileInfo::canonicalPath() const
 
 
 /*!
-    Returns the file's path.
+    Returns the file's path. This doesn't include the file name.
 
     \sa dir(), filePath(), fileName(), isRelative(), absolutePath()
 */
@@ -743,7 +738,6 @@ QFileInfo::suffix() const
     return fileName.mid(lastDot + 1);
 }
 
-#ifndef QT_NO_DIR
 
 /*!
     Returns the file's path as a QDir object.
@@ -781,7 +775,6 @@ QDir QFileInfo::dir(bool absPath) const
     return dir();
 }
 #endif //QT3_SUPPORT
-#endif //QT_NO_DIR
 
 /*!
     Returns true if the user can read the file; otherwise returns false.
@@ -843,8 +836,7 @@ QFileInfo::isHidden() const
 
 /*!
     Returns true if this object points to a file. Returns false if the
-    object points to something which isn't a file, e.g. a directory or
-    a symlink.
+    object points to something which isn't a file, such as a directory.
 
     \sa isDir(), isSymLink()
 */
@@ -1003,7 +995,7 @@ QFileInfo::groupId() const
 
 /*!
     Tests for file permissions. The \a permissions argument can be
-    several flags of type \c QFile::Permissions OR-ed together to check
+    several flags of type QFile::Permissions OR-ed together to check
     for permission combinations.
 
     On systems where files do not have permissions this function

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,7 +23,6 @@
 
 #include "qmime.h"
 
-#ifndef QT_NO_MIME
 
 #include "qimagereader.h"
 #include "qimagewriter.h"
@@ -42,7 +41,7 @@
 #include "qtextdocument.h"
 #include "qdir.h"
 
-#ifndef QT_NO_IMAGEIO_BMP
+#ifndef QT_NO_IMAGEFORMAT_BMP
 extern bool qt_read_dib(QDataStream&, QImage&); // qimage.cpp
 extern bool qt_write_dib(QDataStream&, QImage);   // qimage.cpp
 #endif
@@ -638,7 +637,7 @@ QVariant QWindowsMimeURI::convertToMime(const QString &mimeType, LPDATAOBJECT pD
                 int i=0;
                 while (files[i]) {
                     urls += QUrl::fromLocalFile(QString::fromLocal8Bit(files+i));
-                    i += strlen(files+i)+1;
+                    i += int(strlen(files+i))+1;
                 }
             }
 
@@ -785,7 +784,7 @@ bool QWindowsMimeHtml::convertFromMime(const FORMATETC &formatetc, const QMimeDa
 }
 
 
-#ifndef QT_NO_IMAGEIO_BMP
+#ifndef QT_NO_IMAGEFORMAT_BMP
 class QWindowsMimeImage : public QWindowsMime
 {
 public:
@@ -1102,7 +1101,7 @@ void QWindowsMimeList::init()
 {
     if (!initialized) {
         initialized = true;
-#ifndef QT_NO_IMAGEIO_BMP
+#ifndef QT_NO_IMAGEFORMAT_BMP
         new QWindowsMimeImage;
 #endif
         new QLastResortMimes;
@@ -1132,4 +1131,3 @@ QList<QWindowsMime*> QWindowsMimeList::windowsMimes()
     return mimes;
 }
 
-#endif // QT_NO_MIME

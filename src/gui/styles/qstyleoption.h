@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,6 +31,8 @@
 #include "QtGui/qtabbar.h"
 #include "QtGui/qtabwidget.h"
 #include "QtGui/qrubberband.h"
+
+QT_MODULE(Gui)
 
 class QDebug;
 
@@ -100,6 +102,7 @@ protected:
     QStyleOptionFrame(int version);
 };
 
+#ifndef QT_NO_TABWIDGET
 class Q_GUI_EXPORT QStyleOptionTabWidgetFrame : public QStyleOption
 {
 public:
@@ -120,7 +123,9 @@ public:
 protected:
     QStyleOptionTabWidgetFrame(int version);
 };
+#endif
 
+#ifndef QT_NO_TABBAR
 class Q_GUI_EXPORT QStyleOptionTabBarBase : public QStyleOption
 {
 public:
@@ -137,6 +142,7 @@ public:
 protected:
     QStyleOptionTabBarBase(int version);
 };
+#endif
 
 class Q_GUI_EXPORT QStyleOptionHeader : public QStyleOption
 {
@@ -190,6 +196,7 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionButton::ButtonFeatures)
 
+#ifndef QT_NO_TABBAR
 class Q_GUI_EXPORT QStyleOptionTab : public QStyleOption
 {
 public:
@@ -218,6 +225,7 @@ protected:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionTab::CornerWidgets)
+#endif
 
 class Q_GUI_EXPORT QStyleOptionProgressBar : public QStyleOption
 {
@@ -365,6 +373,7 @@ protected:
     QStyleOptionToolBox(int version);
 };
 
+#ifndef QT_NO_RUBBERBAND
 class Q_GUI_EXPORT QStyleOptionRubberBand : public QStyleOption
 {
 public:
@@ -380,6 +389,7 @@ public:
 protected:
     QStyleOptionRubberBand(int version);
 };
+#endif // QT_NO_RUBBERBAND
 
 // -------------------------- Complex style options -------------------------------
 class Q_GUI_EXPORT QStyleOptionComplex : public QStyleOption
@@ -395,6 +405,7 @@ public:
     QStyleOptionComplex(const QStyleOptionComplex &other) : QStyleOption(Version, Type) { *this = other; }
 };
 
+#ifndef QT_NO_SLIDER
 class Q_GUI_EXPORT QStyleOptionSlider : public QStyleOptionComplex
 {
 public:
@@ -420,7 +431,9 @@ public:
 protected:
     QStyleOptionSlider(int version);
 };
+#endif // QT_NO_SLIDER
 
+#ifndef QT_NO_SPINBOX
 class Q_GUI_EXPORT QStyleOptionSpinBox : public QStyleOptionComplex
 {
 public:
@@ -437,6 +450,7 @@ public:
 protected:
     QStyleOptionSpinBox(int version);
 };
+#endif // QT_NO_SPINBOX
 
 class Q_GUI_EXPORT QStyleOptionQ3ListView : public QStyleOptionComplex
 {
@@ -591,7 +605,7 @@ T qstyleoption_cast(QStyleHintReturn *hint)
     return 0;
 }
 
-#ifndef QT_NO_DEBUG
+#if !defined(QT_NO_DEBUG_STREAM) && !defined(QT_NO_DEBUG)
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType);
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QStyleOption &option);
 #endif

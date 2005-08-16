@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/accessible/qaccessible.cpp -->
 <head>
     <title>Qt 4.0: QAccessibleInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAccessibleInterface Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAccessibleInterface Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QAccessibleInterface class defines an interface that exposes information about accessible objects. <a href="#details">More...</a></p>
-<pre>#include &lt;QAccessibleInterface&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qaccessible.html">QAccessible</a>.</p>
+<pre>#include &lt;QAccessibleInterface&gt;</pre><p>Inherits <a href="qaccessible.html">QAccessible</a>.</p>
 <p>Inherited by <a href="qaccessibleobject.html">QAccessibleObject</a>.</p>
 <ul>
 <li><a href="qaccessibleinterface-members.html">List of all members, including inherited members</a></li>
@@ -139,7 +138,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="relationTo"></a><a href="qaccessible.html#RelationFlag-enum">Relation</a> QAccessibleInterface::relationTo ( int <i>child</i>, const QAccessibleInterface * <i>other</i>, int <i>otherChild</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the relationship between this object's <i>child</i> and the <i>other</i> object's <i>otherChild</i>. If <i>child</i> is 0 the object's own relation is returned.</p>
 <p>The returned value indicates the relation of the called object to the <i>other</i> object, e.g. if this object is a child of <i>other</i> the return value will be <tt>Child</tt>.</p>
-<p>The return value is a combination of the bit flags in the <tt>QAccessible::Relation</tt> enumeration.</p>
+<p>The return value is a combination of the bit flags in the <a href="qaccessible.html#RelationFlag-enum">QAccessible::Relation</a> enumeration.</p>
 <p>All objects provide this information.</p>
 <p>See also <a href="qaccessibleinterface.html#indexOfChild">indexOfChild</a>() and <a href="qaccessibleinterface.html#navigate">navigate</a>().</p>
 <h3 class="fn"><a name="role"></a><a href="qaccessible.html#Role-enum">Role</a> QAccessibleInterface::role ( int <i>child</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
@@ -162,7 +161,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qaccessible.html#Text-enum">Help</a> text provides information about the function and usage of an accessible object. Not all objects provide this information.</p>
 <p>The <a href="qaccessible.html#Text-enum">Accelerator</a> is a keyboard shortcut that activates the object's default action. A keyboard shortcut is the underlined character in the text of a menu, menu item or widget, and is either the character itself, or a combination of this character and a modifier key like Alt, Ctrl or Shift. Command controls like tool buttons also have shortcut keys and usually display them in their tooltip.</p>
 <p>All objects provide a string for <a href="qaccessible.html#Text-enum">Name</a>.</p>
-<p>See also <a href="qaccessibleinterface.html#role">role</a>() and <a href="qaccessibleinterface.html#state">state</a>().</p>
+<p>See also <a href="qaccessibleinterface.html#setText">setText</a>(), <a href="qaccessibleinterface.html#role">role</a>(), and <a href="qaccessibleinterface.html#state">state</a>().</p>
 <h3 class="fn"><a name="userActionCount"></a>int QAccessibleInterface::userActionCount ( int <i>child</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the number of custom actions of the object, or of the object's child if <i>child</i> is not 0.</p>
 <p>The <tt>Action</tt> type enumerates predefined actions: these are not included in the returned value.</p>
@@ -171,6 +170,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

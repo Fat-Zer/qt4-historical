@@ -2,7 +2,6 @@
 DESTDIR = ../../../../bin
 QT += xml network
 CONFIG += qt assistant
-CONFIG -= debug_and_release
 build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
@@ -17,8 +16,8 @@ INCLUDEPATH += \
 
 LIBS += -L../../lib \
     -L../../../../lib \
-    -lQtDesigner \
-    -lQtDesignerComponents
+    -lQtDesignerComponents \
+    -lQtDesigner
 
 RESOURCES += designer.qrc
 

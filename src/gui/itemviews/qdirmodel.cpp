@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,6 +22,8 @@
 ****************************************************************************/
 
 #include "qdirmodel.h"
+
+#ifndef QT_NO_DIRMODEL
 #include <qfile.h>
 #include <qurl.h>
 #include <qmime.h>
@@ -33,6 +35,9 @@
 #include <qapplication.h>
 #include <private/qabstractitemmodel_p.h>
 #include <qdebug.h>
+#if defined(Q_WS_WIN)
+#  include "qt_windows.h"
+#endif
 
 /*!
   \class QFileIconProvider
@@ -203,7 +208,7 @@ QString QFileIconProvider::type(const QFileInfo &info) const
     if (info.isRoot())
         return QObject::tr("Drive");
     if (info.isFile())
-        return info.suffix() + " " + QObject::tr("File");
+        return info.suffix() + QLatin1String(" ") + QObject::tr("File");
     if (info.isDir())
         return QObject::tr("Directory");
     if (info.isSymLink())
@@ -259,7 +264,7 @@ public:
         QFileInfoList fil = dir.entryInfoList(nameFilters, filters, sort);
         for (int i = 0; i < fil.count(); ++i) {
             QString fn = fil.at(i).fileName();
-            if (fn == "." || fn == "..")
+            if (fn == QLatin1String(".") || fn == QLatin1String(".."))
                 fil.removeAt(i--);
         }
         return fil;
@@ -270,7 +275,7 @@ public:
         QStringList sl = dir.entryList(nameFilters, filters, sort);
         for (int i = 0; i < sl.count(); ++i) {
             QString fn = sl.at(i);
-            if (fn == "." || fn == "..")
+            if (fn == QLatin1String(".") || fn == QLatin1String(".."))
                 sl.removeAt(i--);
         }
         return sl;
@@ -497,9 +502,9 @@ QVariant QDirModel::data(const QModelIndex &index, int role) const
                 if (node->info.isRoot()) {
                     QString name = node->info.absoluteFilePath();
 #ifdef Q_OS_WIN
-                    if (name.at(0) == '/') // UNC host
+                    if (name.startsWith(QLatin1Char('/'))) // UNC host
                         return node->info.fileName();
-                    if (name.at(name.length() - 1) == '/')
+                    if (name.endsWith(QLatin1Char('/')))
                         name.chop(1);
 #endif
                     return name;
@@ -645,8 +650,7 @@ void QDirModel::sort(int column, Qt::SortOrder order)
         sort |= QDir::Size;
         break;
     case 2:
-        // FIXME: we should sort on the type string
-        sort |= QDir::DirsFirst;
+        sort |= QDir::Type;
         break;
     case 3:
         sort |= QDir::Time;
@@ -665,7 +669,7 @@ void QDirModel::sort(int column, Qt::SortOrder order)
 
 QStringList QDirModel::mimeTypes() const
 {
-    return QStringList("text/uri-list");
+    return QStringList(QLatin1String("text/uri-list"));
 }
 
 /*!
@@ -789,7 +793,7 @@ void QDirModel::setNameFilters(const QStringList &filters)
 
     d->savePersistentIndexes();
     beginRemoveRows(QModelIndex(), 0, rowCount(QModelIndex()) - 1);
-    
+
     d->nameFilters = filters;
     d->clear(&d->root); // clear model
 
@@ -816,7 +820,7 @@ QStringList QDirModel::nameFilters() const
 void QDirModel::setFilter(QDir::Filters filters)
 {
     Q_D(QDirModel);
-    
+
     d->savePersistentIndexes();
     beginRemoveRows(QModelIndex(), 0, rowCount(QModelIndex()) - 1);
 
@@ -974,7 +978,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
     QStringList pathElements = absolutePath.split(QChar('/'), QString::SkipEmptyParts);
     if ((pathElements.isEmpty() || !QFileInfo(path).exists())
 #ifndef Q_OS_WIN
-        && path != "/"
+        && path != QLatin1String("/")
 #endif
         )
         return QModelIndex();
@@ -982,9 +986,9 @@ QModelIndex QDirModel::index(const QString &path, int column) const
     QModelIndex idx; // start with "My Computer"
     if (!d->root.populated) // make sure the root is populated
         d->populate(&d->root);
-    
+
 #ifdef Q_OS_WIN
-    if (absolutePath.startsWith("//")) { // UNC path
+    if (absolutePath.startsWith(QLatin1String("//"))) { // UNC path
         QString host = pathElements.first();
         int r = 0;
         for (; r < d->root.children.count(); ++r) {
@@ -992,10 +996,10 @@ QModelIndex QDirModel::index(const QString &path, int column) const
                 break;
         }
         if (r >= d->root.children.count()) {
-            QFileInfo info("//" + host);
+            QFileInfo info(QLatin1String("//") + host);
             QDirModelPrivate::QDirNode node;
             node.parent = 0;
-            node.info = info; 
+            node.info = info;
             node.populated = false;
 #ifdef Q_DIRMODEL_CACHED
             node.cached_size = info.size();
@@ -1005,12 +1009,12 @@ QModelIndex QDirModel::index(const QString &path, int column) const
         }
         idx = index(r, 0, QModelIndex());
         pathElements.pop_front();
-    } else if (pathElements.at(0).endsWith(":")) {
-        pathElements[0] += "/";
+    } else if (pathElements.at(0).endsWith(QLatin1Char(':'))) {
+        pathElements[0] += QLatin1Char('/');
     }
 #else
     // add the "/" item, since it is a valid path element on unix
-    pathElements.prepend("/");
+    pathElements.prepend(QLatin1String("/"));
 #endif
     for (int i = 0; i < pathElements.count(); ++i) {
         QStringList entries;
@@ -1031,8 +1035,9 @@ QModelIndex QDirModel::index(const QString &path, int column) const
         idx = index(row, column, idx); // will check row and lazily populate
         // hit an invalid element (could be hidden or just not found)
         if (!idx.isValid()) {
-            qWarning() << "The file or directory" << pathElements.at(i)
-                       << "in the path" << path << "could not be found.";
+            qWarning("The file or directory %s in the path %s could not be found",
+                     qPrintable(pathElements.at(i)),
+                     qPrintable(path));
             break; // return an invalid index
         }
     }
@@ -1061,7 +1066,7 @@ bool QDirModel::isDir(const QModelIndex &index) const
 QModelIndex QDirModel::mkdir(const QModelIndex &parent, const QString &name)
 {
     Q_D(QDirModel);
-    if (!parent.isValid())
+    if (!parent.isValid() || isReadOnly())
         return QModelIndex();
 
     QDirModelPrivate::QDirNode *p =
@@ -1071,10 +1076,10 @@ QModelIndex QDirModel::mkdir(const QModelIndex &parent, const QString &name)
     // For the indexOf() method to work, the new directory has to be a direct child of
     // the parent directory.
 
-    QDir newDir(name); 
+    QDir newDir(name);
     QDir dir(path);
     if (newDir.isRelative())
-        newDir = QDir(path + "/" + name); 
+        newDir = QDir(path + QLatin1Char('/') + name);
     QString childName = newDir.dirName(); // Get the singular name of the directory
     newDir.cdUp();
 
@@ -1099,7 +1104,7 @@ QModelIndex QDirModel::mkdir(const QModelIndex &parent, const QString &name)
 
 bool QDirModel::rmdir(const QModelIndex &index)
 {
-    if (!index.isValid())
+    if (!index.isValid() || isReadOnly())
         return false;
 
     QDirModelPrivate::QDirNode *n =
@@ -1134,7 +1139,7 @@ bool QDirModel::rmdir(const QModelIndex &index)
 
 bool QDirModel::remove(const QModelIndex &index)
 {
-    if (!index.isValid())
+    if (!index.isValid() || isReadOnly())
         return false;
 
     QDirModelPrivate::QDirNode *n =
@@ -1155,7 +1160,7 @@ bool QDirModel::remove(const QModelIndex &index)
         return false;
 
     refresh(par);
-    
+
     return true;
 }
 
@@ -1234,7 +1239,7 @@ void QDirModelPrivate::init()
 {
     filters = QDir::TypeMask;
     sort = QDir::Name;
-    nameFilters << "*";
+    nameFilters << QLatin1String("*");
     root.parent = 0;
     root.info = QFileInfo();
     clear(&root);
@@ -1283,12 +1288,13 @@ QVector<QDirModelPrivate::QDirNode> QDirModelPrivate::children(QDirNode *parent)
 
     QVector<QDirNode> nodes(info.count());
     for (int i = 0; i < info.count(); ++i) {
-        nodes[i].parent = parent;
-        nodes[i].info = info.at(i);
-        nodes[i].populated = false;
+        QDirNode &node = nodes[i];
+        node.parent = parent;
+        node.info = info.at(i);
+        node.populated = false;
 #ifdef Q_DIRMODEL_CACHED
-        nodes[i].cached_size = info.at(i).size();
-        nodes[i].cached_modified = info.at(i).lastModified();
+        node.cached_size = info.at(i).size();
+        node.cached_modified = info.at(i).lastModified();
 #endif
     }
 
@@ -1313,7 +1319,7 @@ void QDirModelPrivate::refresh(QDirNode *parent)
 {
     QFileInfoList info;
     if (!parent)
-        info = QDir::drives(); 
+        info = QDir::drives();
     else if (parent->info.isDir())
         info = entryInfoList(parent->info.filePath());
 
@@ -1367,3 +1373,4 @@ void QDirModelPrivate::restorePersistentIndexes()
     }
 }
 
+#endif // QT_NO_DIRMODEL

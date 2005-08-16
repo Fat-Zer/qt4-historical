@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -117,7 +117,7 @@ private:
     {
         detach(false);
         QString path = p;
-        if ((path.endsWith(QLatin1String("/")) || path.endsWith(QLatin1String("\\")))
+        if ((path.endsWith(QLatin1Char('/')) || path.endsWith(QLatin1Char('\\')))
                 && path.length() > 1) {
 #ifdef Q_OS_WIN
             if (!(path.length() == 3 && path.at(1) == ':'))
@@ -162,6 +162,7 @@ QDirPrivate::~QDirPrivate()
 /* For sorting */
 struct QDirSortItem {
     QString filename_cache;
+    QString suffix_cache;
     QFileInfo item;
 };
 static int qt_cmp_si_sort_flags;
@@ -190,7 +191,8 @@ static int qt_cmp_si(const void *n1, const void *n2)
     }
 
     int r = 0;
-    int sortBy = qt_cmp_si_sort_flags & QDir::SortByMask;
+    int sortBy = (qt_cmp_si_sort_flags & QDir::SortByMask)
+                 | (qt_cmp_si_sort_flags & QDir::Type);
 
     switch (sortBy) {
       case QDir::Time:
@@ -198,6 +200,20 @@ static int qt_cmp_si(const void *n1, const void *n2)
         break;
       case QDir::Size:
         r = f2->item.size() - f1->item.size();
+        break;
+      case QDir::Type:
+      {
+        bool ic = qt_cmp_si_sort_flags & QDir::IgnoreCase;
+
+        if (f1->suffix_cache.isNull())
+            f1->suffix_cache = ic ? f1->item.suffix().toLower()
+                               : f1->item.suffix();
+        if (f2->suffix_cache.isNull())
+            f2->suffix_cache = ic ? f2->item.suffix().toLower()
+                               : f2->item.suffix();
+
+        r = f1->suffix_cache.compare(f2->suffix_cache);
+      }
         break;
       default:
         ;
@@ -240,11 +256,11 @@ inline void QDirPrivate::sortFileList(QDir::SortFlags sort, QStringList &l,
         QDirSortItem *si= new QDirSortItem[l.count()];
         int i;
         for (i = 0; i < l.size(); ++i) {
-	    QString path = data->path;
-	    if (!path.isEmpty() && path.right(1) != QLatin1String("/"))
-		path += QLatin1Char('/');
+            QString path = data->path;
+            if (!path.isEmpty() && !path.endsWith(QLatin1Char('/')))
+                path += QLatin1Char('/');
             si[i].item = QFileInfo(path + l.at(i));
-	}
+        }
         qt_cmp_si_sort_flags = sort;
         qsort(si, i, sizeof(si[0]), qt_cmp_si);
         // put them back in the list(s)
@@ -433,8 +449,8 @@ QDir::QDir(const QString &path) : d_ptr(new QDirPrivate(this))
     also sorts the names using \a sort.
 
     The default \a nameFilter is an empty string, which excludes
-    nothing; the default \a filters is \c TypeMask, which also means
-    exclude nothing. The default \a sort is \c Name|IgnoreCase,
+    nothing; the default \a filters is \l TypeMask, which also means
+    exclude nothing. The default \a sort is \l Name | \l IgnoreCase,
     i.e. sort by name case-insensitively.
 
     If \a path is an empty string, QDir uses "." (the current
@@ -452,7 +468,17 @@ QDir::QDir(const QString &path, const QString &nameFilter,
     Q_D(QDir);
     d->setPath(path.isEmpty() ? QString::fromLatin1(".") : path);
     d->data->nameFilters = QDir::nameFiltersFromString(nameFilter);
-    if (d->data->nameFilters.isEmpty())
+    bool empty = d->data->nameFilters.isEmpty();
+    if(!empty) {
+        empty = true;
+        for(int i = 0; i < d->data->nameFilters.size(); ++i) {
+            if(!d->data->nameFilters.at(i).isEmpty()) {
+                empty = false;
+                break;
+            }
+        }
+    }
+    if (empty)
         d->data->nameFilters = QStringList(QString::fromLatin1("*"));
     d->data->sort = sort;
     d->data->filters = filters;
@@ -532,9 +558,10 @@ QString QDir::path() const
 QString QDir::absolutePath() const
 {
     Q_D(const QDir);
-    if (QDir::isRelativePath(d->data->path))
-        return absoluteFilePath(QString::fromLatin1(""));
-    return cleanPath(d->data->path);
+    QString ret = d->data->path;
+    if (QDir::isRelativePath(ret))
+        ret = absoluteFilePath(QString::fromLatin1(""));
+    return cleanPath(ret);
 }
 
 
@@ -641,12 +668,12 @@ QString QDir::absoluteFilePath(const QString &fileName) const
     if (isRelativePath(d->data->path)) //get pwd
         ret = QFSFileEngine::currentPath(fileName);
     if(!d->data->path.isEmpty() && d->data->path != QLatin1String(".")) {
-        if (!ret.isEmpty() && ret.right(1) != QLatin1String("/"))
+        if (!ret.isEmpty() && !ret.endsWith(QLatin1Char('/')))
             ret += QLatin1Char('/');
         ret += d->data->path;
     }
     if (!fileName.isEmpty()) {
-        if (!ret.isEmpty() && ret.right(1) != QLatin1String("/"))
+        if (!ret.isEmpty() && !ret.endsWith(QLatin1Char('/')))
             ret += QLatin1Char('/');
         ret += fileName;
     }
@@ -684,7 +711,11 @@ QString QDir::relativeFilePath(const QString &fileName) const
         fileDriveMissing = true;
     }
 
+#ifdef Q_OS_WIN
+    if (fileDrive.toLower() != dirDrive.toLower())
+#else
     if (fileDrive != dirDrive)
+#endif
         return convertSeparators(file);
 
     dir.remove(0, dirDrive.size());
@@ -696,7 +727,12 @@ QString QDir::relativeFilePath(const QString &fileName) const
     QStringList fileElts = file.split(QLatin1Char('/'), QString::SkipEmptyParts);
 
     int i = 0;
-    while (i < dirElts.size() && i < fileElts.size() && dirElts.at(i) == fileElts.at(i))
+    while (i < dirElts.size() && i < fileElts.size() &&
+#ifdef Q_OS_WIN
+           dirElts.at(i).toLower() == fileElts.at(i).toLower())
+#else
+           dirElts.at(i) == fileElts.at(i))
+#endif
         ++i;
 
     for (int j = 0; j < dirElts.size() - i; ++j)
@@ -899,21 +935,21 @@ QDir::Filters QDir::filter() const
 
     \omitvalue DefaultFilter
     \omitvalue TypeMask
-    \omitvalue  RWEMask
+    \omitvalue RWEMask
     \omitvalue AccessMask
     \omitvalue PermissionMask
     \omitvalue NoFilter
 
-    Functions that use \c Filter enum values to filter lists of files
+    Functions that use Filter enum values to filter lists of files
     and directories will include symbolic links to files and directories
-    unless you set the \c NoSymLinks value.
+    unless you set the NoSymLinks value.
 
-    If you do not set any of \c Readable, \c Writable, or \c
+    If you do not set any of Readable, Writable, or
     Executable, QDir will set all three of them. This makes the
     default easy to write, and at the same time useful.
 
-    Examples: \c Readable|Writable means list all files for which the
-    application has read access, write access or both. \c Dirs|Drives
+    Examples: Readable | Writable means list all files for which the
+    application has read access, write access or both. Dirs | Drives
     means list drives, directories, all files that the application can
     read, write or execute, and also symlinks to such
     files/directories.
@@ -959,6 +995,7 @@ QDir::SortFlags QDir::sorting() const
     \value Name  Sort by name.
     \value Time  Sort by time (modification time).
     \value Size  Sort by file size.
+    \value Type  Sort by file type (extension).
     \value Unsorted  Do not sort.
 
     \value DirsFirst  Put the directories first, then the files.
@@ -972,7 +1009,7 @@ QDir::SortFlags QDir::sorting() const
 
     You can only specify one of the first four.
 
-    If you specify both \c DirsFirst and \c Reversed, directories are
+    If you specify both DirsFirst and Reversed, directories are
     still put first, but in reverse order; the files will be listed
     after the directories, again in reverse order.
 */
@@ -1550,7 +1587,7 @@ QFileInfoList QDir::drives()
 
 /*!
     Returns the native directory separator: "/" under Unix (including
-    Mac OS X) and "\" under Windows.
+    Mac OS X) and "\\" under Windows.
 
     You do not need to use this function to build file paths. If you
     always use "/", Qt will translate your paths to conform to the
@@ -1711,7 +1748,7 @@ bool QDir::match(const QStringList &filters, const QString &fileName)
 
 bool QDir::match(const QString &filter, const QString &fileName)
 {
-    return match(QStringList(filter), fileName);
+    return match(nameFiltersFromString(filter), fileName);
 }
 #endif
 
@@ -1835,7 +1872,7 @@ QString QDir::cleanPath(const QString &path)
 	ret = QString(out.data(), used);
 
     // Strip away last slash except for root directories
-    if (ret.endsWith(QLatin1String("/"))
+    if (ret.endsWith(QLatin1Char('/'))
         && !(ret.size() == 1 || (ret.size() == 3 && ret.at(1) == QLatin1Char(':'))))
         ret = ret.left(ret.length() - 1);
 
@@ -1877,6 +1914,28 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
 {
     return QDirPrivate::splitFilters(nameFilter);
 }
+
+/*!
+    \macro void Q_INIT_RESOURCE(name)
+    \relates QDir
+
+    Initializes the resources specified by the \c .qrc file with the
+    base name \a name. Normally, Qt resources are loaded
+    automatically at startup. The Q_INIT_RESOURCE() macro is
+    necessary on some platforms for resources stored in a static
+    library.
+
+    For example, if your application's resources are listed in a file
+    called \c myapp.qrc, you can ensure that the resources are
+    initialized at startup by adding this line to your \c main()
+    function:
+
+    \code
+        Q_INIT_RESOURCE(myapp);
+    \endcode
+
+    \sa {The Qt Resource System}
+*/
 
 #ifdef QT3_SUPPORT
 /*!

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,8 +29,11 @@
 #include <QtCore/QVariant>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
+
+#include <QtGui/QLayout>
 #include <QtGui/QImage>
 #include <QtGui/QPixmap>
+
 #include <QtCore/qdebug.h>
 
 static const QMetaObject *introducedBy(const QMetaObject *meta, int index)
@@ -81,6 +84,18 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
         createFakeProperty(QLatin1String("acceptDrops"));
         createFakeProperty(QLatin1String("dragEnabled"));
         createFakeProperty(QLatin1String("modal"));
+
+        int pindex = -1;
+
+        pindex = count();
+        createFakeProperty(QLatin1String("margin"), 0);
+        setAttribute(pindex, true);
+        setPropertyGroup(pindex, tr("Layout"));
+
+        pindex = count();
+        createFakeProperty(QLatin1String("spacing"), 0);
+        setAttribute(pindex, true);
+        setPropertyGroup(pindex, tr("Layout"));
     }
 }
 
@@ -164,6 +179,12 @@ void QDesignerPropertySheet::setPropertyGroup(int index, const QString &group)
 QVariant QDesignerPropertySheet::property(int index) const
 {
     if (isAdditionalProperty(index)) {
+        if (isFakeLayoutProperty(index) && m_object->isWidgetType()) {
+            QWidget *widget = qobject_cast<QWidget*>(m_object);
+            if (QLayout *l = widget->layout())
+                return l->property(propertyName(index).toUtf8());
+        }
+
         return m_addProperties.value(index);
     }
 
@@ -285,6 +306,14 @@ void QDesignerPropertySheet::setFakeProperty(int index, const QVariant &value)
 void QDesignerPropertySheet::setProperty(int index, const QVariant &value)
 {
     if (isAdditionalProperty(index)) {
+        if (isFakeLayoutProperty(index) && m_object->isWidgetType()) {
+            QWidget *widget = qobject_cast<QWidget*>(m_object);
+            if (QLayout *l = widget->layout()) {
+                l->setProperty(propertyName(index).toUtf8(), value);
+                return;
+            }
+        }
+
         m_addProperties[index] = value;
     } else if (isFakeProperty(index)) {
         setFakeProperty(index, value);
@@ -332,10 +361,30 @@ void QDesignerPropertySheet::setChanged(int index, bool changed)
     m_info[index].changed = changed;
 }
 
+bool QDesignerPropertySheet::isFakeLayoutProperty(int index) const
+{
+    if (!isAdditionalProperty(index))
+        return false;
+
+    QString pname = propertyName(index);
+    if (pname == QLatin1String("margin")
+            || pname == QLatin1String("spacing")
+            || pname == QLatin1String("sizeConstraint"))
+        return true;
+
+    return false;
+}
+
 bool QDesignerPropertySheet::isVisible(int index) const
 {
-    if (isAdditionalProperty(index))
+    if (isAdditionalProperty(index)) {
+        if (isFakeLayoutProperty(index) && m_object->isWidgetType()) {
+            QWidget *widget = qobject_cast<QWidget*>(m_object);
+            return (widget->layout() != 0);
+        }
+
         return m_info.value(index).visible;
+    }
 
     if (isFakeProperty(index))
         return true;

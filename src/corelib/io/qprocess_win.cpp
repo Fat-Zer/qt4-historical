@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -35,6 +35,7 @@
 #include <qabstracteventdispatcher.h>
 #include <qdebug.h>
 
+#ifndef QT_NO_PROCESS
 //#define QPROCESS_DEBUG
 
 #define SLEEPMIN 10
@@ -212,43 +213,26 @@ static void qt_create_pipes(QProcessPrivate *that)
         return;
     if (!CloseHandle(tmpStdin))
         return;
-    if (that->processChannelMode == QProcess::ForwardedChannels) {
-        tmpStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (tmpStdout == INVALID_HANDLE_VALUE)
-            return;
-        if (!DuplicateHandle(GetCurrentProcess(), tmpStdout, GetCurrentProcess(),
-                         &that->standardReadPipe[1], 0, TRUE, DUPLICATE_SAME_ACCESS))
+    if (!CreatePipe(&tmpStdout, &that->standardReadPipe[1], &secAtt, 0))
+        return;
+    if (!DuplicateHandle(GetCurrentProcess(), tmpStdout, GetCurrentProcess(),
+                     &that->standardReadPipe[0], 0, FALSE, DUPLICATE_SAME_ACCESS))
+    return;
+    if (!CloseHandle(tmpStdout))
         return;
 
-        tmpStderr = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (tmpStderr == INVALID_HANDLE_VALUE)
+    if (that->processChannelMode == QProcess::MergedChannels) {
+        if (!DuplicateHandle(GetCurrentProcess(), that->standardReadPipe[1], GetCurrentProcess(),
+                     &that->errorReadPipe[1], 0, TRUE, DUPLICATE_SAME_ACCESS))
+        return;
+    } else {
+        if (!CreatePipe(&tmpStderr, &that->errorReadPipe[1], &secAtt, 0))
             return;
         if (!DuplicateHandle(GetCurrentProcess(), tmpStderr, GetCurrentProcess(),
-                         &that->errorReadPipe[1], 0, TRUE, DUPLICATE_SAME_ACCESS))
-        return;
-
-    } else {
-        if (!CreatePipe(&tmpStdout, &that->standardReadPipe[1], &secAtt, 0))
+                     &that->errorReadPipe[0], 0, FALSE, DUPLICATE_SAME_ACCESS))
             return;
-        if (!DuplicateHandle(GetCurrentProcess(), tmpStdout, GetCurrentProcess(),
-                         &that->standardReadPipe[0], 0, FALSE, DUPLICATE_SAME_ACCESS))
-        return;
-        if (!CloseHandle(tmpStdout))
+        if (!CloseHandle(tmpStderr))
             return;
-
-        if (that->processChannelMode == QProcess::MergedChannels) {
-            if (!DuplicateHandle(GetCurrentProcess(), that->standardReadPipe[1], GetCurrentProcess(),
-                         &that->errorReadPipe[1], 0, TRUE, DUPLICATE_SAME_ACCESS))
-            return;
-        } else {
-            if (!CreatePipe(&tmpStderr, &that->errorReadPipe[1], &secAtt, 0))
-                return;
-            if (!DuplicateHandle(GetCurrentProcess(), tmpStderr, GetCurrentProcess(),
-                         &that->errorReadPipe[0], 0, FALSE, DUPLICATE_SAME_ACCESS))
-                return;
-            if (!CloseHandle(tmpStderr))
-                return;
-        }
     }
 }
 
@@ -274,7 +258,7 @@ void QProcessPrivate::destroyPipe(Q_PIPE pipe[2])
 static QString qt_create_commandline(const QString &program, const QStringList &arguments)
 {
     QString programName = program;
-    if (!programName.startsWith("\"") && !programName.endsWith("\"") && programName.contains(" "))
+    if (!programName.startsWith(QLatin1Char('\"')) && !programName.endsWith(QLatin1Char('\"')) && programName.contains(" "))
         programName = "\"" + programName + "\"";
     programName.replace("/", "\\");
 
@@ -480,6 +464,18 @@ qint64 QProcessPrivate::bytesAvailableFromStdout() const
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::bytesAvailableFromStdout() == %d", bytesAvail);
 #endif
+    if (processChannelMode == QProcess::ForwardedChannels && bytesAvail > 0) {
+        QByteArray buf(bytesAvail, 0);
+        DWORD bytesRead = 0;
+        if (ReadFile(standardReadPipe[0], buf.data(), buf.size(), &bytesRead, 0) && bytesRead > 0) {
+            HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (hStdout) {
+                DWORD bytesWritten = 0;
+                WriteFile(hStdout, buf.data(), bytesRead, &bytesWritten, 0);
+            }
+        }
+        bytesAvail = 0;
+    }
     return bytesAvail;
 }
 
@@ -490,6 +486,18 @@ qint64 QProcessPrivate::bytesAvailableFromStderr() const
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::bytesAvailableFromStderr() == %d", bytesAvail);
 #endif
+    if (processChannelMode == QProcess::ForwardedChannels && bytesAvail > 0) {
+        QByteArray buf(bytesAvail, 0);
+        DWORD bytesRead = 0;
+        if (ReadFile(errorReadPipe[0], buf.data(), buf.size(), &bytesRead, 0) && bytesRead > 0) {
+            HANDLE hStderr = GetStdHandle(STD_ERROR_HANDLE);
+            if (hStderr) {
+                DWORD bytesWritten = 0;
+                WriteFile(hStderr, buf.data(), bytesRead, &bytesWritten, 0);
+            }
+        }
+        bytesAvail = 0;
+    }
     return bytesAvail;
 }
 
@@ -513,10 +521,23 @@ qint64 QProcessPrivate::readFromStderr(char *data, qint64 maxlen)
     return bytesRead;
 }
 
+
+static BOOL CALLBACK qt_terminateApp(HWND hwnd, LPARAM procId)
+{
+    DWORD currentProcId = 0;
+    GetWindowThreadProcessId(hwnd, &currentProcId);
+    if (currentProcId == (DWORD)procId)
+	    PostMessage(hwnd, WM_CLOSE, 0, 0);
+
+    return TRUE;
+}
+
 void QProcessPrivate::terminateProcess()
 {
-    if (pid)
+    if (pid) {
+        EnumWindows(qt_terminateApp, (LPARAM)pid->dwProcessId);
         PostThreadMessage(pid->dwThreadId, WM_CLOSE, 0, 0);
+    }
 }
 
 void QProcessPrivate::killProcess()
@@ -714,8 +735,9 @@ void QProcessPrivate::notified()
 
     if (bytesAvailableFromStderr())
         canReadStandardError();
-
-    notifier->start(NOTIFYTIMEOUT);
+    
+    if (processState != QProcess::NotRunning)
+        notifier->start(NOTIFYTIMEOUT);
 }
 
 bool QProcessPrivate::startDetached(const QString &program, const QStringList &arguments)
@@ -760,4 +782,6 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
 
 
 #include "qprocess_win.moc"
+
+#endif // QT_NO_PROCESS
 

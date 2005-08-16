@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,17 +22,12 @@
 ****************************************************************************/
 
 #include "qbytearray.h"
+#include "qdebug.h"
 #include "qiodevice_p.h"
 #include "qfile.h"
+#include "qstringlist.h"
 
 #define Q_VOID
-
-#define CHECK_OPEN(function, returnType) \
-    do { \
-        if (!isOpen()) { \
-            return returnType; \
-        } \
-    } while (0)
 
 #define CHECK_MAXLEN(function, returnType) \
     do { \
@@ -57,6 +52,13 @@
            return returnType; \
        } \
    } while (0)
+
+#define CHECK_OPEN(function, returnType) \
+    do { \
+        if (!isOpen()) { \
+            return returnType; \
+        } \
+    } while (0)
 
 /*! \internal
  */
@@ -192,14 +194,14 @@ QIODevicePrivate::~QIODevicePrivate()
 */
 
 /*!
-    \enum QIODevice::Offset
+    \typedef QIODevice::Offset
     \compat
 
     Use \c qint64 instead.
 */
 
 /*!
-    \enum QIODevice::Status
+    \typedef QIODevice::Status
     \compat
 
     Use QIODevice::OpenMode instead, or see the documentation for
@@ -505,8 +507,9 @@ qint64 QIODevice::size() const
 bool QIODevice::seek(qint64 pos)
 {
     Q_D(QIODevice);
-    if (pos > 0)
-        d->ungetBuffer.chop(pos);
+    qint64 offset = pos - this->pos();
+    if (offset >= 0)
+        d->ungetBuffer.chop(offset);
     else
         d->ungetBuffer.clear();
     return true;
@@ -538,12 +541,16 @@ bool QIODevice::reset()
     Returns the number of bytes that are available for reading. This
     function is commonly used with sequential devices to determine the
     number of bytes to allocate in a buffer before reading.
+
+    Subclasses that reimplement this function call the base
+    implementation in order to include the size of the unget buffer.
 */
 qint64 QIODevice::bytesAvailable() const
 {
+    Q_D(const QIODevice);
     if (!isSequential())
         return size() - pos();
-    return 0;
+    return d->ungetBuffer.size();
 }
 
 /*!
@@ -668,35 +675,47 @@ QByteArray QIODevice::read(qint64 maxSize)
 */
 QByteArray QIODevice::readAll()
 {
-    const int chunkSize = 4096;
-    qint64 totalRead = 0;
     QByteArray tmp;
-    forever {
-        tmp.resize(tmp.size() + chunkSize);
-        qint64 readBytes = read(tmp.data() + totalRead, chunkSize);
-        if (readBytes < chunkSize) {
-            tmp.chop(chunkSize - (readBytes < 0 ? qint64(0) : readBytes));
-            return tmp;
+    if (isSequential()) {
+        // Read it in chunks, bytesAvailable() is unreliable for sequential
+        // devices.
+        const int chunkSize = 4096;
+        qint64 totalRead = 0;
+        forever {
+            tmp.resize(tmp.size() + chunkSize);
+            qint64 readBytes = read(tmp.data() + totalRead, chunkSize);
+            if (readBytes < chunkSize) {
+                tmp.chop(chunkSize - (readBytes < 0 ? qint64(0) : readBytes));
+                return tmp;
+            }
+            totalRead += readBytes;
         }
-        totalRead += readBytes;
+    } else {
+        // Read it all in one go.
+        tmp.resize(int(bytesAvailable()));
+        qint64 readBytes = read(tmp.data(), tmp.size());
+        if (readBytes < tmp.size()) {
+            if (readBytes == -1)
+                return QByteArray();
+            tmp.resize(int(readBytes));
+        }
     }
     return tmp;
 }
 
 /*!
-    This function reads a line of ASCII characters from the device, up
-    to a maximum of \a maxSize bytes, stores the characters in \a data,
-    and returns the number of bytes read. If an error occurred, -1 is
-    returned.
+    This function reads a line of ASCII characters from the device, up to a
+    maximum of \a maxSize - 1 bytes, stores the characters in \a data, and
+    returns the number of bytes read. If an error occurred, -1 is returned.
 
-    If there is room in the buffer (i.e. the line read is shorter than
-    \a maxSize characters), a '\0' byte is appended to \a data.
+    A '\0' byte is always appended to \a data, so \a maxSize must be larger
+    than 1.
 
     Data is read until either of the following conditions are met:
 
     \list
     \o The first '\n' character is read.
-    \o \a maxSize bytes are read.
+    \o \a maxSize - 1 bytes are read.
     \o The end of the device data is detected.
     \endlist
 
@@ -714,8 +733,8 @@ QByteArray QIODevice::readAll()
         }
     \endcode
 
-    If the '\n' character is the 1024th character read then it will be
-    inserted into the buffer; if it occurs after the 1024 character then
+    If the '\n' character is the 1023th character read then it will be
+    inserted into the buffer; if it occurs after the 1023 character then
     it is not read.
 
     This function calls readLineData(), which is implemented using
@@ -728,33 +747,45 @@ QByteArray QIODevice::readAll()
 qint64 QIODevice::readLine(char *data, qint64 maxSize)
 {
     Q_D(QIODevice);
-    if (maxSize < 1) {
-        qWarning("QIODevice::readLine() called with maxSize < 1");
+    if (maxSize < 2) {
+        qWarning("QIODevice::readLine() called with maxSize < 2");
         return qint64(-1);
     }
+
+    // Leave room for a '\0'
+    --maxSize;
 
     qint64 readSoFar = 0;
     if (int ungetSize = d->ungetBuffer.size()) {
         do {
-            if (readSoFar + 1 > maxSize) {
-                if (readSoFar < maxSize)
-                    data[readSoFar] = '\0';
-                d->ungetBuffer.resize(d->ungetBuffer.size() - readSoFar);
-                return readSoFar;
-            }
-
             char c = d->ungetBuffer[ungetSize-- - 1];
             data[readSoFar++] = c;
-            if (c == '\n') {
-                if (readSoFar < maxSize)
-                    data[readSoFar] = '\0';
+            if (c == '\n' || readSoFar + 1 > maxSize) {
+                data[readSoFar] = '\0';
+                seek(pos() + readSoFar);
                 return readSoFar;
             }
         } while (ungetSize > 0);
-        d->ungetBuffer.resize(d->ungetBuffer.size() - readSoFar);
+        seek(pos() + readSoFar);
     }
 
-    return readLineData(data + readSoFar, maxSize - readSoFar);
+    qint64 readBytes = readLineData(data + readSoFar, maxSize - readSoFar);
+    if (readBytes == -1) {
+        data[readSoFar] = '\0';
+        return readSoFar ? readSoFar : -1;
+    }
+    readSoFar += readBytes;
+    data[readSoFar] = '\0';
+
+    if (d->openMode & Text) {
+        if (readSoFar > 1 && data[readSoFar - 1] == '\n' && data[readSoFar - 2] == '\r') {
+            data[readSoFar - 2] = '\n';
+            data[readSoFar - 1] = '\0';
+            --readSoFar;
+        }
+    }
+
+    return readSoFar;
 }
 
 /*!
@@ -771,17 +802,19 @@ QByteArray QIODevice::readLine(qint64 maxSize)
 {
     CHECK_MAXLEN(readLine, QByteArray());
     QByteArray tmp;
-    char buffer[4096];
-    Q_UNUSED(buffer);
+    const int BufferGrowth = 4096;
     qint64 readSoFar = 0;
     qint64 readBytes = 0;
 
     do {
         if (maxSize != 0)
-            tmp.resize(readSoFar + qMin(int(maxSize), int(sizeof(buffer))));
+            tmp.resize(readSoFar + qMin(int(maxSize), BufferGrowth));
         else
-            tmp.resize(readSoFar + int(sizeof(buffer)));
-        readBytes = readLineData(tmp.data() + readSoFar, tmp.size());
+            tmp.resize(readSoFar + BufferGrowth);
+        readBytes = readLine(tmp.data() + readSoFar, tmp.size() - readSoFar);
+        if (readBytes <= 0)
+            break;
+
         readSoFar += readBytes;
     } while (readSoFar < maxSize && readBytes > 0
              && readBytes == tmp.size() && tmp.at(readBytes - 1) != '\n');
@@ -798,23 +831,20 @@ QByteArray QIODevice::readLine(qint64 maxSize)
     implementation, using getChar(). Buffered devices can improve the
     performance of readLine() by reimplementing this function.
 
-    When reimplementing this function, keep in mind that you must
-    handle the \l Text flag which translates end-of-line characters.
+    readLine() appends a '\0' byte to \a data; readLineData() does not
+    need to do this.
 */
 qint64 QIODevice::readLineData(char *data, qint64 maxSize)
 {
     qint64 readSoFar = 0;
     char c;
     bool lastGetSucceeded = false;
-    while (readSoFar + 1 < maxSize && (lastGetSucceeded = getChar(&c))) {
+    while (readSoFar < maxSize && (lastGetSucceeded = getChar(&c))) {
         *data++ = c;
         ++readSoFar;
         if (c == '\n')
             break;
     }
-
-    if (readSoFar < maxSize)
-        *data = '\0';
 
     if (!lastGetSucceeded && readSoFar == 0)
         return qint64(-1);
@@ -904,7 +934,8 @@ qint64 QIODevice::write(const char *data, qint64 maxSize)
     }
 #endif
     qint64 written = writeData(data, maxSize);
-    d->ungetBuffer.chop(written);
+    if (written > 0 && !d->ungetBuffer.isEmpty())
+        d->ungetBuffer.chop(written);
     return written;
 }
 
@@ -943,8 +974,11 @@ void QIODevice::ungetChar(char c)
     d->ungetBuffer.append(c);
     if (!isSequential()) {
         qint64 curPos = pos();
-        if (curPos > 0)
+        if (curPos > 0) {
+            QByteArray tmp = d->ungetBuffer;
             seek(curPos - 1);
+            d->ungetBuffer = tmp;
+        }
     }
 }
 
@@ -962,7 +996,7 @@ void QIODevice::ungetChar(char c)
 
     If called from within a slot connected to the readyRead() signal,
     readyRead() will not be reemitted.
-    
+
     \warning Calling this function from the main (GUI) thread
     might cause your user interface to freeze.
 
@@ -1199,3 +1233,4 @@ void QIODevice::resetStatus()
 #endif
 }
 #endif
+

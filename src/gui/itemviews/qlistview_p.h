@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,6 +37,8 @@
 
 #include <private/qabstractitemview_p.h>
 #include <qrubberband.h>
+
+#ifndef QT_NO_LISTVIEW
 
 template <class T>
 class QBinTree
@@ -169,23 +171,23 @@ template <class T>
 void QBinTree<T>::insertItem(T &item, const QRect &rect, int idx)
 {
     itemVector.insert(idx + 1, 1, item); // insert after idx
-    climbTree(rect, &insert, reinterpret_cast<void *>(idx), 0);
+    climbTree(rect, &insert, Data(idx), 0);
 }
 
 template <class T>
 void QBinTree<T>::removeItem(const QRect &rect, int idx)
 {
-    climbTree(rect, &remove, reinterpret_cast<void *>(idx), 0);
+    climbTree(rect, &remove, Data(idx), 0);
     itemVector.remove(idx, 1);
 }
 
 template <class T>
 void QBinTree<T>::moveItem(const QPoint &dest, const QRect &rect, int idx)
 {
-    climbTree(rect, &remove, reinterpret_cast<void *>(idx), 0);
-    item(idx).x = dest.x();
-    item(idx).y = dest.y();
-    climbTree(QRect(dest, rect.size()), &insert, reinterpret_cast<void *>(idx), 0);
+    climbTree(rect, &remove, Data(idx), 0);
+    itemVector[idx].x = dest.x();
+    itemVector[idx].y = dest.y();
+    climbTree(QRect(dest, rect.size()), &insert, Data(idx), 0);
 }
 
 template <class T>
@@ -255,6 +257,8 @@ public:
         { return (x > -1) && (y > -1) && (w > 0) && (h > 0) && (indexHint > -1); }
     inline void invalidate()
         { x = -1; y = -1; w = 0; h = 0; }
+    inline void resize(const QSize &size)
+        { w = size.width(); h = size.height(); }
 private:
     inline QRect rect() const
         { return QRect(x, y, w, h); }
@@ -296,7 +300,7 @@ public:
     QRect itemsRect(const QVector<QModelIndex> &indexes) const;
 
     inline int flipX(int x) const
-        { return qMax(viewport->width(), layoutBounds.width()) - x; }
+        { return qMax(viewport->width(), contentsSize.width()) - x; }
     inline QPoint flipX(const QPoint &p) const
         { return QPoint(flipX(p.x()), p.y()); }
     inline QRect flipX(const QRect &r) const
@@ -323,6 +327,13 @@ public:
     QRect draggedItemsRect() const;
 
     QModelIndex closestIndex(const QPoint &target, const QVector<QModelIndex> &candidates) const;
+
+    bool selectionAllowed(const QModelIndex &index) const
+    {
+        if (movement == QListView::Static)
+            return index.isValid();
+        return true;
+    }
 
     QRect elasticBand;
 
@@ -381,4 +392,5 @@ public:
     int column;
 };
 
+#endif // QT_NO_LISTVIEW
 #endif //QLISTVIEW_P_H

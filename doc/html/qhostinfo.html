@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/network/qhostinfo.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/network/qhostinfo.cpp -->
 <head>
     <title>Qt 4.0: QHostInfo Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QHostInfo Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QHostInfo Class Reference<br /><sup><sup>[<a href="qtnetwork.html">QtNetwork</a> module]</sup></sup></h1>
 <p>The QHostInfo class provides static functions for host name lookups. <a href="#details">More...</a></p>
-<pre>#include &lt;QHostInfo&gt;</pre><p>Part of the <a href="qtnetwork.html">QtNetwork</a> module.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre>#include &lt;QHostInfo&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qhostinfo-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -70,7 +69,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QHostInfo info = QHostInfo::fromName(&quot;www.trolltech.com&quot;);</pre>
 <p>QHostInfo supports Internationalized Domain Names (IDNs) through the IDNA and Punycode standards.</p>
 <p>To retrieve the name of the local host, use the static <a href="qhostinfo.html#localHostName">QHostInfo::localHostName</a>() function.</p>
-<p>See also <a href="qabstractsocket.html">QAbstractSocket</a> and <a href="http://ietf.org/rfc/rfc3492">RFC 3492</a>.</p>
+<p>See also <a href="qabstractsocket.html">QAbstractSocket</a> and <a href="http://www.rfc-editor.org/rfc/rfc3492.txt">RFC 3492</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="HostInfoError-enum"></a>enum QHostInfo::HostInfoError</h3>
@@ -103,7 +102,7 @@ body { background: #ffffff; color: black; }</style>
         QHostAddress address = info.addresses().first();
         // use the first IP address
     }</pre>
-<p>See also <a href="qhostinfo.html#hostName">hostName</a>() and <a href="qhostinfo.html#error">error</a>().</p>
+<p>See also <a href="qhostinfo.html#setAddresses">setAddresses</a>(), <a href="qhostinfo.html#hostName">hostName</a>(), and <a href="qhostinfo.html#error">error</a>().</p>
 <h3 class="fn"><a name="error"></a><a href="qhostinfo.html#HostInfoError-enum">HostInfoError</a> QHostInfo::error () const</h3>
 <p>Returns the type of error that occurred if the host name lookup failed; otherwise returns <a href="qhostinfo.html#HostInfoError-enum">NoError</a>.</p>
 <p>See also <a href="qhostinfo.html#setError">setError</a>() and <a href="qhostinfo.html#errorString">errorString</a>().</p>
@@ -115,7 +114,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qhostinfo.html#lookupHost">lookupHost</a>().</p>
 <h3 class="fn"><a name="hostName"></a><a href="qstring.html">QString</a> QHostInfo::hostName () const</h3>
 <p>Returns the name of the host whose IP addresses were looked up.</p>
-<p>See also <a href="qhostinfo.html#localHostName">localHostName</a>().</p>
+<p>See also <a href="qhostinfo.html#setHostName">setHostName</a>() and <a href="qhostinfo.html#localHostName">localHostName</a>().</p>
 <h3 class="fn"><a name="localHostName"></a><a href="qstring.html">QString</a> QHostInfo::localHostName ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the host name of this machine.</p>
 <p>See also <a href="qhostinfo.html#hostName">hostName</a>().</p>
@@ -160,6 +159,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

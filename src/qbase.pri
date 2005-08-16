@@ -3,21 +3,13 @@ INCLUDEPATH *= $$QMAKE_INCDIR_QT/$$TARGET #just for today to have some compat
 TEMPLATE	= lib
 
 # note the configure script relies on the VERSION=X.Y.Z line not having any whitespace
-VERSION=4.0.0
+VERSION=4.0.1
 
 #load up the headers info
 unix {
-    contains(QT_PRODUCT, .*Console.*):!equals(TARGET, QtGui):!equals(TARGET, QtOpenGL) {
-        CONFIG += qt_install_headers
-        HEADERS_PRI = $$QT_BUILD_TREE/include/$$TARGET/headers.pri
-        include($$HEADERS_PRI)|clear(HEADERS_PRI)
-    } else {
-        !contains(QT_PRODUCT, .*Console.*) {
-            CONFIG += qt_install_headers
-            HEADERS_PRI = $$QT_BUILD_TREE/include/$$TARGET/headers.pri
-            include($$HEADERS_PRI)|clear(HEADERS_PRI)
-        }
-    }
+    CONFIG += qt_install_headers
+    HEADERS_PRI = $$QT_BUILD_TREE/include/$$TARGET/headers.pri
+    include($$HEADERS_PRI)|clear(HEADERS_PRI)
 }
 
 #version overriding
@@ -92,10 +84,7 @@ win32-borland {
 win32 {
     CONFIG += zlib
     INCLUDEPATH += tmp
-    !static {
-         DEFINES+=QT_MAKEDLL
-         exists(../qt.rc):RC_FILE = ../qt.rc
-    }
+    !static: DEFINES+=QT_MAKEDLL
 }
 win32-borland:INCLUDEPATH += kernel
 

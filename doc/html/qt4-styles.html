@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/qt4-styles.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/qt4-styles.qdoc -->
 <head>
     <title>Qt 4.0: The Qt 4 Style API</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,15 +19,15 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qt4-network.html">The Network Module in Qt 4</a>]
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-threads.html">Thread Support in Qt 4</a>]
 </p>
-<h1 align="center">The Qt 4 Style API</h1>
+<h1 align="center">The Qt 4 Style API<br /><small></small></h1>
 <p>Qt's style API is responsible for performing the widget drawing for built-in widgets. The Qt 4 style API has been revised to make it possible for a style to draw widgets without calling any functions on the widget.</p>
-<p>Because Qt 4 is split across multiple libraries, Qt needed this update to be able to draw widgets from other libraries than <a href="qtgui.html#qtgui">QtGui</a>. For application developers, this has other benefits, such as more managable parameter lists and the possibility of drawing any graphical element without having a widget of a specific type.</p>
+<p>Because Qt 4 is split across multiple libraries, Qt needed this update to be able to draw widgets from other libraries than <a href="qtgui.html">QtGui</a>. For application developers, this has other benefits, such as more managable parameter lists and the possibility of drawing any graphical element without having a widget of a specific type.</p>
 <a name="general-overview"></a>
 <h2>General Overview</h2>
 <p>The <a href="qstyle.html">QStyle</a> class is an abstract base class that encapsulates the look and feel of a GUI. Qt's built-in widgets use it to perform nearly all of their drawing, ensuring that they look exactly like the equivalent native widgets.</p>
@@ -39,7 +39,7 @@ body { background: #ffffff; color: black; }</style>
 <li>a <a href="qwidget.html">QWidget</a> on which the drawing is performed (optional)</li>
 </ul>
 <p>The style gets all the information it needs to render the graphical element from <a href="qstyleoption.html">QStyleOption</a>. The widget is passed as the last argument in case the style needs it to perform special effects (such as animated default buttons on Mac OS X), but it isn't mandatory. In fact, <a href="qstyle.html">QStyle</a> can be used to draw on any paint device, not just widgets, by setting the <a href="qpainter.html">QPainter</a> properly.</p>
-<p>Thanks to <a href="qstyleoption.html">QStyleOption</a>, it is now possible to make <a href="qstyle.html">QStyle</a> draw widgets without linking in any code for the widget. This is how Qt's built-in styles can draw Qt 3 widgets such as <a href="q3listview.html">Q3ListView</a> without necessarily linking against the <a href="qt3support.html#qt3support">Qt3Support</a> library. Another significant benefit of the new approach is that it's now possible to use <a href="qstyle.html">QStyle</a>'s draw functions on other widgets than the built-in widgets; for example, you can draw a combobox on any widget, not just on a <a href="qcombobox.html">QComboBox</a>.</p>
+<p>Thanks to <a href="qstyleoption.html">QStyleOption</a>, it is now possible to make <a href="qstyle.html">QStyle</a> draw widgets without linking in any code for the widget. This is how Qt's built-in styles can draw Qt 3 widgets such as <a href="q3listview.html">Q3ListView</a> without necessarily linking against the <a href="qt3support.html">Qt3Support</a> library. Another significant benefit of the new approach is that it's now possible to use <a href="qstyle.html">QStyle</a>'s draw functions on other widgets than the built-in widgets; for example, you can draw a combobox on any widget, not just on a <a href="qcombobox.html">QComboBox</a>.</p>
 <p><a href="qstyleoption.html">QStyleOption</a> has various subclasses for the various types of graphical elements that can be drawn, and it's possible to create custom subclasses. For example, the <a href="qstyle.html#PrimitiveElement-enum">QStyle::PE_FrameFocusRect</a> element expects a <a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a> argument. This is documented for each enum value.</p>
 <p>When reimplementing <a href="qstyle.html">QStyle</a> functions that take a <a href="qstyleoption.html">QStyleOption</a> parameter, you often need to cast the <a href="qstyleoption.html">QStyleOption</a> to a subclass (e.g., <a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a>). For safety, you can use <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to ensure that the pointer type is correct. If the object isn't of the right type, <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() returns 0. For example:</p>
 <pre>&nbsp;   const QStyleOptionFocusRect *focusRectOption =
@@ -110,6 +110,7 @@ body { background: #ffffff; color: black; }</style>
             QWindowsStyle::drawPrimitive(element, option, painter, widget);
         }
     }</pre>
+<p>See also the <a href="widgets-styles.html">Styles Example</a> for a more detailed description of how custom styles can be created.</p>
 <a name="comparison-with-qt-3"></a>
 <h2>Comparison with Qt 3</h2>
 <p>The <a href="qstyle.html">QStyle</a> class has a similar API in Qt 4 as in Qt 3, with more or less the same functions. What has changed is the signature of the functions and the role played by <a href="qstyleoption.html">QStyleOption</a>. For example, here's the signature of the <a href="qstyle.html#drawControl">QStyle::drawControl</a>() function in Qt 3:</p>
@@ -135,6 +136,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

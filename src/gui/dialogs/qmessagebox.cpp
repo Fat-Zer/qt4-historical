@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -65,6 +65,7 @@ public:
     QPushButton        *pb[3];                  // buttons
 };
 
+#ifndef QT_NO_IMAGEFORMAT_XPM
 /* XPM */
 static const char * const qtlogo_xpm[] = {
 /* width height ncolors chars_per_pixel */
@@ -139,6 +140,7 @@ static const char * const qtlogo_xpm[] = {
 "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",
 "/$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$/",
 };
+#endif // QT_NO_IMAGEFORMAT_XPM
 
 
 /*!
@@ -268,7 +270,7 @@ static const char * const qtlogo_xpm[] = {
     \printuntil }
 
     QMessageBox defines two enum types: Icon and an unnamed button type.
-    Icon defines the \c Question, \c Information, \c Warning, and \c
+    Icon defines the \l Question, \l Information, \l Warning, and \l
     Critical icons for each GUI style. It is used by the constructor
     and by the static member functions question(), information(),
     warning() and critical(). A function called standardIcon() gives
@@ -308,7 +310,7 @@ static const char * const qtlogo_xpm[] = {
 
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
     how to use QMessageBox as well as other built-in Qt dialogs.
-    
+
     \inlineimage qmsgbox-m.png Screenshot in Motif style
     \inlineimage qmsgbox-w.png Screenshot in Windows style
 
@@ -332,18 +334,18 @@ static const char * const qtlogo_xpm[] = {
     \value NoAll A "No to all" button.
 
     The following values are flags that can be OR'ed with the button values.
-    
+
     \value Default The button is default (i.e., QPushButton::default).
     \value Escape The button is activated by pressing the Escape key.
 
     The following values are masks that can be used to separate buttons from
     flags.
-    
+
     \value ButtonMask A bitmask that covers all button types.
     \value FlagMask A bitmask that covers all button flags.
 
     Finally, the last value is often used as a default value.
-    
+
     \value NoButton
 */
 
@@ -445,11 +447,11 @@ QMessageBox::QMessageBox(QWidget *parent)
     than three buttons in your message box. If you don't specify any
     buttons at all, QMessageBox will provide an Ok button.
 
-    One of the buttons can be OR-ed with the \c QMessageBox::Default
+    One of the buttons can be OR-ed with the QMessageBox::Default
     flag to make it the default button (clicked when Enter is
     pressed).
 
-    One of the buttons can be OR-ed with the \c QMessageBox::Escape
+    One of the buttons can be OR-ed with the QMessageBox::Escape
     flag to make it the cancel or close button (clicked when Escape is
     pressed).
 
@@ -480,9 +482,7 @@ QMessageBox::QMessageBox(const QString& caption,
 #ifdef Q_WS_MAC
     setText("<p><b>" + caption + "</b></p><p>" + text + "</p>");
 #else
-#ifndef QT_NO_WIDGET_TOPEXTRA
     setWindowTitle(caption);
-#endif
     setText(text);
 #endif
     setIcon(icon);
@@ -527,7 +527,7 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
             "<p>Qt provides single-source "
             "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
             "Linux, and all major commercial Unix variants. Qt is also"
-            " available for embedded devices.</p>"
+            " available for embedded devices as Qt/Embedded.</p>"
             "<p>Qt is a Trolltech product. See "
             "<tt>http://www.trolltech.com/qt/</tt> for more information.</p>"
            ).arg(QT_VERSION_STR);
@@ -535,6 +535,8 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
 
     }
     label = new QLabel(q);
+    label->setObjectName("qt_msgbox_label");
+
     label->setAlignment(Qt::AlignTop|Qt::AlignLeft);
 
     if ((button2 && !button1) || (button1 && !button0)) {
@@ -543,6 +545,8 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
     }
     icon = QMessageBox::NoIcon;
     iconLabel = new QLabel(q);
+    iconLabel->setObjectName("qt_msgbox_icon_label");
+
     iconLabel->setPixmap(QPixmap());
     numButtons = 0;
     button[0] = button0;
@@ -591,6 +595,7 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
             pb[i] = 0;
         } else {
             pb[i] = new QPushButton(q->tr(mb_texts[button[i]]), q);
+            pb[i]->setObjectName(mb_texts[button[i]]);
             if (defButton == i) {
                 pb[i]->setDefault(true);
                 pb[i]->setFocus();
@@ -622,7 +627,7 @@ int QMessageBoxPrivate::indexOf(int button) const
 
     The text will be interpreted either as a plain text or as rich
     text, depending on the text format setting (\l
-    QMessageBox::textFormat). The default setting is \c Qt::AutoText, i.e.
+    QMessageBox::textFormat). The default setting is Qt::AutoText, i.e.
     the message box will try to auto-detect the format of the text.
 
     The default value of this property is an empty string.
@@ -708,9 +713,7 @@ QMessageBox::QMessageBox(const QString& caption,
 #ifdef Q_WS_MAC
     setText("<p><b>" + caption + "</b></p><p>" + text + "</p>");
 #else
-#ifndef QT_NO_WIDGET_TOPEXTRA
     setWindowTitle(caption);
-#endif
     setText(text);
 #endif
     setIcon(icon);
@@ -973,7 +976,7 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
             return;
         }
     }
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     if (!(e->modifiers() & Qt::AltModifier)) {
         int key = e->key() & ~((int)Qt::MODIFIER_MASK|(int)Qt::UNICODE_ACCEL);
         if (key) {
@@ -1073,8 +1076,8 @@ void QMessageBox::closeEvent(QCloseEvent *e)
     If you don't want all three buttons, set the last button, or last
     two buttons to QMessageBox::NoButton.
 
-    One button can be OR-ed with \c QMessageBox::Default, and one
-    button can be OR-ed with \c QMessageBox::Escape.
+    One button can be OR-ed with QMessageBox::Default, and one
+    button can be OR-ed with QMessageBox::Escape.
 
     Returns the identity (QMessageBox::Ok, or QMessageBox::No, etc.)
     of the button that was clicked.
@@ -1118,8 +1121,8 @@ int QMessageBox::information(QWidget *parent, const QString& caption, const QStr
     If you don't want all three buttons, set the last button, or last
     two buttons to QMessageBox::NoButton.
 
-    One button can be OR-ed with \c QMessageBox::Default, and one
-    button can be OR-ed with \c QMessageBox::Escape.
+    One button can be OR-ed with QMessageBox::Default, and one
+    button can be OR-ed with QMessageBox::Escape.
 
     Returns the identity (QMessageBox::Yes, or QMessageBox::No, etc.)
     of the button that was clicked.
@@ -1165,8 +1168,8 @@ int QMessageBox::question(QWidget *parent,
     If you don't want all three buttons, set the last button, or last
     two buttons to QMessageBox::NoButton.
 
-    One button can be OR-ed with \c QMessageBox::Default, and one
-    button can be OR-ed with \c QMessageBox::Escape.
+    One button can be OR-ed with QMessageBox::Default, and one
+    button can be OR-ed with QMessageBox::Escape.
 
     Returns the identity (QMessageBox::Ok, or QMessageBox::No, etc.)
     of the button that was clicked.
@@ -1212,8 +1215,8 @@ int QMessageBox::warning(QWidget *parent,
     If you don't want all three buttons, set the last button, or last
     two buttons to QMessageBox::NoButton.
 
-    One button can be OR-ed with \c QMessageBox::Default, and one
-    button can be OR-ed with \c QMessageBox::Escape.
+    One button can be OR-ed with QMessageBox::Default, and one
+    button can be OR-ed with QMessageBox::Escape.
 
     Returns the identity (QMessageBox::Ok, or QMessageBox::No, etc.)
     of the button that was clicked.
@@ -1260,11 +1263,9 @@ void QMessageBox::about(QWidget *parent, const QString &caption,
                          const QString& text)
 {
     QMessageBox mb(caption, text, Information, Ok + Default, 0, 0, parent);
-#ifndef QT_NO_WIDGET_TOPEXTRA
     QIcon icon = mb.windowIcon();
     QSize size = icon.actualSize(QSize(64, 64));
     mb.setIconPixmap(icon.pixmap(size));
-#endif
     mb.exec();
 }
 
@@ -1494,10 +1495,10 @@ int QMessageBox::critical(QWidget *parent, const QString &caption,
                     defaultButtonNumber, escapeButtonNumber);
 }
 
-#ifndef QT_NO_IMAGEIO_XPM
+#ifndef QT_NO_IMAGEFORMAT_XPM
 // helper
 extern void qt_read_xpm_image_or_array(QImageReader *, const char * const *, QImage &);
-#endif
+#endif 
 
 /*!
     Displays a simple message box about Qt, with caption \a caption
@@ -1516,15 +1517,16 @@ void QMessageBox::aboutQt(QWidget *parent, const QString &caption)
 {
     QMessageBox mb(parent);
 
-#ifndef QT_NO_WIDGET_TOPEXTRA
     QString c = caption;
     if (c.isEmpty())
         c = tr("About Qt");
     mb.setWindowTitle(c);
-#endif
     mb.setText(*translatedTextAboutQt);
-#ifndef QT_NO_IMAGEIO
+#ifndef QT_NO_IMAGEFORMAT_XPM
     QImage logo(qtlogo_xpm);
+#else
+    QImage logo;
+#endif
 
     if (qGray(mb.palette().color(QPalette::Active, QPalette::Text).rgb()) >
         qGray(mb.palette().color(QPalette::Active, QPalette::Base).rgb()))
@@ -1543,7 +1545,6 @@ void QMessageBox::aboutQt(QWidget *parent, const QString &caption)
     QPixmap pm = QPixmap::fromImage(logo);
     if (!pm.isNull())
         mb.setIconPixmap(pm);
-#endif
     mb.setButtonText(0, tr("OK"));
     if (mb.d_func()->pb[0]) {
         mb.d_func()->pb[0]->setAutoDefault(true);
@@ -1561,7 +1562,7 @@ void QMessageBox::aboutQt(QWidget *parent, const QString &caption)
     The current text format used by the message box. See the \l
     Qt::TextFormat enum for an explanation of the possible options.
 
-    The default format is \c Qt::AutoText.
+    The default format is Qt::AutoText.
 
     \sa setText()
 */

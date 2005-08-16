@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,6 +28,8 @@
 #include "QtGui/qpaintdevice.h"
 #include "QtCore/qrect.h"
 #include "QtCore/qbytearray.h"
+
+QT_MODULE(Gui)
 
 class QIODevice;
 class QStringList;
@@ -67,6 +69,16 @@ public:
         Format_RGB32,
         Format_ARGB32,
         Format_ARGB32_Premultiplied
+#ifdef Q_WS_QWS
+        , Format_RGB16,
+        Format_RGB15,
+        Format_Grayscale16,
+        Format_Grayscale8,
+        Format_Grayscale4,
+        Format_Grayscale4LSB,
+        Format_Grayscale2,
+        Format_Grayscale2LSB
+#endif
     };
 
     QImage();
@@ -74,12 +86,12 @@ public:
     QImage(int width, int height, Format format);
     QImage(uchar *data, int width, int height, Format format);
 
+#ifndef QT_NO_IMAGEFORMAT_XPM
     explicit QImage(const char * const xpm[]);
-#ifndef QT_NO_IMAGEIO
+#endif
     explicit QImage(const QString &fileName, const char *format = 0);
 #ifndef QT_NO_CAST_FROM_ASCII
     explicit QImage(const char *fileName, const char *format = 0);
-#endif
 #endif
 
     QImage(const QImage &);
@@ -141,14 +153,11 @@ public:
     bool hasAlphaChannel() const;
     void setAlphaChannel(const QImage &alphaChannel);
     QImage alphaChannel() const;
-#ifndef QT_NO_IMAGE_DITHER_TO_1
     QImage createAlphaMask(Qt::ImageConversionFlags flags = Qt::AutoColor) const;
-#endif
 #ifndef QT_NO_IMAGE_HEURISTIC_MASK
     QImage createHeuristicMask(bool clipTight = true) const;
 #endif
 
-#ifndef QT_NO_IMAGE_TRANSFORMATION
     inline QImage scaled(int w, int h, Qt::AspectRatioMode aspectMode = Qt::IgnoreAspectRatio,
                         Qt::TransformationMode mode = Qt::FastTransformation) const
         { return scaled(QSize(w, h), aspectMode, mode); }
@@ -158,15 +167,11 @@ public:
     QImage scaledToHeight(int h, Qt::TransformationMode mode = Qt::FastTransformation) const;
     QImage transformed(const QMatrix &matrix, Qt::TransformationMode mode = Qt::FastTransformation) const;
     static QMatrix trueMatrix(const QMatrix &, int w, int h);
-#endif
-#ifndef QT_NO_IMAGE_MIRROR
     QImage mirrored(bool horizontally = false, bool vertically = true) const;
-#endif
     QImage rgbSwapped() const;
     void invertPixels(InvertMode = InvertRgb);
 
 
-#ifndef QT_NO_IMAGEIO
     bool load(const QString &fileName, const char* format=0);
     bool loadFromData(const uchar *buf, int len, const char *format = 0);
     inline bool loadFromData(const QByteArray &data, const char* aformat=0)
@@ -178,7 +183,6 @@ public:
     static QImage fromData(const uchar *data, int size, const char *format = 0);
     inline static QImage fromData(const QByteArray &data, const char *format = 0)
         { return fromData(reinterpret_cast<const uchar *>(data.constData()), data.size(), format); }
-#endif //QT_NO_IMAGEIO
 
     int serialNumber() const;
 
@@ -244,10 +248,8 @@ public:
     inline QT3_SUPPORT QImage copy(const QRect &rect, Qt::ImageConversionFlags) const
         { return copy(rect); }
     static QT3_SUPPORT Endian systemBitOrder();
-#ifndef QT_NO_IMAGEIO
     inline QT3_SUPPORT_CONSTRUCTOR QImage(const QByteArray &data)
         { d = 0; *this = QImage::fromData(data); }
-#endif
 #endif
 
 protected:
@@ -264,7 +266,7 @@ Q_DECLARE_TYPEINFO(QImage, Q_MOVABLE_TYPE);
 
 // QImage stream functions
 
-#if !defined(QT_NO_DATASTREAM) && !defined(QT_NO_IMAGEIO)
+#if !defined(QT_NO_DATASTREAM)
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QImage &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QImage &);
 #endif

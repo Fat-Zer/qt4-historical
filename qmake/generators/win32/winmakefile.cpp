@@ -4,17 +4,17 @@
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -404,7 +404,7 @@ void Win32MakefileGenerator::processRcFileVar()
         if (!project->variables()["RES_FILE"].isEmpty()) {
             fprintf(stderr, "Both rc and res file specified.\n");
             fprintf(stderr, "Please specify one of them, not both.");
-            exit(666);
+            exit(1);
         }
         QString resFile = project->variables()["RC_FILE"].first();
         resFile.replace(".rc", Option::res_ext);
@@ -531,6 +531,15 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
     t << "####### Files" << endl << endl;
     t << "SOURCES       = " << varList("SOURCES") << " " << varList("GENERATED_SOURCES") << endl;
 
+    // do this here so we can set DEST_TARGET to be the complete path to the final target if it is needed.
+    QString orgDestDir = var("DESTDIR");
+    QString destDir = Option::fixPathToTargetOS(orgDestDir, false);
+    if (orgDestDir.endsWith('/') || orgDestDir.endsWith(Option::dir_sep))
+        destDir += Option::dir_sep;
+    QString target = destDir + project->first("TARGET") + project->first("TARGET_EXT");
+    target.remove('"');
+    project->variables()["DEST_TARGET"].prepend(target);
+    
     writeObjectsPart(t);
 
     writeExtraCompilerVariables(t);
@@ -540,12 +549,8 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
     t << "QMAKE_TARGET  = " << var("QMAKE_ORIG_TARGET") << endl;
     // The comment is important to maintain variable compatability with Unix
     // Makefiles, while not interpreting a trailing-slash as a linebreak
-    t << "DESTDIR       = " << var("DESTDIR") << " #avoid trailing-slash linebreak" << endl;
-    t << "TARGET        = ";
-    QString target = var("DESTDIR") + project->first("TARGET") + project->first("TARGET_EXT");
-    target.remove('"');
-    t << target;
-    t << endl << endl;
+    t << "DESTDIR       = " << destDir << " #avoid trailing-slash linebreak" << endl;
+    t << "TARGET        = " << var("DEST_TARGET") << endl << endl;
 
     t << "####### Implicit rules" << endl << endl;
     writeImplicitRulesPart(t);
@@ -559,7 +564,7 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
     if(project->isActiveConfig("dll") && !project->variables()["DLLDESTDIR"].isEmpty()) {
         QStringList dlldirs = project->variables()["DLLDESTDIR"];
         for (QStringList::Iterator dlldir = dlldirs.begin(); dlldir != dlldirs.end(); ++dlldir) {
-            t << "\n\t" << "-$(COPY_FILE) \"$(TARGET)\" " << *dlldir;
+            t << "\n\t" << "-$(COPY_FILE) \"$(TARGET)\" " << Option::fixPathToTargetOS(*dlldir, false);
         }
     }
     t << endl << endl;
@@ -617,7 +622,10 @@ void Win32MakefileGenerator::writeLibsPart(QTextStream &t)
 
 void Win32MakefileGenerator::writeLibDirPart(QTextStream &t)
 {
-    t << varGlue("QMAKE_LIBDIR","-L\"","\" -L\"","\"") << " ";
+    QStringList libDirs = project->variables()["QMAKE_LIBDIR"];
+    for (int i = 0; i < libDirs.size(); ++i)
+        libDirs[i].remove("\"");
+    t << valGlue(libDirs,"-L\"","\" -L\"","\"") << " ";
 }
 
 void Win32MakefileGenerator::writeObjectsPart(QTextStream &t)

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/datastreamformat.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/datastreamformat.qdoc -->
 <head>
     <title>Qt 4.0: Format of the QDataStream Operators</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,40 +16,40 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Format of the QDataStream Operators</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Format of the QDataStream Operators<br /><small></small></h1>
 <p>The <a href="qdatastream.html">QDataStream</a> allows you to serialize some of the Qt data types. The table below lists the data types that <a href="qdatastream.html">QDataStream</a> can serialize and how they are represented. The format described below is <a href="qdatastream.html#setVersion">version 7</a>.</p>
-<p>It is always best to cast integers to a Qt integer type, such as <a href="qtglobal.html#qint16-typedef">qint16</a> or <a href="qtglobal.html#quint32-typedef">quint32</a>, when reading and writing. This ensures that you always know exactly what size integers you are reading and writing, no matter what the underlying platform and architecture the application happens to be running on.</p>
+<p>It is always best to cast integers to a Qt integer type, such as qint16 or quint32, when reading and writing. This ensures that you always know exactly what size integers you are reading and writing, no matter what the underlying platform and architecture the application happens to be running on.</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtglobal.html#qint8-typedef">qint8</a></td><td><ul>
+<tr valign="top" bgcolor="#f0f0f0"><td>qint8</td><td><ul>
 <li>signed byte</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtglobal.html#qint16-typedef">qint16</a></td><td><ul>
+<tr valign="top" bgcolor="#e0e0e0"><td>qint16</td><td><ul>
 <li>signed 16-bit integer</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtglobal.html#qint32-typedef">qint32</a></td><td><ul>
+<tr valign="top" bgcolor="#f0f0f0"><td>qint32</td><td><ul>
 <li>signed 32-bit integer</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtglobal.html#qint64-typedef">qint64</a></td><td><ul>
+<tr valign="top" bgcolor="#e0e0e0"><td>qint64</td><td><ul>
 <li>signed 64-bit integer</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtglobal.html#quint8-typedef">quint8</a></td><td><ul>
+<tr valign="top" bgcolor="#f0f0f0"><td>quint8</td><td><ul>
 <li>unsigned byte</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtglobal.html#quint16-typedef">quint16</a></td><td><ul>
+<tr valign="top" bgcolor="#e0e0e0"><td>quint16</td><td><ul>
 <li>unsigned 16-bit integer</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtglobal.html#quint32-typedef">quint32</a></td><td><ul>
+<tr valign="top" bgcolor="#f0f0f0"><td>quint32</td><td><ul>
 <li>unsigned 32-bit integer</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtglobal.html#quint64-typedef">quint64</a></td><td><ul>
+<tr valign="top" bgcolor="#e0e0e0"><td>quint64</td><td><ul>
 <li>unsigned 64-bit integer</li>
 </ul>
 </td></tr>
@@ -62,61 +62,61 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>const char *</tt></td><td><ul>
-<li>The string length (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The string length (quint32)</li>
 <li>The string bytes, excluding the terminating 0</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qbitarray.html">QBitArray</a></td><td><ul>
-<li>The array size (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The array size (quint32)</li>
 <li>The array bits, i.e. (size + 7)/8 bytes</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qbrush.html">QBrush</a></td><td><ul>
-<li>The brush style (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
+<li>The brush style (quint8)</li>
 <li>The brush color (<a href="qcolor.html">QColor</a>)</li>
 <li>If style is CustomPattern, the brush pixmap (<a href="qpixmap.html">QPixmap</a>)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qbytearray.html">QByteArray</a></td><td><ul>
-<li>If the byte array is null: 0xFFFFFFFF (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
-<li>Otherwise: the array size (<a href="qtglobal.html#quint32-typedef">quint32</a>) followed by the array bytes, i.e. size bytes</li>
+<li>If the byte array is null: 0xFFFFFFFF (quint32)</li>
+<li>Otherwise: the array size (quint32) followed by the array bytes, i.e. size bytes</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qcolor.html">QColor</a></td><td><ul>
-<li>RGB value serialized as a <a href="qtglobal.html#quint32-typedef">quint32</a></li>
+<li>RGB value serialized as a quint32</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qcursor.html">QCursor</a></td><td><ul>
-<li>Shape ID (<a href="qtglobal.html#qint16-typedef">qint16</a>)</li>
+<li>Shape ID (qint16)</li>
 <li>If shape is BitmapCursor: The bitmap (<a href="qpixmap.html">QPixmap</a>), mask (<a href="qpixmap.html">QPixmap</a>), and hot spot (<a href="qpoint.html">QPoint</a>)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdate.html">QDate</a></td><td><ul>
-<li>Julian day (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>Julian day (quint32)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdatetime.html">QDateTime</a></td><td><ul>
 <li>Date (<a href="qdate.html">QDate</a>)</li>
 <li>Time (<a href="qtime.html">QTime</a>)</li>
-<li>0 for <a href="qt.html#TimeSpec-enum">Qt::LocalTime</a>, 1 for <a href="qt.html#TimeSpec-enum">Qt::UTC</a> (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
+<li>0 for <a href="qt.html#TimeSpec-enum">Qt::LocalTime</a>, 1 for <a href="qt.html#TimeSpec-enum">Qt::UTC</a> (quint8)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qfont.html">QFont</a></td><td><ul>
 <li>The family (<a href="qstring.html">QString</a>)</li>
-<li>The point size (<a href="qtglobal.html#qint16-typedef">qint16</a>)</li>
-<li>The style hint (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
-<li>The char set (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
-<li>The weight (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
-<li>The font bits (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
+<li>The point size (qint16)</li>
+<li>The style hint (quint8)</li>
+<li>The char set (quint8)</li>
+<li>The weight (quint8)</li>
+<li>The font bits (quint8)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qhash.html">QHash</a>&lt;Key, T&gt;</td><td><ul>
-<li>The number of items (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The number of items (quint32)</li>
 <li>For all items, the key (Key) and value (T)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qimage.html">QImage</a></td><td><ul>
-<li>If the image is null a &quot;null image&quot; marker is saved; otherwise the image is saved in PNG or BMP format (depending on the stream version). If you want control of the format, stream the image into a <a href="qbuffer.html">QBuffer</a> (using QImageIO) and stream that.</li>
+<li>If the image is null a &quot;null image&quot; marker is saved; otherwise the image is saved in PNG or BMP format (depending on the stream version). If you want control of the format, stream the image into a <a href="qbuffer.html">QBuffer</a> (using <a href="porting4.html#qimageio">QImageIO</a>) and stream that.</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qkeysequence.html">QKeySequence</a></td><td><ul>
@@ -124,17 +124,17 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;</td><td><ul>
-<li>The number of items (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The number of items (quint32)</li>
 <li>The items (T)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qlist.html">QList</a>&lt;T&gt;</td><td><ul>
-<li>The number of items (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The number of items (quint32)</li>
 <li>The items (T)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qmap.html">QMap</a>&lt;Key, T&gt;</td><td><ul>
-<li>The number of items (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The number of items (quint32)</li>
 <li>For all items, the key (Key) and value (T)</li>
 </ul>
 </td></tr>
@@ -168,17 +168,17 @@ body { background: #ffffff; color: black; }</style>
 <li>highlight (<a href="qbrush.html">QBrush</a>)</li>
 <li>highlightedText (<a href="qbrush.html">QBrush</a>)</li>
 <li>link (<a href="qbrush.html">QBrush</a>)</li>
-<li>linkVisited (QBursh)</li>
+<li>linkVisited (<a href="qbrush.html">QBrush</a>)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qpen.html">QPen</a></td><td><ul>
-<li>The pen styles (<a href="qtglobal.html#quint8-typedef">quint8</a>)</li>
-<li>The pen width (<a href="qtglobal.html#quint16-typedef">quint16</a>)</li>
+<li>The pen styles (quint8)</li>
+<li>The pen width (quint16)</li>
 <li>The pen color (<a href="qcolor.html">QColor</a>)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qpicture.html">QPicture</a></td><td><ul>
-<li>The size of the picture data (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The size of the picture data (quint32)</li>
 <li>The raw bytes of picture data (char)</li>
 </ul>
 </td></tr>
@@ -187,45 +187,45 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qpoint.html">QPoint</a></td><td><ul>
-<li>The x coordinate (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
-<li>The y coordinate (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
+<li>The x coordinate (qint32)</li>
+<li>The y coordinate (qint32)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qrect.html">QRect</a></td><td><ul>
-<li>left (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
-<li>top (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
-<li>right (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
-<li>bottom (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
+<li>left (qint32)</li>
+<li>top (qint32)</li>
+<li>right (qint32)</li>
+<li>bottom (qint32)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qregion.html">QRegion</a></td><td><ul>
-<li>The size of the data, i.e. 8 + 16 * (number of rectangles) (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
-<li>10 (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
-<li>The number of rectangles (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The size of the data, i.e. 8 + 16 * (number of rectangles) (quint32)</li>
+<li>10 (qint32)</li>
+<li>The number of rectangles (quint32)</li>
 <li>The rectangles in sequential order (<a href="qrect.html">QRect</a>)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qsize.html">QSize</a></td><td><ul>
-<li>width (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
-<li>height (<a href="qtglobal.html#qint32-typedef">qint32</a>)</li>
+<li>width (qint32)</li>
+<li>height (qint32)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstring.html">QString</a></td><td><ul>
-<li>If the string is null: 0xFFFFFFFF (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
-<li>Otherwise: The string length in bytes (<a href="qtglobal.html#quint32-typedef">quint32</a>) followed by the data in UTF-16</li>
+<li>If the string is null: 0xFFFFFFFF (quint32)</li>
+<li>Otherwise: The string length in bytes (quint32) followed by the data in UTF-16</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtime.html">QTime</a></td><td><ul>
-<li>Milliseconds since midnight (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>Milliseconds since midnight (quint32)</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qvariant.html">QVariant</a></td><td><ul>
-<li>The type of the data (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The type of the data (quint32)</li>
 <li>The data of the specified type</li>
 </ul>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qvector.html">QVector</a>&lt;T&gt;</td><td><ul>
-<li>The number of items (<a href="qtglobal.html#quint32-typedef">quint32</a>)</li>
+<li>The number of items (quint32)</li>
 <li>The items (T)</li>
 </ul>
 </td></tr>
@@ -234,6 +234,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

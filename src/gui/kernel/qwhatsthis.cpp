@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -148,9 +148,7 @@ private:
     QPointer<QWidget>widget;
     bool pressed;
     QString text;
-#ifndef QT_NO_RICHTEXT
     QTextDocument* doc;
-#endif
     QString anchor;
     QPixmap background;
 };
@@ -178,7 +176,6 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
 #endif
 
     QRect r;
-#ifndef QT_NO_RICHTEXT
     doc = 0;
     if (Qt::mightBeRichText(text)) {
         doc = new QTextDocument();
@@ -192,7 +189,6 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
         r.setSize(layout->documentSize().toSize());
     }
     else
-#endif
     {
         int sw = QApplication::desktop()->width() / 3;
         if (sw < 200)
@@ -218,10 +214,8 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
 QWhatsThat::~QWhatsThat()
 {
     instance = 0;
-#ifndef QT_NO_RICHTEXT
     if (doc)
         delete doc;
-#endif
 }
 
 void QWhatsThat::showEvent(QShowEvent *)
@@ -234,10 +228,8 @@ void QWhatsThat::mousePressEvent(QMouseEvent* e)
 {
     pressed = true;
     if (e->button() == Qt::LeftButton && rect().contains(e->pos())) {
-#ifndef QT_NO_RICHTEXT
         if (doc)
             anchor = doc->documentLayout()->anchorAt(e->pos() -  QPoint(hMargin, vMargin));
-#endif
         return;
     }
     close();
@@ -247,7 +239,6 @@ void QWhatsThat::mouseReleaseEvent(QMouseEvent* e)
 {
     if (!pressed)
         return;
-#ifndef QT_NO_RICHTEXT
     if (widget && e->button() == Qt::LeftButton && doc && rect().contains(e->pos())) {
         QString a = doc->documentLayout()->anchorAt(e->pos() -  QPoint(hMargin, vMargin));
         QString href;
@@ -260,13 +251,11 @@ void QWhatsThat::mouseReleaseEvent(QMouseEvent* e)
                 return;
         }
     }
-#endif
     close();
 }
 
 void QWhatsThat::mouseMoveEvent(QMouseEvent* e)
 {
-#ifndef QT_NO_RICHTEXT
 #ifndef QT_NO_CURSOR
     if (!doc)
         return;
@@ -275,7 +264,6 @@ void QWhatsThat::mouseMoveEvent(QMouseEvent* e)
         setCursor(Qt::PointingHandCursor);
     else
         setCursor(Qt::ArrowCursor);
-#endif
 #endif
 }
 
@@ -325,7 +313,6 @@ void QWhatsThat::paintEvent(QPaintEvent*)
     p.setPen(palette().foreground().color());
     r.adjust(hMargin, vMargin, -hMargin, -vMargin);
 
-#ifndef QT_NO_RICHTEXT
     if (doc) {
         p.translate(r.x(), r.y());
         QRect rect = r;
@@ -335,7 +322,6 @@ void QWhatsThat::paintEvent(QPaintEvent*)
         doc->documentLayout()->draw(&p, context);
     }
     else
-#endif
     {
         p.drawText(r, Qt::AlignLeft + Qt::AlignTop + Qt::TextWordWrap + Qt::TextExpandTabs, text);
     }
@@ -397,10 +383,13 @@ QWhatsThisPrivate::QWhatsThisPrivate()
     QPoint pos = QCursor::pos();
     if (QWidget *w = QApplication::widgetAt(pos)) {
         QHelpEvent e(QEvent::QueryWhatsThis, w->mapFromGlobal(pos), pos);
-        QApplication::setOverrideCursor((!QApplication::sendEvent(w, &e) || !e.isAccepted())?
+        bool sentEvent = QApplication::sendEvent(w, &e);
+#ifndef QT_NO_CURSOR
+        QApplication::setOverrideCursor((!sentEvent || !e.isAccepted())?
                                         Qt::ForbiddenCursor:Qt::WhatsThisCursor);
     } else {
         QApplication::setOverrideCursor(Qt::WhatsThisCursor);
+#endif
     }
 #ifndef QT_NO_ACCESSIBILITY
     QAccessible::updateAccessibility(this, 0, QAccessible::ContextHelpStart);
@@ -415,7 +404,9 @@ QWhatsThisPrivate::~QWhatsThisPrivate()
     if (button)
         button->setChecked(false);
 #endif
+#ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
+#endif
 #ifndef QT_NO_ACCESSIBILITY
     QAccessible::updateAccessibility(this, 0, QAccessible::ContextHelpEnd);
 #endif
@@ -444,8 +435,11 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
     {
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
         QHelpEvent e(QEvent::QueryWhatsThis, me->pos(), me->globalPos());
-        QApplication::changeOverrideCursor((!QApplication::sendEvent(w, &e) || !e.isAccepted())?
+        bool sentEvent = QApplication::sendEvent(w, &e);
+#ifndef QT_NO_CURSOR
+        QApplication::changeOverrideCursor((!sentEvent || !e.isAccepted())?
                                            Qt::ForbiddenCursor:Qt::WhatsThisCursor);
+#endif
     }
     // fall thorugh
     case QEvent::MouseButtonRelease:
@@ -491,11 +485,15 @@ private slots:
 
 QWhatsThisAction::QWhatsThisAction(QObject *parent) : QAction(tr("What's This?"), parent)
 {
+#ifndef QT_NO_IMAGEFORMAT_XPM
     QPixmap p((const char**)button_image);
     setIcon(p);
+#endif
     setCheckable(true);
     connect(this, SIGNAL(triggered()), this, SLOT(actionTriggered()));
+#ifndef QT_NO_SHORTCUT
     setShortcut(Qt::ShiftModifier + Qt::Key_F1);
+#endif
 }
 
 void QWhatsThisAction::actionTriggered()

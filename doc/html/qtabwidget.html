@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/widgets/qtabwidget.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qtabwidget.cpp -->
 <head>
     <title>Qt 4.0: QTabWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTabWidget Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTabWidget Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTabWidget class provides a stack of tabbed widgets. <a href="#details">More...</a></p>
-<pre>#include &lt;QTabWidget&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre>#include &lt;QTabWidget&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qtabwidget-members.html">List of all members, including inherited members</a></li>
 <li><a href="qtabwidget-qt3.html">Qt 3 support members</a></li>
@@ -74,7 +73,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QWidget * <b><a href="qtabwidget.html#widget">widget</a></b> ( int <i>index</i> ) const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -171,7 +170,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="tabPosition-prop"></a>tabPosition : <a href="qtabwidget.html#TabPosition-enum">TabPosition</a></h3>
 <p>This property holds the position of the tabs in this tab widget.</p>
-<p>Possible values for this property are <tt>QTabWidget::North</tt> and <tt>QTabWidget::South</tt>.</p>
+<p>Possible values for this property are <a href="qtabwidget.html#TabPosition-enum">QTabWidget::North</a> and <a href="qtabwidget.html#TabPosition-enum">QTabWidget::South</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>TabPosition tabPosition () const</b></li>
@@ -180,7 +179,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtabwidget.html#TabPosition-enum">TabPosition</a>.</p>
 <h3 class="fn"><a name="tabShape-prop"></a>tabShape : <a href="qtabwidget.html#TabShape-enum">TabShape</a></h3>
 <p>This property holds the shape of the tabs in this tab widget.</p>
-<p>Possible values for this property are <tt>QTabWidget::Rounded</tt> (default) or <tt>QTabWidget::Triangular</tt>.</p>
+<p>Possible values for this property are <a href="qtabwidget.html#TabShape-enum">QTabWidget::Rounded</a> (default) or <a href="qtabwidget.html#TabShape-enum">QTabWidget::Triangular</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>TabShape tabShape () const</b></li>
@@ -195,7 +194,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the tabbed widget.</p>
 <h3 class="fn"><a name="addTab"></a>int QTabWidget::addTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>Adds another tab and page to the tab view.</p>
-<p>The new page is <i>child</i>; the tab's label is <i>label</i>. Note the difference between the widget name (which you supply to widget constructors and to <a href="qtabwidget.html#setTabEnabled">setTabEnabled</a>(), for example) and the tab label. The name is internal to the program and invariant, whereas the label is shown on-screen and may vary according to language and other factors.</p>
+<p>The new page is <i>child</i>; the tab's label is <i>label</i>.</p>
 <p>If the tab's <i>label</i> contains an ampersand, the letter following the ampersand is used as a shortcut for the tab, e.g. if the label is &quot;Bro&amp;wse&quot; then Alt+W becomes a shortcut which will move the focus to this tab.</p>
 <p>See also <a href="qtabwidget.html#insertTab">insertTab</a>().</p>
 <h3 class="fn"><a name="addTab-2"></a>int QTabWidget::addTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
@@ -204,6 +203,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is the same as <a href="qtabwidget.html#addTab">addTab</a>(), but with an additional <i>icon</i>.</p>
 <h3 class="fn"><a name="cornerWidget"></a><a href="qwidget.html">QWidget</a> * QTabWidget::cornerWidget ( <a href="qt.html#Corner-enum">Qt::Corner</a> <i>corner</i> = Qt::TopRightCorner ) const</h3>
 <p>Returns the widget shown in the <i>corner</i> of the tab widget or 0.</p>
+<p>See also <a href="qtabwidget.html#setCornerWidget">setCornerWidget</a>().</p>
 <h3 class="fn"><a name="currentChanged"></a>void QTabWidget::currentChanged ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the current page index changes. The parameter is the new current page <i>index</i> position.</p>
 <p>See also <a href="qtabwidget.html#currentWidget">currentWidget</a>() and <a href="qtabwidget.html#currentIndex-prop">currentIndex</a>.</p>
@@ -248,8 +248,10 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtabwidget.html#isTabEnabled">isTabEnabled</a>() and <a href="qwidget.html#enabled-prop">QWidget::setEnabled</a>().</p>
 <h3 class="fn"><a name="setTabIcon"></a>void QTabWidget::setTabIcon ( int <i>index</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i> )</h3>
 <p>Sets the <i>icon</i> for the tab at position <i>index</i>.</p>
+<p>See also <a href="qtabwidget.html#tabIcon">tabIcon</a>().</p>
 <h3 class="fn"><a name="setTabText"></a>void QTabWidget::setTabText ( int <i>index</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>Defines a new <i>label</i> for the page at position <i>index</i>'s tab.</p>
+<p>See also <a href="qtabwidget.html#tabText">tabText</a>().</p>
 <h3 class="fn"><a name="setTabToolTip"></a>void QTabWidget::setTabToolTip ( int <i>index</i>, const <a href="qstring.html">QString</a> &amp; <i>tip</i> )</h3>
 <p>Sets the tab tool tip for the page at position <i>index</i> to <i>tip</i>.</p>
 <p>See also <a href="qtabwidget.html#tabToolTip">tabToolTip</a>().</p>
@@ -258,6 +260,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtabwidget.html#setTabBar">setTabBar</a>().</p>
 <h3 class="fn"><a name="tabIcon"></a><a href="qicon.html">QIcon</a> QTabWidget::tabIcon ( int <i>index</i> ) const</h3>
 <p>Returns the label text for the tab on the page at position <i>index</i>.</p>
+<p>See also <a href="qtabwidget.html#setTabIcon">setTabIcon</a>().</p>
 <h3 class="fn"><a name="tabInserted"></a>void QTabWidget::tabInserted ( int <i>index</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This virtual handler is called after a new tab was added or inserted at position <i>index</i>.</p>
 <p>See also <a href="qtabwidget.html#tabRemoved">tabRemoved</a>().</p>
@@ -266,6 +269,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtabwidget.html#tabInserted">tabInserted</a>().</p>
 <h3 class="fn"><a name="tabText"></a><a href="qstring.html">QString</a> QTabWidget::tabText ( int <i>index</i> ) const</h3>
 <p>Returns the label text for the tab on the page at position <i>index</i>.</p>
+<p>See also <a href="qtabwidget.html#setTabText">setTabText</a>().</p>
 <h3 class="fn"><a name="tabToolTip"></a><a href="qstring.html">QString</a> QTabWidget::tabToolTip ( int <i>index</i> ) const</h3>
 <p>Returns the tab tool tip for the page at position <i>index</i> or an empty string if no tool tip has been set.</p>
 <p>See also <a href="qtabwidget.html#setTabToolTip">setTabToolTip</a>().</p>
@@ -275,6 +279,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

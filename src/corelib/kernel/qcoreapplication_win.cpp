@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -621,7 +621,7 @@ QString decodeMSG(const MSG& msg)
         wmmsg = QString("WM_(%1)").arg(msg.message);
 
     QString rawParameters;
-    rawParameters.sprintf("hwnd(0x%08x) ", (uint)msg.hwnd);
+    rawParameters.sprintf("hwnd(0x%p) ", (void *)msg.hwnd);
 
     // Custom WM_'s
     if (msg.message > WM_APP)
@@ -639,13 +639,13 @@ QString decodeMSG(const MSG& msg)
                                                 FLAG_STRING(WA_INACTIVE,    "Deactivate"),
                                                 FLAG_STRING(WA_CLICKACTIVE, "Activate by mouseclick"),
                                                 FLAG_STRING());
-                parameters.sprintf("%s Hwnd (0x%08x)", activation.toLatin1().data(), (uint)msg.hwnd);
+                parameters.sprintf("%s Hwnd (0x%p)", activation.toLatin1().data(), (void *)msg.hwnd);
             }
             break;
 #endif
 #ifdef WM_CAPTURECHANGED
         case WM_CAPTURECHANGED:
-            parameters.sprintf("Hwnd gaining capture (0x%08x)", (uint)lParam);
+            parameters.sprintf("Hwnd gaining capture (0x%p)", (void *)lParam);
             break;
 #endif
 #ifdef WM_CREATE
@@ -757,16 +757,16 @@ QString decodeMSG(const MSG& msg)
                     windowName = QString((QChar*)lpcs->lpszName,
                                          (int)wcslen(reinterpret_cast<const wchar_t *>(lpcs->lpszName)));
 
-                parameters.sprintf("x,y(%4d,%4d) w,h(%4d,%4d) className(%s) windowName(%s) parent(0x%08x) style(%s) exStyle(%s)",
+                parameters.sprintf("x,y(%4d,%4d) w,h(%4d,%4d) className(%s) windowName(%s) parent(0x%p) style(%s) exStyle(%s)",
                                    lpcs->x, lpcs->y, lpcs->cx, lpcs->cy, className.toLatin1().data(),
-                                   windowName.toLatin1().data(), (uint)lpcs->hwndParent,
+                                   windowName.toLatin1().data(), (void *)lpcs->hwndParent,
                                    styles.toLatin1().data(), exStyles.toLatin1().data());
             }
             break;
 #endif
 #ifdef WM_DESTROY
         case WM_DESTROY:
-            parameters.sprintf("Destroy hwnd (0x%08x)", (uint)msg.hwnd);
+            parameters.sprintf("Destroy hwnd (0x%p)", (void *)msg.hwnd);
             break;
 #endif
 #ifdef WM_IME_NOTIFY
@@ -787,7 +787,7 @@ QString decodeMSG(const MSG& msg)
                                             FLGSTR(IMN_SETSENTENCEMODE),
                                             FLGSTR(IMN_SETSTATUSWINDOWPOS),
                                             FLAG_STRING());
-                parameters.sprintf("Command(%s : 0x%08x)", imnCommand.toLatin1().data(), (uint)lParam);
+                parameters.sprintf("Command(%s : 0x%p)", imnCommand.toLatin1().data(), (void *)lParam);
             }
             break;
 #endif
@@ -817,7 +817,7 @@ QString decodeMSG(const MSG& msg)
 #endif
 #ifdef WM_KILLFOCUS
         case WM_KILLFOCUS:
-            parameters.sprintf("Hwnd gaining keyboard focus (0x%08x)", wParam);
+            parameters.sprintf("Hwnd gaining keyboard focus (0x%p)", (void *)wParam);
             break;
 #endif
 #ifdef WM_CHAR
@@ -855,7 +855,7 @@ QString decodeMSG(const MSG& msg)
         case WM_MOUSEACTIVATE:
             {
                 QString mouseMsg = findWMstr(HIWORD(lParam));
-                parameters.sprintf("TLW(0x%08x) HittestCode(0x%x) MouseMsg(%s)", wParam, LOWORD(lParam), mouseMsg.toLatin1().data());
+                parameters.sprintf("TLW(0x%p) HittestCode(0x%x) MouseMsg(%s)", (void *)wParam, LOWORD(lParam), mouseMsg.toLatin1().data());
             }
             break;
 #endif
@@ -924,7 +924,7 @@ QString decodeMSG(const MSG& msg)
 #if defined(WM_PAINT) && defined(WM_ERASEBKGND)
         case WM_ERASEBKGND:
         case WM_PAINT:
-            parameters.sprintf("hdc(0x%08x)", wParam);
+            parameters.sprintf("hdc(0x%p)", (void *)wParam);
             break;
 #endif
 #ifdef WM_QUERYNEWPALETTE
@@ -941,7 +941,7 @@ QString decodeMSG(const MSG& msg)
 #endif
 #ifdef WM_SETFOCUS
         case WM_SETFOCUS:
-            parameters.sprintf("Lost Focus (0x%08x)", wParam);
+            parameters.sprintf("Lost Focus (0x%p)", (void *)wParam);
             break;
 #endif
 #ifdef WM_SETTEXT
@@ -1002,7 +1002,7 @@ QString decodeMSG(const MSG& msg)
             break;
 #endif
         default:
-            parameters.sprintf("wParam(0x%08x) lParam(0x%08x)", (uint)wParam, (uint)lParam);
+            parameters.sprintf("wParam(0x%p) lParam(0x%p)", (void *)wParam, (void *)lParam);
             break;
     }
     // Yes, we want to give the WM_ names 20 chars of space before showing the

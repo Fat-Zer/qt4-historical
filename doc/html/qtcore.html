@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/classes.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/qtcore.qdoc -->
 <head>
-    <title>Qt 4.0: QtCore Classes</title>
+    <title>Qt 4.0: QtCore Module</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,14 +19,16 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
-[Previous: <a href="modules.html">Qt Classes by Module</a>]
-[<a href="modules.html">Qt Classes by Module</a>]
-[Next: <a href="qtgui.html">QtGui Classes</a>]
+[Previous: <a href="modules.html">Qt's Modules</a>]
+[<a href="modules.html">Qt's Modules</a>]
+[Next: <a href="qtgui.html">QtGui Module</a>]
 </p>
-<h1 align="center">QtCore Classes</h1>
-<a name="qtcore"></a><p><table width="100%">
+<h1 align="center">QtCore Module<br /><small></small></h1>
+<p>The QtCore module contains core non-GUI functionality. <a href="#details">More...</a></p>
+<h2>Classes</h2>
+<p><table width="100%">
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a></b></td><td>Manages Qt's event queue, excluding GUI-related events</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qabstractitemmodel.html">QAbstractItemModel</a></b></td><td>The abstract interface for item model classes</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qabstractlistmodel.html">QAbstractListModel</a></b></td><td>Abstract model that can be subclassed to create one-dimensional list models</td></tr>
@@ -51,7 +53,10 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qfileinfo.html">QFileInfo</a></b></td><td>System-independent file information</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qflag.html">QFlag</a></b></td><td>Helper data type for QFlags</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qflags.html">QFlags</a></b></td><td>Type-safe way of storing OR-combinations of enum values</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qgenericargument.html">QGenericArgument</a></b></td><td>Internal helper class for marshalling arguments</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qgenericreturnargument.html">QGenericReturnArgument</a></b></td><td>Internal helper class for marshalling arguments</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qhash.html">QHash</a></b></td><td>Template class that provides a hash-table-based dictionary</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qhashiterator.html">QHashIterator</a></b></td><td>Java-style const iterator for QHash and QMultiHash</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qiodevice.html">QIODevice</a></b></td><td>The base interface class of all I/O devices in Qt</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlatin1char.html">QLatin1Char</a></b></td><td>8-bit ASCII/Latin-1 character</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlatin1string.html">QLatin1String</a></b></td><td>Thin wrapper around an ASCII/Latin-1 encoded string literal</td></tr>
@@ -60,9 +65,12 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qline.html">QLine</a></b></td><td>Two-dimensional vector that uses integer point accuracy for coordinates</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlinef.html">QLineF</a></b></td><td>Two-dimensional vector that uses floating point accuracy for coordinates</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlinkedlist.html">QLinkedList</a></b></td><td>Template class that provides linked lists</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlinkedlistiterator.html">QLinkedListIterator</a></b></td><td>Java-style const iterator for QLinkedList</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlist.html">QList</a></b></td><td>Template class that provides lists</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlistiterator.html">QListIterator</a></b></td><td>Java-style const iterator for QList and QQueue</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qlocale.html">QLocale</a></b></td><td>Converts between numbers and their string representations in various languages</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmap.html">QMap</a></b></td><td>Template class that provides a skip-list-based dictionary</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmapiterator.html">QMapIterator</a></b></td><td>Java-style const iterator for QMap and QMultiMap</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmetaclassinfo.html">QMetaClassInfo</a></b></td><td>Additional information about a class</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmetaenum.html">QMetaEnum</a></b></td><td>Meta-data about an enumerator</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmetamethod.html">QMetaMethod</a></b></td><td>Meta-data about a member function</td></tr>
@@ -73,6 +81,11 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmodelindex.html">QModelIndex</a></b></td><td>Used to locate data in a data model</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmultihash.html">QMultiHash</a></b></td><td>Convenience QHash subclass that provides multi-valued hashes</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmultimap.html">QMultiMap</a></b></td><td>Convenience QMap subclass that provides multi-valued maps</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutablehashiterator.html">QMutableHashIterator</a></b></td><td>Java-style non-const iterator for QHash and QMultiHash</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutablelinkedlistiterator.html">QMutableLinkedListIterator</a></b></td><td>Java-style non-const iterator for QLinkedList</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutablelistiterator.html">QMutableListIterator</a></b></td><td>Java-style non-const iterator for QList and QQueue</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutablemapiterator.html">QMutableMapIterator</a></b></td><td>Java-style non-const iterator for QMap and QMultiMap</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutablevectoriterator.html">QMutableVectorIterator</a></b></td><td>Java-style non-const iterator for QVector and QStack</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutex.html">QMutex</a></b></td><td>Access serialization between threads</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qmutexlocker.html">QMutexLocker</a></b></td><td>Convenience class that simplifies locking and unlocking mutexes</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qobject.html">QObject</a></b></td><td>The base class of all Qt objects</td></tr>
@@ -87,11 +100,12 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qqueue.html">QQueue</a></b></td><td>Generic container that provides a queue</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qreadlocker.html">QReadLocker</a></b></td><td>Convenience class that simplifies locking and unlocking read-write locks for read access</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qreadwritelock.html">QReadWriteLock</a></b></td><td>Read-write locking</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qrect.html">QRect</a></b></td><td>Defines a rectangle in the plane</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qrect.html">QRect</a></b></td><td>Defines a rectangle in the plane that uses integer point accuracy for coordinates</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qrectf.html">QRectF</a></b></td><td>Defines a rectangle in the plane using floating point coordinates for accuracy</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qregexp.html">QRegExp</a></b></td><td>Pattern matching using regular expressions</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qsemaphore.html">QSemaphore</a></b></td><td>General counting semaphore</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qset.html">QSet</a></b></td><td>Template class that provides a hash-table-based set</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qsetiterator.html">QSetIterator</a></b></td><td>Java-style const iterator for QSet</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qsettings.html">QSettings</a></b></td><td>Persistent platform-independent application settings</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qshareddata.html">QSharedData</a></b></td><td>Base class for shared data objects</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qshareddatapointer.html">QSharedDataPointer</a></b></td><td>Pointer to a shared data object</td></tr>
@@ -123,18 +137,25 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qvarlengtharray.html">QVarLengthArray</a></b></td><td>Low-level variable-length array</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qvariant.html">QVariant</a></b></td><td>Acts like a union for the most common Qt data types</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qvector.html">QVector</a></b></td><td>Template class that provides a dynamic array</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qvectoriterator.html">QVectorIterator</a></b></td><td>Java-style const iterator for QVector and QStack</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qwaitcondition.html">QWaitCondition</a></b></td><td>Condition variable for synchronizing threads</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qwritelocker.html">QWriteLocker</a></b></td><td>Convenience class that simplifies locking and unlocking read-write locks for write access</td></tr>
 </table></p>
+<a name="details"></a>
+<h2>Detailed Description</h2>
+<a name="qtcore"></a><p>The QtCore module contains core non-GUI functionality.</p>
+<p>All other Qt modules rely on this module. To include the definitions of the module's classes, use the following directive:</p>
+<pre>&nbsp;   #include &lt;QtCore&gt;</pre>
+<p>The QtCore module is part of all <a href="editions.html">Qt editions</a>.</p>
 <p>
-[Previous: <a href="modules.html">Qt Classes by Module</a>]
-[<a href="modules.html">Qt Classes by Module</a>]
-[Next: <a href="qtgui.html">QtGui Classes</a>]
+[Previous: <a href="modules.html">Qt's Modules</a>]
+[<a href="modules.html">Qt's Modules</a>]
+[Next: <a href="qtgui.html">QtGui Module</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

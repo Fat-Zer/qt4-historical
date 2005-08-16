@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,6 +23,8 @@
 
 #include "qdockwidgetlayout_p.h"
 #include "qdockwidget.h"
+
+#ifndef QT_NO_DOCKWIDGET
 
 #include <qapplication.h>
 #include <qdebug.h>
@@ -1132,7 +1134,7 @@ QRect QDockWidgetLayout::place(QDockWidget *dockwidget, const QRect &r, const QP
             DEBUG() << "END of place, in-place reorder, target is" << target;
             return target;
         } else {
-            DEBUG() << "  cannot swap" << endl;
+            DEBUG() << "  cannot swap";
             if (horizontal)
                 allowedAreas &= ~(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
             else
@@ -1217,6 +1219,7 @@ void QDockWidgetLayout::drop(QDockWidget *dockwidget, const QRect &r, const QPoi
             allowedAreas &= ~(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
     }
 
+#ifndef QT_NO_MAINWINDOW
     DEBUG() << "  trySplit:" << orientation << location.area
             << info.item->geometry() << p << sz1 << sz2 << separatorExtent;
     QRect target = ::trySplit(orientation, location.area, allowedAreas,
@@ -1280,6 +1283,7 @@ void QDockWidgetLayout::drop(QDockWidget *dockwidget, const QRect &r, const QPoi
     }
 
     DEBUG("END of drop");
+#endif // QT_NO_MAINWINDOW
 }
 
 void QDockWidgetLayout::extend(QDockWidget *dockwidget, Qt::Orientation direction)
@@ -1314,33 +1318,48 @@ void QDockWidgetLayout::extend(QDockWidget *dockwidget, Qt::Orientation directio
     }
 }
 
-void QDockWidgetLayout::split(QDockWidget *existing, QDockWidget *with, Qt::DockWidgetArea area)
+static void locateDockWidget(QDockWidget *w, QDockWidgetLayout **layout, int *where)
 {
-    int which = -1;
-    for (int i = 0; which == -1 && i < layout_info.count(); ++i) {
-	const QDockWidgetLayoutInfo &info = layout_info.at(i);
+    QDockWidgetLayout *l = *layout;
+    *where = -1;
+    for (int i = 0; i < l->layout_info.count(); ++i) {
+	const QDockWidgetLayoutInfo &info = l->layout_info.at(i);
 	if (info.is_sep)
             continue;
-	if (existing == info.item->widget())
-            which = i;
+	if (w == info.item->widget()) {
+            *where = i;
+            *layout = l;
+        } else if (QLayout *lout = info.item->layout()) {
+            *layout = qobject_cast<QDockWidgetLayout *>(lout);
+            locateDockWidget(w, layout, where);
+        }
+        if (*where != -1) 
+            return;
     }
+}
+
+void QDockWidgetLayout::split(QDockWidget *existing, QDockWidget *with, Qt::DockWidgetArea area)
+{
+    QDockWidgetLayout *layout = this;
+    int which = -1;
+    locateDockWidget(existing, &layout, &which);
     Q_ASSERT(which != -1);
-    const QDockWidgetLayoutInfo &info = layout_info.at(which);
+    const QDockWidgetLayoutInfo &info = layout->layout_info.at(which);
 
     Q_ASSERT(relayout_type == QInternal::RelayoutNormal);
     relayout_type = QInternal::RelayoutDropped;
 
     int save_size = info.cur_size;
-    removeWidget(existing);
+    layout->removeWidget(existing);
     // note: info is invalid from now on
 
     // create a nested window dock in place of the current widget
     QDockWidgetLayout *nestedLayout =
         new QDockWidgetLayout(area, orientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal);
-    nestedLayout->setParent(this);
+    nestedLayout->setParent(layout);
     nestedLayout->setObjectName(objectName() + "_nestedLayout");
-    insert(which / 2, nestedLayout).cur_size = save_size;
-    invalidate();
+    layout->insert(which / 2, nestedLayout).cur_size = save_size;
+    layout->invalidate();
 
     switch (area) {
     case Qt::LeftDockWidgetArea:
@@ -1360,7 +1379,7 @@ void QDockWidgetLayout::split(QDockWidget *existing, QDockWidget *with, Qt::Dock
         break;
     }
 
-    relayout_type = QInternal::RelayoutNormal;
+    layout->relayout_type = QInternal::RelayoutNormal;
 }
 
 void QDockWidgetLayout::maybeDelete()
@@ -1368,3 +1387,4 @@ void QDockWidgetLayout::maybeDelete()
     if (layout_info.isEmpty())
         delete this;
 }
+#endif // QT_NO_DOCKWIDGET

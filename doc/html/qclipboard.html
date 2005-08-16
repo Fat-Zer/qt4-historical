@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/kernel/qclipboard.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/kernel/qclipboard.cpp -->
 <head>
     <title>Qt 4.0: QClipboard Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QClipboard Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QClipboard Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QClipboard class provides access to the window system clipboard. <a href="#details">More...</a></p>
-<pre>#include &lt;QClipboard&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre>#include &lt;QClipboard&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qclipboard-members.html">List of all members, including inherited members</a></li>
 <li><a href="qclipboard-qt3.html">Qt 3 support members</a></li>
@@ -82,9 +81,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="notes-for-x11-users"></a>
 <h3>Notes for X11 Users</h3>
 <ul>
-<li>The <a href="winsystem.html#x11">X11</a> Window System has the concept of a separate selection and clipboard. When text is selected, it is immediately available as the global mouse selection. The global mouse selection may later be copied to the clipboard. By convention, the middle mouse button is used to paste the global mouse selection.</li>
-<li><a href="winsystem.html#x11">X11</a> also has the concept of ownership; if you change the selection within a window, <a href="winsystem.html#x11">X11</a> will only notify the owner and the previous owner of the change, i.e. it will not notify all applications that the selection or clipboard data changed.</li>
-<li>Lastly, the <a href="winsystem.html#x11">X11</a> clipboard is event driven, i.e. the clipboard will not function properly if the event loop is not running. Similarly, it is recommended that the contents of the clipboard are stored or retrieved in direct response to user-input events, e.g. mouse button or key presses and releases. You should not store or retrieve the clipboard contents in response to timer or non-user-input events.</li>
+<li>The X11 Window System has the concept of a separate selection and clipboard. When text is selected, it is immediately available as the global mouse selection. The global mouse selection may later be copied to the clipboard. By convention, the middle mouse button is used to paste the global mouse selection.</li>
+<li>X11 also has the concept of ownership; if you change the selection within a window, X11 will only notify the owner and the previous owner of the change, i.e. it will not notify all applications that the selection or clipboard data changed.</li>
+<li>Lastly, the X11 clipboard is event driven, i.e. the clipboard will not function properly if the event loop is not running. Similarly, it is recommended that the contents of the clipboard are stored or retrieved in direct response to user-input events, e.g. mouse button or key presses and releases. You should not store or retrieve the clipboard contents in response to timer or non-user-input events.</li>
 </ul>
 <a name="notes-for-windows-and-mac-os-x-users"></a>
 <h3>Notes for Windows and Mac OS X Users</h3>
@@ -102,7 +101,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QClipboard::Clipboard</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">indicates that data should be stored and retrieved from the global clipboard.</td></tr>
 <tr><td valign="top"><tt>QClipboard::Selection</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">indicates that data should be stored and retrieved from the global mouse selection.</td></tr>
 </table>
-<p><i>Note</i>: Support for <tt>Selection</tt> is provided only on systems with a global mouse selection (e.g. <a href="winsystem.html#x11">X11</a>).</p>
+<p><i>Note</i>: Support for <tt>Selection</tt> is provided only on systems with a global mouse selection (e.g. X11).</p>
 <p>See also <a href="qclipboard.html#supportsSelection">QClipboard::supportsSelection</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -130,7 +129,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the pixmap is retrieved from the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the pixmap is retrieved from the global mouse selection.</p>
 <p>See also <a href="qclipboard.html#setPixmap">setPixmap</a>(), <a href="qclipboard.html#image">image</a>(), <a href="qclipboard-qt3.html#data">data</a>(), and <a href="qpixmap-qt3.html#convertFromImage">QPixmap::convertFromImage</a>().</p>
 <h3 class="fn"><a name="selectionChanged"></a>void QClipboard::selectionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the selection is changed. This only applies to windowing systems that support selections, e.g. <a href="winsystem.html#x11">X11</a>. Windows doesn't support selections.</p>
+<p>This signal is emitted when the selection is changed. This only applies to windowing systems that support selections, e.g. X11. Windows doesn't support selections.</p>
 <h3 class="fn"><a name="setImage"></a>void QClipboard::setImage ( const <a href="qimage.html">QImage</a> &amp; <i>image</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
 <p>Copies the <i>image</i> into the clipboard.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the image is stored in the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the data is stored in the global mouse selection.</p>
@@ -143,7 +142,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the clipboard data to <i>src</i>. Ownership of the data is transferred to the clipboard. If you want to remove the data either call <a href="qclipboard.html#clear">clear</a>() or call <a href="qclipboard-qt3.html#setData">setData</a>() again with new data.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the data is retrieved from the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the data is retrieved from the global mouse selection.</p>
 <p>The <a href="qclipboard.html#setText">setText</a>(), <a href="qclipboard.html#setImage">setImage</a>() and <a href="qclipboard.html#setPixmap">setPixmap</a>() functions are simpler wrappers for setting text, image and pixmap data respectively.</p>
-<p>See also <a href="qclipboard-qt3.html#data">data</a>().</p>
+<p>See also <a href="qclipboard.html#mimeData">mimeData</a>() and <a href="qclipboard-qt3.html#data">data</a>().</p>
 <h3 class="fn"><a name="setPixmap"></a>void QClipboard::setPixmap ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
 <p>Copies <i>pixmap</i> into the clipboard. Note that this is slower than <a href="qclipboard.html#setImage">setImage</a>() because it needs to convert the <a href="qpixmap.html">QPixmap</a> to a <a href="qimage.html">QImage</a> first.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the pixmap is stored in the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the pixmap is stored in the global mouse selection.</p>
@@ -168,6 +167,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

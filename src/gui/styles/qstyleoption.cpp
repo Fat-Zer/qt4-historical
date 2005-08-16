@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -606,6 +606,7 @@ QStyleOptionButton::QStyleOptionButton(int version)
     \brief The size of the icon for the button
 */
 
+#ifndef QT_NO_TABBAR
 /*!
     \class QStyleOptionTab
     \brief The QStyleOptionTab class is used to describe the
@@ -736,6 +737,8 @@ QStyleOptionTab::QStyleOptionTab(int version)
     \variable QStyleOptionTab::position
     \brief the position of the tab in the tab bar
 */
+
+#endif // QT_NO_TABBAR
 
 /*!
     \class QStyleOptionProgressBar
@@ -1046,6 +1049,7 @@ QStyleOptionComplex::QStyleOptionComplex(int version, int type)
     \sa QStyle::SubControl
 */
 
+#ifndef QT_NO_SLIDER
 /*!
     \class QStyleOptionSlider
     \brief The QStyleOptionSlider class is used to describe the
@@ -1189,7 +1193,9 @@ QStyleOptionSlider::QStyleOptionSlider(int version)
 
     \sa QAbstractSlider::pageStep
 */
+#endif // QT_NO_SLIDER
 
+#ifndef QT_NO_SPINBOX
 /*!
     \class QStyleOptionSpinBox
     \brief The QStyleOptionSpinBox class is used to describe the
@@ -1255,6 +1261,7 @@ QStyleOptionSpinBox::QStyleOptionSpinBox(int version)
     \brief Indicates whether whether the spin box has a frame.
 
 */
+#endif // QT_NO_SPINBOX
 
 /*!
     \class QStyleOptionQ3ListViewItem
@@ -1820,7 +1827,7 @@ QStyleOptionToolBox::QStyleOptionToolBox(int version)
     \brief The text for the tool box tab.
 */
 
-
+#ifndef QT_NO_RUBBERBAND
 /*!
     \class QStyleOptionRubberBand
     \brief The QStyleOptionRubberBand class is used to describe the
@@ -1874,6 +1881,7 @@ QStyleOptionRubberBand::QStyleOptionRubberBand(int version)
     \variable QStyleOptionRubberBand::opaque
     \brief Whether the rubber band is required to be drawn in an opque style.
 */
+#endif // QT_NO_RUBBERBAND
 
 /*!
     \class QStyleOptionTitleBar
@@ -2102,6 +2110,7 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     Returns a T or 0 depending on the type of \a option.
 */
 
+#ifndef QT_NO_TABWIDGET
 /*!
     \class QStyleOptionTabWidgetFrame
     \brief The QStyleOptionTabWidgetFrame class is used to describe the
@@ -2174,6 +2183,9 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
 /*! \variable QStyleOptionTabWidgetFrame::leftCornerWidgetSize
     \brief The size of the left-corner widget.
 */
+#endif // QT_NO_TABWIDGET
+
+#ifndef QT_NO_TABBAR
 
 QStyleOptionTabBarBase::QStyleOptionTabBarBase()
     : QStyleOption(Version, SO_TabBarBase), shape(QTabBar::RoundedNorth)
@@ -2197,6 +2209,8 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
 
     Equals 1.
 */
+
+#endif // QT_NO_TABBAR
 
 /*!
     \class QStyleHintReturn
@@ -2349,7 +2363,7 @@ QStyleHintReturnMask::QStyleHintReturnMask() : QStyleHintReturn(Version, Type)
     Returns a T or 0 depending on the type of \a hint.
 */
 
-#ifndef QT_NO_DEBUG
+#if !defined(QT_NO_DEBUG) && !defined(QT_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType)
 {
     switch (optionType) {

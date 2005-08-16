@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/widgets/qabstractspinbox.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qabstractspinbox.cpp -->
 <head>
     <title>Qt 4.0: QAbstractSpinBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAbstractSpinBox Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAbstractSpinBox Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QAbstractSpinBox class provides a spinbox and a line edit to display values. <a href="#details">More...</a></p>
-<pre>#include &lt;QAbstractSpinBox&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre>#include &lt;QAbstractSpinBox&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <p>Inherited by <a href="qdatetimeedit.html">QDateTimeEdit</a>, <a href="qdoublespinbox.html">QDoubleSpinBox</a>, and <a href="qspinbox.html">QSpinBox</a>.</p>
 <ul>
 <li><a href="qabstractspinbox-members.html">List of all members, including inherited members</a></li>
@@ -75,7 +74,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qabstractspinbox.html#wrapping-prop">wrapping</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -152,7 +151,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="alignment-prop"></a>alignment : <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></h3>
 <p>This property holds the alignment of the spin box.</p>
-<p>Possible Values are <tt>Qt::AlignLeft</tt>, <tt>Qt::AlignRight</tt> and <tt>Qt::AlignHCenter</tt>.</p>
+<p>Possible Values are <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>, and <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a>.</p>
 <p>By default, the alignment is <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a></p>
 <p>Attempting to set the alignment to an illegal flag combination does nothing.</p>
 <p>Access functions:</p>
@@ -243,14 +242,16 @@ body { background: #ffffff; color: black; }</style>
 <p>This function interprets the text of the spin box. If the value has changed since last interpretation it will emit signals.</p>
 <h3 class="fn"><a name="lineEdit"></a><a href="qlineedit.html">QLineEdit</a> * QAbstractSpinBox::lineEdit () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>This function returns a pointer to the line edit of the spin box.</p>
+<p>See also <a href="qabstractspinbox.html#setLineEdit">setLineEdit</a>().</p>
 <h3 class="fn"><a name="selectAll"></a>void QAbstractSpinBox::selectAll ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Selects all the text in the spinbox except the prefix and suffix.</p>
 <h3 class="fn"><a name="setLineEdit"></a>void QAbstractSpinBox::setLineEdit ( <a href="qlineedit.html">QLineEdit</a> * <i>lineEdit</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the line edit of the spinbox to be <i>lineEdit</i> instead of the current line edit widget. <i>lineEdit</i> can not be 0.</p>
 <p><a href="qabstractspinbox.html">QAbstractSpinBox</a> takes ownership of the new lineEdit</p>
 <p>If <a href="qlineedit.html#validator">QLineEdit::validator</a>() for the <i>lineEdit</i> returns 0, the internal validator of the spinbox will be set on the line edit.</p>
+<p>See also <a href="qabstractspinbox.html#lineEdit">lineEdit</a>().</p>
 <h3 class="fn"><a name="stepBy"></a>void QAbstractSpinBox::stepBy ( int <i>steps</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Virtual function that is called whenever the user triggers a step. The <i>steps</i> parameter indicates how many steps were taken, e.g. Pressing <tt>Qt::Key_Down</tt> will trigger a call to stepBy(-1), whereas pressing <tt>Qt::Key_Prior</tt> will trigger a call to stepBy(10).</p>
+<p>Virtual function that is called whenever the user triggers a step. The <i>steps</i> parameter indicates how many steps were taken, e.g. Pressing <a href="qt.html#Key-enum">Qt::Key_Down</a> will trigger a call to stepBy(-1), whereas pressing <a href="qt.html#Key-enum">Qt::Key_Prior</a> will trigger a call to stepBy(10).</p>
 <p>If you subclass <a href="qabstractspinbox.html">QAbstractSpinBox</a> you must reimplement this function. Note that this function is called even if the resulting value will be outside the bounds of minimum and maximum. It's this function's job to handle these situations.</p>
 <h3 class="fn"><a name="stepDown"></a>void QAbstractSpinBox::stepDown ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Steps down by one linestep Calling this slot is analogous to calling stepBy(-1);</p>
@@ -270,6 +271,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

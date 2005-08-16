@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -142,10 +142,24 @@ nextCheckState().
 \sa QButtonGroup
 */
 
+QAbstractButtonPrivate::QAbstractButtonPrivate() 
+    :
+#ifndef QT_NO_SHORTCUT
+    shortcutId(0),
+#endif
+    checkable(false), checked(false), autoRepeat(false), autoExclusive(false),
+    down(false), blockRefresh(false)
+#ifndef QT_NO_BUTTONGROUP    
+    , group(0)
+#endif
+{}
+
+#ifndef QT_NO_BUTTONGROUP
+
 class QButtonGroupPrivate: public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QButtonGroup)
-
+        
 public:
     QButtonGroupPrivate():exclusive(true){}
     QList<QAbstractButton *> buttonList;
@@ -153,11 +167,6 @@ public:
     void notifyChecked(QAbstractButton *button);
     bool exclusive;
 };
-
-QAbstractButtonPrivate::QAbstractButtonPrivate()
-    :shortcutId(0), checkable(false), checked(false), autoRepeat(false), autoExclusive(false),
-     down(false), blockRefresh(false), group(0)
-{}
 
 QButtonGroup::QButtonGroup(QObject *parent)
     : QObject(*new QButtonGroupPrivate, parent)
@@ -219,10 +228,14 @@ QAbstractButton *QButtonGroup::checkedButton() const
     return d->checkedButton;
 }
 
+#endif // QT_NO_BUTTONGROUP
+
 QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
 {
+#ifndef QT_NO_BUTTONGROUP
     if (group)
         return group->d_func()->buttonList;
+#endif
 
     Q_Q(const QAbstractButton);
     QList<QAbstractButton*>candidates;
@@ -230,7 +243,11 @@ QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
         candidates =  qFindChildren<QAbstractButton *>(q->parentWidget());
         for (int i = candidates.count() - 1; i >= 0; --i) {
             QAbstractButton *candidate = candidates.at(i);
-            if (!candidate->autoExclusive() || candidate->group())
+            if (!candidate->autoExclusive()
+#ifndef QT_NO_BUTTONGROUP
+                || candidate->group()
+#endif
+                )
                 candidates.removeAt(i);
         }
     }
@@ -239,8 +256,10 @@ QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
 
 QAbstractButton *QAbstractButtonPrivate::queryCheckedButton() const
 {
+#ifndef QT_NO_BUTTONGROUP
     if (group)
         return group->d_func()->checkedButton;
+#endif
 
     Q_Q(const QAbstractButton);
     QList<QAbstractButton *> buttonList = queryButtonList();
@@ -257,23 +276,29 @@ QAbstractButton *QAbstractButtonPrivate::queryCheckedButton() const
 
 void QAbstractButtonPrivate::notifyChecked()
 {
+#ifndef QT_NO_BUTTONGROUP
     Q_Q(QAbstractButton);
-
     if (group) {
         QAbstractButton *previous = group->d_func()->checkedButton;
         group->d_func()->checkedButton = q;
         if (group->d_func()->exclusive && previous && previous != q)
             previous->setChecked(false);
-    } else if (autoExclusive) {
+    } else
+#endif
+    if (autoExclusive) {
         if (QAbstractButton *b = queryCheckedButton())
             b->setChecked(false);
-        }
+    }
 }
 
 void QAbstractButtonPrivate::moveFocus(int key)
 {
     QList<QAbstractButton *> buttonList = queryButtonList();;
+#ifndef QT_NO_BUTTONGROUP
     bool exclusive = group ? group->d_func()->exclusive : autoExclusive;
+#else
+    bool exclusive = autoExclusive;
+#endif
     QWidget *f = qApp->focusWidget();
     QAbstractButton *fb = ::qobject_cast<QAbstractButton *>(f);
     if (!fb || !buttonList.contains(fb))
@@ -407,8 +432,10 @@ void QAbstractButtonPrivate::click()
     emit q->released();
     if (guard)
         emit q->clicked(checked);
+#ifndef QT_NO_BUTTONGROUP
     if (guard && group)
         emit group->buttonClicked(q);
+#endif
     QMetaObject::removeGuard(&guard);
 }
 
@@ -428,9 +455,11 @@ QAbstractButton::QAbstractButton(QWidget *parent)
  */
  QAbstractButton::~QAbstractButton()
 {
+#ifndef QT_NO_BUTTONGROUP
     Q_D(QAbstractButton);
     if (d->group)
         d->group->removeButton(this);
+#endif
 }
 
 
@@ -462,6 +491,7 @@ void QAbstractButton::setText(const QString &text)
     if (d->text == text)
         return;
     d->text = text;
+#ifndef QT_NO_SHORTCUT
     if (d->shortcutId) {
         releaseShortcut(d->shortcutId);
         d->shortcutId = 0;
@@ -469,6 +499,7 @@ void QAbstractButton::setText(const QString &text)
     QKeySequence newMnemonic = QKeySequence::mnemonic(text);
     if (!newMnemonic.isEmpty())
         d->shortcutId = grabShortcut(newMnemonic);
+#endif
     update();
     updateGeometry();
 #ifndef QT_NO_ACCESSIBILITY
@@ -504,7 +535,7 @@ QIcon QAbstractButton::icon() const
     return d->icon;
 }
 
-
+#ifndef QT_NO_SHORTCUT
 /*!
 \property QAbstractButton::shortcut
 \brief the mnemonic associated with the button
@@ -524,6 +555,8 @@ QKeySequence QAbstractButton::shortcut() const
     Q_D(const QAbstractButton);
     return d->shortcut;
 }
+#endif // QT_NO_SHORTCUT
+
 /*!
 \property QAbstractButton::checkable
 \brief whether the button is checkable
@@ -564,7 +597,11 @@ void QAbstractButton::setChecked(bool checked)
 
     if (!checked && d->queryCheckedButton() == this) {
         // the checked button of an exclusive or autoexclusive group cannot be  unchecked
+#ifndef QT_NO_BUTTONGROUP
         if (d->group ? d->group->d_func()->exclusive : d->autoExclusive)
+#else
+        if (d->autoExclusive)
+#endif
             return;
     }
 
@@ -673,6 +710,7 @@ bool QAbstractButton::autoExclusive() const
     return d->autoExclusive;
 }
 
+#ifndef QT_NO_BUTTONGROUP
 /*!
   Returns the group that this button belongs to.
 
@@ -686,6 +724,7 @@ QButtonGroup *QAbstractButton::group() const
     Q_D(const QAbstractButton);
     return d->group;
 }
+#endif // QT_NO_BUTTONGROUP
 
 /*!
 Performs an animated click: the button is pressed and released
@@ -738,8 +777,10 @@ void QAbstractButton::click()
             emit released();
         if (guard)
             emit clicked(d->checked);
+#ifndef QT_NO_BUTTONGROUP
         if (guard && d->group)
             emit d->group->buttonClicked(this);
+#endif
     }
     QMetaObject::removeGuard(&guard);
 }
@@ -819,6 +860,7 @@ bool QAbstractButton::event(QEvent *e)
         }
     }
 
+#ifndef QT_NO_SHORTCUT
     if (e->type() == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         if (d->shortcutId != se->shortcutId())
@@ -831,6 +873,7 @@ bool QAbstractButton::event(QEvent *e)
             window()->setAttribute(Qt::WA_KeyboardFocusChange);
         return true;
     }
+#endif
     return QWidget::event(e);
 }
 
@@ -908,7 +951,11 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
         // fall through
     case Qt::Key_Right:
     case Qt::Key_Down:
+#ifndef QT_NO_BUTTONGROUP
         if (d->group || d->autoExclusive) {
+#else
+        if (d->autoExclusive) {
+#endif
             d->moveFocus(e->key());
             if (hasFocus()) // nothing happend, propagate
                 e->ignore();
@@ -955,8 +1002,10 @@ void QAbstractButton::timerEvent(QTimerEvent *e)
             emit released();
             if (guard)
                 emit clicked(d->checked);
+#ifndef QT_NO_BUTTONGROUP
             if (guard && d->group)
                 emit d->group->buttonClicked(this);
+#endif
             if (guard)
                 emit pressed();
         }

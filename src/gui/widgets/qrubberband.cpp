@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -25,6 +25,9 @@
 #include "qevent.h"
 #include "qstylepainter.h"
 #include "qrubberband.h"
+
+#ifndef QT_NO_RUBBERBAND
+
 #include "qstyle.h"
 #include "qstyleoption.h"
 #ifdef Q_WS_MAC
@@ -55,9 +58,9 @@ QStyleOptionRubberBand QRubberBandPrivate::getStyleOption() const
 }
 
 /*!
-   \class QRubberBand qrubberband.h
-   \brief The QRubberBand class provides a rectangle or line that can
-   indicate a selection or a boundary.
+    \class QRubberBand
+    \brief The QRubberBand class provides a rectangle or line that can
+    indicate a selection or a boundary.
 
     \ingroup misc
     \mainclass
@@ -71,10 +74,15 @@ QStyleOptionRubberBand QRubberBandPrivate::getStyleOption() const
 
     You can create a QRubberBand whenever you need to render a rubber
     band around a given area (or to represent a single line), then
-    call setGeometry(), move() or resize() to position and size it;
-    hiding (or destroying) the widget will make the rubber band
-    disappear. The rubber band can be a \c Rectangle or a \c Line,
-    depending on the shape() it was given when constructed.
+    call setGeometry(), move() or resize() to position and size it.
+    Positions are specified in global coordinates, even if the rubber
+    band has a parent.
+
+    Like other \l{QWidget}s, you must also call show() to make it
+    visible. Hiding or destroying the widget will make the rubber
+    band disappear. The rubber band can be a \l Rectangle or a \l
+    Line (vertical or horizontal), depending on the shape() it was
+    given when constructed.
 */
 
 // ### DOC: How about some nice convenience constructors?
@@ -113,8 +121,18 @@ QRubberBand::~QRubberBand()
 /*!
     \enum QRubberBand::Shape
 
-    \value Line
-    \value Rectangle
+    This enum specifies what shape a QRubberBand should have. This is
+    a drawing hint that is passed down to the style system, and can be
+    interpreted by each QStyle.
+
+    \value Line A QRubberBand can represent a vertical or horizontal
+                line. Geometry is still given in rect() and the line
+                will fill the given geometry on most styles.
+
+    \value Rectangle A QRubberBand can represent a rectangle. Some
+                     styles will interpret this as a filled (often
+                     semi-transparent) rectangle, or a rectangular
+                     outline.
 */
 
 /*!
@@ -142,7 +160,9 @@ void QRubberBandPrivate::updateMask()
 void QRubberBand::paintEvent(QPaintEvent *)
 {
     Q_D(QRubberBand);
+#ifndef Q_WS_MAC
     d->updateMask();
+#endif
     QStylePainter painter(this);
     painter.drawControl(QStyle::CE_RubberBand, d->getStyleOption());
 }
@@ -153,6 +173,10 @@ void QRubberBand::paintEvent(QPaintEvent *)
 void QRubberBand::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
+#ifdef Q_WS_MAC
+    Q_D(QRubberBand);
+    d->updateMask();
+#endif
 }
 
 /*!
@@ -207,17 +231,17 @@ void QRubberBand::changeEvent(QEvent *e)
     \fn void QRubberBand::setGeometry(const QRect &rect)
 
     Changes the rubberband's geometry to the geometry of the rectangle
-    \a rect.
+    \a rect. \a rect is relative of (and bounded by) by the parent
+    geometry.
 
     \sa move() resize()
 */
 void QRubberBand::setGeometry(const QRect &geom)
 {
     Q_D(QRubberBand);
-#if 1
-    QRect mygeom = geom;
-    d->rect = QRect(0, 0, mygeom.width(), mygeom.height());
+    QRect mygeom = geom.normalized();
     if(QWidget *p = parentWidget()) {
+        mygeom.moveTo(p->mapToGlobal(mygeom.topLeft()));
         const QRect prect(p->mapToGlobal(QPoint(0, 0)), p->size());
         if(!prect.contains(mygeom)) {
             if(mygeom.left() < prect.left()) {
@@ -246,9 +270,12 @@ void QRubberBand::setGeometry(const QRect &geom)
             }
         }
     }
+    d->rect = QRect(0, 0, mygeom.width(), mygeom.height());
     QWidget::setGeometry(mygeom);
-    update();
-#else
-    QWidget::setMygeometry(geom);
+#ifdef Q_WS_MAC
+    d->updateMask();
 #endif
+    update();
 }
+
+#endif // QT_NO_RUBBERBAND

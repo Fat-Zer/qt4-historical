@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/tools/designer/src/lib/extension/extension.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/tools/designer/src/lib/extension/extension.cpp -->
 <head>
     <title>Qt 4.0: QAbstractExtensionFactory Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAbstractExtensionFactory Class Reference</h1>
-<p>The QAbstractExtensionFactory class provides the standard interface for extension factories in <i>Qt Designer</i>. <a href="#details">More...</a></p>
-<pre>#include &lt;QAbstractExtensionFactory&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
-<p>Inherited by <a href="qextensionfactory.html">QExtensionFactory</a>.</p>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAbstractExtensionFactory Class Reference<br /><sup><sup>[<a href="qtdesigner.html">QtDesigner</a> module]</sup></sup></h1>
+<p>The QAbstractExtensionFactory class provides the standard interface for extension factories in Qt Designer. <a href="#details">More...</a></p>
+<pre>#include &lt;QAbstractExtensionFactory&gt;</pre><p>Inherited by <a href="qextensionfactory.html">QExtensionFactory</a>.</p>
 <ul>
 <li><a href="qabstractextensionfactory-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -33,17 +32,19 @@ body { background: #ffffff; color: black; }</style>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The QAbstractExtensionFactory class provides the standard interface for extension factories in <i>Qt Designer</i>.</p>
+<p>The QAbstractExtensionFactory class provides the standard interface for extension factories in Qt Designer.</p>
+<p>In <i>Qt Designer</i>, extension factories are used to look up and create named extensions as they are required. QAbstractExtensionFactory provides a default implementation of an extension factory that is</p>
+<p>See also <a href="qabstractextensionmanager.html">QAbstractExtensionManager</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="dtor.QAbstractExtensionFactory"></a>QAbstractExtensionFactory::~QAbstractExtensionFactory ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the extension factory.</p>
 <h3 class="fn"><a name="extension"></a><a href="qobject.html">QObject</a> * QAbstractExtensionFactory::extension ( <a href="qobject.html">QObject</a> * <i>object</i>, const <a href="qstring.html">QString</a> &amp; <i>iid</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns an extension for the given <i>object</i> with an extension identifier specified by <i>iid</i>.</p>
+<p>Returns an extension specified by <i>iid</i> for the given <i>object</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

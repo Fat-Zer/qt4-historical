@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include <qmenubar.h>
+
 #include <qstyle.h>
 #include <qlayout.h>
 #include <qapplication.h>
@@ -34,6 +35,8 @@
 #include <qmainwindow.h>
 #include <qtoolbar.h>
 #include <qwhatsthis.h>
+
+#ifndef QT_NO_MENUBAR
 
 #ifdef QT3_SUPPORT
 #include <private/qaction_p.h>
@@ -89,6 +92,7 @@ void QMenuBarPrivate::updateGeometries()
     itemsWidth = q_width;
     itemsStart = q_start;
     currentAction = 0;
+#ifndef QT_NO_SHORTCUT
     if(itemsDirty) {
         for(int j = 0; j < shortcutIndexMap.size(); ++j)
             q->releaseShortcut(shortcutIndexMap.value(j));
@@ -96,11 +100,10 @@ void QMenuBarPrivate::updateGeometries()
         for(int i = 0; i < actionList.count(); i++)
             shortcutIndexMap.append(q->grabShortcut(QKeySequence::mnemonic(actionList.at(i)->text())));
     }
+#endif
     itemsDirty = false;
 
-#ifndef QT_NO_LAYOUT
     q->updateGeometry();
-#endif
 }
 
 QRect QMenuBarPrivate::actionRect(QAction *act) const
@@ -124,8 +127,12 @@ void QMenuBarPrivate::setKeyboardMode(bool b)
         QWidget *fw = qApp->focusWidget();
         if (fw != q)
             keyboardFocusWidget = qApp->focusWidget();
+        if(!currentAction && !actionList.isEmpty())
+            setCurrentAction(actionList.first());
         q->setFocus();
     } else {
+        if(!popupState)
+            setCurrentAction(0);
         if(keyboardFocusWidget) {
             keyboardFocusWidget->setFocus();
             keyboardFocusWidget = 0;
@@ -435,7 +442,7 @@ QStyleOptionMenuItem QMenuBarPrivate::getStyleOption(const QAction *action) cons
     QMenuBar and QMenu.
 
     \sa QMenu, QShortcut, QAction,
-        {http://developer.apple.com/techpubs/macosx/Carbon/HumanInterfaceToolbox/Aqua/aqua.html}{Aqua Style Guidelines},
+        {http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html}{Introduction to Apple Human Interface Guidelines}
         {fowler}{GUI Design Handbook: Menu Bar}
 */
 
@@ -447,6 +454,8 @@ void QMenuBarPrivate::init()
     q->setAttribute(Qt::WA_CustomWhatsThis);
 #ifdef Q_WS_MAC
     macCreateMenuBar(q->parentWidget());
+    if(mac_menubar)
+        q->hide();
 #endif
     q->setBackgroundRole(QPalette::Button);
     oldWindow = oldParent = 0;
@@ -707,8 +716,10 @@ void QMenuBar::mousePressEvent(QMouseEvent *e)
     QAction *action = d->actionAt(e->pos());
     if (!action) {
         d->setCurrentAction(0);
+#ifndef QT_NO_WHATSTHIS
         if (QWhatsThis::inWhatsThisMode())
             QWhatsThis::showText(e->globalPos(), d->whatsThis, this);
+#endif
         return;
     }
 
@@ -916,7 +927,7 @@ void QMenuBar::actionEvent(QActionEvent *e)
 void QMenuBar::focusInEvent(QFocusEvent *)
 {
     Q_D(QMenuBar);
-    if(!d->currentAction && !d->actionList.isEmpty())
+    if(d->keyboardState && !d->currentAction && !d->actionList.isEmpty())
         d->setCurrentAction(d->actionList.first());
 }
 
@@ -1033,6 +1044,7 @@ bool QMenuBar::event(QEvent *e)
         }
 
     } break;
+#ifndef QT_NO_SHORTCUT
     case QEvent::Shortcut: {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         int shortcutId = se->shortcutId();
@@ -1041,9 +1053,11 @@ bool QMenuBar::event(QEvent *e)
                 d->internalShortcutActivated(j);
         }
     } break;
+#endif
     case QEvent::Show:
         d->updateGeometries();
         break;
+#ifndef QT_NO_WHATSTHIS
     case QEvent::QueryWhatsThis:
         e->setAccepted(d->whatsThis.size());
         if (QAction *action = d->actionAt(static_cast<QHelpEvent*>(e)->pos())) {
@@ -1051,6 +1065,7 @@ bool QMenuBar::event(QEvent *e)
                 e->accept();
         }
         return true;
+#endif
     default:
         break;
     }
@@ -1087,7 +1102,6 @@ bool QMenuBar::eventFilter(QObject *object, QEvent *event)
     }
 
     if (style()->styleHint(QStyle::SH_MenuBar_AltKeyNavigation, 0, this)) {
-
         if (d->altPressed) {
             switch (event->type()) {
             case QEvent::KeyPress:
@@ -1713,4 +1727,4 @@ int QMenuBar::findIdForAction(QAction *act) const
 // for private slots
 
 #include <moc_qmenubar.cpp>
-
+#endif // QT_NO_MENUBAR

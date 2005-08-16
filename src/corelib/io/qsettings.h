@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +27,11 @@
 #include "QtCore/qobject.h"
 #include "QtCore/qvariant.h"
 #include "QtCore/qstring.h"
+
+QT_MODULE(Core)
+
+#ifndef QT_NO_SETTINGS
+
 #ifdef QT3_SUPPORT
 #include "QtCore/qstringlist.h"
 #endif
@@ -42,7 +47,7 @@ class QSettingsPrivate;
 #ifndef QT_NO_QOBJECT
 class Q_CORE_EXPORT QSettings : public QObject
 #else
-class Q_CORE_EXPORT QSettings 
+class Q_CORE_EXPORT QSettings
 #endif
 {
 #ifndef QT_NO_QOBJECT
@@ -53,12 +58,12 @@ class Q_CORE_EXPORT QSettings
     Q_DECLARE_PRIVATE(QSettings)
 
 public:
-    enum Status { 
-        NoError = 0, 
-        AccessError, 
-        FormatError 
+    enum Status {
+        NoError = 0,
+        AccessError,
+        FormatError
     };
-    
+
     enum Format {
         NativeFormat,
         IniFormat
@@ -123,7 +128,7 @@ public:
     bool fallbacksEnabled() const;
 
     QString fileName() const;
-    
+
     static void setSystemIniPath(const QString &dir);
     static void setUserIniPath(const QString &dir);
 
@@ -235,4 +240,6 @@ private:
     Q_DISABLE_COPY(QSettings)
 };
 
+
+#endif // QT_NO_SETTINGS
 #endif // QSETTINGS_H

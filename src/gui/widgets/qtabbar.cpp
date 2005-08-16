@@ -4,7 +4,7 @@
  **
  ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
  **
- ** This file is part of the widgets module of the Qt Toolkit.
+ ** This file is part of the QtGui module of the Qt Toolkit.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -32,6 +32,7 @@
 #include "qdebug.h"
 #include "private/qwidget_p.h"
 
+#ifndef QT_NO_TABBAR
 
 class QTabBarPrivate  : public QWidgetPrivate
 {
@@ -129,12 +130,14 @@ QStyleOptionTab QTabBarPrivate::getStyleOption(int tab) const
     } else {
         opt.position = QStyleOptionTab::Middle;
     }
+#ifndef QT_NO_TABWIDGET
     if (const QTabWidget *tw = qobject_cast<const QTabWidget *>(q->parentWidget())) {
         if (tw->cornerWidget(Qt::TopLeftCorner) || tw->cornerWidget(Qt::BottomLeftCorner))
             opt.cornerWidgets |= QStyleOptionTab::LeftCornerWidget;
         if (tw->cornerWidget(Qt::TopRightCorner) || tw->cornerWidget(Qt::BottomRightCorner))
             opt.cornerWidgets |= QStyleOptionTab::RightCornerWidget;
     }
+#endif
     return opt;
 }
 
@@ -164,13 +167,13 @@ QStyleOptionTab QTabBarPrivate::getStyleOption(int tab) const
 
     The \l shape property defines the tabs' appearance. The choice of
     shape is a matter of taste, although tab dialogs (for preferences
-    and similar) invariably use \c RoundedNorth.
+    and similar) invariably use \l RoundedNorth.
     Tab controls in windows other than dialogs almost
-    always use either \c RoundedSouth or \c TriangularSouth. Many
+    always use either \l RoundedSouth or \l TriangularSouth. Many
     spreadsheets and other tab controls in which all the pages are
-    essentially similar use \c TriangularSouth, whereas \c
+    essentially similar use \l TriangularSouth, whereas \l
     RoundedSouth is used mostly when the pages are different (e.g. a
-    multi-page tool palette). The default in QTabBar is \c
+    multi-page tool palette). The default in QTabBar is \l
     RoundedNorth.
 
     The most important part of QTabBar's API is the currentChanged()
@@ -476,8 +479,8 @@ QTabBar::~QTabBar()
     \property QTabBar::shape
     \brief the shape of the tabs in the tab bar
 
-    The value of this property is one of the following: \c
-    RoundedNorth (default), \c RoundedSouth, \c TriangularNorth or \c
+    The value of this property is one of the following: \l
+    RoundedNorth (default), \l RoundedSouth, \l TriangularNorth or \l
     TriangularBelow.
 
     \sa Shape
@@ -568,8 +571,12 @@ int QTabBar::insertTab(int index, const QIcon& icon, const QString &text)
     } else {
         d->tabList.insert(index, QTabBarPrivate::Tab(icon, text));
     }
+#ifndef QT_NO_SHORTCUT
     d->tabList[index].shortcutId = grabShortcut(QKeySequence::mnemonic(text));
+#endif
     d->refresh();
+    if(d->tabList.count() == 1)
+        setCurrentIndex(index);
     tabInserted(index);
     return index;
 }
@@ -582,7 +589,9 @@ void QTabBar::removeTab(int index)
 {
     Q_D(QTabBar);
     if (d->validIndex(index)) {
+#ifndef QT_NO_SHORTCUT
         releaseShortcut(d->tabList.at(index).shortcutId);
+#endif
         d->tabList.removeAt(index);
         if (index == d->currentIndex)
             setCurrentIndex(d->validIndex(index+1)?index+1:0);
@@ -642,8 +651,10 @@ void QTabBar::setTabText(int index, const QString &text)
     Q_D(QTabBar);
     if (QTabBarPrivate::Tab *tab = d->at(index)) {
         tab->text = text;
+#ifndef QT_NO_SHORTCUT
         releaseShortcut(tab->shortcutId);
         tab->shortcutId = grabShortcut(QKeySequence::mnemonic(text));
+#endif
         d->refresh();
     }
 }
@@ -668,8 +679,12 @@ void QTabBar::setTabIcon(int index, const QIcon & icon)
 {
     Q_D(QTabBar);
     if (QTabBarPrivate::Tab *tab = d->at(index)) {
+        bool simpleIconChange = (!icon.isNull() && !tab->icon.isNull());
         tab->icon = icon;
-        d->refresh();
+        if (simpleIconChange)
+            update(tabRect(index));
+        else
+            d->refresh();
     }
 }
 
@@ -899,6 +914,7 @@ bool QTabBar::event(QEvent *e)
         QRect oldHoverRect = d->hoverRect;
         d->hoverRect = QRect();
         update(oldHoverRect);
+#ifndef QT_NO_TOOLTIP
     } else if (e->type() == QEvent::ToolTip) {
         if (const QTabBarPrivate::Tab *tab = d->at(d->indexAtPos(static_cast<QHelpEvent*>(e)->pos()))) {
             if (!tab->toolTip.isEmpty()) {
@@ -906,6 +922,8 @@ bool QTabBar::event(QEvent *e)
                 return true;
             }
         }
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_SHORTCUT
     } else if (e->type() == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         for (int i = 0; i < d->tabList.count(); ++i) {
@@ -915,6 +933,7 @@ bool QTabBar::event(QEvent *e)
                 return true;
             }
         }
+#endif
     }
     return QWidget::event(e);
 }
@@ -1113,3 +1132,4 @@ void QTabBar::changeEvent(QEvent *e)
 
 #include "moc_qtabbar.cpp"
 
+#endif // QT_NO_TABBAR

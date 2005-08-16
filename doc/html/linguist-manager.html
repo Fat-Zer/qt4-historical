@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/linguist-manual.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/linguist-manual.qdoc -->
 <head>
     <title>Qt 4.0: Qt Linguist Manual: Release Manager</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="linguist-manual.html">Qt Linguist Manual</a>]
 [<a href="linguist-manual.html">Contents</a>]
 [Next: <a href="linguist-translators.html">Qt Linguist Manual: Translators</a>]
 </p>
-<h1 align="center">Qt Linguist Manual: Release Manager</h1>
+<h1 align="center">Qt Linguist Manual: Release Manager<br /><small></small></h1>
 <p>Two tools are provided for the release manager, <a href="#lupdate">lupdate</a> and <a href="#lrelease">lrelease</a>. These tools depend on <i>qmake</i> project files. You don't have to use <i>qmake</i>, though.</p>
 <p>A third tool, <tt>qm2ts</tt>, can be used for converting Qt 2.x message files to <tt>.ts</tt> files.</p>
 <a name="qt-project-files"></a>
@@ -46,8 +46,12 @@ body { background: #ffffff; color: black; }</style>
                       superapp_no.ts \
                       superapp_se.ts</pre>
 <p><a href="qtextcodec.html#setCodecForTr">QTextCodec::setCodecForTr</a>() makes it possible to choose a 8-bit encoding for literal strings that appear within <tt>tr()</tt> calls. This is useful for applications whose source language is, for example, Chinese or Japanese. If no encoding is set, <tt>tr()</tt> uses Latin1.</p>
-<p>If you do use the <a href="qtextcodec.html#codecForTr">QTextCodec::codecForTr</a>() mechanism in your application, <i>Qt Linguist</i> needs you to set the <tt>DEFAULTCODEC</tt> entry in the <tt>.pro</tt> file as well. For example:</p>
-<pre>&nbsp;   DEFAULTCODEC    = ISO-8859-5</pre>
+<p>If you do use the <a href="qtextcodec.html#codecForTr">QTextCodec::codecForTr</a>() mechanism in your application, <i>Qt Linguist</i> needs you to set the <tt>CODECFORTR</tt> entry in the <tt>.pro</tt> file as well. For example:</p>
+<pre>&nbsp;   CODECFORTR      = ISO-8859-5</pre>
+<p>Also, if your compiler uses a different encoding for its runtime system as for its source code and you want to use non-ASCII characters in string literals, you will need to set the <tt>CODECFORSRC</tt>. For example:</p>
+<pre>&nbsp;   CODECFORSRC     = UTF-8</pre>
+<p>Microsoft Visual Studio 2005 .NET appears to be the only compiler for which this is necessary. However, if you want to write portable code, we recommend that you avoid non-ASCII characters in your source files. You can still specify non-ASCII characters portably using escape sequences, for example:</p>
+<pre>&nbsp;   label-&gt;setText(tr(&quot;F\252r \310lise&quot;));</pre>
 <a name="lupdate"></a>
 <h2>lupdate</h2>
 <p>Usage: <tt>lupdate myproject.pro</tt></p>
@@ -73,6 +77,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

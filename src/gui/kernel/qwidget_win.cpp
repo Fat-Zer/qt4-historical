@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -64,7 +64,8 @@ static PtrSetLayeredWindowAttributes ptrSetLayeredWindowAttributes = 0;
 #endif
 
 //#define TABLET_DEBUG
-#define PACKETDATA  (PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_ORIENTATION | PK_CURSOR)
+#define PACKETDATA  (PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_TANGENT_PRESSURE \
+                     | PK_ORIENTATION | PK_CURSOR | PK_Z)
 #define PACKETMODE  0
 #include <wintab.h>
 #include <pktdef.h>
@@ -499,7 +500,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
     }
 
     QWinInputContext::enable(q, q->testAttribute(Qt::WA_InputMethodEnabled) & q->isEnabled());
-    if (q != qt_tablet_widget)
+    if (q != qt_tablet_widget && QWidgetPrivate::mapper)
         qt_tablet_init();
 }
 
@@ -755,8 +756,8 @@ void QWidgetPrivate::setWindowIcon_sys()
     if (!x->winIconBig)
         x->winIconBig = x->winIconSmall;
 
-    SendMessageA(q->winId(), WM_SETICON, 0 /* ICON_SMALL */, (long)x->winIconSmall);
-    SendMessageA(q->winId(), WM_SETICON, 1 /* ICON_BIG */, (long)x->winIconBig);
+    SendMessageA(q->winId(), WM_SETICON, 0 /* ICON_SMALL */, (LPARAM)x->winIconSmall);
+    SendMessageA(q->winId(), WM_SETICON, 1 /* ICON_BIG */, (LPARAM)x->winIconBig);
 }
 
 

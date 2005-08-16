@@ -4,17 +4,17 @@
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -136,7 +136,6 @@ QVariant SpreadSheetItem::display() const
         }
         result = sum;
     } else if (op == "+") {
-        printf("+, %s, %s\n", qPrintable(start->text()), qPrintable(end->text()));
         result = (start->text().toInt() + end->text().toInt());
     } else if (op == "-") {
         result = (start->text().toInt() - end->text().toInt());
@@ -166,30 +165,6 @@ QPoint SpreadSheetItem::convertCoords(const QString coords) const
     return QPoint(c, r);
 }
 
-//   Here we subclass QTableWidget to change the selection behavior to only select with the left mouse button
-//   (so we keep the selection when opening the context menu on an item).
-
-class SpreadSheetTable : public QTableWidget
-{
-    Q_OBJECT
-public:
-    SpreadSheetTable(int rows, int columns, QWidget *parent) :
-        QTableWidget(rows, columns, parent) {}
-
-    QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex &index,
-                                                         const QEvent *event) const;
-};
-
-QItemSelectionModel::SelectionFlags SpreadSheetTable::selectionCommand(const QModelIndex &index,
-                                                                       const QEvent *event) const
-{
-    const QMouseEvent *me = event && event->type() == QEvent::MouseButtonPress
-                            ? static_cast<const QMouseEvent *>(event) : 0;
-    if (me && (me->buttons() & Qt::RightButton || me->buttons() & Qt::MidButton))
-        return QItemSelectionModel::NoUpdate;
-    return QTableWidget::selectionCommand(index, event);
-}
-
 class SpreadSheet : public QMainWindow
 {
     Q_OBJECT
@@ -216,7 +191,6 @@ protected:
     void setupContextMenu();
     void setupContents();
 
-    void setupToolBar();
     void setupMenuBar();
     void createActions();
 
@@ -260,7 +234,7 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     toolBar->addWidget(cellLabel);
     toolBar->addWidget(formulaInput);
 
-    table = new SpreadSheetTable(rows, cols, this);
+    table = new QTableWidget(rows, cols, this);
     for (int c = 0; c < cols; ++c) {
         QString character(QChar('A' + c));
         table->setHorizontalHeaderItem(c, new QTableWidgetItem(character));
@@ -271,7 +245,6 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     createActions();
 
     updateColor(0);
-    setupToolBar();
     setupMenuBar();
     setupContextMenu();
     setupContents();
@@ -359,17 +332,6 @@ void SpreadSheet::setupMenuBar()
 
     QMenu *aboutMenu = menuBar()->addMenu(tr("&Help"));
     aboutMenu->addAction(aboutSpreadSheet);
-}
-
-void SpreadSheet::setupToolBar()
-{
-//     toolBar->addAction(cell_sumAction);
-
-//     toolBar->addAction(firstSeparator);
-//     toolBar->addAction(fontAction);
-//     toolBar->addAction(colorAction);
-//     toolBar->addAction(secondSeparator);
-//     toolBar->addAction(clearAction);
 }
 
 void SpreadSheet::updateStatus(QTableWidgetItem *item)

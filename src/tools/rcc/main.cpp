@@ -1,15 +1,35 @@
-#include <QString>
-#include <QStringList>
-#include <QFile>
-#include <QFileInfo>
-#include <QLocale>
-#include <QIODevice>
-#include <QTextStream>
-#include <QLatin1String>
-#include <QByteArray>
-#include <QHash>
-#include <QChar>
-#include <QDir>
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the tools applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include <qstring.h>
+#include <qstringlist.h>
+#include <qfile.h>
+#include <qfileinfo.h>
+#include <qlocale.h>
+#include <qtextstream.h>
+#include <qbytearray.h>
+#include <qhash.h>
+#include <qdir.h>
 #include "rcc.h"
 
 // Some static globals
@@ -40,8 +60,12 @@ bool processResourceFile(const QStringList &filenamesIn, const QString &filename
     //open output
     FILE *out_fd = stdout;
     if (!filenameOut.isEmpty() && filenameOut != QLatin1String("-")) {
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+		if (fopen_s(&out_fd, filenameOut.toLocal8Bit().constData(), "w")) {
+#else
         out_fd = fopen(filenameOut.toLocal8Bit().constData(), "w");
         if(!out_fd) {
+#endif
             fprintf(stderr, "Unable to open %s for writing\n", filenameOut.toLatin1().constData());
             return false;
         }

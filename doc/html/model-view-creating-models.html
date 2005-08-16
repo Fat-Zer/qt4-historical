@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.0: Creating New Models</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,14 +19,15 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="model-view-model.html">Model Classes</a>]
 [<a href="model-view-programming.html">Contents</a>]
 [Next: <a href="model-view-view.html">View Classes</a>]
 </p>
-<h1 align="center">Creating New Models</h1>
+<h1 align="center">Creating New Models<br /><small></small></h1>
 <ul><li><a href="#introduction">Introduction</a></li>
+<li><a href="#designing-a-model">Designing a Model</a></li>
 <li><a href="#a-read-only-example-model">A Read-Only Example Model</a></li>
 <ul><li><a href="#dimensions-of-the-model">Dimensions of The Model</a></li>
 <li><a href="#model-headers-and-data">Model Headers and Data</a></li>
@@ -44,9 +45,15 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qabstractlistmodel.html">QAbstractListModel</a> and <a href="qabstracttablemodel.html">QAbstractTableModel</a> classes provide support for interfaces to simpler non-hierarchical data structures, and are easier to use as a starting point for simple list and table models.</p>
 <p>In this chapter, we create a simple read-only model to explore the basic principles of the model/view architecture. Later in this chapter, we will adapt this simple model so that items can be modified by the user.</p>
 <p>For an example of a more complex model, see the <a href="itemviews-simpletreemodel.html">Simple Tree Model</a> example.</p>
+<a name="designing-a-model"></a>
+<h2>Designing a Model</h2>
+<p>When creating a new model for an existing data structure, it is important to consider which type of model should be used to provide an interface onto the data. If the data structure can be represented as a list or table of items, you can subclass <a href="qabstractlistmodel.html">QAbstractListModel</a> or <a href="qabstracttablemodel.html">QAbstractTableModel</a> since these classes provide suitable default implementations for many functions.</p>
+<p>However, if the underlying data structure can only be represented by a hierarchical tree structure, it is necessary to subclass <a href="qabstractitemmodel.html">QAbstractItemModel</a>. This approach is taken in the <a href="itemviews-simpletreemodel.html">Simple Tree Model</a> example.</p>
+<p>In this chapter, we will implement a simple model based on a list of strings, so the <a href="qabstractlistmodel.html">QAbstractListModel</a> provides an ideal base class on which to build.</p>
+<p>Whatever form the underlying data structure takes, it is usually a good idea to supplement the standard <a href="qabstractitemmodel.html">QAbstractItemModel</a> API in specialized models with one that allows more natural access to the underlying data structure. This makes it easier to populate the model with data, yet still enables other general model/view components to interact with it using the standard API. The model described below provides a custom constructor for just this purpose.</p>
 <a name="a-read-only-example-model"></a>
 <h2>A Read-Only Example Model</h2>
-<p>The model implemented here is a simple, non-hierarchical, read-only data model. It has a <a href="qstringlist.html">QStringList</a> as its internal data source, and implements only what is needed to make a functioning model. To make the implementation easier, we subclass <a href="qabstractlistmodel.html">QAbstractListModel</a> because it defines sensible default behavior for list models, and it exposes a simpler interface than the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class.</p>
+<p>The model implemented here is a simple, non-hierarchical, read-only data model based on the standard <a href="qstringlistmodel.html">QStringListModel</a> class. It has a <a href="qstringlist.html">QStringList</a> as its internal data source, and implements only what is needed to make a functioning model. To make the implementation easier, we subclass <a href="qabstractlistmodel.html">QAbstractListModel</a> because it defines sensible default behavior for list models, and it exposes a simpler interface than the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class.</p>
 <p>When implementing a model it is important to remember that <a href="qabstractitemmodel.html">QAbstractItemModel</a> does not store any data itself, it merely presents an interface that the views use to access the data. For a minimal read-only model it is only necessary to implement a few functions as there are default implementations for most of the interface. The class declaration is as follows:</p>
 <pre>&nbsp;   class StringListModel : public QAbstractListModel
     {
@@ -108,7 +115,8 @@ body { background: #ffffff; color: black; }</style>
 <h2>An Editable Model</h2>
 <p>The read-only model shows how simple choices could be presented to the user but, for many applications, an editable list model is much more useful. We can modify the read-only model to make the items editable by implementing two extra functions: <a href="qabstractitemmodel.html#flags">flags()</a> and <a href="qabstractitemmodel.html#setData">setData()</a>. The following function declarations are added to the class definition:</p>
 <pre>&nbsp;       Qt::ItemFlags flags(const QModelIndex &amp;index) const;
-        bool setData(const QModelIndex &amp;index, const QVariant &amp;value,</pre>
+        bool setData(const QModelIndex &amp;index, const QVariant &amp;value,
+                     int role = Qt::EditRole);</pre>
 <a name="making-the-model-editable"></a>
 <h3>Making the Model Editable</h3>
 <p>A delegate checks whether an item is editable before creating an editor. The model must let the delegate know that its items are editable. We do this by returning the correct flags for each item in the model; in this case, we enable all items and make them both selectable and editable:</p>
@@ -177,6 +185,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

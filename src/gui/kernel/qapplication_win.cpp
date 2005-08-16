@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1449,7 +1449,8 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             if (g)
                 widget = (QETWidget*)g;
             else if (QApplication::activePopupWidget())
-                widget = (QETWidget*)QApplication::activePopupWidget();
+                widget = (QETWidget*)QApplication::activePopupWidget()->focusWidget()
+                       ? (QETWidget*)QApplication::activePopupWidget()->focusWidget() : (QETWidget*)QApplication::activePopupWidget();
             else if (qApp->focusWidget())
                 widget = (QETWidget*)QApplication::focusWidget();
             else if (!widget || widget->winId() == GetFocus()) // We faked the message to go to exactly that widget.
@@ -1630,12 +1631,6 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 #if defined(QT_NON_COMMERCIAL)
                 QT_NC_SYSCOMMAND
 #endif
-            case SC_MAXIMIZE:
-                window_state_change = true;
-                widget->dataPtr()->window_state &= ~Qt::WindowMinimized;
-                widget->dataPtr()->window_state |= Qt::WindowMaximized;
-                result = false;
-                break;
             case SC_MINIMIZE:
                 window_state_change = true;
                 widget->dataPtr()->window_state |= Qt::WindowMinimized;
@@ -1646,6 +1641,7 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                 }
                 result = false;
                 break;
+            case SC_MAXIMIZE:
             case SC_RESTORE:
                 window_state_change = true;
                 if (widget->isMinimized()) {
@@ -1653,9 +1649,11 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     widget->showChildren(true);
                     QShowEvent e;
                     qt_sendSpontaneousEvent(widget, &e);
-                } else {
+                } 
+                if (wParam == SC_MAXIMIZE)
+                    widget->dataPtr()->window_state |= Qt::WindowMaximized;
+                else
                     widget->dataPtr()->window_state &= ~Qt::WindowMaximized;
-                }
                 result = false;
                 break;
             default:
@@ -2069,12 +2067,10 @@ bool QApplicationPrivate::modalState()
     return app_do_modal;
 }
 
-
-void QApplicationPrivate::enterModal(QWidget *widget)
+void QApplicationPrivate::enterModal_sys(QWidget *widget)
 {
-    if (!qt_modal_stack) {                        // create modal stack
+    if (!qt_modal_stack)
         qt_modal_stack = new QWidgetList;
-    }
 
     releaseAutoCapture();
     QApplicationPrivate::dispatchEnterLeave(0, QWidget::find((WId)curWin));
@@ -2083,15 +2079,9 @@ void QApplicationPrivate::enterModal(QWidget *widget)
     curWin = 0;
     qt_button_down = 0;
     qt_win_ignoreNextMouseReleaseEvent = false;
-
-    if (widget->parentWidget()) {
-        QEvent e(QEvent::WindowBlocked);
-        QApplication::sendEvent(widget->parentWidget(), &e);
-    }
 }
 
-
-void QApplicationPrivate::leaveModal(QWidget *widget)
+void QApplicationPrivate::leaveModal_sys(QWidget *widget)
 {
     if (qt_modal_stack && qt_modal_stack->removeAll(widget)) {
         if (qt_modal_stack->isEmpty()) {
@@ -2106,30 +2096,6 @@ void QApplicationPrivate::leaveModal(QWidget *widget)
         qt_win_ignoreNextMouseReleaseEvent = true;
     }
     app_do_modal = qt_modal_stack != 0;
-
-    if (widget->parentWidget()) {
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(widget->parentWidget(), &e);
-    }
-}
-
-static bool qt_blocked_modal(QWidget *widget)
-{
-    if (!app_do_modal)
-        return false;
-    if (qApp->activePopupWidget())
-        return false;
-    if ((widget->windowType() == Qt::Tool))        // allow tool windows
-        return false;
-
-    QWidget *modal=0, *top=qt_modal_stack->first();
-
-    widget = widget->window();
-    if (widget->testAttribute(Qt::WA_ShowModal))        // widget is modal
-        modal = widget;
-    if (!top || modal == top)                                // don't block event
-        return false;
-    return true;
 }
 
 bool qt_try_modal(QWidget *widget, MSG *msg, int& ret)
@@ -2245,14 +2211,14 @@ void QApplicationPrivate::closePopup(QWidget *popup)
             return;
         if (!qt_nograb())                        // grabbing not disabled
             releaseAutoCapture();
-        if (QApplicationPrivate::active_window) {
-            if (QWidget *fw = QApplicationPrivate::active_window->focusWidget()) {
-                if (fw != q_func()->focusWidget()) {
-                    fw->setFocus(Qt::PopupFocusReason);
-                } else {
-                    QFocusEvent e(QEvent::FocusIn, Qt::PopupFocusReason);
-                    q_func()->sendEvent(fw, &e);
-                }
+        QWidget *fw = QApplicationPrivate::active_window ? QApplicationPrivate::active_window->focusWidget()
+            : q_func()->focusWidget();
+        if (fw) {
+            if (fw != q_func()->focusWidget()) {
+                fw->setFocus(Qt::PopupFocusReason);
+            } else {
+                QFocusEvent e(QEvent::FocusIn, Qt::PopupFocusReason);
+                q_func()->sendEvent(fw, &e);
             }
         }
     } else {
@@ -2579,7 +2545,7 @@ bool QETWidget::translateMouseEvent(const MSG &msg)
              && replayPopupMouseEvent) {
             // the popup dissappeared. Replay the event
             QWidget* w = QApplication::widgetAt(gpos.x, gpos.y);
-            if (w && !qt_blocked_modal(w)) {
+            if (w && !QApplicationPrivate::isBlockedByModal(w)) {
                 if (QWidget::mouseGrabber() == 0)
                     setAutoCapture(w->winId());
                 POINT widgetpt = gpos;
@@ -3252,15 +3218,12 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
         if (!tCursorInfo()->contains(localPacketBuf[i].pkCursor))
             tabletInit(localPacketBuf[i].pkCursor, qt_tablet_context);
         TabletDeviceData tdd = tCursorInfo()->value(localPacketBuf[i].pkCursor);
-        QSize desktopSize = qt_desktopWidget->screenGeometry().size();
-        QPointF hiResGlobal = tdd.scaleCoord(ptNew.x, ptNew.y, 0, desktopSize.width(),
-                                             0, desktopSize.height());
+        QRect desktopArea = qt_desktopWidget->geometry();
+        QPointF hiResGlobal = tdd.scaleCoord(ptNew.x, ptNew.y, desktopArea.left(), desktopArea.width(),
+                                             desktopArea.top(), desktopArea.height());
         if (btnNew) {
-            // I'm not sure what is going on here. It could be the driver or it could be something else
-            // But as near as I can figure, the pressure is being reported in the Z_AXIS now instead of in
-            // the normal pressure area. So that that into account...
             if (pointerType == QTabletEvent::Pen || pointerType == QTabletEvent::Eraser)
-                prsNew = localPacketBuf[i].pkZ / qreal(tdd.maxPressure - tdd.minPressure);
+                prsNew = localPacketBuf[i].pkNormalPressure / qreal(tdd.maxPressure - tdd.minPressure);
             else
                 prsNew = 0;
         } else if (button_pressed) {
@@ -3346,7 +3309,7 @@ bool QETWidget::sendKeyEvent(QEvent::Type type, int code,
                               int state, bool grab, const QString& text,
                               bool autor)
 {
-#if defined QT3_SUPPORT && !defined(QT_NO_ACCEL)
+#if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
     if (type == QEvent::KeyPress && !grab
         && static_cast<QApplicationPrivate*>(qApp->d_ptr)->use_compat()) {
         // send accel events if the keyboard is not grabbed

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/qt3support/widgets/q3scrollview.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/widgets/q3scrollview.cpp -->
 <head>
     <title>Qt 4.0: Q3ScrollView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3ScrollView Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3ScrollView Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3ScrollView widget provides a scrolling area with on-demand scroll bars. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3ScrollView&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3ScrollView&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qscrollview">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="q3frame.html">Q3Frame</a>.</p>
 <p>Inherited by <a href="q3canvasview.html">Q3CanvasView</a>, <a href="q3gridview.html">Q3GridView</a>, <a href="q3iconview.html">Q3IconView</a>, <a href="q3listbox.html">Q3ListBox</a>, <a href="q3listview.html">Q3ListView</a>, <a href="q3table.html">Q3Table</a>, and <a href="q3textedit.html">Q3TextEdit</a>.</p>
 <ul>
@@ -112,7 +111,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -186,7 +185,7 @@ body { background: #ffffff; color: black; }</style>
 <p>To use Q3ScrollView effectively it is important to understand its widget structure in the three styles of use: a single large child widget, a large panning area with some widgets and a large panning area with many widgets.</p>
 <a name="using-one-big-widget"></a>
 <h3>Using One Big Widget</h3>
-<center><img src="images/qscrollview-vp2.png" /></center><p>The first, simplest usage of Q3ScrollView (depicted above), is appropriate for scrolling areas that are never more than about 4000 pixels in either dimension (this is about the maximum reliable size on <a href="winsystem.html#x11">X11</a> servers). In this usage, you just make one large child in the Q3ScrollView. The child should be a child of the <a href="q3scrollview.html#viewport">viewport</a>() of the scrollview and be added with <a href="q3scrollview.html#addChild">addChild</a>():</p>
+<p align="center"><img src="images/qscrollview-vp2.png" /></p><p>The first, simplest usage of Q3ScrollView (depicted above), is appropriate for scrolling areas that are never more than about 4000 pixels in either dimension (this is about the maximum reliable size on X11 servers). In this usage, you just make one large child in the Q3ScrollView. The child should be a child of the <a href="q3scrollview.html#viewport">viewport</a>() of the scrollview and be added with <a href="q3scrollview.html#addChild">addChild</a>():</p>
 <pre>&nbsp;   Q3ScrollView* sv = new Q3ScrollView(...);
     QVBoxWidget* big_box = new QVBoxWidget(sv-&gt;viewport());
     sv-&gt;addChild(big_box);</pre>
@@ -198,7 +197,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Here the Q3ScrollView has four children: the <a href="q3scrollview.html#viewport">viewport</a>(), the <a href="q3scrollview.html#verticalScrollBar">verticalScrollBar</a>(), the <a href="q3scrollview.html#horizontalScrollBar">horizontalScrollBar</a>() and a small <a href="q3scrollview.html#cornerWidget">cornerWidget</a>(). The <a href="q3scrollview.html#viewport">viewport</a>() has one child: the big QVBoxWidget. The QVBoxWidget has the three <a href="qlabel.html">QLabel</a> objects as child widgets. When the view is scrolled, the QVBoxWidget is moved; its children move with it as child widgets normally do.</p>
 <a name="using-a-very-big-view-with-some-widgets"></a>
 <h3>Using a Very Big View with Some Widgets</h3>
-<center><img src="images/qscrollview-vp.png" /></center><p>The second usage of Q3ScrollView (depicted above) is appropriate when few, if any, widgets are on a very large scrolling area that is potentially larger than 4000 pixels in either dimension. In this usage you call <a href="q3scrollview.html#resizeContents">resizeContents</a>() to set the size of the area and reimplement <a href="q3scrollview.html#drawContents">drawContents</a>() to paint the contents. You may also add some widgets by making them children of the <a href="q3scrollview.html#viewport">viewport</a>() and adding them with <a href="q3scrollview.html#addChild">addChild</a>() (this is the same as the process for the single large widget in the previous example):</p>
+<p align="center"><img src="images/qscrollview-vp.png" /></p><p>The second usage of Q3ScrollView (depicted above) is appropriate when few, if any, widgets are on a very large scrolling area that is potentially larger than 4000 pixels in either dimension. In this usage you call <a href="q3scrollview.html#resizeContents">resizeContents</a>() to set the size of the area and reimplement <a href="q3scrollview.html#drawContents">drawContents</a>() to paint the contents. You may also add some widgets by making them children of the <a href="q3scrollview.html#viewport">viewport</a>() and adding them with <a href="q3scrollview.html#addChild">addChild</a>() (this is the same as the process for the single large widget in the previous example):</p>
 <pre>&nbsp;   Q3ScrollView* sv = new Q3ScrollView(...);
     QLabel* child1 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
     sv-&gt;addChild(child1);
@@ -209,7 +208,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Here, the Q3ScrollView has the same four children: the <a href="q3scrollview.html#viewport">viewport</a>(), the <a href="q3scrollview.html#verticalScrollBar">verticalScrollBar</a>(), the <a href="q3scrollview.html#horizontalScrollBar">horizontalScrollBar</a>() and a small <a href="q3scrollview.html#cornerWidget">cornerWidget</a>(). The <a href="q3scrollview.html#viewport">viewport</a>() has the three <a href="qlabel.html">QLabel</a> objects as child widgets. When the view is scrolled, the scrollview moves the child widgets individually.</p>
 <a name="using-a-very-big-view-with-many-widgets"></a>
 <h3>Using a Very Big View with Many Widgets</h3>
-<center><img src="images/qscrollview-cl.png" /></center><p>The final usage of Q3ScrollView (depicted above) is appropriate when many widgets are on a very large scrolling area that is potentially larger than 4000 pixels in either dimension. In this usage you call <a href="q3scrollview.html#resizeContents">resizeContents</a>() to set the size of the area and reimplement <a href="q3scrollview.html#drawContents">drawContents</a>() to paint the contents. You then call enableClipper(true) and add widgets, again by making them children of the <a href="q3scrollview.html#viewport">viewport</a>(), and adding them with <a href="q3scrollview.html#addChild">addChild</a>():</p>
+<p align="center"><img src="images/qscrollview-cl.png" /></p><p>The final usage of Q3ScrollView (depicted above) is appropriate when many widgets are on a very large scrolling area that is potentially larger than 4000 pixels in either dimension. In this usage you call <a href="q3scrollview.html#resizeContents">resizeContents</a>() to set the size of the area and reimplement <a href="q3scrollview.html#drawContents">drawContents</a>() to paint the contents. You then call enableClipper(true) and add widgets, again by making them children of the <a href="q3scrollview.html#viewport">viewport</a>(), and adding them with <a href="q3scrollview.html#addChild">addChild</a>():</p>
 <pre>&nbsp;   Q3ScrollView* sv = new Q3ScrollView(...);
     sv-&gt;enableClipper(true);
     QLabel* child1 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
@@ -224,7 +223,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Normally you will use the first or third method if you want any child widgets in the view.</p>
 <p>Note that the widget you see in the scrolled area is the <a href="q3scrollview.html#viewport">viewport</a>() widget, not the Q3ScrollView itself. So to turn mouse tracking on, for example, use <a href="q3scrollview.html#viewport">viewport</a>()-&gt;setMouseTracking(true).</p>
 <p>To enable drag-and-drop, you would setAcceptDrops(true) on the Q3ScrollView (because drag-and-drop events propagate to the parent). But to work out the logical position in the view, you would need to map the drop co-ordinate from being relative to the Q3ScrollView to being relative to the contents; use the function <a href="q3scrollview.html#viewportToContents">viewportToContents</a>() for this.</p>
-<p>To handle mouse events on the scrolling area, subclass scrollview as you would subclass other widgets, but rather than reimplementing <a href="q3scrollview.html#mousePressEvent">mousePressEvent</a>(), reimplement <a href="q3scrollview.html#contentsMousePressEvent">contentsMousePressEvent</a>() instead. The contents specific event handlers provide translated events in the coordinate system of the scrollview. If you reimplement <a href="q3scrollview.html#mousePressEvent">mousePressEvent</a>(), you'll get called only when part of the Q3ScrollView is clicked: and the only such part is the &quot;corner&quot; (if you don't set a <a href="q3scrollview.html#cornerWidget">cornerWidget</a>()) and the frame; everything else is covered up by the viewport, clipper or scroll bars.</p>
+<p>To handle mouse events on the scrolling area, subclass scrollview as you would subclass other widgets, but rather than reimplementing <a href="qwidget.html#mousePressEvent">mousePressEvent</a>(), reimplement <a href="q3scrollview.html#contentsMousePressEvent">contentsMousePressEvent</a>() instead. The contents specific event handlers provide translated events in the coordinate system of the scrollview. If you reimplement <a href="qwidget.html#mousePressEvent">mousePressEvent</a>(), you'll get called only when part of the Q3ScrollView is clicked: and the only such part is the &quot;corner&quot; (if you don't set a <a href="q3scrollview.html#cornerWidget">cornerWidget</a>()) and the frame; everything else is covered up by the viewport, clipper or scroll bars.</p>
 <p>When you construct a Q3ScrollView, some of the window flags apply to the <a href="q3scrollview.html#viewport">viewport</a>() instead of being sent to the <a href="qwidget.html">QWidget</a> constructor for the Q3ScrollView.</p>
 <ul>
 <li>An image-manipulation widget would use <tt>WNoAutoErase|WStaticContents</tt> because the widget draws all pixels itself, and when its size increases, it only needs a paint event for the new part because the old part remains unchanged.</li>
@@ -246,7 +245,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3ScrollView::Default</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">the <a href="q3scrollview.html">Q3ScrollView</a> selects one of the other settings automatically when it has to. In this version of Qt, <a href="q3scrollview.html">Q3ScrollView</a> changes to <tt>Manual</tt> if you resize the contents with <a href="q3scrollview.html#resizeContents">resizeContents</a>() and to <tt>AutoOne</tt> if a child is added.</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::Manual</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the contents stays the size set by <a href="q3scrollview.html#resizeContents">resizeContents</a>().</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::AutoOne</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">if there is only one child widget the contents stays the size of that widget. Otherwise the behavior is undefined.</td></tr>
-<tr><td valign="top"><tt>Q3ScrollView::AutoOneFit</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">if there is only one child widget the contents stays the size of that widget's <a href="q3scrollview.html#sizeHint">sizeHint</a>(). If the scrollview is resized larger than the child's <a href="q3scrollview.html#sizeHint">sizeHint</a>(), the child will be resized to fit. If there is more than one child, the behavior is undefined.</td></tr>
+<tr><td valign="top"><tt>Q3ScrollView::AutoOneFit</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">if there is only one child widget the contents stays the size of that widget's <a href="qwidget.html#sizeHint-prop">sizeHint</a>(). If the scrollview is resized larger than the child's <a href="qwidget.html#sizeHint-prop">sizeHint</a>(), the child will be resized to fit. If there is more than one child, the behavior is undefined.</td></tr>
 </table>
 <h3 class="fn"><a name="ScrollBarMode-enum"></a>enum Q3ScrollView::ScrollBarMode</h3>
 <p>This enum type describes the various modes of <a href="q3scrollview.html">Q3ScrollView</a>'s scroll bars.</p>
@@ -293,7 +292,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="hScrollBarMode-prop"></a>hScrollBarMode : <a href="q3scrollview.html#ScrollBarMode-enum">ScrollBarMode</a></h3>
 <p>This property holds the mode for the horizontal scroll bar.</p>
-<p>The default mode is <tt>Q3ScrollView::Auto</tt>.</p>
+<p>The default mode is <a href="q3scrollview.html#ScrollBarMode-enum">Q3ScrollView::Auto</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>ScrollBarMode hScrollBarMode () const</b></li>
@@ -311,7 +310,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3scrollview.html#ResizePolicy-enum">ResizePolicy</a>.</p>
 <h3 class="fn"><a name="vScrollBarMode-prop"></a>vScrollBarMode : <a href="q3scrollview.html#ScrollBarMode-enum">ScrollBarMode</a></h3>
 <p>This property holds the mode for the vertical scroll bar.</p>
-<p>The default mode is <tt>Q3ScrollView::Auto</tt>.</p>
+<p>The default mode is <a href="q3scrollview.html#ScrollBarMode-enum">Q3ScrollView::Auto</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>ScrollBarMode vScrollBarMode () const</b></li>
@@ -365,7 +364,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You should not need to use this function.</p>
 <p>See also <a href="q3scrollview.html#visibleWidth-prop">visibleWidth</a>() and <a href="q3scrollview.html#visibleHeight-prop">visibleHeight</a>().</p>
 <h3 class="fn"><a name="contentsContextMenuEvent"></a>void Q3ScrollView::contentsContextMenuEvent ( <a href="qcontextmenuevent.html">QContextMenuEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="q3scrollview.html#contextMenuEvent">contextMenuEvent</a>() in <i>e</i>: the mouse position is translated to be a point on the contents.</p>
+<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#contextMenuEvent">contextMenuEvent</a>() in <i>e</i>: the mouse position is translated to be a point on the contents.</p>
 <h3 class="fn"><a name="contentsDragEnterEvent"></a>void Q3ScrollView::contentsDragEnterEvent ( <a href="qdragenterevent.html">QDragEnterEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#dragEnterEvent">dragEnterEvent</a>(): the drag position is translated to be a point on the contents.</p>
 <p>The default implementation does nothing. The <i>event</i> parameter is ignored.</p>
@@ -379,14 +378,14 @@ body { background: #ffffff; color: black; }</style>
 <p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#dropEvent">dropEvent</a>(): the drop position is translated to be a point on the contents.</p>
 <p>The default implementation does nothing. The <i>event</i> parameter is ignored.</p>
 <h3 class="fn"><a name="contentsMouseDoubleClickEvent"></a>void Q3ScrollView::contentsMouseDoubleClickEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="q3scrollview.html#mouseDoubleClickEvent">mouseDoubleClickEvent</a>(): the click position in <i>e</i> is translated to be a point on the contents.</p>
+<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#mouseDoubleClickEvent">mouseDoubleClickEvent</a>(): the click position in <i>e</i> is translated to be a point on the contents.</p>
 <p>The default implementation generates a normal mouse press event.</p>
 <h3 class="fn"><a name="contentsMouseMoveEvent"></a>void Q3ScrollView::contentsMouseMoveEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="q3scrollview.html#mouseMoveEvent">mouseMoveEvent</a>(): the mouse position in <i>e</i> is translated to be a point on the contents.</p>
+<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#mouseMoveEvent">mouseMoveEvent</a>(): the mouse position in <i>e</i> is translated to be a point on the contents.</p>
 <h3 class="fn"><a name="contentsMousePressEvent"></a>void Q3ScrollView::contentsMousePressEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="q3scrollview.html#mousePressEvent">mousePressEvent</a>(): the press position in <i>e</i> is translated to be a point on the contents.</p>
+<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#mousePressEvent">mousePressEvent</a>(): the press position in <i>e</i> is translated to be a point on the contents.</p>
 <h3 class="fn"><a name="contentsMouseReleaseEvent"></a>void Q3ScrollView::contentsMouseReleaseEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="q3scrollview.html#mouseReleaseEvent">mouseReleaseEvent</a>(): the release position in <i>e</i> is translated to be a point on the contents.</p>
+<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#mouseReleaseEvent">mouseReleaseEvent</a>(): the release position in <i>e</i> is translated to be a point on the contents.</p>
 <h3 class="fn"><a name="contentsMoving"></a>void Q3ScrollView::contentsMoving ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before the contents are moved to position (<i>x</i>, <i>y</i>).</p>
 <p>See also <a href="q3scrollview.html#contentsX-prop">contentsX</a>() and <a href="q3scrollview.html#contentsY-prop">contentsY</a>().</p>
@@ -396,10 +395,11 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the point <i>p</i> translated to a point on the <a href="q3scrollview.html#viewport">viewport</a>() widget.</p>
 <h3 class="fn"><a name="contentsWheelEvent"></a>void Q3ScrollView::contentsWheelEvent ( <a href="qwheelevent.html">QWheelEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="q3scrollview.html#wheelEvent">wheelEvent</a>() in <i>e</i>: the mouse position is translated to be a point on the contents.</p>
+<p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#wheelEvent">wheelEvent</a>() in <i>e</i>: the mouse position is translated to be a point on the contents.</p>
 <h3 class="fn"><a name="cornerWidget"></a><a href="qwidget.html">QWidget</a> * Q3ScrollView::cornerWidget () const</h3>
 <p>Returns the widget in the corner between the two scroll bars.</p>
 <p>By default, no corner widget is present.</p>
+<p>See also <a href="q3scrollview.html#setCornerWidget">setCornerWidget</a>().</p>
 <h3 class="fn"><a name="drawContents"></a>void Q3ScrollView::drawContents ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>clipx</i>, int <i>clipy</i>, int <i>clipw</i>, int <i>cliph</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Reimplement this function if you are viewing a drawing area rather than a widget.</p>
 <p>The function should draw the rectangle (<i>clipx</i>, <i>clipy</i>, <i>clipw</i>, <i>cliph</i>) of the contents using painter <i>p</i>. The clip rectangle is in the scrollview's coordinates.</p>
@@ -485,7 +485,7 @@ body { background: #ffffff; color: black; }</style>
 <p>All widgets set here will be deleted by the <a href="q3scrollview.html">Q3ScrollView</a> when it is destroyed unless you separately reparent the widget after setting some other corner widget (or 0).</p>
 <p>Any <i>newly</i> set widget should have no current parent.</p>
 <p>By default, no corner widget is present.</p>
-<p>See also <a href="q3scrollview.html#vScrollBarMode-prop">setVScrollBarMode</a>() and <a href="q3scrollview.html#hScrollBarMode-prop">setHScrollBarMode</a>().</p>
+<p>See also <a href="q3scrollview.html#cornerWidget">cornerWidget</a>(), <a href="q3scrollview.html#vScrollBarMode-prop">setVScrollBarMode</a>(), and <a href="q3scrollview.html#hScrollBarMode-prop">setHScrollBarMode</a>().</p>
 <h3 class="fn"><a name="setHBarGeometry"></a>void Q3ScrollView::setHBarGeometry ( <a href="qscrollbar.html">QScrollBar</a> &amp; <i>hbar</i>, int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Called when the horizontal scroll bar geometry changes. This is provided as a protected function so that subclasses can do interesting things such as providing extra buttons in some of the space normally used by the scroll bars.</p>
 <p>The default implementation simply gives all the space to <i>hbar</i>. The new geometry is given by <i>x</i>, <i>y</i>, <i>w</i> and <i>h</i>.</p>
@@ -493,7 +493,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setMargins"></a>void Q3ScrollView::setMargins ( int <i>left</i>, int <i>top</i>, int <i>right</i>, int <i>bottom</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the margins around the scrolling area to <i>left</i>, <i>top</i>, <i>right</i> and <i>bottom</i>. This is useful for applications such as spreadsheets with &quot;locked&quot; rows and columns. The marginal space is <i>inside</i> the <a href="qframe.html#frameRect-prop">frameRect</a>() and is left blank; reimplement <a href="q3frame.html#drawFrame">drawFrame</a>() or put widgets in the unused area.</p>
 <p>By default all margins are zero.</p>
-<p>See also <a href="q3scrollview.html#frameChanged">frameChanged</a>().</p>
+<p>See also <a href="q3frame.html#frameChanged">frameChanged</a>().</p>
 <h3 class="fn"><a name="setStaticBackground"></a>void Q3ScrollView::setStaticBackground ( bool <i>y</i> )</h3>
 <p>Sets the scrollview to have a static background if <i>y</i> is true, or a scrolling background if <i>y</i> is false. By default, the background is scrolling.</p>
 <p>Be aware that this mode is quite slow, as a full repaint of the visible area has to be triggered on every contents move.</p>
@@ -544,6 +544,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

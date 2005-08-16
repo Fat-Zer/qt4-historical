@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -169,6 +169,8 @@ public:
         props.remove(key);
     }
 
+    void resolveFont(const QFont &defaultFont);
+
     const PropertyMap &properties() const { return props; }
 
     inline const QFont &font() const {
@@ -217,6 +219,24 @@ uint QTextFormatPrivate::recalcHash() const
     return hashValue;
 }
 
+void QTextFormatPrivate::resolveFont(const QFont &defaultFont)
+{
+    recalcFont();
+    const uint oldMask = fnt.resolve();
+    fnt = fnt.resolve(defaultFont);
+
+    if (props.contains(QTextFormat::FontSizeAdjustment)) {
+        const qreal scaleFactors[7] = {0.7, 0.8, 1.0, 1.2, 1.5, 2, 2.4};
+
+        const int htmlFontSize = qBound(0, props.value(QTextFormat::FontSizeAdjustment).toInt() + 3 - 1, 6);
+
+        qreal pointSize = scaleFactors[htmlFontSize] * defaultFont.pointSizeF();
+        fnt.setPointSizeF(pointSize);
+    }
+
+    fnt.resolve(oldMask);
+}
+
 void QTextFormatPrivate::recalcFont() const
 {
     // update cached font as well
@@ -226,7 +246,7 @@ void QTextFormatPrivate::recalcFont() const
         f.setFamily(props.value(QTextFormat::FontFamily).toString());
 
     if (props.contains(QTextFormat::FontPointSize))
-	f.setPointSizeF(props.value(QTextFormat::FontPointSize).toDouble());
+        f.setPointSizeF(props.value(QTextFormat::FontPointSize).toDouble());
 
     if (props.contains(QTextFormat::FontWeight))
         f.setWeight(props.value(QTextFormat::FontWeight).toInt());
@@ -339,12 +359,13 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value TextIndent
     \value BlockIndent
     \value BlockNonBreakableLines
+    \value BlockTrailingHorizontalRulerWidth
 
     Character properties
 
     \value FontFamily
     \value FontPointSize
-    \value FontSizeIncrement
+    \value FontSizeAdjustment
     \value FontWeight
     \value FontItalic
     \value FontUnderline
@@ -405,7 +426,7 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
 /*!
     \fn bool QTextFormat::isValid() const
 
-    Returns true if the format is valid (i.e. is not \c
+    Returns true if the format is valid (i.e. is not
     InvalidFormat); otherwise returns false.
 */
 
@@ -614,7 +635,7 @@ QTextImageFormat QTextFormat::toImageFormat() const
 
 /*!
     Returns the value of the property specified by \a propertyId. If the
-    property isn't of \c QTextFormat::Bool type, false is returned instead.
+    property isn't of QTextFormat::Bool type, false is returned instead.
 
     \sa setProperty() intProperty() doubleProperty() stringProperty() colorProperty() lengthProperty() lengthVectorProperty() Property
 */
@@ -630,7 +651,7 @@ bool QTextFormat::boolProperty(int propertyId) const
 
 /*!
     Returns the value of the property specified by \a propertyId. If the
-    property is not of \c QTextFormat::Integer type, 0 is returned instead.
+    property is not of QTextFormat::Integer type, 0 is returned instead.
 
     \sa setProperty() boolProperty() doubleProperty() stringProperty() colorProperty() lengthProperty() lengthVectorProperty() Property
 */
@@ -646,11 +667,11 @@ int QTextFormat::intProperty(int propertyId) const
 
 /*!
     Returns the value of the property specified by \a propertyId. If the
-    property isn't of \c QVariant::Double type, 0 is returned instead.
+    property isn't of QVariant::Double type, 0 is returned instead.
 
     \sa setProperty() boolProperty() intProperty() stringProperty() colorProperty() lengthProperty() lengthVectorProperty() Property
 */
-double QTextFormat::doubleProperty(int propertyId) const
+qreal QTextFormat::doubleProperty(int propertyId) const
 {
     if (!d)
         return 0.;
@@ -662,7 +683,7 @@ double QTextFormat::doubleProperty(int propertyId) const
 
 /*!
     Returns the value of the property given by \a propertyId; if the
-    property isn't of \c QVariant::String type, an empty string is
+    property isn't of QVariant::String type, an empty string is
     returned instead.
 
     \sa setProperty() boolProperty() intProperty() doubleProperty() colorProperty() lengthProperty() lengthVectorProperty() Property
@@ -679,7 +700,7 @@ QString QTextFormat::stringProperty(int propertyId) const
 
 /*!
     Returns the value of the property given by \a propertyId; if the
-    property isn't of \c QVariant::Color type, an invalid color is
+    property isn't of QVariant::Color type, an invalid color is
     returned instead.
 
     \sa setProperty(), boolProperty(), intProperty(), doubleProperty(),
@@ -697,7 +718,7 @@ QColor QTextFormat::colorProperty(int propertyId) const
 
 /*!
     Returns the value of the property given by \a propertyId; if the
-    property isn't of \c QVariant::Pen type, Qt::NoPen is
+    property isn't of QVariant::Pen type, Qt::NoPen is
     returned instead.
 
     \sa setProperty() boolProperty() intProperty() doubleProperty() stringProperty() lengthProperty() lengthVectorProperty() Property
@@ -714,7 +735,7 @@ QPen QTextFormat::penProperty(int propertyId) const
 
 /*!
     Returns the value of the property given by \a propertyId; if the
-    property isn't of \c QVariant::Brush type, Qt::NoBrush is
+    property isn't of QVariant::Brush type, Qt::NoBrush is
     returned instead.
 
     \sa setProperty() boolProperty() intProperty() doubleProperty() stringProperty() lengthProperty() lengthVectorProperty() Property
@@ -743,7 +764,7 @@ QTextLength QTextFormat::lengthProperty(int propertyId) const
 
 /*!
     Returns the value of the property given by \a propertyId. If the
-    property isn't of \c QTextFormat::LengthVector type, an empty length
+    property isn't of QTextFormat::LengthVector type, an empty length
     vector is returned instead.
 
     \sa setProperty() boolProperty() intProperty() doubleProperty() stringProperty() colorProperty() lengthProperty() Property
@@ -905,8 +926,18 @@ QMap<int, QVariant> QTextFormat::properties() const
 */
 bool QTextFormat::operator==(const QTextFormat &rhs) const
 {
-    if (format_type == rhs.format_type && d == rhs.d)
+    if (format_type != rhs.format_type)
+        return false;
+
+    if (d == rhs.d)
         return true;
+
+    if (d && d->properties().isEmpty() && !rhs.d)
+        return true;
+
+    if (!d && rhs.d && rhs.d->properties().isEmpty())
+        return true;
+
     if (!d || !rhs.d)
         return false;
 
@@ -2048,7 +2079,7 @@ QTextFormatCollection::~QTextFormatCollection()
 
 int QTextFormatCollection::indexForFormat(const QTextFormat &format)
 {
-    int hash = format.d ? format.d->hash() : 0;
+    uint hash = format.d ? format.d->hash() : 0;
     if (hashes.contains(hash)) {
         for (int i = 0; i < formats.size(); ++i) {
             if (formats.at(i) == format)
@@ -2057,13 +2088,19 @@ int QTextFormatCollection::indexForFormat(const QTextFormat &format)
     }
     int idx = formats.size();
     formats.append(format);
+
+    QTextFormat &f = formats.last();
+    if (!f.d)
+        f.d = new QTextFormatPrivate;
+    f.d->resolveFont(defaultFnt);
+
     hashes.insert(hash);
     return idx;
 }
 
 bool QTextFormatCollection::hasFormatCached(const QTextFormat &format) const
 {
-    int hash = format.d ? format.d->hash() : 0;
+    uint hash = format.d ? format.d->hash() : 0;
     if (hashes.contains(hash)) {
         for (int i = 0; i < formats.size(); ++i)
             if (formats.at(i) == format)
@@ -2110,5 +2147,13 @@ QTextFormat QTextFormatCollection::format(int idx) const
         return QTextFormat();
 
     return formats.at(idx);
+}
+
+void QTextFormatCollection::setDefaultFont(const QFont &f)
+{
+    defaultFnt = f;
+    for (int i = 0; i < formats.count(); ++i)
+        if (formats[i].d)
+            formats[i].d->resolveFont(defaultFnt);
 }
 

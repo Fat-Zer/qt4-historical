@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/painting/qpen.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/painting/qpen.cpp -->
 <head>
     <title>Qt 4.0: QPen Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPen Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPen Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPen class defines how a <a href="qpainter.html">QPainter</a> should draw lines and outlines of shapes. <a href="#details">More...</a></p>
-<pre>#include &lt;QPen&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QPen&gt;</pre><ul>
 <li><a href="qpen-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -62,7 +61,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QPen class defines how a <a href="qpainter.html">QPainter</a> should draw lines and outlines of shapes.</p>
 <p>A pen has a style, width, brush, cap style and join style.</p>
-<p>The pen style defines the line type. The default pen style is <tt>Qt::SolidLine</tt>. Setting the style to <tt>Qt::NoPen</tt> tells the painter to not draw lines or outlines.</p>
+<p>The pen style defines the line type. The default pen style is <a href="qt.html#PenStyle-enum">Qt::SolidLine</a>. Setting the style to <a href="qt.html#PenStyle-enum">Qt::NoPen</a> tells the painter to not draw lines or outlines.</p>
 <p>The pen brush defines the fill of lines and text. The default pen is a solid black brush. The <a href="qcolor.html">QColor</a> documentation lists predefined colors.</p>
 <p>The cap style defines how the end points of lines are drawn. The join style defines how the joins between two lines are drawn when multiple connected lines are drawn (<a href="qpainter.html#drawPolyline">QPainter::drawPolyline</a>() etc.). The cap and join styles only apply to wide lines, i.e. when the width is 1 or greater.</p>
 <p>Use the <a href="qbrush.html">QBrush</a> class to specify fill styles.</p>
@@ -78,7 +77,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See the <a href="qt.html#PenStyle-enum">Qt::PenStyle</a> enum type for a complete list of pen styles.</p>
 <p>Whether or not end points are drawn when the pen width is zero or one depends on the cap style. Using SquareCap (the default) or RoundCap they are drawn, using FlatCap they are not drawn.</p>
 <p>A pen's <a href="qpen.html#color">color</a>(), <a href="qpen.html#brush">brush</a>(), <a href="qpen.html#width">width</a>(), <a href="qpen.html#style">style</a>(), <a href="qpen.html#capStyle">capStyle</a>() and <a href="qpen.html#joinStyle">joinStyle</a>() can be set in the constructor or later with <a href="qpen.html#setColor">setColor</a>(), <a href="qpen.html#setWidth">setWidth</a>(), <a href="qpen.html#setStyle">setStyle</a>(), <a href="qpen.html#setCapStyle">setCapStyle</a>() and <a href="qpen.html#setJoinStyle">setJoinStyle</a>(). Pens may also be compared and streamed.</p>
-<center><img src="images/pen-styles.png" alt="Pen styles" /></center><p>See also <a href="qpainter.html">QPainter</a> and <a href="qpainter.html#setPen">QPainter::setPen</a>().</p>
+<p align="center"><img src="images/pen-styles.png" alt="Pen styles" /></p><p>See also <a href="qpainter.html">QPainter</a> and <a href="qpainter.html#setPen">QPainter::setPen</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPen"></a>QPen::QPen ()</h3>
@@ -98,6 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the pen.</p>
 <h3 class="fn"><a name="brush"></a><a href="qbrush.html">QBrush</a> QPen::brush () const</h3>
 <p>Returns the brush used to fill strokes generated with this pen.</p>
+<p>See also <a href="qpen.html#setBrush">setBrush</a>().</p>
 <h3 class="fn"><a name="capStyle"></a><a href="qt.html#PenCapStyle-enum">Qt::PenCapStyle</a> QPen::capStyle () const</h3>
 <p>Returns the pen's cap style.</p>
 <p>See also <a href="qpen.html#setCapStyle">setCapStyle</a>().</p>
@@ -111,17 +111,18 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpen.html#setJoinStyle">setJoinStyle</a>().</p>
 <h3 class="fn"><a name="setBrush"></a>void QPen::setBrush ( const <a href="qbrush.html">QBrush</a> &amp; <i>brush</i> )</h3>
 <p>Sets the brush used to fill strokes generated with this pen to the given <i>brush</i>.</p>
+<p>See also <a href="qpen.html#brush">brush</a>().</p>
 <h3 class="fn"><a name="setCapStyle"></a>void QPen::setCapStyle ( <a href="qt.html#PenCapStyle-enum">Qt::PenCapStyle</a> <i>c</i> )</h3>
 <p>Sets the pen's cap style to <i>c</i>.</p>
-<p>The default value is <tt>Qt::SquareCap</tt>.</p>
-<center><img src="images/pen-cap-styles.png" alt="Pen Cap Styles" /></center><p>See also <a href="qpen.html#capStyle">capStyle</a>().</p>
+<p>The default value is <a href="qt.html#PenCapStyle-enum">Qt::SquareCap</a>.</p>
+<p align="center"><img src="images/pen-cap-styles.png" alt="Pen Cap Styles" /></p><p>See also <a href="qpen.html#capStyle">capStyle</a>().</p>
 <h3 class="fn"><a name="setColor"></a>void QPen::setColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )</h3>
 <p>Sets the pen color to <i>c</i>.</p>
 <p>See also <a href="qpen.html#color">color</a>().</p>
 <h3 class="fn"><a name="setJoinStyle"></a>void QPen::setJoinStyle ( <a href="qt.html#PenJoinStyle-enum">Qt::PenJoinStyle</a> <i>j</i> )</h3>
 <p>Sets the pen's join style to <i>j</i>.</p>
-<p>The default value is <tt>Qt::BevelJoin</tt>.</p>
-<center><img src="images/pen-join-styles.png" alt="Pen Join Styles" /></center><p>See also <a href="qpen.html#joinStyle">joinStyle</a>().</p>
+<p>The default value is <a href="qt.html#PenJoinStyle-enum">Qt::BevelJoin</a>.</p>
+<p align="center"><img src="images/pen-join-styles.png" alt="Pen Join Styles" /></p><p>See also <a href="qpen.html#joinStyle">joinStyle</a>().</p>
 <h3 class="fn"><a name="setStyle"></a>void QPen::setStyle ( <a href="qt.html#PenStyle-enum">Qt::PenStyle</a> <i>s</i> )</h3>
 <p>Sets the pen style to <i>s</i>.</p>
 <p>See the <a href="qt.html#PenStyle-enum">Qt::PenStyle</a> documentation for a list of all the styles.</p>
@@ -165,6 +166,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

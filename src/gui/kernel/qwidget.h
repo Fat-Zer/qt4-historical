@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,6 +40,8 @@
 #ifdef QT_INCLUDE_COMPAT
 #include "QtGui/qevent.h"
 #endif
+
+QT_MODULE(Gui)
 
 class QLayout;
 class QWSRegionManager;
@@ -158,7 +160,9 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
     Q_PROPERTY(QString windowIconText READ windowIconText WRITE setWindowIconText DESIGNABLE isWindow)
     Q_PROPERTY(double windowOpacity READ windowOpacity WRITE setWindowOpacity DESIGNABLE false)
     Q_PROPERTY(bool windowModified READ isWindowModified WRITE setWindowModified DESIGNABLE isWindow)
+#ifndef QT_NO_TOOLTIP
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip)
+#endif
     Q_PROPERTY(QString statusTip READ statusTip WRITE setStatusTip)
     Q_PROPERTY(QString whatsThis READ whatsThis WRITE setWhatsThis)
 #ifndef QT_NO_ACCESSIBILITY
@@ -179,11 +183,9 @@ public:
     int devType() const;
 
     WId winId() const;
-#ifndef QT_NO_STYLE
     // GUI style setting
     QStyle *style() const;
     void setStyle(QStyle *);
-#endif
     // Widget types and states
 
     bool isTopLevel() const;
@@ -300,10 +302,10 @@ public:
     qreal windowOpacity() const;
 
     bool isWindowModified() const;
-
+#ifndef QT_NO_TOOLTIP
     void setToolTip(const QString &);
     QString toolTip() const;
-
+#endif
     void setStatusTip(const QString &);
     QString statusTip() const;
 
@@ -350,9 +352,11 @@ public:
     void releaseMouse();
     void grabKeyboard();
     void releaseKeyboard();
+#ifndef QT_NO_SHORTCUT
     int grabShortcut(const QKeySequence &key, Qt::ShortcutContext context = Qt::WindowShortcut);
     void releaseShortcut(int id);
     void setShortcutEnabled(int id, bool enable = true);
+#endif
     static QWidget *mouseGrabber();
     static QWidget *keyboardGrabber();
 
@@ -431,10 +435,8 @@ public:
     QRect contentsRect() const;
 
 public:
-#ifndef QT_NO_LAYOUT
     QLayout *layout() const;
     void setLayout(QLayout *);
-#endif
     void updateGeometry();
 
     void setParent(QWidget *parent);
@@ -452,6 +454,7 @@ public:
     bool acceptDrops() const;
     void setAcceptDrops(bool on);
 
+#ifndef QT_NO_ACTION
     //actions
     void addAction(QAction *action);
     void addActions(QList<QAction*> actions);
@@ -459,7 +462,8 @@ public:
     void insertActions(QAction *before, QList<QAction*> actions);
     void removeAction(QAction *action);
     QList<QAction*> actions() const;
-
+#endif
+    
     QWidget *parentWidget() const;
 
     void setWindowFlags(Qt::WindowFlags type);

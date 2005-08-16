@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,6 +23,7 @@
 
 #include "qdockwidget.h"
 
+#ifndef QT_NO_DOCKWIDGET
 #include <qaction.h>
 #include <qapplication.h>
 #include <qdesktopwidget.h>
@@ -108,6 +109,7 @@ public:
     void styleChange(QStyle &);
 
     void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
@@ -128,7 +130,6 @@ public:
         QRubberBand *rubberband;
         QRect origin;   // starting position
         QRect current;  // current size of the dockwidget (can be either placed or floating)
-        QRect floating; // size of the floating dockwidget
         QPoint offset;
         bool canDrop;
     };
@@ -225,6 +226,9 @@ void QDockWidgetTitle::mousePressEvent(QMouseEvent *event)
     if (!::hasFeature(dockwidget, QDockWidget::DockWidgetMovable))
         return;
 
+#ifdef QT_NO_MAINWINDOW
+    return;
+#else
     QMainWindowLayout *layout =
         qobject_cast<QMainWindowLayout *>(dockwidget->parentWidget()->layout());
     if (!layout)
@@ -234,33 +238,23 @@ void QDockWidgetTitle::mousePressEvent(QMouseEvent *event)
     Q_ASSERT(!state);
     state = new DragState;
 
-    const int screen_number = QApplication::desktop()->screenNumber(window());
-    state->rubberband = new QRubberBand(QRubberBand::Rectangle,
-                                        QApplication::desktop()->screen(screen_number));
+    state->rubberband = 0;
 
     // the current location of the tool window in global coordinates
     state->origin = QRect(dockwidget->mapToGlobal(QPoint(0, 0)), dockwidget->size());
     state->current = state->origin;
 
-    // like the above, except using the tool window's size hint
-    state->floating = dockwidget->isWindow()
-                      ? state->current
-                      : QRect(state->current.topLeft(), dockwidget->sizeHint());
-
     const QPoint globalPos = event->globalPos();
     const int dl = globalPos.x() - state->current.left(),
               dr = state->current.right() - globalPos.x(),
-       halfWidth = state->floating.width() / 2;
+       halfWidth = state->origin.width() / 2;
     state->offset = mapFrom(dockwidget,
                             (dl < dr)
                             ? QPoint(qMin(dl, halfWidth), 0)
-                            : QPoint(state->floating.width() - qMin(dr, halfWidth), 0));
+                            : QPoint(state->origin.width() - qMin(dr, halfWidth) - 1, 0));
     state->offset = mapTo(dockwidget, QPoint(state->offset.x(), event->pos().y()));
 
     state->canDrop = true;
-
-    state->rubberband->setGeometry(state->current);
-    state->rubberband->show();
 
 #ifdef Q_WS_WIN
     /* Work around windows expose bug when windows are partially covered by
@@ -271,6 +265,14 @@ void QDockWidgetTitle::mousePressEvent(QMouseEvent *event)
     for (int i=0; i<children.size(); ++i)
         children.at(i)->update();
 #endif
+#endif // QT_NO_MAINWINDOW
+}
+
+void QDockWidgetTitle::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton)
+        return;
+    toggleTopLevel();
 }
 
 void QDockWidgetTitle::mouseMoveEvent(QMouseEvent *event)
@@ -284,7 +286,11 @@ void QDockWidgetTitle::mouseMoveEvent(QMouseEvent *event)
         // see if there is a main window under us, and ask it to place the tool window
         QWidget *widget = QApplication::widgetAt(event->globalPos());
         if (widget) {
-            while (widget && !qobject_cast<QMainWindow *>(widget)) {
+            while (widget
+#ifndef QT_NO_MAINWINDOW
+		   && !qobject_cast<QMainWindow *>(widget)
+#endif
+                   ) {
                 if (widget->isWindow()) {
                     widget = 0;
                     break;
@@ -292,6 +298,7 @@ void QDockWidgetTitle::mouseMoveEvent(QMouseEvent *event)
                 widget = widget->parentWidget();
             }
 
+#ifndef QT_NO_MAINWINDOW
             if (widget) {
                 QMainWindow *mainwindow = qobject_cast<QMainWindow *>(widget);
                 if (mainwindow && mainwindow == dockwidget->parentWidget()) {
@@ -304,6 +311,7 @@ void QDockWidgetTitle::mouseMoveEvent(QMouseEvent *event)
                     layout->resetLayoutInfo();
                 }
             }
+#endif
         }
     }
 
@@ -315,7 +323,7 @@ void QDockWidgetTitle::mouseMoveEvent(QMouseEvent *event)
               recalculate absolute position as if the tool window
               was to be dropped to toplevel
             */
-            target = state->floating;
+            target = state->origin;
             target.moveTopLeft(event->globalPos() - state->offset);
         } else {
             /*
@@ -326,10 +334,16 @@ void QDockWidgetTitle::mouseMoveEvent(QMouseEvent *event)
         }
     }
 
-    if (state->current == target)
-        return;
-
-    state->rubberband->setGeometry(target);
+    if (!state->rubberband) {
+        const int screen_number = QApplication::desktop()->screenNumber(window());
+        state->rubberband = new QRubberBand(QRubberBand::Rectangle,
+                                            QApplication::desktop()->screen(screen_number));
+        state->rubberband->setGeometry(target);
+        state->rubberband->show();
+    } else {
+        if (state->current != target)
+            state->rubberband->setGeometry(target);
+    }
     state->current = target;
 }
 
@@ -340,6 +354,7 @@ void QDockWidgetTitle::mouseReleaseEvent(QMouseEvent *event)
     if (!state)
         return;
 
+#ifndef QT_NO_MAINWINDOW
     QMainWindowLayout *layout =
         qobject_cast<QMainWindowLayout *>(dockwidget->parentWidget()->layout());
     if (!layout)
@@ -382,7 +397,7 @@ void QDockWidgetTitle::mouseReleaseEvent(QMouseEvent *event)
     }
 
     if (!dropped && hasFeature(dockwidget, QDockWidget::DockWidgetFloatable)) {
-        target = state->floating;
+        target = state->origin;
         target.moveTopLeft(event->globalPos() - state->offset);
 
         if (!dockwidget->isFloating()) {
@@ -402,6 +417,7 @@ void QDockWidgetTitle::mouseReleaseEvent(QMouseEvent *event)
 
     delete state;
     state = 0;
+#endif // QT_NO_MAINWINDOW
 }
 
 void QDockWidgetTitle::contextMenuEvent(QContextMenuEvent *event)
@@ -514,10 +530,12 @@ void QDockWidgetPrivate::init() {
     resizer->setMovingEnabled(false);
     resizer->setActive(false);
 
+#ifndef QT_NO_ACTION
     toggleViewAction = new QAction(q);
     toggleViewAction->setCheckable(true);
     toggleViewAction->setText(q->windowTitle());
     QObject::connect(toggleViewAction, SIGNAL(triggered(bool)), q, SLOT(toggleView(bool)));
+#endif
 }
 
 void QDockWidgetPrivate::toggleView(bool b)
@@ -669,6 +687,7 @@ void QDockWidget::setFeatures(QDockWidget::DockWidgetFeatures features)
     d->features = features;
     d->title->updateButtons();
     d->title->update();
+    d->toggleViewAction->setEnabled((d->features & DockWidgetClosable) == DockWidgetClosable);
     emit featuresChanged(d->features);
 }
 
@@ -698,10 +717,12 @@ void QDockWidget::setFloating(bool floating)
 
     setWindowFlags(Qt::FramelessWindowHint | (floating ? Qt::Tool : Qt::Widget));
 
+#ifndef QT_NO_MAINWINDOW
     if (floating) {
         if (QMainWindowLayout *layout = qobject_cast<QMainWindowLayout *>(parentWidget()->layout()))
             layout->invalidate();
     }
+#endif
 
     d->resizer->setActive(floating);
 
@@ -750,7 +771,9 @@ void QDockWidget::changeEvent(QEvent *event)
     switch (event->type()) {
     case QEvent::WindowTitleChange:
         d->title->updateWindowTitle();
+#ifndef QT_NO_ACTION
         d->toggleViewAction->setText(windowTitle());
+#endif
         break;
     default:
         break;
@@ -785,9 +808,11 @@ bool QDockWidget::event(QEvent *event)
         if (!isHidden())
             break;
         // fallthrough intended
+#ifndef QT_NO_ACTION
     case QEvent::Show:
         d->toggleViewAction->setChecked(event->type() == QEvent::Show);
         break;
+#endif
     case QEvent::StyleChange: {
         int fw = style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth);
         d->top->setSpacing(fw);
@@ -799,6 +824,7 @@ bool QDockWidget::event(QEvent *event)
     return QWidget::event(event);
 }
 
+#ifndef QT_NO_ACTION
 /*!
   Returns a checkable action that can be used to show or close this
   dock widget.
@@ -812,6 +838,7 @@ QAction * QDockWidget::toggleViewAction() const
     Q_D(const QDockWidget);
     return d->toggleViewAction;
 }
+#endif // QT_NO_ACTION
 
 /*!
     \fn void QDockWidget::featuresChanged(DockWidgetFeatures features)
@@ -839,3 +866,4 @@ QAction * QDockWidget::toggleViewAction() const
 
 #include "qdockwidget.moc"
 #include "moc_qdockwidget.cpp"
+#endif // QT_NO_DOCKWIDGET

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/coordsys.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/coordsys.qdoc -->
 <head>
     <title>Qt 4.0: The Coordinate System</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,14 +16,14 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">The Coordinate System</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">The Coordinate System<br /><small></small></h1>
 <p>A <a href="qpaintdevice.html">paint device</a> in Qt is a drawable 2D surface. <a href="qwidget.html">QWidget</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qpicture.html">QPicture</a>, and <a href="qprinter.html">QPrinter</a> are all paint devices. A <a href="qpainter.html">QPainter</a> is an object which can draw on such devices.</p>
 <p>The default coordinate system of a paint device has its origin at the top-left corner. The <i>x</i> values increase to the right and the <i>y</i> values increase downwards. The default unit is one pixel on pixel-based devices and one point (1/72 of an inch) on printers.</p>
 <a name="an-example"></a>
 <h2>An Example</h2>
 <p>The illustration below shows a highly magnified portion of the top left corner of a paint device.</p>
-<center><img src="images/coordsys.png" /></center><p>The rectangle and the line were drawn by this code (with the grid added and colors touched up in the illustration):</p>
+<p align="center"><img src="images/coordsys.png" /></p><p>The rectangle and the line were drawn by this code (with the grid added and colors touched up in the illustration):</p>
 <pre>&nbsp;   void MyWidget::paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
@@ -58,8 +58,17 @@ body { background: #ffffff; color: black; }</style>
 <p>Here is a short example that uses the matrix to draw the clock face in the <a href="widgets-analogclock.html">widgets/analogclock</a> example. We recommend compiling and running the example before you read any further. In particular, try resizing the window to different sizes.</p>
 <pre>&nbsp;   void AnalogClock::paintEvent(QPaintEvent *)
     {
-        static const int hourHand[6] = { 7, 8, -7, 8, 0, -40 };
-        static const int minuteHand[6] = { 7, 8, -7, 8, 0, -70 };
+        static const QPoint hourHand[3] = {
+            QPoint(7, 8),
+            QPoint(-7, 8),
+            QPoint(0, -40)
+        };
+        static const QPoint minuteHand[3] = {
+            QPoint(7, 8),
+            QPoint(-7, 8),
+            QPoint(0, -70)
+        };
+
         QColor hourColor(127, 0, 127);
         QColor minuteColor(0, 127, 127, 191);
 
@@ -74,14 +83,14 @@ body { background: #ffffff; color: black; }</style>
 <p>This will give us a 100 x 100 square area with point (0, 0) in the middle that we can draw on. What we draw will show up in the largest possible square that will fit in the widget.</p>
 <pre>&nbsp;       painter.save();
         painter.rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
-        painter.drawConvexPolygon(QPolygon(3, hourHand));
+        painter.drawConvexPolygon(hourHand, 3);
         painter.restore();</pre>
 <p>We draw the clock's hour hand by rotating the coordinate system and calling <a href="qpainter.html#drawConvexPolygon">QPainter::drawConvexPolygon</a>(). Thank's to the rotation, it's drawn pointed in the right direction.</p>
 <p>The polygon is specified as an array of alternating <i>x</i>, <i>y</i> values, stored in the <tt>hourHand</tt> static variable (defined at the beginning of the function), which corresponds to the four points (2, 0), (0, 2), (-2, 0), and (0, -25).</p>
 <p>The calls to <a href="qpainter.html#save">QPainter::save</a>() and <a href="qpainter.html#restore">QPainter::restore</a>() surrounding the code guarantees that the code that follows won't be disturbed by the transformations we've used.</p>
 <pre>&nbsp;       painter.save();
         painter.rotate(6.0 * (time.minute() + time.second() / 60.0));
-        painter.drawConvexPolygon(QPolygon(3, minuteHand));
+        painter.drawConvexPolygon(minuteHand, 3);
         painter.restore();</pre>
 <p>We do the same for the clock's minute hand, which is defined by the four points (1, 0), (0, 1), (-1, 0), and (0, -40). These coordinates specify a hand that is thinner and longer than the minute hand.</p>
 <pre>&nbsp;       for (int j = 0; j &lt; 60; ++j) {
@@ -94,6 +103,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

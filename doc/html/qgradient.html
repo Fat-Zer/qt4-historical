@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/painting/qbrush.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/painting/qbrush.cpp -->
 <head>
     <title>Qt 4.0: QGradient Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QGradient Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QGradient Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QGradient class is used in combination with <a href="qbrush.html">QBrush</a> to specify gradient fills. <a href="#details">More...</a></p>
-<pre>#include &lt;QGradient&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherited by <a href="qconicalgradient.html">QConicalGradient</a>, <a href="qlineargradient.html">QLinearGradient</a>, and <a href="qradialgradient.html">QRadialGradient</a>.</p>
+<pre>#include &lt;QGradient&gt;</pre><p>Inherited by <a href="qconicalgradient.html">QConicalGradient</a>, <a href="qlineargradient.html">QLinearGradient</a>, and <a href="qradialgradient.html">QRadialGradient</a>.</p>
 <ul>
 <li><a href="qgradient-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -86,13 +85,17 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets another stop point at the relative position <i>pos</i> with color <i>color</i>. The position <i>pos</i> must be in the range 0 to 1.</p>
 <h3 class="fn"><a name="setSpread"></a>void QGradient::setSpread ( <a href="qgradient.html#Spread-enum">Spread</a> <i>method</i> )</h3>
 <p>Specifies the spread <i>method</i> that should be used for this gradient. This function only has effect for linear and radial gradients.</p>
+<p>See also <a href="qgradient.html#spread">spread</a>().</p>
 <h3 class="fn"><a name="setStops"></a>void QGradient::setStops ( const <a href="qgradient.html#QGradientStops-typedef">QGradientStops</a> &amp; <i>stops</i> )</h3>
 <p>Replaces the current set of stop points with <i>stops</i>. The positions of the stop points must be in the range 0 to 1 and must be sorted with the lowest point first.</p>
+<p>See also <a href="qgradient.html#stops">stops</a>().</p>
 <h3 class="fn"><a name="spread"></a><a href="qgradient.html#Spread-enum">Spread</a> QGradient::spread () const</h3>
 <p>Returns the spread method use by this gradient. The default is <a href="qgradient.html#Spread-enum">PadSpread</a>.</p>
+<p>See also <a href="qgradient.html#setSpread">setSpread</a>().</p>
 <h3 class="fn"><a name="stops"></a><a href="qgradient.html#QGradientStops-typedef">QGradientStops</a> QGradient::stops () const</h3>
 <p>Returns the stops for this gradient.</p>
 <p>If no stops have been spesified a gradient of black at 0 to white at 1 is used.</p>
+<p>See also <a href="qgradient.html#setStops">setStops</a>().</p>
 <h3 class="fn"><a name="type"></a><a href="qgradient.html#Type-enum">Type</a> QGradient::type () const</h3>
 <p>Returns the type of gradient.</p>
 <hr />
@@ -105,6 +108,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

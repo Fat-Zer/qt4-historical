@@ -2,33 +2,33 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 
-#ifndef QT_NO_PRINTER
-
 #include "qprinter_p.h"
 #include "qprinter.h"
 #include "qprintengine.h"
 #include "qlist.h"
-#include <qprintdialog.h>
 #include <qpagesetupdialog.h>
+#include <qapplication.h>
+
+#ifndef QT_NO_PRINTER
 
 #if defined (Q_WS_WIN)
 #include <private/qprintengine_win_p.h>
@@ -38,7 +38,7 @@
 #include <private/qprintengine_ps_p.h>
 #endif
 
-#ifdef QT3_SUPPORT
+#if defined(QT3_SUPPORT)
 #  include "qprintdialog.h"
 #endif // QT3_SUPPORT
 
@@ -334,6 +334,10 @@ QPrinter::QPrinter(PrinterMode mode)
     : QPaintDevice(),
       d_ptr(new QPrinterPrivate)
 {
+    if (!qApp) {
+        qFatal("QPrinter: Must construct a QApplication before a QPaintDevice");
+        return;
+    }
     Q_D(QPrinter);
 #if defined (Q_WS_WIN)
     d->printEngine = new QWin32PrintEngine(mode);
@@ -352,7 +356,7 @@ QPrinter::QPrinter(PrinterMode mode)
 QPrinter::~QPrinter()
 {
     Q_D(QPrinter);
-#ifdef QT3_SUPPORT
+#if defined(QT3_SUPPORT) && !(defined(QT_NO_PRINTDIALOG))
     delete d->printDialog;
 #endif
     delete d->printEngine;
@@ -608,7 +612,7 @@ void QPrinter::setPageSize(PageSize newPageSize)
 /*!
     Sets the page order to \a pageOrder.
 
-    The page order can be \c QPrinter::FirstPageFirst or \c
+    The page order can be QPrinter::FirstPageFirst or
     QPrinter::LastPageFirst. The application is responsible for
     reading the page order and printing accordingly.
 
@@ -972,8 +976,6 @@ bool QPrinter::abort()
     return d->printEngine->abort();
 }
 
-#endif // QT_NO_PRINTER
-
 #if 0
 /*!
   \fn int QPrinter::minPage() const
@@ -1183,7 +1185,7 @@ void QPrinter::setPrinterSelectionOption(const QString &option)
 }
 #endif
 
-#ifdef QT3_SUPPORT
+#if defined(QT3_SUPPORT) && !(defined(QT_NO_PRINTDIALOG))
 
 void QPrinter::setOutputToFile(bool f)
 {
@@ -1683,3 +1685,6 @@ bool QPrinter::isOptionEnabled( PrinterOption option ) const
     \fn void QPrintEngine::releasePrinterDC(HDC) const
     \internal
 */
+
+#endif // QT_NO_PRINTER
+

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/kernel/qx11info_x11.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/kernel/qx11info_x11.cpp -->
 <head>
     <title>Qt 4.0: QX11Info Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QX11Info Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QX11Info Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QX11Info class provides information about the X display configuration. <a href="#details">More...</a></p>
-<pre>#include &lt;QX11Info&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QX11Info&gt;</pre><ul>
 <li><a href="qx11info-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -65,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QX11Info class provides information about the X display configuration.</p>
 <p>The class provides two APIs: a set of non-static functions that provide information about a specific widget or pixmap, and a set of static functions that provide the default information for the application.</p>
-<p><b>Warning:</b> This class is only available on <a href="winsystem.html#x11">X11</a>.</p>
+<p><b>Warning:</b> This class is only available on X11.</p>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>(), <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>(), and <a href="qdesktopwidget.html">QDesktopWidget</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -79,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the number of cells used by the application on the given <i>screen</i>.</p>
 <p>See also <a href="qx11info.html#cells">cells</a>().</p>
 <h3 class="fn"><a name="appClass"></a>const char * QX11Info::appClass ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the <a href="winsystem.html#x11">X11</a> application class.</p>
+<p>Returns the X11 application class.</p>
 <p>See also <a href="qx11info.html#display">display</a>().</p>
 <h3 class="fn"><a name="appColormap"></a><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QX11Info::appColormap ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a handle for the application's color map on the given <i>screen</i>.</p>
@@ -104,10 +103,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the number of the screen where the application is being displayed.</p>
 <p>See also <a href="qx11info.html#display">display</a>() and <a href="qx11info.html#screen">screen</a>().</p>
 <h3 class="fn"><a name="appTime"></a>unsigned long QX11Info::appTime ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the <a href="winsystem.html#x11">X11</a> time.</p>
+<p>Returns the X11 time.</p>
 <p>See also <a href="qx11info.html#setAppTime">setAppTime</a>() and <a href="qx11info.html#appUserTime">appUserTime</a>().</p>
 <h3 class="fn"><a name="appUserTime"></a>unsigned long QX11Info::appUserTime ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the <a href="winsystem.html#x11">X11</a> user time.</p>
+<p>Returns the X11 user time.</p>
 <p>See also <a href="qx11info.html#setAppUserTime">setAppUserTime</a>() and <a href="qx11info.html#appTime">appTime</a>().</p>
 <h3 class="fn"><a name="appVisual"></a>void * QX11Info::appVisual ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the current visual used by the application on the given <i>screen</i>.</p>
@@ -140,10 +139,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the vertical resolution of the given <i>screen</i> to the number of dots per inch specified by <i>ydpi</i>.</p>
 <p>See also <a href="qx11info.html#appDpiY">appDpiY</a>() and <a href="qx11info.html#setAppDpiX">setAppDpiX</a>().</p>
 <h3 class="fn"><a name="setAppTime"></a>void QX11Info::setAppTime ( unsigned long <i>time</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the <a href="winsystem.html#x11">X11</a> time to the value specified by <i>time</i>.</p>
+<p>Sets the X11 time to the value specified by <i>time</i>.</p>
 <p>See also <a href="qx11info.html#appTime">appTime</a>() and <a href="qx11info.html#setAppUserTime">setAppUserTime</a>().</p>
 <h3 class="fn"><a name="setAppUserTime"></a>void QX11Info::setAppUserTime ( unsigned long <i>time</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the <a href="winsystem.html#x11">X11</a> user time as specified by <i>time</i>.</p>
+<p>Sets the X11 user time as specified by <i>time</i>.</p>
 <p>See also <a href="qx11info.html#appUserTime">appUserTime</a>() and <a href="qx11info.html#setAppTime">setAppTime</a>().</p>
 <h3 class="fn"><a name="visual"></a>void * QX11Info::visual () const</h3>
 <p>Returns the current visual.</p>
@@ -154,6 +153,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

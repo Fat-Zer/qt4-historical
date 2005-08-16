@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/qt3support/dialogs/q3tabdialog.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/dialogs/q3tabdialog.cpp -->
 <head>
     <title>Qt 4.0: Q3TabDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3TabDialog Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3TabDialog Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3TabDialog class provides a stack of tabbed widgets. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3TabDialog&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3TabDialog&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qtabdialog">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qdialog.html">QDialog</a>.</p>
 <ul>
 <li><a href="q3tabdialog-members.html">List of all members, including inherited members</a></li>
@@ -62,7 +61,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -122,7 +121,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="q3tabdialog.html#cancelButtonPressed">cancelButtonPressed</a>() is emitted when the user clicks Cancel.</li>
 <li><a href="q3tabdialog.html#defaultButtonPressed">defaultButtonPressed</a>() is emitted when the user clicks Defaults; the slot it is connected to should reset the state of the dialog to the application defaults.</li>
 <li><a href="q3tabdialog.html#helpButtonPressed">helpButtonPressed</a>() is emitted when the user clicks Help.</li>
-<li><a href="q3tabdialog.html#aboutToShow">aboutToShow</a>() is emitted at the start of <a href="q3tabdialog.html#show">show</a>(); if there is any chance that the state of the application may change between the creation of the tab dialog and the time <a href="q3tabdialog.html#show">show</a>() is called, you must connect this signal to a slot that resets the state of the dialog.</li>
+<li><a href="q3tabdialog.html#aboutToShow">aboutToShow</a>() is emitted at the start of show(); if there is any chance that the state of the application may change between the creation of the tab dialog and the time show() is called, you must connect this signal to a slot that resets the state of the dialog.</li>
 <li><a href="q3tabdialog.html#currentChanged">currentChanged</a>() is emitted when the user selects a page.</li>
 </ul>
 <p>Each tab is either enabled or disabled at any given time (see <a href="q3tabdialog.html#setTabEnabled">setTabEnabled</a>()). If a tab is enabled the tab text is drawn in black and the user can select that tab. If it is disabled the tab is drawn in a different way and the user cannot select that tab. Note that even if a tab is disabled, the page can still be visible; for example, if all of the tabs happen to be disabled.</p>
@@ -136,14 +135,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.Q3TabDialog"></a>Q3TabDialog::~Q3TabDialog ()</h3>
 <p>Destroys the tab dialog.</p>
 <h3 class="fn"><a name="aboutToShow"></a>void Q3TabDialog::aboutToShow ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted by <a href="q3tabdialog.html#show">show</a>() when it is time to set the state of the dialog's contents. The dialog should reflect the current state of the application when it appears; if there is any possibility that the state of the application may change between the time you call <a href="q3tabdialog.html#Q3TabDialog">Q3TabDialog::Q3TabDialog</a>() and <a href="q3tabdialog.html#show">Q3TabDialog::show</a>(), you should set the dialog's state in a slot and connect this signal to it.</p>
+<p>This signal is emitted by show() when it is time to set the state of the dialog's contents. The dialog should reflect the current state of the application when it appears; if there is any possibility that the state of the application may change between the time you call <a href="q3tabdialog.html#Q3TabDialog">Q3TabDialog::Q3TabDialog</a>() and Q3TabDialog::show(), you should set the dialog's state in a slot and connect this signal to it.</p>
 <p>This applies mainly to <a href="q3tabdialog.html">Q3TabDialog</a> objects that are kept around hidden, rather than being created, shown, and deleted afterwards.</p>
-<p>See also <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>(), <a href="q3tabdialog.html#show">show</a>(), and <a href="q3tabdialog.html#cancelButtonPressed">cancelButtonPressed</a>().</p>
+<p>See also <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>(), show(), and <a href="q3tabdialog.html#cancelButtonPressed">cancelButtonPressed</a>().</p>
 <h3 class="fn"><a name="addTab"></a>void Q3TabDialog::addTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>Adds another tab and page to the tab view.</p>
 <p>The new page is <i>child</i>; the tab's label is <i>label</i>. Note the difference between the widget name (which you supply to widget constructors and to <a href="q3tabdialog.html#setTabEnabled">setTabEnabled</a>(), for example) and the tab label. The name is internal to the program and invariant, whereas the label is shown on-screen and may vary according to language and other factors.</p>
 <p>If the tab's <i>label</i> contains an ampersand, the letter following the ampersand is used as an accelerator for the tab, e.g. if the label is &quot;Bro&amp;wse&quot; then Alt+W becomes an accelerator which will move the focus to this tab.</p>
-<p>If you call addTab() after <a href="q3tabdialog.html#show">show</a>() the screen will flicker and the user may be confused.</p>
+<p>If you call addTab() after show() the screen will flicker and the user may be confused.</p>
 <p>See also <a href="q3tabdialog.html#insertTab">insertTab</a>().</p>
 <h3 class="fn"><a name="addTab-2"></a>void Q3TabDialog::addTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qicon.html">QIcon</a> &amp; <i>iconset</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -198,7 +197,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The new page is <i>child</i>; the tab's label is <i>label</i>. Note the difference between the widget name (which you supply to widget constructors and to <a href="q3tabdialog.html#setTabEnabled">setTabEnabled</a>(), for example) and the tab label. The name is internal to the program and invariant, whereas the label is shown on-screen and may vary according to language and other factors.</p>
 <p>If the tab's <i>label</i> contains an ampersand, the letter following the ampersand is used as an accelerator for the tab, e.g. if the label is &quot;Bro&amp;wse&quot; then Alt+W becomes an accelerator which will move the focus to this tab.</p>
 <p>If <i>index</i> is not specified, the tab is simply added. Otherwise it is inserted at the specified position.</p>
-<p>If you call insertTab() after <a href="q3tabdialog.html#show">show</a>(), the screen will flicker and the user may be confused.</p>
+<p>If you call insertTab() after show(), the screen will flicker and the user may be confused.</p>
 <p>See also <a href="q3tabdialog.html#addTab">addTab</a>().</p>
 <h3 class="fn"><a name="insertTab-2"></a>void Q3TabDialog::insertTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qicon.html">QIcon</a> &amp; <i>iconset</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i>, int <i>index</i> = -1 )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -210,14 +209,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Removes page <i>w</i> from this stack of widgets. Does not delete <i>w</i>.</p>
 <p>See also <a href="q3tabdialog.html#showPage">showPage</a>() and <a href="qtabwidget-qt3.html#removePage">QTabWidget::removePage</a>().</p>
 <h3 class="fn"><a name="selected"></a>void Q3TabDialog::selected ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted whenever a tab is selected (raised), including during the first <a href="q3tabdialog.html#show">show</a>(). <i>name</i> is the name of the selected tab.</p>
+<p>This signal is emitted whenever a tab is selected (raised), including during the first show(). <i>name</i> is the name of the selected tab.</p>
 <p>See also <a href="qwidget.html#raise">raise</a>().</p>
 <h3 class="fn"><a name="setApplyButton"></a>void Q3TabDialog::setApplyButton ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Adds an Apply button to the dialog. The button's text is set to <i>text</i>.</p>
 <p>The Apply button should apply the current settings in the dialog box to the application while keeping the dialog visible.</p>
 <p>When Apply is clicked, the <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>() signal is emitted.</p>
 <p>If <i>text</i> is an empty string, no button is shown.</p>
-<p>See also <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), <a href="q3tabdialog.html#setDefaultButton">setDefaultButton</a>(), and <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>().</p>
+<p>See also <a href="q3tabdialog.html#hasApplyButton">hasApplyButton</a>(), <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), <a href="q3tabdialog.html#setDefaultButton">setDefaultButton</a>(), and <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>().</p>
 <h3 class="fn"><a name="setApplyButton-2"></a>void Q3TabDialog::setApplyButton ()</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds an Apply button to the dialog. The button's text is set to a localizable &quot;Apply&quot;.</p>
@@ -226,7 +225,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The cancel button should always return the application to the state it was in before the tab view popped up, or if the user has clicked Apply, back to the state immediately after the last Apply.</p>
 <p>When Cancel is clicked, the <a href="q3tabdialog.html#cancelButtonPressed">cancelButtonPressed</a>() signal is emitted. The dialog is closed at the same time.</p>
 <p>If <i>text</i> is an empty string, no button is shown.</p>
-<p>See also <a href="q3tabdialog.html#setApplyButton">setApplyButton</a>(), <a href="q3tabdialog.html#setDefaultButton">setDefaultButton</a>(), and <a href="q3tabdialog.html#cancelButtonPressed">cancelButtonPressed</a>().</p>
+<p>See also <a href="q3tabdialog.html#hasCancelButton">hasCancelButton</a>(), <a href="q3tabdialog.html#setApplyButton">setApplyButton</a>(), <a href="q3tabdialog.html#setDefaultButton">setDefaultButton</a>(), and <a href="q3tabdialog.html#cancelButtonPressed">cancelButtonPressed</a>().</p>
 <h3 class="fn"><a name="setCancelButton-2"></a>void Q3TabDialog::setCancelButton ()</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds a Cancel button to the dialog. The button's text is set to a localizable &quot;Cancel&quot;.</p>
@@ -235,7 +234,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The Defaults button should set the dialog (but not the application) back to the application defaults.</p>
 <p>When Defaults is clicked, the <a href="q3tabdialog.html#defaultButtonPressed">defaultButtonPressed</a>() signal is emitted.</p>
 <p>If <i>text</i> is an empty string, no button is shown.</p>
-<p>See also <a href="q3tabdialog.html#setApplyButton">setApplyButton</a>(), <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), and <a href="q3tabdialog.html#defaultButtonPressed">defaultButtonPressed</a>().</p>
+<p>See also <a href="q3tabdialog.html#hasDefaultButton">hasDefaultButton</a>(), <a href="q3tabdialog.html#setApplyButton">setApplyButton</a>(), <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), and <a href="q3tabdialog.html#defaultButtonPressed">defaultButtonPressed</a>().</p>
 <h3 class="fn"><a name="setDefaultButton-2"></a>void Q3TabDialog::setDefaultButton ()</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds a Defaults button to the dialog. The button's text is set to a localizable &quot;Defaults&quot;.</p>
@@ -246,7 +245,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Adds a Help button to the dialog. The button's text is set to <i>text</i>.</p>
 <p>When Help is clicked, the <a href="q3tabdialog.html#helpButtonPressed">helpButtonPressed</a>() signal is emitted.</p>
 <p>If <i>text</i> is an empty string, no button is shown.</p>
-<p>See also <a href="q3tabdialog.html#setApplyButton">setApplyButton</a>(), <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), and <a href="q3tabdialog.html#helpButtonPressed">helpButtonPressed</a>().</p>
+<p>See also <a href="q3tabdialog.html#hasHelpButton">hasHelpButton</a>(), <a href="q3tabdialog.html#setApplyButton">setApplyButton</a>(), <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), and <a href="q3tabdialog.html#helpButtonPressed">helpButtonPressed</a>().</p>
 <h3 class="fn"><a name="setHelpButton-2"></a>void Q3TabDialog::setHelpButton ()</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds a Help button to the dialog. The button's text is set to a localizable &quot;Help&quot;.</p>
@@ -254,7 +253,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Adds an OK button to the dialog and sets the button's text to <i>text</i>.</p>
 <p>When the OK button is clicked, the <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>() signal is emitted, and the current settings in the dialog box should be applied to the application. The dialog then closes.</p>
 <p>If <i>text</i> is an empty string, no button is shown.</p>
-<p>See also <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), <a href="q3tabdialog.html#setDefaultButton">setDefaultButton</a>(), and <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>().</p>
+<p>See also <a href="q3tabdialog.html#hasOkButton">hasOkButton</a>(), <a href="q3tabdialog.html#setCancelButton">setCancelButton</a>(), <a href="q3tabdialog.html#setDefaultButton">setDefaultButton</a>(), and <a href="q3tabdialog.html#applyButtonPressed">applyButtonPressed</a>().</p>
 <h3 class="fn"><a name="setOkButton-2"></a>void Q3TabDialog::setOkButton ()</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds an OK button to the dialog. The button's text is set to a localizable &quot;OK&quot;.</p>
@@ -279,6 +278,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

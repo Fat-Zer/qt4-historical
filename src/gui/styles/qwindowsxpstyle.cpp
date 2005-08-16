@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1505,7 +1505,7 @@ void QWindowsXPStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt
     case PE_FrameMenu:
         p->save();
         p->setPen(option->palette.dark().color());
-        p->drawRect(option->rect.adjusted(0,0,-1,-1));
+        p->drawRect(rect.adjusted(0, 0, -1, -1));
         p->restore();
         return;
 
@@ -2501,8 +2501,9 @@ void QWindowsXPStyle::drawComplexControl(ComplexControl cc, const QStyleOptionCo
                 }
             }
             if (sub & SC_ToolButtonMenu) {
-                theme.rect = subControlRect(CC_ToolButton, option, SC_ToolButtonMenu, widget);
-                drawPrimitive(PE_IndicatorButtonDropDown, option, p, widget);
+                QStyleOptionToolButton menuOption = *toolbutton;
+                menuOption.rect = subControlRect(CC_ToolButton, option, SC_ToolButtonMenu, widget);
+                drawPrimitive(PE_IndicatorButtonDropDown, &menuOption, p, widget);
             }
 
             QStyleOptionToolButton label = *toolbutton;
@@ -2691,7 +2692,6 @@ int QWindowsXPStyle::pixelMetric(PixelMetric pm, const QStyleOption *option, con
 
     int res = 0;
     switch (pm) {
-
     case PM_MenuBarPanelWidth:
         res = 0;
         break;
@@ -2975,9 +2975,13 @@ QSize QWindowsXPStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt
             if (menuitem->menuItemType == QStyleOptionMenuItem::Separator) {
                 sz = QSize(10, windowsSepHeight);
                 break;
+            } else if (menuitem->icon.isNull()) {
+                sz = QWindowsStyle::sizeFromContents(ct, option, sz, widget);
+                sz.setHeight(sz.height() - 2);
+                break;
             }
-        }
-        // Fall-through intended
+        }     
+        // Otherwise, fall through
     default:
         sz = QWindowsStyle::sizeFromContents(ct, option, sz, widget);
         break;

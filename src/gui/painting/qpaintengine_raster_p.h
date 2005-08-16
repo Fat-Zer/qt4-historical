@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -38,9 +38,10 @@
 #include <QtGui/qpaintengine.h>
 #include <QtGui/qpainterpath.h>
 
-#include <private/qpaintengine_p.h>
 #include <private/qdatabuffer_p.h>
 #include <private/qdrawhelper_p.h>
+#include <private/qpaintengine_p.h>
+#include <private/qstroker_p.h>
 
 class QFTOutlineMapper;
 class QRasterPaintEnginePrivate;
@@ -66,16 +67,18 @@ public:
     bool end();
 
     void updateState(const QPaintEngineState &state);
+    void updateMatrix(const QMatrix &matrix);
 
     void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
     void updateClipPath(const QPainterPath &path, Qt::ClipOperation op);
 
     void drawPath(const QPainterPath &path);
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
-
     void fillPath(const QPainterPath &path, FillData *fillData);
 
     void drawEllipse(const QRectF &rect);
+
+    void drawRects(const QRect  *rects, int rectCount);
     void drawRects(const QRectF *rects, int rectCount);
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
@@ -84,8 +87,21 @@ public:
     void drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &sr);
     void drawTextItem(const QPointF &p, const QTextItem &textItem);
 
+    void drawLines(const QLine *line, int lineCount);
     void drawLines(const QLineF *line, int lineCount);
+
     void drawPoints(const QPointF *points, int pointCount);
+
+#ifdef Q_NO_USING_KEYWORD
+    inline void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
+        { QPaintEngine::drawPolygon(points, pointCount, mode); }
+    inline void drawPoints(const QPoint *points, int pointCount) { QPaintEngine::drawPoints(points, pointCount); }
+    inline void drawEllipse(const QRect &rect) { QPaintEngine::drawEllipse(rect); }
+#else
+    using QPaintEngine::drawPolygon;
+    using QPaintEngine::drawPoints;
+    using QPaintEngine::drawEllipse;
+#endif
 
     void setFlushOnEnd(bool flush);
     void flush(QPaintDevice *device, const QPoint &offset);
@@ -103,6 +119,9 @@ public:
     Type type() const { return Raster; }
 
     QPoint coordinateOffset() const;
+
+protected:
+    QRasterPaintEngine(QRasterPaintEnginePrivate &d);
 };
 
 
@@ -162,18 +181,26 @@ public:
 
     DrawHelper *drawHelper;
 
+    QStroker basicStroker;
+    QDashStroker *dashStroker;
+    QStrokerOps *stroker;
+
     QImage tempImage;
 
     int deviceDepth;
 
     uint txop;
 
+    uint has_pen : 1;
+    uint has_brush : 1;
+    uint fast_pen : 1;
     uint opaqueBackground : 1;
     uint clipEnabled : 1;
     uint antialiased : 1;
     uint bilinear : 1;
     uint flushOnEnd : 1;
     uint mono_surface : 1;
+    uint int_xform : 1;
 };
 
 /*******************************************************************************

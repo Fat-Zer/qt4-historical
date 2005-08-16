@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -102,9 +102,9 @@ void QTextCursorPrivate::setX()
 
 void QTextCursorPrivate::remove()
 {
-    currentCharFormat = -1;
     if (anchor == position)
         return;
+    currentCharFormat = -1;
     int pos1 = position;
     int pos2 = adjusted_anchor;
     QTextUndoCommand::Operation op = QTextUndoCommand::KeepCursor;
@@ -1006,6 +1006,9 @@ bool QTextCursor::movePosition(MoveOperation op, MoveMode mode, int n)
     (i.e. from position() forward), and replaces the selection with
     the phrase "Hello World".
 
+    Any ASCII linefeed characters (\\n) in the inserted text are transformed
+    into unicode block separators, corresponding to insertBlock() calls.
+
     \sa charFormat() hasSelection()
 */
 void QTextCursor::insertText(const QString &text)
@@ -1037,12 +1040,31 @@ void QTextCursor::insertText(const QString &text, const QTextCharFormat &format)
 
         QTextBlockFormat blockFmt = blockFormat();
 
-        QStringList blocks = text.split(QChar::ParagraphSeparator);
-        for (int i = 0; i < blocks.size(); ++i) {
-            if (i > 0)
+        bool seenCRLF = false;
+
+        int textStart = 0;
+        for (int i = 0; i < text.length(); ++i) {
+            QChar ch = text.at(i);
+            if (ch == QLatin1Char('\n')
+                || ch == QChar::ParagraphSeparator) {
+
+                const int textEnd = (seenCRLF ? i - 1 : i);
+
+                if (textEnd > textStart)
+                    d->priv->insert(d->position, QString(text.unicode() + textStart, textEnd - textStart), formatIdx);
+
+                textStart = i + 1;
                 d->insertBlock(blockFmt, format);
-            d->priv->insert(d->position, blocks.at(i), formatIdx);
+
+                seenCRLF = false;
+            } else if (ch == QLatin1Char('\r')
+                       && (i + 1) < text.length()
+                       && text.at(i + 1) == QLatin1Char('\n')) {
+                seenCRLF = true;
+            }
         }
+        if (textStart < text.length())
+            d->priv->insert(d->position, QString(text.unicode() + textStart, text.length() - textStart), formatIdx);
     }
     d->priv->endEditBlock();
 }
@@ -1119,7 +1141,7 @@ void QTextCursor::select(SelectionType selection)
         const QTextBlock b = d->block();
         const int relativePos = d->position - b.position();
 
-        if (relativePos == 0 || relativePos == b.length() - 1)
+        if (relativePos == b.length() - 1)
             return;
 
         movePosition(StartOfWord);
@@ -1617,7 +1639,7 @@ QTextList *QTextCursor::createList(const QTextListFormat &format)
     Creates and returns a new list with the given \a style, making the
     cursor's current paragraph the first list item.
 
-    The style to be used is defined by the \c QTextListFormat::Style enum.
+    The style to be used is defined by the QTextListFormat::Style enum.
 
     \sa insertList() currentList()
  */

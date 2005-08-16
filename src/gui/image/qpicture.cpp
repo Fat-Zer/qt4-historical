@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -444,9 +444,7 @@ bool QPicture::exec(QPainter *painter, QDataStream &s, int nrecords)
     QPen        pen;
     QBrush      brush;
     QRegion     rgn;
-#ifndef QT_NO_TRANSFORMATIONS
     QMatrix     matrix;
-#endif
 
     QMatrix worldMatrix = painter->matrix();
 
@@ -639,36 +637,25 @@ bool QPicture::exec(QPainter *painter, QDataStream &s, int nrecords)
 // #endif
         case QPicturePrivate::PdcSetVXform:
             s >> i_8;
-#ifndef QT_NO_TRANSFORMATIONS
             painter->setViewTransformEnabled(i_8);
-#endif
             break;
         case QPicturePrivate::PdcSetWindow:
             s >> r;
-#ifndef QT_NO_TRANSFORMATIONS
             painter->setWindow(r.toRect());
-#endif
             break;
         case QPicturePrivate::PdcSetViewport:
             s >> r;
-#ifndef QT_NO_TRANSFORMATIONS
             painter->setViewport(r.toRect());
-#endif
             break;
         case QPicturePrivate::PdcSetWXform:
             s >> i_8;
-#ifndef QT_NO_TRANSFORMATIONS
             painter->setMatrixEnabled(i_8);
-#endif
             break;
         case QPicturePrivate::PdcSetWMatrix:
-#ifndef QT_NO_TRANSFORMATIONS
             s >> matrix >> i_8;
             // i_8 is always false due to updateXForm() in qpaintengine_pic.cpp
             painter->setMatrix(worldMatrix * matrix, false);
-#endif
             break;
-#ifndef QT_NO_TRANSFORMATIONS
 // #ifdef Q_Q3PAINTER
 //             case QPicturePrivate::PdcSaveWMatrix:
 //                 painter->saveWorldMatrix();
@@ -677,7 +664,6 @@ bool QPicture::exec(QPainter *painter, QDataStream &s, int nrecords)
 //                 painter->restoreWorldMatrix();
 //                 break;
 // #endif
-#endif
         case QPicturePrivate::PdcSetClip:
             s >> i_8;
             painter->setClipping(i_8);
@@ -1167,7 +1153,7 @@ QPictureHandler::QPictureHandler(const char *f, const char *h, const QByteArray&
 typedef QList<QPictureHandler *> QPHList;
 static QPHList pictureHandlers;
 
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC(QMutex, mutex)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
                           (QPictureFormatInterface_iid,
@@ -1176,7 +1162,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
 #endif
 void qt_init_picture_plugins()
 {
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     QMutexLocker locker(mutex());
     QFactoryLoader *loader = ::loader();
     QStringList keys = loader->keys();
@@ -1526,7 +1512,7 @@ QByteArray QPictureIO::pictureFormat(QIODevice *d)
     if (rdlen != buflen)
         return format;
 
-    strncpy(buf2, buf, buflen);
+    memcpy(buf2, buf, sizeof(char)*buflen);
 
     for (int n = 0; n < rdlen; n++)
         if (buf[n] == '\0')

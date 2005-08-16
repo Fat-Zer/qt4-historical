@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/qt3support/text/q3stylesheet.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/text/q3stylesheet.cpp -->
 <head>
     <title>Qt 4.0: Q3StyleSheetItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3StyleSheetItem Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3StyleSheetItem Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3StyleSheetItem class provides an encapsulation of a set of text styles. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3StyleSheetItem&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3StyleSheetItem&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <ul>
 <li><a href="q3stylesheetitem-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -154,7 +153,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.Q3StyleSheetItem"></a>Q3StyleSheetItem::~Q3StyleSheetItem ()</h3>
 <p>Destroys the style. Note that <a href="q3stylesheetitem.html">Q3StyleSheetItem</a> objects become owned by <a href="q3stylesheet.html">Q3StyleSheet</a> when they are created.</p>
 <h3 class="fn"><a name="alignment"></a>int Q3StyleSheetItem::alignment () const</h3>
-<p>Returns the alignment of this style. Possible values are <tt>Qt::AlignAuto</tt>, <tt>Qt::AlignLeft</tt>, <tt>Qt::AlignRight</tt>, <tt>Qt::AlignCenter</tt> or <tt>Qt::AlignJustify</tt>.</p>
+<p>Returns the alignment of this style. Possible values are <a href="qt.html#AlignmentFlag-enum">Qt::AlignAuto</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a>.</p>
 <p>See also <a href="q3stylesheetitem.html#setAlignment">setAlignment</a>() and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="allowedInContext"></a>bool Q3StyleSheetItem::allowedInContext ( const Q3StyleSheetItem * <i>s</i> ) const</h3>
 <p>Returns true if this style can be nested into an element of style <i>s</i>; otherwise returns false.</p>
@@ -184,7 +183,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the style sets an italic font; otherwise returns false.</p>
 <p>See also <a href="q3stylesheetitem.html#setFontItalic">setFontItalic</a>() and <a href="q3stylesheetitem.html#definesFontItalic">definesFontItalic</a>().</p>
 <h3 class="fn"><a name="fontSize"></a>int Q3StyleSheetItem::fontSize () const</h3>
-<p>Returns the font size setting of the style. This is either a valid point size or <tt>Q3StyleSheetItem::Undefined</tt>.</p>
+<p>Returns the font size setting of the style. This is either a valid point size or Q3StyleSheetItem::Undefined.</p>
 <p>See also <a href="q3stylesheetitem.html#setFontSize">setFontSize</a>(), <a href="qfont.html#pointSize">QFont::pointSize</a>(), and <a href="qfont.html#setPointSize">QFont::setPointSize</a>().</p>
 <h3 class="fn"><a name="fontStrikeOut"></a>bool Q3StyleSheetItem::fontStrikeOut () const</h3>
 <p>Returns true if the style sets a strike out font; otherwise returns false.</p>
@@ -193,7 +192,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the style sets an underlined font; otherwise returns false.</p>
 <p>See also <a href="q3stylesheetitem.html#setFontUnderline">setFontUnderline</a>() and <a href="q3stylesheetitem.html#definesFontUnderline">definesFontUnderline</a>().</p>
 <h3 class="fn"><a name="fontWeight"></a>int Q3StyleSheetItem::fontWeight () const</h3>
-<p>Returns the font weight setting of the style. This is either a valid <tt>QFont::Weight</tt> or the value <tt>Q3StyleSheetItem::Undefined</tt>.</p>
+<p>Returns the font weight setting of the style. This is either a valid <a href="qfont.html#Weight-enum">QFont::Weight</a> or the value Q3StyleSheetItem::Undefined.</p>
 <p>See also <a href="q3stylesheetitem.html#setFontWeight">setFontWeight</a>() and <a href="qfont.html">QFont</a>.</p>
 <h3 class="fn"><a name="isAnchor"></a>bool Q3StyleSheetItem::isAnchor () const</h3>
 <p>Returns whether this style is an anchor.</p>
@@ -204,7 +203,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the list style of the style.</p>
 <p>See also <a href="q3stylesheetitem.html#setListStyle">setListStyle</a>() and <a href="q3stylesheetitem.html#ListStyle-enum">ListStyle</a>.</p>
 <h3 class="fn"><a name="logicalFontSize"></a>int Q3StyleSheetItem::logicalFontSize () const</h3>
-<p>Returns the logical font size setting of the style. This is either a valid size between 1 and 7 or <tt>Q3StyleSheetItem::Undefined</tt>.</p>
+<p>Returns the logical font size setting of the style. This is either a valid size between 1 and 7 or Q3StyleSheetItem::Undefined.</p>
 <p>See also <a href="q3stylesheetitem.html#setLogicalFontSize">setLogicalFontSize</a>(), <a href="q3stylesheetitem.html#setLogicalFontSizeStep">setLogicalFontSizeStep</a>(), <a href="qfont.html#pointSize">QFont::pointSize</a>(), and <a href="qfont.html#setPointSize">QFont::setPointSize</a>().</p>
 <h3 class="fn"><a name="logicalFontSizeStep"></a>int Q3StyleSheetItem::logicalFontSizeStep () const</h3>
 <p>Returns the logical font size step of this style.</p>
@@ -212,7 +211,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3stylesheetitem.html#setLogicalFontSizeStep">setLogicalFontSizeStep</a>().</p>
 <h3 class="fn"><a name="margin"></a>int Q3StyleSheetItem::margin ( <a href="q3stylesheetitem.html#Margin-enum">Margin</a> <i>m</i> ) const</h3>
 <p>Returns the width of margin <i>m</i> in pixels.</p>
-<p>The margin, <i>m</i>, can be <tt>MarginLeft</tt>, <tt>MarginRight</tt>, <tt>MarginTop</tt>, <tt>MarginBottom</tt>, <tt>MarginAll</tt>, <tt>MarginVertical</tt> or <tt>MarginHorizontal</tt>.</p>
+<p>The margin, <i>m</i>, can be <a href="q3stylesheetitem.html#Margin-enum">MarginLeft</a>, <a href="q3stylesheetitem.html#Margin-enum">MarginRight</a>, <a href="q3stylesheetitem.html#Margin-enum">MarginTop</a>, <a href="q3stylesheetitem.html#Margin-enum">MarginBottom</a>, <a href="q3stylesheetitem.html#Margin-enum">MarginAll</a>, <a href="q3stylesheetitem.html#Margin-enum">MarginVertical</a>, or <a href="q3stylesheetitem.html#Margin-enum">MarginHorizontal</a>.</p>
 <p>See also <a href="q3stylesheetitem.html#setMargin">setMargin</a>() and <a href="q3stylesheetitem.html#Margin-enum">Margin</a>.</p>
 <h3 class="fn"><a name="name"></a><a href="qstring.html">QString</a> Q3StyleSheetItem::name () const</h3>
 <p>Returns the name of the style item.</p>
@@ -223,7 +222,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this style has self-nesting enabled; otherwise returns false.</p>
 <p>See also <a href="q3stylesheetitem.html#setSelfNesting">setSelfNesting</a>().</p>
 <h3 class="fn"><a name="setAlignment"></a>void Q3StyleSheetItem::setAlignment ( int <i>f</i> )</h3>
-<p>Sets the alignment to <i>f</i>. This only makes sense for styles with a <a href="q3stylesheetitem.html#DisplayMode-enum">display mode</a> of <a href="q3stylesheetitem.html#DisplayMode-enum">DisplayBlock</a>. Possible values are <tt>Qt::AlignAuto</tt>, <tt>Qt::AlignLeft</tt>, <tt>Qt::AlignRight</tt>, <tt>Qt::AlignCenter</tt> or <tt>Qt::AlignJustify</tt>.</p>
+<p>Sets the alignment to <i>f</i>. This only makes sense for styles with a <a href="q3stylesheetitem.html#DisplayMode-enum">display mode</a> of <a href="q3stylesheetitem.html#DisplayMode-enum">DisplayBlock</a>. Possible values are <a href="qt.html#AlignmentFlag-enum">Qt::AlignAuto</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a>.</p>
 <p>See also <a href="q3stylesheetitem.html#alignment">alignment</a>(), <a href="q3stylesheetitem.html#displayMode">displayMode</a>(), and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="setAnchor"></a>void Q3StyleSheetItem::setAnchor ( bool <i>anc</i> )</h3>
 <p>If <i>anc</i> is true, sets this style to be an anchor (hypertext link); otherwise sets it to not be an anchor. Elements in this style link to other documents or anchors.</p>
@@ -253,7 +252,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>underline</i> is true, sets underline for the style; otherwise sets no underline.</p>
 <p>See also <a href="q3stylesheetitem.html#fontUnderline">fontUnderline</a>() and <a href="q3stylesheetitem.html#definesFontUnderline">definesFontUnderline</a>().</p>
 <h3 class="fn"><a name="setFontWeight"></a>void Q3StyleSheetItem::setFontWeight ( int <i>w</i> )</h3>
-<p>Sets the font weight setting of the style to <i>w</i>. Valid values are those defined by <tt>QFont::Weight</tt>.</p>
+<p>Sets the font weight setting of the style to <i>w</i>. Valid values are those defined by <a href="qfont.html#Weight-enum">QFont::Weight</a>.</p>
 <p>See also <a href="qfont.html">QFont</a> and <a href="q3stylesheetitem.html#fontWeight">fontWeight</a>().</p>
 <h3 class="fn"><a name="setListStyle"></a>void Q3StyleSheetItem::setListStyle ( <a href="q3stylesheetitem.html#ListStyle-enum">ListStyle</a> <i>s</i> )</h3>
 <p>Sets the list style of the style to <i>s</i>.</p>
@@ -278,19 +277,19 @@ body { background: #ffffff; color: black; }</style>
 <p>In order to support &quot;dirty&quot; HTML, paragraphs <tt>&lt;p&gt;</tt> and list items <tt>&lt;li&gt;</tt> are not self-nesting. This means that starting a new paragraph or list item automatically closes the previous one.</p>
 <p>See also <a href="q3stylesheetitem.html#selfNesting">selfNesting</a>().</p>
 <h3 class="fn"><a name="setVerticalAlignment"></a>void Q3StyleSheetItem::setVerticalAlignment ( <a href="q3stylesheetitem.html#VerticalAlignment-enum">VerticalAlignment</a> <i>valign</i> )</h3>
-<p>Sets the vertical alignment to <i>valign</i>. Possible values are <tt>VAlignBaseline</tt>, <tt>VAlignSub</tt> or <tt>VAlignSuper</tt>.</p>
+<p>Sets the vertical alignment to <i>valign</i>. Possible values are <a href="q3stylesheetitem.html#VerticalAlignment-enum">VAlignBaseline</a>, <a href="q3stylesheetitem.html#VerticalAlignment-enum">VAlignSub</a> or <a href="q3stylesheetitem.html#VerticalAlignment-enum">VAlignSuper</a>.</p>
 <p>The vertical alignment property is not inherited.</p>
 <p>See also <a href="q3stylesheetitem.html#verticalAlignment">verticalAlignment</a>().</p>
 <h3 class="fn"><a name="setWhiteSpaceMode"></a>void Q3StyleSheetItem::setWhiteSpaceMode ( <a href="q3stylesheetitem.html#WhiteSpaceMode-enum">WhiteSpaceMode</a> <i>m</i> )</h3>
 <p>Sets the whitespace mode to <i>m</i>.</p>
-<p>See also <a href="q3stylesheetitem.html#WhiteSpaceMode-enum">WhiteSpaceMode</a>.</p>
+<p>See also <a href="q3stylesheetitem.html#whiteSpaceMode">whiteSpaceMode</a>() and <a href="q3stylesheetitem.html#WhiteSpaceMode-enum">WhiteSpaceMode</a>.</p>
 <h3 class="fn"><a name="styleSheet"></a><a href="q3stylesheet.html">Q3StyleSheet</a> * Q3StyleSheetItem::styleSheet ()</h3>
 <p>Returns the style sheet this item is in.</p>
 <h3 class="fn"><a name="styleSheet-2"></a>const <a href="q3stylesheet.html">Q3StyleSheet</a> * Q3StyleSheetItem::styleSheet () const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the style sheet this item is in.</p>
 <h3 class="fn"><a name="verticalAlignment"></a><a href="q3stylesheetitem.html#VerticalAlignment-enum">VerticalAlignment</a> Q3StyleSheetItem::verticalAlignment () const</h3>
-<p>Returns the vertical alignment of the style. Possible values are <tt>VAlignBaseline</tt>, <tt>VAlignSub</tt> or <tt>VAlignSuper</tt>.</p>
+<p>Returns the vertical alignment of the style. Possible values are <a href="q3stylesheetitem.html#VerticalAlignment-enum">VAlignBaseline</a>, <a href="q3stylesheetitem.html#VerticalAlignment-enum">VAlignSub</a> or <a href="q3stylesheetitem.html#VerticalAlignment-enum">VAlignSuper</a>.</p>
 <p>See also <a href="q3stylesheetitem.html#setVerticalAlignment">setVerticalAlignment</a>().</p>
 <h3 class="fn"><a name="whiteSpaceMode"></a><a href="q3stylesheetitem.html#WhiteSpaceMode-enum">WhiteSpaceMode</a> Q3StyleSheetItem::whiteSpaceMode () const</h3>
 <p>Returns the whitespace mode.</p>
@@ -301,6 +300,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

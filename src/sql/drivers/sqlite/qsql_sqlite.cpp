@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the sql module of the Qt Toolkit.
+** This file is part of the QtSql module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -172,8 +172,8 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
             initColumns();
         if (idx < 0 && !initialFetch)
             return true;
-        for (i = 0; i < rInf.count(); ++i)
-            switch (rInf.field(i).typeID()) {
+        for (i = 0; i < rInf.count(); ++i) {
+            switch (sqlite3_column_type(stmt, i)) {
             case SQLITE_BLOB:
                 values[i + idx] = QByteArray(static_cast<const char *>(
                             sqlite3_column_blob(stmt, i)),
@@ -193,6 +193,7 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
                             sqlite3_column_text16(stmt, i)),
                             sqlite3_column_bytes16(stmt, i) / sizeof(ushort));
                 break;
+            }
         }
         return true;
     case SQLITE_DONE:
@@ -264,12 +265,17 @@ bool QSQLiteResult::exec()
     d->skipRow = false;
     clearValues();
 
-    sqlite3_reset(d->stmt);
-
+    int res = sqlite3_reset(d->stmt);
+    if (res != SQLITE_OK) {
+        setLastError(qMakeError(d->access, QCoreApplication::translate("QSQLiteResult",
+                     "Unable to reset statement"), QSqlError::StatementError, res));
+        d->finalize();
+        return false;
+    }
     int paramCount = sqlite3_bind_parameter_count(d->stmt);
     if (paramCount == values.count()) {
         for (int i = 0; i < paramCount; ++i) {
-            int res = SQLITE_OK;
+            res = SQLITE_OK;
             const QVariant value = values.at(i);
 
             if (value.isNull()) {

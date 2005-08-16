@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/tools/designer/src/lib/sdk/abstractformwindowmanager.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/tools/designer/src/lib/sdk/abstractformwindowmanager.cpp -->
 <head>
     <title>Qt 4.0: QDesignerFormWindowManagerInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,10 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerFormWindowManagerInterface Class Reference</h1>
-<pre>#include &lt;QDesignerFormWindowManagerInterface&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerFormWindowManagerInterface Class Reference<br /><sup><sup>[<a href="qtdesigner.html">QtDesigner</a> module]</sup></sup></h1>
+<p>The QDesignerFormWindowManagerInterface class provides an interface that is used to control form windows in Qt Designer. <a href="#details">More...</a></p>
+<pre>#include &lt;QDesignerFormWindowManagerInterface&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qdesignerformwindowmanagerinterface-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -47,7 +47,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QDesignerFormWindowInterface * <b><a href="qdesignerformwindowmanagerinterface.html#activeFormWindow">activeFormWindow</a></b> () const</li>
 <li><div class="fn"/>virtual QDesignerFormEditorInterface * <b><a href="qdesignerformwindowmanagerinterface.html#core">core</a></b> () const</li>
 <li><div class="fn"/>virtual QDesignerFormWindowInterface * <b><a href="qdesignerformwindowmanagerinterface.html#createFormWindow">createFormWindow</a></b> ( QWidget * <i>parentWidget</i> = 0, Qt::WindowFlags <i>flags</i> = 0 )</li>
-<li><div class="fn"/>virtual void <b><a href="qdesignerformwindowmanagerinterface.html#dragItems">dragItems</a></b> ( const QList&lt;QDesignerDnDItemInterface *&gt; &amp; <i>item_list</i> ) = 0</li>
 <li><div class="fn"/>virtual QDesignerFormWindowInterface * <b><a href="qdesignerformwindowmanagerinterface.html#formWindow">formWindow</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>virtual int <b><a href="qdesignerformwindowmanagerinterface.html#formWindowCount">formWindowCount</a></b> () const</li>
 </ul>
@@ -83,6 +82,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
+<p>The QDesignerFormWindowManagerInterface class provides an interface that is used to control form windows in Qt Designer.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QDesignerFormWindowManagerInterface"></a>QDesignerFormWindowManagerInterface::QDesignerFormWindowManagerInterface ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -106,12 +106,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="actionUndo"></a><a href="qaction.html">QAction</a> * QDesignerFormWindowManagerInterface::actionUndo () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <h3 class="fn"><a name="actionVerticalLayout"></a><a href="qaction.html">QAction</a> * QDesignerFormWindowManagerInterface::actionVerticalLayout () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <h3 class="fn"><a name="activeFormWindow"></a><a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * QDesignerFormWindowManagerInterface::activeFormWindow () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>See also <a href="qdesignerformwindowmanagerinterface.html#setActiveFormWindow">setActiveFormWindow</a>().</p>
 <h3 class="fn"><a name="activeFormWindowChanged"></a>void QDesignerFormWindowManagerInterface::activeFormWindowChanged ( <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * <i>formWindow</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted ...</p>
 <h3 class="fn"><a name="addFormWindow"></a>void QDesignerFormWindowManagerInterface::addFormWindow ( <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * <i>formWindow</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <h3 class="fn"><a name="core"></a><a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> * QDesignerFormWindowManagerInterface::core () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <h3 class="fn"><a name="createFormWindow"></a><a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * QDesignerFormWindowManagerInterface::createFormWindow ( <a href="qwidget.html">QWidget</a> * <i>parentWidget</i> = 0, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>flags</i> = 0 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<h3 class="fn"><a name="dragItems"></a>void QDesignerFormWindowManagerInterface::dragItems ( const <a href="qlist.html">QList</a>&lt;<a href="qdesignerdnditeminterface.html">QDesignerDnDItemInterface</a> *&gt; &amp; <i>item_list</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <h3 class="fn"><a name="formWindow"></a><a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * QDesignerFormWindowManagerInterface::formWindow ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <h3 class="fn"><a name="formWindowAdded"></a>void QDesignerFormWindowManagerInterface::formWindowAdded ( <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * <i>formWindow</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted ...</p>
@@ -120,10 +120,11 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted ...</p>
 <h3 class="fn"><a name="removeFormWindow"></a>void QDesignerFormWindowManagerInterface::removeFormWindow ( <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * <i>formWindow</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <h3 class="fn"><a name="setActiveFormWindow"></a>void QDesignerFormWindowManagerInterface::setActiveFormWindow ( <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * <i>formWindow</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
+<p>See also <a href="qdesignerformwindowmanagerinterface.html#activeFormWindow">activeFormWindow</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

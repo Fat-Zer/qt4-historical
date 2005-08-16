@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/examples/findfiles.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/examples/findfiles.qdoc -->
 <head>
     <title>Qt 4.0: Find Files Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Find Files Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Find Files Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="dialogs-findfiles-window-cpp.html">dialogs/findfiles/window.cpp</a></li>
@@ -25,7 +25,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="dialogs-findfiles-main-cpp.html">dialogs/findfiles/main.cpp</a></li>
 </ul>
 <p>The Find Files example shows how to use <a href="qprogressdialog.html">QProgressDialog</a> to provide feedback on the progress of a slow operation. The example also shows how to use <a href="qfiledialog.html">QFileDialog</a> to facilitate browsing, how to use <a href="qtextstream.html">QTextStream</a>'s streaming operators to read a file, and how to use <a href="qtablewidget.html">QTableWidget</a> to provide standard table display facilities for applications.</p>
-<center><img src="images/findfiles-example.png" alt="Screenshot of the Find Files example" /></center><p>With the Find Files application the user can search for files in a specified directory, matching a specified file name (using wild cards if appropiate) and containing a specified text.</p>
+<p align="center"><img src="images/findfiles-example.png" alt="Screenshot of the Find Files example" /></p><p>With the Find Files application the user can search for files in a specified directory, matching a specified file name (using wild cards if appropiate) and containing a specified text.</p>
 <p>The user is provided with a <b>Browse</b> option, and the result of the search is displayed in a table with the names of the files found and their sizes. In addition the application provides a total count of the files found.</p>
 <a name="window-class-definition"></a>
 <h2>Window Class Definition</h2>
@@ -73,7 +73,7 @@ body { background: #ffffff; color: black; }</style>
         findButton = createButton(tr(&quot;&amp;Find&quot;), SLOT(find()));
         quitButton = createButton(tr(&quot;&amp;Quit&quot;), SLOT(close()));
 
-        fileComboBox = createComboBox(tr(&quot;*.txt&quot;));
+        fileComboBox = createComboBox(tr(&quot;*&quot;));
         textComboBox = createComboBox();
         directoryComboBox = createComboBox(QDir::currentPath());
 
@@ -129,7 +129,8 @@ body { background: #ffffff; color: black; }</style>
         QStringList files;
         if (fileName.isEmpty())
             fileName = &quot;*&quot;;
-        files = directory.entryList(QStringList(fileName), QDir::Files);
+        files = directory.entryList(QStringList(fileName),
+                                    QDir::Files | QDir::NoSymLinks);
 
         if (!text.isEmpty())
             files = findFiles(directory, files, text);
@@ -138,12 +139,13 @@ body { background: #ffffff; color: black; }</style>
 <p>We use the directory's path to create a <a href="qdir.html">QDir</a>; the <a href="qdir.html">QDir</a> class provides access to directory structures and their contents. We create a list of the files (contained in the newly created <a href="qdir.html">QDir</a>) that match the specified file name. If the file name is empty the list will contain all the files in the directory.</p>
 <p>Then we search through all the files in the list, using the private <tt>findFiles()</tt> function, eliminating the ones that don't contain the specified text. And finally, we display the results using the private <tt>showFiles()</tt> function.</p>
 <p>If the user didn't specify any text, there is no reason to search through the files, and we display the results immediately.</p>
-<center><img src="images/findfiles_progress_dialog.png" alt="Screenshot of the Progress Dialog" /></center><pre>&nbsp;   QStringList Window::findFiles(const QDir &amp;directory, const QStringList &amp;files,
+<p align="center"><img src="images/findfiles_progress_dialog.png" alt="Screenshot of the Progress Dialog" /></p><pre>&nbsp;   QStringList Window::findFiles(const QDir &amp;directory, const QStringList &amp;files,
                                   const QString &amp;text)
     {
         QProgressDialog progressDialog(this);
         progressDialog.setCancelButtonText(tr(&quot;&amp;Cancel&quot;));
-        progressDialog.setRange(0, files.count());</pre>
+        progressDialog.setRange(0, files.count());
+        progressDialog.setWindowTitle(tr(&quot;Find Files&quot;));</pre>
 <p>In the private <tt>findFiles()</tt> function we search through a list of files, looking for the ones that contain a specified text. This can be a very slow operation depending on the number of files as well as their sizes. In case there are a large number of files, or there exists some large files on the list, we provide a <a href="qprogressdialog.html">QProgressDialog</a>.</p>
 <p>The <a href="qprogressdialog.html">QProgressDialog</a> class provides feedback on the progress of a slow operation. It is used to give the user an indication of how long an operation is going to take, and to demonstrate that the application has not frozen. It can also give the user an opportunity to abort the operation.</p>
 <pre>&nbsp;       QStringList foundFiles;
@@ -162,6 +164,8 @@ body { background: #ffffff; color: black; }</style>
                 QString line;
                 QTextStream in(&amp;file);
                 while (!in.atEnd()) {
+                    if (progressDialog.wasCanceled())
+                        break;
                     line = in.readLine();
                     if (line.contains(text)) {
                         foundFiles &lt;&lt; files[i];
@@ -183,9 +187,11 @@ body { background: #ffffff; color: black; }</style>
             qint64 size = QFileInfo(file).size();
 
             QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
+            fileNameItem-&gt;setFlags(Qt::ItemIsEnabled);
             QTableWidgetItem *sizeItem = new QTableWidgetItem(QString(&quot;%1 KB&quot;)
                                                  .arg(int((size + 1023) / 1024)));
-            sizeItem-&gt;setTextAlignment(Qt::AlignRight);
+            sizeItem-&gt;setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            sizeItem-&gt;setFlags(Qt::ItemIsEnabled);
 
             int row = filesTable-&gt;rowCount();
             filesTable-&gt;insertRow(row);
@@ -212,7 +218,7 @@ body { background: #ffffff; color: black; }</style>
         return comboBox;
     }</pre>
 <p>The private <tt>createComboBox()</tt> function is also called from the contructor. We create a <a href="qcombobox.html">QComboBox</a> with the given text, and make it editable.</p>
-<p>When the user enters a new string in an editable combobox, the widget may or may not insert it, and it can insert it in several locations, depending on the QComboBox::InsertPolicy(). The default policy is is <a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtBottom</a>.</p>
+<p>When the user enters a new string in an editable combobox, the widget may or may not insert it, and it can insert it in several locations, depending on the <a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertPolicy</a>. The default policy is is <a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtBottom</a>.</p>
 <p>Then we add the provided text to the combobox, and specify the widget's size policies, before we return a pointer to the combobox.</p>
 <pre>&nbsp;   void Window::createFilesTable()
     {
@@ -225,12 +231,12 @@ body { background: #ffffff; color: black; }</style>
         filesTable-&gt;setShowGrid(false);
     }</pre>
 <p>The private <tt>createFilesTable()</tt> function is called from the constructor. In this function we create the <a href="qtablewidget.html">QTableWidget</a> that will display the search results. We set its horizontal headers and their resize mode.</p>
-<p><a href="qtablewidget.html">QTableWidget</a> inherits <a href="qtableview.html">QTableView</a> which provides a default model/view implementation of a table view. The QTableView::horizontalHeaders() function returns the table view's horizontal header as a <a href="qheaderview.html">QHeaderView</a>. The <a href="qheaderview.html">QHeaderView</a> class provides a header row or header column for item views, and the <a href="qheaderview.html#setResizeMode">QHeaderView::setResizeMode</a>() function sets the constraints on how the section in the header can be resized.</p>
+<p><a href="qtablewidget.html">QTableWidget</a> inherits <a href="qtableview.html">QTableView</a> which provides a default model/view implementation of a table view. The <a href="qtableview.html#horizontalHeader">QTableView::horizontalHeader</a>() function returns the table view's horizontal header as a <a href="qheaderview.html">QHeaderView</a>. The <a href="qheaderview.html">QHeaderView</a> class provides a header row or header column for item views, and the <a href="qheaderview.html#setResizeMode">QHeaderView::setResizeMode</a>() function sets the constraints on how the section in the header can be resized.</p>
 <p>Finally, we hide the <a href="qtablewidget.html">QTableWidget</a>'s vertical headers using the <a href="qwidget.html#hide">QWidget::hide</a>() function, and remove the default grid drawn for the table using the <a href="qtableview.html#showGrid-prop">QTableView::setShowGrid</a>() function.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

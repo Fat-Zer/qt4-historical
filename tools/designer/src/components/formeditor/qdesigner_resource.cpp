@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -715,6 +715,40 @@ DomWidget *QDesignerResource::saveWidget(QDesignerStackedWidget *widget, DomWidg
     return ui_widget;
 }
 
+DomProperty *QDesignerResource::createIconProperty(const QVariant &v) const
+{
+    DomProperty *dom_prop = new DomProperty();
+
+    DomResourcePixmap *r = new DomResourcePixmap;
+    QString icon_path;
+    QString qrc_path;
+    if (v.type() == QVariant::Icon) {
+        QIcon icon = qvariant_cast<QIcon>(v);
+        icon_path = iconToFilePath(icon);
+        qrc_path = iconToQrcPath(icon);
+    } else {
+        QPixmap pixmap = qvariant_cast<QPixmap>(v);
+        icon_path = pixmapToFilePath(pixmap);
+        qrc_path = pixmapToQrcPath(pixmap);
+    }
+
+    if (qrc_path.isEmpty())
+        icon_path = workingDirectory().relativeFilePath(icon_path);
+    else
+        qrc_path = workingDirectory().relativeFilePath(qrc_path);
+
+    r->setText(icon_path);
+    if (!qrc_path.isEmpty())
+        r->setAttributeResource(qrc_path);
+
+    if (v.type() == QVariant::Icon)
+        dom_prop->setElementIconSet(r);
+    else
+        dom_prop->setElementPixmap(r);
+
+    return dom_prop;
+}
+
 DomWidget *QDesignerResource::saveWidget(QDesignerTabWidget *widget, DomWidget *ui_parentWidget)
 {
     DomWidget *ui_widget = QAbstractFormBuilder::createDom(widget, ui_parentWidget, false);
@@ -728,15 +762,35 @@ DomWidget *QDesignerResource::saveWidget(QDesignerTabWidget *widget, DomWidget *
             DomWidget *ui_page = createDom(page, ui_widget);
             Q_ASSERT( ui_page != 0 );
 
+            QList<DomProperty*> ui_attribute_list;
+
+            DomProperty *p = 0;
+            DomString *str = 0;
+
             // attribute `title'
-            DomProperty *p = new DomProperty();
+            p = new DomProperty();
             p->setAttributeName(QLatin1String("title"));
-            DomString *str = new DomString();
+            str = new DomString();
             str->setText(widget->tabText(i));
             p->setElementString(str);
-
-            QList<DomProperty*> ui_attribute_list;
             ui_attribute_list.append(p);
+
+            // attribute `icon'
+            if (!widget->tabIcon(i).isNull()) {
+                p = createIconProperty(widget->tabIcon(i));
+                p->setAttributeName(QLatin1String("icon"));
+                ui_attribute_list.append(p);
+            }
+
+            // attribute `toolTip'
+            if (!widget->tabToolTip(i).isEmpty()) {
+                p = new DomProperty();
+                p->setAttributeName(QLatin1String("toolTip"));
+                str = new DomString();
+                str->setText(widget->tabToolTip(i));
+                p->setElementString(str);
+                ui_attribute_list.append(p);
+            }
 
             ui_page->setElementAttribute(ui_attribute_list);
 
@@ -793,23 +847,29 @@ bool QDesignerResource::checkProperty(QDesignerStackedWidget *widget, const QStr
 
 bool QDesignerResource::checkProperty(QObject *obj, const QString &prop) const
 {
-    if (prop == QLatin1String("objectName")) // ### don't store the property objectName
+    if (prop == QLatin1String("objectName")) { // ### don't store the property objectName
         return false;
-    else if (prop == QLatin1String("geometry") && obj->isWidgetType()) {
+    } else if (prop == QLatin1String("geometry") && obj->isWidgetType()) {
         QWidget *check_widget = qobject_cast<QWidget*>(obj);
          if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(obj->parent()))
             check_widget = promoted;
 
         return !LayoutInfo::isWidgetLaidout(core(), check_widget);
-    } else if (!checkProperty(qobject_cast<QDesignerTabWidget*>(obj), prop))
+    } else if (!checkProperty(qobject_cast<QDesignerTabWidget*>(obj), prop)) {
         return false;
-    else if (!checkProperty(qobject_cast<QDesignerToolBox*>(obj), prop))
+    } else if (!checkProperty(qobject_cast<QDesignerToolBox*>(obj), prop)) {
         return false;
-    else if (!checkProperty(qobject_cast<QLayoutWidget*>(obj), prop))
+    } else if (!checkProperty(qobject_cast<QLayoutWidget*>(obj), prop)) {
         return false;
+    }
 
-    if (QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(m_core->extensionManager(), obj))
-        return sheet->isChanged(sheet->indexOf(prop));
+    if (QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(m_core->extensionManager(), obj)) {
+        int pindex = sheet->indexOf(prop);
+        if (sheet->isAttribute(pindex))
+            return false;
+
+        return sheet->isChanged(pindex);
+    }
 
     return false;
 }
@@ -1042,6 +1102,10 @@ QList<DomProperty*> QDesignerResource::computeProperties(QObject *object)
 
 DomProperty *QDesignerResource::createProperty(QObject *object, const QString &propertyName, const QVariant &value)
 {
+    if (!checkProperty(object, propertyName)) {
+        return 0;
+    }
+
     if (qVariantCanConvert<EnumType>(value)) {
         EnumType e = qvariant_cast<EnumType>(value);
         int v = e.value.toInt();

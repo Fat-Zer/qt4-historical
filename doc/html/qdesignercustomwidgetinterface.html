@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/qtdesigner.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/qtdesigner.qdoc -->
 <head>
     <title>Qt 4.0: QDesignerCustomWidgetInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerCustomWidgetInterface Class Reference</h1>
-<p>The QDesignerCustomWidgetInterface provides an interface to a custom widget in <i>Qt Designer</i>. <a href="#details">More...</a></p>
-<pre>#include &lt;QDesignerCustomWidgetInterface&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
-<ul>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerCustomWidgetInterface Class Reference<br /><sup><sup>[<a href="qtdesigner.html">QtDesigner</a> module]</sup></sup></h1>
+<p>The QDesignerCustomWidgetInterface class provides an interface to a custom widget in <i>Qt Designer</i>. <a href="#details">More...</a></p>
+<pre>#include &lt;QDesignerCustomWidgetInterface&gt;</pre><ul>
 <li><a href="qdesignercustomwidgetinterface-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -43,15 +42,15 @@ body { background: #ffffff; color: black; }</style>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The QDesignerCustomWidgetInterface provides an interface to a custom widget in <i>Qt Designer</i>.</p>
-<p>See also Custom Widgets for Qt Designer.</p>
+<p>The QDesignerCustomWidgetInterface class provides an interface to a custom widget in <i>Qt Designer</i>.</p>
+<p>See also <a href="designer-creating-custom-widgets.html">Creating Custom Widgets for Qt Designer</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="dtor.QDesignerCustomWidgetInterface"></a>QDesignerCustomWidgetInterface::~QDesignerCustomWidgetInterface ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the custom widget interface.</p>
 <h3 class="fn"><a name="codeTemplate"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::codeTemplate () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the code template that <i>Qt Designer</i> includes in forms that contain the custom widget when they are saved.</p>
-<p>uic uses the code template to provide code for constructing the custom widget.</p>
+<p><a href="uic.html#uic">uic</a> uses the code template to provide code for constructing the custom widget.</p>
 <h3 class="fn"><a name="createWidget"></a><a href="qwidget.html">QWidget</a> * QDesignerCustomWidgetInterface::createWidget ( <a href="qwidget.html">QWidget</a> * <i>parent</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns a new widget with the given <i>parent</i>.</p>
 <h3 class="fn"><a name="domXml"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::domXml () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -61,7 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="icon"></a><a href="qicon.html">QIcon</a> QDesignerCustomWidgetInterface::icon () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the icon used to represent the custom widget in <i>Qt Designer</i>'s widget box.</p>
 <h3 class="fn"><a name="includeFile"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::includeFile () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns the path to the include file that uic uses when creating code for the custom widget.</p>
+<p>Returns the path to the include file that <a href="uic.html#uic">uic</a> uses when creating code for the custom widget.</p>
 <h3 class="fn"><a name="initialize"></a>void QDesignerCustomWidgetInterface::initialize ( <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> * <i>core</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Initializes the widget for use with the form editor with the specified <i>core</i> interface.</p>
 <p>See also <a href="qdesignercustomwidgetinterface.html#isInitialized">isInitialized</a>().</p>
@@ -69,6 +68,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the custom widget is intended to be used as a container; otherwise returns false.</p>
 <p>Most custom widgets are not used to hold other widgets, so their implementations of this function will return false, but custom containers will return true to ensure that they behave correctly in <i>Qt Designer</i>.</p>
 <h3 class="fn"><a name="isInitialized"></a>bool QDesignerCustomWidgetInterface::isInitialized () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns true if the widget has been initialized; otherwise returns false.</p>
+<p>See also <a href="qdesignercustomwidgetinterface.html#initialize">initialize</a>().</p>
 <h3 class="fn"><a name="name"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::name () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the name of the class that implements the custom widget.</p>
 <h3 class="fn"><a name="toolTip"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::toolTip () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
@@ -79,6 +80,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

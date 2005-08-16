@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -43,7 +43,6 @@
 #include <ctype.h>
 #include <limits.h>
 
-static const int GUARDED_SIGNAL = INT_MIN;
 static int DIRECT_CONNECTION_ONLY = 0;
 
 Q_GLOBAL_STATIC(QReadWriteLock, qt_object_read_write_lock)
@@ -88,10 +87,7 @@ static int *queuedConnectionTypes(const char *signal)
 struct QConnection {
     QObject *sender;
     int signal;
-    union {
-        QObject *receiver;
-        QObject **guarded;
-    };
+    QObject *receiver;
     int method;
     int type; // 0 == auto, 1 == direct, 2 == queued
     int *types;
@@ -144,8 +140,6 @@ void QConnectionList::remove(QObject *object)
             const int at = it.value();
             QConnection &c = connections[at];
             if (c.sender) {
-                if (c.signal == GUARDED_SIGNAL)
-                    *c.guarded = 0;
                 if (c.types && c.types != &DIRECT_CONNECTION_ONLY) {
                     qFree(c.types);
                     c.types = 0;
@@ -181,7 +175,7 @@ void QConnectionList::addConnection(QObject *sender, int signal,
                                     QObject *receiver, int method,
                                     int type, int *types)
 {
-    QConnection c = { sender, signal, {receiver}, method, type, types };
+    QConnection c = { sender, signal, receiver, method, type, types };
     int at;
     if (unusedConnections.isEmpty() || invariant != 0) {
         // append new connection
@@ -210,12 +204,9 @@ bool QConnectionList::removeConnection(QObject *sender, int signal,
         const int at = it.value();
         QConnection &c = connections[at];
         if (c.receiver
-            && ((signal == GUARDED_SIGNAL && c.signal == signal)
-                || (signal < 0 || signal == c.signal))
+            && (signal < 0 || signal == c.signal)
             && (receiver == 0
                 || (c.receiver == receiver && (method < 0 || method == c.method)))) {
-            if (c.signal == GUARDED_SIGNAL)
-                *c.guarded = 0;
             if (c.types) {
                 if (c.types != &DIRECT_CONNECTION_ONLY)
                     qFree(c.types);
@@ -244,28 +235,37 @@ bool QConnectionList::removeConnection(QObject *sender, int signal,
     return success;
 }
 
+/*
+  QObjectSet sets the minimum capacity to 4099 (the first prime number
+  after 4096), so that we can speed up QObject destruction.
+ */
+class QObjectSet : public QSet<QObject *>
+{
+public:
+    QObjectSet()
+    { reserve(4099); }
+};
 
-Q_GLOBAL_STATIC(QSet<QObject *>, allObjects)
+Q_GLOBAL_STATIC(QObjectSet, allObjects)
 
 extern "C" Q_CORE_EXPORT void qt_addObject(QObject *object)
 {
     QWriteLocker locker(QObjectPrivate::readWriteLock());
-    QSet<QObject *> *set = allObjects();
+    QObjectSet *set = allObjects();
     if (set)
         set->insert(object);
 }
 
 extern "C" Q_CORE_EXPORT void qt_removeObject(QObject *object)
 {
-    QWriteLocker locker(QObjectPrivate::readWriteLock());
-    QSet<QObject *> *set = allObjects();
+    QObjectSet *set = allObjects();
     if (set)
         set->remove(object);
 }
 
 bool QObjectPrivate::isValidObject(QObject *object)
 {
-    QSet<QObject *> *set = allObjects();
+    QObjectSet *set = allObjects();
     return set ? set->contains(object) : false;
 }
 
@@ -293,8 +293,7 @@ QObjectPrivate::QObjectPrivate(int version)
 QObjectPrivate::~QObjectPrivate()
 {
 #ifndef QT_NO_USERDATA
-    while (!userData.isEmpty())
-        delete userData.takeFirst();
+    qDeleteAll(userData);
 #endif
 }
 
@@ -358,6 +357,9 @@ QObjectList QObjectPrivate::senderList() const
     return senders;
 }
 
+typedef QMultiHash<QObject *, QObject **> GuardHash;
+Q_GLOBAL_STATIC(GuardHash, guardHash)
+Q_GLOBAL_STATIC(QReadWriteLock, guardHashLock)
 
 /*!\internal
  */
@@ -365,13 +367,13 @@ void QMetaObject::addGuard(QObject **ptr)
 {
     if (!*ptr)
         return;
-    QConnectionList *list = ::connectionList();
-    if (!list) {
+    GuardHash *hash = guardHash();
+    if (!hash) {
         *ptr = 0;
         return;
     }
-    QWriteLocker locker(&list->lock);
-    list->addConnection(*ptr, GUARDED_SIGNAL, reinterpret_cast<QObject*>(ptr), 0);
+    QWriteLocker locker(guardHashLock());
+    hash->insert(*ptr, ptr);
 }
 
 /*!\internal
@@ -380,34 +382,49 @@ void QMetaObject::removeGuard(QObject **ptr)
 {
     if (!*ptr)
         return;
-    QConnectionList *list = ::connectionList();
-    if (!list)
+    GuardHash *hash = guardHash();
+    if (!hash)
         return;
-    QWriteLocker locker(&list->lock);
-    list->removeConnection(*ptr, GUARDED_SIGNAL, reinterpret_cast<QObject*>(ptr), 0);
+    QWriteLocker locker(guardHashLock());
+    GuardHash::iterator it = hash->find(*ptr);
+    const GuardHash::iterator end = hash->end();
+    for (; it.key() == *ptr && it != end; ++it) {
+        if (it.value() == ptr) {
+            (void) hash->erase(it);
+            break;
+        }
+    }
 }
 
 /*!\internal
  */
 void QMetaObject::changeGuard(QObject **ptr, QObject *o)
 {
-    QConnectionList *list = ::connectionList();
-    if (!list) {
+    GuardHash *hash = guardHash();
+    if (!hash) {
         *ptr = 0;
         return;
     }
-    QWriteLocker locker(&list->lock);
-    if (*ptr)
-        list->removeConnection(*ptr, GUARDED_SIGNAL, reinterpret_cast<QObject*>(ptr), 0);
+    QWriteLocker locker(guardHashLock());
+    if (*ptr) {
+        GuardHash::iterator it = hash->find(*ptr);
+        const GuardHash::iterator end = hash->end();
+        for (; it.key() == *ptr && it != end; ++it) {
+            if (it.value() == ptr) {
+                (void) hash->erase(it);
+                break;
+            }
+        }
+    }
     *ptr = o;
     if (*ptr)
-        list->addConnection(*ptr, GUARDED_SIGNAL, reinterpret_cast<QObject*>(ptr), 0);
+        hash->insert(*ptr, ptr);
 }
 
 /*! \internal
  */
-QMetaCallEvent::QMetaCallEvent(int id, int nargs, int *types, void **args)
-    :QEvent(MetaCall), id_(id), nargs_(nargs), types_(types), args_(args)
+QMetaCallEvent::QMetaCallEvent(int id, const QObject *sender, int nargs, int *types, void **args)
+    :QEvent(MetaCall), id_(id), sender_(sender), nargs_(nargs), types_(types), args_(args)
 { }
 
 /*! \internal
@@ -480,8 +497,8 @@ QMetaCallEvent::~QMetaCallEvent()
     \l{qobject_cast()}{qobject_cast}<QWidget>(\e{obj}) or
     \e{obj}->\l{inherits()}{inherits}("QWidget").
 
-    Some QObject functions, e.g. children(), return a \c QObjectList.
-    \c QObjectList is a typedef for QList<QObject *>.
+    Some QObject functions, e.g. children(), return a QObjectList.
+    QObjectList is a typedef for QList<QObject *>.
 
     \sa QMetaObject, QPointer, QObjectCleanupHandler,
         {Object Trees and Object Ownership}
@@ -629,6 +646,19 @@ QObject::~QObject()
     d->wasDeleted = true;
 
     d->blockSig = 0; // unblock signals so we always emit destroyed()
+
+    // set all QPointers for this object to zero
+    GuardHash *hash = ::guardHash();
+    if (hash) {
+        QWriteLocker locker(guardHashLock());
+        GuardHash::iterator it = hash->find(this);
+        const GuardHash::iterator end = hash->end();
+        while (it.key() == this && it != end) {
+            *it.value() = 0;
+            it = hash->erase(it);
+        }
+    }
+
     emit destroyed(this);
 
     QConnectionList *list = ::connectionList();
@@ -650,13 +680,33 @@ QObject::~QObject()
 
     d->eventFilters.clear();
 
-    while (!d->children.isEmpty())                        // delete children objects
-        delete d->children.takeFirst();
+    // delete children objects
+    if (!d->children.isEmpty()) {
+        qDeleteAll(d->children);
+        d->children.clear();
+    }
 
-    ::qt_removeObject(this);
-    QCoreApplication::removePostedEvents(this);
 
-    if (d->parent)                                // remove it from parent object
+    {
+        QWriteLocker locker(QObjectPrivate::readWriteLock());
+        ::qt_removeObject(this);
+
+        /*
+          theoretically, we cannot check d->postedEvents without
+          holding the postEventList.mutex for the object's thread,
+          but since we hold the QObjectPrivate::readWriteLock(),
+          nothing can go into QCoreApplication::postEvent(), which
+          effectively means noone can post new events, which is what
+          we are trying to prevent. this means we can safely check
+          d->postedEvents, since we are fairly sure it will not
+          change (it could, but only by decreasing, i.e. removing
+          posted events from a differebnt thread)
+        */
+        if (d->postedEvents > 0)
+            QCoreApplication::removePostedEvents(this);
+    }
+
+    if (d->parent)        // remove it from parent object
         d->setParent_helper(0);
 
     delete d;
@@ -864,13 +914,29 @@ bool QObject::event(QEvent *e)
         delete this;
         break;
 
-    case QEvent::MetaCall: {
-        QMetaCallEvent *mce = static_cast<QMetaCallEvent*>(e);
-        // #### should set current sender to 0 and reset after metacall.
-        // Problem is a delete this in the slot making this difficult.
-        qt_metacall(QMetaObject::InvokeMetaMethod, mce->id(), mce->args());
-        break;
-    }
+    case QEvent::MetaCall:
+        {
+            Q_D(QObject);
+            QMetaCallEvent *mce = static_cast<QMetaCallEvent*>(e);
+            QObject *previousSender = d->currentSender;
+            d->currentSender = const_cast<QObject*>(mce->sender());
+#if defined(QT_NO_EXCEPTIONS)
+            qt_metacall(QMetaObject::InvokeMetaMethod, mce->id(), mce->args());
+#else
+            try {
+                qt_metacall(QMetaObject::InvokeMetaMethod, mce->id(), mce->args());
+            } catch (...) {
+                QReadLocker locker(QObjectPrivate::readWriteLock());
+                if (QObjectPrivate::isValidObject(this))
+                    d->currentSender = previousSender;
+                throw;
+            }
+#endif
+            QReadLocker locker(QObjectPrivate::readWriteLock());
+            if (QObjectPrivate::isValidObject(this))
+                d->currentSender = previousSender;
+            break;
+        }
 
     case QEvent::ThreadChange: {
         QThread *objectThread = thread();
@@ -1067,11 +1133,21 @@ QThread *QObject::thread() const
 { return QThreadPrivate::threadForId(d_func()->thread); }
 
 /*!
-    Changes this object's thread affinity.  Event processing for this
-    object will continue in the \a targetThread.  If \a targetThread
-    is zero, only \l{QCoreApplication::postEvent()}{posted events} are
-    processed by the main thread; all other event processing for this
-    object stops.
+    Changes the thread affinity for this object and its children. The
+    object cannot be moved if it has a parent. Event processing will
+    continue in the \a targetThread. To move an object to the main
+    thread, pass QCoreApplication::thread() as the \a targetThread.
+
+    If \a targetThread is zero, only
+    \l{QCoreApplication::postEvent()}{posted events} are processed by
+    the main thread; all other event processing for this object and
+    its children stops.
+
+    Note that all active timers for the object will be reset. The
+    timers are first stopped in the current thread and restarted (with
+    the same interval) in the \a targetThread. As a result, constantly
+    moving an object between threads can postpone timer events
+    indefinitely.
 
     \warning This function is \e not thread-safe; the current thread
     must be same as the current thread affinity. In other words, this
@@ -1730,11 +1806,14 @@ void QObject::removeEventFilter(QObject *obj)
 */
 
 /*!
-    Performs a deferred deletion of this object.
+    Schedules this object for deletion.
 
-    Instead of an immediate deletion this function schedules a
-    deferred delete event for processing when Qt returns to the main
-    event loop.
+    The object will be deleted when control returns to the event loop.
+
+    Note that entering and leaving a new event loop (e.g., by opening a modal
+    dialog) will \e not perform the deferred deletion; for the object to be
+    deleted, the control must return to the event loop from which
+    deleteLater() was called.
 
     \sa destroyed(), QPointer
 */
@@ -1763,8 +1842,7 @@ void QObject::deleteLater()
 */
 
 /*!
-    \fn QString QObject::trUtf8(const char *sourceText,
-                                 const char *comment)
+    \fn QString QObject::trUtf8(const char *sourceText, const char *comment)
     \reentrant
 
     Returns a translated version of \a sourceText, or
@@ -1777,7 +1855,15 @@ void QObject::deleteLater()
     translators while performing translations is not supported. Doing
     so will probably result in crashes or other undesirable behavior.
 
-    \sa tr() QApplication::translate()
+    \warning For portability reasons, we recommend that you use
+    escape sequences for specifying non-ASCII characters in string
+    literals to trUtf8(). For example:
+
+    \code
+        label->setText(tr("F\252r \310lise"));
+    \endcode
+
+    \sa tr(), QApplication::translate(), {Internationalization with Qt}
 */
 
 
@@ -2436,7 +2522,23 @@ bool QMetaObject::disconnect(const QObject *sender, int signal_index,
                                   const_cast<QObject*>(receiver), method_index);
 }
 
-/*!\internal
+/*!
+    Searches recursively for all child objects of \a o and connects matching signals
+    to slots of \a o that follow the following form:
+
+    \code
+    void on_<widget name>_<signal name>(<signal parameters>);
+    \endcode
+
+    Let's assume our object has a child object of type QPushButton with
+    the object name \c{button1}. The slot to catch the button's \c{clicked()}
+    signal would be:
+
+    \code
+    void on_button1_clicked();
+    \endcode
+
+    \sa QObject::setObjectName()
  */
 void QMetaObject::connectSlotsByName(QObject *o)
 {
@@ -2478,15 +2580,20 @@ void QMetaObject::connectSlotsByName(QObject *o)
                 break;
             }
         }
-        if (!foundIt)
+        if (foundIt) {
+            // we found our slot, now skip all overloads
+            while (mo->method(i + 1).attributes() & QMetaMethod::Cloned)
+                  ++i;
+        } else if (!(mo->method(i).attributes() & QMetaMethod::Cloned)) {
             qWarning("QMetaObject::connectSlotsByName(): No matching signal for %s", slot);
+        }
     }
 }
 
-static void queued_activate(QObject *obj, const QConnection &c, void **argv)
+static void queued_activate(QObject *sender, const QConnection &c, void **argv)
 {
     if (!c.types && c.types != &DIRECT_CONNECTION_ONLY) {
-        QMetaMethod m = obj->metaObject()->method(c.signal);
+        QMetaMethod m = sender->metaObject()->method(c.signal);
         QConnection &x = const_cast<QConnection &>(c);
         x.types = ::queuedConnectionTypes(m.signature());
         if (!x.types) // cannot queue arguments
@@ -2502,7 +2609,11 @@ static void queued_activate(QObject *obj, const QConnection &c, void **argv)
     args[0] = 0; // return value
     for (int n = 1; n < nargs; ++n)
         args[n] = QMetaType::construct((types[n] = c.types[n-1]), argv[n]);
-    QCoreApplication::postEvent(c.receiver, new QMetaCallEvent(c.method, nargs, types, args));
+    QCoreApplication::postEvent(c.receiver, new QMetaCallEvent(c.method,
+                                                               sender,
+                                                               nargs,
+                                                               types,
+                                                               args));
 }
 
 /*!\internal
@@ -2537,7 +2648,7 @@ void QMetaObject::activate(QObject *sender, int signal_index, void **argv)
         const int at = connections.constData()[connections.size() - (i + 1)];
         QConnectionList * const list = ::connectionList();
         const QConnection &c = list->connections.at(at);
-        if (!c.receiver || c.signal != signal_index)
+        if (!c.receiver || c.signal  != signal_index)
             continue;
 
         // determine if this connection should be sent immediately or
@@ -2565,10 +2676,9 @@ void QMetaObject::activate(QObject *sender, int signal_index, void **argv)
             c.receiver->qt_metacall(QMetaObject::InvokeMetaMethod, method, argv ? argv : empty_argv);
         } catch (...) {
             list->lock.lockForRead();
-            if (c.receiver) {
+            if (c.receiver)
                 c.receiver->d_func()->currentSender = previousSender;
-                throw;
-            }
+            throw;
         }
 #endif
 
@@ -2586,12 +2696,14 @@ void QMetaObject::activate(QObject *sender, int signal_index, void **argv)
     list->invariant.deref();
 }
 
+
 /*!\internal
  */
 void QMetaObject::activate(QObject *sender, const QMetaObject *m, int local_signal_index,
                            void **argv)
 {
-    activate(sender, m->methodOffset() + local_signal_index, argv);
+    int offset = m->methodOffset();
+    activate(sender, offset + local_signal_index, argv);
 }
 
 /*****************************************************************************
@@ -2753,7 +2865,10 @@ QObjectUserData::~QObjectUserData()
 void QObject::setUserData(uint id, QObjectUserData* data)
 {
     Q_D(QObject);
-    d->userData.insert(id, data);
+
+    if (d->userData.size() <= (int) id)
+        d->userData.resize((int) id + 1);
+    d->userData[id] = data;
 }
 
 /*!\internal
@@ -2909,7 +3024,7 @@ QDebug operator<<(QDebug dbg, const QObject *o) {
                    READ getFunction
                    [WRITE setFunction]
                    [RESET resetFunction]
-                   [DESIGNABLE bool] 
+                   [DESIGNABLE bool]
                    [SCRIPTABLE bool]
                    [STORED bool])
     \endcode
@@ -2953,6 +3068,26 @@ QDebug operator<<(QDebug dbg, const QObject *o) {
     \endcode
 
     \sa {Qt's Property System}
+*/
+
+/*!
+    \macro Q_OBJECT
+    \relates QObject
+
+    The Q_OBJECT macro must appear in the private section of a class
+    definition that declares its own signals and slots or that uses
+    other services provided by Qt's meta-object system.
+
+    For example:
+
+    \quotefromfile snippets/signalsandslots/signalsandslots.h
+    \skipto ObjectCounter
+    \skipto include <QObject>
+    \printline include
+    \printline class Counter
+    \printuntil };
+
+    \sa {Meta-Object System}, {Signals and Slots}, {Qt's Property System}
 */
 
 #include "moc_qobject.cpp"

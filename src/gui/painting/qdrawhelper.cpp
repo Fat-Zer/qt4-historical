@@ -957,7 +957,7 @@ static void blend_mono(void *t, const QSpan *span,
     if (y < 0 || y >= image_height)
         return;
 
-    const uint *src = image_bits + y*image_width + x;
+    const uint *src = image_bits + y*image_width;
     for (int i = 0; i < span->len; ++i) {
         int sx = x + i;
         int dx = span->x + i;
@@ -1214,7 +1214,7 @@ static void blend_mono_lsb(void *t, const QSpan *span,
     if (y < 0 || y >= image_height)
         return;
 
-    const uint *src = image_bits + y*image_width + x;
+    const uint *src = image_bits + y*image_width;
     for (int i = 0; i < span->len; ++i) {
         int sx = x + i;
         int dx = span->x + i;
@@ -1427,7 +1427,520 @@ static void blend_conical_gradient_mono_lsb(void *t, const QSpan *span, ConicalG
     }
 }
 
-DrawHelper qDrawHelper[4] =
+
+
+#ifdef Q_WS_QWS
+
+// ************************** 16-bpp RGB16 handling ******************************
+
+
+#include <qscreen_qws.h>
+
+static inline ushort qt_blend_pixel_rgb16(ushort dest, uint src, uint coverage)
+{
+    MASK(src, coverage);
+    int rev_alpha = 255 - qAlpha(src);
+    if (!rev_alpha)
+        return qt_convRgbTo16(src);
+
+    return qt_convRgbTo16(src + BYTE_MUL(qt_conv16ToRgb(dest), rev_alpha));
+}
+
+
+static void blend_color_rgb16(void *t, const QSpan *span, QPainter::CompositionMode, const BlendColorData *data)
+{
+    ushort *target = ((ushort *)t) + span->x;
+    uint color = data->color;
+    MASK(color, span->coverage);
+
+    int alpha = qAlpha(color);
+    if (!alpha)
+        return;
+#if 1
+    ushort pixel = qt_convRgbTo16(color);
+    const ushort *end = target + span->len;
+    while (target < end) {
+        *target = pixel;
+        ++target;
+    }
+#else
+    if (alpha != 0xff) {
+        int rev_alpha = 255 - alpha;
+        const uint *end = target + span->len;
+        while (target < end) {
+            uint dest = *target;
+            *target = (color + BYTE_MUL(dest, rev_alpha)) | 0xff000000;
+            ++target;
+        }
+    } else {
+#if 1
+        const uint *end = target + span->len;
+        while (target < end) {
+            *target = color;
+            ++target;
+        }
+#else
+        sse_memfill(target, color, span->len);
+#endif
+    }
+#endif
+}
+
+static void blend_rgb16(void *t, const QSpan *span,
+                        const qreal dx, const qreal dy,
+                        const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode mode)
+{
+    //src is known to be 32 bpp
+
+
+    ushort *target = ((ushort *)t) + span->x;
+    uint *image_bits = (uint *)ibits;
+    // #### take care of non integer dx/dy
+    int x = qRound(dx);
+    int y = qRound(dy);
+    //     qDebug("x=%f,y=%f %d/%d image_height=%d", dx, dy, x, y, image_height);
+    if (y < 0 || y >= image_height)
+        return;
+
+
+    const uint *src = image_bits + y*image_width + x;
+    const ushort *end = target + span->len;
+    if (x < 0) {
+        src -= x;
+        target -= x;
+        x = 0;
+    }
+    if (end - target > image_width)
+        end = target + image_width;
+
+    if (mode == QPainter::CompositionMode_Source && span->coverage == 255) {
+        while (target < end) {
+            *target++ = qt_convRgbTo16(*src++);
+        }
+    } else {
+        while (target < end) {
+            *target = qt_blend_pixel_rgb16(*target, *src, span->coverage);
+            ++target;
+            ++src;
+        }
+    }
+
+
+}
+
+static void blend_tiled_rgb16(void *t, const QSpan *span,
+                              const qreal dx, const qreal dy,
+                              const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+    ushort *target = ((ushort *)t) + span->x;
+    uint *image_bits = (uint *)ibits;
+    // #### take care of non integer dx/dy
+    int x = qRound(dx);
+    int y = qRound(dy);
+    x %= image_width;
+    y %= image_height;
+
+    if (x < 0)
+        x += image_width;
+    if (y < 0)
+        y += image_height;
+
+    const uint *src = image_bits + y*image_width;
+    for (int i = x; i < x + span->len; ++i) {
+        *target = qt_blend_pixel_rgb16(*target, src[i%image_width], span->coverage);
+        ++target;
+    }
+}
+
+
+#if 0
+static void blend_transformed_bilinear_rgb16(void *t, const QSpan *span,
+                                             const qreal ix, const qreal iy, const qreal dx, const qreal dy,
+                                             const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+    qDebug("not implemented blend_transformed_bilinear_rgb16");
+#if 0
+    uint *target = ((uint *)t) + span->x;
+    uint *image_bits = (uint *)ibits;
+    int x = int((ix + dx * span->x) * fixed_scale) - half_point;
+    int y = int((iy + dy * span->x) * fixed_scale) - half_point;
+
+    int fdx = (int)(dx * fixed_scale);
+    int fdy = (int)(dy * fixed_scale);
+
+    const uint *end = target + span->len;
+    while (target < end) {
+        int x1 = (x >> 16);
+        int x2 = x1 + 1;
+        int y1 = (y >> 16);
+        int y2 = y1 + 1;
+
+        int distx = ((x - (x1 << 16)) >> 8);
+        int disty = ((y - (y1 << 16)) >> 8);
+        int idistx = 256 - distx;
+        int idisty = 256 - disty;
+
+        bool x1_out = ((x1 < 0) | (x1 >= image_width));
+        bool x2_out = ((x2 < 0) | (x2 >= image_width));
+        bool y1_out = ((y1 < 0) | (y1 >= image_height));
+        bool y2_out = ((y2 < 0) | (y2 >= image_height));
+
+        int y1_offset = y1 * image_width;
+        int y2_offset = y1_offset + image_width;
+
+        uint tl = (x1_out | y1_out) ? uint(0) : image_bits[y1_offset + x1];
+        uint tr = (x2_out | y1_out) ? uint(0) : image_bits[y1_offset + x2];
+        uint bl = (x1_out | y2_out) ? uint(0) : image_bits[y2_offset + x1];
+        uint br = (x2_out | y2_out) ? uint(0) : image_bits[y2_offset + x2];
+
+        uint xtop = INTERPOLATE_PIXEL_256(tl, idistx, tr, distx);
+        uint xbot = INTERPOLATE_PIXEL_256(bl, idistx, br, distx);
+        uint res = INTERPOLATE_PIXEL_256(xtop, idisty, xbot, disty);
+
+        *target = qt_blend_pixel_rgb16(*target, res, span->coverage);
+        x += fdx;
+        y += fdy;
+        ++target;
+    }
+#endif
+}
+
+static void blend_transformed_bilinear_tiled_rgb16(void *t, const QSpan *span,
+                                                   const qreal ix, const qreal iy, const qreal dx, const qreal dy,
+                                                   const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+    qDebug("not implemented blend_transformed_bilinear_tiled_rgb16");
+#if 0
+    uint *target = ((uint *)t) + span->x;
+    uint *image_bits = (uint *)ibits;
+    int x = int((ix + dx * span->x) * fixed_scale) - half_point;
+    int y = int((iy + dy * span->x) * fixed_scale) - half_point;
+
+    int fdx = (int)(dx * fixed_scale);
+    int fdy = (int)(dy * fixed_scale);
+
+    const uint *end = target + span->len;
+    while (target < end) {
+        int x1 = (x >> 16);
+        int x2 = (x1 + 1);
+        int y1 = (y >> 16);
+        int y2 = (y1 + 1);
+
+        int distx = ((x - (x1 << 16)) >> 8);
+        int disty = ((y - (y1 << 16)) >> 8);
+        int idistx = 256 - distx;
+        int idisty = 256 - disty;
+
+        x1 %= image_width;
+        x2 %= image_width;
+        y1 %= image_height;
+        y2 %= image_height;
+
+        if (x1 < 0) x1 += image_width;
+        if (x2 < 0) x2 += image_width;
+        if (y1 < 0) y1 += image_height;
+        if (y2 < 0) y2 += image_height;
+
+        Q_ASSERT(x1 >= 0 && x1 < image_width);
+        Q_ASSERT(x2 >= 0 && x2 < image_width);
+        Q_ASSERT(y1 >= 0 && y1 < image_height);
+        Q_ASSERT(y2 >= 0 && y2 < image_height);
+
+        int y1_offset = y1 * image_width;
+        int y2_offset = y2 * image_width;
+
+        uint tl = image_bits[y1_offset + x1];
+        uint tr = image_bits[y1_offset + x2];
+        uint bl = image_bits[y2_offset + x1];
+        uint br = image_bits[y2_offset + x2];
+
+        uint xtop = INTERPOLATE_PIXEL_256(tl, idistx, tr, distx);
+        uint xbot = INTERPOLATE_PIXEL_256(bl, idistx, br, distx);
+        uint res = INTERPOLATE_PIXEL_256(xtop, idisty, xbot, disty);
+
+        *target = qt_blend_pixel_rgb16(*target, res, span->coverage);
+        x += fdx;
+        y += fdy;
+        ++target;
+    }
+#endif
+}
+
+static void blend_transformed_rgb16(void *t, const QSpan *span,
+                                    const qreal ix, const qreal iy, const qreal dx, const qreal dy,
+                                    const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+        qDebug("not implemented blend_transformed_rgb16");
+#if 0
+    uint *target = ((uint *)t) + span->x;
+    uint *image_bits = (uint *)ibits;
+
+    int x = int((ix + dx * span->x) * fixed_scale);
+    int y = int((iy + dy * span->x) * fixed_scale);
+
+    int fdx = (int)(dx * fixed_scale);
+    int fdy = (int)(dy * fixed_scale);
+
+    const uint *end = target + span->len;
+        while (target < end) {
+        int px = x >> 16;
+        int py = y >> 16;
+
+        bool out = (px < 0) | (px >= image_width)
+                   | (py < 0) | (py >= image_height);
+
+        int y_offset = py * image_width;
+
+        uint pixel = out ? uint(0) : image_bits[y_offset + px];
+
+        *target = qt_blend_pixel_rgb16(*target, pixel, span->coverage);
+        x += fdx;
+        y += fdy;
+        ++target;
+    }
+#endif
+}
+
+static void blend_transformed_tiled_rgb16(void *t, const QSpan *span,
+                                          const qreal ix, const qreal iy, const qreal dx, const qreal dy,
+                                          const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+    qDebug("not implemented blend_transformed_tiled_rgb16");
+#if 0
+    uint *target = ((uint *)t) + span->x;
+    uint *image_bits = (uint *)ibits;
+
+    int x = int((ix + dx * span->x) * fixed_scale);
+    int y = int((iy + dy * span->x) * fixed_scale);
+
+    int fdx = (int)(dx * fixed_scale);
+    int fdy = (int)(dy * fixed_scale);
+
+    const uint *end = target + span->len;
+    while (target < end) {
+        int px = x >> 16;
+        int py = y >> 16;
+        px %= image_width;
+        py %= image_height;
+        if (px < 0) px += image_width;
+        if (py < 0) py += image_height;
+        int y_offset = py * image_width;
+
+        Q_ASSERT(px >= 0 && px < image_width);
+        Q_ASSERT(py >= 0 && py < image_height);
+
+        *target = qt_blend_pixel_rgb16(*target, image_bits[y_offset + px], span->coverage);
+        x += fdx;
+        y += fdy;
+        ++target;
+    }
+#endif
+}
+
+static void blend_linear_gradient_rgb16(void *t, const QSpan *span, LinearGradientData *data, qreal ybase, int, QPainter::CompositionMode)
+{
+    qDebug("not implemented blend_transformed_bilinear_rgb16");
+#if 0
+    uint *target = ((uint *)t) + span->x;
+    qreal x1 = data->origin.x();
+    qreal tt = ybase + data->xincr * (span->x - x1);
+
+    if (!data->alphaColor && span->coverage == 255) {
+        for (int x = span->x; x<span->x + span->len; x++) {
+            *target = qt_gradient_pixel(data, tt);
+            ++target;
+            tt += data->xincr;
+        }
+    } else {
+        for (int x = span->x; x<span->x + span->len; x++) {
+            uint src = qt_gradient_pixel(data, tt);
+            *target = qt_blend_pixel_rgb16(*target, src, span->coverage);
+            ++target;
+            tt += data->xincr;
+        }
+    }
+#endif
+}
+
+static void blend_radial_gradient_rgb16(void *t, const QSpan *span, RadialGradientData *data,
+                                       int y, QPainter::CompositionMode mode)
+{
+    qDebug("blend_radial_gradient_rgb16 not implemented");
+}
+
+static void blend_conical_gradient_rgb16(void *t, const QSpan *span, ConicalGradientData *data,
+                                        int y, QPainter::CompositionMode mode)
+{
+    qDebug("blend_conical_gradient_rgb16 not implemented");
+}
+#endif // 0
+
+static inline QRgb qt_conv_4ToRgb(uchar g)
+{
+    g = g | g << 4;
+    return qRgb(g, g, g);
+}
+
+static inline uchar qt_conv_RgbTo4(QRgb c)
+{
+    return qGray(c) >> 4;
+}
+
+#if 0
+static inline uchar qt_blend_pixel_gray4(uchar dest, uint nibble, uint src, uint coverage)
+{
+    MASK(src, coverage);
+    int rev_alpha = 255 - qAlpha(src);
+    if (!rev_alpha)
+        return qt_convRgbTo4(src);
+
+    return qt_convRgbTo4(src + BYTE_MUL(qt_conv4ToRgb(dest), rev_alpha));
+}
+#endif
+
+
+static void blend_color_gray4_lsb(void *t, const QSpan *span, QPainter::CompositionMode, const BlendColorData *data)
+{
+    if (!span->coverage)
+        return;
+    Q_ASSERT(span->coverage == 0xff);
+    uint color = data->color;
+
+    int x0 = span->x;
+    int x1 = span->x + span->len;
+
+    int preAdd = x0 & 1;
+    int postAdd = x1 & 1;
+
+    uchar g = qGray(color) >> 4;
+    uchar gg = g | g << 4;
+
+    uchar *target = (uchar *)t + (x0 >> 1);
+    int len = (x1-postAdd) - (x0+preAdd);
+    len >>= 1;
+    Q_ASSERT(len >= 0);
+
+    if (preAdd) {
+        *target = (*target & 0xf0) | g;
+        ++target;
+    }
+
+    while (len--)
+        *target++ = gg;
+
+    if (postAdd) {
+        *target = (*target & 0x0f) | g << 4;
+        ++target;
+    }
+
+    //### no alpha blending implemented
+}
+
+
+
+
+
+static void blend_tiled_gray4_lsb(void *t, const QSpan *span,
+                        const qreal dx, const qreal dy,
+                        const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+    if (!span->coverage)
+        return;
+    Q_ASSERT(span->coverage == 0xff);
+    uint *image_bits = (uint *)ibits;
+    // #### take care of non integer dx/dy
+    int x = qRound(dx);
+    int y = qRound(dy);
+    if (y < 0 || y >= image_height)
+        return;
+
+    const uint *src = image_bits + y*image_width;
+
+    int x0 = span->x;
+    int x1 = span->x + span->len;
+
+    int preAdd = x0 & 1;
+    int postAdd = x1 & 1;
+
+    uchar *target = (uchar *)t + (x0 >> 1);
+    int len = (x1-postAdd) - (x0+preAdd);
+    len >>= 1;
+    Q_ASSERT(len >= 0);
+
+    int i = x;
+    if (preAdd) {
+        *target = (*target & 0xf0) | (qGray(src[i%image_width]) >> 4);
+        ++target;
+        ++i;
+    }
+
+    while (len--) {
+        uchar gg =  qGray(src[i++%image_width]) >> 4;
+        gg |= qGray(src[i++%image_width]) & 0xf0;
+        *target++ = gg;
+    }
+
+    if (postAdd) {
+        *target = (*target & 0x0f) | ( qGray(src[i++%image_width]) & 0xf0);
+        ++target;
+    }
+
+}
+
+static void blend_gray4_lsb(void *t, const QSpan *span,
+                              const qreal dx, const qreal dy,
+                              const void *ibits, const int image_width, const int image_height, QPainter::CompositionMode)
+{
+
+
+    if (!span->coverage)
+        return;
+    Q_ASSERT(span->coverage == 0xff);
+    uint *image_bits = (uint *)ibits;
+    // #### take care of non integer dx/dy
+    int x = qRound(dx);
+    int y = qRound(dy);
+    if (y < 0 || y >= image_height)
+        return;
+
+    const uint *src = image_bits + y*image_width;
+
+    int x0 = span->x;
+    int x1 = span->x + span->len;
+
+    int preAdd = x0 & 1;
+    int postAdd = x1 & 1;
+
+    uchar *target = (uchar *)t + (x0 >> 1);
+    int len = (x1-postAdd) - (x0+preAdd);
+    len >>= 1;
+    Q_ASSERT(len >= 0);
+
+    const uint *p = src + x;
+    if (preAdd) {
+        *target = (*target & 0xf0) | (qGray(*p++) >> 4);
+        ++target;
+    }
+
+    while (len--) {
+        uchar gg =  qGray(*p++) >> 4;
+        gg |= qGray(*p++) & 0xf0;
+        *target++ = gg;
+    }
+
+    if (postAdd) {
+        *target = (*target & 0x0f) | (qGray(*p) & 0xf0);
+        ++target;
+    }
+
+}
+
+
+#endif //Q_WS_QWS
+
+
+
+DrawHelper qDrawHelper[DrawHelper::Layout_Count] =
 {
     { // Layout_ARGB
         blend_color_argb,
@@ -1477,4 +1990,30 @@ DrawHelper qDrawHelper[4] =
         blend_radial_gradient_mono_lsb,
         blend_conical_gradient_mono_lsb
     }
+#ifdef Q_WS_QWS
+    ,    { // Layout_RGB16
+        blend_color_rgb16,
+        blend_rgb16,
+        blend_tiled_rgb16,
+        0, //blend_transformed_rgb16,
+        0, //blend_transformed_tiled_rgb16,
+        0, //blend_transformed_rgb16,
+        0, //blend_transformed_tiled_rgb16,
+        0, //blend_linear_gradient_rgb16,
+        0, //blend_radial_gradient_rgb16,
+        0 //blend_conical_gradient_rgb16
+    }
+    ,    { // Layout_Gray4LSB
+        blend_color_gray4_lsb,
+        blend_gray4_lsb,
+        blend_tiled_gray4_lsb,
+        0, //blend_transformed_gray4_lsb,
+        0, //blend_transformed_tiled_gray4_lsb,
+        0, //blend_transformed_gray4_lsb,
+        0, //blend_transformed_tiled_gray4_lsb,
+        0, //blend_linear_gradient_gray4_lsb,
+        0, //blend_radial_gradient_gray4_lsb,
+        0  //blend_conical_gradient_gray4_lsb
+    }
+#endif
 };

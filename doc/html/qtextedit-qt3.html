@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/widgets/qtextedit.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qtextedit.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QTextEdit</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QTextEdit</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qtextedit.html">QTextEdit class reference</a></li></ul></p>
@@ -91,8 +91,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Use one of the constructors that doesn't take the <i>name</i> argument and then use <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
 <h3 class="fn"><a name="bold"></a>bool QTextEdit::bold () const</h3>
 <p>Use <a href="qtextedit.html#fontWeight">fontWeight</a>() &gt;= <a href="qfont.html#Weight-enum">QFont::Bold</a> instead.</p>
+<p>See also <a href="qtextedit-qt3.html#setBold">setBold</a>().</p>
 <h3 class="fn"><a name="color"></a><a href="qcolor.html">QColor</a> QTextEdit::color () const</h3>
 <p>Use <a href="qtextedit.html#textColor">textColor</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#setColor">setColor</a>().</p>
 <h3 class="fn"><a name="currentColorChanged"></a>void QTextEdit::currentColorChanged ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>Use <a href="qtextedit.html#currentCharFormatChanged">currentCharFormatChanged</a>() instead.</p>
 <h3 class="fn"><a name="currentFontChanged"></a>void QTextEdit::currentFontChanged ( const <a href="qfont.html">QFont</a> &amp; <i>font</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -103,6 +105,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextedit.html#textCursor">textCursor</a>().</p>
 <h3 class="fn"><a name="family"></a><a href="qstring.html">QString</a> QTextEdit::family () const</h3>
 <p>Use <a href="qtextedit.html#fontFamily">fontFamily</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#setFamily">setFamily</a>().</p>
 <h3 class="fn"><a name="find-2"></a>bool QTextEdit::find ( const <a href="qstring.html">QString</a> &amp; <i>exp</i>, bool <i>cs</i>, bool <i>wo</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Use the <a href="qtextedit.html#find">find</a>() overload that takes a <a href="qtextdocument.html#FindFlag-enum">QTextDocument::FindFlags</a> argument.</p>
@@ -118,10 +121,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qtextedit.html#document">document</a>()-&gt;isUndoAvailable() instead.</p>
 <h3 class="fn"><a name="italic"></a>bool QTextEdit::italic () const</h3>
 <p>Use <a href="qtextedit.html#fontItalic">fontItalic</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#setItalic">setItalic</a>().</p>
 <h3 class="fn"><a name="moveCursor"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, <a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a> <i>mode</i> = QTextCursor::MoveAnchor )</h3>
 <p>Use the QTextCursor() class instead.</p>
 <h3 class="fn"><a name="pointSize"></a>int QTextEdit::pointSize () const</h3>
 <p>Use int(<a href="qtextedit.html#fontPointSize">fontPointSize</a>()+0.5) instead.</p>
+<p>See also <a href="qtextedit-qt3.html#setPointSize">setPointSize</a>().</p>
 <h3 class="fn"><a name="redo"></a>void QTextEdit::redo () const&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Redoes the last operation.</p>
 <p>If there is no operation to redo, i.e. there is no redo step in the undo/redo history, nothing happens.</p>
@@ -130,33 +135,43 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qtextedit.html#textCursor">textCursor</a>().selectedText() instead.</p>
 <h3 class="fn"><a name="setBold"></a>void QTextEdit::setBold ( bool <i>b</i> )</h3>
 <p>Use <a href="qtextedit.html#setFontWeight">setFontWeight</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#bold">bold</a>().</p>
 <h3 class="fn"><a name="setColor"></a>void QTextEdit::setColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Use <a href="qtextedit.html#setTextColor">setTextColor</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#color">color</a>().</p>
 <h3 class="fn"><a name="setFamily"></a>void QTextEdit::setFamily ( const <a href="qstring.html">QString</a> &amp; <i>family</i> )</h3>
 <p>Use <a href="qtextedit.html#setFontFamily">setFontFamily</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#family">family</a>().</p>
 <h3 class="fn"><a name="setItalic"></a>void QTextEdit::setItalic ( bool <i>i</i> )</h3>
 <p>Use <a href="qtextedit.html#setFontItalic">setFontItalic</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#italic">italic</a>().</p>
 <h3 class="fn"><a name="setModified"></a>void QTextEdit::setModified ( bool <i>m</i> = true )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Use document-&gt;setModified() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#isModified">isModified</a>().</p>
 <h3 class="fn"><a name="setPointSize"></a>void QTextEdit::setPointSize ( int <i>size</i> )</h3>
 <p>Use <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#pointSize">pointSize</a>().</p>
 <h3 class="fn"><a name="setText"></a>void QTextEdit::setText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Sets the text edit's <i>text</i>. The text can be plain text or HTML and the text edit will try to guess the right format.</p>
 <p>Use <a href="qtextedit.html#html-prop">setHtml</a>() or <a href="qtextedit.html#setPlainText">setPlainText</a>() directly to avoid text edit's guessing.</p>
+<p>See also <a href="qtextedit-qt3.html#text">text</a>().</p>
 <h3 class="fn"><a name="setTextFormat"></a>void QTextEdit::setTextFormat ( <a href="qt.html#TextFormat-enum">Qt::TextFormat</a> <i>f</i> )</h3>
 <p>Sets the text format to format <i>f</i>.</p>
 <p>See also <a href="qtextedit-qt3.html#textFormat">textFormat</a>().</p>
 <h3 class="fn"><a name="setUnderline"></a>void QTextEdit::setUnderline ( bool <i>b</i> )</h3>
 <p>Use <a href="qtextedit.html#setFontUnderline">setFontUnderline</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#underline">underline</a>().</p>
 <h3 class="fn"><a name="sync"></a>void QTextEdit::sync ()</h3>
 <p>Does nothing.</p>
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QTextEdit::text () const</h3>
 <p>Returns all the text in the text edit as plain text.</p>
+<p>See also <a href="qtextedit-qt3.html#setText">setText</a>().</p>
 <h3 class="fn"><a name="textFormat"></a><a href="qt.html#TextFormat-enum">Qt::TextFormat</a> QTextEdit::textFormat () const</h3>
 <p>Returns the text format.</p>
 <p>See also <a href="qtextedit-qt3.html#setTextFormat">setTextFormat</a>().</p>
 <h3 class="fn"><a name="underline"></a>bool QTextEdit::underline () const</h3>
 <p>Use <a href="qtextedit.html#fontUnderline">fontUnderline</a>() instead.</p>
+<p>See also <a href="qtextedit-qt3.html#setUnderline">setUnderline</a>().</p>
 <h3 class="fn"><a name="undo"></a>void QTextEdit::undo () const&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Undoes the last operation.</p>
 <p>If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.</p>
@@ -165,6 +180,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

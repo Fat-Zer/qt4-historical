@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/qt3support/network/q3socket.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/network/q3socket.cpp -->
 <head>
     <title>Qt 4.0: Q3Socket Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3Socket Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3Socket Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3Socket class provides a buffered TCP connection. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3Socket&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3Socket&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qsocket">Porting to Qt 4</a> for more information.</p>
+<p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
 <p>Inherits <a href="qiodevice.html">QIODevice</a>.</p>
 <ul>
 <li><a href="q3socket-members.html">List of all members, including inherited members</a></li>
@@ -137,7 +137,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3Socket"></a>Q3Socket::Q3Socket ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0, const char * <i>name</i> = 0 )</h3>
-<p>Creates a <a href="q3socket.html">Q3Socket</a> object in <tt>Q3Socket::Idle</tt> state.</p>
+<p>Creates a <a href="q3socket.html">Q3Socket</a> object in <a href="q3socket.html#State-enum">Q3Socket::Idle</a> state.</p>
 <p>The <i>parent</i> and <i>name</i> arguments are passed on to the <a href="qobject.html">QObject</a> constructor.</p>
 <h3 class="fn"><a name="dtor.Q3Socket"></a>Q3Socket::~Q3Socket ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the socket. Closes the connection if necessary.</p>
@@ -177,7 +177,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="close"></a>void Q3Socket::close ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Closes the socket.</p>
 <p>The read buffer is cleared.</p>
-<p>If the output buffer is empty, the state is set to <tt>Q3Socket::Idle</tt> and the connection is terminated immediately. If the output buffer still contains data to be written, <a href="q3socket.html">Q3Socket</a> goes into the <tt>Q3Socket::Closing</tt> state and the rest of the data will be written. When all of the outgoing data have been written, the state is set to <tt>Q3Socket::Idle</tt> and the connection is terminated. At this point, the <a href="q3socket.html#delayedCloseFinished">delayedCloseFinished</a>() signal is emitted.</p>
+<p>If the output buffer is empty, the state is set to <tt>Q3Socket::Idle</tt> and the connection is terminated immediately. If the output buffer still contains data to be written, <a href="q3socket.html">Q3Socket</a> goes into the <a href="q3socket.html#State-enum">Q3Socket::Closing</a> state and the rest of the data will be written. When all of the outgoing data have been written, the state is set to <a href="q3socket.html#State-enum">Q3Socket::Idle</a> and the connection is terminated. At this point, the <a href="q3socket.html#delayedCloseFinished">delayedCloseFinished</a>() signal is emitted.</p>
 <p>If you don't want that the data of the output buffer is written, call <a href="q3socket.html#clearPendingData">clearPendingData</a>() before you call close().</p>
 <p>Reimplemented from <a href="qiodevice.html#close">QIODevice</a>.</p>
 <p>See also <a href="q3socket.html#state">state</a>(), <a href="q3socket.html#bytesToWrite">bytesToWrite</a>(), and <a href="q3socket.html#clearPendingData">clearPendingData</a>().</p>
@@ -194,7 +194,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3socket.html#connectToHost">connectToHost</a>() and <a href="q3socket.html#close">close</a>().</p>
 <h3 class="fn"><a name="delayedCloseFinished"></a>void Q3Socket::delayedCloseFinished ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when a delayed close is finished.</p>
-<p>If you call <a href="q3socket.html#close">close</a>() and there is buffered output data to be written, <a href="q3socket.html">Q3Socket</a> goes into the <tt>Q3Socket::Closing</tt> state and returns immediately. It will then keep writing to the socket until all the data has been written. Then, the delayedCloseFinished() signal is emitted.</p>
+<p>If you call <a href="q3socket.html#close">close</a>() and there is buffered output data to be written, <a href="q3socket.html">Q3Socket</a> goes into the <a href="q3socket.html#State-enum">Q3Socket::Closing</a> state and returns immediately. It will then keep writing to the socket until all the data has been written. Then, the delayedCloseFinished() signal is emitted.</p>
 <p>See also <a href="q3socket.html#close">close</a>().</p>
 <h3 class="fn"><a name="error"></a>void Q3Socket::error ( int <i>error</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted after an error occurred. The <i>error</i> parameter is the <a href="q3socket.html#Error-enum">Error</a> value.</p>
@@ -241,18 +241,22 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setSocket"></a>void Q3Socket::setSocket ( int <i>socket</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the socket to use <i>socket</i> and the <a href="q3socket.html#state">state</a>() to <tt>Connected</tt>. The socket must already be connected.</p>
 <p>This allows us to use the <a href="q3socket.html">Q3Socket</a> class as a wrapper for other socket types (e.g. Unix Domain Sockets).</p>
+<p>See also <a href="q3socket.html#socket">socket</a>().</p>
 <h3 class="fn"><a name="setSocketDevice"></a>void Q3Socket::setSocketDevice ( <a href="q3socketdevice.html">Q3SocketDevice</a> * <i>device</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the internal socket device to <i>device</i>. Passing a <i>device</i> of 0 will cause the internal socket device to be used. Any existing connection will be disconnected before using the new <i>device</i>.</p>
 <p>The new device should not be connected before being associated with a <a href="q3socket.html">Q3Socket</a>; after setting the socket call <a href="q3socket.html#connectToHost">connectToHost</a>() to make the connection.</p>
 <p>This function is useful if you need to subclass <a href="q3socketdevice.html">Q3SocketDevice</a> and want to use the <a href="q3socket.html">Q3Socket</a> API, for example, to implement Unix domain sockets.</p>
+<p>See also <a href="q3socket.html#socketDevice">socketDevice</a>().</p>
 <h3 class="fn"><a name="size"></a><a href="qiodevice-qt3.html#Offset-typedef">Offset</a> Q3Socket::size () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the number of incoming bytes that can be read right now (like <a href="q3socket.html#bytesAvailable">bytesAvailable</a>()).</p>
 <p>Reimplemented from <a href="qiodevice.html#size">QIODevice</a>.</p>
 <h3 class="fn"><a name="socket"></a>int Q3Socket::socket () const</h3>
 <p>Returns the socket number, or -1 if there is no socket at the moment.</p>
+<p>See also <a href="q3socket.html#setSocket">setSocket</a>().</p>
 <h3 class="fn"><a name="socketDevice"></a><a href="q3socketdevice.html">Q3SocketDevice</a> * Q3Socket::socketDevice ()</h3>
 <p>Returns a pointer to the internal socket device.</p>
 <p>There is normally no need to manipulate the socket device directly since this class does the necessary setup for most applications.</p>
+<p>See also <a href="q3socket.html#setSocketDevice">setSocketDevice</a>().</p>
 <h3 class="fn"><a name="state"></a><a href="q3socket.html#State-enum">State</a> Q3Socket::state () const</h3>
 <p>Returns the current state of the socket connection.</p>
 <p>See also <a href="q3socket.html#State-enum">Q3Socket::State</a>.</p>
@@ -274,6 +278,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

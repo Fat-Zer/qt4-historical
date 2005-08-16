@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -221,7 +221,7 @@ QByteArray QUtf16Codec::convertFromUnicode(const QChar *uc, int len, ConverterSt
 {
     Endianness endian = e;
     int length =  2*len;
-    if (state && (!(state->flags & IgnoreHeader))) {
+    if (!state || (!(state->flags & IgnoreHeader))) {
         length += 2;
     } else if (e == Detect) {
         endian = (QSysInfo::ByteOrder == QSysInfo::BigEndian) ? BE : LE;
@@ -230,8 +230,8 @@ QByteArray QUtf16Codec::convertFromUnicode(const QChar *uc, int len, ConverterSt
     QByteArray d;
     d.resize(length);
     char *data = d.data();
-    if (state && !(state->flags & IgnoreHeader)) {
-        const QChar bom(QChar::ByteOrderMark);
+    if (!state || !(state->flags & IgnoreHeader)) {
+        QChar bom(QChar::ByteOrderMark);
         if (endian == BE) {
             data[0] = bom.row();
             data[1] = bom.cell();
@@ -258,7 +258,7 @@ QByteArray QUtf16Codec::convertFromUnicode(const QChar *uc, int len, ConverterSt
         state->flags |= IgnoreHeader;
     }
     return d;
-};
+}
 
 QString QUtf16Codec::convertToUnicode(const char *chars, int len, ConverterState *state) const
 {
@@ -301,8 +301,7 @@ QString QUtf16Codec::convertToUnicode(const char *chars, int len, ConverterState
                         endian = BE;
                     } else {
                         endian = LE;
-                        ch.setRow(*chars++);
-                        ch.setCell(buf);
+                        ch = QChar((ch.unicode() >> 8) | ((ch.unicode() & 0xff) << 8));
                     }
                     *qch++ = ch;
                 }

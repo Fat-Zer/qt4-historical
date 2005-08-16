@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -49,7 +49,7 @@
 
 Q_CORE_EXPORT int qt_ntfs_permission_lookup = 0;
 
-#if !defined(QT_NO_COMPONENT)
+#if !defined(QT_NO_LIBRARY)
 typedef DWORD (WINAPI *PtrGetNamedSecurityInfoW)(LPWSTR, SE_OBJECT_TYPE, SECURITY_INFORMATION, PSID*, PSID*, PACL*, PACL*, PSECURITY_DESCRIPTOR*);
 static PtrGetNamedSecurityInfoW ptrGetNamedSecurityInfoW = 0;
 typedef DECLSPEC_IMPORT BOOL (WINAPI *PtrLookupAccountSidW)(LPCWSTR, PSID, LPWSTR, LPDWORD, LPWSTR, LPDWORD, PSID_NAME_USE);
@@ -139,7 +139,7 @@ static void resolveLibs()
         }
     }
 }
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
 
 // UNC functions NT
 typedef DWORD (WINAPI *PtrNetShareEnum_NT)(LPWSTR, DWORD, LPBYTE*, DWORD, LPDWORD, LPDWORD, LPDWORD);
@@ -364,14 +364,29 @@ QFSFileEnginePrivate::init()
 {
 }
 
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+#include <share.h>
+#endif
 int
 QFSFileEnginePrivate::sysOpen(const QString &fileName, int flags)
 {
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+	QT_WA({
+		int fd;
+		_wsopen_s(&fd, (TCHAR*)fileName.utf16(), flags, _SH_DENYNO, _S_IREAD | _S_IWRITE);
+		return fd;
+	} , {
+		int fd;
+		_sopen_s(&fd, QFSFileEnginePrivate::win95Name(fileName), flags, _SH_DENYNO, _S_IREAD | _S_IWRITE);
+		return fd;
+	});
+#else
     QT_WA({
 	return ::_wopen((TCHAR*)fileName.utf16(), flags, _S_IREAD | _S_IWRITE);
     } , {
 	return QT_OPEN(QFSFileEnginePrivate::win95Name(fileName), flags, _S_IREAD | _S_IWRITE);
     });
+#endif
 }
 #include <sys/stat.h>
 bool
@@ -897,7 +912,7 @@ bool QFSFileEnginePrivate::doStat() const
 QString
 QFSFileEnginePrivate::getLink() const
 {
-#if !defined(QT_NO_COMPONENT)
+#if !defined(QT_NO_LIBRARY)
     QString ret;
     QT_WA({
         bool neededCoInit = false;
@@ -980,12 +995,12 @@ QFSFileEnginePrivate::getLink() const
     return ret;
 #else
     return QString();
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
 }
 
 bool QFSFileEngine::link(const QString &newName)
 {
-#if !defined(QT_NO_COMPONENT)
+#if !defined(QT_NO_LIBRARY)
     bool ret = false;
 
     QString linkName = newName;
@@ -1025,7 +1040,7 @@ bool QFSFileEngine::link(const QString &newName)
         HRESULT hres;
         IShellLinkA *psl;
         bool neededCoInit = false;
-        
+
         hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
         if(hres == CO_E_NOTINITIALIZED) { // COM was not initalized
             neededCoInit = true;
@@ -1058,7 +1073,7 @@ bool QFSFileEngine::link(const QString &newName)
 #else
     Q_UNUSED(newName);
     return false;
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
 }
 
 QFileEngine::FileFlags
@@ -1066,7 +1081,7 @@ QFSFileEnginePrivate::getPermissions() const
 {
     QFileEngine::FileFlags ret = 0;
 
-#if !defined(QT_NO_COMPONENT)
+#if !defined(QT_NO_LIBRARY)
     if((qt_ntfs_permission_lookup > 0) && ((QSysInfo::WindowsVersion&QSysInfo::WV_NT_based) > QSysInfo::WV_NT)) {
 	PSID pOwner = 0;
 	PSID pGroup = 0;
@@ -1165,7 +1180,7 @@ QFSFileEnginePrivate::getPermissions() const
     QString ext = file.right(4).toLower();
     if (ext == ".exe" || ext == ".com" || ext == ".bat" ||
             ext == ".pif" || ext == ".cmd" || (attr & FILE_ATTRIBUTE_DIRECTORY))
-            ret |= QFileEngine::ExeOwnerPerm | QFileEngine::ExeGroupPerm | 
+            ret |= QFileEngine::ExeOwnerPerm | QFileEngine::ExeGroupPerm |
                 QFileEngine::ExeOtherPerm | QFileEngine::ExeUserPerm;
 
     return ret;
@@ -1198,7 +1213,7 @@ QFSFileEngine::fileFlags(QFileEngine::FileFlags type) const
     if(type & FlagsMask) {
         if(d->doStat()) {
             ret |= QFileEngine::FileFlags(ExistsFlag | LocalDiskFlag);
-            if(fileName(BaseName)[0] == QChar('.')) {
+            if(fileName(BaseName).startsWith(QLatin1Char('.'))) {
                 QT_WA({
                     if(GetFileAttributesW((TCHAR*)d->file.utf16()) & FILE_ATTRIBUTE_HIDDEN)
                         ret |= HiddenFlag;
@@ -1231,16 +1246,16 @@ QFSFileEngine::fileName(FileName file) const
     } else if(file == PathName) {
         if(!d->file.size())
             return d->file;
-        
+
         int slash = d->file.lastIndexOf('/');
         if(slash == -1) {
-            if(d->file.at(1) == ':')
+            if(d->file.length() >= 2 && d->file.at(1) == ':')
                 return d->file.left(2);
             return QString::fromLatin1(".");
         } else {
             if(!slash)
                 return QString::fromLatin1("/");
-            if(slash == 2 && d->file.at(1) == ':')
+            if(slash == 2 && d->file.length() >= 2 && d->file.at(1) == ':')
                 slash++;
             return d->file.left(slash);
         }
@@ -1320,7 +1335,7 @@ bool
 QFSFileEngine::isRelativePath() const
 {
     Q_D(const QFSFileEngine);
-    return !(d->file.startsWith("/")
+    return !(d->file.startsWith(QLatin1Char('/'))
         || (d->file.length() >= 2
         && ((d->file.at(0).isLetter() && d->file.at(1) == ':')
         || (d->file.at(0) == '/' && d->file.at(1) == '/'))));                // drive, e.g. a:
@@ -1336,7 +1351,7 @@ QFSFileEngine::ownerId(FileOwner /*own*/) const
 QString
 QFSFileEngine::owner(FileOwner own) const
 {
-#if !defined(QT_NO_COMPONENT)
+#if !defined(QT_NO_LIBRARY)
     Q_D(const QFSFileEngine);
     if((qt_ntfs_permission_lookup > 0) && ((QSysInfo::WindowsVersion&QSysInfo::WV_NT_based) > QSysInfo::WV_NT)) {
 	PSID pOwner = 0;

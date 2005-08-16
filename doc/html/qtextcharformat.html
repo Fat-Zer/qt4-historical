@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/text/qtextformat.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/text/qtextformat.cpp -->
 <head>
     <title>Qt 4.0: QTextCharFormat Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextCharFormat Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextCharFormat Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTextCharFormat class provides formatting information for characters in a <a href="qtextdocument.html">QTextDocument</a>. <a href="#details">More...</a></p>
-<pre>#include &lt;QTextCharFormat&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qtextformat.html">QTextFormat</a>.</p>
+<pre>#include &lt;QTextCharFormat&gt;</pre><p>Inherits <a href="qtextformat.html">QTextFormat</a>.</p>
 <p>Inherited by <a href="qtextimageformat.html">QTextImageFormat</a>.</p>
 <ul>
 <li><a href="qtextcharformat-members.html">List of all members, including inherited members</a></li>
@@ -96,34 +95,37 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a new character format object.</p>
 <h3 class="fn"><a name="anchorHref"></a><a href="qstring.html">QString</a> QTextCharFormat::anchorHref () const</h3>
 <p>Returns the text format's hypertext link, or an empty string if none has been set.</p>
+<p>See also <a href="qtextcharformat.html#setAnchorHref">setAnchorHref</a>().</p>
 <h3 class="fn"><a name="anchorName"></a><a href="qstring.html">QString</a> QTextCharFormat::anchorName () const</h3>
 <p>Returns the anchor name associated with this text format, or an empty string if none has been set. If the anchor name is set, text with this format can be the destination of a hypertext link.</p>
+<p>See also <a href="qtextcharformat.html#setAnchorName">setAnchorName</a>().</p>
 <h3 class="fn"><a name="font"></a><a href="qfont.html">QFont</a> QTextCharFormat::font () const</h3>
 <p>Returns the font for this character format.</p>
+<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="fontFamily"></a><a href="qstring.html">QString</a> QTextCharFormat::fontFamily () const</h3>
 <p>Returns the text format's font family.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontFamily">setFontFamily</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontFixedPitch"></a>bool QTextCharFormat::fontFixedPitch () const</h3>
 <p>Returns true if the text format's font is fixed pitch; otherwise returns false.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontFixedPitch">setFontFixedPitch</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontItalic"></a>bool QTextCharFormat::fontItalic () const</h3>
 <p>Returns true if the text format's font is italic; otherwise returns false.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontItalic">setFontItalic</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontOverline"></a>bool QTextCharFormat::fontOverline () const</h3>
 <p>Returns true if the text format's font is overlined; otherwise returns false.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontOverline">setFontOverline</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontPointSize"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QTextCharFormat::fontPointSize () const</h3>
 <p>Returns the font size used to display text in this format.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontPointSize">setFontPointSize</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontStrikeOut"></a>bool QTextCharFormat::fontStrikeOut () const</h3>
 <p>Returns true if the text format's font is struck out (has a horizontal line drawn through it); otherwise returns false.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontStrikeOut">setFontStrikeOut</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontUnderline"></a>bool QTextCharFormat::fontUnderline () const</h3>
 <p>Returns true if the text format's font is underlined; otherwise returns false.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontUnderline">setFontUnderline</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="fontWeight"></a>int QTextCharFormat::fontWeight () const</h3>
 <p>Returns the text format's font weight.</p>
-<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
+<p>See also <a href="qtextcharformat.html#setFontWeight">setFontWeight</a>() and <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="isAnchor"></a>bool QTextCharFormat::isAnchor () const</h3>
 <p>Returns true if the text is formatted as an anchor; otherwise returns false.</p>
 <p>See also <a href="qtextcharformat.html#setAnchor">setAnchor</a>(), <a href="qtextcharformat.html#setAnchorHref">setAnchorHref</a>(), and <a href="qtextcharformat.html#setAnchorName">setAnchorName</a>().</p>
@@ -137,38 +139,43 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the hypertext link for the text format to the given <i>value</i>. This is typically a URL like &quot;http://www.trolltech.com/index.html&quot;.</p>
 <p>The anchor will be displayed with the <i>value</i> as its display text; if you want to display different text call <a href="qtextcharformat.html#setAnchorName">setAnchorName</a>().</p>
 <p>To format the text as a hypertext link use <a href="qtextcharformat.html#setAnchor">setAnchor</a>().</p>
+<p>See also <a href="qtextcharformat.html#anchorHref">anchorHref</a>().</p>
 <h3 class="fn"><a name="setAnchorName"></a>void QTextCharFormat::setAnchorName ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>Sets the text format's anchor <i>name</i>. For the anchor to work as a hyperlink, the destination must be set with <a href="qtextcharformat.html#setAnchorHref">setAnchorHref</a>() and the anchor must be enabled with <a href="qtextcharformat.html#setAnchor">setAnchor</a>().</p>
+<p>See also <a href="qtextcharformat.html#anchorName">anchorName</a>().</p>
 <h3 class="fn"><a name="setFont"></a>void QTextCharFormat::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>font</i> )</h3>
 <p>Sets the text format's <i>font</i>.</p>
+<p>See also <a href="qtextcharformat.html#font">font</a>().</p>
 <h3 class="fn"><a name="setFontFamily"></a>void QTextCharFormat::setFontFamily ( const <a href="qstring.html">QString</a> &amp; <i>family</i> )</h3>
 <p>Sets the text format's font <i>family</i>.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontFamily">fontFamily</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontFixedPitch"></a>void QTextCharFormat::setFontFixedPitch ( bool <i>fixedPitch</i> )</h3>
 <p>If <i>fixedPitch</i> is true, sets the text format's font to be fixed pitch; otherwise a non-fixed pitch font is used.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontFixedPitch">fontFixedPitch</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontItalic"></a>void QTextCharFormat::setFontItalic ( bool <i>italic</i> )</h3>
 <p>If <i>italic</i> is true, sets the text format's font to be italic; otherwise the font will be non-italic.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontItalic">fontItalic</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontOverline"></a>void QTextCharFormat::setFontOverline ( bool <i>overline</i> )</h3>
 <p>If <i>overline</i> is true, sets the text format's font to be overlined; otherwise the font is displayed non-overlined.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontOverline">fontOverline</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontPointSize"></a>void QTextCharFormat::setFontPointSize ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>size</i> )</h3>
 <p>Sets the text format's font <i>size</i>.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontPointSize">fontPointSize</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontStrikeOut"></a>void QTextCharFormat::setFontStrikeOut ( bool <i>strikeOut</i> )</h3>
 <p>If <i>strikeOut</i> is true, sets the text format's font with strike-out enabled (with a horizontal line through it); otherwise it is displayed without strikeout.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontStrikeOut">fontStrikeOut</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontUnderline"></a>void QTextCharFormat::setFontUnderline ( bool <i>underline</i> )</h3>
 <p>If <i>underline</i> is true, sets the text format's font to be underlined; otherwise it is displayed non-underlined.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontUnderline">fontUnderline</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setFontWeight"></a>void QTextCharFormat::setFontWeight ( int <i>weight</i> )</h3>
 <p>Sets the text format's font weight to <i>weight</i>.</p>
-<p>See also <a href="qtextcharformat.html#setFont">setFont</a>().</p>
+<p>See also <a href="qtextcharformat.html#fontWeight">fontWeight</a>() and <a href="qtextcharformat.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="setTableCellColumnSpan"></a>void QTextCharFormat::setTableCellColumnSpan ( int <i>tableCellColumnSpan</i> )</h3>
 <p>If this character format is applied to characters in a table cell, the cell will span <i>tableCellColumnSpan</i> columns.</p>
+<p>See also <a href="qtextcharformat.html#tableCellColumnSpan">tableCellColumnSpan</a>().</p>
 <h3 class="fn"><a name="setTableCellRowSpan"></a>void QTextCharFormat::setTableCellRowSpan ( int <i>tableCellRowSpan</i> )</h3>
 <p>If this character format is applied to characters in a table cell, the cell will span <i>tableCellRowSpan</i> rows.</p>
+<p>See also <a href="qtextcharformat.html#tableCellRowSpan">tableCellRowSpan</a>().</p>
 <h3 class="fn"><a name="setUnderlineColor"></a>void QTextCharFormat::setUnderlineColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
 <p>Sets the underline color used for the characters with this format to the <i>color</i> specified.</p>
 <p>See also <a href="qtextcharformat.html#underlineColor">underlineColor</a>().</p>
@@ -177,8 +184,10 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextcharformat.html#verticalAlignment">verticalAlignment</a>().</p>
 <h3 class="fn"><a name="tableCellColumnSpan"></a>int QTextCharFormat::tableCellColumnSpan () const</h3>
 <p>If this character format is applied to characters in a table cell, this function returns the number of columns spanned by the text (this may be 1); otherwise it returns 1.</p>
+<p>See also <a href="qtextcharformat.html#setTableCellColumnSpan">setTableCellColumnSpan</a>().</p>
 <h3 class="fn"><a name="tableCellRowSpan"></a>int QTextCharFormat::tableCellRowSpan () const</h3>
 <p>If this character format is applied to characters in a table cell, this function returns the number of rows spanned by the text (this may be 1); otherwise it returns 1.</p>
+<p>See also <a href="qtextcharformat.html#setTableCellRowSpan">setTableCellRowSpan</a>().</p>
 <h3 class="fn"><a name="underlineColor"></a><a href="qcolor.html">QColor</a> QTextCharFormat::underlineColor () const</h3>
 <p>Returns the color used to underline the characters with this format.</p>
 <p>See also <a href="qtextcharformat.html#setUnderlineColor">setUnderlineColor</a>().</p>
@@ -189,6 +198,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

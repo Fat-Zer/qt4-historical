@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/kernel/qapplication.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QApplication</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QApplication</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qapplication.html">QApplication class reference</a></li></ul></p>
@@ -59,6 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="colorMode"></a><a href="qapplication-qt3.html#ColorMode-typedef">ColorMode</a> QApplication::colorMode ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#colorSpec">colorSpec</a>() instead, and use <a href="qapplication.html#ColorSpec-enum">ColorSpec</a> as the enum type.</p>
+<p>See also <a href="qapplication-qt3.html#setColorMode">setColorMode</a>().</p>
 <h3 class="fn"><a name="flushX"></a>void QApplication::flushX ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qcoreapplication.html#flush">flush</a>() instead.</p>
 <h3 class="fn"><a name="hasGlobalMouseTracking"></a>bool QApplication::hasGlobalMouseTracking ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -72,18 +73,21 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qapplication-qt3.html#setMainWidget">setMainWidget</a>().</p>
 <h3 class="fn"><a name="reverseLayout"></a>bool QApplication::reverseLayout ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#layoutDirection-prop">layoutDirection</a>() instead.</p>
+<p>See also <a href="qapplication-qt3.html#setReverseLayout">setReverseLayout</a>().</p>
 <h3 class="fn"><a name="setColorMode"></a>void QApplication::setColorMode ( <a href="qapplication-qt3.html#ColorMode-typedef">ColorMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#setColorSpec">setColorSpec</a>() instead, and pass a <a href="qapplication.html#ColorSpec-enum">ColorSpec</a> value instead.</p>
+<p>See also <a href="qapplication-qt3.html#colorMode">colorMode</a>().</p>
 <h3 class="fn"><a name="setFont-2"></a>void QApplication::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>font</i>, bool <i>b</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Use the two-argument overload instead.</p>
 <h3 class="fn"><a name="setGlobalMouseTracking"></a>void QApplication::setGlobalMouseTracking ( bool <i>dummy</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This function does nothing in Qt 4. The <i>dummy</i> parameter is ignored.</p>
+<p>See also <a href="qapplication-qt3.html#hasGlobalMouseTracking">hasGlobalMouseTracking</a>().</p>
 <h3 class="fn"><a name="setMainWidget"></a>void QApplication::setMainWidget ( <a href="qwidget.html">QWidget</a> * <i>mainWidget</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the application's main widget to <i>mainWidget</i>.</p>
 <p>In most respects the main widget is like any other widget, except that if it is closed, the application exits. Note that <a href="qapplication.html">QApplication</a> does <i>not</i> take ownership of the <i>mainWidget</i>, so if you create your main widget on the heap you must delete it yourself.</p>
 <p>You need not have a main widget; connecting <a href="qapplication.html#lastWindowClosed">lastWindowClosed</a>() to <a href="qcoreapplication.html#quit">quit</a>() is an alternative.</p>
-<p>For <a href="winsystem.html#x11">X11</a>, this function also resizes and moves the main widget according to the <i>-geometry</i> command-line option, so you should set the default geometry (using <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>()) before calling setMainWidget().</p>
+<p>For X11, this function also resizes and moves the main widget according to the <i>-geometry</i> command-line option, so you should set the default geometry (using <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>()) before calling setMainWidget().</p>
 <p>See also <a href="qapplication-qt3.html#mainWidget">mainWidget</a>(), <a href="qapplication.html#exec">exec</a>(), and <a href="qcoreapplication.html#quit">quit</a>().</p>
 <h3 class="fn"><a name="setOverrideCursor-2"></a>void QApplication::setOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; <i>cursor</i>, bool <i>replace</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -93,6 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use the two-argument overload instead.</p>
 <h3 class="fn"><a name="setReverseLayout"></a>void QApplication::setReverseLayout ( bool <i>reverse</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#layoutDirection-prop">setLayoutDirection</a>() instead.</p>
+<p>See also <a href="qapplication-qt3.html#reverseLayout">reverseLayout</a>().</p>
 <h3 class="fn"><a name="setWinStyleHighlightColor"></a>void QApplication::setWinStyleHighlightColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use the palette instead.</p>
 <p>For example, if you have code like</p>
@@ -101,6 +106,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>    QPalette palette(qApp-&gt;palette());
     palette.setColor(QPalette::Highlight, color);
     qApp-&gt;setPalette(palette);</pre>
+<p>See also <a href="qapplication-qt3.html#winStyleHighlightColor">winStyleHighlightColor</a>().</p>
 <h3 class="fn"><a name="widgetAt-2"></a><a href="qwidget.html">QWidget</a> * QApplication::widgetAt ( int <i>x</i>, int <i>y</i>, bool <i>child</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Use the two-argument <a href="qapplication.html#widgetAt">widgetAt</a>() overload to get the child widget. To get the top-level widget do this:</p>
@@ -115,6 +121,7 @@ body { background: #ffffff; color: black; }</style>
         widget = widget-&gt;window();</pre>
 <h3 class="fn"><a name="winStyleHighlightColor"></a>const <a href="qcolor.html">QColor</a> &amp; QApplication::winStyleHighlightColor ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use qApp-&gt;<a href="qapplication.html#palette">palette</a>().color(<a href="qpalette.html#ColorGroup-enum">QPalette::Active</a>, <a href="qpalette.html#ColorRole-enum">QPalette::Highlight</a>) instead.</p>
+<p>See also <a href="qapplication-qt3.html#setWinStyleHighlightColor">setWinStyleHighlightColor</a>().</p>
 <h3 class="fn"><a name="winVersion"></a><a href="qt-qt3.html#WindowsVersion-enum">Qt::WindowsVersion</a> QApplication::winVersion ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qsysinfo.html#WindowsVersion-var">QSysInfo::WindowsVersion</a> instead.</p>
 <hr />
@@ -127,6 +134,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

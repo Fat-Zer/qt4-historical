@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the sql module of the Qt Toolkit.
+** This file is part of the QtSql module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,6 +37,7 @@ void QSqlQueryModelPrivate::prefetch(int limit)
     if (atEnd || limit <= bottom.row())
         return;
 
+    int oldAt = query.at();
     QModelIndex oldBottom = q->createIndex(bottom.row(), 0);
     QModelIndex newBottom;
 
@@ -44,19 +45,27 @@ void QSqlQueryModelPrivate::prefetch(int limit)
     if (query.seek(limit)) {
         newBottom = q->createIndex(limit, bottom.column());
     } else {
-        // fetch as far as we can
-        if (query.last()) {
-            newBottom = q->createIndex(query.at(), bottom.column());
+        // have to seek back to our old position for MS Access
+        int i = oldBottom.row();
+        if (query.seek(i)) {
+            while (query.next())
+                ++i;
+            newBottom = q->createIndex(i, bottom.column());
         } else {
-            error = query.lastError();
+            // empty or invalid query
             newBottom = q->createIndex(-1, bottom.column());
         }
         atEnd = true; // this is the end.
     }
-    if (newBottom.row() > oldBottom.row()) {
-        emit q->beginInsertRows(QModelIndex(), oldBottom.row(), newBottom.row());
+    if (newBottom.row() >= 0
+        && (newBottom.row() > oldBottom.row()
+#ifdef QT3_SUPPORT
+            || oldAt == QSql::BeforeFirst
+#endif
+            )) {
+        q->beginInsertRows(QModelIndex(), oldBottom.row(), newBottom.row());
         bottom = newBottom;
-        emit q->endInsertRows();
+        q->endInsertRows();
     } else {
         bottom = newBottom;
     }
@@ -335,7 +344,7 @@ void QSqlQueryModel::clear()
     the specified \a value. This is useful if the model is used to
     display data in a view (e.g., QTableView).
 
-    Returns true if \a role is \c Qt::DisplayRole and
+    Returns true if \a role is Qt::DisplayRole and
     the \a section refers to a valid section; otherwise returns
     false.
 

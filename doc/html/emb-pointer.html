@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/emb-pointer.qdoc -->
+<head>
+    <title>Qt 4.0: Qt/Embedded Pointer Handling</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt/Embedded Pointer Handling<br /><small></small></h1>
+<p>Pointer handling in Qt/Embedded works for any mouse or mouse-like device such as touch panels and trackballs.</p>
+<p>Usually only one pointer device is supported in an embedded device, but for demonstration purposes, Qt/Embedded includes a large number of supported devices.</p>
+<a name="mouse-protocols"></a>
+<h2>Mouse Protocols</h2>
+<p>Mouse drivers can be enabled/disabled via the configure script. Running <tt>./configure</tt> <tt>-help</tt> lists the available mouse drivers. Only the &quot;pc&quot; mouse driver is enabled in the default configuration.</p>
+<p>Provided the &quot;pc&quot; mouse driver is enabled, Qt/Embedded auto-detects the mouse type and device if it is one of the supported types on <tt>/dev/psaux</tt> or one of the <tt>/dev/ttyS</tt>? serial lines. If multiple mice are detected, all may be used simultaneously.</p>
+<p>Alternatively, you may set the environment variable <tt>QWS_MOUSE_PROTO</tt> to determine which mouse to use. This environment variable may be set to:</p>
+<blockquote><p><i>&lt;protocol&gt;</i><tt>:</tt><i>&lt;device&gt;</i></p>
+</blockquote>
+<p>where <i>&lt;protocol&gt;</i> is one of:</p>
+<ul>
+<li>MouseMan</li>
+<li>IntelliMouse</li>
+<li>Microsoft</li>
+</ul>
+<p>and <i>&lt;device&gt;</i> is the mouse device, often <tt>/dev/mouse</tt>. If no such variable is specified, the built-in default is <tt>Auto</tt>, which enables auto-detection of the mouse protocol and device.</p>
+<p>To add another protocol, new subclasses of <a href="qwsmousehandler.html">QWSMouseHandler</a> and <a href="qmousedriverplugin.html">QMouseDriverPlugin</a> can be written and installed as plugins.</p>
+<a name="touch-panels"></a>
+<h2>Touch Panels</h2>
+<p>Qt/Embedded ships with support for the NEC Vr41XX touch panel and the emerging linux touch panel standard used by the iPAQ and Zaurus. These are subclasses of QWSCalibratedMouseHandler which is in turn a subclass of <a href="qwsmousehandler.html">QWSMouseHandler</a> in <tt>src/gui/kernel/qmouse_qws.cpp</tt>.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+</tr></table></div></address></body>
+</html>

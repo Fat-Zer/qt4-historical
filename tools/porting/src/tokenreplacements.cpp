@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the porting application of the Qt Toolkit.
+** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -24,15 +24,11 @@
 #include "tokenreplacements.h"
 #include "logger.h"
 #include "portingrules.h"
-#include <iostream>
 using namespace TokenEngine;
-using namespace std;
 
-void TokenReplacement::addLogSourceEntry(const QString &text, const TokenContainer &tokenContainer, const int index) const
+void addLogSourceEntry(const QString &text, const TokenContainer &tokenContainer, const int index)
 {
-    Q_UNUSED(tokenContainer);
-    Q_UNUSED(index);
-     Logger *logger = Logger::instance();
+    Logger *logger = Logger::instance();
     int line = tokenContainer.line(index);
     int col = tokenContainer.column(index);
     SourcePointLogEntry *logEntry =
@@ -42,8 +38,7 @@ void TokenReplacement::addLogSourceEntry(const QString &text, const TokenContain
     logger->addEntry(logEntry);
 }
 
-
-void TokenReplacement::addLogWarning(const QString &text) const
+void addLogWarning(const QString &text)
 {
      Logger::instance()->addEntry(new PlainLogEntry("Warning", "Porting", text));
 }
@@ -138,42 +133,6 @@ int QualifiedNameParser::nextScopeToken(Direction direction)
        tokenIndex += direction;
     }
     return tokenIndex - direction;
-}
-
-IncludeTokenReplacement::IncludeTokenReplacement(QByteArray fromFile, QByteArray toFile)
-:fromFile(fromFile)
-,toFile(toFile)
-{  }
-
-bool IncludeTokenReplacement::doReplace(const TokenContainer &tokenContainer,
-                                        int index, TextReplacements &textReplacements)
-{
-    QByteArray tokenText;
-    // read a line of tokens, index points to a "#" token
-    int currentIndex = index;
-    while(currentIndex < tokenContainer.count()) {
-        QByteArray newText = tokenContainer.text(currentIndex);
-        if(newText == "\n" || newText == "\r\n")
-            break;
-        tokenText += newText;
-        ++currentIndex;
-    }
-
-    // Also match cases where the header name contains
-    // capital letters (ex. #include <QWidget.h>)
-    tokenText = tokenText.toLower();
-
-    if(tokenText.startsWith("#") && tokenText.contains("include") ) {
-        int pos = tokenText.indexOf(fromFile);
-        if(pos!=-1) {
-            addLogSourceEntry(tokenText + " -> " + toFile, tokenContainer, index);
-            TokenEngine::Token token = tokenContainer.token(index);
-            textReplacements.insert(toFile, token.start + pos, fromFile.size());
-            return true;
-        }
-    }
-    return false;
-
 }
 
 /////////////////////

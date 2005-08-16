@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/network/qabstractsocket.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/network/qabstractsocket.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QAbstractSocket</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QAbstractSocket</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qabstractsocket.html">QAbstractSocket class reference</a></li></ul></p>
@@ -52,14 +52,14 @@ body { background: #ffffff; color: black; }</style>
 </table>
 <h3 class="fn"><a name="State-typedef"></a>typedef QAbstractSocket::State</h3>
 <p>Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::SocketState</a> instead.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
-<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QAbstractSocket::Idle</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::UnconnectedState</a> instead.</td></tr>
-<tr><td valign="top"><tt>QAbstractSocket::HostLookup</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::HostLookupState</a> instead.</td></tr>
-<tr><td valign="top"><tt>QAbstractSocket::Connecting</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::ConnectingState</a> instead.</td></tr>
-<tr><td valign="top"><tt>QAbstractSocket::Connected</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::ConnectedState</a> instead.</td></tr>
-<tr><td valign="top"><tt>QAbstractSocket::Closing</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::ClosingState</a> instead.</td></tr>
-<tr><td valign="top"><tt>QAbstractSocket::Connection</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Use <a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::ConnectedState</a> instead.</td></tr>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Qt 3 enum value</th><th>Qt 4 enum value</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>Idle</tt></td><td><a href="qabstractsocket.html#SocketState-enum">UnconnectedState</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>HostLookup</tt></td><td><a href="qabstractsocket.html#SocketState-enum">HostLookupState</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>Connecting</tt></td><td><a href="qabstractsocket.html#SocketState-enum">ConnectingState</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>Connected</tt></td><td><a href="qabstractsocket.html#SocketState-enum">ConnectedState</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>Closing</tt></td><td><a href="qabstractsocket.html#SocketState-enum">ClosingState</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>Connection</tt></td><td><a href="qabstractsocket.html#SocketState-enum">ConnectedState</a></td></tr>
 </table>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -69,10 +69,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Use closed() instead.</p>
 <h3 class="fn"><a name="setSocket"></a>void QAbstractSocket::setSocket ( int <i>socket</i> )</h3>
 <p>Use <a href="qabstractsocket.html#setSocketDescriptor">setSocketDescriptor</a>() instead.</p>
+<p>See also <a href="qabstractsocket-qt3.html#socket">socket</a>().</p>
 <h3 class="fn"><a name="socket"></a>int QAbstractSocket::socket () const</h3>
 <p>Use <a href="qabstractsocket.html#socketDescriptor">socketDescriptor</a>() instead.</p>
+<p>See also <a href="qabstractsocket-qt3.html#setSocket">setSocket</a>().</p>
 <h3 class="fn"><a name="waitForMore"></a><a href="qtglobal.html#qulonglong-typedef">qulonglong</a> QAbstractSocket::waitForMore ( int <i>msecs</i>, bool * <i>timeout</i> = 0 ) const</h3>
-<p>Use <a href="qabstractsocket.html#waitForReadyRead">waitForReadyRead</a>() instead.</p>
+<p>Use <a href="qiodevice.html#waitForReadyRead">waitForReadyRead</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    bool timeout;
     Q_ULONG numBytes = socket-&gt;waitForMore(30000, &amp;timeout);</font></pre>
@@ -81,11 +83,11 @@ body { background: #ffffff; color: black; }</style>
     if (socket-&gt;waitForReadyRead(msecs))
         numBytes = socket-&gt;bytesAvailable();
     bool timeout = (error() == QAbstractSocket::SocketTimeoutError);</pre>
-<p>See also <a href="qabstractsocket.html#waitForReadyRead">waitForReadyRead</a>(), <a href="qabstractsocket.html#bytesAvailable">bytesAvailable</a>(), <a href="qabstractsocket.html#error">error</a>(), and <a href="qabstractsocket.html#SocketError-enum">SocketTimeoutError</a>.</p>
+<p>See also <a href="qiodevice.html#waitForReadyRead">waitForReadyRead</a>(), <a href="qabstractsocket.html#bytesAvailable">bytesAvailable</a>(), <a href="qabstractsocket.html#error">error</a>(), and <a href="qabstractsocket.html#SocketError-enum">SocketTimeoutError</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

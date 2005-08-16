@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -26,6 +26,8 @@
 
 #include "QtGui/qabstractbutton.h"
 
+QT_MODULE(Gui)
+
 #ifndef QT_NO_TOOLBUTTON
 
 class QToolButtonPrivate;
@@ -35,8 +37,9 @@ class Q_GUI_EXPORT QToolButton : public QAbstractButton
 {
     Q_OBJECT
     Q_ENUMS(Qt::ToolButtonStyle Qt::ArrowType)
-
+#ifndef QT_NO_MENU
     Q_PROPERTY(ToolButtonPopupMode popupMode READ popupMode WRITE setPopupMode)
+#endif
     Q_PROPERTY(Qt::ToolButtonStyle toolButtonStyle READ toolButtonStyle WRITE setToolButtonStyle)
     Q_PROPERTY(bool autoRaise READ autoRaise WRITE setAutoRaise)
     Q_PROPERTY(Qt::ArrowType arrowType READ arrowType WRITE setArrowType)
@@ -59,11 +62,13 @@ public:
     Qt::ArrowType arrowType() const;
     void setArrowType(Qt::ArrowType type);
 
+#ifndef QT_NO_MENU    
     void setMenu(QMenu* menu);
     QMenu* menu() const;
-
+    
     void setPopupMode(ToolButtonPopupMode mode);
     ToolButtonPopupMode popupMode() const;
+#endif
 
     QAction *defaultAction() const;
 
@@ -71,7 +76,9 @@ public:
     bool autoRaise() const;
 
 public slots:
+#ifndef QT_NO_MENU
     void showMenu();
+#endif
     void setToolButtonStyle(Qt::ToolButtonStyle style);
     void setDefaultAction(QAction *);
 
@@ -94,7 +101,9 @@ protected:
 private:
     Q_DISABLE_COPY(QToolButton)
     Q_DECLARE_PRIVATE(QToolButton)
+#ifndef QT_NO_MENU
     Q_PRIVATE_SLOT(d_func(), void buttonPressed())
+#endif
     Q_PRIVATE_SLOT(d_func(), void actionTriggered())
 
 #ifdef QT3_SUPPORT
@@ -138,7 +147,7 @@ public slots:
         { setIconSize(enable?QSize(32,32):QSize(22,22)); }
     QT_MOC_COMPAT void setUsesTextLabel(bool enable)
         { setToolButtonStyle(enable?Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly); }
-    QT_MOC_COMPAT void setTextPosition(TextPosition pos)
+    QT_MOC_COMPAT void setTextPosition(QToolButton::TextPosition pos)
         { setToolButtonStyle(pos == BesideIcon ? Qt::ToolButtonTextBesideIcon : Qt::ToolButtonTextUnderIcon); }
 
 #endif

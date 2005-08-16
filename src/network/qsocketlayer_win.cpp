@@ -4,7 +4,7 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the network module of the Qt Toolkit.
+** This file is part of the QtNetwork module of the Qt Toolkit.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -937,6 +937,11 @@ qint64 QSocketLayerPrivate::nativeRead(char *data, qint64 maxLength)
         case WSAEBADF:
         case WSAEINVAL:
             setError(QAbstractSocket::NetworkError, ReadErrorString);
+            break;
+        case WSAECONNRESET:
+        case WSAECONNABORTED:
+            // for tcp sockets this will be handled in QSocketLayer::read
+            ret = 0;
             break;
         default:
             break;

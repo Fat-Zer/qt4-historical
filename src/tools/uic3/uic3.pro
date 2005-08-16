@@ -1,7 +1,6 @@
 TEMPLATE = app
 CONFIG += console qt_no_compat_warning
 CONFIG -= app_bundle
-CONFIG -= debug_and_release
 build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
@@ -31,7 +30,8 @@ SOURCES += main.cpp \
            converter.cpp \
            widgetinfo.cpp \
            embed.cpp \
-           qt3to4.cpp
+           qt3to4.cpp \
+           deps.cpp
 
 DEFINES -= QT_COMPAT_WARNINGS
 DEFINES += QT_COMPAT

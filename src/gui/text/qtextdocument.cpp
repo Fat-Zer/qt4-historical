@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -129,9 +129,9 @@ QString Qt::escape(const QString& plain)
     Auxiliary function. Converts the plain text string \a plain to a
     rich text formatted paragraph while preserving most of its look.
 
-    \a mode defines the whitespace mode. Possible values are \c
+    \a mode defines the whitespace mode. Possible values are
     QStyleSheetItem::WhiteSpacePre (no wrapping, all whitespaces
-    preserved) and \c QStyleSheetItem::WhiteSpaceNormal (wrapping,
+    preserved) and QStyleSheetItem::WhiteSpaceNormal (wrapping,
     simplified whitespaces).
 
     \sa escape()
@@ -184,6 +184,7 @@ QString Qt::convertFromPlainText(const QString &plain, Qt::WhiteSpaceMode mode)
     return rich;
 }
 
+#ifndef QT_NO_TEXTCODEC
 /*!
   \internal
 */
@@ -205,7 +206,7 @@ QTextCodec *Qt::codecForHtml(const QByteArray &ba)
     } else {
         QByteArray header = ba.left(512).toLower();
         if ((pos = header.indexOf("http-equiv=")) != -1) {
-            pos = header.indexOf("charset=", pos) + strlen("charset=");
+            pos = header.indexOf("charset=", pos) + int(strlen("charset="));
             if (pos != -1) {
                 int pos2 = header.indexOf('\"', pos+1);
                 QByteArray cs = header.mid(pos, pos2-pos);
@@ -219,6 +220,7 @@ QTextCodec *Qt::codecForHtml(const QByteArray &ba)
 
     return c;
 }
+#endif
 
 // internal, do not Q_EXPORT
 // can go away when QTextDocumentFragment uses QTextDocument
@@ -318,8 +320,11 @@ QTextDocument::~QTextDocument()
 */
 QTextDocument *QTextDocument::clone(QObject *parent) const
 {
+    Q_D(const QTextDocument);
     QTextDocument *doc = new QTextDocument(parent);
     QTextCursor(doc).insertFragment(QTextDocumentFragment(this));
+    doc->d_func()->config()->title = d->config()->title;
+    doc->d_func()->pageSize = d->pageSize;
     return doc;
 }
 
@@ -403,7 +408,11 @@ bool QTextDocument::isUndoRedoEnabled() const
 void QTextDocument::markContentsDirty(int from, int length)
 {
     Q_D(QTextDocument);
+    if (!d->inContentsChange)
+        d->beginEditBlock();
     d->documentChange(from, length);
+    if (!d->inContentsChange)
+        d->endEditBlock();
 }
 
 /*!
@@ -832,7 +841,7 @@ int QTextDocument::pageCount() const
 void QTextDocument::setDefaultFont(const QFont &font)
 {
     Q_D(QTextDocument);
-    d->defaultFont = font;
+    d->setDefaultFont(font);
     documentLayout()->documentChanged(0, 0, d->length());
 }
 
@@ -842,7 +851,7 @@ void QTextDocument::setDefaultFont(const QFont &font)
 QFont QTextDocument::defaultFont() const
 {
     Q_D(const QTextDocument);
-    return d->defaultFont;
+    return d->defaultFont();
 }
 
 /*!
@@ -882,12 +891,14 @@ void QTextDocument::setModified(bool m)
 
     This is only a convenience method to print the whole document to the printer.
 */
+#ifndef QT_NO_PRINTER
 void QTextDocument::print(QPrinter *printer) const
 {
     QPainter p(printer);
 
     // Check that there is a valid device to print to.
-    if (!p.device()) return;
+    if (!p.isActive())
+        return;
 
     const int dpiy = p.device()->logicalDpiY();
     const int margin = (int) ((2/2.54)*dpiy); // 2 cm margins
@@ -926,9 +937,11 @@ void QTextDocument::print(QPrinter *printer) const
         printer->newPage();
         page++;
     } while (true);
+    Q_ASSERT(page == doc->pageCount());
 
     delete doc;
 }
+#endif
 
 /*!
     \enum QTextDocument::ResourceType
@@ -999,8 +1012,10 @@ QVariant QTextDocument::loadResource(int type, const QUrl &name)
     QVariant r;
     if (QTextDocument *doc = qobject_cast<QTextDocument *>(parent()))
         r = doc->loadResource(type, name);
+#ifndef QT_NO_TEXTEDIT
     else if (QTextEdit *edit = qobject_cast<QTextEdit *>(parent()))
         r = edit->loadResource(type, name);
+#endif
     if (!r.isNull())
         addResource(type, name, r);
     return r;
@@ -1027,6 +1042,8 @@ public:
     QString toHtml(const QByteArray &encoding);
 
 private:
+    enum StyleMode { EmitStyleTag, OmitStyleTag };
+
     void emitFrame(QTextFrame::Iterator frameIt);
     void emitBlock(const QTextBlock &block);
     void emitTable(const QTextTable *table);
@@ -1034,9 +1051,11 @@ private:
 
     void emitBlockAttributes(const QTextBlock &block);
     bool emitCharFormatStyle(const QTextCharFormat &format);
+    bool emitLogicalFontSize(const QTextCharFormat &format);
     void emitTextLength(const char *attribute, const QTextLength &length);
     void emitAlignment(Qt::Alignment alignment);
-    void emitFloatStyle(QTextFrameFormat::Position pos);
+    void emitFloatStyle(QTextFrameFormat::Position pos, StyleMode mode = EmitStyleTag);
+    void emitMargins(const QString &top, const QString &bottom, const QString &left, const QString &right);
     void emitAttribute(const char *attribute, const QString &value);
 
     QString html;
@@ -1189,6 +1208,19 @@ bool QTextHtmlExporter::emitCharFormatStyle(const QTextCharFormat &format)
     return attributesEmitted;
 }
 
+bool QTextHtmlExporter::emitLogicalFontSize(const QTextCharFormat &format)
+{
+    if (!format.hasProperty(QTextFormat::FontSizeAdjustment))
+        return false;
+
+    int logSize = 3 + format.property(QTextFormat::FontSizeAdjustment).toInt();
+    html += QLatin1String("<font size=\"");
+    html += QString::number(logSize);
+    html += QLatin1String("\">");
+
+    return true;
+}
+
 void QTextHtmlExporter::emitTextLength(const char *attribute, const QTextLength &length)
 {
     if (length.type() == QTextLength::VariableLength) // default
@@ -1215,18 +1247,44 @@ void QTextHtmlExporter::emitAlignment(Qt::Alignment alignment)
     }
 }
 
-void QTextHtmlExporter::emitFloatStyle(QTextFrameFormat::Position pos)
+void QTextHtmlExporter::emitFloatStyle(QTextFrameFormat::Position pos, StyleMode mode)
 {
     if (pos == QTextFrameFormat::InFlow)
         return;
 
-    html += QLatin1String(" style=\"float:");
+    if (mode == EmitStyleTag)
+        html += QLatin1String(" style=\"float:");
+    else
+        html += QLatin1String(" float:");
+
     if (pos == QTextFrameFormat::FloatLeft)
-        html += QLatin1String(" left;\"");
+        html += QLatin1String(" left;");
     else if (pos == QTextFrameFormat::FloatRight)
-        html += QLatin1String(" right;\"");
+        html += QLatin1String(" right;");
     else
         Q_ASSERT_X(0, "QTextHtmlExporter::emitFloatStyle()", "pos should be a valid enum type");
+
+    if (mode == EmitStyleTag)
+        html += QLatin1Char('\"');
+}
+
+void QTextHtmlExporter::emitMargins(const QString &top, const QString &bottom, const QString &left, const QString &right)
+{
+    html += QLatin1String(" margin-top:");
+    html += top;
+    html += QLatin1String("px;");
+
+    html += QLatin1String(" margin-bottom:");
+    html += bottom;
+    html += QLatin1String("px;");
+
+    html += QLatin1String(" margin-left:");
+    html += left;
+    html += QLatin1String("px;");
+
+    html += QLatin1String(" margin-right:");
+    html += right;
+    html += QLatin1String("px;");
 }
 
 void QTextHtmlExporter::emitFragment(const QTextFragment &fragment)
@@ -1263,6 +1321,10 @@ void QTextHtmlExporter::emitFragment(const QTextFragment &fragment)
         html += QLatin1String("\">");
     else
         html.chop(qstrlen(styleTag.latin1()));
+
+    // qt 4.0.0's parser only supports logical font sizes through the
+    // font tag, not through css, so we have to emit <font> here ;(
+    const bool emittedFontTag = emitLogicalFontSize(format);
 
     QString txt = fragment.text();
     if (txt.count() == 1 && txt.at(0) == QChar::ObjectReplacementCharacter) {
@@ -1302,6 +1364,9 @@ void QTextHtmlExporter::emitFragment(const QTextFragment &fragment)
         }
     }
 
+    if (emittedFontTag)
+        html += QLatin1String("</font>");
+
     if (attributesEmitted)
         html += QLatin1String("</span>");
 
@@ -1339,21 +1404,10 @@ void QTextHtmlExporter::emitBlockAttributes(const QTextBlock &block)
         html += "-qt-paragraph-type:empty;";
     }
 
-    html += QLatin1String(" margin-top:");
-    html += QString::number(format.topMargin());
-    html += QLatin1String("px;");
-
-    html += QLatin1String(" margin-bottom:");
-    html += QString::number(format.bottomMargin());
-    html += QLatin1String("px;");
-
-    html += QLatin1String(" margin-left:");
-    html += QString::number(format.leftMargin());
-    html += QLatin1String("px;");
-
-    html += QLatin1String(" margin-right:");
-    html += QString::number(format.rightMargin());
-    html += QLatin1String("px;");
+    emitMargins(QString::number(format.topMargin()),
+                QString::number(format.bottomMargin()),
+                QString::number(format.leftMargin()),
+                QString::number(format.rightMargin()));
 
     html += QLatin1String(" -qt-block-indent:");
     html += QString::number(format.indent());
@@ -1435,7 +1489,21 @@ void QTextHtmlExporter::emitBlock(const QTextBlock &block)
         }
     }
 
-    const bool pre = block.blockFormat().nonBreakableLines();
+    const QTextBlockFormat blockFormat = block.blockFormat();
+    if (blockFormat.hasProperty(QTextFormat::BlockTrailingHorizontalRulerWidth)) {
+        html += QLatin1String("<hr");
+
+        QTextLength width = blockFormat.lengthProperty(QTextFormat::BlockTrailingHorizontalRulerWidth);
+        if (width.type() != QTextLength::VariableLength)
+            emitTextLength("width", width);
+        else
+            html += QLatin1Char(' ');
+
+        html += QLatin1String("/>");
+        return;
+    }
+
+    const bool pre = blockFormat.nonBreakableLines();
     if (pre) {
         if (list)
             html += QLatin1Char('>');
@@ -1448,18 +1516,28 @@ void QTextHtmlExporter::emitBlock(const QTextBlock &block)
 
     html += QLatin1Char('>');
 
+    bool emittedFontTag = false;
+
     // ### 'if' needed as long as the block char format of a block at pos == 0
     // is equivalent to the char format at that position.
     // later on in the piecetable that's not the case, that's when the block char
     // fmt is at block.position() - 1
     // When changing this also change the 'if' in emitBlockAttributes
     if (block.position() > 0) {
-        defaultCharFormat.merge(block.charFormat());
+        const QTextCharFormat blockCharFmt = block.charFormat();
+        const QTextCharFormat diff = formatDifference(defaultCharFormat, blockCharFmt).toCharFormat();
+
+        emittedFontTag = emitLogicalFontSize(diff);
+
+        defaultCharFormat.merge(blockCharFmt);
     }
 
     for (QTextBlock::Iterator it = block.begin();
          !it.atEnd(); ++it)
         emitFragment(it.fragment());
+
+    if (emittedFontTag)
+        html += QLatin1String("</font>");
 
     if (pre)
         html += QLatin1String("</pre>");
@@ -1574,10 +1652,41 @@ void QTextHtmlExporter::emitFrame(QTextFrame::Iterator frameIt)
 
     for (QTextFrame::Iterator it = frameIt;
          !it.atEnd(); ++it) {
-        if (QTextTable *table = qobject_cast<QTextTable *>(it.currentFrame()))
-            emitTable(table);
-        else if (it.currentBlock().isValid())
+        if (QTextFrame *f = it.currentFrame()) {
+            if (QTextTable *table = qobject_cast<QTextTable *>(f)) {
+                emitTable(table);
+            } else {
+                html += QLatin1String("<table");
+                QTextFrameFormat format = f->frameFormat();
+
+                if (format.hasProperty(QTextFormat::FrameBorder))
+                    emitAttribute("border", QString::number(format.border()));
+
+                html += QLatin1String(" style=\"-qt-table-type: frame;");
+                emitFloatStyle(format.position(), OmitStyleTag);
+
+                if (format.hasProperty(QTextFormat::FrameMargin)) {
+                    const QString margin = QString::number(format.margin());
+                    emitMargins(margin, margin, margin, margin);
+                }
+
+                html += QLatin1Char('\"');
+
+                emitTextLength("width", format.width());
+                emitTextLength("height", format.height());
+
+                QBrush bg = format.background();
+                if (bg != Qt::NoBrush)
+                    emitAttribute("bgcolor", bg.color().name());
+
+                html += QLatin1Char('>');
+                html += QLatin1String("<tr><td style=\"border: none;\">");
+                emitFrame(f->begin());
+                html += QLatin1String("</td></tr></table>");
+            }
+        } else if (it.currentBlock().isValid()) {
             emitBlock(it.currentBlock());
+        }
     }
 }
 

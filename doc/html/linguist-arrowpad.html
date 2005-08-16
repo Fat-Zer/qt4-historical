@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/examples/arrowpad.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/examples/arrowpad.qdoc -->
 <head>
     <title>Qt 4.0: Arrow Pad Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Arrow Pad Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Arrow Pad Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="linguist-arrowpad-arrowpad-cpp.html">linguist/arrowpad/arrowpad.cpp</a></li>
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="linguist-arrowpad-main-cpp.html">linguist/arrowpad/main.cpp</a></li>
 </ul>
 <p>This example is a slightly more involved and introduces a key <i>Qt Linguist</i> concept: &quot;contexts&quot;. It also shows how to use two or more languages.</p>
-<center><img src="images/linguist-arrowpad_en.png" /></center><p>We will use two translations, French and Dutch, although there is no effective limit on the number of possible translations that can be used with an application. The relevant lines of <tt>arrowpad.pro</tt> are</p>
+<p align="center"><img src="images/linguist-arrowpad_en.png" /></p><p>We will use two translations, French and Dutch, although there is no effective limit on the number of possible translations that can be used with an application. The relevant lines of <tt>arrowpad.pro</tt> are</p>
 <pre>&nbsp;   HEADERS      = arrowpad.h \
                    mainwindow.h
     SOURCES      = arrowpad.cpp \
@@ -52,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
         leftButton = new QPushButton(tr(&quot;&amp;Left&quot;));
         rightButton = new QPushButton(tr(&quot;&amp;Right&quot;));</pre>
 <p>We call <tt>ArrowPad::tr()</tt> for each button's label since the labels are user-visible text.</p>
-<center><img src="images/linguist-arrowpad_en.png" /></center><pre>&nbsp;   class MainWindow : public QMainWindow
+<p align="center"><img src="images/linguist-arrowpad_en.png" /></p><pre>&nbsp;   class MainWindow : public QMainWindow
     {
         Q_OBJECT</pre>
 <p>In the screenshot above, the whole window is a <tt>MainWindow</tt>. This is defined in the <tt>mainwindow.h</tt> header file. Here too, we use <tt>Q_OBJECT</tt>, so that <tt>MainWindow</tt> will become a context in <i>Qt Linguist</i>.</p>
@@ -71,7 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If there is no <tt>.qm</tt> message file for the locale chosen the original source text will be used and no error raised.</p>
 <a name="translating-to-french-and-dutch"></a>
 <h2>Translating to French and Dutch</h2>
-<p>We'll begin by translating the example application into French. Start <i>Qt Linguist</i> with <tt>arrowpad_fr.ts</tt>. You should get the seven source texts (&quot;&amp;Up&quot;, &quot;&amp;Left&quot;, etc.) grouped in two contexts (&quot;ArrowPad&quot; and &quot;<a href="mainwindow.html">MainWindow</a>&quot;).</p>
+<p>We'll begin by translating the example application into French. Start <i>Qt Linguist</i> with <tt>arrowpad_fr.ts</tt>. You should get the seven source texts (&quot;&amp;Up&quot;, &quot;&amp;Left&quot;, etc.) grouped in two contexts (&quot;ArrowPad&quot; and &quot;MainWindow&quot;).</p>
 <p>Now, enter the following translations:</p>
 <ul>
 <li><tt>ArrowPad</tt><ul>
@@ -114,8 +114,8 @@ body { background: #ffffff; color: black; }</style>
 <p>In Windows, either modify <tt>autoexec.bat</tt> or run</p>
 <pre>&nbsp;   set LANG=fr</pre>
 <p>When you run the program, you should now see the French version:</p>
-<center><img src="images/linguist-arrowpad_fr.png" /></center><p>Try the same with Dutch, by setting <tt>LANG=nl</tt>. Now the Dutch version should appear:</p>
-<center><img src="images/linguist-arrowpad_nl.png" /></center><a name="exercises"></a>
+<p align="center"><img src="images/linguist-arrowpad_fr.png" /></p><p>Try the same with Dutch, by setting <tt>LANG=nl</tt>. Now the Dutch version should appear:</p>
+<p align="center"><img src="images/linguist-arrowpad_nl.png" /></p><a name="exercises"></a>
 <h2>Exercises</h2>
 <p>Mark one of the translations in <i>Qt Linguist</i> as not done, i.e. by unchecking the &quot;done&quot; checkbox; run <tt>lupdate</tt>, then <tt>lrelease</tt>, then the example. What effect did this change have?</p>
 <p>Set <tt>LANG=fr_CA</tt> (French Canada) and run the example program again. Explain why the result is the same as with <tt>LANG=fr</tt>.</p>
@@ -124,6 +124,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

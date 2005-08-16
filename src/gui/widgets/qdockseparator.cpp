@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +27,8 @@
 
 #include "qmainwindow.h"
 #include "qmainwindowlayout_p.h"
+
+#ifndef QT_NO_DOCKWIDGET
 
 #include <qapplication.h>
 #include <qevent.h>
@@ -44,7 +46,9 @@ void QDockSeparator::setDock(QDockWidgetLayout *d)
     Q_ASSERT(d != 0);
     dock = d;
     orientation = dock->orientation;
+#ifndef QT_NO_CURSOR
     setCursor((orientation == Qt::Horizontal) ? Qt::SplitVCursor : Qt::SplitHCursor);
+#endif
 }
 
 bool QDockSeparator::event(QEvent *event)
@@ -69,7 +73,7 @@ void QDockSeparator::mousePressEvent(QMouseEvent *event)
     if (event->button() != Qt::LeftButton)
         return;
 
-    Q_ASSERT(!state);
+    delete state;
     state = new DragState;
 
     // we map from global coordinates to avoid nasty effects when
@@ -86,7 +90,8 @@ void QDockSeparator::mousePressEvent(QMouseEvent *event)
 
 void QDockSeparator::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_ASSERT(state != 0);
+    if (!state)
+        return;
 
     // we map from global coordinates to avoid nasty effects when
     // event compression kicks in
@@ -96,7 +101,7 @@ void QDockSeparator::mouseMoveEvent(QMouseEvent *event)
 
     // constrain the mouse move event
     if (qobject_cast<QMainWindowLayout *>(mw->layout())->constrain(dock, delta) != 0)
-	qobject_cast<QMainWindowLayout *>(mw->layout())->relayout();
+        qobject_cast<QMainWindowLayout *>(mw->layout())->relayout();
 }
 
 void QDockSeparator::mouseReleaseEvent(QMouseEvent *event)
@@ -109,10 +114,8 @@ void QDockSeparator::mouseReleaseEvent(QMouseEvent *event)
     l->relayout();
     l->discardLayoutInfo();
 
-    Q_ASSERT(state != 0);
-
     // restore focus
-    if (state->prevFocus)
+    if (state && state->prevFocus)
         state->prevFocus->setFocus();
 
     delete state;
@@ -134,3 +137,5 @@ void QDockSeparator::paintEvent(QPaintEvent *)
     opt.palette = palette();
     style()->drawPrimitive(QStyle::PE_IndicatorDockWidgetResizeHandle, &opt, &p, this);
 }
+
+#endif // QT_NO_DOCKWIDGET

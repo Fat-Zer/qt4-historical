@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,11 +39,6 @@ static QPixmap getPixmap(QTextDocument *doc, const QTextImageFormat &format)
 {
     QPixmap pm;
 
-    const bool hasWidth = format.hasProperty(QTextFormat::ImageWidth);
-    const int width = qRound(format.width());
-    const bool hasHeight = format.hasProperty(QTextFormat::ImageHeight);
-    const int height = qRound(format.height());
-
     QString name = format.name();
     const QVariant data = doc->resource(QTextDocument::ImageResource, name);
     if (data.type() == QVariant::Pixmap || data.type() == QVariant::Image) {
@@ -53,10 +48,12 @@ static QPixmap getPixmap(QTextDocument *doc, const QTextImageFormat &format)
     }
 
     if (pm.isNull()) {
-        QTextBrowser *browser = qobject_cast<QTextBrowser *>(doc->parent());
         QString context;
+#ifndef QT_NO_TEXTBROWSER
+        QTextBrowser *browser = qobject_cast<QTextBrowser *>(doc->parent());
         if (browser)
             context = browser->source().toString();
+#endif
         QImage img;
         if (QTextImageHandler::externalLoader)
             img = QTextImageHandler::externalLoader(name, context);
@@ -68,23 +65,38 @@ static QPixmap getPixmap(QTextDocument *doc, const QTextImageFormat &format)
         doc->addResource(QTextDocument::ImageResource, name, pm);
     }
 
+    return pm;
+}
+
+static QSize getPixmapSize(QTextDocument *doc, const QTextImageFormat &format)
+{
+    QPixmap pm;
+
+    const bool hasWidth = format.hasProperty(QTextFormat::ImageWidth);
+    const int width = qRound(format.width());
+    const bool hasHeight = format.hasProperty(QTextFormat::ImageHeight);
+    const int height = qRound(format.height());
+
+    QSize size(width, height);
+    if (!hasWidth || !hasHeight) {
+        pm = getPixmap(doc, format);
+        if (!hasWidth)
+            size.setWidth(pm.width());
+        if (!hasHeight)
+            size.setHeight(pm.height());
+    }
+
     qreal scale = 1.0;
     QPaintDevice *pdev = doc->documentLayout()->paintDevice();
-    if (pdev && !pm.isNull())
-        scale = qreal(pdev->logicalDpiY()) / qreal(pm.logicalDpiY());
-
-    QSize size = pm.size();
-    if (hasWidth)
-        size.setWidth(width);
-    if (hasHeight)
-        size.setHeight(height);
-
+    if (pdev) {
+        if (pm.isNull())
+            pm = getPixmap(doc, format);
+        if (!pm.isNull())
+            scale = qreal(pdev->logicalDpiY()) / qreal(pm.logicalDpiY());
+    }
     size *= scale;
 
-    if (size.isValid() && pm.size() != size)
-        pm = pm.scaled(size);
-
-    return pm;
+    return size;
 }
 
 QTextImageHandler::QTextImageHandler(QObject *parent)
@@ -97,7 +109,7 @@ QSizeF QTextImageHandler::intrinsicSize(QTextDocument *doc, int posInDocument, c
     Q_UNUSED(posInDocument)
     const QTextImageFormat imageFormat = format.toImageFormat();
 
-    return getPixmap(doc, imageFormat).size();
+    return getPixmapSize(doc, imageFormat);
 }
 
 void QTextImageHandler::drawObject(QPainter *p, const QRectF &rect, QTextDocument *doc, int posInDocument, const QTextFormat &format)
