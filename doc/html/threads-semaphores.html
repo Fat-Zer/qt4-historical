@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/semaphores.qdoc -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/doc/src/examples/semaphores.qdoc -->
 <head>
   <title>Qt 4.4: Semaphores Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -23,7 +23,7 @@
 <p>The producer writes data to the buffer until it reaches the end of the buffer, at which point it restarts from the beginning, overwriting existing data. The consumer thread reads the data as it is produced and writes it to standard error.</p>
 <p>Semaphores make it possible to have a higher level of concurrency than mutexes. If accesses to the buffer were guarded by a <a href="qmutex.html">QMutex</a>, the consumer thread couldn't access the buffer at the same time as the producer thread. Yet, there is no harm in having both threads working on <i>different parts</i> of the buffer at the same time.</p>
 <p>The example comprises two classes: <tt>Producer</tt> and <tt>Consumer</tt>. Both inherit from <a href="qthread.html">QThread</a>. The circular buffer used for communicating between these two classes and the semaphores that protect it are global variables.</p>
-<p>An alternative to using <a href="qsemaphore.html">QSemaphore</a> to solve the producer-consumer problem is to use <a href="qwaitcondition.html">QWaitCondition</a> and <a href="qmutex.html">QMutex</a>. This is what the <a href="threads-waitconditions.html">Wait Conditions</a> example does.</p>
+<p>An alternative to using <a href="qsemaphore.html">QSemaphore</a> to solve the producer-consumer problem is to use QWaitCondition and <a href="qmutex.html">QMutex</a>. This is what the <a href="threads-waitconditions.html">Wait Conditions</a> example does.</p>
 <a name="global-variables"></a>
 <h2>Global Variables</h2>
 <p>Let's start by reviewing the circular buffer and the associated semaphores:</p>

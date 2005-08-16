@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/gui/kernel/qformlayout.cpp -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/src/gui/kernel/qformlayout.cpp -->
 <head>
   <title>Qt 4.4: QFormLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QFormLayout" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -141,11 +140,11 @@
 </ul>
 <p>The table below shows the default appearance in different styles.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th><a href="qcommonstyle.html">QCommonStyle</a> derived styles (except <a href="qplastiquestyle.html">QPlastiqueStyle</a>)</th><th><a href="qmacstyle.html">QMacStyle</a></th><th><a href="qplastiquestyle.html">QPlastiqueStyle</a></th><th>Qtopia styles</th></tr></thead>
+<thead><tr valign="top" class="qt-style"><th><a href="qcommonstyle.html">QCommonStyle</a> derived styles (except <a href="qplastiquestyle.html">QPlastiqueStyle</a>)</th><th>QMacStyle</th><th><a href="qplastiquestyle.html">QPlastiqueStyle</a></th><th>Qtopia styles</th></tr></thead>
 <tr valign="top" class="odd"><td><img src="images/qformlayout-win.png" /></td><td><img src="images/qformlayout-mac.png" /></td><td><img src="images/qformlayout-kde.png" /></td><td><img src="images/qformlayout-qpe.png" /></td></tr>
 <tr valign="top" class="even"><td>Traditional style used for Windows, GNOME, and earlier versions of KDE. Labels are left aligned, and expanding fields grow to fill the available space. (This normally corresponds to what we would get using a two-column <a href="qgridlayout.html">QGridLayout</a>.)</td><td>Style based on the <a href="http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/">Mac OS X Aqua guidelines</a>. Labels are right-aligned, the fields don't grow beyond their size hint, and the form is horizontally centered.</td><td>Recommended style for <a href="http://www.kdedevelopers.org/node/2345">KDE applications</a>. Similar to MacStyle, except that the form is left-aligned and all fields grow to fill the available space.</td><td>Default style for Qtopia styles. Labels are right-aligned, expanding fields grow to fill the available space, and row wrapping is enabled for long lines.</td></tr>
 </table></p>
-<p>The form styles can be also be overridden individually by calling <a href="qformlayout.html#labelAlignment-prop">setLabelAlignment</a>(), <a href="qformlayout.html#formAlignment-prop">setFormAlignment</a>(), <a href="qformlayout.html#fieldGrowthPolicy-prop">setFieldGrowthPolicy</a>(), and <a href="qformlayout.html#rowWrapPolicy-prop">setRowWrapPolicy</a>(). For example, to simulate the form layout appearance of <a href="qmacstyle.html">QMacStyle</a> on all platforms, but with left-aligned labels, you could write:</p>
+<p>The form styles can be also be overridden individually by calling <a href="qformlayout.html#labelAlignment-prop">setLabelAlignment</a>(), <a href="qformlayout.html#formAlignment-prop">setFormAlignment</a>(), <a href="qformlayout.html#fieldGrowthPolicy-prop">setFieldGrowthPolicy</a>(), and <a href="qformlayout.html#rowWrapPolicy-prop">setRowWrapPolicy</a>(). For example, to simulate the form layout appearance of QMacStyle on all platforms, but with left-aligned labels, you could write:</p>
 <pre>         formLayout-&gt;setRowWrapPolicy(QFormLayout::DontWrapRows);
          formLayout-&gt;setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
          formLayout-&gt;setFormAlignment(Qt::AlignHCenter | Qt::AlignTop);
@@ -153,22 +152,15 @@
 <p>See also <a href="qgridlayout.html">QGridLayout</a>, <a href="qboxlayout.html">QBoxLayout</a>, and <a href="qstackedlayout.html">QStackedLayout</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QFormLayout/FieldGrowthPolicy" />
-<a name="//apple_ref/cpp/econst/QFormLayout/FieldsStayAtSizeHint" />
-<a name="//apple_ref/cpp/econst/QFormLayout/ExpandingFieldsGrow" />
-<a name="//apple_ref/cpp/econst/QFormLayout/AllNonFixedFieldsGrow" />
 <h3 class="fn"><a name="FieldGrowthPolicy-enum"></a>enum QFormLayout::FieldGrowthPolicy</h3>
 <p>This enum specifies the different policies that can be used to control the way in which the form's fields grow.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QFormLayout::FieldsStayAtSizeHint</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The fields never grow beyond their <a href="qlayoutitem.html#sizeHint">effective size hint</a>. This is the default for <a href="qmacstyle.html">QMacStyle</a>.</td></tr>
+<tr><td valign="top"><tt>QFormLayout::FieldsStayAtSizeHint</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The fields never grow beyond their <a href="qlayoutitem.html#sizeHint">effective size hint</a>. This is the default for QMacStyle.</td></tr>
 <tr><td valign="top"><tt>QFormLayout::ExpandingFieldsGrow</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Fields with an horizontal <a href="qsizepolicy.html">size policy</a> of <a href="qsizepolicy.html#Policy-enum">Expanding</a> or <a href="qsizepolicy.html#Policy-enum">MinimumExpanding</a> will grow to fill the available space. The other fields will not grow beyond their effective size hint. This is the default policy for Plastique.</td></tr>
 <tr><td valign="top"><tt>QFormLayout::AllNonFixedFieldsGrow</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">All fields with a size policy that allows them to grow will grow to fill the available space. This is the default policy for most styles.</td></tr>
 </table></p>
 <p>See also <a href="qformlayout.html#fieldGrowthPolicy-prop">fieldGrowthPolicy</a>.</p>
-<a name="//apple_ref/cpp/tag/QFormLayout/ItemRole" />
-<a name="//apple_ref/cpp/econst/QFormLayout/LabelRole" />
-<a name="//apple_ref/cpp/econst/QFormLayout/FieldRole" />
 <h3 class="fn"><a name="ItemRole-enum"></a>enum QFormLayout::ItemRole</h3>
 <p>This enum specifies the types of widgets (or other layout items) that may appear in a row.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -177,10 +169,6 @@
 <tr><td valign="top"><tt>QFormLayout::FieldRole</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A field widget.</td></tr>
 </table></p>
 <p>See also <a href="qformlayout.html#itemAt">itemAt</a>() and <a href="qformlayout.html#getItemPosition">getItemPosition</a>().</p>
-<a name="//apple_ref/cpp/tag/QFormLayout/RowWrapPolicy" />
-<a name="//apple_ref/cpp/econst/QFormLayout/DontWrapRows" />
-<a name="//apple_ref/cpp/econst/QFormLayout/WrapLongRows" />
-<a name="//apple_ref/cpp/econst/QFormLayout/WrapAllRows" />
 <h3 class="fn"><a name="RowWrapPolicy-enum"></a>enum QFormLayout::RowWrapPolicy</h3>
 <p>This enum specifies the different policies that can be used to control the way in which the form's rows wrap.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -192,11 +180,9 @@
 <p>See also <a href="qformlayout.html#rowWrapPolicy-prop">rowWrapPolicy</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QFormLayout/fieldGrowthPolicy" />
-<a name="//apple_ref/cpp/instm/QFormLayout/setFieldGrowthPolicy" />
 <h3 class="fn"><a name="fieldGrowthPolicy-prop"></a>fieldGrowthPolicy : <a href="qformlayout.html#FieldGrowthPolicy-enum">FieldGrowthPolicy</a></h3>
 <p>This property holds the way in which the form's fields grow.</p>
-<p>The default value depends on the widget or application style. For <a href="qmacstyle.html">QMacStyle</a>, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">FieldsStayAtSizeHint</a>; for <a href="qcommonstyle.html">QCommonStyle</a> derived styles (like Plastique and Windows), the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">ExpandingFieldsGrow</a>; for Qtopia styles, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">AllNonFixedFieldsGrow</a>.</p>
+<p>The default value depends on the widget or application style. For QMacStyle, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">FieldsStayAtSizeHint</a>; for <a href="qcommonstyle.html">QCommonStyle</a> derived styles (like Plastique and Windows), the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">ExpandingFieldsGrow</a>; for Qtopia styles, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">AllNonFixedFieldsGrow</a>.</p>
 <p>If none of the fields can grow and the form is resized, extra space is distributed according to the current <a href="qformlayout.html#formAlignment-prop">form alignment</a>.</p>
 <p>Access functions:</p>
 <ul>
@@ -204,19 +190,15 @@
 <li><div class="fn"/><b>void setFieldGrowthPolicy ( FieldGrowthPolicy <i>policy</i> )</b></li>
 </ul>
 <p>See also <a href="qformlayout.html#formAlignment-prop">formAlignment</a> and <a href="qformlayout.html#rowWrapPolicy-prop">rowWrapPolicy</a>.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/formAlignment" />
-<a name="//apple_ref/cpp/instm/QFormLayout/setFormAlignment" />
 <h3 class="fn"><a name="formAlignment-prop"></a>formAlignment : <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></h3>
 <p>This property holds the alignment of the form layout's contents within the layout's geometry.</p>
-<p>The default value depends on the widget or application style. For <a href="qmacstyle.html">QMacStyle</a>, the default is <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> | <a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a>; for the other styles, the default is <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> | <a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a>.</p>
+<p>The default value depends on the widget or application style. For QMacStyle, the default is <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> | <a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a>; for the other styles, the default is <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> | <a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::Alignment formAlignment () const</b></li>
 <li><div class="fn"/><b>void setFormAlignment ( Qt::Alignment <i>alignment</i> )</b></li>
 </ul>
 <p>See also <a href="qformlayout.html#labelAlignment-prop">labelAlignment</a> and <a href="qformlayout.html#rowWrapPolicy-prop">rowWrapPolicy</a>.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/horizontalSpacing" />
-<a name="//apple_ref/cpp/instm/QFormLayout/setHorizontalSpacing" />
 <h3 class="fn"><a name="horizontalSpacing-prop"></a>horizontalSpacing : int</h3>
 <p>This property holds the spacing between widgets that are laid out side by side.</p>
 <p>If no value is explicitly set, the layout's horizontal spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
@@ -226,8 +208,6 @@
 <li><div class="fn"/><b>void setHorizontalSpacing ( int <i>spacing</i> )</b></li>
 </ul>
 <p>See also <a href="qformlayout.html#verticalSpacing-prop">verticalSpacing</a>, <a href="qstyle.html#pixelMetric">QStyle::pixelMetric</a>(), and <a href="qstyle.html#PixelMetric-enum">PM_LayoutHorizontalSpacing</a>.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/labelAlignment" />
-<a name="//apple_ref/cpp/instm/QFormLayout/setLabelAlignment" />
 <h3 class="fn"><a name="labelAlignment-prop"></a>labelAlignment : <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></h3>
 <p>This property holds the horizontal alignment of the labels.</p>
 <p>The default value depends on the widget or application style. For <a href="qcommonstyle.html">QCommonStyle</a> derived styles, except for <a href="qplastiquestyle.html">QPlastiqueStyle</a>, the default is <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>; for the other styles, the default is <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>.</p>
@@ -237,8 +217,6 @@
 <li><div class="fn"/><b>void setLabelAlignment ( Qt::Alignment <i>alignment</i> )</b></li>
 </ul>
 <p>See also <a href="qformlayout.html#formAlignment-prop">formAlignment</a>.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/rowWrapPolicy" />
-<a name="//apple_ref/cpp/instm/QFormLayout/setRowWrapPolicy" />
 <h3 class="fn"><a name="rowWrapPolicy-prop"></a>rowWrapPolicy : <a href="qformlayout.html#RowWrapPolicy-enum">RowWrapPolicy</a></h3>
 <p>This property holds the way in which the form's rows wrap.</p>
 <p>The default value depends on the widget or application style. For Qtopia styles, the default is <a href="qformlayout.html#RowWrapPolicy-enum">WrapLongRows</a>; for the other styles, the default is <a href="qformlayout.html#RowWrapPolicy-enum">DontWrapRows</a>.</p>
@@ -249,8 +227,6 @@
 <li><div class="fn"/><b>void setRowWrapPolicy ( RowWrapPolicy <i>policy</i> )</b></li>
 </ul>
 <p>See also <a href="qformlayout.html#fieldGrowthPolicy-prop">fieldGrowthPolicy</a>.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/verticalSpacing" />
-<a name="//apple_ref/cpp/instm/QFormLayout/setVerticalSpacing" />
 <h3 class="fn"><a name="verticalSpacing-prop"></a>verticalSpacing : int</h3>
 <p>This property holds the spacing between widgets that are laid out on top of each other.</p>
 <p>If no value is explicitly set, the layout's vertical spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
@@ -262,14 +238,11 @@
 <p>See also <a href="qformlayout.html#horizontalSpacing-prop">horizontalSpacing</a>, <a href="qstyle.html#pixelMetric">QStyle::pixelMetric</a>(), and <a href="qstyle.html#PixelMetric-enum">PM_LayoutHorizontalSpacing</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QFormLayout/QFormLayout" />
 <h3 class="fn"><a name="QFormLayout"></a>QFormLayout::QFormLayout ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a new form layout with the given <i>parent</i> widget.</p>
 <p>See also <a href="qwidget.html#setLayout">QWidget::setLayout</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/~QFormLayout" />
 <h3 class="fn"><a name="dtor.QFormLayout"></a>QFormLayout::~QFormLayout ()</h3>
 <p>Destroys the form layout.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/addRow" />
 <h3 class="fn"><a name="addRow"></a>void QFormLayout::addRow ( <a href="qwidget.html">QWidget</a> * <i>label</i>, <a href="qwidget.html">QWidget</a> * <i>field</i> )</h3>
 <p>Adds a new row to the bottom of this form layout, with the given <i>label</i> and <i>field</i>.</p>
 <p>See also <a href="qformlayout.html#insertRow">insertRow</a>().</p>
@@ -287,18 +260,14 @@
 <h3 class="fn"><a name="addRow-6"></a>void QFormLayout::addRow ( <a href="qlayout.html">QLayout</a> * <i>layout</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Adds the specified <i>layout</i> at the end of this form layout. The <i>layout</i> spans both columns.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/getItemPosition" />
 <h3 class="fn"><a name="getItemPosition"></a>void QFormLayout::getItemPosition ( int <i>index</i>, int * <i>rowPtr</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> * <i>rolePtr</i> ) const</h3>
 <p>Retrieves the row and role (column) of the item at the specified <i>index</i>. If <i>index</i> is out of bounds, *<i>rowPtr</i> is set to -1; otherwise the row is stored in *<i>rowPtr</i> and the role is stored in *<i>rolePtr</i>.</p>
 <p>See also <a href="qformlayout.html#itemAt">itemAt</a>(), <a href="qlayout.html#count">count</a>(), <a href="qformlayout.html#getLayoutPosition">getLayoutPosition</a>(), and <a href="qformlayout.html#getWidgetPosition">getWidgetPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/getLayoutPosition" />
 <h3 class="fn"><a name="getLayoutPosition"></a>void QFormLayout::getLayoutPosition ( <a href="qlayout.html">QLayout</a> * <i>layout</i>, int * <i>rowPtr</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> * <i>rolePtr</i> ) const</h3>
 <p>Retrieves the row and role (column) of the specified child <i>layout</i>. If <i>layout</i> is not in the form layout, *<i>rowPtr</i> is set to -1; otherwise the row is stored in *<i>rowPtr</i> and the role is stored in *<i>rolePtr</i>.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/getWidgetPosition" />
 <h3 class="fn"><a name="getWidgetPosition"></a>void QFormLayout::getWidgetPosition ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int * <i>rowPtr</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> * <i>rolePtr</i> ) const</h3>
 <p>Retrieves the row and role (column) of the specified <i>widget</i> in the layout. If <i>widget</i> is not in the layout, *<i>rowPtr</i> is set to -1; otherwise the row is stored in *<i>rowPtr</i> and the role is stored in *<i>rolePtr</i>.</p>
 <p>See also <a href="qformlayout.html#getItemPosition">getItemPosition</a>() and <a href="qformlayout.html#itemAt">itemAt</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/insertRow" />
 <h3 class="fn"><a name="insertRow"></a>void QFormLayout::insertRow ( int <i>row</i>, <a href="qwidget.html">QWidget</a> * <i>label</i>, <a href="qwidget.html">QWidget</a> * <i>field</i> )</h3>
 <p>Inserts a new row at position <i>row</i> in this form layout, with the given <i>label</i> and <i>field</i>. If <i>row</i> is out of bounds, the new row is added at the end.</p>
 <p>See also <a href="qformlayout.html#addRow">addRow</a>().</p>
@@ -316,43 +285,35 @@
 <h3 class="fn"><a name="insertRow-6"></a>void QFormLayout::insertRow ( int <i>row</i>, <a href="qlayout.html">QLayout</a> * <i>layout</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts the specified <i>layout</i> at position <i>row</i> in this form layout. The <i>layout</i> spans both columns. If <i>row</i> is out of bounds, the widget is added at the end.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/itemAt" />
 <h3 class="fn"><a name="itemAt"></a><a href="qlayoutitem.html">QLayoutItem</a> * QFormLayout::itemAt ( int <i>row</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> <i>role</i> ) const</h3>
 <p>Returns the layout item in the given <i>row</i> with the specified <i>role</i> (column). Returns 0 if there is no such item.</p>
 <p>See also <a href="qlayout.html#itemAt">QLayout::itemAt</a>() and <a href="qformlayout.html#setItem">setItem</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/labelForField" />
 <h3 class="fn"><a name="labelForField"></a><a href="qwidget.html">QWidget</a> * QFormLayout::labelForField ( <a href="qwidget.html">QWidget</a> * <i>field</i> ) const</h3>
 <p>Returns the label associated with the given <i>field</i>.</p>
 <p>See also <a href="qformlayout.html#itemAt">itemAt</a>().</p>
 <h3 class="fn"><a name="labelForField-2"></a><a href="qwidget.html">QWidget</a> * QFormLayout::labelForField ( <a href="qlayout.html">QLayout</a> * <i>field</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/rowCount" />
 <h3 class="fn"><a name="rowCount"></a>int QFormLayout::rowCount () const</h3>
 <p>Returns the number of rows in the form.</p>
 <p>See also <a href="qlayout.html#count">QLayout::count</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/setItem" />
 <h3 class="fn"><a name="setItem"></a>void QFormLayout::setItem ( int <i>row</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> <i>role</i>, <a href="qlayoutitem.html">QLayoutItem</a> * <i>item</i> )</h3>
 <p>Sets the item in the given <i>row</i> for the given <i>role</i> to <i>item</i>, extending the layout with empty rows if necessary.</p>
 <p>If the cell is already occupied, the <i>item</i> is not inserted and an error message is sent to the console.</p>
 <p><b>Warning:</b> Do not use this function to add child layouts or child widget items. Use <a href="qformlayout.html#setLayout">setLayout</a>() or <a href="qformlayout.html#setWidget">setWidget</a>() instead.</p>
 <p>See also <a href="qformlayout.html#setLayout">setLayout</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/setLayout" />
 <h3 class="fn"><a name="setLayout"></a>void QFormLayout::setLayout ( int <i>row</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> <i>role</i>, <a href="qlayout.html">QLayout</a> * <i>layout</i> )</h3>
 <p>Sets the sub-layout in the given <i>row</i> for the given <i>role</i> to <i>layout</i>, extending the form layout with empty rows if necessary.</p>
 <p>If the cell is already occupied, the <i>layout</i> is not inserted and an error message is sent to the console.</p>
 <p><b>Note:</b> For most applications, <a href="qformlayout.html#addRow">addRow</a>() or <a href="qformlayout.html#insertRow">insertRow</a>() should be used instead of setLayout().</p>
 <p>See also <a href="qformlayout.html#setWidget">setWidget</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/setSpacing" />
 <h3 class="fn"><a name="setSpacing"></a>void QFormLayout::setSpacing ( int <i>spacing</i> )</h3>
 <p>This function sets both the vertical and horizontal spacing to <i>spacing</i>.</p>
 <p>See also <a href="qformlayout.html#spacing">spacing</a>(), <a href="qformlayout.html#verticalSpacing-prop">setVerticalSpacing</a>(), and <a href="qformlayout.html#horizontalSpacing-prop">setHorizontalSpacing</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/setWidget" />
 <h3 class="fn"><a name="setWidget"></a>void QFormLayout::setWidget ( int <i>row</i>, <a href="qformlayout.html#ItemRole-enum">ItemRole</a> <i>role</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Sets the widget in the given <i>row</i> for the given <i>role</i> to <i>widget</i>, extending the layout with empty rows if necessary.</p>
 <p>If the cell is already occupied, the <i>widget</i> is not inserted and an error message is sent to the console.</p>
 <p><b>Note:</b> For most applications, <a href="qformlayout.html#addRow">addRow</a>() or <a href="qformlayout.html#insertRow">insertRow</a>() should be used instead of setWidget().</p>
 <p>See also <a href="qformlayout.html#setLayout">setLayout</a>().</p>
-<a name="//apple_ref/cpp/instm/QFormLayout/spacing" />
 <h3 class="fn"><a name="spacing"></a>int QFormLayout::spacing () const</h3>
 <p>If the vertical spacing is equal to the horizontal spacing, this function returns that value; otherwise it returns -1.</p>
 <p>See also <a href="qformlayout.html#setSpacing">setSpacing</a>(), <a href="qformlayout.html#verticalSpacing-prop">verticalSpacing</a>(), and <a href="qformlayout.html#horizontalSpacing-prop">horizontalSpacing</a>().</p>

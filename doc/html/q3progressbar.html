@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/qt3support/widgets/q3progressbar.cpp -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/src/qt3support/widgets/q3progressbar.cpp -->
 <head>
   <title>Qt 4.4: Q3ProgressBar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//Q3ProgressBar" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -59,7 +58,6 @@
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -81,7 +79,6 @@
 <ul>
 <li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
-<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -89,7 +86,6 @@
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
 <li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
@@ -103,8 +99,6 @@
 <p>See also <a href="qprogressdialog.html">QProgressDialog</a> and <a href="qprogressdialog.html">QProgressDialog</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/centerIndicator" />
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/setCenterIndicator" />
 <h3 class="fn"><a name="centerIndicator-prop"></a>centerIndicator : bool</h3>
 <p>This property holds whether the indicator string should be centered.</p>
 <p>Access functions:</p>
@@ -112,8 +106,6 @@
 <li><div class="fn"/><b>bool centerIndicator () const</b></li>
 <li><div class="fn"/><b>void setCenterIndicator ( bool <i>on</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/percentageVisible" />
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/setPercentageVisible" />
 <h3 class="fn"><a name="percentageVisible-prop"></a>percentageVisible : bool</h3>
 <p>This property holds whether the current progress value is displayed.</p>
 <p>The default is true.</p>
@@ -123,8 +115,6 @@
 <li><div class="fn"/><b>void setPercentageVisible ( bool )</b></li>
 </ul>
 <p>See also <a href="q3progressbar.html#centerIndicator-prop">centerIndicator</a>.</p>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/progress" />
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/setProgress" />
 <h3 class="fn"><a name="progress-prop"></a>progress : int</h3>
 <p>This property holds the current amount of progress.</p>
 <p>This property is -1 if progress counting has not started.</p>
@@ -134,7 +124,6 @@
 <li><div class="fn"/><b>virtual void setProgress ( int <i>progress</i> )</b></li>
 <li><div class="fn"/><b>void setProgress ( int <i>progress</i>, int <i>totalSteps</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/progressString" />
 <h3 class="fn"><a name="progressString-prop"></a>progressString : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the amount of progress as a string.</p>
 <p>This property is an empty string if progress counting has not started.</p>
@@ -142,8 +131,6 @@
 <ul>
 <li><div class="fn"/><b>const QString &amp; progressString () const</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/totalSteps" />
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/setTotalSteps" />
 <h3 class="fn"><a name="totalSteps-prop"></a>totalSteps : int</h3>
 <p>This property holds the total number of steps.</p>
 <p>If totalSteps is 0, the progress bar will display a busy indicator.</p>
@@ -154,7 +141,6 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/Q3ProgressBar" />
 <h3 class="fn"><a name="Q3ProgressBar"></a>Q3ProgressBar::Q3ProgressBar ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>f</i> = 0 )</h3>
 <p>Constructs a progress bar.</p>
 <p>The total number of steps is set to 100 by default.</p>
@@ -165,22 +151,18 @@
 <p>The <i>totalSteps</i> is the total number of steps that need to be completed for the operation which this progress bar represents. For example, if the operation is to examine 50 files, this value would be 50. Before examining the first file, call setProgress(0); call setProgress(50) after examining the last file.</p>
 <p>The <i>parent</i>, and widget flags, <i>f</i>, are passed to the <a href="qframe.html#QFrame">QFrame::QFrame</a>() constructor.</p>
 <p>See also <a href="q3progressbar.html#totalSteps-prop">setTotalSteps</a>() and <a href="q3progressbar.html#progress-prop">setProgress</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/margin" />
 <h3 class="fn"><a name="margin"></a>int Q3ProgressBar::margin () const</h3>
 <p>Returns the with of the the margin around the contents of the widget.</p>
 <p>This function uses <a href="qwidget.html#getContentsMargins">QWidget::getContentsMargins</a>() to get the margin.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="q3progressbar.html#setMargin">setMargin</a>() and <a href="qwidget.html#getContentsMargins">QWidget::getContentsMargins</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/reset" />
 <h3 class="fn"><a name="reset"></a>void Q3ProgressBar::reset ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Reset the progress bar. The progress bar &quot;rewinds&quot; and shows no progress.</p>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/setIndicator" />
 <h3 class="fn"><a name="setIndicator"></a>bool Q3ProgressBar::setIndicator ( <a href="qstring.html">QString</a> &amp; <i>indicator</i>, int <i>progress</i>, int <i>totalSteps</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This method is called to generate the text displayed in the center (or in some styles, to the left) of the progress bar.</p>
 <p>The <i>progress</i> may be negative, indicating that the progress bar is in the &quot;reset&quot; state before any progress is set.</p>
 <p>The default implementation is the percentage of completion or blank in the reset state. The percentage is calculated based on the <i>progress</i> and <i>totalSteps</i>. You can set the <i>indicator</i> text if you wish.</p>
 <p>To allow efficient repainting of the progress bar, this method should return false if the string is unchanged from the last call to this function.</p>
-<a name="//apple_ref/cpp/instm/Q3ProgressBar/setMargin" />
 <h3 class="fn"><a name="setMargin"></a>void Q3ProgressBar::setMargin ( int <i>margin</i> )</h3>
 <p>Sets the width of the margin around the contents of the widget to <i>margin</i>.</p>
 <p>This function uses <a href="qwidget.html#setContentsMargins">QWidget::setContentsMargins</a>() to set the margin.</p>

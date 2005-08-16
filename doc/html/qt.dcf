@@ -1325,7 +1325,7 @@
     <section ref="qabstractxmlreceiver.html" title="QAbstractXmlReceiver Class Reference">
         <keyword ref="qabstractxmlreceiver.html">QAbstractXmlReceiver</keyword>
         <keyword ref="qabstractxmlreceiver.html#atomicValue">atomicValue</keyword>
-        <keyword ref="qabstractxmlreceiver.html#attributex">attribute</keyword>
+        <keyword ref="qabstractxmlreceiver.html#attribute">attribute</keyword>
         <keyword ref="qabstractxmlreceiver.html#characters">characters</keyword>
         <keyword ref="qabstractxmlreceiver.html#comment">comment</keyword>
         <keyword ref="qabstractxmlreceiver.html#endDocument">endDocument</keyword>
@@ -1784,6 +1784,7 @@
         <keyword ref="qapplication.html#topLevelWidgets">topLevelWidgets</keyword>
         <keyword ref="qapplication.html#type">type</keyword>
         <keyword ref="qapplication.html#widgetAt">widgetAt</keyword>
+        <keyword ref="qapplication.html#x11ClientMessage">x11ClientMessage</keyword>
         <keyword ref="qapplication.html#x11EventFilter">x11EventFilter</keyword>
         <keyword ref="qapplication.html#x11ProcessEvent">x11ProcessEvent</keyword>
         <keyword ref="qapplication.html#qApp">qApp</keyword>
@@ -2382,7 +2383,9 @@
         <keyword ref="qclipboard.html#Mode-enum">QClipboard::Selection</keyword>
         <keyword ref="qclipboard.html#changed">changed</keyword>
         <keyword ref="qclipboard.html#clear">clear</keyword>
+        <keyword ref="qclipboard.html#connectNotify">connectNotify</keyword>
         <keyword ref="qclipboard.html#dataChanged">dataChanged</keyword>
+        <keyword ref="qclipboard.html#event">event</keyword>
         <keyword ref="qclipboard.html#findBufferChanged">findBufferChanged</keyword>
         <keyword ref="qclipboard.html#image">image</keyword>
         <keyword ref="qclipboard.html#mimeData">mimeData</keyword>
@@ -2511,23 +2514,6 @@
         <keyword ref="qcolorgroup.html#operator-eq-eq">operator==</keyword>
         <section ref="qcolorgroup-members.html" title="List of all members"/>
         <section ref="qcolorgroup-qt3.html" title="Qt 3 support members"/>
-    </section>
-    <section ref="qcolormap.html" title="QColormap Class Reference">
-        <keyword ref="qcolormap.html">QColormap</keyword>
-        <keyword ref="qcolormap.html#Mode-enum">Mode</keyword>
-        <keyword ref="qcolormap.html#Mode-enum">QColormap::Direct</keyword>
-        <keyword ref="qcolormap.html#Mode-enum">QColormap::Indexed</keyword>
-        <keyword ref="qcolormap.html#Mode-enum">QColormap::Gray</keyword>
-        <keyword ref="qcolormap.html#colorAt">colorAt</keyword>
-        <keyword ref="qcolormap.html#colormap">colormap</keyword>
-        <keyword ref="qcolormap.html#depth">depth</keyword>
-        <keyword ref="qcolormap.html#hPal">hPal</keyword>
-        <keyword ref="qcolormap.html#instance">instance</keyword>
-        <keyword ref="qcolormap.html#mode">mode</keyword>
-        <keyword ref="qcolormap.html#pixel">pixel</keyword>
-        <keyword ref="qcolormap.html#size">size</keyword>
-        <keyword ref="qcolormap.html#operator-eq">operator=</keyword>
-        <section ref="qcolormap-members.html" title="List of all members"/>
     </section>
     <section ref="qcolumnview.html" title="QColumnView Class Reference">
         <keyword ref="qcolumnview.html">QColumnView</keyword>
@@ -3515,16 +3501,6 @@
     <section ref="qdesktopservices.html" title="QDesktopServices Class Reference">
         <keyword ref="qdesktopservices.html">QDesktopServices</keyword>
         <keyword ref="qdesktopservices.html#StandardLocation-enum">StandardLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::TempLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::PicturesLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::HomeLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::DocumentsLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::MusicLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::ApplicationsLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::DataLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::MoviesLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::DesktopLocation</keyword>
-        <keyword ref="qdesktopservices.html#StandardLocation-enum">QDesktopServices::FontsLocation</keyword>
         <keyword ref="qdesktopservices.html#displayName">displayName</keyword>
         <keyword ref="qdesktopservices.html#openUrl">openUrl</keyword>
         <keyword ref="qdesktopservices.html#setUrlHandler">setUrlHandler</keyword>
@@ -3909,7 +3885,7 @@
     </section>
     <section ref="qdomelement.html" title="QDomElement Class Reference">
         <keyword ref="qdomelement.html">QDomElement</keyword>
-        <keyword ref="qdomelement.html#attributex">attribute</keyword>
+        <keyword ref="qdomelement.html#attribute">attribute</keyword>
         <keyword ref="qdomelement.html#attributeNS">attributeNS</keyword>
         <keyword ref="qdomelement.html#attributeNode">attributeNode</keyword>
         <keyword ref="qdomelement.html#attributeNodeNS">attributeNodeNS</keyword>
@@ -4768,6 +4744,7 @@
         <keyword ref="qfont.html#Weight-enum">QFont::Black</keyword>
         <keyword ref="qfont.html#bold">bold</keyword>
         <keyword ref="qfont.html#capitalization">capitalization</keyword>
+        <keyword ref="qfont.html#cleanup">cleanup</keyword>
         <keyword ref="qfont.html#defaultFamily">defaultFamily</keyword>
         <keyword ref="qfont.html#exactMatch">exactMatch</keyword>
         <keyword ref="qfont.html#family">family</keyword>
@@ -4775,6 +4752,7 @@
         <keyword ref="qfont.html#freetypeFace">freetypeFace</keyword>
         <keyword ref="qfont.html#fromString">fromString</keyword>
         <keyword ref="qfont.html#handle">handle</keyword>
+        <keyword ref="qfont.html#initialize">initialize</keyword>
         <keyword ref="qfont.html#insertSubstitution">insertSubstitution</keyword>
         <keyword ref="qfont.html#insertSubstitutions">insertSubstitutions</keyword>
         <keyword ref="qfont.html#isCopyOf">isCopyOf</keyword>
@@ -5083,6 +5061,7 @@
         <keyword ref="qfsfileengine.html">QFSFileEngine</keyword>
         <keyword ref="qfsfileengine.html#currentPath">currentPath</keyword>
         <keyword ref="qfsfileengine.html#drives">drives</keyword>
+        <keyword ref="qfsfileengine.html#fileFlags">fileFlags</keyword>
         <keyword ref="qfsfileengine.html#homePath">homePath</keyword>
         <keyword ref="qfsfileengine.html#open">open</keyword>
         <keyword ref="qfsfileengine.html#rootPath">rootPath</keyword>
@@ -5334,6 +5313,7 @@
         <keyword ref="qglcontext.html#setWindowCreated">setWindowCreated</keyword>
         <keyword ref="qglcontext.html#swapBuffers">swapBuffers</keyword>
         <keyword ref="qglcontext.html#textureCacheLimit">textureCacheLimit</keyword>
+        <keyword ref="qglcontext.html#tryVisual">tryVisual</keyword>
         <keyword ref="qglcontext.html#windowCreated">windowCreated</keyword>
         <section ref="qglcontext-members.html" title="List of all members"/>
         <section ref="qglcontext-obsolete.html" title="Obsolete members"/>
@@ -5479,6 +5459,7 @@
         <keyword ref="qglwidget.html#resizeOverlayGL">resizeOverlayGL</keyword>
         <keyword ref="qglwidget.html#setAutoBufferSwap">setAutoBufferSwap</keyword>
         <keyword ref="qglwidget.html#setColormap">setColormap</keyword>
+        <keyword ref="qglwidget.html#setContext">setContext</keyword>
         <keyword ref="qglwidget.html#setMouseTracking">setMouseTracking</keyword>
         <keyword ref="qglwidget.html#swapBuffers">swapBuffers</keyword>
         <keyword ref="qglwidget.html#updateGL">updateGL</keyword>
@@ -6350,7 +6331,6 @@
         <keyword ref="qhash.html#operator-eq">operator=</keyword>
         <keyword ref="qhash.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qhash.html#operator-5b-5d">operator[]</keyword>
-        <keyword ref="qhash.html#qHashx">qHash</keyword>
         <section ref="qhash-members.html" title="List of all members"/>
     </section>
     <section ref="qhashiterator.html" title="QHashIterator Class Reference">
@@ -7276,6 +7256,7 @@
         <keyword ref="qkeyevent.html#nativeScanCode">nativeScanCode</keyword>
         <keyword ref="qkeyevent.html#nativeVirtualKey">nativeVirtualKey</keyword>
         <keyword ref="qkeyevent.html#text">text</keyword>
+        <keyword ref="qkeyevent.html#operator-eq-eq">operator==</keyword>
         <section ref="qkeyevent-members.html" title="List of all members"/>
         <section ref="qkeyevent-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -8498,6 +8479,10 @@
         <keyword ref="qlocalsocket.html#LocalSocketState-enum">QLocalSocket::UnconnectedState</keyword>
         <keyword ref="qlocalsocket.html#LocalSocketState-enum">QLocalSocket::ConnectingState</keyword>
         <keyword ref="qlocalsocket.html#abort">abort</keyword>
+        <keyword ref="qlocalsocket.html#bytesAvailable">bytesAvailable</keyword>
+        <keyword ref="qlocalsocket.html#bytesToWrite">bytesToWrite</keyword>
+        <keyword ref="qlocalsocket.html#canReadLine">canReadLine</keyword>
+        <keyword ref="qlocalsocket.html#close">close</keyword>
         <keyword ref="qlocalsocket.html#connectToServer">connectToServer</keyword>
         <keyword ref="qlocalsocket.html#connected">connected</keyword>
         <keyword ref="qlocalsocket.html#disconnectFromServer">disconnectFromServer</keyword>
@@ -8507,43 +8492,19 @@
         <keyword ref="qlocalsocket.html#fullServerName">fullServerName</keyword>
         <keyword ref="qlocalsocket.html#isValid">isValid</keyword>
         <keyword ref="qlocalsocket.html#readBufferSize">readBufferSize</keyword>
+        <keyword ref="qlocalsocket.html#readData">readData</keyword>
         <keyword ref="qlocalsocket.html#serverName">serverName</keyword>
         <keyword ref="qlocalsocket.html#setReadBufferSize">setReadBufferSize</keyword>
         <keyword ref="qlocalsocket.html#setSocketDescriptor">setSocketDescriptor</keyword>
         <keyword ref="qlocalsocket.html#socketDescriptor">socketDescriptor</keyword>
         <keyword ref="qlocalsocket.html#state">state</keyword>
         <keyword ref="qlocalsocket.html#stateChanged">stateChanged</keyword>
+        <keyword ref="qlocalsocket.html#waitForBytesWritten">waitForBytesWritten</keyword>
         <keyword ref="qlocalsocket.html#waitForConnected">waitForConnected</keyword>
         <keyword ref="qlocalsocket.html#waitForDisconnected">waitForDisconnected</keyword>
         <keyword ref="qlocalsocket.html#waitForReadyRead">waitForReadyRead</keyword>
+        <keyword ref="qlocalsocket.html#writeData">writeData</keyword>
         <section ref="qlocalsocket-members.html" title="List of all members"/>
-    </section>
-    <section ref="qmacpasteboardmime.html" title="QMacPasteboardMime Class Reference">
-        <keyword ref="qmacpasteboardmime.html">QMacPasteboardMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#all">all</keyword>
-        <keyword ref="qmacpasteboardmime.html#canConvert">canConvert</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertFromMime">convertFromMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertToMime">convertToMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertor">convertor</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertorName">convertorName</keyword>
-        <keyword ref="qmacpasteboardmime.html#flavorFor">flavorFor</keyword>
-        <keyword ref="qmacpasteboardmime.html#flavorToMime">flavorToMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#mimeFor">mimeFor</keyword>
-        <section ref="qmacpasteboardmime-members.html" title="List of all members"/>
-    </section>
-    <section ref="qmacstyle.html" title="QMacStyle Class Reference">
-        <keyword ref="qmacstyle.html">QMacStyle</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">FocusRectPolicy</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusEnabled</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusDefault</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusDisabled</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">WidgetSizePolicy</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeMini</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeDefault</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeSmall</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeLarge</keyword>
-        <section ref="qmacstyle-members.html" title="List of all members"/>
-        <section ref="qmacstyle-obsolete.html" title="Obsolete members"/>
     </section>
     <section ref="qmainwindow.html" title="QMainWindow Class Reference">
         <keyword ref="qmainwindow.html">QMainWindow</keyword>
@@ -8782,13 +8743,12 @@
         <keyword ref="qmenu.html#insertSeparator">insertSeparator</keyword>
         <keyword ref="qmenu.html#isEmpty">isEmpty</keyword>
         <keyword ref="qmenu.html#isTearOffMenuVisible">isTearOffMenuVisible</keyword>
+        <keyword ref="qmenu.html#macMenu">macMenu</keyword>
         <keyword ref="qmenu.html#menuAction">menuAction</keyword>
         <keyword ref="qmenu.html#popup">popup</keyword>
         <keyword ref="qmenu.html#setActiveAction">setActiveAction</keyword>
         <keyword ref="qmenu.html#setDefaultAction">setDefaultAction</keyword>
         <keyword ref="qmenu.html#triggered">triggered</keyword>
-        <keyword ref="qmenu.html#wceCommands">wceCommands</keyword>
-        <keyword ref="qmenu.html#wceMenu">wceMenu</keyword>
         <section ref="qmenu-members.html" title="List of all members"/>
         <section ref="qmenu-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -8807,11 +8767,10 @@
         <keyword ref="qmenubar.html#initStyleOption">initStyleOption</keyword>
         <keyword ref="qmenubar.html#insertMenu">insertMenu</keyword>
         <keyword ref="qmenubar.html#insertSeparator">insertSeparator</keyword>
+        <keyword ref="qmenubar.html#macMenu">macMenu</keyword>
         <keyword ref="qmenubar.html#setActiveAction">setActiveAction</keyword>
         <keyword ref="qmenubar.html#setDefaultAction">setDefaultAction</keyword>
         <keyword ref="qmenubar.html#triggered">triggered</keyword>
-        <keyword ref="qmenubar.html#wceCommands">wceCommands</keyword>
-        <keyword ref="qmenubar.html#wceRefresh">wceRefresh</keyword>
         <section ref="qmenubar-members.html" title="List of all members"/>
         <section ref="qmenubar-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -9498,7 +9457,7 @@
         <keyword ref="qnetworkreply.html#NetworkError-enum">QNetworkReply::ProxyConnectionRefusedError</keyword>
         <keyword ref="qnetworkreply.html#NetworkError-enum">QNetworkReply::UnknownContentError</keyword>
         <keyword ref="qnetworkreply.html#abort">abort</keyword>
-        <keyword ref="qnetworkreply.html#attributex">attribute</keyword>
+        <keyword ref="qnetworkreply.html#attribute">attribute</keyword>
         <keyword ref="qnetworkreply.html#close">close</keyword>
         <keyword ref="qnetworkreply.html#downloadProgress">downloadProgress</keyword>
         <keyword ref="qnetworkreply.html#error">error</keyword>
@@ -9551,7 +9510,7 @@
         <keyword ref="qnetworkrequest.html#KnownHeaders-enum">QNetworkRequest::ContentLengthHeader</keyword>
         <keyword ref="qnetworkrequest.html#KnownHeaders-enum">QNetworkRequest::CookieHeader</keyword>
         <keyword ref="qnetworkrequest.html#KnownHeaders-enum">QNetworkRequest::SetCookieHeader</keyword>
-        <keyword ref="qnetworkrequest.html#attributex">attribute</keyword>
+        <keyword ref="qnetworkrequest.html#attribute">attribute</keyword>
         <keyword ref="qnetworkrequest.html#hasRawHeader">hasRawHeader</keyword>
         <keyword ref="qnetworkrequest.html#header">header</keyword>
         <keyword ref="qnetworkrequest.html#rawHeader">rawHeader</keyword>
@@ -9629,49 +9588,6 @@
         <keyword ref="qobjectcleanuphandler.html#isEmpty">isEmpty</keyword>
         <keyword ref="qobjectcleanuphandler.html#remove">remove</keyword>
         <section ref="qobjectcleanuphandler-members.html" title="List of all members"/>
-    </section>
-    <section ref="qpagesetupdialog.html" title="QPageSetupDialog Class Reference">
-        <keyword ref="qpagesetupdialog.html">QPageSetupDialog</keyword>
-        <keyword ref="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOption</keyword>
-        <keyword ref="qpagesetupdialog.html#PageSetupDialogOption-enum">PageSetupDialogOptions</keyword>
-        <keyword ref="qpagesetupdialog.html#PageSetupDialogOption-enum">QPageSetupDialog::None</keyword>
-        <keyword ref="qpagesetupdialog.html#PageSetupDialogOption-enum">QPageSetupDialog::DontUseSheet</keyword>
-        <keyword ref="qpagesetupdialog.html#addEnabledOption">addEnabledOption</keyword>
-        <keyword ref="qpagesetupdialog.html#enabledOptions">enabledOptions</keyword>
-        <keyword ref="qpagesetupdialog.html#isOptionEnabled">isOptionEnabled</keyword>
-        <keyword ref="qpagesetupdialog.html#printer">printer</keyword>
-        <keyword ref="qpagesetupdialog.html#setEnabledOptions">setEnabledOptions</keyword>
-        <section ref="qpagesetupdialog-members.html" title="List of all members"/>
-    </section>
-    <section ref="qpaintdevice.html" title="QPaintDevice Class Reference">
-        <keyword ref="qpaintdevice.html">QPaintDevice</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">PaintDeviceMetric</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmPhysicalDpiX</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmPhysicalDpiY</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmHeight</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmDepth</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmHeightMM</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmWidth</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmWidthMM</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmDpiX</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmDpiY</keyword>
-        <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmNumColors</keyword>
-        <keyword ref="qpaintdevice.html#depth">depth</keyword>
-        <keyword ref="qpaintdevice.html#height">height</keyword>
-        <keyword ref="qpaintdevice.html#heightMM">heightMM</keyword>
-        <keyword ref="qpaintdevice.html#logicalDpiX">logicalDpiX</keyword>
-        <keyword ref="qpaintdevice.html#logicalDpiY">logicalDpiY</keyword>
-        <keyword ref="qpaintdevice.html#metric">metric</keyword>
-        <keyword ref="qpaintdevice.html#numColors">numColors</keyword>
-        <keyword ref="qpaintdevice.html#paintEngine">paintEngine</keyword>
-        <keyword ref="qpaintdevice.html#paintingActive">paintingActive</keyword>
-        <keyword ref="qpaintdevice.html#physicalDpiX">physicalDpiX</keyword>
-        <keyword ref="qpaintdevice.html#physicalDpiY">physicalDpiY</keyword>
-        <keyword ref="qpaintdevice.html#qwsDisplay">qwsDisplay</keyword>
-        <keyword ref="qpaintdevice.html#width">width</keyword>
-        <keyword ref="qpaintdevice.html#widthMM">widthMM</keyword>
-        <section ref="qpaintdevice-members.html" title="List of all members"/>
-        <section ref="qpaintdevice-qt3.html" title="Qt 3 support members"/>
     </section>
     <section ref="qpaintengine.html" title="QPaintEngine Class Reference">
         <keyword ref="qpaintengine.html">QPaintEngine</keyword>
@@ -10130,6 +10046,8 @@
         <keyword ref="qpicture.html#setData">setData</keyword>
         <keyword ref="qpicture.html#size">size</keyword>
         <keyword ref="qpicture.html#operator-eq">operator=</keyword>
+        <keyword ref="qpicture.html#operator-lt-lt">operator&lt;&lt;</keyword>
+        <keyword ref="qpicture.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qpicture-members.html" title="List of all members"/>
         <section ref="qpicture-obsolete.html" title="Obsolete members"/>
         <section ref="qpicture-qt3.html" title="Qt 3 support members"/>
@@ -10218,6 +10136,8 @@
         <keyword ref="qpixmap.html#width">width</keyword>
         <keyword ref="qpixmap.html#x11Info">x11Info</keyword>
         <keyword ref="qpixmap.html#x11PictureHandle">x11PictureHandle</keyword>
+        <keyword ref="qpixmap.html#x11SetDefaultScreen">x11SetDefaultScreen</keyword>
+        <keyword ref="qpixmap.html#x11SetScreen">x11SetScreen</keyword>
         <keyword ref="qpixmap.html#operator-QVariant">operator QVariant</keyword>
         <keyword ref="qpixmap.html#operator-not">operator!</keyword>
         <keyword ref="qpixmap.html#operator-eq">operator=</keyword>
@@ -10363,6 +10283,8 @@
         <keyword ref="qpoint.html#operator-2b-eq">operator+=</keyword>
         <keyword ref="qpoint.html#operator--eq">operator-=</keyword>
         <keyword ref="qpoint.html#operator-2f-eq">operator/=</keyword>
+        <keyword ref="qpoint.html#operator-2a">operator*</keyword>
+        <keyword ref="qpoint.html#operator-">operator-</keyword>
         <keyword ref="qpoint.html#operator-2f">operator/</keyword>
         <section ref="qpoint-members.html" title="List of all members"/>
     </section>
@@ -10613,17 +10535,6 @@
         <section ref="qprinter-members.html" title="List of all members"/>
         <section ref="qprinter-obsolete.html" title="Obsolete members"/>
         <section ref="qprinter-qt3.html" title="Qt 3 support members"/>
-    </section>
-    <section ref="qprinterinfo.html" title="QPrinterInfo Class Reference">
-        <keyword ref="qprinterinfo.html">QPrinterInfo</keyword>
-        <keyword ref="qprinterinfo.html#availablePrinters">availablePrinters</keyword>
-        <keyword ref="qprinterinfo.html#defaultPrinter">defaultPrinter</keyword>
-        <keyword ref="qprinterinfo.html#isDefault">isDefault</keyword>
-        <keyword ref="qprinterinfo.html#isNull">isNull</keyword>
-        <keyword ref="qprinterinfo.html#printerName">printerName</keyword>
-        <keyword ref="qprinterinfo.html#supportedPaperSizes">supportedPaperSizes</keyword>
-        <keyword ref="qprinterinfo.html#operator-eq">operator=</keyword>
-        <section ref="qprinterinfo-members.html" title="List of all members"/>
     </section>
     <section ref="qprintpreviewdialog.html" title="QPrintPreviewDialog Class Reference">
         <keyword ref="qprintpreviewdialog.html">QPrintPreviewDialog</keyword>
@@ -11065,6 +10976,7 @@
         <keyword ref="qregion.html#RegionType-enum">QRegion::Rectangle</keyword>
         <keyword ref="qregion.html#boundingRect">boundingRect</keyword>
         <keyword ref="qregion.html#contains">contains</keyword>
+        <keyword ref="qregion.html#eor">eor</keyword>
         <keyword ref="qregion.html#handle">handle</keyword>
         <keyword ref="qregion.html#intersect">intersect</keyword>
         <keyword ref="qregion.html#intersected">intersected</keyword>
@@ -11073,6 +10985,7 @@
         <keyword ref="qregion.html#numRects">numRects</keyword>
         <keyword ref="qregion.html#rects">rects</keyword>
         <keyword ref="qregion.html#setRects">setRects</keyword>
+        <keyword ref="qregion.html#subtract">subtract</keyword>
         <keyword ref="qregion.html#subtracted">subtracted</keyword>
         <keyword ref="qregion.html#translate">translate</keyword>
         <keyword ref="qregion.html#translated">translated</keyword>
@@ -11094,7 +11007,6 @@
         <keyword ref="qregion.html#operator-7c">operator|</keyword>
         <keyword ref="qregion.html#operator-7c-eq">operator|=</keyword>
         <section ref="qregion-members.html" title="List of all members"/>
-        <section ref="qregion-obsolete.html" title="Obsolete members"/>
         <section ref="qregion-qt3.html" title="Qt 3 support members"/>
     </section>
     <section ref="qresizeevent.html" title="QResizeEvent Class Reference">
@@ -11714,9 +11626,6 @@
         <keyword ref="qsize.html#operator-2b-eq">operator+=</keyword>
         <keyword ref="qsize.html#operator--eq">operator-=</keyword>
         <keyword ref="qsize.html#operator-2f-eq">operator/=</keyword>
-        <keyword ref="qsize.html#operator-not-eq">operator!=</keyword>
-        <keyword ref="qsize.html#operator-2a">operator*</keyword>
-        <keyword ref="qsize.html#operator-">operator-</keyword>
         <section ref="qsize-members.html" title="List of all members"/>
     </section>
     <section ref="qsizef.html" title="QSizeF Class Reference">
@@ -11887,6 +11796,7 @@
         <keyword ref="qsourcelocation.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq">operator=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="qsourcelocation.html#qHash">qHash</keyword>
         <section ref="qsourcelocation-members.html" title="List of all members"/>
     </section>
     <section ref="qspaceritem.html" title="QSpacerItem Class Reference">
@@ -12891,8 +12801,6 @@
         <keyword ref="qstring.html#operator-gt-eq">operator&gt;=</keyword>
         <keyword ref="qstring.html#operator-5b-5d">operator[]</keyword>
         <keyword ref="qstring.html#operator-2b">operator+</keyword>
-        <keyword ref="qstring.html#operator-lt-lt">operator&lt;&lt;</keyword>
-        <keyword ref="qstring.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <keyword ref="qstring.html#QT_NO_CAST_FROM_ASCII">QT_NO_CAST_FROM_ASCII</keyword>
         <keyword ref="qstring.html#QT_NO_CAST_TO_ASCII">QT_NO_CAST_TO_ASCII</keyword>
         <section ref="qstring-members.html" title="List of all members"/>
@@ -12955,7 +12863,6 @@
         <keyword ref="qstringref.html#operator-eq">operator=</keyword>
         <keyword ref="qstringref.html#operator-lt">operator&lt;</keyword>
         <keyword ref="qstringref.html#operator-lt-eq">operator&lt;=</keyword>
-        <keyword ref="qstringref.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qstringref.html#operator-gt">operator&gt;</keyword>
         <keyword ref="qstringref.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="qstringref-members.html" title="List of all members"/>
@@ -17738,6 +17645,7 @@
         <keyword ref="qvariant.html#qVariantSetValue">qVariantSetValue</keyword>
         <keyword ref="qvariant.html#qVariantValue">qVariantValue</keyword>
         <keyword ref="qvariant.html#qvariant_cast">qvariant_cast</keyword>
+        <keyword ref="qvariant.html#operator-not-eq">operator!=</keyword>
         <section ref="qvariant-members.html" title="List of all members"/>
         <section ref="qvariant-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -17838,13 +17746,6 @@
         <keyword ref="qvectoriterator.html#toFront">toFront</keyword>
         <keyword ref="qvectoriterator.html#operator-eq">operator=</keyword>
         <section ref="qvectoriterator-members.html" title="List of all members"/>
-    </section>
-    <section ref="qwaitcondition.html" title="QWaitCondition Class Reference">
-        <keyword ref="qwaitcondition.html">QWaitCondition</keyword>
-        <keyword ref="qwaitcondition.html#wait">wait</keyword>
-        <keyword ref="qwaitcondition.html#wakeAll">wakeAll</keyword>
-        <keyword ref="qwaitcondition.html#wakeOne">wakeOne</keyword>
-        <section ref="qwaitcondition-members.html" title="List of all members"/>
     </section>
     <section ref="qwebframe.html" title="QWebFrame Class Reference">
         <keyword ref="qwebframe.html">QWebFrame</keyword>
@@ -18659,62 +18560,6 @@
         <keyword ref="qwritelocker.html#relock">relock</keyword>
         <keyword ref="qwritelocker.html#unlock">unlock</keyword>
         <section ref="qwritelocker-members.html" title="List of all members"/>
-    </section>
-    <section ref="qx11embedcontainer.html" title="QX11EmbedContainer Class Reference">
-        <keyword ref="qx11embedcontainer.html">QX11EmbedContainer</keyword>
-        <keyword ref="qx11embedcontainer.html#Error-enum">Error</keyword>
-        <keyword ref="qx11embedcontainer.html#Error-enum">QX11EmbedContainer::Unknown</keyword>
-        <keyword ref="qx11embedcontainer.html#Error-enum">QX11EmbedContainer::InvalidWindowID</keyword>
-        <keyword ref="qx11embedcontainer.html#clientClosed">clientClosed</keyword>
-        <keyword ref="qx11embedcontainer.html#clientIsEmbedded">clientIsEmbedded</keyword>
-        <keyword ref="qx11embedcontainer.html#clientWinId">clientWinId</keyword>
-        <keyword ref="qx11embedcontainer.html#discardClient">discardClient</keyword>
-        <keyword ref="qx11embedcontainer.html#embedClient">embedClient</keyword>
-        <keyword ref="qx11embedcontainer.html#error">error</keyword>
-        <section ref="qx11embedcontainer-members.html" title="List of all members"/>
-    </section>
-    <section ref="qx11embedwidget.html" title="QX11EmbedWidget Class Reference">
-        <keyword ref="qx11embedwidget.html">QX11EmbedWidget</keyword>
-        <keyword ref="qx11embedwidget.html#Error-enum">Error</keyword>
-        <keyword ref="qx11embedwidget.html#Error-enum">QX11EmbedWidget::Unknown</keyword>
-        <keyword ref="qx11embedwidget.html#Error-enum">QX11EmbedWidget::InvalidWindowID</keyword>
-        <keyword ref="qx11embedwidget.html#containerClosed">containerClosed</keyword>
-        <keyword ref="qx11embedwidget.html#containerWinId">containerWinId</keyword>
-        <keyword ref="qx11embedwidget.html#embedInto">embedInto</keyword>
-        <keyword ref="qx11embedwidget.html#embedded">embedded</keyword>
-        <keyword ref="qx11embedwidget.html#error">error</keyword>
-        <section ref="qx11embedwidget-members.html" title="List of all members"/>
-    </section>
-    <section ref="qx11info.html" title="QX11Info Class Reference">
-        <keyword ref="qx11info.html">QX11Info</keyword>
-        <keyword ref="qx11info.html#appCells">appCells</keyword>
-        <keyword ref="qx11info.html#appClass">appClass</keyword>
-        <keyword ref="qx11info.html#appColormap">appColormap</keyword>
-        <keyword ref="qx11info.html#appDefaultColormap">appDefaultColormap</keyword>
-        <keyword ref="qx11info.html#appDefaultVisual">appDefaultVisual</keyword>
-        <keyword ref="qx11info.html#appDepth">appDepth</keyword>
-        <keyword ref="qx11info.html#appDpiX">appDpiX</keyword>
-        <keyword ref="qx11info.html#appDpiY">appDpiY</keyword>
-        <keyword ref="qx11info.html#appRootWindow">appRootWindow</keyword>
-        <keyword ref="qx11info.html#appScreen">appScreen</keyword>
-        <keyword ref="qx11info.html#appTime">appTime</keyword>
-        <keyword ref="qx11info.html#appUserTime">appUserTime</keyword>
-        <keyword ref="qx11info.html#appVisual">appVisual</keyword>
-        <keyword ref="qx11info.html#cells">cells</keyword>
-        <keyword ref="qx11info.html#colormap">colormap</keyword>
-        <keyword ref="qx11info.html#defaultColormap">defaultColormap</keyword>
-        <keyword ref="qx11info.html#defaultVisual">defaultVisual</keyword>
-        <keyword ref="qx11info.html#depth">depth</keyword>
-        <keyword ref="qx11info.html#display">display</keyword>
-        <keyword ref="qx11info.html#isCompositingManagerRunning">isCompositingManagerRunning</keyword>
-        <keyword ref="qx11info.html#screen">screen</keyword>
-        <keyword ref="qx11info.html#setAppDpiX">setAppDpiX</keyword>
-        <keyword ref="qx11info.html#setAppDpiY">setAppDpiY</keyword>
-        <keyword ref="qx11info.html#setAppTime">setAppTime</keyword>
-        <keyword ref="qx11info.html#setAppUserTime">setAppUserTime</keyword>
-        <keyword ref="qx11info.html#visual">visual</keyword>
-        <keyword ref="qx11info.html#operator-eq">operator=</keyword>
-        <section ref="qx11info-members.html" title="List of all members"/>
     </section>
     <section ref="qxmlattributes.html" title="QXmlAttributes Class Reference">
         <keyword ref="qxmlattributes.html">QXmlAttributes</keyword>
@@ -21313,6 +21158,7 @@
         <keyword ref="q3process.html#Communication-enum">Q3Process::Stdin</keyword>
         <keyword ref="q3process.html#Communication-enum">Q3Process::Stdout</keyword>
         <keyword ref="q3process.html#Communication-enum">Q3Process::DupStderr</keyword>
+        <keyword ref="q3process.html#PID-typedef">PID</keyword>
         <keyword ref="q3process.html#addArgument">addArgument</keyword>
         <keyword ref="q3process.html#arguments">arguments</keyword>
         <keyword ref="q3process.html#canReadLineStderr">canReadLineStderr</keyword>
@@ -21321,6 +21167,7 @@
         <keyword ref="q3process.html#closeStdin">closeStdin</keyword>
         <keyword ref="q3process.html#communication">communication</keyword>
         <keyword ref="q3process.html#exitStatus">exitStatus</keyword>
+        <keyword ref="q3process.html#flushStdin">flushStdin</keyword>
         <keyword ref="q3process.html#isRunning">isRunning</keyword>
         <keyword ref="q3process.html#kill">kill</keyword>
         <keyword ref="q3process.html#launch">launch</keyword>
@@ -21795,6 +21642,7 @@
         <keyword ref="q3socketdevice.html#bind">bind</keyword>
         <keyword ref="q3socketdevice.html#blocking">blocking</keyword>
         <keyword ref="q3socketdevice.html#bytesAvailable">bytesAvailable</keyword>
+        <keyword ref="q3socketdevice.html#close">close</keyword>
         <keyword ref="q3socketdevice.html#connect">connect</keyword>
         <keyword ref="q3socketdevice.html#error">error</keyword>
         <keyword ref="q3socketdevice.html#flush">flush</keyword>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/2dpainting.qdoc -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/doc/src/examples/2dpainting.qdoc -->
 <head>
   <title>Qt 4.4: 2D Painting Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,7 +28,7 @@
 <li><a href="opengl-2dpainting-2dpainting-pro.html">opengl/2dpainting/2dpainting.pro</a></li>
 </ul>
 <p>The 2D Painting example shows how <a href="qpainter.html">QPainter</a> and <a href="qglwidget.html">QGLWidget</a> can be used together to display accelerated 2D graphics on supported hardware.</p>
-<p align="center"><img src="images/2dpainting-example.png" /></p><p>The <a href="qpainter.html">QPainter</a> class is used to draw 2D graphics primitives onto paint devices provided by <a href="qpaintdevice.html">QPaintDevice</a> subclasses, such as <a href="qwidget.html">QWidget</a> and <a href="qimage.html">QImage</a>.</p>
+<p align="center"><img src="images/2dpainting-example.png" /></p><p>The <a href="qpainter.html">QPainter</a> class is used to draw 2D graphics primitives onto paint devices provided by QPaintDevice subclasses, such as <a href="qwidget.html">QWidget</a> and <a href="qimage.html">QImage</a>.</p>
 <p>Since <a href="qglwidget.html">QGLWidget</a> is a subclass of <a href="qwidget.html">QWidget</a>, it is possible to reimplement its <a href="qwidget.html#paintEvent">paintEvent()</a> and use <a href="qpainter.html">QPainter</a> to draw on the device, just as you would with a <a href="qwidget.html">QWidget</a>. The only difference is that the painting operations will be accelerated in hardware if it is supported by your system's OpenGL drivers.</p>
 <p>In this example, we perform the same painting operations on a <a href="qwidget.html">QWidget</a> and a <a href="qglwidget.html">QGLWidget</a>. The <a href="qwidget.html">QWidget</a> is shown with anti-aliasing enabled, and the <a href="qglwidget.html">QGLWidget</a> will also use anti-aliasing if the required extensions are supported by your system's OpenGL driver.</p>
 <a name="overview"></a>

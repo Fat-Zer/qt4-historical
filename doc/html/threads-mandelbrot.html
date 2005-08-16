@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/mandelbrot.qdoc -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/doc/src/examples/mandelbrot.qdoc -->
 <head>
   <title>Qt 4.4: Mandelbrot Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -78,7 +78,7 @@
  };</pre>
 <p>The class inherits <a href="qthread.html">QThread</a> so that it gains the ability to run in a separate thread. Apart from the constructor and destructor, <tt>render()</tt> is the only public function. Whenever the thread is done rendering an image, it emits the <tt>renderedImage()</tt> signal.</p>
 <p>The protected <tt>run()</tt> function is reimplemented from <a href="qthread.html">QThread</a>. It is automatically called when the thread is started.</p>
-<p>In the <tt>private</tt> section, we have a <a href="qmutex.html">QMutex</a>, a <a href="qwaitcondition.html">QWaitCondition</a>, and a few other data members. The mutex protects the other data member.</p>
+<p>In the <tt>private</tt> section, we have a <a href="qmutex.html">QMutex</a>, a QWaitCondition, and a few other data members. The mutex protects the other data member.</p>
 <a name="renderthread-class-implementation"></a>
 <h2>RenderThread Class Implementation</h2>
 <pre> RenderThread::RenderThread(QObject *parent)

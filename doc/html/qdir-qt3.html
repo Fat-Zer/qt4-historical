@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/src/corelib/io/qdir.cpp -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/src/corelib/io/qdir.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QDir</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -39,23 +39,17 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QDir/absFilePath" />
 <h3 class="fn"><a name="absFilePath"></a><a href="qstring.html">QString</a> QDir::absFilePath ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, bool <i>acceptAbsPath</i> = true ) const</h3>
 <p>Use absoluteFilePath(<i>fileName</i>) instead.</p>
 <p>The <i>acceptAbsPath</i> parameter is ignored.</p>
-<a name="//apple_ref/cpp/instm/QDir/absPath" />
 <h3 class="fn"><a name="absPath"></a><a href="qstring.html">QString</a> QDir::absPath () const</h3>
 <p>Use <a href="qdir.html#absolutePath">absolutePath</a>() instead.</p>
-<a name="//apple_ref/cpp/clm/QDir/cleanDirPath" />
 <h3 class="fn"><a name="cleanDirPath"></a><a href="qstring.html">QString</a> QDir::cleanDirPath ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qdir.html#cleanPath">cleanPath</a>() instead.</p>
-<a name="//apple_ref/cpp/clm/QDir/convertSeparators" />
 <h3 class="fn"><a name="convertSeparators"></a><a href="qstring.html">QString</a> QDir::convertSeparators ( const <a href="qstring.html">QString</a> &amp; <i>pathName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qdir.html#toNativeSeparators">QDir::toNativeSeparators</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QDir/convertToAbs" />
 <h3 class="fn"><a name="convertToAbs"></a>void QDir::convertToAbs ()</h3>
 <p>Use <a href="qdir.html#makeAbsolute">makeAbsolute</a>() instead.</p>
-<a name="//apple_ref/cpp/clm/QDir/currentDirPath" />
 <h3 class="fn"><a name="currentDirPath"></a><a href="qstring.html">QString</a> QDir::currentDirPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the absolute path of the application's current directory.</p>
 <p>Use <a href="qdir.html#currentPath">currentPath</a>() instead.</p>
@@ -66,12 +60,10 @@
 <h3 class="fn"><a name="entryList-3"></a><a href="qstringlist.html">QStringList</a> QDir::entryList ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i>, <a href="qdir.html#Filter-enum">Filters</a> <i>filters</i> = NoFilter, <a href="qdir.html#SortFlag-enum">SortFlags</a> <i>sort</i> = NoSort ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the overload that takes a name filter string list as first argument instead of a combination of attribute filter flags.</p>
-<a name="//apple_ref/cpp/clm/QDir/homeDirPath" />
 <h3 class="fn"><a name="homeDirPath"></a><a href="qstring.html">QString</a> QDir::homeDirPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the absolute path of the user's home directory.</p>
 <p>Use <a href="qdir.html#homePath">homePath</a>() instead.</p>
 <p>See also <a href="qdir.html#homePath">homePath</a>().</p>
-<a name="//apple_ref/cpp/instm/QDir/matchAllDirs" />
 <h3 class="fn"><a name="matchAllDirs"></a>bool QDir::matchAllDirs () const</h3>
 <p>Use <a href="qdir.html#filter">filter</a>() &amp; <a href="qdir.html#Filter-enum">AllDirs</a> instead.</p>
 <p>See also <a href="qdir-qt3.html#setMatchAllDirs">setMatchAllDirs</a>().</p>
@@ -79,7 +71,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use mkdir(<i>dirName</i>) instead.</p>
 <p>The <i>acceptAbsPath</i> parameter is ignored.</p>
-<a name="//apple_ref/cpp/instm/QDir/nameFilter" />
 <h3 class="fn"><a name="nameFilter"></a><a href="qstring.html">QString</a> QDir::nameFilter () const</h3>
 <p>Use <a href="qdir.html#nameFilters">nameFilters</a>() instead.</p>
 <p>See also <a href="qdir-qt3.html#setNameFilter">setNameFilter</a>().</p>
@@ -87,16 +78,13 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use rmdir(<i>dirName</i>) instead.</p>
 <p>The <i>acceptAbsPath</i> parameter is ignored.</p>
-<a name="//apple_ref/cpp/clm/QDir/rootDirPath" />
 <h3 class="fn"><a name="rootDirPath"></a><a href="qstring.html">QString</a> QDir::rootDirPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the absolute path of the root directory.</p>
 <p>Use <a href="qdir.html#rootPath">rootPath</a>() instead.</p>
 <p>See also <a href="qdir.html#rootPath">rootPath</a>().</p>
-<a name="//apple_ref/cpp/instm/QDir/setMatchAllDirs" />
 <h3 class="fn"><a name="setMatchAllDirs"></a>void QDir::setMatchAllDirs ( bool <i>on</i> )</h3>
 <p>Use <a href="qdir.html#setFilter">setFilter</a>() instead.</p>
 <p>See also <a href="qdir-qt3.html#matchAllDirs">matchAllDirs</a>().</p>
-<a name="//apple_ref/cpp/instm/QDir/setNameFilter" />
 <h3 class="fn"><a name="setNameFilter"></a>void QDir::setNameFilter ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i> )</h3>
 <p>Use <a href="qdir.html#setNameFilters">setNameFilters</a>() instead.</p>
 <p>The <i>nameFilter</i> is a wildcard (globbing) filter that understands &quot;*&quot; and &quot;?&quot; wildcards. (See <a href="qregexp.html#qregexp-wildcard-matching">QRegExp wildcard matching</a>.) You may specify several filter entries, each separated by spaces or by semicolons.</p>

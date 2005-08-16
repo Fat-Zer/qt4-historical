@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.0-1209388211/qt-all-opensource-src-4.4.0/doc/src/examples/blockingfortuneclient.qdoc -->
+<!-- /tmp/mkdist-qt-4.4.0-1209390379/qt-embedded-wince-opensource-src-4.4.0/doc/src/examples/blockingfortuneclient.qdoc -->
 <head>
   <title>Qt 4.4: Blocking Fortune Client Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -125,7 +125,7 @@
      else
          cond.wakeOne();
  }</pre>
-<p>What happened here was that because the thread falls asleep waiting for a new request, we needed to wake it up again when a new request arrives. <a href="qwaitcondition.html">QWaitCondition</a> is often used in threads to signal a wakeup call like this.</p>
+<p>What happened here was that because the thread falls asleep waiting for a new request, we needed to wake it up again when a new request arrives. QWaitCondition is often used in threads to signal a wakeup call like this.</p>
 <pre> FortuneThread::~FortuneThread()
  {
      quit = true;
