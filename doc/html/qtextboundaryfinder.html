@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qtextboundaryfinder.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-embedded-wince-opensource-src-4.4.1/src/corelib/tools/qtextboundaryfinder.cpp -->
 <head>
   <title>Qt 4.4: QTextBoundaryFinder Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QTextBoundaryFinder" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -60,11 +59,6 @@
 <p>Line break boundaries give possible places where a line break might happen and sentence boundaries will show the beginning and end of whole sentences.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QTextBoundaryFinder/BoundaryReason" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/NotAtBoundary" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/StartWord" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/EndWord" />
-<a name="//apple_ref/cpp/tdef/QTextBoundaryFinder/BoundaryReasons" />
 <h3 class="flags"><a name="BoundaryReason-enum"></a>enum QTextBoundaryFinder::BoundaryReason<br />flags QTextBoundaryFinder::BoundaryReasons</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
@@ -73,11 +67,6 @@
 <tr><td valign="top"><tt>QTextBoundaryFinder::EndWord</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The boundary finder is at the end of a word.</td></tr>
 </table></p>
 <p>The BoundaryReasons type is a typedef for <a href="qflags.html">QFlags</a>&lt;BoundaryReason&gt;. It stores an OR combination of BoundaryReason values.</p>
-<a name="//apple_ref/cpp/tag/QTextBoundaryFinder/BoundaryType" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/Grapheme" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/Word" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/Line" />
-<a name="//apple_ref/cpp/econst/QTextBoundaryFinder/Sentence" />
 <h3 class="fn"><a name="BoundaryType-enum"></a>enum QTextBoundaryFinder::BoundaryType</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
@@ -88,7 +77,6 @@
 </table></p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/QTextBoundaryFinder" />
 <h3 class="fn"><a name="QTextBoundaryFinder"></a>QTextBoundaryFinder::QTextBoundaryFinder ()</h3>
 <p>Constructs an invalid <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> object.</p>
 <h3 class="fn"><a name="QTextBoundaryFinder-2"></a>QTextBoundaryFinder::QTextBoundaryFinder ( const QTextBoundaryFinder &amp; <i>other</i> )</h3>
@@ -99,49 +87,36 @@
 <p>Creates a <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> object of <i>type</i> operating on <i>chars</i> with <i>length</i>.</p>
 <p><i>buffer</i> is an optional working buffer of size <i>bufferSize</i> you can pass to the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a>. If the buffer is large enough to hold the working data required, it will use this insetad of allocating it's own buffer.</p>
 <p><b>Warning:</b> <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> does not create a copy of <i>chars</i>. It is the application programmer's responsability to ensure the array is allocated for as long as the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> object stays alive. The same applies to <i>buffer</i>.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/~QTextBoundaryFinder" />
 <h3 class="fn"><a name="dtor.QTextBoundaryFinder"></a>QTextBoundaryFinder::~QTextBoundaryFinder ()</h3>
 <p>Destructs the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> object.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/boundaryReasons" />
 <h3 class="fn"><a name="boundaryReasons"></a><a href="qtextboundaryfinder.html#BoundaryReason-enum">BoundaryReasons</a> QTextBoundaryFinder::boundaryReasons () const</h3>
 <p>Returns the reasons for the boundary finder to have chosen the current position as a boundary.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/isAtBoundary" />
 <h3 class="fn"><a name="isAtBoundary"></a>bool QTextBoundaryFinder::isAtBoundary () const</h3>
 <p>Returns true if the object's <a href="qtextboundaryfinder.html#position">position</a>() is currently at a valid text boundary.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool QTextBoundaryFinder::isValid () const</h3>
 <p>Returns true if the text boundary finder is valid; otherwise returns false. A default <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> is invalid.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/position" />
 <h3 class="fn"><a name="position"></a>int QTextBoundaryFinder::position () const</h3>
 <p>Returns the current position of the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a>.</p>
 <p>See also <a href="qtextboundaryfinder.html#setPosition">setPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/setPosition" />
 <h3 class="fn"><a name="setPosition"></a>void QTextBoundaryFinder::setPosition ( int <i>position</i> )</h3>
 <p>Sets the current position of the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> to <i>position</i>. If <i>position</i> is out of bounds it will get bound to the valid positions.</p>
 <p>See also <a href="qtextboundaryfinder.html#position">position</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/string" />
 <h3 class="fn"><a name="string"></a><a href="qstring.html">QString</a> QTextBoundaryFinder::string () const</h3>
 <p>Returns the string the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> object operates on.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/toEnd" />
 <h3 class="fn"><a name="toEnd"></a>void QTextBoundaryFinder::toEnd ()</h3>
 <p>Moves the finder to the end of the string. This is equivalent to setPosition(string.length()).</p>
 <p>See also <a href="qtextboundaryfinder.html#setPosition">setPosition</a>() and <a href="qtextboundaryfinder.html#position">position</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/toNextBoundary" />
 <h3 class="fn"><a name="toNextBoundary"></a>int QTextBoundaryFinder::toNextBoundary ()</h3>
 <p>Moves the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> to the next boundary position and returns that position.</p>
 <p>Returns -1 is there is no next boundary.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/toPreviousBoundary" />
 <h3 class="fn"><a name="toPreviousBoundary"></a>int QTextBoundaryFinder::toPreviousBoundary ()</h3>
 <p>Moves the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> to the previous boundary position and returns that position.</p>
 <p>Returns -1 is there is no previous boundary.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/toStart" />
 <h3 class="fn"><a name="toStart"></a>void QTextBoundaryFinder::toStart ()</h3>
 <p>Moves the finder to the start of the string. This is equivalent to setPosition(0).</p>
 <p>See also <a href="qtextboundaryfinder.html#setPosition">setPosition</a>() and <a href="qtextboundaryfinder.html#position">position</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/type" />
 <h3 class="fn"><a name="type"></a><a href="qtextboundaryfinder.html#BoundaryType-enum">BoundaryType</a> QTextBoundaryFinder::type () const</h3>
 <p>Returns the type of the <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextBoundaryFinder/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QTextBoundaryFinder &amp; QTextBoundaryFinder::operator= ( const QTextBoundaryFinder &amp; <i>other</i> )</h3>
 <p>Assigns the object, <i>other</i>, to another <a href="qtextboundaryfinder.html">QTextBoundaryFinder</a> object.</p>
 <p /><address><hr /><div align="center">
