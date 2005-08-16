@@ -7,7 +7,6 @@
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl/Phonon::Gstreamer/MediaNode" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://qtsoftware.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -56,55 +55,32 @@
 <a name="details"></a>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/Phonon::Gstreamer::MediaNode/NodeDescriptionEnum" />
-<a name="//apple_ref/cpp/tdef/Phonon::Gstreamer::MediaNode/NodeDescription" />
 <h3 class="flags"><a name="NodeDescriptionEnum-enum"></a>enum MediaNode::NodeDescriptionEnum<br />flags MediaNode::NodeDescription</h3>
 <p>The NodeDescription type is a typedef for <a href="qflags.html">QFlags</a>&lt;NodeDescriptionEnum&gt;. It stores an OR combination of NodeDescriptionEnum values.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/MediaNode" />
 <h3 class="fn"><a name="MediaNode"></a>MediaNode::MediaNode ( <a href="phonon-gstreamer-backend.html">Backend</a> * <i>backend</i>, <a href="phonon-gstreamer-medianode.html#NodeDescriptionEnum-enum">NodeDescription</a> <i>description</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/~MediaNode" />
 <h3 class="fn"><a name="dtor.MediaNode"></a>MediaNode::~MediaNode ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/audioElement" />
 <h3 class="fn"><a name="audioElement"></a>GstElement * MediaNode::audioElement ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/backend" />
 <h3 class="fn"><a name="backendx"></a><a href="phonon-gstreamer-backend.html">Backend</a> * MediaNode::backend ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/breakGraph" />
 <h3 class="fn"><a name="breakGraph"></a>bool MediaNode::breakGraph ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/buildGraph" />
 <h3 class="fn"><a name="buildGraph"></a>bool MediaNode::buildGraph ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/connectNode" />
 <h3 class="fn"><a name="connectNode"></a>bool MediaNode::connectNode ( <a href="qobject.html">QObject</a> * <i>other</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/connectToFakeSink" />
 <h3 class="fn"><a name="connectToFakeSink"></a>bool MediaNode::connectToFakeSink ( GstElement * <i>tee</i>, GstElement * <i>sink</i>, GstElement * <i>bin</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/description" />
 <h3 class="fn"><a name="description"></a><a href="phonon-gstreamer-medianode.html#NodeDescriptionEnum-enum">NodeDescription</a> MediaNode::description () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/disconnectNode" />
 <h3 class="fn"><a name="disconnectNode"></a>bool MediaNode::disconnectNode ( <a href="qobject.html">QObject</a> * <i>other</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool MediaNode::isValid ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/link" />
 <h3 class="fn"><a name="link"></a>bool MediaNode::link ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/linkMediaNodeList" />
 <h3 class="fn"><a name="linkMediaNodeList"></a>bool MediaNode::linkMediaNodeList ( <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a> *&gt; &amp; <i>list</i>, GstElement * <i>bin</i>, GstElement * <i>tee</i>, GstElement * <i>sink</i>, GstElement * <i>src</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/mediaNodeEvent" />
 <h3 class="fn"><a name="mediaNodeEvent"></a>void MediaNode::mediaNodeEvent ( const <a href="phonon-gstreamer-medianodeevent.html">MediaNodeEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/name" />
 <h3 class="fn"><a name="name"></a>const <a href="qstring.html">QString</a> &amp; MediaNode::name ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/notify" />
 <h3 class="fn"><a name="notify"></a>void MediaNode::notify ( const <a href="phonon-gstreamer-medianodeevent.html">MediaNodeEvent</a> * <i>event</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/releaseFakeSinkIfConnected" />
 <h3 class="fn"><a name="releaseFakeSinkIfConnected"></a>bool MediaNode::releaseFakeSinkIfConnected ( GstElement * <i>tee</i>, GstElement * <i>sink</i>, GstElement * <i>bin</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/root" />
 <h3 class="fn"><a name="root"></a><a href="phonon-gstreamer-mediaobject.html">MediaObject</a> * MediaNode::root ()</h3>
 <p>See also <a href="phonon-gstreamer-medianode.html#setRoot">setRoot</a>().</p>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/setRoot" />
 <h3 class="fn"><a name="setRoot"></a>void MediaNode::setRoot ( <a href="phonon-gstreamer-mediaobject.html">MediaObject</a> * <i>mediaObject</i> )</h3>
 <p>See also <a href="phonon-gstreamer-medianode.html#root">root</a>().</p>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/unlink" />
 <h3 class="fn"><a name="unlink"></a>bool MediaNode::unlink ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<a name="//apple_ref/cpp/instm/Phonon::Gstreamer::MediaNode/videoElement" />
 <h3 class="fn"><a name="videoElement"></a>GstElement * MediaNode::videoElement ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
