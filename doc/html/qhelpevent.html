@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qevent.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/gui/kernel/qevent.cpp -->
 <head>
   <title>Qt 4.4: QHelpEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QHelpEvent" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -47,32 +46,25 @@
 <p>See also <a href="qtooltip.html">QToolTip</a>, <a href="qwhatsthis.html">QWhatsThis</a>, <a href="qstatustipevent.html">QStatusTipEvent</a>, and <a href="qwhatsthisclickedevent.html">QWhatsThisClickedEvent</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QHelpEvent/QHelpEvent" />
 <h3 class="fn"><a name="QHelpEvent"></a>QHelpEvent::QHelpEvent ( <a href="qevent.html#Type-enum">Type</a> <i>type</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>globalPos</i> )</h3>
 <p>Constructs a help event with the given <i>type</i> corresponding to the widget-relative position specified by <i>pos</i> and the global position specified by <i>globalPos</i>.</p>
 <p><i>type</i> must be either <a href="qevent.html#Type-enum">QEvent::ToolTip</a> or <a href="qevent.html#Type-enum">QEvent::WhatsThis</a>.</p>
 <p>See also <a href="qhelpevent.html#pos">pos</a>() and <a href="qhelpevent.html#globalPos">globalPos</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpEvent/globalPos" />
 <h3 class="fn"><a name="globalPos"></a>const <a href="qpoint.html">QPoint</a> &amp; QHelpEvent::globalPos () const</h3>
 <p>Returns the mouse cursor position when the event was generated in global coordinates.</p>
 <p>See also <a href="qhelpevent.html#pos">pos</a>(), <a href="qhelpevent.html#globalX">globalX</a>(), and <a href="qhelpevent.html#globalY">globalY</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpEvent/globalX" />
 <h3 class="fn"><a name="globalX"></a>int QHelpEvent::globalX () const</h3>
 <p>Same as <a href="qhelpevent.html#globalPos">globalPos</a>().<a href="qhelpevent.html#x">x</a>().</p>
 <p>See also <a href="qhelpevent.html#x">x</a>(), <a href="qhelpevent.html#globalY">globalY</a>(), and <a href="qhelpevent.html#globalPos">globalPos</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpEvent/globalY" />
 <h3 class="fn"><a name="globalY"></a>int QHelpEvent::globalY () const</h3>
 <p>Same as <a href="qhelpevent.html#globalPos">globalPos</a>().<a href="qhelpevent.html#y">y</a>().</p>
 <p>See also <a href="qhelpevent.html#y">y</a>(), <a href="qhelpevent.html#globalX">globalX</a>(), and <a href="qhelpevent.html#globalPos">globalPos</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpEvent/pos" />
 <h3 class="fn"><a name="pos"></a>const <a href="qpoint.html">QPoint</a> &amp; QHelpEvent::pos () const</h3>
 <p>Returns the mouse cursor position when the event was generated, relative to the widget to which the event is dispatched.</p>
 <p>See also <a href="qhelpevent.html#globalPos">globalPos</a>(), <a href="qhelpevent.html#x">x</a>(), and <a href="qhelpevent.html#y">y</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpEvent/x" />
 <h3 class="fn"><a name="x"></a>int QHelpEvent::x () const</h3>
 <p>Same as <a href="qhelpevent.html#pos">pos</a>().x().</p>
 <p>See also <a href="qhelpevent.html#y">y</a>(), <a href="qhelpevent.html#pos">pos</a>(), and <a href="qhelpevent.html#globalPos">globalPos</a>().</p>
-<a name="//apple_ref/cpp/instm/QHelpEvent/y" />
 <h3 class="fn"><a name="y"></a>int QHelpEvent::y () const</h3>
 <p>Same as <a href="qhelpevent.html#pos">pos</a>().y().</p>
 <p>See also <a href="qhelpevent.html#x">x</a>(), <a href="qhelpevent.html#pos">pos</a>(), and <a href="qhelpevent.html#globalPos">globalPos</a>().</p>

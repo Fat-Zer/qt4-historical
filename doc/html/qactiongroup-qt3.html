@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qactiongroup.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/gui/kernel/qactiongroup.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QActionGroup</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -30,10 +30,8 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QActionGroup/add" />
 <h3 class="fn"><a name="add"></a>void QActionGroup::add ( <a href="qaction.html">QAction</a> * <i>a</i> )</h3>
 <p>Use <a href="qactiongroup.html#addAction">addAction</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QActionGroup/addSeparator" />
 <h3 class="fn"><a name="addSeparator"></a>void QActionGroup::addSeparator ()</h3>
 <p>Normally you add a separator to the menus or widgets to which actions are added, so this function is very rarely needed.</p>
 <p>For example, if you have code like</p>
@@ -42,13 +40,11 @@
 <pre> QAction *separator = new QAction(this);
  separator-&gt;setSeparator(true);
  actionGroup-&gt;addAction(separator);</pre>
-<a name="//apple_ref/cpp/instm/QActionGroup/addTo" />
 <h3 class="fn"><a name="addTo"></a>bool QActionGroup::addTo ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> actionGroup-&gt;addTo(widget);</font></pre>
 <p>you can rewrite it as</p>
 <pre> widget-&gt;addActions(actionGroup-&gt;actions());</pre>
-<a name="//apple_ref/cpp/instm/QActionGroup/selected" />
 <h3 class="fn"><a name="selected"></a>void QActionGroup::selected ( <a href="qaction.html">QAction</a> * <i>action</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>Use <a href="qactiongroup.html#triggered">triggered</a>() instead.</p>
 <p /><address><hr /><div align="center">

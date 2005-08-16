@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/network/q3http.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/qt3support/network/q3http.cpp -->
 <head>
   <title>Qt 4.4: Q3HttpRequestHeader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//Q3HttpRequestHeader" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -49,7 +48,6 @@
 <p>See also <a href="q3httpresponseheader.html">Q3HttpResponseHeader</a> and <a href="q3http.html">Q3Http</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3HttpRequestHeader/Q3HttpRequestHeader" />
 <h3 class="fn"><a name="Q3HttpRequestHeader"></a>Q3HttpRequestHeader::Q3HttpRequestHeader ()</h3>
 <p>Constructs an empty HTTP request header.</p>
 <h3 class="fn"><a name="Q3HttpRequestHeader-2"></a>Q3HttpRequestHeader::Q3HttpRequestHeader ( const <a href="qstring.html">QString</a> &amp; <i>method</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i>, int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</h3>
@@ -58,25 +56,20 @@
 <p>Constructs a copy of <i>header</i>.</p>
 <h3 class="fn"><a name="Q3HttpRequestHeader-4"></a>Q3HttpRequestHeader::Q3HttpRequestHeader ( const <a href="qstring.html">QString</a> &amp; <i>str</i> )</h3>
 <p>Constructs a HTTP request header from the string <i>str</i>. The <i>str</i> should consist of one or more &quot;\r\n&quot; delimited lines; the first line should be the request-line (format: method, space, request-URI, space HTTP-version); each of the remaining lines should have the format key, colon, space, value.</p>
-<a name="//apple_ref/cpp/instm/Q3HttpRequestHeader/majorVersion" />
 <h3 class="fn"><a name="majorVersion"></a>int Q3HttpRequestHeader::majorVersion () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the major protocol-version of the HTTP request header.</p>
 <p>Reimplemented from <a href="q3httpheader.html#majorVersion">Q3HttpHeader</a>.</p>
 <p>See also <a href="q3httprequestheader.html#minorVersion">minorVersion</a>(), <a href="q3httprequestheader.html#method">method</a>(), <a href="q3httprequestheader.html#pathx">path</a>(), and <a href="q3httprequestheader.html#setRequest">setRequest</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3HttpRequestHeader/method" />
 <h3 class="fn"><a name="method"></a><a href="qstring.html">QString</a> Q3HttpRequestHeader::method () const</h3>
 <p>Returns the method of the HTTP request header.</p>
 <p>See also <a href="q3httprequestheader.html#pathx">path</a>(), <a href="q3httprequestheader.html#majorVersion">majorVersion</a>(), <a href="q3httprequestheader.html#minorVersion">minorVersion</a>(), and <a href="q3httprequestheader.html#setRequest">setRequest</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3HttpRequestHeader/minorVersion" />
 <h3 class="fn"><a name="minorVersion"></a>int Q3HttpRequestHeader::minorVersion () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the minor protocol-version of the HTTP request header.</p>
 <p>Reimplemented from <a href="q3httpheader.html#minorVersion">Q3HttpHeader</a>.</p>
 <p>See also <a href="q3httprequestheader.html#majorVersion">majorVersion</a>(), <a href="q3httprequestheader.html#method">method</a>(), <a href="q3httprequestheader.html#pathx">path</a>(), and <a href="q3httprequestheader.html#setRequest">setRequest</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3HttpRequestHeader/path" />
 <h3 class="fn"><a name="pathx"></a><a href="qstring.html">QString</a> Q3HttpRequestHeader::path () const</h3>
 <p>Returns the request-URI of the HTTP request header.</p>
 <p>See also <a href="q3httprequestheader.html#method">method</a>(), <a href="q3httprequestheader.html#majorVersion">majorVersion</a>(), <a href="q3httprequestheader.html#minorVersion">minorVersion</a>(), and <a href="q3httprequestheader.html#setRequest">setRequest</a>().</p>
-<a name="//apple_ref/cpp/instm/Q3HttpRequestHeader/setRequest" />
 <h3 class="fn"><a name="setRequest"></a>void Q3HttpRequestHeader::setRequest ( const <a href="qstring.html">QString</a> &amp; <i>method</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i>, int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</h3>
 <p>This function sets the request method to <i>method</i>, the request-URI to <i>path</i> and the protocol-version to <i>majorVer</i> and <i>minorVer</i>.</p>
 <p>See also <a href="q3httprequestheader.html#method">method</a>(), <a href="q3httprequestheader.html#pathx">path</a>(), <a href="q3httprequestheader.html#majorVersion">majorVersion</a>(), and <a href="q3httprequestheader.html#minorVersion">minorVersion</a>().</p>

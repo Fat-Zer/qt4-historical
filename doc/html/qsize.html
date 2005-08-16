@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/tools/qsize.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/corelib/tools/qsize.cpp -->
 <head>
   <title>Qt 4.4: QSize Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSize" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -46,15 +45,15 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>bool <b><a href="qsize.html#operator-not-eq-28">operator!=</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
-<li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2a-23">operator*</a></b> ( const QSize &amp; <i>size</i>, qreal <i>factor</i> )</li>
-<li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2a-25">operator*</a></b> ( qreal <i>factor</i>, const QSize &amp; <i>size</i> )</li>
-<li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2b-18">operator+</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
-<li><div class="fn"/>const QSize <b><a href="qsize.html#operator--8">operator-</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
+<li><div class="fn"/>bool <b><a href="qsize.html#operator-not-eq-4">operator!=</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
+<li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2a-3">operator*</a></b> ( const QSize &amp; <i>size</i>, qreal <i>factor</i> )</li>
+<li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2a-27">operator*</a></b> ( qreal <i>factor</i>, const QSize &amp; <i>size</i> )</li>
+<li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2b-7">operator+</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
+<li><div class="fn"/>const QSize <b><a href="qsize.html#operator--3">operator-</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
 <li><div class="fn"/>const QSize <b><a href="qsize.html#operator-2f-5">operator/</a></b> ( const QSize &amp; <i>size</i>, qreal <i>divisor</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qsize.html#operator-lt-lt-106">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QSize &amp; <i>size</i> )</li>
-<li><div class="fn"/>bool <b><a href="qsize.html#operator-eq-eq-40">operator==</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qsize.html#operator-gt-gt-65">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QSize &amp; <i>size</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qsize.html#operator-lt-lt-29">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QSize &amp; <i>size</i> )</li>
+<li><div class="fn"/>bool <b><a href="qsize.html#operator-eq-eq-7">operator==</a></b> ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qsize.html#operator-gt-gt-18">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QSize &amp; <i>size</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -67,38 +66,30 @@
 <p>See also <a href="qsizef.html">QSizeF</a>, <a href="qpoint.html">QPoint</a>, and <a href="qrect.html">QRect</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSize/QSize" />
 <h3 class="fn"><a name="QSize"></a>QSize::QSize ()</h3>
 <p>Constructs a size with an invalid width and height (i.e&#x2e;, <a href="qsize.html#isValid">isValid</a>() returns false).</p>
 <p>See also <a href="qsize.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="QSize-2"></a>QSize::QSize ( int <i>width</i>, int <i>height</i> )</h3>
 <p>Constructs a size with the given <i>width</i> and <i>height</i>.</p>
 <p>See also <a href="qsize.html#setWidth">setWidth</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/boundedTo" />
 <h3 class="fn"><a name="boundedTo"></a>QSize QSize::boundedTo ( const QSize &amp; <i>otherSize</i> ) const</h3>
 <p>Returns a size holding the minimum width and height of this size and the given <i>otherSize</i>.</p>
 <p>See also <a href="qsize.html#expandedTo">expandedTo</a>() and <a href="qsize.html#scale">scale</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/expandedTo" />
 <h3 class="fn"><a name="expandedTo"></a>QSize QSize::expandedTo ( const QSize &amp; <i>otherSize</i> ) const</h3>
 <p>Returns a size holding the maximum width and height of this size and the given <i>otherSize</i>.</p>
 <p>See also <a href="qsize.html#boundedTo">boundedTo</a>() and <a href="qsize.html#scale">scale</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/height" />
 <h3 class="fn"><a name="height"></a>int QSize::height () const</h3>
 <p>Returns the height.</p>
 <p>See also <a href="qsize.html#width">width</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QSize::isEmpty () const</h3>
 <p>Returns true if either of the width and height is less than or equal to 0; otherwise returns false.</p>
 <p>See also <a href="qsize.html#isNull">isNull</a>() and <a href="qsize.html#isValid">isValid</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/isNull" />
 <h3 class="fn"><a name="isNull"></a>bool QSize::isNull () const</h3>
 <p>Returns true if both the width and height is 0; otherwise returns false.</p>
 <p>See also <a href="qsize.html#isValid">isValid</a>() and <a href="qsize.html#isEmpty">isEmpty</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool QSize::isValid () const</h3>
 <p>Returns true if both the width and height is equal to or greater than 0; otherwise returns false.</p>
 <p>See also <a href="qsize.html#isNull">isNull</a>() and <a href="qsize.html#isEmpty">isEmpty</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/rheight" />
 <h3 class="fn"><a name="rheight"></a>int &amp; QSize::rheight ()</h3>
 <p>Returns a reference to the height.</p>
 <p>Using a reference makes it possible to manipulate the height directly. For example:</p>
@@ -107,7 +98,6 @@
 
 <span class="comment"> // size becomes (100,15)</span></pre>
 <p>See also <a href="qsize.html#rwidth">rwidth</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/rwidth" />
 <h3 class="fn"><a name="rwidth"></a>int &amp; QSize::rwidth ()</h3>
 <p>Returns a reference to the width.</p>
 <p>Using a reference makes it possible to manipulate the width directly. For example:</p>
@@ -116,7 +106,6 @@
 
 <span class="comment"> // size becomes (120,10)</span></pre>
 <p>See also <a href="qsize.html#rheight">rheight</a>() and <a href="qsize.html#setWidth">setWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/scale" />
 <h3 class="fn"><a name="scale"></a>void QSize::scale ( int <i>width</i>, int <i>height</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> )</h3>
 <p>Scales the size to a rectangle with the given <i>width</i> and <i>height</i>, according to the specified <i>mode</i>:</p>
 <ul>
@@ -140,28 +129,22 @@
 <h3 class="fn"><a name="scale-2"></a>void QSize::scale ( const QSize &amp; <i>size</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Scales the size to a rectangle with the given <i>size</i>, according to the specified <i>mode</i>.</p>
-<a name="//apple_ref/cpp/instm/QSize/setHeight" />
 <h3 class="fn"><a name="setHeight"></a>void QSize::setHeight ( int <i>height</i> )</h3>
 <p>Sets the height to the given <i>height</i>.</p>
 <p>See also <a href="qsize.html#rheight">rheight</a>(), <a href="qsize.html#height">height</a>(), and <a href="qsize.html#setWidth">setWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/setWidth" />
 <h3 class="fn"><a name="setWidth"></a>void QSize::setWidth ( int <i>width</i> )</h3>
 <p>Sets the width to the given <i>width</i>.</p>
 <p>See also <a href="qsize.html#rwidth">rwidth</a>(), <a href="qsize.html#width">width</a>(), and <a href="qsize.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/transpose" />
 <h3 class="fn"><a name="transpose"></a>void QSize::transpose ()</h3>
 <p>Swaps the width and height values.</p>
 <p>See also <a href="qsize.html#setWidth">setWidth</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/width" />
 <h3 class="fn"><a name="width"></a>int QSize::width () const</h3>
 <p>Returns the width.</p>
 <p>See also <a href="qsize.html#height">height</a>() and <a href="qsize.html#setWidth">setWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/operator*=" />
 <h3 class="fn"><a name="operator-2a-eq"></a>QSize &amp; QSize::operator*= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i> )</h3>
 <p>Multiplies both the width and height by the given <i>factor</i>, and returns a reference to the size.</p>
 <p>Note that the result is rounded to the nearest integer.</p>
 <p>See also <a href="qsize.html#scale">scale</a>().</p>
-<a name="//apple_ref/cpp/instm/QSize/operator+=" />
 <h3 class="fn"><a name="operator-2b-eq"></a>QSize &amp; QSize::operator+= ( const QSize &amp; <i>size</i> )</h3>
 <p>Adds the given <i>size</i> to <i>this</i> size, and returns a reference to this size. For example:</p>
 <pre> QSize s( 3, 7);
@@ -169,7 +152,6 @@
  s += r;
 
 <span class="comment"> // s becomes (2,11)</span></pre>
-<a name="//apple_ref/cpp/instm/QSize/operator-=" />
 <h3 class="fn"><a name="operator--eq"></a>QSize &amp; QSize::operator-= ( const QSize &amp; <i>size</i> )</h3>
 <p>Subtracts the given <i>size</i> from <i>this</i> size, and returns a reference to this size. For example:</p>
 <pre> QSize s( 3, 7);
@@ -177,41 +159,40 @@
  s -= r;
 
 <span class="comment"> // s becomes (4,3)</span></pre>
-<a name="//apple_ref/cpp/instm/QSize/operator/=" />
 <h3 class="fn"><a name="operator-2f-eq"></a>QSize &amp; QSize::operator/= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>divisor</i> )</h3>
 <p>Divides both the width and height by the given <i>divisor</i>, and returns a reference to the size.</p>
 <p>Note that the result is rounded to the nearest integer.</p>
 <p>See also <a href="qsize.html#scale">QSize::scale</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-not-eq-28"></a>bool operator!= ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
+<h3 class="fn"><a name="operator-not-eq-4"></a>bool operator!= ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are different; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-2a-23"></a>const QSize operator* ( const QSize &amp; <i>size</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i> )</h3>
+<h3 class="fn"><a name="operator-2a-3"></a>const QSize operator* ( const QSize &amp; <i>size</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Multiplies the given <i>size</i> by the given <i>factor</i>, and returns the result rounded to the nearest integer.</p>
 <p>See also <a href="qsize.html#scale">QSize::scale</a>().</p>
-<h3 class="fn"><a name="operator-2a-25"></a>const QSize operator* ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i>, const QSize &amp; <i>size</i> )</h3>
+<h3 class="fn"><a name="operator-2a-27"></a>const QSize operator* ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>factor</i>, const QSize &amp; <i>size</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Multiplies the given <i>size</i> by the given <i>factor</i>, and returns the result rounded to the nearest integer.</p>
-<h3 class="fn"><a name="operator-2b-18"></a>const QSize operator+ ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
+<h3 class="fn"><a name="operator-2b-7"></a>const QSize operator+ ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the sum of <i>s1</i> and <i>s2</i>; each component is added separately.</p>
-<h3 class="fn"><a name="operator--8"></a>const QSize operator- ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
+<h3 class="fn"><a name="operator--3"></a>const QSize operator- ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns <i>s2</i> subtracted from <i>s1</i>; each component is subtracted separately.</p>
 <h3 class="fn"><a name="operator-2f-5"></a>const QSize operator/ ( const QSize &amp; <i>size</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>divisor</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Divides the given <i>size</i> by the given <i>divisor</i>, and returns the result rounded to the nearest integer.</p>
 <p>See also <a href="qsize.html#scale">QSize::scale</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-106"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QSize &amp; <i>size</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-29"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QSize &amp; <i>size</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>size</i> to the given <i>stream</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-eq-eq-40"></a>bool operator== ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
+<h3 class="fn"><a name="operator-eq-eq-7"></a>bool operator== ( const QSize &amp; <i>s1</i>, const QSize &amp; <i>s2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are equal; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-gt-gt-65"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QSize &amp; <i>size</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-18"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QSize &amp; <i>size</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a size from the given <i>stream</i> into the given <i>size</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>

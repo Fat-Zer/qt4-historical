@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/dialogs/qmessagebox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/gui/dialogs/qmessagebox.cpp -->
 <head>
   <title>Qt 4.4: Obsolete Members for QMessageBox</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -43,7 +43,6 @@
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QMessageBox/Button" />
 <h3 class="fn"><a name="Button-typedef"></a>typedef QMessageBox::Button</h3>
 <p>Use <a href="qmessagebox.html#StandardButton-enum">QMessageBox::StandardButton</a> instead.</p>
 <hr />
@@ -85,7 +84,6 @@
 <p>If <i>parent</i> is 0, the message box is an <a href="qt.html#WindowModality-enum">application modal</a> dialog box. If <i>parent</i> is a widget, the message box is <a href="qt.html#WindowModality-enum">window modal</a> relative to <i>parent</i>.</p>
 <p>The <i>parent</i> and <i>f</i> arguments are passed to the <a href="qdialog.html">QDialog</a> constructor.</p>
 <p>See also <a href="qmessagebox.html#setWindowTitle">setWindowTitle</a>(), <a href="qmessagebox.html#text-prop">setText</a>(), and <a href="qmessagebox.html#icon-prop">setIcon</a>().</p>
-<a name="//apple_ref/cpp/instm/QMessageBox/buttonText" />
 <h3 class="fn"><a name="buttonText"></a><a href="qstring.html">QString</a> QMessageBox::buttonText ( int <i>button</i> ) const</h3>
 <p>Returns the text of the message box button <i>button</i>, or an empty string if the message box does not contain the button.</p>
 <p>Use <a href="qmessagebox.html#button">button</a>() and <a href="qabstractbutton.html#text-prop">QPushButton::text</a>() instead.</p>
@@ -168,7 +166,6 @@
 <p><i>button0Text</i> is the text of the first button, and is optional. If <i>button0Text</i> is not supplied, &quot;OK&quot; (translated) will be used. <i>button1Text</i> is the text of the second button, and is optional. <i>button2Text</i> is the text of the third button, and is optional. <i>defaultButtonNumber</i> (0, 1 or 2) is the index of the default button; pressing Return or Enter is the same as clicking the default button. It defaults to 0 (the first button). <i>escapeButtonNumber</i> is the index of the Escape button; pressing Escape is the same as clicking this button. It defaults to -1; supply 0, 1 or 2 to make pressing Escape equivalent to clicking the relevant button.</p>
 <p>If <i>parent</i> is 0, the message box is an <a href="qt.html#WindowModality-enum">application modal</a> dialog box. If <i>parent</i> is a widget, the message box is <a href="qt.html#WindowModality-enum">window modal</a> relative to <i>parent</i>.</p>
 <p>See also <a href="qmessagebox.html#information">information</a>(), <a href="qmessagebox.html#warning">warning</a>(), and <a href="qmessagebox.html#critical">critical</a>().</p>
-<a name="//apple_ref/cpp/instm/QMessageBox/setButtonText" />
 <h3 class="fn"><a name="setButtonText"></a>void QMessageBox::setButtonText ( int <i>button</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Sets the text of the message box button <i>button</i> to <i>text</i>. Setting the text of a button that is not in the message box is silently ignored.</p>
 <p>Use <a href="qmessagebox.html#addButton">addButton</a>() instead.</p>

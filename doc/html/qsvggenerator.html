@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/svg/qsvggenerator.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/svg/qsvggenerator.cpp -->
 <head>
   <title>Qt 4.4: QSvgGenerator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSvgGenerator" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -58,48 +57,37 @@
 <p>See also <a href="qsvgrenderer.html">QSvgRenderer</a> and <a href="qsvgwidget.html">QSvgWidget</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/QSvgGenerator" />
 <h3 class="fn"><a name="QSvgGenerator"></a>QSvgGenerator::QSvgGenerator ()</h3>
 <p>Constructs a new generator.</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/~QSvgGenerator" />
 <h3 class="fn"><a name="dtor.QSvgGenerator"></a>QSvgGenerator::~QSvgGenerator ()</h3>
 <p>Destroys the generator.</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/fileName" />
 <h3 class="fn"><a name="fileName"></a><a href="qstring.html">QString</a> QSvgGenerator::fileName () const</h3>
 <p>Returns the name of the file to be created by the generator.</p>
 <p>See also <a href="qsvggenerator.html#setFileName">setFileName</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/outputDevice" />
 <h3 class="fn"><a name="outputDevice"></a><a href="qiodevice.html">QIODevice</a> * QSvgGenerator::outputDevice () const</h3>
 <p>Returns the target output device for generated SVGs.</p>
 <p>See also <a href="qsvggenerator.html#setOutputDevice">setOutputDevice</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/paintEngine" />
 <h3 class="fn"><a name="paintEngine"></a><a href="qpaintengine.html">QPaintEngine</a> * QSvgGenerator::paintEngine () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the paint engine used to render graphics to be converted to SVG format information.</p>
 <p>Reimplemented from <a href="qpaintdevice.html#paintEngine">QPaintDevice</a>.</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/resolution" />
 <h3 class="fn"><a name="resolution"></a>int QSvgGenerator::resolution () const</h3>
 <p>Returns the resolution of the generated output in dots per inch.</p>
 <p>See also <a href="qsvggenerator.html#setResolution">setResolution</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/setFileName" />
 <h3 class="fn"><a name="setFileName"></a>void QSvgGenerator::setFileName ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )</h3>
 <p>Sets the target filename for generated SVGs to <i>fileName</i>.</p>
 <p>See also <a href="qsvggenerator.html#fileName">fileName</a>() and <a href="qsvggenerator.html#setOutputDevice">setOutputDevice</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/setOutputDevice" />
 <h3 class="fn"><a name="setOutputDevice"></a>void QSvgGenerator::setOutputDevice ( <a href="qiodevice.html">QIODevice</a> * <i>outputDevice</i> )</h3>
 <p>Sets the output device for generated SVGs to <i>outputDevice</i>.</p>
 <p>If both output device and file name are specified, the output device will have precedence.</p>
 <p>See also <a href="qsvggenerator.html#outputDevice">outputDevice</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/setResolution" />
 <h3 class="fn"><a name="setResolution"></a>void QSvgGenerator::setResolution ( int <i>resolution</i> )</h3>
 <p>Sets the resolution of the generated output to <i>resolution</i>. The argument is specified in dots per inch.</p>
 <p>The resolution is used to calculate the physical size of an SVG drawing.</p>
 <p>See also <a href="qsvggenerator.html#resolution">resolution</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/setSize" />
 <h3 class="fn"><a name="setSize"></a>void QSvgGenerator::setSize ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> )</h3>
 <p>Sets the size of the generated SVG to <i>size</i>.</p>
 <p>It is not possible to set the size while the SVG is being generated.</p>
 <p>See also <a href="qsvggenerator.html#size">size</a>().</p>
-<a name="//apple_ref/cpp/instm/QSvgGenerator/size" />
 <h3 class="fn"><a name="size"></a><a href="qsize.html">QSize</a> QSvgGenerator::size () const</h3>
 <p>Returns the size of the generated SVG.</p>
 <p>See also <a href="qsvggenerator.html#setSize">setSize</a>().</p>

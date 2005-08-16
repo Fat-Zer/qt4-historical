@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/io/qabstractfileengine.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/corelib/io/qabstractfileengine.cpp -->
 <head>
   <title>Qt 4.4: QAbstractFileEngineHandler Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QAbstractFileEngineHandler" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -64,14 +63,11 @@
 <p>See also <a href="qabstractfileengine.html">QAbstractFileEngine</a> and <a href="qabstractfileengine.html#create">QAbstractFileEngine::create</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QAbstractFileEngineHandler/QAbstractFileEngineHandler" />
 <h3 class="fn"><a name="QAbstractFileEngineHandler"></a>QAbstractFileEngineHandler::QAbstractFileEngineHandler ()</h3>
 <p>Constructs a file handler and registers it with Qt. Once created this handler's <a href="qabstractfileenginehandler.html#create">create</a>() function will be called (along with all the other handlers) for any paths used. The most recently created handler that recognizes the given path (i.e&#x2e; that returns a <a href="qabstractfileengine.html">QAbstractFileEngine</a>) is used for the new path.</p>
 <p>See also <a href="qabstractfileenginehandler.html#create">create</a>().</p>
-<a name="//apple_ref/cpp/instm/QAbstractFileEngineHandler/~QAbstractFileEngineHandler" />
 <h3 class="fn"><a name="dtor.QAbstractFileEngineHandler"></a>QAbstractFileEngineHandler::~QAbstractFileEngineHandler ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the file handler. This will automatically unregister the handler from Qt.</p>
-<a name="//apple_ref/cpp/instm/QAbstractFileEngineHandler/create" />
 <h3 class="fn"><a name="create"></a><a href="qabstractfileengine.html">QAbstractFileEngine</a> * QAbstractFileEngineHandler::create ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Creates a file engine for file <i>fileName</i>. Returns 0 if this file handler cannot handle <i>fileName</i>.</p>
 <p>Example:</p>

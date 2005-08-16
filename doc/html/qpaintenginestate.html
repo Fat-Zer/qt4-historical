@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/painting/qpainter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.4: QPaintEngineState Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QPaintEngineState" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -72,92 +71,73 @@
 <p>See also <a href="qpaintengine.html">QPaintEngine</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/backgroundBrush" />
 <h3 class="fn"><a name="backgroundBrush"></a><a href="qbrush.html">QBrush</a> QPaintEngineState::backgroundBrush () const</h3>
 <p>Returns the background brush in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyBackground</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/backgroundMode" />
 <h3 class="fn"><a name="backgroundMode"></a><a href="qt.html#BGMode-enum">Qt::BGMode</a> QPaintEngineState::backgroundMode () const</h3>
 <p>Returns the background mode in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyBackgroundMode</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/brush" />
 <h3 class="fn"><a name="brush"></a><a href="qbrush.html">QBrush</a> QPaintEngineState::brush () const</h3>
 <p>Returns the brush in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyBrush</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/brushNeedsResolving" />
 <h3 class="fn"><a name="brushNeedsResolving"></a>bool QPaintEngineState::brushNeedsResolving () const</h3>
 <p>Returns whether the coordinate of the fill have been specified as bounded by the current rendering operation and have to be resolved (about the currently rendered primitive).</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/brushOrigin" />
 <h3 class="fn"><a name="brushOrigin"></a><a href="qpointf.html">QPointF</a> QPaintEngineState::brushOrigin () const</h3>
 <p>Returns the brush origin in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyBrushOrigin</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/clipOperation" />
 <h3 class="fn"><a name="clipOperation"></a><a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> QPaintEngineState::clipOperation () const</h3>
 <p>Returns the clip operation in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes either the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyClipPath</a> or the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyClipRegion</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/clipPath" />
 <h3 class="fn"><a name="clipPath"></a><a href="qpainterpath.html">QPainterPath</a> QPaintEngineState::clipPath () const</h3>
 <p>Returns the clip path in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyClipPath</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/clipRegion" />
 <h3 class="fn"><a name="clipRegion"></a><a href="qregion.html">QRegion</a> QPaintEngineState::clipRegion () const</h3>
 <p>Returns the clip region in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyClipRegion</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/compositionMode" />
 <h3 class="fn"><a name="compositionMode"></a><a href="qpainter.html#CompositionMode-enum">QPainter::CompositionMode</a> QPaintEngineState::compositionMode () const</h3>
 <p>Returns the composition mode in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyCompositionMode</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/font" />
 <h3 class="fn"><a name="font"></a><a href="qfont.html">QFont</a> QPaintEngineState::font () const</h3>
 <p>Returns the font in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyFont</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/isClipEnabled" />
 <h3 class="fn"><a name="isClipEnabled"></a>bool QPaintEngineState::isClipEnabled () const</h3>
 <p>Returns wether clipping is enabled or not in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyClipEnabled</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/matrix" />
 <h3 class="fn"><a name="matrix"></a><a href="qmatrix.html">QMatrix</a> QPaintEngineState::matrix () const</h3>
 <p>Returns the matrix in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyTransform</a> flag.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/opacity" />
 <h3 class="fn"><a name="opacity"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QPaintEngineState::opacity () const</h3>
 <p>Returns the opacity in the current paint engine state.</p>
 <p>This function was introduced in Qt 4.2.</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/painter" />
 <h3 class="fn"><a name="painter"></a><a href="qpainter.html">QPainter</a> * QPaintEngineState::painter () const</h3>
 <p>Returns a pointer to the painter currently updating the paint engine.</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/pen" />
 <h3 class="fn"><a name="pen"></a><a href="qpen.html">QPen</a> QPaintEngineState::pen () const</h3>
 <p>Returns the pen in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyPen</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/penNeedsResolving" />
 <h3 class="fn"><a name="penNeedsResolving"></a>bool QPaintEngineState::penNeedsResolving () const</h3>
 <p>Returns whether the coordinate of the stroke have been specified as bounded by the current rendering operation and have to be resolved (about the currently rendered primitive).</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/renderHints" />
 <h3 class="fn"><a name="renderHints"></a><a href="qpainter.html#RenderHint-enum">QPainter::RenderHints</a> QPaintEngineState::renderHints () const</h3>
 <p>Returns the render hints in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyHints</a> flag.</p>
 <p>See also <a href="qpaintenginestate.html#state">state</a>() and <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/state" />
 <h3 class="fn"><a name="state"></a><a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyFlags</a> QPaintEngineState::state () const</h3>
 <p>Returns a combination of flags identifying the set of properties that need to be updated when updating the paint engine's state (i.e&#x2e; during a call to the <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>() function).</p>
 <p>See also <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
-<a name="//apple_ref/cpp/instm/QPaintEngineState/transform" />
 <h3 class="fn"><a name="transform"></a><a href="qtransform.html">QTransform</a> QPaintEngineState::transform () const</h3>
 <p>Returns the matrix in the current paint engine state.</p>
 <p>This variable should only be used when the <a href="qpaintenginestate.html#state">state</a>() returns a combination which includes the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyTransform</a> flag.</p>

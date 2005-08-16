@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/tools/designer/src/lib/sdk/abstractactioneditor.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-win-opensource-src-4.4.2/tools/designer/src/lib/sdk/abstractactioneditor.cpp -->
 <head>
   <title>Qt 4.4: QDesignerActionEditorInterface Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QDesignerActionEditorInterface" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -67,23 +66,17 @@
 <p>See also <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> and <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QDesignerActionEditorInterface/QDesignerActionEditorInterface" />
 <h3 class="fn"><a name="QDesignerActionEditorInterface"></a>QDesignerActionEditorInterface::QDesignerActionEditorInterface ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>flags</i> = 0 )</h3>
 <p>Constructs an action editor interface with the given <i>parent</i> and the specified window <i>flags</i>.</p>
-<a name="//apple_ref/cpp/instm/QDesignerActionEditorInterface/~QDesignerActionEditorInterface" />
 <h3 class="fn"><a name="dtor.QDesignerActionEditorInterface"></a>QDesignerActionEditorInterface::~QDesignerActionEditorInterface ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the action editor interface.</p>
-<a name="//apple_ref/cpp/instm/QDesignerActionEditorInterface/core" />
 <h3 class="fn"><a name="core"></a><a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> * QDesignerActionEditorInterface::core () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a pointer to <i>Qt Designer</i>'s current <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> object.</p>
-<a name="//apple_ref/cpp/instm/QDesignerActionEditorInterface/manageAction" />
 <h3 class="fn"><a name="manageAction"></a>void QDesignerActionEditorInterface::manageAction ( <a href="qaction.html">QAction</a> * <i>action</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Instructs <i>Qt Designer</i> to manage the specified <i>action</i>. An action that is managed by <i>Qt Designer</i> is available in the action editor.</p>
 <p>See also <a href="qdesigneractioneditorinterface.html#unmanageAction">unmanageAction</a>().</p>
-<a name="//apple_ref/cpp/instm/QDesignerActionEditorInterface/setFormWindow" />
 <h3 class="fn"><a name="setFormWindow"></a>void QDesignerActionEditorInterface::setFormWindow ( <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> * <i>formWindow</i> )&nbsp;&nbsp;<tt> [pure virtual slot]</tt></h3>
 <p>Sets the currently selected form window to <i>formWindow</i>.</p>
-<a name="//apple_ref/cpp/instm/QDesignerActionEditorInterface/unmanageAction" />
 <h3 class="fn"><a name="unmanageAction"></a>void QDesignerActionEditorInterface::unmanageAction ( <a href="qaction.html">QAction</a> * <i>action</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Instructs <i>Qt Designer</i> to ignore the specified <i>action</i>. An unmanaged action is not available in the action editor.</p>
 <p>See also <a href="qdesigneractioneditorinterface.html#manageAction">manageAction</a>().</p>
