@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/wince-introduction.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-wince-opensource-src-4.5.0/doc/src/wince-introduction.qdoc -->
 <head>
   <title>Qt 4.5: Windows CE - Introduction to using Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -30,9 +30,10 @@
 <h3>Building your own applications</h3>
 <p>If you are new to Qt development, have a look at <a href="how-to-learn-qt.html">How to Learn Qt</a> and <a href="tutorials.html">Tutorials</a>. In general there is little or no difference in developing Qt applications for Windows CE compared to any of the other platforms supported by Qt.</p>
 <p>Once you have a <tt>.pro</tt> file, there are two ways of building your application. You can either do it on the command line or inside of VS2005. To do it on the command line, simply write:</p>
-<pre></pre>
+<pre> qmake
+ nmake</pre>
 <p>To build the project inside of VS2005, on the command line write:</p>
-<pre></pre>
+<pre> qmake -tp vc</pre>
 <p>then start VS2005 with the generated <tt>.vcproj</tt> or <tt>.sln</tt> file and select <i>Build project</i>.</p>
 <p>For more information on how to use qmake have a look at the <a href="qmake-tutorial.html">qmake Tutorial</a>.</p>
 <a name="running-the-application"></a>

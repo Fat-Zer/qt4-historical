@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/examples/threadedfortuneserver.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-wince-opensource-src-4.5.0/doc/src/examples/threadedfortuneserver.qdoc -->
 <head>
   <title>Qt 4.5: Threaded Fortune Server Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -78,7 +78,7 @@
      int socketDescriptor;
      QString text;
  };</pre>
-<p>Moving on to the FortuneThread class, this is a <a href="qthread.html">QThread</a> subclass whose job is to write the fortune to the connected socket. The class reimplements <a href="qthread.html#run">QThread::run</a>(), and it has a signal for reporting errors.</p>
+<p>Moving on to the FortuneThread class, this is a <a href="qthread.html">QThread</a> subclass whose job is to write the fortune to the connected socket. The class reimplements <a href="qthread.html#runx">QThread::run</a>(), and it has a signal for reporting errors.</p>
 <pre> FortuneThread::FortuneThread(int socketDescriptor, const QString &amp;fortune, QObject *parent)
      : QThread(parent), socketDescriptor(socketDescriptor), text(fortune)
  {

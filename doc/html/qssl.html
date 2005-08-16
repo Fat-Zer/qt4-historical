@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/network/ssl/qssl.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-wince-opensource-src-4.5.0/src/network/ssl/qssl.cpp -->
 <head>
   <title>Qt 4.5: QSsl Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -33,9 +33,6 @@
 <p>The QSsl namespace declares enums common to all SSL classes in <a href="qtnetwork.html">QtNetwork</a>.</p>
 <hr />
 <h2>Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QSsl/AlternateNameEntryType" />
-<a name="//apple_ref/cpp/econst/QSsl/EmailEntry" />
-<a name="//apple_ref/cpp/econst/QSsl/DnsEntry" />
 <h3 class="fn"><a name="AlternateNameEntryType-enum"></a>enum QSsl::AlternateNameEntryType</h3>
 <p>Describes the key types for alternate name entries in <a href="qsslcertificate.html">QSslCertificate</a>.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -44,9 +41,6 @@
 <tr><td valign="top"><tt>QSsl::DnsEntry</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A DNS host name entry; the entry contains a host name entry that the certificate is valid for. The entry may contain wildcards.</td></tr>
 </table></p>
 <p>See also <a href="qsslcertificate.html#alternateSubjectNames">QSslCertificate::alternateSubjectNames</a>().</p>
-<a name="//apple_ref/cpp/tag/QSsl/EncodingFormat" />
-<a name="//apple_ref/cpp/econst/QSsl/Pem" />
-<a name="//apple_ref/cpp/econst/QSsl/Der" />
 <h3 class="fn"><a name="EncodingFormat-enum"></a>enum QSsl::EncodingFormat</h3>
 <p>Describes supported encoding formats for certificates and keys.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -54,9 +48,6 @@
 <tr><td valign="top"><tt>QSsl::Pem</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The PEM format.</td></tr>
 <tr><td valign="top"><tt>QSsl::Der</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The DER format.</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/QSsl/KeyAlgorithm" />
-<a name="//apple_ref/cpp/econst/QSsl/Rsa" />
-<a name="//apple_ref/cpp/econst/QSsl/Dsa" />
 <h3 class="fn"><a name="KeyAlgorithm-enum"></a>enum QSsl::KeyAlgorithm</h3>
 <p>Describes the different key algorithms supported by <a href="qsslkey.html">QSslKey</a>.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -64,9 +55,6 @@
 <tr><td valign="top"><tt>QSsl::Rsa</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The RSA algorithm.</td></tr>
 <tr><td valign="top"><tt>QSsl::Dsa</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The DSA algorithm.</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/QSsl/KeyType" />
-<a name="//apple_ref/cpp/econst/QSsl/PrivateKey" />
-<a name="//apple_ref/cpp/econst/QSsl/PublicKey" />
 <h3 class="fn"><a name="KeyType-enum"></a>enum QSsl::KeyType</h3>
 <p>Describes the two types of keys <a href="qsslkey.html">QSslKey</a> supports.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -74,12 +62,6 @@
 <tr><td valign="top"><tt>QSsl::PrivateKey</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A private key.</td></tr>
 <tr><td valign="top"><tt>QSsl::PublicKey</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A public key.</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/QSsl/SslProtocol" />
-<a name="//apple_ref/cpp/econst/QSsl/SslV3" />
-<a name="//apple_ref/cpp/econst/QSsl/SslV2" />
-<a name="//apple_ref/cpp/econst/QSsl/TlsV1" />
-<a name="//apple_ref/cpp/econst/QSsl/UnknownProtocol" />
-<a name="//apple_ref/cpp/econst/QSsl/AnyProtocol" />
 <h3 class="fn"><a name="SslProtocol-enum"></a>enum QSsl::SslProtocol</h3>
 <p>Describes the protocol of the cipher.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">

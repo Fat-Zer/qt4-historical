@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/wince-customization.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-wince-opensource-src-4.5.0/doc/src/wince-customization.qdoc -->
 <head>
   <title>Qt 4.5: Windows CE - Working with Custom SDKs</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -23,7 +23,7 @@
 <a name="creating-a-custom-build-specification"></a>
 <h3>Creating a Custom Build Specification</h3>
 <p>Create a subdirectory in the <tt>mkspecs</tt> folder of the Qt directory. New specifications for Qt for Windows CE following this naming convention:</p>
-<pre></pre>
+<pre> wince&lt;version&gt;&lt;SDK-shortcut&gt;-[architecture]-msvc2005</pre>
 <p>Using this convention makes it possible for <a href="qmake-manual.html#qmake">qmake</a> to identify that you are building Qt for Windows CE, and will customize the compilation process accordingly.</p>
 <p>Create the files <tt>qmake.conf</tt> and <tt>qplatformdefs.h</tt> inside the new specification directory. Take a look at the implementation of the other Windows CE specifications included in the <tt>mkspecs</tt> directory to see what is required to build Qt for Windows CE successfully.</p>
 <a name="fine-tuning-options"></a>
@@ -34,13 +34,16 @@
 <li><b>CE_ARCH</b> specifies information about the target architecture.</li>
 </ul>
 <p>Following is an example configuration for the Windows Mobile 5 for Pocket PC SDK:</p>
-<pre></pre>
+<pre> CE_SDK        = Windows Mobile 5.0 Pocket PC SDK
+ CE_ARCH       = ARMV4I</pre>
 <p><b>Note:</b> <a href="qmake-manual.html#qmake">qmake</a> uses this information to build a valid Visual Studio project file. You need to ensure that they are identical to the configuration of the custom SDK, otherwise you might not be able to compile or debug your project with Visual Studio.</p>
 <p>Additionally, most Windows CE SDKs use extra compiler options. These can be specified by expanding the <tt>DEFINES</tt> value.</p>
 <p>For example, with Windows Mobile 5 for Pocket PC, the <tt>DEFINES</tt> variable is expanded in the following way:</p>
-<pre></pre>
+<pre> DEFINES      += UNDER_CE WINCE _WINDOWS _UNICODE UNICODE _WIN32_WCE=0x501 $$CE_ARCH _ARMV4I_ armv4i _ARM_ ARM _M_ARM ARM _WIN32 __arm__ Q_OS_WINCE_WM QT_NO_PRINTER QT_NO_PRINTDIALOG</pre>
 <p>The mkspec may require additional configuration to be used inside of Visual Studio, depending on the Windows CE SDK. The above example defines <tt>_M_ARM</tt>. This definition is available internally in Visual Studio. Hence, the compiler will warn you about redefinition during the build step. These warnings can be disabled by adding a <tt>default_post.prf</tt> file containing the following lines, within the subdirectory.</p>
-<pre></pre>
+<pre> if(equals(TEMPLATE_PREFIX, &quot;vc&quot;) | equals(TEMPLATE, &quot;vc*&quot;)) {
+     DEFINES -= _M_ARM
+ }</pre>
 <a name="compiling-qt-for-a-custom-sdk"></a>
 <h3>Compiling Qt for a Custom SDK</h3>
 <p>Windows CE is highly customizable, hence it is possible that some SDKs have feature-stripped setups. Depending on the SDK's configuration, Qt may not compile in its standard configuration, as Qt for Windows CE is designed to be compatible with the Standard SDK setup.</p>
@@ -52,7 +55,22 @@
 <p>Unfortunately, the operating system will not provide an error message that mentions which symbols are absent. Instead, a message box with the following message will appear:</p>
 <p><tt>app.exe is not a valid CE application!</tt></p>
 <p>To identify the missing symbols, you need to create a temporary application that attempts to dynamically load the Qt for Windows CE libraries using <tt>LoadLibrary</tt>. The following code can be used for this:</p>
-<pre></pre>
+<pre> wchar_t* libraries[] = {
+     L&quot;QtCore4.dll&quot;,
+     L&quot;QtGui4.dll&quot;,
+     0
+ };
+
+ for (int i = 0; libraries[i] != 0; ++i) {
+     HINSTANCE instance = LoadLibraryW(libraries[i]);
+     OutputDebugStringW(libraries[i]);
+     if (instance != NULL) {
+         OutputDebugStringW(L&quot; : Successfully instantiated\n&quot;);
+         FreeLibrary(instance);
+     } else {
+         OutputDebugStringW(L&quot; : Could not be loaded\n&quot;);
+     }
+ }</pre>
 <p>Once you have compiled and deployed the application as well as the Qt libraries, start a remote debugger. The debugger will then print the ordinal number of the unresolved symbol.</p>
 <p>Search for parts of Qt that rely on these functions and disable them using the <a href="fine-tuning-features.html">QFeatures</a> functionality.</p>
 <p>In our experience, when Qt applications do not start on Windows CE, it is usually the result of missing symbols for the following classes or features:</p>

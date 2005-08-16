@@ -1,18 +1,25 @@
-This is a list of Frequently Asked Questions regarding Qt Release 4.5.0.
+             Frequently Asked Questions (FAQ) for Qt/CE
 
-Q: I'm using a Unix system and I downloaded the Zip package. However when I try
-to run the configure script I get the following error message:
-"bash: ./configure: /bin/sh^M: bad interpreter: No such file or directory"
-A: The problem here is converting files from Windows style line endings (CRLF)
-to Unix style line endings (LF). To avoid this problem, uncompress the file
-again but this time specify the option "-a" to unzip, so it adds the right line
-endings.
+Q: Do you support Windows CE 6.0?
+A: Yes. Although there will not be a public SDK available by Microsoft
+   we do have support for custom SDK created by hardware vendors.
 
-Q: I'm running Windows XP and I downloaded the qt-win-eval-4.5.0-vs2008.exe
-version of Qt. However when I try to run the examples I get an error saying:
-"The application failed to start because the application configuration is
-incorrect. Reinstalling the application may fix this problem.". I reinstalled
-the package and the error persists, what am I doing wrong?
-A: The problem is an incorrect version of the CRT. Visual studio requires CRT90
-while Windows XP comes with CRT80. To solve this problem please install the
-2008 CRT redistributable package from Microsoft.
+Q: What tools do I need to develop an application with Qt/CE?
+A: You need Visual Studio 2005 Standard Edition (or better) and a
+   Windows CE 5.0 or Windows Mobile 5.0 SDK (available free from
+   Microsoft) or later.
+
+Q: What platforms does Qt/CE support?
+A: At the moment we support:
+   Windows Mobile 5.0 Pocket PC Edition (ARM)
+   Windows Mobile 5.0 Smartphone Edition (ARM)
+   Windows CE 5.0 Standard SDK (ARM)
+   Windows CE 5.0 Standard SDK (X86)
+   Windows CE 5.0 Standard SDK (MIPS)
+   Windows CE 5.0 Standard SDK (SH4)
+   Windows Mobile 6 Classic (ARM)
+   Windows Mobile 6 Standard (ARM)
+   Windows Mobile 6 Professional(ARM)
+
+Q: What version of Qt does Qt/CE rely on?
+A: On a preview version of the upcoming 4.4.0 release.

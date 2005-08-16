@@ -7,7 +7,6 @@
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl/Phonon::DS9/MediaGraph" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://qtsoftware.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -44,12 +43,12 @@
 <li><div class="fn"></div>HRESULT <b><a href="phonon-ds9-mediagraph.html#loadSource">loadSource</a></b> ( const Phonon::MediaSource &amp; )</li>
 <li><div class="fn"></div>Phonon::MediaSource <b><a href="phonon-ds9-mediagraph.html#mediaSource">mediaSource</a></b> () const</li>
 <li><div class="fn"></div>QMultiMap&lt;QString, QString&gt; <b><a href="phonon-ds9-mediagraph.html#metadatax">metadata</a></b> () const</li>
-<li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#pause">pause</a></b> ()</li>
+<li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#pausex">pause</a></b> ()</li>
 <li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#play">play</a></b> ()</li>
 <li><div class="fn"></div>Filter <b><a href="phonon-ds9-mediagraph.html#realSource">realSource</a></b> () const</li>
 <li><div class="fn"></div>HRESULT <b><a href="phonon-ds9-mediagraph.html#renderResult">renderResult</a></b> () const</li>
 <li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#setStopPosition">setStopPosition</a></b> ( qint64 <i>time</i> )</li>
-<li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#stop">stop</a></b> ()</li>
+<li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#stopx">stop</a></b> ()</li>
 <li><div class="fn"></div>qint64 <b><a href="phonon-ds9-mediagraph.html#stopPosition">stopPosition</a></b> () const</li>
 <li><div class="fn"></div>void <b><a href="phonon-ds9-mediagraph.html#switchFilters">switchFilters</a></b> ( Filter <i>oldFilter</i>, Filter <i>newFilter</i> )</li>
 <li><div class="fn"></div>OAFilterState <b><a href="phonon-ds9-mediagraph.html#syncGetRealState">syncGetRealState</a></b> () const</li>
@@ -76,74 +75,41 @@
 <a name="details"></a>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/MediaGraph" />
 <h3 class="fn"><a name="MediaGraph"></a>MediaGraph::MediaGraph ( <a href="phonon-ds9-mediaobject.html">MediaObject</a> * <i>mo</i>, short <i>index</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/~MediaGraph" />
 <h3 class="fn"><a name="dtor.MediaGraph"></a>MediaGraph::~MediaGraph ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/absoluteCurrentTime" />
 <h3 class="fn"><a name="absoluteCurrentTime"></a><a href="qtglobal.html#qint64-typedef">qint64</a> MediaGraph::absoluteCurrentTime () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/absoluteSeek" />
 <h3 class="fn"><a name="absoluteSeek"></a>void MediaGraph::absoluteSeek ( <a href="qtglobal.html#qint64-typedef">qint64</a> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/absoluteTotalTime" />
 <h3 class="fn"><a name="absoluteTotalTime"></a><a href="qtglobal.html#qint64-typedef">qint64</a> MediaGraph::absoluteTotalTime () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/cleanup" />
 <h3 class="fn"><a name="cleanup"></a>HRESULT MediaGraph::cleanup ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/connectNodes" />
 <h3 class="fn"><a name="connectNodes"></a>bool MediaGraph::connectNodes ( <a href="phonon-ds9-backendnode.html">BackendNode</a> * <i>source</i>, <a href="phonon-ds9-backendnode.html">BackendNode</a> * <i>sink</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/disconnectNodes" />
 <h3 class="fn"><a name="disconnectNodes"></a>bool MediaGraph::disconnectNodes ( <a href="phonon-ds9-backendnode.html">BackendNode</a> * <i>source</i>, <a href="phonon-ds9-backendnode.html">BackendNode</a> * <i>sink</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/ensureStopped" />
 <h3 class="fn"><a name="ensureStopped"></a>void MediaGraph::ensureStopped ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/finishLoading" />
 <h3 class="fn"><a name="finishLoading"></a>void MediaGraph::finishLoading ( <a href="qtglobal.html#quint16-typedef">quint16</a> <i>workId</i>, HRESULT <i>hr</i>, <a href="phonon-ds9.html#Graph-typedef">Graph</a> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/finishSeeking" />
 <h3 class="fn"><a name="finishSeeking"></a>void MediaGraph::finishSeeking ( <a href="qtglobal.html#quint16-typedef">quint16</a> <i>workId</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>time</i> )</h3>
-<a name="//apple_ref/cpp/clm/Phonon::DS9::MediaGraph/getAllFilters" />
 <h3 class="fn"><a name="getAllFilters"></a><a href="qlist.html">QList</a>&lt;<a href="phonon-ds9.html#Filter-typedef">Filter</a>&gt; MediaGraph::getAllFilters ( <a href="phonon-ds9.html#Graph-typedef">Graph</a> <i>graph</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <h3 class="fn"><a name="getAllFilters-2"></a><a href="qlist.html">QList</a>&lt;<a href="phonon-ds9.html#Filter-typedef">Filter</a>&gt; MediaGraph::getAllFilters () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/grabFilter" />
 <h3 class="fn"><a name="grabFilter"></a>void MediaGraph::grabFilter ( <a href="phonon-ds9.html#Filter-typedef">Filter</a> <i>filter</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/grabNode" />
 <h3 class="fn"><a name="grabNode"></a>void MediaGraph::grabNode ( <a href="phonon-ds9-backendnode.html">BackendNode</a> * <i>node</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/graph" />
 <h3 class="fn"><a name="graph"></a><a href="phonon-ds9.html#Graph-typedef">Graph</a> MediaGraph::graph () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/hasVideo" />
 <h3 class="fn"><a name="hasVideo"></a>bool MediaGraph::hasVideo () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/index" />
 <h3 class="fn"><a name="index"></a>short MediaGraph::index () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/isLoading" />
 <h3 class="fn"><a name="isLoading"></a>bool MediaGraph::isLoading () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/isSeekable" />
 <h3 class="fn"><a name="isSeekable"></a>bool MediaGraph::isSeekable () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/isStopping" />
 <h3 class="fn"><a name="isStopping"></a>bool MediaGraph::isStopping () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/loadSource" />
 <h3 class="fn"><a name="loadSource"></a>HRESULT MediaGraph::loadSource ( const <a href="phonon-mediasource.html">Phonon::MediaSource</a> &amp; )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/mediaSource" />
 <h3 class="fn"><a name="mediaSource"></a><a href="phonon-mediasource.html">Phonon::MediaSource</a> MediaGraph::mediaSource () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/metadata" />
 <h3 class="fn"><a name="metadatax"></a><a href="qmultimap.html">QMultiMap</a>&lt;<a href="qstring.html">QString</a>, <a href="qstring.html">QString</a>&gt; MediaGraph::metadata () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/pause" />
-<h3 class="fn"><a name="pause"></a>void MediaGraph::pause ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/play" />
+<h3 class="fn"><a name="pausex"></a>void MediaGraph::pause ()</h3>
 <h3 class="fn"><a name="play"></a>void MediaGraph::play ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/realSource" />
 <h3 class="fn"><a name="realSource"></a><a href="phonon-ds9.html#Filter-typedef">Filter</a> MediaGraph::realSource () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/renderResult" />
 <h3 class="fn"><a name="renderResult"></a>HRESULT MediaGraph::renderResult () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/setStopPosition" />
 <h3 class="fn"><a name="setStopPosition"></a>void MediaGraph::setStopPosition ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>time</i> )</h3>
 <p>See also <a href="phonon-ds9-mediagraph.html#stopPosition">stopPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/stop" />
-<h3 class="fn"><a name="stop"></a>void MediaGraph::stop ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/stopPosition" />
+<h3 class="fn"><a name="stopx"></a>void MediaGraph::stop ()</h3>
 <h3 class="fn"><a name="stopPosition"></a><a href="qtglobal.html#qint64-typedef">qint64</a> MediaGraph::stopPosition () const</h3>
 <p>See also <a href="phonon-ds9-mediagraph.html#setStopPosition">setStopPosition</a>().</p>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/switchFilters" />
 <h3 class="fn"><a name="switchFilters"></a>void MediaGraph::switchFilters ( <a href="phonon-ds9.html#Filter-typedef">Filter</a> <i>oldFilter</i>, <a href="phonon-ds9.html#Filter-typedef">Filter</a> <i>newFilter</i> )</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/syncGetRealState" />
 <h3 class="fn"><a name="syncGetRealState"></a>OAFilterState MediaGraph::syncGetRealState () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::DS9::MediaGraph/titles" />
 <h3 class="fn"><a name="titles"></a><a href="qlist.html">QList</a>&lt;<a href="qtglobal.html#qint64-typedef">qint64</a>&gt; MediaGraph::titles () const</h3>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
