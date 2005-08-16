@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qevent.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/src/gui/kernel/qevent.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QPaintEvent</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -24,7 +24,6 @@
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPaintEvent-3"></a>QPaintEvent::QPaintEvent ( const <a href="qregion.html">QRegion</a> &amp; <i>paintRegion</i>, const <a href="qrect.html">QRect</a> &amp; <i>paintRect</i> )</h3>
 <p>Constructs a paint event object with both a <i>paintRegion</i> and a <i>paintRect</i>, both of which represent the area of the widget that needs to be updated.</p>
-<a name="//apple_ref/cpp/instm/QPaintEvent/erased" />
 <h3 class="fn"><a name="erased"></a>bool QPaintEvent::erased () const</h3>
 <p>Returns true if the paint event region (or rectangle) has been erased with the widget's background; otherwise returns false.</p>
 <p>Qt 4 <i>always</i> erases regions that require painting. The exception to this rule is if the widget sets the <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a> or <a href="qt.html#WidgetAttribute-enum">Qt::WA_NoSystemBackground</a> attributes. If either one of those attributes is set <i>and</i> the window system does not make use of subwidget alpha composition (currently X11 and Windows, but this may change), then the region is not erased.</p>

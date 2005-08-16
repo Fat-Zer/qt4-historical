@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/widgets/qtextedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/src/gui/widgets/qtextedit.cpp -->
 <head>
   <title>Qt 4.4: QTextEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QTextEdit" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -313,11 +312,6 @@
 <p>See also <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextcursor.html">QTextCursor</a>, <a href="mainwindows-application.html">Application Example</a>, <a href="richtext-syntaxhighlighter.html">Syntax Highlighter Example</a>, and <a href="richtext.html">Rich Text Processing</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QTextEdit/AutoFormattingFlag" />
-<a name="//apple_ref/cpp/econst/QTextEdit/AutoNone" />
-<a name="//apple_ref/cpp/econst/QTextEdit/AutoBulletList" />
-<a name="//apple_ref/cpp/econst/QTextEdit/AutoAll" />
-<a name="//apple_ref/cpp/tdef/QTextEdit/AutoFormatting" />
 <h3 class="flags"><a name="AutoFormattingFlag-enum"></a>enum QTextEdit::AutoFormattingFlag<br />flags QTextEdit::AutoFormatting</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
@@ -326,11 +320,6 @@
 <tr><td valign="top"><tt>QTextEdit::AutoAll</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Apply all automatic formatting. Currently only automatic bullet lists are supported.</td></tr>
 </table></p>
 <p>The AutoFormatting type is a typedef for <a href="qflags.html">QFlags</a>&lt;AutoFormattingFlag&gt;. It stores an OR combination of AutoFormattingFlag values.</p>
-<a name="//apple_ref/cpp/tag/QTextEdit/LineWrapMode" />
-<a name="//apple_ref/cpp/econst/QTextEdit/NoWrap" />
-<a name="//apple_ref/cpp/econst/QTextEdit/WidgetWidth" />
-<a name="//apple_ref/cpp/econst/QTextEdit/FixedPixelWidth" />
-<a name="//apple_ref/cpp/econst/QTextEdit/FixedColumnWidth" />
 <h3 class="fn"><a name="LineWrapMode-enum"></a>enum QTextEdit::LineWrapMode</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
@@ -341,8 +330,6 @@
 </table></p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QTextEdit/acceptRichText" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setAcceptRichText" />
 <h3 class="fn"><a name="acceptRichText-prop"></a>acceptRichText : bool</h3>
 <p>This property holds whether the text edit accepts rich text insertions by the user.</p>
 <p>When this propery is set to false text edit will accept only plain text input from the user. For example through clipboard or drag and drop.</p>
@@ -353,8 +340,6 @@
 <li><div class="fn"/><b>bool acceptRichText () const</b></li>
 <li><div class="fn"/><b>void setAcceptRichText ( bool <i>accept</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/autoFormatting" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setAutoFormatting" />
 <h3 class="fn"><a name="autoFormatting-prop"></a>autoFormatting : <a href="qtextedit.html#AutoFormattingFlag-enum">AutoFormatting</a></h3>
 <p>This property holds the enabled set of auto formatting features.</p>
 <p>The value can be any combination of the values in the <a href="qtextedit.html#AutoFormattingFlag-enum">AutoFormattingFlag</a> enum. The default is <a href="qtextedit.html#AutoFormattingFlag-enum">AutoNone</a>. Choose <a href="qtextedit.html#AutoFormattingFlag-enum">AutoAll</a> to enable all automatic formatting.</p>
@@ -364,8 +349,6 @@
 <li><div class="fn"/><b>AutoFormatting autoFormatting () const</b></li>
 <li><div class="fn"/><b>void setAutoFormatting ( AutoFormatting <i>features</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/cursorWidth" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setCursorWidth" />
 <h3 class="fn"><a name="cursorWidth-prop"></a>cursorWidth : int</h3>
 <p>This property specifies the width of the cursor in pixels. The default value is 1.</p>
 <p>This property was introduced in Qt 4.2.</p>
@@ -374,8 +357,6 @@
 <li><div class="fn"/><b>int cursorWidth () const</b></li>
 <li><div class="fn"/><b>void setCursorWidth ( int <i>width</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/documentTitle" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setDocumentTitle" />
 <h3 class="fn"><a name="documentTitle-prop"></a>documentTitle : <a href="qstring.html">QString</a></h3>
 <p>This property holds the title of the document parsed from the text.</p>
 <p>By default, for a newly-created, empty document, this property contains an empty string.</p>
@@ -384,8 +365,6 @@
 <li><div class="fn"/><b>QString documentTitle () const</b></li>
 <li><div class="fn"/><b>void setDocumentTitle ( const QString &amp; <i>title</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/toHtml" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setHtml" />
 <h3 class="fn"><a name="html-prop"></a>html : <a href="qstring.html">QString</a></h3>
 <p>This property provides an HTML interface to the text of the text edit.</p>
 <p>toHtml() returns the text of the text edit as html.</p>
@@ -398,8 +377,6 @@
 <li><div class="fn"/><b>void setHtml ( const QString &amp; <i>text</i> )</b></li>
 </ul>
 <p>See also <a href="richtext-html-subset.html">Supported HTML Subset</a> and <a href="qtextedit.html#plainText-prop">plainText</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/lineWrapColumnOrWidth" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setLineWrapColumnOrWidth" />
 <h3 class="fn"><a name="lineWrapColumnOrWidth-prop"></a>lineWrapColumnOrWidth : int</h3>
 <p>This property holds the position (in pixels or columns depending on the wrap mode) where text will be wrapped.</p>
 <p>If the wrap mode is <a href="qtextedit.html#LineWrapMode-enum">FixedPixelWidth</a>, the value is the number of pixels from the left edge of the text edit at which text should be wrapped. If the wrap mode is <a href="qtextedit.html#LineWrapMode-enum">FixedColumnWidth</a>, the value is the column number (in character columns) from the left edge of the text edit at which text should be wrapped.</p>
@@ -410,8 +387,6 @@
 <li><div class="fn"/><b>void setLineWrapColumnOrWidth ( int <i>w</i> )</b></li>
 </ul>
 <p>See also <a href="qtextedit.html#lineWrapMode-prop">lineWrapMode</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/lineWrapMode" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setLineWrapMode" />
 <h3 class="fn"><a name="lineWrapMode-prop"></a>lineWrapMode : <a href="qtextedit.html#LineWrapMode-enum">LineWrapMode</a></h3>
 <p>This property holds the line wrap mode.</p>
 <p>The default mode is <a href="qtextedit.html#LineWrapMode-enum">WidgetWidth</a> which causes words to be wrapped at the right edge of the text edit. Wrapping occurs at whitespace, keeping whole words intact. If you want wrapping to occur within words use <a href="qtextedit.html#wordWrapMode-prop">setWordWrapMode</a>(). If you set a wrap mode of <a href="qtextedit.html#LineWrapMode-enum">FixedPixelWidth</a> or <a href="qtextedit.html#LineWrapMode-enum">FixedColumnWidth</a> you should also call <a href="qtextedit.html#lineWrapColumnOrWidth-prop">setLineWrapColumnOrWidth</a>() with the width you want.</p>
@@ -421,8 +396,6 @@
 <li><div class="fn"/><b>void setLineWrapMode ( LineWrapMode <i>mode</i> )</b></li>
 </ul>
 <p>See also <a href="qtextedit.html#lineWrapColumnOrWidth-prop">lineWrapColumnOrWidth</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/overwriteMode" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setOverwriteMode" />
 <h3 class="fn"><a name="overwriteMode-prop"></a>overwriteMode : bool</h3>
 <p>This property holds whether text entered by the user will overwrite existing text.</p>
 <p>As with many text editors, the text editor widget can be configured to insert or overwrite existing text with new text entered by the user.</p>
@@ -434,8 +407,6 @@
 <li><div class="fn"/><b>bool overwriteMode () const</b></li>
 <li><div class="fn"/><b>void setOverwriteMode ( bool <i>overwrite</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/toPlainText" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setPlainText" />
 <h3 class="fn"><a name="plainText-prop"></a>plainText : <a href="qstring.html">QString</a></h3>
 <p>This property gets and sets the text editor's contents as plain text. Previous contents are removed and undo/redo history is reset when the property is set.</p>
 <p>If the text edit has another content type, it will not be replaced by plain text if you call toPlainText().</p>
@@ -447,8 +418,6 @@
 <li><div class="fn"/><b>void setPlainText ( const QString &amp; <i>text</i> )</b></li>
 </ul>
 <p>See also <a href="qtextedit.html#html-prop">html</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/isReadOnly" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setReadOnly" />
 <h3 class="fn"><a name="readOnly-prop"></a>readOnly : bool</h3>
 <p>This property holds whether the text edit is read-only.</p>
 <p>In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible.</p>
@@ -458,8 +427,6 @@
 <li><div class="fn"/><b>bool isReadOnly () const</b></li>
 <li><div class="fn"/><b>void setReadOnly ( bool <i>ro</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/tabChangesFocus" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setTabChangesFocus" />
 <h3 class="fn"><a name="tabChangesFocus-prop"></a>tabChangesFocus : bool</h3>
 <p>This property holds whether Tab changes focus or is accepted as input.</p>
 <p>In some occasions text edits should not allow the user to input tabulators or change indentation using the <b>Tab</b> key, as this breaks the focus chain. The default is false.</p>
@@ -468,8 +435,6 @@
 <li><div class="fn"/><b>bool tabChangesFocus () const</b></li>
 <li><div class="fn"/><b>void setTabChangesFocus ( bool <i>b</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/tabStopWidth" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setTabStopWidth" />
 <h3 class="fn"><a name="tabStopWidth-prop"></a>tabStopWidth : int</h3>
 <p>This property holds the tab stop width in pixels.</p>
 <p>By default, this property contains a value of 80.</p>
@@ -479,8 +444,6 @@
 <li><div class="fn"/><b>int tabStopWidth () const</b></li>
 <li><div class="fn"/><b>void setTabStopWidth ( int <i>width</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/textInteractionFlags" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setTextInteractionFlags" />
 <h3 class="fn"><a name="textInteractionFlags-prop"></a>textInteractionFlags : <a href="qt.html#TextInteractionFlag-enum">Qt::TextInteractionFlags</a></h3>
 <p>Specifies how the widget should interact with user input.</p>
 <p>The default value depends on whether the <a href="qtextedit.html">QTextEdit</a> is read-only or editable, and whether it is a <a href="qtextbrowser.html">QTextBrowser</a> or not.</p>
@@ -490,8 +453,6 @@
 <li><div class="fn"/><b>Qt::TextInteractionFlags textInteractionFlags () const</b></li>
 <li><div class="fn"/><b>void setTextInteractionFlags ( Qt::TextInteractionFlags <i>flags</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/isUndoRedoEnabled" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setUndoRedoEnabled" />
 <h3 class="fn"><a name="undoRedoEnabled-prop"></a>undoRedoEnabled : bool</h3>
 <p>This property holds whether undo and redo are enabled.</p>
 <p>Users are only able to undo or redo actions if this property is true, and if there is an action that can be undone (or redone).</p>
@@ -500,8 +461,6 @@
 <li><div class="fn"/><b>bool isUndoRedoEnabled () const</b></li>
 <li><div class="fn"/><b>void setUndoRedoEnabled ( bool <i>enable</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QTextEdit/wordWrapMode" />
-<a name="//apple_ref/cpp/instm/QTextEdit/setWordWrapMode" />
 <h3 class="fn"><a name="wordWrapMode-prop"></a>wordWrapMode : <a href="qtextoption.html#WrapMode-enum">QTextOption::WrapMode</a></h3>
 <p>This property holds the mode QTextEdit will use when wrapping text by words.</p>
 <p>By default, this property is set to <a href="qtextoption.html#WrapMode-enum">QTextOption::WrapAtWordBoundaryOrAnywhere</a>.</p>
@@ -513,40 +472,31 @@
 <p>See also <a href="qtextoption.html#WrapMode-enum">QTextOption::WrapMode</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QTextEdit/QTextEdit" />
 <h3 class="fn"><a name="QTextEdit"></a>QTextEdit::QTextEdit ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs an empty <a href="qtextedit.html">QTextEdit</a> with parent <i>parent</i>.</p>
 <h3 class="fn"><a name="QTextEdit-2"></a>QTextEdit::QTextEdit ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a <a href="qtextedit.html">QTextEdit</a> with parent <i>parent</i>. The text edit will display the text <i>text</i>. The text is interpreted as html.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/~QTextEdit" />
 <h3 class="fn"><a name="dtor.QTextEdit"></a>QTextEdit::~QTextEdit ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destructor.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/alignment" />
 <h3 class="fn"><a name="alignment"></a><a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> QTextEdit::alignment () const</h3>
 <p>Returns the alignment of the current paragraph.</p>
 <p>See also <a href="qtextedit.html#setAlignment">setAlignment</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/anchorAt" />
 <h3 class="fn"><a name="anchorAt"></a><a href="qstring.html">QString</a> QTextEdit::anchorAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> ) const</h3>
 <p>Returns the reference of the anchor at position <i>pos</i>, or an empty string if no anchor exists at that point.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/append" />
 <h3 class="fn"><a name="append"></a>void QTextEdit::append ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Appends a new paragraph with <i>text</i> to the end of the text edit.</p>
 <p><b>Note:</b> The new paragraph appended will have the same character format and block format as the current paragraph, determined by the position of the cursor.</p>
 <p>See also <a href="qtextedit.html#currentCharFormat">currentCharFormat</a>() and <a href="qtextcursor.html#blockFormat">QTextCursor::blockFormat</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/canInsertFromMimeData" />
 <h3 class="fn"><a name="canInsertFromMimeData"></a>bool QTextEdit::canInsertFromMimeData ( const <a href="qmimedata.html">QMimeData</a> * <i>source</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function returns true if the contents of the MIME data object, specified by <i>source</i>, can be decoded and inserted into the document. It is called for example when during a drag operation the mouse enters this widget and it is necessary to determine whether it is possible to accept the drag and drop operation.</p>
 <p>Reimplement this function to enable drag and drop support for additional MIME types.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/canPaste" />
 <h3 class="fn"><a name="canPaste"></a>bool QTextEdit::canPaste () const</h3>
 <p>Returns whether text can be pasted from the clipboard into the textedit.</p>
 <p>This function was introduced in Qt 4.2.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/clear" />
 <h3 class="fn"><a name="clear"></a>void QTextEdit::clear ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Deletes all the text in the text edit.</p>
 <p>Note that the undo/redo history is cleared by this function.</p>
 <p>See also <a href="qtextedit.html#cut">cut</a>(), <a href="qtextedit.html#plainText-prop">setPlainText</a>(), and <a href="qtextedit.html#html-prop">setHtml</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/contextMenuEvent" />
 <h3 class="fn"><a name="contextMenuEvent"></a>void QTextEdit::contextMenuEvent ( <a href="qcontextmenuevent.html">QContextMenuEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Shows the standard context menu created with <a href="qtextedit.html#createStandardContextMenu">createStandardContextMenu</a>().</p>
 <p>If you do not want the text edit to have a context menu, you can set its <a href="qwidget.html#contextMenuPolicy-prop">contextMenuPolicy</a> to <a href="qt.html#ContextMenuPolicy-enum">Qt::NoContextMenu</a>. If you want to customize the context menu, reimplement this function. If you want to extend the standard context menu, reimplement this function, call <a href="qtextedit.html#createStandardContextMenu">createStandardContextMenu</a>() and extend the menu returned.</p>
@@ -560,21 +510,17 @@
      delete menu;
  }</pre>
 <p>Reimplemented from <a href="qwidget.html#contextMenuEvent">QWidget</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/copy" />
 <h3 class="fn"><a name="copy"></a>void QTextEdit::copy ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Copies any selected text to the clipboard.</p>
 <p>See also <a href="qtextedit.html#copyAvailable">copyAvailable</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/copyAvailable" />
 <h3 class="fn"><a name="copyAvailable"></a>void QTextEdit::copyAvailable ( bool <i>yes</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when text is selected or de-selected in the text edit.</p>
 <p>When text is selected this signal will be emitted with <i>yes</i> set to true. If no text has been selected or if the selected text is de-selected this signal is emitted with <i>yes</i> set to false.</p>
 <p>If <i>yes</i> is true then <a href="qtextedit.html#copy">copy</a>() can be used to copy the selection to the clipboard. If <i>yes</i> is false then <a href="qtextedit.html#copy">copy</a>() does nothing.</p>
 <p>See also <a href="qtextedit.html#selectionChanged">selectionChanged</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/createMimeDataFromSelection" />
 <h3 class="fn"><a name="createMimeDataFromSelection"></a><a href="qmimedata.html">QMimeData</a> * QTextEdit::createMimeDataFromSelection () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function returns a new MIME data object to represent the contents of the text edit's current selection. It is called when the selection needs to be encapsulated into a new <a href="qmimedata.html">QMimeData</a> object; for example, when a drag and drop operation is started, or when data is copyied to the clipboard.</p>
 <p>If you reimplement this function, note that the ownership of the returned <a href="qmimedata.html">QMimeData</a> object is passed to the caller. The selection can be retrieved by using the <a href="qtextedit.html#textCursor">textCursor</a>() function.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/createStandardContextMenu" />
 <h3 class="fn"><a name="createStandardContextMenu"></a><a href="qmenu.html">QMenu</a> * QTextEdit::createStandardContextMenu ()</h3>
 <p>This function creates the standard context menu which is shown when the user clicks on the text edit with the right mouse button. It is called from the default <a href="qtextedit.html#contextMenuEvent">contextMenuEvent</a>() handler. The popup menu's ownership is transferred to the caller.</p>
 <p>We recommend that you use the createStandardContextMenu(<a href="qpoint.html">QPoint</a>) version instead which will enable the actions that are sensitive to where the user clicked.</p>
@@ -582,225 +528,174 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function creates the standard context menu which is shown when the user clicks on the text edit with the right mouse button. It is called from the default <a href="qtextedit.html#contextMenuEvent">contextMenuEvent</a>() handler and it takes the <i>position</i> of where the mouse click was. This can enable actions that are sensitive to the position where the user clicked. The popup menu's ownership is transferred to the caller.</p>
 <p>This function was introduced in Qt 4.4.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/currentCharFormat" />
 <h3 class="fn"><a name="currentCharFormat"></a><a href="qtextcharformat.html">QTextCharFormat</a> QTextEdit::currentCharFormat () const</h3>
 <p>Returns the char format that is used when inserting new text.</p>
 <p>See also <a href="qtextedit.html#setCurrentCharFormat">setCurrentCharFormat</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/currentCharFormatChanged" />
 <h3 class="fn"><a name="currentCharFormatChanged"></a>void QTextEdit::currentCharFormatChanged ( const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>f</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the current character format has changed, for example caused by a change of the cursor position.</p>
 <p>The new format is <i>f</i>.</p>
 <p>See also <a href="qtextedit.html#setCurrentCharFormat">setCurrentCharFormat</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/currentFont" />
 <h3 class="fn"><a name="currentFont"></a><a href="qfont.html">QFont</a> QTextEdit::currentFont () const</h3>
 <p>Returns the font of the current format.</p>
 <p>See also <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(), <a href="qtextedit.html#setFontFamily">setFontFamily</a>(), and <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/cursorForPosition" />
 <h3 class="fn"><a name="cursorForPosition"></a><a href="qtextcursor.html">QTextCursor</a> QTextEdit::cursorForPosition ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> ) const</h3>
 <p>returns a <a href="qtextcursor.html">QTextCursor</a> at position <i>pos</i> (in viewport coordinates).</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/cursorPositionChanged" />
 <h3 class="fn"><a name="cursorPositionChanged"></a>void QTextEdit::cursorPositionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the position of the cursor changed.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/cursorRect" />
 <h3 class="fn"><a name="cursorRect"></a><a href="qrect.html">QRect</a> QTextEdit::cursorRect ( const <a href="qtextcursor.html">QTextCursor</a> &amp; <i>cursor</i> ) const</h3>
 <p>returns a rectangle (in viewport coordinates) that includes the <i>cursor</i>.</p>
 <h3 class="fn"><a name="cursorRect-2"></a><a href="qrect.html">QRect</a> QTextEdit::cursorRect () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>returns a rectangle (in viewport coordinates) that includes the cursor of the text edit.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/cut" />
 <h3 class="fn"><a name="cut"></a>void QTextEdit::cut ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Copies the selected text to the clipboard and deletes it from the text edit.</p>
 <p>If there is no selected text nothing happens.</p>
 <p>See also <a href="qtextedit.html#copy">copy</a>() and <a href="qtextedit.html#paste">paste</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/document" />
 <h3 class="fn"><a name="document"></a><a href="qtextdocument.html">QTextDocument</a> * QTextEdit::document () const</h3>
 <p>Returns a pointer to the underlying document.</p>
 <p>See also <a href="qtextedit.html#setDocument">setDocument</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/ensureCursorVisible" />
 <h3 class="fn"><a name="ensureCursorVisible"></a>void QTextEdit::ensureCursorVisible ()</h3>
 <p>Ensures that the cursor is visible by scrolling the text edit if necessary.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/extraSelections" />
 <h3 class="fn"><a name="extraSelections"></a><a href="qlist.html">QList</a>&lt;<a href="qtextedit-extraselection.html">ExtraSelection</a>&gt; QTextEdit::extraSelections () const</h3>
 <p>Returns previously set extra selections.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextedit.html#setExtraSelections">setExtraSelections</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/find" />
 <h3 class="fn"><a name="find"></a>bool QTextEdit::find ( const <a href="qstring.html">QString</a> &amp; <i>exp</i>, <a href="qtextdocument.html#FindFlag-enum">QTextDocument::FindFlags</a> <i>options</i> = 0 )</h3>
 <p>Finds the next occurrence of the string, <i>exp</i>, using the given <i>options</i>. Returns true if <i>exp</i> was found and changes the cursor to select the match; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/fontFamily" />
 <h3 class="fn"><a name="fontFamily"></a><a href="qstring.html">QString</a> QTextEdit::fontFamily () const</h3>
 <p>Returns the font family of the current format.</p>
 <p>See also <a href="qtextedit.html#setFontFamily">setFontFamily</a>(), <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/fontItalic" />
 <h3 class="fn"><a name="fontItalic"></a>bool QTextEdit::fontItalic () const</h3>
 <p>Returns true if the font of the current format is italic; otherwise returns false.</p>
 <p>See also <a href="qtextedit.html#setFontItalic">setFontItalic</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/fontPointSize" />
 <h3 class="fn"><a name="fontPointSize"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QTextEdit::fontPointSize () const</h3>
 <p>Returns the point size of the font of the current format.</p>
 <p>See also <a href="qtextedit.html#setFontFamily">setFontFamily</a>(), <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/fontUnderline" />
 <h3 class="fn"><a name="fontUnderline"></a>bool QTextEdit::fontUnderline () const</h3>
 <p>Returns true if the font of the current format is underlined; otherwise returns false.</p>
 <p>See also <a href="qtextedit.html#setFontUnderline">setFontUnderline</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/fontWeight" />
 <h3 class="fn"><a name="fontWeight"></a>int QTextEdit::fontWeight () const</h3>
 <p>Returns the font weight of the current format.</p>
 <p>See also <a href="qtextedit.html#setFontWeight">setFontWeight</a>(), <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(), <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>(), and <a href="qfont.html#Weight-enum">QFont::Weight</a>.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/insertFromMimeData" />
 <h3 class="fn"><a name="insertFromMimeData"></a>void QTextEdit::insertFromMimeData ( const <a href="qmimedata.html">QMimeData</a> * <i>source</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function inserts the contents of the MIME data object, specified by <i>source</i>, into the text edit at the current cursor position. It is called whenever text is inserted as the result of a clipboard paste operation, or when the text edit accepts data from a drag and drop operation.</p>
 <p>Reimplement this function to enable drag and drop support for additional MIME types.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/insertHtml" />
 <h3 class="fn"><a name="insertHtml"></a>void QTextEdit::insertHtml ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Convenience slot that inserts <i>text</i> which is assumed to be of html formatting at the current cursor position.</p>
 <p>It is equivalent to:</p>
 <pre> edit-&gt;textCursor().insertHtml(fragment);</pre>
 <p><b>Note:</b> When using this function with a style sheet, the style sheet will only apply to the current block in the document. In order to apply a style sheet throughout a document, use <a href="qtextdocument.html#defaultStyleSheet-prop">QTextDocument::setDefaultStyleSheet</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/insertPlainText" />
 <h3 class="fn"><a name="insertPlainText"></a>void QTextEdit::insertPlainText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Convenience slot that inserts <i>text</i> at the current cursor position.</p>
 <p>It is equivalent to</p>
 <pre> edit-&gt;textCursor().insertText(text);</pre>
-<a name="//apple_ref/cpp/instm/QTextEdit/loadResource" />
 <h3 class="fn"><a name="loadResource"></a><a href="qvariant.html">QVariant</a> QTextEdit::loadResource ( int <i>type</i>, const <a href="qurl.html">QUrl</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Loads the resource specified by the given <i>type</i> and <i>name</i>.</p>
 <p>This function is an extension of <a href="qtextdocument.html#loadResource">QTextDocument::loadResource</a>().</p>
 <p>See also <a href="qtextdocument.html#loadResource">QTextDocument::loadResource</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/mergeCurrentCharFormat" />
 <h3 class="fn"><a name="mergeCurrentCharFormat"></a>void QTextEdit::mergeCurrentCharFormat ( const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>modifier</i> )</h3>
 <p>Merges the properties specified in <i>modifier</i> into the current character format by calling QTextCursor::mergeCharFormat on the editor's cursor. If the editor has a selection then the properties of <i>modifier</i> are directly applied to the selection.</p>
 <p>See also <a href="qtextcursor.html#mergeCharFormat">QTextCursor::mergeCharFormat</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/moveCursor" />
 <h3 class="fn"><a name="moveCursor"></a>void QTextEdit::moveCursor ( <a href="qtextcursor.html#MoveOperation-enum">QTextCursor::MoveOperation</a> <i>operation</i>, <a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a> <i>mode</i> = QTextCursor::MoveAnchor )</h3>
 <p>Moves the cursor by performing the given <i>operation</i>.</p>
 <p>If <i>mode</i> is <a href="qtextcursor.html#MoveMode-enum">QTextCursor::KeepAnchor</a>, the cursor selects the text it moves over. This is the same effect that the user achieves when they hold down the Shift key and move the cursor with the cursor keys.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextcursor.html#movePosition">QTextCursor::movePosition</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/paste" />
 <h3 class="fn"><a name="paste"></a>void QTextEdit::paste ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Pastes the text from the clipboard into the text edit at the current cursor position.</p>
 <p>If there is no text in the clipboard nothing happens.</p>
 <p>To change the behavior of this function, i.e&#x2e; to modify what <a href="qtextedit.html">QTextEdit</a> can paste and how it is being pasted, reimplement the virtual <a href="qtextedit.html#canInsertFromMimeData">canInsertFromMimeData</a>() and <a href="qtextedit.html#insertFromMimeData">insertFromMimeData</a>() functions.</p>
 <p>See also <a href="qtextedit.html#cut">cut</a>() and <a href="qtextedit.html#copy">copy</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/print" />
 <h3 class="fn"><a name="print"></a>void QTextEdit::print ( <a href="qprinter.html">QPrinter</a> * <i>printer</i> ) const</h3>
 <p>Convenience function to print the text edit's document to the given <i>printer</i>. This is equivalent to calling the print method on the document directly except that this function also supports <a href="qprinter.html#PrintRange-enum">QPrinter::Selection</a> as print range.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qtextdocument.html#print">QTextDocument::print</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/redo" />
 <h3 class="fn"><a name="redo"></a>void QTextEdit::redo ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Redoes the last operation.</p>
 <p>If there is no operation to redo, i.e&#x2e; there is no redo step in the undo/redo history, nothing happens.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextedit.html#undo">undo</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/redoAvailable" />
 <h3 class="fn"><a name="redoAvailable"></a>void QTextEdit::redoAvailable ( bool <i>available</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever redo operations become available (<i>available</i> is true) or unavailable (<i>available</i> is false).</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/scrollToAnchor" />
 <h3 class="fn"><a name="scrollToAnchor"></a>void QTextEdit::scrollToAnchor ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Scrolls the text edit so that the anchor with the given <i>name</i> is visible; does nothing if the <i>name</i> is empty, or is already visible, or isn't found.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/selectAll" />
 <h3 class="fn"><a name="selectAll"></a>void QTextEdit::selectAll ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Selects all text.</p>
 <p>See also <a href="qtextedit.html#copy">copy</a>(), <a href="qtextedit.html#cut">cut</a>(), and <a href="qtextedit.html#textCursor">textCursor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/selectionChanged" />
 <h3 class="fn"><a name="selectionChanged"></a>void QTextEdit::selectionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the selection changes.</p>
 <p>See also <a href="qtextedit.html#copyAvailable">copyAvailable</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setAlignment" />
 <h3 class="fn"><a name="setAlignment"></a>void QTextEdit::setAlignment ( <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>a</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the alignment of the current paragraph to <i>a</i>. Valid alignments are <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a> and <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> (which centers horizontally).</p>
 <p>See also <a href="qtextedit.html#alignment">alignment</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setCurrentCharFormat" />
 <h3 class="fn"><a name="setCurrentCharFormat"></a>void QTextEdit::setCurrentCharFormat ( const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>format</i> )</h3>
 <p>Sets the char format that is be used when inserting new text to <i>format</i> by calling <a href="qtextcursor.html#setCharFormat">QTextCursor::setCharFormat</a>() on the editor's cursor. If the editor has a selection then the char format is directly applied to the selection.</p>
 <p>See also <a href="qtextedit.html#currentCharFormat">currentCharFormat</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setCurrentFont" />
 <h3 class="fn"><a name="setCurrentFont"></a>void QTextEdit::setCurrentFont ( const <a href="qfont.html">QFont</a> &amp; <i>f</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the font of the current format to <i>f</i>.</p>
 <p>See also <a href="qtextedit.html#currentFont">currentFont</a>(), <a href="qtextedit.html#setFontPointSize">setFontPointSize</a>(), and <a href="qtextedit.html#setFontFamily">setFontFamily</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setDocument" />
 <h3 class="fn"><a name="setDocument"></a>void QTextEdit::setDocument ( <a href="qtextdocument.html">QTextDocument</a> * <i>document</i> )</h3>
 <p>Makes <i>document</i> the new document of the text editor.</p>
 <p><b>Note:</b> The editor <i>does not take ownership of the document</i> unless it is the document's parent object. The parent object of the provided document remains the owner of the object.</p>
 <p>If the current document is a child of the text editor, then it is deleted.</p>
 <p>See also <a href="qtextedit.html#document">document</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setExtraSelections" />
 <h3 class="fn"><a name="setExtraSelections"></a>void QTextEdit::setExtraSelections ( const <a href="qlist.html">QList</a>&lt;<a href="qtextedit-extraselection.html">ExtraSelection</a>&gt; &amp; <i>selections</i> )</h3>
 <p>This function allows temporarily marking certain regions in the document with a given color, specified as <i>selections</i>. This can be useful for example in a programming editor to mark a whole line of text with a given background color to indicate the existence of a breakpoint.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextedit-extraselection.html">QTextEdit::ExtraSelection</a> and <a href="qtextedit.html#extraSelections">extraSelections</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setFontFamily" />
 <h3 class="fn"><a name="setFontFamily"></a>void QTextEdit::setFontFamily ( const <a href="qstring.html">QString</a> &amp; <i>fontFamily</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the font family of the current format to <i>fontFamily</i>.</p>
 <p>See also <a href="qtextedit.html#fontFamily">fontFamily</a>() and <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setFontItalic" />
 <h3 class="fn"><a name="setFontItalic"></a>void QTextEdit::setFontItalic ( bool <i>italic</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>If <i>italic</i> is true, sets the current format to italic; otherwise sets the current format to non-italic.</p>
 <p>See also <a href="qtextedit.html#fontItalic">fontItalic</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setFontPointSize" />
 <h3 class="fn"><a name="setFontPointSize"></a>void QTextEdit::setFontPointSize ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>s</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the point size of the current format to <i>s</i>.</p>
 <p>Note that if <i>s</i> is zero or negative, the behavior of this function is not defined.</p>
 <p>See also <a href="qtextedit.html#fontPointSize">fontPointSize</a>(), <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="qtextedit.html#setFontFamily">setFontFamily</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setFontUnderline" />
 <h3 class="fn"><a name="setFontUnderline"></a>void QTextEdit::setFontUnderline ( bool <i>underline</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>If <i>underline</i> is true, sets the current format to underline; otherwise sets the current format to non-underline.</p>
 <p>See also <a href="qtextedit.html#fontUnderline">fontUnderline</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setFontWeight" />
 <h3 class="fn"><a name="setFontWeight"></a>void QTextEdit::setFontWeight ( int <i>weight</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the font weight of the current format to the given <i>weight</i>, where the value used is in the range defined by the <a href="qfont.html#Weight-enum">QFont::Weight</a> enum.</p>
 <p>See also <a href="qtextedit.html#fontWeight">fontWeight</a>(), <a href="qtextedit.html#setCurrentFont">setCurrentFont</a>(), and <a href="qtextedit.html#setFontFamily">setFontFamily</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setText" />
 <h3 class="fn"><a name="setText"></a>void QTextEdit::setText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the text edit's <i>text</i>. The text can be plain text or HTML and the text edit will try to guess the right format.</p>
 <p>Use <a href="qtextedit.html#html-prop">setHtml</a>() or <a href="qtextedit.html#plainText-prop">setPlainText</a>() directly to avoid text edit's guessing.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextedit-qt3.html#text">text</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setTextBackgroundColor" />
 <h3 class="fn"><a name="setTextBackgroundColor"></a>void QTextEdit::setTextBackgroundColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the text background color of the current format to <i>c</i>.</p>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qtextedit.html#textBackgroundColor">textBackgroundColor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setTextColor" />
 <h3 class="fn"><a name="setTextColor"></a>void QTextEdit::setTextColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the text color of the current format to <i>c</i>.</p>
 <p>See also <a href="qtextedit.html#textColor">textColor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/setTextCursor" />
 <h3 class="fn"><a name="setTextCursor"></a>void QTextEdit::setTextCursor ( const <a href="qtextcursor.html">QTextCursor</a> &amp; <i>cursor</i> )</h3>
 <p>Sets the visible <i>cursor</i>.</p>
 <p>See also <a href="qtextedit.html#textCursor">textCursor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/textBackgroundColor" />
 <h3 class="fn"><a name="textBackgroundColor"></a><a href="qcolor.html">QColor</a> QTextEdit::textBackgroundColor () const</h3>
 <p>Returns the text background color of the current format.</p>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qtextedit.html#setTextBackgroundColor">setTextBackgroundColor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/textChanged" />
 <h3 class="fn"><a name="textChanged"></a>void QTextEdit::textChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the document's content changes; for example, when text is inserted or deleted, or when formatting is applied.</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/textColor" />
 <h3 class="fn"><a name="textColor"></a><a href="qcolor.html">QColor</a> QTextEdit::textColor () const</h3>
 <p>Returns the text color of the current format.</p>
 <p>See also <a href="qtextedit.html#setTextColor">setTextColor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/textCursor" />
 <h3 class="fn"><a name="textCursor"></a><a href="qtextcursor.html">QTextCursor</a> QTextEdit::textCursor () const</h3>
 <p>Returns a copy of the <a href="qtextcursor.html">QTextCursor</a> that represents the currently visible cursor. Note that changes on the returned cursor do not affect <a href="qtextedit.html">QTextEdit</a>'s cursor; use <a href="qtextedit.html#setTextCursor">setTextCursor</a>() to update the visible cursor.</p>
 <p>See also <a href="qtextedit.html#setTextCursor">setTextCursor</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/undo" />
 <h3 class="fn"><a name="undo"></a>void QTextEdit::undo ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Undoes the last operation.</p>
 <p>If there is no operation to undo, i.e&#x2e; there is no undo step in the undo/redo history, nothing happens.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextedit.html#redo">redo</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/undoAvailable" />
 <h3 class="fn"><a name="undoAvailable"></a>void QTextEdit::undoAvailable ( bool <i>available</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever undo operations become available (<i>available</i> is true) or unavailable (<i>available</i> is false).</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/zoomIn" />
 <h3 class="fn"><a name="zoomIn"></a>void QTextEdit::zoomIn ( int <i>range</i> = 1 )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Zooms in on the text by making the base font size <i>range</i> points larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="qtextedit.html#zoomOut">zoomOut</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextEdit/zoomOut" />
 <h3 class="fn"><a name="zoomOut"></a>void QTextEdit::zoomOut ( int <i>range</i> = 1 )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Zooms out on the text by making the base font size <i>range</i> points smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="qtextedit.html#zoomIn">zoomIn</a>().</p>

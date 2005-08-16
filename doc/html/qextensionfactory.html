@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/tools/designer/src/lib/extension/default_extensionfactory.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/tools/designer/src/lib/extension/default_extensionfactory.cpp -->
 <head>
   <title>Qt 4.4: QExtensionFactory Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QExtensionFactory" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -86,19 +85,15 @@
 <p>See also <a href="qextensionmanager.html">QExtensionManager</a> and <a href="qabstractextensionfactory.html">QAbstractExtensionFactory</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QExtensionFactory/QExtensionFactory" />
 <h3 class="fn"><a name="QExtensionFactory"></a>QExtensionFactory::QExtensionFactory ( <a href="qextensionmanager.html">QExtensionManager</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs an extension factory with the given <i>parent</i>.</p>
-<a name="//apple_ref/cpp/instm/QExtensionFactory/createExtension" />
 <h3 class="fn"><a name="createExtension"></a><a href="qobject.html">QObject</a> * QExtensionFactory::createExtension ( <a href="qobject.html">QObject</a> * <i>object</i>, const <a href="qstring.html">QString</a> &amp; <i>iid</i>, <a href="qobject.html">QObject</a> * <i>parent</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Creates an extension specified by <i>iid</i> for the given <i>object</i>. The extension object is created as a child of the specified <i>parent</i>.</p>
 <p>See also <a href="qextensionfactory.html#extension">extension</a>().</p>
-<a name="//apple_ref/cpp/instm/QExtensionFactory/extension" />
 <h3 class="fn"><a name="extension"></a><a href="qobject.html">QObject</a> * QExtensionFactory::extension ( <a href="qobject.html">QObject</a> * <i>object</i>, const <a href="qstring.html">QString</a> &amp; <i>iid</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the extension specified by <i>iid</i> for the given <i>object</i>.</p>
 <p>Reimplemented from <a href="qabstractextensionfactory.html#extension">QAbstractExtensionFactory</a>.</p>
 <p>See also <a href="qextensionfactory.html#createExtension">createExtension</a>().</p>
-<a name="//apple_ref/cpp/instm/QExtensionFactory/extensionManager" />
 <h3 class="fn"><a name="extensionManager"></a><a href="qextensionmanager.html">QExtensionManager</a> * QExtensionFactory::extensionManager () const</h3>
 <p>Returns the extension manager for the extension factory.</p>
 <p /><address><hr /><div align="center">

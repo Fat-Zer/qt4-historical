@@ -1,0 +1,42 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/trolltech/styles/commonstyle">
+<file>images/filelink-16.png</file>
+<file>images/file-16.png</file>
+<file>images/newdirectory-16.png</file>
+<file>images/dvd-16.png</file>
+<file>images/cdr-16.png</file>
+<file>images/floppy-16.png</file>
+<file>images/harddrive-16.png</file>
+<file>images/trash-16.png</file>
+<file>images/networkdrive-16.png</file>
+<file>images/computer-16.png</file>
+<file>images/desktop-16.png</file>
+<file>images/dirclosed-16.png</file>
+<file>images/dirlink-16.png</file>
+<file>images/diropen-16.png</file>
+<file>images/left-16.png</file>
+<file>images/right-16.png</file>
+<file>images/up-16.png</file>
+<file>images/down-16.png</file>
+<file>images/filecontents-16.png</file>
+<file>images/fileinfo-16.png</file>
+<file>images/viewdetailed-16.png</file>
+<file>images/viewlist-16.png</file>
+<file>images/fontbitmap-16.png</file>
+<file>images/fonttruetype-16.png</file>
+<file>images/standardbutton-apply-16.png</file>
+<file>images/standardbutton-cancel-16.png</file>
+<file>images/standardbutton-clear-16.png</file>
+<file>images/standardbutton-close-16.png</file>
+<file>images/standardbutton-delete-16.png</file>
+<file>images/standardbutton-help-16.png</file>
+<file>images/standardbutton-no-16.png</file>
+<file>images/standardbutton-ok-16.png</file>
+<file>images/standardbutton-open-16.png</file>
+<file>images/standardbutton-save-16.png</file>
+<file>images/standardbutton-yes-16.png</file>
+</qresource>
+<qresource prefix="/trolltech/stylesheet">
+<file>default.qss</file>
+</qresource>
+</RCC>

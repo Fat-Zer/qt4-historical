@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/xmlpatterns/api/qxmlserializer.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/src/xmlpatterns/api/qxmlserializer.cpp -->
 <head>
   <title>Qt 4.4: QXmlSerializer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QXmlSerializer" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -57,19 +56,15 @@
 <p>See also <a href="http://www.w3.org/TR/xslt-xquery-serialization/">XSLT 2.0 and XQuery 1.0 Serialization</a> and <a href="qxmlformatter.html">QXmlFormatter</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QXmlSerializer/QXmlSerializer" />
 <h3 class="fn"><a name="QXmlSerializer"></a>QXmlSerializer::QXmlSerializer ( const <a href="qxmlquery.html">QXmlQuery</a> &amp; <i>query</i>, <a href="qiodevice.html">QIODevice</a> * <i>outputDevice</i> )</h3>
 <p>Constructs a serializer that uses the name pool and message handler in <i>query</i>, and writes the output to <i>outputDevice</i>.</p>
 <p><i>outputDevice</i> must be a valid, non-null device that is open in write mode, otherwise behavior is undefined.</p>
 <p><i>outputDevice</i> must not be opened with <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Text</a> because it will cause the output to be incorrect. This class will ensure line endings are serialized as according with the XML specification. <a href="qxmlserializer.html">QXmlSerializer</a> does not take ownership of <i>outputDevice</i>.</p>
-<a name="//apple_ref/cpp/instm/QXmlSerializer/codec" />
 <h3 class="fn"><a name="codec"></a>const <a href="qtextcodec.html">QTextCodec</a> * QXmlSerializer::codec () const</h3>
 <p>Returns the codec being used by the serializer for encoding its XML output.</p>
 <p>See also <a href="qxmlserializer.html#setCodec">setCodec</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlSerializer/outputDevice" />
 <h3 class="fn"><a name="outputDevice"></a><a href="qiodevice.html">QIODevice</a> * QXmlSerializer::outputDevice () const</h3>
 <p>Returns a pointer to the output device. There is no corresponding function to <i>set</i> the output device, because the output device must be passed to the constructor. The serializer does not take ownership of its IO device.</p>
-<a name="//apple_ref/cpp/instm/QXmlSerializer/setCodec" />
 <h3 class="fn"><a name="setCodec"></a>void QXmlSerializer::setCodec ( const <a href="qtextcodec.html">QTextCodec</a> * <i>outputCodec</i> )</h3>
 <p>Sets the codec the serializer will use for encoding its XML output. The output codec is set to <i>outputCodec</i>. By default, the output codec is set to the one for <tt>UTF-8</tt>. The serializer does not take ownership of the codec.</p>
 <p>See also <a href="qxmlserializer.html#codec">codec</a>().</p>

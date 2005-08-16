@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/io/qtextstream.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/src/corelib/io/qtextstream.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QTextStream</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -55,14 +55,6 @@
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QTextStream/Encoding" />
-<a name="//apple_ref/cpp/econst/QTextStream/Latin1" />
-<a name="//apple_ref/cpp/econst/QTextStream/Locale" />
-<a name="//apple_ref/cpp/econst/QTextStream/RawUnicode" />
-<a name="//apple_ref/cpp/econst/QTextStream/Unicode" />
-<a name="//apple_ref/cpp/econst/QTextStream/UnicodeNetworkOrder" />
-<a name="//apple_ref/cpp/econst/QTextStream/UnicodeReverse" />
-<a name="//apple_ref/cpp/econst/QTextStream/UnicodeUTF8" />
 <h3 class="fn"><a name="Encoding-enum"></a>enum QTextStream::Encoding</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
@@ -78,90 +70,65 @@
 <p>See also <a href="qtextstream.html#setCodec">setCodec</a>() and <a href="qtextstream.html#setAutoDetectUnicode">setAutoDetectUnicode</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QTextStream/fill" />
 <h3 class="fn"><a name="fill"></a>int QTextStream::fill ( int <i>f</i> )</h3>
 <p>Use <a href="qtextstream.html#setPadChar">setPadChar</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/flags" />
 <h3 class="fn"><a name="flags"></a>int QTextStream::flags () const</h3>
 <p>Use <a href="qtextstream.html#fieldAlignment">fieldAlignment</a>(), <a href="qtextstream.html#padChar">padChar</a>(), <a href="qtextstream.html#fieldWidth">fieldWidth</a>(), <a href="qtextstream.html#numberFlags">numberFlags</a>(), <a href="qtextstream.html#integerBase">integerBase</a>(), <a href="qtextstream.html#realNumberNotation">realNumberNotation</a>(), and realNumberNotation instead.</p>
 <h3 class="fn"><a name="flags-2"></a>int QTextStream::flags ( int <i>f</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qtextstream.html#setFieldAlignment">setFieldAlignment</a>(), <a href="qtextstream.html#setPadChar">setPadChar</a>(), <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>(), <a href="qtextstream.html#setNumberFlags">setNumberFlags</a>(), <a href="qtextstream.html#setIntegerBase">setIntegerBase</a>(), <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>(), and setRealNumberNotation instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/precision" />
 <h3 class="fn"><a name="precision"></a>int QTextStream::precision ( int <i>p</i> )</h3>
 <p>Use <a href="qtextstream.html#setRealNumberPrecision">setRealNumberPrecision</a>() instead.</p>
 <h3 class="fn"><a name="read-2"></a><a href="qstring.html">QString</a> QTextStream::read ()</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qtextstream.html#readAll">readAll</a>() or <a href="qtextstream.html#readLine">readLine</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/setEncoding" />
 <h3 class="fn"><a name="setEncoding"></a>void QTextStream::setEncoding ( <a href="qtextstream-qt3.html#Encoding-enum">Encoding</a> <i>encoding</i> )</h3>
 <p>Use <a href="qtextstream.html#setCodec">setCodec</a>() and <a href="qtextstream.html#setAutoDetectUnicode">setAutoDetectUnicode</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/setf" />
 <h3 class="fn"><a name="setf"></a>int QTextStream::setf ( int <i>bits</i> )</h3>
 <p>Use <a href="qtextstream.html#setFieldAlignment">setFieldAlignment</a>(), <a href="qtextstream.html#setPadChar">setPadChar</a>(), <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>(), <a href="qtextstream.html#setNumberFlags">setNumberFlags</a>(), <a href="qtextstream.html#setIntegerBase">setIntegerBase</a>(), <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>(), and setRealNumberNotation instead.</p>
 <h3 class="fn"><a name="setf-2"></a>int QTextStream::setf ( int <i>bits</i>, int <i>mask</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qtextstream.html#setFieldAlignment">setFieldAlignment</a>(), <a href="qtextstream.html#setPadChar">setPadChar</a>(), <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>(), <a href="qtextstream.html#setNumberFlags">setNumberFlags</a>(), <a href="qtextstream.html#setIntegerBase">setIntegerBase</a>(), <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>(), and setRealNumberNotation instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/unsetDevice" />
 <h3 class="fn"><a name="unsetDevice"></a>void QTextStream::unsetDevice ()</h3>
 <p>Use setDevice(0) instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/unsetf" />
 <h3 class="fn"><a name="unsetf"></a>int QTextStream::unsetf ( int <i>bits</i> )</h3>
 <p>Use <a href="qtextstream.html#setFieldAlignment">setFieldAlignment</a>(), <a href="qtextstream.html#setPadChar">setPadChar</a>(), <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>(), <a href="qtextstream.html#setNumberFlags">setNumberFlags</a>(), <a href="qtextstream.html#setIntegerBase">setIntegerBase</a>(), <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>(), and setRealNumberNotation instead.</p>
-<a name="//apple_ref/cpp/instm/QTextStream/width" />
 <h3 class="fn"><a name="width"></a>int QTextStream::width ( int <i>w</i> )</h3>
 <p>Use <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>() instead.</p>
 <hr />
 <h2>Member Variable Documentation</h2>
-<a name="//apple_ref/cpp/data/QTextStream/adjustfield" />
 <h3 class="fn"><a name="adjustfield-var"></a>const int QTextStream::adjustfield</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/basefield" />
 <h3 class="fn"><a name="basefield-var"></a>const int QTextStream::basefield</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/bin" />
 <h3 class="fn"><a name="bin-var"></a>const int QTextStream::bin</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/dec" />
 <h3 class="fn"><a name="dec-var"></a>const int QTextStream::dec</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/fixed" />
 <h3 class="fn"><a name="fixed-var"></a>const int QTextStream::fixed</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/floatfield" />
 <h3 class="fn"><a name="floatfield-var"></a>const int QTextStream::floatfield</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/hex" />
 <h3 class="fn"><a name="hex-var"></a>const int QTextStream::hex</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/internal" />
 <h3 class="fn"><a name="internal-var"></a>const int QTextStream::internal</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/left" />
 <h3 class="fn"><a name="left-var"></a>const int QTextStream::left</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/oct" />
 <h3 class="fn"><a name="oct-var"></a>const int QTextStream::oct</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/right" />
 <h3 class="fn"><a name="right-var"></a>const int QTextStream::right</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/scientific" />
 <h3 class="fn"><a name="scientific-var"></a>const int QTextStream::scientific</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/showbase" />
 <h3 class="fn"><a name="showbase-var"></a>const int QTextStream::showbase</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/showpoint" />
 <h3 class="fn"><a name="showpoint-var"></a>const int QTextStream::showpoint</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/showpos" />
 <h3 class="fn"><a name="showpos-var"></a>const int QTextStream::showpos</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/skipws" />
 <h3 class="fn"><a name="skipws-var"></a>const int QTextStream::skipws</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
-<a name="//apple_ref/cpp/data/QTextStream/uppercase" />
 <h3 class="fn"><a name="uppercase-var"></a>const int QTextStream::uppercase</h3>
 <p>Use the new <a href="qtextstream.html#qtextstream-manipulators">QTextStream manipulators</a> instead.</p>
 <p /><address><hr /><div align="center">

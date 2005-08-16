@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/painting/q3picture.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/src/qt3support/painting/q3picture.cpp -->
 <head>
   <title>Qt 4.4: Q3Picture Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//Q3Picture" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -49,12 +48,10 @@
 <p>See also <a href="qpicture.html">QPicture</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Q3Picture/Q3Picture" />
 <h3 class="fn"><a name="Q3Picture"></a>Q3Picture::Q3Picture ()</h3>
 <p>Constructs a <a href="q3picture.html">Q3Picture</a>.</p>
 <h3 class="fn"><a name="Q3Picture-2"></a>Q3Picture::Q3Picture ( const <a href="qpicture.html">QPicture</a> &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
-<a name="//apple_ref/cpp/instm/Q3Picture/load" />
 <h3 class="fn"><a name="load"></a>bool Q3Picture::load ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, const char * <i>format</i> = 0 )</h3>
 <p>Loads the picture in the specified <i>format</i> from the given <i>device</i>. Returns true if the file is loaded successfully; otherwise returns false.</p>
 <p>Note that when using the load() function to read SVG files, the format must be specified. For example:</p>
@@ -64,7 +61,6 @@
 <h3 class="fn"><a name="load-2"></a>bool Q3Picture::load ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>format</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Loads the picture in the specified <i>format</i> from a file with the given <i>fileName</i>. Returns true if the file is loaded successfully; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/Q3Picture/save" />
 <h3 class="fn"><a name="save"></a>bool Q3Picture::save ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, const char * <i>format</i> = 0 )</h3>
 <p>Saves the picture in the specified <i>format</i> to the given <i>device</i>. Returns true if the save is successful. Returns false if, for example, the picture is still being painted, i.e&#x2e;, <a href="qpainter.html#end">QPainter::end</a>() has not yet been called.</p>
 <p>Note that when using the save() function to save SVG files, the format must be specified. For example:</p>

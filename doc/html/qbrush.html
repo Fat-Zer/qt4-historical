@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/painting/qbrush.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/src/gui/painting/qbrush.cpp -->
 <head>
   <title>Qt 4.4: QBrush Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QBrush" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -57,8 +56,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qbrush.html#operator-lt-lt-53">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QBrush &amp; <i>brush</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qbrush.html#operator-gt-gt-26">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QBrush &amp; <i>brush</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qbrush.html#operator-lt-lt-140">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QBrush &amp; <i>brush</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qbrush.html#operator-gt-gt-81">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QBrush &amp; <i>brush</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -98,7 +97,6 @@
 <p>See also <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a>, <a href="qpainter.html">QPainter</a>, and <a href="qcolor.html">QColor</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QBrush/QBrush" />
 <h3 class="fn"><a name="QBrush"></a>QBrush::QBrush ()</h3>
 <p>Constructs a default black brush with the style <a href="qt.html#BrushStyle-enum">Qt::NoBrush</a> (i.e&#x2e; this brush will not fill shapes).</p>
 <h3 class="fn"><a name="QBrush-2"></a>QBrush::QBrush ( <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a> <i>style</i> )</h3>
@@ -129,17 +127,13 @@
 <h3 class="fn"><a name="QBrush-10"></a>QBrush::QBrush ( const <a href="qgradient.html">QGradient</a> &amp; <i>gradient</i> )</h3>
 <p>Constructs a brush based on the given <i>gradient</i>.</p>
 <p>The brush style is set to the corresponding gradient style (either <a href="qt.html#BrushStyle-enum">Qt::LinearGradientPattern</a>, <a href="qt.html#BrushStyle-enum">Qt::RadialGradientPattern</a> or <a href="qt.html#BrushStyle-enum">Qt::ConicalGradientPattern</a>).</p>
-<a name="//apple_ref/cpp/instm/QBrush/~QBrush" />
 <h3 class="fn"><a name="dtor.QBrush"></a>QBrush::~QBrush ()</h3>
 <p>Destroys the brush.</p>
-<a name="//apple_ref/cpp/instm/QBrush/color" />
 <h3 class="fn"><a name="color"></a>const <a href="qcolor.html">QColor</a> &amp; QBrush::color () const</h3>
 <p>Returns the brush color.</p>
 <p>See also <a href="qbrush.html#setColor">setColor</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/gradient" />
 <h3 class="fn"><a name="gradient"></a>const <a href="qgradient.html">QGradient</a> * QBrush::gradient () const</h3>
 <p>Returns the gradient describing this brush.</p>
-<a name="//apple_ref/cpp/instm/QBrush/isOpaque" />
 <h3 class="fn"><a name="isOpaque"></a>bool QBrush::isOpaque () const</h3>
 <p>Returns true if the brush is fully opaque otherwise false. A brush is considered opaque if:</p>
 <ul>
@@ -147,12 +141,10 @@
 <li>Its <a href="qbrush.html#texture">texture</a>() does not have an alpha channel and is not a <a href="qbitmap.html">QBitmap</a>.</li>
 <li>The colors in the <a href="qbrush.html#gradient">gradient</a>() all have an alpha component that is 255.</li>
 </ul>
-<a name="//apple_ref/cpp/instm/QBrush/matrix" />
 <h3 class="fn"><a name="matrix"></a>const <a href="qmatrix.html">QMatrix</a> &amp; QBrush::matrix () const</h3>
 <p>Returns the current transformation matrix for the brush.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qbrush.html#setMatrix">setMatrix</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/setColor" />
 <h3 class="fn"><a name="setColor"></a>void QBrush::setColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
 <p>Sets the brush color to the given <i>color</i>.</p>
 <p>Note that calling setColor() will not make a difference if the style is a gradient. The same is the case if the style is <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a> style unless the current texture is a <a href="qbitmap.html">QBitmap</a>.</p>
@@ -160,73 +152,60 @@
 <h3 class="fn"><a name="setColor-2"></a>void QBrush::setColor ( <a href="qt.html#GlobalColor-enum">Qt::GlobalColor</a> <i>color</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the brush color to the given <i>color</i>.</p>
-<a name="//apple_ref/cpp/instm/QBrush/setMatrix" />
 <h3 class="fn"><a name="setMatrix"></a>void QBrush::setMatrix ( const <a href="qmatrix.html">QMatrix</a> &amp; <i>matrix</i> )</h3>
 <p>Sets <i>matrix</i> as an explicit transformation matrix on the current brush. The brush transformation matrix is merged with <a href="qpainter.html">QPainter</a> transformation matrix to produce the final result.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qbrush.html#matrix">matrix</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/setStyle" />
 <h3 class="fn"><a name="setStyle"></a>void QBrush::setStyle ( <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a> <i>style</i> )</h3>
 <p>Sets the brush style to <i>style</i>.</p>
 <p>See also <a href="qbrush.html#style">style</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/setTexture" />
 <h3 class="fn"><a name="setTexture"></a>void QBrush::setTexture ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i> )</h3>
 <p>Sets the brush pixmap to <i>pixmap</i>. The style is set to <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a>.</p>
 <p>The current brush color will only have an effect for monochrome pixmaps, i.e&#x2e; for <a href="qpixmap.html#depth">QPixmap::depth</a>() == 1 (<a href="qbitmap.html">QBitmaps</a>).</p>
 <p>See also <a href="qbrush.html#texture">texture</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/setTextureImage" />
 <h3 class="fn"><a name="setTextureImage"></a>void QBrush::setTextureImage ( const <a href="qimage.html">QImage</a> &amp; <i>image</i> )</h3>
 <p>Sets the brush image to <i>image</i>. The style is set to <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a>.</p>
 <p>Note the current brush color will <i>not</i> have any affect on monochrome images, as opposed to calling <a href="qbrush.html#setTexture">setTexture</a>() with a <a href="qbitmap.html">QBitmap</a>. If you want to change the color of monochrome image brushes, either convert the image to <a href="qbitmap.html">QBitmap</a> with <tt>QBitmap::fromImage()</tt> and set the resulting <a href="qbitmap.html">QBitmap</a> as a texture, or change the entries in the color table for the image.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qbrush.html#textureImage">textureImage</a>() and <a href="qbrush.html#setTexture">setTexture</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/setTransform" />
 <h3 class="fn"><a name="setTransform"></a>void QBrush::setTransform ( const <a href="qtransform.html">QTransform</a> &amp; <i>matrix</i> )</h3>
 <p>Sets <i>matrix</i> as an explicit transformation matrix on the current brush. The brush transformation matrix is merged with <a href="qpainter.html">QPainter</a> transformation matrix to produce the final result.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qbrush.html#transform">transform</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/style" />
 <h3 class="fn"><a name="style"></a><a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a> QBrush::style () const</h3>
 <p>Returns the brush style.</p>
 <p>See also <a href="qbrush.html#setStyle">setStyle</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/texture" />
 <h3 class="fn"><a name="texture"></a><a href="qpixmap.html">QPixmap</a> QBrush::texture () const</h3>
 <p>Returns the custom brush pattern, or a null pixmap if no custom brush pattern has been set.</p>
 <p>See also <a href="qbrush.html#setTexture">setTexture</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/textureImage" />
 <h3 class="fn"><a name="textureImage"></a><a href="qimage.html">QImage</a> QBrush::textureImage () const</h3>
 <p>Returns the custom brush pattern, or a null image if no custom brush pattern has been set.</p>
 <p>If the texture was set as a <a href="qpixmap.html">QPixmap</a> it will be converted to a <a href="qimage.html">QImage</a>.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qbrush.html#setTextureImage">setTextureImage</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/transform" />
 <h3 class="fn"><a name="transform"></a><a href="qtransform.html">QTransform</a> QBrush::transform () const</h3>
 <p>Returns the current transformation matrix for the brush.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qbrush.html#setTransform">setTransform</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/operator QVariant" />
 <h3 class="fn"><a name="operator-QVariant"></a>QBrush::operator QVariant () const</h3>
 <p>Returns the brush as a <a href="qvariant.html">QVariant</a></p>
-<a name="//apple_ref/cpp/instm/QBrush/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QBrush::operator!= ( const QBrush &amp; <i>brush</i> ) const</h3>
 <p>Returns true if the brush is different from the given <i>brush</i>; otherwise returns false.</p>
 <p>Two brushes are different if they have different styles, colors or pixmaps.</p>
 <p>See also <a href="qbrush.html#operator-eq-eq">operator==</a>().</p>
-<a name="//apple_ref/cpp/instm/QBrush/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QBrush &amp; QBrush::operator= ( const QBrush &amp; <i>brush</i> )</h3>
 <p>Assigns the given <i>brush</i> to <i>this</i> brush and returns a reference to <i>this</i> brush.</p>
-<a name="//apple_ref/cpp/instm/QBrush/operator==" />
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QBrush::operator== ( const QBrush &amp; <i>brush</i> ) const</h3>
 <p>Returns true if the brush is equal to the given <i>brush</i>; otherwise returns false.</p>
 <p>Two brushes are equal if they have equal styles, colors and pixmaps.</p>
 <p>See also <a href="qbrush.html#operator-not-eq">operator!=</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-53"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QBrush &amp; <i>brush</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-140"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QBrush &amp; <i>brush</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>brush</i> to the given <i>stream</i> and returns a reference to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-26"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QBrush &amp; <i>brush</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-81"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QBrush &amp; <i>brush</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the given <i>brush</i> from the given <i>stream</i> and returns a reference to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>

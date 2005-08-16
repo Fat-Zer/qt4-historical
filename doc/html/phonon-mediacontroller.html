@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/phonon-api.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-embedded-wince-opensource-src-4.4.2/doc/src/phonon-api.qdoc -->
 <head>
   <title>Qt 4.4: MediaController Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl/Phonon/MediaController" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -16,7 +15,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">MediaController Class Reference<br /><span class="small-subtitle">(Phonon::MediaController)<br />[<a href="phonon.html">Phonon</a> module]</span>
 </h1>
 <p>The MediaController class controls optional features of a media file/device. <a href="#details">More...</a></p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre> #include &lt;<a href="phonon.html">Phonon</a>&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
 <li><a href="phonon-mediacontroller-members.html">List of all members, including inherited members</a></li>
@@ -93,11 +92,6 @@
 <p><b>Author:</b> Matthias Kretz &lt;kretz@kde.org&gt;</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/Phonon::MediaController/Feature" />
-<a name="//apple_ref/cpp/econst/Phonon::MediaController/Angles" />
-<a name="//apple_ref/cpp/econst/Phonon::MediaController/Chapters" />
-<a name="//apple_ref/cpp/econst/Phonon::MediaController/Titles" />
-<a name="//apple_ref/cpp/tdef/Phonon::MediaController/Features" />
 <h3 class="flags"><a name="Feature-enum"></a>enum MediaController::Feature<br />flags MediaController::Features</h3>
 <p>The values of this enum are interpreted differently depending on the type of media source, e.g&#x2e;, DVD or CD. We give examples for these sources.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -109,93 +103,71 @@
 <p>The Features type is a typedef for <a href="qflags.html">QFlags</a>&lt;Feature&gt;. It stores an OR combination of Feature values.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/MediaController" />
 <h3 class="fn"><a name="MediaController"></a>MediaController::MediaController ( <a href="phonon-mediaobject.html">MediaObject</a> * <i>parent</i> )</h3>
 <p>Constructs a new <a href="phonon-mediacontroller.html">MediaController</a> with the media object (<i>parent</i>) to be used by the media controller.</p>
 <p>See also <a href="phonon-mediaobject.html">MediaObject</a> and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/~MediaController" />
 <h3 class="fn"><a name="dtor.MediaController"></a>MediaController::~MediaController ()</h3>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/angleChanged" />
 <h3 class="fn"><a name="angleChanged"></a>void MediaController::angleChanged ( int <i>angleNumber</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the current angle changes. The new angle number is given by <i>angleNumber</i>.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/autoplayTitles" />
 <h3 class="fn"><a name="autoplayTitles"></a>bool MediaController::autoplayTitles () const</h3>
 <p>Returns true if titles will automatically be played when the media is played; otherwise returns false.</p>
 <p>The media controller will play the titles of the media source in sequence when the media object's <a href="phonon-mediaobject.html#play">play()</a> function is called. If the autoplay option is disabled, the media object will play the <a href="phonon-mediacontroller.html#currentTitle">MediaController::currentTitle()</a>{current title} and then finish the playback.</p>
 <p>See also <a href="phonon-mediacontroller.html#setAutoplayTitles">setAutoplayTitles</a>() and <a href="phonon-mediacontroller.html#currentTitle">currentTitle</a>().</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/availableAngles" />
 <h3 class="fn"><a name="availableAngles"></a>int MediaController::availableAngles () const</h3>
 <p>Returns the available angles that is available for the current media source.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/availableAnglesChanged" />
 <h3 class="fn"><a name="availableAnglesChanged"></a>void MediaController::availableAnglesChanged ( int <i>availableAngles</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the number of available angles changes. The new number of available angles is given by <i>availableAngles</i>.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/availableChapters" />
 <h3 class="fn"><a name="availableChapters"></a>int MediaController::availableChapters () const</h3>
 <p>Returns the number of chapters the current media source contains.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/availableChaptersChanged" />
 <h3 class="fn"><a name="availableChaptersChanged"></a>void MediaController::availableChaptersChanged ( int <i>availableChapters</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the number of available chapters changes. The new number of available chapters is given by <i>availableChapters</i>.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/availableTitles" />
 <h3 class="fn"><a name="availableTitles"></a>int MediaController::availableTitles () const</h3>
 <p>Returns the number of titles that the current media source contains.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/availableTitlesChanged" />
 <h3 class="fn"><a name="availableTitlesChanged"></a>void MediaController::availableTitlesChanged ( int <i>availableTitles</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the number of available titles changes. The new number of available titles is given by <i>availableTitles</i>.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/chapterChanged" />
 <h3 class="fn"><a name="chapterChanged"></a>void MediaController::chapterChanged ( int <i>chapterNumber</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the current chapter changes. The new chapter number is given by <i>chapterNumber</i>.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/currentAngle" />
 <h3 class="fn"><a name="currentAngle"></a>int MediaController::currentAngle () const</h3>
 <p>Returns the angle that is currently used.</p>
 <p>See also <a href="phonon-mediacontroller.html#setCurrentAngle">setCurrentAngle</a>() and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/currentChapter" />
 <h3 class="fn"><a name="currentChapter"></a>int MediaController::currentChapter () const</h3>
 <p>Returns the chapter that is currently being played back.</p>
 <p>See also <a href="phonon-mediacontroller.html#setCurrentChapter">setCurrentChapter</a>() and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/currentTitle" />
 <h3 class="fn"><a name="currentTitle"></a>int MediaController::currentTitle () const</h3>
 <p>Returns the title that is currently played back.</p>
 <p>The current title is 0 (the first) by default.</p>
 <p>See also <a href="phonon-mediacontroller.html#setCurrentTitle">setCurrentTitle</a>() and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/nextTitle" />
 <h3 class="fn"><a name="nextTitle"></a>void MediaController::nextTitle ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Skips to the next title.</p>
 <p>If it was playing before the title change it will start playback on the next title if autoplayTitles is enabled.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/previousTitle" />
 <h3 class="fn"><a name="previousTitle"></a>void MediaController::previousTitle ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Skips to the previous title.</p>
 <p>If it was playing before the title change it will start playback on the previous title if autoplayTitles is enabled.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/setAutoplayTitles" />
 <h3 class="fn"><a name="setAutoplayTitles"></a>void MediaController::setAutoplayTitles ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the titles to play automatically when the media is played if <i>enable</i> is true; otherwise disables this option.</p>
 <p>The media controller will play the titles of the media source in sequence when the media object's <a href="phonon-mediaobject.html#play">play()</a> function is called. If the autoplay option is disabled, the media object will play the <a href="phonon-mediacontroller.html#currentTitle">MediaController::currentTitle()</a>{current title} and then finish the playback.</p>
 <p>See also <a href="phonon-mediacontroller.html#autoplayTitles">autoplayTitles</a>() and <a href="phonon-mediacontroller.html#currentTitle">currentTitle</a>().</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/setCurrentAngle" />
 <h3 class="fn"><a name="setCurrentAngle"></a>void MediaController::setCurrentAngle ( int <i>angleNumber</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the current angle to the given <i>angleNumber</i> if the media file or device supports navigation by angle number.</p>
 <p>See also <a href="phonon-mediacontroller.html#currentAngle">currentAngle</a>() and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/setCurrentChapter" />
 <h3 class="fn"><a name="setCurrentChapter"></a>void MediaController::setCurrentChapter ( int <i>chapterNumber</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the current chapter to the given <i>chapterNumber</i> if the media file or device supports navigation by chapter number.</p>
 <p>See also <a href="phonon-mediacontroller.html#currentChapter">currentChapter</a>() and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/setCurrentTitle" />
 <h3 class="fn"><a name="setCurrentTitle"></a>void MediaController::setCurrentTitle ( int <i>titleNumber</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Skips to the given title <i>titleNumber</i>.</p>
 <p>If it was playing before the title change it will start playback on the new title if autoplayTitles is enabled.</p>
 <p>See also <a href="phonon-mediacontroller.html#currentTitle">currentTitle</a>() and <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/supportedFeatures" />
 <h3 class="fn"><a name="supportedFeatures"></a><a href="phonon-mediacontroller.html#Feature-enum">Features</a> MediaController::supportedFeatures () const</h3>
-<a name="//apple_ref/cpp/instm/Phonon::MediaController/titleChanged" />
 <h3 class="fn"><a name="titleChanged"></a>void MediaController::titleChanged ( int <i>titleNumber</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the current title changes. The new title number is given by <i>titleNumber</i>.</p>
 <p>See also <a href="phonon-mediacontroller.html#Feature-enum">Feature</a>.</p>
