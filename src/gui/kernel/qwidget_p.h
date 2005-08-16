@@ -174,8 +174,7 @@ public:
     void init(QWidget *desktopWidget, Qt::WindowFlags f);
     void create_sys(WId window, bool initializeWindow, bool destroyOldWindow);
     void createRecursively();
-    void uncreateRecursively(bool includeThis = true);
-    void createWinId();
+    void createWinId(WId id = 0);
 
     void createTLExtra();
     void createExtra();
@@ -227,6 +226,15 @@ public:
     void updateIsOpaque();
     bool isOpaque() const;
     bool hasBackground() const;
+
+#ifdef QT_EXPERIMENTAL_REGIONS
+    QRegion getOpaqueRegion() const;
+    QRegion getOpaqueChildren() const;
+    void setDirtyOpaqueRegion();
+
+    mutable QRegion opaqueChildren;
+    mutable bool dirtyOpaqueChildren;
+#endif
 
     enum CloseMode {
         CloseNoEvent,
@@ -305,8 +313,8 @@ public:
 #endif
     void setWindowTitle_helper(const QString &cap);
 
-    void setMinimumSize_helper(int minw, int minh);
-    void setMaximumSize_helper(int maxw, int maxh);
+    bool setMinimumSize_helper(int minw, int minh);
+    bool setMaximumSize_helper(int maxw, int maxh);
     void setConstraints_sys();
 
 #if defined(Q_WS_QWS)

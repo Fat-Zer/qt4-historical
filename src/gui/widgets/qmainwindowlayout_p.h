@@ -147,6 +147,8 @@ public:
     QTimer *separatorMoveTimer;
     QVector<QLayoutStruct> separatorMoveCache;
 
+    void keepSize(QDockWidget *w);
+
 #ifndef QT_NO_TABBAR
     QTabBar *getTabBar();
     QSet<QTabBar*> usedTabBars;

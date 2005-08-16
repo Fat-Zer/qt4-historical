@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/xml/qdom.cpp -->
 <head>
   <title>Qt 4.2: QDomNode Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -109,6 +109,7 @@
 <p>You can find out the type of a node using <a href="qdomnode.html#isAttr">isAttr</a>(), <a href="qdomnode.html#isCDATASection">isCDATASection</a>(), <a href="qdomnode.html#isDocumentFragment">isDocumentFragment</a>(), <a href="qdomnode.html#isDocument">isDocument</a>(), <a href="qdomnode.html#isDocumentType">isDocumentType</a>(), <a href="qdomnode.html#isElement">isElement</a>(), <a href="qdomnode.html#isEntityReference">isEntityReference</a>(), <a href="qdomnode.html#isText">isText</a>(), <a href="qdomnode.html#isEntity">isEntity</a>(), <a href="qdomnode.html#isNotation">isNotation</a>(), <a href="qdomnode.html#isProcessingInstruction">isProcessingInstruction</a>(), <a href="qdomnode.html#isCharacterData">isCharacterData</a>() and <a href="qdomnode.html#isComment">isComment</a>().</p>
 <p>A QDomNode can be converted into one of its subclasses using <a href="qdomnode.html#toAttr">toAttr</a>(), <a href="qdomnode.html#toCDATASection">toCDATASection</a>(), <a href="qdomnode.html#toDocumentFragment">toDocumentFragment</a>(), <a href="qdomnode.html#toDocument">toDocument</a>(), <a href="qdomnode.html#toDocumentType">toDocumentType</a>(), <a href="qdomnode.html#toElement">toElement</a>(), <a href="qdomnode.html#toEntityReference">toEntityReference</a>(), <a href="qdomnode.html#toText">toText</a>(), <a href="qdomnode.html#toEntity">toEntity</a>(), <a href="qdomnode.html#toNotation">toNotation</a>(), <a href="qdomnode.html#toProcessingInstruction">toProcessingInstruction</a>(), <a href="qdomnode.html#toCharacterData">toCharacterData</a>() or <a href="qdomnode.html#toComment">toComment</a>(). You can convert a node to a null node with <a href="qdomnode.html#clear">clear</a>().</p>
 <p>Copies of the QDomNode class share their data using explicit sharing. This means that modifying one node will change all copies. This is especially useful in combination with functions which return a QDomNode, e.g. <a href="qdomnode.html#firstChild">firstChild</a>(). You can make an independent (deep) copy of the node with <a href="qdomnode.html#cloneNode">cloneNode</a>().</p>
+<p>A QDomNode can be null, much like a null pointer. Creating a copy of a null node results in another null node. It is not possible to modify a null node, but it is possible to assign another, possibly non-null node to it. In this case, the copy of the null node will remain null. You can check if a QDomNode is null by calling <a href="qdomnode.html#isNull">isNull</a>(). The empty constructor of a QDomNode (or any of the derived classes) creates a null node.</p>
 <p>Nodes are inserted with <a href="qdomnode.html#insertBefore">insertBefore</a>(), <a href="qdomnode.html#insertAfter">insertAfter</a>() or <a href="qdomnode.html#appendChild">appendChild</a>(). You can replace one node with another using <a href="qdomnode.html#replaceChild">replaceChild</a>() and remove a node with <a href="qdomnode.html#removeChild">removeChild</a>().</p>
 <p>To traverse nodes use <a href="qdomnode.html#firstChild">firstChild</a>() to get a node's first child (if any), and <a href="qdomnode.html#nextSibling">nextSibling</a>() to traverse. QDomNode also provides <a href="qdomnode.html#lastChild">lastChild</a>(), <a href="qdomnode.html#previousSibling">previousSibling</a>() and <a href="qdomnode.html#parentNode">parentNode</a>(). To find the first child node with a particular node name use <a href="qdomnode.html#namedItem">namedItem</a>().</p>
 <p>To find out if a node has children use <a href="qdomnode.html#hasChildNodes">hasChildNodes</a>() and to get a list of all of a node's children use <a href="qdomnode.html#childNodes">childNodes</a>().</p>
@@ -336,7 +337,7 @@
 <tr valign="top" class="odd"><td><a href="qdomattr.html">QDomAttr</a></td><td>The attribute value</td></tr>
 <tr valign="top" class="even"><td><a href="qdomcdatasection.html">QDomCDATASection</a></td><td>The content of the CDATA section</td></tr>
 <tr valign="top" class="odd"><td><a href="qdomcomment.html">QDomComment</a></td><td>The comment</td></tr>
-<tr valign="top" class="even"><td><a href="qdomprocessinginstruction.html">QDomProcessingInstruction</a></td><td>The data of the processing intruction</td></tr>
+<tr valign="top" class="even"><td><a href="qdomprocessinginstruction.html">QDomProcessingInstruction</a></td><td>The data of the processing instruction</td></tr>
 <tr valign="top" class="odd"><td><a href="qdomtext.html">QDomText</a></td><td>The text</td></tr>
 </table></p>
 <p>All the other subclasses do not have a node value and will return an empty string.</p>
@@ -430,6 +431,14 @@
 <p>The data of the copy is shared (shallow copy): modifying one node will also change the other. If you want to make a deep copy, use <a href="qdomnode.html#cloneNode">cloneNode</a>().</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QDomNode::operator== ( const QDomNode &amp; <i>n</i> ) const</h3>
 <p>Returns true if <i>n</i> and this DOM node are equal; otherwise returns false.</p>
+<p>Any instance of <a href="qdomnode.html">QDomNode</a> acts as a reference to an underlying data structure in <a href="qdomdocument.html">QDomDocument</a>. The test for equality checks if the two references point to the same underlying node. For example:</p>
+<pre> QDomDocument document;
+ QDomElement element1 = document.documentElement();
+ QDomElement element2 = element1;</pre>
+<p>The two nodes (<a href="qdomelement.html">QDomElement</a> is a <a href="qdomnode.html">QDomNode</a> subclass) both refer to the document's root element, and <tt>element1 == element2</tt> will return true. On the other hand:</p>
+<pre> QDomElement element3 = document.createElement(&quot;MyElement&quot;);
+ QDomElement element4 = document.createElement(&quot;MyElement&quot;);</pre>
+<p>Even though both nodes are empty elements carrying the same name, <tt>element3 == element4</tt> will return false because they refer to two different nodes in the underlying data structure.</p>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="operator-lt-lt-118"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>str</i>, const QDomNode &amp; <i>node</i> )</h3>
@@ -439,6 +448,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

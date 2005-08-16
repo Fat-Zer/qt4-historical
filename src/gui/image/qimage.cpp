@@ -584,7 +584,7 @@ QImageData::~QImageData()
 
     The mirrored() function returns a mirror of the image in the
     desired direction, the scaled() returns a copy of the image scaled
-    to a rectangle of the desired measures, the rgbSwapped() fucntion
+    to a rectangle of the desired measures, the rgbSwapped() function
     constructs a BGR image from a RGB image, and the alphaChannel()
     function constructs an image from this image's alpha channel.
 
@@ -3810,8 +3810,8 @@ QImage QImage::createHeuristicMask(bool clipTight) const
     int h = height();
     QImage m(w, h, Format_MonoLSB);
     m.setNumColors(2);
-    m.setColor(0, 0xffffff);
-    m.setColor(1, 0);
+    m.setColor(0, QColor(Qt::color0).rgba());
+    m.setColor(1, QColor(Qt::color1).rgba());
     m.fill(0xff);
 
     QRgb background = PIX(0,0);
@@ -4709,7 +4709,7 @@ void QImage::setText(const char* key, const char* lang, const QString& s)
 /*!
     \internal
 
-    Used by QPainter to retreive a paint engine for the image.
+    Used by QPainter to retrieve a paint engine for the image.
 */
 
 QPaintEngine *QImage::paintEngine() const
@@ -4986,14 +4986,13 @@ bool qt_xForm_helper(const QMatrix &trueMat, int xoffset, int type, int depth,
     Returns a number that identifies the contents of this
     QImage object. Distinct QImage objects can only have the same
     serial number if they refer to the same contents (but they don't
-    have to). Also, the serial number of a QImage may change during
-    the lifetime of the object.
+    have to).
 
-    A null image has always a serial number of 0.
+    \warning The serial number doesn't necessarily change when the
+    image is altered. This means that it may be dangerous to use
+    it as a cache key.
 
-    Serial numbers are moslty useful in conjunction with cacheing.
-
-    \sa {QImage#Image Information}{Image Information}, operator==()
+    \sa operator==()
 */
 
 int QImage::serialNumber() const
@@ -5097,8 +5096,15 @@ void QImage::setAlphaChannel(const QImage &alphaChannel)
 
 
 /*!
-    Extracts the alpha channel from this image as an 8 bit gray scale
-    image and returns it.
+    Returns the alpha channel of the image as a new grayscale QPixmap in which
+    each pixel's red, green, and blue values are given the alpha value of the
+    original image. The color depth of the returned image is 8-bit.
+
+    You can see an example of use of this function in QPixmap's 
+    \l{QPixmap::}{alphaChannel()}, which works in the same way as 
+    this function on QPixmaps.
+
+    \sa setAlphaChannel(), {QPixmap#Pixmap Information}{Pixmap
 
     \sa setAlphaChannel(), hasAlphaChannel(), {QImage#Image
     Transformations}{Image Transformations}

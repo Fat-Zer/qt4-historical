@@ -36,7 +36,4 @@
 <section ref="qmake-common-projects.html" title="qmake Common Projects">
     <keyword ref="qmake-common-projects.html">qmake Common Projects</keyword>
 </section>
-<section ref="qmake-third-party-code.html" title="Third-Party Code Used in qmake">
-    <keyword ref="qmake-third-party-code.html">Third-Party Code Used in qmake</keyword>
-</section>
 </DCF>

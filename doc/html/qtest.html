@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/tools/qtestlib/src/qtestcase.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/tools/qtestlib/src/qtestcase.cpp -->
 <head>
   <title>Qt 4.2: QTest Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -76,6 +76,7 @@
 <li><div class="fn"/><b><a href="qtest.html#QTEST_APPLESS_MAIN">QTEST_APPLESS_MAIN</a></b> (  <i>TestClass</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a></b> (  <i>TestClass</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QTEST_NOOP_MAIN">QTEST_NOOP_MAIN</a></b> ()</li>
+<li><div class="fn"/><b><a href="qtest.html#QVERIFY2">QVERIFY2</a></b> (  <i>condition</i>,  <i>message</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QVERIFY">QVERIFY</a></b> (  <i>condition</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QWARN">QWARN</a></b> (  <i>message</i> )</li>
 </ul>
@@ -399,6 +400,11 @@
      QTEST_NOOP_MAIN
  #endif</pre>
 <p>See also <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>().</p>
+<h3 class="fn"><a name="QVERIFY2"></a>QVERIFY2 (  <i>condition</i>,  <i>message</i> )</h3>
+<p>The QVERIFY2() macro behaves exactly like <a href="qtest.html#QVERIFY">QVERIFY</a>(), except that it outputs a verbose <i>message</i> when <i>condition</i> is false. The <i>message</i> is a plain C string.</p>
+<p>Example:</p>
+<pre> QVERIFY2(1 + 1 == 2, &quot;A breach in basic arithmetic occured.&quot;);</pre>
+<p>See also <a href="qtest.html#QVERIFY">QVERIFY</a>() and <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
 <h3 class="fn"><a name="QVERIFY"></a>QVERIFY (  <i>condition</i> )</h3>
 <p>The QVERIFY() macro checks whether the <i>condition</i> is true or not. If it is true, execution continues. If not, a failure is recorded in the test log and the test won't be executed further.</p>
 <p><b>Note:</b> This macro can only be used in a test function that is invoked by the test framework.</p>
@@ -412,6 +418,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

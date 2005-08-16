@@ -27,6 +27,7 @@
 #include <qdebug.h>
 #include <private/qevent_p.h>
 #include <private/qlocale_p.h>
+#include <private/qapplication_p.h>
 #include <qwidget.h>
 #include <qapplication.h>
 
@@ -412,7 +413,12 @@ static inline int toKeyOrUnicode(int vk, int scancode, unsigned char *kbdBuffer)
     Q_ASSERT(vk > 0 && vk < 256);
     int code = 0;
     QChar unicodeBuffer[5];
-    int res = ToUnicode(vk, scancode, kbdBuffer, reinterpret_cast<LPWSTR>(unicodeBuffer), 5, 0);
+    int res = 0;
+    if (QSysInfo::WindowsVersion < QSysInfo::WV_NT)
+        res = ToAscii(vk, scancode, kbdBuffer, reinterpret_cast<LPWORD>(unicodeBuffer), 0);
+    else
+        res = ToUnicode(vk, scancode, kbdBuffer, reinterpret_cast<LPWSTR>(unicodeBuffer), 5, 0);
+
     if (res)
         code = unicodeBuffer[0].toUpper().unicode();
 
@@ -497,9 +503,18 @@ static void qt_show_system_menu(QWidget* tlw)
     EnableMenuItem(menu, SC_MAXIMIZE, ! (tlw->windowFlags() & Qt::WindowMaximizeButtonHint) || maximized?disabled:enabled);
     EnableMenuItem(menu, SC_RESTORE, maximized?enabled:disabled);
 
-    EnableMenuItem(menu, SC_SIZE, maximized?disabled:enabled);
+    // We should _not_ check with the setFixedSize(x,y) case here, since Windows is not able to check
+    // this and our menu here would be out-of-sync with the menu produced by mouse-click on the
+    // System Menu, or right-click on the titlebar.
+    EnableMenuItem(menu, SC_SIZE, (tlw->windowFlags() & Qt::MSWindowsFixedSizeDialogHint) || maximized?disabled:enabled);
     EnableMenuItem(menu, SC_MOVE, maximized?disabled:enabled);
     EnableMenuItem(menu, SC_CLOSE, enabled);
+    // Set bold on close menu item
+    MENUITEMINFO closeItem;
+    closeItem.cbSize = sizeof(MENUITEMINFO);
+    closeItem.fMask = MIIM_STATE;
+    closeItem.fState = MFS_DEFAULT;
+    SetMenuItemInfo(menu, SC_CLOSE, FALSE, &closeItem);
 #endif
 
 #undef enabled
@@ -662,6 +677,20 @@ void QKeyMapperPrivate::updatePossibleKeyCodes(unsigned char *kbdBuffer, quint32
     setKbdState(buffer, true, true, true);
     keyLayout[vk_key]->qtKey[7] = toKeyOrUnicode(vk_key, scancode, buffer);
 
+    // If this vk_key a Dead Key
+    if (MapVirtualKey(vk_key, 2) & 0x80008000) { // (High-order dead key on Win 95 is 0x8000)
+        // Push a Space, then the original key through the low-level ToAscii functions.
+        // We do this because these functions (ToAscii / ToUnicode) will alter the internal state of
+        // the keyboard driver By doing the following, we set the keyboard driver state back to what
+        // it was before we wrecked it with the code above.
+        // We need to push the space with an empty keystate map, since the driver checks the map for
+        // transitions in modifiers, so this helps us capture all possible deadkeys.
+        unsigned char emptyBuffer[256];
+        memset(emptyBuffer, 0, sizeof(emptyBuffer));
+        ::ToAscii(VK_SPACE, 0, emptyBuffer, reinterpret_cast<LPWORD>(&buffer), 0);
+        ::ToAscii(vk_key, scancode, kbdBuffer, reinterpret_cast<LPWORD>(&buffer), 0);
+    }
+
 #ifdef DEBUG_KEYMAPPER
     qDebug("updatePossibleKeyCodes for virtual key = 0x%02x!", vk_key);
     for (int i = 0; i < 8; ++i) {
@@ -707,19 +736,28 @@ bool QKeyMapperPrivate::translateKeyEvent(QWidget *widget, const MSG &msg, bool 
     bool isDeadKey = MapVirtualKey(msg.wParam, 2) & 0x80008000; // High-order on 95 is 0x8000
     bool isNumpad = (msg.wParam >= VK_NUMPAD0 && msg.wParam <= VK_NUMPAD9);
     quint32 nModifiers = 0;
-    // Map native modifiers to some bit representation
-    nModifiers |= (GetKeyState(VK_LSHIFT  ) & 0x80 ? ShiftLeft : 0);
-    nModifiers |= (GetKeyState(VK_RSHIFT  ) & 0x80 ? ShiftRight : 0);
-    nModifiers |= (GetKeyState(VK_LCONTROL) & 0x80 ? ControlLeft : 0);
-    nModifiers |= (GetKeyState(VK_RCONTROL) & 0x80 ? ControlRight : 0);
-    nModifiers |= (GetKeyState(VK_LMENU   ) & 0x80 ? AltLeft : 0);
-    nModifiers |= (GetKeyState(VK_RMENU   ) & 0x80 ? AltRight : 0);
-    nModifiers |= (GetKeyState(VK_LWIN    ) & 0x80 ? MetaLeft : 0);
-    nModifiers |= (GetKeyState(VK_RWIN    ) & 0x80 ? MetaRight : 0);
-    // Add Lock keys to the same bits
-    nModifiers |= (GetKeyState(VK_CAPITAL ) & 0x01 ? CapsLock : 0);
-    nModifiers |= (GetKeyState(VK_NUMLOCK ) & 0x01 ? NumLock : 0);
-    nModifiers |= (GetKeyState(VK_SCROLL  ) & 0x01 ? ScrollLock : 0);
+
+    if (QSysInfo::WindowsVersion < QSysInfo::WV_NT) {
+        nModifiers |= (GetKeyState(VK_SHIFT  ) < 0 ? ShiftAny : 0);
+        nModifiers |= (GetKeyState(VK_CONTROL) < 0 ? ControlAny : 0);
+        nModifiers |= (GetKeyState(VK_MENU   ) < 0 ? AltAny : 0);
+        nModifiers |= (GetKeyState(VK_LWIN   ) < 0 ? MetaLeft : 0);
+        nModifiers |= (GetKeyState(VK_RWIN   ) < 0 ? MetaRight : 0);
+    } else {
+        // Map native modifiers to some bit representation
+        nModifiers |= (GetKeyState(VK_LSHIFT  ) & 0x80 ? ShiftLeft : 0);
+        nModifiers |= (GetKeyState(VK_RSHIFT  ) & 0x80 ? ShiftRight : 0);
+        nModifiers |= (GetKeyState(VK_LCONTROL) & 0x80 ? ControlLeft : 0);
+        nModifiers |= (GetKeyState(VK_RCONTROL) & 0x80 ? ControlRight : 0);
+        nModifiers |= (GetKeyState(VK_LMENU   ) & 0x80 ? AltLeft : 0);
+        nModifiers |= (GetKeyState(VK_RMENU   ) & 0x80 ? AltRight : 0);
+        nModifiers |= (GetKeyState(VK_LWIN    ) & 0x80 ? MetaLeft : 0);
+        nModifiers |= (GetKeyState(VK_RWIN    ) & 0x80 ? MetaRight : 0);
+        // Add Lock keys to the same bits
+        nModifiers |= (GetKeyState(VK_CAPITAL ) & 0x01 ? CapsLock : 0);
+        nModifiers |= (GetKeyState(VK_NUMLOCK ) & 0x01 ? NumLock : 0);
+        nModifiers |= (GetKeyState(VK_SCROLL  ) & 0x01 ? ScrollLock : 0);
+    }
 
     // Get the modifier states (may be altered later, depending on key code)
     int state = 0;
@@ -1053,9 +1091,7 @@ bool QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
                               quint32 nativeScanCode, quint32 nativeVirtualKey, quint32 nativeModifiers)
 {
     Q_UNUSED(count);
-#if 1 // ####### Enable Support stuff below
-    Q_UNUSED(grab);
-#elif defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
+#if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
     if (type == QEvent::KeyPress
         && !grab
         && QApplicationPrivate::instance()->use_compat()) {
@@ -1063,7 +1099,7 @@ bool QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
         QKeyEventEx a(type, code, modifiers,
                       text, autorepeat, qMax(1, int(text.length())),
                       nativeScanCode, nativeVirtualKey, nativeModifiers);
-        if (QApplicationPrivate::instance()->qt_tryAccelEvent(this, &a))
+        if (QApplicationPrivate::instance()->qt_tryAccelEvent(widget, &a))
             return true;
     }
 #endif

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/qt3support/network/q3networkprotocol.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/qt3support/network/q3networkprotocol.cpp -->
 <head>
   <title>Qt 4.2: Q3NetworkProtocol Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -147,7 +147,7 @@
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StWaiting</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The operation is in the <a href="q3networkprotocol.html">Q3NetworkProtocol</a>'s queue waiting to be prcessed.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StInProgress</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The operation is being processed.</td></tr>
-<tr><td valign="top"><tt>Q3NetworkProtocol::StDone</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The operation has been processed succesfully.</td></tr>
+<tr><td valign="top"><tt>Q3NetworkProtocol::StDone</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The operation has been processed successfully.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StFailed</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The operation has been processed but an error occurred.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StStopped</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The operation has been processed but has been stopped before it finished, and is waiting to be processed.</td></tr>
 </table></p>
@@ -171,7 +171,7 @@
 <h3 class="fn"><a name="connectionStateChanged"></a>void Q3NetworkProtocol::connectionStateChanged ( int <i>state</i>, const <a href="qstring.html">QString</a> &amp; <i>data</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the state of the connection of the network protocol is changed. <i>state</i> describes the new state, which is one of, <tt>ConHostFound</tt>, <tt>ConConnected</tt> or <tt>ConClosed</tt>. <i>data</i> is a message text.</p>
 <h3 class="fn"><a name="createdDirectory"></a>void Q3NetworkProtocol::createdDirectory ( const <a href="qurlinfo.html">QUrlInfo</a> &amp; <i>i</i>, <a href="q3networkoperation.html">Q3NetworkOperation</a> * <i>op</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when mkdir() has been succesful and the directory has been created. <i>i</i> holds the information about the new directory. <i>op</i> is the pointer to the operation object which contains all the information about the operation, including the state, etc. Using op-&gt;arg( 0 ), you can get the file name of the new directory.</p>
+<p>This signal is emitted when mkdir() has been successful and the directory has been created. <i>i</i> holds the information about the new directory. <i>op</i> is the pointer to the operation object which contains all the information about the operation, including the state, etc. Using op-&gt;arg( 0 ), you can get the file name of the new directory.</p>
 <p>When a protocol emits this signal, <a href="q3networkprotocol.html">Q3NetworkProtocol</a> is smart enough to let the <a href="q3urloperator.html">Q3UrlOperator</a>, which is used by the network protocol, emit its corresponding signal.</p>
 <h3 class="fn"><a name="data"></a>void Q3NetworkProtocol::data ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, <a href="q3networkoperation.html">Q3NetworkOperation</a> * <i>op</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when new <i>data</i> has been received after calling get() or put(). <i>op</i> holds the name of the file from which data is retrieved or uploaded in its first argument, and the (raw) data in its second argument. You can get them with op-&gt;arg( 0 ) and op-&gt;rawArg( 1 ). <i>op</i> is the pointer to the operation object, which contains all the information about the operation, including the state, etc.</p>
@@ -218,7 +218,7 @@
 <p>When implementing a new network protocol, this method should be reimplemented if the protocol supports removing children (files); this method should then process this <a href="q3networkoperation.html">Q3NetworkOperation</a>.</p>
 <p><i>op</i> is the pointer to the operation object which contains all the information on the operation that has finished, including the state, etc.</p>
 <h3 class="fn"><a name="operationRename"></a>void Q3NetworkProtocol::operationRename ( <a href="q3networkoperation.html">Q3NetworkOperation</a> * <i>op</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>When implementing a new newtork protocol, this method should be reimplemented if the protocol supports renaming children (files); this method should then process this <a href="q3networkoperation.html">Q3NetworkOperation</a>.</p>
+<p>When implementing a new network protocol, this method should be reimplemented if the protocol supports renaming children (files); this method should then process this <a href="q3networkoperation.html">Q3NetworkOperation</a>.</p>
 <p><i>op</i> is the pointer to the operation object which contains all the information on the operation that has finished, including the state, etc.</p>
 <h3 class="fn"><a name="registerNetworkProtocol"></a>void Q3NetworkProtocol::registerNetworkProtocol ( const <a href="qstring.html">QString</a> &amp; <i>protocol</i>, Q3NetworkProtocolFactoryBase * <i>protocolFactory</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Static method to register a network protocol for Qt. For example, if you have an implementation of NNTP (called Nntp) which is derived from <a href="q3networkprotocol.html">Q3NetworkProtocol</a>, call:</p>
@@ -226,7 +226,7 @@
 <p>after which your implementation is registered for future nntp operations.</p>
 <p>The name of the protocol is given in <i>protocol</i> and a pointer to the protocol factory is given in <i>protocolFactory</i>.</p>
 <h3 class="fn"><a name="removed"></a>void Q3NetworkProtocol::removed ( <a href="q3networkoperation.html">Q3NetworkOperation</a> * <i>op</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when remove() has been succesful and the file has been removed. <i>op</i> holds the file name of the removed file in the first argument, accessible with op-&gt;arg( 0 ). <i>op</i> is the pointer to the operation object which contains all the information about the operation, including the state, etc.</p>
+<p>This signal is emitted when remove() has been succesiisful and the file has been removed. <i>op</i> holds the file name of the removed file in the first argument, accessible with op-&gt;arg( 0 ). <i>op</i> is the pointer to the operation object which contains all the information about the operation, including the state, etc.</p>
 <p>When a protocol emits this signal, <a href="q3networkprotocol.html">Q3NetworkProtocol</a> is smart enough to let the <a href="q3urloperator.html">Q3UrlOperator</a>, which is used by the network protocol, emit its corresponding signal.</p>
 <h3 class="fn"><a name="setAutoDelete"></a>void Q3NetworkProtocol::setAutoDelete ( bool <i>b</i>, int <i>i</i> = 10000 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Because it's sometimes hard to take care of removing network protocol instances, <a href="q3networkprotocol.html">Q3NetworkProtocol</a> provides an auto-delete mechanism. If you set <i>b</i> to true, the network protocol instance is removed after it has been inactive for <i>i</i> milliseconds (i.e. <i>i</i> milliseconds after the last operation has been processed). If you set <i>b</i> to false the auto-delete mechanism is switched off.</p>
@@ -249,6 +249,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

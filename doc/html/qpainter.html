@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.2: QPainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -911,6 +911,7 @@
 <p>(<i>x</i>, <i>y</i>) specifies the top-left point in the paint device that is to be drawn onto; with the given <i>width</i> and <i>height</i>. (<i>sx</i>, <i>sy</i>) specifies the top-left point in the <i>pixmap</i> that is to be drawn; this defaults to (0, 0).</p>
 <h3 class="fn"><a name="end"></a>bool QPainter::end ()</h3>
 <p>Ends painting. Any resources used while painting are released. You don't normally need to call this since it is called by the destructor.</p>
+<p>Returns true if the painter is no longer active; otherwise returns false.</p>
 <p>See also <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#isActive">isActive</a>().</p>
 <h3 class="fn"><a name="eraseRect"></a>void QPainter::eraseRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>rectangle</i> )</h3>
 <p>Erases the area inside the given <i>rectangle</i>. Equivalent to calling</p>
@@ -1033,7 +1034,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Enables clipping, and sets the clip region to the given <i>rectangle</i> using the given clip <i>operation</i>.</p>
 <h3 class="fn"><a name="setClipRegion"></a>void QPainter::setClipRegion ( const <a href="qregion.html">QRegion</a> &amp; <i>region</i>, <a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> <i>operation</i> = Qt::ReplaceClip )</h3>
-<p>Sets the clip region to the givne <i>region</i> using the given clip <i>operation</i>. The default clip operation is to replace the current clip region.</p>
+<p>Sets the clip region to the given <i>region</i> using the specified clip <i>operation</i>. The default clip operation is to replace the current clip region.</p>
 <p>Note that the clip region is given in logical coordinates.</p>
 <p>See also <a href="qpainter.html#clipRegion">clipRegion</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), and <a href="qpainter.html#clipping">Clipping</a>.</p>
 <h3 class="fn"><a name="setClipping"></a>void QPainter::setClipping ( bool <i>enable</i> )</h3>
@@ -1395,7 +1396,7 @@
 <h3 class="fn"><a name="hasViewXForm"></a>bool QPainter::hasViewXForm () const</h3>
 <p>Use <a href="qpainter.html#viewTransformEnabled">viewTransformEnabled</a>() instead.</p>
 <h3 class="fn"><a name="hasWorldXForm"></a>bool QPainter::hasWorldXForm () const</h3>
-<p>Use <a href="qpainter-obsolete.html#matrixEnabled">matrixEnabled</a>() instead.</p>
+<p>Use <a href="qpainter.html#worldMatrixEnabled">worldMatrixEnabled</a>() instead.</p>
 <h3 class="fn"><a name="redirect"></a>void QPainter::redirect ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pdev</i>, <a href="qpaintdevice.html">QPaintDevice</a> * <i>replacement</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qpainter.html#setRedirected">setRedirected</a>() instead.</p>
 <h3 class="fn"><a name="redirect-2"></a><a href="qpaintdevice.html">QPaintDevice</a> * QPainter::redirect ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pdev</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -1410,80 +1411,80 @@
 <p>Use <a href="qpainter.html#setViewTransformEnabled">setViewTransformEnabled</a>() instead.</p>
 <p>See also <a href="qpainter-qt3.html#hasViewXForm">hasViewXForm</a>().</p>
 <h3 class="fn"><a name="setWorldXForm"></a>void QPainter::setWorldXForm ( bool <i>enabled</i> )</h3>
-<p>Use <a href="qpainter-obsolete.html#setMatrixEnabled">setMatrixEnabled</a>() instead.</p>
+<p>Use <a href="qpainter.html#setWorldMatrixEnabled">setWorldMatrixEnabled</a>() instead.</p>
 <p>See also <a href="qpainter-qt3.html#hasWorldXForm">hasWorldXForm</a>().</p>
 <h3 class="fn"><a name="translationX"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QPainter::translationX () const</h3>
-<p>Use the world <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qmatrix.html#dx">QMatrix::dx</a>() instead.</p>
+<p>Use the <a href="qpainter.html#worldMatrix">worldMatrix</a>() combined with <a href="qmatrix.html#dx">QMatrix::dx</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  qreal x = painter.translationX();</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- qreal x = painter.matrix().dx();</pre>
+ qreal x = painter.worldMatrix().dx();</pre>
 <h3 class="fn"><a name="translationY"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QPainter::translationY () const</h3>
-<p>Use the world <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qmatrix.html#dy">QMatrix::dy</a>() instead.</p>
+<p>Use the <a href="qpainter.html#worldMatrix">worldMatrix</a>() combined with <a href="qmatrix.html#dy">QMatrix::dy</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  qreal y = painter.translationY();</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- qreal y = painter.matrix().dy();</pre>
+ qreal y = painter.worldMatrix().dy();</pre>
 <h3 class="fn"><a name="xForm"></a><a href="qpoint.html">QPoint</a> QPainter::xForm ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> ) const</h3>
-<p>Use <i>point</i> * <a href="qpainter-obsolete.html#matrix">matrix</a>() instead.</p>
+<p>Use <i>point</i> * <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() instead.</p>
 <h3 class="fn"><a name="xForm-2"></a><a href="qrect.html">QRect</a> QPainter::xForm ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <i>rectangle</i> * <a href="qpainter-obsolete.html#matrix">matrix</a>() instead.</p>
+<p>Use <i>rectangle</i> * <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() instead.</p>
 <h3 class="fn"><a name="xForm-3"></a><a href="qpolygon.html">QPolygon</a> QPainter::xForm ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>polygon</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <i>polygon</i> * <a href="qpainter-obsolete.html#matrix">matrix</a>() instead.</p>
+<p>Use <i>polygon</i> * <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() instead.</p>
 <h3 class="fn"><a name="xForm-4"></a><a href="qpolygon.html">QPolygon</a> QPainter::xForm ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>polygon</i>, int <i>index</i>, int <i>count</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qvector.html#mid">QPolygon::mid</a>() instead.</p>
+<p>Use <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() combined with <a href="qvector.html#mid">QPolygon::mid</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  QPolygon transformed = painter.xForm(polygon, index, count)</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- QPolygon transformed = polygon.mid(index, count) * painter.matrix();</pre>
+ QPolygon transformed = polygon.mid(index, count) * painter.combinedMatrix();</pre>
 <h3 class="fn"><a name="xFormDev"></a><a href="qpoint.html">QPoint</a> QPainter::xFormDev ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> ) const</h3>
-<p>Use <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
+<p>Use <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() combined with <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  QPoint transformed = painter.xFormDev(point);</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- QPoint transformed = point * painter.matrix().inverted();</pre>
+ QPoint transformed = point * painter.combinedMatrix().inverted();</pre>
 <h3 class="fn"><a name="xFormDev-2"></a><a href="qrect.html">QRect</a> QPainter::xFormDev ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
+<p>Use combineMatrix() combined with <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  QRect transformed = painter.xFormDev(rectangle);</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- QRect transformed = rectangle * painter.matrix().inverted();</pre>
+ QRect transformed = rectangle * painter.combinedMatrix().inverted();</pre>
 <h3 class="fn"><a name="xFormDev-3"></a><a href="qpolygon.html">QPolygon</a> QPainter::xFormDev ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>polygon</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
+<p>Use <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() combined with <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  QPolygon transformed = painter.xFormDev(rectangle);</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- QPolygon transformed = polygon * painter.matrix().inverted();</pre>
+ QPolygon transformed = polygon * painter.combinedMatrix().inverted();</pre>
 <h3 class="fn"><a name="xFormDev-4"></a><a href="qpolygon.html">QPolygon</a> QPainter::xFormDev ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>polygon</i>, int <i>index</i>, int <i>count</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qpainter-obsolete.html#matrix">matrix</a>() combined with <a href="qvector.html#mid">QPolygon::mid</a>() and <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
+<p>Use <a href="qpainter.html#combinedMatrix">combinedMatrix</a>() combined with <a href="qvector.html#mid">QPolygon::mid</a>() and <a href="qmatrix.html#inverted">QMatrix::inverted</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QPainter painter(this);
  QPolygon transformed = painter.xFormDev(polygon, index, count);</font></pre>
 <p>you can rewrite it as</p>
 <pre> QPainter painter(this);
- QPolygon transformed = polygon.mid(index, count) * painter.matrix().inverted();</pre>
+ QPolygon transformed = polygon.mid(index, count) * painter.combinedMatrix().inverted();</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/xml/qdom.cpp -->
 <head>
   <title>Qt 4.2: QDomDocument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -214,8 +214,8 @@
 <p>If <i>namespaceProcessing</i> is false, the functions <a href="qdomnode.html#prefix">QDomNode::prefix</a>(), <a href="qdomnode.html#localName">QDomNode::localName</a>() and <a href="qdomnode.html#namespaceURI">QDomNode::namespaceURI</a>() return an empty string.</p>
 <p>Entity references are handled as follows:</p>
 <ul>
-<li>References to internal general entities and character entities occuring in the content are included. The result is a <a href="qdomtext.html">QDomText</a> node with the references replaced by their corresponding entity values.</li>
-<li>References to parameter entities occuring in the internal subset are included. The result is a <a href="qdomdocumenttype.html">QDomDocumentType</a> node which contains entity and notation declarations with the references replaced by their corresponding entity values.</li>
+<li>References to internal general entities and character entities occurring in the content are included. The result is a <a href="qdomtext.html">QDomText</a> node with the references replaced by their corresponding entity values.</li>
+<li>References to parameter entities occurring in the internal subset are included. The result is a <a href="qdomdocumenttype.html">QDomDocumentType</a> node which contains entity and notation declarations with the references replaced by their corresponding entity values.</li>
 <li>Any general parsed entity reference which is not defined in the internal subset and which occurs in the content is represented as a <a href="qdomentityreference.html">QDomEntityReference</a> node.</li>
 <li>Any parsed entity reference which is not defined in the internal subset and which occurs outside of the content is replaced with an empty string.</li>
 <li>Any unparsed entity reference is replaced with an empty string.</li>
@@ -224,25 +224,25 @@
 <p>See also <a href="qdomnode.html#namespaceURI">QDomNode::namespaceURI</a>() and <a href="qdomnode.html#localName">QDomNode::localName</a>().</p>
 <h3 class="fn"><a name="setContent-2"></a>bool QDomDocument::setContent ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, bool <i>namespaceProcessing</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>This function reads the XML document from the string <i>text</i>. Since <i>text</i> is already a Unicode string, no encoding detection is done.</p>
+<p>This function reads the XML document from the string <i>text</i>, returning true if the content was successfully parsed; otherwise returns false. Since <i>text</i> is already a Unicode string, no encoding detection is done.</p>
 <h3 class="fn"><a name="setContent-3"></a>bool QDomDocument::setContent ( <a href="qiodevice.html">QIODevice</a> * <i>dev</i>, bool <i>namespaceProcessing</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>This function reads the XML document from the IO device <i>dev</i>.</p>
+<p>This function reads the XML document from the IO device <i>dev</i>, returning true if the content was successfully parsed; otherwise returns false.</p>
 <h3 class="fn"><a name="setContent-4"></a>bool QDomDocument::setContent ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>This function reads the XML document from the string <i>text</i>. Since <i>text</i> is already a Unicode string, no encoding detection is performed.</p>
+<p>This function reads the XML document from the string <i>text</i>, returning true if the content was successfully parsed; otherwise returns false. Since <i>text</i> is already a Unicode string, no encoding detection is performed.</p>
 <p>No namespace processing is performed either.</p>
 <h3 class="fn"><a name="setContent-5"></a>bool QDomDocument::setContent ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>buffer</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>This function reads the XML document from the byte array <i>buffer</i>.</p>
+<p>This function reads the XML document from the byte array <i>buffer</i>, returning true if the content was successfully parsed; otherwise returns false.</p>
 <p>No namespace processing is performed.</p>
 <h3 class="fn"><a name="setContent-6"></a>bool QDomDocument::setContent ( <a href="qiodevice.html">QIODevice</a> * <i>dev</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>This function reads the XML document from the IO device <i>dev</i>.</p>
+<p>This function reads the XML document from the IO device <i>dev</i>, returning true if the content was successfully parsed; otherwise returns false.</p>
 <p>No namespace processing is performed.</p>
 <h3 class="fn"><a name="setContent-7"></a>bool QDomDocument::setContent ( <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>source</i>, <a href="qxmlreader.html">QXmlReader</a> * <i>reader</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>This function reads the XML document from the <a href="qxmlinputsource.html">QXmlInputSource</a> <i>source</i> and parses it with the <a href="qxmlreader.html">QXmlReader</a> <i>reader</i>.</p>
+<p>This function reads the XML document from the <a href="qxmlinputsource.html">QXmlInputSource</a> <i>source</i> and parses it with the <a href="qxmlreader.html">QXmlReader</a> <i>reader</i>, returning true if the content was successfully parsed; otherwise returns false.</p>
 <p>This function doesn't change the features of the <i>reader</i>. If you want to use certain features for parsing you can use this function to set up the reader appropriately.</p>
 <p>See also <a href="qxmlsimplereader.html">QXmlSimpleReader</a>.</p>
 <h3 class="fn"><a name="toByteArray"></a><a href="qbytearray.html">QByteArray</a> QDomDocument::toByteArray ( int <i>indent</i> = 1 ) const</h3>
@@ -259,6 +259,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

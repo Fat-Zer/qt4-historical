@@ -135,6 +135,13 @@ Q_CORE_EXPORT uint qGlobalPostedEventsCount()
 }
 
 
+void qt_set_current_thread_to_main_thread()
+{
+    QCoreApplicationPrivate::theMainThread = QThread::currentThread();
+}
+
+
+
 QCoreApplication *QCoreApplication::self = 0;
 QAbstractEventDispatcher *QCoreApplicationPrivate::eventDispatcher = 0;
 uint QCoreApplicationPrivate::attribs;
@@ -801,14 +808,6 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
         return;
     }
 
-#ifndef QT_NO_THREAD
-    // uberhack for enabling some threading features for Qt Jambi
-    if (receiver == (QObject *) 0xfeedface && event == (QEvent *) 0xc0ffee) {
-        QCoreApplicationPrivate::theMainThread = QThread::currentThread();
-        return;
-    }
-#endif
-
     QReadLocker locker(QObjectPrivate::readWriteLock());
     if (!QObjectPrivate::isValidObject(receiver)) {
         qWarning("QCoreApplication::postEvent: Receiver is not a valid QObject");
@@ -996,7 +995,7 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
         }
 
         // first, we diddle the event so that we can deliver
-        // it, and that noone will try to touch it later.
+        // it, and that no one will try to touch it later.
         pe.event->posted = false;
         QEvent * e = pe.event;
         QObject * r = pe.receiver;
@@ -1467,9 +1466,9 @@ QString QCoreApplication::applicationFilePath()
 #if defined( Q_WS_WIN )
     QFileInfo filePath;
     QT_WA({
-        unsigned short module_name[256];
-        GetModuleFileNameW(0, reinterpret_cast<wchar_t *>(module_name), sizeof(module_name));
-        filePath = QString::fromUtf16(module_name);
+        wchar_t module_name[256];
+        GetModuleFileNameW(0, module_name, sizeof(module_name) / sizeof(wchar_t));
+        filePath = QString::fromUtf16((ushort *)module_name);
     }, {
         char module_name[256];
         GetModuleFileNameA(0, module_name, sizeof(module_name));

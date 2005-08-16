@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/tutorial.qdoc -->
 <head>
   <title>Qt 4.2: Qt Tutorial 8 - Preparing for Battle</title>
   <link rel="prev" href="tutorial-t7.html" />
@@ -102,14 +102,14 @@
 <p>If the new angle equals the old one, we return immediately. It is important to only emit the <tt>angleChanged()</tt> signal when the angle really has changed.</p>
 <p>Then we set the new angle value and repaint our widget. The <a href="qwidget.html#update">QWidget::update</a>() function clears the widget (usually filling it with its background color) and sends a paint event to the widget. This results in a call to the paint event function of the widget.</p>
 <p>Finally, we emit the <tt>angleChanged()</tt> signal to tell the outside world that the angle has changed. The <tt>emit</tt> keyword is unique to Qt and not regular C++ syntax. In fact, it is a macro.</p>
-<pre> void CannonField::paintEvent(QPaintEvent * /* event */)
+<pre> void CannonField::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
      painter.drawText(200, 200,
                       tr(&quot;Angle = &quot;) + QString::number(currentAngle));
  }</pre>
 <p>This is our first attempt to write a paint event handler. The event argument contains information about the paint event, for example information about the region in the widget that must be updated. For the time being, we will be lazy and just paint everything.</p>
-<p>Our code displays the angle value in the widget at a fixed position. To achieve this we create a <a href="qpainter.html">QPainter</a> operating on the <tt>CannonField</tt> widget and use it to paint a string representation of the <tt>currentAngle</tt> value. We'll come back to <a href="qpainter.html">QPainter</a> later; it can do a great many things</p>
+<p>Our code displays the angle value in the widget at a fixed position. To achieve this we create a <a href="qpainter.html">QPainter</a> operating on the <tt>CannonField</tt> widget and use it to paint a string representation of the <tt>currentAngle</tt> value. We'll come back to <a href="qpainter.html">QPainter</a> later; it can do a great many things.</p>
 <a name="t8-main-cpp"></a>
 <h3><a href="tutorial-t8-main-cpp.html">t8/main.cpp</a></h3>
 <pre> #include &quot;cannonfield.h&quot;</pre>
@@ -176,6 +176,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

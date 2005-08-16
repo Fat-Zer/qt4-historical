@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/tutorial.qdoc -->
 <head>
   <title>Qt 4.2: Qt Tutorial 11 - Giving It a Shot</title>
   <link rel="prev" href="tutorial-t10.html" />
@@ -100,7 +100,7 @@
 <p>Next we fetch the new shot rectangle.</p>
 <p>If the shot has moved beyond the right or bottom edge of the widget we stop the timer, or we add the new <tt>shotRect()</tt> to the <a href="qregion.html">QRegion</a>.</p>
 <p>Finally, we repaint the <a href="qregion.html">QRegion</a>. This will send a single paint event for just the one or two rectangles that need updating.</p>
-<pre> void CannonField::paintEvent(QPaintEvent * /* event */)
+<pre> void CannonField::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
 
@@ -149,17 +149,17 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http:<span class="comment">//www.trolltech.com/products/qt/opensource.html</span>
+ ** http://www.trolltech.com/products/qt/opensource.html
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http:<span class="comment">//www.trolltech.com/products/qt/licensing.html or contact the</span>
+ ** http://www.trolltech.com/products/qt/licensing.html or contact the
  ** sales department at sales@trolltech.com.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/
+ ****************************************************************************/</span>
 
  #include &lt;QApplication&gt;
  #include &lt;QFont&gt;
@@ -198,6 +198,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

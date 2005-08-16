@@ -103,7 +103,6 @@ QDBusConnectionManager::~QDBusConnectionManager()
             d->closeConnection();
     }
     connectionHash.clear();
-    dbus_shutdown();
 }
 
 void QDBusConnectionManager::bindToApplication()

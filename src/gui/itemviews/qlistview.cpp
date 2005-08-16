@@ -91,14 +91,14 @@
          \o A \l{Plastique Style Widget Gallery}{Plastique style} list view.
     \endtable
 
-    \sa {Model/View Programming}, QTreeView, QTableView, QListWidget
+    \sa {View Classes}, QTreeView, QTableView, QListWidget
 */
 
 /*!
     \enum QListView::ViewMode
 
-    \value ListMode The items are layed out using TopToBottom flow, with Small size and Static movement
-    \value IconMode The items are layed out using LeftToRight flow, with Large size and Free movement
+    \value ListMode The items are laid out using TopToBottom flow, with Small size and Static movement
+    \value IconMode The items are laid out using LeftToRight flow, with Large size and Free movement
 */
 
 /*!
@@ -1101,9 +1101,10 @@ void QListView::paintEvent(QPaintEvent *e)
         painter.translate(delta.x(), delta.y());
         d->drawItems(&painter, d->draggedItems);
     }
-
-    // Paint the dropIndicator
-    d_func()->paintDropIndicator(&painter);
+    // FIXME: Until the we can provide a proper drop indicator
+    // in IconMode, it makes no sense to show it
+    if (d->viewMode == ListMode)
+        d->paintDropIndicator(&painter);
 #endif
 
 #ifndef QT_NO_RUBBERBAND
@@ -1222,6 +1223,7 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
     if (rect.isEmpty()) {
         return d->model->index(0, 0, d->root);
     }
+    if (d->gridSize.isValid()) rect.setSize(d->gridSize);
 
     QSize contents = d->contentsSize;
     QPoint pos = rect.center();
@@ -1316,6 +1318,8 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
 /*!
     Returns the rectangle of the item at position \a index in the
     model. The rectangle is in contents coordinates.
+
+    \sa visualRect()
 */
 QRect QListView::rectForIndex(const QModelIndex &index) const
 {
@@ -1872,7 +1876,7 @@ void QListViewPrivate::doStaticLayout(const QRect &bounds, int first, int last)
                 segmentStartRows.append(row);
                 deltaSegPosition = 0;
             }
-            // save the flow positon of this item
+            // save the flow position of this item
             flowPositions.append(flowPosition);
             // prepare for the next item
             deltaSegPosition = qMax(deltaSegHint, deltaSegPosition);

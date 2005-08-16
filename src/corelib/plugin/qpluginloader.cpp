@@ -254,7 +254,7 @@ QString QPluginLoader::fileName() const
 /*!
     \since 4.2
 
-    Returns a text string with the description of the last error that occured.
+    Returns a text string with the description of the last error that occurred.
 */
 QString QPluginLoader::errorString() const
 {
@@ -281,8 +281,10 @@ QObjectList QPluginLoader::staticInstances()
 {
     QObjectList instances;
     StaticInstanceFunctionList *functions = staticInstanceFunctionList();
-    for (int i = 0; i < functions->count(); ++i)
-        instances.append((*functions)[i]());
+    if (functions) {
+        for (int i = 0; i < functions->count(); ++i)
+            instances.append((*functions)[i]());
+    }
     return instances;
 }
 #endif // QT_NO_LIBRARY

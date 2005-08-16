@@ -130,17 +130,20 @@ static void dump(QDebug debug, const QDockWidgetLayout &layout)
 */
 
 QDockAreaLayoutItem::QDockAreaLayoutItem(QWidgetItem *_widgetItem)
-    : widgetItem(_widgetItem), subinfo(0), pos(0), size(-1), gap(false)
+    : widgetItem(_widgetItem), subinfo(0), pos(0), size(-1), gap(false),
+        keep_size(false)
 {
 }
 
 QDockAreaLayoutItem::QDockAreaLayoutItem(QDockAreaLayoutInfo *_subinfo)
-    : widgetItem(0), subinfo(_subinfo), pos(0), size(-1), gap(false)
+    : widgetItem(0), subinfo(_subinfo), pos(0), size(-1), gap(false),
+        keep_size(false)
 {
 }
 
 QDockAreaLayoutItem::QDockAreaLayoutItem(const QDockAreaLayoutItem &other)
-    : widgetItem(other.widgetItem), subinfo(0), pos(other.pos), size(other.size), gap(other.gap)
+    : widgetItem(other.widgetItem), subinfo(0), pos(other.pos),
+        size(other.size), gap(other.gap), keep_size(other.keep_size)
 {
     if (other.subinfo != 0)
         subinfo = new QDockAreaLayoutInfo(*other.subinfo);
@@ -497,10 +500,13 @@ void QDockAreaLayoutInfo::fitItems()
     QVector<QLayoutStruct> layout_struct_list(item_list.size()*2);
     int j = 0;
 
+    int size = pick(o, rect.size());
+    int min_size = pick(o, minimumSize());
+
     bool prev_gap = false;
     bool first = true;
     for (int i = 0; i < item_list.size(); ++i) {
-        const QDockAreaLayoutItem &item = item_list.at(i);
+        QDockAreaLayoutItem &item = item_list[i];
         if (item.skip())
             continue;
 
@@ -514,10 +520,18 @@ void QDockAreaLayoutInfo::fitItems()
             ls.sizeHint = sep;
         }
 
+        if (item.keep_size) {
+            int d = item.size - pick(o, item.minimumSize());
+            if (min_size + d <= size)
+                min_size -= d;
+            else
+                item.keep_size = false; // sorry, not enough space
+        }
+
         QLayoutStruct &ls = layout_struct_list[j++];
         ls.init();
         ls.empty = false;
-        if (gap) {
+        if (gap || item.keep_size) {
             ls.minimumSize = ls.maximumSize = ls.sizeHint = item.size;
             ls.expansive = false;
             ls.stretch = 0;
@@ -533,12 +547,13 @@ void QDockAreaLayoutInfo::fitItems()
             }
         }
 
+        item.keep_size = false;
         prev_gap = gap;
         first = false;
     }
     layout_struct_list.resize(j);
 
-    qGeomCalc(layout_struct_list, 0, j, pick(o, rect.topLeft()), pick(o, rect.size()), 0);
+    qGeomCalc(layout_struct_list, 0, j, pick(o, rect.topLeft()), size, 0);
 
     j = 0;
     prev_gap = false;
@@ -1926,18 +1941,21 @@ void QDockWidgetLayout::saveState(QDataStream &stream) const
     stream << (uchar) DockWidgetStateMarker;
     int cnt = 0;
     for (int i = 0; i < PosCount; ++i) {
-        if (!docks[i].isEmpty())
+        if (!docks[i].item_list.isEmpty())
             ++cnt;
     }
     stream << cnt;
     for (int i = 0; i < PosCount; ++i) {
-        if (docks[i].isEmpty())
+        if (docks[i].item_list.isEmpty())
             continue;
         stream << i << docks[i].rect.size();
         docks[i].saveState(stream);
     }
 
     stream << centralWidgetRect.size();
+
+    for (int i = 0; i < 4; ++i)
+        stream << static_cast<int>(corners[i]);
 }
 
 bool QDockWidgetLayout::restoreState(QDataStream &stream, const QList<QDockWidget*> &dockwidgets)
@@ -1964,7 +1982,19 @@ bool QDockWidgetLayout::restoreState(QDataStream &stream, const QList<QDockWidge
     stream >> size;
     centralWidgetRect = QRect(QPoint(0, 0), size);
 
-    return stream.status() == QDataStream::Ok;
+    bool ok = stream.status() == QDataStream::Ok;
+
+    if (ok) {
+        int cornerData[4];
+        for (int i = 0; i < 4; ++i)
+            stream >> cornerData[i];
+        if (stream.status() == QDataStream::Ok) {
+            for (int i = 0; i < 4; ++i)
+                corners[i] = static_cast<Qt::DockWidgetArea>(cornerData[i]);
+        }
+    }
+
+    return ok;
 }
 
 QList<int> QDockWidgetLayout::indexOf(QDockWidget *dockWidget, IndexOfFlag flag) const
@@ -2786,6 +2816,15 @@ QRect QDockWidgetLayout::gapRect(QList<int> path)
     }
 
     return result;
+}
+
+void QDockWidgetLayout::keepSize(QDockWidget *w)
+{
+    QList<int> path = indexOf(w, IndexOfFindsAll);
+    if (path.isEmpty())
+        return;
+    QDockAreaLayoutItem &item = this->item(path);
+    item.keep_size = true;
 }
 
 #endif // QT_NO_DOCKWIDGET

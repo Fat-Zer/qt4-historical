@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/doc/src/examples/tooltips.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/tooltips.qdoc -->
 <head>
   <title>Qt 4.2: Tooltips Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -142,7 +142,7 @@
 <p>If the type is <a href="qevent.html#Type-enum">QEvent::ToolTip</a>, we cast the event to a <a href="qhelpevent.html">QHelpEvent</a>, otherwise we propagate the event using the <a href="qwidget.html#event">QWidget::event</a>() function.</p>
 <p>The <a href="qhelpevent.html">QHelpEvent</a> class provides an event that is used to request helpful information about a particular point in a widget.</p>
 <p>For example, the <a href="qhelpevent.html#pos">QHelpEvent::pos</a>() function returns the event's position relative to the widget to which the event is dispatched. Here we use this information to determine if the position of the event is contained within the area of any of the shape items. If it is, we display the shape item's tooltip at the position of the event. Note that the <a href="qtooltip.html#showText">QToolTip::showText</a>() function needs the event's position in global coordinates provided by <a href="qhelpevent.html#globalPos">QHelpEvent::globalPos</a>().</p>
-<pre> void SortingBox::resizeEvent(QResizeEvent * /* event */)
+<pre> void SortingBox::resizeEvent(QResizeEvent * <span class="comment">/* event */</span>)
  {
      int margin = style()-&gt;pixelMetric(QStyle::PM_DefaultTopLevelMargin);
      int x = width() - margin;
@@ -153,7 +153,7 @@
      updateButtonGeometry(newTriangleButton, x, y);
  }</pre>
 <p>The <tt>resizeEvent()</tt> function is reimplemented to receive the resize events dispatched to the widget. It makes sure that the tool buttons keep their position relative to the main widget when the widget is resized. We want the buttons to always be vertically aligned in the application's bottom right corner, so each time the main widget is resized we update the buttons geometry.</p>
-<pre> void SortingBox::paintEvent(QPaintEvent * /* event */)
+<pre> void SortingBox::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
      foreach (ShapeItem shapeItem, shapeItems) {</pre>
@@ -369,6 +369,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

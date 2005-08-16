@@ -392,6 +392,26 @@ static QString nativeAbsoluteFilePathW(const QString &path)
     return ret;
 }
 
+static QString nativeAbsoluteFilePath(const QString &path)
+{
+    QString absPath = QT_WA_INLINE(nativeAbsoluteFilePathW(path), nativeAbsoluteFilePathA(path));
+    // This is really ugly, but GetFullPathName strips off whitespace at the end.
+    // If you for instance write ". " in the lineedit of QFileDialog,
+    // (which is an invalid filename) this function will strip the space off and viola,
+    // the file is later reported as existing. Therefore, we re-add the whitespace that
+    // was at the end of path in order to keep the filename invalid.
+    int i = path.size() - 1;
+    while (i >= 0 && path.at(i) == QLatin1Char(' ')) --i;
+    int extraws = path.size() - 1 - i;
+    if (extraws >= 0) {
+        while (extraws) {
+            absPath.append(QLatin1Char(' '));
+            --extraws;
+        }
+    }
+    return absPath;
+}
+
 QByteArray QFSFileEnginePrivate::win95Name(const QString &path)
 {
     QString ret(path);
@@ -417,10 +437,10 @@ QByteArray QFSFileEnginePrivate::win95Name(const QString &path)
 */
 QString QFSFileEnginePrivate::longFileName(const QString &path)
 {
-    QString absPath = QT_WA_INLINE(nativeAbsoluteFilePathW(path), nativeAbsoluteFilePathA(path));
-    QString prefix = "\\\\?\\";
+    QString absPath = nativeAbsoluteFilePath(path);
+    QString prefix = QLatin1String("\\\\?\\");
     if (isUncPath(path)) {
-        prefix = "\\\\?\\UNC\\";
+        prefix = QLatin1String("\\\\?\\UNC\\");
         absPath.remove(0, 2);
     }
     return prefix + absPath;
@@ -856,7 +876,7 @@ bool QFSFileEngine::setCurrentPath(const QString &path)
     } , {
         r = ::SetCurrentDirectoryA(QFSFileEnginePrivate::win95Name(path));
     });
-    return r >= 0;
+    return r != 0;
 }
 
 /*!
@@ -1147,7 +1167,7 @@ static QString readLink(const QString &link)
         hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
                                     IID_IShellLink, (LPVOID *)&psl);
 
-        if(hres == CO_E_NOTINITIALIZED) { // COM was not initalized
+        if(hres == CO_E_NOTINITIALIZED) { // COM was not initialized
             neededCoInit = true;
             CoInitialize(NULL);
             hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
@@ -1181,7 +1201,7 @@ static QString readLink(const QString &link)
         hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
                                     IID_IShellLinkA, (LPVOID *)&psl);
 
-        if(hres == CO_E_NOTINITIALIZED) { // COM was not initalized
+        if(hres == CO_E_NOTINITIALIZED) { // COM was not initialized
             neededCoInit = true;
             CoInitialize(NULL);
             hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
@@ -1236,7 +1256,7 @@ bool QFSFileEngine::link(const QString &newName)
         bool neededCoInit = false;
 
         hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
-        if(hres == CO_E_NOTINITIALIZED) { // COM was not initalized
+        if(hres == CO_E_NOTINITIALIZED) { // COM was not initialized
                 neededCoInit = true;
                 CoInitialize(NULL);
                 hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
@@ -1266,7 +1286,7 @@ bool QFSFileEngine::link(const QString &newName)
         bool neededCoInit = false;
 
         hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
-        if(hres == CO_E_NOTINITIALIZED) { // COM was not initalized
+        if(hres == CO_E_NOTINITIALIZED) { // COM was not initialized
             neededCoInit = true;
             CoInitialize(NULL);
             hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void **)&psl);
@@ -1498,7 +1518,7 @@ QString QFSFileEngine::fileName(FileName file) const
                 && d->file.at(2) != QLatin1Char('/') || // It's a drive-relative path, so Z:a.txt -> Z:\currentpath\a.txt
                 d->file.startsWith(QLatin1Char('/'))    // It's a absolute path to the current drive, so \a.txt -> Z:\a.txt
                 ) {
-                ret = QDir::fromNativeSeparators(QT_WA_INLINE(nativeAbsoluteFilePathW(d->file), nativeAbsoluteFilePathA(d->file)));
+                ret = QDir::fromNativeSeparators(nativeAbsoluteFilePath(d->file));
             } else {
                 ret = d->file;
             }

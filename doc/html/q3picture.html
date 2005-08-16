@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/qt3support/painting/q3picture.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/qt3support/painting/q3picture.cpp -->
 <head>
   <title>Qt 4.2: Q3Picture Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -35,7 +35,6 @@
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>5 static public members inherited from <a href="qpicture.html#static-public-members">QPicture</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpicture.html#protected-functions">QPicture</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
@@ -43,7 +42,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The Q3Picture class is a paint device that records and replays <a href="q3painter.html">Q3Painter</a> commands.</p>
-<p>Q3Picture can also read and write SVG (Scalable Vector Graphics) files; these files are in an XML format specified by <a href="http://www.w3.org/Graphics/SVG/">W3C</a>. (See the <a href="q3picture.html#load">load</a>() and <a href="q3picture.html#save">save</a>() functions.)</p>
+<p>Q3Picture can also read and write SVG (Scalable Vector Graphics) files; these files are in an XML format specified by <a href="http://www.w3.org/Graphics/SVG/ W3C">http://www.w3.org/Graphics/SVG/ W3C</a>. Note that when using the <a href="q3picture.html#load">load</a>() and <a href="q3picture.html#save">save</a>() functions to read and write SVG files, the format must be specified.</p>
 <p>See also <a href="qpicture.html">QPicture</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -53,13 +52,22 @@
 <p>Constructs a copy of <i>other</i>.</p>
 <h3 class="fn"><a name="load"></a>bool Q3Picture::load ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, const char * <i>format</i> = 0 )</h3>
 <p>Loads the picture in the specified <i>format</i> from the given <i>device</i>. Returns true if the file is loaded successfully; otherwise returns false.</p>
+<p>Note that when using the load() function to read SVG files, the format must be specified. For example:</p>
+<pre> Q3Picture picture;
+ picture.load(&quot;drawing.svg&quot;, SVG);</pre>
 <p>See also <a href="q3picture.html#save">save</a>().</p>
 <h3 class="fn"><a name="load-2"></a>bool Q3Picture::load ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>format</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Loads the picture in the specified <i>format</i> from a file with the given <i>fileName</i>. Returns true if the file is loaded successfully; otherwise returns false.</p>
-<p>See also <a href="q3picture.html#save">save</a>().</p>
 <h3 class="fn"><a name="save"></a>bool Q3Picture::save ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, const char * <i>format</i> = 0 )</h3>
 <p>Saves the picture in the specified <i>format</i> to the given <i>device</i>.</p>
+<p>Note that when using the save() function to save SVG files, the format must be specified. For example:</p>
+<pre> Q3Picture picture;
+ QPainter painter;
+ painter.begin(&amp;picture);           <span class="comment">// paint in picture</span>
+ ...
+ painter.end();                     <span class="comment">// painting done</span>
+ picture.save(&quot;drawing.svg&quot;, SVG);  <span class="comment">// save picture</span></pre>
 <p>See also <a href="q3picture.html#load">load</a>().</p>
 <h3 class="fn"><a name="save-2"></a>bool Q3Picture::save ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>format</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -69,6 +77,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

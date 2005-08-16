@@ -33,13 +33,13 @@ MySortFilterProxyModel::MySortFilterProxyModel(QObject *parent)
 void MySortFilterProxyModel::setFilterMinimumDate(const QDate &date)
 {
     minDate = date;
-    clear();
+    filterChanged();
 }
 
 void MySortFilterProxyModel::setFilterMaximumDate(const QDate &date)
 {
     maxDate = date;
-    clear();
+    filterChanged();
 }
 
 bool MySortFilterProxyModel::filterAcceptsRow(int sourceRow,
@@ -63,8 +63,17 @@ bool MySortFilterProxyModel::lessThan(const QModelIndex &left,
     if (leftData.type() == QVariant::DateTime) {
         return leftData.toDateTime() < rightData.toDateTime();
     } else {
-        return QString::localeAwareCompare(leftData.toString(), 
-                                           rightData.toString()) < 0;
+        QRegExp *emailPattern = new QRegExp("([\\w\\.]*@[\\w\\.]*)");
+
+        QString leftString = leftData.toString();
+        if(left.column() == 1 && emailPattern->indexIn(leftString) != -1)
+            leftString = emailPattern->cap(1);
+
+        QString rightString = rightData.toString();
+        if(right.column() == 1 && emailPattern->indexIn(rightString) != -1)
+            rightString = emailPattern->cap(1);
+
+        return QString::localeAwareCompare(leftString, rightString) < 0;
     }
 }
 

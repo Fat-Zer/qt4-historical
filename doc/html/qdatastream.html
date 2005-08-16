@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/corelib/io/qdatastream.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/io/qdatastream.cpp -->
 <head>
   <title>Qt 4.2: QDataStream Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -219,7 +219,7 @@
 <p>The serialization format is a quint32 length specifier first, then <i>l</i> bytes of data.</p>
 <p>See also <a href="qdatastream.html#readRawData">readRawData</a>() and <a href="qdatastream.html#writeBytes">writeBytes</a>().</p>
 <h3 class="fn"><a name="readRawData"></a>int QDataStream::readRawData ( char * <i>s</i>, int <i>len</i> )</h3>
-<p>Reads <i>len</i> bytes from the stream into <i>s</i> and returns a reference to the stream.</p>
+<p>Reads at most <i>len</i> bytes from the stream into <i>s</i> and returns the number of bytes read. If an error occurs, this function returns -1.</p>
 <p>The buffer <i>s</i> must be preallocated. The data is <i>not</i> encoded.</p>
 <p>See also <a href="qdatastream.html#readBytes">readBytes</a>(), <a href="qiodevice.html#read">QIODevice::read</a>(), and <a href="qdatastream.html#writeRawData">writeRawData</a>().</p>
 <h3 class="fn"><a name="resetStatus"></a>void QDataStream::resetStatus ()</h3>
@@ -370,6 +370,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

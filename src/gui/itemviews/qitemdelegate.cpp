@@ -234,7 +234,7 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
     updateEditorGeometry(). This process is described in the
     \l{Spin Box Delegate example}.
 
-    \sa {Model/View Programming}, QAbstractItemDelegate, {Spin Box Delegate Example},
+    \sa {Delegate Classes}, QAbstractItemDelegate, {Spin Box Delegate Example},
         {Settings Editor Example}, {Icons Example}
 */
 
@@ -336,7 +336,7 @@ void QItemDelegate::paint(QPainter *painter,
                                    icon.actualSize(option.decorationSize, iconMode, iconState));
         } else {
             pixmap = decoration(opt, value);
-            decorationRect = QRect(QPoint(0, 0), option.decorationSize).intersected(pixmap.rect());
+            decorationRect = QRect(QPoint(0, 0), pixmap.size());
         }
     }
 
@@ -444,6 +444,18 @@ void QItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) con
     Q_D(const QItemDelegate);
     QVariant v = index.data(Qt::EditRole);
     QByteArray n = editor->metaObject()->userProperty().name();
+
+    // ### Remove in Qt 5: A work-around for missing "USER true" in
+    // qdatetimeedit.h for QTimeEdit's time property and QDateEdit's date
+    // property. It only triggers if the default user property "dateTime" is
+    // reported for QTimeEdit and QDateEdit.
+    if (n == "dateTime") {
+        if (editor->inherits("QTimeEdit"))
+            n = "time";
+        else if (editor->inherits("QDateEdit"))
+            n = "date";
+    }
+
     if (n.isEmpty())
         n = d->editorFactory()->valuePropertyName(static_cast<QVariant::Type>(v.userType()));
     if (!n.isEmpty())
@@ -576,16 +588,25 @@ void QItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &o
 
     if (textRect.width() < textLayoutSize.width()
         || textRect.height() < textLayoutSize.height()) {
-        const QString elided = option.fontMetrics.elidedText(text,
-                                                             option.textElideMode,
-                                                             textRect.width());
+        QString elided;
+        int start = 0;
+        int end = text.indexOf(QChar::LineSeparator, start);
+        if (end == -1) {
+            elided += option.fontMetrics.elidedText(text, option.textElideMode, textRect.width());
+        } else while (end != -1) {
+            elided += option.fontMetrics.elidedText(text.mid(start, end - start),
+                                                    option.textElideMode, textRect.width());
+            start = end + 1;
+            end = text.indexOf(QChar::LineSeparator, start);
+        }
         d->textLayout.setText(elided);
         textLayoutSize = d->doTextLayout(textRect.width());
     }
 
-    textRect.setTop(textRect.top() + (textRect.height()/2) - (textLayoutSize.toSize().height()/2));
-
-    d->textLayout.draw(painter, textRect.topLeft(), QVector<QTextLayout::FormatRange>(), textRect);
+    const QSize layoutSize(textRect.width(), int(textLayoutSize.height()));
+    const QRect layoutRect = QStyle::alignedRect(option.direction, option.displayAlignment,
+                                                  layoutSize, textRect);
+    d->textLayout.draw(painter, layoutRect.topLeft(), QVector<QTextLayout::FormatRange>(), layoutRect);
 }
 
 /*!
@@ -1017,7 +1038,7 @@ bool QItemDelegate::eventFilter(QObject *object, QEvent *event)
     } else if (event->type() == QEvent::FocusOut) {
         if (!editor->isActiveWindow() || (QApplication::focusWidget() != editor)) {
             QWidget *w = QApplication::focusWidget();
-            while (w) { // dont worry about focus changes internally in the editor
+            while (w) { // don't worry about focus changes internally in the editor
                 if (w == editor)
                     return false;
                 w = w->parentWidget();
@@ -1056,8 +1077,14 @@ bool QItemDelegate::editorEvent(QEvent *event,
     if (!(flags & Qt::ItemIsUserCheckable) || !((flags & Qt::ItemIsEnabled)))
         return false;
 
+    // make sure that we have a check state
+    QVariant value = index.data(Qt::CheckStateRole);
+    if (!value.isValid())
+        return false;
+
     // make sure that we have the right event type
-    if (event->type() == QEvent::MouseButtonRelease) {
+    if ((event->type() == QEvent::MouseButtonRelease)
+        || (event->type() == QEvent::MouseButtonDblClick)) {
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
         QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignLeft | Qt::AlignVCenter,
                                               check(option, option.rect, Qt::Checked).size(),
@@ -1065,6 +1092,11 @@ bool QItemDelegate::editorEvent(QEvent *event,
                                                     option.rect.width(), option.rect.height()));
         if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
             return false;
+
+        // eat the double click events inside the check rect
+        if (event->type() == QEvent::MouseButtonDblClick)
+            return true;
+
     } else if (event->type() == QEvent::KeyPress) {
         if (static_cast<QKeyEvent*>(event)->key() != Qt::Key_Space
          && static_cast<QKeyEvent*>(event)->key() != Qt::Key_Select)
@@ -1072,11 +1104,6 @@ bool QItemDelegate::editorEvent(QEvent *event,
     } else {
         return false;
     }
-
-    // make sure that we have a check state
-    QVariant value = index.data(Qt::CheckStateRole);
-    if (!value.isValid())
-        return false;
 
     Qt::CheckState state = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked
                             ? Qt::Unchecked : Qt::Checked);

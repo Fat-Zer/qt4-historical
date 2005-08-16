@@ -42,6 +42,10 @@
 #include <private/qabstractitemmodel_p.h>
 #include <qdebug.h>
 
+#ifdef Q_WS_X11
+#include <private/qt_x11_p.h>
+#endif
+
 QComboBoxPrivate::QComboBoxPrivate()
     : QWidgetPrivate(),
       model(QAbstractItemModelPrivate::staticEmptyModel()),
@@ -122,6 +126,22 @@ void QComboBoxPrivate::_q_modelReset()
 void QComboBoxPrivate::_q_modelDestroyed()
 {
     model = QAbstractItemModelPrivate::staticEmptyModel();
+}
+
+
+//Windows and KDE allows menus to cover the taskbar, while GNOME and Mac don't
+QRect QComboBoxPrivate::popupGeometry(int screen) const
+{
+#ifdef Q_WS_WIN
+    return QApplication::desktop()->screenGeometry(screen);
+#elif defined Q_WS_X11
+    if (X11->desktopEnvironment == DE_KDE)
+        return QApplication::desktop()->screenGeometry(screen);
+    else
+        return QApplication::desktop()->availableGeometry(screen);
+#else
+        return QApplication::desktop()->availableGeometry(screen);
+#endif
 }
 
 bool QComboBoxPrivate::updateHoverControl(const QPoint &pos)
@@ -1912,7 +1932,7 @@ void QComboBox::showPopup()
     QStyleOptionComboBox opt = d->getStyleOption();
     QRect listRect(style()->subControlRect(QStyle::CC_ComboBox, &opt,
                                            QStyle::SC_ComboBoxListBoxPopup, this));
-    QRect screen = QApplication::desktop()->screenGeometry(this);
+    QRect screen = d->popupGeometry(QApplication::desktop()->screenNumber(this));
     QPoint below = mapToGlobal(listRect.bottomLeft());
     int belowHeight = screen.bottom() - below.y();
     QPoint above = mapToGlobal(listRect.topLeft());
@@ -1996,6 +2016,7 @@ void QComboBox::showPopup()
 
     container->raise();
     container->show();
+    container->updateScrollers();
     view()->setFocus();
 }
 

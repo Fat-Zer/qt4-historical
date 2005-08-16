@@ -81,9 +81,9 @@
     QHeaderView widget above or beside the scrolling area.
 
     For convenience, QAbstractScrollArea makes all viewport events available in
-    the virtual viewportEvent() handler.  QWidget's specialised
+    the virtual viewportEvent() handler.  QWidget's specialized
     handlers are remapped to viewport events in the cases where this
-    makes sense. The remapped specialised handlers are: paintEvent(),
+    makes sense. The remapped specialized handlers are: paintEvent(),
     mousePressEvent(), mouseReleaseEvent(), mouseDoubleClickEvent(),
     mouseMoveEvent(), wheelEvent(), dragEnterEvent(), dragMoveEvent(),
     dragLeaveEvent(), dropEvent(), contextMenuEvent().  and
@@ -248,7 +248,7 @@ void QAbstractScrollAreaPrivate::layoutChildren()
     const bool hasCornerWidget = (cornerWidget != 0);
 
 // If the scroll bars are at the very right and bottom of the window we
-// move their positions to be alligned with the size grip.
+// move their positions to be aligned with the size grip.
 #ifdef Q_WS_MAC
     QWidget * const window = q->window();
     // Check if a native sizegrip is present.
@@ -745,10 +745,16 @@ void QAbstractScrollArea::setViewportMargins(int left, int top, int right, int b
 }
 
 /*!
+    \fn bool QAbstractScrollArea::event(QEvent *event)
+
     \reimp
 
     This is the main event handler for the QAbstractScrollArea widget (\e not
-    the scrolling area viewport()). The event is passed in \a e.
+    the scrolling area viewport()). The specified \a event is a general event
+    object that may need to be cast to the appropriate class depending on its
+    type.
+
+    \sa QEvent::type()
 */
 bool QAbstractScrollArea::event(QEvent *e)
 {
@@ -806,8 +812,16 @@ bool QAbstractScrollArea::event(QEvent *e)
     return true;
 }
 
-/*!  The main event handler for the scrolling area (the viewport()
-  widget). It handles event \a e.
+/*!
+  \fn bool QAbstractScrollArea::viewportEvent(QEvent *event)
+
+  The main event handler for the scrolling area (the viewport() widget).
+  It handles the \a event specified, and can be called by subclasses to
+  provide reasonable default behavior.
+
+  Returns true to indicate to the event system that the event has been
+  handled, and needs no further processing; otherwise returns false to
+  indicate that the event should be propagated further.
 
   You can reimplement this function in a subclass, but we recommend
   using one of the specialized event handlers instead.
@@ -817,8 +831,7 @@ bool QAbstractScrollArea::event(QEvent *e)
   mouseMoveEvent(), wheelEvent(), dragEnterEvent(), dragMoveEvent(),
   dragLeaveEvent(), dropEvent(), contextMenuEvent(), and
   resizeEvent().
-
- */
+*/
 bool QAbstractScrollArea::viewportEvent(QEvent *e)
 {
     switch (e->type()) {
@@ -1055,7 +1068,7 @@ void QAbstractScrollArea::dropEvent(QDropEvent *)
     The default implementation simply calls update() on the entire
     viewport(), subclasses can reimplement this handler for
     optimization purposes, or - like QScrollArea - to move a contents
-    widget. The paramters \a dx and \a dy are there for convenience,
+    widget. The parameters \a dx and \a dy are there for convenience,
     so that the class knows how much should be scrolled (useful
     e.g. when doing pixel-shifts). You may just as well ignore these
     values and scroll directly to the position the scroll bars

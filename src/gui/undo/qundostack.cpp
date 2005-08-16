@@ -141,7 +141,7 @@ QUndoCommand::~QUndoCommand()
     A command ID is used in command compression. It must be an integer unique to
     this command's class, or -1 if the command doesn't support compression.
 
-    If the command supports compression this function must be overriden in the
+    If the command supports compression this function must be overridden in the
     derived class to return the correct ID. The base implementation returns -1.
 
     QUndoStack will only try to merge two commands if they have the same ID, and
@@ -190,7 +190,9 @@ bool QUndoCommand::mergeWith(const QUndoCommand *command)
 
 /*!
     Applies a change to the document. This function must be implemented in
-    the derived class.
+    the derived class. Calling QUndoStack::push(),
+    QUndoStack::undo() or QUndoStack::redo() from this funciton leads to
+    undefined beahavior.
 
     The default implementation calls redo() on all child commands.
 
@@ -206,7 +208,9 @@ void QUndoCommand::redo()
 /*!
     Reverts a change to the document. After undo() is called, the state of
     the document should be the same as before redo() was called. This function must
-    be implemented in the derived class.
+    be implemented in the derived class. Calling QUndoStack::push(),
+    QUndoStack::undo() or QUndoStack::redo() from this funciton leads to
+    undefined beahavior.
 
     The default implementation calls undo() on all child commands in reverse order.
 

@@ -373,14 +373,21 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
         id = CreateWindowEx(exsty, cname, ttitle, style, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, parentw, 0, appinst, 0);
 #else
         const bool wasMoved = q->testAttribute(Qt::WA_Moved);
-        const int x = wasMoved ? data.crect.left() : CW_USEDEFAULT;
-        const int y = wasMoved ? data.crect.top() : CW_USEDEFAULT;
+        int x = wasMoved ? data.crect.left() : CW_USEDEFAULT;
+        int y = wasMoved ? data.crect.top() : CW_USEDEFAULT;
         int w = CW_USEDEFAULT;
         int h = CW_USEDEFAULT;
 
-        if (q->testAttribute(Qt::WA_Resized)) {
-            RECT rect = {0,0,0,0};
-            if (AdjustWindowRectEx(&rect, style & ~WS_OVERLAPPED, FALSE, exsty)) {
+        // Adjust for framestrut when needed
+        RECT rect = {0,0,0,0};
+        if (AdjustWindowRectEx(&rect, style & ~WS_OVERLAPPED, FALSE, exsty)) {
+            QTLWExtra *td = maybeTopData();
+            if (wasMoved && (td && !td->posFromMove)) {
+                x = data.crect.x() + rect.left;
+                y = data.crect.y() + rect.top;
+            }
+
+            if (q->testAttribute(Qt::WA_Resized)) {
                 w = data.crect.width() + (rect.right - rect.left);
                 h = data.crect.height() + (rect.bottom - rect.top);
             }
@@ -557,29 +564,21 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     bool explicitlyHidden = q->testAttribute(Qt::WA_WState_Hidden) && q->testAttribute(Qt::WA_WState_ExplicitShowHide);
 
     data.window_flags = f;
+    data.fstrut_dirty = true;
     q->setAttribute(Qt::WA_WState_Created, false);
     q->setAttribute(Qt::WA_WState_Visible, false);
     q->setAttribute(Qt::WA_WState_Hidden, false);
     adjustFlags(data.window_flags, q);
-
-    //create parent chain if child was previously created
-    bool parentCreated = parent && parent->testAttribute(Qt::WA_WState_Created);
-    if (wasCreated && !q->isWindow() && !parentCreated)
-        parent->d_func()->createWinId();
-
-    //delayed creation: don't create the widget if it was not previously created, and it is not being reparented into a created parent
-    if (wasCreated || !q->isWindow() && parentCreated)
-        q->create();
-
+    // keep compatibility with previous versions, we need to preserve the created state
+    // (but we recreate the winId for the widget being reparented, again for compability)
+    if (wasCreated || (!q->isWindow() && parent->testAttribute(Qt::WA_WState_Created)))
+        createWinId();
     if (q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
         q->setAttribute(Qt::WA_WState_Hidden);
     q->setAttribute(Qt::WA_WState_ExplicitShowHide, explicitlyHidden);
 
     if (wasCreated) {
-        if (q->internalWinId() != 0)
-            reparentChildren();
-        else
-            uncreateRecursively(false);
+        reparentChildren();
     }
 
     if (extra && !extra->mask.isEmpty()) {
@@ -1328,16 +1327,14 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
         if (q->windowType() == Qt::Desktop) {
             data.crect.setRect(x, y, w, h);
         } else if (q->isWindow()) {
-            if (!q->isVisible())
-                updateFrameStrut();
-            QRect fr(q->frameGeometry());
+            QRect fs(frameStrut());
             if (extra) {
-                fr.setLeft(fr.left() + x - data.crect.left());
-                fr.setTop(fr.top() + y - data.crect.top());
-                fr.setRight(fr.right() + (x + w - 1) - data.crect.right());
-                fr.setBottom(fr.bottom() + (y + h - 1) - data.crect.bottom());
+                fs.setLeft(x - fs.left());
+                fs.setTop(y - fs.top());
+                fs.setRight((x + w - 1) + fs.right());
+                fs.setBottom((y + h - 1) + fs.bottom());
             }
-            MoveWindow(q->internalWinId(), fr.x(), fr.y(), fr.width(), fr.height(), true);
+            MoveWindow(q->internalWinId(), fs.x(), fs.y(), fs.width(), fs.height(), true);
             if (!q->isVisible())
                 InvalidateRect(q->internalWinId(), 0, FALSE);
             RECT rect;

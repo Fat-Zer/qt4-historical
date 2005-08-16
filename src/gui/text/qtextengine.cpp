@@ -208,8 +208,6 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
     int sor = 0;
     int eor = -1;
 
-    // ### should get rid of this!
-    bool first = true;
 
     int length = engine->layoutData->string.length();
 
@@ -309,7 +307,7 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
                 case QChar::DirAL:
                 case QChar::DirEN:
                 case QChar::DirAN:
-                    if (!first) {
+                    if (eor >= 0) {
                         appendItems(engine, sor, eor, control, dir);
                         dir = eor < length ? QUnicodeTables::direction(unicode[eor]) : control.basicDirection();
                         status.eor = dir;
@@ -364,7 +362,7 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
                 case QChar::DirL:
                 case QChar::DirEN:
                 case QChar::DirAN:
-                    if (!first)
+                    if (eor >= 0)
                         appendItems(engine, sor, eor, control, dir);
                     // fall through
                 case QChar::DirR:
@@ -431,8 +429,10 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
                     case QChar::DirR:
                     case QChar::DirAL:
                     case QChar::DirAN:
-                        if (!first)
+                        if (eor >= 0)
                             appendItems(engine, sor, eor, control, dir);
+                        else
+                            eor = current;
                         status.eor = QChar::DirEN;
                         dir = QChar::DirAN; break;
                     case QChar::DirES:
@@ -486,8 +486,11 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
                 case QChar::DirR:
                 case QChar::DirAL:
                 case QChar::DirEN:
-                    if (!first)
+                    if (eor >= 0){
                         appendItems(engine, sor, eor, control, dir);
+                    } else {
+                        eor = current;
+                    }
                     dir = QChar::DirON; status.eor = QChar::DirAN;
                     break;
                 case QChar::DirCS:
@@ -602,7 +605,6 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
             status.last = dirCurrent;
         }
 
-        first = false;
         ++current;
     }
 

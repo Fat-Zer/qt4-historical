@@ -1,4 +1,4 @@
-                          INSTALLING Qt/Windows Version 4.2.1
+                          INSTALLING Qt/Windows Version 4.2.2
 
 Note: If you have obtained a binary package for this platform, consult the
 installation instructions provided instead of the ones in this document.
@@ -13,18 +13,18 @@ installation instructions provided instead of the ones in this document.
     For the open source version you do not need a license file.
 
 2.  Uncompress the files into the directory you want Qt installed,
-    e.g. C:\Qt\4.2.1. 
+    e.g. C:\Qt\4.2.2. 
 
     NOTE: The install path must not contain any spaces.
 
 3. Environment variables
 
-   In order to use Qt, some environment variables needs to be
-   extended.
+   In order to build and use Qt, the PATH environment variable needs
+   to be extended:
 
         PATH               - to locate qmake, moc and other Qt tools
 
-   This is done by adding c:\Qt\4.2.1\bin to the PATH variable.
+   This is done by adding c:\Qt\4.2.2\bin to the PATH variable.
 
    For newer versions of Windows, PATH can be extended through
    "Control Panel->System->Advanced->Environment variables" and for
@@ -35,7 +35,7 @@ installation instructions provided instead of the ones in this document.
     To configure the Qt library for your machine type:
 
         C:
-        cd \Qt\4.2.1
+        cd \Qt\4.2.2
         configure
 
     Type "configure -help" to get a list of all available options.

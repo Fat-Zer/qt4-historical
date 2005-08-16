@@ -84,10 +84,10 @@
 /*!
     \fn qreal QTextLength::rawValue() const
 
-    Returns the constraint value that is specific for the type of the lenght.
-    If the length is QTextLength::PercentageLengt then the raw value is in
+    Returns the constraint value that is specific for the type of the length.
+    If the length is QTextLength::PercentageLength then the raw value is in
     percent, in the range of 0 to 100. If the length is QTextLength::FixedLength
-    then that fixed amount is returned. For variable lengths zero is returned.
+    then that fixed amount is returned. For variable lengths, zero is returned.
 */
 
 /*!
@@ -122,13 +122,15 @@ QTextLength::operator QVariant() const
 
 QDataStream &operator<<(QDataStream &stream, const QTextLength &length)
 {
-    return stream << qint32(length.lengthType) << length.fixedValueOrPercentage;
+    return stream << qint32(length.lengthType) << double(length.fixedValueOrPercentage);
 }
 
 QDataStream &operator>>(QDataStream &stream, QTextLength &length)
 {
     qint32 type;
-    stream >> type >> length.fixedValueOrPercentage;
+    double fixedValueOrPercentage;
+    stream >> type >> fixedValueOrPercentage;
+    length.fixedValueOrPercentage = fixedValueOrPercentage;
     length.lengthType = QTextLength::Type(type);
     return stream;
 }

@@ -182,6 +182,8 @@ public:
     QRect cursorRect() const;
     bool fixup();
 
+    QRect adjustedContentsRect() const;
+
 #ifndef QT_NO_DRAGANDDROP
     // drag and drop
     QPoint dndPos;

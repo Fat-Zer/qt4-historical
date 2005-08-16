@@ -1,10 +1,10 @@
 /****************************************************************************
-**
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
-**
-** This file is part of the qmake application of the Qt Toolkit.
-**
-** This file may be used under the terms of the GNU General Public
+ **
+ ** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+ **
+ ** This file is part of the qmake application of the Qt Toolkit.
+ **
+ ** This file may be used under the terms of the GNU General Public
 ** License version 2.0 as published by the Free Software Foundation
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
@@ -15,11 +15,11 @@
 ** review the following information:
 ** http://www.trolltech.com/products/qt/licensing.html or contact the
 ** sales department at sales@trolltech.com.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
 
 #include "unixmake.h"
 #include "option.h"
@@ -116,7 +116,7 @@ UnixMakefileGenerator::init()
     project->values("QMAKE_ORIG_DESTDIR") = project->values("DESTDIR");
     project->values("QMAKE_LIBS") += project->values("LIBS");
     if((!project->isEmpty("QMAKE_LIB_FLAG") && !project->isActiveConfig("staticlib")) ||
-         (project->isActiveConfig("qt") &&  project->isActiveConfig("plugin"))) {
+       (project->isActiveConfig("qt") &&  project->isActiveConfig("plugin"))) {
         if(configs.indexOf("dll") == -1) configs.append("dll");
     } else if(!project->isEmpty("QMAKE_APP_FLAG") || project->isActiveConfig("dll")) {
         configs.removeAll("staticlib");
@@ -436,7 +436,7 @@ UnixMakefileGenerator::findLibraries()
                         QString lib_stub;
                         for(QList<QMakeLocalFileName>::Iterator dep_it = libdirs.begin(); dep_it != libdirs.end(); ++dep_it) {
                             if(exists((*dep_it).local() + Option::dir_sep + "lib" + stub +
-                                             "." + (*extit))) {
+                                      "." + (*extit))) {
                                 lib_stub = stub;
                                 break;
                             }
@@ -470,11 +470,11 @@ UnixMakefileGenerator::findLibraries()
 }
 
 QString linkLib(const QString &file, const QString &libName) {
-  QString ret;
-  QRegExp reg("^.*lib(" + QRegExp::escape(libName) + "[^./=]*).*$");
-  if(reg.exactMatch(file))
-    ret = "-l" + reg.cap(1);
-  return ret;
+    QString ret;
+    QRegExp reg("^.*lib(" + QRegExp::escape(libName) + "[^./=]*).*$");
+    if(reg.exactMatch(file))
+        ret = "-l" + reg.cap(1);
+    return ret;
 }
 
 void
@@ -485,57 +485,58 @@ UnixMakefileGenerator::processPrlFiles()
     frameworkdirs.append(QMakeLocalFileName("/Library/Frameworks"));
     const QString lflags[] = { "QMAKE_LIBDIR_FLAGS", "QMAKE_FRAMEWORKDIR_FLAGS", "QMAKE_LFLAGS", "QMAKE_LIBS", QString() };
     for(int i = 0; !lflags[i].isNull(); i++) {
-            QStringList &l = project->values(lflags[i]);
+        QStringList &l = project->values(lflags[i]);
         for(int lit = 0; lit < l.size(); ++lit) {
             QString opt = l.at(lit).trimmed();
-                if(opt.startsWith("-")) {
-                    if(opt.startsWith("-L")) {
-                        libdirs.append(QMakeLocalFileName(opt.right(opt.length()-2)));
+            if(opt.startsWith("-")) {
+                if(opt.startsWith("-L")) {
+                    libdirs.append(QMakeLocalFileName(opt.right(opt.length()-2)));
                 } else if(opt.startsWith("-l")) {
-                        QString lib = opt.right(opt.length() - 2);
-                        for(QList<QMakeLocalFileName>::Iterator dep_it = libdirs.begin(); dep_it != libdirs.end(); ++dep_it) {
-                            if(!project->isActiveConfig("compile_libtool")) { //give them the .libs..
-                                QString la = (*dep_it).local() + Option::dir_sep + "lib" + lib + Option::libtool_ext;
-                                if(exists(la) && QFile::exists((*dep_it).local() + Option::dir_sep + ".libs")) {
-                                    QString dot_libs = (*dep_it).real() + Option::dir_sep + ".libs";
+                    QString lib = opt.right(opt.length() - 2);
+                    for(int dep_idx = 0; dep_idx < libdirs.count(); ++dep_idx) {
+                        const QMakeLocalFileName &lfn = libdirs[dep_idx];
+                        if(!project->isActiveConfig("compile_libtool")) { //give them the .libs..
+                            QString la = lfn.local() + Option::dir_sep + "lib" + lib + Option::libtool_ext;
+                            if(exists(la) && QFile::exists(lfn.local() + Option::dir_sep + ".libs")) {
+                                QString dot_libs = lfn.real() + Option::dir_sep + ".libs";
                                 l.append("-L" + dot_libs);
-                                    libdirs.append(QMakeLocalFileName(dot_libs));
-                                }
-                            }
-
-                            QString prl = (*dep_it).local() + Option::dir_sep + "lib" + lib;
-                            if(!project->isEmpty("QMAKE_" + lib.toUpper() + "_SUFFIX"))
-                                prl += project->first("QMAKE_" + lib.toUpper() + "_SUFFIX");
-                            if(processPrlFile(prl)) {
-                                if(prl.startsWith((*dep_it).local()))
-                                    prl.replace(0, (*dep_it).local().length(), (*dep_it).real());
-                                opt = linkLib(prl, lib);
-                                break;
+                                libdirs.append(QMakeLocalFileName(dot_libs));
                             }
                         }
-                    } else if(Option::target_mode == Option::TARG_MACX_MODE && opt.startsWith("-F")) {
-                        frameworkdirs.append(QMakeLocalFileName(opt.right(opt.length()-2)));
-                    } else if(Option::target_mode == Option::TARG_MACX_MODE && opt.startsWith("-framework")) {
-                        if(opt.length() > 11)
-                            opt = opt.mid(11);
-                        else
-                            opt = l.at(++lit);
-                        opt = opt.trimmed();
-                        const QList<QMakeLocalFileName> dirs = frameworkdirs + libdirs;
-                        for(QList<QMakeLocalFileName>::ConstIterator dep_it = dirs.begin(); dep_it != dirs.end(); ++dep_it) {
-                            QString prl = (*dep_it).local() + "/" + opt + ".framework/" + opt + Option::prl_ext;
-                            if(processPrlFile(prl))
-                                break;
+
+                        QString prl = lfn.local() + Option::dir_sep + "lib" + lib;
+                        if(!project->isEmpty("QMAKE_" + lib.toUpper() + "_SUFFIX"))
+                            prl += project->first("QMAKE_" + lib.toUpper() + "_SUFFIX");
+                        if(processPrlFile(prl)) {
+                            if(prl.startsWith(lfn.local()))
+                                prl.replace(0, lfn.local().length(), lfn.real());
+                            opt = linkLib(prl, lib);
+                            break;
                         }
                     }
-                } else if(!opt.isNull()) {
-                    QString lib = opt;
+                } else if(Option::target_mode == Option::TARG_MACX_MODE && opt.startsWith("-F")) {
+                    frameworkdirs.append(QMakeLocalFileName(opt.right(opt.length()-2)));
+                } else if(Option::target_mode == Option::TARG_MACX_MODE && opt.startsWith("-framework")) {
+                    if(opt.length() > 11)
+                        opt = opt.mid(11);
+                    else
+                        opt = l.at(++lit);
+                    opt = opt.trimmed();
+                    const QList<QMakeLocalFileName> dirs = frameworkdirs + libdirs;
+                    for(QList<QMakeLocalFileName>::ConstIterator dep_it = dirs.begin(); dep_it != dirs.end(); ++dep_it) {
+                        QString prl = (*dep_it).local() + "/" + opt + ".framework/" + opt + Option::prl_ext;
+                        if(processPrlFile(prl))
+                            break;
+                    }
+                }
+            } else if(!opt.isNull()) {
+                QString lib = opt;
                 processPrlFile(lib);
 #if 0
-                    if(ret)
-                      opt = linkLib(lib, "");
+                if(ret)
+                    opt = linkLib(lib, "");
 #endif
-                    if(!opt.isEmpty())
+                if(!opt.isEmpty())
                     l.replaceInStrings(lib, opt);
             }
 
@@ -544,8 +545,8 @@ UnixMakefileGenerator::processPrlFiles()
                 for(int prl = 0; prl < prl_libs.size(); ++prl)
                     l.insert(lit+prl+1, prl_libs.at(prl));
                 prl_libs.clear();
-                }
             }
+        }
 
         //merge them into a logical order
         if(!project->isActiveConfig("no_smart_library_merge") && !project->isActiveConfig("no_lflags_merge")) {

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/doc/src/examples/containerextension.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/containerextension.qdoc -->
 <head>
   <title>Qt 4.2: Container Extension Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -44,6 +44,7 @@
 </ul>
 <p>The project file for custom widget plugins needs some additional information to ensure that they will work within <i>Qt Designer</i>. For example, custom widget plugins rely on components supplied with <i>Qt Designer</i>, and this must be specified in the project file that we use. We will first take a look at the plugin's project file.</p>
 <p>Then we will continue by reviewing the <tt>MultiPageWidgetPlugin</tt> class, and take a look at the <tt>MultiPageWidgetExtensionFactory</tt> and <tt>MultiPageWidgetContainerExtension</tt> classes. Finally, we will take a quick look at the <tt>MultiPageWidget</tt> class definition.</p>
+<p><b>Note:</b> Currently, this particular example can only be used for experimenting and prototyping within QDesigner's workspace. The reason is that uic does not recognize the custom container functionality, i.e., it will not generate the code required to add pages to the container. This issue will be resolved in the next minor release.</p>
 <a name="the-project-file-containerextension-pro"></a>
 <h2>The Project File: containerextension.pro</h2>
 <p>The project file must contain some additional information to ensure that the plugin will work as expected:</p>
@@ -394,6 +395,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

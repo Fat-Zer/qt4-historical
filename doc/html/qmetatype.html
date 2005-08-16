@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/corelib/kernel/qmetatype.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/kernel/qmetatype.cpp -->
 <head>
   <title>Qt 4.2: QMetaType Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -141,11 +141,13 @@
 <p>Returns true if the custom datatype with ID <i>type</i> is registered; otherwise returns false.</p>
 <p>See also <a href="qmetatype.html#type">type</a>(), <a href="qmetatype.html#typeName">typeName</a>(), and <a href="qmetatype.html#Type-enum">Type</a>.</p>
 <h3 class="fn"><a name="load"></a>bool QMetaType::load ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, int <i>type</i>, void * <i>data</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Reads the object of the specified <i>type</i> from the given <i>stream</i> into <i>data</i>. The type must have been registered with <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() and <a href="qmetatype.html#qRegisterMetaTypeStreamOperators">qRegisterMetaTypeStreamOperators</a>() beforehand.</p>
+<p>Reads the object of the specified <i>type</i> from the given <i>stream</i> into <i>data</i>. Returns true if the object is loaded successfully; otherwise returns false.</p>
+<p>The type must have been registered with <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() and <a href="qmetatype.html#qRegisterMetaTypeStreamOperators">qRegisterMetaTypeStreamOperators</a>() beforehand.</p>
 <p>Normally, you should not need to call this function directly. Instead, use <a href="qvariant.html">QVariant</a>'s <tt>operator&gt;&gt;()</tt>, which relies on load() to stream custom types.</p>
 <p>See also <a href="qmetatype.html#save">save</a>() and <a href="qmetatype.html#qRegisterMetaTypeStreamOperators">qRegisterMetaTypeStreamOperators</a>().</p>
 <h3 class="fn"><a name="save"></a>bool QMetaType::save ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, int <i>type</i>, const void * <i>data</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Writes the object pointed to by <i>data</i> with the ID <i>type</i> to the given <i>stream</i>. The type must have been registered with <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() and <a href="qmetatype.html#qRegisterMetaTypeStreamOperators">qRegisterMetaTypeStreamOperators</a>() beforehand.</p>
+<p>Writes the object pointed to by <i>data</i> with the ID <i>type</i> to the given <i>stream</i>. Returns true if the object is saved successfully; otherwise returns false.</p>
+<p>The type must have been registered with <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() and <a href="qmetatype.html#qRegisterMetaTypeStreamOperators">qRegisterMetaTypeStreamOperators</a>() beforehand.</p>
 <p>Normally, you should not need to call this function directly. Instead, use <a href="qvariant.html">QVariant</a>'s <tt>operator&lt;&lt;()</tt>, which relies on save() to stream custom types.</p>
 <p>See also <a href="qmetatype.html#load">load</a>() and <a href="qmetatype.html#qRegisterMetaTypeStreamOperators">qRegisterMetaTypeStreamOperators</a>().</p>
 <h3 class="fn"><a name="type"></a>int QMetaType::type ( const char * <i>typeName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -184,7 +186,7 @@
 <h3 class="fn"><a name="qRegisterMetaTypeStreamOperators"></a>void qRegisterMetaTypeStreamOperators ( const char * <i>typeName</i> )</h3>
 <p>Registers the stream operators for the type <tt>T</tt> called <i>typeName</i>.</p>
 <p>Afterward, the type can be streamed using <a href="qmetatype.html#load">QMetaType::load</a>() and <a href="qmetatype.html#save">QMetaType::save</a>(). These functions are used when streaming a <a href="qvariant.html">QVariant</a>.</p>
-<pre> qRegisterMetaTypeStreamOperator&lt;MyClass&gt;(&quot;MyClass&quot;);</pre>
+<pre> qRegisterMetaTypeStreamOperators&lt;MyClass&gt;(&quot;MyClass&quot;);</pre>
 <p>The stream operators should have the following signatures:</p>
 <pre> QDataStream &amp;operator&lt;&lt;(QDataStream &amp;out, const MyClass &amp;myObj);
  QDataStream &amp;operator&gt;&gt;(QDataStream &amp;in, MyClass &amp;myObj);</pre>
@@ -225,6 +227,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

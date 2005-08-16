@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/widgets/qabstractbutton.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/widgets/qabstractbutton.cpp -->
 <head>
   <title>Qt 4.2: QAbstractButton Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -125,9 +125,9 @@
 <p>This class implements an <i>abstract</i> button. Subclasses of this class handle user actions, and specify how the button is drawn.</p>
 <p>QAbstractButton provides support for both push buttons and checkable (toggle) buttons. Checkable buttons are implemented in the <a href="qradiobutton.html">QRadioButton</a> and <a href="qcheckbox.html">QCheckBox</a> classes. Push buttons are implemented in the <a href="qpushbutton.html">QPushButton</a> and <a href="qtoolbutton.html">QToolButton</a> classes; these also provide toggle behavior if required.</p>
 <p>Any button can display a label containing text and an icon. <a href="qabstractbutton.html#text-prop">setText</a>() sets the text; <a href="qabstractbutton.html#icon-prop">setIcon</a>() sets the icon. If a button is disabled, its label is changed to give the button a &quot;disabled&quot; appearance.</p>
-<p>If the button is a text button with a string containing an ampersand (&amp;), QAbstractButton creates an automatic shortcut key, called a mnemonic, that may change based on the button translation. The following code creates a push button labelled &quot;Ro<u>c</u>k &amp; Roll&quot; (where the c is underlined):</p>
+<p>If the button is a text button with a string containing an ampersand ('&amp;'), QAbstractButton automatically creates a shortcut key. For example:</p>
 <pre> QPushButton *button = new QPushButton(tr(&quot;Ro&amp;ck &amp;&amp; Roll&quot;), this);</pre>
-<p>In this example, the shortcut <b>Alt+C</b> is assigned to the button, so that when the user presses <b>Alt+C</b> the button will call <a href="qabstractbutton.html#animateClick">animateClick</a>().</p>
+<p>The <b>Alt+C</b> shortcut is assigned to the button, i.e., when the user presses <b>Alt+C</b> the button will call <a href="qabstractbutton.html#animateClick">animateClick</a>(). See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>You can also set a custom shortcut key using the <a href="qabstractbutton.html#shortcut-prop">setShortcut</a>() function. This is useful mostly for buttons that do not have any text, because they have no automatic shortcut.</p>
 <pre> button-&gt;setIcon(QIcon(&quot;:/images/print.png&quot;));
  button-&gt;setShortcut(tr(&quot;Alt+F7&quot;));</pre>
@@ -142,12 +142,12 @@
 <li><a href="qabstractbutton.html#checkable-prop">setCheckable</a>() sets whether the button is a toggle button or not.</li>
 </ul>
 <p>The difference between <a href="qabstractbutton.html#down-prop">isDown</a>() and <a href="qabstractbutton.html#checked-prop">isChecked</a>() is as follows. When the user clicks a toggle button to check it, the button is first <i>pressed</i> then released into the <i>checked</i> state. When the user clicks it again (to uncheck it), the button moves first to the <i>pressed</i> state, then to the <i>unchecked</i> state (<a href="qabstractbutton.html#checked-prop">isChecked</a>() and <a href="qabstractbutton.html#down-prop">isDown</a>() are both false).</p>
-<p>QAbstractButton provides five signals:</p>
+<p>QAbstractButton provides four signals:</p>
 <ol type="1">
 <li><a href="qabstractbutton.html#pressed">pressed</a>() is emitted when the left mouse button is pressed while the mouse cursor is inside the button.</li>
 <li><a href="qabstractbutton.html#released">released</a>() is emitted when the left mouse button is released.</li>
 <li><a href="qabstractbutton.html#clicked">clicked</a>() is emitted when the button is first pressed and then released, when the shortcut key is typed, or when <a href="qabstractbutton.html#click">click</a>() or <a href="qabstractbutton.html#animateClick">animateClick</a>() is called.</li>
-<li>toggled(bool) is emitted when the state of a toggle button changes.</li>
+<li><a href="qabstractbutton.html#toggled">toggled</a>() is emitted when the state of a toggle button changes.</li>
 </ol>
 <p>To subclass QAbstractButton, you must reimplement at least <a href="qwidget.html#paintEvent">paintEvent</a>() to draw the button's outline and its text or pixmap. It is generally advisable to reimplement <a href="qwidget.html#sizeHint-prop">sizeHint</a>() as well, and sometimes <a href="qabstractbutton.html#hitButton">hitButton</a>() (to determine whether a button press is within the button). For buttons with more than two states (like tri-state buttons), you will also have to reimplement <a href="qabstractbutton.html#checkStateSet">checkStateSet</a>() and <a href="qabstractbutton.html#nextCheckState">nextCheckState</a>().</p>
 <p>See also <a href="qbuttongroup.html">QButtonGroup</a>.</p>
@@ -243,7 +243,8 @@
 </ul>
 <h3 class="fn"><a name="text-prop"></a>text : <a href="qstring.html">QString</a></h3>
 <p>This property holds the text shown on the button.</p>
-<p>This property will return a an empty string if the button has no text. If the text contains an ampersand character (&amp;), a mnemonic is automatically created for it. The character that follows the '&amp;' will be used as the shortcut key. Any previous mnemonic will be overwritten, or cleared if no mnemonic is defined by the text.</p>
+<p>If the button has no text, the text() function will return a an empty string.</p>
+<p>If the text contains an ampersand character ('&amp;'), a shortcut is automatically created for it. The character that follows the '&amp;' will be used as the shortcut key. Any previous shortcut will be overwritten, or cleared if no shortcut is defined by the text. See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>There is no default text.</p>
 <p>Access functions:</p>
 <ul>
@@ -344,6 +345,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

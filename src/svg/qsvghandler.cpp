@@ -78,6 +78,15 @@ static QString xmlSimplify(const QString &str)
     return temp;
 }
 
+// http://www.w3.org/TR/SVGMobile12/types.html (<list of xxx>: wsp)
+static inline bool isSvgSpace(QChar c)
+{
+    return (c.unicode() == 0x20 ||
+            c.unicode() == 0x9  ||
+            c.unicode() == 0xD  ||
+            c.unicode() == 0xA);
+}
+
 
 class QSvgStyleSelector : public QCss::StyleSelector
 {
@@ -262,79 +271,146 @@ public:
         Q_UNUSED(node);
     }
 };
-static QList<qreal> parseNumbersList(QString::const_iterator &itr)
-{
-    QList<qreal> points;
-    QString temp;
-    while ((*itr).isSpace())
-        ++itr;
-    while ((*itr).isNumber() ||
-           (*itr) == QLatin1Char('-') || (*itr) == QLatin1Char('+') ||
-           (*itr) == QLatin1Char('.')) {
-        temp = QString();
 
-        if ((*itr) == QLatin1Char('-'))
-            temp += *itr++;
-        else if ((*itr) == QLatin1Char('+'))
-            temp += *itr++;
-        while ((*itr).isDigit())
-            temp += *itr++;
-        if ((*itr) == QLatin1Char('.'))
-            temp += *itr++;
-        while ((*itr).isDigit())
-            temp += *itr++;
-        if (( *itr) == QLatin1Char('e')) {
-            temp += *itr++;
-            if ((*itr) == QLatin1Char('-') ||
-                (*itr) == QLatin1Char('+'))
-                temp += *itr++;
+static qreal toDouble(const QChar *&str)
+{
+    const int maxLen = 255;//technically doubles can go til 308+ but whatever
+    char temp[maxLen+1];
+    int pos = 0;
+
+    if (*str == QLatin1Char('-')) {
+        temp[pos++] = '-';
+        ++str;
+    } else if (*str == QLatin1Char('+')) {
+        ++str;
         }
-        while ((*itr).isDigit())
-            temp += *itr++;
-        while ((*itr).isSpace())
-            ++itr;
-        if ((*itr) == QLatin1Char(','))
-            ++itr;
-        points.append(temp.toDouble());
+    while (*str >= QLatin1Char('0') && *str <= QLatin1Char('9') && pos < maxLen) {
+        temp[pos++] = str->toLatin1();
+        ++str;
+    }
+    if (*str == QLatin1Char('.') && pos < maxLen) {
+        temp[pos++] = '.';
+        ++str;
+    }
+    while (*str >= QLatin1Char('0') && *str <= QLatin1Char('9') && pos < maxLen) {
+        temp[pos++] = str->toLatin1();
+        ++str;
+    }
+    bool exponent = false;
+    if (*str == QLatin1Char('e') && pos < maxLen) {
+        exponent = true;
+        temp[pos++] = 'e';
+        ++str;
+        if ((*str == QLatin1Char('-') || *str == QLatin1Char('+')) && pos < maxLen) {
+            temp[pos++] = str->toLatin1();
+            ++str;
+        }
+        while (*str >= QLatin1Char('0') && *str <= QLatin1Char('9') && pos < maxLen) {
+            temp[pos++] = str->toLatin1();
+            ++str;
+        }
+    }
+    temp[pos] = '\0';
+
+    qreal val;
+    if (!exponent && pos < 10) {
+        int ival = 0;
+        const char *t = temp;
+        bool neg = false;
+        if(*t == '-') {
+            neg = true;
+            ++t;
+        }
+        while(*t && *t != '.') {
+            ival *= 10;
+            ival += (*t) - '0';
+            ++t;
+        }
+        if(*t == '.') {
+            ++t;
+            int div = 1;
+            while(*t) {
+                ival *= 10;
+                ival += (*t) - '0';
+                div *= 10;
+                ++t;
+            }
+            val = ((qreal)ival)/((qreal)div);
+        } else {
+            val = ival;
+        }
+        if (neg)
+            val = -val;
+    } else {
+#ifdef Q_WS_QWS
+        if(sizeof(qreal) == sizeof(float))
+            val = strtof(temp, 0);
+        else
+#endif
+            val = strtod(temp, 0);
+    }
+    return val;
+
+}
+static qreal toDouble(const QString &str)
+{
+    const QChar *c = str.constData();
+    return ::toDouble(c);
+}
+
+static QVector<qreal> parseNumbersList(const QChar *&str)
+{
+    QVector<qreal> points;
+    if (!str)
+        return points;
+
+    while (str->isSpace())
+        ++str;
+    while ((*str >= QLatin1Char('0') && *str <= QLatin1Char('9')) ||
+           *str == QLatin1Char('-') || *str == QLatin1Char('+') ||
+           *str == QLatin1Char('.')) {
+
+        points.append(::toDouble(str));
+
+        while (isSvgSpace(*str))
+            ++str;
+        if (*str == QLatin1Char(','))
+            ++str;
+
         //eat the rest of space
-        while ((*itr).isSpace())
-            ++itr;
+        while (isSvgSpace(*str))
+            ++str;
     }
 
     return points;
 }
 
-static QList<qreal> parsePercentageList(QString::const_iterator &itr)
+static QVector<qreal> parsePercentageList(const QChar *&str)
 {
-    QList<qreal> points;
-    QString temp;
-    while ((*itr).isSpace())
-        ++itr;
-    while ((*itr).isNumber() ||
-           (*itr) == QLatin1Char('-') || (*itr) == QLatin1Char('+')) {
-        temp = QString();
+    QVector<qreal> points;
+    if (!str)
+        return points;
 
-        if ((*itr) == QLatin1Char('-'))
-            temp += *itr++;
-        else if ((*itr) == QLatin1Char('+'))
-            temp += *itr++;
-        while ((*itr).isDigit())
-            temp += *itr++;
-        if ((*itr) == QLatin1Char('.'))
-            temp += *itr++;
-        while ((*itr).isDigit())
-            temp += *itr++;
-        if (( *itr) == QLatin1Char('%')) {
-            itr++;
-        }
-        while ((*itr).isSpace())
-            ++itr;
-        if ((*itr) == QLatin1Char(','))
-            ++itr;
-        points.append(temp.toDouble());
+    while (str->isSpace())
+        ++str;
+    while ((*str >= QLatin1Char('0') && *str <= QLatin1Char('9')) ||
+           *str == QLatin1Char('-') || *str == QLatin1Char('+') ||
+           *str == QLatin1Char('.')) {
+
+        points.append(::toDouble(str));
+
+        while (isSvgSpace(*str))
+            ++str;
+        if (*str == QLatin1Char('%'))
+            ++str;
+        while (isSvgSpace(*str))
+            ++str;
+        if (*str == QLatin1Char(','))
+            ++str;
+
         //eat the rest of space
-        while ((*itr).isSpace())
-            ++itr;
+        while (isSvgSpace(*str))
+            ++str;
     }
 
     return points;
@@ -389,15 +465,13 @@ static bool resolveColor(const QString &colorStr, QColor &color, QSvgHandler *ha
         color = colors[colorStrTr];
         return color.isValid();
     } else if (colorStr.startsWith(QLatin1String("rgb("))) {
-        QString::const_iterator itr = colorStr.constBegin();
-        ++itr; ++itr; ++itr; ++itr;
-        QString::const_iterator itr_back = itr;
-        QList<qreal> compo = parseNumbersList(itr);
+        const QChar *s = colorStr.constData() + 4;
+        QVector<qreal> compo = parseNumbersList(s);
         //1 means that it failed after reaching non-parsable
         //character which is going to be "%"
         if (compo.size() == 1) {
-            itr = itr_back;
-            compo = parsePercentageList(itr);
+            const QChar *s = colorStr.constData() + 4;
+            compo = parsePercentageList(s);
             compo[0] *= 2.55;
             compo[1] *= 2.55;
             compo[2] *= 2.55;
@@ -425,7 +499,7 @@ static bool constructColor(const QString &colorStr, const QString &opacity,
     if (!resolveColor(colorStr, color, handler))
         return false;
     if (!opacity.isEmpty()) {
-        qreal op = opacity.toDouble();
+        qreal op = ::toDouble(opacity);
         if (op <= 1)
             op *= 255;
         color.setAlpha(int(op));
@@ -437,42 +511,33 @@ static qreal parseLength(const QString &str, QSvgHandler::LengthType &type,
                          QSvgHandler *handler)
 {
     QString numStr = str.trimmed();
-    qreal len = 0;
 
     if (numStr.endsWith(QLatin1Char('%'))) {
         numStr.chop(1);
-        len = numStr.toDouble();
         type = QSvgHandler::PERCENT;
     } else if (numStr.endsWith(QLatin1String("px"))) {
         numStr.chop(2);
-        len = numStr.toDouble();
         type = QSvgHandler::PX;
     } else if (numStr.endsWith(QLatin1String("pc"))) {
         numStr.chop(2);
-        len = numStr.toDouble();
         type = QSvgHandler::PC;
     } else if (numStr.endsWith(QLatin1String("pt"))) {
         numStr.chop(2);
-        len = numStr.toDouble();
         type = QSvgHandler::PT;
     } else if (numStr.endsWith(QLatin1String("mm"))) {
         numStr.chop(2);
-        len = numStr.toDouble();
         type = QSvgHandler::MM;
     } else if (numStr.endsWith(QLatin1String("cm"))) {
         numStr.chop(2);
-        len = numStr.toDouble();
         type = QSvgHandler::CM;
     } else if (numStr.endsWith(QLatin1String("in"))) {
         numStr.chop(2);
-        len = numStr.toDouble();
         type = QSvgHandler::IN;
     } else {
-        len = numStr.toDouble();
         type = handler->defaultCoordinateSystem();
         //type = QSvgHandler::OTHER;
     }
-    //qDebug()<<"len is "<<len<<", from "<<numStr;
+    qreal len = ::toDouble(numStr);
     return len;
 }
 
@@ -483,8 +548,8 @@ static bool createSvgGlyph(QSvgFont *font, const QXmlAttributes &attributes)
     QString havStr = attributes.value(QLatin1String("horiz-adv-x"));
     QString pathStr = attributes.value(QLatin1String("d"));
 
-    QChar unicode = (uncStr.isEmpty())?0:uncStr.at(0);
-    qreal havx = (havStr.isEmpty())?-1:havStr.toDouble();
+    QChar unicode = (uncStr.isEmpty()) ? 0 : uncStr.at(0);
+    qreal havx = (havStr.isEmpty()) ? -1 : ::toDouble(havStr);
     QPainterPath path;
     parsePathDataFast(pathStr, path);
 
@@ -658,9 +723,8 @@ static void parseQPen(QPen &pen, QSvgNode *node,
                 else if (linejoin == QLatin1String("bevel"))
                     pen.setJoinStyle(Qt::BevelJoin);
             }
-            if (!miterlimit.isEmpty()) {
-                pen.setMiterLimit(miterlimit.toDouble());
-            }
+            if (!miterlimit.isEmpty())
+                pen.setMiterLimit(::toDouble(miterlimit));
 
             if (!linecap.isEmpty()) {
                 if (linecap == QLatin1String("butt"))
@@ -672,15 +736,15 @@ static void parseQPen(QPen &pen, QSvgNode *node,
             }
 
             if (!dashArray.isEmpty()) {
-                QString::const_iterator itr = dashArray.constBegin();
-                QList<qreal> dashes = parseNumbersList(itr);
-                QVector<qreal> vec(dashes.size());
-
-                int i = 0;
-                foreach(qreal dash, dashes) {
-                    vec[i++] = dash/penw;
+                const QChar *s = dashArray.constData();
+                QVector<qreal> dashes = parseNumbersList(s);
+                qreal *d = dashes.data();
+                if (penw != 0)
+                    for (int i = 0; i < dashes.size(); ++i) {
+                        *d /= penw;
+                        ++d;
                 }
-                pen.setDashPattern(vec);
+                pen.setDashPattern(dashes);
             }
 
         } else {
@@ -692,106 +756,124 @@ static void parseQPen(QPen &pen, QSvgNode *node,
 static QMatrix parseTransformationMatrix(const QString &value)
 {
     QMatrix matrix;
-    QString::const_iterator itr = value.constBegin();
+    const QChar *str = value.constData();
 
-    while (itr != value.constEnd()) {
-        if ((*itr) == QLatin1Char('m')) {  //matrix
-            QString temp(QLatin1String("m"));
-            int remains = 6;
-            while (remains--) {
-                temp += *itr++;
+    while (*str != QLatin1Char(0)) {
+        if (str->isSpace() || *str == QLatin1Char(',')) {
+            ++str;
+            continue;
+        }
+        enum State {
+            Matrix,
+            Translate,
+            Rotate,
+            Scale,
+            SkewX,
+            SkewY
+        };
+        State state = Matrix;
+        if (*str == QLatin1Char('m')) {  //matrix
+            const char *ident = "atrix";
+            for (int i = 0; i < 5; ++i)
+                if (*(++str) != QLatin1Char(ident[i]))
+                    goto error;
+            ++str;
+            state = Matrix;
+        } else if (*str == QLatin1Char('t')) { //translate
+            const char *ident = "ranslate";
+            for (int i = 0; i < 8; ++i)
+                if (*(++str) != QLatin1Char(ident[i]))
+                    goto error;
+            ++str;
+            state = Translate;
+        } else if (*str == QLatin1Char('r')) { //rotate
+            const char *ident = "otate";
+            for (int i = 0; i < 5; ++i)
+                if (*(++str) != QLatin1Char(ident[i]))
+                    goto error;
+            ++str;
+            state = Rotate;
+        } else if (*str == QLatin1Char('s')) { //scale, skewX, skewY
+            ++str;
+            if (*str == QLatin1Char('c')) {
+                const char *ident = "ale";
+                for (int i = 0; i < 3; ++i)
+                    if (*(++str) != QLatin1Char(ident[i]))
+                        goto error;
+                ++str;
+                state = Scale;
+            } else if (*str == QLatin1Char('k')) {
+                if (*(++str) != QLatin1Char('e'))
+                    goto error;
+                if (*(++str) != QLatin1Char('w'))
+                    goto error;
+                ++str;
+                if (*str == QLatin1Char('X'))
+                    state = SkewX;
+                else if (*str == QLatin1Char('Y'))
+                    state = SkewY;
+                ++str;
+            } else {
+                goto error;
             }
+        } else {
+            goto error;
+        }
 
-            while ((*itr).isSpace())
-                ++itr;
-            ++itr;// '('
-            QList<qreal> points = parseNumbersList(itr);
-            ++itr; // ')'
+        while (str->isSpace())
+            ++str;
+        if (*str != QLatin1Char('('))
+            goto error;
+        ++str;
+        QVector<qreal> points = parseNumbersList(str);
+        if (*str != QLatin1Char(')'))
+            goto error;
+        ++str;
 
-            Q_ASSERT(points.count() == 6);
+        if(state == Matrix) {
+            if(points.count() != 6)
+                goto error;
             matrix = matrix * QMatrix(points[0], points[1],
                                       points[2], points[3],
                                       points[4], points[5]);
-
-            //qDebug()<<"matrix is "<<temp;
-        } else if ((*itr) == QLatin1Char('t')) { //translate
-            QString trans;
-            int remains = 9;
-            while (remains--) {
-                trans += *itr++;
-            }
-            while ((*itr).isSpace())
-                ++itr;
-            ++itr;// '('
-            QList<qreal> points = parseNumbersList(itr);
-            ++itr; // ')'
-
-            Q_ASSERT(points.count() == 2 ||
-                     points.count() == 1);
-            if (points.count() == 2)
+        } else if (state == Translate) {
+            if (points.count() == 1)
+                matrix.translate(points[0], 0);
+            else if (points.count() == 2)
                 matrix.translate(points[0], points[1]);
             else
-                matrix.translate(points[0], 0);
-
-            //qDebug()<<"trans is "<<points;
-        } else if ((*itr) == QLatin1Char('r')) { //rotate
-            QString rot;
-            int remains = 6;
-            while (remains--) {
-                rot += *itr++;
-            }
-            while ((*itr).isSpace())
-                ++itr;
-
-            ++itr;// '('
-            QList<qreal> points = parseNumbersList(itr);
-            ++itr;// ')'
-            Q_ASSERT(points.count() == 3 ||
-                     points.count() == 1);
-            if (points.count() == 3) {
+                goto error;
+        } else if (state == Rotate) {
+            if(points.count() == 1) {
+                matrix.rotate(points[0]);
+            } else if (points.count() == 3) {
                 matrix.translate(points[1], points[2]);
                 matrix.rotate(points[0]);
                 matrix.translate(-points[1], -points[2]);
+            } else {
+                goto error;
             }
-            else
-                matrix.rotate(points[0]);
-
-            //qDebug()<<"rot is "<<points;
-        } else if ((*itr) == QLatin1Char('s')) { //scale | skewX | skewY
-            QString temp;
-            int remains = 5;
-            while (remains--) {
-                temp += *itr++;
-            }
-            while ((*itr).isSpace())
-                ++itr;
-
-            ++itr;// '('
-            QList<qreal> points = parseNumbersList(itr);
-            ++itr;// ')'
-            Q_ASSERT(points.count() == 2 ||
-                     points.count() == 1);
-            if (temp == QLatin1String("scale")) {
-                if (points.count() == 2) {
-                    matrix.scale(points[0], points[1]);
-                }
-                else
-                    matrix.scale(points[0], points[0]);
-            } else if (temp == QLatin1String("skewX")) {
+        } else if (state == Scale) {
+            if (points.count() < 1 || points.count() > 2)
+                goto error;
+            qreal sx = points[0];
+            qreal sy = sx;
+            if(points.count() == 2)
+                sy = points[1];
+            matrix.scale(sx, sy);
+        } else if (state == SkewX) {
+            if (points.count() != 1)
+                goto error;
                 const qreal deg2rad = qreal(0.017453292519943295769);
                 matrix.shear(tan(points[0]*deg2rad), 0);
-            } else if (temp == QLatin1String("skewY")) {
+        } else if (state == SkewY) {
+            if (points.count() != 1)
+                goto error;
                 const qreal deg2rad = qreal(0.017453292519943295769);
                 matrix.shear(0, tan(points[0]*deg2rad));
             }
-        } else if ((*itr) == QLatin1Char(' ')  ||
-                   (*itr) == QLatin1Char('\t') ||
-                   (*itr) == QLatin1Char('\n')) {
-            ++itr;
-        }
-        if (itr != value.constEnd())
-            ++itr;
     }
+  error:
     return matrix;
 }
 
@@ -891,20 +973,18 @@ static void parsePen(QSvgNode *node,
 
             qreal penw = pen.widthF();
             if (!dashArray.isEmpty()) {
-                QString::const_iterator itr = dashArray.constBegin();
-                QList<qreal> dashes = parseNumbersList(itr);
-                QVector<qreal> vec(dashes.size());
-
-                int i = 0;
-                foreach(qreal dash, dashes) {
-                    vec[i++] = dash/penw;
+                const QChar *s = dashArray.constData();
+                QVector<qreal> dashes = parseNumbersList(s);
+                qreal *d = dashes.data();
+                if(penw != 0)
+                    for (int i = 0; i < dashes.size(); ++i) {
+                        *d /= penw;
+                        ++d;
                 }
-
-                pen.setDashPattern(vec);
+                pen.setDashPattern(dashes);
             }
-            if (!miterlimit.isEmpty()) {
-                pen.setMiterLimit(miterlimit.toDouble());
-            }
+            if (!miterlimit.isEmpty())
+                pen.setMiterLimit(::toDouble(miterlimit));
 
             node->appendStyleProperty(new QSvgStrokeStyle(pen), myId);
         } else {
@@ -1267,28 +1347,31 @@ static void pathArc(QPainterPath &path,
     }
 }
 
-static bool parsePathDataFast(const QString &data, QPainterPath &path)
+static bool parsePathDataFast(const QString &dataStr, QPainterPath &path)
 {
-    QString::const_iterator itr = data.constBegin();
     qreal x0 = 0, y0 = 0;              // starting point
     qreal x = 0, y = 0;                // current point
     char lastMode = 0;
-    QChar pathElem;
     QPointF ctrlPt;
+    const QChar *str = dataStr.constData();
 
-    while (itr != data.constEnd()) {
-        while ((*itr).isSpace())
-            ++itr;
-        pathElem = *itr;
-        ++itr;
-        QList<qreal> arg = parseNumbersList(itr);
-        if (pathElem == QLatin1Char('z') || pathElem == QLatin1Char('Z'))
+    while (*str != QLatin1Char(0)) {
+        while (isSvgSpace(*str))
+            ++str;
+        QChar pathElem = *str;
+        ++str;
+        QVector<qreal> arg = parseNumbersList(str);
+        if (pathElem == 'z' || pathElem == 'Z')
             arg.append(0);//dummy
         while (!arg.isEmpty()) {
             qreal offsetX = x;        // correction offsets
             qreal offsetY = y;        // for relative commands
-            switch (pathElem.toAscii()) {
+            switch (pathElem.unicode()) {
             case 'm': {
+                if (arg.count() < 2) {
+                    arg.pop_front();
+                    break;
+                }
                 x = x0 = arg[0] + offsetX;
                 y = y0 = arg[1] + offsetY;
                 path.moveTo(x0, y0);
@@ -1296,6 +1379,10 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
             }
                 break;
             case 'M': {
+                if (arg.count() < 2) {
+                    arg.pop_front();
+                    break;
+                }
                 x = x0 = arg[0];
                 y = y0 = arg[1];
                 path.moveTo(x0, y0);
@@ -1311,6 +1398,10 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
             }
                 break;
             case 'l': {
+                if (arg.count() < 2) {
+                    arg.pop_front();
+                    break;
+                }
                 x = arg.front() + offsetX;
                 arg.pop_front();
                 y = arg.front() + offsetY;
@@ -1320,6 +1411,10 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
             }
                 break;
             case 'L': {
+                if (arg.count() < 2) {
+                    arg.pop_front();
+                    break;
+                }
                 x = arg.front(); arg.pop_front();
                 y = arg.front(); arg.pop_front();
                 path.lineTo(x, y);
@@ -1349,6 +1444,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
             }
                 break;
             case 'c': {
+                if (arg.count() < 6) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF c1(arg[0]+offsetX, arg[1]+offsetY);
                 QPointF c2(arg[2]+offsetX, arg[3]+offsetY);
                 QPointF e(arg[4]+offsetX, arg[5]+offsetY);
@@ -1362,6 +1462,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 'C': {
+                if (arg.count() < 6) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF c1(arg[0], arg[1]);
                 QPointF c2(arg[2], arg[3]);
                 QPointF e(arg[4], arg[5]);
@@ -1375,6 +1480,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 's': {
+                if (arg.count() < 4) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF c1;
                 if (lastMode == 'c' || lastMode == 'C' ||
                     lastMode == 's' || lastMode == 'S')
@@ -1392,6 +1502,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 'S': {
+                if (arg.count() < 4) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF c1;
                 if (lastMode == 'c' || lastMode == 'C' ||
                     lastMode == 's' || lastMode == 'S')
@@ -1409,6 +1524,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 'q': {
+                if (arg.count() < 4) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF c(arg[0]+offsetX, arg[1]+offsetY);
                 QPointF e(arg[2]+offsetX, arg[3]+offsetY);
                 path.quadTo(c, e);
@@ -1420,6 +1540,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 'Q': {
+                if (arg.count() < 4) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF c(arg[0], arg[1]);
                 QPointF e(arg[2], arg[3]);
                 path.quadTo(c, e);
@@ -1431,6 +1556,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 't': {
+                if (arg.count() < 2) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF e(arg[0]+offsetX, arg[1]+offsetY);
                 QPointF c;
                 if (lastMode == 'q' || lastMode == 'Q' ||
@@ -1446,6 +1576,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 'T': {
+                if (arg.count() < 2) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 QPointF e(arg[0], arg[1]);
                 QPointF c;
                 if (lastMode == 'q' || lastMode == 'Q' ||
@@ -1461,6 +1596,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
                 break;
             }
             case 'a': {
+                if (arg.count() < 7) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 qreal rx = arg[0];
                 qreal ry = arg[1];
                 qreal xAxisRotation = arg[2];
@@ -1483,6 +1623,11 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
             }
                 break;
             case 'A': {
+                if (arg.count() < 7) {
+                    while (arg.count())
+                        arg.pop_front();
+                    break;
+                }
                 qreal rx = arg[0];
                 qreal ry = arg[1];
                 qreal xAxisRotation = arg[2];
@@ -1503,11 +1648,9 @@ static bool parsePathDataFast(const QString &data, QPainterPath &path)
             }
                 break;
             default:
-                qDebug()<<"path data is "<<pathElem;
-                Q_ASSERT(!"invalid path data");
-                break;
+                return false;
             }
-            lastMode = pathElem.toAscii();
+            lastMode = pathElem.toLatin1();
         }
     }
     return true;
@@ -1550,7 +1693,7 @@ static void parseCSStoXMLAttrs(const QVector<QCss::Declaration> &declarations,
                 break;
             }
         }
-            
+
         attributes.append(decl.property, QString(),
                           decl.property, valueStr);
     }
@@ -1559,6 +1702,7 @@ static void parseCSStoXMLAttrs(const QVector<QCss::Declaration> &declarations,
 static bool parseCSStoXMLAttrs(QString css,
                                QXmlAttributes &attributes)
 {
+#if 0
     css.prepend(QLatin1String("dummy {"));
     css.append(QLatin1Char('}'));
     QCss::StyleSheet sheet;
@@ -1567,6 +1711,39 @@ static bool parseCSStoXMLAttrs(QString css,
         return false;
     parseCSStoXMLAttrs(sheet.styleRules.at(0).declarations, attributes);
     return attributes.count();
+#else
+    // preprocess (for unicode escapes), tokenize and remove comments
+    QCss::Parser parser(css);
+
+    while (parser.hasNext()) {
+        parser.skipSpace();
+
+        if (!parser.hasNext())
+            break;
+        parser.next();
+        const QString key = parser.lexem();
+
+        parser.skipSpace();
+        if (!parser.test(QCss::COLON))
+            break;
+
+        parser.skipSpace();
+        if (!parser.hasNext())
+            break;
+
+        QString value;
+        do {
+            parser.next();
+            value += parser.lexem();
+        } while (parser.hasNext() && !parser.test(QCss::SEMICOLON));
+
+        attributes.append(key, QString(), key, value);
+
+        parser.skipSpace();
+    }
+
+    return attributes.count();
+#endif
 }
 
 static void cssStyleLookup(QSvgNode *node,
@@ -1846,14 +2023,14 @@ static bool parseAnimateColorNode(QSvgNode *parent,
     } else if (durStr.endsWith(QLatin1String("s"))) {
         durStr.chop(1);
     }
-    int begin = static_cast<int>(beginStr.toDouble() * ms);
-    int end   = static_cast<int>((durStr.toDouble() + begin) * ms);
+    int begin = static_cast<int>(::toDouble(beginStr) * ms);
+    int end   = static_cast<int>((::toDouble(durStr) + begin) * ms);
 
     QSvgAnimateColor *anim = new QSvgAnimateColor(begin, end, 0);
     anim->setArgs((targetStr == QLatin1String("fill")), colors);
     anim->setFreeze(fillStr == QLatin1String("freeze"));
     anim->setRepeatCount(
-        (repeatStr == QLatin1String("indefinite"))?-1:repeatStr.toDouble());
+        (repeatStr == QLatin1String("indefinite")) ? -1 : ::toDouble(repeatStr));
 
     parent->appendStyleProperty(anim, attributes.value(QLatin1String("id")));
     parent->document()->setAnimated(true);
@@ -1883,30 +2060,30 @@ static bool parseAnimateTransformNode(QSvgNode *parent,
     QString fromStr    = attributes.value(QLatin1String("from"));
     QString toStr      = attributes.value(QLatin1String("to"));
 
-    QList<qreal> vals;
+    QVector<qreal> vals;
     if (values.isEmpty()) {
-        QString::const_iterator itr = fromStr.constBegin();
-        QList<qreal> lst = parseNumbersList(itr);
+        const QChar *s = fromStr.constData();
+        QVector<qreal> lst = parseNumbersList(s);
         while (lst.count() < 3)
             lst.append(0.0);
         vals << lst;
 
-        itr = toStr.constBegin();
-        lst = parseNumbersList(itr);
+        s = toStr.constData();
+        lst = parseNumbersList(s);
         while (lst.count() < 3)
             lst.append(0.0);
         vals << lst;
     } else {
-        QString::const_iterator itr = values.constBegin();
-        while (itr != values.constEnd()) {
-            QList<qreal> tmpVals = parseNumbersList(itr);
+        const QChar *s = values.constData();
+        while (s && *s != QLatin1Char(0)) {
+            QVector<qreal> tmpVals = parseNumbersList(s);
             while (tmpVals.count() < 3)
                 tmpVals.append(0.0);
 
             vals << tmpVals;
-            if (itr == values.constEnd())
+            if (*s == QLatin1Char(0))
                 break;
-            ++itr;
+            ++s;
         }
     }
 
@@ -1918,15 +2095,17 @@ static bool parseAnimateTransformNode(QSvgNode *parent,
     } else if (beginStr.endsWith(QLatin1String("s"))) {
         beginStr.chop(1);
     }
+    int begin = static_cast<int>(::toDouble(beginStr) * ms);
     durStr = durStr.trimmed();
     if (durStr.endsWith(QLatin1String("ms"))) {
         durStr.chop(2);
         ms = 1;
     } else if (durStr.endsWith(QLatin1String("s"))) {
         durStr.chop(1);
+        ms = 1000;
     }
-    int begin = static_cast<int>(beginStr.toDouble() * ms);
-    int end   = static_cast<int>(durStr.toDouble()*ms) + begin;
+    int end = static_cast<int>(::toDouble(durStr)*ms) + begin;
+
     QSvgAnimateTransform::TransformType type = QSvgAnimateTransform::Empty;
     if (typeStr == QLatin1String("translate")) {
         type = QSvgAnimateTransform::Translate;
@@ -1938,13 +2117,14 @@ static bool parseAnimateTransformNode(QSvgNode *parent,
         type = QSvgAnimateTransform::SkewX;
     } else if (typeStr == QLatin1String("skewY")) {
         type = QSvgAnimateTransform::SkewY;
+    } else {
+        return false;
     }
 
     QSvgAnimateTransform *anim = new QSvgAnimateTransform(begin, end, 0);
     anim->setArgs(type, vals);
     anim->setFreeze(fillStr == QLatin1String("freeze"));
-    anim->setRepeatCount(
-        (repeatStr == QLatin1String("indefinite"))?-1:repeatStr.toDouble());
+    anim->setRepeatCount((repeatStr == QLatin1String("indefinite"))? -1 : ::toDouble(repeatStr));
 
     parent->appendStyleProperty(anim, attributes.value(QLatin1String("id")));
     parent->document()->setAnimated(true);
@@ -1975,9 +2155,9 @@ static QSvgNode *createCircleNode(QSvgNode *parent,
     QString cx      = attributes.value(QLatin1String("cx"));
     QString cy      = attributes.value(QLatin1String("cy"));
     QString r       = attributes.value(QLatin1String("r"));
-    qreal ncx = cx.toDouble();
-    qreal ncy = cy.toDouble();
-    qreal nr  = r.toDouble();
+    qreal ncx = ::toDouble(cx);
+    qreal ncy = ::toDouble(cy);
+    qreal nr  = ::toDouble(r);
 
     QRectF rect(ncx-nr, ncy-nr, nr*2, nr*2);
     QSvgNode *circle = new QSvgCircle(parent, rect);
@@ -2017,10 +2197,10 @@ static QSvgNode *createEllipseNode(QSvgNode *parent,
     QString cy      = attributes.value(QLatin1String("cy"));
     QString rx      = attributes.value(QLatin1String("rx"));
     QString ry      = attributes.value(QLatin1String("ry"));
-    qreal ncx = cx.toDouble();
-    qreal ncy = cy.toDouble();
-    qreal nrx = rx.toDouble();
-    qreal nry = ry.toDouble();
+    qreal ncx = ::toDouble(cx);
+    qreal ncy = ::toDouble(cy);
+    qreal nrx = ::toDouble(rx);
+    qreal nry = ::toDouble(ry);
 
     QRectF rect(ncx-nrx, ncy-nry, nrx*2, nry*2);
     QSvgNode *ellipse = new QSvgEllipse(parent, rect);
@@ -2034,7 +2214,7 @@ static QSvgStyleProperty *createFontNode(QSvgNode *parent,
     QString hax      = attributes.value(QLatin1String("horiz-adv-x"));
     QString myId     = attributes.value(QLatin1String("id"));
 
-    qreal horizAdvX = hax.toDouble();
+    qreal horizAdvX = ::toDouble(hax);
 
     while (parent && parent->type() != QSvgNode::DOC) {
         parent = parent->parent();
@@ -2066,7 +2246,7 @@ static bool parseFontFaceNode(QSvgStyleProperty *parent,
     QString name   = attributes.value(QLatin1String("font-family"));
     QString unitsPerEmStr   = attributes.value(QLatin1String("units-per-em"));
 
-    qreal unitsPerEm = unitsPerEmStr.toDouble();
+    qreal unitsPerEm = ::toDouble(unitsPerEmStr);
     if (!unitsPerEm)
         unitsPerEm = 1000;
 
@@ -2175,8 +2355,8 @@ static QSvgNode *createImageNode(QSvgNode *parent,
     QString width  = attributes.value(QLatin1String("width"));
     QString height = attributes.value(QLatin1String("height"));
     QString filename = attributes.value(QLatin1String("xlink:href"));
-    qreal nx = x.toDouble();
-    qreal ny = y.toDouble();
+    qreal nx = ::toDouble(x);
+    qreal ny = ::toDouble(y);
     QSvgHandler::LengthType type;
     qreal nwidth = parseLength(width, type, handler);
     nwidth = convertToPixels(nwidth, true, type);
@@ -2222,10 +2402,10 @@ static QSvgNode *createLineNode(QSvgNode *parent,
     QString y1 = attributes.value(QLatin1String("y1"));
     QString x2 = attributes.value(QLatin1String("x2"));
     QString y2 = attributes.value(QLatin1String("y2"));
-    qreal nx1 = x1.toDouble();
-    qreal ny1 = y1.toDouble();
-    qreal nx2 = x2.toDouble();
-    qreal ny2 = y2.toDouble();
+    qreal nx1 = ::toDouble(x1);
+    qreal ny1 = ::toDouble(y1);
+    qreal nx2 = ::toDouble(x2);
+    qreal ny2 = ::toDouble(y2);
 
     QLineF lineBounds(nx1, ny1, nx2, ny2);
     QSvgNode *line = new QSvgLine(parent, lineBounds);
@@ -2288,10 +2468,10 @@ static QSvgStyleProperty *createLinearGradientNode(QSvgNode *node,
     QString x2 = attributes.value(QLatin1String("x2"));
     QString y2 = attributes.value(QLatin1String("y2"));
     QString units = attributes.value(QLatin1String("gradientUnits"));
-    qreal nx1 = x1.toDouble();
-    qreal ny1 = y1.toDouble();
-    qreal nx2 = x2.toDouble();
-    qreal ny2 = y2.toDouble();
+    qreal nx1 = ::toDouble(x1);
+    qreal ny1 = ::toDouble(y1);
+    qreal nx2 = ::toDouble(x2);
+    qreal ny2 = ::toDouble(y2);
     bool  needsResolving = true;
 
     if (nx2==0 && ny2==0) {
@@ -2368,15 +2548,14 @@ static QSvgNode *createPolygonNode(QSvgNode *parent,
                                    const QXmlAttributes &attributes,
                                    QSvgHandler *)
 {
-    Q_UNUSED(parent); Q_UNUSED(attributes);
     QString pointsStr  = attributes.value(QLatin1String("points"));
 
     //same QPolygon parsing is in createPolylineNode
-    QString::const_iterator sitr = pointsStr.constBegin();
-    QList<qreal> points = parseNumbersList(sitr);
+    const QChar *s = pointsStr.constData();
+    QVector<qreal> points = parseNumbersList(s);
     QPolygonF poly(points.count()/2);
     int i = 0;
-    QList<qreal>::const_iterator itr = points.constBegin();
+    QVector<qreal>::const_iterator itr = points.constBegin();
     while (itr != points.constEnd()) {
         qreal one = *itr; ++itr;
         qreal two = *itr; ++itr;
@@ -2394,11 +2573,11 @@ static QSvgNode *createPolylineNode(QSvgNode *parent,
     QString pointsStr  = attributes.value(QLatin1String("points"));
 
     //same QPolygon parsing is in createPolygonNode
-    QString::const_iterator sitr = pointsStr.constBegin();
-    QList<qreal> points = parseNumbersList(sitr);
+    const QChar *s = pointsStr.constData();
+    QVector<qreal> points = parseNumbersList(s);
     QPolygonF poly(points.count()/2);
     int i = 0;
-    QList<qreal>::const_iterator itr = points.constBegin();
+    QVector<qreal>::const_iterator itr = points.constBegin();
     while (itr != points.constEnd()) {
         qreal one = *itr; ++itr;
         qreal two = *itr; ++itr;
@@ -2434,19 +2613,19 @@ static QSvgStyleProperty *createRadialGradientNode(QSvgNode *node,
     qreal ncy = 0.5;
     qreal nr  = 0.5;
     if (!cx.isEmpty())
-        ncx = cx.toDouble();
+        ncx = ::toDouble(cx);
     if (!cy.isEmpty())
-        ncy = cy.toDouble();
+        ncy = ::toDouble(cy);
     if (!r.isEmpty())
-        nr = r.toDouble();
-    
+        nr = ::toDouble(r);
+
     qreal nfx = ncx;
     if (!fx.isEmpty())
-        nfx = fx.toDouble();
+        nfx = ::toDouble(fx);
     qreal nfy = ncy;
     if (!fy.isEmpty())
-        nfy = fy.toDouble();
-    
+        nfy = ::toDouble(fy);
+
     if (units == QLatin1String("userSpaceOnUse")) {
         needsResolving = false;
     }
@@ -2476,10 +2655,10 @@ static QSvgNode *createRectNode(QSvgNode *parent,
 
     qreal nheight = parseLength(height, type, handler);
     nheight = convertToPixels(nheight, true, type);
-    qreal nrx = rx.toDouble();
-    qreal nry = ry.toDouble();
+    qreal nrx = ::toDouble(rx);
+    qreal nry = ::toDouble(ry);
 
-    QRectF bounds(x.toDouble(), y.toDouble(),
+    QRectF bounds(::toDouble(x), ::toDouble(y),
                   nwidth, nheight);
 
     //9.2 The 'rect'  element clearly specifies it

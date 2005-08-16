@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/widgets/qsplitter.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/widgets/qsplitter.cpp -->
 <head>
   <title>Qt 4.2: QSplitter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -202,11 +202,12 @@
 <h3 class="fn"><a name="refresh"></a>void QSplitter::refresh ()</h3>
 <p>Updates the splitter's state. You should not need to call this function.</p>
 <h3 class="fn"><a name="restoreState"></a>bool QSplitter::restoreState ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>state</i> )</h3>
-<p>Restores the splitter's layout to the <i>state</i> specified.</p>
+<p>Restores the splitter's layout to the <i>state</i> specified. Returns true if the state is restored; otherwise returns false.</p>
 <p>Typically this is used in conjunction with <a href="qsettings.html">QSettings</a> to restore the size from a past session. Here is an example:</p>
 <p>Restore the splitters's state:</p>
 <pre>     QSettings settings;
      splitter-&gt;restoreState(settings.value(&quot;splitterSizes&quot;).toByteArray());</pre>
+<p>A failure to restore the splitter's layout may result from either invalid or out-of-date data in the supplied byte array.</p>
 <p>See also <a href="qsplitter.html#saveState">saveState</a>().</p>
 <h3 class="fn"><a name="saveState"></a><a href="qbytearray.html">QByteArray</a> QSplitter::saveState () const</h3>
 <p>Saves the state of the splitter's layout.</p>
@@ -295,6 +296,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

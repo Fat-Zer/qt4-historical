@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/widgets/qpushbutton.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/widgets/qpushbutton.cpp -->
 <head>
   <title>Qt 4.2: QPushButton Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -81,9 +81,9 @@
 <h2>Detailed Description</h2>
 <p>The QPushButton widget provides a command button.</p>
 <p>The push button, or command button, is perhaps the most commonly used widget in any graphical user interface. Push (click) a button to command the computer to perform some action, or to answer a question. Typical buttons are OK, Apply, Cancel, Close, Yes, No and Help.</p>
-<p>A command button is rectangular and typically displays a text label describing its action. An underlined character in the label (signified by preceding it with an ampersand in the text) indicates a shortcut key, e.g.</p>
-<pre> QPushButton *pb = new QPushButton(&quot;&amp;Download&quot;, this);</pre>
-<p>In this example the shortcut is <i>Alt+D</i>, and the label text will be displayed as <b><u>D</u>ownload</b>.</p>
+<p>A command button is rectangular and typically displays a text label describing its action. A shortcut key can be specified by preceding the preferred character with an ampersand in the text. For example:</p>
+<pre> QPushButton *button = new QPushButton(&quot;&amp;Download&quot;, this);</pre>
+<p>In this example the shortcut is <i>Alt+D</i>. See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>Push buttons display a textual label, and optionally a small icon. These can be set using the constructors and changed later using <a href="qabstractbutton.html#text-prop">setText</a>() and <a href="qabstractbutton.html#icon-prop">setIcon</a>(). If the button is disabled the appearance of the text and icon will be manipulated with respect to the GUI style to make the button look &quot;disabled&quot;.</p>
 <p>A push button emits the signal <a href="qabstractbutton.html#clicked">clicked</a>() when it is activated by the mouse, the Spacebar or by a keyboard shortcut. Connect to this signal to perform the button's action. Push buttons also provide less commonly used signals, for example, <a href="qabstractbutton.html#pressed">pressed</a>() and <a href="qabstractbutton.html#released">released</a>().</p>
 <p>Command buttons in dialogs are by default auto-default buttons, i.e. they become the default push button automatically when they receive the keyboard input focus. A default button is a push button that is activated when the user presses the Enter or Return key in a dialog. You can change this with <a href="qpushbutton.html#autoDefault-prop">setAutoDefault</a>(). Note that auto-default buttons reserve a little extra space which is necessary to draw a default-button indicator. If you do not want this space around your buttons, call setAutoDefault(false).</p>
@@ -183,6 +183,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -472,13 +472,13 @@ static void setupLocaleMapper()
 
 static void setup()
 {
-    if (all) return;
-
 #ifndef QT_NO_THREAD
     QMutexLocker locker(qt_global_mutexpool ?
                         qt_global_mutexpool->get(&all) : 0);
-    if (all) return;
 #endif
+
+    if (all)
+        return;
 
     if (destroying_is_ok)
         qWarning("QTextCodec: Creating new codec during codec cleanup");
@@ -1070,7 +1070,7 @@ const char *QTextCodec::locale()
     QByteArray l = QLocale::system().name().toLatin1();
     int len = qMin(l.length(), 5);
     memcpy(locale, l.constData(), len);
-    locale[len+1] = '\0';
+    locale[len] = '\0';
 
     return locale;
 }

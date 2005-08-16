@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
   <title>Qt 4.2: QWSWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -37,7 +37,7 @@
 <p>When running a <a href="qtopiacore.html">Qtopia Core</a> application, it either runs as a server or connects to an existing server. As applications add and remove widgets, the <a href="qwsserver.html">QWSServer</a> class maintains information about each window. Note that you should never construct the QWSWindow class yourself; the current top-level windows can be retrieved using the <a href="qwsserver.html#clientWindows">QWSServer::clientWindows</a>() function.</p>
 <p>QWSWindow provides functions returning various information about the window: its <a href="qwswindow.html#caption">caption</a>(), <a href="qwswindow.html#name">name</a>(), <a href="qwswindow.html#opacity">opacity</a>() and <a href="qwswindow.html#winId">winId</a>() along with the <a href="qwswindow.html#client">client</a>() that owns the window.</p>
 <p>In addition, it is possible to determine whether the window is visible using the <a href="qwswindow.html#isVisible">isVisible</a>() function, if the window is completely obscured by another window or by the bounds of the screen using the <a href="qwswindow.html#isFullyObscured">isFullyObscured</a>() function, and whether the window has an alpha channel different from 255 using the <a href="qwswindow.html#isOpaque">isOpaque</a>() function. Finally, QWSWindow provides the <a href="qwswindow.html#requestedRegion">requestedRegion</a>() function that returns the region of the display the window wants to draw on.</p>
-<p>See also <a href="qwsserver.html">QWSServer</a>, <a href="qtopiacore-running.html">Running Applications</a>, and <a href="qtopiacore.html">Qtopia Core</a>.</p>
+<p>See also <a href="qwsserver.html">QWSServer</a> and <a href="qtopiacore-running.html">Running Qtopia Core Applications</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="caption"></a>const <a href="qstring.html">QString</a> &amp; QWSWindow::caption () const</h3>
@@ -69,6 +69,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/widgets/qgroupbox.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/widgets/qgroupbox.cpp -->
 <head>
   <title>Qt 4.2: QGroupBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -164,9 +164,9 @@
 <p>See also <a href="qgroupbox.html#title-prop">title</a>.</p>
 <h3 class="fn"><a name="title-prop"></a>title : <a href="qstring.html">QString</a></h3>
 <p>This property holds the group box title text.</p>
-<p>The group box title text will have a keyboard shortcut if the title contains an ampersand (&amp;) followed by a letter.</p>
+<p>The group box title text will have a keyboard shortcut if the title contains an ampersand ('&amp;') followed by a letter.</p>
 <pre> g-&gt;setTitle(&quot;&amp;User information&quot;);</pre>
-<p>This produces &quot;<u>U</u>ser information&quot;; <b>Alt+U</b> moves the keyboard focus to the group box.</p>
+<p>In the example above, <b>Alt+U</b> moves the keyboard focus to the group box. See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>There is no default title text.</p>
 <p>Access functions:</p>
 <ul>
@@ -200,6 +200,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/painting/qpainterpath.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/painting/qpainterpath.cpp -->
 <head>
   <title>Qt 4.2: QPainterPath Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -129,7 +129,7 @@
 <p>Finally, QPainterPath provides the <a href="qpainterpath.html#contains">contains</a>() function which can be used to determine whether a given point or rectangle is inside the path, and the <a href="qpainterpath.html#intersects">intersects</a>() function which determines if any of the points inside a given rectangle also are inside this path.</p>
 <a name="qpainterpath-conversion"></a>
 <h3>QPainterPath Conversion</h3>
-<p>For compatibilty reasons, it might be required to simplify the representation of a painter path: QPainterPath provides the <a href="qpainterpath.html#toFillPolygon">toFillPolygon</a>(), <a href="qpainterpath.html#toFillPolygons">toFillPolygons</a>() and <a href="qpainterpath.html#toSubpathPolygons">toSubpathPolygons</a>() functions which convert the painter path into a polygon. The <a href="qpainterpath.html#toFillPolygon">toFillPolygon</a>() returns the painter path as one single polygon, while the two latter functions return a list of polygons.</p>
+<p>For compatibility reasons, it might be required to simplify the representation of a painter path: QPainterPath provides the <a href="qpainterpath.html#toFillPolygon">toFillPolygon</a>(), <a href="qpainterpath.html#toFillPolygons">toFillPolygons</a>() and <a href="qpainterpath.html#toSubpathPolygons">toSubpathPolygons</a>() functions which convert the painter path into a polygon. The <a href="qpainterpath.html#toFillPolygon">toFillPolygon</a>() returns the painter path as one single polygon, while the two latter functions return a list of polygons.</p>
 <p>The <a href="qpainterpath.html#toFillPolygons">toFillPolygons</a>() and <a href="qpainterpath.html#toSubpathPolygons">toSubpathPolygons</a>() functions are provided because it is usually faster to draw several small polygons than to draw one large polygon, even though the total number of points drawn is the same. The difference between the two is the <i>number</i> of polygons they return: The <a href="qpainterpath.html#toSubpathPolygons">toSubpathPolygons</a>() creates one polygon for each subpath regardless of intersecting subpaths (i.e. overlapping bounding rectangles), while the <a href="qpainterpath.html#toFillPolygons">toFillPolygons</a>() functions creates only one polygon for overlapping subpaths.</p>
 <p>The <a href="qpainterpath.html#toFillPolygon">toFillPolygon</a>() and <a href="qpainterpath.html#toFillPolygons">toFillPolygons</a>() functions first convert all the subpaths to polygons, then uses a rewinding technique to make sure that overlapping subpaths can be filled using the correct fill rule. Note that rewinding inserts additional lines in the polygon so the outline of the fill polygon does not match the outline of the path.</p>
 <a name="examples"></a>
@@ -416,6 +416,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

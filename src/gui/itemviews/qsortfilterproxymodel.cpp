@@ -583,7 +583,25 @@ void QSortFilterProxyModelPrivate::source_items_inserted(
         return;
     IndexMap::const_iterator it = source_index_mapping.constFind(source_parent);
     if (it == source_index_mapping.constEnd()) {
-        // Don't care, since we don't have mapping for this index
+        if (source_parent.isValid()) {
+            QModelIndex source_grand_parent = source_parent.parent();
+            it = source_index_mapping.constFind(source_grand_parent);
+            if (it == source_index_mapping.constEnd()) {
+                // Don't care, since we don't have mapping for the grand parent
+                return;
+            }
+        }
+        it = create_mapping(source_parent);
+        Mapping *m = it.value();
+        QModelIndex proxy_parent = source_to_proxy(source_parent);
+        if (m->source_rows.count() > 0) {
+            q->beginInsertRows(proxy_parent, 0, m->source_rows.count() - 1);
+            q->endInsertRows();
+        }
+        if (m->source_columns.count() > 0) {
+            q->beginInsertColumns(proxy_parent, 0, m->source_columns.count() - 1);
+            q->endInsertColumns();
+        }
         return;
     }
 
@@ -692,6 +710,43 @@ void QSortFilterProxyModelPrivate::source_items_removed(
             proxy_to_source.replace(proxy_item, source_item - delta_item_count);
     }
     build_source_to_proxy_mapping(proxy_to_source, source_to_proxy);
+
+    // see if any mapped children should be (re)moved
+    QVector<QModelIndex>::iterator it2 = m->mapped_children.begin();
+    for ( ; it2 != m->mapped_children.end(); ) {
+        const QModelIndex source_child_index = *it2;
+        const int pos = (orient == Qt::Vertical)
+                        ? source_child_index.row()
+                        : source_child_index.column();
+        if (pos < start) {
+            // not affected by removal
+            ++it2;
+            continue;
+        } else if (pos <= end) {
+            // in the removed interval
+            it2 = m->mapped_children.erase(it2);
+            remove_from_mapping(source_child_index);
+        } else {
+            // below the removed items -- recompute the index
+            QModelIndex new_index;
+            if (orient == Qt::Vertical) {
+                new_index = model->index(pos - delta_item_count,
+                                         source_child_index.column(),
+                                         source_parent);
+            } else {
+                new_index = model->index(source_child_index.row(),
+                                         pos - delta_item_count,
+                                         source_parent);
+            }
+            *it2 = new_index;
+            ++it2;
+
+            // update mapping
+            Mapping *cm = source_index_mapping.take(source_child_index);
+            Q_ASSERT(cm);
+            source_index_mapping.insert(new_index, cm);
+        }
+    }
 }
 
 /*!
@@ -925,8 +980,12 @@ void QSortFilterProxyModelPrivate::_q_sourceReset()
 
 void QSortFilterProxyModelPrivate::_q_sourceLayoutAboutToBeChanged()
 {
-    QModelIndexList source_indexes = store_persistent_indexes();
+    Q_Q(QSortFilterProxyModel);
     saved_persistent_indexes.clear();
+    if (persistent.indexes.isEmpty())
+        return;
+    emit q->layoutAboutToBeChanged();
+    QModelIndexList source_indexes = store_persistent_indexes();
     QModelIndexList::const_iterator it;
     for(it = source_indexes.constBegin(); it != source_indexes.constEnd(); ++it)
         saved_persistent_indexes << (*it);
@@ -945,8 +1004,6 @@ void QSortFilterProxyModelPrivate::_q_sourceLayoutChanged()
     it = saved_persistent_indexes.constBegin();
     for ( ; it != saved_persistent_indexes.constEnd(); ++it)
         source_indexes << (*it);
-
-    emit q->layoutAboutToBeChanged();
 
     qDeleteAll(source_index_mapping);
     source_index_mapping.clear();
@@ -1518,10 +1575,31 @@ bool QSortFilterProxyModel::removeRows(int row, int count, const QModelIndex &pa
     QSortFilterProxyModelPrivate::Mapping *m = d->create_mapping(source_parent).value();
     if (row + count > m->source_rows.count())
         return false;
-    int source_row = (row >= m->source_rows.count()
-                      ? m->source_rows.at(m->source_rows.count()) + 1
-                      : m->source_rows.at(row));
-    return d->model->removeRows(source_row, count, source_parent);
+    if ((count == 1)
+        || ((d->sort_column < 0) && (m->proxy_rows.count() == m->source_rows.count()))) {
+        int source_row = m->source_rows.at(row);
+        return d->model->removeRows(source_row, count, source_parent);
+    }
+    // remove corresponding source intervals
+    // ### if this proves to be slow, we can switch to single-row removal
+    QVector<int> rows;
+    for (int i = row; i < row + count; ++i)
+        rows.append(m->source_rows.at(i));
+    qSort(rows.begin(), rows.end());
+    
+    int pos = rows.count() - 1;
+    bool ok = true;
+    while (pos >= 0) {
+        const int source_end = rows.at(pos--);
+        int source_start = source_end;
+        while ((pos >= 0) && (rows.at(pos) == (source_start - 1))) {
+            --source_start;
+            --pos;
+        }
+        ok = ok && d->model->removeRows(source_start, source_end - source_start + 1,
+                                        source_parent);
+    }
+    return ok;
 }
 
 /*!
@@ -1536,10 +1614,28 @@ bool QSortFilterProxyModel::removeColumns(int column, int count, const QModelInd
     QSortFilterProxyModelPrivate::Mapping *m = d->create_mapping(source_parent).value();
     if (column + count > m->source_columns.count())
         return false;
-    int source_column = (column >= m->source_columns.count()
-                         ? m->source_columns.at(m->source_columns.count()) + 1
-                         : m->source_columns.at(column));
-    return d->model->removeColumns(source_column, count, source_parent);
+    if ((count == 1) || (m->proxy_columns.count() == m->source_columns.count())) {
+        int source_column = m->source_columns.at(column);
+        return d->model->removeColumns(source_column, count, source_parent);
+    }
+    // remove corresponding source intervals
+    QVector<int> columns;
+    for (int i = column; i < column + count; ++i)
+        columns.append(m->source_columns.at(i));
+
+    int pos = columns.count() - 1;
+    bool ok = true;
+    while (pos >= 0) {
+        const int source_end = columns.at(pos--);
+        int source_start = source_end;
+        while ((pos >= 0) && (columns.at(pos) == (source_start - 1))) {
+            --source_start;
+            --pos;
+        }
+        ok = ok && d->model->removeColumns(source_start, source_end - source_start + 1,
+                                           source_parent);
+    }
+    return ok;
 }
 
 /*!

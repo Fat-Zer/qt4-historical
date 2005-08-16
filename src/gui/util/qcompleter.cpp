@@ -99,7 +99,7 @@
     \endcode
 
     completionCount() returns the total number of completions for the
-    current prefix. completionCount() should be avoided when posible,
+    current prefix. completionCount() should be avoided when possible,
     since it requires a scan of the entire model.
 
     \section1 The Completion Model
@@ -237,7 +237,7 @@ QModelIndex QCompletionModel::mapFromSource(const QModelIndex& idx) const
         } else {
             row = rootIndices.indexOf(idx.row());
             if (row == -1 && engine->curParent.isValid())
-                return QModelIndex(); // source parent and our parent dont match
+                return QModelIndex(); // source parent and our parent don't match
         }
 
         if (row == -1) {
@@ -409,7 +409,7 @@ void QCompletionEngine::filter(const QStringList& parts)
     if (curParts.last().isEmpty())
         curMatch = QMatchData(QIndexMapper(0, model->rowCount(curParent) - 1), -1, false);
     else
-        curMatch = filter(curParts.last(), curParent, 1); // build atleast one
+        curMatch = filter(curParts.last(), curParent, 1); // build at least one
     curRow = curMatch.isValid() ? 0 : -1;
 }
 
@@ -705,17 +705,18 @@ void QCompleterPrivate::init(QAbstractItemModel *m)
 #endif // QT_NO_LISTVIEW
 }
 
-void QCompleterPrivate::setCurrentIndex(const QModelIndex& index, bool select)
+void QCompleterPrivate::setCurrentIndex(QModelIndex index, bool select)
 {
-    if (!select)
+    if (!select) {
         popup->selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
-    else {
+    } else {
         if (!index.isValid())
             popup->selectionModel()->clear();
         else
             popup->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select
                                                             | QItemSelectionModel::Rows);
     }
+    index = popup->selectionModel()->currentIndex();
     if (!index.isValid())
         popup->scrollToTop();
     else
@@ -840,7 +841,7 @@ QCompleter::~QCompleter()
     Sets the widget for which completion are provided for to \a widget. This
     function is automatically called when a QCompleter is set on a QLineEdit
     using QLineEdit::setCompleter() or on a QComboBox using
-    QComboBox::setCompleter(). The widget needs to be set explicity when
+    QComboBox::setCompleter(). The widget needs to be set explicitly when
     providing completions for custom widgets.
 
     \sa widget(), setModel(), setPopup()
@@ -967,8 +968,10 @@ void QCompleter::setPopup(QAbstractItemView *popup)
 {
     Q_D(QCompleter);
     Q_ASSERT(popup != 0);
-    if (d->popup)
+    if (d->popup) {
+        QObject::disconnect(d->popup->selectionModel(), 0, this, 0);
         QObject::disconnect(d->popup, 0, this, 0);
+    }
     if (d->popup != popup)
         delete d->popup;
     if (popup->model() != d->proxy)
@@ -1038,7 +1041,8 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
               return true;
         }
 
-        // Handle popup navigation keys.
+        // Handle popup navigation keys. These are hardcoded because up/down might make the
+        // widget do something else (lineedit cursor moves to home/end on mac, for instance)
         switch (key) {
         case Qt::Key_End:
         case Qt::Key_Home:
@@ -1077,11 +1081,11 @@ bool QCompleter::eventFilter(QObject *o, QEvent *e)
         // Send the event to the widget. If the widget accepted the event, do nothing
         // If the widget did not accept the event, provide a default implementation
         d->eatFocusOut = false;
-        QApplication::sendEvent(d->widget, ke);
+        (static_cast<QObject *>(d->widget))->event(ke);
         d->eatFocusOut = true;
-        if (e->isAccepted()) {
+        if (!d->widget || e->isAccepted() || !d->popup->isVisible()) {
             // widget lost focus, hide the popup
-            if (!d->widget->hasFocus())
+            if (d->widget && !d->widget->hasFocus())
                 d->popup->hide();
             return true;
         }
@@ -1159,9 +1163,11 @@ void QCompleter::complete(const QRect& rect)
 }
 
 /*!
-    Sets the current row to the \a row specified. This function may be used
-    along with currentCompletion() to iterate through all the possible
-    completions.
+    Sets the current row to the \a row specified. Returns true if successful;
+    otherwise returns false.
+
+    This function may be used along with currentCompletion() to iterate
+    through all the possible completions.
 
     \sa currentCompletion(), completionCount()
 */

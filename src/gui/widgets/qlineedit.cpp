@@ -1685,7 +1685,9 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
         default:
             if (QApplication::keypadNavigationEnabled()) {
                 if (!hasEditFocus() && !(event->modifiers() & Qt::ControlModifier)) {
-                    if (!event->text().isEmpty() && event->text().at(0).isPrint()) {
+                    if (!event->text().isEmpty() && event->text().at(0).isPrint()
+                        && !isReadOnly())
+                    {
                         setEditFocus(true);
                         clear();
                     } else {
@@ -2521,7 +2523,7 @@ void QLineEditPrivate::updateTextLayout()
     QString str = q->displayText();
     QChar* uc = str.data();
     for (int i = 0; i < (int)str.length(); ++i) {
-        if (! uc[i].isPrint())
+        if (!uc[i].isPrint() || uc[i] == QChar::LineSeparator)
             uc[i] = QChar(0x0020);
     }
     textLayout.setFont(q->font());
@@ -2539,9 +2541,7 @@ void QLineEditPrivate::updateTextLayout()
 
 int QLineEditPrivate::xToPos(int x, QTextLine::CursorPosition betweenOrOn) const
 {
-    Q_Q(const QLineEdit);
-    QStyleOptionFrame opt = getStyleOption();
-    QRect cr = q->style()->subElementRect(QStyle::SE_LineEditContents, &opt, q);
+    QRect cr = adjustedContentsRect();
     x-= cr.x() - hscroll + horizontalMargin;
     QTextLine l = textLayout.lineAt(0);
     return l.xToCursor(x, betweenOrOn);
@@ -2550,8 +2550,7 @@ int QLineEditPrivate::xToPos(int x, QTextLine::CursorPosition betweenOrOn) const
 QRect QLineEditPrivate::cursorRect() const
 {
     Q_Q(const QLineEdit);
-    QStyleOptionFrame opt = getStyleOption();
-    QRect cr = q->style()->subElementRect(QStyle::SE_LineEditContents, &opt, q);
+    QRect cr = adjustedContentsRect();
     int cix = cr.x() - hscroll + horizontalMargin;
     QTextLine l = textLayout.lineAt(0);
     int c = cursor;
@@ -2560,6 +2559,13 @@ QRect QLineEditPrivate::cursorRect() const
     cix += qRound(l.cursorToX(c));
     int ch = qMin(cr.height(), q->fontMetrics().height() + 1);
     return QRect(cix-5, cr.y() + (cr.height() -  ch) / 2, 10, ch);
+}
+
+QRect QLineEditPrivate::adjustedContentsRect() const
+{
+    Q_Q(const QLineEdit);
+    QStyleOptionFrame opt = getStyleOption();
+    return q->style()->subElementRect(QStyle::SE_LineEditContents, &opt, q);
 }
 
 bool QLineEditPrivate::fixup() // this function assumes that validate currently returns != Acceptable
@@ -2610,7 +2616,7 @@ void QLineEditPrivate::moveCursor(int pos, bool mark)
         setCursorVisible(false);
         cursor = pos;
         setCursorVisible(true);
-        if (!q->contentsRect().contains(cursorRect()))
+        if (!adjustedContentsRect().contains(cursorRect()))
             q->update();
     }
     QStyleOptionFrame opt = getStyleOption();

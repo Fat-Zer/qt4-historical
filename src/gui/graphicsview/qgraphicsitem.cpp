@@ -56,7 +56,7 @@
 
     You can set whether an item should be visible (i.e., drawn, and accepting
     events), by calling setVisible(). Hiding an item will also hide its
-    children. Similarily, you can enable or disable an item by calling
+    children. Similarly, you can enable or disable an item by calling
     setEnabled(). If you disable an item, all its children will also be
     disabled. By default, items are both visible and enabled. To toggle
     whether an item is selected or not, first enable selection by setting
@@ -128,7 +128,7 @@
     functions rotate(), scale(), translate(), or shear(). Item transformations
     accumulate from parent to child, so if both a parent and child item are
     rotated 90 degrees, the child's total transformation will be 180 degrees.
-    Similarily, if the item's parent is scaled to 2x its original size, its
+    Similarly, if the item's parent is scaled to 2x its original size, its
     children will also be twice as large. An item's transformation does not
     affect its own local geometry; all geometry functions (e.g., contains(),
     update(), and all the mapping functions) still operate in local
@@ -149,7 +149,8 @@
     Items are painted by the view, starting with the parent items and then
     drawing children, in ascending stacking order. You can set an item's
     stacking order by calling setZValue(), and test it by calling
-    zValue(). Stacking order applies to sibling items; parents are always
+    zValue(), where items with low z-values are painted before items with
+    high z-values. Stacking order applies to sibling items; parents are always
     drawn before their children.
 
     QGraphicsItem receives events from QGraphicsScene through the virtual
@@ -298,7 +299,9 @@
     argument is the new child item (i.e., a QGraphicsItem pointer). Do not
     pass this item to any item's setParentItem() function as this notification
     is delivered. The return value is unused; you cannot adjust anything in
-    this notification.
+    this notification. Note that the new child might not be fully constructed
+    when this notification is sent; calling pure virtual functions on
+    the child can lead to a crash.
 
     \value ItemChildRemovedChange A child is removed from this item. The value
     argument is the child item that is about to be removed (i.e., a
@@ -620,7 +623,6 @@ void QGraphicsItem::setParentItem(QGraphicsItem *parent)
         d_ptr->parent->d_func()->children.removeAll(this);
         qVariantSetValue<QGraphicsItem *>(variant, this);
         d_ptr->parent->itemChange(ItemChildRemovedChange, variant);
-        d_ptr->parent->update();
     }
 
     if ((d_ptr->parent = parent)) {
@@ -628,7 +630,6 @@ void QGraphicsItem::setParentItem(QGraphicsItem *parent)
         qVariantSetValue<QGraphicsItem *>(variant, this);
         d_ptr->parent->itemChange(ItemChildAddedChange, variant);
         addToIndex();
-        d_ptr->parent->update();
 
         // Optionally inherit ancestor event handling from the new parent
         if (!d_ptr->handlesChildEvents) {
@@ -686,7 +687,7 @@ void QGraphicsItem::setFlag(GraphicsItemFlag flag, bool enabled)
     flags not in \a flags are disabled.
 
     If the item had focus and \a flags does not enable ItemIsFocusable, the
-    item loses focus as a result of calling this function. Similarily, if the
+    item loses focus as a result of calling this function. Similarly, if the
     item was selected, and \a flags does not enabled ItemIsSelectable, the
     item is automatically unselected.
 
@@ -838,7 +839,7 @@ bool QGraphicsItem::isVisible() const
     the grab is not regained by making the item visible again; it must receive
     a new mouse press to regain the mouse grab.
 
-    Similarily, an invisible item cannot have focus, so if the item has focus
+    Similarly, an invisible item cannot have focus, so if the item has focus
     when it becomes invisible, it will lose focus, and the focus is not
     regained by simply making the item visible again.
 
@@ -1109,7 +1110,7 @@ void QGraphicsItem::setAcceptsHoverEvents(bool enabled)
 
 /*!
     Returns true if this item handles child events (i.e., all events
-    intented for any of its children are instead sent to this item);
+    intended for any of its children are instead sent to this item);
     otherwise, false is returned.
 
     This property is useful for item groups; it allows one item to
@@ -1117,6 +1118,8 @@ void QGraphicsItem::setAcceptsHoverEvents(bool enabled)
     children handling their events individually.
 
     The default is to return false; children handle their own events.
+    The exception for this is if the item is a QGraphicsItemGroup, then 
+    it defaults to return true.
 
     \sa setHandlesChildEvents()
 */
@@ -1374,7 +1377,7 @@ QMatrix QGraphicsItem::sceneMatrix() const
     otherwise, \a matrix \e replaces the current matrix. \a combine is false
     by default.
 
-    To simplify interation with items using a transformed view, QGraphicsItem
+    To simplify interaction with items using a transformed view, QGraphicsItem
     provides mapTo... and mapFrom... functions that can translate between
     items' and the scene's coordinates. For example, you can call mapToScene()
     to map an item coordiate to a scene coordinate, or mapFromScene() to map
@@ -1393,10 +1396,10 @@ void QGraphicsItem::setMatrix(const QMatrix &matrix, bool combine)
     if (oldMatrix == newMatrix)
         return;
 
-    d_ptr->hasMatrix = !newMatrix.isIdentity();
-
     qt_graphicsItem_fullUpdate(this);
     removeFromIndex();
+    d_ptr->hasMatrix = !newMatrix.isIdentity();
+
     QVariant variant;
     qVariantSetValue<QMatrix>(variant, newMatrix);
     d_ptr->setExtra(QGraphicsItemPrivate::ExtraMatrix,
@@ -2381,9 +2384,17 @@ void QGraphicsItem::removeSceneEventFilter(QGraphicsItem *filterItem)
 
 /*!
     Filters events for the item \a watched. \a event is the filtered
-    event. Reimplement this function after installing this item as an
-    event filter for another item to intersect all the other item's
-    events.
+    event.
+
+    Reimplementing this function in a subclass makes it possible
+    for the item to be used as an event filter for other items,
+    intercepting all the events send to those items before they are
+    able to respond.
+
+    Reimplementations must return true to prevent further processing of
+    a given event, ensuring that it will not be delivered to the watched
+    item, or return false to indicate that the event should be propagated
+    further by the event system.
 
     \sa installSceneEventFilter()
 */
@@ -2794,15 +2805,17 @@ void QGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         QList<QGraphicsItem *> selectedItems;
         if (d_ptr->scene) {
             selectedItems = d_ptr->scene->selectedItems();
-        } else if (QGraphicsItem *parent = parentItem()) {
-            while (parent && parent->isSelected())
-                selectedItems << parent;
+        } else {
+            QGraphicsItem *parent = this;
+            while ((parent = parent->parentItem()))
+                if (parent->isSelected())
+                    selectedItems << parent;
         }
         selectedItems << this;
 
         // Move all selected items
         foreach (QGraphicsItem *item, selectedItems) {
-            if ((item->flags() & ItemIsMovable) && !item->parentItem() || !item->parentItem()->isSelected()) {
+            if ((item->flags() & ItemIsMovable) && (!item->parentItem() || !item->parentItem()->isSelected())) {
                 item->setPos(item == this ? newPos : item->pos() + diff);
                 if (item->flags() & ItemIsSelectable)
                     item->setSelected(true);
@@ -3811,11 +3824,10 @@ void QGraphicsEllipseItem::paint(QPainter *painter, const QStyleOptionGraphicsIt
     Q_UNUSED(widget);
     painter->setPen(d->pen);
     painter->setBrush(d->brush);
-    if (d->spanAngle != 360 * 10) {
+    if ((d->spanAngle != 0) && (qAbs(d->spanAngle) % (360 * 16) == 0))
         painter->drawEllipse(d->rect);
-    } else {
+    else
         painter->drawPie(d->rect, d->startAngle, d->spanAngle);
-    }
 
     if (option->state & QStyle::State_Selected) {
         painter->setPen(QPen(option->palette.text(), 1.0, Qt::DashLine));
@@ -4699,6 +4711,9 @@ QVariant QGraphicsPixmapItem::extension(const QVariant &variant) const
     to provide a reasonable implementation of boundingRect(), shape(),
     and contains(). You can set the font by calling setFont().
 
+    It is possible to make the item editable by setting the Qt::TextEditable flag
+    using setTextInteractionFlags().
+
     \sa QGraphicsSimpleTextItem, QGraphicsPathItem, QGraphicsRectItem,
         QGraphicsEllipseItem, QGraphicsPixmapItem, QGraphicsPolygonItem,
         QGraphicsLineItem, {The Graphics View Framework}
@@ -5260,15 +5275,21 @@ QTextControl *QGraphicsTextItemPrivate::textControl() const
 /*!
     \fn QGraphicsTextItem::linkActivated(const QString &link)
 
-    This signal is emitted when the user clicks on a link. \a link
-    is the link that was clicked.
+    This signal is emitted when the user clicks on a link on a text item
+    that enables Qt::LinksAccessibleByMouse or Qt::LinksAccessibleByKeyboard.
+    \a link is the link that was clicked.
+
+    \sa setTextInteractionFlags()
 */
 
 /*!
     \fn QGraphicsTextItem::linkHovered(const QString &link)
 
-    This signal is emitted when the user hovers over a link. \a link is
+    This signal is emitted when the user hovers over a link on a text item
+    that enables Qt::LinksAccessibleByMouse. \a link is
     the link that was hovered over.
+
+    \sa setTextInteractionFlags()
 */
 
 /*!
@@ -5278,6 +5299,9 @@ QTextControl *QGraphicsTextItemPrivate::textControl() const
     The default for a QGraphicsTextItem is Qt::NoTextInteraction. Setting a
     value different to Qt::NoTextInteraction will also set the ItemIsFocusable
     QGraphicsItem flag.
+
+    By default, the text is read-only. To transform the item into an editor,
+    set the Qt::TextEditable flag.
 */
 void QGraphicsTextItem::setTextInteractionFlags(Qt::TextInteractionFlags flags)
 {
@@ -5605,6 +5629,60 @@ QVariant QGraphicsSimpleTextItem::extension(const QVariant &variant) const
     one.
     \since 4.2
     \ingroup multimedia
+
+    A QGraphicsItemGroup is a special type of compound item that
+    treats itself and all its children as one item (i.e., all events
+    and geometries for all children are merged together). It's common
+    to use item groups in presentation tools, when the user wants to
+    group several smaller items into one big item in order to simplify
+    moving and copying of items.
+
+    If all you want is to store items inside other items, you can use
+    any QGraphicsItem directly by passing a suitable parent to
+    setParentItem().
+
+    The boundingRect() function of QGraphicsItemGroup returns the
+    bounding rectangle of all items in the item group. In addition,
+    item groups have handlesChildEvents() enabled by default, so all
+    events sent to a member of the group go to the item group (i.e.,
+    selecting one item in a group will select them all).
+
+    There are two ways to construct an item group. The easiest and
+    most common approach is to pass a list of items (e.g., all
+    selected items) to QGraphicsScene::createItemGroup(), which
+    returns a new QGraphicsItemGroup item. The other approach is to
+    manually construct a QGraphicsItemGroup item, add it to the scene
+    calling QGraphicsScene::addItem(), and then add items to the group
+    manually, one at a time by calling addToGroup(). To dismantle
+    ("ungroup") an item group, you can either call
+    QGraphicsScene::destroyItemGroup(), or you can manually remove all
+    items from the group by calling removeFromGroup().
+
+    \code
+      // Group all selected items together
+      QGraphicsItemGroup *group = scene->createItemGroup(scene->selecteditems());
+
+      // Destroy the group, and delete the group item
+      scene->destroyItemGroup(group);
+    \endcode
+
+    The operation of adding and removing items preserves the items'
+    scene-relative position and transformation, as opposed to calling
+    setParentItem(), where only the child item's parent-relative
+    position and transformation are kept.
+
+    The addtoGroup() function reparents the target item to this item
+    group, keeping the item's position and transformation intact
+    relative to the scene. Visually, this means that items added via
+    addToGroup() will remain completely unchanged as a result of this
+    operation, regardless of the item or the group's current position
+    or transformation; although the item's position and matrix are
+    likely to change.
+
+    The removeFromGroup() function has similar semantics to
+    setParentItem(); it reparents the item to the parent item of the
+    item group. As with addToGroup(), the item's scene-relative
+    position and transformation remain intact.
 
     \sa QGraphicsItem, {The Graphics View Framework}
 */

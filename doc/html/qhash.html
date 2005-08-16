@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/tools/qhash.cpp -->
 <head>
   <title>Qt 4.2: QHash Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -104,7 +104,7 @@
 <p>QHash&lt;Key, T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It stores (key, value) pairs and provides very fast lookup of the value associated with a key.</p>
 <p>QHash provides very similar functionality to <a href="qmap.html">QMap</a>. The differences are:</p>
 <ul>
-<li>QHash provides faster lookups than <a href="qmap.html">QMap</a>.</li>
+<li>QHash provides faster lookups than <a href="qmap.html">QMap</a>. (See <a href="containers.html#algorithmic-complexity">Algorithmic Complexity</a> for details.)</li>
 <li>When iterating over a <a href="qmap.html">QMap</a>, the items are always sorted by key. With QHash, the items are arbitrarily ordered.</li>
 <li>The key type of a <a href="qmap.html">QMap</a> must provide operator&lt;(). The key type of a QHash must provide operator==() and a global qHash(Key) function.</li>
 </ul>
@@ -260,7 +260,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qhash.html#size">size</a>().</p>
 <h3 class="fn"><a name="empty"></a>bool QHash::empty () const</h3>
-<p>This function is provided for STL compatibility. It is equivalent to <a href="qhash.html#isEmpty">isEmpty</a>().</p>
+<p>This function is provided for STL compatibility. It is equivalent to <a href="qhash.html#isEmpty">isEmpty</a>(), returning true if the hash is empty; otherwise returns false.</p>
 <h3 class="fn"><a name="end"></a><a href="qhash-iterator.html">iterator</a> QHash::end ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the hash.</p>
 <p>See also <a href="qhash.html#begin">begin</a>() and <a href="qhash.html#constEnd">constEnd</a>().</p>
@@ -447,6 +447,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

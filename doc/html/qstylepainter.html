@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/painting/qstylepainter.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/painting/qstylepainter.cpp -->
 <head>
   <title>Qt 4.2: QStylePainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -46,7 +46,7 @@
 <p>The QStylePainter class is a convenience class for drawing <a href="qstyle.html">QStyle</a> elements inside a widget.</p>
 <p>QStylePainter extends <a href="qpainter.html">QPainter</a> with a set of high-level <tt>draw...()</tt> functions implemented on top of <a href="qstyle.html">QStyle</a>'s API. The advantage of using QStylePainter is that the parameter lists get considerably shorter. Whereas a <a href="qstyle.html">QStyle</a> object must be able to draw on any widget using any painter (because the application normally has one <a href="qstyle.html">QStyle</a> object shared by all widget), a QStylePainter is initialized with a widget, eliminating the need to specify the <a href="qwidget.html">QWidget</a>, the <a href="qpainter.html">QPainter</a>, and the <a href="qstyle.html">QStyle</a> for every function call.</p>
 <p>Example using <a href="qstyle.html">QStyle</a> directly:</p>
-<pre> void MyWidget::paintEvent(QPaintEvent * /* event */)
+<pre> void MyWidget::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
 
@@ -57,7 +57,7 @@
      style()-&gt;drawPrimitive(QStyle::PE_FrameFocusRect, &amp;option, &amp;painter, this);
  }</pre>
 <p>Example using QStylePainter:</p>
-<pre> void MyWidget::paintEvent(QPaintEvent * /* event */)
+<pre> void MyWidget::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QStylePainter painter(this);
 
@@ -77,10 +77,12 @@
 <h3 class="fn"><a name="QStylePainter-3"></a>QStylePainter::QStylePainter ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pd</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Construct a <a href="qstylepainter.html">QStylePainter</a> using <i>pd</i> for its paint device, and attributes from <i>widget</i>.</p>
 <h3 class="fn"><a name="begin"></a>bool QStylePainter::begin ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
-<p>Begin painting operations on widget <i>widget</i>. This is automatically called by the constructor that takes a <a href="qwidget.html">QWidget</a>.</p>
+<p>Begin painting operations on the specified <i>widget</i>. Returns true if the painter is ready to use; otherwise returns false.</p>
+<p>This is automatically called by the constructor that takes a <a href="qwidget.html">QWidget</a>.</p>
 <h3 class="fn"><a name="begin-2"></a>bool QStylePainter::begin ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pd</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Begin painting operations on paint device <i>pd</i> as if it was <i>widget</i>. This is automatically called by the constructor that takes a <a href="qpaintdevice.html">QPaintDevice</a> and a <a href="qwidget.html">QWidget</a>.</p>
+<p>Begin painting operations on paint device <i>pd</i> as if it was <i>widget</i>.</p>
+<p>This is automatically called by the constructor that takes a <a href="qpaintdevice.html">QPaintDevice</a> and a <a href="qwidget.html">QWidget</a>.</p>
 <h3 class="fn"><a name="drawComplexControl"></a>void QStylePainter::drawComplexControl ( <a href="qstyle.html#ComplexControl-enum">QStyle::ComplexControl</a> <i>cc</i>, const <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> &amp; <i>option</i> )</h3>
 <p>Use the widget's style to draw a complex control <i>cc</i> specified by the <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> <i>option</i>.</p>
 <p>See also <a href="qstyle.html#drawComplexControl">QStyle::drawComplexControl</a>().</p>
@@ -103,6 +105,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

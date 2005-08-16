@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/corelib/io/qurl.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/io/qurl.cpp -->
 <head>
   <title>Qt 4.2: QUrl Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -116,7 +116,7 @@
 <p>URLs can be represented in two forms: encoded or unencoded. The unencoded representation is suitable for showing to users, but the encoded representation is typically what you would send to a web server. For example, the unencoded URL &quot;http://b&uuml;<tt></tt>hler.example.com&quot; would be sent to the server as &quot;http://xn--bhler-kva.example.com/List%20of%20applicants.xml&quot;.</p>
 <p>A URL can also be constructed piece by piece by calling <a href="qurl.html#setScheme">setScheme</a>(), <a href="qurl.html#setUserName">setUserName</a>(), <a href="qurl.html#setPassword">setPassword</a>(), <a href="qurl.html#setHost">setHost</a>(), <a href="qurl.html#setPort">setPort</a>(), <a href="qurl.html#setPath">setPath</a>(), <a href="qurl.html#setEncodedQuery">setEncodedQuery</a>() and <a href="qurl.html#setFragment">setFragment</a>(). Some convenience functions are also available: <a href="qurl.html#setAuthority">setAuthority</a>() sets the user name, password, host and port. <a href="qurl.html#setUserInfo">setUserInfo</a>() sets the user name and password at once.</p>
 <p>Call <a href="qurl.html#isValid">isValid</a>() to check if the URL is valid. This can be done at any point during the constructing of a URL.</p>
-<p>Constructing a query is particularily convenient through the use of <a href="qurl.html#setQueryItems">setQueryItems</a>(), <a href="qurl.html#addQueryItem">addQueryItem</a>() and <a href="qurl.html#removeQueryItem">removeQueryItem</a>(). Use <a href="qurl.html#setQueryDelimiters">setQueryDelimiters</a>() to customize the delimiters used for generating the query string.</p>
+<p>Constructing a query is particularly convenient through the use of <a href="qurl.html#setQueryItems">setQueryItems</a>(), <a href="qurl.html#addQueryItem">addQueryItem</a>() and <a href="qurl.html#removeQueryItem">removeQueryItem</a>(). Use <a href="qurl.html#setQueryDelimiters">setQueryDelimiters</a>() to customize the delimiters used for generating the query string.</p>
 <p>For the convenience of generating encoded URL strings or query strings, there are two static functions called <a href="qurl.html#fromPercentEncoding">fromPercentEncoding</a>() and <a href="qurl.html#toPercentEncoding">toPercentEncoding</a>() which deal with percent encoding and decoding of QStrings.</p>
 <p>Calling <a href="qurl.html#isRelative">isRelative</a>() will tell whether or not the URL is relative. A relative URL can be resolved by passing it as argument to <a href="qurl.html#resolved">resolved</a>(), which returns an absolute URL. <a href="qurl.html#isParentOf">isParentOf</a>() is used for determining whether one URL is a parent of another.</p>
 <p><a href="qurl.html#fromLocalFile">fromLocalFile</a>() constructs a QUrl by parsing a local file path. <a href="qurl.html#toLocalFile">toLocalFile</a>() converts a URL to a local file path.</p>
@@ -153,7 +153,7 @@
 <li>Spaces and &quot;%20&quot;: If an encoded URL contains a space, this will be replaced with &quot;%20&quot;. If a decoded URL contains &quot;%20&quot;, this will be replaced with a single space before the URL is parsed.</li>
 <li>Single &quot;%&quot; characters: Any occurrences of a percent character &quot;%&quot; not followed by exactly two hexadecimal characters (e.g., &quot;13% coverage.html&quot;) will be replaced by &quot;%25&quot;.</li>
 <li>Non-US-ASCII characters: An encoded URL should only contain US-ASCII characters. In TolerantMode, characters outside this range are automatically percent-encoded.</li>
-<li>Any occurence of &quot;[&quot; and &quot;]&quot; following the host part of the URL is percent-encoded.</li>
+<li>Any occurrence of &quot;[&quot; and &quot;]&quot; following the host part of the URL is percent-encoded.</li>
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -477,6 +477,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

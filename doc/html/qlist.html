@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/corelib/tools/qlistdata.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/tools/qlistdata.cpp -->
 <head>
   <title>Qt 4.2: QList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -126,7 +126,7 @@
 <li>If you need a real linked list, with guarantees of <a href="containers.html#constant-time">constant time</a> insertions in the middle of the list and iterators to items rather than indexes, use <a href="qlinkedlist.html">QLinkedList</a>.</li>
 <li>If you want the items to occupy adjacent memory positions, use <a href="qvector.html">QVector</a>.</li>
 </ul>
-<p>Internally, QList&lt;T&gt; is represented as an array of pointers to items. (Exceptionally, if T is a pointer type, a basic type of the size of a pointer, or one of Qt's <a href="shared.html#shared-classes">shared classes</a>, QList&lt;T&gt; stores the item directly in the pointer.) For lists under a thousand items, this representation allows for very fast insertions in the middle, in addition to instantaneous index-based access. Furthermore, operations like <a href="qlist.html#prepend">prepend</a>() and <a href="qlist.html#append">append</a>() are very fast, because QList preallocates memory on both sides of its internal array.</p>
+<p>Internally, QList&lt;T&gt; is represented as an array of pointers to items. (Exceptionally, if T is a pointer type, a basic type of the size of a pointer, or one of Qt's <a href="shared.html#shared-classes">shared classes</a>, QList&lt;T&gt; stores the item directly in the pointer.) For lists under a thousand items, this representation allows for very fast insertions in the middle, in addition to instantaneous index-based access. Furthermore, operations like <a href="qlist.html#prepend">prepend</a>() and <a href="qlist.html#append">append</a>() are very fast, because QList preallocates memory on both sides of its internal array. (See <a href="containers.html#algorithmic-complexity">Algorithmic Complexity</a> for details.)</p>
 <p>Here's an example of a QList that stores integers and a QList that stores <a href="qdate.html">QDate</a> values:</p>
 <pre> QList&lt;int&gt; integerList;
  QList&lt;QDate&gt; dateList;</pre>
@@ -515,6 +515,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

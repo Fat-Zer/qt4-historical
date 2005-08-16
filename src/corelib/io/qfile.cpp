@@ -1078,7 +1078,9 @@ QFile::permissions(const QString &fileName)
 }
 
 /*!
-    Sets the permissions for the file to \a permissions.
+    Sets the permissions for the file to the \a permissions specified.
+    Returns true if successful, or false if the permissions cannot be
+    modified.
 
     \sa permissions(), setFileName()
 */
@@ -1108,7 +1110,8 @@ QFile::setPermissions(const QString &fileName, Permissions permissions)
 }
 
 /*!
-    Flushes any buffered data to the file.
+    Flushes any buffered data to the file. Returns true if successful;
+    otherwise returns false.
 */
 
 bool

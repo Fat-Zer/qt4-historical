@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/painting/qprinter.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/painting/qprinter.cpp -->
 <head>
   <title>Qt 4.2: QPrinter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -106,7 +106,7 @@
 <p>The QPrinter class is a paint device that paints on a printer.</p>
 <p>On Windows or Mac OS X, QPrinter uses the built-in printer drivers. On X11, QPrinter generates postscript and sends that to lpr, lp, or another <a href="qprinter.html#printProgram">printProgram</a>(). QPrinter can also print to any other <a href="qprintengine.html">QPrintEngine</a>.</p>
 <p>QPrinter is used in much the same way as <a href="qwidget.html">QWidget</a> and <a href="qpixmap.html">QPixmap</a> are used. The big difference is that you must keep track of pages.</p>
-<p>QPrinter supports a number of settable parameters, most of which can be changed by the end user through a <a href="qabstractprintdialog.html">QAbstractPrintDialog</a> print dialog. In general, QPrinter passes these functions onto the underlying <a href="qprintengine.html">QPrintEngine</a>.</p>
+<p>QPrinter supports a number of settable parameters, most of which can be changed by the end user through a <a href="qprintdialog.html">print dialog</a>. In general, QPrinter passes these functions onto the underlying <a href="qprintengine.html">QPrintEngine</a>.</p>
 <p>The most important parameters are:</p>
 <ul>
 <li><a href="qprinter.html#setOrientation">setOrientation</a>() tells QPrinter which page orientation to use.</li>
@@ -116,16 +116,11 @@
 <li><a href="qprinter.html#setNumCopies">setNumCopies</a>() tells QPrinter how many copies of the document it should print.</li>
 </ul>
 <p>Many of the settable functions can only be called before the actual printing begins (i.e., before <a href="qpainter.html#begin">QPainter::begin</a>() is called). This usually makes sense (e.g., you can't change the number of copies when you are halfway through printing). There are also some settings that the user sets (through the printer dialog) and that applications are expected to obey. See <a href="qabstractprintdialog.html">QAbstractPrintDialog</a>'s documentation for more details.</p>
-<p>Once <a href="qpainter.html#begin">QPainter::begin</a>() has been called, you must call <a href="qprinter.html#newPage">newPage</a>() for each page that you want to print <i>before</i> performing any painting operations.</p>
-<p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th>Printer and Painter Coordinate Systems</th></tr></thead>
-<tr valign="top" class="odd"><td><img src="images/printer-rects.png" /></td><td>The <a href="qprinter.html#paperRect">paperRect</a>() and <a href="qprinter.html#pageRect">pageRect</a>() functions provide information about the size of the paper used for printing and the area on it that can be painted on.<p>The rectangle returned by <a href="qprinter.html#pageRect">pageRect</a>() typically lies inside the rectangle returned by <a href="qprinter.html#paperRect">paperRect</a>(). You do not need to take the positions and sizes of these area into account when using a <a href="qpainter.html">QPainter</a> with a QPrinter as the underlying paint device; the origin of the painter's coordinate system will coincide with the top-left corner of the <a href="qprinter.html#pageRect">pageRect</a>() and painting operations will be clipped to the bounds of the drawable part of the page.</p>
-</td></tr>
-</table></p>
-<p>The paint system automatically uses the correct device metrics when painting text but, if you need to position text using information obtained from font metrics, you need to ensure that the print device is specified when you construct <a href="qfontmetrics.html">QFontMetrics</a> and <a href="qfontmetricsf.html">QFontMetricsF</a> objects.</p>
-<p>use you will probably also need to look at the device metrics for the printer.</p>
+<p>When <a href="qpainter.html#begin">QPainter::begin</a>() is called, the QPrinter it operates on is prepared for a new page, enabling the <a href="qpainter.html">QPainter</a> to be used immediately to paint the first page in a document. Once the first page has been painted, <a href="qprinter.html#newPage">newPage</a>() can be called to request a new blank page to paint on, or <a href="qpainter.html#end">QPainter::end</a>() can be called to finish printing. The second page and all following pages are prepared using a call to <a href="qprinter.html#newPage">newPage</a>() before they are painted.</p>
+<p>The first page in a document does not need to be preceded by a call to <a href="qprinter.html#newPage">newPage</a>(). You only need to calling <a href="qprinter.html#newPage">newPage</a>() after <a href="qpainter.html#begin">QPainter::begin</a>() if you need to insert a blank page at the beginning of a printed document. Similarly, calling <a href="qprinter.html#newPage">newPage</a>() after the last page in a document is painted will result in a trailing blank page appended to the end of the printed document.</p>
 <p>If you want to abort the print job, <a href="qprinter.html#abort">abort</a>() will try its best to stop printing. It may cancel the entire job or just part of it.</p>
 <p>If your current locale converts &quot;,&quot; to &quot;.&quot;, you will need to set a locale that doesn't do this (e.g. the &quot;C&quot; locale) before using QPrinter.</p>
+<p>See also <a href="qprintdialog.html">QPrintDialog</a> and <a href="printing.html">Printing with Qt</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ColorMode-enum"></a>enum QPrinter::ColorMode</h3>
@@ -357,7 +352,7 @@
 <p>Sets the document name to <i>name</i>.</p>
 <p>See also <a href="qprinter.html#docName">docName</a>().</p>
 <h3 class="fn"><a name="setDoubleSidedPrinting"></a>void QPrinter::setDoubleSidedPrinting ( bool <i>doubleSided</i> )</h3>
-<p>Enables double side printing if <i>enable</i> is true; otherwise disables it.</p>
+<p>Enables double sided printing if <i>doubleSided</i> is true; otherwise disables it.</p>
 <p>Currently this option is only supported on X11.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qprinter.html#doubleSidedPrinting">doubleSidedPrinting</a>().</p>
@@ -532,6 +527,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

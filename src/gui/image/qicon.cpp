@@ -493,7 +493,7 @@ QIcon::operator QVariant() const
 
     A null icon always has a serial number of 0.
 
-    Serial numbers are mostly useful in conjunction with cacheing.
+    Serial numbers are mostly useful in conjunction with caching.
 
     \sa QPixmap::serialNumber()
 */
@@ -503,7 +503,8 @@ int QIcon::serialNumber() const
     return d ? d->serialNum : 0;
 }
 
-/*!  Returns a pixmap with the requested \a size, \a mode, and \a
+/*!  
+  Returns a pixmap with the requested \a size, \a mode, and \a
   state, generating one if necessary. The pixmap might be smaller than
   requested, but never larger.
 
@@ -521,7 +522,8 @@ QPixmap QIcon::pixmap(const QSize &size, Mode mode, State state) const
 
     \overload
 
-    Returns a pixmap of size QSize(\a w, \a h).
+    Returns a pixmap of size QSize(\a w, \a h). The pixmap might be smaller than
+    requested, but never larger.
 */
 
 /*!
@@ -529,7 +531,8 @@ QPixmap QIcon::pixmap(const QSize &size, Mode mode, State state) const
 
     \overload
 
-    Returns a pixmap of size QSize(\a extent, \a extent).
+    Returns a pixmap of size QSize(\a extent, \a extent). The pixmap might be smaller
+    than requested, but never larger.
 */
 
 /*!  Returns the actual size of the icon for the requested \a size, \a
@@ -650,6 +653,7 @@ void QIcon::addFile(const QString &fileName, const QSize &size, Mode mode, State
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QIcon &icon)
     \relates QIcon
+    \since 4.2
 
     Writes the given \a icon to the the given \a stream as a PNG
     image. If the icon contains more than one image, all images will
@@ -683,6 +687,7 @@ QDataStream &operator<<(QDataStream &s, const QIcon &icon)
 /*!
     \fn QDataStream &operator>>(QDataStream &stream, QIcon &icon)
     \relates QIcon
+    \since 4.2
 
     Reads an image, or a set of images, from the given \a stream into
     the given \a icon.

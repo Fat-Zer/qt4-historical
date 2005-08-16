@@ -653,7 +653,9 @@ void QDesignerActions::previewForm(QAction *action)
             if (style != 0) {
                 style->setParent(widget);
                 widget->setStyle(style);
-                //widget->setPalette(style->standardPalette());
+                if (style->metaObject()->className() != QApplication::style()->metaObject()->className())
+                    widget->setPalette(style->standardPalette());
+
                 QList<QWidget*> lst = qFindChildren<QWidget*>(widget);
                 foreach (QWidget *w, lst) {
                     if (w->windowType() == Qt::Popup)
@@ -664,6 +666,8 @@ void QDesignerActions::previewForm(QAction *action)
         }
 
         widget->setWindowTitle(tr("%1 - [Preview]").arg(widget->windowTitle()));
+
+        widget->installEventFilter(this);
 
         widget->show();
     }
@@ -1107,4 +1111,21 @@ void QDesignerActions::showFormSettings()
     }
 
     delete settingsDialog;
+}
+
+bool QDesignerActions::eventFilter(QObject *watched, QEvent *event)
+{
+    QWidget *w = qobject_cast<QWidget *>(watched);
+    if (w && w->isWindow() && event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = (QKeyEvent *)event;
+        if (keyEvent && (keyEvent->key() == Qt::Key_Escape
+#ifdef Q_WS_MAC
+            || (keyEvent->modifiers() == Qt::ControlModifier && keyEvent->key() == Qt::Key_Period)
+#endif
+            )) {
+            w->close();
+            return true;
+        }
+    }
+    return QObject::eventFilter(watched, event);
 }

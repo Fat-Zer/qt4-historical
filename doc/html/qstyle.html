@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/styles/qstyle.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/styles/qstyle.cpp -->
 <head>
   <title>Qt 4.2: QStyle Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -29,7 +29,7 @@
 <li><div class="fn"/>enum <b><a href="qstyle.html#PrimitiveElement-enum">PrimitiveElement</a></b> { PE_PanelButtonCommand, PE_FrameDefaultButton, PE_PanelButtonBevel, PE_PanelButtonTool, ..., PE_CustomBase }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a></b> { SP_TitleBarMinButton, SP_TitleBarMenuButton, SP_TitleBarMaxButton, SP_TitleBarCloseButton, ..., SP_CustomBase }</li>
 <li><div class="fn"/>flags <b><a href="qstyle.html#StateFlag-enum">State</a></b></li>
-<li><div class="fn"/>enum <b><a href="qstyle.html#StateFlag-enum">StateFlag</a></b> { State_Active, State_Alternate, State_AutoRaise, State_Bottom, ..., State_ReadOnly }</li>
+<li><div class="fn"/>enum <b><a href="qstyle.html#StateFlag-enum">StateFlag</a></b> { State_Active, State_AutoRaise, State_Bottom, State_Children, ..., State_ReadOnly }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#StyleHint-enum">StyleHint</a></b> { SH_EtchDisabledText, SH_DitherDisabledText, SH_GUIStyle, SH_ScrollBar_ContextMenu, ..., SH_ItemView_MovementWithoutUpdatingSelection }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#SubControl-enum">SubControl</a></b> { SC_None, SC_ScrollBarAddLine, SC_ScrollBarSubLine, SC_ScrollBarAddPage, ..., SC_All }</li>
 <li><div class="fn"/>flags <b><a href="qstyle.html#SubControl-enum">SubControls</a></b></li>
@@ -121,7 +121,7 @@
 <li>a <a href="qwidget.html">QWidget</a> on which the drawing is performed (optional)</li>
 </ul>
 <p>For example, if you want to draw a focus rectangle on your widget, you can write:</p>
-<pre> void MyWidget::paintEvent(QPaintEvent * /* event */)
+<pre> void MyWidget::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
 
@@ -252,7 +252,7 @@
 </table></p>
 <p>See also <a href="qstyle.html#SubControl-enum">SubControl</a> and <a href="qstyle.html#drawComplexControl">drawComplexControl</a>().</p>
 <h3 class="fn"><a name="ContentsType-enum"></a>enum QStyle::ContentsType</h3>
-<p>This enum describes the availble contents types. These are used to calculate sizes for the contents of various widgets.</p>
+<p>This enum describes the available contents types. These are used to calculate sizes for the contents of various widgets.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::CT_CheckBox</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A check box, like <a href="qcheckbox.html">QCheckBox</a>.</td></tr>
@@ -537,7 +537,6 @@
 <p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QStyle::State_Active</tt></td><td align="center" valign="top"><tt>0x00010000</tt></td></tr>
-<tr><td valign="top"><tt>QStyle::State_Alternate</tt></td><td align="center" valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QStyle::State_AutoRaise</tt></td><td align="center" valign="top"><tt>0x00001000</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_Bottom</tt></td><td align="center" valign="top"><tt>0x00000400</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_Children</tt></td><td align="center" valign="top"><tt>0x00080000</tt></td></tr>
@@ -753,12 +752,12 @@
 <h3 class="fn"><a name="dtor.QStyle"></a>QStyle::~QStyle ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the style object.</p>
 <h3 class="fn"><a name="alignedRect"></a><a href="qrect.html">QRect</a> QStyle::alignedRect ( <a href="qt.html#LayoutDirection-enum">Qt::LayoutDirection</a> <i>direction</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i>, const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns a new rectangle of the specifed <i>size</i> that is aligned to the given <i>rectangle</i> according to the specified <i>alignment</i> and <i>direction</i>.</p>
+<p>Returns a new rectangle of the specified <i>size</i> that is aligned to the given <i>rectangle</i> according to the specified <i>alignment</i> and <i>direction</i>.</p>
 <h3 class="fn"><a name="drawComplexControl"></a>void QStyle::drawComplexControl ( <a href="qstyle.html#ComplexControl-enum">ComplexControl</a> <i>control</i>, const <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> * <i>option</i>, <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Draws the given <i>control</i> using the provided <i>painter</i> with the style options specified by <i>option</i>.</p>
 <p>The <i>widget</i> argument is optional and can be used as aid in drawing the control.</p>
 <p>The <i>option</i> parameter is a pointer to a <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> object that can be casted to the correct subclass using the <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() function. Note that the <tt>rect</tt> member of the specified <i>option</i> must be in logical coordinates. Reimplementations of this function should use <a href="qstyle.html#visualRect">visualRect</a>() to change the logical coordinates into screen coordinates before calling the <a href="qstyle.html#drawPrimitive">drawPrimitive</a>() or <a href="qstyle.html#drawControl">drawControl</a>() function.</p>
-<p>The table below is listing the complex control elements and their associated style option subclass. The style options contain all the parameters required to draw the controls, including <a href="qstyleoption.html#state-var">QStyleOption::state</a> which holds the <a href="qstyle.html#StateFlag-enum">style flags</a> that are used when drawing. The table also describes which flags that are set when casting the given <i>option</i> to the appropiate subclass.</p>
+<p>The table below is listing the complex control elements and their associated style option subclass. The style options contain all the parameters required to draw the controls, including <a href="qstyleoption.html#state-var">QStyleOption::state</a> which holds the <a href="qstyle.html#StateFlag-enum">style flags</a> that are used when drawing. The table also describes which flags that are set when casting the given <i>option</i> to the appropriate subclass.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Complex Control</th><th><a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> Subclass</th><th>Style Flag</th><th>Remark</th></tr></thead>
 <tr valign="top" class="odd"><td rowspan="2"><a href="qstyle.html#ComplexControl-enum">CC_SpinBox</a></td><td rowspan="2"><a href="qstyleoptionspinbox.html">QStyleOptionSpinBox</a></td><td><a href="qstyle.html#StateFlag-enum">State_Enabled</a></td><td>Set if the spin box is enabled.</td></tr>
@@ -784,7 +783,7 @@
 <h3 class="fn"><a name="drawControl"></a>void QStyle::drawControl ( <a href="qstyle.html#ControlElement-enum">ControlElement</a> <i>element</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i>, <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Draws the given <i>element</i> with the provided <i>painter</i> with the style options specified by <i>option</i>.</p>
 <p>The <i>widget</i> argument is optional and can be used as aid in drawing the control. The <i>option</i> parameter is a pointer to a <a href="qstyleoption.html">QStyleOption</a> object that can be casted to the correct subclass using the <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() function.</p>
-<p>The table below is listing the control elements and their associated style option subclass. The style options contain all the parameters required to draw the controls, including <a href="qstyleoption.html#state-var">QStyleOption::state</a> which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given option to the appropiate subclass.</p>
+<p>The table below is listing the control elements and their associated style option subclass. The style options contain all the parameters required to draw the controls, including <a href="qstyleoption.html#state-var">QStyleOption::state</a> which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given option to the appropriate subclass.</p>
 <p>Note that if a control element is not listed here, it is because it uses a plain <a href="qstyleoption.html">QStyleOption</a> object.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Control Element</th><th><a href="qstyleoption.html">QStyleOption</a> Subclass</th><th>Style Flag</th><th>Remark</th></tr></thead>
@@ -830,7 +829,7 @@
 <h3 class="fn"><a name="drawPrimitive"></a>void QStyle::drawPrimitive ( <a href="qstyle.html#PrimitiveElement-enum">PrimitiveElement</a> <i>element</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i>, <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Draws the given primitive <i>element</i> with the provided <i>painter</i> using the style options specified by <i>option</i>.</p>
 <p>The <i>widget</i> argument is optional and may contain a widget that may aid in drawing the primitive element.</p>
-<p>The table below is listing the primitive elements and their associated style option subclasses. The style options contain all the parameters required to draw the elements, including <a href="qstyleoption.html#state-var">QStyleOption::state</a> which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given option to the appropiate subclass.</p>
+<p>The table below is listing the primitive elements and their associated style option subclasses. The style options contain all the parameters required to draw the elements, including <a href="qstyleoption.html#state-var">QStyleOption::state</a> which holds the style flags that are used when drawing. The table also describes which flags that are set when casting the given option to the appropriate subclass.</p>
 <p>Note that if a primitive element is not listed here, it is because it uses a plain <a href="qstyleoption.html">QStyleOption</a> object.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Primitive Element</th><th><a href="qstyleoption.html">QStyleOption</a> Subclass</th><th>Style Flag</th><th>Remark</th></tr></thead>
@@ -926,14 +925,14 @@
 <p>See also <a href="qstyle.html#sliderPositionFromValue">sliderPositionFromValue</a>().</p>
 <h3 class="fn"><a name="standardIcon"></a><a href="qicon.html">QIcon</a> QStyle::standardIcon ( <a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a> <i>standardIcon</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const</h3>
 <p>Returns an icon for the given <i>standardIcon</i>.</p>
-<p>The <i>standardIcon</i> is a standard pixmap which can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropiate icon. The <i>widget</i> argument is optional and can also be used to aid the determination of the icon.</p>
+<p>The <i>standardIcon</i> is a standard pixmap which can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropriate icon. The <i>widget</i> argument is optional and can also be used to aid the determination of the icon.</p>
 <p><b>Warning:</b> Because of binary compatibility constraints, this function is not virtual. If you want to provide your own icons in a <a href="qstyle.html">QStyle</a> subclass, reimplement the <a href="qstyle.html#standardIconImplementation">standardIconImplementation</a>() slot in your subclass instead. The standardIcon() function will dynamically detect the slot and call it.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qstyle.html#standardIconImplementation">standardIconImplementation</a>() and <a href="qstyle.html#standardPixmap">standardPixmap</a>().</p>
 <h3 class="fn"><a name="standardIconImplementation"></a><a href="qicon.html">QIcon</a> QStyle::standardIconImplementation ( <a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a> <i>standardIcon</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [protected slot]</tt></h3>
 <p>Returns an icon for the given <i>standardIcon</i>.</p>
 <p>Reimplement this slot to provide your own icons in a <a href="qstyle.html">QStyle</a> subclass; because of binary compatibility constraints, the <a href="qstyle.html#standardIcon">standardIcon</a>() function (introduced in Qt 4.1) is not virtual. Instead, <a href="qstyle.html#standardIcon">standardIcon</a>() will dynamically detect and call <i>this</i> slot. The default implementation simply calls the <a href="qstyle.html#standardPixmap">standardPixmap</a>() function with the given parameters.</p>
-<p>The <i>standardIcon</i> is a standard pixmap which can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropiate icon. The <i>widget</i> argument is optional and can also be used to aid the determination of the icon.</p>
+<p>The <i>standardIcon</i> is a standard pixmap which can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropriate icon. The <i>widget</i> argument is optional and can also be used to aid the determination of the icon.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qstyle.html#standardIcon">standardIcon</a>().</p>
 <h3 class="fn"><a name="standardPalette"></a><a href="qpalette.html">QPalette</a> QStyle::standardPalette () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -941,14 +940,14 @@
 <p>Note that on systems that support system colors, the style's standard palette is not used.</p>
 <h3 class="fn"><a name="standardPixmap"></a><a href="qpixmap.html">QPixmap</a> QStyle::standardPixmap ( <a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a> <i>standardPixmap</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns a pixmap for the given <i>standardPixmap</i>.</p>
-<p>A standard pixmap is a pixmap that can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropiate pixmap. The <i>widget</i> argument is optional and can also be used to aid the determination of the pixmap.</p>
+<p>A standard pixmap is a pixmap that can follow some existing GUI style or guideline. The <i>option</i> argument can be used to pass extra information required when defining the appropriate pixmap. The <i>widget</i> argument is optional and can also be used to aid the determination of the pixmap.</p>
 <p>See also <a href="qstyle.html#standardIcon">standardIcon</a>().</p>
 <h3 class="fn"><a name="styleHint"></a>int QStyle::styleHint ( <a href="qstyle.html#StyleHint-enum">StyleHint</a> <i>hint</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0, <a href="qstylehintreturn.html">QStyleHintReturn</a> * <i>returnData</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns an integer representing the specified style <i>hint</i> for the given <i>widget</i> described by the provided style <i>option</i>.</p>
 <p>Note that currently, the <i>returnData</i> and <i>widget</i> parameters are not used; they are provided for future enhancement. In addition, the <i>option</i> parameter is used only in case of the <a href="qstyle.html#StyleHint-enum">SH_ComboBox_Popup</a>, <a href="qstyle.html#StyleHint-enum">SH_ComboBox_LayoutDirection</a>, and <a href="qstyle.html#StyleHint-enum">SH_GroupBox_TextLabelColor</a> style hints.</p>
 <h3 class="fn"><a name="subControlRect"></a><a href="qrect.html">QRect</a> QStyle::subControlRect ( <a href="qstyle.html#ComplexControl-enum">ComplexControl</a> <i>control</i>, const <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> * <i>option</i>, <a href="qstyle.html#SubControl-enum">SubControl</a> <i>subControl</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the rectangle containing the specified <i>subControl</i> of the given complex <i>control</i> (with the style specified by <i>option</i>). The rectangle is defined in screen coordinates.</p>
-<p>The <i>option</i> argument is a pointer to <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> or one of its subclasses, and can be casted to the appropiate type using the <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() function. See <a href="qstyle.html#drawComplexControl">drawComplexControl</a>() for details. The <i>widget</i> is optional and can contain additional information for the function.</p>
+<p>The <i>option</i> argument is a pointer to <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> or one of its subclasses, and can be casted to the appropriate type using the <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() function. See <a href="qstyle.html#drawComplexControl">drawComplexControl</a>() for details. The <i>widget</i> is optional and can contain additional information for the function.</p>
 <p>See also <a href="qstyle.html#drawComplexControl">drawComplexControl</a>().</p>
 <h3 class="fn"><a name="subElementRect"></a><a href="qrect.html">QRect</a> QStyle::subElementRect ( <a href="qstyle.html#SubElement-enum">SubElement</a> <i>element</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the sub-area for the given <i>element</i> as described in the provided style <i>option</i>. The returned rectangle is defined in screen coordinates.</p>
@@ -991,6 +990,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

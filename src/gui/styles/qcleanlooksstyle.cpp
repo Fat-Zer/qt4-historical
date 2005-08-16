@@ -608,7 +608,7 @@ QCleanlooksStyle::~QCleanlooksStyle()
     \fn void QCleanlooksStyle::drawItemText(QPainter *painter, const QRect &rectangle, int alignment, const QPalette &palette,
                                     bool enabled, const QString& text, QPalette::ColorRole textRole) const
 
-    Draws the given \a text in the specified \c rectangle using the
+    Draws the given \a text in the specified \a rectangle using the
     provided \a painter and \a palette.
 
     Text is drawn using the painter's pen. If an explicit \a textRole
@@ -1328,7 +1328,7 @@ void QCleanlooksStyle::drawControl(ControlElement element, const QStyleOption *o
     case CE_Splitter:
         painter->save();
         {
-            //hover appearence
+            // hover appearance
             QBrush fillColor = option->palette.background().color();
             if (option->state & State_MouseOver && option->state & State_Enabled)
                 fillColor = fillColor.color().light(106);

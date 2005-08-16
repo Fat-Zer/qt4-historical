@@ -112,7 +112,7 @@ static HANDLE qt_adopted_thread_wakeup = 0;
 /*! \internal
     Adds an adopted thread to the list of threads that Qt watches to make sure
     the thread data is properly cleaned up. This function starts the watcher
-    thread if neccesary.
+    thread if necessary.
 */
 void qt_watch_adopted_thread(const HANDLE adoptedThreadHandle, QThread *qthread)
 {
@@ -148,7 +148,6 @@ void qt_adopted_thread_watcher_function(void *)
         const uint handleCount = qt_adopted_thread_handles.count();
 
         if (handleCount == 1) {
-            CloseHandle(qt_adopted_thread_watcher_handle);
             qt_adopted_thread_watcher_handle = 0;
             qt_adopted_thread_watcher_mutex.unlock();
             break;

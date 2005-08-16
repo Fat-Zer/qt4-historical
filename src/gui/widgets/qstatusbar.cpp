@@ -353,7 +353,7 @@ int QStatusBar::insertPermanentWidget(int index, QWidget *widget, int stretch)
 }
 
 /*!
-    Removes the specifed \a widget from the status bar (without
+    Removes the specified \a widget from the status bar (without
     deleting it).
 
     \sa addWidget(), addPermanentWidget(), clearMessage()

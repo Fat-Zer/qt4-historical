@@ -213,7 +213,6 @@ public:
 #endif
     virtual QString displayText() const { return text; }
     virtual QString getAmPmText(AmPm ap, Case cs) const;
-    virtual bool isRightToLeft() const { return false; }
 
     mutable int currentSectionIndex;
     Sections display;
@@ -222,7 +221,7 @@ public:
     QList<SectionNode> sectionNodes;
     SectionNode first, last, none;
     QStringList separators;
-    QString displayFormat, reversedFormat;
+    QString displayFormat;
     QVariant::Type typ;
 
     bool fixday;

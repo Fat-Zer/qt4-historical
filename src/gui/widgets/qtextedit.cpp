@@ -153,6 +153,10 @@ void QTextEditPrivate::init(const QString &html)
     QObject::connect(control, SIGNAL(cursorPositionChanged()), q, SIGNAL(cursorPositionChanged()));
 
     QTextDocument *doc = control->document();
+    // set a null page size initially to avoid any relayouting until the textedit
+    // is shown. relayoutDocument() will take care of setting the page size to the
+    // viewport dimensions later.
+    doc->setPageSize(QSize(0, 0));
     doc->documentLayout()->setPaintDevice(viewport);
     doc->setDefaultFont(q->font());
 
@@ -181,9 +185,9 @@ void QTextEditPrivate::_q_repaintContents(const QRectF &contentsRect)
     }
     const int xOffset = horizontalOffset();
     const int yOffset = verticalOffset();
-    const QRect visibleRect(xOffset, yOffset, viewport->width(), viewport->height());
+    const QRectF visibleRect(xOffset, yOffset, viewport->width(), viewport->height());
 
-    QRect r = contentsRect.toRect().intersected(visibleRect);
+    QRect r = contentsRect.intersected(visibleRect).toRect();
     if (r.isEmpty())
         return;
 
@@ -1715,7 +1719,7 @@ void QTextEdit::setAcceptRichText(bool accept)
     This function allows temporarily marking certain regions in the document
     with a given color, specified as \a selections. This can be useful for
     example in a programming editor to mark a whole line of text with a given
-    background color to indicate the existance of a breakpoint.
+    background color to indicate the existence of a breakpoint.
 
     \sa QTextEdit::ExtraSelection, extraSelections()
 */

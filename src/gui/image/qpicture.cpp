@@ -39,6 +39,11 @@
 #include "qregion.h"
 #include "qdebug.h"
 
+void qt_format_text(const QFont &fnt, const QRectF &_r,
+                    int tf, const QString& str, QRectF *brect,
+                    int tabstops, int *, int tabarraylen,
+                    QPainter *painter);
+
 /*!
     \class QPicture
     \brief The QPicture class is a paint device that records and
@@ -238,10 +243,8 @@ void QPicture::setData(const char* data, uint size)
     Loads a picture from the file specified by \a fileName and returns
     true if successful; otherwise returns false.
 
-    By default, the file will be interpreted as being in the native
-    QPicture format. Specifying the \a format string is optional and
-    is only needed for importing picture data stored in a different
-    format.
+    Please note that the \a format parameter has been deprecated and
+    will have no effect.
 
     \sa save()
 */
@@ -290,8 +293,8 @@ bool QPicture::load(QIODevice *dev, const char *format)
     Saves a picture to the file specified by \a fileName and returns
     true if successful; otherwise returns false.
 
-    Specifying the file \a format string is optional. By default the
-    data will be saved in the native QPicture file format.
+    Please note that the \a format parameter has been deprecated and
+    will have no effect.
 
     \sa load()
 */
@@ -465,7 +468,6 @@ bool QPicture::exec(QPainter *painter, QDataStream &s, int nrecords)
     QMatrix     matrix;
 
     QMatrix worldMatrix = painter->matrix();
-    QMatrix oldWorldMatrix = worldMatrix;
     worldMatrix.scale(qreal(painter->device()->logicalDpiX()) / qreal(qt_defaultDpi()),
                       qreal(painter->device()->logicalDpiY()) / qreal(qt_defaultDpi()));
     painter->setMatrix(worldMatrix);
@@ -577,18 +579,9 @@ bool QPicture::exec(QPainter *painter, QDataStream &s, int nrecords)
             else
                 painter->setLayoutDirection(Qt::LeftToRight);
 
-            font = QFont(font, painter->device());
-
-            QMatrix matrix = painter->matrix();
-            painter->setMatrix(oldWorldMatrix);
-
-            p.rx() *= painter->device()->logicalDpiX() / double(qt_defaultDpi());
-            p.ry() *= painter->device()->logicalDpiY() / double(qt_defaultDpi());
-
             qt_format_text(font, QRectF(p, QSizeF(1, 1)), Qt::TextSingleLine | Qt::TextDontClip, str, /*brect=*/0, /*tabstops=*/0, /*...*/0, /*tabarraylen=*/0, painter);
 
             painter->setLayoutDirection(oldDir);
-            painter->setMatrix(matrix);
             break;
         }
         case QPicturePrivate::PdcDrawPixmap: {
@@ -699,12 +692,8 @@ bool QPicture::exec(QPainter *painter, QDataStream &s, int nrecords)
             break;
         case QPicturePrivate::PdcSetWMatrix:
             s >> matrix >> i_8;
-            matrix.setMatrix(matrix.m11(), matrix.m12(), matrix.m21(), matrix.m22(),
-                             matrix.dx() * painter->device()->logicalDpiX() / double(qt_defaultDpi()),
-                             matrix.dy() * painter->device()->logicalDpiY() / double(qt_defaultDpi()));
             // i_8 is always false due to updateXForm() in qpaintengine_pic.cpp
-            painter->setMatrix(worldMatrix * matrix, false);
-            oldWorldMatrix *= matrix;
+            painter->setMatrix(matrix * worldMatrix, false);
             break;
 // #ifdef Q_Q3PAINTER
 //             case QPicturePrivate::PdcSaveWMatrix:
@@ -992,13 +981,11 @@ QDataStream &operator>>(QDataStream &s, QPicture &r)
 #include "qpictureformatplugin.h"
 
 /*!
+    \obsolete
+
     Returns a string that specifies the picture format of the file \a
     fileName, or 0 if the file cannot be read or if the format is not
     recognized.
-
-    The QPictureIO documentation lists the guaranteed supported picture
-    formats, or use QPicture::inputFormats() and QPicture::outputFormats()
-    to get lists that include the installed formats.
 
     \sa load() save()
 */
@@ -1009,6 +996,8 @@ const char* QPicture::pictureFormat(const QString &fileName)
 }
 
 /*!
+    \obsolete
+
     Returns a list of picture formats that are supported for picture
     input.
 
@@ -1028,6 +1017,8 @@ static QStringList qToStringList(const QList<QByteArray> arr)
 }
 
 /*!
+    \obsolete
+
     Returns a list of picture formats that are supported for picture
     input.
 
@@ -1047,6 +1038,8 @@ QStringList QPicture::inputFormatList()
 
 
 /*!
+    \obsolete
+
     Returns a list of picture formats that are supported for picture
     output.
 
@@ -1065,6 +1058,8 @@ QStringList QPicture::outputFormatList()
 }
 
 /*!
+    \obsolete
+
     Returns a list of picture formats that are supported for picture
     output.
 
@@ -1080,6 +1075,8 @@ QList<QByteArray> QPicture::outputFormats()
  *****************************************************************************/
 
 /*!
+    \obsolete
+
     \class QPictureIO qpicture.h
 
     \brief The QPictureIO class contains parameters for loading and
@@ -1284,7 +1281,7 @@ static QPictureHandler *get_picture_handler(const char *format)
     \skipto add
     \printuntil ...
 
-    Before the regulare expression test, all the 0 bytes in the file header are
+    Before the regular expression test, all the 0 bytes in the file header are
     converted to 1 bytes. This is done because when Qt was ASCII-based, QRegExp
     could not handle 0 bytes in strings.
 

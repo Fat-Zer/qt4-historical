@@ -1187,7 +1187,7 @@ int QSplitter::count() const
 
     This method is also used to handle the situation where a widget is created
     with the splitter as a parent but not explicitly added with insertWidget()
-    or addWidget(). This is for compatiblity and not the recommended way of
+    or addWidget(). This is for compatibility and not the recommended way of
     putting widgets into a splitter in new code. Please use insertWidget() or
     addWidget() in new code.
 
@@ -1660,6 +1660,7 @@ QByteArray QSplitter::saveState() const
 
 /*!
     Restores the splitter's layout to the \a state specified.
+    Returns true if the state is restored; otherwise returns false.
 
     Typically this is used in conjunction with QSettings to restore the size
     from a past session. Here is an example:
@@ -1670,6 +1671,9 @@ QByteArray QSplitter::saveState() const
     \skipto RESTORE
     \skipto QSettings
     \printuntil restoreState(
+
+    A failure to restore the splitter's layout may result from either
+    invalid or out-of-date data in the supplied byte array.
 
     \sa saveState()
 */

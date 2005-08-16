@@ -64,10 +64,12 @@ public:
     int markOption(const char* name, const char* value);
     void saveOptions(QList<const ppd_option_t*> options, QList<const char*> markedOptions);
 
-    QRect paperRect() const;
-    QRect pageRect() const;
+    QRect paperRect(const char *choice) const;
+    QRect pageRect(const char *choice) const;
 
     QStringList options() const;
+
+    static bool printerHasPPD(const char *printerName);
 
 private:
     void collectMarkedOptions(QStringList& list, const ppd_group_t* group = 0) const;

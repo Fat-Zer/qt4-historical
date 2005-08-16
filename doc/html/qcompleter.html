@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/util/qcompleter.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/util/qcompleter.cpp -->
 <head>
   <title>Qt 4.2: QCompleter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -137,7 +137,7 @@
 <p>To retrieve a single candidate string, call <a href="qcompleter.html#completionPrefix-prop">setCompletionPrefix</a>() with the text that needs to be completed and call <a href="qcompleter.html#currentCompletion">currentCompletion</a>(). You can iterate through the list of completions as below:</p>
 <pre> for (int i = 0; completer-&gt;setCurrentRow(i); i++)
      qDebug() &lt;&lt; completer-&gt;currentCompletion() &lt;&lt; &quot; is match number &quot; &lt;&lt; i;</pre>
-<p><a href="qcompleter.html#completionCount">completionCount</a>() returns the total number of completions for the current prefix. <a href="qcompleter.html#completionCount">completionCount</a>() should be avoided when posible, since it requires a scan of the entire model.</p>
+<p><a href="qcompleter.html#completionCount">completionCount</a>() returns the total number of completions for the current prefix. <a href="qcompleter.html#completionCount">completionCount</a>() should be avoided when possible, since it requires a scan of the entire model.</p>
 <a name="the-completion-model"></a>
 <h3>The Completion Model</h3>
 <p><a href="qcompleter.html#completionModel">completionModel</a>() return a list model that contains all possible completions for the current completion prefix, in the order in which they appear in the model. This model can be used to display the current completions in a custom view. Calling <a href="qcompleter.html#completionPrefix-prop">setCompletionPrefix</a>() automatically refreshes the completion model.</p>
@@ -273,7 +273,8 @@
 <p>Returns the popup used to display completions.</p>
 <p>See also <a href="qcompleter.html#setPopup">setPopup</a>().</p>
 <h3 class="fn"><a name="setCurrentRow"></a>bool QCompleter::setCurrentRow ( int <i>row</i> )</h3>
-<p>Sets the current row to the <i>row</i> specified. This function may be used along with <a href="qcompleter.html#currentCompletion">currentCompletion</a>() to iterate through all the possible completions.</p>
+<p>Sets the current row to the <i>row</i> specified. Returns true if successful; otherwise returns false.</p>
+<p>This function may be used along with <a href="qcompleter.html#currentCompletion">currentCompletion</a>() to iterate through all the possible completions.</p>
 <p>See also <a href="qcompleter.html#currentRow">currentRow</a>(), <a href="qcompleter.html#currentCompletion">currentCompletion</a>(), and <a href="qcompleter.html#completionCount">completionCount</a>().</p>
 <h3 class="fn"><a name="setModel"></a>void QCompleter::setModel ( <a href="qabstractitemmodel.html">QAbstractItemModel</a> * <i>model</i> )</h3>
 <p>Sets the model which provides completions to <i>model</i>. The <i>model</i> can be list model or a tree model. If a model has been already previously set and it has the <a href="qcompleter.html">QCompleter</a> as its parent, it is deleted.</p>
@@ -285,7 +286,7 @@
 <p>Ensure that this function is called before the view settings are modified. This is required since view's properties may require that a model has been set on the view (for example, hiding columns in the view requires a model to be set on the view).</p>
 <p>See also <a href="qcompleter.html#popup">popup</a>().</p>
 <h3 class="fn"><a name="setWidget"></a>void QCompleter::setWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
-<p>Sets the widget for which completion are provided for to <i>widget</i>. This function is automatically called when a <a href="qcompleter.html">QCompleter</a> is set on a <a href="qlineedit.html">QLineEdit</a> using <a href="qlineedit.html#setCompleter">QLineEdit::setCompleter</a>() or on a <a href="qcombobox.html">QComboBox</a> using <a href="qcombobox.html#setCompleter">QComboBox::setCompleter</a>(). The widget needs to be set explicity when providing completions for custom widgets.</p>
+<p>Sets the widget for which completion are provided for to <i>widget</i>. This function is automatically called when a <a href="qcompleter.html">QCompleter</a> is set on a <a href="qlineedit.html">QLineEdit</a> using <a href="qlineedit.html#setCompleter">QLineEdit::setCompleter</a>() or on a <a href="qcombobox.html">QComboBox</a> using <a href="qcombobox.html#setCompleter">QComboBox::setCompleter</a>(). The widget needs to be set explicitly when providing completions for custom widgets.</p>
 <p>See also <a href="qcompleter.html#widget">widget</a>(), <a href="qcompleter.html#setModel">setModel</a>(), and <a href="qcompleter.html#setPopup">setPopup</a>().</p>
 <h3 class="fn"><a name="splitPath"></a><a href="qstringlist.html">QStringList</a> QCompleter::splitPath ( const <a href="qstring.html">QString</a> &amp; <i>path</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Splits the given <i>path</i> into strings that are used to match at each level in the <a href="qcompleter.html#model">model</a>().</p>
@@ -299,6 +300,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

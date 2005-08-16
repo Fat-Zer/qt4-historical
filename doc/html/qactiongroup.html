@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/kernel/qactiongroup.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/kernel/qactiongroup.cpp -->
 <head>
   <title>Qt 4.2: QActionGroup Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -87,7 +87,7 @@
 <p>Here we create a new action group. Since the action group is exclusive by default, only one of the actions in the group is checked at any one time.</p>
 <p align="center"><img src="images/qactiongroup-align.png" alt="Alignment options in a QMenu" /></p><p>A QActionGroup emits an <a href="qactiongroup.html#triggered">triggered</a>() signal when one of its actions is chosen. Each action in an action group emits its <a href="qactiongroup.html#triggered">triggered</a>() signal as usual.</p>
 <p>As stated above, an action group is <a href="qactiongroup.html#exclusive-prop">exclusive</a> by default; it ensures that only one checkable action is active at any one time. If you want to group checkable actions without making them exclusive, you can turn of exclusiveness by calling setExclusive(false).</p>
-<p>Actions can be added to an action group using <a href="qactiongroup.html#addAction">addAction</a>(), but it is usually more convenient to specify a group when creating actions; this ensures that actions are automatically created with a parent. Actions can be visually separated from each other using <a href="qactiongroup-qt3.html#addSeparator">addSeparator</a>(). Action groups are added to widgets with the <a href="qwidget.html#addActions">QWidget::addActions</a>() function.</p>
+<p>Actions can be added to an action group using <a href="qactiongroup.html#addAction">addAction</a>(), but it is usually more convenient to specify a group when creating actions; this ensures that actions are automatically created with a parent. Actions can be visually separated from each other by adding a separator action to the group; create an action and use <a href="qaction.html">QAction</a>'s <a href="qaction.html#setSeparator">setSeparator()</a> function to make it considered a separator. Action groups are added to widgets with the <a href="qwidget.html#addActions">QWidget::addActions</a>() function.</p>
 <p>See also <a href="qaction.html">QAction</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -178,6 +178,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

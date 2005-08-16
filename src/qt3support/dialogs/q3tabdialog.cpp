@@ -333,7 +333,7 @@ bool Q3TabDialog::hasOkButton() const
   This applies mainly to Q3TabDialog objects that are kept around
   hidden, rather than being created, shown, and deleted afterwards.
 
-  \sa applyButtonPressed(), show(), cancelButtonPressed()
+  \sa applyButtonPressed(), QWidget::show(), cancelButtonPressed()
 */
 
 

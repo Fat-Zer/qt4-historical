@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/widgets/qmainwindow.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/widgets/qmainwindow.cpp -->
 <head>
   <title>Qt 4.2: QMainWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -262,8 +262,9 @@
 <h3 class="fn"><a name="splitDockWidget"></a>void QMainWindow::splitDockWidget ( <a href="qdockwidget.html">QDockWidget</a> * <i>first</i>, <a href="qdockwidget.html">QDockWidget</a> * <i>second</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i> )</h3>
 <p>Splits the space covered by the <i>first</i> dock widget into two parts, moves the <i>first</i> dock widget into the first part, and moves the <i>second</i> dock widget into the second part.</p>
 <p>The <i>orientation</i> specifies how the space is divided: A <a href="qt.html#Orientation-enum">Qt::Horizontal</a> split places the second dock widget to the right of the first; a <a href="qt.html#Orientation-enum">Qt::Vertical</a> split places the second dock widget below the first.</p>
-<p><i>Note</i>: if <i>first</i> is currently in a tabbed docked area, <i>second</i> will be added as a new tab, not as a neighbor of <i>next</i>. This is because a single tab can contain only one dock widget.</p>
+<p><i>Note</i>: if <i>first</i> is currently in a tabbed docked area, <i>second</i> will be added as a new tab, not as a neighbor of <i>first</i>. This is because a single tab can contain only one dock widget.</p>
 <p><i>Note</i>: The <a href="qt.html#LayoutDirection-enum">Qt::LayoutDirection</a> influences the order of the dock widgets in the two parts of the divided area. When right-to-left layout direction is enabled, the placing of the dock widgets will be reversed.</p>
+<p>See also <a href="qmainwindow.html#tabifyDockWidget">tabifyDockWidget</a>(), <a href="qmainwindow.html#addDockWidget">addDockWidget</a>(), and <a href="qmainwindow.html#removeDockWidget">removeDockWidget</a>().</p>
 <h3 class="fn"><a name="statusBar"></a><a href="qstatusbar.html">QStatusBar</a> * QMainWindow::statusBar () const</h3>
 <p>Returns the status bar for the main window. This function creates and returns an empty status bar if the status bar does not exist.</p>
 <p>See also <a href="qmainwindow.html#setStatusBar">setStatusBar</a>().</p>
@@ -284,6 +285,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1489,7 +1489,7 @@ QStyleOptionSpinBox QAbstractSpinBoxPrivate::getStyleOption() const
         opt.state |= QStyle::State_Sunken;
 
     opt.stepEnabled = q->style()->styleHint(QStyle::SH_SpinControls_DisableOnBounds)
-                      ? q->stepEnabled() 
+                      ? q->stepEnabled()
                       : (QAbstractSpinBox::StepDownEnabled|QAbstractSpinBox::StepUpEnabled);
 
     opt.frame = frame;
@@ -1567,6 +1567,8 @@ void QAbstractSpinBoxPrivate::setValue(const QVariant &val, EmitPolicy ep,
 void QAbstractSpinBoxPrivate::updateEdit()
 {
     Q_Q(QAbstractSpinBox);
+    if (type == QVariant::Invalid)
+        return;
     const QString newText = specialValue() ? specialValueText : prefix + textFromValue(value) + suffix;
     if (newText == edit->displayText())
         return;

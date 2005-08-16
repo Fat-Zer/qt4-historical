@@ -320,7 +320,7 @@ void QFontEngine::addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout *glyp
     item.fontEngine = this;
     item.f = 0;
 
-    p.drawTextItem(QPointF(0, item.ascent.toReal()), item);
+    p.drawTextItem(QPointF(-metrics.x.toReal(), item.ascent.toReal()), item);
     p.end();
 
     QImage image = bm.toImage();
@@ -365,7 +365,7 @@ QImage QFontEngine::alphaMapForGlyph(glyph_t glyph)
     if (glyph_width <= 0 || glyph_height <= 0)
         return QImage();
     QFixedPoint pt;
-    pt.x = -glyph_x;
+    pt.x = 0;
     pt.y = -glyph_y; // the baseline
     QPainterPath path;
     QImage im(glyph_width + glyph_x, glyph_height, QImage::Format_ARGB32_Premultiplied);
@@ -412,7 +412,7 @@ QFontEngine::Properties QFontEngine::properties() const
     p.descent = descent();
     p.leading = leading();
     p.emSquare = p.ascent;
-    p.boundingBox = QRectF(0, p.ascent.toReal(), maxCharWidth(), (p.ascent + p.descent).toReal());
+    p.boundingBox = QRectF(0, -p.ascent.toReal(), maxCharWidth(), (p.ascent + p.descent).toReal());
     p.italicAngle = 0;
     p.capHeight = p.ascent;
     p.lineWidth = lineThickness();

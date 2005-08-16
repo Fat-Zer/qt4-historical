@@ -130,9 +130,6 @@ QWidget *VariantDelegate::createEditor(QWidget *parent,
         lineEdit->setValidator(validator);
     }
 
-    connect(lineEdit, SIGNAL(returnPressed()),
-            this, SLOT(commitAndCloseEditor()));
-
     return lineEdit;
 }
 
@@ -297,11 +294,4 @@ QString VariantDelegate::displayText(const QVariant &value)
         return value.toTime().toString(Qt::ISODate);
     }
     return QString("<%1>").arg(value.typeName());
-}
-
-void VariantDelegate::commitAndCloseEditor()
-{
-    QWidget *editor = qobject_cast<QWidget *>(sender());
-    emit commitData(editor);
-    emit closeEditor(editor);
 }

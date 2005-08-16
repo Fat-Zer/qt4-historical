@@ -302,7 +302,7 @@ const QString::Null QString::null = QString::Null();
 
     You can also pass string literals to functions that take QStrings
     as arguments, invoking the QString(const char *)
-    constructor. Similarily, you can pass a QString to a function that
+    constructor. Similarly, you can pass a QString to a function that
     takes a \c{const char *} argument using the \l qPrintable() macro
     which returns the given QString as a \c{const char *}. This is
     equivalent to calling <QString>.toAscii().constData().
@@ -2705,7 +2705,7 @@ QString QString::left(int len)  const
 {
     if (d == &shared_null)
         return QString();
-    if (len > d->size || len < 0)
+    if (len >= d->size || len < 0)
         return *this;
     return QString((const QChar*) d->data, len);
 }
@@ -2730,7 +2730,7 @@ QString QString::right(int len) const
 {
     if (d == &shared_null)
         return QString();
-    if (len > d->size || len < 0)
+    if (len >= d->size || len < 0)
         return *this;
     return QString((const QChar*) d->data + d->size - len, len);
 }

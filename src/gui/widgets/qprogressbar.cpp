@@ -125,7 +125,7 @@ bool QProgressBarPrivate::repaintRequired() const
     is still running.
 
     The progress bar uses the concept of \e steps. You set it up by
-    specifying the minumum and maximum possible step values, and it
+    specifying the minimum and maximum possible step values, and it
     will display the percentage of steps that have been completed
     when you later give it the current step value. The percentage is
     calculated by dividing the progress (value() - minimum()) divided
@@ -160,6 +160,10 @@ bool QProgressBarPrivate::repaintRequired() const
 
     \value TopToBottom The text is rotated 90 degrees clockwise.
     \value BottomToTop The text is rotated 90 degrees counter-clockwise.
+
+    Note that whether or not the text is drawn is dependent on the style.
+    Currently CDE, CleanLooks, Motif, and Plastique draw the text. Mac, Windows
+    and WindowsXP style do not.
 
     \sa textDirection
 */

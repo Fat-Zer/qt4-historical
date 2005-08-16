@@ -26,13 +26,13 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.2.1"
+#define QT_VERSION_STR   "4.2.2"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040201
+#define QT_VERSION 0x040202
 
-#define QT_PACKAGEDATE_STR "2006-10-20"
+#define QT_PACKAGEDATE_STR "2006-11-27"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>
@@ -147,8 +147,8 @@
 #endif
 
 #if defined(Q_OS_DARWIN)
-#  define Q_OS_MAC /* Q_OS_MAC is mostly for compatiblity, but also more clear */
-#  define Q_OS_MACX /* Q_OS_MACX is only for compatiblity.*/
+#  define Q_OS_MAC /* Q_OS_MAC is mostly for compatibility, but also more clear */
+#  define Q_OS_MACX /* Q_OS_MACX is only for compatibility.*/
 #endif
 
 #if defined(Q_OS_MSDOS) || defined(Q_OS_OS2) || defined(Q_OS_WIN)
@@ -1221,12 +1221,6 @@ Q_CORE_EXPORT QT3_SUPPORT void qSystemWarning(const char *msg, int code = -1);
 Q_CORE_EXPORT void qErrnoWarning(int code, const char *msg, ...);
 Q_CORE_EXPORT void qErrnoWarning(const char *msg, ...);
 
-#ifdef QT_NO_DEBUG_OUTPUT
-#  define qDebug if(1); else qDebug
-#endif
-#ifdef QT_NO_WARNING_OUTPUT
-#  define qWarning if(1); else qWarning
-#endif
 #if (defined(QT_NO_DEBUG_OUTPUT) || defined(QT_NO_TEXTSTREAM)) && !defined(QT_NO_DEBUG_STREAM)
 #define QT_NO_DEBUG_STREAM
 #endif
@@ -1244,6 +1238,13 @@ Q_CORE_EXPORT_INLINE QDebug qWarning();
 Q_CORE_EXPORT_INLINE QDebug qCritical();
 #else
 inline QNoDebug qDebug();
+#endif
+
+#ifdef QT_NO_DEBUG_OUTPUT
+#  define qDebug if(1); else qDebug
+#endif
+#ifdef QT_NO_WARNING_OUTPUT
+#  define qWarning if(1); else qWarning
 #endif
 
 inline void qt_noop() {}

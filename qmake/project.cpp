@@ -1371,8 +1371,9 @@ QMakeProject::isActiveConfig(const QString &x, bool regex, QMap<QString, QString
     else if(Option::target_mode == Option::TARG_WIN_MODE && x == "win32")
         return true;
     QRegExp re(x, Qt::CaseSensitive, QRegExp::Wildcard);
-    QString spec = Option::mkfile::qmakespec.right(Option::mkfile::qmakespec.length() -
-                                                   (Option::mkfile::qmakespec.lastIndexOf(QDir::separator())+1));
+    static QString spec;
+    if(spec.isEmpty())
+        spec = QFileInfo(Option::mkfile::qmakespec).fileName();
     if((regex && re.exactMatch(spec)) || (!regex && spec == x))
         return true;
 #ifdef Q_OS_UNIX
@@ -1395,7 +1396,7 @@ QMakeProject::isActiveConfig(const QString &x, bool regex, QMap<QString, QString
 #elif defined(Q_OS_WIN)
     else if(spec == "default") {
         // We can't resolve symlinks as they do on Unix, so configure.exe puts the source of the
-        // qmake.conf at the end of the default/qmake.conf in the QMAKESPEC_ORG variable. 
+        // qmake.conf at the end of the default/qmake.conf in the QMAKESPEC_ORG variable.
         const QStringList &spec_org = (place ? (*place)["QMAKESPEC_ORIGINAL"]
                                              : vars["QMAKESPEC_ORIGINAL"]);
         if (!spec_org.isEmpty()) {

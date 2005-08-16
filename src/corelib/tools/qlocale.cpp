@@ -603,7 +603,8 @@ QVariant QSystemLocale::query(QueryType type, QVariant in = QVariant()) const
         QString result = getWinLocaleInfo(locale_info);
         if (format_string)
             result = winToQtFormat(result);
-        return result;
+        if (!result.isEmpty())
+            return result;
     }
     return QVariant();
 }
@@ -1046,10 +1047,14 @@ QVariant QSystemLocale::query(QueryType type, QVariant in = QVariant()) const
     switch(type) {
 //     case Name:
 //         return getMacLocaleName();
-    case DecimalPoint:
-        return getCFLocaleValue(kCFLocaleDecimalSeparator);
-    case GroupSeparator:
-        return getCFLocaleValue(kCFLocaleGroupingSeparator);
+    case DecimalPoint: {
+        QString value = getCFLocaleValue(kCFLocaleDecimalSeparator);
+        return value.isEmpty() ? QVariant() : value;
+    }
+    case GroupSeparator: {
+        QString value = getCFLocaleValue(kCFLocaleGroupingSeparator);
+        return value.isEmpty() ? QVariant() : value;
+    }
     case DateFormatLong:
     case DateFormatShort:
         return macToQtFormat(getMacDateFormat(type == DateFormatShort
@@ -3020,8 +3025,9 @@ static QString qulltoa(qulonglong l, int base, const QLocalePrivate &locale)
 {
     ushort buff[65]; // length of MAX_ULLONG in base 2
     ushort *p = buff + 65;
+    const QChar _zero = locale.zero();
 
-    if (base != 10 || locale.zero().unicode() == '0') {
+    if (base != 10 || _zero.unicode() == '0') {
         while (l != 0) {
             int c = l % base;
 
@@ -3039,7 +3045,7 @@ static QString qulltoa(qulonglong l, int base, const QLocalePrivate &locale)
         while (l != 0) {
             int c = l % base;
 
-            *(--p) = locale.zero().unicode() + c;
+            *(--p) = _zero.unicode() + c;
 
             l /= base;
         }
@@ -3216,8 +3222,10 @@ QString QLocalePrivate::doubleToString(double d,
             free(buff);
 #endif // QT_QLOCALE_USES_FCVT
 
-        if (zero().unicode() != '0') {
-            ushort z = zero().unicode() - '0';
+        const QChar _zero = zero();
+
+        if (_zero.unicode() != '0') {
+            ushort z = _zero.unicode() - '0';
             for (int i = 0; i < digits.length(); ++i)
                 reinterpret_cast<ushort *>(digits.data())[i] += z;
         }
@@ -3514,7 +3522,8 @@ bool QLocalePrivate::numberToCLocale(const QString &num,
     const QChar *uc = num.unicode();
     int l = num.length();
     int idx = 0;
-    const ushort zeroUnicode = zero().unicode();
+    const QChar _zero = zero();
+    const ushort zeroUnicode = _zero.unicode();
     const ushort tenUnicode = zeroUnicode + 10;
 
     // Skip whitespace
@@ -3522,6 +3531,8 @@ bool QLocalePrivate::numberToCLocale(const QString &num,
         ++idx;
     if (idx == l)
         return false;
+
+    const QChar _group = group();
 
     while (idx < l) {
         char out;
@@ -3539,7 +3550,7 @@ bool QLocalePrivate::numberToCLocale(const QString &num,
             out = ',';
         // In several languages group() is the char 0xA0, which looks like a space.
         // People use a regular space instead of it and complain it doesn't work.
-        else if (group().unicode() == 0xA0 && in.unicode() == ' ')
+        else if (_group.unicode() == 0xA0 && in.unicode() == ' ')
             out = ',';
         else if (in == exponential() || in == exponential().toUpper())
             out = 'e';
@@ -3696,7 +3707,7 @@ qulonglong QLocalePrivate::bytearrayToUnsLongLong(const char *num, int base, boo
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
+ *    must display the following acknowledgment:
  *        This product includes software developed by the University of
  *        California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors

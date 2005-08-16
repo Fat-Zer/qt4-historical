@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/doc/src/examples/hellotr.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/hellotr.qdoc -->
 <head>
   <title>Qt 4.2: Hello tr() Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -42,7 +42,7 @@
  TRANSLATIONS = hellotr_la.ts</pre>
 <p>will work. <tt>TRANSLATIONS</tt> specifies the message files we want to maintain. In this example, we just maintain one set of translations, namely Latin.</p>
 <p>Note that the file extension is <tt>.ts</tt>, not <tt>.qm</tt>. The <tt>.ts</tt> translation source format is designed for use during the application's development. Programmers or release managers run the <tt>lupdate</tt> program to generate and update <tt>.ts</tt> files with the source text that is extracted from the source code. Translators read and update the <tt>.ts</tt> files using <i>Qt Linguist</i> adding and editing their translations.</p>
-<p>The <tt>.ts</tt> format is human-readable XML that can be emailed directly and is easy to put under version control. If you edit this file manually, be aware that the default encoding for XML is UTF-8, not Latin1 (ISO 8859-1). One way to type in a Latin1 character such as '' (Norwegian o with slash) is to use an XML entity: &quot;&amp;#xf8;&quot;. This will work for any Unicode 4.0 character.</p>
+<p>The <tt>.ts</tt> format is human-readable XML that can be emailed directly and is easy to put under version control. If you edit this file manually, be aware that the default encoding for XML is UTF-8, not Latin1 (ISO 8859-1). One way to type in a Latin1 character such as '&oslash;' (Norwegian o with slash) is to use an XML entity: &quot;&amp;#xf8;&quot;. This will work for any Unicode 4.0 character.</p>
 <p>Once the translations are complete the <tt>lrelease</tt> program is used to convert the <tt>.ts</tt> files into the <tt>.qm</tt> Qt message file format. The <tt>.qm</tt> format is a compact binary format designed to deliver very fast lookup performance. Both <tt>lupdate</tt> and <tt>lrelease</tt> read all the project's source and header files (as specified in the HEADERS and SOURCES lines of the project file) and extract the strings that appear in <tt>tr()</tt> function calls.</p>
 <p><tt>lupdate</tt> is used to create and update the message files (<tt>hellotr_la.ts</tt> in this case) to keep them in sync with the source code. It is safe to run <tt>lupdate</tt> at any time, as <tt>lupdate</tt> does not remove any information. For example, you can put it in the makefile, so the <tt>.ts</tt> files are updated whenever the source changes.</p>
 <p>Try running <tt>lupdate</tt> right now, like this:</p>
@@ -75,6 +75,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

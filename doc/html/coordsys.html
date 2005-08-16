@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/doc/src/coordsys.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/coordsys.qdoc -->
 <head>
   <title>Qt 4.2: The Coordinate System</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -89,8 +89,8 @@
 <tr valign="top" class="odd"><td><img src="images/qpainter-clock.png" /></td><td><img src="images/qpainter-rotation.png" /></td><td><img src="images/qpainter-scale.png" /></td><td><img src="images/qpainter-translation.png" /></td></tr>
 <tr valign="top" class="even"><td>nop</td><td><a href="qpainter.html#rotate">rotate()</a></td><td><a href="qpainter.html#scale">scale()</a></td><td><a href="qpainter.html#translate">translate()</a></td></tr>
 </table></p>
-<p>You can also twist the coordinate system around the origin using the <a href="qpainter.html#shear">QPainter::shear</a>() function. See the <a href="demos-affine.html">Affine Transformations</a> demo for a visualization of a sheared coordinate system. All the transformation operations operate on <a href="qpainter.html">QPainter</a>'s transformation matrix that you can retrieve using the <a href="qpainter-obsolete.html#matrix">QPainter::matrix</a>() function. A matrix transforms a point in the plane to another point.</p>
-<p>If you need the same transformations over and over, you can also use <a href="qmatrix.html">QMatrix</a> objects and the <a href="qpainter-obsolete.html#matrix">QPainter::matrix</a>() and <a href="qpainter-obsolete.html#setMatrix">QPainter::setMatrix</a>() functions. You can at any time save the <a href="qpainter.html">QPainter</a>'s transformation matrix by calling the <a href="qpainter.html#save">QPainter::save</a>() function which saves the matrix on an internal stack. The <a href="qpainter.html#restore">QPainter::restore</a>() function pops it back.</p>
+<p>You can also twist the coordinate system around the origin using the <a href="qpainter.html#shear">QPainter::shear</a>() function. See the <a href="demos-affine.html">Affine Transformations</a> demo for a visualization of a sheared coordinate system. All the transformation operations operate on <a href="qpainter.html">QPainter</a>'s transformation matrix that you can retrieve using the <a href="qpainter.html#worldMatrix">QPainter::worldMatrix</a>() function. A matrix transforms a point in the plane to another point.</p>
+<p>If you need the same transformations over and over, you can also use <a href="qmatrix.html">QMatrix</a> objects and the <a href="qpainter.html#worldMatrix">QPainter::worldMatrix</a>() and <a href="qpainter.html#setWorldMatrix">QPainter::setWorldMatrix</a>() functions. You can at any time save the <a href="qpainter.html">QPainter</a>'s transformation matrix by calling the <a href="qpainter.html#save">QPainter::save</a>() function which saves the matrix on an internal stack. The <a href="qpainter.html#restore">QPainter::restore</a>() function pops it back.</p>
 <p>One frequent need for the transformation matrix is when reusing the same drawing code on a variety of paint devices. Without transformations, the results are tightly bound to the resolution of the paint device. Printers have high resolution, e.g. 600 dots per inch, whereas screens often have between 72 and 100 dots per inch.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th colspan="2">Analog Clock Example</th></tr></thead>
@@ -148,7 +148,7 @@
 <a name="window-viewport-conversion"></a>
 <h2>Window-Viewport Conversion</h2>
 <p>When drawing with <a href="qpainter.html">QPainter</a>, we specify points using logical coordinates which then are converted into the physical coordinates of the paint device.</p>
-<p>The mapping of the logical coordinates to the physical coordinates are handled by <a href="qpainter.html">QPainter</a>'s world transformation <a href="qpainter-obsolete.html#matrix">matrix()</a> (described in the <a href="#transformations">Transformations</a> section), and <a href="qpainter.html">QPainter</a>'s <a href="qpainter.html#viewport">viewport()</a> and <a href="qpainter.html#window">window()</a>. The viewport represents the physical coordinates specifying an arbitrary rectangle. The &quot;window&quot; describes the same rectangle in logical coordinates. By default the logical and physical coordinate systems coincide, and are equivalent to the paint device's rectangle.</p>
+<p>The mapping of the logical coordinates to the physical coordinates are handled by <a href="qpainter.html">QPainter</a>'s world transformation <a href="qpainter.html#worldMatrix">worldMatrix()</a> (described in the <a href="#transformations">Transformations</a> section), and <a href="qpainter.html">QPainter</a>'s <a href="qpainter.html#viewport">viewport()</a> and <a href="qpainter.html#window">window()</a>. The viewport represents the physical coordinates specifying an arbitrary rectangle. The &quot;window&quot; describes the same rectangle in logical coordinates. By default the logical and physical coordinate systems coincide, and are equivalent to the paint device's rectangle.</p>
 <p>Using window-viewport conversion you can make the logical coordinate system fit your preferences. The mechanism can also be used to make the drawing code independent of the paint device. You can, for example, make the logical coordinates extend from (-50, -50) to (50, 50) with (0, 0) in the center by calling the <a href="qpainter.html#setWindow">QPainter::setWindow</a>() function:</p>
 <pre>     QPainter painter(this);
      painter.setWindow(QRect(-50, -50, 100, 100));</pre>
@@ -167,6 +167,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

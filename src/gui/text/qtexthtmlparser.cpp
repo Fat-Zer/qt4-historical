@@ -130,7 +130,7 @@ static const struct QTextHtmlEntity { const char *name; quint16 code; } entities
     { "copy", 0x00a9 },
     { "crarr", 0x21b5 },
     { "cup", 0x222a },
-    { "curren", 0x00a4 },
+    { "cur" "ren", 0x00a4 },
     { "dArr", 0x21d3 },
     { "dagger", 0x2020 },
     { "darr", 0x2193 },
@@ -1045,6 +1045,8 @@ void QTextHtmlParserNode::initializeProperties(const QTextHtmlParserNode *parent
     fontFamily = parent->fontFamily;
     hasFontPointSize = parent->hasFontPointSize;
     fontPointSize = parent->fontPointSize;
+    hasFontPixelSize = parent->hasFontPixelSize;
+    fontPixelSize = parent->fontPixelSize;
     fontSizeAdjustment = parent->fontSizeAdjustment;
     hasFontSizeAdjustment = parent->hasFontSizeAdjustment;
     fontWeight = parent->fontWeight;
@@ -1528,9 +1530,11 @@ void QTextHtmlParser::applyAttributes(const QStringList &attributes)
                     QColor c; c.setNamedColor(value);
                     node->background = c;
                 } else if (key == QLatin1String("rowspan")) {
-                    setIntAttribute(&node->tableCellRowSpan, value);
+                    if (setIntAttribute(&node->tableCellRowSpan, value))
+                        node->tableCellRowSpan = qMax(1, node->tableCellRowSpan);
                 } else if (key == QLatin1String("colspan")) {
-                    setIntAttribute(&node->tableCellColSpan, value);
+                    if (setIntAttribute(&node->tableCellColSpan, value))
+                        node->tableCellColSpan = qMax(1, node->tableCellColSpan);
                 }
                 break;
             case Html_table:

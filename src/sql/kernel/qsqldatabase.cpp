@@ -353,9 +353,9 @@ void QSqlDatabasePrivate::disable()
     To make programming more convenient, QSqlDatabase is a value
     class. Any changes done to a database connection through one
     QSqlDatabase object will affect other QSqlDatabase objects
-    representing the same connection. Call cloneConnection() if you
-    want to create an independent database connection based on an
-    existing one.
+    representing the same connection. Call cloneDatabase() if you want
+    to create an independent database connection based on an existing
+    one.
 
     If you need multiple database connections simultaneously, specify
     an arbitrary name to addDatabase() and database(). Call
@@ -1435,7 +1435,7 @@ QSqlRecord QSqlDatabase::recordInfo(const QSqlQuery& query) const
     database connection.
 
     Note that the connection is not opened, to use it, it is
-    neccessary to call open() first.
+    necessary to call open() first.
 */
 QSqlDatabase QSqlDatabase::cloneDatabase(const QSqlDatabase &other, const QString &connectionName)
 {

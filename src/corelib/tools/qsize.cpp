@@ -47,7 +47,7 @@
 
     Use the expandedTo() function to retrieve a size which holds the
     maximum height and width of \e this size and a given
-    size. Similarily, the boundedTo() function returns a size which
+    size. Similarly, the boundedTo() function returns a size which
     holds the minimum height and width of \e this size and a given
     size.
 
@@ -463,7 +463,7 @@ QDebug operator<<(QDebug dbg, const QSize &s) {
 
     Use the expandedTo() function to retrieve a size which holds the
     maximum height and width of this size and a given
-    size. Similarily, the boundedTo() function returns a size which
+    size. Similarly, the boundedTo() function returns a size which
     holds the minimum height and width of this size and a given size.
 
     The QSizeF class also provides the toSize() function returning a
@@ -837,7 +837,7 @@ void QSizeF::scale(const QSizeF &s, Qt::AspectRatioMode mode)
 
 QDataStream &operator<<(QDataStream &s, const QSizeF &sz)
 {
-    s << sz.width() << sz.height();
+    s << double(sz.width()) << double(sz.height());
     return s;
 }
 
@@ -856,8 +856,8 @@ QDataStream &operator>>(QDataStream &s, QSizeF &sz)
     double w, h;
     s >> w;
     s >> h;
-    sz.setWidth(w);
-    sz.setHeight(h);
+    sz.setWidth(qreal(w));
+    sz.setHeight(qreal(h));
     return s;
 }
 #endif // QT_NO_DATASTREAM

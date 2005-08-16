@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
   <title>Qt 4.2: QWSInputMethod Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -95,12 +95,12 @@
 <p>This virtual function allows subclasses of <a href="qwsinputmethod.html">QWSInputMethod</a> to handle key input from physical or virtual keyboards.</p>
 <p>To block the event from further processing, return true when reimplementing this function; the default implementation returns false.</p>
 <p>The key input is identified by its <i>unicode</i>, <i>keycode</i> (a <a href="qt.html#Key-enum">Qt::Key</a> value), <i>modifiers</i> (an OR combination of <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a>), <i>isPress</i> telling whether the input is a key press or key release, and <i>autoRepeat</i> determining if the input is <a href="qwskeyboardhandler.html#beginAutoRepeat">auto repeated</a>.</p>
-<p>See also <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> and <a href="qtopiacore-charinput.html">Character Input</a>.</p>
+<p>See also <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> and <a href="qtopiacore-charinput.html">Qtopia Core Character Input</a>.</p>
 <h3 class="fn"><a name="filter-2"></a>bool QWSInputMethod::filter ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i>, int <i>state</i>, int <i>wheel</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This virtual function allows subclasses of <a href="qwsinputmethod.html">QWSInputMethod</a> to handle mouse input from physical or virtual pointer devices.</p>
 <p>To block the event from further processing, return true when reimplementing this function; the default implementation returns false. The mouse event is specified by the given <i>position</i>, <i>state</i> and <i>wheel</i> parameters.</p>
-<p>See also <a href="qwsinputmethod.html#setInputResolution">setInputResolution</a>(), <a href="qwsmousehandler.html">QWSMouseHandler</a>, and <a href="qtopiacore-pointer.html">Pointer Handling</a>.</p>
+<p>See also <a href="qwsinputmethod.html#setInputResolution">setInputResolution</a>(), <a href="qwsmousehandler.html">QWSMouseHandler</a>, and <a href="qtopiacore-pointer.html">Qtopia Core Pointer Handling</a>.</p>
 <h3 class="fn"><a name="inputResolutionShift"></a><a href="qtglobal.html#uint-typedef">uint</a> QWSInputMethod::inputResolutionShift () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the number of bits shifted to go from pointer resolution to screen resolution when filtering mouse events using the <a href="qwsinputmethod.html#filter">filter</a>() function.</p>
 <p>See also <a href="qwsinputmethod.html#setInputResolution">setInputResolution</a>().</p>
@@ -152,6 +152,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

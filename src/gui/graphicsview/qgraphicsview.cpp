@@ -246,8 +246,8 @@ public:
     QRegion backgroundPixmapExposed;
 
 #ifndef QT_NO_CURSOR
-    QCursor viewCursor;
-    bool hasViewCursor;
+    QCursor originalCursor;
+    bool hasStoredOriginalCursor;
 #endif
 
     QGraphicsSceneDragDropEvent *lastDragDropEvent;
@@ -273,7 +273,7 @@ QGraphicsViewPrivate::QGraphicsViewPrivate()
 #endif
       handScrolling(false), cacheMode(0), mustResizeBackgroundPixmap(true),
 #ifndef QT_NO_CURSOR
-      hasViewCursor(false),
+      hasStoredOriginalCursor(false),
 #endif
       lastDragDropEvent(0)
 {
@@ -723,14 +723,21 @@ QGraphicsView::DragMode QGraphicsView::dragMode() const
 void QGraphicsView::setDragMode(DragMode mode)
 {
     Q_D(QGraphicsView);
+    if (d->dragMode == mode)
+        return;
+
+#ifndef QT_NO_CURSOR
+    if (d->dragMode == ScrollHandDrag)
+        viewport()->unsetCursor();
+#endif
+
     d->dragMode = mode;
+
 #ifndef QT_NO_CURSOR
     if (d->dragMode == ScrollHandDrag) {
-        d->hasViewCursor = true;
-        d->viewCursor = QCursor(Qt::OpenHandCursor);
-        viewport()->setCursor(d->viewCursor);
-    } else {
-        unsetCursor();
+        // Forget the stored viewport cursor when we enter scroll hand drag mode.
+        d->hasStoredOriginalCursor = false;
+        viewport()->setCursor(Qt::OpenHandCursor);
     }
 #endif
 }
@@ -740,11 +747,11 @@ void QGraphicsView::setDragMode(DragMode mode)
     \brief which parts of the view are cached
 
     QGraphicsView can cache pre-rendered content in a QPixmap, which is then
-    drawn onto the viewport. The purpose of such cacheing is to speed up the
+    drawn onto the viewport. The purpose of such caching is to speed up the
     total rendering time for areas that are slow to render.  Texture, gradient
     and alpha blended backgrounds, for example, can be notibly slow to render;
     especially with a transformed view. The CacheBackground flag enables
-    cacheing of the view's background. For example:
+    caching of the view's background. For example:
 
     \code
         QGraphicsView view;
@@ -793,11 +800,11 @@ void QGraphicsView::resetCachedContent()
         return;
 
     if (d->cacheMode & CacheBackground) {
-        // Background cacheing is enabled.
+        // Background caching is enabled.
         d->mustResizeBackgroundPixmap = true;
         viewport()->update();
     } else if (d->mustResizeBackgroundPixmap) {
-        // Background cacheing is disabled.
+        // Background caching is disabled.
         // Cleanup, free some resources.
         d->mustResizeBackgroundPixmap = false;
         d->backgroundPixmap = QPixmap();
@@ -943,7 +950,7 @@ QMatrix QGraphicsView::matrix() const
     To simplify interation with items using a transformed view, QGraphicsView
     provides mapTo... and mapFrom... functions that can translate between
     scene and view coordinates. For example, you can call mapToScene() to map
-    a view coordiate to a floating point scene coordinate, or mapFromScene()
+    a view coordinate to a floating point scene coordinate, or mapFromScene()
     to map from floating point scene coordinates to view coordinates.
 
     \sa matrix(), rotate(), scale(), shear(), translate()
@@ -1824,6 +1831,7 @@ bool QGraphicsView::event(QEvent *event)
 bool QGraphicsView::viewportEvent(QEvent *event)
 {
     Q_D(QGraphicsView);
+
     if (!d->scene)
         return QAbstractScrollArea::viewportEvent(event);
 
@@ -1837,14 +1845,22 @@ bool QGraphicsView::viewportEvent(QEvent *event)
     case QEvent::Enter:
         QApplication::sendEvent(d->scene, event);
         break;
+    case QEvent::WindowDeactivate:
+        // ### This is a temporary fix for until we get proper mouse
+        // grab events. mouseGrabberItem should be set to 0 if we lose
+        // the mouse grab.
+        d->scene->d_func()->mouseGrabberItem = 0;
+        break;
     case QEvent::Leave:
-        d->useLastMouseEvent = false;
-#ifndef QT_NO_CURSOR
-        if (d->hasViewCursor && !d->scene->mouseGrabberItem()) {
-            d->hasViewCursor = false;
-            viewport()->setCursor(d->viewCursor);
+        // ### This is a temporary fix for until we get proper mouse
+        // grab events. mouseGrabberItem should be set to 0 if we lose
+        // the mouse grab.
+        if ((QApplication::activePopupWidget() && QApplication::activePopupWidget() != window())
+            || (QApplication::activeModalWidget() && QApplication::activeModalWidget() != window())
+            || (QApplication::activeWindow() != window())) {
+            d->scene->d_func()->mouseGrabberItem = 0;
         }
-#endif
+        d->useLastMouseEvent = false;
         QApplication::sendEvent(d->scene, event);
         break;
 #ifndef QT_NO_TOOLTIP
@@ -2148,10 +2164,6 @@ void QGraphicsView::mousePressEvent(QMouseEvent *event)
                && event->button() == Qt::LeftButton) {
         d->handScrolling = true;
 #ifndef QT_NO_CURSOR
-        if (!d->hasViewCursor) {
-            d->hasViewCursor = true;
-            d->viewCursor = viewport()->cursor();
-        }
         viewport()->setCursor(Qt::ClosedHandCursor);
 #endif
     }
@@ -2225,22 +2237,31 @@ void QGraphicsView::mouseMoveEvent(QMouseEvent *event)
     QApplication::sendEvent(d->scene, &mouseEvent);
 
     // Store the last item under the mouse for use when replaying.
-    if ((d->lastItemUnderCursor = d->scene->itemAt(mapToScene(event->pos()))))
+    QList<QGraphicsItem *> itemsUnderCursor = d->scene->items(mapToScene(event->pos()));
+    if (!itemsUnderCursor.isEmpty()) {
+        d->lastItemUnderCursor = itemsUnderCursor.first();
         d->lastItemUnderCursorPos = d->lastItemUnderCursor->mapFromScene(mouseEvent.scenePos());
+    }
 
 #ifndef QT_NO_CURSOR
-    if (d->lastItemUnderCursor) {
-        if (!d->hasViewCursor) {
-            d->hasViewCursor = true;
-            d->viewCursor = viewport()->cursor();
+    // Find the topmost item under the mouse with a cursor.
+    foreach (QGraphicsItem *item, itemsUnderCursor) {
+        if (item->hasCursor()) {
+            if (!d->hasStoredOriginalCursor) {
+                // Store the original viewport cursor.
+                d->hasStoredOriginalCursor = true;
+                d->originalCursor = viewport()->cursor();
+            }
+            viewport()->setCursor(item->cursor());
+            return;
         }
-        if (d->lastItemUnderCursor->hasCursor())
-            viewport()->setCursor(d->lastItemUnderCursor->cursor());
-    } else {
-        if (d->hasViewCursor) {
-            d->hasViewCursor = false;
-            viewport()->setCursor(d->viewCursor);
-        }
+    }
+
+    // No items with cursors found; revert to the view cursor.
+    if (d->hasStoredOriginalCursor) {
+        // Restore the original viewport cursor.
+        d->hasStoredOriginalCursor = false;
+        viewport()->setCursor(d->originalCursor);
     }
 #endif
 }
@@ -2267,10 +2288,10 @@ void QGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 #endif
     if (d->dragMode == QGraphicsView::ScrollHandDrag) {
 #ifndef QT_NO_CURSOR
-        if (d->hasViewCursor) {
-            d->hasViewCursor = false;
-            viewport()->setCursor(d->viewCursor);
-        }
+        // Restore the open hand cursor. ### There might be items
+        // under the mouse that have a valid cursor at this time, so
+        // we could repeat the steps from mouseMoveEvent().
+        viewport()->setCursor(Qt::OpenHandCursor);
 #endif
         d->handScrolling = false;
     }
@@ -2395,7 +2416,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
             QPainter p(&d->backgroundPixmap);
             p.fillRect(0, 0, d->backgroundPixmap.width(), d->backgroundPixmap.height(),
                        viewport()->palette().brush(viewport()->backgroundRole()));
-            d->backgroundPixmapExposed = QRegion(event->rect());
+            d->backgroundPixmapExposed = QRegion(viewport()->rect());
             d->mustResizeBackgroundPixmap = false;
         }
 

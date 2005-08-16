@@ -138,7 +138,7 @@ const ppd_file_t* QCUPSSupport::setCurrentPrinter(int index)
     // marking default options
     _ppdMarkDefaults(currPPD);
 
-    // marking options explicitely set
+    // marking options explicitly set
     _cupsMarkOptions(currPPD, printers[currPrinterIndex].num_options, printers[currPrinterIndex].options);
 
     // getting pointer to page sizes
@@ -241,23 +241,27 @@ void QCUPSSupport::saveOptions(QList<const ppd_option_t*> options, QList<const c
     _cupsSetDests(prnCount, printers);
 }
 
-QRect QCUPSSupport::paperRect() const
+QRect QCUPSSupport::paperRect(const char *choice) const
 {
+    if (!currPPD)
+        return QRect();
     for (int i = 0; i < currPPD->num_sizes; ++i) {
-        if (currPPD->sizes[i].marked == 0)
-            return QRect(0, 0, (int)currPPD->sizes[i].width, (int)currPPD->sizes[i].length);
+        if (qstrcmp(currPPD->sizes[i].name, choice) == 0)
+            return QRect(0, 0, qRound(currPPD->sizes[i].width), qRound(currPPD->sizes[i].length));
     }
     return QRect();
 }
 
-QRect QCUPSSupport::pageRect() const
+QRect QCUPSSupport::pageRect(const char *choice) const
 {
+    if (!currPPD)
+        return QRect();
     for (int i = 0; i < currPPD->num_sizes; ++i) {
-        if (currPPD->sizes[i].marked == 0)
-            return QRect((int)currPPD->sizes[i].left,
-                         (int)currPPD->sizes[i].length - (int)currPPD->sizes[i].top,
-                         (int)(currPPD->sizes[i].right - currPPD->sizes[i].left),
-                         (int)(currPPD->sizes[i].top - currPPD->sizes[i].bottom));
+        if (qstrcmp(currPPD->sizes[i].name, choice) == 0)
+            return QRect(qRound(currPPD->sizes[i].left),
+                         qRound(currPPD->sizes[i].length - currPPD->sizes[i].top),
+                         qRound(currPPD->sizes[i].right - currPPD->sizes[i].left),
+                         qRound(currPPD->sizes[i].top - currPPD->sizes[i].bottom));
     }
     return QRect();
 }
@@ -267,6 +271,13 @@ QStringList QCUPSSupport::options() const
     QStringList list;
     collectMarkedOptions(list);
     return list;
+}
+
+bool QCUPSSupport::printerHasPPD(const char *printerName)
+{
+    if (!isAvailable())
+        return false;
+    return _cupsGetPPD(printerName) != 0;
 }
 
 void QCUPSSupport::collectMarkedOptions(QStringList& list, const ppd_group_t* group) const

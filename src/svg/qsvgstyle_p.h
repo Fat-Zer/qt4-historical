@@ -246,7 +246,7 @@ public:
     void setPointSize(qreal size);
     qreal pointSize() const;
 
-    //### hack to avoid having a seperate style element for text-anchor
+    //### hack to avoid having a separate style element for text-anchor
     QString textAnchor() const;
     void setTextAnchor(const QString &anchor);
 
@@ -394,7 +394,7 @@ public:
     };
 public:
     QSvgAnimateTransform(int startMs, int endMs, int by = 0);
-    void setArgs(TransformType type, const QList<qreal> &args);
+    void setArgs(TransformType type, const QVector<qreal> &args);
     void setFreeze(bool freeze);
     void setRepeatCount(qreal repeatCount);
     virtual void apply(QPainter *p, const QRectF &, QSvgNode *node);
@@ -406,7 +406,7 @@ private:
     qreal m_from, m_to, m_by;
     qreal m_totalRunningTime;
     TransformType m_type;
-    QList<qreal> m_args;
+    QVector<qreal> m_args;
     int m_count;
     QMatrix m_transform;
     QMatrix m_oldWorldMatrix;

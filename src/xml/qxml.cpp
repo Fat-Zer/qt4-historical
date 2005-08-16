@@ -78,7 +78,7 @@ static const signed char cltDq      = 12; // "
 static const signed char cltSq      = 13; // '
 static const signed char cltUnknown = 14;
 
-// Hack for letting QDom know where the skipped entity occured
+// Hack for letting QDom know where the skipped entity occurred
 bool qt_xml_skipped_entity_in_content;
 
 // character lookup table
@@ -939,6 +939,19 @@ int QXmlAttributes::index(const QString& qName) const
     return -1;
 }
 
+#ifdef Q_WS_QWS
+/*! \overload
+  */
+int QXmlAttributes::index(const QLatin1String& qName) const
+{
+    for (int i = 0; i < attList.size(); ++i) {
+        if (attList.at(i).qname == qName)
+            return i;
+    }
+    return -1;
+}
+#endif
+
 /*!
     \overload
 
@@ -1078,6 +1091,24 @@ QString QXmlAttributes::value(const QString& qName) const
         return QString();
     return attList.at(i).value;
 }
+
+#ifdef Q_WS_QWS
+/*!
+    \overload
+
+    Returns an attribute's value for the qualified name \a qName, or an
+    empty string if no attribute exists for the name given.
+
+    \sa {Namespace Support via Features}
+*/
+QString QXmlAttributes::value(const QLatin1String& qName) const
+{
+    int i = index(qName);
+    if (i == -1)
+        return QString();
+    return attList.at(i).value;
+}
+#endif
 
 /*!
     \overload
@@ -3414,7 +3445,7 @@ bool QXmlSimpleReaderPrivate::parseBeginOrContinue(int state, bool incremental)
   ad 7: Get the new state according to the input that was read.
   ad 8: Do some actions according to the state. The last line in every case
         statement reads new data (i.e. it move the cursor). This can also be
-        done by calling another parse...() funtion. If you need processing for
+        done by calling another parse...() function. If you need processing for
         this state after that, you have to put it into the switch statement 5.
         This ensures that you have a well defined re-entry point, when you ran
         out of data.

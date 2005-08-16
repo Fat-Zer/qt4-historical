@@ -184,7 +184,7 @@ void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
     }
 
     QBrush brush;
-    //we need to resolve boundries
+    //we need to resolve boundaries
     //the code is funky i'll have to verify it
     //(testcases right now are bugs/resolve_radial.svg
     // and bugs/resolve_linear.svg)
@@ -422,7 +422,7 @@ QSvgAnimateTransform::QSvgAnimateTransform(int startMs, int endMs, int byMs )
     m_totalRunningTime = m_to - m_from;
 }
 
-void QSvgAnimateTransform::setArgs(TransformType type, const QList<qreal> &args)
+void QSvgAnimateTransform::setArgs(TransformType type, const QVector<qreal> &args)
 {
     m_type = type;
     m_args = args;

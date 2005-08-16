@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/xml/qxml.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/xml/qxml.cpp -->
 <head>
   <title>Qt 4.2: QXmlAttributes Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -27,7 +27,8 @@
 <li><div class="fn"/>void <b><a href="qxmlattributes.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qxmlattributes.html#count">count</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qxmlattributes.html#index">index</a></b> ( const QString &amp; <i>qName</i> ) const</li>
-<li><div class="fn"/>int <b><a href="qxmlattributes.html#index-2">index</a></b> ( const QString &amp; <i>uri</i>, const QString &amp; <i>localPart</i> ) const</li>
+<li><div class="fn"/>int <b><a href="qxmlattributes.html#index-2">index</a></b> ( const QLatin1String &amp; <i>qName</i> ) const</li>
+<li><div class="fn"/>int <b><a href="qxmlattributes.html#index-3">index</a></b> ( const QString &amp; <i>uri</i>, const QString &amp; <i>localPart</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qxmlattributes.html#length">length</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qxmlattributes.html#localName">localName</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qxmlattributes.html#qName">qName</a></b> ( int <i>index</i> ) const</li>
@@ -37,7 +38,8 @@
 <li><div class="fn"/>QString <b><a href="qxmlattributes.html#uri">uri</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qxmlattributes.html#value">value</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qxmlattributes.html#value-2">value</a></b> ( const QString &amp; <i>qName</i> ) const</li>
-<li><div class="fn"/>QString <b><a href="qxmlattributes.html#value-3">value</a></b> ( const QString &amp; <i>uri</i>, const QString &amp; <i>localName</i> ) const</li>
+<li><div class="fn"/>QString <b><a href="qxmlattributes.html#value-3">value</a></b> ( const QLatin1String &amp; <i>qName</i> ) const</li>
+<li><div class="fn"/>QString <b><a href="qxmlattributes.html#value-4">value</a></b> ( const QString &amp; <i>uri</i>, const QString &amp; <i>localName</i> ) const</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -63,7 +65,9 @@
 <p>Looks up the index of an attribute by the qualified name <i>qName</i>.</p>
 <p>Returns the index of the attribute or -1 if it wasn't found.</p>
 <p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
-<h3 class="fn"><a name="index-2"></a>int QXmlAttributes::index ( const <a href="qstring.html">QString</a> &amp; <i>uri</i>, const <a href="qstring.html">QString</a> &amp; <i>localPart</i> ) const</h3>
+<h3 class="fn"><a name="index-2"></a>int QXmlAttributes::index ( const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>qName</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="index-3"></a>int QXmlAttributes::index ( const <a href="qstring.html">QString</a> &amp; <i>uri</i>, const <a href="qstring.html">QString</a> &amp; <i>localPart</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Looks up the index of an attribute by a namespace name.</p>
 <p><i>uri</i> specifies the namespace URI, or an empty string if the name has no namespace URI. <i>localPart</i> specifies the attribute's local name.</p>
@@ -99,7 +103,11 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns an attribute's value for the qualified name <i>qName</i>, or an empty string if no attribute exists for the name given.</p>
 <p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
-<h3 class="fn"><a name="value-3"></a><a href="qstring.html">QString</a> QXmlAttributes::value ( const <a href="qstring.html">QString</a> &amp; <i>uri</i>, const <a href="qstring.html">QString</a> &amp; <i>localName</i> ) const</h3>
+<h3 class="fn"><a name="value-3"></a><a href="qstring.html">QString</a> QXmlAttributes::value ( const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>qName</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns an attribute's value for the qualified name <i>qName</i>, or an empty string if no attribute exists for the name given.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
+<h3 class="fn"><a name="value-4"></a><a href="qstring.html">QString</a> QXmlAttributes::value ( const <a href="qstring.html">QString</a> &amp; <i>uri</i>, const <a href="qstring.html">QString</a> &amp; <i>localName</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns an attribute's value by namespace name.</p>
 <p><i>uri</i> specifies the namespace URI, or an empty string if the name has no namespace URI. <i>localName</i> specifies the attribute's local name.</p>
@@ -107,6 +115,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

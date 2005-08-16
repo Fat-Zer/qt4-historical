@@ -85,7 +85,7 @@ public:
     mutable QHash<QAction *, QWidget *> widgetItems;
     void calcActionRects(QMap<QAction*, QRect> &actionRects, QList<QAction*> &actionList) const;
     void updateActions();
-    const QRect popupGeometry(int screen) const;
+    QRect popupGeometry(int screen=-1) const;
     QList<QAction *> filterActions(const QList<QAction *> &actions) const;
     uint ncols : 4; //4 bits is probably plenty
     uint collapsibleSeparators : 1;
@@ -118,7 +118,7 @@ public:
     void scrollMenu(QMenuScroller::ScrollDirection direction, bool page=false, bool active=false);
     void scrollMenu(QAction *action, QMenuScroller::ScrollLocation location, bool active=false);
 
-    //syncronous operation (ie exec())
+    //synchronous operation (ie exec())
     QEventLoop *eventLoop;
     QPointer<QAction> syncAction;
     QStyleOptionMenuItem getStyleOption(const QAction *action) const;

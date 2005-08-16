@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-win-opensource-src-4.2.1/src/corelib/tools/qvector.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/tools/qvector.cpp -->
 <head>
   <title>Qt 4.2: QVector Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -124,7 +124,7 @@
 <p>QVector&lt;T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It stores its items in adjacent memory locations and provides fast index-based access.</p>
 <p><a href="qlist.html">QList</a>&lt;T&gt;, <a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;, and <a href="qvarlengtharray.html">QVarLengthArray</a>&lt;T&gt; provide similar functionality. Here's an overview:</p>
 <ul>
-<li>For most purposes, <a href="qlist.html">QList</a> is the right class to use. Operations like <a href="qvector.html#prepend">prepend</a>() and <a href="qvector.html#insert">insert</a>() are usually faster than with QVector because of the way <a href="qlist.html">QList</a> stores its items in memory, and its index-based API is more convenient than <a href="qlinkedlist.html">QLinkedList</a>'s iterator-based API. It also expands to less code in your executable.</li>
+<li>For most purposes, <a href="qlist.html">QList</a> is the right class to use. Operations like <a href="qvector.html#prepend">prepend</a>() and <a href="qvector.html#insert">insert</a>() are usually faster than with QVector because of the way <a href="qlist.html">QList</a> stores its items in memory (see <a href="containers.html#algorithmic-complexity">Algorithmic Complexity</a> for details), and its index-based API is more convenient than <a href="qlinkedlist.html">QLinkedList</a>'s iterator-based API. It also expands to less code in your executable.</li>
 <li>If you need a real linked list, with guarantees of <a href="containers.html#constant-time">constant time</a> insertions in the middle of the list and iterators to items rather than indexes, use <a href="qlinkedlist.html">QLinkedList</a>.</li>
 <li>If you want the items to occupy adjacent memory positions, use QVector.</li>
 <li>If you want a low-level variable-size array, <a href="qvarlengtharray.html">QVarLengthArray</a> may be sufficient.</li>
@@ -271,7 +271,7 @@
 <h3 class="fn"><a name="data-2"></a>const T * QVector::data () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="empty"></a>bool QVector::empty () const</h3>
-<p>This function is provided for STL compatibility. It is equivalent to <a href="qvector.html#isEmpty">isEmpty</a>().</p>
+<p>This function is provided for STL compatibility. It is equivalent to <a href="qvector.html#isEmpty">isEmpty</a>(), returning true if the vector is empty; otherwise returns false.</p>
 <h3 class="fn"><a name="end"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::end ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the vector.</p>
 <p>See also <a href="qvector.html#begin">begin</a>() and <a href="qvector.html#constEnd">constEnd</a>().</p>
@@ -494,6 +494,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>
