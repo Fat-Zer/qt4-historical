@@ -110,6 +110,7 @@ QTextCodec *TWTextCodecs::createForName(const QByteArray &name)
 }
 
 
-Q_EXPORT_PLUGIN(TWTextCodecs);
+Q_EXPORT_STATIC_PLUGIN(TWTextCodecs);
+Q_EXPORT_PLUGIN2(qtwcodecs, TWTextCodecs);
 
 #endif // QT_NO_TEXTCODECPLUGIN

@@ -23,14 +23,14 @@
 #ifndef QTEXTLAYOUT_H
 #define QTEXTLAYOUT_H
 
-#include "QtCore/qstring.h"
-#include "QtCore/qnamespace.h"
-#include "QtCore/qrect.h"
-#include "QtCore/qvector.h"
-#include "QtGui/qcolor.h"
-#include "QtCore/qobject.h"
-#include "QtGui/qevent.h"
-#include "QtGui/qtextformat.h"
+#include <QtCore/qstring.h>
+#include <QtCore/qnamespace.h>
+#include <QtCore/qrect.h>
+#include <QtCore/qvector.h>
+#include <QtGui/qcolor.h>
+#include <QtCore/qobject.h>
+#include <QtGui/qevent.h>
+#include <QtGui/qtextformat.h>
 
 QT_MODULE(Gui)
 
@@ -149,6 +149,9 @@ private:
 
     friend class QPainter;
     friend class QPSPrinter;
+    friend void qt_format_text(const QFont &font, const QRectF &_r, int tf, const QString& str,
+                               QRectF *brect, int tabstops, int* tabarray, int tabarraylen,
+                               QPainter *painter);
     QTextEngine *d;
 };
 

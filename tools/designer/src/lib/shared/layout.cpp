@@ -39,6 +39,8 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QMainWindow>
 
+namespace qdesigner_internal {
+
 class FriendlyBoxLayout: public QBoxLayout
 {
 public:
@@ -46,11 +48,6 @@ public:
 
     friend void insert_into_box_layout(QBoxLayout *box, int index, QWidget *widget);
 };
-
-static bool operator<(const QPointer<QWidget> &p1, const QPointer<QWidget> &p2)
-{
-    return p1.operator->() < p2.operator->();
-}
 
 void add_to_box_layout(QBoxLayout *box, QWidget *widget)
 {
@@ -84,6 +81,7 @@ void add_to_grid_layout(QGridLayout *grid, QWidget *widget, int r, int c, int rs
         grid->addWidget(widget, r, c, rs, cs, align);
     }
 }
+
 
 /*!
   \class Layout layout.h
@@ -201,6 +199,7 @@ void Layout::setup()
         connect(w, SIGNAL(destroyed()), this, SLOT(widgetDestroyed()));
         startPoint = QPoint(qMin(startPoint.x(), w->x()), qMin(startPoint.y(), w->y()));
         QRect rc(w->geometry());
+
         geometries.insert(w, rc);
         // Change the Z-order, as saving/loading uses the Z-order for
         // writing/creating widgets and this has to be the same as in
@@ -214,8 +213,9 @@ void Layout::setup()
 void Layout::widgetDestroyed()
 {
      if (sender() && sender()->isWidgetType()) {
-         const QWidget *w = static_cast<const QWidget*>(sender());
-         m_widgets.removeAt(m_widgets.indexOf(const_cast<QWidget*>(w)));
+         QWidget *w = static_cast<QWidget *>(sender());
+         m_widgets.removeAt(m_widgets.indexOf(w));
+         geometries.remove(w);
      }
 }
 
@@ -285,7 +285,7 @@ void Layout::undoLayout()
     formWindow->selectWidget(layoutBase, false);
 
     QDesignerWidgetFactoryInterface *widgetFactory = formWindow->core()->widgetFactory();
-    QMapIterator<QPointer<QWidget>, QRect> it(geometries);
+    QHashIterator<QWidget *, QRect> it(geometries);
     while (it.hasNext()) {
         it.next();
 
@@ -972,3 +972,6 @@ void GridLayout::buildGrid()
 
     grid->simplify();
 }
+
+
+} // namespace qdesigner_internal

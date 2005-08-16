@@ -29,13 +29,6 @@
 
 #include "finddialog.h"
 
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qwhatsthis.h>
-
 FindDialog::FindDialog(QWidget *parent)
     : QDialog(parent)
 {

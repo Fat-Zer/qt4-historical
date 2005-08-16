@@ -24,14 +24,17 @@
 #ifndef QNAMESPACE_H
 #define QNAMESPACE_H
 
-#include "QtCore/qglobal.h"
+#include <QtCore/qglobal.h>
 
 QT_MODULE(Core)
 
 #ifndef Q_MOC_RUN
-namespace Qt {
+namespace
 #else
-class Q_CORE_EXPORT Qt {
+class Q_CORE_EXPORT
+#endif
+Qt {
+#ifdef Q_MOC_RUN
     Q_OBJECT
     Q_ENUMS(Orientation TextFormat BackgroundMode DateFormat ScrollBarPolicy FocusPolicy ContextMenuPolicy CaseSensitivity LayoutDirection ArrowType)
     Q_ENUMS(ToolButtonStyle)
@@ -39,6 +42,7 @@ class Q_CORE_EXPORT Qt {
     Q_FLAGS(Alignment)
     Q_FLAGS(Orientations)
     Q_FLAGS(DockWidgetAreas)
+    Q_ENUMS(DockWidgetArea)
 public:
 #endif
     enum GlobalColor {
@@ -287,8 +291,9 @@ public:
         WA_Disabled = 0,
         WA_UnderMouse = 1,
         WA_MouseTracking = 2,
-        WA_ContentsPropagated = 3,
-        WA_NoBackground = 4,
+        WA_ContentsPropagated = 3, // ## deprecated
+        WA_OpaquePaintEvent = 4,
+        WA_NoBackground = WA_OpaquePaintEvent, // ## deprecated
         WA_StaticContents = 5,
         WA_LaidOut = 7,
         WA_PaintOnScreen = 8,
@@ -335,13 +340,13 @@ public:
         WA_WState_Reparented = 63,
         WA_WState_ConfigPending = 64,
         WA_WState_Polished = 66,
-        WA_WState_DND = 67, // ## depricated
+        WA_WState_DND = 67, // ## deprecated
         WA_WState_OwnSizePolicy = 68,
         WA_WState_ExplicitShowHide = 69,
 
-        WA_ShowModal = 70, // ## for now, need mode (application modal, modal to parent, ...)
+        WA_ShowModal = 70, // ## deprecated
         WA_MouseNoMask = 71,
-        WA_GroupLeader = 72, // ## for now, might go away.
+        WA_GroupLeader = 72, // ## deprecated
         WA_NoMousePropagation = 73, // ## for now, might go away.
         WA_Hover = 74,
         WA_InputMethodTransparent = 75, // Don't reset IM when user clicks on this (for virtual keyboards on embedded)
@@ -350,7 +355,13 @@ public:
         WA_KeyboardFocusChange = 77,
 
         WA_AcceptDrops = 78,
-        WA_ForceAcceptDrops = 79,
+        WA_DropSiteRegistered = 79, // internal
+        WA_ForceAcceptDrops = WA_DropSiteRegistered, // ## deprecated
+
+        WA_WindowPropagation = 80,
+
+        WA_NoX11EventCompression = 81,
+        WA_TintedBackground = 82,
 
         // Add new attributes above this
         WA_AttributeCount
@@ -669,6 +680,7 @@ public:
 	// you are writing your own input method
 
 	// International & multi-key character composition
+        Key_AltGr               = 0x01001103,
 	Key_Multi_key           = 0x01001120,  // Multi-key character compose
 	Key_Codeinput           = 0x01001137,
 	Key_SingleCandidate     = 0x0100113c,
@@ -796,6 +808,20 @@ public:
 
         Key_MediaLast = 0x0100ffff,
 
+        // Keypad navigation keys
+        Key_Select = 0x01010000,
+        Key_Yes = 0x01010001,
+        Key_No = 0x01010002,
+
+        // Device keys
+        Key_Context1 = 0x01100000,
+        Key_Context2 = 0x01100001,
+        Key_Context3 = 0x01100002,
+        Key_Context4 = 0x01100003,
+        Key_Call = 0x01100004,
+        Key_Hangup = 0x01100005,
+        Key_Flip = 0x01100006,
+
         Key_unknown = 0x01ffffff
     };
 
@@ -814,6 +840,7 @@ public:
         DotLine,
         DashDotLine,
         DashDotDotLine,
+        CustomDashLine,
         MPenStyle = 0x0f
     };
 
@@ -861,10 +888,11 @@ public:
 #ifndef qdoc
     typedef int MacintoshVersion;
 
-    enum {
+    enum
 #else
-    enum MacintoshVersion {
+    enum MacintoshVersion
 #endif
+    {
         //Unknown
         MV_Unknown  = 0x0000,
 
@@ -889,10 +917,11 @@ public:
 #ifndef qdoc
     typedef int WindowsVersion;
 
-    enum {
+    enum
 #else
-    enum WindowsVersion {
+    enum WindowsVersion
 #endif
+    {
         WV_32s = QSysInfo::WV_32s,
         WV_95 = QSysInfo::WV_95,
         WV_98 = QSysInfo::WV_98,
@@ -1151,7 +1180,8 @@ public:
         PopupFocusReason,
         ShortcutFocusReason,
         MenuBarFocusReason,
-        OtherFocusReason
+        OtherFocusReason,
+        NoFocusReason
     };
 
     enum ContextMenuPolicy {
@@ -1213,6 +1243,8 @@ public:
         // Accessibility
         AccessibleTextRole = 11,
         AccessibleDescriptionRole = 12,
+        // More Metadata
+        SizeHintRole = 13,
         // Reserved
         UserRole = 32
     };
@@ -1251,7 +1283,18 @@ public:
     typedef void * HANDLE;
 #endif
     typedef WindowFlags WFlags;
+
+    enum WindowModality {
+        NonModal,
+        WindowModal,
+        ApplicationModal
+    };
+
 }
+#ifdef Q_MOC_RUN
+ ;
+#endif
+
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::MouseButtons)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::Orientations)
@@ -1270,11 +1313,12 @@ class Q_CORE_EXPORT QInternal {
 public:
     enum PaintDeviceFlags {
         UnknownDevice = 0x00,
-        Widget = 0x01,
-        Pixmap = 0x02,
-        Image = 0x03,
-        Printer = 0x04,
-        Picture = 0x05
+        Widget        = 0x01,
+        Pixmap        = 0x02,
+        Image         = 0x03,
+        Printer       = 0x04,
+        Picture       = 0x05,
+        Pbuffer       = 0x06
     };
     enum RelayoutType {
         RelayoutNormal,

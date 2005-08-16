@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/examples/basiclayouts.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/examples/basiclayouts.qdoc -->
 <head>
-    <title>Qt 4.0: Basic Layouts Example</title>
+    <title>Qt 4.1: Basic Layouts Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -135,14 +135,14 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       for (int i = 0; i &lt; NumGridRows; ++i) {
             labels[i] = new QLabel(tr(&quot;Line %1:&quot;).arg(i + 1));
             lineEdits[i] = new QLineEdit;
-            layout-&gt;addWidget(labels[i], i, 0);
-            layout-&gt;addWidget(lineEdits[i], i, 1);
+            layout-&gt;addWidget(labels[i], i + 1, 0);
+            layout-&gt;addWidget(lineEdits[i], i + 1, 1);
         }</pre>
 <p>For each row in the grid we create a label and an associated line edit, and add them to the layout. The <a href="qgridlayout.html#addWidget">QGridLayout::addWidget</a>() function differ from the corresponding function in <a href="qboxlayout.html">QBoxLayout</a>: It needs the row and column specifying the grid cell to put the widget in.</p>
 <pre>&nbsp;       smallEditor = new QTextEdit;
         smallEditor-&gt;setPlainText(tr(&quot;This widget takes up about two thirds of the &quot;
                                      &quot;grid layout.&quot;));
-        layout-&gt;addWidget(smallEditor, 0, 2, 3, 1);</pre>
+        layout-&gt;addWidget(smallEditor, 0, 2, 4, 1);</pre>
 <p><a href="qgridlayout.html#addWidget">QGridLayout::addWidget</a>() can in addition take arguments specifying the number of rows and columns the cell will be spanning. In this example, we create a small editor which spans three rows and one column.</p>
 <p>For both the <a href="qboxlayout.html#addWidget">QBoxLayout::addWidget</a>() and <a href="qgridlayout.html#addWidget">QGridLayout::addWidget</a>() functions it is also possible to add a last argument specifying the widget's alignment. By default it fills the whole cell. But we could, for example, align a widget with the right edge by specifying the alignment to be <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>.</p>
 <pre>&nbsp;       layout-&gt;setColumnStretch(1, 10);
@@ -156,6 +156,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

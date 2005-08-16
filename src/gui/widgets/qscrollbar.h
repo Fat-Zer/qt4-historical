@@ -24,8 +24,8 @@
 #ifndef QSCROLLBAR_H
 #define QSCROLLBAR_H
 
-#include "QtGui/qwidget.h"
-#include "QtGui/qabstractslider.h"
+#include <QtGui/qwidget.h>
+#include <QtGui/qabstractslider.h>
 
 QT_MODULE(Gui)
 
@@ -51,6 +51,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *);
     void hideEvent(QHideEvent*);
     void sliderChange(SliderChange change);
+    void contextMenuEvent(QContextMenuEvent *);
 
 #ifdef QT3_SUPPORT
 public:
@@ -67,4 +68,5 @@ private:
 };
 
 #endif // QT_NO_SCROLLBAR
+
 #endif // QSCROLLBAR_H

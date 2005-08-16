@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/io/qtextstream.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/io/qtextstream.cpp -->
 <head>
-    <title>Qt 4.0: QTextStream Class Reference</title>
+    <title>Qt 4.1: QTextStream Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -32,6 +32,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>enum <b><a href="qtextstream.html#NumberFlag-enum">NumberFlag</a></b> { ShowBase, ForcePoint, ForceSign, UppercaseBase, UppercaseDigits }</li>
 <li><div class="fn"/>flags <b><a href="qtextstream.html#NumberFlag-enum">NumberFlags</a></b></li>
 <li><div class="fn"/>enum <b><a href="qtextstream.html#RealNumberNotation-enum">RealNumberNotation</a></b> { ScientificNotation, FixedNotation, SmartNotation }</li>
+<li><div class="fn"/>enum <b><a href="qtextstream.html#Status-enum">Status</a></b> { Ok, ReadPastEnd, ReadCorruptData }</li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -54,11 +55,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qtextstream.html#integerBase">integerBase</a></b> () const</li>
 <li><div class="fn"/>NumberFlags <b><a href="qtextstream.html#numberFlags">numberFlags</a></b> () const</li>
 <li><div class="fn"/>QChar <b><a href="qtextstream.html#padChar">padChar</a></b> () const</li>
+<li><div class="fn"/>QString <b><a href="qtextstream.html#read">read</a></b> ( qint64 <i>maxlen</i> )</li>
 <li><div class="fn"/>QString <b><a href="qtextstream.html#readAll">readAll</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qtextstream.html#readLine">readLine</a></b> ( qint64 <i>maxlen</i> = 0 )</li>
 <li><div class="fn"/>RealNumberNotation <b><a href="qtextstream.html#realNumberNotation">realNumberNotation</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtextstream.html#realNumberPrecision">realNumberPrecision</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#reset">reset</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qtextstream.html#resetStatus">resetStatus</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qtextstream.html#seek">seek</a></b> ( qint64 <i>pos</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#setAutoDetectUnicode">setAutoDetectUnicode</a></b> ( bool <i>enabled</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#setCodec">setCodec</a></b> ( QTextCodec * <i>codec</i> )</li>
@@ -72,25 +75,27 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtextstream.html#setPadChar">setPadChar</a></b> ( QChar <i>ch</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a></b> ( RealNumberNotation <i>notation</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#setRealNumberPrecision">setRealNumberPrecision</a></b> ( int <i>precision</i> )</li>
+<li><div class="fn"/>void <b><a href="qtextstream.html#setStatus">setStatus</a></b> ( Status <i>status</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#setString">setString</a></b> ( QString * <i>string</i>, QIODevice::OpenMode <i>openMode</i> = QIODevice::ReadWrite )</li>
 <li><div class="fn"/>void <b><a href="qtextstream.html#skipWhiteSpace">skipWhiteSpace</a></b> ()</li>
+<li><div class="fn"/>Status <b><a href="qtextstream.html#status">status</a></b> () const</li>
 <li><div class="fn"/>QString * <b><a href="qtextstream.html#string">string</a></b> () const</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt">operator&lt;&lt;</a></b> ( QChar <i>c</i> )</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( signed short <i>i</i> )</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-3">operator&lt;&lt;</a></b> ( float <i>f</i> )</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-4">operator&lt;&lt;</a></b> ( const QString &amp; <i>string</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-5">operator&lt;&lt;</a></b> ( char <i>c</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-6">operator&lt;&lt;</a></b> ( unsigned short <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-7">operator&lt;&lt;</a></b> ( signed int <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-8">operator&lt;&lt;</a></b> ( unsigned int <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-9">operator&lt;&lt;</a></b> ( signed long <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-10">operator&lt;&lt;</a></b> ( unsigned long <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-11">operator&lt;&lt;</a></b> ( qlonglong <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-12">operator&lt;&lt;</a></b> ( qulonglong <i>i</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-13">operator&lt;&lt;</a></b> ( double <i>f</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-14">operator&lt;&lt;</a></b> ( const QByteArray &amp; <i>array</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-15">operator&lt;&lt;</a></b> ( const char * <i>string</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-16">operator&lt;&lt;</a></b> ( const void * <i>ptr</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-6">operator&lt;&lt;</a></b> ( char <i>c</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-7">operator&lt;&lt;</a></b> ( unsigned short <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-8">operator&lt;&lt;</a></b> ( signed int <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-9">operator&lt;&lt;</a></b> ( unsigned int <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-10">operator&lt;&lt;</a></b> ( signed long <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-11">operator&lt;&lt;</a></b> ( unsigned long <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-12">operator&lt;&lt;</a></b> ( qlonglong <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-13">operator&lt;&lt;</a></b> ( qulonglong <i>i</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-14">operator&lt;&lt;</a></b> ( double <i>f</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-15">operator&lt;&lt;</a></b> ( const QByteArray &amp; <i>array</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-16">operator&lt;&lt;</a></b> ( const char * <i>string</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-lt-lt-17">operator&lt;&lt;</a></b> ( const void * <i>ptr</i> )</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-gt-gt">operator&gt;&gt;</a></b> ( QChar &amp; <i>c</i> )</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-gt-gt-2">operator&gt;&gt;</a></b> ( signed short &amp; <i>i</i> )</li>
 <li><div class="fn"/>QTextStream &amp; <b><a href="qtextstream.html#operator-gt-gt-3">operator&gt;&gt;</a></b> ( float &amp; <i>f</i> )</li>
@@ -230,6 +235,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextStream::SmartNotation</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Scientific or fixed-point notation, depending on which makes most sense (<tt>printf()</tt>'s <tt>%g</tt> flag).</td></tr>
 </table>
 <p>See also <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>().</p>
+<h3 class="fn"><a name="Status-enum"></a>enum QTextStream::Status</h3>
+<p>This enum describes the current status of the text stream.</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QTextStream::Ok</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The text stream is operating normally.</td></tr>
+<tr><td valign="top"><tt>QTextStream::ReadPastEnd</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The text stream has read past the end of the data in the underlying device.</td></tr>
+<tr><td valign="top"><tt>QTextStream::ReadCorruptData</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The text stream has read corrupt data.</td></tr>
+</table>
+<p>See also <a href="qtextstream.html#status">status</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextStream"></a>QTextStream::QTextStream ()</h3>
@@ -295,6 +309,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="padChar"></a><a href="qchar.html">QChar</a> QTextStream::padChar () const</h3>
 <p>Returns the current pad character.</p>
 <p>See also <a href="qtextstream.html#setPadChar">setPadChar</a>() and <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>().</p>
+<h3 class="fn"><a name="read"></a><a href="qstring.html">QString</a> QTextStream::read ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>maxlen</i> )</h3>
+<p>Reads at most <i>maxlen</i> characters from the stream, and returns the data read as a <a href="qstring.html">QString</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextstream.html#readAll">readAll</a>(), <a href="qtextstream.html#readLine">readLine</a>(), and <a href="qiodevice.html#read">QIODevice::read</a>().</p>
 <h3 class="fn"><a name="readAll"></a><a href="qstring.html">QString</a> QTextStream::readAll ()</h3>
 <p>Reads the entire content of the stream, and returns it as a <a href="qstring.html">QString</a>. Avoid this function when working on large files, as it will consume a significant amount of memory.</p>
 <p>Calling <a href="qtextstream.html#readLine">readLine</a>() is better if you do not know how much data is available.</p>
@@ -312,6 +330,10 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextstream.html#setRealNumberPrecision">setRealNumberPrecision</a>(), <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>(), <a href="qtextstream.html#realNumberNotation">realNumberNotation</a>(), <a href="qtextstream.html#numberFlags">numberFlags</a>(), and <a href="qtextstream.html#integerBase">integerBase</a>().</p>
 <h3 class="fn"><a name="reset"></a>void QTextStream::reset ()</h3>
 <p>Resets <a href="qtextstream.html">QTextStream</a>'s formatting options, bringing it back to its original constructed state. The device, string and any buffered data is left untouched.</p>
+<h3 class="fn"><a name="resetStatus"></a>void QTextStream::resetStatus ()</h3>
+<p>Resets the status of the text stream.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextstream.html#Status-enum">QTextStream::Status</a>, <a href="qtextstream.html#status">status</a>(), and <a href="qtextstream.html#setStatus">setStatus</a>().</p>
 <h3 class="fn"><a name="seek"></a>bool QTextStream::seek ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>pos</i> )</h3>
 <p>Seeks to the position <i>pos</i> in the device. Returns true on success; otherwise returns false.</p>
 <p>If <a href="qtextstream.html">QTextStream</a> operates on a string, this function does nothing and returns false.</p>
@@ -366,6 +388,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setRealNumberPrecision"></a>void QTextStream::setRealNumberPrecision ( int <i>precision</i> )</h3>
 <p>Sets the precision of real numbers to <i>precision</i>. This value describes the number of fraction digits <a href="qtextstream.html">QTextStream</a> should write when generating real numbers.</p>
 <p>See also <a href="qtextstream.html#realNumberPrecision">realNumberPrecision</a>() and <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>().</p>
+<h3 class="fn"><a name="setStatus"></a>void QTextStream::setStatus ( <a href="qtextstream.html#Status-enum">Status</a> <i>status</i> )</h3>
+<p>Sets the status of the text stream to the <i>status</i> given.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextstream.html#Status-enum">Status</a>, <a href="qtextstream.html#status">status</a>(), and <a href="qtextstream.html#resetStatus">resetStatus</a>().</p>
 <h3 class="fn"><a name="setString"></a>void QTextStream::setString ( <a href="qstring.html">QString</a> * <i>string</i>, <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::OpenMode</a> <i>openMode</i> = QIODevice::ReadWrite )</h3>
 <p>Sets the current string to <i>string</i>, using the given <i>openMode</i>. If a device has already been assigned, <a href="qtextstream.html">QTextStream</a> will call <a href="qtextstream.html#flush">flush</a>() before replacing it.</p>
 <p>See also <a href="qtextstream.html#string">string</a>() and <a href="qtextstream.html#setDevice">setDevice</a>().</p>
@@ -373,6 +399,9 @@ body { background: #ffffff; color: black; }</style>
 <p>Reads and discards whitespace from the stream until either a non-space character is detected, or until <a href="qtextstream.html#atEnd">atEnd</a>() returns true. This function is useful when reading a stream character by character.</p>
 <p>Whitespace characters are all characters for which <a href="qchar.html#isSpace">QChar::isSpace</a>() returns true.</p>
 <p>See also operator&gt;&gt;(QChar &amp;) and operator&gt;&gt;(char &amp;).</p>
+<h3 class="fn"><a name="status"></a><a href="qtextstream.html#Status-enum">Status</a> QTextStream::status () const</h3>
+<p>Returns the status of the text stream.</p>
+<p>See also <a href="qtextstream.html#Status-enum">QTextStream::Status</a>, <a href="qtextstream.html#setStatus">setStatus</a>(), and <a href="qtextstream.html#resetStatus">resetStatus</a>().</p>
 <h3 class="fn"><a name="string"></a><a href="qstring.html">QString</a> * QTextStream::string () const</h3>
 <p>Returns the current string assigned to the <a href="qtextstream.html">QTextStream</a>, or 0 if no string has been assigned.</p>
 <p>See also <a href="qtextstream.html#setString">setString</a>() and <a href="qtextstream.html#device">device</a>().</p>
@@ -391,43 +420,43 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the string <i>string</i> to the stream, and returns a reference to the <a href="qtextstream.html">QTextStream</a>. The string is first encoded using the assigned codec (the default codec is <a href="qtextcodec.html#codecForLocale">QTextCodec::codecForLocale</a>()) before it is written to the stream.</p>
 <p>See also <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>() and <a href="qtextstream.html#setCodec">setCodec</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-5"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( char <i>c</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-6"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( char <i>c</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Converts <i>c</i> from ASCII to a <a href="qchar.html">QChar</a>, then writes it to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-6"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( unsigned short <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-7"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( unsigned short <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the unsigned short <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-7"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( signed int <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-8"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( signed int <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the signed int <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-8"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( unsigned int <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-9"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( unsigned int <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the unsigned int <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-9"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( signed long <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-10"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( signed long <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the signed long <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-10"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( unsigned long <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-11"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( unsigned long <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the unsigned long <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-11"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( <a href="qtglobal.html#qlonglong-typedef">qlonglong</a> <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-12"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( <a href="qtglobal.html#qlonglong-typedef">qlonglong</a> <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the qlonglong <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-12"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( <a href="qtglobal.html#qulonglong-typedef">qulonglong</a> <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-13"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( <a href="qtglobal.html#qulonglong-typedef">qulonglong</a> <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the qulonglong <i>i</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-13"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( double <i>f</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-14"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( double <i>f</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the double <i>f</i> to the stream.</p>
-<h3 class="fn"><a name="operator-lt-lt-14"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>array</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-15"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>array</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes <i>array</i> to the stream. The contents of <i>array</i> are converted with <a href="qstring.html#fromAscii">QString::fromAscii</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-15"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( const char * <i>string</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-16"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( const char * <i>string</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the constant string pointed to by <i>string</i> to the stream. <i>string</i> is assumed to be in ISO-8859-1 encoding. This operator is convenient when working with constant string data. Example:</p>
 <pre>&nbsp;   QTextStream out(stdout);
     out &lt;&lt; &quot;Qt rocks!&quot; &lt;&lt; endl;</pre>
 <p>Warning: <a href="qtextstream.html">QTextStream</a> assumes that <i>string</i> points to a string of text, terminated by a '\0' character. If there is no terminating '\0' character, your application may crash.</p>
-<h3 class="fn"><a name="operator-lt-lt-16"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( const void * <i>ptr</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-17"></a>QTextStream &amp; QTextStream::operator&lt;&lt; ( const void * <i>ptr</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes <i>ptr</i> to the stream as a hexadecimal number with a base.</p>
 <h3 class="fn"><a name="operator-gt-gt"></a>QTextStream &amp; QTextStream::operator&gt;&gt; ( <a href="qchar.html">QChar</a> &amp; <i>c</i> )</h3>
@@ -581,6 +610,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

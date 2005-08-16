@@ -106,9 +106,38 @@ unix:x11 {
 
 unix:SOURCES += painting/qregion_unix.cpp
 
+win32|x11|embedded {
+        SOURCES += painting/qbackingstore.cpp
+}
 
 embedded {
 	SOURCES += \
 		painting/qcolormap_qws.cpp \
-		painting/qpaintdevice_qws.cpp 
+		painting/qpaintdevice_qws.cpp
+}
+
+mac {
+
+} else:sse|win32-g++ {
+    sse_compiler.commands = $$QMAKE_CXX -c -msse $(CXXFLAGS) $(INCPATH) ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}
+    sse_compiler.dependency_type = TYPE_C
+    sse_compiler.output = ${QMAKE_VAR_OBJECTS_DIR}${QMAKE_FILE_BASE}$${first(QMAKE_EXT_OBJ)}
+    sse_compiler.input = SSE_SOURCES
+    sse_compiler.variable_out = OBJECTS
+    sse_compiler.name = compiling[sse] ${QMAKE_FILE_IN}
+    silent:sse_compiler.commands = @echo compiling[sse] ${QMAKE_FILE_IN} && $$sse_compiler.commands
+    QMAKE_EXTRA_COMPILERS += sse_compiler
+    DEFINES += QT_HAVE_SSE
+
+    SSE_SOURCES += painting/qdrawhelper_x86.cpp
+} else:win32:!win32-msvc {
+    SOURCES += painting/qdrawhelper_x86.cpp
+    DEFINES += QT_HAVE_SSE
+}
+
+CONFIG += pdf
+pdf {
+    DEFINES += QT_PDF_SUPPORT
+    SOURCES += painting/qprintengine_pdf.cpp
+    HEADERS += painting/qprintengine_pdf_p.h
 }

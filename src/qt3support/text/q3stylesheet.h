@@ -24,14 +24,12 @@
 #ifndef Q3STYLESHEET_H
 #define Q3STYLESHEET_H
 
-#include "QtCore/qstring.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qhash.h"
-#include "QtCore/qobject.h"
-#include "QtGui/qcolor.h"
-#include "QtGui/qfont.h"
-//#include "qmime.h"
-//#include "qmimefactory.h"
+#include <QtCore/qstring.h>
+#include <QtCore/qlist.h>
+#include <QtCore/qhash.h>
+#include <QtCore/qobject.h>
+#include <QtGui/qcolor.h>
+#include <QtGui/qfont.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -208,4 +206,4 @@ private:
 
 #endif // QT_NO_RICHTEXT
 
-#endif // QSTYLESHEET_H
+#endif // Q3STYLESHEET_H

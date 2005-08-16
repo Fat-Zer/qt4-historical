@@ -24,6 +24,8 @@
 #include "qmetatype.h"
 #include "qobjectdefs.h"
 #include "qbytearray.h"
+#include "qreadwritelock.h"
+#include "qstring.h"
 #include "qvector.h"
 
 /*!
@@ -40,6 +42,43 @@
 
     Q_DECLARE_METATYPE() doesn't actually register the
     type; you must still use qRegisterMetaType() for that.
+
+    This example shows a typical use case of Q_DECLARE_METATYPE():
+
+    \code
+        struct MyStruct
+        {
+            int i;
+            ...
+        };
+
+        Q_DECLARE_METATYPE(MyStruct)
+    \endcode
+
+    If \c MyStruct is in a namespace, the Q_DECLARE_METATYPE() macro
+    has to be outside the namespace:
+
+    \code
+        namespace MyNamespace
+        {
+            ...
+        }
+
+        Q_DECLARE_METATYPE(MyNamespace::MyStruct)
+    \endcode
+
+    Since \c{MyStruct} is now known to QMetaType, it can be used in QVariant:
+
+    \code
+        MyStruct s;
+        QVariant var;
+        var.setValue(s); // copy s into the variant
+
+        ...
+
+        // retrieve the value
+        MyStruct s2 = var.value<MyStruct>();
+    \endcode
 
     \sa qRegisterMetaType()
 */
@@ -81,6 +120,7 @@
     \brief The QMetaType class manages named types in the meta object system.
 
     \ingroup objectmodel
+    \reentrant
 
     The class is used as a helper to marshall types in QVariant and
     in queued signals and slots connections. It associates a type
@@ -94,8 +134,8 @@
     \c{MyClass}:
 
     \code
-        if (QMetaType::isRegistered("MyClass")) {
-            int id = QMetaType::type("MyClass");
+        int id = QMetaType::type("MyClass");
+        if (id != 0) {
             void *myClassPtr = QMetaType::construct(id);
             ...
             QMetaType::destroy(id, myClassPtr);
@@ -103,46 +143,11 @@
         }
     \endcode
 
-    \section1 The Q_DECLARE_METATYPE() Macro
-
-    The Q_DECLARE_METATYPE() macro makes a custom type known to
-    QMetaType. It is needed to use the type as a custom type in
+    The Q_DECLARE_METATYPE() macro can be used to register a type at
+    compile time. This is required to use the type as custom type in
     QVariant.
 
-    Ideally, this macro should be placed below the declaration of
-    the class or struct. If that is not possible, it can be put in
-    a private header file which has to be included every time that
-    type is used in a QVariant.
-
-    This example shows a typical use case of Q_DECLARE_METATYPE():
-
-    \code
-        struct MyStruct
-        {
-            int i;
-            ...
-        };
-
-        Q_DECLARE_METATYPE(MyStruct)
-    \endcode
-
-    Since \c{MyStruct} is now known to QMetaType, it can be used in QVariant:
-
-    \code
-        MyStruct s;
-        QVariant var;
-        var.setValue(s); // copy s into the variant
-
-        ...
-
-        // retrieve the value
-        MyStruct s2 = var.value<MyStruct>();
-    \endcode
-
-    Note that Q_DECLARE_METATYPE() doesn't actually register the
-    type; you must still use qRegisterMetaType() for that.
-
-    \sa QVariant::setValue(), QVariant::value(), QVariant::fromValue()
+    \sa Q_DECLARE_METATYPE(), QVariant::setValue(), QVariant::value(), QVariant::fromValue()
 */
 
 static const struct { const char * typeName; int type; } types[] = {
@@ -200,6 +205,7 @@ public:
 };
 
 Q_GLOBAL_STATIC(QVector<QCustomTypeInfo>, customTypes)
+Q_GLOBAL_STATIC(QReadWriteLock, customTypesLock)
 
 #ifndef QT_NO_DATASTREAM
 /*! \internal
@@ -210,14 +216,18 @@ void QMetaType::registerStreamOperators(const char *typeName, SaveOperator saveO
     int idx = type(typeName);
     if (!idx)
         return;
+
     QVector<QCustomTypeInfo> *ct = customTypes();
     if (!ct)
         return;
+    QWriteLocker locker(customTypesLock());
     (*ct)[idx - User].setOperators(saveOp, loadOp);
 }
 #endif
 
 /*!
+    \threadsafe
+
     Returns the type name associated with the given \a type, or 0 if no
     matching type was found. The returned pointer must not be deleted.
 
@@ -228,9 +238,11 @@ const char *QMetaType::typeName(int type)
     if (type >= User) {
         if (!isRegistered(type))
             return 0;
+
         const QVector<QCustomTypeInfo> * const ct = customTypes();
         if (!ct)
             return 0;
+        QReadLocker locker(customTypesLock());
         return ct->at(type - User).typeName.constData();
     }
     int i = 0;
@@ -243,6 +255,30 @@ const char *QMetaType::typeName(int type)
 }
 
 /*! \internal
+    Same as QMetaType::type(), but doesn't lock.
+*/
+static int qMetaTypeType_unlocked(const char *typeName)
+{
+    if (!typeName)
+        return 0;
+    int i = 0;
+    while (types[i].typeName && strcmp(typeName, types[i].typeName))
+        ++i;
+    if (!types[i].type) {
+        const QVector<QCustomTypeInfo> * const ct = customTypes();
+        if (!ct)
+            return 0;
+
+        for (int v = 0; v < ct->count(); ++v) {
+            if (strcmp(ct->at(v).typeName, typeName) == 0)
+                return v + QMetaType::User;
+        }
+    }
+    return types[i].type;
+}
+
+/*! \internal
+
     Registers a user type for marshalling, with \a typeName, a \a
     destructor, and a \a constructor. Returns the type's handle,
     or -1 if the type could not be registered.
@@ -251,10 +287,13 @@ int QMetaType::registerType(const char *typeName, Destructor destructor,
                             Constructor constructor)
 {
     QVector<QCustomTypeInfo> *ct = customTypes();
-    static int currentIdx = User;
     if (!ct || !typeName || !destructor || !constructor)
         return -1;
-    int idx = type(typeName);
+
+    QWriteLocker locker(customTypesLock());
+    static int currentIdx = User;
+    int idx = qMetaTypeType_unlocked(typeName);
+
     if (idx) {
         if (idx < User) {
             qWarning("cannot re-register basic type '%s'", typeName);
@@ -270,6 +309,8 @@ int QMetaType::registerType(const char *typeName, Destructor destructor,
 }
 
 /*!
+    \threadsafe
+
     Returns true if the custom datatype with ID \a type is registered;
     otherwise returns false.
 
@@ -277,11 +318,15 @@ int QMetaType::registerType(const char *typeName, Destructor destructor,
 */
 bool QMetaType::isRegistered(int type)
 {
+    QReadLocker locker(customTypesLock());
+
     const QVector<QCustomTypeInfo> * const ct = customTypes();
     return (type >= User) && (ct && ct->count() > type - User);
 }
 
 /*!
+    \threadsafe
+
     Returns a handle to the type called \a typeName, or 0 if there is
     no such type.
 
@@ -289,19 +334,8 @@ bool QMetaType::isRegistered(int type)
 */
 int QMetaType::type(const char *typeName)
 {
-    if (!typeName)
-        return 0;
-    int i = 0;
-    while (types[i].typeName && strcmp(typeName, types[i].typeName))
-        ++i;
-    if (!types[i].type) {
-        const QVector<QCustomTypeInfo> * const ct = customTypes();
-        for (int v = 0; ct && v < ct->count(); ++v) {
-            if (strcmp(ct->at(v).typeName, typeName) == 0)
-                return v + User;
-        }
-    }
-    return types[i].type;
+    QReadLocker locker(customTypesLock());
+    return qMetaTypeType_unlocked(typeName);
 }
 
 #ifndef QT_NO_DATASTREAM
@@ -315,7 +349,13 @@ bool QMetaType::save(QDataStream &stream, int type, const void *data)
     const QVector<QCustomTypeInfo> * const ct = customTypes();
     if (!ct)
         return false;
-    QMetaType::SaveOperator saveOp = ct->at(type - User).saveOp;
+
+    SaveOperator saveOp = 0;
+    {
+        QReadLocker locker(customTypesLock());
+        saveOp = ct->at(type - User).saveOp;
+    }
+
     if (!saveOp)
         return false;
     saveOp(stream, data);
@@ -332,7 +372,13 @@ bool QMetaType::load(QDataStream &stream, int type, void *data)
     const QVector<QCustomTypeInfo> * const ct = customTypes();
     if (!ct)
         return false;
-    QMetaType::LoadOperator loadOp = ct->at(type - User).loadOp;
+
+    LoadOperator loadOp = 0;
+    {
+        QReadLocker locker(customTypesLock());
+        loadOp = ct->at(type - User).loadOp;
+    }
+
     if (!loadOp)
         return false;
     loadOp(stream, data);
@@ -428,10 +474,17 @@ void *QMetaType::construct(int type, const void *copy)
         }
     }
 
-    const QVector<QCustomTypeInfo> * const ct = customTypes();
-    if (type >= User && (ct && ct->count() > type - User))
-        return ct->at(type - User).constr(copy);
-    return 0;
+    Constructor constr = 0;
+    {
+        const QVector<QCustomTypeInfo> * const ct = customTypes();
+        QReadLocker locker(customTypesLock());
+        if (type < User || !ct || ct->count() <= type - User)
+            return 0;
+
+        constr = ct->at(type - User).constr;
+    } // unlock to prevent reentrancy
+
+    return constr(copy);
 }
 
 /*!
@@ -495,9 +548,16 @@ void QMetaType::destroy(int type, void *data)
         break;
     default:
         {
+
             const QVector<QCustomTypeInfo> * const ct = customTypes();
-            if (type >= User && (ct && ct->count() > type - User))
-                ct->at(type - User).destr(data);
+            Destructor destr = 0;
+            {
+                QReadLocker locker(customTypesLock());
+                if (type < User || !ct || ct->count() <= type - User)
+                    break;
+                destr = ct->at(type - User).destr;
+            } // unlock to prevent reentrancy
+            destr(data);
             break;
         }
     }
@@ -506,6 +566,7 @@ void QMetaType::destroy(int type, void *data)
 /*!
     \fn int qRegisterMetaType(const char *typeName, T *dummy = 0)
     \relates QMetaType
+    \threadsafe
 
     Registers the type name \a typeName to the type \c{T}. Returns
     the internal ID used by QMetaType. Any class or struct that has a
@@ -539,3 +600,28 @@ void QMetaType::destroy(int type, void *data)
 /*! \typedef QMetaType::LoadOperator
     \internal
 */
+
+/*! \fn int qMetaTypeId(T *dummy = 0)
+    \relates QMetaType
+    \since 4.1
+    \threadsafe
+
+    Returns the meta type id of type \c T at compile time. If the
+    type was not declared with Q_DECLARE_METATYPE(), compilation will
+    fail. The \a dummy parameter never has to be specified out, it's a
+    workaround for compiler limitations.
+
+    Typical usage:
+
+    \code
+        int id = qMetaTypeId<QString>(); // id is now QMetaType::QString
+        id = qMetaTypeId<MyStruct>(); // compile error if MyStruct not declared
+    \endcode
+
+    QMetaType::type() returns the same id as qMetaTypeId(), but does a
+    lookup at runtime based on the name of the type. QMetaType::type() is
+    a bit slower, but compilation succeeds if a type is not registered.
+
+    \sa Q_DECLARE_METATYPE(), QMetaType::type()
+*/
+

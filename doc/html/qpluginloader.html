@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/plugin/qpluginloader.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/plugin/qpluginloader.cpp -->
 <head>
-    <title>Qt 4.0: QPluginLoader Class Reference</title>
+    <title>Qt 4.1: QPluginLoader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -23,6 +23,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qpluginloader-members.html">List of all members, including inherited members</a></li>
+<li><a href="qpluginloader-obsolete.html">Obsolete members</a></li>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
@@ -60,7 +61,8 @@ body { background: #ffffff; color: black; }</style>
 <h3>Macros</h3>
 <ul>
 <li><div class="fn"/><b><a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a></b> (  <i>ClassName</i>,  <i>Identifier</i> )</li>
-<li><div class="fn"/><b><a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a></b> (  <i>ClassName</i> )</li>
+<li><div class="fn"/><b><a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a></b> (  <i>PluginName</i>,  <i>ClassName</i> )</li>
+<li><div class="fn"/><b><a href="qpluginloader.html#Q_IMPORT_PLUGIN">Q_IMPORT_PLUGIN</a></b> (  <i>ClassName</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -116,29 +118,13 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpluginloader.html#load">load</a>().</p>
 <h3 class="fn"><a name="load"></a>bool QPluginLoader::load ()</h3>
 <p>Loads the plugin and returns true if the plugin was loaded successfully; otherwise returns false. Since <a href="qpluginloader.html#instance">instance</a>() always calls this function before resolving any symbols it is not necessary to call it explicitly. In some situations you might want the plugin loaded in advance, in which case you would use this function.</p>
-<p>On Darwin and Mac OS X this function uses code from dlcompat, part of the OpenDarwin project.</p>
-<pre>&nbsp;   Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
-
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    &quot;Software&quot;), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+<p>On Mac OS X this function uses code from dlcompat, part of the OpenDarwin project.</p>
+<p>Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 <p>See also <a href="qpluginloader.html#unload">unload</a>().</p>
-<h3 class="fn"><a name="staticInstances"></a>QObjectList QPluginLoader::staticInstances ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="staticInstances"></a><a href="qobject.html#QObjectList-typedef">QObjectList</a> QPluginLoader::staticInstances ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <h3 class="fn"><a name="unload"></a>bool QPluginLoader::unload ()</h3>
 <p>Unloads the plugin and returns true if the plugin could be unloaded; otherwise returns false.</p>
 <p>This happens automatically on application termination, so you shouldn't normally need to call this function.</p>
@@ -147,22 +133,45 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Macro Documentation</h2>
 <h3 class="fn"><a name="Q_DECLARE_INTERFACE"></a>Q_DECLARE_INTERFACE (  <i>ClassName</i>,  <i>Identifier</i> )</h3>
-<p>This macro associates the given <i>Identifier</i> (a string literal) to the interface class called <i>ClassName</i>.</p>
-<p>Example:</p>
+<p>This macro associates the given <i>Identifier</i> (a string literal) to the interface class called <i>ClassName</i>. The <i>Identifier</i> must be unique. For example:</p>
 <pre>&nbsp;   Q_DECLARE_INTERFACE(BrushInterface,
                         &quot;com.trolltech.PlugAndPaint.BrushInterface/1.0&quot;)</pre>
 <p>This macro is normally used right after the class definition for <i>ClassName</i>, in a header file. See the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example for details.</p>
-<p>See also <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>(), <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
-<h3 class="fn"><a name="Q_EXPORT_PLUGIN"></a>Q_EXPORT_PLUGIN (  <i>ClassName</i> )</h3>
-<p>This macro exports the plugin class <i>ClassName</i>. There should be exactly one occurrence of this macro in a Qt plugin's source code (in an implementation file).</p>
+<p>If you want to use Q_DECLARE_INTERFACE with interface classes declared in a namespace then you have to make sure the Q_DECLARE_INTERFACE is not inside a namespace though. For example:</p>
+<pre>&nbsp;   namespace Foo
+    {
+        struct MyInterface { ... };
+    }
+    Q_DECLARE_INTERFACE(Foo::MyInterface, &quot;org.examples.MyInterface&quot;)</pre>
+<p>See also <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>(), <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
+<h3 class="fn"><a name="Q_EXPORT_PLUGIN2"></a>Q_EXPORT_PLUGIN2 (  <i>PluginName</i>,  <i>ClassName</i> )</h3>
+<p>This macro exports the plugin class <i>ClassName</i> with the name <i>PluginName</i>. There should be exactly one occurrence of this macro in a Qt plugin's source code (in an implementation file).</p>
 <p>Example:</p>
-<pre>&nbsp;   Q_EXPORT_PLUGIN(ExtraFiltersPlugin)</pre>
+<pre>&nbsp;   Q_EXPORT_PLUGIN2(pnp_extrafilters, ExtraFiltersPlugin)</pre>
 <p>See the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example for details.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>() and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
+<h3 class="fn"><a name="Q_IMPORT_PLUGIN"></a>Q_IMPORT_PLUGIN (  <i>ClassName</i> )</h3>
+<p>This macro imports the plugin class <i>ClassName</i>. Inserting this macro into your application's source code will allow you to make use of a static plugin.</p>
+<p>Example:</p>
+<pre>&nbsp;   Q_IMPORT_PLUGIN(QJpegPlugin)</pre>
+<p>Static plugins must also be included by the linker when your application is built. With qmake, you can use QTPLUGIN to add the required plugins to your build.</p>
+<p>Example:</p>
+<pre>&nbsp;   TEMPLATE = app
+    QTPLUGIN += jpeg gif mng # image formats
+    QTPLUGIN += cn tw        # codecs</pre>
+<p>Depending on your build, Qt provides the following static plugins:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Plugin class</th><th>Type</th><th>Description</th><th>QTPLUGIN entry</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QJpegPlugin</td><td>Image format</td><td>The JPEG image format</td><td>jpeg</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QGifPlugin</td><td>Image format</td><td>The GIF image format</td><td>gif</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QMngPlugin</td><td>Image format</td><td>The MNG image format</td><td>mng</td></tr>
+</table>
+<p>See also <a href="plugins-howto.html">How to Create Qt Plugins</a> and <a href="qmake-using.html">Using qmake</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

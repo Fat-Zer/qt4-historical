@@ -24,7 +24,7 @@
 #ifndef Q3DOCKWINDOW_H
 #define Q3DOCKWINDOW_H
 
-#include "Qt3Support/q3frame.h"
+#include <Qt3Support/q3frame.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -129,12 +129,12 @@ public:
 
     QString windowTitle() const;
 
-signals:
+Q_SIGNALS:
     void orientationChanged(Qt::Orientation o);
     void placeChanged(Q3DockWindow::Place p);
     void visibilityChanged(bool);
 
-public slots:
+public Q_SLOTS:
     virtual void undock(QWidget *w);
     virtual void undock() { undock(0); }
     virtual void dock();
@@ -151,7 +151,7 @@ protected:
 
     bool event(QEvent *e);
 
-private slots:
+private Q_SLOTS:
     void toggleVisible() { setVisible(!isVisible()); }
 
 private:
@@ -208,6 +208,6 @@ inline Q3DockArea *Q3DockWindow::area() const
     return dockArea;
 }
 
-#endif
+#endif // QT_NO_MAINWINDOW
 
 #endif // Q3DOCKWINDOW_H

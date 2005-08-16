@@ -28,14 +28,14 @@
 #include "widgetinfo.h"
 #include "globaldefs.h"
 #include "qt3to4.h"
-#include "../uic/utils.h"
+#include "utils.h"
 
-#include <qdebug.h>
-#include <qfile.h>
-#include <qhash.h>
-#include <qstringlist.h>
-#include <qdatetime.h>
-#include <qregexp.h>
+#include <QtDebug>
+#include <QFile>
+#include <QHash>
+#include <QStringList>
+#include <QDateTime>
+#include <QRegExp>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -782,9 +782,40 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
                 continue;
             }
 
+            if (name == QLatin1String("font")) {
+                // For the boolean properties (italic, bold, underline, strikeout),
+                // Ui 3 files store true as "1", but DomFont::read() expects "true",
+                // so we have to convert them
+                QDomElement f = e.firstChild().toElement();
+                for (QDomElement fp = f.firstChild().toElement(); !fp.isNull(); fp = fp.nextSibling().toElement()) {
+                    QString fpTag = fp.tagName().toLower();
+                    if (fpTag == QLatin1String("italic") ||
+                        fpTag == QLatin1String("bold") ||
+                        fpTag == QLatin1String("underline") ||
+                        fpTag == QLatin1String("strikeout")) {
+                        QDomText text = fp.firstChild().toText();
+                        if (!text.isNull()) {
+                            if (text.data() == QLatin1String("1"))
+                                text.setData(QLatin1String("true"));
+                            else if (text.data() == QLatin1String("0"))
+                                text.setData(QLatin1String("false"));
+                        }
+                    }
+                }
+            }
+
             DomProperty *prop = readProperty(e);
             if (!prop)
                 continue;
+
+            if (prop->kind() == DomProperty::String) {
+                QDomNodeList comments = e.elementsByTagName(QLatin1String("comment"));
+                if (comments.length()) {
+                    QString comment = comments.item(0).firstChild().toText().data();
+                    if (!comment.isEmpty())
+                        prop->elementString()->setAttributeComment(comment);
+                }
+            }
 
             if (className == QLatin1String("Line")
                     && prop->attributeName() == QLatin1String("orientation")) {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -22,16 +22,15 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
-
 #include "colorswatch.h"
 #include "toolbar.h"
 
-#include <qaction.h>
-#include <qlayout.h>
-#include <qmenu.h>
-#include <qmenubar.h>
-#include <qstatusbar.h>
-#include <qtextedit.h>
+#include <QAction>
+#include <QLayout>
+#include <QMenu>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QTextEdit>
 
 static const char * const message =
     "<p><b>Qt Main Window Demo</b></p>"
@@ -113,6 +112,8 @@ void MainWindow::setupDockWidgets()
 
     for (int i = 0; i < setCount; ++i) {
         ColorSwatch *swatch = new ColorSwatch(tr(sets[i].name), this, Qt::WFlags(sets[i].flags));
+        if (i%2)
+            swatch->setWindowIcon(QIcon(QPixmap(":/res/qt.png")));
         addDockWidget(sets[i].area, swatch);
         dockWidgetMenu->addMenu(swatch->menu);
     }

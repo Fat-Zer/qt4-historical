@@ -56,7 +56,7 @@
   removed with removeRows(). The contents of the string list can be
   retrieved with the stringList() convenience function.
 
-  \sa QAbstractListModel QAbstractItemModel
+  \sa QAbstractListModel, QAbstractItemModel, {Model/View Programming}
 */
 
 /*!
@@ -120,7 +120,10 @@ QVariant QStringListModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags QStringListModel::flags(const QModelIndex &index) const
 {
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    if (index.isValid())
+        return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    else
+        return QAbstractItemModel::flags(index);
 }
 
 /*!
@@ -190,6 +193,17 @@ bool QStringListModel::removeRows(int row, int count, const QModelIndex &parent)
     endRemoveRows();
 
     return true;
+}
+
+/*!
+  \reimp
+*/
+void QStringListModel::sort(int, Qt::SortOrder order)
+{
+    if (order == Qt::AscendingOrder)
+        qSort(lst.begin(), lst.end(), qLess<QString>());
+    else
+        qSort(lst.begin(), lst.end(), qGreater<QString>());
 }
 
 /*!

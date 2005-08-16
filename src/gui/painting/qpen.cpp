@@ -55,6 +55,9 @@
 
     Use the QBrush class to specify fill styles.
 
+    Since Qt 4.1 it is possible to specify a custom dash pattern in
+    QPen using setDashPattern().
+
     Example:
     \quotefromfile snippets/brush/brush.cpp
     \skipto PEN
@@ -80,7 +83,8 @@
 
 class QPenPrivate {
 public:
-    void init(const QBrush &brush, qreal width, Qt::PenStyle, Qt::PenCapStyle, Qt::PenJoinStyle);
+    QPenPrivate(const QBrush &brush, qreal width, Qt::PenStyle, Qt::PenCapStyle,
+                Qt::PenJoinStyle _joinStyle);
 
     QAtomic ref;
     qreal width;
@@ -88,27 +92,66 @@ public:
     Qt::PenStyle style;
     Qt::PenCapStyle capStyle;
     Qt::PenJoinStyle joinStyle;
+    mutable QVector<qreal> dashPattern;
+    qreal miterLimit;
 };
+
+
+/*!
+  \internal
+*/
+inline QPenPrivate::QPenPrivate(const QBrush &_brush, qreal _width, Qt::PenStyle penStyle,
+                                Qt::PenCapStyle _capStyle, Qt::PenJoinStyle _joinStyle)
+    : ref(1), width(_width), brush(_brush), style(penStyle), capStyle(_capStyle),
+      joinStyle(_joinStyle), miterLimit(2)
+{
+}
 
 static const Qt::PenCapStyle qpen_default_cap = Qt::SquareCap;
 static const Qt::PenJoinStyle qpen_default_join = Qt::BevelJoin;
 
-/*!
-  \internal
-  Initializes the pen.
-*/
 
-
-void QPenPrivate::init(const QBrush &brush, qreal width, Qt::PenStyle penStyle,
-                       Qt::PenCapStyle capStyle, Qt::PenJoinStyle joinStyle)
+class QPenStatic
 {
-    this->ref = 1;
-    this->style = penStyle;
-    this->width = width;
-    this->brush = brush;
-    this->style = penStyle;
-    this->capStyle = capStyle;
-    this->joinStyle = joinStyle;
+public:
+    QPenPrivate *pointer;
+    bool destroyed;
+
+    inline QPenStatic()
+        : pointer(0), destroyed(false)
+    { }
+
+    inline ~QPenStatic()
+    {
+        if (!pointer->ref.deref())
+            delete pointer;
+        pointer = 0;
+        destroyed = true;
+    }
+};
+
+
+static QPenPrivate *defaultPenInstance()
+{
+    static QPenStatic defaultPen;
+    if (!defaultPen.pointer && !defaultPen.destroyed) {
+        QPenPrivate *x = new QPenPrivate(Qt::black, 0, Qt::SolidLine,
+                                         qpen_default_cap, qpen_default_join);
+        if (!q_atomic_test_and_set_ptr(&defaultPen.pointer, 0, x))
+            delete x;
+    }
+    return defaultPen.pointer;
+}
+
+static QPenPrivate *nullPenInstance()
+{
+    static QPenStatic defaultPen;
+    if (!defaultPen.pointer && !defaultPen.destroyed) {
+        QPenPrivate *x = new QPenPrivate(Qt::black, 0, Qt::NoPen, qpen_default_cap, qpen_default_join);
+        if (!q_atomic_test_and_set_ptr(&defaultPen.pointer, 0, x))
+            delete x;
+    }
+    return defaultPen.pointer;
 }
 
 /*!
@@ -117,8 +160,8 @@ void QPenPrivate::init(const QBrush &brush, qreal width, Qt::PenStyle penStyle,
 
 QPen::QPen()
 {
-    d = new QPenPrivate;
-    d->init(Qt::black, 0, Qt::SolidLine, qpen_default_cap, qpen_default_join);
+    d = defaultPenInstance();
+    d->ref.ref();
 }
 
 /*!
@@ -129,8 +172,12 @@ QPen::QPen()
 
 QPen::QPen(Qt::PenStyle style)
 {
-    d = new QPenPrivate;
-    d->init(Qt::black, 0, style, qpen_default_cap, qpen_default_join);
+    if (style == Qt::NoPen) {
+        d = nullPenInstance();
+        d->ref.ref();
+    } else {
+        d = new QPenPrivate(Qt::black, 0, style, qpen_default_cap, qpen_default_join);
+    }
 }
 
 
@@ -142,8 +189,7 @@ QPen::QPen(Qt::PenStyle style)
 
 QPen::QPen(const QColor &color)
 {
-    d = new QPenPrivate;
-    d->init(color, 0, Qt::SolidLine, qpen_default_cap, qpen_default_join);
+    d = new QPenPrivate(color, 0, Qt::SolidLine, qpen_default_cap, qpen_default_join);
 }
 
 
@@ -157,8 +203,7 @@ QPen::QPen(const QColor &color)
 
 QPen::QPen(const QBrush &brush, qreal width, Qt::PenStyle s, Qt::PenCapStyle c, Qt::PenJoinStyle j)
 {
-    d = new QPenPrivate;
-    d->init(brush, width, s, c, j);
+    d = new QPenPrivate(brush, width, s, c, j);
 }
 
 /*!
@@ -197,13 +242,10 @@ void QPen::detach()
     if (d->ref == 1)
         return;
 
-    QPenPrivate *x = new QPenPrivate;
-    x->ref = 1;
-    x->style = d->style;
-    x->width = d->width;
-    x->brush = d->brush;
-    x->capStyle = d->capStyle;
-    x->joinStyle = d->joinStyle;
+    QPenPrivate *x = new QPenPrivate(d->brush, d->width, d->style, d->capStyle,
+                                     d->joinStyle);
+    x->miterLimit = d->miterLimit;
+    x->dashPattern = d->dashPattern;
     x = qAtomicSetPtr(&d, x);
     if (!x->ref.deref())
         delete x;
@@ -258,6 +300,91 @@ void QPen::setStyle(Qt::PenStyle s)
     d->style = s;
 }
 
+/*!
+    Returns the dash pattern of this pen.
+ */
+QVector<qreal> QPen::dashPattern() const
+{
+    if (d->style == Qt::SolidLine || d->style == Qt::NoPen) {
+        return QVector<qreal>();
+    } else if (d->dashPattern.isEmpty()) {
+        const qreal space = 2;
+        const qreal dot = 1;
+        const qreal dash = 4;
+
+        switch (d->style) {
+        case Qt::DashLine:
+            d->dashPattern << dash << space;
+            break;
+        case Qt::DotLine:
+            d->dashPattern << dot << space;
+            break;
+        case Qt::DashDotLine:
+            d->dashPattern << dash << space << dot << space;
+            break;
+        case Qt::DashDotDotLine:
+            d->dashPattern << dash << space << dot << space << dot << space;
+            break;
+        default:
+            break;
+        }
+    }
+    return d->dashPattern;
+}
+
+/*!
+    Sets the dash pattern for this pen to \a pattern. This implicitly
+    converts the style of the pen to Qt::CustomDashLine.
+
+    The pattern must be specified as an even number of entries where
+    the entries 1, 3, 5... are the dashes and 2, 4, 6... are the
+    spaces.
+
+    The dash pattern is specified in units of the pens width, e.g. a
+    dash of length 5 in width 10 is 50 pixels long. Each dash is also
+    subject to cap styles so a dash of 1 with square cap set will
+    extend 0.5 pixels out in each direction resulting in a total width
+    of 2.
+ */
+void QPen::setDashPattern(const QVector<qreal> &pattern)
+{
+    if (pattern.isEmpty())
+        return;
+    detach();
+    d->dashPattern = pattern;
+    d->style = Qt::CustomDashLine;
+
+    if ((d->dashPattern.size() % 2) == 1) {
+        qWarning("QPen::setDashPattern(), pattern not of even length");
+        d->dashPattern << 1;
+    }
+}
+
+/*!
+    Returns the miter limit of the pen. The miter limt is only
+    relevant when the join style is set to Qt::MiterJoin.
+*/
+qreal QPen::miterLimit() const
+{
+    return d->miterLimit;
+}
+
+/*!
+    Sets the miter limit of this pen to \a limit.
+
+    The miter limit describes how far a miter join can extend from the
+    join point. This is used to reduce artifacts between line joins
+    where the lines are close to parallel.
+
+    This value does only have effect when the pen style is set to
+    Qt::MiterJoin. The value is specified in units of the pens width.
+*/
+void QPen::setMiterLimit(qreal limit)
+{
+    detach();
+    d->miterLimit = limit;
+}
+
 
 /*!
     \fn qreal QPen::width() const
@@ -301,6 +428,8 @@ void QPen::setWidth(int width)
 {
     if (width < 0)
         qWarning("QPen::setWidth(): Setting a pen width with a negative value is not defined.");
+    if ((qreal)width == d->width)
+        return;
     detach();
     d->width = width;
 }
@@ -460,6 +589,9 @@ bool QPen::operator==(const QPen &p) const
                           && p.d->capStyle == d->capStyle
                           && p.d->joinStyle == d->joinStyle
                           && p.d->width == d->width
+                          && p.d->miterLimit == d->miterLimit
+                          && (d->style != Qt::CustomDashLine
+                              || p.dashPattern() == dashPattern())
                           && p.d->brush == d->brush);
 }
 
@@ -502,6 +634,8 @@ QDataStream &operator<<(QDataStream &s, const QPen &p)
     } else {
         s << p.widthF();
         s << p.brush();
+        s << p.miterLimit();
+        s << p.dashPattern();
     }
     return s;
 }
@@ -522,6 +656,8 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
     double width = 0;
     QColor color;
     QBrush brush;
+    double miterLimit = 2;
+    QVector<qreal> dashPattern;
     s >> style;
     if (s.version() < 7) {
         s >> width8;
@@ -531,14 +667,37 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
     } else {
         s >> width;
         s >> brush;
+        s >> miterLimit;
+        s >> dashPattern;
     }
 
-    Qt::PenStyle penStyle = Qt::PenStyle(style & Qt::MPenStyle);
-    Qt::PenCapStyle capStyle = Qt::PenCapStyle(style & Qt::MPenCapStyle);
-    Qt::PenJoinStyle joinStyle = Qt::PenJoinStyle(style & Qt::MPenJoinStyle);
-
-    p = QPen(brush, width, penStyle, capStyle, joinStyle);
+    p.detach();
+    p.d->width = width;
+    p.d->brush = brush;
+    p.d->style = Qt::PenStyle(style & Qt::MPenStyle);
+    p.d->capStyle = Qt::PenCapStyle(style & Qt::MPenCapStyle);
+    p.d->joinStyle = Qt::PenJoinStyle(style & Qt::MPenJoinStyle);
+    p.d->dashPattern = dashPattern;
+    p.d->miterLimit = miterLimit;
 
     return s;
 }
 #endif //QT_NO_DATASTREAM
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug dbg, const QPen &p)
+{
+#ifndef Q_BROKEN_DEBUG_STREAM
+    dbg.nospace() << "QPen(" << p.width() << ',' << p.brush()
+                  << ',' << int(p.style()) << ',' << int(p.capStyle())
+                  << ',' << int(p.joinStyle()) << ',' << p.dashPattern()
+                  << ',' << p.miterLimit() << ')';
+    return dbg.space();
+#else
+    qWarning("This compiler doesn't support streaming QPen to QDebug");
+    return dbg;
+    Q_UNUSED(p);
+#endif
+}
+#endif
+

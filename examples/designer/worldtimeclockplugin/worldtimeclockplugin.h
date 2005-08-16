@@ -21,18 +21,20 @@
 **
 ****************************************************************************/
 
-#include <QtDesigner/QDesignerContainerExtension>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#ifndef WORLDTIMECLOCKPLUGIN_H
+#define WORLDTIMECLOCKPLUGIN_H
 
-#include <QtCore/qplugin.h>
-#include <QtGui/QIcon>
+#include <QDesignerCustomWidgetInterface>
 
-class WorldTimeClockPlugin : public QObject, public QDesignerCustomWidgetInterface
+class WorldTimeClockPlugin : public QObject,
+                             public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
+
 public:
     WorldTimeClockPlugin(QObject *parent = 0);
+
     bool isContainer() const;
     bool isInitialized() const;
     QIcon icon() const;
@@ -49,3 +51,5 @@ public:
 private:
     bool initialized;
 };
+
+#endif

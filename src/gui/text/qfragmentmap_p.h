@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include <qglobal.h>
+#include "QtCore/qglobal.h"
 #include <stdlib.h>
 
 template <class T> class QFragmentMap;
@@ -185,7 +185,7 @@ public:
         Header *head;
         char *fragments;
     };
-    int fragmentSize;
+    const int fragmentSize;
 };
 
 template <class T>

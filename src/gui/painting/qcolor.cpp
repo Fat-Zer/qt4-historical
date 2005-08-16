@@ -47,12 +47,39 @@
     value) or set a color name (the color name can be any of the SVG 1.0 color
     names).
 
+    QColor also support alpha-blended outlining and filling. The
+    alpha channel of a color specifies the transparency effect, 0
+    represents a fully transparent color, while 255 represents a fully
+    opaque color. For example:
+
+    \code
+    // Specfiy semi-transparent red
+    painter.setBrush(QColor(255, 0, 0, 127));
+    painter.drawRect(0, 0, width()/2, height());
+
+    // Specify semi-transparend blue
+    painter.setBrush(QColor(0, 0, 255, 127));
+    painter.drawRect(0, 0, width(), height()/2);
+    \endcode
+
+    The code above produces the following output:
+
+    \img alphafill.png
+
+    Alpha-blended drawing is supported on Windows, Mac OS X, and on
+    X11 systems that have the X Render extension installed.
+
+    The alpha channel of a color can be retrieved and set using the
+    alpha() and setAlpha() functions, respectively, if its value is an
+    integer, and alphaF() and setAlphaF() if its value is qreal
+    (double).
+
     QColor's validity (isValid()) indicates whether it is legal at
     all. For example, a RGB color with RGB values out of range is
     illegal. For performance reasons, QColor mostly disregards illegal
     colors. Therefore, the result of using an invalid color is undefined.
 
-    There are 20 predefined QColor objects: Qt::white, Qt::black,
+    There are 20 predefined QColor's: Qt::white, Qt::black,
     Qt::red, Qt::darkRed, Qt::green, Qt::darkGreen, Qt::blue,
     Qt::darkBlue, Qt::cyan, Qt::darkCyan, Qt::magenta,
     Qt::darkMagenta, Qt::yellow, Qt::darkYellow, Qt::gray,
@@ -303,8 +330,10 @@ QString QColor::name() const
     \i #RRGGBB
     \i #RRRGGGBBB
     \i #RRRRGGGGBBBB
-    \i A name from the X color database (rgb.txt) (e.g.
-    "steelblue" or "gainsboro"). These color names work on all platforms.
+    \i A name from the list of colors defined in the list of \l{SVG color keyword names}
+       provided by the World Wide Web Consortium; for example, "steelblue" or "gainsboro".
+       These color names work on all platforms.
+    \i \c transparent - representing the absence of a color.
     \endlist
 
     The color is invalid if \a name cannot be parsed.

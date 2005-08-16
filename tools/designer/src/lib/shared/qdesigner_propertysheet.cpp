@@ -34,7 +34,11 @@
 #include <QtGui/QImage>
 #include <QtGui/QPixmap>
 
-#include <QtCore/qdebug.h>
+#include <QtGui/QDockWidget>
+#include <QtGui/QDialog>
+#include <QtGui/QStackedWidget>
+
+namespace qdesigner_internal {
 
 static const QMetaObject *introducedBy(const QMetaObject *meta, int index)
 {
@@ -45,6 +49,17 @@ static const QMetaObject *introducedBy(const QMetaObject *meta, int index)
         return introducedBy(meta->superClass(), index);
 
     return 0;
+}
+
+} // qdesigner_internal
+
+using namespace qdesigner_internal;
+
+static bool hasLayoutAttributes(QObject *object)
+{
+    if (qobject_cast<QStackedWidget*>(object) != 0)
+        return false;
+    return true;
 }
 
 QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
@@ -59,17 +74,17 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
     }
     Q_ASSERT(baseMeta != 0);
 
-    // ### hack
     for (int index=0; index<count(); ++index) {
         QMetaProperty p = meta->property(index);
-        setVisible(index, p.isDesignable(m_object));
 
         if (p.type() == QVariant::KeySequence)
             createFakeProperty(QString::fromUtf8(p.name()));
+        else
+            setVisible(index, false); // use the default for `real' properties
 
         QString pgroup = QString::fromUtf8(baseMeta->className());
 
-        if (const QMetaObject *pmeta = introducedBy(baseMeta, index)) {
+        if (const QMetaObject *pmeta = qdesigner_internal::introducedBy(baseMeta, index)) {
             pgroup = QString::fromUtf8(pmeta->className());
         }
 
@@ -83,19 +98,24 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
         createFakeProperty(QLatin1String("whatsThis"));
         createFakeProperty(QLatin1String("acceptDrops"));
         createFakeProperty(QLatin1String("dragEnabled"));
+
+        if (hasLayoutAttributes(object)) {
+            int pindex = -1;
+
+            pindex = count();
+            createFakeProperty(QLatin1String("margin"), 0);
+            setAttribute(pindex, true);
+            setPropertyGroup(pindex, tr("Layout"));
+
+            pindex = count();
+            createFakeProperty(QLatin1String("spacing"), 0);
+            setAttribute(pindex, true);
+            setPropertyGroup(pindex, tr("Layout"));
+        }
+    }
+
+    if (qobject_cast<QDialog*>(object)) {
         createFakeProperty(QLatin1String("modal"));
-
-        int pindex = -1;
-
-        pindex = count();
-        createFakeProperty(QLatin1String("margin"), 0);
-        setAttribute(pindex, true);
-        setPropertyGroup(pindex, tr("Layout"));
-
-        pindex = count();
-        createFakeProperty(QLatin1String("spacing"), 0);
-        setAttribute(pindex, true);
-        setPropertyGroup(pindex, tr("Layout"));
     }
 }
 
@@ -367,6 +387,7 @@ bool QDesignerPropertySheet::isFakeLayoutProperty(int index) const
         return false;
 
     QString pname = propertyName(index);
+
     if (pname == QLatin1String("margin")
             || pname == QLatin1String("spacing")
             || pname == QLatin1String("sizeConstraint"))
@@ -390,7 +411,7 @@ bool QDesignerPropertySheet::isVisible(int index) const
         return true;
 
     QMetaProperty p = meta->property(index);
-    return p.isWritable() && m_info.value(index).visible;
+    return (p.isWritable() && p.isDesignable(m_object)) || m_info.value(index).visible;
 }
 
 void QDesignerPropertySheet::setVisible(int index, bool visible)
@@ -433,3 +454,4 @@ QObject *QDesignerPropertySheetFactory::createExtension(QObject *object, const Q
 
     return 0;
 }
+

@@ -24,10 +24,8 @@
 #ifndef Q3OBJECTDICT_H
 #define Q3OBJECTDICT_H
 
-#ifndef QT_H
-#include "QtCore/qmetaobject.h"
-#include "Qt3Support/q3asciidict.h"
-#endif // QT_H
+#include <QtCore/qmetaobject.h>
+#include <Qt3Support/q3asciidict.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -35,7 +33,7 @@ QT_MODULE(Qt3SupportLight)
 // The object dictionary is a collection of QMetaObjects
 //
 
-class Q_COMPAT_EXPORT Q3ObjectDictionary : public Q3AsciiDict<QMetaObject>
+class Q3ObjectDictionary : public Q3AsciiDict<QMetaObject>
 {
 public:
     Q3ObjectDictionary(int size=17,bool cs=true,bool ck=true)

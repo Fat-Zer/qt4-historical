@@ -37,11 +37,11 @@
 
 #ifndef QT_NO_PRINTER
 
-#include "qprinter.h"
-#include "qprintengine.h"
-#include "qpaintengine.h"
-#include "qpaintengine_p.h"
-#include "qt_windows.h"
+#include "QtGui/qprinter.h"
+#include "QtGui/qprintengine.h"
+#include "QtGui/qpaintengine.h"
+#include "QtCore/qt_windows.h"
+#include "private/qpaintengine_p.h"
 
 class QWin32PrintEnginePrivate;
 class QPrinterPrivate;
@@ -63,6 +63,7 @@ public:
 
     void drawPath(const QPainterPath &path);
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
+    void drawTextItem(const QPointF &p, const QTextItem &textItem);
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
     void drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &p);
@@ -107,6 +108,9 @@ public:
     {
     }
 
+    ~QWin32PrintEnginePrivate();
+
+
     /* Reads the default printer name and its driver (printerProgram) into
        the engines private data. */
     void queryDefault();
@@ -116,6 +120,10 @@ public:
        structures are already in use, they are freed using release
     */
     void initialize();
+
+    /* Initializes data in the print engine whenever the HDC has been renewed 
+    */
+    void initHDC();
 
     /* Releases all the handles the printer currently holds, HDC, DEVMODE,
        etc and resets the corresponding members to 0. */
@@ -166,6 +174,7 @@ public:
     HGLOBAL globalDevMode;
     void *devMode;
     void *pInfo;
+    HGLOBAL hMem;
 
     HDC hdc;
 
@@ -201,6 +210,8 @@ public:
     uint complex_xform : 1;
     uint has_pen : 1;
     uint has_brush : 1;
+
+    uint txop;
 
     QColor brush_color;
     QPen pen;

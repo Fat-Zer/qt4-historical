@@ -92,6 +92,16 @@ struct QBasicAtomic
 	q_atomic_unlock(lock);
 	return false;
     }
+    
+    inline bool testAndSetAcquire(int expected, int newval)
+    {
+        return testAndSet(expected, newval);
+    }
+    
+    inline bool testAndSetRelease(int expected, int newval)
+    {
+        return testAndSet(expected, newval);
+    }
 
     inline int exchange(int newval)
     {

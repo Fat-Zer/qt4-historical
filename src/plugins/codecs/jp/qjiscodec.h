@@ -50,14 +50,15 @@
  * SUCH DAMAGE.
  */
 
-#ifndef QJISCODEC_P_H
-#define QJISCODEC_P_H
+#ifndef QJISCODEC_H
+#define QJISCODEC_H
 
-#include "qtextcodec.h"
 #include "qjpunicode.h"
-#include <qlist.h>
+#include <QtCore/qtextcodec.h>
+#include <QtCore/qlist.h>
 
 #ifndef QT_NO_TEXTCODECPLUGIN
+
 class QJisCodec : public QTextCodec {
 public:
     static QByteArray _name();
@@ -77,5 +78,7 @@ public:
 protected:
     const QJpUnicodeConv *conv;
 };
+
 #endif // QT_NO_TEXTCODECPLUGIN
-#endif // QJISCODEC_P_H
+
+#endif // QJISCODEC_H

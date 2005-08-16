@@ -276,6 +276,7 @@ QDragManager::QDragManager()
     willDrop = false;
     eventLoop = 0;
     dropData = new QDropData();
+    currentDropTarget = 0;
 }
 
 
@@ -362,6 +363,24 @@ Qt::DropAction QDragManager::defaultAction(Qt::DropActions possibleActions,
 #endif
 
     return defaultAction;
+}
+
+void QDragManager::setCurrentTarget(QWidget *target, bool dropped)
+{
+    if (currentDropTarget == target)
+        return;
+
+    currentDropTarget = target;
+    if (!dropped && object) {
+        object->d_func()->target = target;
+        emit object->targetChanged(target);
+    }
+
+}
+    
+QWidget *QDragManager::currentTarget()
+{
+    return currentDropTarget;
 }
 
 #endif
@@ -556,7 +575,7 @@ QByteArray QInternalMimeData::renderDataHelper(const QString &mimeType, const QM
                 QImage image = qvariant_cast<QImage>(data->imageData());
                 QBuffer buf(&ba);
                 buf.open(QBuffer::WriteOnly);
-                image.save(&buf, mimeType.mid(mimeType.indexOf('/') + 1).toLatin1().toUpper());
+                image.save(&buf, mimeType.mid(mimeType.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper());
             }
         }
     }

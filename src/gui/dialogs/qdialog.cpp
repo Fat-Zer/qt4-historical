@@ -81,14 +81,14 @@
     Alternatively you can call the done() slot with \c Accepted or
     \c Rejected.
 
-    An alternative is to call setModal(true), then show(). Unlike
-    exec(), show() returns control to the caller immediately. Calling
-    setModal(true) is especially useful for progress dialogs, where
-    the user must have the ability to interact with the dialog, e.g.
-    to cancel a long running operation. If you use show() and
-    setModal(true) together you must call
-    QApplication::processEvents() periodically during processing to
-    enable the user to interact with the dialog. (See
+    An alternative is to call setModal(true) or setWindowModality(),
+    then show(). Unlike exec(), show() returns control to the caller
+    immediately. Calling setModal(true) is especially useful for
+    progress dialogs, where the user must have the ability to interact
+    with the dialog, e.g.  to cancel a long running operation. If you
+    use show() and setModal(true) together to perform a long operation,
+    you must call QApplication::processEvents() periodically during
+    processing to enable the user to interact with the dialog. (See
     QProgressDialog.)
 
     \section1 Modeless Dialogs
@@ -210,7 +210,7 @@ QDialog::QDialog(QWidget *parent, const char *name, bool modal, Qt::WFlags f)
               | QFlag((f & Qt::WindowType_Mask) == 0 ? Qt::Dialog : 0)
         )
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 #endif
 
@@ -362,6 +362,9 @@ void QDialog::setResult(int r)
     Users cannot interact with any other window in the same
     application until they close the dialog.
 
+    Note that exec() ignores the value of the QWidget::windowModality
+    property and always pops up dialogs as Qt::ApplicationModal.
+
   \sa show(), result()
 */
 
@@ -415,6 +418,11 @@ void QDialog::done(int r)
     hide();
     setResult(r);
     d->close_helper(QWidgetPrivate::CloseNoEvent);
+    emit finished(r);
+    if (r == Accepted)
+        emit accepted();
+    else if (r == Rejected)
+        emit rejected();
 }
 
 /*!
@@ -633,7 +641,7 @@ void QDialog::setVisible(bool visible)
                 }
             }
         }
-        if (fw) {
+        if (fw && !fw->hasFocus()) {
             QFocusEvent e(QEvent::FocusIn, Qt::TabFocusReason);
             QApplication::sendEvent(fw, &e);
         }
@@ -890,13 +898,14 @@ QSize QDialog::minimumSizeHint() const
     \property QDialog::modal
     \brief whether show() should pop up the dialog as modal or modeless
 
-    By default, this property is false and show() pops up the dialog as
-    modeless.
+    By default, this property is false and show() pops up the dialog
+    as modeless. Setting his property to true is equivalent to setting
+    QWidget::windowModality to Qt::ApplicationModal.
 
     exec() ignores the value of this property and always pops up the
     dialog as modal.
 
-    \sa show(), exec()
+    \sa QWidget::windowModality, show(), exec()
 */
 
 void QDialog::setModal(bool modal)
@@ -956,3 +965,44 @@ void QDialog::resizeEvent(QResizeEvent *)
 #endif
 }
 
+/*! \fn void QDialog::finished(int result)
+    \since 4.1
+
+    This signal is emitted when the dialog's \a result code has been
+    set, either by the user or by calling done(), accept(), or
+    reject().
+
+    Note that this signal is \e not emitted when hiding the dialog
+    with hide() or setVisible(false). This includes deleting the
+    dialog while it is visible.
+
+    \sa accepted(), rejected()
+*/
+
+/*! \fn void QDialog::accepted()
+    \since 4.1
+
+    This signal is emitted when the dialog has been accepted either by
+    the user or by calling accept() or done() with the
+    QDialog::Accepted argument.
+
+    Note that this signal is \e not emitted when hiding the dialog
+    with hide() or setVisible(false). This includes deleting the
+    dialog while it is visible.
+
+    \sa finished(), rejected()
+*/
+
+/*! \fn void QDialog::rejected()
+    \since 4.1
+
+    This signal is emitted when the dialog has been rejected either by
+    the user or by calling reject() or done() with the
+    QDialog::Rejected argument.
+
+    Note that this signal is \e not emitted when hiding the dialog
+    with hide() or setVisible(false). This includes deleting the
+    dialog while it is visible.
+
+    \sa finished(), accepted()
+*/

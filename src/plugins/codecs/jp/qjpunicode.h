@@ -53,7 +53,7 @@
 #ifndef QJPUNICODE_H
 #define QJPUNICODE_H
 
-#include "qglobal.h"
+#include <QtCore/qglobal.h>
 
 class QJpUnicodeConv {
 public:

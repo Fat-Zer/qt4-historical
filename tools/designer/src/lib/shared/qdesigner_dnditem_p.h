@@ -40,7 +40,9 @@
 #include "shared_global_p.h"
 #include <QtDesigner/abstractdnditem.h>
 
-class QT_SHARED_EXPORT QDesignerDnDItem: public QDesignerDnDItemInterface
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT QDesignerDnDItem: public QDesignerDnDItemInterface
 {
 public:
     QDesignerDnDItem(DropType type, QWidget *source = 0);
@@ -68,4 +70,7 @@ private:
 
     Q_DISABLE_COPY(QDesignerDnDItem)
 };
+
+} // namespace qdesigner_internal
+
 #endif // QDESIGNER_DNDITEM_H

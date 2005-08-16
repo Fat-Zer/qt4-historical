@@ -35,24 +35,43 @@
 // We mean it.
 //
 
-#include <private/qwidget_p.h>
+#include "QtGui/qcombobox.h"
 
 #ifndef QT_NO_COMBOBOX
-#include <qabstractslider.h>
-#include <qapplication.h>
-#include <qbasictimer.h>
-#include <qcombobox.h>
-#include <qhash.h>
-#include <qitemdelegate.h>
-#include <qlineedit.h>
-#include <qlistview.h>
-#include <qpainter.h>
-#include <qpair.h>
-#include <qstyle.h>
-#include <qstyleoption.h>
-#include <qtimer.h>
+#include "QtGui/qabstractslider.h"
+#include "QtGui/qapplication.h"
+#include "qitemdelegate.h"
+#include "QtGui/qlineedit.h"
+#include "QtGui/qlistview.h"
+#include "QtGui/qpainter.h"
+#include "QtGui/qstyle.h"
+#include "QtGui/qstyleoption.h"
+#include "QtCore/qhash.h"
+#include "QtCore/qpair.h"
+#include "QtCore/qtimer.h"
+#include "private/qwidget_p.h"
 
 #include <limits.h>
+
+class QComboBoxListView : public QListView
+{
+    Q_OBJECT
+protected:
+    void resizeEvent(QResizeEvent *event)
+    {
+        QListView::resizeEvent(event);
+        resizeContents(viewport()->width(), contentsSize().height());
+    }
+
+    QStyleOptionViewItem viewOptions() const
+    {
+        QStyleOptionViewItem option = QListView::viewOptions();
+        option.showDecorationSelected = true;
+        option.textElideMode = Qt::ElideMiddle;
+        return option;
+    }
+};
+
 
 class QStandardItemModel;
 
@@ -98,7 +117,7 @@ protected:
         style()->drawControl(QStyle::CE_MenuScroller, &menuOpt, &p);
     }
 
-signals:
+Q_SIGNALS:
     void doScroll(int action);
 
 private:
@@ -116,8 +135,9 @@ public:
     void setItemView(QAbstractItemView *itemView);
     int spacing() const;
     QTimer blockMouseReleaseTimer;
+    QPoint initialClickPosition;
 
-public slots:
+public Q_SLOTS:
     void scrollItemView(int action);
     void updateScrollers();
     void setCurrentIndex(const QModelIndex &index);
@@ -129,7 +149,7 @@ protected:
     void hideEvent(QHideEvent *e);
     QStyleOptionComboBox comboStyleOption() const;
 
-signals:
+Q_SIGNALS:
     void itemSelected(const QModelIndex &);
     void resetButton();
 
@@ -185,11 +205,14 @@ public:
     bool contains(const QString &text, int role);
     void emitActivated(const QModelIndex&);
     void emitHighlighted(const QModelIndex&);
+    void emitCurrentIndexChanged(int index);
     void modelDestroyed();
     void resetButton();
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void rowsAboutToBeInserted(const QModelIndex & parent, int start, int end);
     void rowsInserted(const QModelIndex & parent, int start, int end);
     void rowsAboutToBeRemoved(const QModelIndex & parent, int start, int end);
+    void rowsRemoved(const QModelIndex & parent, int start, int end);
     void updateArrow(QStyle::StateFlag state);
     bool updateHoverControl(const QPoint &pos);
     QStyle::SubControl newHoverControl(const QPoint &pos);
@@ -216,7 +239,10 @@ public:
     QRect hoverRect;
     QPersistentModelIndex currentIndex;
     QPersistentModelIndex root;
+    Qt::CaseSensitivity autoCompletionCaseSensitivity;
+    int indexBeforeChange;
 };
 
 #endif // QT_NO_COMBOBOX
+
 #endif // QCOMBOBOX_P_H

@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include <qtoolbutton.h>
+#include "QtGui/qtoolbutton.h"
 
 #ifndef QT_NO_TOOLBUTTON
 
@@ -49,9 +49,10 @@ public:
 
     QSize sizeHint() const;
 
-public slots:
+public Q_SLOTS:
     void setOrientation(Qt::Orientation o);
 };
 
 #endif // QT_NO_TOOLBUTTON
+
 #endif // QTOOLBAREXTENSION_P_H

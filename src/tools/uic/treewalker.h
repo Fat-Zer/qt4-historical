@@ -102,5 +102,4 @@ struct TreeWalker
     virtual void acceptConnectionHint(DomConnectionHint *connectionHint);
 };
 
-
 #endif // TREEWALKER_H

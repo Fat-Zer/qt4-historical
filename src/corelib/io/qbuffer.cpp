@@ -23,7 +23,6 @@
 
 #include "qbuffer.h"
 #include "private/qiodevice_p.h"
-#include "qtimer.h"
 
 /** QBufferPrivate **/
 class QBufferPrivate : public QIODevicePrivate

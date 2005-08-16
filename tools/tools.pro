@@ -5,9 +5,11 @@ no-png {
     SUBDIRS		= assistant/lib \
 			assistant \
 			linguist \
-			porting
+			porting \
+                        qtestlib
     !contains(QT_EDITION, Console):SUBDIRS += designer
-    unix:SUBDIRS        += qtconfig
+    unix:!embedded:SUBDIRS        += qtconfig
+    win32:!contains(QT_EDITION, OpenSource|Console):SUBDIRS       += activeqt
 }
 
 CONFIG+=ordered

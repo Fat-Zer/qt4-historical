@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#ifndef ABSTRACTFORMBUILDER_H
+#define ABSTRACTFORMBUILDER_H
 
 #include <QtDesigner/uilib_global.h>
 
@@ -33,37 +33,48 @@
 #include <QtGui/QSizePolicy>
 #include <QtGui/QPalette>
 
-class QIcon;
-class QObject;
-class QVariant;
-class QWidget;
-class QListWidget;
-class QTreeWidget;
-class QComboBox;
-class QLayout;
-class QLayoutItem;
-class QSpacerItem;
-class QIODevice;
+#if 0
+// pragma for syncqt, don't remove.
+#pragma qt_class(QAbstractFormBuilder)
+#endif
+
 class QAction;
 class QActionGroup;
+class QComboBox;
+class QIODevice;
+class QIcon;
+class QLayout;
+class QLayoutItem;
+class QListWidget;
+class QObject;
+class QSpacerItem;
+class QTreeWidget;
+class QTableWidget;
+class QVariant;
+class QWidget;
 
-class DomUI;
-class DomWidget;
-class DomLayout;
-class DomLayoutItem;
-class DomProperty;
-class DomColorGroup;
-class DomSpacer;
-class DomString;
-class DomTabStops;
-class DomConnections;
-class DomCustomWidgets;
+#ifdef QFORMINTERNAL_NAMESPACE
+namespace QFormInternal
+{
+#endif
+
 class DomAction;
 class DomActionGroup;
 class DomActionRef;
+class DomColorGroup;
+class DomConnections;
+class DomCustomWidgets;
+class DomLayout;
+class DomLayoutItem;
+class DomProperty;
 class DomResources;
+class DomSpacer;
+class DomString;
+class DomTabStops;
+class DomUI;
+class DomWidget;
 
-class QT_UILIB_EXPORT QAbstractFormBuilder
+class QDESIGNER_UILIB_EXPORT QAbstractFormBuilder
 {
 public:
     QAbstractFormBuilder();
@@ -141,10 +152,12 @@ protected:
 
     void loadListWidgetExtraInfo(DomWidget *ui_widget, QListWidget *listWidget, QWidget *parentWidget);
     void loadTreeWidgetExtraInfo(DomWidget *ui_widget, QTreeWidget *treeWidget, QWidget *parentWidget);
+    void loadTableWidgetExtraInfo(DomWidget *ui_widget, QTableWidget *tableWidget, QWidget *parentWidget);
     void loadComboBoxExtraInfo(DomWidget *ui_widget, QComboBox *comboBox, QWidget *parentWidget);
 
     void saveListWidgetExtraInfo(QListWidget *widget, DomWidget *ui_widget, DomWidget *ui_parentWidget);
     void saveTreeWidgetExtraInfo(QTreeWidget *treeWidget, DomWidget *ui_widget, DomWidget *ui_parentWidget);
+    void saveTableWidgetExtraInfo(QTableWidget *tablWidget, DomWidget *ui_widget, DomWidget *ui_parentWidget);
     void saveComboBoxExtraInfo(QComboBox *widget, DomWidget *ui_widget, DomWidget *ui_parentWidget);
 
 //
@@ -155,7 +168,7 @@ protected:
     static QString toString(const DomString *str);
     static QHash<QString, DomProperty*> propertyMap(const QList<DomProperty*> &properties);
 
-    void setupColorGroup(QPalette &palette, DomColorGroup *group);
+    void setupColorGroup(QPalette &palette, QPalette::ColorGroup colorGroup, DomColorGroup *group);
     DomColorGroup *saveColorGroup(const QPalette &palette);
 
     void reset();
@@ -173,4 +186,8 @@ private:
     void operator = (const QAbstractFormBuilder &other);
 };
 
-#endif // RESOURCE_H
+#ifdef QFORMINTERNAL_NAMESPACE
+}
+#endif
+
+#endif // ABSTRACTFORMBUILDER_H

@@ -24,8 +24,6 @@
 #ifndef QABSTRACTPRINTDIALOG_P_H
 #define QABSTRACTPRINTDIALOG_P_H
 
-#ifndef QT_NO_PRINTDIALOG
-
 //
 //  W A R N I N G
 //  -------------
@@ -37,10 +35,12 @@
 // We mean it.
 //
 
-class QPrinter;
+#ifndef QT_NO_PRINTDIALOG
 
-#include <private/qdialog_p.h>
-#include "qabstractprintdialog.h"
+#include "private/qdialog_p.h"
+#include "QtGui/qabstractprintdialog.h"
+
+class QPrinter;
 
 class QAbstractPrintDialogPrivate : public QDialogPrivate
 {

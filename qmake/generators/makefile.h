@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef __MAKEFILE_H__
-#define __MAKEFILE_H__
+#ifndef MAKEFILE_H
+#define MAKEFILE_H
 
 #include "option.h"
 #include "project.h"
@@ -38,6 +38,22 @@
 #define QT_POPEN popen
 #endif
 
+struct ReplaceExtraCompilerCacheKey
+{
+    mutable uint hash;
+    QString var, in, out, pwd;
+    ReplaceExtraCompilerCacheKey(const QString &v, const QString &i, const QString &o);
+    bool operator==(const ReplaceExtraCompilerCacheKey &f) const;
+    inline uint hashCode() const {
+        if(!hash)
+            hash = qHash(var) | qHash(in) | qHash(out) /*| qHash(pwd)*/;
+        return hash;
+    }
+};
+inline uint qHash(const ReplaceExtraCompilerCacheKey &f) { return f.hashCode(); }
+
+struct ReplaceExtraCompilerCacheKey;
+
 class MakefileGenerator : protected QMakeSourceFileInfo
 {
     QString spec;
@@ -50,6 +66,7 @@ class MakefileGenerator : protected QMakeSourceFileInfo
     //internal caches
     mutable QHash<QString, QMakeLocalFileName> depHeuristicsCache;
     mutable QHash<QString, QStringList> dependsCache;
+    mutable QHash<ReplaceExtraCompilerCacheKey, QString> extraCompilerVariablesCache;
 
 protected:
     //makefile style generator functions
@@ -198,4 +215,4 @@ inline MakefileGenerator::~MakefileGenerator()
 
 QString mkdir_p_asstring(const QString &dir);
 
-#endif /* __MAKEFILE_H__ */
+#endif // MAKEFILE_H

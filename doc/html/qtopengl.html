@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/qtopengl.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qtopengl.qdoc -->
 <head>
-    <title>Qt 4.0: QtOpenGL Module</title>
+    <title>Qt 4.1: QtOpenGL Module</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -27,11 +27,16 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <h1 align="center">QtOpenGL Module<br /><small></small></h1>
 <p>The QtOpenGL module offers classes that make it easy to use OpenGL in Qt applications. <a href="#details">More...</a></p>
+<h2>Namespaces</h2>
+<p><table width="100%">
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qgl.html">QGL</a></b></td><td>Miscellaneous identifiers used in the Qt OpenGL module</td></tr>
+</table></p>
 <h2>Classes</h2>
 <p><table width="100%">
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qglcolormap.html">QGLColormap</a></b></td><td>Used for installing custom colormaps into QGLWidgets</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qglcontext.html">QGLContext</a></b></td><td>Encapsulates an OpenGL rendering context</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qglformat.html">QGLFormat</a></b></td><td>The display format of an OpenGL rendering context</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qglpixelbuffer.html">QGLPixelBuffer</a></b></td><td>Encapsulates an OpenGL pbuffer</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qglwidget.html">QGLWidget</a></b></td><td>Widget for rendering OpenGL graphics</td></tr>
 </table></p>
 <a name="details"></a>
@@ -45,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 <p>To link against the module, add this line to your <a href="qmake-manual.html#qmake">qmake</a> <tt>.pro</tt> file:</p>
 <pre>&nbsp;   QT += opengl</pre>
 <p>The Qt OpenGL module is implemented as a platform-independent Qt/C++ wrapper around the platform-dependent GLX, WGL, or AGL C APIs. The functionality provided is very similar to Mark Kilgard's GLUT library, but with much more non-OpenGL-specific GUI functionality, i.e. the whole Qt API.</p>
-<p><b>Warning:</b> The QtOpenGL module is part of the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a> and the <a href="opensourceedition.html">Qt Open Source Edition</a>. It is available on Windows, X11, and Mac OS X. The module is <i>not</i> part of <a href="http://www.trolltech.com/products/qtopia/">Qt/Embedded</a>.</p>
+<p><b>Warning:</b> The QtOpenGL module is part of the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a> and the <a href="opensourceedition.html">Qt Open Source Edition</a>. It is available on Windows, X11, and Mac OS X. The module is <i>not</i> part of <a href="http://www.trolltech.com/products/qtopia/">Qtopia Core</a>.</p>
 <a name="installation"></a>
 <h3>Installation</h3>
 <p>When you install Qt for X11, the configure script will autodetect if OpenGL headers and libraries are installed on your system, and if so, it will include the Qt OpenGL module in the Qt library. (If your OpenGL headers or libraries are placed in a non-standard directory, you may need to change the <a href="qmake-variable-reference.html#qmake-incdir-opengl">QMAKE_INCDIR_OPENGL</a> and/or <a href="qmake-variable-reference.html#qmake-libdir-opengl">QMAKE_LIBDIR_OPENGL</a> in the config file for your system).</p>
@@ -73,6 +78,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

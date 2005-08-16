@@ -45,7 +45,7 @@ public:
     FtpWindow(QWidget *parent = 0);
 
 private slots:
-    void connectToFtpServer();
+    void connectOrDisconnect();
     void downloadFile();
     void cancelDownload();
 
@@ -55,7 +55,6 @@ private slots:
     void cdToParent();
     void updateDataTransferProgress(qint64 readBytes,
                                     qint64 totalBytes);
-    void enableConnectButton();
     void enableDownloadButton();
 
 private:

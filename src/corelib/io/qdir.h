@@ -24,9 +24,9 @@
 #ifndef QDIR_H
 #define QDIR_H
 
-#include "QtCore/qstring.h"
-#include "QtCore/qfileinfo.h"
-#include "QtCore/qstringlist.h"
+#include <QtCore/qstring.h>
+#include <QtCore/qfileinfo.h>
+#include <QtCore/qstringlist.h>
 
 QT_MODULE(Core)
 
@@ -43,9 +43,10 @@ public:
                   Files       = 0x002,
                   Drives      = 0x004,
                   NoSymLinks  = 0x008,
+                  AllEntries  = Dirs | Files | Drives,
                   TypeMask    = 0x00f,
 #ifdef QT3_SUPPORT
-                  All         = TypeMask,
+                  All         = AllEntries,
 #endif
 
                   Readable    = 0x010,
@@ -59,10 +60,12 @@ public:
                   Modified    = 0x080,
                   Hidden      = 0x100,
                   System      = 0x200,
+                 
                   AccessMask  = 0x3F0,
 
                   AllDirs       = 0x400,
                   CaseSensitive = 0x800,
+                  NoDotAndDotDot = 0x1000,
 
                   NoFilter = -1
 #ifdef QT3_SUPPORT
@@ -84,6 +87,7 @@ public:
                     Reversed    = 0x08,
                     IgnoreCase  = 0x10,
                     DirsLast    = 0x20,
+                    LocaleAware = 0x40, 
                     Type        = 0x80,
                     NoSort = -1
 #ifdef QT3_SUPPORT
@@ -95,7 +99,7 @@ public:
     QDir(const QDir &);
     QDir(const QString &path = QString());
     QDir(const QString &path, const QString &nameFilter,
-         SortFlags sort = SortFlags(Name | IgnoreCase), Filters filter = TypeMask);
+         SortFlags sort = SortFlags(Name | IgnoreCase), Filters filter = AllEntries);
     ~QDir();
 
     QDir &operator=(const QDir &);
@@ -188,15 +192,8 @@ public:
     inline QT3_SUPPORT QString absPath() const { return absolutePath(); }
     inline QT3_SUPPORT QString absFilePath(const QString &fileName, bool acceptAbsPath = true) const
        { Q_UNUSED(acceptAbsPath); return absoluteFilePath(fileName); }
-    inline QT3_SUPPORT bool matchAllDirs() const
-        { return filter() & AllDirs; }
-    inline QT3_SUPPORT void setMatchAllDirs(bool on)
-    {
-        if(on)
-            setFilter(filter() | AllDirs);
-        else
-            setFilter(filter() & ~(int)AllDirs);
-    }
+    QT3_SUPPORT bool matchAllDirs() const;
+    QT3_SUPPORT void setMatchAllDirs(bool on);
     inline QT3_SUPPORT QStringList entryList(const QString &nameFilter, Filters filters = NoFilter,
                                            SortFlags sort = NoSort) const
     { return entryList(nameFiltersFromString(nameFilter), filters, sort); }

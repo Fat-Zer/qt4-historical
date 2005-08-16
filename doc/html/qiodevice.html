@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/io/qiodevice.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/io/qiodevice.cpp -->
 <head>
-    <title>Qt 4.0: QIODevice Class Reference</title>
+    <title>Qt 4.1: QIODevice Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -52,6 +52,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qiodevice.html#isWritable">isWritable</a></b> () const</li>
 <li><div class="fn"/>virtual bool <b><a href="qiodevice.html#open">open</a></b> ( OpenMode <i>mode</i> )</li>
 <li><div class="fn"/>OpenMode <b><a href="qiodevice.html#openMode">openMode</a></b> () const</li>
+<li><div class="fn"/>qint64 <b><a href="qiodevice.html#peek">peek</a></b> ( char * <i>data</i>, qint64 <i>maxSize</i> )</li>
+<li><div class="fn"/>QByteArray <b><a href="qiodevice.html#peek-2">peek</a></b> ( qint64 <i>maxSize</i> )</li>
 <li><div class="fn"/>virtual qint64 <b><a href="qiodevice.html#pos">pos</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qiodevice.html#putChar">putChar</a></b> ( char <i>c</i> )</li>
 <li><div class="fn"/>qint64 <b><a href="qiodevice.html#read">read</a></b> ( char * <i>data</i>, qint64 <i>maxSize</i> )</li>
@@ -109,7 +111,7 @@ body { background: #ffffff; color: black; }</style>
 <p>QIODevice distinguishes between two types of devices: random-access devices and sequential devices.</p>
 <ul>
 <li>Random-access devices support seeking to arbitrary positions using <a href="qiodevice.html#seek">seek</a>(). The current position in the file is available by calling <a href="qiodevice.html#pos">pos</a>(). <a href="qfile.html">QFile</a> and <a href="qbuffer.html">QBuffer</a> are examples of random-access devices.</li>
-<li>Sequential devices don't support seeking to arbitrary positions. The data must be read in one pass. Functions like <a href="qiodevice.html#pos">pos</a>(), <a href="qiodevice.html#seek">seek</a>(), and <a href="qiodevice.html#size">size</a>() don't work for sequential devices. <a href="qtcpsocket.html">QTcpSocket</a> and <a href="qprocess.html">QProcess</a> are examples of sequential devices.</li>
+<li>Sequential devices don't support seeking to arbitrary positions. The data must be read in one pass. The functions <a href="qiodevice.html#pos">pos</a>() and <a href="qiodevice.html#size">size</a>() don't work for sequential devices. <a href="qtcpsocket.html">QTcpSocket</a> and <a href="qprocess.html">QProcess</a> are examples of sequential devices.</li>
 </ul>
 <p>You can use <a href="qiodevice.html#isSequential">isSequential</a>() to determine the type of device.</p>
 <p>QIODevice emits <a href="qiodevice.html#readyRead">readyRead</a>() when new data is available for reading; for example, if new data has arrived on the network or if additional data is appended to a file that you are reading from. You can call <a href="qiodevice.html#bytesAvailable">bytesAvailable</a>() to determine the number of bytes that currently available for reading. It's common to use <a href="qiodevice.html#bytesAvailable">bytesAvailable</a>() together with the <a href="qiodevice.html#readyRead">readyRead</a>() signal when programming with asynchronous devices such as <a href="qtcpsocket.html">QTcpSocket</a>, where fragments of data can arrive at arbitrary points in time. QIODevice emits the <a href="qiodevice.html#bytesWritten">bytesWritten</a>() signal every time a payload of data has been written to the device. Use <a href="qiodevice.html#bytesToWrite">bytesToWrite</a>() to determine the current amount of data waiting to be written.</p>
@@ -145,7 +147,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QIODevice::ReadWrite</tt></td><td align="center" valign="top"><tt>ReadOnly | WriteOnly</tt></td><td valign="top">The device is open for reading and writing.</td></tr>
 <tr><td valign="top"><tt>QIODevice::Append</tt></td><td align="center" valign="top"><tt>0x0004</tt></td><td valign="top">The device is opened in append mode, so that all data is written to the end of the file.</td></tr>
 <tr><td valign="top"><tt>QIODevice::Truncate</tt></td><td align="center" valign="top"><tt>0x0008</tt></td><td valign="top">If possible, the device is truncated before it is opened. All earlier contents of the device are lost.</td></tr>
-<tr><td valign="top"><tt>QIODevice::Text</tt></td><td align="center" valign="top"><tt>0x0010</tt></td><td valign="top">When reading lines using <a href="qiodevice.html#readLine">readLine</a>(), end-of-line terminators are translated to the local encoding.</td></tr>
+<tr><td valign="top"><tt>QIODevice::Text</tt></td><td align="center" valign="top"><tt>0x0010</tt></td><td valign="top">When reading, the end-of-line terminators are translated to '\n'. When writing, the end-of-line terminators are translated to the local encoding, for example '\r\n' for Win32.</td></tr>
 <tr><td valign="top"><tt>QIODevice::Unbuffered</tt></td><td align="center" valign="top"><tt>0x0020</tt></td><td valign="top">Any buffer in the device is bypassed.</td></tr>
 </table>
 <p>Certain flags, such as QIODevice::Unbuffered and QIODevice::Truncate, might be meaningless for some subclasses. (For example, access to a <a href="qbuffer.html">QBuffer</a> is always unbuffered.)</p>
@@ -210,6 +212,30 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="openMode"></a><a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> QIODevice::openMode () const</h3>
 <p>Returns the mode in which the device has been opened; i.e. <a href="qiodevice.html#OpenModeFlag-enum">ReadOnly</a> or <a href="qiodevice.html#OpenModeFlag-enum">WriteOnly</a>.</p>
 <p>See also <a href="qiodevice.html#setOpenMode">setOpenMode</a>() and <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a>.</p>
+<h3 class="fn"><a name="peek"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::peek ( char * <i>data</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>maxSize</i> )</h3>
+<p>Reads at most <i>maxSize</i> bytes from the device into <i>data</i>, without side effects (i.e., if you call <a href="qiodevice.html#read">read</a>() after peek(), you will get the same data). Returns the number of bytes read. If an error occurs, such as when attempting to peek a device opened in <a href="qiodevice.html#OpenModeFlag-enum">WriteOnly</a> mode, this function returns -1.</p>
+<p>0 is returned when no more data is available for reading.</p>
+<p>Example:</p>
+<pre>&nbsp;   bool isExeFile(QFile *file)
+    {
+        char buf[2];
+        if (file-&gt;peek(buf, sizeof(buf)) == sizeof(buf))
+            return (buf[0] == 'M' &amp;&amp; buf[1] == 'Z');
+        return false;
+    }</pre>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qiodevice.html#read">read</a>().</p>
+<h3 class="fn"><a name="peek-2"></a><a href="qbytearray.html">QByteArray</a> QIODevice::peek ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>maxSize</i> )</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Peeks at most <i>maxSize</i> bytes from the device, returning the data peeked as a <a href="qbytearray.html">QByteArray</a>.</p>
+<p>Example:</p>
+<pre>&nbsp;   bool isExeFile(QFile *file)
+    {
+        return file-&gt;peek(2) == &quot;MZ&quot;;
+    }</pre>
+<p>This function has no way of reporting errors; returning an empty QByteArray() can mean either that no data was currently available for peeking, or that an error occurred.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qiodevice.html#read">read</a>().</p>
 <h3 class="fn"><a name="pos"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::pos () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>For random-access devices, this function returns the position that data is written to or read from. For sequential devices or closed devices, where there is no concept of a &quot;current position&quot;, 0 is returned.</p>
 <p>See also <a href="qiodevice.html#isSequential">isSequential</a>() and <a href="qiodevice.html#seek">seek</a>().</p>
@@ -233,7 +259,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qiodevice.html#read">read</a>(), <a href="qiodevice.html#readLine">readLine</a>(), and <a href="qiodevice.html#writeData">writeData</a>().</p>
 <h3 class="fn"><a name="readLine"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::readLine ( char * <i>data</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>maxSize</i> )</h3>
 <p>This function reads a line of ASCII characters from the device, up to a maximum of <i>maxSize</i> - 1 bytes, stores the characters in <i>data</i>, and returns the number of bytes read. If an error occurred, -1 is returned.</p>
-<p>A '\0' byte is always appended to <i>data</i>, so <i>maxSize</i> must be larger than 1.</p>
+<p>A terminating '\0' byte is always appended to <i>data</i>, so <i>maxSize</i> must be larger than 1.</p>
 <p>Data is read until either of the following conditions are met:</p>
 <ul>
 <li>The first '\n' character is read.</li>
@@ -315,6 +341,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

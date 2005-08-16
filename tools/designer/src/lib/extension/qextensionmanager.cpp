@@ -25,23 +25,93 @@
 
 /*!
     \class QExtensionManager
-    \brief The QExtensionManager class provides extension management facilities for \QD.
+
+    \brief The QExtensionManager class provides extension management
+    facilities for Qt Designer.
+
     \inmodule QtDesigner
+
+    In \QD the extensions are not created until they are required. For
+    that reason, when implementing an extension, you must also create
+    a QExtensionFactory, i.e a class that is able to make an instance
+    of your extension, and register it using \QD's extension manager.
+
+    The registration of an extension factory is typically made in the
+    QDesignerCustomWidgetInterface::initialize() function:
+
+    \code
+        void MyPlugin::initialize(QDesignerFormEditorInterface *formEditor)
+        {
+            if (initialized)
+                return;
+
+            QExtensionManager *manager = formEditor->extensionManager();
+            Q_ASSERT(manager != 0);
+
+            manager->registerExtensions(new MyExtensionFactory(manager),
+                                        Q_TYPEID(QDesignerTaskMenuExtension));
+
+            initialized = true;
+        }
+    \endcode
+
+    The QExtensionManager is not intended to be instantiated
+    directly. You can retrieve an interface to \QD's extension manager
+    using the QDesignerFormEditorInterface::extensionManager()
+    function. A pointer to \QD's current QDesignerFormEditorInterface
+    object (\c formEditor in the example above) is provided by the
+    QDesignerCustomWidgetInterface::initialize() function's
+    parameter. When implementing a custom widget plugin, you must
+    subclass the QDesignerCustomWidgetInterface to expose your plugin
+    to \QD.
+
+    Then, when an extension is required, \QD's extension manager will
+    run through all its registered factories calling
+    QExtensionFactory::createExtension() for each until the first one
+    that is able to create the requested extension for the selected
+    object, is found. This factory will then make an instance of the
+    extension.
+
+    There are four available types of extensions in \QD:
+    QDesignerContainerExtension , QDesignerMemberSheetExtension,
+    QDesignerPropertySheetExtension and
+    QDesignerTaskMenuExtension. \QD's behavior is the same whether the
+    requested extension is associated with a container, a member
+    sheet, a property sheet or a task menu.
+
+    For a complete example using the QExtensionManager class, see the
+    \l {designer/taskmenuextension}{Task Menu Extension example}. The
+    example shows how to create a custom widget plugin for Qt
+    Designer, and how to to use the QDesignerTaskMenuExtension class
+    to add custom items to \QD's task menu.
+
+    \sa QExtensionFactory, QAbstractExtensionManager
 */
 
 /*!
-    Constructs an extenstion manager with the given \a parent.*/
+    Constructs an extension manager with the given \a parent.
+*/
 QExtensionManager::QExtensionManager(QObject *parent)
     : QObject(parent)
 {
 }
 
+
 /*!
-    Register \a factory as an extension factory with an identifier specified by \a iid.*/
+  Destroys the extension manager
+*/
+QExtensionManager::~QExtensionManager()
+{
+}
+
+/*!
+    Register the extension specified by the given \a factory and
+    extension identifier \a iid.
+*/
 void QExtensionManager::registerExtensions(QAbstractExtensionFactory *factory, const QString &iid)
 {
     if (iid.isEmpty()) {
-        m_globalExtension.append(factory);
+        m_globalExtension.prepend(factory);
         return;
     }
 
@@ -52,7 +122,9 @@ void QExtensionManager::registerExtensions(QAbstractExtensionFactory *factory, c
 }
 
 /*!
-    Unregister the \a factory with the identifier specified by \a iid.*/
+    Unregister the extension specified by the given \a factory and
+    extension identifier \a iid.
+*/
 void QExtensionManager::unregisterExtensions(QAbstractExtensionFactory *factory, const QString &iid)
 {
     if (iid.isEmpty()) {
@@ -67,7 +139,9 @@ void QExtensionManager::unregisterExtensions(QAbstractExtensionFactory *factory,
 }
 
 /*!
-    Returns the extension for the given \a object with the identifier specified by \a iid.*/
+    Returns the extension specified by \a iid, for the given \a
+    object.
+*/
 QObject *QExtensionManager::extension(QObject *object, const QString &iid) const
 {
     QList<QAbstractExtensionFactory*> l = m_extensions.value(iid);

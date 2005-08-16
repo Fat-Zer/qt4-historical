@@ -24,11 +24,11 @@
 #ifndef QPIXMAP_H
 #define QPIXMAP_H
 
-#include "QtGui/qpaintdevice.h"
-#include "QtGui/qcolor.h"
-#include "QtCore/qnamespace.h"
-#include "QtCore/qstring.h" // char*->QString conversion
-#include "QtGui/qimage.h"
+#include <QtGui/qpaintdevice.h>
+#include <QtGui/qcolor.h>
+#include <QtCore/qnamespace.h>
+#include <QtCore/qstring.h> // char*->QString conversion
+#include <QtGui/qimage.h>
 
 QT_MODULE(Gui)
 
@@ -131,8 +131,8 @@ public:
     inline bool isQBitmap() const { return depth() == 1; }
 
 #if defined(Q_WS_QWS)
-    virtual const uchar * qwsScanLine(int) const;
-    virtual int qwsBytesPerLine() const;
+    const uchar *qwsBits() const;
+    int qwsBytesPerLine() const;
     QRgb *clut() const;
     int numCols() const;
 #elif defined(Q_WS_MAC)

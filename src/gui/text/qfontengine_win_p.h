@@ -24,6 +24,17 @@
 #ifndef QFONTENGINE_WIN_P_H
 #define QFONTENGINE_WIN_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 class QFontEngineWin : public QFontEngine
 {
 public:
@@ -35,16 +46,18 @@ public:
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
 
     void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
+    void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
+                         QPainterPath *path, QTextItem::RenderFlags flags);
     virtual void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
 
-    HGDIOBJ selectDesignFont(float *) const;
+    HGDIOBJ selectDesignFont(QFixed *) const;
 
     glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
     glyph_metrics_t boundingBox(glyph_t glyph);
 
-    qreal ascent() const;
-    qreal descent() const;
-    qreal leading() const;
+    QFixed ascent() const;
+    QFixed descent() const;
+    QFixed leading() const;
     qreal maxCharWidth() const;
     qreal minLeftBearing() const;
     qreal minRightBearing() const;
@@ -57,7 +70,7 @@ public:
 
     enum { widthCacheSize = 0x800, cmapCacheSize = 0x500 };
     mutable unsigned char widthCache[widthCacheSize];
-    mutable float *designAdvances;
+    mutable QFixed *designAdvances;
     mutable int designAdvancesSize;
 };
 
@@ -70,4 +83,4 @@ public:
     QStringList fallbacks;
 };
 
-#endif
+#endif // QFONTENGINE_WIN_P_H

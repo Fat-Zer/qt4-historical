@@ -59,7 +59,7 @@ bool QSqlTableModelPrivate::setRecord(int row, const QSqlRecord &record)
     if (strategy == QSqlTableModel::OnFieldChange)
         strategy = QSqlTableModel::OnRowChange;
     for (int i = 0; i < record.count(); ++i) {
-        int idx = rec.indexOf(record.fieldName(i));
+        int idx = nameToIndex(record.fieldName(i));
         if (idx == -1)
             continue;
         QModelIndex cIndex = q->createIndex(row, idx);
@@ -72,6 +72,11 @@ bool QSqlTableModelPrivate::setRecord(int row, const QSqlRecord &record)
     strategy = oldStrategy;
 
     return isOk;
+}
+
+int QSqlTableModelPrivate::nameToIndex(const QString &name) const
+{
+    return rec.indexOf(name);
 }
 
 void QSqlTableModelPrivate::clear()
@@ -338,7 +343,8 @@ QString QSqlTableModel::tableName() const
 
 /*!
     Populates the model with data from the table that was set via setTable(), using the
-    specified filter and sort condition.
+    specified filter and sort condition, and returns true if successful; otherwise
+    returns false.
 
     \sa setTable(), setFilter(), selectStatement()
 */
@@ -633,8 +639,9 @@ bool QSqlTableModel::submitAll()
     case OnFieldChange:
         return true;
     case OnRowChange:
-        if (d->editBuffer.isEmpty())
+        if (d->editBuffer.isEmpty()){
             return true;
+        }
         if (d->insertIndex != -1) {
             if (!insertRowIntoTable(d->editBuffer))
                 return false;
@@ -883,7 +890,7 @@ QString QSqlTableModel::orderByClause() const
     QSqlField f = d->rec.field(d->sortColumn);
     if (!f.isValid())
         return s;
-    s.append(QLatin1String("ORDER BY ")).append(f.name());
+    s.append(QLatin1String("ORDER BY ")).append(d->tableName).append(QLatin1Char('.')).append(f.name());
     s += d->sortOrder == Qt::AscendingOrder ? QLatin1String(" ASC") : QLatin1String(" DESC");
     return s;
 }

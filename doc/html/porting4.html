@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/porting4.qdoc -->
 <head>
-    <title>Qt 4.0: Porting to Qt 4</title>
+    <title>Qt 4.1: Porting to Qt 4</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -63,6 +63,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qcolordrag">QColorDrag</a></li>
 <li><a href="#qcombobox">QComboBox</a></li>
 <li><a href="#qcstring">QCString</a></li>
+<li><a href="#qcustomevent">QCustomEvent</a></li>
 <li><a href="#qdatabrowser">QDataBrowser</a></li>
 <li><a href="#qdatapump">QDataPump</a></li>
 <li><a href="#qdatasink">QDataSink</a></li>
@@ -120,8 +121,8 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qnetworkprotocol">QNetworkProtocol</a></li>
 <li><a href="#qobject">QObject</a></li>
 <li><a href="#qobjectdictionary">QObjectDictionary</a></li>
-</ul></td><td width="25%"><ul>
 <li><a href="#qobjectlist">QObjectList</a></li>
+</ul></td><td width="25%"><ul>
 <li><a href="#qpaintdevice">QPaintDevice</a></li>
 <li><a href="#qpaintdevicemetrics">QPaintDeviceMetrics</a></li>
 <li><a href="#qpainter">QPainter</a></li>
@@ -162,9 +163,9 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qsqlform">QSqlForm</a></li>
 <li><a href="#qsqlpropertymap">QSqlPropertyMap</a></li>
 <li><a href="#qsqlquery">QSqlQuery</a></li>
-</ul></td><td width="25%"><ul>
 <li><a href="#qsqlrecord">QSqlRecord</a></li>
 <li><a href="#qsqlrecordinfo">QSqlRecordInfo</a></li>
+</ul></td><td width="25%"><ul>
 <li><a href="#qsqlselectcursor">QSqlSelectCursor</a></li>
 <li><a href="#qstoreddrag">QStoredDrag</a></li>
 <li><a href="#qstr-i-list">QStr(I)List</a></li>
@@ -198,6 +199,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qwidgetfactory">QWidgetFactory</a></li>
 <li><a href="#qwidgetintdict">QWidgetIntDict</a></li>
 <li><a href="#qwidgetlist">QWidgetList</a></li>
+<li><a href="#qwidgetplugin">QWidgetPlugin</a></li>
 <li><a href="#qwidgetstack">QWidgetStack</a></li>
 <li><a href="#qwizard">QWizard</a></li>
 <li><a href="#qworkspace">QWorkspace</a></li>
@@ -219,7 +221,7 @@ body { background: #ffffff; color: black; }</style>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt 3 type name</th><th>Qt 4 type name</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qapplication-qt3.html#ColorMode-typedef">QApplication::ColorMode</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::ColorSpec</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QButton::ToggleState</td><td><a href="qcheckbox.html#ToggleState-enum">QCheckBox::ToggleState</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QButton::ToggleState</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::ToggleState</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QCursorShape</td><td><a href="qt.html#CursorShape-enum">Qt::CursorShape</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QFile::FilterSpec</td><td>QFile::Filters</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qfile.html#PermissionSpec-typedef">QFile::PermissionSpec</a></td><td><a href="qfile.html#Permission-enum">QFile::Permission</a></td></tr>
@@ -260,9 +262,9 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qaccessible.html#StateFlag-enum">QAccessible::Moveable</a></td><td><a href="qaccessible.html#StateFlag-enum">QAccessible::Movable</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qapplication-qt3.html#CustomColors-var">QApplication::CustomColors</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::CustomColor</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qapplication-qt3.html#NormalColors-var">QApplication::NormalColors</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::NormalColor</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QButton::NoChange</td><td><a href="qcheckbox.html#ToggleState-enum">QCheckBox::NoChange</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QButton::Off</td><td><a href="qcheckbox.html#ToggleState-enum">QCheckBox::Off</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QButton::On</td><td><a href="qcheckbox.html#ToggleState-enum">QCheckBox::On</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QButton::NoChange</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::NoChange</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QButton::Off</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::Off</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QButton::On</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::On</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#Decomposition-enum">QChar::Single</a></td><td><a href="qchar.html#Decomposition-enum">QChar::NoDecomposition</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::byteOrderMark</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ByteOrderMark</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::byteOrderSwapped</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ByteOrderSwapped</a></td></tr>
@@ -906,6 +908,10 @@ body { background: #ffffff; color: black; }</style>
 </li>
 </ol>
 <p>Since the old <tt>QCString</tt> class inherited from <a href="qbytearray.html">QByteArray</a>, everything that is said in the <a href="#qbytearray-section">QByteArray section</a> applies for <tt>QCString</tt> as well.</p>
+<a name="qcustomevent"></a>
+<h2>QCustomEvent</h2>
+<p>In Qt 3, developers could create a custom event by constructing a new <a href="qcustomevent.html">QCustomEvent</a>, and send relevant data to other components in the application by passing a void pointer, either on construction or using the setData() function. Objects could receive custom events by reimplementing the <a href="qobject.html#customEvent">customEvent()</a> function, and access the stored data using the event's data() function.</p>
+<p>In Qt 4, custom events are created by subclassing <a href="qevent.html">QEvent</a> and reimplementing the <a href="qevent.html#type">type()</a> function to return a value in the range allocated for user events. Event-specific data can be stored in a way that is appropriate for your application. Custom events are still delivered to each object's <a href="qobject.html#customEvent">customEvent()</a> handler function, but as <a href="qevent.html">QEvent</a> objects rather than as deprecated <a href="qcustomevent.html">QCustomEvent</a> objects.</p>
 <a name="qdatabrowser"></a>
 <h2>QDataBrowser</h2>
 <p>The <tt>QDataBrowser</tt> class has been renamed <a href="q3databrowser.html">Q3DataBrowser</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. It is expected that Qt 4.1 will offer a replacement class. In the meantime, you can use <a href="q3databrowser.html">Q3DataBrowser</a> for creating data-aware forms or you can roll your own.</p>
@@ -1268,6 +1274,7 @@ body { background: #ffffff; color: black; }</style>
     layout-&gt;addWidget(child1);
     layout-&gt;addWidget(child2);
     hbox-&gt;setLayout(layout);</pre>
+<p>Note that child widgets are not automatically placed into the widget's layout; you will need to manually add each widget to the <a href="qhboxlayout.html">QHBoxLayout</a>.</p>
 <a name="qheader"></a>
 <h2>QHeader</h2>
 <p>The <tt>QHeader</tt> class has been renamed <a href="q3header.html">Q3Header</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, it is replaced by the <a href="qheaderview.html">QHeaderView</a> class.</p>
@@ -1291,7 +1298,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>QImageIO</tt> class has been split into two classes: <a href="qimagereader.html">QImageReader</a> and <a href="qimagewriter.html">QImageWriter</a>. The table below shows the correspondance between the two APIs:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt 3 function</th><th>Qt 4 equivalents</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::description()</td><td><a href="qimagewriter.html#description">QImageWriter::description</a>()</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::description()</td><td><a href="qimagewriter-obsolete.html#description">QImageWriter::description</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::fileName()</td><td><a href="qimagereader.html#fileName">QImageReader::fileName</a>() and <a href="qimagewriter.html#fileName">QImageWriter::fileName</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::format()</td><td><a href="qimagereader.html#format">QImageReader::format</a>() and <a href="qimagewriter.html#format">QImageWriter::format</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::gamma()</td><td><a href="qimagewriter.html#gamma">QImageWriter::gamma</a>()</td></tr>
@@ -1300,7 +1307,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::parameters()</td><td>N/A</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::quality()</td><td><a href="qimagewriter.html#quality">QImageWriter::quality</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::read()</td><td><a href="qimagereader.html#read">QImageReader::read</a>()</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::setDescription()</td><td><a href="qimagewriter.html#setDescription">QImageWriter::setDescription</a>()</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::setDescription()</td><td><a href="qimagewriter-obsolete.html#setDescription">QImageWriter::setDescription</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::setFileName()</td><td><a href="qimagereader.html#setFileName">QImageReader::setFileName</a>() and <a href="qimagewriter.html#setFileName">QImageWriter::setFileName</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::setFormat()</td><td><a href="qimagereader.html#setFormat">QImageReader::setFormat</a>() and <a href="qimagewriter.html#setFormat">QImageWriter::setFormat</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::setGamma()</td><td><a href="qimagewriter.html#setGamma">QImageWriter::setGamma</a>()</td></tr>
@@ -1391,6 +1398,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>QLayout</h2>
 <p><a href="qlayout.html">QLayout</a> setSupportsMargin()</p>
 <p>The deleteAllItems() function is now only available if <tt>QT3_SUPPORT</tt> is defined. If you maintain a <a href="qlist.html">QList</a> of layout items, you can use <a href="qtalgorithms.html#qDeleteAll">qDeleteAll</a>() to remove all the items in one go.</p>
+<p>In Qt 3, it was possible to change the resizing behavior for layouts in top-level widgets by adjusting the layout's <tt>resizeMode</tt> property. In Qt 4, this property has been replaced by the <a href="qlayout.html#sizeConstraint-prop">QLayout::sizeConstraint</a> property which provides more control over how the layout behaves when resized.</p>
 <p>See also the <a href="#qlayoutiterator-section">section on QLayoutIterator</a> and the <a href="#qglayoutiterator-section">section on QGLayoutIterator</a>.</p>
 <a name="qlayoutiterator-section"></a><a name="qlayoutiterator"></a>
 <h2>QLayoutIterator</h2>
@@ -1506,7 +1514,7 @@ body { background: #ffffff; color: black; }</style>
 <p>In Qt 4 applications, you can use classes like <a href="qftp.html">QFtp</a> and <a href="qhttp.html">QHttp</a> directly to perform file-related actions on a remote host.</p>
 <a name="qobject"></a>
 <h2>QObject</h2>
-<p><a href="qobject.html#children">QObject::children</a>() now returns a QObjectList instead of a pointer to a QObjectList. See also the comments on QObjectList below.</p>
+<p><a href="qobject.html#children">QObject::children</a>() now returns a <a href="qobject.html#QObjectList-typedef">QObjectList</a> instead of a pointer to a <a href="qobject.html#QObjectList-typedef">QObjectList</a>. See also the comments on <a href="qobject.html#QObjectList-typedef">QObjectList</a> below.</p>
 <p>QObject::killTimers() has been removed because it was unsafe to use in subclass. (A subclass normally doesn't know whether the base class uses timers or not.)</p>
 <p>The <tt>QObject::name</tt> property has been renamed <a href="qobject.html#objectName-prop">QObject::objectName</a>.</p>
 <p><tt>QObject::objectTrees()</tt> has been removed because maintaining a global tree of all objects in a multithreaded application was judged too expensive. If you are primarly interested in widgets, use <a href="qapplication.html#allWidgets">QApplication::allWidgets</a>() or <a href="qapplication.html#topLevelWidgets">QApplication::topLevelWidgets</a>().</p>
@@ -1515,7 +1523,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="#qobjectdictionary">QObjectDictionary</a> class is a synonym for QAsciiDict&lt;<a href="qmetaobject.html">QMetaObject</a>&gt;. See the <a href="#qasciidict-section">section on QAsciiDict&lt;T&gt;</a>.</p>
 <a name="qobjectlist"></a>
 <h2>QObjectList</h2>
-<p>In Qt 3, the QObjectList class was a typedef for QPtrList&lt;<a href="qobject.html">QObject</a>&gt;. In Qt 4, it is a typedef for <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a> *&gt;. See the <a href="#qptrlist-section">section on QPtrList&lt;T&gt;</a>.</p>
+<p>In Qt 3, the <a href="qobject.html#QObjectList-typedef">QObjectList</a> class was a typedef for QPtrList&lt;<a href="qobject.html">QObject</a>&gt;. In Qt 4, it is a typedef for <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a> *&gt;. See the <a href="#qptrlist-section">section on QPtrList&lt;T&gt;</a>.</p>
 <a name="qpaintdevice"></a>
 <h2>QPaintDevice</h2>
 <p>To reimplement painter backends one previously needed to reimplement the virtual function QPaintDevice::cmd(). This function is taken out and should is replaced with the function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() and the abstract class <a href="qpaintengine.html">QPaintEngine</a>. <a href="qpaintengine.html">QPaintEngine</a> provides virtual functions for all drawing operations that can be performed on a painter backend.</p>
@@ -1533,6 +1541,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>QPainter</h2>
 <p>The <a href="qpainter.html">QPainter</a> class has undergone some changes in Qt 4 because of the way rectangles are drawn. In Qt 4, the result of drawing a <a href="qrect.html">QRect</a> with a pen width of 1 pixel is 1 pixel wider and 1 pixel taller than in Qt 3.</p>
 <p>For compatibility, we provide a <a href="q3painter.html">Q3Painter</a> class in <a href="qt3support.html">Qt3Support</a> that provides the old semantics. See the <a href="q3painter.html">Q3Painter</a> documentation for details and for the reasons why we had to make this change.</p>
+<p>The <a href="http://doc.trolltech.com/3.3/qpainter.html#CoordinateMode-enum">QPainter::CoordinateMode</a> enum has been removed in Qt 4. All clipping operations are now defined using logical coordinates and are subject to transformation operations.</p>
 <a name="qpointarray"></a>
 <h2>QPointArray</h2>
 <p>The <tt>QPointArray</tt> class has been renamed <a href="qpolygon.html">QPolygon</a> in Qt 4 and has undergone significant changes. In Qt 3, <tt>QPointArray</tt> inherited from QMemArray&lt;<a href="qpoint.html">QPoint</a>&gt;. In Qt 4, <a href="qpolygon.html">QPolygon</a> inherits from <a href="qvector.html">QVector</a>&lt;<a href="qpoint.html">QPoint</a>&gt;. Everything mentioned in the <a href="#qmemarray-section">section on QMemArray&lt;T&gt;</a> apply for <a href="#qpointarray">QPointArray</a> as well.</p>
@@ -1541,6 +1550,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="qpopupmenu"></a>
 <h2>QPopupMenu</h2>
 <p>For most purposes, <a href="#qpopupmenu">QPopupMenu</a> has been replaced by <a href="qmenu.html">QMenu</a> in Qt 4. For compatibility with older applications, <a href="q3popupmenu.html">Q3PopupMenu</a> provides the old API and features that are specific to popup menus.</p>
+<p>In Qt 3, it was common practice to add entries to popup menus using the insertItem() function. In Qt 4, menu entries are completely represented by actions for consistency with other user interface components, such as toolbar buttons. Create new menus with the <a href="qmenu.html">QMenu</a> class, and use the overloaded <a href="qmenu.html#addAction">QMenu::addAction</a>() functions to insert new entries.</p>
+<p>The <a href="examples.html#main-window-examples">Main Window examples</a> provided show how to use Qt's action system to construct menus, toolbars, and other common user interface elements.</p>
 <a name="qprinter"></a>
 <h2>QPrinter</h2>
 <p>The <a href="qprinter.html">QPrinter</a> class now expects printing to be set up from a <a href="qprintdialog.html">QPrintDialog</a>.</p>
@@ -1627,7 +1638,7 @@ body { background: #ffffff; color: black; }</style>
 </td><td><pre>&nbsp;       delete list.takeLast();</pre>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><pre>&nbsp;       list.remove(index);</pre>
-</td><td><pre>&nbsp;       delete list.take(index);</pre>
+</td><td><pre>&nbsp;       delete list.takeAt(index);</pre>
 </td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><pre>&nbsp;       list.remove(value);</pre>
 </td><td><pre>&nbsp;       int i = list.indexOf(value);
@@ -1656,7 +1667,7 @@ body { background: #ffffff; color: black; }</style>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>QPtrList function</th><th><a href="qlistiterator.html">QListIterator</a> equivalent</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrList::at()</td><td>N/A</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QPtrList::current()</td><td>QListIterator::value()</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QPtrList::current()</td><td><a href="qmutablelistiterator.html#value">QMutableListIterator::value</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrList::currentNode()</td><td>N/A</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QPtrList::findNext(const T *)</td><td>QListIterator::findNext(const T *)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrList::findNextRef(const T *)</td><td>QListIterator::findNext(const T *)</td></tr>
@@ -1686,12 +1697,12 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrListIterator::atFirst()</td><td>!<a href="qlistiterator.html#hasPrevious">QListIterator::hasPrevious</a>() (notice the <tt>!</tt>)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QPtrListIterator::atLast()</td><td>!<a href="qlistiterator.html#hasNext">QListIterator::hasNext</a>() (notice the <tt>!</tt>)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrListIterator::count()</td><td><a href="qlist.html#count">QList::count</a>() or <a href="qlist.html#size">QList::size</a>()</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QPtrListIterator::current()</td><td>QListIterator::value()</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QPtrListIterator::current()</td><td><a href="qmutablelistiterator.html#value">QMutableListIterator::value</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrListIterator::isEmpty()</td><td><a href="qlist.html#isEmpty">QList::isEmpty</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QPtrListIterator::toFirst()</td><td><a href="qlistiterator.html#toFront">QListIterator::toFront</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QPtrListIterator::toLast()</td><td><a href="qlistiterator.html#toBack">QListIterator::toBack</a>()</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QPtrListIterator::operator()</td><td>QListIterator::value()</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QPtrListIterator::operator*()</td><td>QListIterator::value()</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QPtrListIterator::operator()</td><td><a href="qmutablelistiterator.html#value">QMutableListIterator::value</a>()</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QPtrListIterator::operator*()</td><td><a href="qmutablelistiterator.html#value">QMutableListIterator::value</a>()</td></tr>
 </table>
 <p>Again, be aware that <a href="qlistiterator.html">QListIterator</a> has a different way of iterating than QPtrList. A typical loop with QPtrList looks like this:</p>
 <pre>&nbsp;       QPtrList&lt;QWidget&gt; list;
@@ -2018,6 +2029,13 @@ body { background: #ffffff; color: black; }</style>
                 do_something(QString());</pre>
 <p>In new code, we recommend that you don't rely on the distinction between a null string and a (non-null) empty string. See <a href="qstring.html#distinction-between-null-and-empty-strings">Distinction Between Null and Empty Strings</a> for details.</p>
 </li>
+<li><a href="qstring-qt3.html#latin1">QString::latin1</a>() and <a href="qstring-qt3.html#ascii">QString::ascii</a>() have been replaced with <a href="qstring.html#toLatin1">QString::toLatin1</a>() and <a href="qstring.html#toAscii">QString::toAscii</a>(), which return a <a href="qbytearray.html">QByteArray</a> instead of a (non-reentrant) <tt>const char *</tt>. For consistency, <a href="qstring-qt3.html#utf8">QString::utf8</a>() and <a href="qstring-qt3.html#local8Bit">QString::local8Bit</a>(), which already returned a <a href="qbytearray.html">QByteArray</a> (actually a <tt>QCString</tt>), have been renamed <a href="qstring.html#toUtf8">QString::toUtf8</a>() and <a href="qstring.html#toLocal8Bit">QString::toLocal8Bit</a>().<p>To obtain a <tt>const char *</tt> pointer to ASCII or Latin-1 data, use <a href="qstring.html#toAscii">QString::toAscii</a>() or <a href="qstring.html#toLatin1">QString::toLatin1</a>() to obtain a <a href="qbytearray.html">QByteArray</a> containing the data, then call <a href="qbytearray.html#constData">QByteArray::constData</a>() to access the character data directly. Note that the pointer returned by this function is only valid for the lifetime of the byte array; you should avoid taking a pointer to the data contained in temporary objects.</p>
+<pre>&nbsp;       QString greeting = &quot;Hello&quot;;
+        const char *badData = greeting.toAscii().constData(); // data is invalid
+        QByteArray asciiData = greeting.toAscii();
+        const char *goodData = asciiData.constData();</pre>
+<p>In the above example, the <tt>goodData</tt> pointer is valid for the lifetime of the <tt>asciiData</tt> byte array. If you need to keep a copy of the data in a non-Qt data structure, use standard C memory allocation and string copying functions to do so <i>before</i> destroying the byte array.</p>
+</li>
 <li><a href="qstring.html#at">QString::at</a>() returned a non-const reference, whereas the new <a href="qstring.html#at">QString::at</a>() returns a const value. Code like<pre>&nbsp;       str.at(0) = 'X';</pre>
 <p>will no longer compile. Instead, use QString::operator[]:</p>
 <pre>&nbsp;       str[0] = 'X';</pre>
@@ -2117,7 +2135,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See <a href="richtext.html">Rich Text Processing</a> for an overview of the Qt 4 rich text classes.</p>
 <a name="qsyntaxhighlighter"></a>
 <h2>QSyntaxHighlighter</h2>
-<p>The <a href="#qsyntaxhighlighter">QSyntaxHighlighter</a> class has been renamed <a href="q3syntaxhighlighter.html">Q3SyntaxHighlighter</a> and moved to the <a href="qt3support.html">Qt3Support</a> library.</p>
+<p>The <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class has been renamed <a href="q3syntaxhighlighter.html">Q3SyntaxHighlighter</a> and moved to the <a href="qt3support.html">Qt3Support</a> library.</p>
 <p>See <a href="richtext.html">Rich Text Processing</a> for an overview of the Qt 4 rich text classes.</p>
 <a name="qtabbar"></a>
 <h2>QTabBar</h2>
@@ -2239,6 +2257,7 @@ body { background: #ffffff; color: black; }</style>
     layout-&gt;addWidget(child1);
     layout-&gt;addWidget(child2);
     vbox-&gt;setLayout(layout);</pre>
+<p>Note that child widgets are not automatically placed into the widget's layout; you will need to manually add each widget to the <a href="qvboxlayout.html">QVBoxLayout</a>.</p>
 <a name="qwhatsthis"></a>
 <h2>QWhatsThis</h2>
 <p>The <a href="qwhatsthis.html">QWhatsThis</a> class has been redesigned in Qt 4. The old <tt>QWhatsThis</tt> class is available as <a href="q3whatsthis.html">Q3WhatsThis</a> in <a href="qt3support.html">Qt3Support</a>.</p>
@@ -2342,7 +2361,6 @@ body { background: #ffffff; color: black; }</style>
 <li>QWidget::setSizeIncrement(int w, int h)</li>
 <li>QWidget::setSizePolicy(<a href="qsizepolicy.html">QSizePolicy</a>)</li>
 <li>QWidget::setUpdatesEnabled(bool enable)</li>
-<li>QWidget::setWFlags(WFlags)</li>
 <li>QWidget::setWState(uint)</li>
 <li><a href="qwidget.html#showFullScreen">QWidget::showFullScreen</a>()</li>
 <li><a href="qwidget.html#showMaximized">QWidget::showMaximized</a>()</li>
@@ -2350,6 +2368,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qwidget.html#showNormal">QWidget::showNormal</a>()</li>
 <li><a href="qwidget.html#cursor-prop">QWidget::unsetCursor</a>()</li>
 </ul>
+<p><tt>QWidget::setWFlags()</tt> was renamed <a href="qwidget.html#windowFlags-prop">QWidget::setWindowFlags</a>().</p>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qwidget.html">QWidget</a> properties in Qt 3 that have changed in Qt 4.</p>
 <a name="qwidgetfactory"></a>
 <h2>QWidgetFactory</h2>
@@ -2360,12 +2379,15 @@ body { background: #ffffff; color: black; }</style>
 <a name="qwidgetlist-section"></a><a name="qwidgetlist"></a>
 <h2>QWidgetList</h2>
 <p>In Qt 3, the QWidgetList class was a typedef for QPtrList&lt;<a href="qwidget.html">QWidget</a>&gt;. In Qt 4, it is a typedef for <a href="qlist.html">QList</a>&lt;<a href="qwidget.html">QWidget</a> *&gt;. See the <a href="#qptrlist-section">section on QPtrList&lt;T&gt;</a>.</p>
+<a name="qwidgetplugin"></a>
+<h2>QWidgetPlugin</h2>
+<p>The <a href="#qwidgetplugin">QWidgetPlugin</a> class is no longer available in Qt 4. To create custom widget plugins, subclass <a href="qdesignercustomwidgetinterface.html">QDesignerCustomWidgetInterface</a> to provide information about the custom widget, and build a plugin in the way described in the <a href="designer-customwidgetplugin.html">Custom Widget Plugin</a> example.</p>
 <a name="qwidgetstack"></a>
 <h2>QWidgetStack</h2>
 <p>The <a href="#qwidgetstack">QWidgetStack</a> class is no longer part of the Qt public API. It has been renamed <a href="q3widgetstack.html">Q3WidgetStack</a> and moved to <a href="qt3support.html">Qt3Support</a>. In Qt 4 applications, you can use <a href="qstackedwidget.html">QStackedWidget</a> instead to obtain the same results.</p>
 <a name="qwizard"></a>
 <h2>QWizard</h2>
-<p>The <tt>QWizard</tt> class is no longer part of the Qt public API. It has been renamed <a href="q3wizard.html">Q3Wizard</a> and moved to <a href="qt3support.html">Qt3Support</a>. In Qt 4 applications, you can easily obtain the same result by combining a QStackedBox with a <a href="qdialog.html">QDialog</a> and provide <a href="qpushbutton.html">QPushButton</a>s yourself.</p>
+<p>The <tt>QWizard</tt> class is no longer part of the Qt public API. It has been renamed <a href="q3wizard.html">Q3Wizard</a> and moved to <a href="qt3support.html">Qt3Support</a>. In Qt 4 applications, you can easily obtain the same result by combining a <a href="qstackedwidget.html">QStackedWidget</a> with a <a href="qdialog.html">QDialog</a> and provide <a href="qpushbutton.html">QPushButton</a>s yourself.</p>
 <p>The <a href="dialogs-simplewizard.html">Simple Wizard</a> and <a href="dialogs-complexwizard.html">Complex Wizard</a> examples show how to create wizards without using <a href="q3wizard.html">Q3Wizard</a>.</p>
 <a name="qworkspace"></a>
 <h2>QWorkspace</h2>
@@ -3052,6 +3074,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

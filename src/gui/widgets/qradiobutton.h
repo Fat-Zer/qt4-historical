@@ -24,10 +24,11 @@
 #ifndef QRADIOBUTTON_H
 #define QRADIOBUTTON_H
 
-#include "QtGui/qabstractbutton.h"
+#include <QtGui/qabstractbutton.h>
 
 QT_MODULE(Gui)
 
+class QRadioButtonPrivate;
 
 class Q_GUI_EXPORT QRadioButton : public QAbstractButton
 {
@@ -40,8 +41,10 @@ public:
     QSize sizeHint() const;
 
 protected:
+    bool event(QEvent *e);
     bool hitButton(const QPoint &) const;
     void paintEvent(QPaintEvent *);
+    void mouseMoveEvent(QMouseEvent *);
 
 #ifdef QT3_SUPPORT
 public:
@@ -50,8 +53,8 @@ public:
 #endif
 
 private:
+    Q_DECLARE_PRIVATE(QRadioButton)
     Q_DISABLE_COPY(QRadioButton)
 };
-
 
 #endif // QRADIOBUTTON_H

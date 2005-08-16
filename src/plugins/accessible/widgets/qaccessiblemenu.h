@@ -24,7 +24,7 @@
 #ifndef QACCESSIBLEMENU_H
 #define QACCESSIBLEMENU_H
 
-#include <qaccessiblewidget.h>
+#include <QtGui/qaccessiblewidget.h>
 
 #ifndef QT_NO_ACCESSIBILITY
 
@@ -72,5 +72,7 @@ protected:
     QMenuBar *menuBar() const;
 };
 #endif // QT_NO_MENUBAR
+
 #endif // QT_NO_ACCESSIBILITY
+
 #endif // QACCESSIBLEMENU_H

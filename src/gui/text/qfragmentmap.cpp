@@ -65,15 +65,15 @@ void QFragmentMap::check()
 }
 #else
 #define PMDEBUG if(0)qDebug
-inline void inorder() {}
-inline void check() {}
+static inline void inorder() {}
+static inline void check() {}
 #endif
 
 #define TAG(a,b,c,d) (((quint32)a) << 24) | (((quint32)b) << 16) | (((quint32)c) << 8) | d;
 
 QFragmentMapData::QFragmentMapData(uint fs)
+    : fragmentSize(qMax<uint>(fs, sizeof(Header)))
 {
-    fragmentSize = qMax<uint>(fs, sizeof(Header));
     init();
 }
 

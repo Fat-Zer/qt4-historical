@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/painting/qpainter.cpp -->
 <head>
-    <title>Qt 4.0: QPainter Class Reference</title>
+    <title>Qt 4.1: QPainter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPainter Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPainter class performs low-level painting on widgets and other paint devices. <a href="#details">More...</a></p>
-<pre>#include &lt;QPainter&gt;</pre><p>Inherited by <a href="q3painter.html">Q3Painter</a>, <a href="qdirectpainter.html">QDirectPainter</a>, and <a href="qstylepainter.html">QStylePainter</a>.</p>
+<pre>#include &lt;QPainter&gt;</pre><p>Inherited by <a href="q3painter.html">Q3Painter</a> and <a href="qstylepainter.html">QStylePainter</a>.</p>
 <ul>
 <li><a href="qpainter-members.html">List of all members, including inherited members</a></li>
 <li><a href="qpainter-qt3.html">Qt 3 support members</a></li>
@@ -241,7 +241,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qpainter.html#brush">brush</a>() is the currently set brush; the color or pattern that's used for filling e.g. circles.</li>
 <li><a href="qpainter.html#pen">pen</a>() is the currently set pen; the color or stipple that's used for drawing lines or boundaries.</li>
 <li><a href="qpainter.html#backgroundMode">backgroundMode</a>() is <tt>Opaque</tt> or <tt>Transparent</tt>, i.e. whether <a href="qpainter.html#background">background</a>() is used or not.</li>
-<li><a href="qpainter-qt3.html#backgroundColor">backgroundColor</a>() only applies when <a href="qpainter.html#backgroundMode">backgroundMode</a>() is Opaque and <a href="qpainter.html#pen">pen</a>() is a stipple. In that case, it describes the color of the background pixels in the stipple.</li>
+<li><a href="qpainter.html#background">background</a>() only applies when <a href="qpainter.html#backgroundMode">backgroundMode</a>() is Opaque and <a href="qpainter.html#pen">pen</a>() is a stipple. In that case, it describes the color of the background pixels in the stipple.</li>
 <li><a href="qpainter.html#brushOrigin">brushOrigin</a>() is the origin of the tiled brushes, normally the origin of widget's background.</li>
 <li><a href="qpainter.html#viewport">viewport</a>(), <a href="qpainter.html#window">window</a>(), <a href="qpainter.html#matrix">matrix</a>() and many more make up the painter's coordinate transformation system. See <a href="coordsys.html">The Coordinate System</a> for an explanation of this, or see below for a very brief overview of the functions.</li>
 <li><a href="qpainter.html#hasClipping">hasClipping</a>() is whether the painter clips at all. (The paint device clips, too.) If the painter clips, it clips to <a href="qpainter.html#clipRegion">clipRegion</a>().</li>
@@ -255,19 +255,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Normally, the QPainter operates on the device's own coordinate system (usually pixels), but QPainter has good support for coordinate transformations. See <a href="coordsys.html">The Coordinate System</a> for a more general overview and a simple example.</p>
 <p>The most common functions used are <a href="qpainter.html#scale">scale</a>(), <a href="qpainter.html#rotate">rotate</a>(), <a href="qpainter.html#translate">translate</a>() and <a href="qpainter.html#shear">shear</a>(), all of which operate on the <a href="qpainter.html#matrix">matrix</a>(). <a href="qpainter.html#setMatrix">setMatrix</a>() can replace or add to the currently set <a href="qpainter.html#matrix">matrix</a>().</p>
 <p><a href="qpainter.html#setViewport">setViewport</a>() sets the rectangle on which QPainter operates. The default is the entire device, which is usually fine. <a href="qpainter.html#setWindow">setWindow</a>() sets the coordinate system, that is, the rectangle that maps to <a href="qpainter.html#viewport">viewport</a>(). What's drawn inside the <a href="qpainter.html#window">window</a>() ends up being inside the <a href="qpainter.html#viewport">viewport</a>(). The window's default is the same as the viewport.</p>
-<p>QPainter can clip any drawing operation to a rectangle, a region, or a vector path. The current clip is available using the functions <a href="qpainter.html#clipRegion">clipRegion</a>() and <a href="qpainter.html#clipPath">clipPath</a>(). Wether paths or regions are preferred (faster) depends on the underlying <a href="qpainter.html#paintEngine">paintEngine</a>(). For example, the <a href="qimage.html">QImage</a> paint engine prefers paths while the X11 paint engine prefers regions. Setting a clip is done in the painters logical coordinates.</p>
+<p>QPainter can clip any drawing operation to a rectangle, a region, or a vector path. The current clip is available using the functions <a href="qpainter.html#clipRegion">clipRegion</a>() and <a href="qpainter.html#clipPath">clipPath</a>(). Whether paths or regions are preferred (faster) depends on the underlying <a href="qpainter.html#paintEngine">paintEngine</a>(). For example, the <a href="qimage.html">QImage</a> paint engine prefers paths while the X11 paint engine prefers regions. Setting a clip is done in the painters logical coordinates.</p>
 <p>After QPainter's clipping, the paint device may also clip. For example, most widgets clip away the pixels used by child widgets, and most printers clip away an area near the edges of the paper. This additional clipping is not reflected by the return value of <a href="qpainter.html#clipRegion">clipRegion</a>() or <a href="qpainter.html#hasClipping">hasClipping</a>().</p>
 <p><a href="qpainter.html#isActive">isActive</a>() indicates whether the painter is active. <a href="qpainter.html#begin">begin</a>() (and the most usual constructor) makes it active. <a href="qpainter.html#end">end</a>() (and the destructor) deactivates it. If the painter is active, <a href="qpainter.html#device">device</a>() returns the paint device on which the painter paints.</p>
 <p>Sometimes it is desirable to make someone else paint on an unusual <a href="qpaintdevice.html">QPaintDevice</a>. QPainter supports a static function to do this, <a href="qpainter.html#setRedirected">setRedirected</a>().</p>
-<p>setTabStops() and setTabArray() can change where the tab stops are, but these are very seldomly used.</p>
 <p><b>Warning:</b> Unless a widget has the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOutsidePaintEvent</a> attribute set. A QPainter can only be used on a widget inside a paintEvent() or a function called by a paintEvent(). On Mac OS X, you can only paint on a widget in a paintEvent() regardless of this attribute's setting.</p>
 <p>See also <a href="qpaintdevice.html">QPaintDevice</a>, <a href="qwidget.html">QWidget</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qprinter.html">QPrinter</a>, <a href="qpicture.html">QPicture</a>, <a href="qpaintengine.html">QPaintEngine</a>, and <a href="coordsys.html">The Coordinate System</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="CompositionMode-enum"></a>enum QPainter::CompositionMode</h3>
 <p>Defines one of the Porter-Duff composition operations. Composition modes are used to specify how a source and destination pixel are merged together.</p>
-<p>The most common type is SourceOver (often referred to as just alpha blending) where the source pixel is blended on top of the destination pixel in such a way that the alpha component of the source defines the translucensy of the pixel.</p>
-<p>Porter Duff operator will only work when the paint device is a <a href="qimage.html">QImage</a> in Format::ARGB32_Premultiplied or Format::ARGB32, where the premultiplied version is the preferred format.</p>
+<p>The most common type is SourceOver (often referred to as just alpha blending) where the source pixel is blended on top of the destination pixel in such a way that the alpha component of the source defines the translucency of the pixel.</p>
+<p>Porter Duff operator will only work when the paint device is a <a href="qimage.html">QImage</a> in Format_ARGB32_Premultiplied or Format_ARGB32, where the premultiplied version is the preferred format.</p>
 <p>When a composition mode is set it applies to all painting operator, pens, brushes, gradients and pixmap/image drawing.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
@@ -375,11 +374,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the brush origin currently set.</p>
 <p>See also <a href="qpainter.html#setBrushOrigin">setBrushOrigin</a>().</p>
 <h3 class="fn"><a name="clipPath"></a><a href="qpainterpath.html">QPainterPath</a> QPainter::clipPath () const</h3>
-<p>Returns the currently clip as a path. Note that the clip path is given in logical coordinates and <i>subject</i> to <a href="coordsys.html">coordinate transformation</a></p>
-<p>See also <a href="qpainter.html#setClipPath">setClipPath</a>().</p>
+<p>Returns the currently clip as a path. Note that the clip path is given in logical coordinates and are subject to <a href="coordsys.html">coordinate transformations</a>.</p>
+<p>See also <a href="qpainter.html#setClipPath">setClipPath</a>(), <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
 <h3 class="fn"><a name="clipRegion"></a><a href="qregion.html">QRegion</a> QPainter::clipRegion () const</h3>
-<p>Returns the currently set clip region. Note that the clip region is given in logical coordinates and <i>subject</i> to <a href="coordsys.html">coordinate transformation</a>.</p>
-<p>See also <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
+<p>Returns the currently set clip region. Note that the clip region is given in logical coordinates and are subject to <a href="coordsys.html">coordinate transformations</a>.</p>
+<p>See also <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), <a href="qpainter.html#setClipPath">setClipPath</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
 <h3 class="fn"><a name="compositionMode"></a><a href="qpainter.html#CompositionMode-enum">CompositionMode</a> QPainter::compositionMode () const</h3>
 <p>Resturns the current composition mode.</p>
 <p>See also <a href="qpainter.html#CompositionMode-enum">QPainter::CompositionMode</a> and <a href="qpainter.html#setCompositionMode">setCompositionMode</a>().</p>
@@ -387,8 +386,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the paint device on which this painter is currently painting, or 0 if the painter is not active.</p>
 <p>See also <a href="qpaintdevice.html#paintingActive">QPaintDevice::paintingActive</a>().</p>
 <h3 class="fn"><a name="deviceMatrix"></a>const <a href="qmatrix.html">QMatrix</a> &amp; QPainter::deviceMatrix () const</h3>
-<p>Returns the matrix that transforms from logical coordinates to device coordinates of the platform dependent paintdevice.</p>
-<p>This function is ONLY needed when using platform painting commands on the platform dependent handle, and the platform does not do transformations nativly.</p>
+<p>Returns the matrix that transforms from logical coordinates to device coordinates of the platform dependent paint device.</p>
+<p>This function is <i>only</i> needed when using platform painting commands on the platform dependent handle, and the platform does not do transformations nativly.</p>
 <p>See also <a href="qpainter.html#matrix">matrix</a>() and <a href="qpaintengine.html#hasFeature">QPaintEngine::hasFeature</a>().</p>
 <h3 class="fn"><a name="drawArc"></a>void QPainter::drawArc ( const <a href="qrectf.html">QRectF</a> &amp; <i>r</i>, int <i>a</i>, int <i>alen</i> )</h3>
 <p>Draws an arc defined by the rectangle <i>r</i>, the start angle <i>a</i> and the arc length <i>alen</i>.</p>
@@ -713,13 +712,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Ends painting. Any resources used while painting are released. You don't normally need to call this since it is called by the destructor.</p>
 <p>See also <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#isActive">isActive</a>().</p>
 <h3 class="fn"><a name="eraseRect"></a>void QPainter::eraseRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>r</i> )</h3>
-<p>Erases the area inside the rectangle <i>r</i>. Equivalent to <tt>fillRect(r, backgroundColor())</tt>.</p>
+<p>Erases the area inside the rectangle <i>r</i>. Equivalent to <tt>fillRect(r, background())</tt>.</p>
 <h3 class="fn"><a name="eraseRect-2"></a>void QPainter::eraseRect ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Erases the area inside the rectangle <i>rect</i>. Equivalent to <tt>fillRect(rect, backgroundColor())</tt>.</p>
+<p>Erases the area inside the rectangle <i>rect</i>. Equivalent to <tt>fillRect(rect, background())</tt>.</p>
 <h3 class="fn"><a name="eraseRect-3"></a>void QPainter::eraseRect ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Erases the area inside <i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>. Equivalent to <tt>fillRect(x, y, w, h, backgroundColor())</tt>.</p>
+<p>Erases the area inside <i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>. Equivalent to <tt>fillRect(x, y, w, h, background())</tt>.</p>
 <h3 class="fn"><a name="fillPath"></a>void QPainter::fillPath ( const <a href="qpainterpath.html">QPainterPath</a> &amp; <i>path</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>brush</i> )</h3>
 <p>Fills the path <i>path</i> using the given <i>brush</i>. The outline is not drawn.</p>
 <h3 class="fn"><a name="fillRect"></a>void QPainter::fillRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>r</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>brush</i> )</h3>
@@ -814,27 +813,27 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setClipPath"></a>void QPainter::setClipPath ( const <a href="qpainterpath.html">QPainterPath</a> &amp; <i>path</i>, <a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> <i>op</i> = Qt::ReplaceClip )</h3>
 <p>Sets the clip path for the painter to <i>path</i>, with the clip operation <i>op</i>.</p>
 <p>The clip path is specified in logical (painter) coordinates.</p>
-<p>See also <a href="qpainter.html#clipPath">clipPath</a>().</p>
+<p>See also <a href="qpainter.html#clipPath">clipPath</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), <a href="qpainter.html#setClipRegion">setClipRegion</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
 <h3 class="fn"><a name="setClipRect"></a>void QPainter::setClipRect ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, <a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> <i>op</i> = Qt::ReplaceClip )</h3>
 <p>Sets the clip region to the rectangle <i>rect</i> using the clip operation <i>op</i>. The default operation is to replace the current clip rectangle.</p>
-<p>See also <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#clipRegion">clipRegion</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
+<p>See also clipRect(), <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#setClipPath">setClipPath</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
 <h3 class="fn"><a name="setClipRect-2"></a>void QPainter::setClipRect ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, <a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> <i>op</i> = Qt::ReplaceClip )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Sets the clip region to the rectangle <i>x</i>, <i>y</i>, <i>w</i>, <i>h</i> and enables clipping.</p>
-<p>See also <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#clipRegion">clipRegion</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
+<p>See also clipRect(), <a href="qpainter.html#setClipRegion">setClipRegion</a>(), <a href="qpainter.html#setClipPath">setClipPath</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
 <h3 class="fn"><a name="setClipRect-3"></a>void QPainter::setClipRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i>, <a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> <i>op</i> = Qt::ReplaceClip )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Sets the clip region of the rectange <i>rect</i>.</p>
 <h3 class="fn"><a name="setClipRegion"></a>void QPainter::setClipRegion ( const <a href="qregion.html">QRegion</a> &amp; <i>r</i>, <a href="qt.html#ClipOperation-enum">Qt::ClipOperation</a> <i>op</i> = Qt::ReplaceClip )</h3>
 <p>Sets the clip region to <i>r</i> using the clip operation <i>op</i>. The default clip operation is to replace the current clip region.</p>
 <p>Note that the clip region is given in logical coordinates and <i>subject</i> to <a href="coordsys.html">coordinate transformation.</a></p>
-<p>See also <a href="qpainter.html#setClipRect">setClipRect</a>(), <a href="qpainter.html#clipRegion">clipRegion</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
+<p>See also <a href="qpainter.html#clipRegion">clipRegion</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), <a href="qpainter.html#setClipPath">setClipPath</a>(), and <a href="qpainter.html#setClipping">setClipping</a>().</p>
 <h3 class="fn"><a name="setClipping"></a>void QPainter::setClipping ( bool <i>enable</i> )</h3>
 <p>Enables clipping if <i>enable</i> is true, or disables clipping if <i>enable</i> is false.</p>
-<p>See also <a href="qpainter.html#hasClipping">hasClipping</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), and <a href="qpainter.html#setClipRegion">setClipRegion</a>().</p>
+<p>See also <a href="qpainter.html#hasClipping">hasClipping</a>(), <a href="qpainter.html#setClipRect">setClipRect</a>(), <a href="qpainter.html#setClipRegion">setClipRegion</a>(), and <a href="qpainter.html#setClipPath">setClipPath</a>().</p>
 <h3 class="fn"><a name="setCompositionMode"></a>void QPainter::setCompositionMode ( <a href="qpainter.html#CompositionMode-enum">CompositionMode</a> <i>mode</i> )</h3>
 <p>Sets the composition mode to <i>mode</i>.</p>
-<p><b>Warning:</b> Not all paintdevices support non default composition modes.</p>
+<p><b>Warning:</b> You can only set the composition mode for <a href="qpainter.html">QPainter</a> objects that operates on a <a href="qimage.html">QImage</a>.</p>
 <p>See also <a href="qpainter.html#compositionMode">compositionMode</a>(), <a href="qpainter.html#CompositionMode-enum">QPainter::CompositionMode</a>, and <a href="qpaintengine.html#PaintEngineFeature-enum">QPaintEngine::PaintEngineFeature</a>.</p>
 <h3 class="fn"><a name="setFont"></a>void QPainter::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>font</i> )</h3>
 <p>Sets the painter's font to <i>font</i>.</p>
@@ -942,7 +941,6 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="qDrawPlainRect"></a>void qDrawPlainRect ( QPainter * <i>p</i>, int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, const <a href="qcolor.html">QColor</a> &amp; <i>c</i>, int <i>lineWidth</i> = 1, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
-<p><tt>#include &lt;qdrawutil.h&gt;</tt></p>
 <p>Draws the plain rectangle specified by (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) using the painter <i>p</i>.</p>
 <p>The color argument <i>c</i> specifies the line color.</p>
 <p>The <i>lineWidth</i> argument specifies the line width.</p>
@@ -951,7 +949,6 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>()-&gt; Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>See also <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>() and <a href="qstyle.html#drawPrimitive">QStyle::drawPrimitive</a>().</p>
 <h3 class="fn"><a name="qDrawShadeLine"></a>void qDrawShadeLine ( QPainter * <i>p</i>, int <i>x1</i>, int <i>y1</i>, int <i>x2</i>, int <i>y2</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>sunken</i> = true, int <i>lineWidth</i> = 1, int <i>midLineWidth</i> = 0 )</h3>
-<p><tt>#include &lt;qdrawutil.h&gt;</tt></p>
 <p>Draws a horizontal (<i>y1</i> == <i>y2</i>) or vertical (<i>x1</i> == <i>x2</i>) shaded line using the painter <i>p</i>.</p>
 <p>Nothing is drawn if <i>y1</i> != <i>y2</i> and <i>x1</i> != <i>x2</i> (i.e. the line is neither horizontal nor vertical).</p>
 <p>The palette <i>pal</i> specifies the shading colors (<a href="qpalette.html#light">light</a>, <a href="qpalette.html#dark">dark</a> and <a href="qpalette.html#mid">middle</a> colors).</p>
@@ -962,7 +959,6 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>()-&gt; Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>See also <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>(), <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), and <a href="qstyle.html#drawPrimitive">QStyle::drawPrimitive</a>().</p>
 <h3 class="fn"><a name="qDrawShadePanel"></a>void qDrawShadePanel ( QPainter * <i>p</i>, int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>sunken</i> = false, int <i>lineWidth</i> = 1, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
-<p><tt>#include &lt;qdrawutil.h&gt;</tt></p>
 <p>Draws the shaded panel specified by (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) using the painter <i>p</i>.</p>
 <p>The palette <i>pal</i> specifies the shading colors (<a href="qpalette.html#light">light</a>, <a href="qpalette.html#dark">dark</a> and <a href="qpalette.html#mid">middle</a> colors).</p>
 <p>The panel appears sunken if <i>sunken</i> is true, or raised if <i>sunken</i> is false.</p>
@@ -972,7 +968,6 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>()-&gt; Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>See also <a href="qpainter.html#qDrawWinPanel">qDrawWinPanel</a>(), <a href="qpainter.html#qDrawShadeLine">qDrawShadeLine</a>(), <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>(), and <a href="qstyle.html#drawPrimitive">QStyle::drawPrimitive</a>().</p>
 <h3 class="fn"><a name="qDrawShadeRect"></a>void qDrawShadeRect ( QPainter * <i>p</i>, int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>sunken</i> = false, int <i>lineWidth</i> = 1, int <i>midLineWidth</i> = 0, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
-<p><tt>#include &lt;qdrawutil.h&gt;</tt></p>
 <p>Draws the shaded rectangle specified by (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) using the painter <i>p</i>.</p>
 <p>The paletted <i>pal</i> specifies the shading colors (<a href="qpalette.html#light">light</a>, <a href="qpalette.html#dark">dark</a> and <a href="qpalette.html#mid">middle</a> colors).</p>
 <p>The rectangle appears sunken if <i>sunken</i> is true, or raised if <i>sunken</i> is false.</p>
@@ -983,7 +978,6 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>()-&gt; Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>See also <a href="qpainter.html#qDrawShadeLine">qDrawShadeLine</a>(), <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), <a href="qpainter.html#qDrawPlainRect">qDrawPlainRect</a>(), <a href="qstyle.html#drawItemText">QStyle::drawItemText</a>(), <a href="qstyle.html#drawItemPixmap">QStyle::drawItemPixmap</a>(), <a href="qstyle.html#drawControl">QStyle::drawControl</a>(), and <a href="qstyle.html#drawComplexControl">QStyle::drawComplexControl</a>().</p>
 <h3 class="fn"><a name="qDrawWinButton"></a>void qDrawWinButton ( QPainter * <i>p</i>, int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>sunken</i> = false, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
-<p><tt>#include &lt;qdrawutil.h&gt;</tt></p>
 <p>Draws the Windows-style button specified by (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) using the painter <i>p</i>.</p>
 <p>The palette <i>pal</i> specifies the shading colors (<a href="qpalette.html#light">light</a>, <a href="qpalette.html#dark">dark</a> and <a href="qpalette.html#mid">middle</a> colors).</p>
 <p>The button appears sunken if <i>sunken</i> is true, or raised if <i>sunken</i> is false.</p>
@@ -992,7 +986,6 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>()-&gt; Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>See also <a href="qpainter.html#qDrawWinPanel">qDrawWinPanel</a>() and <a href="qstyle.html#drawControl">QStyle::drawControl</a>().</p>
 <h3 class="fn"><a name="qDrawWinPanel"></a>void qDrawWinPanel ( QPainter * <i>p</i>, int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>sunken</i> = false, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
-<p><tt>#include &lt;qdrawutil.h&gt;</tt></p>
 <p>Draws the Windows-style panel specified by (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) using the painter <i>p</i>.</p>
 <p>The palette <i>pal</i> specifies the shading colors.</p>
 <p>The panel appears sunken if <i>sunken</i> is true, or raised if <i>sunken</i> is false.</p>
@@ -1005,6 +998,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

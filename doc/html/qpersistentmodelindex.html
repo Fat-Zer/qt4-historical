@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
-    <title>Qt 4.0: QPersistentModelIndex Class Reference</title>
+    <title>Qt 4.1: QPersistentModelIndex Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -29,6 +29,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qpersistentmodelindex.html#QPersistentModelIndex-3">QPersistentModelIndex</a></b> ( const QPersistentModelIndex &amp; <i>other</i> )</li>
 <li><div class="fn"/>QModelIndex <b><a href="qpersistentmodelindex.html#child">child</a></b> ( int <i>row</i>, int <i>column</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qpersistentmodelindex.html#column">column</a></b> () const</li>
+<li><div class="fn"/>QVariant <b><a href="qpersistentmodelindex.html#data">data</a></b> ( int <i>role</i> = Qt::DisplayRole ) const</li>
 <li><div class="fn"/>bool <b><a href="qpersistentmodelindex.html#isValid">isValid</a></b> () const</li>
 <li><div class="fn"/>const QAbstractItemModel * <b><a href="qpersistentmodelindex.html#model">model</a></b> () const</li>
 <li><div class="fn"/>QModelIndex <b><a href="qpersistentmodelindex.html#parent">parent</a></b> () const</li>
@@ -60,8 +61,10 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpersistentmodelindex.html#parent">parent</a>() and <a href="qpersistentmodelindex.html#sibling">sibling</a>().</p>
 <h3 class="fn"><a name="column"></a>int QPersistentModelIndex::column () const</h3>
 <p>Returns the column this persistent model index refers to.</p>
+<h3 class="fn"><a name="data"></a><a href="qvariant.html">QVariant</a> QPersistentModelIndex::data ( int <i>role</i> = Qt::DisplayRole ) const</h3>
 <h3 class="fn"><a name="isValid"></a>bool QPersistentModelIndex::isValid () const</h3>
-<p>Returns true if this persistent model index is valid; otherwise returns false.</p>
+<p>Returns true if this persistent model index is valid; otherwise returns false. A valid index belongs to a model, and has non-negative row and column numbers.</p>
+<p>See also <a href="qpersistentmodelindex.html#model">model</a>(), <a href="qpersistentmodelindex.html#row">row</a>(), and <a href="qpersistentmodelindex.html#column">column</a>().</p>
 <h3 class="fn"><a name="model"></a>const <a href="qabstractitemmodel.html">QAbstractItemModel</a> * QPersistentModelIndex::model () const</h3>
 <p>Returns the model that the index belongs to.</p>
 <h3 class="fn"><a name="parent"></a><a href="qmodelindex.html">QModelIndex</a> QPersistentModelIndex::parent () const</h3>
@@ -78,6 +81,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this persistent model index does not refer to the same location as the <i>other</i> model index; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-lt"></a>bool QPersistentModelIndex::operator&lt; ( const QPersistentModelIndex &amp; <i>other</i> ) const</h3>
 <p>Returns true if this persistent model index is smaller than the <i>other</i> persistent model index; otherwise returns false.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="operator-eq"></a>QPersistentModelIndex &amp; QPersistentModelIndex::operator= ( const QPersistentModelIndex &amp; <i>other</i> )</h3>
 <p>Sets the persistent model index to refer to the same item in a model as the <i>other</i> persistent model index.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>QPersistentModelIndex &amp; QPersistentModelIndex::operator= ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>other</i> )</h3>
@@ -92,6 +96,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

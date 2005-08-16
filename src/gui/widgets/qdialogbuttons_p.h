@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include "qwidget.h"
+#include "QtGui/qwidget.h"
 
 struct QDialogButtonsPrivate;
 
@@ -87,10 +87,10 @@ protected:
     void resizeEvent(QResizeEvent *);
     void changeEvent(QEvent *);
 
-private slots:
+private Q_SLOTS:
     void handleClicked();
 
-signals:
+Q_SIGNALS:
     void clicked(Button);
     void acceptClicked();
     void rejectClicked();
@@ -105,6 +105,5 @@ private:
     QDialogButtonsPrivate *d;
     void init(quint32, Qt::Orientation);
 };
-
 
 #endif //QDIALOGBUTTONS_P_H

@@ -24,7 +24,7 @@
 #ifndef QWORKSPACE_H
 #define QWORKSPACE_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -66,19 +66,21 @@ public:
     void setBackground(const QBrush &background);
     QBrush background() const;
 
-signals:
+Q_SIGNALS:
     void windowActivated(QWidget* w);
 
-public slots:
+public Q_SLOTS:
     void setActiveWindow(QWidget *w);
     void cascade();
     void tile();
+    void arrangeIcons();
     void closeActiveWindow();
     void closeAllWindows();
     void activateNextWindow();
     void activatePreviousWindow();
 
 protected:
+    bool event(QEvent *e);
     void paintEvent(QPaintEvent *e);
     void changeEvent(QEvent *);
     void childEvent(QChildEvent *);

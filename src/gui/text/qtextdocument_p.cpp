@@ -168,15 +168,20 @@ QTextDocumentPrivate::QTextDocumentPrivate()
 
     undoEnabled = true;
     inContentsChange = false;
+
+    useDesignMetrics = false;
 }
 
 void QTextDocumentPrivate::init()
 {
-    frame = qobject_cast<QTextFrame *>(createObject(QTextFrameFormat()));
+    QTextFrameFormat defaultRootFrameFormat;
+    defaultRootFrameFormat.setMargin(4);
+    frame = qobject_cast<QTextFrame *>(createObject(defaultRootFrameFormat));
     framesDirty = false;
 
     bool undoState = undoEnabled; 
     undoEnabled = false;
+    initialBlockCharFormatIndex = formats.indexForFormat(QTextCharFormat());
     insertBlock(0, formats.indexForFormat(QTextBlockFormat()), formats.indexForFormat(QTextCharFormat()));
     undoEnabled = undoState;
     modified = false;
@@ -205,7 +210,7 @@ void QTextDocumentPrivate::clear()
     int len = fragments.length();
     fragments.clear();
     blocks.clear();
-    resources.clear();
+    cachedResources.clear();
     q->contentsChange(0, len, 0);
     if (lout)
         lout->documentChanged(0, len, 0);
@@ -526,6 +531,19 @@ void QTextDocumentPrivate::setCharFormat(int pos, int length, const QTextCharFor
     int newFormatIdx = -1;
     if (mode == SetFormat)
         newFormatIdx = formats.indexForFormat(newFormat);
+
+    if (pos == -1) {
+        if (mode == MergeFormat) {
+            QTextFormat format = formats.format(initialBlockCharFormatIndex);
+            format.merge(newFormat);
+            initialBlockCharFormatIndex = formats.indexForFormat(format);
+        } else {
+            initialBlockCharFormatIndex = newFormatIdx;
+        }
+
+        ++pos;
+        --length;
+    }
 
     const int startPos = pos;
     const int endPos = pos + length;
@@ -973,16 +991,24 @@ void QTextDocumentPrivate::adjustDocumentChangesAndCursors(int from, int addedOr
 QString QTextDocumentPrivate::plainText() const
 {
     QString result;
+    result.reserve(length());
     for (QTextDocumentPrivate::FragmentIterator it = begin(); it != end(); ++it) {
         const QTextFragmentData *f = *it;
-        result += QString(text.unicode() + f->stringPosition, f->size);
+        result += QString::fromRawData(text.unicode() + f->stringPosition, f->size);
     }
     // remove trailing block separator
     result.chop(1);
     return result;
 }
 
+int QTextDocumentPrivate::blockCharFormatIndex(int node) const
+{
+    int pos = blocks.position(node);
+    if (pos == 0)
+        return initialBlockCharFormatIndex;
 
+    return fragments.find(pos - 1)->format;
+}
 
 int QTextDocumentPrivate::nextCursorPosition(int position, QTextLayout::CursorMode mode) const
 {

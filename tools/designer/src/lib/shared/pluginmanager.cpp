@@ -35,17 +35,13 @@
 #include <QtCore/qdebug.h>
 #include <QtCore/QCoreApplication>
 
-namespace qdesigner_internal {
-
 static QStringList unique(const QStringList &lst)
 {
     QSet<QString> s = QSet<QString>::fromList(lst);
     return s.toList();
 }
 
-}
-
-QStringList PluginManager::defaultPluginPaths() const
+QStringList QDesignerPluginManager::defaultPluginPaths() const
 {
     QStringList result;
 
@@ -62,7 +58,7 @@ QStringList PluginManager::defaultPluginPaths() const
     return result;
 }
 
-PluginManager::PluginManager(QDesignerFormEditorInterface *core)
+QDesignerPluginManager::QDesignerPluginManager(QDesignerFormEditorInterface *core)
     : QObject(core), m_core(core)
 {
     QSettings settings;
@@ -71,24 +67,23 @@ PluginManager::PluginManager(QDesignerFormEditorInterface *core)
 
     m_pluginPaths = defaultPluginPaths();
     m_disabledPlugins
-        = qdesigner_internal::unique(
-            settings.value(QLatin1String("DisabledPlugins")).toStringList());
+        = unique(settings.value(QLatin1String("DisabledPlugins")).toStringList());
     updateRegisteredPlugins();
 
     settings.endGroup();
 }
 
-PluginManager::~PluginManager()
+QDesignerPluginManager::~QDesignerPluginManager()
 {
     syncSettings();
 }
 
-QDesignerFormEditorInterface *PluginManager::core() const
+QDesignerFormEditorInterface *QDesignerPluginManager::core() const
 {
     return m_core;
 }
 
-QStringList PluginManager::findPlugins(const QString &path)
+QStringList QDesignerPluginManager::findPlugins(const QString &path)
 {
     QStringList result;
 
@@ -105,34 +100,34 @@ QStringList PluginManager::findPlugins(const QString &path)
     return result;
 }
 
-void PluginManager::setDisabledPlugins(const QStringList &disabled_plugins)
+void QDesignerPluginManager::setDisabledPlugins(const QStringList &disabled_plugins)
 {
     m_disabledPlugins = disabled_plugins;
     updateRegisteredPlugins();
 }
 
-void PluginManager::setPluginPaths(const QStringList &plugin_paths)
+void QDesignerPluginManager::setPluginPaths(const QStringList &plugin_paths)
 {
     m_pluginPaths = plugin_paths;
     updateRegisteredPlugins();
 }
 
-QStringList PluginManager::disabledPlugins() const
+QStringList QDesignerPluginManager::disabledPlugins() const
 {
     return m_disabledPlugins;
 }
 
-QStringList PluginManager::registeredPlugins() const
+QStringList QDesignerPluginManager::registeredPlugins() const
 {
     return m_registeredPlugins;
 }
 
-QStringList PluginManager::pluginPaths() const
+QStringList QDesignerPluginManager::pluginPaths() const
 {
     return m_pluginPaths;
 }
 
-QObject *PluginManager::instance(const QString &plugin) const
+QObject *QDesignerPluginManager::instance(const QString &plugin) const
 {
     if (m_disabledPlugins.contains(plugin))
         return 0;
@@ -141,14 +136,14 @@ QObject *PluginManager::instance(const QString &plugin) const
     return loader.instance();
 }
 
-void PluginManager::updateRegisteredPlugins()
+void QDesignerPluginManager::updateRegisteredPlugins()
 {
     m_registeredPlugins.clear();
     foreach (QString path,  m_pluginPaths)
         registerPath(path);
 }
 
-void PluginManager::registerPath(const QString &path)
+void QDesignerPluginManager::registerPath(const QString &path)
 {
     QStringList candidates = findPlugins(path);
 
@@ -156,7 +151,7 @@ void PluginManager::registerPath(const QString &path)
         registerPlugin(plugin);
 }
 
-void PluginManager::registerPlugin(const QString &plugin)
+void QDesignerPluginManager::registerPlugin(const QString &plugin)
 {
     if (m_disabledPlugins.contains(plugin))
         return;
@@ -168,7 +163,7 @@ void PluginManager::registerPlugin(const QString &plugin)
         m_registeredPlugins += plugin;
 }
 
-bool PluginManager::syncSettings()
+bool QDesignerPluginManager::syncSettings()
 {
     QSettings settings;
     settings.beginGroup(QLatin1String("PluginManager"));
@@ -177,7 +172,7 @@ bool PluginManager::syncSettings()
     return settings.status() == QSettings::NoError;
 }
 
-void PluginManager::ensureInitialized()
+void QDesignerPluginManager::ensureInitialized()
 {
     QStringList plugins = registeredPlugins();
 
@@ -199,13 +194,13 @@ void PluginManager::ensureInitialized()
     }
 }
 
-QList<QDesignerCustomWidgetInterface*> PluginManager::registeredCustomWidgets() const
+QList<QDesignerCustomWidgetInterface*> QDesignerPluginManager::registeredCustomWidgets() const
 {
-    const_cast<PluginManager*>(this)->ensureInitialized();
+    const_cast<QDesignerPluginManager*>(this)->ensureInitialized();
     return m_customWidgets;
 }
 
-QList<QObject*> PluginManager::instances() const
+QList<QObject*> QDesignerPluginManager::instances() const
 {
     QStringList plugins = registeredPlugins();
 

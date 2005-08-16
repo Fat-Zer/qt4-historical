@@ -24,9 +24,9 @@
 #ifndef Q3TEXTBROWSER_H
 #define Q3TEXTBROWSER_H
 
-#include "QtGui/qpixmap.h"
-#include "QtGui/qcolor.h"
-#include "Qt3Support/q3textedit.h"
+#include <QtGui/qpixmap.h>
+#include <QtGui/qcolor.h>
+#include <Qt3Support/q3textedit.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -47,7 +47,7 @@ public:
 
     QString source() const;
 
-public slots:
+public Q_SLOTS:
     virtual void setSource(const QString& name);
     virtual void backward();
     virtual void forward();
@@ -56,7 +56,7 @@ public slots:
     void setText(const QString &txt) { setText(txt, QString()); }
     virtual void setText(const QString &txt, const QString &context);
 
-signals:
+Q_SIGNALS:
     void backwardAvailable(bool);
     void forwardAvailable(bool);
     void sourceChanged(const QString&);

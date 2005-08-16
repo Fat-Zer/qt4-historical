@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/dialogs/qabstractprintdialog.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/dialogs/qabstractprintdialog.cpp -->
 <head>
-    <title>Qt 4.0: QPrintDialog Class Reference</title>
+    <title>Qt 4.1: QPrintDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -28,23 +28,23 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qprintdialog.html#QPrintDialog">QPrintDialog</a></b> ( QPrinter * <i>printer</i>, QWidget * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qprintdialog.html#dtor.QPrintDialog">~QPrintDialog</a></b> ()</li>
-<li><div class="fn"/>virtual int <b><a href="qprintdialog.html#exec">exec</a></b> ()</li>
 </ul>
 <ul>
 <li><div class="fn"/>14 public functions inherited from <a href="qabstractprintdialog.html#public-functions">QAbstractPrintDialog</a></li>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qdialog.html#properties">QDialog</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>5 public slots inherited from <a href="qdialog.html#public-slots">QDialog</a></li>
 <li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
+<li><div class="fn"/>3 signals inherited from <a href="qdialog.html#signals">QDialog</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qwidget.html#signals">QWidget</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
@@ -57,26 +57,25 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QPrintDialog class provides a dialog for specifying the printer's configuration.</p>
 <p>It encompasses both the sort of details needed for doing a simple print-out and some print configuration setup.</p>
-<p>Typical use of the QPrintDialog is to construct it on a <a href="qprinter.html">QPrinter</a> object and call <a href="qprintdialog.html#exec">exec</a>() to execute it.</p>
+<p>Typical use of the QPrintDialog is to construct it on a <a href="qprinter.html">QPrinter</a> object and call <a href="qabstractprintdialog.html#exec">exec</a>() to execute it.</p>
 <pre>&nbsp;   QPrintDialog printDialog(printer, parent);
     if (printDialog.exec() == QDialog::Accept) {
         // print ...
     }</pre>
-<p>The printer dialog in Motif style:</p>
-<p align="center"><img src="images/qprintdlg-m.png" /></p><hr />
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qprintdialog-plastique.png" alt="Screenshot of a Plastique style printer dialog" /></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>A printer dialog in Plastique style</td></tr>
+</table>
+<hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPrintDialog"></a>QPrintDialog::QPrintDialog ( <a href="qprinter.html">QPrinter</a> * <i>printer</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a new modal printer dialog for the given <i>printer</i> with the given <i>parent</i>.</p>
 <h3 class="fn"><a name="dtor.QPrintDialog"></a>QPrintDialog::~QPrintDialog ()</h3>
 <p>Destroys the object and frees any allocated resources. Does not delete the associated <a href="qprinter.html">QPrinter</a> object.</p>
-<h3 class="fn"><a name="exec"></a>int QPrintDialog::exec ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Launches the print dialog.</p>
-<p>Reimplemented from <a href="qabstractprintdialog.html#exec">QAbstractPrintDialog</a>.</p>
-<p>See also <a href="qdialog.html#DialogCode-enum">QDialog::DialogCode</a>, <a href="qdialog.html#accept">accept</a>(), and <a href="qdialog.html#reject">reject</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -43,6 +43,14 @@ void PuzzleWidget::clear()
     update();
 }
 
+void PuzzleWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("image/x-puzzle-piece"))
+        event->accept();
+    else
+        event->ignore();
+}
+
 void PuzzleWidget::dragLeaveEvent(QDragLeaveEvent *event)
 {
     QRect updateRect = highlightedRect;
@@ -149,6 +157,9 @@ void PuzzleWidget::mousePressEvent(QMouseEvent *event)
         piecePixmaps.insert(found, pixmap);
         pieceRects.insert(found, square);
         update(targetSquare(event->pos()));
+
+        if (location == QPoint(square.x()/80, square.y()/80))
+            inPlace++;
     }
 }
 

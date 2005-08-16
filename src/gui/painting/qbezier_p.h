@@ -35,9 +35,9 @@
 // We mean it.
 //
 
-#include <qpoint.h>
-#include <qline.h>
-#include <qrect.h>
+#include "QtCore/qpoint.h"
+#include "QtCore/qline.h"
+#include "QtCore/qrect.h"
 
 class QPolygonF;
 

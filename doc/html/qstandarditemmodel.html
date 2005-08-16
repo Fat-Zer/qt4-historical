@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/itemviews/qstandarditemmodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/itemviews/qstandarditemmodel.cpp -->
 <head>
-    <title>Qt 4.0: QStandardItemModel Class Reference</title>
+    <title>Qt 4.1: QStandardItemModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -52,10 +52,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>2 public slots inherited from <a href="qabstractitemmodel.html#public-slots">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
-<li><div class="fn"/>3 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
+<li><div class="fn"/>12 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>12 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
+<li><div class="fn"/>13 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
@@ -65,13 +65,7 @@ body { background: #ffffff; color: black; }</style>
 <p>QStandardItemModel provides a model that that can be used as a repository for standard Qt data types. Data is written to the model and read back using the standard <a href="qabstractitemmodel.html">QAbstractItemModel</a> interface. The way each item of information is referenced depends on how the data is inserted into the model.</p>
 <p>For performance and flexibility, you may want to subclass <a href="qabstractitemmodel.html">QAbstractItemModel</a> to provide support for different kinds of repositories. For example, the <a href="qdirmodel.html">QDirModel</a> provides a model interface to the underlying file system, and does not actually store file information internally.</p>
 <p>An example usage of QStandardItemModel to create a table:</p>
-<pre>&nbsp;       QStandardItemModel *model = new QStandardItemModel(4, 2);
-        for (int row = 0; row &lt; 4; ++row) {
-            for (int column = 0; column &lt; 2; ++column) {
-                QModelIndex index = model-&gt;index(row, column, QModelIndex());
-                model-&gt;setData(index, QVariant((row+1) * (column+1)));
-            }
-        }</pre>
+<pre></pre>
 <p>An example usage of QStandardItemModel to create a tree:</p>
 <pre>&nbsp;   QStandardItemModel *model = new QStandardItemModel();
     QModelIndex parent;
@@ -155,6 +149,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

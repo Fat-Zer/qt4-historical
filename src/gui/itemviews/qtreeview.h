@@ -77,6 +77,8 @@ public:
     bool isExpanded(const QModelIndex &index) const;
     void setExpanded(const QModelIndex &index, bool expand);
 
+    void keyboardSearch(const QString &search);
+
     QRect visualRect(const QModelIndex &index) const;
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
     QModelIndex indexAt(const QPoint &p) const;
@@ -86,11 +88,11 @@ public:
     void doItemsLayout();
     void reset();
 
-signals:
+Q_SIGNALS:
     void expanded(const QModelIndex &index);
     void collapsed(const QModelIndex &index);
 
-public slots:
+public Q_SLOTS:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void hideColumn(int column);
     void showColumn(int column);
@@ -100,11 +102,12 @@ public slots:
     void sortByColumn(int column);
     void selectAll();
 
-protected slots:
+protected Q_SLOTS:
     void columnResized(int column, int oldSize, int newSize);
     void columnCountChanged(int oldCount, int newCount);
     void columnMoved();
     void reexpand();
+    void rowsRemoved(const QModelIndex &parent, int first, int last);
 
 protected:
     QTreeView(QTreeViewPrivate &dd, QWidget *parent = 0);
@@ -120,7 +123,8 @@ protected:
     QRegion visualRegionForSelection(const QItemSelection &selection) const;
     QModelIndexList selectedIndexes() const;
 
-    void paintEvent(QPaintEvent *e);
+    void timerEvent(QTimerEvent *event);
+    void paintEvent(QPaintEvent *event);
     virtual void drawRow(QPainter *painter,
                          const QStyleOptionViewItem &options,
                          const QModelIndex &index) const;
@@ -128,13 +132,16 @@ protected:
                               const QRect &rect,
                               const QModelIndex &index) const;
 
-    void mousePressEvent(QMouseEvent *e);
-    void mouseDoubleClickEvent(QMouseEvent *e);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
     void updateGeometries();
 
     int sizeHintForColumn(int column) const;
     int indexRowSizeHint(const QModelIndex &index) const;
+
+    void horizontalScrollbarAction(int action);
 
     bool isIndexHidden(const QModelIndex &index) const;
 
@@ -144,4 +151,5 @@ private:
 };
 
 #endif // QT_NO_TREEVIEW
+
 #endif // QTREEVIEW_H

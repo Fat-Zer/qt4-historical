@@ -25,17 +25,15 @@
 #include "ui4.h"
 #include "driver.h"
 #include "option.h"
-
-// operations
 #include "treewalker.h"
 #include "validator.h"
 #include "writeincludes.h"
 #include "writedeclaration.h"
 
-#include <qdom.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
-#include <qtextstream.h>
+#include <QDomDocument>
+#include <QFileInfo>
+#include <QRegExp>
+#include <QTextStream>
 
 #if defined Q_WS_WIN
 #include <qt_windows.h>
@@ -115,7 +113,7 @@ void Uic::writeCopyrightHeader(DomUI *ui)
 {
     QString comment = ui->elementComment();
     if (comment.size())
-        out << "/*\n" << comment << "\n*/\n";
+        out << "/*\n" << comment << "\n*/\n\n";
 }
 
 bool Uic::write(QIODevice *in)

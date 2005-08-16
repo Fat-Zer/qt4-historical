@@ -24,8 +24,9 @@
 #ifndef QFONTJPCODEC_H
 #define QFONTJPCODEC_H
 
-#include "qtextcodec.h"
-#include "qlist.h"
+#include <QtCore/qtextcodec.h>
+#include <QtCore/qlist.h>
+
 class QJpUnicodeConv;
 
 #ifdef Q_WS_X11

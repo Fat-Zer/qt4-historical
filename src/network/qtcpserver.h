@@ -31,6 +31,7 @@
 QT_MODULE(Network)
 
 class QTcpServerPrivate;
+class QNetworkProxy;
 class QTcpSocket;
 
 class Q_NETWORK_EXPORT QTcpServer : public QObject
@@ -61,14 +62,19 @@ public:
     QAbstractSocket::SocketError serverError() const;
     QString errorString() const;
 
+#ifndef QT_NO_NETWORKPROXY
+    void setProxy(const QNetworkProxy &networkProxy);
+    QNetworkProxy proxy() const;
+#endif
+
 protected:
     virtual void incomingConnection(int handle);
 
-signals:
+Q_SIGNALS:
     void newConnection();
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void processIncomingConnection(int))
+    Q_PRIVATE_SLOT(d_func(), void processIncomingConnection())
     Q_DISABLE_COPY(QTcpServer)
     Q_DECLARE_PRIVATE(QTcpServer)
 };

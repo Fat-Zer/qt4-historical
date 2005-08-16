@@ -24,10 +24,10 @@
 #ifndef QHASH_H
 #define QHASH_H
 
-#include "QtCore/qatomic.h"
-#include "QtCore/qchar.h"
-#include "QtCore/qiterator.h"
-#include "QtCore/qlist.h"
+#include <QtCore/qatomic.h>
+#include <QtCore/qchar.h>
+#include <QtCore/qiterator.h>
+#include <QtCore/qlist.h>
 
 QT_MODULE(Core)
 
@@ -139,6 +139,16 @@ inline bool operator==(const QHashDummyValue & /* v1 */, const QHashDummyValue &
 Q_DECLARE_TYPEINFO(QHashDummyValue, Q_MOVABLE_TYPE | Q_DUMMY_TYPE);
 
 template <class Key, class T>
+struct QHashDummyNode
+{
+    QHashDummyNode *next;
+    uint h;
+    Key key;
+
+    inline QHashDummyNode(const Key &key0) : key(key0) {}
+};
+
+template <class Key, class T>
 struct QHashNode
 {
     QHashNode *next;
@@ -146,13 +156,21 @@ struct QHashNode
     Key key;
     T value;
 
-    inline QHashNode(const Key &key0) : key(key0) {}
+    inline QHashNode(const Key &key0) : key(key0) {} // ### remove in 5.0
     inline QHashNode(const Key &key0, const T &value0) : key(key0), value(value0) {}
     inline bool same_key(uint h0, const Key &key0) { return h0 == h && key0 == key; }
 };
 
 #ifndef QT_NO_PARTIAL_TEMPLATE_SPECIALIZATION
-#define Q_HASH_DECLARE_INT_NODE(key_type) \
+#define Q_HASH_DECLARE_INT_NODES(key_type) \
+    template <class T> \
+    struct QHashDummyNode<key_type, T> { \
+        QHashDummyNode *next; \
+        union { uint h; key_type key; }; \
+\
+        inline QHashDummyNode(key_type /* key0 */) {} \
+    }; \
+\
     template <class T> \
     struct QHashNode<key_type, T> { \
         QHashNode *next; \
@@ -165,17 +183,18 @@ struct QHashNode
     }
 
 #if defined(Q_BYTE_ORDER) && Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-Q_HASH_DECLARE_INT_NODE(short);
-Q_HASH_DECLARE_INT_NODE(ushort);
+Q_HASH_DECLARE_INT_NODES(short);
+Q_HASH_DECLARE_INT_NODES(ushort);
 #endif
-Q_HASH_DECLARE_INT_NODE(int);
-Q_HASH_DECLARE_INT_NODE(uint);
-#undef Q_HASH_DECLARE_INT_NODE
+Q_HASH_DECLARE_INT_NODES(int);
+Q_HASH_DECLARE_INT_NODES(uint);
+#undef Q_HASH_DECLARE_INT_NODES
 #endif // QT_NO_PARTIAL_TEMPLATE_SPECIALIZATION
 
 template <class Key, class T>
 class QHash
 {
+    typedef QHashDummyNode<Key, T> DummyNode;
     typedef QHashNode<Key, T> Node;
 
     union {
@@ -287,8 +306,8 @@ public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
         typedef T value_type;
-        typedef T *pointer;
-        typedef T &reference;
+        typedef const T *pointer;
+        typedef const T &reference;
 
         inline operator Node *() const { return concrete(i); }
         inline const_iterator() : i(0) { }
@@ -318,7 +337,7 @@ public:
             return *this;
         }
         inline const_iterator operator--(int) {
-            iterator r = *this;
+            const_iterator r = *this;
             i = QHashData::previousNode(i);
             return r;
         }
@@ -345,6 +364,7 @@ public:
     inline int count() const { return d->size; }
     iterator find(const Key &key);
     const_iterator find(const Key &key) const;
+    const_iterator constFind(const Key &key) const;
     iterator insert(const Key &key, const T &value);
     iterator insertMulti(const Key &key, const T &value);
     QHash<Key, T> &unite(const QHash<Key, T> &other);
@@ -380,7 +400,7 @@ Q_INLINE_TEMPLATE void QHash<Key, T>::duplicateNode(QHashData::Node *node, void 
 {
     Node *concreteNode = concrete(node);
     if (QTypeInfo<T>::isDummy) {
-        (void) new (newNode) Node(concreteNode->key);
+        (void) new (newNode) DummyNode(concreteNode->key);
     } else {
         (void) new (newNode) Node(concreteNode->key, concreteNode->value);
     }
@@ -393,7 +413,7 @@ QHash<Key, T>::createNode(uint ah, const Key &akey, const T &avalue, Node **anex
     Node *node;
 
     if (QTypeInfo<T>::isDummy) {
-        node = new (d->allocateNode()) Node(akey);
+        node = reinterpret_cast<Node *>(new (d->allocateNode()) DummyNode(akey));
     } else {
         node = new (d->allocateNode()) Node(akey, avalue);
     }
@@ -685,6 +705,12 @@ Q_INLINE_TEMPLATE void QHash<Key, T>::reserve(int asize)
 
 template <class Key, class T>
 Q_INLINE_TEMPLATE typename QHash<Key, T>::const_iterator QHash<Key, T>::find(const Key &akey) const
+{
+    return const_iterator(*findNode(akey));
+}
+
+template <class Key, class T>
+Q_INLINE_TEMPLATE typename QHash<Key, T>::const_iterator QHash<Key, T>::constFind(const Key &akey) const
 {
     return const_iterator(*findNode(akey));
 }

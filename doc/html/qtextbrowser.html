@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qtextbrowser.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qtextbrowser.cpp -->
 <head>
-    <title>Qt 4.0: QTextBrowser Class Reference</title>
+    <title>Qt 4.1: QTextBrowser Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -38,10 +38,10 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table>
 <ul>
-<li><div class="fn"/>9 properties inherited from <a href="qtextedit.html#properties">QTextEdit</a></li>
+<li><div class="fn"/>12 properties inherited from <a href="qtextedit.html#properties">QTextEdit</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="qabstractscrollarea.html#properties">QAbstractScrollArea</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -54,10 +54,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QUrl <b><a href="qtextbrowser.html#source-prop">source</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>42 public functions inherited from <a href="qtextedit.html#public-functions">QTextEdit</a></li>
+<li><div class="fn"/>47 public functions inherited from <a href="qtextedit.html#public-functions">QTextEdit</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -71,7 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qtextbrowser.html#source-prop">setSource</a></b> ( const QUrl &amp; <i>name</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>20 public slots inherited from <a href="qtextedit.html#public-slots">QTextEdit</a></li>
+<li><div class="fn"/>21 public slots inherited from <a href="qtextedit.html#public-slots">QTextEdit</a></li>
 <li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 </ul>
@@ -112,9 +112,10 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QTextBrowser class provides a rich text browser with hypertext navigation.</p>
 <p>This class extends <a href="qtextedit.html">QTextEdit</a> (in read-only mode), adding some navigation functionality so that users can follow links in hypertext documents. The contents of <a href="qtextedit.html">QTextEdit</a> are set with <a href="qtextedit.html#html-prop">setHtml</a>() or <a href="qtextedit.html#setPlainText">setPlainText</a>(), but QTextBrowser also implements the <a href="qtextbrowser.html#source-prop">setSource</a>() function, making it possible to set the text to a named document. The name is looked up in a list of search paths and in the directory of the current document factory. If a document name ends with an anchor (for example, &quot;<tt>#anchor&quot;</tt>), the text browser automatically scrolls to that position (using <a href="qtextedit.html#scrollToAnchor">scrollToAnchor</a>()). When the user clicks on a hyperlink, the browser will call <a href="qtextbrowser.html#source-prop">setSource</a>() itself with the link's <tt>href</tt> value as argument. You can track the current source by connecting to the <a href="qtextbrowser.html#sourceChanged">sourceChanged</a>() signal.</p>
-<p>QTextBrowser provides <a href="qtextbrowser.html#backward">backward</a>() and <a href="qtextbrowser.html#forward">forward</a>() slots which you can use to implement Back and Forward buttons. The <a href="qtextbrowser.html#home">home</a>() slot sets the text to the very first document displayed. The <a href="qtextbrowser.html#anchorClicked">anchorClicked</a>() signal is emitted when the user clicks an anchor.</p>
+<p>QTextBrowser provides <a href="qtextbrowser.html#backward">backward</a>() and <a href="qtextbrowser.html#forward">forward</a>() slots which you can use to implement Back and Forward buttons. The <a href="qtextbrowser.html#home">home</a>() slot sets the text to the very first document displayed. The <a href="qtextbrowser.html#anchorClicked">anchorClicked</a>() signal is emitted when the user clicks an anchor. To override the default navigation behavior of the browser, call the <a href="qtextbrowser.html#source-prop">setSource</a>() function to supply new document text in a slot connected to this signal.</p>
 <p>If you want to provide your users with editable rich text use <a href="qtextedit.html">QTextEdit</a>. If you want a text browser without hypertext navigation use <a href="qtextedit.html">QTextEdit</a>, and use <a href="qtextedit.html#readOnly-prop">QTextEdit::setReadOnly</a>() to disable editing. If you just need to display a small piece of rich text use <a href="qlabel.html">QLabel</a>.</p>
 <p>If you want to load documents stored in the Qt resource system use qrc as the scheme in the URL to load. For example, for the document resource path <tt>:/docs/index.html</tt> use <tt>qrc:/docs/index.html</tt> as the URL with <a href="qtextbrowser.html#source-prop">setSource</a>().</p>
+<p>See also <a href="qtextedit.html">QTextEdit</a> and <a href="qtextdocument.html">QTextDocument</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="modified-prop"></a>modified : const bool</h3>
@@ -147,6 +148,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs an empty <a href="qtextbrowser.html">QTextBrowser</a> with parent <i>parent</i>.</p>
 <h3 class="fn"><a name="anchorClicked"></a>void QTextBrowser::anchorClicked ( const <a href="qurl.html">QUrl</a> &amp; <i>link</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the user clicks an anchor. The URL referred to by the anchor is passed in <i>link</i>.</p>
+<p>Note that the browser will automatically handle navigation to the location specified by <i>link</i> unless you call <a href="qtextbrowser.html#source-prop">setSource</a>() in a slot connected. This mechanism is used to override the default navigation features of the browser.</p>
 <h3 class="fn"><a name="backward"></a>void QTextBrowser::backward ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Changes the document displayed to the previous document in the list of documents built by navigating links. Does nothing if there is no previous document.</p>
 <p>See also <a href="qtextbrowser.html#forward">forward</a>() and <a href="qtextbrowser.html#backwardAvailable">backwardAvailable</a>().</p>
@@ -192,6 +194,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

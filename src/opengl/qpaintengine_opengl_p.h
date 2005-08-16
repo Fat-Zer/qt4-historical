@@ -24,7 +24,18 @@
 #ifndef QPAINTENGINE_OPENGL_P_H
 #define QPAINTENGINE_OPENGL_P_H
 
-#include "qpaintengine.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtGui/qpaintengine.h"
 
 class QOpenGLPaintEnginePrivate;
 
@@ -52,12 +63,23 @@ public:
     void drawLines(const QLineF *lines, int lineCount);
     void drawPoints(const QPointF *p, int pointCount);
 
+#ifdef Q_NO_USING_KEYWORD
+    inline void drawPoints(const QPoint *points, int pointCount) { QPaintEngine::drawPoints(points, pointCount); }
+    inline void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
+        { QPaintEngine::drawPolygon(points, pointCount, mode); }
+    inline void drawLines(const QLine *lines, int lineCount) { QPaintEngine::drawLines(lines, lineCount); }
+    inline void drawRects(const QRect *r, int rectCount) { QPaintEngine::drawRects(r, rectCount); }
+#else
+    using QPaintEngine::drawRects;
+    using QPaintEngine::drawPolygon;
+    using QPaintEngine::drawPoints;
+    using QPaintEngine::drawLines;
+#endif
+
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
 
     void drawPath(const QPainterPath &path);
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
-    inline void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
-        { QPaintEngine::drawPolygon(points, pointCount, mode); }
     void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
     void drawImage(const QRectF &r, const QImage &image, const QRectF &sr,
                    Qt::ImageConversionFlags conversionFlags);

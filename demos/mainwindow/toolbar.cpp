@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -23,11 +23,11 @@
 
 #include "toolbar.h"
 
-#include <qmainwindow.h>
-#include <qmenu.h>
-#include <qpainter.h>
-#include <qpainterpath.h>
-#include <qspinbox.h>
+#include <QMainWindow>
+#include <QMenu>
+#include <QPainter>
+#include <QPainterPath>
+#include <QSpinBox>
 
 #include <stdlib.h>
 

@@ -21,9 +21,9 @@
 **
 ****************************************************************************/
 
-#include "customsqlmodel.h"
+#include <QtGui>
 
-#include <qcolor.h>
+#include "customsqlmodel.h"
 
 CustomSqlModel::CustomSqlModel(QObject *parent)
     : QSqlQueryModel(parent)

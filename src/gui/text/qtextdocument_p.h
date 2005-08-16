@@ -35,19 +35,19 @@
 // We mean it.
 //
 
-#include "qglobal.h"
-#include <qstring.h>
-#include <qvector.h>
-#include <qlist.h>
-#include <private/qobject_p.h>
-#include "qfragmentmap_p.h"
-#include "qtextlayout.h"
-#include "qtextformat_p.h"
-#include "qtextdocument.h"
-#include "qtextobject.h"
-#include <qmap.h>
-#include <qvariant.h>
-#include <qurl.h>
+#include "QtCore/qglobal.h"
+#include "QtCore/qstring.h"
+#include "QtCore/qvector.h"
+#include "QtCore/qlist.h"
+#include "private/qobject_p.h"
+#include "private/qfragmentmap_p.h"
+#include "QtGui/qtextlayout.h"
+#include "private/qtextformat_p.h"
+#include "QtGui/qtextdocument.h"
+#include "QtGui/qtextobject.h"
+#include "QtCore/qmap.h"
+#include "QtCore/qvariant.h"
+#include "QtCore/qurl.h"
 
 // #define QT_QMAP_DEBUG
 
@@ -197,6 +197,8 @@ public:
     inline QTextBlock blocksBegin() const { return QTextBlock(const_cast<QTextDocumentPrivate *>(this), blocks.firstNode()); }
     inline QTextBlock blocksEnd() const { return QTextBlock(const_cast<QTextDocumentPrivate *>(this), 0); }
     inline QTextBlock blocksFind(int pos) const { return QTextBlock(const_cast<QTextDocumentPrivate *>(this), blocks.findNode(pos)); }
+    int blockCharFormatIndex(int node) const;
+
     inline int numBlocks() const { return blocks.numNodes(); }
 
     const BlockMap &blockMap() const { return blocks; }
@@ -281,17 +283,53 @@ private:
     QAbstractTextDocumentLayout *lout;
     FragmentMap fragments;
     BlockMap blocks;
+    int initialBlockCharFormatIndex;
 
     QList<QTextCursorPrivate*> cursors;
     QList<QTextCursorPrivate*> changedCursors;
     QMap<int, QTextObject *> objects;
     QMap<QUrl, QVariant> resources;
+    QMap<QUrl, QVariant> cachedResources;
 
     QTextDocumentConfig docConfig;
+    bool useDesignMetrics;
 
 public:
     bool inContentsChange;
     QSizeF pageSize;
+};
+
+class QTextTable;
+class QTextHtmlExporter
+{
+public:
+    QTextHtmlExporter(const QTextDocument *_doc);
+
+    QString toHtml(const QByteArray &encoding);
+
+    void setFragmentMarkers(bool enable) { fragmentMarkers = enable; }
+
+private:
+    enum StyleMode { EmitStyleTag, OmitStyleTag };
+
+    void emitFrame(QTextFrame::Iterator frameIt);
+    void emitBlock(const QTextBlock &block);
+    void emitTable(const QTextTable *table);
+    void emitFragment(const QTextFragment &fragment);
+
+    void emitBlockAttributes(const QTextBlock &block);
+    bool emitCharFormatStyle(const QTextCharFormat &format);
+    bool emitLogicalFontSize(const QTextCharFormat &format);
+    void emitTextLength(const char *attribute, const QTextLength &length);
+    void emitAlignment(Qt::Alignment alignment);
+    void emitFloatStyle(QTextFrameFormat::Position pos, StyleMode mode = EmitStyleTag);
+    void emitMargins(const QString &top, const QString &bottom, const QString &left, const QString &right);
+    void emitAttribute(const char *attribute, const QString &value);
+
+    QString html;
+    QTextCharFormat defaultCharFormat;
+    const QTextDocument *doc;
+    bool fragmentMarkers;
 };
 
 #endif // QTEXTDOCUMENT_P_H

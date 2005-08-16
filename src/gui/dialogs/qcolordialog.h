@@ -24,7 +24,7 @@
 #ifndef QCOLORDIALOG_H
 #define QCOLORDIALOG_H
 
-#include "QtGui/qdialog.h"
+#include <QtGui/qdialog.h>
 
 QT_MODULE(Gui)
 
@@ -80,6 +80,6 @@ private:
     friend class QColorShower;
 };
 
-#endif
+#endif // QT_NO_COLORDIALOG
 
-#endif //QCOLORDIALOG_H
+#endif // QCOLORDIALOG_H

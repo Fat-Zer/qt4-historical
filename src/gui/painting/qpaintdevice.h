@@ -24,8 +24,8 @@
 #ifndef QPAINTDEVICE_H
 #define QPAINTDEVICE_H
 
-#include "QtGui/qwindowdefs.h"
-#include "QtCore/qrect.h"
+#include <QtGui/qwindowdefs.h>
+#include <QtCore/qrect.h>
 
 QT_MODULE(Gui)
 
@@ -59,8 +59,6 @@ public:
 
 #if defined(Q_WS_QWS)
     static QWSDisplay *qwsDisplay();
-    virtual const uchar * qwsScanLine(int) const;
-    virtual int qwsBytesPerLine() const;
 #endif
 
 #ifdef Q_WS_WIN

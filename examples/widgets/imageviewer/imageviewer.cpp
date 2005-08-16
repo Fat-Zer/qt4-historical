@@ -102,9 +102,9 @@ void ImageViewer::fitToWindow()
 {
     bool fitToWindow = fitToWindowAct->isChecked();
     scrollArea->setWidgetResizable(fitToWindow);
-    if (!fitToWindow)
-        imageLabel->adjustSize();
-
+    if (!fitToWindow) {
+        normalSize();
+    }
     updateActions();
 }
 

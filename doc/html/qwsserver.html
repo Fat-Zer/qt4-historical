@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
-    <title>Qt 4.0: QWSServer Class Reference</title>
+    <title>Qt 4.1: QWSServer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -18,7 +18,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSServer Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
-<p>The QWSServer class provides server-specific functionality in Qt/Embedded. <a href="#details">More...</a></p>
+<p>The QWSServer class provides server-specific functionality in Qtopia Core. <a href="#details">More...</a></p>
 <pre>#include &lt;QWSServer&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qwsserver-members.html">List of all members, including inherited members</a></li>
@@ -38,11 +38,11 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qwsserver.html#QWSServer">QWSServer</a></b> ( int <i>flags</i> = 0, QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qwsserver.html#dtor.QWSServer">~QWSServer</a></b> ()</li>
-<li><div class="fn"/>const QList&lt;QWSWindow *&gt; <b><a href="qwsserver.html#clientWindows">clientWindows</a></b> ()</li>
+<li><div class="fn"/>const QBrush &amp; <b><a href="qwsserver.html#backgroundBrush">backgroundBrush</a></b> () const</li>
+<li><div class="fn"/>const QList&lt;QWSWindow *&gt; &amp; <b><a href="qwsserver.html#clientWindows">clientWindows</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwsserver.html#closeKeyboard">closeKeyboard</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwsserver.html#closeMouse">closeMouse</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwsserver.html#enablePainting">enablePainting</a></b> ( bool <i>e</i> )</li>
-<li><div class="fn"/>QWSPropertyManager * <b><a href="qwsserver.html#manager">manager</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwsserver.html#openKeyboard">openKeyboard</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwsserver.html#openMouse">openMouse</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwsserver.html#refresh">refresh</a></b> ()</li>
@@ -100,9 +100,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The QWSServer class provides server-specific functionality in Qt/Embedded.</p>
-<p>When you run a Qt/Embedded application, it either runs as a server or connects to an existing server. If it runs as a server, some additional operations are provided by this class.</p>
-<p>This class is instantiated by <a href="qapplication.html">QApplication</a> for Qt/Embedded server processes. You should never construct this class yourself.</p>
+<p>The QWSServer class provides server-specific functionality in Qtopia Core.</p>
+<p>When you run a Qtopia Core application, it either runs as a server or connects to an existing server. If it runs as a server, some additional operations are provided by this class.</p>
+<p>This class is instantiated by <a href="qapplication.html">QApplication</a> for Qtopia Core server processes. You should never construct this class yourself.</p>
 <p>A pointer to the QWSServer instance can be obtained via the global <tt>qwsServer</tt> variable.</p>
 <p>The mouse and keyboard devices can be opened with <a href="qwsserver.html#openMouse">openMouse</a>() and <a href="qwsserver.html#openKeyboard">openKeyboard</a>(). (Close them with <a href="qwsserver.html#closeMouse">closeMouse</a>() and <a href="qwsserver.html#closeKeyboard">closeKeyboard</a>().)</p>
 <p>The display is refreshed with <a href="qwsserver.html#refresh">refresh</a>(), and painting can be enabled or disabled with <a href="qwsserver.html#enablePainting">enablePainting</a>().</p>
@@ -137,7 +137,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QWSServer"></a>QWSServer::QWSServer ( int <i>flags</i> = 0, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
 <p>Construct a <a href="qwsserver.html">QWSServer</a> object.</p>
-<p><b>Warning:</b> This class is instantiated by <a href="qapplication.html">QApplication</a> for Qt/Embedded server processes. You should never construct this class yourself.</p>
+<p><b>Warning:</b> This class is instantiated by <a href="qapplication.html">QApplication</a> for Qtopia Core server processes. You should never construct this class yourself.</p>
 <p>The <i>flags</i> are used for keyboard and mouse setting. The server's parent is <i>parent</i>.</p>
 <h3 class="fn"><a name="dtor.QWSServer"></a>QWSServer::~QWSServer ()</h3>
 <p>Destruct <a href="qwsserver.html">QWSServer</a></p>
@@ -145,8 +145,9 @@ body { background: #ffffff; color: black; }</style>
 <p>Adds a filter <i>f</i> to be invoked for all key events from physical keyboard drivers (events sent via processKeyEvent()).</p>
 <p>The filter is not invoked for keys generated by virtual keyboard drivers (events sent via <a href="qwsserver.html#sendKeyEvent">sendKeyEvent</a>()).</p>
 <p>Keyboard filters are removed by <a href="qwsserver.html#removeKeyboardFilter">removeKeyboardFilter</a>().</p>
-<h3 class="fn"><a name="clientWindows"></a>const <a href="qlist.html">QList</a>&lt;<a href="qwswindow.html">QWSWindow</a> *&gt; QWSServer::clientWindows ()</h3>
-<p>Returns the list of top-level windows. This list will change as applications add and remove wigdets so it should not be stored for future use. The windows are sorted in stacking order from top-most to bottom-most.</p>
+<h3 class="fn"><a name="backgroundBrush"></a>const <a href="qbrush.html">QBrush</a> &amp; QWSServer::backgroundBrush () const</h3>
+<h3 class="fn"><a name="clientWindows"></a>const <a href="qlist.html">QList</a>&lt;<a href="qwswindow.html">QWSWindow</a> *&gt; &amp; QWSServer::clientWindows ()</h3>
+<p>Returns the list of top-level windows. This list will change as applications add and remove widgets so it should not be stored for future use. The windows are sorted in stacking order from top-most to bottom-most.</p>
 <h3 class="fn"><a name="closeKeyboard"></a>void QWSServer::closeKeyboard ()</h3>
 <p>Closes keyboard device(s).</p>
 <h3 class="fn"><a name="closeMouse"></a>void QWSServer::closeMouse ()</h3>
@@ -161,8 +162,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="keyboardHandler"></a><a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> * QWSServer::keyboardHandler ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the primary keyboard handler.</p>
 <p>See also <a href="qwsserver.html#setKeyboardHandler">setKeyboardHandler</a>().</p>
-<h3 class="fn"><a name="manager"></a>QWSPropertyManager * QWSServer::manager ()</h3>
-<p>Returns the QWSPropertyManager, which is used for implementing X11-style window properties.</p>
 <h3 class="fn"><a name="markedText"></a>void QWSServer::markedText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever some text is selected. The selection is passed in <i>text</i>.</p>
 <h3 class="fn"><a name="mouseHandler"></a><a href="qwsmousehandler.html">QWSMouseHandler</a> * QWSServer::mouseHandler ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -210,7 +209,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the primary keyboard handler to <i>kh</i>.</p>
 <p>See also <a href="qwsserver.html#keyboardHandler">keyboardHandler</a>().</p>
 <h3 class="fn"><a name="setMaxWindowRect"></a>void QWSServer::setMaxWindowRect ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the area of the screen which Qt/Embedded applications will consider to be the maximum area to use for windows to <i>r</i>.</p>
+<p>Sets the area of the screen which Qtopia Core applications will consider to be the maximum area to use for windows to <i>r</i>.</p>
 <p>See also <a href="qwidget.html#showMaximized">QWidget::showMaximized</a>().</p>
 <h3 class="fn"><a name="setScreenSaverInterval"></a>void QWSServer::setScreenSaverInterval ( int <i>ms</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the timeout for the screensaver to <i>ms</i> milliseconds. A setting of zero turns off the screensaver.</p>
@@ -227,6 +226,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

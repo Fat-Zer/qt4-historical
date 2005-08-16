@@ -24,10 +24,10 @@
 #ifndef QBRUSH_H
 #define QBRUSH_H
 
-#include "QtCore/qpair.h"
-#include "QtCore/qpoint.h"
-#include "QtCore/qvector.h"
-#include "QtGui/qcolor.h"
+#include <QtCore/qpair.h>
+#include <QtCore/qpoint.h>
+#include <QtCore/qvector.h>
+#include <QtGui/qcolor.h>
 
 QT_MODULE(Gui)
 
@@ -137,7 +137,8 @@ public:
     enum Type {
         LinearGradient,
         RadialGradient,
-        ConicalGradient
+        ConicalGradient,
+        NoGradient
     };
 
     enum Spread {
@@ -158,13 +159,14 @@ public:
     void setStops(const QGradientStops &stops);
     QGradientStops stops() const;
 
-    bool operator==(const QGradient &gradient);
+    bool operator==(const QGradient &gradient); // 5.0 - remove me
+    bool operator==(const QGradient &gradient) const;
+
 
 private:
     friend class QLinearGradient;
     friend class QRadialGradient;
     friend class QConicalGradient;
-    friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QBrush &);
 
     Type m_type;
     Spread m_spread;

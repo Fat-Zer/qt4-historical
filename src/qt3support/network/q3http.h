@@ -24,12 +24,10 @@
 #ifndef Q3HTTP_H
 #define Q3HTTP_H
 
-#ifndef QT_H
-#include "QtCore/qobject.h"
-#include "Qt3Support/q3networkprotocol.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qstringlist.h"
-#endif // QT_H
+#include <QtCore/qobject.h>
+#include <Qt3Support/q3networkprotocol.h>
+#include <QtCore/qmap.h>
+#include <QtCore/qstringlist.h>
 
 QT_MODULE(Qt3Support)
 
@@ -195,10 +193,10 @@ public:
     Error error() const;
     QString errorString() const;
 
-public slots:
+public Q_SLOTS:
     void abort();
 
-signals:
+Q_SIGNALS:
     void stateChanged( int );
     void responseHeaderReceived( const Q3HttpResponseHeader& resp );
     void readyRead( const Q3HttpResponseHeader& resp );
@@ -215,7 +213,7 @@ protected:
 
     void timerEvent( QTimerEvent * );
 
-private slots:
+private Q_SLOTS:
     void clientReply( const Q3HttpResponseHeader &rep );
     void clientDone( bool );
     void clientStateChanged( int );
@@ -249,6 +247,6 @@ private:
     friend class Q3HttpPGHRequest;
 };
 
-#endif
+#endif // QT_NO_NETWORKPROTOCOL_HTTP
 
-#endif
+#endif // Q3HTTP_H

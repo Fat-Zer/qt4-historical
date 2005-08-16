@@ -24,10 +24,10 @@
 #ifndef Q3MIMEFACTORY_H
 #define Q3MIMEFACTORY_H
 
-#include "QtGui/qwindowdefs.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qmap.h"
-#include "QtGui/qpixmap.h"
+#include <QtGui/qwindowdefs.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qmap.h>
+#include <QtGui/qpixmap.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -73,4 +73,4 @@ Q_COMPAT_EXPORT QImage qImageFromMimeSource(const QString &abs_name);
 
 #endif // QT_NO_MIMEFACTORY
 
-#endif // QMIMEFACTORY_H
+#endif // Q3MIMEFACTORY_H

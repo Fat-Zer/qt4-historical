@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/itemviews/q3table.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/itemviews/q3table.cpp -->
 <head>
-    <title>Qt 4.0: Q3Table Class Reference</title>
+    <title>Qt 4.1: Q3Table Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -54,7 +54,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -129,7 +129,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -453,6 +453,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3table.html#removeSelection">removeSelection</a>().</p>
 <h3 class="fn"><a name="clicked"></a>void Q3Table::clicked ( int <i>row</i>, int <i>col</i>, int <i>button</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>mousePos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when mouse button <i>button</i> is clicked. The cell where the event took place is at <i>row</i>, <i>col</i>, and the mouse's position is in <i>mousePos</i>.</p>
+<p>See also <a href="qt.html#MouseButton-enum">Qt::MouseButton</a>.</p>
 <h3 class="fn"><a name="columnAt"></a>int Q3Table::columnAt ( int <i>x</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the number of the column at position <i>x</i>. <i>x</i> must be given in content coordinates.</p>
 <p>See also <a href="q3table.html#columnPos">columnPos</a>() and <a href="q3table.html#rowAt">rowAt</a>().</p>
@@ -518,6 +519,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3table.html#numSelections-prop">numSelections</a>().</p>
 <h3 class="fn"><a name="doubleClicked"></a>void Q3Table::doubleClicked ( int <i>row</i>, int <i>col</i>, int <i>button</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>mousePos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when mouse button <i>button</i> is double-clicked. The cell where the event took place is at <i>row</i>, <i>col</i>, and the mouse's position is in <i>mousePos</i>.</p>
+<p>See also <a href="qt.html#MouseButton-enum">Qt::MouseButton</a>.</p>
 <h3 class="fn"><a name="dragEnabled"></a>bool Q3Table::dragEnabled () const</h3>
 <p>If this function returns true, the table supports dragging.</p>
 <p>See also <a href="q3table.html#setDragEnabled">setDragEnabled</a>().</p>
@@ -634,6 +636,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3table.html#setPixmap">setPixmap</a>().</p>
 <h3 class="fn"><a name="pressed"></a>void Q3Table::pressed ( int <i>row</i>, int <i>col</i>, int <i>button</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>mousePos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when mouse button <i>button</i> is pressed. The cell where the event took place is at <i>row</i>, <i>col</i>, and the mouse's position is in <i>mousePos</i>.</p>
+<p>See also <a href="qt.html#MouseButton-enum">Qt::MouseButton</a>.</p>
 <h3 class="fn"><a name="removeColumn"></a>void Q3Table::removeColumn ( int <i>col</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Removes column <i>col</i>, and deletes all its cells including any table items and widgets the cells may contain. Also clears the selection(s).</p>
 <p>See also <a href="q3table.html#removeColumns">removeColumns</a>(), <a href="q3table.html#hideColumn">hideColumn</a>(), <a href="q3table.html#insertColumns">insertColumns</a>(), and <a href="q3table.html#removeRow">removeRow</a>().</p>
@@ -811,6 +814,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

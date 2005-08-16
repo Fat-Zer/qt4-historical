@@ -23,6 +23,7 @@
 
 #include "qitemselectionmodel.h"
 #include <private/qitemselectionmodel_p.h>
+#include <qdebug.h>
 
 #ifndef QT_NO_ITEMVIEWS
 /*!
@@ -73,10 +74,10 @@
 */
 
 /*!
-    \fn QItemSelectionRange::QItemSelectionRange(const QModelIndex &parent, const QModelIndex &index)
+    \fn QItemSelectionRange::QItemSelectionRange(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 
-    Constructs a new selection range containing only the model item specified
-    by the \a parent and the model \a index.
+    Constructs a new selection range containing only the index specified
+    by the \a topLeft and the index \a bottomRight.
 
 */
 
@@ -84,7 +85,7 @@
     \fn QItemSelectionRange::QItemSelectionRange(const QModelIndex &index)
 
     Constructs a new selection range containing only the model item specified
-    by the model \a index.
+    by the model index \a index.
 */
 
 /*!
@@ -180,7 +181,8 @@
 */
 bool QItemSelectionRange::intersects(const QItemSelectionRange &other) const
 {
-    return (parent() == other.parent()
+    return (isValid() && other.isValid()
+            && parent() == other.parent()
             && ((top() <= other.top() && bottom() >= other.top())
                 || (top() >= other.top() && top() <= other.bottom()))
             && ((left() <= other.left() && right() >= other.left())
@@ -197,7 +199,7 @@ bool QItemSelectionRange::intersects(const QItemSelectionRange &other) const
 
 QItemSelectionRange QItemSelectionRange::intersect(const QItemSelectionRange &other) const
 {
-    if (model()) {
+    if (model() == other.model() && parent() == other.parent()) {
         QModelIndex topLeft = model()->index(qMax(top(), other.top()),
                                              qMax(left(), other.left()),
                                              other.parent());
@@ -392,13 +394,17 @@ void QItemSelection::merge(const QItemSelection &other, QItemSelectionModel::Sel
     QItemSelection newSelection = other;
     // Collect intersections
     QItemSelection intersections;
-    for (int n = 0; n < newSelection.count(); ++n) {
-        if (newSelection.at(n).isValid()) { // nothing intersects an invalid selection range
-            for (int t = 0; t < count(); ++t) {
-                if (newSelection.at(n).intersects(at(t)))
-                    intersections.append(at(t).intersect(newSelection.at(n)));
-            }
+    QItemSelection::iterator it = newSelection.begin();
+    while (it != newSelection.end()) {
+        if (!(*it).isValid()) {
+            it = newSelection.erase(it);
+            continue;
         }
+        for (int t = 0; t < count(); ++t) {
+            if ((*it).intersects(at(t)))
+                intersections.append(at(t).intersect(*it));
+        }
+        ++it;
     }
 
     //  Split the old (and new) ranges using the intersections
@@ -427,9 +433,9 @@ void QItemSelection::merge(const QItemSelection &other, QItemSelectionModel::Sel
 }
 
 /*!
-  Splits the selection \a range using the selection \a other range, and puts
-  the resulting selection in \a result.
-
+  Splits the selection \a range using the selection \a other range.
+  Removes all items in \a other from \a range and puts the result in \a result.
+  This can be compared with the semantics of the \e subtract operation of a set.
   \sa merge()
 */
 
@@ -446,6 +452,7 @@ void QItemSelection::split(const QItemSelectionRange &range,
     int other_bottom = other.bottom();
     int other_right = other.right();
     const QAbstractItemModel *model = range.model();
+    Q_ASSERT(model);
     if (other_top > top) {
         QModelIndex tl = model->index(top, left, parent);
         QModelIndex br = model->index(other_top - 1, right, parent);
@@ -553,6 +560,15 @@ QItemSelectionModel::QItemSelectionModel(QAbstractItemModel *model)
 }
 
 /*!
+  Constructs a selection model that operates on the specified item \a model with \a parent.
+*/
+QItemSelectionModel::QItemSelectionModel(QAbstractItemModel *model, QObject *parent)
+    : QObject(*new QItemSelectionModelPrivate, parent)
+{
+    d_func()->model = model;
+}
+
+/*!
   \internal
 */
 QItemSelectionModel::QItemSelectionModel(QItemSelectionModelPrivate &dd, QAbstractItemModel *model)
@@ -574,7 +590,7 @@ QItemSelectionModel::~QItemSelectionModel()
 
   \sa QItemSelectionModel::SelectionFlags
 */
-void QItemSelectionModel::select(const QModelIndex &index, SelectionFlags command)
+void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::SelectionFlags command)
 {
     if (index.isValid()) {
         QItemSelection selection(index, index);
@@ -648,7 +664,7 @@ void QItemSelectionModel::select(const QModelIndex &index, SelectionFlags comman
 
   \sa QItemSelectionModel::SelectionFlag
 */
-void QItemSelectionModel::select(const QItemSelection &selection, SelectionFlags command)
+void QItemSelectionModel::select(const QItemSelection &selection, QItemSelectionModel::SelectionFlags command)
 {
     Q_D(QItemSelectionModel);
     if (command == NoUpdate)
@@ -731,7 +747,7 @@ void QItemSelectionModel::reset()
   of the current selection.
   \sa select()
 */
-void QItemSelectionModel::setCurrentIndex(const QModelIndex &index, SelectionFlags command)
+void QItemSelectionModel::setCurrentIndex(const QModelIndex &index, QItemSelectionModel::SelectionFlags command)
 {
     Q_D(QItemSelectionModel);
     if (index == d->currentIndex) {
@@ -765,7 +781,7 @@ QModelIndex QItemSelectionModel::currentIndex() const
 bool QItemSelectionModel::isSelected(const QModelIndex &index) const
 {
     Q_D(const QItemSelectionModel);
-    if (model() != index.model()
+    if (model() != index.model() || !index.isValid()
         || (model()->flags(index) & Qt::ItemIsSelectable) == 0)
         return false;
     bool selected = false;
@@ -1054,4 +1070,20 @@ void QItemSelectionModel::emitSelectionChanged(const QItemSelection &newSelectio
 
     emit selectionChanged(selected, deselected);
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug dbg, const QItemSelectionRange &range)
+{
+#ifndef Q_BROKEN_DEBUG_STREAM
+    dbg.nospace() << "QItemSelectionRange(" << range.topLeft()
+                  << "," << range.bottomRight() << ")";
+    return dbg.space();
+#else
+    qWarning("This compiler doesn't support streaming QItemSelectionRange to QDebug");
+    return dbg;
+    Q_UNUSED(range);
+#endif
+}
+#endif
+
 #endif // QT_NO_ITEMVIEWS

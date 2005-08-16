@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/q3ptrvector.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/q3ptrvector.qdoc -->
 <head>
-    <title>Qt 4.0: Q3PtrVector Class Reference</title>
+    <title>Qt 4.1: Q3PtrVector Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -74,7 +74,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Q3PtrVector is implemented as a template class. Defines a template instance Q3PtrVector&lt;X&gt; to create a vector that contains pointers to X (X*).</p>
 <p>A vector is the same as an array. The main difference between Q3PtrVector and <a href="q3memarray.html">Q3MemArray</a> is that Q3PtrVector stores pointers to the elements, whereas <a href="q3memarray.html">Q3MemArray</a> stores the elements themselves (i.e. <a href="q3memarray.html">Q3MemArray</a> is value-based and Q3PtrVector is pointer-based).</p>
 <p>Items are added to the vector using <a href="q3ptrvector.html#insert">insert</a>() or <a href="q3ptrvector.html#fill">fill</a>(). Items are removed with <a href="q3ptrvector.html#remove">remove</a>(). You can get a pointer to an item at a particular index position using <a href="q3ptrvector.html#at">at</a>().</p>
-<p>Unless otherwise stated, all functions that remove items from the vector will also delete the element pointed to if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled. By default, auto-deletion is disabled; see <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(). This behaviour can be changed in a subclass by reimplementing the virtual function <a href="q3ptrcollection.html#deleteItem">deleteItem</a>().</p>
+<p>Unless otherwise stated, all functions that remove items from the vector will also delete the element pointed to if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled. By default, auto-deletion is disabled; see <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(). This behavior can be changed in a subclass by reimplementing the virtual function <a href="q3ptrcollection.html#deleteItem">deleteItem</a>().</p>
 <p>Functions that compare items (<a href="q3ptrvector.html#find">find</a>() and <a href="q3ptrvector.html#sort">sort</a>() for example) will do so using the virtual function <a href="q3ptrvector.html#compareItems">compareItems</a>(). The default implementation of this function only compares the pointer values. Reimplement <a href="q3ptrvector.html#compareItems">compareItems</a>() in a subclass to get searching and sorting based on the item contents. You can perform a linear search for a pointer in the vector using <a href="q3ptrvector.html#findRef">findRef</a>(), or a binary search (of a sorted vector) using <a href="q3ptrvector.html#bsearch">bsearch</a>(). You can count the number of times an item appears in the vector with <a href="q3ptrvector.html#contains">contains</a>() or <a href="q3ptrvector.html#containsRef">containsRef</a>().</p>
 <p>See also <a href="q3memarray.html">Q3MemArray</a>.</p>
 <hr />
@@ -204,6 +204,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

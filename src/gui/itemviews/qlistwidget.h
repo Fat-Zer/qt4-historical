@@ -43,6 +43,9 @@ public:
     enum { Type = 0, UserType = 1000 };
     explicit QListWidgetItem(QListWidget *view = 0, int type = Type);
     explicit QListWidgetItem(const QString &text, QListWidget *view = 0, int type = Type);
+    explicit QListWidgetItem(const QIcon &icon, const QString &text,
+                             QListWidget *view = 0, int type = Type);
+    QListWidgetItem(const QListWidgetItem &other);
     virtual ~QListWidgetItem();
 
     virtual QListWidgetItem *clone() const;
@@ -64,13 +67,17 @@ public:
         { return data(Qt::StatusTipRole).toString(); }
     inline void setStatusTip(const QString &statusTip);
 
+#ifndef QT_NO_TOOLTIP
     inline QString toolTip() const
         { return data(Qt::ToolTipRole).toString(); }
     inline void setToolTip(const QString &toolTip);
+#endif
 
+#ifndef QT_NO_WHATSTHIS
     inline QString whatsThis() const
         { return data(Qt::WhatsThisRole).toString(); }
     inline void setWhatsThis(const QString &whatsThis);
+#endif
 
     inline QFont font() const
         { return qvariant_cast<QFont>(data(Qt::FontRole)); }
@@ -95,6 +102,11 @@ public:
         { return static_cast<Qt::CheckState>(data(Qt::CheckStateRole).toInt()); }
     inline void setCheckState(Qt::CheckState state)
         { setData(Qt::CheckStateRole, state); }
+
+    inline QSize sizeHint() const
+        { return qvariant_cast<QSize>(data(Qt::SizeHintRole)); }
+    inline void setSizeHint(const QSize &size)
+        { setData(Qt::SizeHintRole, size); }
 
     virtual QVariant data(int role) const;
     virtual void setData(int role, const QVariant &value);
@@ -129,11 +141,15 @@ inline void QListWidgetItem::setIcon(const QIcon &aicon)
 inline void QListWidgetItem::setStatusTip(const QString &astatusTip)
 { setData(Qt::StatusTipRole, astatusTip); }
 
+#ifndef QT_NO_TOOLTIP
 inline void QListWidgetItem::setToolTip(const QString &atoolTip)
 { setData(Qt::ToolTipRole, atoolTip); }
+#endif
 
+#ifndef QT_NO_WHATSTHIS
 inline void QListWidgetItem::setWhatsThis(const QString &awhatsThis)
 { setData(Qt::WhatsThisRole, awhatsThis); }
+#endif
 
 inline void QListWidgetItem::setFont(const QFont &afont)
 { setData(Qt::FontRole, afont); }
@@ -149,7 +165,7 @@ class Q_GUI_EXPORT QListWidget : public QListView
 {
     Q_OBJECT
     Q_PROPERTY(int count READ count)
-    Q_PROPERTY(int currentRow READ currentRow WRITE setCurrentRow)
+    Q_PROPERTY(int currentRow READ currentRow WRITE setCurrentRow NOTIFY currentRowChanged USER true)
 
     friend class QListWidgetItem;
     friend class QListModel;
@@ -184,6 +200,9 @@ public:
     void openPersistentEditor(QListWidgetItem *item);
     void closePersistentEditor(QListWidgetItem *item);
 
+    QWidget *itemWidget(QListWidgetItem *item) const;
+    void setItemWidget(QListWidgetItem *item, QWidget *widget);
+
     bool isItemSelected(const QListWidgetItem *item) const;
     void setItemSelected(const QListWidgetItem *item, bool select);
     QList<QListWidgetItem*> selectedItems() const;
@@ -192,11 +211,11 @@ public:
     bool isItemHidden(const QListWidgetItem *item) const;
     void setItemHidden(const QListWidgetItem *item, bool hide);
 
-public slots:
+public Q_SLOTS:
     void scrollToItem(const QListWidgetItem *item, QAbstractItemView::ScrollHint hint = EnsureVisible);
     void clear();
 
-signals:
+Q_SIGNALS:
     void itemPressed(QListWidgetItem *item);
     void itemClicked(QListWidgetItem *item);
     void itemDoubleClicked(QListWidgetItem *item);
@@ -211,10 +230,13 @@ signals:
     void itemSelectionChanged();
 
 protected:
+    bool event(QEvent *e);
     virtual QStringList mimeTypes() const;
     virtual QMimeData *mimeData(const QList<QListWidgetItem*> items) const;
+#ifndef QT_NO_DRAGANDDROP
     virtual bool dropMimeData(int index, const QMimeData *data, Qt::DropAction action);
     virtual Qt::DropActions supportedDropActions() const;
+#endif
     QList<QListWidgetItem*> items(const QMimeData *data) const;
 
     QModelIndex indexFromItem(QListWidgetItem *item) const;
@@ -242,4 +264,5 @@ inline QListWidgetItem *QListWidget::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
 
 #endif // QT_NO_LISTWIDGET
+
 #endif // QLISTWIDGET_H

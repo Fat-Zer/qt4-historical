@@ -24,9 +24,9 @@
 #ifndef QREGION_H
 #define QREGION_H
 
-#include "QtCore/qatomic.h"
-#include "QtCore/qrect.h"
-#include "QtGui/qwindowdefs.h"
+#include <QtCore/qatomic.h>
+#include <QtCore/qrect.h>
+#include <QtGui/qwindowdefs.h>
 
 QT_MODULE(Gui)
 
@@ -66,6 +66,8 @@ public:
 
     void translate(int dx, int dy);
     inline void translate(const QPoint &p) { translate(p.x(), p.y()); }
+    QRegion translated(int dx, int dy) const;
+    inline QRegion translated(const QPoint &p) const { return translated(p.x(), p.y()); }
 
     QRegion unite(const QRegion &r) const;
     QRegion intersect(const QRegion &r) const;
@@ -156,6 +158,5 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QRegion &);
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRegion &);
 #endif
-
 
 #endif // QREGION_H

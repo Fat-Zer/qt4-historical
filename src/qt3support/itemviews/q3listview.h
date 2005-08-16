@@ -24,12 +24,11 @@
 #ifndef Q3LISTVIEW_H
 #define Q3LISTVIEW_H
 
-#include "Qt3Support/q3scrollview.h"
+#include <Qt3Support/q3scrollview.h>
 
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_LISTVIEW
-
 
 class QPixmap;
 class QFont;
@@ -346,7 +345,7 @@ public:
 
     void hideColumn(int column);
 
-public slots:
+public Q_SLOTS:
     virtual void clear();
     virtual void invertSelection();
     virtual void selectAll(bool select);
@@ -354,7 +353,7 @@ public slots:
     void setContentsPos(int x, int y);
     void adjustColumn(int col);
 
-signals:
+Q_SIGNALS:
     void selectionChanged();
     void selectionChanged(Q3ListViewItem *);
     void currentChanged(Q3ListViewItem *);
@@ -416,11 +415,11 @@ protected:
     virtual void paintEmptyArea(QPainter *, const QRect &);
     void changeEvent(QEvent *);
 
-protected slots:
+protected Q_SLOTS:
     void updateContents();
     void doAutoScroll();
 
-private slots:
+private Q_SLOTS:
     void changeSortColumn(int);
     void handleIndexChange();
     void updateDirtyItems();

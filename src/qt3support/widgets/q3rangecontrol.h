@@ -24,8 +24,8 @@
 #ifndef Q3RANGECONTROL_H
 #define Q3RANGECONTROL_H
 
-#include "QtCore/qglobal.h"
-#include "QtGui/qwidget.h"
+#include <QtCore/qglobal.h>
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -131,11 +131,11 @@ public:
 
     void arrange();
 
-signals:
+Q_SIGNALS:
     void stepUpPressed();
     void stepDownPressed();
 
-public slots:
+public Q_SLOTS:
     void stepUp();
     void stepDown();
 
@@ -150,7 +150,7 @@ protected:
     void changeEvent(QEvent *);
     void paintEvent(QPaintEvent *);
 
-private slots:
+private Q_SLOTS:
     void timerDone();
     void timerDoneEx();
 
@@ -163,6 +163,6 @@ private:
     Q_DISABLE_COPY(Q3SpinWidget)
 };
 
-#endif // QT_NO_SPINWIDGET
+#endif // QT_NO_RANGECONTROL
 
-#endif // QRANGECONTROL_H
+#endif // Q3RANGECONTROL_H

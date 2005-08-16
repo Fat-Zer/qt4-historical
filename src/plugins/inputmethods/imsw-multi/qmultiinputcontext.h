@@ -1,4 +1,27 @@
 /****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the plugins of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/****************************************************************************
 ** $Id$
 **
 ** Definition of QMultiInputContext class
@@ -13,40 +36,18 @@
 **
 ****************************************************************************/
 
-/****************************************************************************
-**
-** Copyright (C) 1992-2004 Trolltech AS. All rights reserved.
-**
-** This file is part of the input method module of the Qt Toolkit.
-**
-** Licensees holding valid Qt Preview licenses may use this file in
-** accordance with the Qt Preview License Agreement provided with the
-** Software.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
 #ifndef QMULTIINPUTCONTEXT_H
 #define QMULTIINPUTCONTEXT_H
 
 #ifndef QT_NO_IM
 
-#include <qobject.h>
-#include <qstring.h>
-#include <qnamespace.h>
-#include <qwidget.h>
-#include <qinputcontext.h>
-#include <qmap.h>
-#include <qpointer.h>
-#include <qlist.h>
+#include <QtGui/qwidget.h>
+#include <QtGui/qinputcontext.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qnamespace.h>
+#include <QtCore/qmap.h>
+#include <QtCore/qpointer.h>
+#include <QtCore/qlist.h>
 
 class QMultiInputContext : public QInputContext
 {
@@ -79,16 +80,16 @@ public:
     QInputContext *slave() { return slaves.at(current); }
     const QInputContext *slave() const { return slaves.at(current); }
 
-protected slots:
+protected Q_SLOTS:
     void changeSlave(QAction *);
 private:
-    QWidget *fw;
+    void *unused;
     int current;
     QList<QInputContext *> slaves;
     QMenu *menu;
     QAction *separator;
 };
 
-#endif //Q_NO_IM
+#endif // Q_NO_IM
 
 #endif // QMULTIINPUTCONTEXT_H

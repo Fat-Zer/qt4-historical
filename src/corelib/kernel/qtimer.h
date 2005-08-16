@@ -26,8 +26,8 @@
 
 #ifndef QT_NO_QOBJECT
 
-#include "QtCore/qbasictimer.h" // conceptual inheritance
-#include "QtCore/qobject.h"
+#include <QtCore/qbasictimer.h> // conceptual inheritance
+#include <QtCore/qobject.h>
 
 QT_MODULE(Core)
 
@@ -54,7 +54,7 @@ public:
 
     static void singleShot(int msec, QObject *receiver, const char *member);
 
-public slots:
+public Q_SLOTS:
     void start(int msec);
 
     void start();
@@ -65,7 +65,7 @@ public slots:
     QT_MOC_COMPAT int start(int msec, bool sshot);
 #endif
 
-signals:
+Q_SIGNALS:
     void timeout();
 
 protected:
@@ -84,6 +84,6 @@ private:
 
 inline void QTimer::setSingleShot(bool asingleShot) { single = asingleShot; }
 
-#endif
+#endif // QT_NO_QOBJECT
 
 #endif // QTIMER_H

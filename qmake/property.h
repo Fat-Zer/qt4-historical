@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef __PROPERTY_H__
-#define __PROPERTY_H__
+#ifndef PROPERTY_H
+#define PROPERTY_H
 
 #include <qstring.h>
 
@@ -45,4 +45,4 @@ public:
     bool exec();
 };
 
-#endif /* __PROPERTY_H__ */
+#endif // PROPERTY_H

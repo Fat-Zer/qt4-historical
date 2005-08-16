@@ -39,4 +39,4 @@ public:
     bool save(const QString &fileName, const char *format = 0);
 };
 
-#endif
+#endif // Q3PICTURE_H

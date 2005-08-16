@@ -21,12 +21,6 @@
 **
 ****************************************************************************/
 
-/****************************************************************
-**
-** Implementation CannonField class, Qt tutorial 14
-**
-****************************************************************/
-
 #include <QDateTime>
 #include <QMouseEvent>
 #include <QPaintEvent>
@@ -52,6 +46,7 @@ CannonField::CannonField(QWidget *parent)
     gameEnded = false;
     barrelPressed = false;
     setPalette(QPalette(QColor(250, 250, 200)));
+    setAutoFillBackground(true);
     newTarget();
 }
 
@@ -177,7 +172,7 @@ void CannonField::paintEvent(QPaintEvent * /* event */)
     if (gameEnded) {
         painter.setPen(Qt::black);
         painter.setFont(QFont("Courier", 48, QFont::Bold));
-        painter.drawText(rect(), Qt::AlignCenter, "Game Over");
+        painter.drawText(rect(), Qt::AlignCenter, tr("Game Over"));
     }
     paintCannon(painter);
     paintBarrier(painter);
@@ -208,7 +203,7 @@ void CannonField::paintBarrier(QPainter &painter)
     painter.drawRect(barrierRect());
 }
 
-const QRect barrelRect(33, -4, 15, 8);
+const QRect barrelRect(30, -5, 20, 10);
 
 void CannonField::paintCannon(QPainter &painter)
 {
@@ -234,7 +229,7 @@ QRect CannonField::shotRect() const
 {
     const double gravity = 4;
 
-    double time = timerCount / 40.0;
+    double time = timerCount / 20.0;
     double velocity = shootForce;
     double radians = shootAngle * 3.14159265 / 180;
 

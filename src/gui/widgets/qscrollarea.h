@@ -21,10 +21,10 @@
 **
 ****************************************************************************/
 
-#ifndef QWIDGETVIEW_H
-#define QWIDGETVIEW_H
+#ifndef QSCROLLAREA_H
+#define QSCROLLAREA_H
 
-#include "QtGui/qabstractscrollarea.h"
+#include <QtGui/qabstractscrollarea.h>
 
 QT_MODULE(Gui)
 
@@ -49,6 +49,8 @@ public:
 
     QSize sizeHint() const;
     bool focusNextPrevChild(bool next);
+    
+    void ensureVisible(int x, int y, int xmargin = 50, int ymargin = 50);
 
 protected:
     bool event(QEvent *);
@@ -62,4 +64,5 @@ private:
 };
 
 #endif // QT_NO_SCROLLAREA
-#endif // QWIDGETVIEW_H
+
+#endif // QSCROLLAREA_H

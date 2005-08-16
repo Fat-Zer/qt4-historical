@@ -24,8 +24,12 @@
 #ifndef QDATASTREAM_H
 #define QDATASTREAM_H
 
-#include "QtCore/qiodevice.h"
-#include "QtCore/qglobal.h"
+#include <QtCore/qiodevice.h>
+#include <QtCore/qglobal.h>
+
+#ifdef Status
+#error qdatastream.h must be included before any header file that defines Status
+#endif
 
 QT_MODULE(Core)
 
@@ -52,9 +56,10 @@ public:
         Qt_3_0 = 4,
         Qt_3_1 = 5,
         Qt_3_3 = 6,
-        Qt_4_0 = 7
-#if QT_VERSION >= 0x040100
-#error "Add Qt_4_1 = Qt_4_0"
+        Qt_4_0 = 7,
+        Qt_4_1 = Qt_4_0
+#if QT_VERSION >= 0x040200
+#error Add Qt_4_2 = Qt_4_1
 #endif
     };
 
@@ -63,9 +68,6 @@ public:
         LittleEndian = QSysInfo::LittleEndian
     };
 
-#ifdef Status
-#error This file has to be included before any system files that define Status
-#endif
     enum Status {
         Ok,
         ReadPastEnd,
@@ -132,6 +134,8 @@ public:
 
     QDataStream &writeBytes(const char *, uint len);
     int writeRawData(const char *, int len);
+
+    int skipRawData(int len);
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT QDataStream &readRawBytes(char *str, uint len)
@@ -319,7 +323,7 @@ Q_OUTOFLINE_TEMPLATE QDataStream &operator>>(QDataStream &in, QHash<Key, T> &has
         Key k;
         T t;
         in >> k >> t;
-        hash.insert(k, t);
+        hash.insertMulti(k, t);
     }
 
     if (in.status() != QDataStream::Ok)
@@ -333,10 +337,11 @@ template <class Key, class T>
 Q_OUTOFLINE_TEMPLATE QDataStream &operator<<(QDataStream &out, const QHash<Key, T>& hash)
 {
     out << quint32(hash.size());
-    typename QHash<Key, T>::ConstIterator it = hash.begin();
-    while (it != hash.end()) {
+    typename QHash<Key, T>::ConstIterator it = hash.end();
+    typename QHash<Key, T>::ConstIterator begin = hash.begin();
+    while (it != begin) {
+        --it;
         out << it.key() << it.value();
-        ++it;
     }
     return out;
 }
@@ -366,7 +371,7 @@ Q_OUTOFLINE_TEMPLATE QDataStream &operator>>(QDataStream &in, QMap<aKey, aT> &ma
         aKey key;
         aT value;
         in >> key >> value;
-        map.insert(key, value);
+        map.insertMulti(key, value);
     }
 #if !defined(Q_CC_BOR)
     map.d->insertInOrder = false;
@@ -382,10 +387,11 @@ template <class Key, class T>
 Q_OUTOFLINE_TEMPLATE QDataStream &operator<<(QDataStream &out, const QMap<Key, T> &map)
 {
     out << quint32(map.size());
-    typename QMap<Key, T>::ConstIterator it = map.begin();
-    while (it != map.end()) {
+    typename QMap<Key, T>::ConstIterator it = map.end();
+    typename QMap<Key, T>::ConstIterator begin = map.begin();
+    while (it != begin) {
+        --it;
         out << it.key() << it.value();
-        ++it;
     }
     return out;
 }

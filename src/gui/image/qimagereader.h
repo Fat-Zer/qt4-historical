@@ -28,10 +28,12 @@
 
 QT_MODULE(Gui)
 
+class QColor;
 class QIODevice;
 class QImage;
 class QRect;
 class QSize;
+class QStringList;
 
 class QImageReaderPrivate;
 class Q_GUI_EXPORT QImageReader
@@ -61,6 +63,9 @@ public:
 
     QSize size() const;
 
+    QStringList textKeys() const;
+    QString text(const QString &key) const;
+
     void setClipRect(const QRect &rect);
     QRect clipRect() const;
 
@@ -69,6 +74,11 @@ public:
 
     void setScaledClipRect(const QRect &rect);
     QRect scaledClipRect() const;
+
+    void setBackgroundColor(const QColor &color);
+    QColor backgroundColor() const;
+
+    bool supportsAnimation() const;
 
     bool canRead() const;
     QImage read();
@@ -93,4 +103,4 @@ private:
     QImageReaderPrivate *d;
 };
 
-#endif
+#endif // QIMAGEREADER_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/image/qimagewriter.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qimagewriter.cpp -->
 <head>
-    <title>Qt 4.0: QImageWriter Class Reference</title>
+    <title>Qt 4.1: QImageWriter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -22,6 +22,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>#include &lt;QImageWriter&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qimagewriter-members.html">List of all members, including inherited members</a></li>
+<li><a href="qimagewriter-obsolete.html">Obsolete members</a></li>
 </ul>
 <a name="public-types"></a>
 <h3>Public Types</h3>
@@ -36,7 +37,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qimagewriter.html#QImageWriter-3">QImageWriter</a></b> ( const QString &amp; <i>fileName</i>, const QByteArray &amp; <i>format</i> = QByteArray() )</li>
 <li><div class="fn"/><b><a href="qimagewriter.html#dtor.QImageWriter">~QImageWriter</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qimagewriter.html#canWrite">canWrite</a></b> () const</li>
-<li><div class="fn"/>QString <b><a href="qimagewriter.html#description">description</a></b> () const</li>
 <li><div class="fn"/>QIODevice * <b><a href="qimagewriter.html#device">device</a></b> () const</li>
 <li><div class="fn"/>ImageWriterError <b><a href="qimagewriter.html#error">error</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qimagewriter.html#errorString">errorString</a></b> () const</li>
@@ -44,12 +44,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QByteArray <b><a href="qimagewriter.html#format">format</a></b> () const</li>
 <li><div class="fn"/>float <b><a href="qimagewriter.html#gamma">gamma</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qimagewriter.html#quality">quality</a></b> () const</li>
-<li><div class="fn"/>void <b><a href="qimagewriter.html#setDescription">setDescription</a></b> ( const QString &amp; <i>description</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagewriter.html#setDevice">setDevice</a></b> ( QIODevice * <i>device</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagewriter.html#setFileName">setFileName</a></b> ( const QString &amp; <i>fileName</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagewriter.html#setFormat">setFormat</a></b> ( const QByteArray &amp; <i>format</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagewriter.html#setGamma">setGamma</a></b> ( float <i>gamma</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagewriter.html#setQuality">setQuality</a></b> ( int <i>quality</i> )</li>
+<li><div class="fn"/>void <b><a href="qimagewriter.html#setText">setText</a></b> ( const QString &amp; <i>key</i>, const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>bool <b><a href="qimagewriter.html#write">write</a></b> ( const QImage &amp; <i>image</i> )</li>
 </ul>
 <a name="static-public-members"></a>
@@ -89,9 +89,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="canWrite"></a>bool QImageWriter::canWrite () const</h3>
 <p>Returns true if <a href="qimagewriter.html">QImageWriter</a> can write the image (i.e., the image format is supported and the assigned device is open for reading.</p>
 <p>See also <a href="qimagewriter.html#write">write</a>(), <a href="qimagewriter.html#setDevice">setDevice</a>(), and <a href="qimagewriter.html#setFormat">setFormat</a>().</p>
-<h3 class="fn"><a name="description"></a><a href="qstring.html">QString</a> QImageWriter::description () const</h3>
-<p>Returns the description of the image.</p>
-<p>See also <a href="qimagewriter.html#setDescription">setDescription</a>().</p>
 <h3 class="fn"><a name="device"></a><a href="qiodevice.html">QIODevice</a> * QImageWriter::device () const</h3>
 <p>Returns the device currently assigned to <a href="qimagewriter.html">QImageWriter</a>, or 0 if no device has been assigned.</p>
 <p>See also <a href="qimagewriter.html#setDevice">setDevice</a>().</p>
@@ -113,10 +110,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="quality"></a>int QImageWriter::quality () const</h3>
 <p>Returns the quality level of the image.</p>
 <p>See also <a href="qimagewriter.html#setQuality">setQuality</a>().</p>
-<h3 class="fn"><a name="setDescription"></a>void QImageWriter::setDescription ( const <a href="qstring.html">QString</a> &amp; <i>description</i> )</h3>
-<p>This is an image format specific function that sets the description of the image to <i>description</i>. For image formats that do not support setting the description, this value is ignored.</p>
-<p>The contents of <i>description</i> depends on the image format.</p>
-<p>See also <a href="qimagewriter.html#description">description</a>().</p>
 <h3 class="fn"><a name="setDevice"></a>void QImageWriter::setDevice ( <a href="qiodevice.html">QIODevice</a> * <i>device</i> )</h3>
 <p>Sets <a href="qimagewriter.html">QImageWriter</a>'s device to <i>device</i>. If a device has already been set, the old device is removed from <a href="qimagewriter.html">QImageWriter</a> and is otherwise left unchanged.</p>
 <p>If the device is not already open, <a href="qimagewriter.html">QImageWriter</a> will attempt to open the device in <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::WriteOnly</a> mode by calling open(). Note that this does not work for certain devices, such as <a href="qprocess.html">QProcess</a>, <a href="qtcpsocket.html">QTcpSocket</a> and <a href="qudpsocket.html">QUdpSocket</a>, where more logic is required to open the device.</p>
@@ -138,9 +131,31 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an image format specific function that sets the quality level of the image to <i>quality</i>. For image formats that do not support setting the quality, this value is ignored.</p>
 <p>The value range of <i>quality</i> depends on the image format. For example, the &quot;jpeg&quot; format supports a quality range from 0 (low quality, high compression) to 100 (high quality, low compression).</p>
 <p>See also <a href="qimagewriter.html#quality">quality</a>().</p>
+<h3 class="fn"><a name="setText"></a>void QImageWriter::setText ( const <a href="qstring.html">QString</a> &amp; <i>key</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
+<p>Sets the image text associated with the key <i>key</i> to <i>text</i>. This is useful for storing copyright information or other information about the image. Example:</p>
+<pre>&nbsp;   QImage image(&quot;some/image.jpeg&quot;);
+    QImageWriter writer(&quot;images/outimage.png&quot;, &quot;png&quot;);
+    writer.setText(&quot;Author&quot;, &quot;John Smith&quot;);
+    writer.write(image);</pre>
+<p>If you want to store a single block of data (e.g., a comment), you can pass an empty key, or use a generic key like &quot;Description&quot;.</p>
+<p>The key and text will be embedded into the image data after calling <a href="qimagewriter.html#write">write</a>().</p>
+<p>Support for this option is implemented through <a href="qimageiohandler.html#ImageOption-enum">QImageIOHandler::Description</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qimage.html#setText">QImage::setText</a>() and <a href="qimagereader.html#text">QImageReader::text</a>().</p>
 <h3 class="fn"><a name="supportedImageFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QImageWriter::supportedImageFormats ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of image formats supported by <a href="qimagewriter.html">QImageWriter</a>.</p>
-<p>See also <a href="qimagewriter.html#setFormat">setFormat</a>() and <a href="qimagereader.html#supportedImageFormats">QImageReader::supportedImageFormats</a>().</p>
+<p>By default, Qt can write the following formats:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Description</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>BMP</td><td>Windows Bitmap</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>JPG</td><td>Joint Photographic Experts Group</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>JPEG</td><td>Joint Photographic Experts Group</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>PNG</td><td>Portable Network Graphics</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>PPM</td><td>Portable Pixmap</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>XBM</td><td>X11 Bitmap</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>XPM</td><td>X11 Pixmap</td></tr>
+</table>
+<p>See also <a href="qimagewriter.html#setFormat">setFormat</a>(), <a href="qimagereader.html#supportedImageFormats">QImageReader::supportedImageFormats</a>(), and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
 <h3 class="fn"><a name="write"></a>bool QImageWriter::write ( const <a href="qimage.html">QImage</a> &amp; <i>image</i> )</h3>
 <p>Writes the image <i>image</i> to the assigned device or file name. Returns true on success; otherwise returns false. If the operation fails, you can call <a href="qimagewriter.html#error">error</a>() to find the type of error that occurred, or <a href="qimagewriter.html#errorString">errorString</a>() to get a human readable description of the error.</p>
 <p>See also <a href="qimagewriter.html#canWrite">canWrite</a>(), <a href="qimagewriter.html#error">error</a>(), and <a href="qimagewriter.html#errorString">errorString</a>().</p>
@@ -148,6 +163,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

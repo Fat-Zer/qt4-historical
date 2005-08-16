@@ -95,6 +95,8 @@ void QDockWidgetSeparator::mousePressEvent(QMouseEvent *event)
 
 void QDockWidgetSeparator::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (!state)
+        return;
     if (event->button() != Qt::LeftButton)
         return;
 
@@ -114,7 +116,8 @@ void QDockWidgetSeparator::mouseReleaseEvent(QMouseEvent *event)
 
 void QDockWidgetSeparator::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_ASSERT(state != 0);
+    if (!state)
+        return;
 
     QPoint p = parentWidget()->mapFromGlobal(event->globalPos());
     int delta = pick(layout->orientation, p - state->origin);

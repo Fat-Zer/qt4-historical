@@ -1,10 +1,32 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the demonstration applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 #include "xform.h"
 #include "hoverpoints.h"
-#include "arthurwidgets.h"
 
-#include <qlayout.h>
-#include <qpainter.h>
-#include <qpainterpath.h>
+#include <QLayout>
+#include <QPainter>
+#include <QPainterPath>
 
 const int alpha = 155;
 
@@ -13,9 +35,9 @@ XFormView::XFormView(QWidget *parent)
 {
     setAttribute(Qt::WA_MouseTracking);
     type = VectorType;
-    rotation = 0.0;
-    scale = 1.0;
-    shear = 0.0;
+    m_rotation = 0.0;
+    m_scale = 1.0;
+    m_shear = 0.0;
 
     pixmap = QPixmap(":/res/bg1.jpg");
     pts = new HoverPoints(this, HoverPoints::CircleShape);
@@ -77,12 +99,12 @@ void XFormView::updateCtrlPoints(const QPolygonF &points)
     ctrlPoints = points;
 
     QLineF line(ctrlPoints.at(0), ctrlPoints.at(1));
-    rotation = line.angle(QLineF(0, 0, 1, 0));
+    m_rotation = line.angle(QLineF(0, 0, 1, 0));
     if (line.dy() < 0)
-        rotation = 360 - rotation;
+        m_rotation = 360 - m_rotation;
 
     if (trans.isNull())
-        emit rotationChanged(int(rotation*10));
+        emit rotationChanged(int(m_rotation*10));
 }
 
 void XFormView::setVectorType()
@@ -112,13 +134,13 @@ void XFormView::setAnimation(bool animate)
 
 void XFormView::changeRotation(int r)
 {
-    double old_rot = rotation;
-    rotation = double(r/10.0);
+    double old_rot = m_rotation;
+    m_rotation = double(r/10.0);
 
     QPointF center(pts->points().at(0));
     QMatrix m;
     m.translate(center.x(), center.y());
-    m.rotate(rotation - old_rot);
+    m.rotate(m_rotation - old_rot);
     m.translate(-center.x(), -center.y());
     pts->setPoints(pts->points() * m);
 
@@ -127,13 +149,13 @@ void XFormView::changeRotation(int r)
 
 void XFormView::changeScale(int s)
 {
-    scale = double(s/1000.0);
+    m_scale = double(s/1000.0);
     update();
 }
 
 void XFormView::changeShear(int s)
 {
-    shear = double(s/1000.0);
+    m_shear = double(s/1000.0);
     update();
 }
 
@@ -150,11 +172,11 @@ void XFormView::timerEvent(QTimerEvent *e)
         setUpdatesEnabled(false);
         static double scale_inc = 0.003;
         static double shear_inc = -0.001;
-        emit scaleChanged(int((scale + scale_inc) * 1000));
-        emit shearChanged(int((shear + shear_inc) * 1000));
-        if (scale >= 4.0 || scale <= 0.1)
+        emit scaleChanged(int((m_scale + scale_inc) * 1000));
+        emit shearChanged(int((m_shear + shear_inc) * 1000));
+        if (m_scale >= 4.0 || m_scale <= 0.1)
             scale_inc = -scale_inc;
-        if (shear >= 1.0 || shear <= -1.0)
+        if (m_shear >= 1.0 || m_shear <= -1.0)
             shear_inc = -shear_inc;
         setUpdatesEnabled(true);
 
@@ -164,9 +186,9 @@ void XFormView::timerEvent(QTimerEvent *e)
 
 void XFormView::wheelEvent(QWheelEvent *e)
 {
-    scale += e->delta()/600.0;
-    scale = qMax(.1, qMin(4.0, scale));
-    emit scaleChanged(int(scale*1000));
+    m_scale += e->delta()/600.0;
+    m_scale = qMax(.1, qMin(4.0, m_scale));
+    emit scaleChanged(int(m_scale*1000));
 }
 
 void XFormView::reset()
@@ -186,9 +208,9 @@ void XFormView::drawPixmapType(QPainter *painter)
     painter->translate(ctrlPoints.at(0) - center);
 
     painter->translate(center);
-    painter->rotate(rotation);
-    painter->scale(scale, scale);
-    painter->shear(shear, shear);
+    painter->rotate(m_rotation);
+    painter->scale(m_scale, m_scale);
+    painter->shear(m_shear, m_shear);
     painter->translate(-center);
 
     painter->drawPixmap(QPointF(0, 0), pixmap);
@@ -211,9 +233,9 @@ void XFormView::drawTextType(QPainter *painter)
     painter->translate(ctrlPoints.at(0) - center);
 
     painter->translate(center);
-    painter->rotate(rotation);
-    painter->scale(scale, scale);
-    painter->shear(shear, shear);
+    painter->rotate(m_rotation);
+    painter->scale(m_scale, m_scale);
+    painter->shear(m_shear, m_shear);
     painter->translate(-center);
 
     painter->drawText(0, 0, textEditor->text());
@@ -233,9 +255,9 @@ void XFormView::drawVectorType(QPainter *painter)
     QRect br(-55, 275, 500, 590);
     QPoint center = br.center();
     painter->translate(center.x(), center.y());
-    painter->rotate(rotation);
-    painter->scale(scale, scale);
-    painter->shear(shear, shear);
+    painter->rotate(m_rotation);
+    painter->scale(m_scale, m_scale);
+    painter->shear(m_shear, m_shear);
     painter->translate(-center.x(), -center.y());
 
     painter->setPen(Qt::NoPen);
@@ -687,32 +709,32 @@ XFormWidget::XFormWidget(QWidget *parent)
 
     view = new XFormView(this);
 
-    QGroupBox *mainGroup = new ArthurGroupBox(this);
+    QGroupBox *mainGroup = new QGroupBox(this);
     mainGroup->setFixedWidth(180);
     mainGroup->setTitle("Affine Transformations");
 
-    ArthurGroupBox *rotateGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *rotateGroup = new QGroupBox(mainGroup);
     rotateGroup->setAttribute(Qt::WA_ContentsPropagated);
     rotateGroup->setTitle("Rotate");
     QSlider *rotateSlider = new QSlider(Qt::Horizontal, rotateGroup);
     rotateSlider->setRange(0, 3600);
     rotateSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    ArthurGroupBox *scaleGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *scaleGroup = new QGroupBox(mainGroup);
     scaleGroup->setAttribute(Qt::WA_ContentsPropagated);
     scaleGroup->setTitle("Scale");
     QSlider *scaleSlider = new QSlider(Qt::Horizontal, scaleGroup);
     scaleSlider->setRange(1, 4000);
     scaleSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    ArthurGroupBox *shearGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *shearGroup = new QGroupBox(mainGroup);
     shearGroup->setAttribute(Qt::WA_ContentsPropagated);
     shearGroup->setTitle("Shear");
     QSlider *shearSlider = new QSlider(Qt::Horizontal, shearGroup);
     shearSlider->setRange(-990, 990);
     shearSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    ArthurGroupBox *typeGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *typeGroup = new QGroupBox(mainGroup);
     typeGroup->setAttribute(Qt::WA_ContentsPropagated);
     typeGroup->setTitle("Type");
     QRadioButton *vectorType = new QRadioButton(typeGroup);

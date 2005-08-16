@@ -24,17 +24,21 @@
 #ifndef QTEXTSTREAM_H
 #define QTEXTSTREAM_H
 
-#include "QtCore/qiodevice.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qchar.h"
+#include <QtCore/qiodevice.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qchar.h>
 
 #ifndef QT_NO_TEXTCODEC
 #  ifdef QT3_SUPPORT
-#    include "QtCore/qtextcodec.h"
+#    include <QtCore/qtextcodec.h>
 #  endif
 #endif
 
 #include <stdio.h>
+
+#ifdef Status
+#error qtextstream.h must be included before any header file that defines Status
+#endif
 
 QT_MODULE(Core)
 
@@ -57,6 +61,11 @@ public:
         AlignRight,
         AlignCenter,
         AlignAccountingStyle
+    };
+    enum Status {
+        Ok,
+        ReadPastEnd,
+        ReadCorruptData
     };
     enum NumberFlag {
         ShowBase = 0x1,
@@ -91,6 +100,10 @@ public:
     void setString(QString *string, QIODevice::OpenMode openMode = QIODevice::ReadWrite);
     QString *string() const;
 
+    Status status() const;
+    void setStatus(Status status);
+    void resetStatus();
+
     bool atEnd() const;
     void reset();
     void flush();
@@ -100,6 +113,7 @@ public:
 
     QString readLine(qint64 maxlen = 0);
     QString readAll();
+    QString read(qint64 maxlen);
 
     void setFieldAlignment(FieldAlignment alignment);
     FieldAlignment fieldAlignment() const;
@@ -138,6 +152,7 @@ public:
     QTextStream &operator>>(QByteArray &array);
     QTextStream &operator>>(char *c);
 
+    QTextStream &operator<<(QBool b);
     QTextStream &operator<<(QChar ch);
     QTextStream &operator<<(char ch);
     QTextStream &operator<<(signed short i);
@@ -325,6 +340,5 @@ private:
     Q_DISABLE_COPY(QTextOStream)
 };
 #endif
-
 
 #endif // QTEXTSTREAM_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/io/qsettings.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/io/qsettings.cpp -->
 <head>
-    <title>Qt 4.0: QSettings Class Reference</title>
+    <title>Qt 4.1: QSettings Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -23,14 +23,18 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qsettings-members.html">List of all members, including inherited members</a></li>
+<li><a href="qsettings-obsolete.html">Obsolete members</a></li>
 <li><a href="qsettings-qt3.html">Qt 3 support members</a></li>
 </ul>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>enum <b><a href="qsettings.html#Format-enum">Format</a></b> { NativeFormat, IniFormat }</li>
+<li><div class="fn"/>enum <b><a href="qsettings.html#Format-enum">Format</a></b> { NativeFormat, IniFormat, InvalidFormat }</li>
+<li><div class="fn"/>typedef <b><a href="qsettings.html#ReadFunc-typedef">ReadFunc</a></b></li>
 <li><div class="fn"/>enum <b><a href="qsettings.html#Scope-enum">Scope</a></b> { UserScope, SystemScope }</li>
+<li><div class="fn"/>typedef <b><a href="qsettings.html#SettingsMap-typedef">SettingsMap</a></b></li>
 <li><div class="fn"/>enum <b><a href="qsettings.html#Status-enum">Status</a></b> { NoError, AccessError, FormatError }</li>
+<li><div class="fn"/>typedef <b><a href="qsettings.html#WriteFunc-typedef">WriteFunc</a></b></li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -69,8 +73,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qsettings.html#setSystemIniPath">setSystemIniPath</a></b> ( const QString &amp; <i>dir</i> )</li>
-<li><div class="fn"/>void <b><a href="qsettings.html#setUserIniPath">setUserIniPath</a></b> ( const QString &amp; <i>dir</i> )</li>
+<li><div class="fn"/>Format <b><a href="qsettings.html#registerFormat">registerFormat</a></b> ( const QString &amp; <i>extension</i>, ReadFunc <i>readFunc</i>, WriteFunc <i>writeFunc</i>, Qt::CaseSensitivity <i>caseSensitivity</i> = Qt::CaseSensitive )</li>
+<li><div class="fn"/>void <b><a href="qsettings.html#setPath">setPath</a></b> ( Format <i>format</i>, Scope <i>scope</i>, const QString &amp; <i>path</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
@@ -87,7 +91,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QSettings class provides persistent platform-independent application settings.</p>
 <p>Users normally expect an application to remember its settings (window sizes and positions, options, etc.) across sessions. This information is often stored in the system registry on Windows, and in XML preferences files on Mac OS X. On Unix systems, in the absence of a standard, many applications (including the KDE applications) use INI text files.</p>
-<p>QSettings is an abstraction around these technologies, enabling you to save and restore application settings in a portable manner.</p>
+<p>QSettings is an abstraction around these technologies, enabling you to save and restore application settings in a portable manner. It also supports <a href="qsettings.html#registerFormat">custom storage formats</a>.</p>
 <p>QSettings's API is based on <a href="qvariant.html">QVariant</a>, allowing you to save most value-based types, such as <a href="qstring.html">QString</a>, <a href="qrect.html">QRect</a>, and <a href="qimage.html">QImage</a>, with the minimum of effort.</p>
 <ul><li><a href="#basic-usage">Basic Usage</a></li>
 <li><a href="#qvariant-and-gui-types">QVariant and GUI Types</a></li>
@@ -132,7 +136,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Setting keys can contain any Unicode characters. The Windows registry and INI files use case-insensitive keys, whereas the Carbon Preferences API on Mac OS X uses case-sensitive keys. To avoid portability problems, follow these two simple rules:</p>
 <ol type="1">
 <li>Always refer to the same key using the same case. For example, if you refer to a key as &quot;text fonts&quot; in one place in your code, don't refer to it as &quot;Text Fonts&quot; somewhere else.</li>
-<li>Avoid key names that are identical except for the case. For example, if you have a key called &quot;MainWindow&quot;, don't try to save another key as &quot;mainwindow&quot;.</li>
+<li>Avoid key names that are identical except for the case. For example, if you have a key called &quot;<a href="designer-getting-started.html#mainwindow">MainWindow</a>&quot;, don't try to save another key as &quot;mainwindow&quot;.</li>
 </ol>
 <p>You can form hierarchical keys using the '/' character as a separator, similar to Unix file paths. For example:</p>
 <pre>&nbsp;       settings.setValue(&quot;mainwindow/size&quot;, win-&gt;size());
@@ -232,22 +236,21 @@ body { background: #ffffff; color: black; }</style>
 <a name="platform-specific-notes"></a>
 <h3>Platform-Specific Notes</h3>
 <p>As mentioned in the <a href="#fallback-mechanism">Fallback Mechanism</a> section, QSettings stores settings for an application in up to four locations, depending on whether the settings are user-specific or system-wide and whether the the settings are application-specific or organization-wide. For simplicity, we're assuming the organization is called MySoft and the application is called Star Runner.</p>
-<p>If the file format is <a href="qsettings.html#Format-enum">NativeFormat</a>, the following files are used on Unix systems:</p>
+<p>On Unix systems, if the file format is <a href="qsettings.html#Format-enum">NativeFormat</a>, the following files are used by default:</p>
 <ol type="1">
 <li><tt>$HOME/.config/MySoft/Star Runner.conf</tt></li>
 <li><tt>$HOME/.config/MySoft.conf</tt></li>
 <li><tt>/etc/xdg/MySoft/Star Runner.conf</tt></li>
 <li><tt>/etc/xdg/MySoft.conf</tt></li>
 </ol>
-<p>The <tt>$HOME/.config</tt> portion of the first two paths can be overridden by the user by setting the <tt>XDG_CONFIG_HOME</tt> environment variable; the <tt>/etc/xdg</tt> portion of the last two paths can be overridden when building the Qt library (see <a href="qlibraryinfo.html">QLibraryInfo</a> for details). Both can be overridden using <a href="qsettings.html#setUserIniPath">setUserIniPath</a>() and <a href="qsettings.html#setSystemIniPath">setSystemIniPath</a>().</p>
-<p>On Mac OS X versions 10.2 and 10.3, these files are used:</p>
+<p>On Mac OS X versions 10.2 and 10.3, these files are used by default:</p>
 <ol type="1">
 <li><tt>$HOME/Library/Preferences/com.MySoft.Star Runner.plist</tt></li>
 <li><tt>$HOME/Library/Preferences/com.MySoft.plist</tt></li>
 <li><tt>/Library/Preferences/com.MySoft.Star Runner.plist</tt></li>
 <li><tt>/Library/Preferences/com.MySoft.plist</tt></li>
 </ol>
-<p>On Windows, the settings are stored in the following registry paths:</p>
+<p>On Windows, <a href="qsettings.html#Format-enum">NativeFormat</a> settings are stored in the following registry paths:</p>
 <ol type="1">
 <li><tt>HKEY_CURRENT_USER\Software\MySoft\Star Runner</tt></li>
 <li><tt>HKEY_CURRENT_USER\Software\MySoft</tt></li>
@@ -261,7 +264,6 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>/etc/xdg/MySoft/Star Runner.ini</tt></li>
 <li><tt>/etc/xdg/MySoft.ini</tt></li>
 </ol>
-<p>Again, the <tt>$HOME/.config</tt> portion of the first two paths can be overridden by the user by setting the <tt>XDG_CONFIG_HOME</tt> environment variable; the <tt>/etc/xdg</tt> portion of the last two paths can be overridden when building the Qt library (see <a href="qlibraryinfo.html">QLibraryInfo</a> for details). Both can be overridden using <a href="qsettings.html#setUserIniPath">setUserIniPath</a>() and <a href="qsettings.html#setSystemIniPath">setSystemIniPath</a>().</p>
 <p>On Windows, the following files are used:</p>
 <ol type="1">
 <li><tt>%APPDATA%\MySoft\Star Runner.ini</tt></li>
@@ -269,7 +271,8 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>%COMMON_APPDATA%\MySoft\Star Runner.ini</tt></li>
 <li><tt>%COMMON_APPDATA%\MySoft.ini</tt></li>
 </ol>
-<p>The <tt>%APPDATA%</tt> path is usually <tt>C:\Documents and Settings\<i>User Name</i>\Application Data</tt>; the <tt>%COMMON_APPDATA%</tt> path is usually <tt>C:\Windows\Application Data</tt>.</p>
+<p>The <tt>%APPDATA%</tt> path is usually <tt>C:\Documents and Settings\<i>User Name</i>\Application Data</tt>; the <tt>%COMMON_APPDATA%</tt> path is usually <tt>C:\Documents and Settings\All Users\Application Data</tt>.</p>
+<p>The paths for the <tt>.ini</tt> and <tt>.conf</tt> files can be changed using <a href="qsettings.html#setPath">setPath</a>(). On Unix and Mac OS X, the user can override them by by setting the <tt>XDG_CONFIG_HOME</tt> environment variable; see <a href="qsettings.html#setPath">setPath</a>() for details.</p>
 <p>While QSettings attempts to smooth over the differences between the different supported platforms, there are still a few differences that you should be aware of when porting your application:</p>
 <ul>
 <li>The Windows system registry has the following limitations: A subkey may not exceed 255 characters, an entry's value may not exceed 16,383 characters, and all the values of a key may not exceed 65,535 characters. One way to work around these limitations is to store the settings using the <a href="qsettings.html#Format-enum">IniFormat</a> instead of the <a href="qsettings.html#Format-enum">NativeFormat</a>.</li>
@@ -290,9 +293,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSettings::NativeFormat</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Store the settings using the most appropriate storage format for the platform. On Windows, this means the system registry; on Mac OS X, this means the CFPreferences API; on Unix, this means textual configuration files in INI format.</td></tr>
 <tr><td valign="top"><tt>QSettings::IniFormat</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Store the settings in INI files.</td></tr>
+<tr><td valign="top"><tt>QSettings::InvalidFormat</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top">Special value returned by <a href="qsettings.html#registerFormat">registerFormat</a>().</td></tr>
 </table>
 <p>On Unix, NativeFormat and IniFormat mean the same thing, except that the file extension is different (<tt>.conf</tt> for NativeFormat, <tt>.ini</tt> for IniFormat).</p>
-<p>The INI file format is a Windows file format that Qt supports on all platforms. In the absence of an INI standard, we try to follow what Microsoft does, with the following two exceptions:</p>
+<p>The INI file format is a Windows file format that Qt supports on all platforms. In the absence of an INI standard, we try to follow what Microsoft does, with the following exceptions:</p>
 <ul>
 <li>If you store types that <a href="qvariant.html">QVariant</a> can't convert to <a href="qstring.html">QString</a> (e.g., <a href="qpoint.html">QPoint</a>, <a href="qrect.html">QRect</a>, and <a href="qsize.html">QSize</a>), Qt uses an <tt>@</tt>-based syntax to encode the type. For example:<pre>&nbsp;   pos = @Point(100 100)</pre>
 <p>To minimize compatibility issues, any <tt>@</tt> that doesn't appear at the first position in the value or that isn't followed by a Qt type (<tt>Point</tt>, <tt>Rect</tt>, <tt>Size</tt>, etc.) is treated as a normal character.</p>
@@ -300,7 +304,13 @@ body { background: #ffffff; color: black; }</style>
 <li>Although backslash is a special character in INI files, most Windows applications don't escape backslashes (<tt>\</tt>) in file paths:<pre>&nbsp;   windir = C:\Windows</pre>
 <p><a href="qsettings.html">QSettings</a> always treats backslash as a special character and provides no API for reading or writing such entries.</p>
 </li>
+<li>The INI file format has severe restrictions on the syntax of a key. Qt works around this by using <tt>%</tt> as an escape character in keys. In addition, if you save a top-level setting (a key with no slashes in it, e.g., &quot;someKey&quot;), it will appear in the INI file's &quot;General&quot; section. To avoid overwriting other keys, if you save something using the a key such as &quot;General/someKey&quot;, the key will be located in the &quot;%General&quot; section, <i>not</i> in the &quot;General&quot; section.</li>
 </ul>
+<p>See also <a href="qsettings.html#registerFormat">registerFormat</a>() and <a href="qsettings.html#setPath">setPath</a>().</p>
+<h3 class="fn"><a name="ReadFunc-typedef"></a>typedef QSettings::ReadFunc</h3>
+<p>Typedef for a pointer to a function with the following signature:</p>
+<pre>&nbsp;   bool myReadFunc(QIODevice &amp;device, QSettings::SettingsMap &amp;map);</pre>
+<p>See also <a href="qsettings.html#WriteFunc-typedef">WriteFunc</a> and <a href="qsettings.html#registerFormat">registerFormat</a>().</p>
 <h3 class="fn"><a name="Scope-enum"></a>enum QSettings::Scope</h3>
 <p>This enum specifies whether settings are user-specific or shared by all users of the same system.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -308,6 +318,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QSettings::UserScope</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Store settings in a location specific to the current user (e.g., in the user's home directory).</td></tr>
 <tr><td valign="top"><tt>QSettings::SystemScope</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Store settings in a global location, so that all users on the same machine access the same set of settings.</td></tr>
 </table>
+<p>See also <a href="qsettings.html#setPath">setPath</a>().</p>
+<h3 class="fn"><a name="SettingsMap-typedef"></a>typedef QSettings::SettingsMap</h3>
+<p>Typedef for <a href="qmap.html">QMap</a>&lt;<a href="qstring.html">QString</a>, <a href="qvariant.html">QVariant</a>&gt;.</p>
+<p>See also <a href="qsettings.html#registerFormat">registerFormat</a>().</p>
 <h3 class="fn"><a name="Status-enum"></a>enum QSettings::Status</h3>
 <p>The following status values are possible:</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -317,6 +331,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QSettings::FormatError</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A format error occurred (e.g. loading a malformed INI file).</td></tr>
 </table>
 <p>See also <a href="qsettings.html#status">status</a>().</p>
+<h3 class="fn"><a name="WriteFunc-typedef"></a>typedef QSettings::WriteFunc</h3>
+<p>Typedef for a pointer to a function with the following signature:</p>
+<pre>&nbsp;   bool myWriteFunc(QIODevice &amp;device, const QSettings::SettingsMap &amp;map);</pre>
+<p>See also <a href="qsettings.html#ReadFunc-typedef">ReadFunc</a> and <a href="qsettings.html#registerFormat">registerFormat</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QSettings"></a>QSettings::QSettings ( const <a href="qstring.html">QString</a> &amp; <i>organization</i>, const <a href="qstring.html">QString</a> &amp; <i>application</i> = QString(), <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -519,7 +537,30 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="isWritable"></a>bool QSettings::isWritable () const</h3>
 <p>Returns true if settings can be written using this <a href="qsettings.html">QSettings</a> object; returns false otherwise.</p>
 <p>One reason why isWritable() might return false is if <a href="qsettings.html">QSettings</a> operates on a read-only file.</p>
-<p>See also <a href="qsettings.html#fileName">fileName</a>() and <a href="qsettings.html#status">status</a>().</p>
+<p><b>Warning:</b> This function is not perfectly reliable, because the file permissions can change at any time.</p>
+<p>See also <a href="qsettings.html#fileName">fileName</a>(), <a href="qsettings.html#status">status</a>(), and <a href="qsettings.html#sync">sync</a>().</p>
+<h3 class="fn"><a name="registerFormat"></a><a href="qsettings.html#Format-enum">Format</a> QSettings::registerFormat ( const <a href="qstring.html">QString</a> &amp; <i>extension</i>, <a href="qsettings.html#ReadFunc-typedef">ReadFunc</a> <i>readFunc</i>, <a href="qsettings.html#WriteFunc-typedef">WriteFunc</a> <i>writeFunc</i>, <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a> <i>caseSensitivity</i> = Qt::CaseSensitive )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Registers a custom storage format. On success, returns a special Format value that can then be passed to the <a href="qsettings.html">QSettings</a> constuctor. On failure, returns <a href="qsettings.html#Format-enum">InvalidFormat</a>.</p>
+<p>The <i>extension</i> is the file extension associated to the format (without the '.').</p>
+<p>The <i>readFunc</i> and <i>writeFunc</i> parameters are pointers to functions that read and write a set of (key, value) pairs. The <a href="qiodevice.html">QIODevice</a> parameter to the read and write functions is always opened in binary mode (i.e., without the <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Text</a> flag).</p>
+<p>The <i>caseSensitivity</i> parameter specifies whether keys are case sensitive or not. This makes a difference when looking up values using <a href="qsettings.html">QSettings</a>. The default is case sensitive.</p>
+<p>By default, if you use one of the constructors that work in terms of an organization name and an application name, the file system locations used are the same as for <a href="qsettings.html#Format-enum">IniFormat</a>. Use <a href="qsettings.html#setPath">setPath</a>() to specify other locations.</p>
+<p>Example:</p>
+<pre>&nbsp;   bool readXmlFile(QIODevice &amp;device, QSettings::SettingsMap &amp;map);
+    bool writeXmlFile(QIODevice &amp;device, const QSettings::SettingsMap &amp;map);
+
+    int main(int argc, char *argv[])
+    {
+        const QSettings::Format XmlFormat =
+                QSettings::registerFormat(&quot;xml&quot;, readXmlFunc, writeXmlFunc);
+
+        QSettings settings(XmlFormat, QSettings::UserSettings, &quot;MySoft&quot;,
+                           &quot;Star Runner&quot;);
+
+        ...
+    }</pre>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qsettings.html#setPath">setPath</a>().</p>
 <h3 class="fn"><a name="remove"></a>void QSettings::remove ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )</h3>
 <p>Removes the setting <i>key</i> and any sub-settings of <i>key</i>.</p>
 <p>Example:</p>
@@ -554,18 +595,23 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets whether fallbacks are enabled to <i>b</i>.</p>
 <p>By default, fallbacks are enabled.</p>
 <p>See also <a href="qsettings.html#fallbacksEnabled">fallbacksEnabled</a>().</p>
-<h3 class="fn"><a name="setSystemIniPath"></a>void QSettings::setSystemIniPath ( const <a href="qstring.html">QString</a> &amp; <i>dir</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the directory where <a href="qsettings.html">QSettings</a> stores its <a href="qsettings.html#Scope-enum">SystemScope</a> <tt>.ini</tt> files to <i>dir</i>.</p>
-<p>On Unix systems, the default directory is <tt>/etc/xdg</tt> in accordance with FreeDesktop's XDG Base Directory Specification. This default can be changed when compiling Qt by passing the <tt>--sysconfdir</tt> flag to <tt>configure</tt>.</p>
-<p>On Windows, the default directory is <tt>C:\Documents and Settings\All Users\Application Data</tt>.</p>
-<p>A call to this function should precede any instantiations of <a href="qsettings.html">QSettings</a> objects.</p>
-<p>See also <a href="qsettings.html#setUserIniPath">setUserIniPath</a>().</p>
-<h3 class="fn"><a name="setUserIniPath"></a>void QSettings::setUserIniPath ( const <a href="qstring.html">QString</a> &amp; <i>dir</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the directory where <a href="qsettings.html">QSettings</a> stores its <a href="qsettings.html#Scope-enum">UserScope</a> <tt>.ini</tt> files to <i>dir</i>.</p>
-<p>On Unix systems, the default directory is read from the <tt>$XDG_CONFIG_HOME</tt> environment variable. If this variable is empty or unset, <tt>$HOME/.config</tt> is used, in accordance with the FreeDesktop's XDG Base Directory Specification. Calling this function overrides the path specified in <tt>$XDG_CONFIG_HOME</tt>.</p>
-<p>On Windows, the default directory is <tt>C:\Documents and Settings\&lt;username&gt;\Application Data</tt>.</p>
-<p>A call to this function should precede any instantiations of <a href="qsettings.html">QSettings</a> objects.</p>
-<p>See also <a href="qsettings.html#setSystemIniPath">setSystemIniPath</a>().</p>
+<h3 class="fn"><a name="setPath"></a>void QSettings::setPath ( <a href="qsettings.html#Format-enum">Format</a> <i>format</i>, <a href="qsettings.html#Scope-enum">Scope</a> <i>scope</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Sets the path used for storing settings for the given <i>format</i> and <i>scope</i>, to <i>path</i>. The <i>format</i> can be a custom format.</p>
+<p>The table below summarizes the default values:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Platform</th><th>Format</th><th>Scope</th><th>Path</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td rowspan="2">Windows</td><td rowspan="2"><a href="qsettings.html#Format-enum">IniFormat</a></td><td><a href="qsettings.html#Scope-enum">UserScope</a></td><td><tt>%APPDATA%</tt></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsettings.html#Scope-enum">SystemScope</a></td><td><tt>%COMMON_APPDATA%</tt></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td rowspan="2">Unix</td><td rowspan="2"><a href="qsettings.html#Format-enum">NativeFormat</a>, <a href="qsettings.html#Format-enum">IniFormat</a></td><td><a href="qsettings.html#Scope-enum">UserScope</a></td><td><tt>$HOME/.config</tt></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsettings.html#Scope-enum">SystemScope</a></td><td><tt>/etc/xdg</tt></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td rowspan="2">Mac OS X</td><td rowspan="2"><a href="qsettings.html#Format-enum">IniFormat</a></td><td><a href="qsettings.html#Scope-enum">UserScope</a></td><td><tt>$HOME/.config</tt></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsettings.html#Scope-enum">SystemScope</a></td><td><tt>/etc/xdg</tt></td></tr>
+</table>
+<p>The default <a href="qsettings.html#Scope-enum">UserScope</a> paths on Unix and Mac OS X (<tt>$HOME/.config</tt>) can be overridden by the user by setting the <tt>XDG_CONFIG_HOME</tt> environment variable. The default <a href="qsettings.html#Scope-enum">SystemScope</a> paths on Unix and Mac OS X (<tt>/etc/xdg</tt>) can be overridden when building the Qt library using the <tt>configure</tt> script's <tt>--sysconfdir</tt> flag (see <a href="qlibraryinfo.html">QLibraryInfo</a> for details).</p>
+<p>Setting the <a href="qsettings.html#Format-enum">NativeFormat</a> paths on Windows and Mac OS X has no effect.</p>
+<p><b>Warning:</b> This function doesn't affect existing <a href="qsettings.html">QSettings</a> objects.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qsettings.html#registerFormat">registerFormat</a>().</p>
 <h3 class="fn"><a name="setValue"></a>void QSettings::setValue ( const <a href="qstring.html">QString</a> &amp; <i>key</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i> )</h3>
 <p>Sets the value of setting <i>key</i> to <i>value</i>.</p>
 <p>If the key already exists, the previous value is overwritten.</p>
@@ -596,6 +642,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

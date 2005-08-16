@@ -24,7 +24,7 @@
 #ifndef Q3WIZARD_H
 #define Q3WIZARD_H
 
-#include "QtGui/qdialog.h"
+#include <QtGui/qdialog.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -72,7 +72,7 @@ public:
 
     bool eventFilter( QObject *, QEvent * );
 
-public slots:
+public Q_SLOTS:
     virtual void setBackEnabled( QWidget *, bool );
     virtual void setNextEnabled( QWidget *, bool );
     virtual void setFinishEnabled( QWidget *, bool );
@@ -82,12 +82,12 @@ public slots:
     // obsolete
     virtual void setFinish(  QWidget *, bool ) {}
 
-protected slots:
+protected Q_SLOTS:
     virtual void back();
     virtual void next();
     virtual void help();
 
-signals:
+Q_SIGNALS:
     void helpClicked();
     void selected( const QString& );
 

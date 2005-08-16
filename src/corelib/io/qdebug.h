@@ -24,10 +24,14 @@
 #ifndef QDEBUG_H
 #define QDEBUG_H
 
-#include "QtCore/qlist.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qtextstream.h"
-#include "QtCore/qstring.h"
+#include <QtCore/qalgorithms.h>
+#include <QtCore/qhash.h>
+#include <QtCore/qlist.h>
+#include <QtCore/qmap.h>
+#include <QtCore/qpair.h>
+#include <QtCore/qtextstream.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvector.h>
 
 QT_MODULE(Core)
 
@@ -45,6 +49,7 @@ class Q_CORE_EXPORT QDebug
 public:
     inline QDebug(QtMsgType t) : stream(new Stream(t)) {}
     inline QDebug(const QDebug &o):stream(o.stream) { ++stream->ref; }
+    inline QDebug &operator=(const QDebug &other);
     inline ~QDebug()
         { if (!--stream->ref) { qt_message_output(stream->type, stream->buffer.toLocal8Bit().data()); delete stream; } }
     inline QDebug &space() { stream->space = true; stream->ts << " "; return *this; }
@@ -80,6 +85,15 @@ public:
     { stream->ts << m; return *this; }
 };
 
+inline QDebug &QDebug::operator=(const QDebug &other)
+{
+    if (this != &other) {
+        QDebug copy(other);
+        qSwap(stream, copy.stream);
+    }
+    return *this;
+}
+
 template <class T>
 inline QDebug operator<<(QDebug debug, const QList<T> &list)
 {
@@ -93,6 +107,12 @@ inline QDebug operator<<(QDebug debug, const QList<T> &list)
     return debug.space();
 }
 
+template <typename T>
+inline QDebug operator<<(QDebug debug, const QVector<T> &vec)
+{
+    return operator<<(debug, vec.toList());
+}
+
 template <class aKey, class aT>
 inline QDebug operator<<(QDebug debug, const QMap<aKey, aT> &map)
 {
@@ -102,6 +122,24 @@ inline QDebug operator<<(QDebug debug, const QMap<aKey, aT> &map)
         debug << "(" << it.key() << ", " << it.value() << ")";
     }
     debug << ")";
+    return debug.space();
+}
+
+template <class aKey, class aT>
+inline QDebug operator<<(QDebug debug, const QHash<aKey, aT> &hash)
+{
+    debug.nospace() << "QHash(";
+    for (typename QHash<aKey, aT>::const_iterator it = hash.constBegin();
+            it != hash.constEnd(); ++it)
+        debug << "(" << it.key() << ", " << it.value() << ")";
+    debug << ")";
+    return debug.space();
+}
+
+template <class T1, class T2>
+inline QDebug operator<<(QDebug debug, const QPair<T1, T2> &pair)
+{
+    debug.nospace() << "QPair(" << pair.first << "," << pair.second << ")";
     return debug.space();
 }
 

@@ -25,7 +25,7 @@
 #ifndef QDIAL_H
 #define QDIAL_H
 
-#include "QtGui/qabstractslider.h"
+#include <QtGui/qabstractslider.h>
 
 QT_MODULE(Gui)
 
@@ -57,11 +57,12 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
-public slots:
+public Q_SLOTS:
     void setNotchesVisible(bool visible);
     void setWrapping(bool on);
 
 protected:
+    bool event(QEvent *e);
     void resizeEvent(QResizeEvent *re);
     void paintEvent(QPaintEvent *pe);
 
@@ -77,7 +78,7 @@ public:
                                 QWidget* parent = 0, const char* name = 0);
     QT3_SUPPORT_CONSTRUCTOR QDial(QWidget *parent, const char *name);
 
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void dialPressed();
     QT_MOC_COMPAT void dialMoved(int value);
     QT_MOC_COMPAT void dialReleased();

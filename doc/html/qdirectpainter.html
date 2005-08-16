@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/embedded/qdirectpainter_qws.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/embedded/qdirectpainter_qws.cpp -->
 <head>
-    <title>Qt 4.0: QDirectPainter Class Reference</title>
+    <title>Qt 4.1: QDirectPainter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,105 +19,66 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDirectPainter Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QDirectPainter class provides direct access to the video hardware. <a href="#details">More...</a></p>
-<pre>#include &lt;QDirectPainter&gt;</pre><p>Inherits <a href="qpainter.html">QPainter</a>.</p>
+<pre>#include &lt;QDirectPainter&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qdirectpainter-members.html">List of all members, including inherited members</a></li>
 </ul>
-<a name="public-functions"></a>
-<h3>Public Functions</h3>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
 <ul>
-<li><div class="fn"/><b><a href="qdirectpainter.html#QDirectPainter">QDirectPainter</a></b> ( QWidget * <i>w</i> )</li>
-<li><div class="fn"/><b><a href="qdirectpainter.html#dtor.QDirectPainter">~QDirectPainter</a></b> ()</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#depth">depth</a></b> () const</li>
 <li><div class="fn"/>uchar * <b><a href="qdirectpainter.html#frameBuffer">frameBuffer</a></b> ()</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#height">height</a></b> () const</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#lineStep">lineStep</a></b> ()</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#numRects">numRects</a></b> () const</li>
-<li><div class="fn"/>QPoint <b><a href="qdirectpainter.html#offset">offset</a></b> () const</li>
-<li><div class="fn"/>const QRect &amp; <b><a href="qdirectpainter.html#rect">rect</a></b> ( int <i>i</i> ) const</li>
-<li><div class="fn"/>QRegion <b><a href="qdirectpainter.html#region">region</a></b> () const</li>
-<li><div class="fn"/>void <b><a href="qdirectpainter.html#setAreaChanged">setAreaChanged</a></b> ( const QRect &amp; <i>r</i> )</li>
-<li><div class="fn"/>QSize <b><a href="qdirectpainter.html#size">size</a></b> () const</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#transformOrientation">transformOrientation</a></b> ()</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#width">width</a></b> () const</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#xOffset">xOffset</a></b> () const</li>
-<li><div class="fn"/>int <b><a href="qdirectpainter.html#yOffset">yOffset</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qdirectpainter.html#linestep">linestep</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qdirectpainter.html#lock">lock</a></b> ()</li>
+<li><div class="fn"/>QRegion <b><a href="qdirectpainter.html#region">region</a></b> ()</li>
+<li><div class="fn"/>QRegion <b><a href="qdirectpainter.html#reserveRegion">reserveRegion</a></b> ( const QRegion &amp; <i>reg</i> )</li>
+<li><div class="fn"/>int <b><a href="qdirectpainter.html#screenDepth">screenDepth</a></b> ()</li>
+<li><div class="fn"/>int <b><a href="qdirectpainter.html#screenHeight">screenHeight</a></b> ()</li>
+<li><div class="fn"/>int <b><a href="qdirectpainter.html#screenWidth">screenWidth</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qdirectpainter.html#unlock">unlock</a></b> ()</li>
 </ul>
 <ul>
-<li><div class="fn"/>162 public functions inherited from <a href="qpainter.html#public-functions">QPainter</a></li>
+<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>1 static public member inherited from <a href="qpainter.html#static-public-members">QPainter</a></li>
+<li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
+<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
+<li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
+<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QDirectPainter class provides direct access to the video hardware.</p>
-<p>Only available in Qt/Embedded.</p>
-<p>When the hardware is known and well defined, as is often the case with software for embedded devices, it may be useful to manipulate the underlying video hardware directly. In order to do this in a way that is co-operative with other applications, you must lock the video hardware for exclusive use for a small time while you write to it, and you must know the clipping region which is allocated to a widget.</p>
+<p>Only available in Qtopia Core.</p>
+<p>When the hardware is known and well defined, as is often the case with software for embedded devices, it may be useful to manipulate the underlying video hardware directly. In order to do this in a way that is co-operative with other applications, you must reserve a region of the screen for the application.</p>
 <p>QDirectPainter provides this functionality.</p>
-<p>In the simplest case, you make a QDirectPainter on a widget and then, observing the clip region, perform some platform-specific operation. For example:</p>
-<pre>&nbsp;   void MyWidget::updatePlatformGraphics()
-    {
-        QDirectPainter dp(this);
-        for (int i = 0; i &lt; dp.numRects; i++) {
-            const QRect&amp; clip = dp.rect(i);
-            ... // platform specific operation
-        }
-    }</pre>
-<p>The platform-specific code has access to the display, but should only modify graphics in the rectangles specified by <a href="qdirectpainter.html#numRects">numRects</a>() and <a href="qdirectpainter.html#rect">rect</a>(). Note that these rectangles are relative to the entire display.</p>
-<p>The <a href="qdirectpainter.html#offset">offset</a>() function returns the position of the widget relative to the entire display, allowing you to offset platform-specific operations appropriately. The <a href="qdirectpainter.html#xOffset">xOffset</a>() and <a href="qdirectpainter.html#yOffset">yOffset</a>() functions merely return the component values of <a href="qdirectpainter.html#offset">offset</a>().</p>
-<p>For simple frame-buffer hardware, the <a href="qdirectpainter.html#frameBuffer">frameBuffer</a>(), <a href="qdirectpainter.html#lineStep">lineStep</a>(), and <a href="qdirectpainter.html#depth">depth</a>() functions provide basic access, though some hardware configurations are insufficiently specified by such simple parameters.</p>
-<p>Note that while a QDirectPainter exists, the entire Qt/Embedded window system is locked from use by other applications. Always construct the QDirectPainter as an auto (stack) variable, and be very careful to write robust and stable code within its scope.</p>
+<p>Depending on the hardware, you may also have to lock the video hardware for exclusive use for a small time while you write to it. Use the functions <a href="qdirectpainter.html#lock">lock</a>() and <a href="qdirectpainter.html#unlock">unlock</a>() in that case.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QDirectPainter"></a>QDirectPainter::QDirectPainter ( <a href="qwidget.html">QWidget</a> * <i>w</i> )</h3>
-<p>Construct a direct painter on <i>w</i>. The display is locked and the mouse cursor is hidden if it is above <i>w</i>.</p>
-<h3 class="fn"><a name="dtor.QDirectPainter"></a>QDirectPainter::~QDirectPainter ()</h3>
-<p>Destroys the direct painter. The mouse cursor is revealed if necessary and the display is unlocked.</p>
-<h3 class="fn"><a name="depth"></a>int QDirectPainter::depth () const</h3>
-<p>Returns the bit-depth of the display.</p>
-<h3 class="fn"><a name="frameBuffer"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QDirectPainter::frameBuffer ()</h3>
-<p>Returns a pointer to the framebuffer memory if available.</p>
-<h3 class="fn"><a name="height"></a>int QDirectPainter::height () const</h3>
-<p>Returns the height of the widget drawn upon.</p>
-<h3 class="fn"><a name="lineStep"></a>int QDirectPainter::lineStep ()</h3>
-<p>Returns the spacing in bytes from one framebuffer line to the next.</p>
-<h3 class="fn"><a name="numRects"></a>int QDirectPainter::numRects () const</h3>
-<p>Returns the number of rectangles in the drawable region.</p>
-<p>See also <a href="qdirectpainter.html#rect">rect</a>() and <a href="qdirectpainter.html#region">region</a>().</p>
-<h3 class="fn"><a name="offset"></a><a href="qpoint.html">QPoint</a> QDirectPainter::offset () const</h3>
-<p>Returns the position of the widget relative to the entire display.</p>
-<h3 class="fn"><a name="rect"></a>const <a href="qrect.html">QRect</a> &amp; QDirectPainter::rect ( int <i>i</i> ) const</h3>
-<p>Returns a reference to rectangle <i>i</i> of the drawable region. Valid values for <i>i</i> are 0..<a href="qdirectpainter.html#numRects">numRects</a>()-1.</p>
-<p>See also <a href="qdirectpainter.html#region">region</a>().</p>
-<h3 class="fn"><a name="region"></a><a href="qregion.html">QRegion</a> QDirectPainter::region () const</h3>
-<p>Returns the region of the framebuffer which represents the exposed area of the widget being painted on. Note that this may be a sub-area of the clip region, because of child widgets and overlapping cousin widgets.</p>
-<p>See also <a href="qdirectpainter.html#numRects">numRects</a>() and <a href="qdirectpainter.html#rect">rect</a>().</p>
-<h3 class="fn"><a name="setAreaChanged"></a>void QDirectPainter::setAreaChanged ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )</h3>
-<p>Sets the area changed by the transaction to <i>r</i>. By default, the entire widget is assumed to have changed. The area changed is only used by some graphics drivers, so often calling this function for a smaller area will make no difference to performance.</p>
-<h3 class="fn"><a name="size"></a><a href="qsize.html">QSize</a> QDirectPainter::size () const</h3>
-<p>Returns the size of the widget drawn upon.</p>
-<p>See also <a href="qdirectpainter.html#width">width</a>() and <a href="qdirectpainter.html#height">height</a>().</p>
-<h3 class="fn"><a name="transformOrientation"></a>int QDirectPainter::transformOrientation ()</h3>
-<p>Returns a number that signifies the orientation of the framebuffer.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td>0</td><td>no rotation</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>1</td><td>90 degrees rotation</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>2</td><td>180 degrees rotation</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>3</td><td>270 degrees rotation</td></tr>
-</table>
-<h3 class="fn"><a name="width"></a>int QDirectPainter::width () const</h3>
-<p>Returns the width of the widget drawn upon.</p>
-<h3 class="fn"><a name="xOffset"></a>int QDirectPainter::xOffset () const</h3>
-<p>Returns the X-position of the widget relative to the entire display.</p>
-<h3 class="fn"><a name="yOffset"></a>int QDirectPainter::yOffset () const</h3>
-<p>Returns the Y-position of the widget relative to the entire display.</p>
+<h3 class="fn"><a name="frameBuffer"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QDirectPainter::frameBuffer ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="linestep"></a>int QDirectPainter::linestep ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the length in bytes of each scanline of the framebuffer.</p>
+<h3 class="fn"><a name="lock"></a>void QDirectPainter::lock ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Locks access to video hardware, stopping all other applications from accessing the screen.</p>
+<p><b>Warning:</b> this will prevent all other applications from working until <a href="qdirectpainter.html#unlock">unlock</a>() is called.</p>
+<h3 class="fn"><a name="region"></a><a href="qregion.html">QRegion</a> QDirectPainter::region ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the reserved region.</p>
+<h3 class="fn"><a name="reserveRegion"></a><a href="qregion.html">QRegion</a> QDirectPainter::reserveRegion ( const <a href="qregion.html">QRegion</a> &amp; <i>reg</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Attempts to reserve the region <i>reg</i> and returns the region actually reserved. Releases the previously reserved region, if any. If not released explicitly, the region will be released on application exit.</p>
+<h3 class="fn"><a name="screenDepth"></a>int QDirectPainter::screenDepth ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the bit depth of the display.</p>
+<h3 class="fn"><a name="screenHeight"></a>int QDirectPainter::screenHeight ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the height of the display in pixels.</p>
+<h3 class="fn"><a name="screenWidth"></a>int QDirectPainter::screenWidth ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the width of the display in pixels.</p>
+<h3 class="fn"><a name="unlock"></a>void QDirectPainter::unlock ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Unlocks the video lock, allowing other applications to display on the screen.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

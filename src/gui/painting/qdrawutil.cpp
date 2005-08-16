@@ -31,8 +31,6 @@
 /*!
     \relates QPainter
 
-    \c{#include <qdrawutil.h>}
-
     Draws a horizontal (\a y1 == \a y2) or vertical (\a x1 == \a x2)
     shaded line using the painter \a p.
 
@@ -146,8 +144,6 @@ void qDrawShadeLine(QPainter *p, int x1, int y1, int x2, int y2,
 /*!
     \relates QPainter
 
-    \c{#include <qdrawutil.h>}
-
     Draws the shaded rectangle specified by (\a x, \a y, \a w, \a h)
     using the painter \a p.
 
@@ -254,8 +250,6 @@ void qDrawShadeRect(QPainter *p, int x, int y, int w, int h,
 
 /*!
     \relates QPainter
-
-    \c{#include <qdrawutil.h>}
 
     Draws the shaded panel specified by (\a x, \a y, \a w, \a h) using
     the painter \a p.
@@ -371,27 +365,21 @@ static void qDrawWinShades(QPainter *p,
     if (w < 2 || h < 2)                        // can't do anything with that
         return;
     QPen oldPen = p->pen();
-    QPolygon a(3);
-    a.setPoints(3, x, y+h-2, x, y, x+w-2, y);
+    QPoint a[3] = { QPoint(x, y+h-2), QPoint(x, y), QPoint(x+w-2, y) };
     p->setPen(c1);
-    p->drawPolyline(a);
-    a.setPoints(3, x, y+h-1, x+w-1, y+h-1, x+w-1, y);
+    p->drawPolyline(a, 3);
+    QPoint b[3] = { QPoint(x, y+h-1), QPoint(x+w-1, y+h-1), QPoint(x+w-1, y) };
     p->setPen(c2);
-    p->drawPolyline(a);
+    p->drawPolyline(b, 3);
     if (w > 4 && h > 4) {
-        a.setPoints(3, x+1, y+h-3, x+1, y+1, x+w-3, y+1);
+        QPoint c[3] = { QPoint(x+1, y+h-3), QPoint(x+1, y+1), QPoint(x+w-3, y+1) };
         p->setPen(c3);
-        p->drawPolyline(a);
-        a.setPoints(3, x+1, y+h-2, x+w-2, y+h-2, x+w-2, y+1);
+        p->drawPolyline(c, 3);
+        QPoint d[3] = { QPoint(x+1, y+h-2), QPoint(x+w-2, y+h-2), QPoint(x+w-2, y+1) };
         p->setPen(c4);
-        p->drawPolyline(a);
-        if (fill) {
-            QBrush oldBrush = p->brush();
-            p->setBrush(*fill);
-            p->setPen(Qt::NoPen);
-            p->drawRect(x+2, y+2, w-4, h-4);
-            p->setBrush(oldBrush);
-        }
+        p->drawPolyline(d, 3);
+        if (fill) 
+            p->fillRect(QRect(x+2, y+2, w-4, h-4), *fill);
     }
     p->setPen(oldPen);
 }
@@ -399,8 +387,6 @@ static void qDrawWinShades(QPainter *p,
 
 /*!
     \relates QPainter
-
-    \c{#include <qdrawutil.h>}
 
     Draws the Windows-style button specified by (\a x, \a y, \a w, \a
     h) using the painter \a p.
@@ -440,8 +426,6 @@ void qDrawWinButton(QPainter *p, int x, int y, int w, int h,
 
 /*!
     \relates QPainter
-
-    \c{#include <qdrawutil.h>}
 
     Draws the Windows-style panel specified by (\a x, \a y, \a w, \a
     h) using the painter \a p.
@@ -483,8 +467,6 @@ void qDrawWinPanel(QPainter *p, int x, int y, int w, int h,
 
 /*!
     \relates QPainter
-
-    \c{#include <qdrawutil.h>}
 
     Draws the plain rectangle specified by (\a x, \a y, \a w, \a h)
     using the painter \a p.

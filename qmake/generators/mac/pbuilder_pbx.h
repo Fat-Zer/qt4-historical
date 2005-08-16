@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef __PBUILDER_PBX_H__
-#define __PBUILDER_PBX_H__
+#ifndef PBUILDER_PBX_H
+#define PBUILDER_PBX_H
 
 #include "unixmake.h"
 
@@ -56,5 +56,4 @@ protected:
 inline ProjectBuilderMakefileGenerator::~ProjectBuilderMakefileGenerator()
 { }
 
-
-#endif /* __PBUILDER_PBX_H__ */
+#endif // PBUILDER_PBX_H

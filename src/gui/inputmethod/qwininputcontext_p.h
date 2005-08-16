@@ -21,6 +21,9 @@
 **
 ****************************************************************************/
 
+#ifndef QWININPUTCONTEXT_P_H
+#define QWININPUTCONTEXT_P_H
+
 //
 //  W A R N I N G
 //  -------------
@@ -32,11 +35,8 @@
 // We mean it.
 //
 
-#ifndef QWININPUTCONTEXT_P_H
-#define QWININPUTCONTEXT_P_H
-
-#include <qinputcontext.h>
-#include "qt_windows.h"
+#include "QtGui/qinputcontext.h"
+#include "QtCore/qt_windows.h"
 
 class QWinInputContext : public QInputContext
 {
@@ -67,4 +67,4 @@ private:
     void init();
 };
 
-#endif
+#endif // QWININPUTCONTEXT_P_H

@@ -39,6 +39,7 @@ public:
     virtual ~QLayoutWidgetPropertySheet();
 
     virtual void setProperty(int index, const QVariant &value);
+    virtual bool isVisible(int index) const;
 };
 
 class QLayoutWidgetPropertySheetFactory: public QExtensionFactory

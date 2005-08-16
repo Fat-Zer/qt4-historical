@@ -50,5 +50,4 @@ private:
     const Option &option;
 };
 
-
 #endif // WRITEDECLARATION_H

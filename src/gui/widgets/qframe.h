@@ -24,7 +24,7 @@
 #ifndef QFRAME_H
 #define QFRAME_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -101,6 +101,7 @@ public:
     void setFrameRect(const QRect &);
 
 protected:
+    bool event(QEvent *e);
     void paintEvent(QPaintEvent *);
     void changeEvent(QEvent *);
     void drawFrame(QPainter *);

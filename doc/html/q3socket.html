@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/network/q3socket.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/network/q3socket.cpp -->
 <head>
-    <title>Qt 4.0: Q3Socket Class Reference</title>
+    <title>Qt 4.1: Q3Socket Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -67,7 +67,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Q_ULONG <b><a href="q3socket.html#waitForMore-2">waitForMore</a></b> ( int <i>msecs</i> ) const</li>
 </ul>
 <ul>
-<li><div class="fn"/>30 public functions inherited from <a href="qiodevice.html#public-functions">QIODevice</a></li>
+<li><div class="fn"/>32 public functions inherited from <a href="qiodevice.html#public-functions">QIODevice</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
 <a name="signals"></a>
@@ -110,7 +110,7 @@ body { background: #ffffff; color: black; }</style>
 <p><a href="q3socket.html#connectToHost">connectToHost</a>() is the most-used function. As its name implies, it opens a connection to a named host.</p>
 <p>Most network protocols are either packet-oriented or line-oriented. <a href="q3socket.html#canReadLine">canReadLine</a>() indicates whether a connection contains an entire unread line or not, and <a href="q3socket.html#bytesAvailable">bytesAvailable</a>() returns the number of bytes available for reading.</p>
 <p>The signals <a href="q3socket.html#error">error</a>(), <a href="q3socket.html#connected">connected</a>(), <a href="q3socket.html#readyRead">readyRead</a>() and <a href="q3socket.html#connectionClosed">connectionClosed</a>() inform you of the progress of the connection. There are also some less commonly used signals. <a href="q3socket.html#hostFound">hostFound</a>() is emitted when <a href="q3socket.html#connectToHost">connectToHost</a>() has finished its DNS lookup and is starting its TCP connection. <a href="q3socket.html#delayedCloseFinished">delayedCloseFinished</a>() is emitted when <a href="q3socket.html#close">close</a>() succeeds. <a href="q3socket.html#bytesWritten">bytesWritten</a>() is emitted when Q3Socket moves data from its &quot;to be written&quot; queue into the TCP implementation.</p>
-<p>There are several access functions for the socket: <a href="q3socket.html#state">state</a>() returns whether the object is idle, is doing a DNS lookup, is connecting, has an operational connection, etc. <a href="q3socket.html#address">address</a>() and <a href="q3socket.html#port">port</a>() return the IP address and port used for the connection. The <a href="q3socket.html#peerAddress">peerAddress</a>() and <a href="q3socket.html#peerPort">peerPort</a>() functions return the IP address and port used by the peer, and <a href="q3socket.html#peerName">peerName</a>() returns the name of the peer (normally the name that was passed to <a href="q3socket.html#connectToHost">connectToHost</a>()). <a href="q3socket.html#socket">socket</a>() returns a pointer to the <a href="q3socketdevice.html">Q3SocketDevice</a> used for this socket.</p>
+<p>There are several access functions for the socket: <a href="q3socket.html#state">state</a>() returns whether the object is idle, is doing a DNS lookup, is connecting, has an operational connection, etc. <a href="q3socket.html#address">address</a>() and <a href="q3socket.html#port">port</a>() return the IP address and port used for the connection. The <a href="q3socket.html#peerAddress">peerAddress</a>() and <a href="q3socket.html#peerPort">peerPort</a>() functions return the IP address and port used by the peer, and <a href="q3socket.html#peerName">peerName</a>() returns the name of the peer (normally the name that was passed to <a href="q3socket.html#connectToHost">connectToHost</a>()). <a href="q3socket.html#socketDevice">socketDevice</a>() returns a pointer to the <a href="q3socketdevice.html">Q3SocketDevice</a> used for this socket.</p>
 <p>Q3Socket inherits <a href="qiodevice.html">QIODevice</a>, and reimplements some functions. In general, you can treat it as a <a href="qiodevice.html">QIODevice</a> for writing, and mostly also for reading. The match isn't perfect, since the <a href="qiodevice.html">QIODevice</a> API is designed for devices that are controlled by the same machine, and an asynchronous peer-to-peer network connection isn't quite like that. For example, there is nothing that matches <a href="qiodevice.html#size">QIODevice::size</a>() exactly. The documentation for <a href="q3socket.html#open">open</a>(), <a href="q3socket.html#close">close</a>(), <a href="q3socket.html#flush">flush</a>(), <a href="q3socket.html#size">size</a>(), <a href="q3socket.html#at">at</a>(), <a href="q3socket.html#atEnd">atEnd</a>(), <a href="qiodevice-qt3.html#readBlock">readBlock</a>(), <a href="qiodevice-qt3.html#writeBlock">writeBlock</a>(), <a href="q3socket.html#getch">getch</a>(), <a href="q3socket.html#putch">putch</a>(), <a href="q3socket.html#ungetch">ungetch</a>() and <a href="qiodevice.html#readLine">readLine</a>() describes the differences in detail.</p>
 <p><b>Warning:</b> Q3Socket is not suitable for use in threads. If you need to uses sockets in threads use the lower-level <a href="q3socketdevice.html">Q3SocketDevice</a> class.</p>
 <p>See also <a href="q3socketdevice.html">Q3SocketDevice</a>, <a href="qhostaddress.html">QHostAddress</a>, and <a href="qsocketnotifier.html">QSocketNotifier</a>.</p>
@@ -278,6 +278,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

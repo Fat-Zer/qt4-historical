@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/styles/qstyleoption.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/styles/qstyleoption.cpp -->
 <head>
-    <title>Qt 4.0: QStyleOptionTab Class Reference</title>
+    <title>Qt 4.1: QStyleOptionTab Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -20,6 +20,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyleOptionTab Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QStyleOptionTab class is used to describe the parameters for drawing a tab bar. <a href="#details">More...</a></p>
 <pre>#include &lt;QStyleOptionTab&gt;</pre><p>Inherits <a href="qstyleoption.html">QStyleOption</a>.</p>
+<p>Inherited by <a href="qstyleoptiontabv2.html">QStyleOptionTabV2</a>.</p>
 <ul>
 <li><a href="qstyleoptiontab-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -67,7 +68,11 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QStyleOptionTab class is used to describe the parameters for drawing a tab bar.</p>
-<p>The QStyleOptionTab class is used for drawing <a href="qtabbar.html">QTabBar</a> and the pane for <a href="qtabwidget.html">QTabWidget</a>.</p>
+<p>The QStyleOptionTab class is used for drawing several built-in Qt widgets including <a href="qtabbar.html">QTabBar</a> and the panel for <a href="qtabwidget.html">QTabWidget</a>. Note that to describe the parameters necessary for drawing a frame in Qt 4.1 or above, you must use the <a href="qstyleoptionframev2.html">QStyleOptionFrameV2</a> subclass.</p>
+<p>An instance of the QStyleOptiontabV2 class has type <a href="qstyleoption.html#OptionType-enum">SO_Tab</a> and <a href="qstyleoption.html#version-varx">version</a> 1. The type is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles. The version is used by <a href="qstyleoption.html">QStyleOption</a> subclasses to implement extensions without breaking compatibility. If you use <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>(), you normally don't need to check it.</p>
+<p>If you create your own <a href="qstyle.html">QStyle</a> subclass, you should handle both QStyleOptionTab and <a href="qstyleoptiontabv2.html">QStyleOptionTabV2</a>.</p>
+<p>For an example demonstrating how style options can be used, see the <a href="widgets-styles.html">Styles</a> example.</p>
+<p>See also <a href="qstyleoptiontabv2.html">QStyleOptionTabV2</a> and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="CornerWidget-enum"></a>enum QStyleOptionTab::CornerWidget<br />flags QStyleOptionTab::CornerWidgets</h3>
@@ -107,8 +112,10 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Variable Documentation</h2>
 <h3 class="fn"><a name="Type-var"></a>const int QStyleOptionTab::Type</h3>
 <p>Equals <a href="qstyleoption.html#OptionType-enum">SO_Tab</a>.</p>
+<p>The type is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles.</p>
 <h3 class="fn"><a name="Version-var"></a>const int QStyleOptionTab::Version</h3>
 <p>Equals 1.</p>
+<p>The version is used by <a href="qstyleoption.html">QStyleOption</a> subclasses to implement extensions without breaking compatibility. If you use <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>(), you normally don't need to check it.</p>
 <h3 class="fn"><a name="cornerWidgets-var"></a><a href="qstyleoptiontab.html#CornerWidget-enum">CornerWidgets</a> QStyleOptionTab::cornerWidgets</h3>
 <p>This variable holds information on the cornerwidgets of the tab bar.</p>
 <p>See also <a href="qstyleoptiontab.html#CornerWidget-enum">CornerWidget</a>.</p>
@@ -131,6 +138,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -22,20 +22,24 @@
 ****************************************************************************/
 
 #include "qplatformdefs.h"
-
 #include "qsettings.h"
 
 #ifndef QT_NO_SETTINGS
 
-#include "qcache.h"
 #include "qsettings_p.h"
+#include "qcache.h"
 #include "qfile.h"
 #include "qdir.h"
 #include "qfileinfo.h"
-#include "qrect.h"
 #include "qmutex.h"
 #include "qlibraryinfo.h"
 #include "qtemporaryfile.h"
+
+#ifndef QT_NO_GEOM_VARIANT
+#include "qsize.h"
+#include "qpoint.h"
+#include "qrect.h"
+#endif // !QT_NO_GEOM_VARIANT
 
 #ifndef QT_NO_QOBJECT
 #include "qcoreapplication.h"
@@ -67,14 +71,24 @@
     objects of the same application.
 */
 
+struct QConfFileCustomFormat
+{
+    QString extension;
+    QSettings::ReadFunc readFunc;
+    QSettings::WriteFunc writeFunc;
+    Qt::CaseSensitivity caseSensitivity;
+};
+
 typedef QHash<QString, QConfFile *> ConfFileHash;
 typedef QCache<QString, QConfFile> ConfFileCache;
+typedef QHash<int, QString> PathHash;
+typedef QVector<QConfFileCustomFormat> CustomFormatVector;
 
 Q_GLOBAL_STATIC(ConfFileHash, usedHashFunc)
 Q_GLOBAL_STATIC(ConfFileCache, unusedCacheFunc)
+Q_GLOBAL_STATIC(PathHash, pathHashFunc)
+Q_GLOBAL_STATIC(CustomFormatVector, customFormatVectorFunc)
 Q_GLOBAL_STATIC(QMutex, globalMutex)
-Q_GLOBAL_STATIC(QString, defaultSystemIniPath)
-Q_GLOBAL_STATIC(QString, defaultUserIniPath)
 
 #ifndef Q_OS_WIN
 static bool unixLock(int handle, int lockType)
@@ -94,10 +108,10 @@ QConfFile::QConfFile(const QString &fileName)
     usedHashFunc()->insert(name, this);
 }
 
-SettingsKeyMap QConfFile::mergedKeyMap() const
+InternalSettingsMap QConfFile::mergedKeyMap() const
 {
-    SettingsKeyMap result = originalKeys;
-    SettingsKeyMap::const_iterator i;
+    InternalSettingsMap result = originalKeys;
+    InternalSettingsMap::const_iterator i;
 
     for (i = removedKeys.begin(); i != removedKeys.end(); ++i)
         result.remove(i.key());
@@ -192,24 +206,17 @@ after_loop:
 // see also qsettings_win.cpp and qsettings_mac.cpp
 
 #if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
-QSettingsPrivate *QSettingsPrivate::create(QSettings::Format format,
-                                           QSettings::Scope scope,
-                                           const QString &organization,
-                                           const QString &application)
+QSettingsPrivate *QSettingsPrivate::create(QSettings::Format format, QSettings::Scope scope,
+                                           const QString &organization, const QString &application)
 {
-    QConfFileSettingsPrivate *p = new QConfFileSettingsPrivate(format, scope,
-                                                               organization, application);
-    p->init();
-    return p;
+    return new QConfFileSettingsPrivate(format, scope, organization, application);
 }
 #endif
 
 #if !defined(Q_OS_WIN)
 QSettingsPrivate *QSettingsPrivate::create(const QString &fileName, QSettings::Format format)
 {
-    QConfFileSettingsPrivate *p = new QConfFileSettingsPrivate(fileName, format);
-    p->init();
-    return p;
+    return new QConfFileSettingsPrivate(fileName, format);
 }
 #endif
 
@@ -344,6 +351,7 @@ QString QSettingsPrivate::variantToString(const QVariant &v)
             result = escapedLeadingAt(result);
             break;
         }
+#ifndef QT_NO_GEOM_VARIANT
         case QVariant::Rect: {
             QRect r = qvariant_cast<QRect>(v);
             result += QLatin1String("@Rect(");
@@ -375,6 +383,7 @@ QString QSettingsPrivate::variantToString(const QVariant &v)
             result += QLatin1Char(')');
             break;
         }
+#endif // !QT_NO_GEOM_VARIANT
 
         default: {
 #ifndef QT_NO_DATASTREAM
@@ -814,20 +823,46 @@ static bool checkAccess(const QString &name)
     }
 }
 
-void QConfFileSettingsPrivate::init()
+void QConfFileSettingsPrivate::initFormat()
+{
+    extension = (format == QSettings::NativeFormat) ? QLatin1String(".conf") : QLatin1String(".ini");
+    readFunc = 0;
+    writeFunc = 0;
+#ifdef Q_OS_MAC
+    caseSensitivity = (format == QSettings::NativeFormat) ? Qt::CaseSensitive : Qt::CaseInsensitive;
+#else
+    caseSensitivity = Qt::CaseInsensitive;
+#endif
+
+    if (format > QSettings::IniFormat) {
+        QMutexLocker locker(globalMutex());
+        const CustomFormatVector *customFormatVector = customFormatVectorFunc();
+
+        int i = (int)format - (int)QSettings::CustomFormat1;
+        if (i >= 0 && i < customFormatVector->size()) {
+            QConfFileCustomFormat info = customFormatVector->at(i);
+            extension = info.extension;
+            readFunc = info.readFunc;
+            writeFunc = info.writeFunc;
+            caseSensitivity = info.caseSensitivity;
+        }
+    }
+}
+
+void QConfFileSettingsPrivate::initAccess()
 {
     bool readAccess = false;
-    if (confFiles[spec])
+    if (confFiles[spec]) {
         readAccess = checkAccess(confFiles[spec]->name);
+        if (format > QSettings::IniFormat) {
+            if (!readFunc)
+                readAccess = false;
+        }
+    }
 
     if (!readAccess)
         setStatus(QSettings::AccessError);
 
-#ifdef Q_OS_MAC
-    cs = (format == QSettings::NativeFormat) ? Qt::CaseSensitive : Qt::CaseInsensitive;
-#else
-    cs = Qt::CaseInsensitive;
-#endif
     sync();       // loads the files the first time
 }
 
@@ -876,42 +911,82 @@ static QString windowsConfigPath(int type)
 }
 #endif // Q_OS_WIN
 
-static QString systemIniPath()
+static inline int pathHashKey(QSettings::Format format, QSettings::Scope scope)
 {
-    QString result;
-
-    result = *defaultSystemIniPath();
-    if (result.isEmpty()) {
-#ifdef Q_OS_WIN
-        result = windowsConfigPath(CSIDL_COMMON_APPDATA);
-#else
-        result = QLibraryInfo::location(QLibraryInfo::SettingsPath);
-#endif // Q_OS_WIN
-    }
-
-    return result + QDir::separator();
+    return int((uint(format) << 1) | uint(scope == QSettings::SystemScope));
 }
 
-static QString userIniPath()
+static QString getPath(QSettings::Format format, QSettings::Scope scope)
 {
-    QString result;
+    Q_ASSERT((int)QSettings::NativeFormat == 0);
+    Q_ASSERT((int)QSettings::IniFormat == 1);
 
-    result = *defaultUserIniPath();
-    if (result.isEmpty()) {
-#ifdef Q_OS_WIN
-        result = windowsConfigPath(CSIDL_APPDATA);
-#else
-        char *env = getenv("XDG_CONFIG_HOME");
-        if (env == 0)
-            result = QDir::homePath() + QDir::separator() + QLatin1String(".config");
-        else if (*env == '/')
-            result = QLatin1String(env);
-        else
-            result = QDir::homePath() + QDir::separator() + QLatin1String(env);
-#endif // Q_OS_WIN
+    QString homePath = QDir::homePath();
+    QString systemPath;
+
+    globalMutex()->lock();
+    PathHash *pathHash = pathHashFunc();
+    bool loadSystemPath = pathHash->isEmpty();
+    globalMutex()->unlock();
+
+    if (loadSystemPath) {
+        /*
+           QLibraryInfo::location() uses QSettings, so in order to
+           avoid a dead-lock, we can't hold the global mutex while
+           calling it.
+       */
+        systemPath = QLibraryInfo::location(QLibraryInfo::SettingsPath);
+        systemPath += QLatin1Char('/');
     }
 
-    return result + QDir::separator();
+    QMutexLocker locker(globalMutex());
+    if (pathHash->isEmpty()) {
+        /*
+           Lazy initialization of pathHash. We initialize the
+           IniFormat paths and (on Unix) the NativeFormat paths.
+           (The NativeFormat paths are not configurable for the
+           Windows registry and the Mac CFPreferences.)
+       */
+#ifdef Q_OS_WIN
+        pathHash->insert(pathHashKey(QSettings::IniFormat, QSettings::UserScope),
+                         windowsConfigPath(CSIDL_APPDATA) + QDir::separator());
+        pathHash->insert(pathHashKey(QSettings::IniFormat, QSettings::SystemScope),
+                         windowsConfigPath(CSIDL_COMMON_APPDATA) + QDir::separator());
+#else
+        QString userPath;
+        char *env = getenv("XDG_CONFIG_HOME");
+        if (env == 0) {
+            userPath = homePath;
+            userPath += QLatin1Char('/');
+#ifdef Q_WS_QWS
+            userPath += QLatin1String("Settings");
+#else
+            userPath += QLatin1String(".config");
+#endif
+        } else if (*env == '/') {
+            userPath = QLatin1String(env);
+        } else {
+            userPath = homePath;
+            userPath += QLatin1Char('/');
+            userPath += QLatin1String(env);
+        }
+        userPath += QLatin1Char('/');
+
+        pathHash->insert(pathHashKey(QSettings::IniFormat, QSettings::UserScope), userPath);
+        pathHash->insert(pathHashKey(QSettings::IniFormat, QSettings::SystemScope), systemPath);
+#ifndef Q_OS_MAC
+        pathHash->insert(pathHashKey(QSettings::NativeFormat, QSettings::UserScope), userPath);
+        pathHash->insert(pathHashKey(QSettings::NativeFormat, QSettings::SystemScope), systemPath);
+#endif
+#endif
+    }
+
+    QString result = pathHash->value(pathHashKey(format, scope));
+    if (!result.isEmpty())
+        return result;
+
+    // fall back on INI path
+    return pathHash->value(pathHashKey(QSettings::IniFormat, scope));
 }
 
 QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
@@ -921,6 +996,8 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
 {
     int i;
     this->format = format;
+    initFormat();
+
     for (i = 0; i < NumConfFiles; ++i)
         confFiles[i] = 0;
 
@@ -930,19 +1007,20 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
         org = QLatin1String("Unknown Organization");
     }
 
-    const char *extension = format == QSettings::IniFormat ? ".ini" : ".conf";
-
-    QString appFile = org + QDir::separator() + application + QLatin1String(extension);
-    QString orgFile = org + QLatin1String(extension);
+    QString appFile = org + QDir::separator() + application + extension;
+    QString orgFile = org + extension;
 
     if (scope == QSettings::UserScope) {
+        QString userPath = getPath(format, QSettings::UserScope);
         if (!application.isEmpty())
-            confFiles[F_User | F_Application] = QConfFile::fromName(userIniPath() + appFile);
-        confFiles[F_User | F_Organization] = QConfFile::fromName(userIniPath() + orgFile);
+            confFiles[F_User | F_Application] = QConfFile::fromName(userPath + appFile);
+        confFiles[F_User | F_Organization] = QConfFile::fromName(userPath + orgFile);
     }
+
+    QString systemPath = getPath(format, QSettings::SystemScope);
     if (!application.isEmpty())
-        confFiles[F_Global | F_Application] = QConfFile::fromName(systemIniPath() + appFile);
-    confFiles[F_Global | F_Organization] = QConfFile::fromName(systemIniPath() + orgFile);
+        confFiles[F_System | F_Application] = QConfFile::fromName(systemPath + appFile);
+    confFiles[F_System | F_Organization] = QConfFile::fromName(systemPath + orgFile);
 
     for (i = 0; i < NumConfFiles; ++i) {
         if (confFiles[i]) {
@@ -950,15 +1028,21 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
             break;
         }
     }
+
+    initAccess();
 }
 
 QConfFileSettingsPrivate::QConfFileSettingsPrivate(const QString &fileName,
                                                    QSettings::Format format)
 {
+    this->format = format;
+    initFormat();
+
     confFiles[0] = QConfFile::fromName(fileName);
     for (int i = 1; i < NumConfFiles; ++i)
         confFiles[i] = 0;
-    this->format = format;
+
+    initAccess();
 }
 
 QConfFileSettingsPrivate::~QConfFileSettingsPrivate()
@@ -988,16 +1072,16 @@ void QConfFileSettingsPrivate::remove(const QString &key)
     if (!confFile)
         return;
 
-    QSettingsKey theKey(key, cs);
-    QSettingsKey prefix(key + QLatin1Char('/'), cs);
+    QSettingsKey theKey(key, caseSensitivity);
+    QSettingsKey prefix(key + QLatin1Char('/'), caseSensitivity);
     QMutexLocker locker(&confFile->mutex);
 
-    SettingsKeyMap::iterator i = confFile->addedKeys.lowerBound(prefix);
+    InternalSettingsMap::iterator i = confFile->addedKeys.lowerBound(prefix);
     while (i != confFile->addedKeys.end() && i.key().startsWith(prefix))
         i = confFile->addedKeys.erase(i);
     confFile->addedKeys.remove(theKey);
 
-    SettingsKeyMap::const_iterator j = confFile->originalKeys.lowerBound(prefix);
+    InternalSettingsMap::const_iterator j = confFile->originalKeys.lowerBound(prefix);
     while (j != confFile->originalKeys.constEnd() && j.key().startsWith(prefix)) {
         confFile->removedKeys.insert(j.key(), QVariant());
         ++j;
@@ -1012,7 +1096,7 @@ void QConfFileSettingsPrivate::set(const QString &key, const QVariant &value)
     if (!confFile)
         return;
 
-    QSettingsKey theKey(key, cs);
+    QSettingsKey theKey(key, caseSensitivity);
     QMutexLocker locker(&confFile->mutex);
     confFile->removedKeys.remove(theKey);
     confFile->addedKeys.insert(theKey, value);
@@ -1020,8 +1104,8 @@ void QConfFileSettingsPrivate::set(const QString &key, const QVariant &value)
 
 bool QConfFileSettingsPrivate::get(const QString &key, QVariant *value) const
 {
-    QSettingsKey theKey(key, cs);
-    SettingsKeyMap::const_iterator j;
+    QSettingsKey theKey(key, caseSensitivity);
+    InternalSettingsMap::const_iterator j;
     bool found = false;
 
     for (int i = 0; i < NumConfFiles; ++i) {
@@ -1053,9 +1137,9 @@ bool QConfFileSettingsPrivate::get(const QString &key, QVariant *value) const
 QStringList QConfFileSettingsPrivate::children(const QString &prefix, ChildSpec spec) const
 {
     QMap<QString, QString> result;
-    SettingsKeyMap::const_iterator j;
+    InternalSettingsMap::const_iterator j;
 
-    QSettingsKey thePrefix(prefix, cs);
+    QSettingsKey thePrefix(prefix, caseSensitivity);
     int startPos = prefix.size();
 
     for (int i = 0; i < NumConfFiles; ++i) {
@@ -1122,6 +1206,9 @@ QString QConfFileSettingsPrivate::fileName() const
 
 bool QConfFileSettingsPrivate::isWritable() const
 {
+    if (format > QSettings::IniFormat && !writeFunc)
+        return false;
+
     QConfFile *confFile = confFiles[spec];
     if (!confFile)
         return false;
@@ -1210,7 +1297,7 @@ void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
     }
 
     if (mustReadFile) {
-        SettingsKeyMap newKeys;
+        InternalSettingsMap newKeys;
 
         /*
             Files that we can't read (because of permissions or
@@ -1223,7 +1310,24 @@ void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
             } else
 #endif
             {
-                ok = readIniFile(file, &newKeys);
+                if (format <= QSettings::IniFormat) {
+                    ok = readIniFile(file, &newKeys);
+                } else {
+                    if (readFunc) {
+                        QSettings::SettingsMap tempNewKeys;
+                        ok = readFunc(file, tempNewKeys);
+
+                        if (ok) {
+                            QSettings::SettingsMap::const_iterator i = tempNewKeys.constBegin();
+                            while (i != tempNewKeys.constEnd()) {
+                                newKeys.insert(QSettingsKey(i.key(), caseSensitivity), i.value());
+                                ++i;
+                            }
+                        }
+                    } else {
+                        ok = false;
+                    }
+                }
             }
 
             if (!ok)
@@ -1240,7 +1344,7 @@ void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
         so everything is under control.
     */
     if (!readOnly) {
-        SettingsKeyMap mergedKeys = confFile->mergedKeyMap();
+        InternalSettingsMap mergedKeys = confFile->mergedKeyMap();
 
         if (file.isWritable()) {
 #ifdef Q_OS_MAC
@@ -1251,7 +1355,23 @@ void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
             {
                 file.seek(0); // shouldn't be necessary
                 file.resize(0);
-                ok = writeIniFile(file, mergedKeys);
+
+                if (format <= QSettings::IniFormat) {
+                    ok = writeIniFile(file, mergedKeys);
+                } else {
+                    if (writeFunc) {
+                        QSettings::SettingsMap tempOriginalKeys;
+
+                        InternalSettingsMap::const_iterator i = mergedKeys.constBegin();
+                        while (i != mergedKeys.constEnd()) {
+                            tempOriginalKeys.insert(i.key(), i.value());
+                            ++i;
+                        }
+                        ok = writeFunc(file, tempOriginalKeys);
+                    } else {
+                        ok = false;
+                    }
+                }
             }
         } else {
             ok = false;
@@ -1386,7 +1506,7 @@ end:
     possible, so if the user doesn't check the status he will get the
     most out of the file anyway.
 */
-bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, SettingsKeyMap *map)
+bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, InternalSettingsMap *map)
 {
     QString currentSection;
     bool currentSectionIsLowercase = true;
@@ -1457,7 +1577,7 @@ bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, SettingsKeyMap *ma
     return ok;
 }
 
-bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKeyMap &map)
+bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const InternalSettingsMap &map)
 {
     typedef QMap<QString, QVariantMap> IniMap;
     IniMap iniMap;
@@ -1469,7 +1589,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     const char eol = '\n';
 #endif
 
-    for (SettingsKeyMap::const_iterator j = map.constBegin(); j != map.constEnd(); ++j) {
+    for (InternalSettingsMap::const_iterator j = map.constBegin(); j != map.constEnd(); ++j) {
         QString section;
         QString key = j.key().realKey();
         int slashPos;
@@ -1540,9 +1660,10 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     absence of a standard, many applications (including the KDE
     applications) use INI text files.
 
-    QSettings is an abstraction around these technologies,
-    enabling you to save and restore application settings in a
-    portable manner.
+    QSettings is an abstraction around these technologies, enabling
+    you to save and restore application settings in a portable
+    manner. It also supports \l{registerFormat()}{custom storage
+    formats}.
 
     QSettings's API is based on QVariant, allowing you to save
     most value-based types, such as QString, QRect, and QImage,
@@ -1836,8 +1957,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     organization is called MySoft and the application is called Star
     Runner.
 
-    If the file format is NativeFormat, the following files are used
-    on Unix systems:
+    On Unix systems, if the file format is NativeFormat, the
+    following files are used by default:
 
     \list 1
     \o \c{$HOME/.config/MySoft/Star Runner.conf}
@@ -1846,14 +1967,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     \o \c{/etc/xdg/MySoft.conf}
     \endlist
 
-    The \c $HOME/.config portion of the first two paths can be
-    overridden by the user by setting the \c XDG_CONFIG_HOME
-    environment variable; the \c /etc/xdg portion of the last two
-    paths can be overridden when building the Qt library (see
-    QLibraryInfo for details). Both can be overridden using
-    setUserIniPath() and setSystemIniPath().
-
-    On Mac OS X versions 10.2 and 10.3, these files are used:
+    On Mac OS X versions 10.2 and 10.3, these files are used by
+    default:
 
     \list 1
     \o \c{$HOME/Library/Preferences/com.MySoft.Star Runner.plist}
@@ -1862,8 +1977,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     \o \c{/Library/Preferences/com.MySoft.plist}
     \endlist
 
-    On Windows, the settings are stored in the following registry
-    paths:
+    On Windows, NativeFormat settings are stored in the following
+    registry paths:
 
     \list 1
     \o \c{HKEY_CURRENT_USER\Software\MySoft\Star Runner}
@@ -1882,13 +1997,6 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     \o \c{/etc/xdg/MySoft.ini}
     \endlist
 
-    Again, the \c $HOME/.config portion of the first two paths can be
-    overridden by the user by setting the \c XDG_CONFIG_HOME
-    environment variable; the \c /etc/xdg portion of the last two
-    paths can be overridden when building the Qt library (see
-    QLibraryInfo for details). Both can be overridden using
-    setUserIniPath() and setSystemIniPath().
-
     On Windows, the following files are used:
 
     \list 1
@@ -1900,7 +2008,13 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
 
     The \c %APPDATA% path is usually \tt{C:\\Documents and
     Settings\\\e{User Name}\\Application Data}; the \c
-    %COMMON_APPDATA% path is usually \c{C:\Windows\Application Data}.
+    %COMMON_APPDATA% path is usually \tt{C:\\Documents and
+    Settings\\All Users\\Application Data}.
+
+    The paths for the \c .ini and \c .conf files can be changed using
+    setPath(). On Unix and Mac OS X, the user can override them by by
+    setting the \c XDG_CONFIG_HOME environment variable; see
+    setPath() for details.
 
     While QSettings attempts to smooth over the differences between
     the different supported platforms, there are still a few
@@ -1971,6 +2085,23 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
                          API; on Unix, this means textual
                          configuration files in INI format.
     \value IniFormat  Store the settings in INI files.
+    \value InvalidFormat Special value returned by registerFormat().
+    \omitvalue CustomFormat1
+    \omitvalue CustomFormat2
+    \omitvalue CustomFormat3
+    \omitvalue CustomFormat4
+    \omitvalue CustomFormat5
+    \omitvalue CustomFormat6
+    \omitvalue CustomFormat7
+    \omitvalue CustomFormat8
+    \omitvalue CustomFormat9
+    \omitvalue CustomFormat10
+    \omitvalue CustomFormat11
+    \omitvalue CustomFormat12
+    \omitvalue CustomFormat13
+    \omitvalue CustomFormat14
+    \omitvalue CustomFormat15
+    \omitvalue CustomFormat16
 
     On Unix, NativeFormat and IniFormat mean the same thing, except
     that the file extension is different (\c .conf for NativeFormat,
@@ -1978,7 +2109,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
 
     The INI file format is a Windows file format that Qt supports on
     all platforms. In the absence of an INI standard, we try to
-    follow what Microsoft does, with the following two exceptions:
+    follow what Microsoft does, with the following exceptions:
 
     \list
     \o  If you store types that QVariant can't convert to QString
@@ -2004,8 +2135,18 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
 
         QSettings always treats backslash as a special character and
         provides no API for reading or writing such entries.
+
+    \o  The INI file format has severe restrictions on the syntax of
+        a key. Qt works around this by using \c % as an escape
+        character in keys. In addition, if you save a top-level
+        setting (a key with no slashes in it, e.g., "someKey"), it
+        will appear in the INI file's "General" section. To avoid
+        overwriting other keys, if you save something using the a key
+        such as "General/someKey", the key will be located in the
+        "%General" section, \e not in the "General" section.
     \endlist
 
+    \sa registerFormat(), setPath()
 */
 
 /*! \enum QSettings::Scope
@@ -2021,6 +2162,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
                         set of settings.
     \omitvalue User
     \omitvalue Global
+
+    \sa setPath()
 */
 
 #ifndef QT_NO_QOBJECT
@@ -2615,7 +2758,10 @@ QStringList QSettings::childGroups() const
     One reason why isWritable() might return false is if
     QSettings operates on a read-only file.
 
-    \sa fileName(), status()
+    \warning This function is not perfectly reliable, because the
+    file permissions can change at any time.
+
+    \sa fileName(), status(), sync()
 */
 bool QSettings::isWritable() const
 {
@@ -2797,41 +2943,173 @@ QVariant QSettings::value(const QString &key, const QVariant &defaultValue) cons
 }
 
 /*!
-    Sets the directory where QSettings stores its SystemScope \c .ini files to \a dir.
+    \obsolete
 
-    On Unix systems, the default directory is \c /etc/xdg in accordance with FreeDesktop's
-    XDG Base Directory Specification. This default can be changed when compiling Qt by passing
-    the \c --sysconfdir flag to \c configure.
+    Use setPath() instead.
 
-    On Windows, the default directory is \c{C:\Documents and Settings\All Users\Application Data}.
-
-    A call to this function should precede any instantiations of QSettings objects.
-
-    \sa setUserIniPath()
+    \oldcode
+        setSystemIniPath(path);
+    \newcode
+        setPath(QSettings::NativeFormat, QSettings::SystemScope, path);
+        setPath(QSettings::IniFormat, QSettings::SystemScope, path);
+    \endcode
 */
 void QSettings::setSystemIniPath(const QString &dir)
 {
-    *defaultSystemIniPath() = dir;
+    setPath(IniFormat, SystemScope, dir);
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
+    setPath(NativeFormat, SystemScope, dir);
+#endif
 }
 
 /*!
-    Sets the directory where QSettings stores its UserScope \c .ini files to \a dir.
+    \obsolete
 
-    On Unix systems, the default directory is read from the \c $XDG_CONFIG_HOME environment
-    variable. If this variable is empty or unset, \c $HOME/.config is used, in accordance with
-    the FreeDesktop's XDG Base Directory Specification. Calling this function overrides the
-    path specified in \c $XDG_CONFIG_HOME.
-
-    On Windows, the default directory is \c{C:\Documents and Settings\<username>\Application Data}.
-
-    A call to this function should precede any instantiations of QSettings objects.
-
-    \sa setSystemIniPath()
+    Use setPath() instead.
 */
 
 void QSettings::setUserIniPath(const QString &dir)
 {
-    *defaultUserIniPath() = dir;
+    setPath(IniFormat, UserScope, dir);
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
+    setPath(NativeFormat, UserScope, dir);
+#endif
+}
+
+/*!
+    \since 4.1
+
+    Sets the path used for storing settings for the given \a format
+    and \a scope, to \a path. The \a format can be a custom format.
+
+    The table below summarizes the default values:
+
+    \table
+    \header \o Platform      \o Format                       \o Scope       \o Path
+    \row    \o{1,2} Windows  \o{1,2} IniFormat               \o UserScope   \o \c %APPDATA%
+    \row                                                     \o SystemScope \o \c %COMMON_APPDATA%
+    \row    \o{1,2} Unix     \o{1,2} NativeFormat, IniFormat \o UserScope   \o \c $HOME/.config
+    \row                                                     \o SystemScope \o \c /etc/xdg
+    \row    \o{1,2} Mac OS X \o{1,2} IniFormat               \o UserScope   \o \c $HOME/.config
+    \row                                                     \o SystemScope \o \c /etc/xdg
+    \endtable
+
+    The default UserScope paths on Unix and Mac OS X (\c
+    $HOME/.config) can be overridden by the user by setting the \c
+    XDG_CONFIG_HOME environment variable. The default SystemScope
+    paths on Unix and Mac OS X (\c /etc/xdg) can be overridden when
+    building the Qt library using the \c configure script's \c
+    --sysconfdir flag (see QLibraryInfo for details).
+
+    Setting the NativeFormat paths on Windows and Mac OS X has no
+    effect.
+
+    \warning This function doesn't affect existing QSettings objects.
+
+    \sa registerFormat()
+*/
+void QSettings::setPath(Format format, Scope scope, const QString &path)
+{
+    QMutexLocker locker(globalMutex());
+    PathHash *pathHash = pathHashFunc();
+    pathHash->insert(pathHashKey(format, scope), path + QDir::separator());
+}
+
+/*!
+    \typedef QSettings::SettingsMap
+
+    Typedef for QMap<QString, QVariant>.
+
+    \sa registerFormat()
+*/
+
+/*!
+    \typedef QSettings::ReadFunc
+
+    Typedef for a pointer to a function with the following signature:
+
+    \code
+        bool myReadFunc(QIODevice &device, QSettings::SettingsMap &map);
+    \endcode
+
+    \sa WriteFunc, registerFormat()
+*/
+
+/*!
+    \typedef QSettings::WriteFunc
+
+    Typedef for a pointer to a function with the following signature:
+
+    \code
+        bool myWriteFunc(QIODevice &device, const QSettings::SettingsMap &map);
+    \endcode
+
+    \sa ReadFunc, registerFormat()
+*/
+
+/*!
+    \since 4.1
+
+    Registers a custom storage format. On success, returns a special
+    Format value that can then be passed to the QSettings constuctor.
+    On failure, returns InvalidFormat.
+
+    The \a extension is the file
+    extension associated to the format (without the '.').
+
+    The \a readFunc and \a writeFunc parameters are pointers to
+    functions that read and write a set of (key, value) pairs. The
+    QIODevice parameter to the read and write functions is always
+    opened in binary mode (i.e., without the QIODevice::Text flag).
+
+    The \a caseSensitivity parameter specifies whether keys are case
+    sensitive or not. This makes a difference when looking up values
+    using QSettings. The default is case sensitive.
+
+    By default, if you use one of the constructors that work in terms
+    of an organization name and an application name, the file system
+    locations used are the same as for IniFormat. Use setPath() to
+    specify other locations.
+
+    Example:
+
+    \code
+        bool readXmlFile(QIODevice &device, QSettings::SettingsMap &map);
+        bool writeXmlFile(QIODevice &device, const QSettings::SettingsMap &map);
+
+        int main(int argc, char *argv[])
+        {
+            const QSettings::Format XmlFormat =
+                    QSettings::registerFormat("xml", readXmlFunc, writeXmlFunc);
+
+            QSettings settings(XmlFormat, QSettings::UserSettings, "MySoft",
+                               "Star Runner");
+
+            ...
+        }
+    \endcode
+
+    \sa setPath()
+*/
+QSettings::Format QSettings::registerFormat(const QString &extension, ReadFunc readFunc,
+                                            WriteFunc writeFunc,
+                                            Qt::CaseSensitivity caseSensitivity)
+{
+    QMutexLocker locker(globalMutex());
+    CustomFormatVector *customFormatVector = customFormatVectorFunc();
+    int index = customFormatVector->size();
+    if (index == 16) // the QSettings::Format enum has room for 16 custom formats
+        return QSettings::InvalidFormat;
+
+    QConfFileCustomFormat info;
+    info.extension = QLatin1Char('.');
+    info.extension += extension;
+    info.readFunc = readFunc;
+    info.writeFunc = writeFunc;
+    info.caseSensitivity = caseSensitivity;
+    customFormatVector->append(info);
+
+    return QSettings::Format((int)QSettings::CustomFormat1 + index);
 }
 
 #ifdef QT3_SUPPORT
@@ -2995,7 +3273,7 @@ void QSettings::setUserIniPath(const QString &dir)
 /*! \enum QSettings::System
     \compat
 
-    \value Unix Unix systems (X11 and Qt/Embedded)
+    \value Unix Unix systems (X11 and Qtopia Core)
     \value Windows Microsoft Windows systems
     \value Mac Mac OS X systems
 

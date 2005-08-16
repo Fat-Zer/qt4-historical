@@ -291,4 +291,3 @@ void XmlOutput::addAttribute(const QString &attribute, const QString &value)
         xmlFile << endl;
     xmlFile << currentIndent << doConversion(attribute) << "=\"" << doConversion(value) << "\"";
 }
-

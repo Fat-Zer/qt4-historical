@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/examples/activeqt/multiple.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/examples/activeqt/multiple.qdoc -->
 <head>
-    <title>Qt 4.0: Multiple Example (ActiveQt)</title>
+    <title>Qt 4.1: Multiple Example (ActiveQt)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -105,10 +105,9 @@ body { background: #ffffff; color: black; }</style>
         int line_width;
     };</pre>
 <p>The second control draws a circle. The linewith is exposed as a property. <tt>Q_CLASSINFO()</tt> is used to specify the COM identifiers, and to set the attributes <i>ToSuperClass</i> and <i>StockEvents</i> to expose only the API of the class itself, and to add COM stock events to the ActiveX control.</p>
-<pre>&nbsp;   #include &lt;qaxfactory.h&gt;
-
-    #include &quot;ax1.h&quot;
+<pre>&nbsp;   #include &quot;ax1.h&quot;
     #include &quot;ax2.h&quot;
+    #include &lt;QAxFactory&gt;
 
     QAXFACTORY_BEGIN(&quot;{98DE28B6-6CD3-4e08-B9FA-3D1DB43F1D2F}&quot;, &quot;{05828915-AD1C-47ab-AB96-D6AD1E25F0E2}&quot;)
         QAXCLASS(QAxWidget1)
@@ -156,6 +155,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

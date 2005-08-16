@@ -24,7 +24,7 @@
 #ifndef QGROUPBOX_H
 #define QGROUPBOX_H
 
-#include "QtGui/qframe.h"
+#include <QtGui/qframe.h>
 
 QT_MODULE(Gui)
 
@@ -39,39 +39,42 @@ class Q_GUI_EXPORT QGroupBox : public QWidget
     Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool flat READ isFlat WRITE setFlat)
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
-    Q_PROPERTY(bool checked READ isChecked WRITE setChecked)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled USER true)
 public:
     explicit QGroupBox(QWidget* parent=0);
     explicit QGroupBox(const QString &title, QWidget* parent=0);
     ~QGroupBox();
 
     QString title() const;
-    void setTitle(const QString &);
+    void setTitle(const QString &title);
 
     Qt::Alignment alignment() const;
-    void setAlignment(int);
+    void setAlignment(int alignment);
 
     QSize minimumSizeHint() const;
 
     bool isFlat() const;
-    void setFlat(bool b);
+    void setFlat(bool flat);
     bool isCheckable() const;
-    void setCheckable(bool b);
+    void setCheckable(bool checkable);
     bool isChecked() const;
 
-public slots:
-    void setChecked(bool b);
+public Q_SLOTS:
+    void setChecked(bool checked);
 
-signals:
+Q_SIGNALS:
     void toggled(bool);
 
 protected:
-    bool event(QEvent *);
-    void childEvent(QChildEvent *);
-    void resizeEvent(QResizeEvent *);
-    void paintEvent(QPaintEvent *);
-    void focusInEvent(QFocusEvent *);
-    void changeEvent(QEvent *);
+    bool event(QEvent *event);
+    void childEvent(QChildEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void focusInEvent(QFocusEvent *event);
+    void changeEvent(QEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);  
 
 #ifdef QT3_SUPPORT
 public:

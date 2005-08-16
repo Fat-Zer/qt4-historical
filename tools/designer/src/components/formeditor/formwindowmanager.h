@@ -149,6 +149,7 @@ private:
     QWidget *m_last_widget_under_mouse;
     FormWindow *m_last_form_under_mouse;
     QDesignerWidgetBoxInterface *m_widget_box_under_mouse;
+    Qt::ContextMenuPolicy m_savedContextMenuPolicy;
 };
 
 }  // namespace qdesigner_internal

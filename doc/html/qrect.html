@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/tools/qrect.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/tools/qrect.cpp -->
 <head>
-    <title>Qt 4.0: QRect Class Reference</title>
+    <title>Qt 4.1: QRect Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -97,10 +97,10 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>bool <b><a href="qrect.html#operator-not-eq-14">operator!=</a></b> ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qrect.html#operator-lt-lt-44">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QRect &amp; <i>rectangle</i> )</li>
-<li><div class="fn"/>bool <b><a href="qrect.html#operator-eq-eq-21">operator==</a></b> ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qrect.html#operator-gt-gt-29">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QRect &amp; <i>rectangle</i> )</li>
+<li><div class="fn"/>bool <b><a href="qrect.html#operator-not-eq-15">operator!=</a></b> ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qrect.html#operator-lt-lt-49">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QRect &amp; <i>rectangle</i> )</li>
+<li><div class="fn"/>bool <b><a href="qrect.html#operator-eq-eq-23">operator==</a></b> ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qrect.html#operator-gt-gt-30">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QRect &amp; <i>rectangle</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -199,7 +199,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qrect.html#isEmpty">isEmpty</a>() and <a href="qrect.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="isValid"></a>bool QRect::isValid () const</h3>
 <p>Returns true if the rectangle is valid; otherwise returns false.</p>
-<p>A valid rectangle has a <a href="qrect.html#left">left</a>() &lt;= <a href="qrect.html#right">right</a>() and <a href="qrect.html#top">top</a>() &lt;= <a href="qrect.html#bottom">bottom</a>().</p>
+<p>A valid rectangle has a <a href="qrect.html#left">left</a>() &lt; <a href="qrect.html#right">right</a>() and <a href="qrect.html#top">top</a>() &lt; <a href="qrect.html#bottom">bottom</a>().</p>
 <p>Note that non-trivial operations like intersections are not defined for invalid rectangles.</p>
 <p><tt>isValid() == !isEmpty()</tt></p>
 <p>See also <a href="qrect.html#isNull">isNull</a>(), <a href="qrect.html#isEmpty">isEmpty</a>(), and <a href="qrect.html#normalized">normalized</a>().</p>
@@ -352,17 +352,17 @@ body { background: #ffffff; color: black; }</style>
 <p>Unites this rectangle with rectangle <i>r</i>.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-not-eq-14"></a>bool operator!= ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</h3>
+<h3 class="fn"><a name="operator-not-eq-15"></a>bool operator!= ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns true if the rectangles <i>r1</i> and <i>r2</i> are different; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-lt-lt-44"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QRect &amp; <i>rectangle</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-49"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QRect &amp; <i>rectangle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the <i>rectangle</i> to the <i>stream</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-eq-eq-21"></a>bool operator== ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</h3>
+<h3 class="fn"><a name="operator-eq-eq-23"></a>bool operator== ( const QRect &amp; <i>r1</i>, const QRect &amp; <i>r2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns true if the rectangles <i>r1</i> and <i>r2</i> are equal; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-gt-gt-29"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QRect &amp; <i>rectangle</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-30"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QRect &amp; <i>rectangle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a <i>rectangle</i> from the <i>stream</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -370,6 +370,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

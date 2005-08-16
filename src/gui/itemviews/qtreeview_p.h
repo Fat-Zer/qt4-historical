@@ -35,7 +35,8 @@
 // We mean it.
 //
 
-#include <private/qabstractitemview_p.h>
+#include "private/qabstractitemview_p.h"
+
 #ifndef QT_NO_TREEVIEW
 
 struct QTreeViewItem
@@ -61,8 +62,8 @@ public:
     ~QTreeViewPrivate() {}
     void initialize();
 
-    void expand(int item);
-    void collapse(int item);
+    void expand(int item, bool emitSignal = true);
+    void collapse(int item, bool emitSignal = true);
     void layout(int item);
 
     int pageUp(int item) const;
@@ -92,7 +93,7 @@ public:
     int columnAt(int x) const;
 
     void relayout(const QModelIndex &parent);
-    void reexpandChildren(const QModelIndex &parent);
+    void reexpandChildren(const QModelIndex &parent, bool emitSignal = true);
 
     void updateVerticalScrollbar();
     void updateHorizontalScrollbar();
@@ -127,4 +128,5 @@ public:
 };
 
 #endif // QT_NO_TREEVIEW
+
 #endif // QTREEVIEW_P_H

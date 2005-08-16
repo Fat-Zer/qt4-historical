@@ -25,9 +25,9 @@
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
+#include "tokenengine.h"
 #include <QVector>
 #include <QByteArray>
-#include "tokenengine.h"
 
 class Tokenizer
 {

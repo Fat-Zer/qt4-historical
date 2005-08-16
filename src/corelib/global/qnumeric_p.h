@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include <qglobal.h>
+#include "QtCore/qglobal.h"
 
 static const unsigned char qt_be_inf_bytes[] = { 0x7f, 0xf0, 0, 0, 0, 0, 0, 0 };
 static const unsigned char qt_le_inf_bytes[] = { 0, 0, 0, 0, 0, 0, 0xf0, 0x7f };
@@ -121,16 +121,6 @@ static inline bool qIsFinite(float d)
     } else {
         return (ch[3] & 0x7f) != 0x7f || (ch[2] & 0x80) != 0x80;
     }
-}
-
-static inline bool qFuzzyCompare(double p1, double p2)
-{
-    return qAbs(p1 - p2) < 0.00000000001;
-}
-
-static inline bool qFuzzyCompare(float p1, float p2)
-{
-    return qAbs(p1 - p2) < 0.000001;
 }
 
 #endif // QNUMERIC_P_H

@@ -51,6 +51,9 @@
 #pragma message disable narrowptr
 #endif
 
+typedef void (*_qt_image_cleanup_hook)(int);
+Q_GUI_EXPORT _qt_image_cleanup_hook qt_image_cleanup_hook = 0;
+
 struct QImageData {        // internal image data
     QImageData();
     ~QImageData();
@@ -100,6 +103,8 @@ struct QImageData {        // internal image data
         }
         return r;
     }
+
+    QMap<QString, QString> text;
 #endif
     bool doImageIO(const QImage *image, QImageWriter* io, int quality) const;
 
@@ -108,11 +113,22 @@ struct QImageData {        // internal image data
 
 extern int qt_defaultDpi();
 
+QBasicAtomic qimage_serial_number = Q_ATOMIC_INIT(1);
+int qimage_next_serial_number()
+{
+    register int id;
+    for (;;) {
+        id = qimage_serial_number;
+        if (qimage_serial_number.testAndSet(id, id + 1))
+            break;
+    }
+    return id;
+}
+
+
 QImageData::QImageData()
 {
-    static int serial = 0;
-
-    ser_no = ++serial;
+    ser_no = qimage_next_serial_number();
     ref = 0;
 
     width = height = depth = 0;
@@ -272,7 +288,7 @@ QImageData::~QImageData()
 
     QImage supports a number of \link QImage::Format formats\endlink. These
     include monochrome images, 8-bit images, and 32-bit images with an optional
-    alpha channel. Monochrome and 8-bit images are indexed based and use a
+    alpha channel. Monochrome and 8-bit images are index-based and use a
     color lookup table, while 32-bit images use RGB or ARGB values.
 
     An entry in the color table is an RGB triplet encoded as an \c qRgb
@@ -308,11 +324,11 @@ QImageData::~QImageData()
     \skipto QImage
     \printuntil qRgb
 
-    In Qt/Embedded, scanlines are aligned to the pixel depth and may
+    In Qtopia Core, scanlines are aligned to the pixel depth and may
     be padded to any degree, while on all other platforms, the
     scanlines are 32-bit aligned for all depths. The constructor
     taking a \c{uchar*} argument always expects 32-bit aligned data.
-    In Qt/Embedded, an additional constructor allows the number of
+    In Qtopia Core, an additional constructor allows the number of
     bytes-per-line to be specified.
 
     Pixel colors are retrieved with pixel() and set with setPixel().
@@ -336,12 +352,31 @@ QImageData::~QImageData()
     an image in-place, for example, setAlphaChannel(), setColor(),
     setDotsPerMeterX() and setDotsPerMeterY() and setNumColors().
 
-    Images can be loaded and saved in the supported formats. Images
-    are saved to a file with save(). Images are loaded from a file
-    with load() (or in the constructor) or from an array of data with
-    loadFromData(). The lists of supported formats are available from
-    QImageReader::supportedImageFormats() and
-    QImageWriter::supportedImageFormats().
+    Images can be loaded and saved in the supported file formats.
+    Images are saved to a file with save(). Images are loaded from a
+    file with load() (or in the constructor) or from an array of data
+    with loadFromData(). The lists of supported formats are available
+    from QImageReader::supportedImageFormats() and
+    QImageWriter::supportedImageFormats(). By default, Qt supports
+    the following formats:
+
+    \table
+    \header \o Format \o Description                      \o Qt's support
+    \row    \o BMP    \o Windows Bitmap                   \o Read/write
+    \row    \o GIF    \o Graphic Interchange Format (optional) \o Read
+    \row    \o JPG    \o Joint Photographic Experts Group \o Read/write
+    \row    \o JPEG   \o Joint Photographic Experts Group \o Read/write
+    \row    \o PNG    \o Portable Network Graphics        \o Read/write
+    \row    \o PBM    \o Portable Bitmap                  \o Read
+    \row    \o PGM    \o Portable Graymap                 \o Read
+    \row    \o PPM    \o Portable Pixmap                  \o Read/write
+    \row    \o XBM    \o X11 Bitmap                       \o Read/write
+    \row    \o XPM    \o X11 Pixmap                       \o Read/write
+    \endtable
+
+    (To configure Qt with GIF support, pass \c -qt-gif to the \c
+    configure script or check the appropriate option in the graphical
+    installer.)
 
     When loading an image, the file name can be either refer to an
     actual file on disk or to one of the application's embedded
@@ -357,7 +392,7 @@ QImageData::~QImageData()
     New image formats can be added as \link plugins-howto.html
     plugins\endlink.
 
-    \sa QImageReader, QImageWriter, QPixmap QColor {shclass.html}{Shared Classes}
+    \sa QImageReader, QImageWriter, QPixmap, QColor, {shclass.html}{Shared Classes}
 */
 
 /*!
@@ -405,7 +440,7 @@ QImageData::~QImageData()
                             by the alpha component divided by 255. (If RR, GG, or BB
                             has a higher value than the alpha channel, the results are undefined.)
 
-    The following image formats are specific to \l{Qt/Embedded}:
+    The following image formats are specific to \l{Qtopia Core}:
 
     \value Format_RGB16     The image is stored using a 16-bit RGB format.
     \value Format_RGB15     The image is stored using a 15-bit RGB format.
@@ -781,7 +816,7 @@ QImage::QImage(uchar* data, int w, int h, int depth, const QRgb* colortable, int
 
     The endianness is specified by \a bitOrder.
 
-    \warning This constructor is only available in Qt/Embedded.
+    \warning This constructor is only available in Qtopia Core.
 */
 QImage::QImage(uchar* data, int w, int h, int depth, int bpl, const QRgb* colortable, int numColors, Endian bitOrder)
     : QPaintDevice()
@@ -822,8 +857,11 @@ QImage::QImage(uchar* data, int w, int h, int depth, int bpl, const QRgb* colort
 
 QImage::~QImage()
 {
-    if (d && !d->ref.deref())
+    if (d && !d->ref.deref()) {
+        if (qt_image_cleanup_hook)
+            qt_image_cleanup_hook(d->ser_no);
         delete d;
+    }
 }
 
 /*!
@@ -908,7 +946,7 @@ QImage QImage::copy(const QRect& r) const
         QImage image(d->width, d->height, d->format);
 
 #ifdef Q_WS_QWS
-        // Qt/Embedded can create images with non-default bpl
+        // Qtopia Core can create images with non-default bpl
         // make sure we don't crash.
         if (image.d->nbytes != d->nbytes) {
             int bpl = image.bytesPerLine();
@@ -956,10 +994,10 @@ QImage QImage::copy(const QRect& r) const
     image.d->colortable = d->colortable;
 
     int pixels_to_copy = w - dx;
-    if (pixels_to_copy > x + d->width)
+    if (pixels_to_copy > d->width - x)
         pixels_to_copy = d->width - x;
     int lines_to_copy = h - dy;
-    if (lines_to_copy > y + d->height)
+    if (lines_to_copy > d->height - y)
         lines_to_copy = d->height - y;
 
     bool byteAligned = true;
@@ -1206,24 +1244,6 @@ int QImage::numBytes() const
     return d ? d->nbytes : 0;
 }
 
-#ifdef Q_WS_QWS
-/*!
-  \reimp
-*/
-const uchar * QImage::qwsScanLine(int i) const
-{
-    return scanLine(i);
-}
-
-/*!
-  \reimp
-*/
-int QImage::qwsBytesPerLine() const
-{
-    return bytesPerLine();
-}
-#endif
-
 /*!
     Returns the number of bytes per image scanline. This is equivalent
     to numBytes()/height().
@@ -1382,12 +1402,12 @@ void QImage::fill(uint pixel)
 /*!
     Inverts all pixel values in the image.
 
-    If the depth is 32: if \a mode is InvertRgba (the default), the alpha bits are
-    also inverted, otherwise they are left unchanged.
-
-    If the depth is not 32, the argument \a mode has no meaning. The
-    default mode is InvertRgb, which leaves the alpha channel
+    The default \a mode is InvertRgb, which leaves the alpha channel
     unchanged.
+
+    If the depth is 32 and the \a mode is InvertRgba, the alpha bits
+    are also inverted, otherwise they are left unchanged. If the depth
+    is \e not 32, the argument \a mode has no meaning.
 
     Note that inverting an 8-bit image means to replace all pixels
     using color index \e i with a pixel using color index 255 minus \e
@@ -2251,6 +2271,7 @@ static void convert_RGB_to_Indexed8(QImageData *dst, const QImageData *src, Qt::
                 dst_data += dst->bytes_per_line;
             }
             dst->has_alpha_clut = true;
+            delete mask;
         }
 
 #undef MAX_R
@@ -2736,6 +2757,7 @@ QImage QImage::convertToFormat(Format format, Qt::ImageConversionFlags flags) co
     }
 
 #ifdef Q_WS_QWS
+#ifdef QT_QWS_DEPTH_16
     if (format == Format_RGB16) {
         QImage tmp;
         if (d->format == Format_RGB32 || d->format == Format_ARGB32)
@@ -2754,6 +2776,7 @@ QImage QImage::convertToFormat(Format format, Qt::ImageConversionFlags flags) co
         else
             return image.convertToFormat(format);
     }
+#endif
 #endif
 
     return QImage();
@@ -3034,14 +3057,14 @@ bool QImage::isGrayscale() const
 /*!
     \fn QImage QImage::smoothScale(int width, int height, Qt::AspectRatioMode mode) const
 
-    Use scale(\a width, \a height, \a mode, Qt::SmoothTransformation) instead.
+    Use scaled(\a width, \a height, \a mode, Qt::SmoothTransformation) instead.
 */
 
 /*!
     \fn QImage QImage::smoothScale(const QSize &size, Qt::AspectRatioMode mode) const
     \overload
 
-    Use scale(\a size, \a mode, Qt::SmoothTransformation) instead.
+    Use scaled(\a size, \a mode, Qt::SmoothTransformation) instead.
 */
 
 /*!
@@ -3195,11 +3218,6 @@ QMatrix QImage::trueMatrix(const QMatrix &matrix, int w, int h)
     if (x3 > xmax) xmax = x3;
     if (x4 > xmax) xmax = x4;
 
-    if (xmax-xmin > 1.0)
-        xmin -= xmin/(xmax-xmin);
-    if (ymax-ymin > 1.0)
-        ymin -= ymin/(ymax-ymin);
-
     mat.setMatrix(matrix.m11(), matrix.m12(), matrix.m21(), matrix.m22(), -xmin, -ymin);
     return mat;
 }
@@ -3238,12 +3256,18 @@ QImage QImage::transformed(const QMatrix &matrix, Qt::TransformationMode mode) c
         wd = int(qAbs(mat.m11()) * ws + 0.9999);
         hd = qAbs(hd);
         wd = qAbs(wd);
+    } else if (d->format == Format_RGB32 && mat.m11() == 0. && mat.m22() == 0. &&
+              ((mat.m12() == 1. && mat.m21() == -1.) ||     // 90 degrees
+               (mat.m12() == -1. && mat.m21() == 1.))) {    // -90 degrees
+        // Dont perform a complex_xform for trivial rotations
+        wd = hs;
+        hd = ws;
     } else {                                        // rotation or shearing
         QPolygonF a(QRectF(0, 0, ws, hs));
         a = mat.map(a);
-        QRectF r = a.boundingRect().normalized();
-        wd = int(r.width() + 0.9999);
-        hd = int(r.height() + 0.9999);
+        QRectF r = a.boundingRect();
+        wd = int(qAbs(r.width()) + 0.9999);
+        hd = int(qAbs(r.height()) + 0.9999);
         complex_xform = true;
     }
 
@@ -3485,7 +3509,7 @@ QImage QImage::mirrored(bool horizontal, bool vertical) const
         return QImage();
 
     if ((d->width <= 1 && d->height <= 1) || (!horizontal && !vertical))
-        return QImage();
+        return *this;
 
     int w = d->width;
     int h = d->height;
@@ -3628,6 +3652,24 @@ bool QImage::load(const QString &fileName, const char* format)
 
     QImage image = QImageReader(fileName, format).read();
     if (!image.isNull()) {
+        operator=(image);
+        return true;
+    }
+    return false;
+}
+
+/*!
+    \overload
+
+    This function reads a QImage from the QIODevice, \a device. This
+    can be used, for example, to load an image directly into a
+    QByteArray.
+*/
+
+bool QImage::load(QIODevice* device, const char* format)
+{
+    QImage image = QImageReader(device, format).read();
+    if(!image.isNull()) {
         operator=(image);
         return true;
     }
@@ -3874,7 +3916,7 @@ void bitBlt(QImage *dst, int dx, int dy, const QImage *src, int sx, int sy, int 
 /*!
     Returns true if this image and image \a i have the same contents;
     otherwise returns false. The comparison can be slow, unless there
-    is some obvious difference, such as different widths, in which
+    is some obvious difference (e.g. different size or format), in which
     case the function will return quickly.
 
     \sa operator=()
@@ -4011,6 +4053,63 @@ void QImage::setOffset(const QPoint& p)
 #ifndef QT_NO_IMAGE_TEXT
 
 /*!
+    Returns the text keys for this image. You can use
+    these keys with text() to list the image text for
+    a certain key.
+
+    \sa text(), setText(), QImageReader::textKeys()
+*/
+QStringList QImage::textKeys() const
+{
+    return d ? QStringList(d->text.keys()) : QStringList();
+}
+
+/*!
+    Returns the image text associated with \a key. If
+    \a key is an empty string, the whole image text is
+    returned, with each key-text pair separated by a newline.
+
+    You can also set the image text by calling setText().
+
+    \sa textKeys(), setText()
+*/
+QString QImage::text(const QString &key) const
+{
+    if (!d)
+        return QString();
+
+    if (!key.isEmpty())
+        return d->text.value(key);
+
+    QString tmp;
+    foreach (QString key, d->text.keys()) {
+        if (!tmp.isEmpty())
+            tmp += QLatin1String("\n\n");
+        tmp += key + ": " + d->text.value(key).simplified();
+    }
+    return tmp;
+}
+
+/*!
+    Sets the image text \a value with the key \a key. If you
+    just want to store a single text block (i.e., a "comment"
+    or just a description), you can either pass an empty key,
+    or use a generic key like "Description".
+
+    The image text is embedded into the image data when you
+    call save() or QImageWriter::write().
+
+    \sa text(), QImageWriter::setText()
+*/
+void QImage::setText(const QString &key, const QString &value)
+{
+    if (d)
+        d->text.insert(key, value);
+}
+
+/*!
+    \obsolete
+
     Returns the string recorded for the keyword \a key in language \a
     lang, or in a default language if \a lang is 0.
 */
@@ -4021,6 +4120,7 @@ QString QImage::text(const char* key, const char* lang) const
 
 /*!
     \overload
+    \obsolete
 
     Returns the string recorded for the keyword and language \a kl.
 */
@@ -4053,28 +4153,8 @@ QStringList QImage::textLanguages() const
 }
 
 /*!
-    Returns the keywords for which some texts are recorded.
+    \obsolete
 
-    Note that if you want to iterate over the list, you should iterate
-    over a copy, e.g.
-
-    \code
-        QStringList list = myImage.textKeys();
-        QStringList::Iterator it = list.begin();
-        while(it != list.end()) {
-            myProcessing(*it);
-            ++it;
-        }
-    \endcode
-
-    \sa textList() text() setText() textLanguages()
-*/
-QStringList QImage::textKeys() const
-{
-    return d ? d->keys() : QStringList();
-}
-
-/*!
     Returns a list of QImageTextKeyLang objects that enumerate all the
     texts key/language pairs set by setText() for this image.
 */
@@ -4084,6 +4164,8 @@ QList<QImageTextKeyLang> QImage::textList() const
 }
 
 /*!
+    \obsolete
+
     Records string \a s for the keyword \a key. The \a key should be
     a portable keyword recognizable by other software - some suggested
     values can be found in

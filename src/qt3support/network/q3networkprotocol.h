@@ -24,13 +24,10 @@
 #ifndef Q3NETWORKPROTOCOL_H
 #define Q3NETWORKPROTOCOL_H
 
-#ifndef QT_H
-#include "QtNetwork/qurlinfo.h"
-#include "QtCore/qstring.h"
-#include "Qt3Support/q3dict.h"
-#include "QtCore/qobject.h"
-#include "Qt3Support/q3valuelist.h"
-#endif // QT_H
+#include <QtCore/qstring.h>
+#include <QtCore/qobject.h>
+#include <Qt3Support/q3dict.h>
+#include <Qt3Support/q3valuelist.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -41,6 +38,7 @@ class Q3NetworkOperation;
 class QTimer;
 class Q3UrlOperator;
 class Q3NetworkProtocolPrivate;
+class QUrlInfo;
 template <class T> class Q3ValueList;
 
 class Q_COMPAT_EXPORT Q3NetworkProtocolFactoryBase
@@ -136,7 +134,7 @@ public:
     virtual void clearOperationQueue();
     virtual void stop();
 
-signals:
+Q_SIGNALS:
     void data( const QByteArray &, Q3NetworkOperation *res );
     void connectionStateChanged( int state, const QString &data );
     void finished( Q3NetworkOperation *res );
@@ -162,7 +160,7 @@ protected:
 private:
     Q3NetworkProtocolPrivate *d;
 
-private slots:
+private Q_SLOTS:
     void processNextOperation( Q3NetworkOperation *old );
     void startOps();
     void emitNewChildren( const QUrlInfo &i, Q3NetworkOperation *op );
@@ -207,7 +205,7 @@ public:
 
     void free();
 
-private slots:
+private Q_SLOTS:
     void deleteMe();
 
 private:

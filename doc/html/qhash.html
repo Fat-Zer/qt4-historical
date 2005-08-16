@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/tools/qhash.cpp -->
 <head>
-    <title>Qt 4.0: QHash Class Reference</title>
+    <title>Qt 4.1: QHash Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -44,6 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qhash.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>const_iterator <b><a href="qhash.html#constBegin">constBegin</a></b> () const</li>
 <li><div class="fn"/>const_iterator <b><a href="qhash.html#constEnd">constEnd</a></b> () const</li>
+<li><div class="fn"/>const_iterator <b><a href="qhash.html#constFind">constFind</a></b> ( const Key &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qhash.html#contains">contains</a></b> ( const Key &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qhash.html#count">count</a></b> ( const Key &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qhash.html#count-2">count</a></b> () const</li>
@@ -78,23 +79,23 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHashx">qHash</a></b> ( char <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-4">qHash</a></b> ( uchar <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-5">qHash</a></b> ( signed char <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-6">qHash</a></b> ( ushort <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-7">qHash</a></b> ( short <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-8">qHash</a></b> ( uint <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-9">qHash</a></b> ( int <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-10">qHash</a></b> ( ulong <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-11">qHash</a></b> ( long <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-12">qHash</a></b> ( quint64 <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-13">qHash</a></b> ( qint64 <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-14">qHash</a></b> ( QChar <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-15">qHash</a></b> ( const QByteArray &amp; <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-16">qHash</a></b> ( const QString &amp; <i>key</i> )</li>
-<li><div class="fn"/>uint <b><a href="qhash.html#qHash-17">qHash</a></b> ( const T * <i>key</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qhash.html#operator-lt-lt-9">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qhash.html#operator-gt-gt-9">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-2x">qHash</a></b> ( char <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-5">qHash</a></b> ( uchar <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-6">qHash</a></b> ( signed char <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-7">qHash</a></b> ( ushort <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-8">qHash</a></b> ( short <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-9">qHash</a></b> ( uint <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-10">qHash</a></b> ( int <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-11">qHash</a></b> ( ulong <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-12">qHash</a></b> ( long <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-13">qHash</a></b> ( quint64 <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-14">qHash</a></b> ( qint64 <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-15">qHash</a></b> ( QChar <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-16">qHash</a></b> ( const QByteArray &amp; <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-17">qHash</a></b> ( const QString &amp; <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-18">qHash</a></b> ( const T * <i>key</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qhash.html#operator-lt-lt-10">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qhash.html#operator-gt-gt-10">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -105,7 +106,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li>QHash provides faster lookups than <a href="qmap.html">QMap</a>.</li>
 <li>When iterating over a <a href="qmap.html">QMap</a>, the items are always sorted by key. With QHash, the items are arbitrarily ordered.</li>
-<li>The key type of a <a href="qmap.html">QMap</a> must provide operator&lt;(). The key type of a QHash must provide operator==() and a global <a href="qhash.html#qHashx">qHash</a>(Key) function.</li>
+<li>The key type of a <a href="qmap.html">QMap</a> must provide operator&lt;(). The key type of a QHash must provide operator==() and a global qHash(Key) function.</li>
 </ul>
 <p>Here's an example QHash with <a href="qstring.html">QString</a> keys and <tt>int</tt> values:</p>
 <pre>&nbsp;   QHash&lt;QString, int&gt; hash;</pre>
@@ -167,8 +168,8 @@ body { background: #ffffff; color: black; }</style>
     foreach (int value, hash)
         cout &lt;&lt; value &lt;&lt; endl;</pre>
 <p>Items can be removed from the hash in several ways. One way is to call <a href="qhash.html#remove">remove</a>(); this will remove any item with the given key. Another way is to use <a href="qmutablehashiterator.html#remove">QMutableHashIterator::remove</a>(). In addition, you can clear the entire hash using <a href="qhash.html#clear">clear</a>().</p>
-<p>QHash's key and value data types must be <a href="containers.html#assignable-data-types">assignable data types</a>. You cannot, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *. In addition, QHash's key type must provide operator==(), and there must also be a global <a href="qhash.html#qHashx">qHash</a>() function that returns a hash value for an argument of the key's type.</p>
-<p>Here's a list of the C++ and Qt types that can serve as keys in a QHash: any integer type (char, unsigned long, etc.), any pointer type, <a href="qchar.html">QChar</a>, <a href="qstring.html">QString</a>, and <a href="qbytearray.html">QByteArray</a>. For all of these, the <tt>&lt;QHash&gt;</tt> header defines a <a href="qhash.html#qHashx">qHash</a>() function that computes an adequate hash value. If you want to use other types as the key, make sure that you provide operator==() and a <a href="qhash.html#qHashx">qHash</a>() implementation.</p>
+<p>QHash's key and value data types must be <a href="containers.html#assignable-data-types">assignable data types</a>. You cannot, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *. In addition, QHash's key type must provide operator==(), and there must also be a global qHash() function that returns a hash value for an argument of the key's type.</p>
+<p>Here's a list of the C++ and Qt types that can serve as keys in a QHash: any integer type (char, unsigned long, etc.), any pointer type, <a href="qchar.html">QChar</a>, <a href="qstring.html">QString</a>, and <a href="qbytearray.html">QByteArray</a>. For all of these, the <tt>&lt;QHash&gt;</tt> header defines a qHash() function that computes an adequate hash value. If you want to use other types as the key, make sure that you provide operator==() and a qHash() implementation.</p>
 <p>Example:</p>
 <pre>&nbsp;   #ifndef EMPLOYEE_H
     #define EMPLOYEE_H
@@ -197,7 +198,7 @@ body { background: #ffffff; color: black; }</style>
     }
 
     #endif // EMPLOYEE_H</pre>
-<p>The <a href="qhash.html#qHashx">qHash</a>() function computes a numeric value based on a key. It can use any algorithm imaginable, as long as it always returns the same value if given the same argument. In other words, if <tt>e1 == e2</tt>, then <tt>qHash(e1) == qHash(e2)</tt> must hold as well. However, to obtain good performance, the <a href="qhash.html#qHashx">qHash</a>() function should attempt to return different hash values for different keys to the largest extent possible.</p>
+<p>The qHash() function computes a numeric value based on a key. It can use any algorithm imaginable, as long as it always returns the same value if given the same argument. In other words, if <tt>e1 == e2</tt>, then <tt>qHash(e1) == qHash(e2)</tt> must hold as well. However, to obtain good performance, the qHash() function should attempt to return different hash values for different keys to the largest extent possible.</p>
 <p>In the example above, we've relied on Qt's global qHash(const <a href="qstring.html">QString</a> &amp;) to give us a hash value for the employee's name, and XOR'ed this with the day they were born to help produce unique hashes for people with the same name.</p>
 <p>Internally, QHash uses a hash table to perform lookups. Unlike Qt 3's <tt>QDict</tt> class, which needed to be initialized with a prime number, QHash's hash table automatically grows and shrinks to provide fast lookups without wasting too much memory. You can still control the size of the hash table by calling <a href="qhash.html#reserve">reserve</a>() if you already know approximately how many items the QHash will contain, but this isn't necessary to obtain good performance. You can also call <a href="qhash.html#capacity">capacity</a>() to retrieve the hash table's size.</p>
 <p>See also <a href="qhashiterator.html">QHashIterator</a>, <a href="qmutablehashiterator.html">QMutableHashIterator</a>, <a href="qmap.html">QMap</a>, and <a href="qset.html">QSet</a>.</p>
@@ -236,6 +237,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="constEnd"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::constEnd () const</h3>
 <p>Returns a const <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the hash.</p>
 <p>See also <a href="qhash.html#constBegin">constBegin</a>() and <a href="qhash.html#end">end</a>().</p>
+<h3 class="fn"><a name="constFind"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::constFind ( const Key &amp; <i>key</i> ) const</h3>
+<p>Returns an iterator pointing to the item with key <i>key</i> in the hash.</p>
+<p>If the hash contains no item with key <i>key</i>, the function returns <a href="qhash.html#constEnd">constEnd</a>().</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qhash.html#find">find</a>().</p>
 <h3 class="fn"><a name="contains"></a>bool QHash::contains ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns true if the hash contains an item with key <i>key</i>; otherwise returns false.</p>
 <p>See also <a href="qhash.html#count">count</a>().</p>
@@ -358,42 +364,43 @@ body { background: #ffffff; color: black; }</style>
 <p>Same as <a href="qhash.html#value">value</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="qHashx"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-2x"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the hash value for <i>key</i>.</p>
-<h3 class="fn"><a name="qHash-4"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uchar-typedef">uchar</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-5"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uchar-typedef">uchar</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-5"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( signed char <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-6"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( signed char <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-6"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#ushort-typedef">ushort</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-7"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#ushort-typedef">ushort</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-7"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( short <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-8"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( short <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-8"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uint-typedef">uint</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-9"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uint-typedef">uint</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-9"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( int <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-10"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( int <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-10"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#ulong-typedef">ulong</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-11"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#ulong-typedef">ulong</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-11"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( long <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-12"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( long <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-12"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#quint64-typedef">quint64</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-13"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#quint64-typedef">quint64</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-13"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-14"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-14"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qchar.html">QChar</a> <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-15"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qchar.html">QChar</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-15"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-16"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-16"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-17"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="qHash-17"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const T * <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-18"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const T * <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="operator-lt-lt-9"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the hash <i>hash</i> to stream <i>out</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-9"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a hash from stream <i>in</i> into <i>hash</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&gt;&gt;()</tt>.</p>
@@ -402,6 +409,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

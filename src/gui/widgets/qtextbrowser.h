@@ -24,7 +24,7 @@
 #ifndef QTEXTBROWSER_H
 #define QTEXTBROWSER_H
 
-#include "QtGui/qtextedit.h"
+#include <QtGui/qtextedit.h>
 #include <QtCore/qurl.h>
 
 QT_MODULE(Gui)
@@ -54,14 +54,14 @@ public:
 
     virtual QVariant loadResource(int type, const QUrl &name);
 
-public slots:
+public Q_SLOTS:
     virtual void setSource(const QUrl &name);
     virtual void backward();
     virtual void forward();
     virtual void home();
     virtual void reload();
 
-signals:
+Q_SIGNALS:
     void backwardAvailable(bool);
     void forwardAvailable(bool);
     void sourceChanged(const QUrl &);
@@ -70,6 +70,7 @@ signals:
     void anchorClicked(const QUrl &);
 
 protected:
+    bool event(QEvent *e);
     virtual void keyPressEvent(QKeyEvent *ev);
     virtual void mouseMoveEvent(QMouseEvent *ev);
     virtual void mousePressEvent(QMouseEvent *ev);
@@ -90,4 +91,5 @@ private:
 };
 
 #endif // QT_NO_TEXTBROWSER
+
 #endif // QTEXTBROWSER_H

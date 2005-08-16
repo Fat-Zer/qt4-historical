@@ -22,9 +22,8 @@
 ****************************************************************************/
 
 #include "private/qpicture_p.h"
-#include "QtCore/qfile.h"
-#include "QtGui/qpainter.h"
-
+#include "qfile.h"
+#include "qpainter.h"
 #include "q3picture.h"
 #include "q3paintengine_svg_p.h"
 
@@ -137,7 +136,7 @@ bool Q3Picture::load(QIODevice *dev, const char *format)
     if (qstrcmp(format, "svg" ) == 0) {
 	Q3SvgDevice svg;
 	if (!svg.load(dev))
-	    return FALSE;
+	    return false;
         QPainter p(this);
         p.setRenderHint(QPainter::Antialiasing);
 	bool b = svg.play(&p);
@@ -168,7 +167,7 @@ bool Q3Picture::save(const QString &fileName, const char *format)
 	Q3SvgDevice svg;
 	QPainter p(&svg);
 	if (!play(&p))
-	    return FALSE;
+	    return false;
 	svg.setBoundingRect(boundingRect());
 	return svg.save(fileName);
     }
@@ -195,7 +194,7 @@ bool Q3Picture::save(QIODevice *dev, const char *format)
 	Q3SvgDevice svg;
 	QPainter p(&svg);
 	if (!play(&p))
-	    return FALSE;
+	    return false;
 	svg.setBoundingRect(boundingRect());
 	return svg.save(dev);
     }

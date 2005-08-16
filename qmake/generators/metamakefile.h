@@ -20,13 +20,15 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#ifndef __METAMAKEFILE_H__
-#define __METAMAKEFILE_H__
+
+#ifndef METAMAKEFILE_H
+#define METAMAKEFILE_H
+
+#include <qlist.h>
+#include <qstring.h>
 
 class QMakeProject;
 class MakefileGenerator;
-#include <qlist.h>
-#include <qstring.h>
 
 class MetaMakefileGenerator
 {
@@ -48,4 +50,4 @@ public:
     virtual bool write(const QString &) = 0;
 };
 
-#endif /* __METAMAKEFILE_H__ */
+#endif // METAMAKEFILE_H

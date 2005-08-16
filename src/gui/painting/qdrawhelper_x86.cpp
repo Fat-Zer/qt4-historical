@@ -21,347 +21,647 @@
 **
 ****************************************************************************/
 
-#if defined(Q_CC_GNU) && defined(__i386__)
-enum CPUFeatures {
-    None = 0,
-    MMX = 0x1,
-    SSE = 0x2,
-    SSE2 = 0x4,
-    CMOV = 0x8
-};
-static uint detectCPUFeatures() {
-    uint result;
-    /* see p. 118 of amd64 instruction set manual Vol3 */
-    asm ("push %%ebx\n"
-         "pushf\n"
-         "pop %%eax\n"
-         "mov %%eax, %%ebx\n"
-         "xor $0x00200000, %%eax\n"
-         "push %%eax\n"
-         "popf\n"
-         "pushf\n"
-         "pop %%eax\n"
-         "mov $0x0, %%edx\n"
-         "xor %%ebx, %%eax\n"
-         "jz 1f\n"
+#include <private/qdrawhelper_p.h>
+#include <private/qpaintengine_raster_p.h>
 
-         "mov $0x00000001, %%eax\n"
-         "cpuid\n"
-         "1:\n"
-         "pop %%ebx\n"
-         "mov %%edx, %0\n"
-        : "=r" (result)
-        :
-        : "%eax", "%ecx", "%edx"
-        );
+#if defined(QT_HAVE_SSE) && (!defined(__APPLE__) || defined(__i386__))
 
-    uint features = 0;
-    // result now contains the standard feature bits
-    if (result & (1 << 15))
-        features |= CMOV;
-    if (result & (1 << 23))
-        features |= MMX;
-    if (result & (1 << 25))
-        features |= SSE;
-    if (result & (1 << 26))
-        features |= SSE2;
-    return features;
-}
-
-
-static void sse_memfill(uint *target, uint value, int len)
-{
-    uint *end = target + len;
-    if (len >= 7) {
-        {
-            int align = (((ulong)target) & 0xf) >> 2;
-            switch(align) {
-            case 1:
-                *target++ = value;
-            case 2:
-                *target++ = value;
-            case 3:
-                *target++ = value;
-            default:
-                break;
-            }
-        }
-        asm("movd %1, %%xmm1\n"
-            "pshufd $0x0, %%xmm1, %%xmm0\n"
-            "mov %2, %%eax\n"
-            "mov %3, %%edx\n"
-            "1: movdqa %%xmm0, (%%eax)\n"
-            "add $0x10, %%eax\n"
-            "cmp %%eax, %%edx\n"
-            "jb 1b\n"
-            "mov %%eax, %0\n"
-            : "=r" (target)
-            : "m" (value),
-              "r" (target),
-              "m" (end)
-            : "%eax", "%edx", "%xmm0", "%xmm1"
-            );
-    }
-    while (target < end) {
-        *target = value;
-        ++target;
-    }
-}
-
-#define qt_alpha_pixel(s, t, a, ra) { int tmp = s*a + t*ra; t = qt_div_255(tmp); }
-#define qt_alpha_pixel_pm(s, t, ra) { int tmp = s + t*ra; t = qt_div_255(tmp); }
-
-static void blend_color_sse(ARGB *target, const QSpan *span, ARGB color)
-{
-    if (!span->len)
-        return;
-
-    int alpha = qt_div_255(color.a * span->coverage);
-    int pr = alpha * color.r;
-    int pg = alpha * color.g;
-    int pb = alpha * color.b;
-
-    int rev_alpha = 255 - alpha;
-
-    const ushort pm[4]
-        = { (ushort)pb, (ushort)pg, (ushort)pr, 0 };
-    const ushort mask[4]
-        = { 0, 0, 0, 0xffff };
-    if (span->len > 1 ) {
-        /*
-          registers:
-          xmm0: premultiplied src
-          xmm1: rev_alpha
-          xmm2: *target
-          xmm7: 0
-          xmm6: alpha mask
-        */
-        asm("pxor %%xmm7, %%xmm7\n" // clear xmm7
-            "movlps %2, %%xmm0\n" // src to xmm0
-            "movlhps %%xmm0, %%xmm0\n"
-            "movlps %5, %%xmm6\n" // src to xmm0
-            "movlhps %%xmm6, %%xmm6\n"
-            "movd %3, %%xmm1\n"  // rev_alpha to xmm1
-            // #### should work without the line below
-            "punpcklbw %%xmm7, %%xmm1\n"
-            "pshuflw $0, %%xmm1, %%xmm1\n"
-            "movlhps %%xmm1, %%xmm1\n" // spread rev_alpha over all channels
-            "1:\n"
-            "prefetchnta 128(%1)\n"
-            "movlps (%1), %%xmm2\n" // target to xmm2
-            "punpcklbw %%xmm7, %%xmm2\n" //  to xmm1
-            "pmullw %%xmm1, %%xmm2\n" // target * ralpha
-            "paddw %%xmm0, %%xmm2\n" // sum to xmm1
-            "por %%xmm6, %%xmm2\n" // make sure alpha is set to 0xff
-            "psrlw $8, %%xmm2\n" // shift right
-            "packuswb %%xmm2, %%xmm2\n" // pack to 8 bits
-            "movlps %%xmm2, (%1)\n"
-            "add $8, %1\n"
-            "dec %4\n"
-            "jnz 1b\n"
-            "mov %1, %0\n"
-            : "=m" (target)
-            : "r" (target),
-              "m" (*pm),
-              "r" (rev_alpha),
-              "r" (span->len/2),
-              "m" (*mask)
-            : "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7"
-            );
-    }
-    if (span->len % 2) {
-        qt_alpha_pixel_pm(pr, target->r, rev_alpha);
-        qt_alpha_pixel_pm(pg, target->g, rev_alpha);
-        qt_alpha_pixel_pm(pb, target->b, rev_alpha);
-        target->a = 255;
-    }
-}
-
-#define CMOV_PIX(pixel, out, mask, image_bits, offset) \
-    asm ("mov %1, %%edx\n"                             \
-         "and $"#mask",%%edx\n"                         \
-         "cmovnz (%2,%3,0x4), %%edx\n"                  \
-         "mov %%edx, %0\n"                             \
-         : "=m" (pixel)                                \
-         : "r" (out),                                  \
-           "r" (image_bits),                           \
-           "r" (offset)                                \
-         : "%edx"                             \
-        )
-
-static void blend_transformed_bilinear_sse(ARGB *target, const QSpan *span,
-                                           qreal ix, qreal iy, qreal dx, qreal dy,
-                                           ARGB *image_bits, int image_width, int image_height)
-{
-    const int fixed_scale = 1 << 16;
-    int x = int((ix + dx * span->x) * fixed_scale);
-    int y = int((iy + dy * span->x) * fixed_scale);
-
-    int fdx = (int)(dx * fixed_scale);
-    int fdy = (int)(dy * fixed_scale);
-
-    /*
-      set up constant xmm registers:
-      xmm7 : 0
-      xmm6 : coverage
-      xmm5 : alpha mask on xmm5
-      xmm4 : 0x00ff...
-    */
-    {
-        const ushort mask[4] = { 0, 0, 0, 0xffff };
-        uint coverage = span->coverage;
-        asm("pxor %%xmm7, %%xmm7\n" // clear xmm7
-            "movd %0, %%xmm6\n"  // coverage to xmm6
-            "punpcklbw %%xmm7, %%xmm6\n"
-            "pshuflw $0, %%xmm6, %%xmm6\n" // spread over all channels
-            "movlps %1, %%xmm5\n" // mask to xmm5
-            "movlhps %%xmm5, %%xmm5\n"
-            "movd %%xmm6, %0\n"
-            "pcmpeqb %%xmm4, %%xmm4\n"
-            "psrlw $8, %%xmm4\n" // 0x255 in xmm4
-            :
-            : "r" (coverage),
-              "m" (*mask)
-            : "%xmm5", "%xmm6", "%xmm7"
-            );
-    }
-    for (int i = 0; i < span->len; ++i) {
-        const int x1 = (x >> 16);
-        const int y1 = (y >> 16);
-
-        const int distx = ((x - (x1 << 16)) >> 8);
-        const int disty = ((y - (y1 << 16)) >> 8);
-        const int idistx = 256 - distx;
-        const int idisty = 256 - disty;
-
-        const long y1_offset = y1 * image_width;
-        const long y2_offset = y1_offset + image_width;
-
-        struct {
-            uint tl;
-            uint bl;
-        } left;
-        struct {
-            uint tr;
-            uint br;
-        } right;
-
-        {
-            const int x2 = x1 + 1;
-            const int y2 = y1 + 1;
-            enum {
-                X1Out = 0x1,
-                X2Out = 0x2,
-                Y1Out = 0x4,
-                Y2Out = 0x8
-            };
-            register const uint out = (x1 >= 0 & x1 < image_width)
-                                      | ((x2 >= 0 & x2 < image_width) << 1)
-                                      | ((y1 >= 0 & y1 < image_height) << 2)
-                                      | ((y2 >= 0 & y2 < image_height) << 3);
-            CMOV_PIX(left.tl, out, 0x5, image_bits, y1_offset + x1); // X1Out|Y2Out
-            CMOV_PIX(left.bl, out, 0x8, image_bits, y2_offset + x1); // X1Out|Y2Out
-            CMOV_PIX(right.tr, out, 0x6, image_bits, y1_offset + x2); // X2Out|Y1Out
-            CMOV_PIX(right.br, out, 0xa, image_bits, y2_offset + x2); // X2Out|Y2Out
-        }
-        /*
-          tl, bl : xmm0
-          tr: xmm1 low
-          br : xmm1 high
-          distx, idistx :  xmm2
-          idistx, idisty: xmm3
-          scratch: xmm6
-          zero: xmm7
-        */
-
-        asm("movlps %0, %%xmm0\n" // left to xmm0
-            "punpcklbw %%xmm7, %%xmm0\n"
-
-            "movlps %1, %%xmm1\n"
-            "punpcklbw %%xmm7, %%xmm1\n"
-
-            "movd %2, %%xmm2\n"
-            "pshuflw $0, %%xmm2, %%xmm2\n"
-            "movlhps %%xmm2, %%xmm2\n" // spread distx
-            "pmullw %%xmm2, %%xmm1\n"
-
-            "movd %3, %%xmm2\n"
-            "pshuflw $0, %%xmm2, %%xmm2\n"
-            "movlhps %%xmm2, %%xmm2\n" // spread distx
-            "pmullw %%xmm2, %%xmm0\n"
-
-            "paddw %%xmm1, %%xmm0\n" // now contains xtop and xbottom
-            "psrlw $8, %%xmm0\n"
-
-            "movd %4, %%xmm2\n"
-            "pshuflw $0, %%xmm2, %%xmm2\n"
-            "movd %5, %%xmm3\n"
-            "pshuflw $0, %%xmm3, %%xmm3\n"
-            "movlhps %%xmm2, %%xmm3\n" // disty and idisty in mm2
-
-            "pmullw %%xmm3, %%xmm0\n"
-
-            "movhlps %%xmm0, %%xmm1\n"
-            "paddw %%xmm1, %%xmm0\n"
-            "psrlw $8, %%xmm0\n" // src is now in xmm0, ready for blend
-
-            // blend operation follows
-            /*
-              src already in xmm0
-              target in xmm1
-              alpha of src in xmm2
-              rev alpha in xmm5
-            */
-            "movd (%6), %%xmm1\n" // target to mm1
-            "punpcklbw %%xmm7, %%xmm1\n"
-            "pshuflw $255, %%xmm0, %%xmm2\n" // spread alpha over all channels
-            "pmullw %%xmm6, %%xmm2\n" // alpha *= coverage
-            "psrlw $8, %%xmm2\n" // shift right
-            "pmullw %%xmm2, %%xmm0\n" // src *= alpha
-            "movdqa %%xmm4, %%xmm3\n"
-            "psubw %%xmm2, %%xmm3\n" // 0x255 - alpha in xmm3
-            "pmullw %%xmm3, %%xmm1\n" // target *= ralpha
-            "paddw %%xmm1, %%xmm0\n" // sum to xmm1
-            "por %%xmm5, %%xmm0\n" // make sure alpha is set to 0xff
-            "psrlw $8, %%xmm0\n" // shift right
-            "packuswb %%xmm0, %%xmm0\n" // pack to 8 bits
-            "movd %%xmm0, (%6)\n"
-            :
-            : "m" (left),
-              "m" (right),
-              "r" (distx),
-              "r" (idistx),
-              "r" (disty),
-              "r" (idisty),
-              "r" (target)
-            : "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7"
-            );
-//         qDebug("target = %x", *((uint *)target));
-        x += fdx;
-        y += fdy;
-        ++target;
-    }
-}
-
-#elif defined Q_CC_MSVC
-
-
-#endif // Q_CC_GCC and Q_CC_MSVC
-
-void qInitDrawhelperAsm()
-{
-    static uint features = 0;
-    if (features)
-        return;
-
-#if defined (Q_CC_GNU) && defined (__i386__)
-    features = detectCPUFeatures();
-
-    if (features & SSE2) {
-        dh[DrawHelper_RGB32]->blendColor = blend_color_sse;
-        dh[DrawHelper_RGB32]->blendTransformedBilinear = blend_transformed_bilinear_sse;
-    }
-#else
-    Q_UNUSED(dh)
+#ifdef Q_CC_GNU
+#  include <mmintrin.h>
+#  if !defined(__IWMMXT__)
+#    include <xmmintrin.h>
+#  endif
+// It seems that gcc (3.1 <= x < 3.4) segfaults when casting the ULL immediate values to __m64.
+// A workaround was proposed here: http://gcc.gnu.org/ml/gcc-prs/2002-07/msg00329.html
+#  if __GNUC__ == 3 && __GNUC_MINOR__ >= 1 && __GNUC_MINOR__ < 4
+#    define C_FF volatile unsigned long long mmx_0x00ff_ull = 0x00ff00ff00ff00ffULL; \
+		 const m64 mmx_0x00ff = (__m64)mmx_0x00ff_ull
+#    define C_80 volatile unsigned long long mmx_0x0080_ull = 0x0080008000800080ULL; \
+                 const m64 mmx_0x0080 = (__m64)mmx_0x0080_ull
+#  else
+#    define C_FF const m64 mmx_0x00ff = (__m64)0x00ff00ff00ff00ffULL
+#    define C_80 const m64 mmx_0x0080 = (__m64)0x0080008000800080ULL
+#  endif
+#  define C_00 const m64 mmx_0x0000 = _mm_setzero_si64()
+#elif defined (Q_OS_WIN)
+#  include <mmintrin.h>
+#  include <xmmintrin.h>
+#  define C_FF const m64 mmx_0x00ff = _mm_set1_pi16(0xff)
+#  define C_80 const m64 mmx_0x0080 = _mm_set1_pi16(0x80)
+#  define C_00 const m64 mmx_0x0000 = _mm_setzero_si64()
+#  pragma warning(disable: 4799) // No EMMS at end of function
 #endif
+
+typedef __m64 m64;
+
+#ifndef _MM_SHUFFLE
+#define _MM_SHUFFLE(fp3,fp2,fp1,fp0) \
+ (((fp3) << 6) | ((fp2) << 4) | ((fp1) << 2) | (fp0))
+
+#endif
+
+static inline m64 alpha(m64 x)
+{
+    return _mm_shuffle_pi16 (x, _MM_SHUFFLE(3, 3, 3, 3));
 }
+
+static inline m64 _negate(const m64 &x, const m64 &mmx_0x00ff)
+{
+    return _mm_xor_si64(x, mmx_0x00ff);
+}
+#define negate(x) _negate(x, mmx_0x00ff)
+
+static inline m64 add(const m64 &a, const m64 &b)
+{
+    return  _mm_adds_pu16 (a, b);
+}
+
+static inline m64 _byte_mul(const m64 &a, const m64 &b, const m64 &mmx_0x0080)
+{
+    m64 res = _mm_mullo_pi16(a, b);
+    res = _mm_adds_pu16(res, mmx_0x0080);
+    res = _mm_adds_pu16(res, _mm_srli_pi16 (res, 8));
+    return _mm_srli_pi16(res, 8);
+}
+#define byte_mul(a, b) _byte_mul(a, b, mmx_0x0080)
+
+static inline m64 interpolate_pixel_256(const m64 &x, const m64 &a, const m64 &y, const m64 &b) {
+    m64 res = _mm_adds_pu16(_mm_mullo_pi16(x, a), _mm_mullo_pi16(y, b));
+    return _mm_srli_pi16(res, 8);
+}
+
+static inline m64 _interpolate_pixel_255(const m64 &x, const m64 &a, const m64 &y, const m64 &b, const m64 &mmx_0x0080) {
+    m64 res = _mm_adds_pu16(_mm_mullo_pi16(x, a), _mm_mullo_pi16(y, b));
+    res = _mm_adds_pu16(res, mmx_0x0080);
+    res = _mm_adds_pu16(res, _mm_srli_pi16 (res, 8));
+    return _mm_srli_pi16(res, 8);
+}
+#define interpolate_pixel_255(x, a, y, b) _interpolate_pixel_255(x, a, y, b, mmx_0x0080)
+
+static inline m64 _premul(m64 x, const m64 &mmx_0x0080) {
+    m64 a = alpha(x);
+    return _byte_mul(x, a, mmx_0x0080);
+}
+#define premul(x) _premul(x, mmx_0x0080)
+
+static inline m64 _load(uint x, const m64 &mmx_0x0000)
+{
+    return _mm_unpacklo_pi8(_mm_cvtsi32_si64(x), mmx_0x0000);
+}
+#define load(x) _load(x, mmx_0x0000)
+
+static inline m64 _load_alpha(uint x, const m64 &mmx_0x0000)
+{
+    m64 t = _mm_unpacklo_pi8(_mm_cvtsi32_si64(x), mmx_0x0000);
+    return _mm_shuffle_pi16 (t, _MM_SHUFFLE(0, 0, 0, 0));
+}
+#define load_alpha(x) _load_alpha(x, mmx_0x0000)
+
+static inline uint _store(const m64 &x, const m64 &mmx_0x0000)
+{
+    return _mm_cvtsi64_si32(_mm_packs_pu16(x, mmx_0x0000));
+}
+#define store(x) _store(x, mmx_0x0000)
+
+#if defined(__IWMMXT__)
+static inline void end_mmx() {}
+#else
+static inline void end_mmx()
+{
+    _mm_empty();
+}
+#endif
+
+/*
+  result = 0
+  d = d * cia
+*/
+static void QT_FASTCALL comp_func_solid_Clear(uint *dest, int length, uint, uint const_alpha)
+{
+    if (!length)
+        return;
+
+    if (const_alpha == 255) {
+        QT_MEMFILL_UINT(dest, length, 0);
+    } else {
+        C_FF; C_80; C_00;
+        m64 ia = negate(load_alpha(const_alpha));
+        for (int i = 0; i < length; ++i) {
+            dest[i] = store(byte_mul(load(dest[i]), ia));
+        }
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_Clear(uint *dest, const uint *, int length, uint const_alpha)
+{
+    if (const_alpha == 255) {
+        QT_MEMFILL_UINT(dest, length, 0);
+    } else {
+        C_FF; C_80; C_00;
+        m64 ia = negate(load_alpha(const_alpha));
+        for (int i = 0; i < length; ++i)
+            dest[i] = store(byte_mul(load(dest[i]), ia));
+    }
+    end_mmx();
+}
+
+/*
+  result = s
+  dest = s * ca + d * cia
+*/
+static void QT_FASTCALL comp_func_solid_Source(uint *dest, int length, uint src, uint const_alpha)
+{
+    if (const_alpha == 255) {
+        QT_MEMFILL_UINT(dest, length, src);
+    } else {
+        C_FF; C_80; C_00;
+        const m64 a = load_alpha(const_alpha);
+        const m64 ia = negate(a);
+        const m64 s = byte_mul(load(src), a);
+        for (int i = 0; i < length; ++i) {
+            dest[i] = store(add(s, byte_mul(load(dest[i]), ia)));
+        }
+        end_mmx();
+    }
+}
+
+static void QT_FASTCALL comp_func_Source(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    if (const_alpha == 255) {
+        ::memcpy(dest, src, length * sizeof(uint));
+    } else {
+        C_FF; C_80; C_00;
+        const m64 a = load_alpha(const_alpha);
+        const m64 ia = negate(a);
+        for (int i = 0; i < length; ++i)
+            dest[i] = store(interpolate_pixel_255(load(src[i]), a, load(dest[i]), ia));
+    }
+    end_mmx();
+}
+
+/*
+  result = s + d * sia
+  dest = (s + d * sia) * ca + d * cia
+       = s * ca + d * (sia * ca + cia)
+       = s * ca + d * (1 - sa*ca)
+*/
+static void QT_FASTCALL comp_func_solid_SourceOver(uint *dest, int length, uint src, uint const_alpha)
+{
+    if ((const_alpha & qAlpha(src)) == 255) {
+        QT_MEMFILL_UINT(dest, length, src);
+    } else {
+        C_FF; C_80; C_00;
+        m64 s = load(src);
+        if (const_alpha != 255) {
+            m64 ca = load_alpha(const_alpha);
+            s = byte_mul(s, ca);
+        }
+        m64 a = negate(alpha(s));
+        for (int i = 0; i < length; ++i)
+            dest[i] = store(add(s, byte_mul(load(dest[i]), a)));
+        end_mmx();
+    }
+}
+
+static void QT_FASTCALL comp_func_SourceOver(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF;
+    C_80;
+    C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            m64 ia = negate(alpha(s));
+            dest[i] = store(add(s, byte_mul(load(dest[i]), ia)));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        for (int i = 0; i < length; ++i) {
+            m64 s = byte_mul(load(src[i]), ca);
+            m64 ia = negate(alpha(s));
+            dest[i] = store(add(s, byte_mul(load(dest[i]), ia)));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = d + s * dia
+  dest = (d + s * dia) * ca + d * cia
+       = d + s * dia * ca
+*/
+static void QT_FASTCALL comp_func_solid_DestinationOver(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    m64 s = load(src);
+    if (const_alpha != 255)
+        s = byte_mul(s, load_alpha(const_alpha));
+
+    for (int i = 0; i < length; ++i) {
+        m64 d = load(dest[i]);
+        m64 dia = negate(alpha(d));
+        dest[i] = store(add(d, byte_mul(s, dia)));
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_DestinationOver(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            m64 ia = negate(alpha(d));
+            dest[i] = store(add(d, byte_mul(load(src[i]), ia)));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            m64 dia = negate(alpha(d));
+            dia = byte_mul(dia, ca);
+            dest[i] = store(add(d, byte_mul(load(src[i]), dia)));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = s * da
+  dest = s * da * ca + d * cia
+*/
+static void QT_FASTCALL comp_func_solid_SourceIn(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_80; C_00;
+    if (const_alpha == 255) {
+        m64 s = load(src);
+        for (int i = 0; i < length; ++i) {
+            m64 da = alpha(load(dest[i]));
+            dest[i] = store(byte_mul(s, da));
+        }
+    } else {
+        C_FF;
+        m64 s = load(src);
+        m64 ca = load_alpha(const_alpha);
+        s = byte_mul(s, ca);
+        m64 cia = negate(ca);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(s, alpha(d), d, cia));
+        }
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_SourceIn(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 a = alpha(load(dest[i]));
+            dest[i] = store(byte_mul(load(src[i]), a));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        m64 cia = negate(ca);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            m64 da = byte_mul(alpha(d), ca);
+            dest[i] = store(interpolate_pixel_255(load(src[i]), da, d, cia));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = d * sa
+  dest = d * sa * ca + d * cia
+       = d * (sa * ca + cia)
+*/
+static void QT_FASTCALL comp_func_solid_DestinationIn(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_80; C_00;
+    m64 a = alpha(load(src));
+    if (const_alpha != 255) {
+        C_FF;
+        m64 ca = load_alpha(const_alpha);
+        m64 cia = negate(ca);
+        a = byte_mul(a, ca);
+        a = add(a, cia);
+    }
+    for (int i = 0; i < length; ++i)
+        dest[i] = store(byte_mul(load(dest[i]), a));
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_DestinationIn(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 a = alpha(load(src[i]));
+            dest[i] = store(byte_mul(load(dest[i]), a));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        m64 cia = negate(ca);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            m64 a = alpha(load(src[i]));
+            a = byte_mul(a, ca);
+            a = add(a, cia);
+            dest[i] = store(byte_mul(d, a));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = s * dia
+  dest = s * dia * ca + d * cia
+*/
+static void QT_FASTCALL comp_func_solid_SourceOut(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    m64 s = load(src);
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 dia = negate(alpha(load(dest[i])));
+            dest[i] = store(byte_mul(s, dia));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        m64 cia = negate(ca);
+        s = byte_mul(s, ca);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(s, negate(alpha(d)), d, cia));
+        }
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_SourceOut(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 ia = negate(alpha(load(dest[i])));
+            dest[i] = store(byte_mul(load(src[i]), ia));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        m64 cia = negate(ca);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            m64 dia = byte_mul(negate(alpha(d)), ca);
+            dest[i] = store(interpolate_pixel_255(load(src[i]), dia, d, cia));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = d * sia
+  dest = d * sia * ca + d * cia
+       = d * (sia * ca + cia)
+*/
+static void QT_FASTCALL comp_func_solid_DestinationOut(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    m64 a = negate(alpha(load(src)));
+    if (const_alpha != 255) {
+        m64 ca = load_alpha(const_alpha);
+        a = byte_mul(a, ca);
+        a = add(a, negate(ca));
+    }
+    for (int i = 0; i < length; ++i)
+        dest[i] = store(byte_mul(load(dest[i]), a));
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_DestinationOut(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 a = negate(alpha(load(src[i])));
+            dest[i] = store(byte_mul(load(dest[i]), a));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        m64 cia = negate(ca);
+        for (int i = 0; i < length; ++i) {
+            m64 d = load(dest[i]);
+            m64 a = negate(alpha(load(src[i])));
+            a = byte_mul(a, ca);
+            a = add(a, cia);
+            dest[i] = store(byte_mul(d, a));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = s*da + d*sia
+  dest = s*da*ca + d*sia*ca + d *cia
+       = s*ca * da + d * (sia*ca + cia)
+       = s*ca * da + d * (1 - sa*ca)
+*/
+static void QT_FASTCALL comp_func_solid_SourceAtop(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    m64 s = load(src);
+    if (const_alpha != 255) {
+        m64 ca = load_alpha(const_alpha);
+        s = byte_mul(s, ca);
+    }
+    m64 a = negate(alpha(s));
+    for (int i = 0; i < length; ++i) {
+        m64 d = load(dest[i]);
+        dest[i] = store(interpolate_pixel_255(s, alpha(d), d, a));
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_SourceAtop(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(s, alpha(d), d, negate(alpha(s))));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            s = byte_mul(s, ca);
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(s, alpha(d), d, negate(alpha(s))));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = d*sa + s*dia
+  dest = d*sa*ca + s*dia*ca + d *cia
+       = s*ca * dia + d * (sa*ca + cia)
+*/
+static void QT_FASTCALL comp_func_solid_DestinationAtop(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    m64 s = load(src);
+    m64 a = alpha(s);
+    if (const_alpha != 255) {
+        m64 ca = load_alpha(const_alpha);
+        s = byte_mul(s, ca);
+        a = alpha(s);
+        a = add(a, negate(ca));
+    }
+    for (int i = 0; i < length; ++i) {
+        m64 d = load(dest[i]);
+        dest[i] = store(interpolate_pixel_255(s, negate(alpha(d)), d, a));
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_DestinationAtop(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(d, alpha(s), s, negate(alpha(d))));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            s = byte_mul(s, ca);
+            m64 d = load(dest[i]);
+            m64 a = alpha(s);
+            a = add(a, negate(ca));
+            dest[i] = store(interpolate_pixel_255(s, negate(alpha(d)), d, a));
+        }
+    }
+    end_mmx();
+}
+
+/*
+  result = d*sia + s*dia
+  dest = d*sia*ca + s*dia*ca + d *cia
+       = s*ca * dia + d * (sia*ca + cia)
+       = s*ca * dia + d * (1 - sa*ca)
+*/
+static void QT_FASTCALL comp_func_solid_XOR(uint *dest, int length, uint src, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    m64 s = load(src);
+    if (const_alpha != 255) {
+        m64 ca = load_alpha(const_alpha);
+        s = byte_mul(s, ca);
+    }
+    m64 a = negate(alpha(s));
+    for (int i = 0; i < length; ++i) {
+        m64 d = load(dest[i]);
+        dest[i] = store(interpolate_pixel_255(s, negate(alpha(d)), d, a));
+    }
+    end_mmx();
+}
+
+static void QT_FASTCALL comp_func_XOR(uint *dest, const uint *src, int length, uint const_alpha)
+{
+    C_FF; C_80; C_00;
+    if (const_alpha == 255) {
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(s, negate(alpha(d)), d, negate(alpha(s))));
+        }
+    } else {
+        m64 ca = load_alpha(const_alpha);
+        for (int i = 0; i < length; ++i) {
+            m64 s = load(src[i]);
+            s = byte_mul(s, ca);
+            m64 d = load(dest[i]);
+            dest[i] = store(interpolate_pixel_255(s, negate(alpha(d)), d, negate(alpha(s))));
+        }
+    }
+    end_mmx();
+}
+
+const CompositionFunctionSolid qt_functionForModeSolid_SSE[] = {
+        comp_func_solid_SourceOver,
+        comp_func_solid_DestinationOver,
+        comp_func_solid_Clear,
+        comp_func_solid_Source,
+        0,
+        comp_func_solid_SourceIn,
+        comp_func_solid_DestinationIn,
+        comp_func_solid_SourceOut,
+        comp_func_solid_DestinationOut,
+        comp_func_solid_SourceAtop,
+        comp_func_solid_DestinationAtop,
+        comp_func_solid_XOR
+};
+
+const CompositionFunction qt_functionForMode_SSE[] = {
+        comp_func_SourceOver,
+        comp_func_DestinationOver,
+        comp_func_Clear,
+        comp_func_Source,
+        0,
+        comp_func_SourceIn,
+        comp_func_DestinationIn,
+        comp_func_SourceOut,
+        comp_func_DestinationOut,
+        comp_func_SourceAtop,
+        comp_func_DestinationAtop,
+        comp_func_XOR
+};
+
+
+void qt_blend_color_argb_sse(int count, const QSpan *spans, void *userData)
+{
+    QSpanData *data = reinterpret_cast<QSpanData *>(userData);
+    if (data->rasterBuffer->compositionMode == QPainter::CompositionMode_Source
+        || (data->rasterBuffer->compositionMode == QPainter::CompositionMode_SourceOver
+            && qAlpha(data->solid.color) == 255)) {
+        // inline for performance
+        C_FF;
+        C_80;
+        C_00;
+        while (count--) {
+            uint *target = ((uint *)data->rasterBuffer->scanLine(spans->y)) + spans->x;
+            if (spans->coverage == 255) {
+                QT_MEMFILL_UINT(target, spans->len, data->solid.color);
+            } else {
+                // dest = s * ca + d * (1 - sa*ca) --> dest = s * ca + d * (1-ca)
+                m64 ca = load_alpha(spans->coverage);
+                m64 s = byte_mul(load(data->solid.color), ca);
+                m64 ica = negate(ca);
+                for (int i = 0; i < spans->len; ++i)
+                    target[i] = store(add(s, byte_mul(load(target[i]), ica)));
+            }
+            ++spans;
+        }
+        end_mmx();
+        return;
+    }
+    CompositionFunctionSolid func = qt_functionForModeSolid_SSE[data->rasterBuffer->compositionMode];
+    if (!func)
+        return;
+
+    while (count--) {
+        uint *target = ((uint *)data->rasterBuffer->scanLine(spans->y)) + spans->x;
+        func(target, spans->len, data->solid.color, spans->coverage);
+        ++spans;
+    }
+}
+
+#endif //QT_HAVE_SSE

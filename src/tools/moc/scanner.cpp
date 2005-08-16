@@ -24,9 +24,7 @@
 #include "scanner.h"
 #include "moc.h"
 #include "utils.h"
-
 #include "keywords.cpp"
-
 
 Symbols Scanner::scan(const QByteArray &input)
 {
@@ -69,12 +67,7 @@ Symbols Scanner::scan(const QByteArray &input)
         if (token > SPECIAL_TREATMENT_MARK) {
             switch (token) {
             case QUOTE:
-                while (*data && (*data != '\"'
-                                 || (*(data-1)=='\\'
-                                     && *(data-2)!='\\')))
-                    ++data;
-                if (*data)
-                    ++data;
+                data = skipQuote(data);
                 token = STRING_LITERAL;
                 break;
             case SINGLEQUOTE:
@@ -136,6 +129,11 @@ Symbols Scanner::scan(const QByteArray &input)
             case NEWLINE:
                 ++lineNum;
                 continue;
+            case MOC_NEXT_IS_IDENTIFIER:
+                while (is_whitespace(*data))
+                    ++data;
+                lexem = data;
+                // fall through
             case CHARACTER:
                 while (is_ident_char(*data))
                     ++data;
@@ -154,7 +152,3 @@ Symbols Scanner::scan(const QByteArray &input)
     symbols += Symbol(); // eof symbol
     return symbols;
 }
-
-
-
-

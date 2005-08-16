@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef CONFIGDIALOG_H
+#define CONFIGDIALOG_H
 
 #include <QDialog>
 

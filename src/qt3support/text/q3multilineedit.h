@@ -24,7 +24,7 @@
 #ifndef Q3MULTILINEEDIT_H
 #define Q3MULTILINEEDIT_H
 
-#include "Qt3Support/q3textedit.h"
+#include <Qt3Support/q3textedit.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -85,7 +85,7 @@ public:
     int maxLines() const { return QWIDGETSIZE_MAX; }
     void setMaxLines(int) {}
 
-public slots:
+public Q_SLOTS:
     void deselect() { selectAll(false); }
 
 protected:
@@ -114,4 +114,4 @@ private:
 
 #endif // QT_NO_MULTILINEEDIT
 
-#endif // QMULTILINEEDIT_H
+#endif // Q3MULTILINEEDIT_H

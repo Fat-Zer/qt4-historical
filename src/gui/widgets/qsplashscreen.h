@@ -24,8 +24,8 @@
 #ifndef QSPLASHSCREEN_H
 #define QSPLASHSCREEN_H
 
-#include "QtGui/qpixmap.h"
-#include "QtGui/qwidget.h"
+#include <QtGui/qpixmap.h>
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -45,7 +45,7 @@ public:
     void finish(QWidget *w);
     void repaint();
 
-public slots:
+public Q_SLOTS:
     void showMessage(const QString &message, int alignment = Qt::AlignLeft,
                   const QColor &color = Qt::black);
     void clearMessage();
@@ -55,10 +55,11 @@ public slots:
     inline QT_MOC_COMPAT void clear() { clearMessage(); }
 #endif
 
-signals:
+Q_SIGNALS:
     void messageChanged(const QString &message);
 
 protected:
+    bool event(QEvent *e);
     virtual void drawContents(QPainter *painter);
     void mousePressEvent(QMouseEvent *);
 
@@ -66,6 +67,7 @@ private:
     Q_DISABLE_COPY(QSplashScreen)
     Q_DECLARE_PRIVATE(QSplashScreen)
 };
+
 #endif // QT_NO_SPLASHSCREEN
 
 #endif // QSPLASHSCREEN_H

@@ -41,7 +41,7 @@ class Q_GUI_EXPORT QSpinBox : public QAbstractSpinBox
     Q_PROPERTY(int maximum READ maximum WRITE setMaximum)
     Q_PROPERTY(int minimum READ minimum WRITE setMinimum)
     Q_PROPERTY(int singleStep READ singleStep WRITE setSingleStep)
-    Q_PROPERTY(int value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(int value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
     explicit QSpinBox(QWidget *parent = 0);
@@ -81,16 +81,17 @@ public:
 #endif
 
 protected:
+    bool event(QEvent *e);
     virtual QValidator::State validate(QString &input, int &pos) const;
     virtual int valueFromText(const QString &text) const;
     virtual QString textFromValue(int v) const;
     virtual void fixup(QString &str) const;
 
 
-public slots:
+public Q_SLOTS:
     void setValue(int val);
 
-signals:
+Q_SIGNALS:
     void valueChanged(int);
     void valueChanged(const QString &);
 
@@ -144,10 +145,10 @@ public:
     virtual QString textFromValue(double v) const;
     virtual void fixup(QString &str) const;
 
-public slots:
+public Q_SLOTS:
     void setValue(double val);
 
-signals:
+Q_SIGNALS:
     void valueChanged(double);
     void valueChanged(const QString &);
 
@@ -157,4 +158,5 @@ private:
 };
 
 #endif // QT_NO_SPINBOX
+
 #endif // QSPINBOX_H

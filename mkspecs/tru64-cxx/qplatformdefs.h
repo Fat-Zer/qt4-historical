@@ -13,7 +13,9 @@
 // We are hot - unistd.h should have turned on the specific APIs we requested
 
 
+#ifndef QT_NO_THREAD
 #include <pthread.h>
+#endif
 #include <dirent.h>
 #include <fcntl.h>
 #include <grp.h>
@@ -31,6 +33,9 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
+#ifndef QT_NO_IPV6IFNAME
+#include <net/if.h>
+#endif
 
 #define QT_FOPEN                ::fopen
 #define QT_FSEEK                ::fseek

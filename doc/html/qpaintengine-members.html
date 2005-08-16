@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/painting/qpaintengine.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/painting/qpaintengine.cpp -->
 <head>
-    <title>Qt 4.0: List of All Members for QPaintEngine</title>
+    <title>Qt 4.1: List of All Members for QPaintEngine</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -21,6 +21,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This is the complete list of members for <a href="qpaintengine.html">QPaintEngine</a>, including inherited members.</p>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
+<li><div class="fn"/>enum <a href="qpaintengine.html#DirtyFlag-enum">DirtyFlag</a></li>
 <li><div class="fn"/>flags <a href="qpaintengine.html#DirtyFlag-enum">DirtyFlags</a></li>
 <li><div class="fn"/>enum <a href="qpaintengine.html#PaintEngineFeature-enum">PaintEngineFeature</a></li>
 <li><div class="fn"/>flags <a href="qpaintengine.html#PaintEngineFeature-enum">PaintEngineFeatures</a></li>
@@ -29,7 +30,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qpaintengine.html#QPaintEngine">QPaintEngine</a> ( PaintEngineFeatures )</li>
 <li><div class="fn"/><a href="qpaintengine.html#dtor.QPaintEngine">~QPaintEngine</a> ()</li>
 <li><div class="fn"/><a href="qpaintengine.html#begin">begin</a> ( QPaintDevice * ) : bool</li>
-<li><div class="fn"/><a href="qpaintengine.html#d_ptr-var">d_ptr</a> : QPaintEnginePrivate *</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawEllipse">drawEllipse</a> ( const QRectF &amp; )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawEllipse-2">drawEllipse</a> ( const QRect &amp; )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawImage">drawImage</a> ( const QRectF &amp;, const QImage &amp;, const QRectF &amp;, Qt::ImageConversionFlags )</li>
@@ -38,8 +38,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qpaintengine.html#drawPath">drawPath</a> ( const QPainterPath &amp; )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawPixmap">drawPixmap</a> ( const QRectF &amp;, const QPixmap &amp;, const QRectF &amp; )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawPoints">drawPoints</a> ( const QPointF *, int )</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qpaintengine.html#drawPoints-2">drawPoints</a> ( const QPoint *, int )</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qpaintengine.html#drawPolygon">drawPolygon</a> ( const QPointF *, int, PolygonDrawMode )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawPolygon-2">drawPolygon</a> ( const QPoint *, int, PolygonDrawMode )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawRects">drawRects</a> ( const QRectF *, int )</li>
@@ -47,14 +47,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qpaintengine.html#drawTextItem">drawTextItem</a> ( const QPointF &amp;, const QTextItem &amp; )</li>
 <li><div class="fn"/><a href="qpaintengine.html#drawTiledPixmap">drawTiledPixmap</a> ( const QRectF &amp;, const QPixmap &amp;, const QPointF &amp; )</li>
 <li><div class="fn"/><a href="qpaintengine.html#end">end</a> () : bool</li>
-<li><div class="fn"/><a href="qpaintengine.html#gccaps-var">gccaps</a> : PaintEngineFeatures</li>
 <li><div class="fn"/><a href="qpaintengine.html#hasFeature">hasFeature</a> ( PaintEngineFeatures ) const : bool</li>
 <li><div class="fn"/><a href="qpaintengine.html#isActive">isActive</a> () const : bool</li>
 <li><div class="fn"/><a href="qpaintengine.html#paintDevice">paintDevice</a> () const : QPaintDevice *</li>
 <li><div class="fn"/><a href="qpaintengine.html#painter">painter</a> () const : QPainter *</li>
 <li><div class="fn"/><a href="qpaintengine.html#setActive">setActive</a> ( bool )</li>
-<li><div class="fn"/><a href="qpaintengine.html#state-var">state</a> : QPaintEngineState *</li>
 <li><div class="fn"/><a href="qpaintengine.html#type">type</a> () const : Type</li>
+<li><div class="fn"/><a href="qpaintengine.html#updateState">updateState</a> ( const QPaintEngineState &amp; )</li>
 </ul>
 </td></tr>
 </table>
@@ -62,6 +61,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -24,10 +24,11 @@
 #ifndef QIMAGE_H
 #define QIMAGE_H
 
-#include "QtGui/qrgb.h"
-#include "QtGui/qpaintdevice.h"
-#include "QtCore/qrect.h"
-#include "QtCore/qbytearray.h"
+#include <QtGui/qpaintdevice.h>
+#include <QtGui/qrgb.h>
+#include <QtCore/qbytearray.h>
+#include <QtCore/qrect.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Gui)
 
@@ -172,13 +173,14 @@ public:
     void invertPixels(InvertMode = InvertRgb);
 
 
+    bool load(QIODevice *device, const char* format);
     bool load(const QString &fileName, const char* format=0);
     bool loadFromData(const uchar *buf, int len, const char *format = 0);
     inline bool loadFromData(const QByteArray &data, const char* aformat=0)
         { return loadFromData(reinterpret_cast<const uchar *>(data.constData()), data.size(), aformat); }
 
     bool save(const QString &fileName, const char* format, int quality=-1) const;
-    bool save(QIODevice * device, const char* format, int quality=-1) const;
+    bool save(QIODevice *device, const char* format, int quality=-1) const;
 
     static QImage fromData(const uchar *data, int size, const char *format = 0);
     inline static QImage fromData(const QByteArray &data, const char *format = 0)
@@ -186,10 +188,6 @@ public:
 
     int serialNumber() const;
 
-#ifdef Q_WS_QWS
-    virtual const uchar * qwsScanLine(int) const;
-    virtual int qwsBytesPerLine() const;
-#endif
     QPaintEngine *paintEngine() const;
 
     // Auxiliary data
@@ -200,10 +198,14 @@ public:
     QPoint offset() const;
     void setOffset(const QPoint&);
 #ifndef QT_NO_IMAGE_TEXT
+    QStringList textKeys() const;
+    QString text(const QString &key = QString()) const;
+    void setText(const QString &key, const QString &value);
+
+    // The following functions are obsolete as of 4.1
+    QString text(const char* key, const char* lang=0) const;
     QList<QImageTextKeyLang> textList() const;
     QStringList textLanguages() const;
-    QStringList textKeys() const;
-    QString text(const char* key, const char* lang=0) const;
     QString text(const QImageTextKeyLang&) const;
     void setText(const char* key, const char* lang, const QString&);
 #endif

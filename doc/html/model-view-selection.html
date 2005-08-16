@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
 <head>
-    <title>Qt 4.0: Handling Selections in Item Views</title>
+    <title>Qt 4.1: Handling Selections in Item Views</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -60,7 +60,7 @@ body { background: #ffffff; color: black; }</style>
 
         topLeft = model-&gt;index(0, 0, QModelIndex());
         bottomRight = model-&gt;index(5, 2, QModelIndex());</pre>
-<p>To select these items in the model, and see the corresponding change in the table view, we need to construct a selection object then apply it to the selection model. We must also specify the model that the indexes belong to because the model indexes do not contain this information:</p>
+<p>To select these items in the model, and see the corresponding change in the table view, we need to construct a selection object then apply it to the selection model:</p>
 <pre>&nbsp;       QItemSelection selection(topLeft, bottomRight);
         selectionModel-&gt;select(selection, QItemSelectionModel::Select);</pre>
 <p>The selection is applied to the selection model using a command defined by a combination of <a href="qitemselectionmodel.html#SelectionFlag-enum">selection flags</a>. In this case, the flags used cause the items recorded in the selection object to be included in the selection model, regardless of their previous state. The resulting selection is shown by the view.</p>
@@ -161,6 +161,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

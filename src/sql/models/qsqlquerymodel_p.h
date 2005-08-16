@@ -36,13 +36,12 @@
 //
 
 #include "private/qabstractitemmodel_p.h"
-
-#include "qlist.h"
-#include "qsqlerror.h"
-#include "qsqlquery.h"
-#include "qsqlrecord.h"
-#include "qvarlengtharray.h"
-#include "qvector.h"
+#include "QtSql/qsqlerror.h"
+#include "QtSql/qsqlquery.h"
+#include "QtSql/qsqlrecord.h"
+#include "QtCore/qhash.h"
+#include "QtCore/qvarlengtharray.h"
+#include "QtCore/qvector.h"
 
 class QSqlQueryModelPrivate: public QAbstractItemModelPrivate
 {
@@ -58,7 +57,7 @@ public:
     QModelIndex bottom;
     QSqlRecord rec;
     uint atEnd : 1;
-    QVector<QVariant> headers;
+    QVector<QHash<int, QVariant> > headers;
     QVarLengthArray<int, 56> colOffsets; // used to calculate indexInQuery of columns
 };
 

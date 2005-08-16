@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/codecs/qtextcodec.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/codecs/qtextcodec.cpp -->
 <head>
-    <title>Qt 4.0: QTextCodec Class Reference</title>
+    <title>Qt 4.1: QTextCodec Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -79,15 +79,15 @@ body { background: #ffffff; color: black; }</style>
 <p>The supported encodings are:</p>
 <ul>
 <li>Apple Roman</li>
-<li>Big5</li>
-<li>Big5-HKSCS</li>
-<li>EUC-JP</li>
-<li>EUC-KR</li>
-<li>GB18030-0</li>
+<li><a href="codec-big5.html">Big5</a></li>
+<li><a href="codec-big5hkscs.html">Big5-HKSCS</a></li>
+<li><a href="codec-eucjp.html">EUC-JP</a></li>
+<li><a href="codec-euckr.html">EUC-KR</a></li>
+<li><a href="codec-gbk.html">GB18030-0</a></li>
 <li>IBM 850</li>
 <li>IBM 866</li>
 <li>IBM 874</li>
-<li>ISO 2022-JP</li>
+<li><a href="codecs-jis.html">ISO 2022-JP</a></li>
 <li>ISO 8859-1 to 10</li>
 <li>ISO 8859-13 to 16</li>
 <li>Iscii-Bng, Dev, Gjr, Knd, Mlm, Ori, Pnj, Tlg, and Tml</li>
@@ -97,9 +97,9 @@ body { background: #ffffff; color: black; }</style>
 <li>KOI8-U</li>
 <li>MuleLao-1</li>
 <li>ROMAN8</li>
-<li>Shift-JIS</li>
+<li><a href="codec-sjis.html">Shift-JIS</a></li>
 <li>TIS-620</li>
-<li>TSCII</li>
+<li><a href="codec-tscii.html">TSCII</a></li>
 <li>UTF-8</li>
 <li>UTF-16</li>
 <li>UTF-16BE</li>
@@ -134,8 +134,8 @@ body { background: #ffffff; color: black; }</style>
 <p>To add support for another encoding to Qt, make a subclass of QTextCodec and implement the functions listed in the table below.</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Function</th><th>Description</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodec.html#name">name</a>()</td><td>Returns the official name for the encoding. If the encoding is listed in the <a href="http://www.iana.org/assignments/character-sets">IANA character-sets encoding file</a>, the name should be the preferred MIME name for the encoding.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtextcodec.html#aliases">aliases</a>()</td><td>Returns a list of alternative names for the encoding. QTextCodec provides a default implementation that returns an empty list. For example, &quot;ISO-8859&quot; has &quot;latin1&quot;, &quot;US_ASCII&quot;, and &quot;iso-ir-100&quot; as aliases.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodec.html#name">name</a>()</td><td>Returns the official name for the encoding. If the ncoding is listed in the <a href="http://www.iana.org/assignments/character-sets">IANA character-sets encoding file</a>, the name should be the preferred MIME name for the encoding.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtextcodec.html#aliases">aliases</a>()</td><td>Returns a list of alternative names for the encoding. QTextCodec provides a default implementation that returns an empty list. For example, &quot;ISO-8859-1&quot; has &quot;latin1&quot;, &quot;CP819&quot;, &quot;IBM819&quot;, and &quot;iso-ir-100&quot; as aliases.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodec.html#mibEnum">mibEnum</a>()</td><td>Return the MIB enum for the encoding if it is listed in the <a href="http://www.iana.org/assignments/character-sets">IANA character-sets encoding file</a>.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qtextcodec.html#convertToUnicode">convertToUnicode</a>()</td><td>Converts an 8-bit character string to Unicode.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodec.html#convertFromUnicode">convertFromUnicode</a>()</td><td>Converts a Unicode string to an 8-bit character string.</td></tr>
@@ -223,6 +223,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextcodec.html#codecForCStrings">codecForCStrings</a>() and <a href="qtextcodec.html#setCodecForTr">setCodecForTr</a>().</p>
 <h3 class="fn"><a name="setCodecForLocale"></a>void QTextCodec::setCodecForLocale ( QTextCodec * <i>c</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Set the codec to <i>c</i>; this will be returned by <a href="qtextcodec.html#codecForLocale">codecForLocale</a>(). This might be needed for some applications that want to use their own mechanism for setting the locale.</p>
+<p>Setting this codec is not supported on DOS based Windows.</p>
 <p>See also <a href="qtextcodec.html#codecForLocale">codecForLocale</a>().</p>
 <h3 class="fn"><a name="setCodecForTr"></a>void QTextCodec::setCodecForTr ( QTextCodec * <i>c</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the codec used by <a href="qobject.html#tr">QObject::tr</a>() on its argument to <i>c</i>. If <i>c</i> is 0 (the default), tr() assumes Latin1.</p>
@@ -250,6 +251,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -37,6 +37,7 @@
 #include <QtDesigner/QtDesigner>
 #include <qdesigner_formbuilder_p.h>
 #include <qtundo_p.h>
+#include <pluginmanager_p.h>
 
 #include <QtAssistant/QAssistantClient>
 
@@ -56,7 +57,7 @@
 
 QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     : QObject(workbench),
-      m_workbench(workbench), m_assistantClient(0)
+      m_workbench(workbench), m_assistantClient(0), m_openDirectory(QString())
 {
     Q_ASSERT(m_workbench != 0);
 
@@ -112,6 +113,9 @@ QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     }
     updateRecentFileActions();
 
+    act = new QAction(this);
+    act->setSeparator(true);
+    m_recentFilesActions->addAction(act);
 
     act = new QAction(tr("Clear &Menu"), this);
     connect(act, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
@@ -148,6 +152,7 @@ QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     m_fileActions->addAction(sep);
 
     m_quitAction = new QAction(tr("&Quit"), this);
+    m_quitAction->setShortcut(tr("CTRL+Q"));
     connect(m_quitAction, SIGNAL(triggered()),
             this, SLOT(shutdown()));
     m_fileActions->addAction(m_quitAction);
@@ -207,6 +212,7 @@ QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     m_editWidgetsAction->setChecked(true);
     m_editWidgetsAction->setEnabled(false);
     QList<QObject*> builtinPlugins = QPluginLoader::staticInstances();
+    builtinPlugins += m_core->pluginManager()->instances();
     foreach (QObject *plugin, builtinPlugins) {
         if (QDesignerFormEditorPluginInterface *formEditorPlugin = qobject_cast<QDesignerFormEditorPluginInterface*>(plugin)) {
             m_toolActions->addAction(formEditorPlugin->action());
@@ -291,13 +297,6 @@ QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
 
         m_styleActions->addAction(a);
     }
-
-//
-// tools actions
-//
-    m_useBigIcons = new QAction(tr("Use &Big Toolbar Icons"), this);
-    m_useBigIcons->setCheckable(true);
-    m_useBigIcons->setChecked(settings.useBigIcons());
 
 //
 // window actions
@@ -507,7 +506,7 @@ bool QDesignerActions::openForm()
 {
     QString fileName = QFileDialog::getOpenFileName(
             core()->topLevel(),
-            tr("Open Form"), QString(),
+            tr("Open Form"), m_openDirectory,
             tr("Designer UI files (*.ui)"), 0, QFileDialog::DontUseSheet);
 
     if (!fileName.isEmpty()) {
@@ -596,28 +595,19 @@ void QDesignerActions::previewFormLater(QAction *action)
 void QDesignerActions::previewForm(QAction *action)
 {
     if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow()) {
-        QDialog *fakeTopLevel = new QDialog(fw);
-        QHBoxLayout *layout = new QHBoxLayout(fakeTopLevel);
-        layout->setMargin(0);
-
-        QDesignerFormBuilder builder(core());
+        qdesigner_internal::QDesignerFormBuilder builder(core());
         builder.setWorkingDirectory(fw->absoluteDir());
 
         QByteArray bytes = fw->contents().toUtf8();
         QBuffer buffer(&bytes);
 
-        QWidget *widget = builder.load(&buffer, fakeTopLevel);
+        QWidget *widget = builder.load(&buffer, 0);
         Q_ASSERT(widget);
 
-        if (QDialog *dlg = qobject_cast<QDialog *>(widget)) {
-            dlg->setAttribute(Qt::WA_DeleteOnClose, true);
-            connect(dlg, SIGNAL(destroyed()), fakeTopLevel, SLOT(accept()));
-        }
-
-        QSize size = widget->size();
-
-        widget->setParent(fakeTopLevel, 0);
-        layout->addWidget(widget);
+        widget->setParent(fw->window(), Qt::Dialog);
+        widget->setWindowModality(Qt::ApplicationModal);
+        widget->setAttribute(Qt::WA_DeleteOnClose, true);
+        widget->move(fw->mapToGlobal(QPoint(0, 0)) + QPoint(10, 10));
 
         QStyle *style = 0;
 
@@ -626,9 +616,10 @@ void QDesignerActions::previewForm(QAction *action)
             style = QStyleFactory::create(styleName);
 
             if (style != 0) {
-                fakeTopLevel->setStyle(style);
-                fakeTopLevel->setPalette(style->standardPalette());
-                QList<QWidget*> lst = qFindChildren<QWidget*>(fakeTopLevel);
+                style->setParent(widget);
+                widget->setStyle(style);
+                widget->setPalette(style->standardPalette());
+                QList<QWidget*> lst = qFindChildren<QWidget*>(widget);
                 foreach (QWidget *w, lst) {
                     if (w->windowType() == Qt::Popup)
                         w->setPalette(style->standardPalette());
@@ -637,12 +628,9 @@ void QDesignerActions::previewForm(QAction *action)
             }
         }
 
-        fakeTopLevel->resize(size);
-        fakeTopLevel->setWindowTitle(tr("%1 - [Preview]").arg(widget->windowTitle()));
-        fakeTopLevel->exec();
+        widget->setWindowTitle(tr("%1 - [Preview]").arg(widget->windowTitle()));
 
-        delete fakeTopLevel;
-        delete style;
+        widget->show();
     }
 }
 
@@ -684,17 +672,20 @@ bool QDesignerActions::readInForm(const QString &fileName)
         return false;
     }
 
+    m_openDirectory = QFileInfo(f).absolutePath();
 
     QDesignerFormWindow *formWindow = workbench()->createFormWindow();
     if (QDesignerFormWindowInterface *editor = formWindow->editor()) {
         editor->setFileName(fileName);
         editor->setContents(&f);
         Q_ASSERT(editor->mainContainer() != 0);
+        formWindow->updateWindowTitle(fileName);
         formWindow->resize(editor->mainContainer()->size());
         formWindowManager->setActiveFormWindow(editor);
     }
     formWindow->show();
     addRecentFile(fileName);
+    formWindow->editor()->setDirty(false);
     return true;
 }
 
@@ -846,8 +837,15 @@ void QDesignerActions::addRecentFile(const QString &fileName)
 
 void QDesignerActions::minimizeForm()
 {
-    if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow())
-        fw->parentWidget()->showMinimized();
+    if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow()) {
+        if (m_workbench->mode() == QDesignerWorkbench::DockedMode) {
+            // Yuck, I need to get to the QWorkspaceChild::showShaded(), but there is no way
+            // to do that legally, so I use the QMetaObject as my guide.
+            QMetaObject::invokeMethod(fw->parentWidget()->parentWidget(), "showShaded");
+        } else {
+            fw->parentWidget()->showMinimized();
+        }
+    }
 }
 
 void QDesignerActions::bringAllToFront()
@@ -907,9 +905,6 @@ QActionGroup *QDesignerActions::uiMode() const
 }
 
 
-QAction *QDesignerActions::useBigIconsAction() const
-{ return m_useBigIcons; }
-
 QAction *QDesignerActions::editWidgets() const
 {
     return m_editWidgetsAction;
@@ -959,6 +954,11 @@ void QDesignerActions::aboutPlugins()
 
 void QDesignerActions::showFormSettings()
 {
-    FormWindowSettings dlg(core()->formWindowManager()->activeFormWindow());
-    dlg.exec();
+    QDesignerFormWindowInterface *formWindow = core()->formWindowManager()->activeFormWindow();
+    QDesignerFormWindow *window = m_workbench->findFormWindow(formWindow);
+    FormWindowSettings dlg(formWindow);
+    if (dlg.exec() && window) {
+        formWindow->setDirty(true);
+        window->updateChanged();
+    }
 }

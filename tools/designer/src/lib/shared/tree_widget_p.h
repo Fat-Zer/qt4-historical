@@ -39,7 +39,9 @@
 #include "shared_global_p.h"
 #include <QTreeWidget>
 
-class QT_SHARED_EXPORT TreeWidget: public QTreeWidget
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT TreeWidget: public QTreeWidget
 {
     Q_OBJECT
 public:
@@ -49,5 +51,7 @@ public:
 protected:
     void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
 };
+
+} // namespace qdesigner_internal
 
 #endif // TREEWIDGET_H

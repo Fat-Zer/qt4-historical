@@ -35,7 +35,7 @@ Window::Window(QWidget *parent)
     grid->addWidget(createPushButtonGroup(), 1, 1);
     setLayout(grid);
 
-    setWindowTitle(tr("Group Box"));
+    setWindowTitle(tr("Group Boxes"));
     resize(480, 320);
 }
 

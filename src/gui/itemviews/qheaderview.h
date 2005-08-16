@@ -34,10 +34,14 @@ class QHeaderViewPrivate;
 
 class Q_GUI_EXPORT QHeaderView : public QAbstractItemView
 {
+    friend class QTableView;
+    friend class QTableViewPrivate;
     Q_OBJECT
     Q_PROPERTY(bool showSortIndicator READ isSortIndicatorShown WRITE setSortIndicatorShown)
     Q_PROPERTY(bool highlightSections READ highlightSections WRITE setHighlightSections)
     Q_PROPERTY(bool stretchLastSection READ stretchLastSection WRITE setStretchLastSection)
+    Q_PROPERTY(int defaultSectionSize READ defaultSectionSize WRITE setDefaultSectionSize)
+    Q_PROPERTY(Qt::Alignment defaultAlignment READ defaultAlignment WRITE setDefaultAlignment)
     Q_ENUMS(ResizeMode)
 
 public:
@@ -72,9 +76,11 @@ public:
 
     void moveSection(int from, int to);
     void resizeSection(int logicalIndex, int size);
+    void resizeSections(QHeaderView::ResizeMode mode);
 
     bool isSectionHidden(int logicalIndex) const;
     void setSectionHidden(int logicalIndex, bool hide);
+    int hiddenSectionCount() const;
 
     inline void hideSection(int logicalIndex);
     inline void showSection(int logicalIndex);
@@ -107,14 +113,21 @@ public:
     bool stretchLastSection() const;
     void setStretchLastSection(bool stretch);
 
+    int defaultSectionSize() const;
+    void setDefaultSectionSize(int size);
+
+    Qt::Alignment defaultAlignment() const;
+    void setDefaultAlignment(Qt::Alignment alignment);
+
     void doItemsLayout();
     bool sectionsMoved() const;
+    bool sectionsHidden() const;
 
-public slots:
+public Q_SLOTS:
     void setOffset(int offset);
     void headerDataChanged(Qt::Orientation orientation, int logicalFirst, int logicalLast);
 
-signals:
+Q_SIGNALS:
     void sectionMoved(int logicalIndex, int oldVisualIndex, int newVisualIndex);
     void sectionResized(int logicalIndex, int oldSize, int newSize);
     void sectionPressed(int logicalIndex);
@@ -124,7 +137,7 @@ signals:
     void sectionHandleDoubleClicked(int logicalIndex);
     void sectionAutoResize(int logicalIndex, QHeaderView::ResizeMode mode);
 
-protected slots:
+protected Q_SLOTS:
     void updateSection(int logicalIndex);
     void resizeSections();
     void sectionsInserted(const QModelIndex &parent, int logicalFirst, int logicalLast);
@@ -144,6 +157,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *e);
+    bool viewportEvent(QEvent *e);
 
     virtual void paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const;
     virtual QSize sectionSizeFromContents(int logicalIndex) const;
@@ -167,6 +181,7 @@ protected:
     QRegion visualRegionForSelection(const QItemSelection &selection) const;
 
 private:
+    Q_PRIVATE_SLOT(d_func(), void sectionsRemoved(const QModelIndex &parent, int logicalFirst, int logicalLast))
     Q_DECLARE_PRIVATE(QHeaderView)
     Q_DISABLE_COPY(QHeaderView)
 };
@@ -183,4 +198,5 @@ inline void QHeaderView::showSection(int alogicalIndex)
 { setSectionHidden(alogicalIndex, false); }
 
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QHEADERVIEW_H

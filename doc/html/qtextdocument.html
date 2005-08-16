@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/text/qtextdocument.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/text/qtextdocument.cpp -->
 <head>
-    <title>Qt 4.0: QTextDocument Class Reference</title>
+    <title>Qt 4.1: QTextDocument Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -33,12 +33,17 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<ul>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qtextdocument.html#defaultFont-prop">defaultFont</a></b> : QFont</li>
 <li><div class="fn"/><b><a href="qtextdocument.html#modified-prop">modified</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qtextdocument.html#pageSize-prop">pageSize</a></b> : QSizeF</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><b><a href="qtextdocument.html#undoRedoEnabled-prop">undoRedoEnabled</a></b> : bool</li>
+<li><div class="fn"/><b><a href="qtextdocument.html#useDesignMetrics-prop">useDesignMetrics</a></b> : bool</li>
 </ul>
+</td></tr>
+</table>
 <ul>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
@@ -80,8 +85,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtextdocument.html#pageSize-prop">setPageSize</a></b> ( const QSizeF &amp; <i>size</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextdocument.html#setPlainText">setPlainText</a></b> ( const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextdocument.html#undoRedoEnabled-prop">setUndoRedoEnabled</a></b> ( bool <i>enable</i> )</li>
+<li><div class="fn"/>void <b><a href="qtextdocument.html#useDesignMetrics-prop">setUseDesignMetrics</a></b> ( bool <i>b</i> )</li>
 <li><div class="fn"/>QString <b><a href="qtextdocument.html#toHtml">toHtml</a></b> ( const QByteArray &amp; <i>encoding</i> = QByteArray() ) const</li>
 <li><div class="fn"/>QString <b><a href="qtextdocument.html#toPlainText">toPlainText</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qtextdocument.html#useDesignMetrics-prop">useDesignMetrics</a></b> () const</li>
 </ul>
 <ul>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
@@ -192,6 +199,13 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b>bool isUndoRedoEnabled () const</b></li>
 <li><div class="fn"/><b>void setUndoRedoEnabled ( bool <i>enable</i> )</b></li>
+</ul>
+<h3 class="fn"><a name="useDesignMetrics-prop"></a>useDesignMetrics : bool</h3>
+<p>This property was introduced in Qt 4.1.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>bool useDesignMetrics () const</b></li>
+<li><div class="fn"/><b>void setUseDesignMetrics ( bool <i>b</i> )</b></li>
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -309,6 +323,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

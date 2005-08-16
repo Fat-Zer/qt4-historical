@@ -35,18 +35,16 @@
 // We mean it.
 //
 
-#include <qatomic.h>
-#include <qbuffer.h>
-#include <qobjectdefs.h>
-#include <qpicture.h>
-#include <qrect.h>
-#include <private/qobject_p.h>
+#include "QtCore/qatomic.h"
+#include "QtCore/qbuffer.h"
+#include "QtCore/qobjectdefs.h"
+#include "QtGui/qpicture.h"
+#include "QtCore/qrect.h"
+#include "private/qobject_p.h"
 
 class QPaintEngine;
 
 extern const char  *qt_mfhdr_tag;
-extern const quint16 mfhdr_maj;
-extern const quint16 mfhdr_min;
 
 class Q_GUI_EXPORT QPicturePrivate
 {
@@ -79,7 +77,7 @@ public:
         PdcDrawImage = 18, // rect,image
         PdcDrawText2 = 19, // point,str
         PdcDrawText2Formatted = 20, // rect,ival,str
-        PdcDrawTextItem = 21,
+        PdcDrawTextItem = 21, // pos,text,font,flags
         PdcDrawLast = PdcDrawTextItem,
         PdcDrawPoints = 22, // ptarr,ival,ival
         PdcDrawWinFocusRect = 23, // rect,color

@@ -28,6 +28,10 @@
 #include "qdesigner_tabwidget_p.h"
 #include "qdesigner_toolbox_p.h"
 #include "qdesigner_stackedbox_p.h"
+#include "qdesigner_toolbar_p.h"
+#include "qdesigner_menubar_p.h"
+#include "qdesigner_menu_p.h"
+#include "qdesigner_dockwidget_p.h"
 #include "qdesigner_promotedwidget_p.h"
 #include "abstractformwindow.h"
 
@@ -41,6 +45,8 @@
 
 #include <QtGui/QtGui>
 #include <QtCore/qdebug.h>
+
+namespace qdesigner_internal {
 
 QPointer<QWidget> *WidgetFactory::m_lastPassiveInteractor = new QPointer<QWidget>();
 bool WidgetFactory::m_lastWasAPassiveInteractor = false;
@@ -60,7 +66,7 @@ void WidgetFactory::loadPlugins()
 {
     m_customFactory.clear();
 
-    PluginManager *pluginManager = m_core->pluginManager();
+    QDesignerPluginManager *pluginManager = m_core->pluginManager();
 
     QList<QDesignerCustomWidgetInterface*> lst = pluginManager->registeredCustomWidgets();
     foreach (QDesignerCustomWidgetInterface *c, lst) {
@@ -77,20 +83,31 @@ QWidget *WidgetFactory::createWidget(const QString &widgetName, QWidget *parentW
 
     QWidget *w = 0;
 
+    // ### cleanup
     if (QDesignerCustomWidgetInterface *f = m_customFactory.value(widgetName)) {
-        return f->createWidget(parentWidget);
+        w = f->createWidget(parentWidget);
     } else if (widgetName == QLatin1String("Line")) {
         w = new Line(parentWidget);
     } else if (widgetName == QLatin1String("QLabel")) {
         w = new QDesignerLabel(parentWidget);
+    } else if (widgetName == QLatin1String("QDockWidget")) {
+        w = new QDesignerDockWidget(parentWidget);
     } else if (widgetName == QLatin1String("QTabWidget")) {
         w = new QDesignerTabWidget(parentWidget);
     } else if (widgetName == QLatin1String("QStackedWidget")) {
         w = new QDesignerStackedWidget(parentWidget);
     } else if (widgetName == QLatin1String("QToolBox")) {
         w = new QDesignerToolBox(parentWidget);
+    } else if (widgetName == QLatin1String("QToolBar")) {
+        w = new QDesignerToolBar(parentWidget);
+    } else if (widgetName == QLatin1String("QMenuBar")) {
+        w = new QDesignerMenuBar(parentWidget);
+    } else if (widgetName == QLatin1String("QMenu")) {
+        w = new QDesignerMenu(parentWidget);
     } else if (widgetName == QLatin1String("Spacer")) {
         w = new Spacer(parentWidget);
+    } else if (widgetName == QLatin1String("QDockWidget")) {
+        w = new QDesignerDockWidget(parentWidget);
     } else if (widgetName == QLatin1String("QLayoutWidget")) {
         w = fw ? new QLayoutWidget(fw, parentWidget) : new QWidget(parentWidget);
     } else if (widgetName == QLatin1String("QDialog")) {
@@ -160,6 +177,12 @@ const char *WidgetFactory::classNameOf(QObject* o)
         return "QTabWidget";
     else if (qobject_cast<QDesignerStackedWidget*>(o))
         return "QStackedWidget";
+    else if (qobject_cast<QDesignerMenuBar*>(o))
+        return "QMenuBar";
+    else if (qobject_cast<QDesignerToolBar*>(o))
+        return "QToolBar";
+    else if (qobject_cast<QDesignerDockWidget*>(o))
+        return "QDockWidget";
     else if (qobject_cast<QDesignerToolBox*>(o))
         return "QToolBox";
     else if (qobject_cast<QDesignerDialog*>(o))
@@ -170,6 +193,8 @@ const char *WidgetFactory::classNameOf(QObject* o)
         return "QLabel";
     else if (qstrcmp(o->metaObject()->className(), "QAxBase") == 0)
         return "QAxWidget";
+    else if (qstrcmp(o->metaObject()->className(), "QDesignerQ3WidgetStack") == 0)
+        return "Q3WidgetStack";
     else if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(o))
         return promoted->customClassName();
 
@@ -249,7 +274,7 @@ QLayout *WidgetFactory::createLayout(QWidget *widget, QLayout *parentLayout, int
 QWidget* WidgetFactory::containerOfWidget(QWidget *w) const
 {
     if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(w))
-        return promoted->child();
+        return containerOfWidget(promoted->child());
     else if (QDesignerContainerExtension *container = qt_extension<QDesignerContainerExtension*>(core()->extensionManager(), w))
         return container->widget(container->currentIndex());
 
@@ -318,6 +343,32 @@ void WidgetFactory::initialize(QObject *object) const
         QSize sz = widget->sizeHint();
         if (sz.width() <= 0 && sz.height() <= 0)
             widget->setMinimumSize(QSize(16, 16));
+
+        widget->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+
+        if (!(qobject_cast<QDesignerWidget*>(widget) || qobject_cast<QDesignerDialog*>(widget)))
+            widget->setAttribute(Qt::WA_TintedBackground);
+    }
+
+    if (qobject_cast<QDockWidget*>(object) || qobject_cast<QToolBar*>(object)) {
+        sheet->setVisible(sheet->indexOf(QLatin1String("windowTitle")), true);
+
+        if (qobject_cast<QDockWidget*>(object)) {
+            sheet->setVisible(sheet->indexOf(QLatin1String("windowIcon")), true);
+        }
+    }
+
+    if (qobject_cast<QAction*>(object)) {
+        sheet->setChanged(sheet->indexOf(QLatin1String("text")), true);
+    }
+
+    if (qobject_cast<QMenu*>(object)) {
+        sheet->setChanged(sheet->indexOf(QLatin1String("geometry")), false);
+        sheet->setChanged(sheet->indexOf(QLatin1String("title")), true);
+    }
+
+    if (qobject_cast<QMenu*>(object) || qobject_cast<QMenuBar*>(object)) {
+        qobject_cast<QWidget*>(object)->setFocusPolicy(Qt::StrongFocus);
     }
 }
 
@@ -356,3 +407,4 @@ bool WidgetFactory::isPassiveInteractor(QWidget *widget)
     return m_lastWasAPassiveInteractor;
 }
 
+} // namespace qdesigner_internal

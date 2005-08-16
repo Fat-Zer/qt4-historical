@@ -24,13 +24,13 @@
 #ifndef QSTYLEOPTION_H
 #define QSTYLEOPTION_H
 
-#include "QtGui/qabstractspinbox.h"
-#include "QtGui/qicon.h"
-#include "QtGui/qslider.h"
-#include "QtGui/qstyle.h"
-#include "QtGui/qtabbar.h"
-#include "QtGui/qtabwidget.h"
-#include "QtGui/qrubberband.h"
+#include <QtGui/qabstractspinbox.h>
+#include <QtGui/qicon.h>
+#include <QtGui/qslider.h>
+#include <QtGui/qstyle.h>
+#include <QtGui/qtabbar.h>
+#include <QtGui/qtabwidget.h>
+#include <QtGui/qrubberband.h>
 
 QT_MODULE(Gui)
 
@@ -43,11 +43,11 @@ public:
                       SO_Default, SO_FocusRect, SO_Button, SO_Tab, SO_MenuItem,
                       SO_Frame, SO_ProgressBar, SO_ToolBox, SO_Header, SO_Q3DockWindow,
                       SO_DockWidget, SO_Q3ListViewItem, SO_ViewItem, SO_TabWidgetFrame,
-                      SO_TabBarBase, SO_RubberBand,
+                      SO_TabBarBase, SO_RubberBand, SO_ToolBar,
 
                       SO_Complex = 0xf0000, SO_Slider, SO_SpinBox, SO_ToolButton, SO_ComboBox,
-                      SO_Q3ListView, SO_TitleBar,
-
+                      SO_Q3ListView, SO_TitleBar, SO_GroupBox,
+                    
                       SO_CustomBase = 0xf00,
                       SO_ComplexCustomBase = 0xf000000
                     };
@@ -68,6 +68,7 @@ public:
     ~QStyleOption();
 
     void init(const QWidget *w);
+    inline void initFrom(const QWidget *w) { init(w); }
     QStyleOption &operator=(const QStyleOption &other);
 };
 
@@ -101,6 +102,28 @@ public:
 protected:
     QStyleOptionFrame(int version);
 };
+
+class Q_GUI_EXPORT QStyleOptionFrameV2 : public QStyleOptionFrame
+{
+public:
+    enum { Version = 2 };
+    enum FrameFeature {
+        None = 0x00,
+        Flat = 0x01
+    };
+    Q_DECLARE_FLAGS(FrameFeatures, FrameFeature)
+    FrameFeatures features;
+
+    QStyleOptionFrameV2();
+    QStyleOptionFrameV2(const QStyleOptionFrameV2 &other) : QStyleOptionFrame(Version) { *this = other; }
+    QStyleOptionFrameV2(const QStyleOptionFrame &other);
+    QStyleOptionFrameV2 &operator=(const QStyleOptionFrame &other);
+
+protected:
+    QStyleOptionFrameV2(int version);
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionFrameV2::FrameFeatures)
 
 #ifndef QT_NO_TABWIDGET
 class Q_GUI_EXPORT QStyleOptionTabWidgetFrame : public QStyleOption
@@ -225,7 +248,52 @@ protected:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionTab::CornerWidgets)
+
+class Q_GUI_EXPORT QStyleOptionTabV2 : public QStyleOptionTab
+{
+public:
+    enum { Version = 2 };
+    QSize iconSize;
+    QStyleOptionTabV2();
+    QStyleOptionTabV2(const QStyleOptionTabV2 &other) : QStyleOptionTab(Version) { *this = other; }
+    QStyleOptionTabV2(const QStyleOptionTab &other);
+    QStyleOptionTabV2 &operator=(const QStyleOptionTab &other);
+
+protected:
+    QStyleOptionTabV2(int version);
+};
+
 #endif
+
+
+#ifndef QT_NO_TOOLBAR
+
+class Q_GUI_EXPORT QStyleOptionToolBar : public QStyleOption
+{
+public:
+    enum { Type = SO_ToolBar };
+    enum { Version = 1 };
+    enum ToolBarPosition { Beginning, Middle, End, OnlyOne };
+    enum ToolBarFeature { None = 0x0, Movable = 0x1 };
+    Q_DECLARE_FLAGS(ToolBarFeatures, ToolBarFeature)
+    ToolBarPosition positionOfLine; // The toolbar line position
+    ToolBarPosition positionWithinLine; // The position within a toolbar
+    Qt::ToolBarArea toolBarArea; // The toolbar docking area
+    ToolBarFeatures features;
+    int lineWidth;
+    int midLineWidth;
+    QStyleOptionToolBar();
+    QStyleOptionToolBar(const QStyleOptionToolBar &other) : QStyleOption(Version, Type) { *this = other; }
+
+protected:
+    QStyleOptionToolBar(int version);
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QStyleOptionToolBar::ToolBarFeatures)
+
+#endif
+
+
 
 class Q_GUI_EXPORT QStyleOptionProgressBar : public QStyleOption
 {
@@ -245,6 +313,25 @@ public:
 
 protected:
     QStyleOptionProgressBar(int version);
+};
+
+// Adds style info for vertical progress bars
+class Q_GUI_EXPORT QStyleOptionProgressBarV2 : public QStyleOptionProgressBar
+{
+public:
+    enum { Type = SO_ProgressBar };
+    enum { Version = 2 };
+    Qt::Orientation orientation;
+    bool invertedAppearance;
+    bool bottomToTop;
+
+    QStyleOptionProgressBarV2();
+    QStyleOptionProgressBarV2(const QStyleOptionProgressBar &other);
+    QStyleOptionProgressBarV2(const QStyleOptionProgressBarV2 &other);
+    QStyleOptionProgressBarV2 &operator=(const QStyleOptionProgressBar &other);
+
+protected:
+    QStyleOptionProgressBarV2(int version);
 };
 
 class Q_GUI_EXPORT QStyleOptionMenuItem : public QStyleOption
@@ -538,10 +625,29 @@ protected:
     QStyleOptionTitleBar(int version);
 };
 
+class Q_GUI_EXPORT QStyleOptionGroupBox : public QStyleOptionComplex
+{
+public:
+    enum { Type = SO_GroupBox };
+    enum { Version = 1 };
+
+    QStyleOptionFrameV2::FrameFeatures features;
+    QString text;
+    Qt::Alignment textAlignment;
+    QColor textColor;
+    int lineWidth;
+    int midLineWidth;
+
+    QStyleOptionGroupBox();
+    QStyleOptionGroupBox(const QStyleOptionGroupBox &other) : QStyleOptionComplex(Version, Type) { *this = other; }
+protected:
+    QStyleOptionGroupBox(int version);
+};
+
 template <typename T>
 T qstyleoption_cast(const QStyleOption *opt)
 {
-    if (opt && opt->version <= static_cast<T>(0)->Version && (opt->type == static_cast<T>(0)->Type
+    if (opt && opt->version >= static_cast<T>(0)->Version && (opt->type == static_cast<T>(0)->Type
         || int(static_cast<T>(0)->Type) == QStyleOption::SO_Default
         || (int(static_cast<T>(0)->Type) == QStyleOption::SO_Complex
             && opt->type > QStyleOption::SO_Complex)))
@@ -552,7 +658,7 @@ T qstyleoption_cast(const QStyleOption *opt)
 template <typename T>
 T qstyleoption_cast(QStyleOption *opt)
 {
-    if (opt && opt->version <= static_cast<T>(0)->Version && (opt->type == static_cast<T>(0)->Type
+    if (opt && opt->version >= static_cast<T>(0)->Version && (opt->type == static_cast<T>(0)->Type
         || int(static_cast<T>(0)->Type) == QStyleOption::SO_Default
         || (int(static_cast<T>(0)->Type) == QStyleOption::SO_Complex
             && opt->type > QStyleOption::SO_Complex)))
@@ -610,4 +716,4 @@ Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QStyleOption::OptionType &opt
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QStyleOption &option);
 #endif
 
-#endif
+#endif // QSTYLEOPTION_H

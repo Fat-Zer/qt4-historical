@@ -24,8 +24,8 @@
 #ifndef QPRINTER_H
 #define QPRINTER_H
 
-#include "QtGui/qpaintdevice.h"
-#include "QtCore/qstring.h"
+#include <QtGui/qpaintdevice.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Gui)
 
@@ -37,6 +37,7 @@ QT_MODULE(Gui)
 
 class QPrinterPrivate;
 class QPaintEngine;
+class QPrintEngine;
 
 class Q_GUI_EXPORT QPrinter : public QPaintDevice
 {
@@ -45,7 +46,7 @@ public:
     enum PrinterMode { ScreenResolution, PrinterResolution, HighResolution };
 
     explicit QPrinter(PrinterMode mode = ScreenResolution);
-   ~QPrinter();
+    ~QPrinter();
 
     int devType() const;
 
@@ -80,10 +81,18 @@ public:
                         Active,
                         Aborted,
                         Error };
-#ifdef QT3_SUPPORT
+
+    enum OutputFormat { NativeFormat, PdfFormat };
+
+    // ### Qt 5: Merge with QAbstractPrintDialog::PrintRange
     enum PrintRange { AllPages, Selection, PageRange };
+
+#ifdef QT3_SUPPORT
     enum PrinterOption { PrintToFile, PrintSelection, PrintPageRange };
 #endif // QT3_SUPPORT
+
+    void setOutputFormat(OutputFormat format);
+    OutputFormat outputFormat() const;
 
     void setPrinterName(const QString &);
     QString printerName() const;
@@ -129,6 +138,9 @@ public:
 
     QList<int> supportedResolutions() const;
 
+    void setFontEmbeddingEnabled(bool enable);
+    bool fontEmbeddingEnabled() const;
+
 #ifdef Q_WS_WIN
     void setWinPageSize(int winPageSize);
     int winPageSize() const;
@@ -148,13 +160,21 @@ public:
     PrinterState printerState() const;
 
     QPaintEngine *paintEngine() const;
+    QPrintEngine *printEngine() const;
 
 #ifdef Q_WS_WIN
     HDC getDC() const;
     void releaseDC(HDC hdc) const;
 #endif
 
-#if defined (QT3_SUPPORT)
+    void setFromTo(int fromPage, int toPage);
+    int fromPage() const;
+    int toPage() const;
+
+    void setPrintRange(PrintRange range);
+    PrintRange printRange() const;
+
+#ifdef QT3_SUPPORT
 #ifdef Q_WS_MAC
     QT3_SUPPORT bool pageSetup(QWidget *parent = 0);
     QT3_SUPPORT bool printSetup(QWidget *parent = 0);
@@ -162,19 +182,12 @@ public:
 
     QT3_SUPPORT bool setup(QWidget *parent = 0);
 
-    QT3_SUPPORT void setFromTo(int fromPage, int toPage);
-    QT3_SUPPORT int fromPage() const;
-    QT3_SUPPORT int toPage() const;
-
     QT3_SUPPORT void setMinMax(int minPage, int maxPage);
     QT3_SUPPORT int minPage() const;
     QT3_SUPPORT int maxPage() const;
 
     QT3_SUPPORT void setCollateCopiesEnabled(bool);
     QT3_SUPPORT bool collateCopiesEnabled() const;
-
-    QT3_SUPPORT void setPrintRange(PrintRange range);
-    QT3_SUPPORT PrintRange printRange() const;
 
     QT3_SUPPORT void setOptionEnabled(PrinterOption, bool enable);
     QT3_SUPPORT bool isOptionEnabled(PrinterOption) const;
@@ -189,7 +202,8 @@ public:
 #endif
 
 protected:
-    int         metric(PaintDeviceMetric) const;
+    int metric(PaintDeviceMetric) const;
+    void setEngines(QPrintEngine *printEngine, QPaintEngine *paintEngine);
 
 private:
     Q_DISABLE_COPY(QPrinter)
@@ -220,8 +234,7 @@ inline void QPrinter::margins(uint *top, uint *left, uint *bottom, uint *right) 
     if (right)
         *right = paper.right() - page.right();
 }
-
-#endif // QT3_SUPPORT
+#endif
 
 #endif // QT_NO_PRINTER
 

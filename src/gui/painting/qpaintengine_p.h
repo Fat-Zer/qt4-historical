@@ -35,11 +35,10 @@
 // We mean it.
 //
 
-// Used to get Q_DECLARE_PUBLIC
+#include "QtGui/qpainter.h"
+#include "QtGui/qpaintengine.h"
+#include "QtGui/qregion.h"
 #include "private/qobject_p.h"
-#include "qpainter.h"
-#include "qpaintengine.h"
-#include "qregion.h"
 
 class QPaintDevice;
 
@@ -52,6 +51,9 @@ public:
     QPaintDevice *pdev;
     QPaintEngine *q_ptr;
     QRegion systemClip;
+
+private:
+    QRect systemRect;
 };
 
 #endif // QPAINTENGINE_P_H

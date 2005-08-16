@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/xml/qdom.cpp -->
 <head>
-    <title>Qt 4.0: QDomNamedNodeMap Class Reference</title>
+    <title>Qt 4.1: QDomNamedNodeMap Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,7 +30,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qdomnamednodemap.html#QDomNamedNodeMap-2">QDomNamedNodeMap</a></b> ( const QDomNamedNodeMap &amp; <i>n</i> )</li>
 <li><div class="fn"/><b><a href="qdomnamednodemap.html#dtor.QDomNamedNodeMap">~QDomNamedNodeMap</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qdomnamednodemap.html#contains">contains</a></b> ( const QString &amp; <i>name</i> ) const</li>
-<li><div class="fn"/>uint <b><a href="qdomnamednodemap.html#count">count</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qdomnamednodemap.html#count">count</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qdomnamednodemap.html#isEmpty">isEmpty</a></b> () const</li>
 <li><div class="fn"/>QDomNode <b><a href="qdomnamednodemap.html#item">item</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>uint <b><a href="qdomnamednodemap.html#length">length</a></b> () const</li>
 <li><div class="fn"/>QDomNode <b><a href="qdomnamednodemap.html#namedItem">namedItem</a></b> ( const QString &amp; <i>name</i> ) const</li>
@@ -39,6 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QDomNode <b><a href="qdomnamednodemap.html#removeNamedItemNS">removeNamedItemNS</a></b> ( const QString &amp; <i>nsURI</i>, const QString &amp; <i>localName</i> )</li>
 <li><div class="fn"/>QDomNode <b><a href="qdomnamednodemap.html#setNamedItem">setNamedItem</a></b> ( const QDomNode &amp; <i>newNode</i> )</li>
 <li><div class="fn"/>QDomNode <b><a href="qdomnamednodemap.html#setNamedItemNS">setNamedItemNS</a></b> ( const QDomNode &amp; <i>newNode</i> )</li>
+<li><div class="fn"/>int <b><a href="qdomnamednodemap.html#size">size</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qdomnamednodemap.html#operator-not-eq">operator!=</a></b> ( const QDomNamedNodeMap &amp; <i>n</i> ) const</li>
 <li><div class="fn"/>QDomNamedNodeMap &amp; <b><a href="qdomnamednodemap.html#operator-eq">operator=</a></b> ( const QDomNamedNodeMap &amp; <i>n</i> )</li>
 <li><div class="fn"/>bool <b><a href="qdomnamednodemap.html#operator-eq-eq">operator==</a></b> ( const QDomNamedNodeMap &amp; <i>n</i> ) const</li>
@@ -66,9 +68,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the object and frees its resources.</p>
 <h3 class="fn"><a name="contains"></a>bool QDomNamedNodeMap::contains ( const <a href="qstring.html">QString</a> &amp; <i>name</i> ) const</h3>
 <p>Returns true if the map contains a node called <i>name</i>; otherwise returns false.</p>
-<h3 class="fn"><a name="count"></a><a href="qtglobal.html#uint-typedef">uint</a> QDomNamedNodeMap::count () const</h3>
-<p>Returns the number of nodes in the map.</p>
-<p>This function is the same as <a href="qdomnamednodemap.html#length">length</a>().</p>
+<h3 class="fn"><a name="count"></a>int QDomNamedNodeMap::count () const</h3>
+<p>This function is provided for Qt API consistency. It is equivalent to <a href="qdomnamednodemap.html#length">length</a>().</p>
+<h3 class="fn"><a name="isEmpty"></a>bool QDomNamedNodeMap::isEmpty () const</h3>
+<p>Returns true if the map is empty; otherwise returns false. This function is provided for Qt API consistency.</p>
 <h3 class="fn"><a name="item"></a><a href="qdomnode.html">QDomNode</a> QDomNamedNodeMap::item ( int <i>index</i> ) const</h3>
 <p>Retrieves the node at position <i>index</i>.</p>
 <p>This can be used to iterate over the map. Note that the nodes in the map are ordered arbitrarily.</p>
@@ -99,6 +102,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setNamedItemNS"></a><a href="qdomnode.html">QDomNode</a> QDomNamedNodeMap::setNamedItemNS ( const <a href="qdomnode.html">QDomNode</a> &amp; <i>newNode</i> )</h3>
 <p>Inserts the node <i>newNode</i> in the map. If a node with the same namespace URI and the same local name already exists in the map, it is replaced by <i>newNode</i>. If the new node replaces an existing node, the replaced node is returned.</p>
 <p>See also <a href="qdomnamednodemap.html#namedItemNS">namedItemNS</a>(), <a href="qdomnamednodemap.html#removeNamedItemNS">removeNamedItemNS</a>(), and <a href="qdomnamednodemap.html#setNamedItem">setNamedItem</a>().</p>
+<h3 class="fn"><a name="size"></a>int QDomNamedNodeMap::size () const</h3>
+<p>This function is provided for Qt API consistency. It is equivalent to <a href="qdomnamednodemap.html#length">length</a>().</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QDomNamedNodeMap::operator!= ( const QDomNamedNodeMap &amp; <i>n</i> ) const</h3>
 <p>Returns true if <i>n</i> and this named node map are not equal; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq"></a>QDomNamedNodeMap &amp; QDomNamedNodeMap::operator= ( const QDomNamedNodeMap &amp; <i>n</i> )</h3>
@@ -109,6 +114,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

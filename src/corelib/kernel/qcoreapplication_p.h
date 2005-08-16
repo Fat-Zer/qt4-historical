@@ -35,9 +35,9 @@
 // We mean it.
 //
 
-#include "qobject_p.h"
-#include "qcoreapplication.h"
-#include "qtranslator.h"
+#include "QtCore/qcoreapplication.h"
+#include "QtCore/qtranslator.h"
+#include "private/qobject_p.h"
 
 typedef QList<QTranslator*> QTranslatorList;
 
@@ -52,6 +52,7 @@ public:
 
     bool notify_helper(QObject *, QEvent *);
 
+    virtual QString appName() const;
     virtual void createEventDispatcher();
     static void moveToMainThread(QObject *o);
     static void removePostedEvent(QEvent *);
@@ -76,6 +77,8 @@ public:
     uint application_type;
 
     QCoreApplication::EventFilter eventFilter;
+
+    bool in_exec;
 
     static QAbstractEventDispatcher *eventDispatcher;
     static bool is_app_running;

@@ -142,14 +142,14 @@ nextCheckState().
 \sa QButtonGroup
 */
 
-QAbstractButtonPrivate::QAbstractButtonPrivate() 
+QAbstractButtonPrivate::QAbstractButtonPrivate()
     :
 #ifndef QT_NO_SHORTCUT
     shortcutId(0),
 #endif
     checkable(false), checked(false), autoRepeat(false), autoExclusive(false),
     down(false), blockRefresh(false)
-#ifndef QT_NO_BUTTONGROUP    
+#ifndef QT_NO_BUTTONGROUP
     , group(0)
 #endif
 {}
@@ -159,13 +159,14 @@ QAbstractButtonPrivate::QAbstractButtonPrivate()
 class QButtonGroupPrivate: public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QButtonGroup)
-        
+
 public:
     QButtonGroupPrivate():exclusive(true){}
     QList<QAbstractButton *> buttonList;
     QPointer<QAbstractButton> checkedButton;
     void notifyChecked(QAbstractButton *button);
     bool exclusive;
+    QMap<QAbstractButton*, int> mapping;
 };
 
 QButtonGroup::QButtonGroup(QObject *parent)
@@ -195,12 +196,19 @@ void QButtonGroup::setExclusive(bool exclusive)
 
 void QButtonGroup::addButton(QAbstractButton *button)
 {
+    addButton(button, -1);
+}
+
+void QButtonGroup::addButton(QAbstractButton *button, int id)
+{
     Q_D(QButtonGroup);
     if (QButtonGroup *previous = button->d_func()->group)
         if (previous && previous != this)
             previous->removeButton(button);
     button->d_func()->group = this;
     d->buttonList.append(button);
+    if (id != -1)
+        d->mapping[button] = id;
     if (d->exclusive && button->isChecked())
         button->d_func()->notifyChecked();
 }
@@ -226,6 +234,31 @@ QAbstractButton *QButtonGroup::checkedButton() const
 {
     Q_D(const QButtonGroup);
     return d->checkedButton;
+}
+
+QAbstractButton *QButtonGroup::button(int id) const
+{
+    Q_D(const QButtonGroup);
+    return d->mapping.key(id);
+}
+
+void QButtonGroup::setId(QAbstractButton *button, int id)
+{
+    Q_D(QButtonGroup);
+    if (button && id != -1)
+        d->mapping[button] = id;
+}
+
+int QButtonGroup::id(QAbstractButton *button) const
+{
+    Q_D(const QButtonGroup);
+    return d->mapping.value(button, -1);
+}
+
+int QButtonGroup::checkedId() const
+{
+    Q_D(const QButtonGroup);
+    return d->mapping.value(d->checkedButton, -1);
 }
 
 #endif // QT_NO_BUTTONGROUP
@@ -368,6 +401,9 @@ void QAbstractButtonPrivate::moveFocus(int key)
     }
 
     if (exclusive
+#ifdef QT_KEYPAD_NAVIGATION
+        && !QApplication::keypadNavigationEnabled()
+#endif
         && candidate
         && fb->d_func()->checked
         && candidate->d_func()->checkable)
@@ -425,16 +461,20 @@ void QAbstractButtonPrivate::click()
     QObject *guard = q;
     QMetaObject::addGuard(&guard);
     q->nextCheckState();
-    if (!guard)
+    if (!guard) {
+        QMetaObject::removeGuard(&guard);
         return;
+    }
     blockRefresh = false;
     refresh();
     emit q->released();
     if (guard)
         emit q->clicked(checked);
 #ifndef QT_NO_BUTTONGROUP
-    if (guard && group)
+    if (guard && group) {
+        emit group->buttonClicked(group->id(q));
         emit group->buttonClicked(q);
+    }
 #endif
     QMetaObject::removeGuard(&guard);
 }
@@ -939,6 +979,7 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Return:
         e->ignore();
         break;
+    case Qt::Key_Select:
     case Qt::Key_Space:
         if (!e->isAutoRepeat()) {
             setDown(true);
@@ -980,6 +1021,7 @@ void QAbstractButton::keyReleaseEvent(QKeyEvent *e)
 {
     Q_D(QAbstractButton);
     switch (e->key()) {
+    case Qt::Key_Select:
     case Qt::Key_Space:
         if (!e->isAutoRepeat() && d->down)
             d->click();
@@ -1008,6 +1050,7 @@ void QAbstractButton::timerEvent(QTimerEvent *e)
 #endif
             if (guard)
                 emit pressed();
+            QMetaObject::removeGuard(&guard);
         }
     } else if (e->timerId() == d->animateTimer.timerId()) {
         d->animateTimer.stop();
@@ -1019,6 +1062,9 @@ void QAbstractButton::timerEvent(QTimerEvent *e)
 void QAbstractButton::focusInEvent(QFocusEvent *e)
 {
     Q_D(QAbstractButton);
+#ifdef QT_KEYPAD_NAVIGATION
+    if (!QApplication::keypadNavigationEnabled())
+#endif
     d->fixFocusPolicy();
     QWidget::focusInEvent(e);
 }
@@ -1148,7 +1194,7 @@ QAbstractButton::QAbstractButton(QWidget *parent, const char *name, Qt::WFlags f
     : QWidget(*new QAbstractButtonPrivate, parent, f)
 {
     Q_D(QAbstractButton);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 

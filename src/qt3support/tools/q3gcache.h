@@ -24,9 +24,9 @@
 #ifndef Q3GCACHE_H
 #define Q3GCACHE_H
 
-#include "Qt3Support/q3ptrcollection.h"
-#include "Qt3Support/q3glist.h"
-#include "Qt3Support/q3gdict.h"
+#include <Qt3Support/q3ptrcollection.h>
+#include <Qt3Support/q3glist.h>
+#include <Qt3Support/q3gdict.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -107,6 +107,5 @@ protected:
 protected:
     Q3CListIt *it;				// iterator on cache list
 };
-
 
 #endif // Q3GCACHE_H

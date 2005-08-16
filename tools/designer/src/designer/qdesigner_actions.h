@@ -61,8 +61,6 @@ public:
     QActionGroup *uiMode() const;
     QActionGroup *styleActions() const;
 
-    QAction *useBigIconsAction() const;
-
 //
 // file actions
 //
@@ -165,6 +163,7 @@ private:
     QDesignerWorkbench *m_workbench;
     QDesignerFormEditorInterface *m_core;
     QAssistantClient *m_assistantClient;
+    QString m_openDirectory;
 
     QActionGroup *m_fileActions;
     QActionGroup *m_recentFilesActions;
@@ -218,8 +217,6 @@ private:
     QAction *m_aboutDesignerAction;
     QAction *m_sdiAction;
     QAction *m_dockedMdiAction;
-
-    QAction *m_useBigIcons;
 };
 
 #endif // QDESIGNER_ACTIONS_H

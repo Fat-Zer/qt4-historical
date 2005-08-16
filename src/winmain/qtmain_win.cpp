@@ -22,11 +22,9 @@
 ****************************************************************************/
 
 #include "qt_windows.h"
-
 #include "qbytearray.h"
 #include "qstring.h"
 #include "qvector.h"
-
 
 /*
   This file contains the code in the qtmain library for Windows.
@@ -87,7 +85,7 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
 
     // If there exists an other instance of this application
     // it will be the owner of a mutex with the unique ID.
-    HANDLE mutex = CreateMutex(NULL, true, uid.ucs2());
+    HANDLE mutex = CreateMutex(NULL, TRUE, uid.ucs2());
     if (mutex && ERROR_ALREADY_EXISTS == GetLastError()) {
         CloseHandle(mutex);
 
@@ -107,4 +105,3 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
     int result = main(argc, argv.data());
     return result;
 }
-

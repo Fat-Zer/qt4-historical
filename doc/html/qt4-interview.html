@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/qt4-interview.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qt4-interview.qdoc -->
 <head>
-    <title>Qt 4.0: The Interview Framework</title>
+    <title>Qt 4.1: The Interview Framework</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -53,12 +53,14 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="qstandarditemmodel.html">QStandardItemModel</a> is a minimal convenience model that developers can use to manage items of data.</li>
 <li><a href="qdirmodel.html">QDirModel</a> provides directory information for use with <a href="qlistview.html">QListView</a> and <a href="qtreeview.html">QTreeView</a>.</li>
+<li><a href="qstringlistmodel.html">QStringListModel</a> is a convenience model that can be used to hold strings for views such as <a href="qlistview.html">QListView</a> and <a href="qcombobox.html">QComboBox</a>.</li>
 </ul>
 <p>Two specialized abstract models are provided that can be subclassed and extended (see the <a href="model-view-programming.html#related-examples">Model/View Programming</a> examples):</p>
 <ul>
 <li><a href="qabstracttablemodel.html">QAbstractTableModel</a> is a useful starting point for providing a custom model that can be used with <a href="qtableview.html">QTableView</a>.</li>
 <li><a href="qabstractlistmodel.html">QAbstractListModel</a> can be subclassed to produce a list-based model for use with <a href="qlistview.html">QListView</a>.</li>
 </ul>
+<p>Operations on items, such as filtering and sorting, are handled by <i>proxy models</i> that allow views to display processed data without having to copy or modify data obtained from a source model. Interview provides the <a href="qsortfilterproxymodel.html">QSortFilterProxyModel</a> class to allow items of data from a source model to be sorted and filtered before they are supplied to views.</p>
 <p>Developers who are familiar with the conventional list, tree, and table widgets may find <a href="qlistwidget.html">QListWidget</a>, <a href="qtreewidget.html">QTreeWidget</a>, and <a href="qtablewidget.html">QTableWidget</a> useful. These present a simplified interface to the views that does not require a knowledge of the underlying model/view architecture.</p>
 <p>For details about how to use the model/view classes, see the <a href="model-view-programming.html">Model/View Programming</a> document.</p>
 <p>See also the <a href="qt4-sql.html">Database GUI Layer</a> document for information about Qt 4's database models.</p>
@@ -100,6 +102,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   class StringListModel : public QAbstractListModel
     {
         Q_OBJECT
+
     public:
         StringListModel(const QStringList &amp;strings, QObject *parent = 0)
             : QAbstractListModel(parent), stringList(strings) {}
@@ -124,7 +127,7 @@ body { background: #ffffff; color: black; }</style>
         if (!index.isValid())
             return QVariant();
 
-        if (index.row() &lt; 0 || index.row() &gt;= stringList.size())
+        if (index.row() &gt;= stringList.size())
             return QVariant();
 
         if (role == Qt::DisplayRole)
@@ -173,7 +176,7 @@ body { background: #ffffff; color: black; }</style>
 <li>The <a href="qtablewidget.html">QTableWidget</a> class provides comparable functionality to Qt 3's <a href="porting4.html#qtable">QTable</a> class.</li>
 </ul>
 <p>Each of the convenience classes have a corresponding item class: <a href="qlistwidgetitem.html">QListWidgetItem</a>, <a href="qtreewidgetitem.html">QTreeWidgetItem</a>, and <a href="qtablewidgetitem.html">QTableWidgetItem</a> are the Qt 4 equivalents of Qt 3's QListBoxItem, QListViewItem, and QTableItem respectively.</p>
-<p>The move towards a model/view architecture presents both challenges and opportunities for developers. Although the approach may appear to be rather powerful for simple applications, it encourages greater reuse of components, both within the library and within applications.</p>
+<p>The move towards a model/view architecture presents both challenges and opportunities for developers. Although the approach may appear to be rather powerful for simple applications, it encourages greater reuse of components within applications.</p>
 <p>
 [Previous: <a href="qt4-tulip.html">The Tulip Container Classes</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -183,6 +186,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

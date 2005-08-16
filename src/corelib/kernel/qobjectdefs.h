@@ -24,7 +24,7 @@
 #ifndef QOBJECTDEFS_H
 #define QOBJECTDEFS_H
 
-#include "QtCore/qnamespace.h"
+#include <QtCore/qnamespace.h>
 
 QT_MODULE(Core)
 
@@ -33,15 +33,21 @@ class QString;
 class QByteArray;
 
 #ifndef Q_MOC_OUTPUT_REVISION
-#define Q_MOC_OUTPUT_REVISION 58
+#define Q_MOC_OUTPUT_REVISION 59
 #endif
 
 // The following macros are our "extensions" to C++
 // They are used, strictly speaking, only by the moc.
 
 #ifndef QT_MOC_CPP
-# define slots
-# define signals protected
+# if defined(QT_NO_KEYWORDS)
+#  define QT_NO_EMIT
+# else
+#   define slots
+#   define signals protected
+# endif
+# define Q_SLOTS
+# define Q_SIGNALS protected
 # define Q_PRIVATE_SLOT(d, signature)
 #ifndef QT_NO_EMIT
 # define emit
@@ -96,6 +102,8 @@ private:
 #else // QT_MOC_CPP
 #define slots slots
 #define signals signals
+#define Q_SLOTS Q_SLOTS
+#define Q_SIGNALS Q_SIGNALS
 #define Q_CLASSINFO(name, value) Q_CLASSINFO(name, value)
 #define Q_PROPERTY(text) Q_PROPERTY(text)
 #define Q_OVERRIDE(text) Q_OVERRIDE(text)
@@ -238,7 +246,9 @@ struct Q_CORE_EXPORT QMetaObject
 
     // internal index-based signal activation
     static void activate(QObject *sender, int signal_index, void **argv);
+    static void activate(QObject *sender, int from_signal_index, int to_signal_index, void **argv);
     static void activate(QObject *sender, const QMetaObject *, int local_signal_index, void **argv);
+    static void activate(QObject *sender, const QMetaObject *, int from_local_signal_index, int to_local_signal_index, void **argv);
     // internal guarded pointers
     static void addGuard(QObject **ptr);
     static void removeGuard(QObject **ptr);
@@ -317,7 +327,8 @@ struct Q_CORE_EXPORT QMetaObject
         QueryPropertyDesignable,
         QueryPropertyScriptable,
         QueryPropertyStored,
-        QueryPropertyEditable
+        QueryPropertyEditable,
+        QueryPropertyUser
     };
 
 #ifdef QT3_SUPPORT

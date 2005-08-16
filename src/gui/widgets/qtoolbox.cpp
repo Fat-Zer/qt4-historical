@@ -293,7 +293,7 @@ QToolBox::QToolBox(QWidget *parent, const char *name, Qt::WFlags f)
     :  QFrame(*new QToolBoxPrivate, parent, f)
 {
     Q_D(QToolBox);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->layout = new QVBoxLayout(this);
     d->layout->setMargin(0);
     setBackgroundRole(QPalette::Button);
@@ -765,6 +765,11 @@ void QToolBox::itemRemoved(int index)
     Use widget() instead.
 */
 
+/*! \reimp */
+bool QToolBox::event(QEvent *e)
+{
+    return QFrame::event(e);
+}
 
 #include "moc_qtoolbox.cpp"
 

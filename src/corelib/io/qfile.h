@@ -24,19 +24,19 @@
 #ifndef QFILE_H
 #define QFILE_H
 
-#include "QtCore/qiodevice.h"
-#include "QtCore/qstring.h"
-
+#include <QtCore/qiodevice.h>
+#include <QtCore/qstring.h>
 #include <stdio.h>
 
 #ifdef open
-#error qfile.h must be included before any system header that defines open
+#error qfile.h must be included before any header file that defines open
 #endif
 
 QT_MODULE(Core)
 
-class QFileEngine;
+class QAbstractFileEngine;
 class QFilePrivate;
+
 class Q_CORE_EXPORT QFile : public QIODevice
 {
 #ifndef QT_NO_QOBJECT
@@ -139,7 +139,7 @@ public:
 
     int handle() const;
 
-    virtual QFileEngine *fileEngine() const;
+    virtual QAbstractFileEngine *fileEngine() const;
 
 #ifdef QT3_SUPPORT
     typedef Permission PermissionSpec;

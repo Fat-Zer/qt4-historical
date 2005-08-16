@@ -24,30 +24,26 @@
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
+#include <QSyntaxHighlighter>
+
 #include <QHash>
-#include <QString>
-#include <QStringList>
-#include <QTextBlock>
 #include <QTextCharFormat>
 
 class QTextDocument;
 
-class Highlighter : public QObject
+class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
+
 public:
-    Highlighter(QObject *parent = 0);
+    Highlighter(QTextDocument *parent = 0);
 
-    void addToDocument(QTextDocument *doc);
-    void addMapping(const QString &pattern, const QTextCharFormat &format);
-
-private slots:
-    void highlight(int from, int removed, int added);
+protected:
+    void highlightBlock(const QString &text);
 
 private:
-    void highlightBlock(QTextBlock block);
-
     QHash<QString,QTextCharFormat> mappings;
+    QTextCharFormat multiLineCommentFormat;
 };
 
 #endif

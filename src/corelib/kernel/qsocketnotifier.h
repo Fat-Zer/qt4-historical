@@ -24,7 +24,7 @@
 #ifndef QSOCKETNOTIFIER_H
 #define QSOCKETNOTIFIER_H
 
-#include "QtCore/qobject.h"
+#include <QtCore/qobject.h>
 
 QT_MODULE(Core)
 
@@ -45,10 +45,10 @@ public:
 
     inline bool isEnabled() const { return snenabled; }
 
-public slots:
+public Q_SLOTS:
     void setEnabled(bool);
 
-signals:
+Q_SIGNALS:
     void activated(int socket);
 
 protected:

@@ -21,6 +21,11 @@
 **
 ****************************************************************************/
 
+#include "projectporter.h"
+#include "fileporter.h"
+#include "logger.h"
+#include "preprocessorcontrol.h"
+
 #include <QString>
 #include <QFile>
 #include <QFileInfo>
@@ -30,12 +35,7 @@
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QLibraryInfo>
-#include <QDebug>
-
-#include "projectporter.h"
-#include "fileporter.h"
-#include "logger.h"
-#include "preprocessorcontrol.h"
+#include <QtDebug>
 
 QString rulesFilePath;
 QString applicationDirPath;
@@ -134,10 +134,12 @@ int main(int argc, char**argv)
     const Option disableBuiltinQt3HeadersOption("-disableBuiltinQt3Headers", "Do not use the built-in Qt 3 headers.");
     const Option missingFileWarningsOption("-missingFileWarnings", "Warn about files not found while searching for header files.");
     const Option alwaysOverwriteOption("-alwaysOverwrite", "Port all files without prompting.");
+    const Option strictOption("-strict", "Be stricter when selecting which tokens to replace.");
 
     const OptionList optionList = OptionList() << helpOption << alwaysOverwriteOption << rulesFileOption
                                                << includeDirectoryOption << disableCppParsingOption
-                                               << disableBuiltinQt3HeadersOption << missingFileWarningsOption;
+                                               << disableBuiltinQt3HeadersOption << missingFileWarningsOption
+                                               << strictOption;
 
     if (argc == 1) {
         usage(optionList);
@@ -175,6 +177,9 @@ int main(int argc, char**argv)
             includeSearchDirectories += argv[currentArg];
         } else if (disableCppParsingOption.checkArgument(argText)) {
             enableCppParsing = false;
+        } else if (strictOption.checkArgument(argText)) {
+            // Enable strict mode, this is used by the ScopedTokenReplacement constructor. 
+            Logger::instance()->globalState.insert("strictMode", "");
         } else if (disableBuiltinQt3HeadersOption.checkArgument(argText)) {
             useBuildtinQt3Headers = false;
         } else if (missingFileWarningsOption.checkArgument(argText)) {

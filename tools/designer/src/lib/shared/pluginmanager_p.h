@@ -43,12 +43,12 @@
 class QDesignerFormEditorInterface;
 class QDesignerCustomWidgetInterface;
 
-class QT_SHARED_EXPORT PluginManager: public QObject
+class QDESIGNER_SHARED_EXPORT QDesignerPluginManager: public QObject
 {
     Q_OBJECT
 public:
-    PluginManager(QDesignerFormEditorInterface *core);
-    virtual ~PluginManager();
+    QDesignerPluginManager(QDesignerFormEditorInterface *core);
+    virtual ~QDesignerPluginManager();
 
     QDesignerFormEditorInterface *core() const;
 

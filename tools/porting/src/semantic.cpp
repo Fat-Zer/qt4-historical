@@ -21,14 +21,13 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#include "semantic.h"
-#include <QDebug>
-#include <QString>
-#include <QRegExp>
 
 #include "smallobject.h"
 #include "tokenengine.h"
-
+#include "semantic.h"
+#include <QtDebug>
+#include <QString>
+#include <QRegExp>
 
 using namespace TokenStreamAdapter;
 using namespace TokenEngine;
@@ -458,10 +457,10 @@ void Semantic::parseUsingDirective(UsingDirectiveAST *ast)
     if (targetNamespace == 0)
         return;
 
-    // Find the insertion namespace, wich is the first common
-    // ancesotor namespace for the current sope and the insertion namespace
+    // Find the insertion namespace, which is the first common
+    // ancesotor namespace for the current scope and the target namespace
 
-    // currentScope might be a block scope, find the first namespace parent
+    // currentScope might be a block scope, find its first namespace parent
     CodeModel::Scope *currentParent = currentScope.top();
     while (currentParent->toNamespaceScope() == 0) {
         currentParent = currentParent->parent();

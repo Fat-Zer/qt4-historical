@@ -24,10 +24,10 @@
 #ifndef Q3SIMPLERICHTEXT_H
 #define Q3SIMPLERICHTEXT_H
 
-#include "QtCore/qnamespace.h"
-#include "QtCore/qstring.h"
-#include "QtGui/qregion.h"
-#include "QtGui/qcolor.h"
+#include <QtCore/qnamespace.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qregion.h>
+#include <QtGui/qcolor.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -80,4 +80,4 @@ private:
 
 #endif // QT_NO_RICHTEXT
 
-#endif // QSIMPLERICHTEXT_H
+#endif // Q3SIMPLERICHTEXT_H

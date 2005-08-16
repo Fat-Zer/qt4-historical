@@ -29,7 +29,7 @@
 #include <qcoreapplication.h>
 #include <qmetaobject.h>
 #include <qregexp.h>
-#include <private/qsocketlayer_p.h>
+#include <private/qnativesocketengine_p.h>
 #include <qstringlist.h>
 #include <qthread.h>
 #include <qtimer.h>
@@ -40,10 +40,10 @@
 #endif
 
 Q_GLOBAL_STATIC(QHostInfoAgent, agent)
-   
+
 //#define QHOSTINFO_DEBUG
 
-/*!         
+/*!
     \class QHostInfo
     \brief The QHostInfo class provides static functions for host name lookups.
 
@@ -52,26 +52,32 @@ Q_GLOBAL_STATIC(QHostInfoAgent, agent)
     \ingroup io
 
     QHostInfo uses the lookup mechanisms provided by the operating
-    system to find the IP address(es) associated with a host name.
+    system to find the IP address(es) associated with a host name,
+    or the host name associated with an IP address.
     The class provides two static convenience functions: one that
     works asynchronously and emits a signal once the host is found,
     and one that blocks and returns a QHostInfo object.
 
     To look up a host's IP addresses asynchronously, call lookupHost(),
-    which takes the host name, a receiver object, and a slot
+    which takes the host name or IP address, a receiver object, and a slot
     signature as arguments and returns an ID. You can abort the
     lookup by calling abortHostLookup() with the lookup ID.
 
     Example:
 
     \code
+        // To find the IP address of www.trolltech.com
         QHostInfo::lookupHost("www.trolltech.com",
+                              this, SLOT(printResults(QHostInfo)));
+
+        // To find the host name for 4.2.2.1
+        QHostInfo::lookupHost("4.2.2.1",
                               this, SLOT(printResults(QHostInfo)));
     \endcode
 
 
     The slot is invoked when the results are ready. (If you use
-    Qt/Embedded and disabled multithread support by defining \c
+    Qtopia Core and disabled multithread support by defining \c
     QT_NO_THREAD, lookupHost() will block until the lookup has
     finished.) The results are stored in a QHostInfo object. Call
     addresses() to get the list of IP addresses for the host, and
@@ -138,6 +144,17 @@ static int qt_qhostinfo_newid()
         }
     \endcode
 
+    If you pass a literal IP address to \a name instead of a host name,
+    QHostInfo will search for the domain name for the IP (i.e., QHostInfo will
+    perform a \e reverse lookup). On success, the resulting QHostInfo will
+    contain both the resolved domain name and IP addresses for the host
+    name. Example:
+
+    \code
+        QHostInfo::lookupHost("4.2.2.1",
+                              this, SLOT(lookedUp(QHostInfo)));
+    \endcode
+
     \sa abortHostLookup(), addresses(), error(), fromName()
 */
 int QHostInfo::lookupHost(const QString &name, QObject *receiver,
@@ -154,41 +171,8 @@ int QHostInfo::lookupHost(const QString &name, QObject *receiver,
 
     qRegisterMetaType<QHostInfo>("QHostInfo");
 
-    // Don't start a thread if we don't have to do any lookup.
-    QHostAddress addr;
-    if (addr.setAddress(name)) {
-        if (!member || !member[0]) {
-            qWarning("QHostInfo::lookupHost() called with invalid slot [%s]", member);
-            return -1;
-        }
-
-        QByteArray arr(member + 1);
-        if (!arr.contains('(')) {
-            qWarning("QHostInfo::lookupHost() called with invalid slot [%s]", member);
-            return -1;
-        }
-
-        QHostInfo info(::qt_qhostinfo_newid());
-        info.setAddresses(QList<QHostAddress>() << addr);
-        arr.resize(arr.indexOf('('));
-
-        // To mimic the same behavior that the lookup would have if it was not
-        // an IP, we need to choose a Qt::QueuedConnection if there is thread support;
-        // otherwise Qt::DirectConnection.
-        if (!QMetaObject::invokeMethod(receiver, arr,
-#if !defined QT_NO_THREAD
-                         Qt::QueuedConnection,
-#else
-                         Qt::DirectConnection,
-#endif
-                         QGenericArgument("QHostInfo", &info))) {
-            qWarning("QHostInfo::lookupHost() called with invalid slot (QMetaObject::invokeMethod failed)");
-        }
-        return info.lookupId();
-    }
-
 #if defined Q_OS_WIN32
-    QSocketLayer bust; // makes sure WSAStartup was callled
+    QWindowsSockInit bust; // makes sure WSAStartup was callled
 #endif
 
     // Support for IDNA by first splitting the name into labels, then
@@ -242,6 +226,11 @@ void QHostInfo::abortHostLookup(int id)
     the program is suspended until the results of the lookup are
     ready. Returns the result of the lookup in a QHostInfo object.
 
+    If you pass a literal IP address to \a name instead of a host name,
+    QHostInfo will search for the domain name for the IP (i.e., QHostInfo will
+    perform a \e reverse lookup). On success, the returned QHostInfo will
+    contain both the resolved domain name and IP addresses for the host name.
+
     \sa lookupHost()
 */
 QHostInfo QHostInfo::fromName(const QString &name)
@@ -249,14 +238,6 @@ QHostInfo QHostInfo::fromName(const QString &name)
 #if defined QHOSTINFO_DEBUG
     qDebug("QHostInfo::fromName(\"%s\")",name.toLatin1().constData());
 #endif
-
-    // If the address string is an IP address, don't do a lookup.
-    QHostAddress addr;
-    if (addr.setAddress(name)) {
-        QHostInfo info;
-        info.setAddresses(QList<QHostAddress>() << addr);
-        return info;
-    }
 
     // Support for IDNA by first splitting the name into labels, then
     // running the punycode decoder on each part, then merging
@@ -302,6 +283,7 @@ void QHostInfoAgent::run()
 		return;
 #endif
             query = queries.takeFirst();
+            pendingQueryId = query->object->lookupId;
         }
 
 #if defined(QHOSTINFO_DEBUG)
@@ -310,9 +292,12 @@ void QHostInfoAgent::run()
 #endif
 
         QHostInfo info = fromName(query->hostName);
-        info.setLookupId(query->object->lookupId);
-        query->object->emitResultsReady(info);
-        query->object = 0;
+        int id = query->object->lookupId;
+        info.setLookupId(id);
+        if (pendingQueryId == id) {
+            query->object->emitResultsReady(info);
+            query->object = 0;
+        }
         delete query;
     }
 }

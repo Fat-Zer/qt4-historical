@@ -257,8 +257,17 @@ static bool read_dib(QDataStream &s, int offset, int startpos, QImage &image)
         green_shift = 8;
         red_shift = 16;
         blue_scale = green_scale = red_scale = 1;
-    } else if (comp == BMP_RGB && nbits == 16)  // don't support RGB values for 15/16 bpp
-        return false;
+    } else if (comp == BMP_RGB && nbits == 16) {
+        blue_mask = 0x001f;
+        green_mask = 0x03e0;
+        red_mask = 0x7c00;
+        blue_shift = 0;
+        green_shift = 2;
+        red_shift = 7;
+        red_scale = 1;
+        green_scale = 1;
+        blue_scale = 8;
+    }
 
     // offset can be bogus, be careful
     if (offset>=0 && startpos + offset > d->pos())
@@ -295,14 +304,14 @@ static bool read_dib(QDataStream &s, int offset, int startpos, QImage &image)
         uchar *buf    = new uchar[buflen];
         if (comp == BMP_RLE4) {                // run length compression
             int x=0, y=0, c, i;
-            char b;
+            quint8 b;
             register uchar *p = data + (h-1)*bpl;
             const uchar *endp = p + w;
             while (y < h) {
-                if (!d->getChar(&b))
+                if (!d->getChar((char *)&b))
                     break;
                 if (b == 0) {                        // escape code
-                    if (!d->getChar(&b) || b == 1) {
+                    if (!d->getChar((char *)&b) || b == 1) {
                         y = h;                // exit loop
                     } else switch (b) {
                         case 0:                        // end of line
@@ -312,10 +321,10 @@ static bool read_dib(QDataStream &s, int offset, int startpos, QImage &image)
                             break;
                         case 2:                        // delta (jump)
                         {
-                            char tmp;
-                            d->getChar(&tmp);
+                            quint8 tmp;
+                            d->getChar((char *)&tmp);
                             x += tmp;
-                            d->getChar(&tmp);
+                            d->getChar((char *)&tmp);
                             y += tmp;
                         }
 
@@ -334,13 +343,13 @@ static bool read_dib(QDataStream &s, int offset, int startpos, QImage &image)
 
                             i = (c = b)/2;
                             while (i--) {
-                                d->getChar(&b);
+                                d->getChar((char *)&b);
                                 *p++ = b >> 4;
                                 *p++ = b & 0x0f;
                             }
                             if (c & 1) {
-                                char tmp;
-                                d->getChar(&tmp);
+                                unsigned char tmp;
+                                d->getChar((char *)&tmp);
                                 *p++ = tmp >> 4;
                             }
                             if ((((c & 3) + 1) & 2) == 2)
@@ -353,7 +362,7 @@ static bool read_dib(QDataStream &s, int offset, int startpos, QImage &image)
                         b = endp-p;
 
                     i = (c = b)/2;
-                    d->getChar(&b);                // 2 pixels to be repeated
+                    d->getChar((char *)&b);                // 2 pixels to be repeated
                     while (i--) {
                         *p++ = b >> 4;
                         *p++ = b & 0x0f;
@@ -406,10 +415,10 @@ static bool read_dib(QDataStream &s, int offset, int startpos, QImage &image)
                                 y = h-1;
 
                             {
-                                char tmp;
-                                d->getChar(&tmp);
+                                quint8 tmp;
+                                d->getChar((char *)&tmp);
                                 x += tmp;
-                                d->getChar(&tmp);
+                                d->getChar((char *)&tmp);
                                 y += tmp;
                             }
                             p = data + (h-y-1)*bpl + x;
@@ -599,7 +608,11 @@ bool Q_GUI_EXPORT qt_read_dib(QDataStream &s, QImage &image)
 
 bool QBmpHandler::canRead() const
 {
-    return canRead(device());
+    if (canRead(device())) {
+        setFormat("bmp");
+        return true;
+    }
+    return false;
 }
 
 bool QBmpHandler::canRead(QIODevice *device)
@@ -609,26 +622,9 @@ bool QBmpHandler::canRead(QIODevice *device)
         return false;
     }
 
-    qint64 oldPos = device->pos();
-
     char head[2];
-    qint64 readBytes = device->read(head, sizeof(head));
-    if (readBytes != sizeof(head)) {
-        if (device->isSequential()) {
-            while (readBytes > 0)
-                device->ungetChar(head[readBytes-- - 1]);
-        } else {
-            device->seek(oldPos);
-        }
+    if (device->peek(head, sizeof(head)) != sizeof(head))
         return false;
-    }
-
-    if (device->isSequential()) {
-        while (readBytes > 0)
-            device->ungetChar(head[readBytes-- - 1]);
-    } else {
-        device->seek(oldPos);
-    }
 
     return (qstrncmp(head, "BM", 2) == 0);
 }

@@ -46,7 +46,9 @@
 class QWidget;
 class QDesignerFormWindowInterface;
 
-class QT_SHARED_EXPORT QDesignerTaskMenu: public QObject, public QDesignerTaskMenuExtension
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT QDesignerTaskMenu: public QObject, public QDesignerTaskMenuExtension
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerTaskMenuExtension)
@@ -70,10 +72,14 @@ private slots:
     void changeToolTip();
     void changeStatusTip();
     void changeWhatsThis();
+    void createMenuBar();
+    void addToolBar();
+    void createStatusBar();
 
 private:
     QPointer<QWidget> m_widget;
     QAction *m_separator;
+    QAction *m_separator2;
     QAction *m_changeObjectNameAction;
     QAction *m_changeToolTip;
     QAction *m_changeStatusTip;
@@ -81,9 +87,13 @@ private:
     QAction *m_createDockWidgetAction;
     QAction *m_promoteToCustomWidgetAction;
     QAction *m_demoteFromCustomWidgetAction;
+
+    QAction *m_addMenuBar;
+    QAction *m_addToolBar;
+    QAction *m_addStatusBar;
 };
 
-class QT_SHARED_EXPORT QDesignerTaskMenuFactory: public QExtensionFactory
+class QDESIGNER_SHARED_EXPORT QDesignerTaskMenuFactory: public QExtensionFactory
 {
     Q_OBJECT
 public:
@@ -92,5 +102,7 @@ public:
 protected:
     virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
 };
+
+} // namespace qdesigner_internal
 
 #endif // QDESIGNER_TASKMENU_H

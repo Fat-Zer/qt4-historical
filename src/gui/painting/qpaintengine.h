@@ -24,9 +24,9 @@
 #ifndef QPAINTENGINE_H
 #define QPAINTENGINE_H
 
-#include "QtCore/qnamespace.h"
-#include "QtCore/qobjectdefs.h"
-#include "QtGui/qpainter.h"
+#include <QtCore/qnamespace.h>
+#include <QtCore/qobjectdefs.h>
+#include <QtGui/qpainter.h>
 
 QT_MODULE(Gui)
 
@@ -98,6 +98,7 @@ public:
         DirtyClipPath           = 0x0100,
         DirtyHints              = 0x0200,
         DirtyCompositionMode    = 0x0400,
+        DirtyClipEnabled        = 0x0800,
 
         AllDirty                = 0xffff
     };
@@ -149,6 +150,9 @@ public:
 
     void setSystemClip(const QRegion &baseClip);
     QRegion systemClip() const;
+
+    void setSystemRect(const QRect &rect);
+    QRect systemRect() const;
 
 #ifdef Q_WS_WIN
     virtual HDC getDC() const;
@@ -241,10 +245,13 @@ public:
     Qt::ClipOperation clipOperation() const;
     QRegion clipRegion() const;
     QPainterPath clipPath() const;
+    bool isClipEnabled() const;
 
     QPainter::RenderHints renderHints() const;
 
     QPainter::CompositionMode compositionMode() const;
+
+
 
     QPainter *painter() const;
 
@@ -288,7 +295,7 @@ inline void QPaintEngine::clearDirty(DirtyFlags df)
     state->dirtyFlags &= ~static_cast<uint>(df);
 }
 
-
+Q_DECLARE_OPERATORS_FOR_FLAGS(QTextItem::RenderFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPaintEngine::PaintEngineFeatures)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPaintEngine::DirtyFlags)
 

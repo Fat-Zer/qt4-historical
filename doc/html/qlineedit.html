@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qlineedit.cpp -->
 <head>
-    <title>Qt 4.0: QLineEdit Class Reference</title>
+    <title>Qt 4.1: QLineEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -54,7 +54,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -108,7 +108,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>const QValidator * <b><a href="qlineedit.html#validator">validator</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -300,6 +300,10 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>D</tt></td><td>ASCII digit required. 1-9.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>d</tt></td><td>ASCII digit permitted but not required (1-9).</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>#</tt></td><td>ASCII digit or plus/minus sign permitted but not required.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>H</tt></td><td>Hexadecimal character required. A-F, a-f, 0-9.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>h</tt></td><td>Hexadecimal character permitted but not required.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>B</tt></td><td>Binary character required. 0-1.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>b</tt></td><td>Binary character permitted but not required.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&gt;</tt></td><td>All following alphabetic characters are uppercased.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;</tt></td><td>All following alphabetic characters are lowercased.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>!</tt></td><td>Switch off case conversion.</td></tr>
@@ -310,8 +314,9 @@ body { background: #ffffff; color: black; }</style>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Mask</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>000.000.000.000;_</tt></td><td>IP address; blanks are <tt>_</tt>.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>0000-00-00</tt></td><td>ISO Date; blanks are <tt>space</tt></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>&gt;AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#</tt></td><td>License number; blanks are <tt>-</tt> and all (alphabetic) characters are converted to uppercase.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>HH:HH:HH:HH:HH:HH;_</tt></td><td>MAC address</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>0000-00-00</tt></td><td>ISO Date; blanks are <tt>space</tt></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>&gt;AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#</tt></td><td>License number; blanks are <tt>-</tt> and all (alphabetic) characters are converted to uppercase.</td></tr>
 </table>
 <p>To get range control (e.g. for an IP address) use masks together with <a href="qlineedit.html#setValidator">validators</a>.</p>
 <p>Access functions:</p>
@@ -510,6 +515,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

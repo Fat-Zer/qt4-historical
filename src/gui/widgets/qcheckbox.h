@@ -24,10 +24,9 @@
 #ifndef QCHECKBOX_H
 #define QCHECKBOX_H
 
-#include "QtGui/qabstractbutton.h"
+#include <QtGui/qabstractbutton.h>
 
 QT_MODULE(Gui)
-
 
 class QCheckBoxPrivate;
 
@@ -50,14 +49,16 @@ public:
     Qt::CheckState checkState() const;
     void setCheckState(Qt::CheckState state);
 
-signals:
+Q_SIGNALS:
     void stateChanged(int);
 
 protected:
+    bool event(QEvent *e);
     bool hitButton(const QPoint &pos) const;
     void checkStateSet();
     void nextCheckState();
     void paintEvent(QPaintEvent *);
+    void mouseMoveEvent(QMouseEvent *);
 
 #ifdef QT3_SUPPORT
 public:
@@ -80,6 +81,5 @@ private:
     Q_DECLARE_PRIVATE(QCheckBox)
     Q_DISABLE_COPY(QCheckBox)
 };
-
 
 #endif // QCHECKBOX_H

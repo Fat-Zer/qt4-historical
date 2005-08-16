@@ -63,7 +63,7 @@
     \link shclass.html implicit sharing\endlink, so it is very
     efficient to pass QBitmap objects as arguments.
 
-    \sa QPixmap, QPainter::drawPixmap(), bitBlt(), \link shclass.html Shared Classes\endlink
+    \sa QPixmap, QPainter::drawPixmap(), bitBlt(), {shclass.html}{Shared Classes}
 */
 
 
@@ -288,6 +288,13 @@ QBitmap QBitmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
 
     return bm;
 #else
+    const QRgb c0 = QColor(Qt::black).rgb();
+    const QRgb c1 = QColor(Qt::white).rgb();
+    if (img.color(0) == c0 && img.color(1) == c1) {
+        img.invertPixels();
+        img.setColor(0, c1);
+        img.setColor(1, c0);
+    }
     return QBitmap(QPixmap::fromImage(img, flags|Qt::MonoOnly));
 #endif
 }

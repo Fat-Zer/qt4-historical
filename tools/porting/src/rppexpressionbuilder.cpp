@@ -20,6 +20,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #include "rppexpressionbuilder.h"
 #include "tokens.h"
 #include "rpp.h"

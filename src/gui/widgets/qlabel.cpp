@@ -143,8 +143,17 @@ public:
     was a button (inheriting from QAbstractButton), triggering the
     mnemonic would emulate a button click.
 
-    \inlineimage macintosh-label.png Screenshot in Macintosh style
-    \inlineimage windows-label.png Screenshot in Windows style
+    \table
+    \row
+    \i \inlineimage macintosh-label.png Screenshot of a Macintosh style label
+    \i A Macintosh style label
+    \row
+    \i \inlineimage plastique-label.png Screenshot of a Plastique style label
+    \i A Plastique style label
+    \row
+    \i \inlineimage windowsxp-label.png Screenshot of a Windows XP style label
+    \i A Windows XP style label
+    \endtable
 
     \sa QLineEdit, QTextEdit, QPixmap, QMovie,
         {fowler}{GUI Design Handbook: Label}
@@ -211,7 +220,7 @@ QLabel::QLabel(QWidget *parent, const char *name, Qt::WFlags f)
 {
     Q_D(QLabel);
     if (name)
-        setObjectName(name);
+        setObjectName(QString::fromAscii(name));
     d->init();
 }
 
@@ -231,7 +240,7 @@ QLabel::QLabel(const QString &text, QWidget *parent, const char *name,
 {
     Q_D(QLabel);
     if (name)
-        setObjectName(name);
+        setObjectName(QString::fromAscii(name));
     d->init();
     setText(text);
 }
@@ -258,7 +267,7 @@ QLabel::QLabel(QWidget *buddy, const QString &text,
 {
     Q_D(QLabel);
     if (name)
-        setObjectName(name);
+        setObjectName(QString::fromAscii(name));
     d->init();
     setBuddy(buddy);
     setText(text);
@@ -788,8 +797,11 @@ void QLabel::paintEvent(QPaintEvent *)
 #ifndef QT_NO_MOVIE
     if (mov) {
         QRect r = style->itemPixmapRect(cr, align, mov->currentPixmap());
-        // ### could resize movie frame at this point
-        paint.drawPixmap(r.x(), r.y(), mov->currentPixmap());
+        if (d->scaledcontents) {
+            paint.drawPixmap(cr.x(), cr.y(), mov->currentPixmap().scaled(cr.size()));
+        } else {
+            paint.drawPixmap(r.x(), r.y(), mov->currentPixmap());
+        }
     }
     else
 #endif
@@ -880,7 +892,7 @@ void QLabel::paintEvent(QPaintEvent *)
                 pix = style->generatedIconPixmap(QIcon::Disabled, pix, &opt);
             style->drawItemPixmap(&paint, cr, align, pix);
         } else {
-            style->drawItemText(&paint, cr, align, palette(), isEnabled(), d->ltext);
+            style->drawItemText(&paint, cr, align, palette(), isEnabled(), d->ltext, foregroundRole());
         }
 
     }
@@ -986,12 +998,22 @@ void QLabelPrivate::movieUpdated(const QRect& rect)
 {
     Q_Q(QLabel);
     if (lmovie && lmovie->isValid()) {
-        QRect r = q->contentsRect();
-        r = q->style()->itemPixmapRect(r, align, lmovie->currentPixmap());
-        r.translate(rect.x(), rect.y());
-        r.setWidth(qMin(r.width(), rect.width()));
-        r.setHeight(qMin(r.height(), rect.height()));
-        q->repaint(r);
+        QRect r;
+        if (scaledcontents) {
+            QRect cr = q->contentsRect();
+            QRect pixmapRect(cr.topLeft(), lmovie->currentPixmap().size());
+            if (pixmapRect.isEmpty())
+                return;
+            r.setRect(cr.left(), cr.top(),
+                      (rect.width() * cr.width()) / pixmapRect.width(),
+                      (rect.height() * cr.height()) / pixmapRect.height());
+        } else {
+            r = q->style()->itemPixmapRect(q->contentsRect(), align, lmovie->currentPixmap());
+            r.translate(rect.x(), rect.y());
+            r.setWidth(qMin(r.width(), rect.width()));
+            r.setHeight(qMin(r.height(), rect.height()));
+        }
+        q->update(r);
     }
 }
 

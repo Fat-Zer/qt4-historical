@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/tools/qdatetime.cpp -->
 <head>
-    <title>Qt 4.0: QDate Class Reference</title>
+    <title>Qt 4.1: QDate Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -71,8 +71,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qdate.html#operator-lt-lt-28">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QDate &amp; <i>date</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qdate.html#operator-gt-gt-19">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QDate &amp; <i>date</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qdate.html#operator-lt-lt-33">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QDate &amp; <i>date</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qdate.html#operator-gt-gt-20">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QDate &amp; <i>date</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -164,12 +164,12 @@ body { background: #ffffff; color: black; }</style>
 <p>For any field that is not represented in the format the following defaults are used:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Field</th><th>Default value</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Year</td><td>The current year</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Year</td><td>1900</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Month</td><td>1</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Day</td><td>1</td></tr>
 </table>
 <p>The following examples demonstrate the default values:</p>
-<pre>&nbsp;   QDate::fromString(&quot;1.30&quot;, &quot;M.d&quot;);           // January 30 in the current year
+<pre>&nbsp;   QDate::fromString(&quot;1.30&quot;, &quot;M.d&quot;);           // January 30 1900
     QDate::fromString(&quot;20000110&quot;, &quot;yyyyMMdd&quot;);  // January 10, 2000
     QDate::fromString(&quot;20000110&quot;, &quot;yyyyMd&quot;);    // January 10, 2000</pre>
 <p>See also <a href="qdatetime.html#fromString">QDateTime::fromString</a>(), <a href="qtime.html#fromString">QTime::fromString</a>(), <a href="qdate.html#toString">QDate::toString</a>(), <a href="qdatetime.html#toString">QDateTime::toString</a>(), and <a href="qtime.html#toString">QTime::toString</a>().</p>
@@ -317,20 +317,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns 0 if the date is invalid.</p>
 <p>In accordance with ISO 8601, weeks start on <a href="qt.html#DayOfWeek-enum">Qt::Monday</a> and the first <a href="qt.html#DayOfWeek-enum">Qt::Thursday</a> of a year is always in week 1 of that year. Most years have 52 weeks, but some have 53.</p>
 <p>*<i>yearNumber</i> is not always the same as <a href="qdate.html#year">year</a>(). For example, 1 January 2000 has week number 52 in the year 1999, and 31 December 2002 has week number 1 in the year 2003.</p>
-<pre>&nbsp;   Copyright (c) 1989 The Regents of the University of California.
-    All rights reserved.
-
-    Redistribution and use in source and binary forms are permitted
-    provided that the above copyright notice and this paragraph are
-    duplicated in all such forms and that any documentation,
-    advertising materials, and other materials related to such
-    distribution and use acknowledge that the software was developed
-    by the University of California, Berkeley.  The name of the
-    University may not be used to endorse or promote products derived
-    from this software without specific prior written permission.
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
-    IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</pre>
+<p>Copyright (c) 1989 The Regents of the University of California. All rights reserved.</p>
+<p>Redistribution and use in source and binary forms are permitted provided that the above copyright notice and this paragraph are duplicated in all such forms and that any documentation, advertising materials, and other materials related to such distribution and use acknowledge that the software was developed by the University of California, Berkeley. The name of the University may not be used to endorse or promote products derived from this software without specific prior written permission. THIS SOFTWARE IS PROVIDED &quot;AS IS&quot; AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</p>
 <p>See also <a href="qdate.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="year"></a>int QDate::year () const</h3>
 <p>Returns the year (1752 to 8000) of this date.</p>
@@ -349,11 +337,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this date is later than or equal to <i>d</i>; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-28"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QDate &amp; <i>date</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-33"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QDate &amp; <i>date</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the <i>date</i> to stream <i>out</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-19"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QDate &amp; <i>date</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-20"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QDate &amp; <i>date</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a date from stream <i>in</i> into the <i>date</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -361,6 +349,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

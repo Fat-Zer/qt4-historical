@@ -24,15 +24,14 @@
 #ifndef QSTRINGLIST_H
 #define QSTRINGLIST_H
 
-#include "QtCore/qalgorithms.h"
-#include "QtCore/qdatastream.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qregexp.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qstringmatcher.h"
-
+#include <QtCore/qalgorithms.h>
+#include <QtCore/qdatastream.h>
+#include <QtCore/qlist.h>
+#include <QtCore/qregexp.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qstringmatcher.h>
 #ifdef QT_INCLUDE_COMPAT
-#include <qvaluelist.h>
+#include <Qt3Support/q3valuelist.h>
 #endif
 
 QT_MODULE(Core)

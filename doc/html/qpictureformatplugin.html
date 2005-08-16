@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/image/qpictureformatplugin.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qpictureformatplugin.cpp -->
 <head>
-    <title>Qt 4.0: QPictureFormatPlugin Class Reference</title>
+    <title>Qt 4.1: QPictureFormatPlugin Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,6 +30,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qpictureformatplugin.html#dtor.QPictureFormatPlugin">~QPictureFormatPlugin</a></b> ()</li>
 <li><div class="fn"/>virtual bool <b><a href="qpictureformatplugin.html#installIOHandler">installIOHandler</a></b> ( const QString &amp; <i>format</i> ) = 0</li>
 <li><div class="fn"/>virtual QStringList <b><a href="qpictureformatplugin.html#keys">keys</a></b> () const = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qpictureformatplugin.html#loadPicture">loadPicture</a></b> ( const QString &amp; <i>format</i>, const QString &amp; <i>fileName</i>, QPicture * <i>picture</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qpictureformatplugin.html#savePicture">savePicture</a></b> ( const QString &amp; <i>format</i>, const QString &amp; <i>fileName</i>, const QPicture &amp; <i>picture</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
@@ -47,27 +49,31 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QPictureFormatPlugin class provides an abstract base for custom picture format plugins.</p>
 <p>The picture format plugin is a simple plugin interface that makes it easy to create custom picture formats that can be used transparently by applications.</p>
-<p>Writing an picture format plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qpictureformatplugin.html#keys">keys</a>(), <a href="qpictureformatinterface.html#loadPicture">loadPicture</a>(), <a href="qpictureformatinterface.html#savePicture">savePicture</a>(), and <a href="qpictureformatplugin.html#installIOHandler">installIOHandler</a>(), and exporting the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Writing an picture format plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qpictureformatplugin.html#keys">keys</a>(), <a href="qpictureformatplugin.html#loadPicture">loadPicture</a>(), <a href="qpictureformatplugin.html#savePicture">savePicture</a>(), and <a href="qpictureformatplugin.html#installIOHandler">installIOHandler</a>(), and exporting the class with the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
 <p>See also <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPictureFormatPlugin"></a>QPictureFormatPlugin::QPictureFormatPlugin ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs an picture format plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Constructs an picture format plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
 <h3 class="fn"><a name="dtor.QPictureFormatPlugin"></a>QPictureFormatPlugin::~QPictureFormatPlugin ()</h3>
 <p>Destroys the picture format plugin.</p>
 <p>You never have to call this explicitly. Qt destroys a plugin automatically when it is no longer used.</p>
 <h3 class="fn"><a name="installIOHandler"></a>bool QPictureFormatPlugin::installIOHandler ( const <a href="qstring.html">QString</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Installs a <a href="qpictureio.html">QPictureIO</a> picture I/O handler for the picture format <i>format</i>.</p>
-<p>Reimplemented from <a href="qpictureformatinterface.html#installIOHandler">QPictureFormatInterface</a>.</p>
 <p>See also <a href="qpictureformatplugin.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QPictureFormatPlugin::keys () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the list of picture formats this plugin supports.</p>
-<p>Reimplemented from <a href="qfactoryinterface.html#keys">QFactoryInterface</a>.</p>
 <p>See also <a href="qpictureformatplugin.html#installIOHandler">installIOHandler</a>().</p>
+<h3 class="fn"><a name="loadPicture"></a>bool QPictureFormatPlugin::loadPicture ( const <a href="qstring.html">QString</a> &amp; <i>format</i>, const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, <a href="qpicture.html">QPicture</a> * <i>picture</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Loads the picture stored in the file called <i>fileName</i>, with the given <i>format</i>, into *<i>picture</i>. Returns true on success; otherwise returns false.</p>
+<p>See also <a href="qpictureformatplugin.html#savePicture">savePicture</a>().</p>
+<h3 class="fn"><a name="savePicture"></a>bool QPictureFormatPlugin::savePicture ( const <a href="qstring.html">QString</a> &amp; <i>format</i>, const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const <a href="qpicture.html">QPicture</a> &amp; <i>picture</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Saves the given <i>picture</i> into the file called <i>fileName</i>, using the specified <i>format</i>. Returns true on success; otherwise returns false.</p>
+<p>See also <a href="qpictureformatplugin.html#loadPicture">loadPicture</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

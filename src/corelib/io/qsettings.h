@@ -24,16 +24,16 @@
 #ifndef QSETTINGS_H
 #define QSETTINGS_H
 
-#include "QtCore/qobject.h"
-#include "QtCore/qvariant.h"
-#include "QtCore/qstring.h"
+#include <QtCore/qobject.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Core)
 
 #ifndef QT_NO_SETTINGS
 
 #ifdef QT3_SUPPORT
-#include "QtCore/qstringlist.h"
+#include <QtCore/qstringlist.h>
 #endif
 
 #include <ctype.h>
@@ -42,6 +42,7 @@ QT_MODULE(Core)
 #undef Status
 #endif
 
+class QIODevice;
 class QSettingsPrivate;
 
 #ifndef QT_NO_QOBJECT
@@ -66,7 +67,25 @@ public:
 
     enum Format {
         NativeFormat,
-        IniFormat
+        IniFormat,
+
+        InvalidFormat = 16,
+        CustomFormat1,
+        CustomFormat2,
+        CustomFormat3,
+        CustomFormat4,
+        CustomFormat5,
+        CustomFormat6,
+        CustomFormat7,
+        CustomFormat8,
+        CustomFormat9,
+        CustomFormat10,
+        CustomFormat11,
+        CustomFormat12,
+        CustomFormat13,
+        CustomFormat14,
+        CustomFormat15,
+        CustomFormat16
     };
 
     enum Scope {
@@ -79,10 +98,9 @@ public:
 #endif
     };
 
-
 #ifndef QT_NO_QOBJECT
     explicit QSettings(const QString &organization,
-              const QString &application = QString(), QObject *parent = 0);
+                       const QString &application = QString(), QObject *parent = 0);
     QSettings(Scope scope, const QString &organization,
               const QString &application = QString(), QObject *parent = 0);
     QSettings(Format format, Scope scope, const QString &organization,
@@ -91,7 +109,7 @@ public:
     explicit QSettings(QObject *parent = 0);
 #else
     explicit QSettings(const QString &organization,
-              const QString &application = QString());
+                       const QString &application = QString());
     QSettings(Scope scope, const QString &organization,
               const QString &application = QString());
     QSettings(Format format, Scope scope, const QString &organization,
@@ -129,8 +147,16 @@ public:
 
     QString fileName() const;
 
-    static void setSystemIniPath(const QString &dir);
-    static void setUserIniPath(const QString &dir);
+    static void setSystemIniPath(const QString &dir); // ### remove in 5.0 (use setPath() instead)
+    static void setUserIniPath(const QString &dir);   // ### remove in 5.0 (use setPath() instead)
+    static void setPath(Format format, Scope scope, const QString &path);
+
+    typedef QMap<QString, QVariant> SettingsMap;
+    typedef bool (*ReadFunc)(QIODevice &device, SettingsMap &map);
+    typedef bool (*WriteFunc)(QIODevice &device, const SettingsMap &map);
+
+    static Format registerFormat(const QString &extension, ReadFunc readFunc, WriteFunc writeFunc,
+                                 Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive);
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT bool writeEntry(const QString &key, bool value)
@@ -199,10 +225,16 @@ public:
     inline QT3_SUPPORT void setPath(const QString &organization, const QString &application,
                                     Scope scope = Global)
     {
+#ifndef QT_NO_QOBJECT
         QObject *parent = this->parent();
         this->~QSettings();
         new (this) QSettings(scope == Global ? QSettings::SystemScope : QSettings::UserScope,
                              organization, application, parent);
+#else
+        this->~QSettings();
+        new (this) QSettings(scope == Global ? QSettings::SystemScope : QSettings::UserScope,
+                             organization, application);
+#endif
     }
     inline QT3_SUPPORT void resetGroup()
     {
@@ -240,6 +272,6 @@ private:
     Q_DISABLE_COPY(QSettings)
 };
 
-
 #endif // QT_NO_SETTINGS
+
 #endif // QSETTINGS_H

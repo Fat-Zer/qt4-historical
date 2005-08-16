@@ -24,7 +24,7 @@
 #ifndef Q3PAINTDEVICEMETRICS_H
 #define Q3PAINTDEVICEMETRICS_H
 
-#include "QtGui/qpaintdevice.h"
+#include <QtGui/qpaintdevice.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -48,5 +48,4 @@ private:
     const QPaintDevice *pdev;
 };
 
-
-#endif // QPAINTDEVICEMETRICS_H
+#endif // Q3PAINTDEVICEMETRICS_H

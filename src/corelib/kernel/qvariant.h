@@ -24,11 +24,12 @@
 #ifndef QVARIANT_H
 #define QVARIANT_H
 
-#include "QtCore/qatomic.h"
-#include "QtCore/qbytearray.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qmetatype.h"
-#include "QtCore/qmap.h"
+#include <QtCore/qatomic.h>
+#include <QtCore/qbytearray.h>
+#include <QtCore/qlist.h>
+#include <QtCore/qmetatype.h>
+#include <QtCore/qmap.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Core)
 
@@ -39,7 +40,6 @@ class QDateTime;
 class QLine;
 class QLineF;
 class QLocale;
-class QString;
 class QStringList;
 class QTime;
 class QPoint;
@@ -48,12 +48,12 @@ class QSize;
 class QSizeF;
 class QRect;
 class QRectF;
+class QRegExp;
 class QTextFormat;
 class QTextLength;
 class QUrl;
 class QVariant;
 class QVariantComparisonHelper;
-
 
 #ifndef QT_NO_MEMBER_TEMPLATES
 template <typename T>
@@ -82,7 +82,6 @@ class Q_CORE_EXPORT QVariant
         ULongLong = 5,
         Double = 6,
         Char = 7,
-
         Map = 8,
         List = 9,
         String = 10,
@@ -94,7 +93,6 @@ class Q_CORE_EXPORT QVariant
         DateTime = 16,
         Url = 17,
         Locale = 18,
-
         Rect = 19,
         RectF = 20,
         Size = 21,
@@ -103,6 +101,7 @@ class Q_CORE_EXPORT QVariant
         LineF = 24,
         Point = 25,
         PointF = 26,
+	RegExp = 27,
 
 #ifdef QT3_SUPPORT
         ColorGroup = 63,
@@ -173,6 +172,7 @@ class Q_CORE_EXPORT QVariant
 #endif
     QVariant(const QUrl &url);
     QVariant(const QLocale &locale);
+    QVariant(const QRegExp &regExp);
 
     QVariant& operator=(const QVariant &other);
 
@@ -213,7 +213,7 @@ class Q_CORE_EXPORT QVariant
     QTime toTime() const;
     QDateTime toDateTime() const;
     QList<QVariant> toList() const;
-    QMap<QString,QVariant> toMap() const;
+    QMap<QString, QVariant> toMap() const;
 
 #ifndef QT_NO_GEOM_VARIANT
     QPoint toPoint() const;
@@ -227,6 +227,7 @@ class Q_CORE_EXPORT QVariant
 #endif
     QUrl toUrl() const;
     QLocale toLocale() const;
+    QRegExp toRegExp() const;
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT int &asInt();
@@ -349,8 +350,7 @@ class Q_CORE_EXPORT QVariant
 protected:
     friend inline bool qvariant_cast_helper(const QVariant &, QVariant::Type, void *);
     friend int qRegisterGuiVariant();
-    friend inline bool operator==(const QVariant &,
-                                  const QVariantComparisonHelper &);
+    friend inline bool operator==(const QVariant &, const QVariantComparisonHelper &);
 #ifndef QT_NO_DEBUG_STREAM
     friend Q_CORE_EXPORT QDebug operator<<(QDebug, const QVariant &);
 #endif
@@ -365,6 +365,12 @@ protected:
     void *castOrDetach(Type t);
 #endif
     bool cmp(const QVariant &other) const;
+
+private:
+#ifndef QT3_SUPPORT
+    // force compile error, prevent QVariant(QVariant::Type, int) to be called
+    inline QVariant(bool, int) { Q_ASSERT(false); }
+#endif
 };
 
 #ifndef QT_MOC
@@ -460,6 +466,8 @@ template<>
 inline int qt_variant_metatype_id(QTextFormat *) { return QVariant::TextFormat; }
 template<>
 inline int qt_variant_metatype_id(QLocale *) { return QVariant::Locale; }
+template<>
+inline int qt_variant_metatype_id(QRegExp *) { return QVariant::RegExp; }
 template<>
 inline int qt_variant_metatype_id(QLineF *) { return QVariant::LineF; }
 template<>
@@ -561,8 +569,7 @@ public:
     inline QVariantComparisonHelper(const QVariant &var)
         : v(&var) {}
 private:
-    friend inline bool operator==(const QVariant &,
-                                  const QVariantComparisonHelper &);
+    friend inline bool operator==(const QVariant &, const QVariantComparisonHelper &);
     const QVariant *v;
 };
 
@@ -636,6 +643,5 @@ Q_DECLARE_TYPEINFO(QVariant, Q_MOVABLE_TYPE);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QVariant &);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QVariant::Type);
 #endif
-
 
 #endif // QVARIANT_H

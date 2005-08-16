@@ -78,9 +78,11 @@ public:
     inline qreal rawValue() const { return fixedValueOrPercentage; }
 
     inline bool operator==(const QTextLength &other) const
-    { return lengthType == other.lengthType && fixedValueOrPercentage == other.fixedValueOrPercentage; }
+    { return lengthType == other.lengthType
+             && qFuzzyCompare(fixedValueOrPercentage, other.fixedValueOrPercentage); }
     inline bool operator!=(const QTextLength &other) const
-    { return lengthType != other.lengthType || fixedValueOrPercentage != other.fixedValueOrPercentage; }
+    { return lengthType != other.lengthType
+             || !qFuzzyCompare(fixedValueOrPercentage, other.fixedValueOrPercentage); }
     operator QVariant() const;
 
 private:
@@ -98,6 +100,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QTextFormat &);
 
 class Q_GUI_EXPORT QTextFormat
 {
+    Q_GADGET
+    Q_ENUMS(FormatType Property ObjectTypes)
 public:
     enum FormatType {
         InvalidFormat = -1,
@@ -143,10 +147,11 @@ public:
         FontOverline = 0x2006,
         FontStrikeOut = 0x2007,
         FontFixedPitch = 0x2008,
+        FontPixelSize = 0x2009,
 
         TextUnderlineColor = 0x2010,
-
         TextVerticalAlignment = 0x2021,
+        TextOutline = 0x2022,
 
         IsAnchor = 0x2030,
         AnchorHref = 0x2031,
@@ -178,9 +183,6 @@ public:
         ImageWidth = 0x5010,
         ImageHeight = 0x5011,
 
-        // internal properties
-        DocumentFragmentMark = 0x6000,
-
         // --
         UserProperty = 0x100000
     };
@@ -188,7 +190,9 @@ public:
     enum ObjectTypes {
         NoObject,
         ImageObject,
-        TableObject
+        TableObject,
+
+        UserObject = 0x1000
     };
 
     QTextFormat();
@@ -341,6 +345,11 @@ public:
     { setProperty(TextVerticalAlignment, alignment); }
     inline VerticalAlignment verticalAlignment() const
     { return static_cast<VerticalAlignment>(intProperty(TextVerticalAlignment)); }
+
+    inline void setTextOutline(const QPen &pen)
+    { setProperty(TextOutline, pen); }
+    inline QPen textOutline() const
+    { return penProperty(TextOutline); }
 
     inline void setAnchor(bool anchor)
     { setProperty(IsAnchor, anchor); }

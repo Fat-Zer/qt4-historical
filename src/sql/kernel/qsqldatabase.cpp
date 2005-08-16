@@ -81,7 +81,7 @@ QT_STATIC_CONST_IMPL char *QSqlDatabase::defaultConnection = "qt_sql_default_con
 
 typedef QHash<QString, QSqlDriverCreatorBase*> DriverDict;
 
-class ConnectionDict: public QHash<QString, QSqlDatabase>
+class QConnectionDict: public QHash<QString, QSqlDatabase>
 {
 public:
     inline bool contains_ts(const QString &key)
@@ -129,7 +129,7 @@ public:
     static void removeDatabase(const QString& name);
     static void invalidateDb(const QSqlDatabase &db, const QString &name);
     static DriverDict &driverDict();
-    Q_GLOBAL_STATIC(ConnectionDict, dbDict)
+    Q_GLOBAL_STATIC(QConnectionDict, dbDict)
     static void cleanConnections();
 };
 
@@ -154,11 +154,11 @@ QSqlDatabasePrivate::~QSqlDatabasePrivate()
 
 void QSqlDatabasePrivate::cleanConnections()
 {
-    ConnectionDict *dict = dbDict();
+    QConnectionDict *dict = dbDict();
     Q_ASSERT(dict);
     QWriteLocker locker(&dict->lock);
 
-    ConnectionDict::iterator it = dict->begin();
+    QConnectionDict::iterator it = dict->begin();
     while (it != dict->end()) {
         invalidateDb(it.value(), it.key());
         ++it;
@@ -203,7 +203,7 @@ void QSqlDatabasePrivate::invalidateDb(const QSqlDatabase &db, const QString &na
 
 void QSqlDatabasePrivate::removeDatabase(const QString &name)
 {
-    ConnectionDict *dict = dbDict();
+    QConnectionDict *dict = dbDict();
     Q_ASSERT(dict);
     QWriteLocker locker(&dict->lock);
 
@@ -215,7 +215,7 @@ void QSqlDatabasePrivate::removeDatabase(const QString &name)
 
 void QSqlDatabasePrivate::addDatabase(const QSqlDatabase &db, const QString &name)
 {
-    ConnectionDict *dict = dbDict();
+    QConnectionDict *dict = dbDict();
     Q_ASSERT(dict);
     QWriteLocker locker(&dict->lock);
 
@@ -231,7 +231,7 @@ void QSqlDatabasePrivate::addDatabase(const QSqlDatabase &db, const QString &nam
 */
 QSqlDatabase QSqlDatabasePrivate::database(const QString& name, bool open)
 {
-    const ConnectionDict *dict = dbDict();
+    const QConnectionDict *dict = dbDict();
     Q_ASSERT(dict);
 
     dict->lock.lockForRead();
@@ -404,6 +404,8 @@ void QSqlDatabasePrivate::disable()
 
     \warning If you add a database with the same name as an
     existing database, the new database will replace the old one.
+    This will happen automatically if you call this function more
+    than once without specifying \a connectionName.
 
     To make use of the connection, you will need to set it up, for
     example by calling some or all of setDatabaseName(),
@@ -608,7 +610,7 @@ QStringList QSqlDatabase::connectionNames()
     \row \i QMYSQL   \i MySQL Driver
     \row \i QOCI     \i Oracle Call Interface Driver
     \row \i QODBC    \i ODBC Driver (includes Microsoft SQL Server)
-    \row \i QPSQL    \i PostgreSQL v6.x and v7.x Driver
+    \row \i QPSQL    \i PostgreSQL 7.3 and above Driver
     \row \i QSQLITE  \i SQLite version 3 or above
     \row \i QSQLITE2 \i SQLite version 2
     \row \i QTDS     \i Sybase Adaptive Server

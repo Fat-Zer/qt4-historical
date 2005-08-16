@@ -124,25 +124,31 @@
     \fn void QAbstractSlider::sliderPressed()
 
     This signal is emitted when the user presses the slider with the
-    mouse.
+    mouse, or programmatically when setSliderDown(true) is called.
+
+    \sa sliderReleased(), sliderMoved(), isSliderDown()
 */
 
 /*!
     \fn void QAbstractSlider::sliderMoved(int value)
 
-    This signal is emitted when the slider is dragged by the user, with
-    the new slider \a value as an argument.
+    This signal is emitted when sliderDown is true and the slider moves. This
+    usually happens when the user is dragging the slider. The \a value
+    is the new slider position.
 
     This signal is emitted even when tracking is turned off.
 
-    \sa setTracking(), valueChanged()
+    \sa setTracking(), valueChanged(), isSliderDown(),
+    sliderPressed(), sliderReleased()
 */
 
 /*!
     \fn void QAbstractSlider::sliderReleased()
 
     This signal is emitted when the user releases the slider with the
-    mouse.
+    mouse, or programmatically when setSliderDown(false) is called.
+
+    \sa sliderPressed() sliderMoved() sliderDown
 */
 
 /*!
@@ -449,9 +455,10 @@ void QAbstractSlider::setSliderPosition(int position)
     if (position == d->position)
         return;
     d->position = position;
-    if (!d->blocktracking)
-        repaint();
-    emit sliderMoved(position);
+    if (!d->tracking)
+        update();
+    if (d->pressed)
+        emit sliderMoved(position);
     if (d->tracking && !d->blocktracking)
         triggerAction(SliderMove);
 }
@@ -487,8 +494,11 @@ void QAbstractSlider::setValue(int value)
     if (d->value == value)
         return;
     d->value = value;
-    if (d->position != value)
-        emit sliderMoved((d->position = value));
+    if (d->position != value) {
+        d->position = value;
+        if (d->pressed)
+            emit sliderMoved((d->position = value));
+    }
 #ifndef QT_NO_ACCESSIBILITY
     QAccessible::updateAccessibility(this, 0, QAccessible::ValueChanged);
 #endif
@@ -663,7 +673,6 @@ void QAbstractSlider::wheelEvent(QWheelEvent * e)
     e->accept();
 }
 #endif
-
 /*!
     \reimp
 */
@@ -675,15 +684,37 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
 
         // It seems we need to use invertedAppearance for Left and right, otherwise, things look weird.
         case Qt::Key_Left:
+#ifdef QT_KEYPAD_NAVIGATION
+            if (QApplication::keypadNavigationEnabled() && d->orientation == Qt::Vertical)
+                action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
+            else
+#endif
             action = !d->invertedAppearance ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
         case Qt::Key_Right:
+#ifdef QT_KEYPAD_NAVIGATION
+            if (QApplication::keypadNavigationEnabled() && d->orientation == Qt::Vertical)
+                action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
+            else
+#endif
             action = !d->invertedAppearance ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
         case Qt::Key_Up:
+#ifdef QT_KEYPAD_NAVIGATION
+            if (QApplication::keypadNavigationEnabled()) {
+                ev->ignore();
+                break;
+            }
+#endif
             action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
         case Qt::Key_Down:
+#ifdef QT_KEYPAD_NAVIGATION
+            if (QApplication::keypadNavigationEnabled()) {
+                ev->ignore();
+                break;
+            }
+#endif
             action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
         case Qt::Key_PageUp:
@@ -722,6 +753,14 @@ void QAbstractSlider::changeEvent(QEvent *ev)
     default:
         QWidget::changeEvent(ev);
     }
+}
+
+/*!
+    \reimp
+*/
+bool QAbstractSlider::event(QEvent *e)
+{
+    return QWidget::event(e);
 }
 
 /*! \fn int QAbstractSlider::minValue() const

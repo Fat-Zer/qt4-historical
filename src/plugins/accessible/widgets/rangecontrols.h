@@ -24,9 +24,10 @@
 #ifndef RANGECONTROLS_H
 #define RANGECONTROLS_H
 
-#include <qaccessiblewidget.h>
+#include <QtGui/qaccessiblewidget.h>
 
 #ifndef QT_NO_ACCESSIBILITY
+
 class QScrollBar;
 class QSlider;
 class QSpinBox;
@@ -115,5 +116,7 @@ protected:
     QSlider *slider() const;
 };
 #endif // QT_NO_SLIDER
+
 #endif // QT_NO_ACCESSIBILITY
+
 #endif // RANGECONTROLS_H

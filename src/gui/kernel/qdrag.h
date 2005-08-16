@@ -24,7 +24,7 @@
 #ifndef QDRAG_H
 #define QDRAG_H
 
-#include "QtCore/qobject.h"
+#include <QtCore/qobject.h>
 
 QT_MODULE(Gui)
 
@@ -60,7 +60,7 @@ public:
 
     void setDragCursor(const QPixmap &cursor, Qt::DropAction action);
 
-signals:
+Q_SIGNALS:
     void actionChanged(Qt::DropAction action);
     void targetChanged(QWidget *newTarget);
 
@@ -73,4 +73,5 @@ private:
 };
 
 #endif // QT_NO_DRAGANDDROP
+
 #endif // QDRAG_H

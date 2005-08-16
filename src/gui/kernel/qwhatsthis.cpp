@@ -34,7 +34,6 @@
 #include "qaction.h"
 #include "qcursor.h"
 #include "qbitmap.h"
-#include "qtooltip.h"
 #include "qtextdocument.h"
 #include "../text/qtextdocumentlayout_p.h"
 #include "qtoolbutton.h"
@@ -168,7 +167,10 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
     instance = this;
     setAttribute(Qt::WA_DeleteOnClose, true);
     setAttribute(Qt::WA_NoSystemBackground, true);
-    setPalette(QToolTip::palette());
+    QPalette pal(Qt::black, QColor(255,255,220),
+                 QColor(96,96,96), Qt::black, Qt::black,
+                 Qt::black, QColor(255,255,220));
+    setPalette(pal);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
 #ifndef QT_NO_CURSOR

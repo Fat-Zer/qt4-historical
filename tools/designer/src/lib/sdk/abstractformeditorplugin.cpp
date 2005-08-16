@@ -24,6 +24,7 @@
 #include <QtDesigner/abstractformeditorplugin.h>
 
 /*!
+    \internal
     \class QDesignerFormEditorPluginInterface
     \brief The QDesignerFormEditorPluginInterface class provides an interface that is used to
     manage plugins for Qt Designer's form editor component.

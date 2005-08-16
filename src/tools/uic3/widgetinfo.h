@@ -24,7 +24,7 @@
 #ifndef WIDGETINFO_H
 #define WIDGETINFO_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class QString;
 struct QMetaObject;
@@ -52,4 +52,4 @@ private:
     static QString resolveEnumerator(const QMetaEnum &metaEnum, const QString &name);
 };
 
-#endif
+#endif // WIDGETINFO_H

@@ -24,10 +24,8 @@
 #ifndef Q3SIGNAL_H
 #define Q3SIGNAL_H
 
-#ifndef QT_H
-#include "QtCore/qvariant.h"
-#include "QtCore/qobject.h"
-#endif // QT_H
+#include <QtCore/qvariant.h>
+#include <QtCore/qobject.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -55,7 +53,7 @@ public:
     void	setValue(const QVariant &value);
     QVariant	value() const;
 #endif
-signals:
+Q_SIGNALS:
 #ifndef QT_NO_VARIANT
     void signal(const QVariant&);
 #endif

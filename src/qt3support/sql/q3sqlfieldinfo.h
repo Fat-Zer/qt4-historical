@@ -26,8 +26,8 @@
 
 #ifndef QT_NO_SQL
 
-#include "QtCore/qglobal.h"
-#include "QtSql/qsqlfield.h"
+#include <QtCore/qglobal.h>
+#include <QtSql/qsqlfield.h>
 
 QT_MODULE(Qt3Support)
 
@@ -136,6 +136,6 @@ public:
 
 };
 
-#endif        // QT_NO_SQL
+#endif // QT_NO_SQL
 
-#endif
+#endif // Q3SQLFIELDINFO_H

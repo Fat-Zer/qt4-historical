@@ -41,7 +41,7 @@ public:
     inline QItemSelectionRange(const QItemSelectionRange &other)
         : tl(other.tl), br(other.br) {}
     inline QItemSelectionRange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-    inline QItemSelectionRange(const QModelIndex &index)
+    explicit inline QItemSelectionRange(const QModelIndex &index)
         { tl = index; br = tl; }
 
     inline int top() const { return tl.row(); }
@@ -116,6 +116,7 @@ public:
     Q_DECLARE_FLAGS(SelectionFlags, SelectionFlag)
 
     explicit QItemSelectionModel(QAbstractItemModel *model);
+    explicit QItemSelectionModel(QAbstractItemModel *model, QObject *parent);
     virtual ~QItemSelectionModel();
 
     QModelIndex currentIndex() const;
@@ -132,14 +133,14 @@ public:
 
     const QAbstractItemModel *model() const;
 
-public slots:
+public Q_SLOTS:
     void setCurrentIndex(const QModelIndex &index, QItemSelectionModel::SelectionFlags command);
     virtual void select(const QModelIndex &index, QItemSelectionModel::SelectionFlags command);
     virtual void select(const QItemSelection &selection, QItemSelectionModel::SelectionFlags command);
     virtual void clear();
     virtual void reset();
 
-signals:
+Q_SIGNALS:
     void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void currentChanged(const QModelIndex &current, const QModelIndex &previous);
     void currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
@@ -172,5 +173,10 @@ public:
                       QItemSelection *result);
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+Q_GUI_EXPORT QDebug operator<<(QDebug, const QItemSelectionRange &);
+#endif
+
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QITEMSELECTIONMODEL_H

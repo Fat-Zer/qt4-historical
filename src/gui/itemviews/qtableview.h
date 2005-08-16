@@ -53,12 +53,16 @@ public:
     void setVerticalHeader(QHeaderView *header);
 
     int rowViewportPosition(int row) const;
-    int rowHeight(int row) const;
     int rowAt(int y) const;
 
+    void setRowHeight(int row, int height);
+    int rowHeight(int row) const;
+
     int columnViewportPosition(int column) const;
-    int columnWidth(int column) const;
     int columnAt(int x) const;
+
+    void setColumnWidth(int column, int width);
+    int columnWidth(int column) const;
 
     bool isRowHidden(int row) const;
     void setRowHidden(int row, bool hide);
@@ -67,7 +71,6 @@ public:
     void setColumnHidden(int column, bool hide);
 
     bool showGrid() const;
-    void setShowGrid(bool show);
 
     Qt::PenStyle gridStyle() const;
     void setGridStyle(Qt::PenStyle style);
@@ -76,7 +79,7 @@ public:
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
     QModelIndex indexAt(const QPoint &p) const;
 
-public slots:
+public Q_SLOTS:
     void selectRow(int row);
     void selectColumn(int column);
     void hideRow(int row);
@@ -84,10 +87,13 @@ public slots:
     void showRow(int row);
     void showColumn(int column);
     void resizeRowToContents(int row);
+    void resizeRowsToContents();
     void resizeColumnToContents(int column);
+    void resizeColumnsToContents();
     void sortByColumn(int column);
+    void setShowGrid(bool show);
 
-protected slots:
+protected Q_SLOTS:
     void rowMoved(int row, int oldIndex, int newIndex);
     void columnMoved(int column, int oldIndex, int newIndex);
     void rowResized(int row, int oldHeight, int newHeight);
@@ -101,6 +107,8 @@ protected:
 
     QStyleOptionViewItem viewOptions() const;
     void paintEvent(QPaintEvent *e);
+
+    void timerEvent(QTimerEvent *event);
 
     int horizontalOffset() const;
     int verticalOffset() const;
@@ -126,4 +134,5 @@ private:
 };
 
 #endif // QT_NO_TABLEVIEW
+
 #endif // QTABLEVIEW_H

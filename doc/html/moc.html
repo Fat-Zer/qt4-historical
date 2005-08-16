@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/moc.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/moc.qdoc -->
 <head>
-    <title>Qt 4.0: Using the Meta-Object Compiler (moc)</title>
+    <title>Qt 4.1: Using the Meta-Object Compiler (moc)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -127,6 +127,7 @@ body { background: #ffffff; color: black; }</style>
     signals:
         void mySignal(int);
     };</pre>
+<p>Another limitation is that moc does not expand macros, so you for example cannot use a macro to declare a signal/slot or use one to define a base class for a <a href="qobject.html">QObject</a>.</p>
 <p>Less importantly, the following constructs are illegal. All of them have alternatives which we think are usually better, so removing these limitations is not a high priority for us.</p>
 <a name="multiple-inheritance-requires-qobject-to-be-first"></a>
 <h3>Multiple Inheritance Requires QObject to Be First</h3>
@@ -158,6 +159,22 @@ body { background: #ffffff; color: black; }</style>
         void apply(ApplyFunction, char *);
     };</pre>
 <p>It may sometimes be even better to replace the function pointer with inheritance and virtual functions.</p>
+<a name="enums-and-typedefs-must-be-fully-qualified-for-signal-and-slot-parameters"></a>
+<h3>Enums and Typedefs Must Be Fully Qualified for Signal and Slot Parameters</h3>
+<p>When checking the signatures of its arguments, <a href="qobject.html#connect">QObject::connect</a>() compares the data types literally. Thus, <a href="qt.html#AlignmentFlag-enum">Alignment</a> and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> are treated as two distinct types. To work around this limitation, make sure to fully qualify the data types when declaring signals and slots, and when establishing connections. For example:</p>
+<pre>&nbsp;   class MyClass : public QObject
+    {
+        Q_OBJECT
+
+        enum Error {
+            ConnectionRefused,
+            RemoteHostClosed,
+            UnknownError
+        };
+
+    signals:
+        void stateChanged(MyClass::Error error);
+    };</pre>
 <a name="type-macros-cannot-be-used-for-signal-and-slot-parameters"></a>
 <h3>Type Macros Cannot Be Used for Signal and Slot Parameters</h3>
 <p>Since <tt>moc</tt> doesn't expand <tt>#define</tt>s, type macros that take an argument will not work in signals and slots. Here is an illegal example:</p>
@@ -197,6 +214,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

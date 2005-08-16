@@ -26,7 +26,10 @@
 
 #ifndef QT_NO_REGEXP
 
-#include "QtCore/qstring.h"
+#include <QtCore/qstring.h>
+#ifdef QT3_SUPPORT
+#include <new>
+#endif
 
 QT_MODULE(Core)
 
@@ -36,7 +39,7 @@ class QStringList;
 class Q_CORE_EXPORT QRegExp
 {
 public:
-    enum PatternSyntax { RegExp, Wildcard };
+    enum PatternSyntax { RegExp, Wildcard, FixedString };
     enum CaretMode { CaretAtZero, CaretAtOffset, CaretWontMatch };
 
     QRegExp();
@@ -111,8 +114,14 @@ public:
 private:
     QRegExpPrivate *priv;
 };
+
 Q_DECLARE_TYPEINFO(QRegExp, Q_MOVABLE_TYPE);
 
+#ifndef QT_NO_DATASTREAM
+Q_CORE_EXPORT QDataStream &operator<<(QDataStream &out, const QRegExp &regExp);
+Q_CORE_EXPORT QDataStream &operator>>(QDataStream &in, QRegExp &regExp);
 #endif
+
+#endif // QT_NO_REGEXP
 
 #endif // QREGEXP_H

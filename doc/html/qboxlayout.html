@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/kernel/qboxlayout.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/kernel/qboxlayout.cpp -->
 <head>
-    <title>Qt 4.0: QBoxLayout Class Reference</title>
+    <title>Qt 4.1: QBoxLayout Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -95,7 +95,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qlayout.html#margin-prop">setMargin</a>() sets the width of the outer border. This is the width of the reserved space along each of the QBoxLayout's four sides.</li>
 <li><a href="qlayout.html#spacing-prop">setSpacing</a>() sets the width between neighboring boxes. (You can use <a href="qboxlayout.html#addSpacing">addSpacing</a>() to get more space at a particular spot.)</li>
 </ul>
-<p>The margin defaults to 0. The spacing defaults to the same as the margin width for a top-level layout, or to the same as the parent layout. Both are parameters to the constructor.</p>
+<p>The margin default is provided by the style. The default margin Qt styles specify is 9 for widgets and 11 for top level windows. The spacing defaults to the same as the margin width for a top-level layout, or to the same as the parent layout.</p>
 <p>To remove a widget from a layout, call <a href="qlayout.html#removeWidget">removeWidget</a>(). Calling <a href="qwidget.html#hide">QWidget::hide</a>() on a widget also effectively removes the widget from the layout until <a href="qwidget.html#show">QWidget::show</a>() is called.</p>
 <p>You will almost always want to use <a href="qvboxlayout.html">QVBoxLayout</a> and <a href="qhboxlayout.html">QHBoxLayout</a> rather than QBoxLayout because of their convenient constructors.</p>
 <p>See also <a href="qgridlayout.html">QGridLayout</a>, <a href="qstackedlayout.html">QStackedLayout</a>, and <a href="layout.html">Layout Classes</a>.</p>
@@ -176,6 +176,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

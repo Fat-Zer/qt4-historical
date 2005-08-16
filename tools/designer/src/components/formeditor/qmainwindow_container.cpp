@@ -22,13 +22,16 @@
 ****************************************************************************/
 
 #include "qmainwindow_container.h"
+#include "qdesigner_toolbar_p.h"
 
 #include <QtCore/qdebug.h>
 
+#include <QtGui/QLayout>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
 #include <QtGui/QToolBar>
 #include <QtGui/QStatusBar>
+#include <QtGui/QDockWidget>
 
 using namespace qdesigner_internal;
 
@@ -62,19 +65,61 @@ void QMainWindowContainer::setCurrentIndex(int index)
     Q_UNUSED(index);
 }
 
+static Qt::ToolBarArea toolBarArea(QToolBar *me)
+{
+    if (QMainWindow *mw = qobject_cast<QMainWindow*>(me->parentWidget())) {
+        if (mw->layout() && mw->layout()->indexOf(me) != -1) {
+            return mw->toolBarArea(me);
+        }
+    }
+
+    return Qt::TopToolBarArea;
+}
+
+static Qt::DockWidgetArea dockWidgetArea(QDockWidget *me)
+{
+    if (QMainWindow *mw = qobject_cast<QMainWindow*>(me->parentWidget())) {
+        // Make sure that me is actually managed by mw, otherwise
+        // QMainWindow::dockWidgetArea() will be VERY upset
+        QList<QLayout*> candidates;
+        if (mw->layout()) {
+            candidates.append(mw->layout());
+            candidates += qFindChildren<QLayout*>(mw->layout());
+        }
+        foreach (QLayout *l, candidates) {
+            if (l->indexOf(me) != -1) {
+                return mw->dockWidgetArea(me);
+            }
+        }
+    }
+
+    return Qt::LeftDockWidgetArea;
+}
+
 void QMainWindowContainer::addWidget(QWidget *widget)
 {
     if (QToolBar *toolBar = qobject_cast<QToolBar*>(widget)) {
-        m_mainWindow->addToolBar(toolBar);
         m_widgets.append(widget);
+        m_mainWindow->addToolBar(toolBarArea(toolBar), toolBar);
+        toolBar->show();
     } else if (QMenuBar *menuBar = qobject_cast<QMenuBar*>(widget)) {
         m_widgets.append(widget);
         m_mainWindow->setMenuBar(menuBar);
+        menuBar->show();
     } else if (QStatusBar *statusBar = qobject_cast<QStatusBar*>(widget)) {
         m_widgets.append(widget);
         m_mainWindow->setStatusBar(statusBar);
+        statusBar->show();
+    } else if (QDockWidget *dockWidget = qobject_cast<QDockWidget*>(widget)) {
+        m_widgets.append(widget);
+        m_mainWindow->addDockWidget(dockWidgetArea(dockWidget), dockWidget);
+        dockWidget->show();
     } else if (widget != m_mainWindow->centralWidget()) {
-        Q_ASSERT(m_mainWindow->centralWidget() == 0);
+        if (m_mainWindow->centralWidget() != 0) {
+            // ignore this widget!
+            return;
+        }
+
         widget->setParent(m_mainWindow);
         m_mainWindow->setCentralWidget(widget);
         m_widgets.prepend(widget);
@@ -90,6 +135,20 @@ void QMainWindowContainer::insertWidget(int index, QWidget *widget)
 
 void QMainWindowContainer::remove(int index)
 {
+    QWidget *widget = m_widgets.at(index);
+    if (QToolBar *toolBar = qobject_cast<QToolBar*>(widget)) {
+        m_mainWindow->removeToolBar(toolBar);
+    } else if (QMenuBar *menuBar = qobject_cast<QMenuBar*>(widget)) {
+        menuBar->hide();
+        menuBar->setParent(0);
+        m_mainWindow->setMenuBar(0);
+    } else if (QStatusBar *statusBar = qobject_cast<QStatusBar*>(widget)) {
+        statusBar->hide();
+        statusBar->setParent(0);
+        m_mainWindow->setStatusBar(0);
+    } else if (QDockWidget *dockWidget = qobject_cast<QDockWidget*>(widget)) {
+        m_mainWindow->removeDockWidget(dockWidget);
+    }
     m_widgets.removeAt(index);
 }
 

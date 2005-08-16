@@ -65,7 +65,6 @@ public:
 protected:
     void paintEvent(QPaintEvent* e);
     void closeEvent(QCloseEvent*);
-    bool eventFilter(QObject* o, QEvent* e);
     void alphaBlend();
 
 protected slots:
@@ -153,47 +152,6 @@ void QAlphaWidget::run(int time)
     }
 }
 
-/*
-  \reimp
-*/
-bool QAlphaWidget::eventFilter(QObject* o, QEvent* e)
-{
-    switch (e->type()) {
-    case QEvent::Move:
-        if (o != widget)
-            break;
-        move(widget->geometry().x(),widget->geometry().y());
-        update();
-        break;
-    case QEvent::Hide:
-    case QEvent::Close:
-        if (o != widget)
-            break;
-    case QEvent::MouseButtonPress:
-#if defined(QT3_SUPPORT)
-        if (o->inherits("QScrollView"))
-            break;
-#endif
-    case QEvent::MouseButtonDblClick:
-        setEnabled(true);
-        showWidget = false;
-        render();
-        break;
-    case QEvent::KeyPress:
-        {
-            QKeyEvent *ke = (QKeyEvent*)e;
-            if (ke->key() == Qt::Key_Escape)
-                showWidget = false;
-            else
-                duration = 0;
-            render();
-            break;
-        }
-    default:
-        break;
-    }
-    return QWidget::eventFilter(o, e);
-}
 
 /*
   \reimp
@@ -310,7 +268,6 @@ public:
 
 protected:
     void paintEvent(QPaintEvent*);
-    bool eventFilter(QObject*, QEvent*);
     void closeEvent(QCloseEvent*);
 
 private slots:
@@ -382,55 +339,6 @@ void QRollEffect::paintEvent(QPaintEvent*)
 
     QPainter p(this);
     p.drawPixmap(x, y, pm);
-}
-
-/*
-  \reimp
-*/
-bool QRollEffect::eventFilter(QObject* o, QEvent* e)
-{
-    switch (e->type()) {
-    case QEvent::Move:
-        if (o != widget)
-            break;
-        move(widget->geometry().x(),widget->geometry().y());
-        update();
-        break;
-    case QEvent::Hide:
-    case QEvent::Close:
-        if (o != widget || done)
-            break;
-        setEnabled(true);
-        showWidget = false;
-        done = true;
-        scroll();
-        break;
-    case QEvent::MouseButtonPress:
-#if defined(QT3_SUPPORT)
-        if (o->inherits("QScrollView"))
-            break;
-#endif
-    case QEvent::MouseButtonDblClick:
-        if (done)
-            break;
-        setEnabled(true);
-        showWidget = false;
-        done = true;
-        scroll();
-        break;
-    case QEvent::KeyPress:
-        {
-            QKeyEvent *ke = (QKeyEvent*)e;
-            if (ke->key() == Qt::Key_Escape)
-                showWidget = false;
-            done = true;
-            scroll();
-            break;
-        }
-    default:
-        break;
-    }
-    return QWidget::eventFilter(o, e);
 }
 
 /*

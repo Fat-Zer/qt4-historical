@@ -20,6 +20,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #ifndef QMACINPUTCONTEXT_P_H
 #define QMACINPUTCONTEXT_P_H
 
@@ -34,8 +35,8 @@
 // We mean it.
 //
 
-#include <private/qt_mac_p.h>
-#include <QtGui/qinputcontext.h>
+#include "QtGui/qinputcontext.h"
+#include "private/qt_mac_p.h"
 
 class Q_GUI_EXPORT QMacInputContext : public QInputContext
 {

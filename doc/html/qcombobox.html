@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qcombobox.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qcombobox.cpp -->
 <head>
-    <title>Qt 4.0: QComboBox Class Reference</title>
+    <title>Qt 4.1: QComboBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -35,6 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qcombobox.html#autoCompletion-prop">autoCompletion</a></b> : bool</li>
+<li><div class="fn"/><b><a href="qcombobox.html#autoCompletionCaseSensitivity-prop">autoCompletionCaseSensitivity</a></b> : Qt::CaseSensitivity</li>
 <li><div class="fn"/><b><a href="qcombobox.html#count-prop">count</a></b> : const int</li>
 <li><div class="fn"/><b><a href="qcombobox.html#currentIndex-prop">currentIndex</a></b> : int</li>
 <li><div class="fn"/><b><a href="qcombobox.html#currentText-prop">currentText</a></b> : const QString</li>
@@ -53,7 +54,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -65,6 +66,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qcombobox.html#addItem-2">addItem</a></b> ( const QIcon &amp; <i>icon</i>, const QString &amp; <i>text</i>, const QVariant &amp; <i>userData</i> = QVariant() )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#addItems">addItems</a></b> ( const QStringList &amp; <i>texts</i> )</li>
 <li><div class="fn"/>bool <b><a href="qcombobox.html#autoCompletion-prop">autoCompletion</a></b> () const</li>
+<li><div class="fn"/>Qt::CaseSensitivity <b><a href="qcombobox.html#autoCompletionCaseSensitivity-prop">autoCompletionCaseSensitivity</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qcombobox.html#count-prop">count</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qcombobox.html#currentIndex-prop">currentIndex</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qcombobox.html#currentText-prop">currentText</a></b> () const</li>
@@ -92,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qcombobox.html#removeItem">removeItem</a></b> ( int <i>index</i> )</li>
 <li><div class="fn"/>QModelIndex <b><a href="qcombobox.html#rootModelIndex">rootModelIndex</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#autoCompletion-prop">setAutoCompletion</a></b> ( bool <i>enable</i> )</li>
-<li><div class="fn"/>void <b><a href="qcombobox.html#currentIndex-prop">setCurrentIndex</a></b> ( int <i>index</i> )</li>
+<li><div class="fn"/>void <b><a href="qcombobox.html#autoCompletionCaseSensitivity-prop">setAutoCompletionCaseSensitivity</a></b> ( Qt::CaseSensitivity <i>sensitivity</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#duplicatesEnabled-prop">setDuplicatesEnabled</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#editable-prop">setEditable</a></b> ( bool <i>editable</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#frame-prop">setFrame</a></b> ( bool )</li>
@@ -118,7 +120,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QAbstractItemView * <b><a href="qcombobox.html#view">view</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -127,6 +129,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>void <b><a href="qcombobox.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#clearEditText">clearEditText</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qcombobox.html#currentIndex-prop">setCurrentIndex</a></b> ( int <i>index</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#setEditText">setEditText</a></b> ( const QString &amp; <i>text</i> )</li>
 </ul>
 <ul>
@@ -138,6 +141,8 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>void <b><a href="qcombobox.html#activated">activated</a></b> ( int <i>index</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#activated-2">activated</a></b> ( const QString &amp; <i>text</i> )</li>
+<li><div class="fn"/>void <b><a href="qcombobox.html#currentIndexChanged">currentIndexChanged</a></b> ( int <i>index</i> )</li>
+<li><div class="fn"/>void <b><a href="qcombobox.html#currentIndexChanged-2">currentIndexChanged</a></b> ( const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#editTextChanged">editTextChanged</a></b> ( const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#highlighted">highlighted</a></b> ( int <i>index</i> )</li>
 <li><div class="fn"/>void <b><a href="qcombobox.html#highlighted-2">highlighted</a></b> ( const QString &amp; <i>text</i> )</li>
@@ -190,12 +195,21 @@ body { background: #ffffff; color: black; }</style>
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="autoCompletion-prop"></a>autoCompletion : bool</h3>
 <p>This property holds whether the combobox provides auto-completion for editable items.</p>
+<p>This property was introduced in Qt 4.1.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool autoCompletion () const</b></li>
 <li><div class="fn"/><b>void setAutoCompletion ( bool <i>enable</i> )</b></li>
 </ul>
 <p>See also <a href="qcombobox.html#editable-prop">editable</a>.</p>
+<h3 class="fn"><a name="autoCompletionCaseSensitivity-prop"></a>autoCompletionCaseSensitivity : <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a></h3>
+<p>This property holds the case-sensitive property used in auto-completion.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>Qt::CaseSensitivity autoCompletionCaseSensitivity () const</b></li>
+<li><div class="fn"/><b>void setAutoCompletionCaseSensitivity ( Qt::CaseSensitivity <i>sensitivity</i> )</b></li>
+</ul>
+<p>See also <a href="qcombobox.html#autoCompletion-prop">autoCompletion</a>.</p>
 <h3 class="fn"><a name="count-prop"></a>count : const int</h3>
 <p>This property holds the number of items in the combobox.</p>
 <p>Access functions:</p>
@@ -203,7 +217,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>int count () const</b></li>
 </ul>
 <h3 class="fn"><a name="currentIndex-prop"></a>currentIndex : int</h3>
-<p>This property holds the index of the current item in the combobox. The index can change when inserting or removing items.</p>
+<p>This property holds the index of the current item in the combobox. The index can change when inserting or removing items. Returns -1 if no current item is set or the combobox is empty.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int currentIndex () const</b></li>
@@ -302,10 +316,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.QComboBox"></a>QComboBox::~QComboBox ()</h3>
 <p>Destroys the combobox.</p>
 <h3 class="fn"><a name="activated"></a>void QComboBox::activated ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is sent when an item in the combobox is activated. The item's <i>index</i> is given.</p>
+<p>This signal is sent when an item in the combobox is activated by the user. The item's <i>index</i> is given.</p>
 <h3 class="fn"><a name="activated-2"></a>void QComboBox::activated ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>This signal is sent when an item in the combobox is activated. The item's <i>text</i> is given.</p>
+<p>This signal is sent when an item in the combobox is activated by the user. The item's <i>text</i> is given.</p>
 <h3 class="fn"><a name="addItem"></a>void QComboBox::addItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
 <p>Adds an item to the combobox with the given <i>text</i>, and containing the specified <i>userData</i>. The item is appended to the list of existing items.</p>
 <h3 class="fn"><a name="addItem-2"></a>void QComboBox::addItem ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
@@ -318,6 +332,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Note: If you have set an external model on the combobox this model will still be cleared when calling this function.</p>
 <h3 class="fn"><a name="clearEditText"></a>void QComboBox::clearEditText ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Clears the contents of the line edit used for editing in the combobox.</p>
+<h3 class="fn"><a name="currentIndexChanged"></a>void QComboBox::currentIndexChanged ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>This signal is sent whenever the <a href="qcombobox.html#currentIndex-prop">currentIndex</a> in the combobox changes either through user interaction or programmatically. The item's <i>index</i> is given or -1 if the combobox becomes empty or the <a href="qcombobox.html#currentIndex-prop">currentIndex</a> was reset.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<h3 class="fn"><a name="currentIndexChanged-2"></a>void QComboBox::currentIndexChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This signal is sent whenever the <a href="qcombobox.html#currentIndex-prop">currentIndex</a> in the combobox changes either through user interaction or programmatically. The item's <i>text</i> is given.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="editTextChanged"></a>void QComboBox::editTextChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the text in the combobox's line edit widget is changed. The new text is specified by <i>text</i>.</p>
 <h3 class="fn"><a name="findData"></a>int QComboBox::findData ( const <a href="qvariant.html">QVariant</a> &amp; <i>data</i>, int <i>role</i> = Qt::UserRole, <a href="qt.html#MatchFlag-enum">Qt::MatchFlags</a> <i>flags</i> = Qt::MatchExactly | Qt::MatchCaseSensitive ) const</h3>
@@ -329,10 +350,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="hidePopup"></a>void QComboBox::hidePopup ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Hides the list of items in the combobox if it is currently visible; otherwise this function does nothing.</p>
 <h3 class="fn"><a name="highlighted"></a>void QComboBox::highlighted ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is sent when an item in the combobox is highlighted. The item's <i>index</i> is given.</p>
+<p>This signal is sent when an item in the combobox is highlighted by the user. The item's <i>index</i> is given.</p>
 <h3 class="fn"><a name="highlighted-2"></a>void QComboBox::highlighted ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>This signal is sent when an item in the combobox is highlighted. The item's <i>text</i> is given.</p>
+<p>This signal is sent when an item in the combobox is highlighted by the user. The item's <i>text</i> is given.</p>
 <h3 class="fn"><a name="insertItem"></a>void QComboBox::insertItem ( int <i>index</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
 <p>Inserts the <i>text</i> and <i>userData</i> into the combobox at the given <i>index</i>.</p>
 <h3 class="fn"><a name="insertItem-2"></a>void QComboBox::insertItem ( int <i>index</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
@@ -405,6 +426,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

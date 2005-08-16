@@ -24,7 +24,7 @@
 #ifndef QPUSHBUTTON_H
 #define QPUSHBUTTON_H
 
-#include "QtGui/qabstractbutton.h"
+#include <QtGui/qabstractbutton.h>
 
 QT_MODULE(Gui)
 
@@ -60,12 +60,13 @@ public:
     void setFlat(bool);
     bool isFlat() const;
 
-public slots:
+public Q_SLOTS:
 #ifndef QT_NO_MENU
     void showMenu();
 #endif
 
 protected:
+    bool event(QEvent *e);
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *);
     void focusInEvent(QFocusEvent *);

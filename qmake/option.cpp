@@ -24,10 +24,10 @@
 #include "option.h"
 #include <qdir.h>
 #include <qregexp.h>
-#include <stdlib.h>
-#include <stdarg.h>
 #include <qhash.h>
 #include <qsettings.h>
+#include <stdlib.h>
+#include <stdarg.h>
 
 //convenience
 QString Option::prf_ext;
@@ -579,6 +579,10 @@ Option::fixString(QString string, uchar flags)
     } else if(flags & Option::FixPathToTargetSeparators) {
         string = string.replace('/', Option::dir_sep).replace('\\', Option::dir_sep);
     }
+
+    if (string.startsWith("\"") && string.endsWith("\"") ||
+        string.startsWith("\'") && string.endsWith("\'"))
+        string = string.mid(1, string.length()-2);
 
     //cache
     cache->insert(cacheKey, string);

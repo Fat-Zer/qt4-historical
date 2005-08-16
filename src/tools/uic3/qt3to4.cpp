@@ -21,10 +21,8 @@
 **
 ****************************************************************************/
 
-
 #include "qt3to4.h"
 
-#include <qconfig.h>
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -191,6 +189,9 @@ QString Porting::renameHeader(const QString &headerName) const
 
 QString Porting::renameClass(const QString &className) const
 {
+    if (className == QLatin1String("QSplitter"))  // We don't want a Q3Splitter, ever!
+        return className;
+
     int index = findRule(m_renamedClasses, className);
     return index == -1 ? className : m_renamedClasses.at(index).second;
 }

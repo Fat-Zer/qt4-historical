@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
+#include "qapplication.h"
 #include "qplatformdefs.h"
-
 #include "qgl.h"
 #include "qpixmap.h"
 #include "qimage.h"
@@ -30,6 +30,7 @@
 #include <private/qpaintengine_opengl_p.h>
 #include "qcolormap.h"
 #include "qcache.h"
+
 #include "qfile.h"
 
 Q_GLOBAL_STATIC(QGLFormat, qgl_default_format)
@@ -911,6 +912,9 @@ void QGLContextPrivate::init(QPaintDevice *dev, const QGLFormat &format)
     hbitmap = 0;
     hbitmap_hdc = 0;
 #endif
+#if defined(Q_WS_MAC)
+    update = false;
+#endif
     crWin = false;
     initDone = false;
     sharing = false;
@@ -936,7 +940,8 @@ static int nearest_gl_texture_size(int v)
 
 class QGLTexture {
 public:
-    QGLTexture(const QGLContext *ctx, GLuint tx_id) : context(ctx), id(tx_id) {}
+    QGLTexture(const QGLContext *ctx, GLuint tx_id, bool _clean = false)
+        : context(ctx), id(tx_id), clean(_clean) {}
     ~QGLTexture() {
         if (!context->isSharing())
             glDeleteTextures(1, &id);
@@ -944,11 +949,18 @@ public:
 
     const QGLContext *context;
     GLuint id;
+    bool clean;
 };
 
 typedef QCache<QString, QGLTexture> QGLTextureCache;
 static int qt_tex_cache_limit = 64*1024; // cache ~64 MB worth of textures - this is not accurate though
 static QGLTextureCache *qt_tex_cache = 0;
+
+typedef void (*_qt_pixmap_cleanup_hook)(int);
+typedef void (*_qt_image_cleanup_hook)(int);
+
+extern Q_GUI_EXPORT _qt_pixmap_cleanup_hook qt_pixmap_cleanup_hook;
+extern Q_GUI_EXPORT _qt_image_cleanup_hook qt_image_cleanup_hook;
 
 // DDS format structure
 struct DDSFormat {
@@ -961,9 +973,9 @@ struct DDSFormat {
     quint32 dwMipMapCount;
     quint32 dummy2[11];
     struct {
-	quint32 dummy3[2];
-	quint32 dwFourCC;
-	quint32 dummy4[5];
+        quint32 dummy3[2];
+        quint32 dwFourCC;
+        quint32 dummy4[5];
     } ddsPixelFormat;
 };
 
@@ -1067,17 +1079,19 @@ QGLContext::~QGLContext()
     Q_D(QGLContext);
     // remove any textures cached in this context
     if (qt_tex_cache) {
-	QList<QString> keys = qt_tex_cache->keys();
-	for (int i = 0; i < keys.size(); ++i) {
-	    const QString &key = keys.at(i);
-	    if (qt_tex_cache->object(key)->context == this)
-		qt_tex_cache->remove(key);
-	}
-	// ### thread safety
-	if (qt_tex_cache->size() == 0) {
-	    delete qt_tex_cache;
-	    qt_tex_cache = 0;
-	}
+        QList<QString> keys = qt_tex_cache->keys();
+        for (int i = 0; i < keys.size(); ++i) {
+            const QString &key = keys.at(i);
+            if (qt_tex_cache->object(key)->context == this)
+                qt_tex_cache->remove(key);
+        }
+        // ### thread safety
+        if (qt_tex_cache->size() == 0) {
+            qt_pixmap_cleanup_hook = 0;
+            qt_image_cleanup_hook = 0;
+            delete qt_tex_cache;
+            qt_tex_cache = 0;
+        }
     }
 
     reset();
@@ -1102,18 +1116,18 @@ GLuint QGLContext::bindTexture(const QString &fileName)
     if (!qt_glCompressedTexImage2DARB) {
         qWarning("QGLContext::bindTexture(): The GL implementation does not support texture"
                  "compression extensions.");
-	return 0;
+        return 0;
     }
 
     if (!qt_tex_cache)
-	qt_tex_cache = new QGLTextureCache(qt_tex_cache_limit);
+        qt_tex_cache = new QGLTextureCache(qt_tex_cache_limit);
 
     QString key(fileName);
     QGLTexture *texture = qt_tex_cache->object(key);
 
     if (texture && texture->context == this) {
-	glBindTexture(GL_TEXTURE_2D, texture->id);
-	return texture->id;
+        glBindTexture(GL_TEXTURE_2D, texture->id);
+        return texture->id;
     }
 
     QFile f(fileName);
@@ -1122,16 +1136,16 @@ GLuint QGLContext::bindTexture(const QString &fileName)
     char tag[4];
     f.read(&tag[0], 4);
     if (strncmp(tag,"DDS ", 4) != 0) {
-	qWarning("QGLContext::bindTexture(): not a DDS image file.");
-	return 0;
+        qWarning("QGLContext::bindTexture(): not a DDS image file.");
+        return 0;
     }
 
     DDSFormat ddsHeader;
     f.read((char *) &ddsHeader, sizeof(DDSFormat));
 
     if (!ddsHeader.dwLinearSize) {
-	qWarning("QGLContext::bindTexture() DDS image size is not valid.");
-	return 0;
+        qWarning("QGLContext::bindTexture() DDS image size is not valid.");
+        return 0;
     }
 
     int factor = 4;
@@ -1141,19 +1155,19 @@ GLuint QGLContext::bindTexture(const QString &fileName)
 
     switch(ddsHeader.ddsPixelFormat.dwFourCC) {
     case FOURCC_DXT1:
-	format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-	factor = 2;
-	blockSize = 8;
-	break;
+        format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+        factor = 2;
+        blockSize = 8;
+        break;
     case FOURCC_DXT3:
-	format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-	break;
+        format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+        break;
     case FOURCC_DXT5:
-	format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-	break;
+        format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+        break;
     default:
-	qWarning("QGLContext::bindTexture() DDS image format not supported.");
-	return 0;
+        qWarning("QGLContext::bindTexture() DDS image format not supported.");
+        return 0;
     }
 
     if (ddsHeader.dwMipMapCount > 1)
@@ -1178,17 +1192,17 @@ GLuint QGLContext::bindTexture(const QString &fileName)
 
     // load mip-maps
     for(int i = 0; i < (int) ddsHeader.dwMipMapCount; ++i) {
-	if (w == 0) w = 1;
-	if (h == 0) h = 1;
+        if (w == 0) w = 1;
+        if (h == 0) h = 1;
 
-	size = ((w+3)/4) * ((h+3)/4) * blockSize;
-	qt_glCompressedTexImage2DARB(GL_TEXTURE_2D, i, format, w, h, 0,
+        size = ((w+3)/4) * ((h+3)/4) * blockSize;
+        qt_glCompressedTexImage2DARB(GL_TEXTURE_2D, i, format, w, h, 0,
                                      size, pixels + offset);
-	offset += size;
+        offset += size;
 
-	// half size for each mip-map level
-	w = w/2;
-	h = h/2;
+        // half size for each mip-map level
+        w = w/2;
+        h = h/2;
     }
 
     free(pixels);
@@ -1198,44 +1212,156 @@ GLuint QGLContext::bindTexture(const QString &fileName)
     return tx_id;
 }
 
-GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint format, const QString &key)
+/*
+  a hook that removes textures from the cache when a pixmap/image
+  is deref'ed
+*/
+static void qt_gl_clean_cache(const QString &serial)
+{
+    const QList<QString> keys = qt_tex_cache->keys();
+    for (int i = 0; i < keys.count(); ++i) {
+        const QString &key = keys.at(i);
+        if (key.startsWith(serial)) {
+            if (qt_tex_cache->object(key)->clean)
+                qt_tex_cache->remove(key);
+            break;
+        }
+    }
+}
+
+static void qt_gl_pixmap_cleanup(int serial)
+{
+    if (qt_tex_cache)
+        qt_gl_clean_cache(QString().sprintf("p%08x", serial));
+}
+
+static void qt_gl_image_cleanup(int serial)
+{
+    if (qt_tex_cache)
+        qt_gl_clean_cache(QString().sprintf("i%08x", serial));
+}
+
+
+QImage QGLContextPrivate::convertToBGRA(const QImage &image)
+{
+    QImage img = image;
+    if (image.format() != QImage::Format_ARGB32)
+        img = image.convertToFormat(QImage::Format_ARGB32);
+
+    if (QSysInfo::ByteOrder == QSysInfo::BigEndian) {
+        // mirror + swizzle
+        QImage res = img.copy();
+        for (int i=0; i < img.height(); i++) {
+            uint *p = (uint*) img.scanLine(i);
+            uint *q = (uint*) res.scanLine(img.height() - i - 1);
+            uint *end = p + img.width();
+            while (p < end) {
+                *q = ((*p << 24) & 0xff000000)
+                     | ((*p >> 24) & 0x000000ff)
+                     | ((*p << 8) & 0x00ff0000)
+                     | ((*p >> 8) & 0x0000ff00);
+                p++;
+                q++;
+            }
+        }
+        return res;
+    } else {
+        return img.mirrored();
+    }
+}
+
+GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint format,
+                                      const QString &key, bool clean)
 {
     Q_Q(QGLContext);
 
-    if (!qt_tex_cache)
-	qt_tex_cache = new QGLTextureCache(qt_tex_cache_limit);
+    if (!qt_tex_cache) {
+        qt_tex_cache = new QGLTextureCache(qt_tex_cache_limit);
+        qt_pixmap_cleanup_hook = qt_gl_pixmap_cleanup;
+        qt_image_cleanup_hook = qt_gl_image_cleanup;
+    }
 
     // Scale the pixmap if needed. GL textures needs to have the
     // dimensions 2^n+2(border) x 2^m+2(border).
     QImage tx;
     int tx_w = nearest_gl_texture_size(image.width());
     int tx_h = nearest_gl_texture_size(image.height());
+
     if (target == GL_TEXTURE_2D && (tx_w != image.width() || tx_h != image.height()))
-	tx = QGLWidget::convertToGLFormat(image.scaled(tx_w, tx_h));
+        tx = convertToBGRA(image.scaled(tx_w, tx_h));
     else
-	tx = QGLWidget::convertToGLFormat(image);
+        tx = convertToBGRA(image);
 
     GLuint tx_id;
     glGenTextures(1, &tx_id);
     glBindTexture(target, tx_id);
     glTexParameterf(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     if (QGLExtensions::glExtensions & QGLExtensions::GenerateMipmap
-	&& target == GL_TEXTURE_2D)
+        && target == GL_TEXTURE_2D)
     {
-	glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
-	glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
+        glTexParameteri(target, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     } else {
         glTexParameterf(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     }
 
-    glTexImage2D(target, 0, format, tx.width(), tx.height(), 0, GL_RGBA,
-		 GL_UNSIGNED_BYTE, tx.bits());
+    glTexImage2D(target, 0, format, tx.width(), tx.height(), 0, GL_BGRA,
+                 GL_UNSIGNED_BYTE, tx.bits());
 
     // this assumes the size of a texture is always smaller than the max cache size
     int cost = tx.width()*tx.height()*4/1024;
-    qt_tex_cache->insert(key, new QGLTexture(q, tx_id), cost);
+    if (qt_tex_cache->totalCost() + cost > qt_tex_cache->maxCost()) {
+        // the cache is full - make an attempt to remove something
+        const QList<QString> keys = qt_tex_cache->keys();
+        int i = 0;
+        while (i < qt_tex_cache->count()
+               && (qt_tex_cache->totalCost() + cost > qt_tex_cache->maxCost())) {
+            QGLTexture *tex = qt_tex_cache->object(keys.at(i));
+            if (tex->context == q)
+                qt_tex_cache->remove(keys.at(i));
+            ++i;
+        }
+    }
+    qt_tex_cache->insert(key, new QGLTexture(q, tx_id, clean), cost);
     return tx_id;
+}
+
+bool QGLContextPrivate::textureCacheLookup(const QString &key, GLuint *id)
+{
+    Q_Q(QGLContext);
+    if (qt_tex_cache) {
+        QGLTexture *texture = qt_tex_cache->object(key);
+        if (texture && texture->context == q) {
+            *id = texture->id;
+            return true;
+        }
+    }
+    return false;
+}
+
+/*! \internal */
+GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint format, bool clean)
+{
+    const QString key = QString("%1_%2_%3").arg(QString().sprintf("i%08x",image.serialNumber())).arg(target).arg(format);
+    GLuint id;
+    if (textureCacheLookup(key, &id)) {
+        glBindTexture(target, id);
+        return id;
+    }
+    return bindTexture(image, target, format, key, clean);
+}
+
+/*! \internal */
+GLuint QGLContextPrivate::bindTexture(const QPixmap &pixmap, GLenum target, GLint format, bool clean)
+{
+    const QString key = QString("%1_%2_%3").arg(QString().sprintf("p%08x",pixmap.serialNumber())).arg(target).arg(format);
+    GLuint id;
+    if (textureCacheLookup(key, &id)) {
+        glBindTexture(target, id);
+        return id;
+    }
+    return bindTexture(pixmap.toImage(), target, format, key, clean);
 }
 
 /*!
@@ -1263,13 +1389,11 @@ GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint 
 GLuint QGLContext::bindTexture(const QImage &image, GLenum target, GLint format)
 {
     Q_D(QGLContext);
-    const QString key = QString("%1_%2_%3").arg(image.serialNumber()).arg(target).arg(format);
-    if (qt_tex_cache) {
-        QGLTexture *texture = qt_tex_cache->object(key);
-        if (texture && texture->context == this) {
-            glBindTexture(target, texture->id);
-            return texture->id;
-        }
+    const QString key = QString("%1_%2_%3").arg(QString().sprintf("i%08x",image.serialNumber())).arg(target).arg(format);
+    GLuint id;
+    if (d->textureCacheLookup(key, &id)) {
+        glBindTexture(target, id);
+        return id;
     }
     return d->bindTexture(image, target, format, key);
 }
@@ -1281,14 +1405,11 @@ GLuint QGLContext::bindTexture(const QImage &image, GLenum target, GLint format)
 GLuint QGLContext::bindTexture(const QPixmap &pixmap, GLenum target, GLint format)
 {
     Q_D(QGLContext);
-    const QString key = QString("%1_%2_%3").arg(pixmap.serialNumber()).arg(target).arg(format);
-
-    if (qt_tex_cache) {
-        QGLTexture *texture = qt_tex_cache->object(key);
-        if (texture && texture->context == this) {
-            glBindTexture(target, texture->id);
-            return texture->id;
-        }
+    const QString key = QString("%1_%2_%3").arg(QString().sprintf("p%08x",pixmap.serialNumber())).arg(target).arg(format);
+    GLuint id;
+    if (d->textureCacheLookup(key, &id)) {
+        glBindTexture(target, id);
+        return id;
     }
     return d->bindTexture(pixmap.toImage(), target, format, key);
 }
@@ -1304,15 +1425,15 @@ GLuint QGLContext::bindTexture(const QPixmap &pixmap, GLenum target, GLint forma
 void QGLContext::deleteTexture(GLuint id)
 {
     if (!qt_tex_cache)
-	return;
+        return;
 
     QList<QString> keys = qt_tex_cache->keys();
     for (int i = 0; i < keys.size(); ++i) {
-	QGLTexture *tex = qt_tex_cache->object(keys.at(i));
-	if (tex->id == id && tex->context == this) {
-	    qt_tex_cache->remove(keys.at(i));
-	    break;
-	}
+        QGLTexture *tex = qt_tex_cache->object(keys.at(i));
+        if (tex->id == id && tex->context == this) {
+            qt_tex_cache->remove(keys.at(i));
+            break;
+        }
     }
 }
 
@@ -1328,7 +1449,7 @@ void QGLContext::setTextureCacheLimit(int size)
 {
     qt_tex_cache_limit = size;
     if (qt_tex_cache)
-	qt_tex_cache->setMaxCost(qt_tex_cache_limit);
+        qt_tex_cache->setMaxCost(qt_tex_cache_limit);
 }
 
 /*!
@@ -2357,35 +2478,19 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
         sz = QSize(w, h);
 
 #if defined(Q_WS_X11)
-    // If we are using OpenGL widgets under X11 we HAVE to make sure
-    // that the default visual is GL enabled, and that the Pixmap has
-    // the same depth as the GL window.
-
     extern int qt_x11_preferred_pixmap_depth;
     int old_depth = qt_x11_preferred_pixmap_depth;
     qt_x11_preferred_pixmap_depth = x11Info().depth();
     QPixmap pm(sz);
     qt_x11_preferred_pixmap_depth = old_depth;
-    Visual *gl_visual = (Visual *) d->glcx->d_func()->vi;
-    Visual *gl_pixmap_visual = 0;
+    QX11Info xinfo = x11Info();
 
-    if (gl_visual != QX11Info::appVisual()) {
-        int nvis = 0;
-        XVisualInfo visInfo;
-        memset(&visInfo, 0, sizeof(XVisualInfo));
-        visInfo.visualid = XVisualIDFromVisual(gl_visual);
-        visInfo.screen = QX11Info::appScreen();
-        XVisualInfo *vi = XGetVisualInfo(QX11Info::display(),
-                                         VisualIDMask | VisualScreenMask,
-                                         &visInfo, &nvis);
-        gl_pixmap_visual = vi->visual;
-        if (vi) {
-            QX11InfoData* xd = pm.x11Info().getX11Data(true);
-            xd->depth = vi->depth;
-            xd->visual = (Visual *) vi->visual;
-            const_cast<QX11Info &>(pm.x11Info()).setX11Data(xd);
-            XFree(vi);
-        }
+    // make sure we use a pixmap with the same depth/visual as the widget
+    if (xinfo.visual() != QX11Info::appVisual()) {
+        QX11InfoData* xd = pm.x11Info().getX11Data(true);
+        xd->depth = xinfo.depth();
+        xd->visual = static_cast<Visual *>(xinfo.visual());
+        const_cast<QX11Info &>(pm.x11Info()).setX11Data(xd);
     }
 
 #else
@@ -2415,6 +2520,7 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
         success = false;
 
 #if defined(Q_WS_WIN)
+    glFlush();
     pm = QPixmap::fromWinHBITMAP(d->glcx->d_func()->hbitmap);
 #endif
 
@@ -2426,7 +2532,7 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
 
     if (success) {
 #if defined(Q_WS_X11)
-        if (gl_pixmap_visual) {
+        if (xinfo.visual() != QX11Info::appVisual()) {
             QImage image = pm.toImage();
             QPixmap p = QPixmap::fromImage(image);
             return p;
@@ -2760,7 +2866,7 @@ int QGLWidget::fontDisplayListBase(const QFont & fnt, int listBase)
 void QGLWidget::renderText(int x, int y, const QString & str, const QFont & fnt, int listBase)
 {
     makeCurrent();
-    glPushAttrib(GL_TRANSFORM_BIT | GL_VIEWPORT_BIT | GL_LIST_BIT | GL_CURRENT_BIT | GL_COLOR_BUFFER_BIT);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
@@ -2769,6 +2875,7 @@ void QGLWidget::renderText(int x, int y, const QString & str, const QFont & fnt,
     glPushMatrix();
     glLoadIdentity();
 
+    glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glRasterPos2i(0, 0);
@@ -2880,7 +2987,8 @@ void QGLWidget::deleteTexture(GLuint id)
     d->glcx->deleteTexture(id);
 }
 
-Q_GLOBAL_STATIC(QOpenGLPaintEngine, qt_widget_paintengine)
+Q_GLOBAL_STATIC(QOpenGLPaintEngine, qt_gl_engine)
+
 /*!
     \internal
 
@@ -2889,7 +2997,7 @@ Q_GLOBAL_STATIC(QOpenGLPaintEngine, qt_widget_paintengine)
 */
 QPaintEngine *QGLWidget::paintEngine() const
 {
-    return qt_widget_paintengine();
+    return qt_gl_engine();
 }
 
 #ifdef QT3_SUPPORT
@@ -2948,13 +3056,17 @@ void QGLExtensions::init_extensions()
 {
     QString extensions(reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS)));
     if (extensions.contains("texture_rectangle"))
-	glExtensions |= TextureRectangle;
+        glExtensions |= TextureRectangle;
     if (extensions.contains("multisample"))
-	glExtensions |= SampleBuffers;
+        glExtensions |= SampleBuffers;
     if (extensions.contains("generate_mipmap"))
-	glExtensions |= GenerateMipmap;
+        glExtensions |= GenerateMipmap;
     if (extensions.contains("texture_compression_s3tc"))
-	glExtensions |= TextureCompression;
+        glExtensions |= TextureCompression;
+    if (extensions.contains("ARB_fragment_program"))
+        glExtensions |= FragmentProgram;
+    if (extensions.contains("mirrored_repeat"))
+        glExtensions |= MirroredRepeat;
 
     QGLContext cx(QGLFormat::defaultFormat());
     if (glExtensions & TextureCompression) {

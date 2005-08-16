@@ -24,14 +24,25 @@
 #ifndef QABSTRACTSOCKET_P_H
 #define QABSTRACTSOCKET_P_H
 
-#include "qabstractsocket.h"
-#include <private/qinternal_p.h>
-#include <private/qiodevice_p.h>
-#include <qbytearray.h>
-#include <qlist.h>
-#include <private/qsocketlayer_p.h>
-#include <qsocketnotifier.h>
-#include <qtimer.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtNetwork/qabstractsocket.h"
+#include "QtCore/qbytearray.h"
+#include "QtCore/qlist.h"
+#include "QtCore/qtimer.h"
+#include "private/qinternal_p.h"
+#include "private/qiodevice_p.h"
+#include "private/qnativesocketengine_p.h"
+#include "qnetworkproxy.h"
 
 class QHostInfo;
 
@@ -46,8 +57,8 @@ public:
     void connectToNextAddress();
     void startConnecting(const QHostInfo &hostInfo);
     void testConnection();
-    bool canReadNotification(int);
-    bool canWriteNotification(int);
+    bool canReadNotification();
+    bool canWriteNotification();
     void abortConnectionAttempt();
 
     bool readSocketNotifierCalled;
@@ -64,15 +75,18 @@ public:
     QHostAddress host;
     QList<QHostAddress> addresses;
 
-    QSocketLayer socketLayer;
+    quint16 localPort;
+    quint16 peerPort;
+    QHostAddress localAddress;
+    QHostAddress peerAddress;
+    QString peerName;
 
-    QSocketNotifier *readSocketNotifier;
-    QSocketNotifier *writeSocketNotifier;
+    QAbstractSocketEngine *socketEngine;
 
     void resetSocketLayer();
     bool flush();
 
-    bool initSocketLayer(QAbstractSocket::SocketType socketType, QAbstractSocket::NetworkLayerProtocol protocol);
+    bool initSocketLayer(const QHostAddress &host, QAbstractSocket::SocketType socketType);
     void setupSocketNotifiers();
     bool readFromSocket();
 
@@ -92,6 +106,10 @@ public:
     QAbstractSocket::SocketState state;
 
     QAbstractSocket::SocketError socketError;
+
+#ifndef QT_NO_NETWORKPROXY
+    QNetworkProxy *proxy;
+#endif
 };
 
 #endif // QABSTRACTSOCKET_P_H

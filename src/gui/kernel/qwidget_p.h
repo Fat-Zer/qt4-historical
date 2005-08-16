@@ -35,23 +35,22 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
-
-#include <qrect.h>
-#include <qregion.h>
-#include <qsizepolicy.h>
-#include <qwidget.h>
+#include "QtGui/qwidget.h"
+#include "private/qobject_p.h"
+#include "QtCore/qrect.h"
+#include "QtGui/qregion.h"
+#include "QtGui/qsizepolicy.h"
 
 #ifdef Q_WS_WIN
-#include <qt_windows.h>
+#include "QtCore/qt_windows.h"
 #endif // Q_WS_WIN
 
 #ifdef Q_WS_X11
-#include <qx11info_x11.h>
+#include "QtGui/qx11info_x11.h"
 #endif
 
 #if defined(Q_WS_QWS)
-#include <qinputcontext.h>
+#include "QtGui/qinputcontext.h"
 #endif
 
 // Extra QWidget data
@@ -59,7 +58,6 @@
 //  - top-level widgets have extra extra data to reduce cost further
 #if defined(Q_WS_QWS)
 class QWSManager;
-class QWSBackingStore;
 #endif
 #if defined(Q_WS_WIN)
 class QOleDropTarget;
@@ -69,6 +67,7 @@ class QCoreGraphicsPaintEnginePrivate;
 #endif
 class QPaintEngine;
 class QPixmap;
+class QWidgetBackingStore;
 
 class QStyle;
 
@@ -81,6 +80,9 @@ struct QTLWExtra {
     short incw, inch; // size increments
     ulong fleft, fright, ftop, fbottom; // frame strut
     uint opacity : 8;
+#ifndef Q_WS_MAC
+    QWidgetBackingStore *backingStore;
+#endif
 #if defined(Q_WS_WIN)
     ulong savedFlags; // Save window flags while showing fullscreen
 #else
@@ -91,10 +93,11 @@ struct QTLWExtra {
     WId parentWinId; // parent window Id (valid after reparenting)
     uint embedded : 1; // window is embedded in another Qt application
     uint spont_unmapped: 1; // window was spontaneously unmapped
-    uint reserved: 1; // reserved
     uint dnd : 1; // DND properties installed
     uint uspos : 1; // User defined position
     uint ussize : 1; // User defined size
+    uint validWMState : 1; // is WM_STATE valid?
+    uint waitingForMapNotify : 1; // show() has been called, haven't got the MapNotify yet
     QPoint fullScreenOffset;
     QBitmap *iconMask;
 #endif
@@ -106,12 +109,9 @@ struct QTLWExtra {
 #if defined(Q_WS_QWS) && !defined (QT_NO_QWS_MANAGER)
 //    QRegion decor_allocated_region; // decoration allocated region
     QWSManager *qwsManager;
+    QRect frameGeometry;
 #endif
 #if defined Q_WS_QWS
-    QWSBackingStore *backingStore;
-    QPoint backingStoreOffset;
-
-    QRegion dirtyRegion;
     bool inPaintTransaction;
 #endif
 #if defined(Q_WS_WIN)
@@ -119,6 +119,7 @@ struct QTLWExtra {
     HICON winIconSmall; // internal small Windows icon
 #endif
     QRect normalGeometry; // used by showMin/maximized/FullScreen
+
 };
 
 struct QWExtra {
@@ -148,6 +149,7 @@ struct QWExtra {
     uint compress_events : 1;
 #endif
     uint explicitMinSize : 2;
+    uint autoFillBackground : 1;
 };
 
 class Q_GUI_EXPORT QWidgetPrivate : public QObjectPrivate
@@ -188,16 +190,23 @@ public:
     void resolveLayoutDirection();
 
     bool isBackgroundInherited() const;
-    void updateInheritedBackground();
-    void updatePropagatedBackground(const QRegion * = 0);
 
     void setUpdatesEnabled_helper(bool );
 
-    void composeBackground(const QRect &);
+    void paintBackground(QPainter *, const QRect &, bool asRoot = true) const;
+    enum DrawWidgetFlags {
+        DrawAsRoot = 0x01,
+        DrawPaintOnScreen = 0x02,
+        DrawRecursive = 0x04,
+        DrawInvisible = 0x08
+    };
+    void drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QPoint &offset, int flags = DrawAsRoot | DrawRecursive);
 
     QRect clipRect() const;
-    bool hasComplexClipRegion() const;
-    bool isFullyOpaque() const;
+    QRegion clipRegion() const;
+    void subtractOpaqueChildren(QRegion &rgn, const QRect &clipRect, const QPoint &offset) const;
+    bool isOpaque() const;
+    bool hasBackground() const;
 
     enum CloseMode {
         CloseNoEvent,
@@ -207,20 +216,35 @@ public:
     bool close_helper(CloseMode mode);
 
     bool compositeEvent(QEvent *e);
-    void setWindowIcon_sys();
+    void setWindowIcon_sys(bool forceReset = false);
 
     void focusInputContext();
     void unfocusInputContext();
 
 #if defined(Q_WS_X11)
     void checkChildrenDnd();
-    QRegion invalidated_region;
+    void fixupDnd();
 
     void setWindowRole(const char *role);
+    void sendStartupMessage(const char *message) const;
 #endif
 
 #if defined (Q_WS_WIN)
     void reparentChildren();
+#endif
+
+    void scrollChildren(int dx, int dy);
+
+#ifndef Q_WS_MAC
+    void dirtyWidget_sys(const QRegion &rgn);
+    void cleanWidget_sys(const QRegion& rgn);
+    void moveRect(const QRect &, int dx, int dy);
+    void scrollRect(const QRect &, int dx, int dy);
+    void invalidateBuffer(const QRegion &);
+    bool isOverlapped(const QRect&) const;
+# if defined(Q_WS_X11)
+    QRegion dirtyOnScreen;
+# endif
 #endif
 
     void reparentFocusWidgets(QWidget *oldtlw);
@@ -239,8 +263,7 @@ public:
     void hide_sys();
     void hide_helper();
     void setEnabled_helper(bool);
-    bool setAcceptDrops_sys(bool);
-    void setAcceptDrops_helper(bool);
+    void registerDropSite(bool);
     void updateFrameStrut() const;
     void setWindowIconText_sys(const QString &cap);
     void setWindowIconText_helper(const QString &cap);
@@ -253,15 +276,9 @@ public:
     void setConstraints_sys();
 
 #if defined(Q_WS_QWS)
-//    void updateRequestedRegion(const QPoint &gpos);
-//    QRegion requestedRegion() const;
     QRegion localRequestedRegion() const;
-    void requestWindowRegion(const QRegion &r);
 
-    void doPaint(const QRegion &rgn);
-
-    void bltToScreen(const QRegion &globalrgn);
-    void paintHierarchy(const QRegion &rgn );
+    void blitToScreen(const QRegion &globalrgn);
 #ifndef QT_NO_CURSOR
     void updateCursor(const QRegion &r) const;
 #endif
@@ -272,6 +289,10 @@ public:
 
     static int instanceCounter; // Current number of widget instances
     static int maxInstances; // Maximum number of widget instances
+
+#ifdef QT_KEYPAD_NAVIGATION
+    static QWidget *editingWidget;
+#endif
 
     QWidgetData data;
 
@@ -290,7 +311,15 @@ public:
     int leftmargin, topmargin, rightmargin, bottommargin;
     // ### TODO: reorganize private/extra/topextra to save memory
     QPointer<QWidget> compositeChildGrab;
-    QString toolTip, statusTip, whatsThis;
+#ifndef QT_NO_TOOLTIP
+    QString toolTip;
+#endif
+#ifndef QT_NO_STATUSTIP
+    QString statusTip;
+#endif
+#ifndef QT_NOWHATSTHIS
+    QString whatsThis;
+#endif
     QString accessibleName, accessibleDescription;
 
     QPalette::ColorRole fg_role : 8;
@@ -347,6 +376,8 @@ public:
     QPaintEngine *extraPaintEngine;
 
     mutable const QMetaObject *polished;
+
+    void setModal_sys();
 };
 
 inline QWExtra *QWidgetPrivate::extraData() const

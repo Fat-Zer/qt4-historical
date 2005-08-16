@@ -1,10 +1,18 @@
 TEMPLATE = lib
 TARGET = QtDesignerComponents
+contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 CONFIG += qt debug_and_release depend_prl
 DESTDIR = $$QT_BUILD_TREE/lib
 DLLDESTDIR = $$QT_BUILD_TREE/bin
 
-VERSION = 4.0.1
+# QtDesignerComponents uses
+DEFINES += QT_STATICPLUGIN
+
+isEmpty(QT_MAJOR_VERSION) {
+   VERSION=4.1.0
+} else {
+   VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
+}
 QMAKE_TARGET_COMPANY = Trolltech AS
 QMAKE_TARGET_PRODUCT = Designer
 QMAKE_TARGET_DESCRIPTION = Graphical user interface designer.
@@ -38,7 +46,6 @@ include(../widgetbox/widgetbox.pri)
 include(../buddyeditor/buddyeditor.pri)
 include(../taskmenu/taskmenu.pri)
 include(../tabordereditor/tabordereditor.pri)
-include(../resourceeditor/resourceeditor.pri)
 
 PRECOMPILED_HEADER= lib_pch.h
 

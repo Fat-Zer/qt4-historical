@@ -42,6 +42,8 @@
 #define GROUND_W                20
 #define GROUND_H                25
 
+namespace qdesigner_internal {
+
 /*******************************************************************************
 ** Tools
 */
@@ -220,26 +222,29 @@ class SetEndPointCommand : public CECommand
 {
     Q_OBJECT
 public:
-    SetEndPointCommand(ConnectionEdit *edit, Connection *con, EndPoint::Type type, QWidget *widget);
+    SetEndPointCommand(ConnectionEdit *edit, Connection *con, EndPoint::Type type, QObject *object);
     virtual void redo();
     virtual void undo();
 private:
     Connection *m_con;
     EndPoint::Type m_type;
-    QWidget *m_old_widget, *m_new_widget;
+    QObject *m_old_widget, *m_new_widget;
     QPoint m_old_pos, m_new_pos;
 };
 
 SetEndPointCommand::SetEndPointCommand(ConnectionEdit *edit, Connection *con,
-                                        EndPoint::Type type, QWidget *widget)
+                                        EndPoint::Type type, QObject *object)
     : CECommand(edit)
 {
     m_con = con;
     m_type = type;
-    m_old_widget = con->widget(type);
+    m_old_widget = con->object(type);
     m_old_pos = con->endPointPos(type);
-    m_new_widget = widget;
-    m_new_pos = edit->widgetRect(m_new_widget).center();
+    m_new_widget = object;
+
+    if (QWidget *widget = qobject_cast<QWidget*>(object)) {
+        m_new_pos = edit->widgetRect(widget).center();
+    }
 
     setDescription(tr("Change %1").arg(m_type == EndPoint::Source ? tr("source") : tr("target")));
 }
@@ -271,7 +276,7 @@ Connection::Connection(ConnectionEdit *edit)
     m_target_pos = QPoint(-1, -1);
 }
 
-Connection::Connection(ConnectionEdit *edit, QWidget *source, QWidget *target)
+Connection::Connection(ConnectionEdit *edit, QObject *source, QObject *target)
 {
     m_edit = edit;
     m_source = source;
@@ -334,22 +339,6 @@ QPoint Connection::endPointPos(EndPoint::Type type) const
         return m_source_pos;
     else
         return m_target_pos;
-}
-
-
-void Connection::setSource(QWidget *source, const QPoint &pos)
-{
-    if (source == m_source && m_source_pos == pos)
-        return;
-
-    update(false);
-
-    m_source = source;
-    m_source_pos = pos;
-    m_source_rect = m_edit->widgetRect(source);
-    updateKneeList();
-
-    update(false);
 }
 
 static QPoint lineEntryPos(const QPoint &p1, const QPoint &p2, const QRect &rect)
@@ -666,7 +655,24 @@ void Connection::trimLine()
     }
 }
 
-void Connection::setTarget(QWidget *target, const QPoint &pos)
+void Connection::setSource(QObject *source, const QPoint &pos)
+{
+    if (source == m_source && m_source_pos == pos)
+        return;
+
+    update(false);
+
+    m_source = source;
+    if (QWidget *widget = qobject_cast<QWidget*>(source)) {
+        m_source_pos = pos;
+        m_source_rect = m_edit->widgetRect(widget);
+        updateKneeList();
+    }
+
+    update(false);
+}
+
+void Connection::setTarget(QObject *target, const QPoint &pos)
 {
     if (target == m_target && m_target_pos == pos)
         return;
@@ -674,9 +680,11 @@ void Connection::setTarget(QWidget *target, const QPoint &pos)
     update(false);
 
     m_target = target;
-    m_target_pos = pos;
-    m_target_rect = m_edit->widgetRect(target);
-    updateKneeList();
+    if (QWidget *widget = qobject_cast<QWidget*>(target)) {
+        m_target_pos = pos;
+        m_target_rect = m_edit->widgetRect(widget);
+        updateKneeList();
+    }
 
     update(false);
 }
@@ -760,10 +768,10 @@ QRect Connection::endPointRect(EndPoint::Type type) const
 {
     if (type == EndPoint::Source) {
         if (m_source_pos != QPoint(-1, -1))
-            return ::endPointRect(m_source_pos);
+            return qdesigner_internal::endPointRect(m_source_pos);
     } else {
         if (m_target_pos != QPoint(-1, -1))
-            return ::endPointRect(m_target_pos);
+            return qdesigner_internal::endPointRect(m_target_pos);
     }
     return QRect();
 }
@@ -869,8 +877,8 @@ void Connection::checkWidgets()
 {
     bool changed = false;
 
-    if (m_source != 0) {
-        QRect r = m_edit->widgetRect(m_source);
+    if (QWidget *sourceWidget = qobject_cast<QWidget*>(m_source)) {
+        QRect r = m_edit->widgetRect(sourceWidget);
         if (r != m_source_rect) {
             if (m_source_pos != QPoint(-1, -1) && !r.contains(m_source_pos)) {
                 QPoint offset = m_source_pos - m_source_rect.topLeft();
@@ -883,8 +891,8 @@ void Connection::checkWidgets()
         }
     }
 
-    if (m_target != 0) {
-        QRect r = m_edit->widgetRect(m_target);
+    if (QWidget *targetWidget = qobject_cast<QWidget*>(m_target)) {
+        QRect r = m_edit->widgetRect(targetWidget);
         if (r != m_target_rect) {
             if (m_target_pos != QPoint(-1, -1) && !r.contains(m_target_pos)) {
                 QPoint offset = m_target_pos - m_target_rect.topLeft();
@@ -930,7 +938,7 @@ void ConnectionEdit::clear()
 {
     m_con_list.clear();
     m_sel_con_set.clear();
-//    m_bg_widget = 0;
+    m_bg_widget = 0;
     m_widget_under_mouse = 0;
     m_tmp_con = 0;
 }
@@ -961,17 +969,8 @@ void ConnectionEdit::updateBackground()
     if (!m_enable_update_background)
         return;
 
-    m_bg_pixmap = QPixmap::grabWidget(m_bg_widget);
-/*
-    QPainter p(&m_bg_pixmap);
-    p.setPen(QColor(0, 0, 255, 22));
-    for (int y = 0; y < m_bg_pixmap.height(); y += 2)
-        p.drawLine(0, y, m_bg_pixmap.width(), y); */
-
-
-    foreach(Connection *c, m_con_list) {
+    foreach(Connection *c, m_con_list)
         c->updateVisibility();
-    }
 
     updateLines();
     update();
@@ -1045,11 +1044,6 @@ void ConnectionEdit::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
     p.setClipRegion(e->region());
-
-    if (m_bg_pixmap.isNull())
-        updateBackground();
-
-    p.drawPixmap(m_bg_pixmap.rect(), m_bg_pixmap);
 
     WidgetSet heavy_highlight_set, light_highlight_set;
 
@@ -1446,26 +1440,28 @@ void ConnectionEdit::resizeEvent(QResizeEvent *e)
 
 void ConnectionEdit::setSource(Connection *con, const QString &obj_name)
 {
-    QWidget *w = qFindChild<QWidget*>(m_bg_widget, obj_name);
-    if (w == 0 && m_bg_widget->objectName() == obj_name)
-        w = m_bg_widget;
+    QObject *object = qFindChild<QObject*>(m_bg_widget, obj_name);
+    if (object == 0 && m_bg_widget->objectName() == obj_name)
+        object = m_bg_widget;
 
-    if (w == con->widget(EndPoint::Source))
+    if (object == con->object(EndPoint::Source))
         return;
 
-    m_undo_stack->push(new SetEndPointCommand(this, con, EndPoint::Source, w));
+    m_undo_stack->push(new SetEndPointCommand(this, con, EndPoint::Source, object));
 }
 
 void ConnectionEdit::setTarget(Connection *con, const QString &obj_name)
 {
-    QWidget *w = qFindChild<QWidget*>(m_bg_widget, obj_name);
-    if (w == 0 && m_bg_widget->objectName() == obj_name)
-        w = m_bg_widget;
+    QObject *object = qFindChild<QObject*>(m_bg_widget, obj_name);
+    if (object == 0 && m_bg_widget->objectName() == obj_name)
+        object = m_bg_widget;
 
-    if (w == con->widget(EndPoint::Target))
+    if (object == con->object(EndPoint::Target))
         return;
 
-    m_undo_stack->push(new SetEndPointCommand(this, con, EndPoint::Target, w));
+    m_undo_stack->push(new SetEndPointCommand(this, con, EndPoint::Target, object));
 }
+
+} // namespace qdesigner_internal
 
 #include "connectionedit.moc"

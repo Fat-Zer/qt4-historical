@@ -23,6 +23,7 @@
 
 #include <qplatformdefs.h>
 #include <private/qabstractspinbox_p.h>
+#include <private/qdatetime_p.h>
 #include <qabstractspinbox.h>
 
 #ifndef QT_NO_SPINBOX
@@ -229,9 +230,8 @@ void QAbstractSpinBox::setSpecialValueText(const QString &s)
     Q_D(QAbstractSpinBox);
 
     d->specialValueText = s;
-    d->cachedText.clear();
-    d->cachedValue.clear();
-    d->update();
+    d->clearCache();
+    d->updateEdit();
 }
 
 /*!
@@ -295,7 +295,7 @@ void QAbstractSpinBox::setReadOnly(bool enable)
     Q_D(QAbstractSpinBox);
     d->readOnly = enable;
     d->edit->setReadOnly(enable);
-    update();
+    d->updateButtons();
 }
 
 /*!
@@ -338,8 +338,6 @@ void QAbstractSpinBox::setFrame(bool enable)
 Qt::Alignment QAbstractSpinBox::alignment() const
 {
     Q_D(const QAbstractSpinBox);
-    if (d->dirty)
-        d->updateEdit();
 
     return (Qt::Alignment)d->edit->alignment();
 }
@@ -347,8 +345,6 @@ Qt::Alignment QAbstractSpinBox::alignment() const
 void QAbstractSpinBox::setAlignment(Qt::Alignment flag)
 {
     Q_D(QAbstractSpinBox);
-    if (d->dirty)
-        d->updateEdit();
 
     d->edit->setAlignment(flag);
 }
@@ -361,8 +357,6 @@ void QAbstractSpinBox::selectAll()
 {
     Q_D(QAbstractSpinBox);
 
-    if (d->dirty)
-        d->updateEdit();
 
     if (!d->specialValue()) {
         const int tmp = d->edit->displayText().size() - d->suffix.size();
@@ -380,8 +374,6 @@ void QAbstractSpinBox::clear()
 {
     Q_D(QAbstractSpinBox);
 
-    if (d->dirty)
-        d->updateEdit();
 
     d->edit->setText(d->prefix + d->suffix);
     d->edit->setCursorPosition(d->prefix.size());
@@ -408,16 +400,16 @@ void QAbstractSpinBox::clear()
 QAbstractSpinBox::StepEnabled QAbstractSpinBox::stepEnabled() const
 {
     Q_D(const QAbstractSpinBox);
-    if (d->readOnly)
-        return StepEnabled(0);
+    if (d->readOnly || d->type == QVariant::Invalid)
+        return StepNone;
     if (!style()->styleHint(QStyle::SH_SpinControls_DisableOnBounds)
         || d->wrapping)
         return StepEnabled(StepUpEnabled | StepDownEnabled);
     StepEnabled ret = StepNone;
-    if (d->value < d->maximum) {
+    if (d->variantCompare(d->value, d->maximum) < 0) {
         ret |= StepUpEnabled;
     }
-    if (d->value > d->minimum) {
+    if (d->variantCompare(d->value, d->minimum) > 0) {
         ret |= StepDownEnabled;
     }
     return ret;
@@ -510,8 +502,6 @@ void QAbstractSpinBox::stepBy(int steps)
 QLineEdit *QAbstractSpinBox::lineEdit() const
 {
     Q_D(const QAbstractSpinBox);
-    if (d->dirty)
-        d->updateEdit();
 
     return d->edit;
 }
@@ -564,8 +554,8 @@ void QAbstractSpinBox::setLineEdit(QLineEdit *lineEdit)
 
     if (isVisible())
         d->edit->show();
-
-    update();
+    if (isVisible())
+        d->updateEdit();
 }
 
 
@@ -589,7 +579,7 @@ bool QAbstractSpinBox::event(QEvent *event)
     Q_D(QAbstractSpinBox);
     switch (event->type()) {
     case QEvent::ApplicationLayoutDirectionChange:
-        update();
+        d->updateEdit();
         break;
     case QEvent::HoverEnter:
     case QEvent::HoverLeave:
@@ -597,7 +587,12 @@ bool QAbstractSpinBox::event(QEvent *event)
         if (const QHoverEvent *he = static_cast<const QHoverEvent *>(event))
             d->updateHoverControl(he->pos());
         break;
-    default: break;
+    case QEvent::ShortcutOverride:
+        if (d->edit->event(event))
+            return true;
+        break;
+    default:
+        break;
     }
     return QWidget::event(event);
 }
@@ -610,11 +605,8 @@ void QAbstractSpinBox::showEvent(QShowEvent *)
 {
     Q_D(QAbstractSpinBox);
 
-    if (d->dirty) {
         d->reset();
         d->updateEdit();
-    }
-    d->updateSpinBox();
 }
 
 /*!
@@ -656,12 +648,13 @@ void QAbstractSpinBox::changeEvent(QEvent *e)
 void QAbstractSpinBox::resizeEvent(QResizeEvent *e)
 {
     Q_D(QAbstractSpinBox);
+    QWidget::resizeEvent(e);
 
     QStyleOptionSpinBox opt = d->getStyleOption();
     opt.subControls = QStyle::SC_SpinBoxEditField;
     d->edit->setGeometry(style()->subControlRect(QStyle::CC_SpinBox, &opt,
                                                  QStyle::SC_SpinBoxEditField, this));
-    QWidget::resizeEvent(e);
+    update();
 }
 
 /*!
@@ -787,6 +780,15 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *e)
         steps *= 10;
     case Qt::Key_Up:
     case Qt::Key_Down: {
+#ifdef QT_KEYPAD_NAVIGATION
+        if (QApplication::keypadNavigationEnabled()) {
+            // Reserve up/down for nav - use left/right for edit.
+            if (e->key() == Qt::Key_Up || e->key() == Qt::Key_Down) {
+                e->ignore();
+                return;
+            }
+        }
+#endif
         e->accept();
         const bool up = (e->key() == Qt::Key_PageUp || e->key() == Qt::Key_Up);
         if (!(stepEnabled() & (up ? StepUpEnabled : StepDownEnabled)))
@@ -799,6 +801,29 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *e)
         stepBy(steps);
         return;
     }
+#ifdef QT_KEYPAD_NAVIGATION
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+        if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
+            const bool up = (e->key() == Qt::Key_Right);
+            if (!(stepEnabled() & (up ? StepUpEnabled : StepDownEnabled)))
+                return;
+            if (!up)
+                steps *= -1;
+            if (style()->styleHint(QStyle::SH_SpinBox_AnimateButton, 0, this)) {
+                d->buttonState = (Keyboard | (up ? Up : Down));
+            }
+            stepBy(steps);
+            return;
+        }
+        break;
+    case Qt::Key_Back:
+        if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
+            e->ignore();
+            return;
+        }
+        break;
+#endif
     case Qt::Key_Enter:
     case Qt::Key_Return:
         d->interpret(AlwaysEmit);
@@ -806,6 +831,17 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *e)
         e->ignore();
         emit editingFinished();
         return;
+
+#ifdef QT_KEYPAD_NAVIGATION
+    case Qt::Key_Select:
+        if (QApplication::keypadNavigationEnabled()) {
+            // Toggles between left/right moving cursor and inc/dec.
+            setEditFocus(!hasEditFocus());
+            if (!hasEditFocus())
+                selectAll();
+        }
+        return;
+#endif
 
 #ifdef Q_WS_X11 // only X11
     case Qt::Key_U:
@@ -1091,7 +1127,7 @@ void QAbstractSpinBox::mouseReleaseEvent(QMouseEvent *e)
 QAbstractSpinBoxPrivate::QAbstractSpinBoxPrivate()
     : edit(0), type(QVariant::Invalid), spinClickTimerId(-1),
       spinClickTimerInterval(100), spinClickThresholdTimerId(-1), spinClickThresholdTimerInterval(thresholdTime),
-      buttonState(None), dirty(true), cachedText("\x01"), cachedState(QValidator::Invalid),
+      buttonState(None), cachedText("\x01"), cachedState(QValidator::Invalid),
       pendingEmit(false), readOnly(false), wrapping(false),
       ignoreCursorPositionChanged(false), frame(true),
       hoverControl(QStyle::SC_None), buttonSymbols(QAbstractSpinBox::UpDownArrows), validator(0)
@@ -1208,12 +1244,7 @@ void QAbstractSpinBoxPrivate::editorTextChanged(const QString &t)
     QValidator::State state = q->validate(tmp, pos);
     if (state == QValidator::Acceptable) {
         const QVariant v = valueFromText(tmp);
-        if (tmp != t) {
-            const bool wasBlocked = edit->blockSignals(true);
-            edit->setText(prefix + tmp + suffix);
-            edit->blockSignals(wasBlocked);
-        }
-        setValue(v, EmitIfChanged, false);
+        setValue(v, EmitIfChanged, tmp != t);
         pendingEmit = false;
     } else {
         pendingEmit = true;
@@ -1288,7 +1319,7 @@ void QAbstractSpinBoxPrivate::init()
     q->setAttribute(Qt::WA_InputMethodEnabled);
 
     q->setLineEdit(new QLineEdit(q));
-    edit->setObjectName("qt_spinbox_lineedit");
+    edit->setObjectName(QLatin1String("qt_spinbox_lineedit"));
     if (type != QVariant::Invalid) {
         validator = new QSpinBoxValidator(q, this);
         edit->setValidator(validator);
@@ -1301,7 +1332,7 @@ void QAbstractSpinBoxPrivate::init()
     Calls QWidget::update() on the area where the arrows are painted.
 */
 
-void QAbstractSpinBoxPrivate::updateSpinBox()
+void QAbstractSpinBoxPrivate::updateButtons()
 {
     Q_Q(QAbstractSpinBox);
 
@@ -1330,7 +1361,7 @@ void QAbstractSpinBoxPrivate::reset()
         if (spinClickThresholdTimerId != -1)
             q->killTimer(spinClickThresholdTimerId);
         spinClickTimerId = spinClickThresholdTimerId = -1;
-        updateSpinBox();
+        updateButtons();
     }
 }
 
@@ -1379,11 +1410,7 @@ QStyleOptionSpinBox QAbstractSpinBoxPrivate::getStyleOption() const
     if (buttonState)
         opt.state |= QStyle::State_Sunken;
 
-    if (type != QVariant::Invalid) {
-        opt.stepEnabled = q->stepEnabled();
-    } else {
-        opt.stepEnabled = QAbstractSpinBox::StepNone;
-    }
+    opt.stepEnabled = q->stepEnabled();
 
     opt.frame = frame;
     return opt;
@@ -1401,22 +1428,25 @@ QVariant QAbstractSpinBoxPrivate::bound(const QVariant &val, const QVariant &old
 {
     QVariant v = val;
     if (!wrapping || steps == 0 || old.isNull()) {
-        if (v < minimum) {
+        if (variantCompare(v, minimum) < 0) {
             v = wrapping ? maximum : minimum;
         }
-        if (v > maximum) {
+        if (variantCompare(v, maximum) > 0) {
             v = wrapping ? minimum : maximum;
         }
     } else {
         const bool wasMin = old == minimum;
         const bool wasMax = old == maximum;
-        const bool wrapped = (v > old && steps < 0) || (v < old && steps > 0);
-        if (v > maximum) {
+        const int oldcmp = variantCompare(v, old);
+        const int maxcmp = variantCompare(v, maximum);
+        const int mincmp = variantCompare(v, minimum);
+        const bool wrapped = (oldcmp > 0 && steps < 0) || (oldcmp < 0 && steps > 0);
+        if (maxcmp > 0) {
             v = ((wasMax && !wrapped && steps > 0) || (steps < 0 && !wasMin && wrapped))
                 ? minimum : maximum;
-        } else if (wrapped && (v > maximum || v < minimum)) {
+        } else if (wrapped && (maxcmp > 0 || mincmp < 0)) {
             v = (wasMax && steps > 0 || (!wasMin && steps < 0)) ? minimum : maximum;
-        } else if (v < minimum) {
+        } else if (mincmp < 0) {
             v = (!wasMax && !wasMin ? minimum : maximum);
         }
     }
@@ -1437,8 +1467,12 @@ void QAbstractSpinBoxPrivate::setValue(const QVariant &val, EmitPolicy ep,
     const QVariant old = value;
     value = bound(val);
     pendingEmit = false;
-    if (doUpdate)
-        update();
+    if (doUpdate) {
+        updateEdit();
+    } else {
+        updateButtons();
+    }
+
     if (ep == AlwaysEmit || (ep == EmitIfChanged && old != value)) {
         emitSignals(ep, old);
     }
@@ -1450,48 +1484,29 @@ void QAbstractSpinBoxPrivate::setValue(const QVariant &val, EmitPolicy ep,
     Updates the line edit to reflect the current value of the spin box.
 */
 
-void QAbstractSpinBoxPrivate::updateEdit() const
+void QAbstractSpinBoxPrivate::updateEdit()
 {
-    QLineEdit *e = const_cast<QLineEdit*>(edit);
-    const bool empty = e->text().isEmpty();
-    int cursor = e->cursorPosition();
-    int selsize = e->selectedText().size();
     const QString newText = specialValue() ? specialValueText : prefix + textFromValue(value) + suffix;
-    const bool sb = e->blockSignals(true);
-    e->setText(newText);
+    if (newText == edit->displayText())
+        return;
+
+    const bool empty = edit->text().isEmpty();
+    int cursor = edit->cursorPosition();
+    int selsize = edit->selectedText().size();
+    const bool sb = edit->blockSignals(true);
+    edit->setText(newText);
 
     if (!specialValue()) {
         cursor = qBound(prefix.size(), cursor, edit->displayText().size() - suffix.size());
 
         if (selsize > 0) {
-            e->setSelection(cursor, selsize);
+            edit->setSelection(cursor, selsize);
         } else {
-            e->setCursorPosition(empty ? prefix.size() : cursor);
+            edit->setCursorPosition(empty ? prefix.size() : cursor);
         }
     }
-    e->blockSignals(sb);
-
-    const_cast<QAbstractSpinBoxPrivate *>(this)->dirty = false;
-}
-
-/*!
-    \internal
-
-    Calls updateEdit() and updateSpinBox() if the widget is visible. Else sets the dirty flag.
-*/
-
-void QAbstractSpinBoxPrivate::update()
-{
-    Q_Q(QAbstractSpinBox);
-
-    if (type != QVariant::Invalid) {
-        if (!q->isVisible()) {
-            dirty = true;
-        } else {
-            updateEdit();
-            updateSpinBox();
-        }
-    }
+    edit->blockSignals(sb);
+    updateButtons();
 }
 
 /*!
@@ -1502,10 +1517,9 @@ void QAbstractSpinBoxPrivate::update()
 
 void QAbstractSpinBoxPrivate::setRange(const QVariant &min, const QVariant &max)
 {
-    cachedText.clear();
-    cachedValue.clear();
+    clearCache();
     minimum = min;
-    maximum = qMax(min, max);
+    maximum = (variantCompare(min, max) < 0 ? max : min);
 
     reset();
     setValue(bound(value), EmitIfChanged);
@@ -1522,10 +1536,10 @@ QVariant QAbstractSpinBoxPrivate::getZeroVariant() const
     QVariant ret;
     switch (type) {
     case QVariant::Int: ret = QVariant((int)0); break;
-    case QVariant::Double: ret = QVariant((double)0); break;
+    case QVariant::Double: ret = QVariant((double)0.0); break;
     case QVariant::Time: ret = QVariant(QTime()); break;
-    case QVariant::Date: ret = QVariant(DATE_INITIAL); break;
-    case QVariant::DateTime: ret = QVariant(QDateTime(DATE_INITIAL, QTime())); break;
+    case QVariant::Date: ret = QVariant(QDATE_INITIAL); break;
+    case QVariant::DateTime: ret = QVariant(QDateTime(QDATE_INITIAL, QTime())); break;
     default: break;
     }
     return ret;
@@ -1597,12 +1611,19 @@ void QAbstractSpinBoxPrivate::interpret(EmitPolicy ep)
     if (doInterpret) {
         v = valueFromText(tmp);
     }
-    cachedValue.clear();
-    cachedText.clear();
+    clearCache();
     setValue(v, ep, true);
     if (oldpos != pos)
         edit->setCursorPosition(pos);
 }
+
+void QAbstractSpinBoxPrivate::clearCache() const
+{
+    cachedText.clear();
+    cachedValue.clear();
+    cachedState = QValidator::Acceptable;
+}
+
 
 // --- QSpinBoxValidator ---
 
@@ -1614,7 +1635,7 @@ void QAbstractSpinBoxPrivate::interpret(EmitPolicy ep)
 QSpinBoxValidator::QSpinBoxValidator(QAbstractSpinBox *qp, QAbstractSpinBoxPrivate *dp)
     : QValidator(qp), qptr(qp), dptr(dp)
 {
-    setObjectName("qt_spinboxvalidator");
+    setObjectName(QLatin1String("qt_spinboxvalidator"));
 }
 
 /*!
@@ -1646,92 +1667,8 @@ void QSpinBoxValidator::fixup(QString &input) const
 {
     qptr->fixup(input);
 }
+
 // --- global ---
-
-
-/*!
-    \internal
-    Compares two variants and returns true if \a arg1 < \a arg2
-*/
-
-bool operator<(const QVariant &arg1, const QVariant &arg2)
-{
-    if (arg1.type() != arg2.type())
-        qWarning("%s %d: Different types. This should never happen (%s vs %s)", __FILE__, __LINE__,
-                 arg1.typeName(), arg2.typeName());
-    switch (arg1.type()) {
-    case QVariant::Int: return arg1.toInt() < arg2.toInt();
-    case QVariant::Double: return arg1.toDouble() < arg2.toDouble();
-    case QVariant::Date: return arg1.toDate() < arg2.toDate();
-    case QVariant::Time: return arg1.toTime() < arg2.toTime();
-    case QVariant::DateTime: return arg1.toDateTime() < arg2.toDateTime();
-    default: break;
-    }
-    return false;
-}
-
-/*!
-    \internal
-    Compares two variants and returns true if \a arg1 > \a arg2
-*/
-
-bool operator>(const QVariant &arg1, const QVariant &arg2)
-{
-    if (arg1.type() != arg2.type())
-        qWarning("%s %d: Different types. This should never happen (%s vs %s)", __FILE__, __LINE__,
-                 arg1.typeName(), arg2.typeName());
-    switch (arg1.type()) {
-    case QVariant::Int: return arg1.toInt() > arg2.toInt();
-    case QVariant::Double: return arg1.toDouble() > arg2.toDouble();
-    case QVariant::Time: return arg1.toTime() > arg2.toTime();
-    case QVariant::Date: return arg1.toDate() > arg2.toDate();
-    case QVariant::DateTime: return arg1.toDateTime() > arg2.toDateTime();
-    default: break;
-    }
-    return false;
-}
-
-/*!
-    \internal
-    Compares two variants and returns true if \a arg1 >= \a arg2
-*/
-
-bool operator<=(const QVariant &arg1, const QVariant &arg2)
-{
-    if (arg1.type() != arg2.type())
-        qWarning("%s %d: Different types. This should never happen (%s vs %s)", __FILE__, __LINE__,
-                 arg1.typeName(), arg2.typeName());
-    switch (arg1.type()) {
-    case QVariant::Int:
-    case QVariant::Double:
-    case QVariant::Date:
-    case QVariant::Time:
-    case QVariant::DateTime: return (arg1 < arg2 || arg1 == arg2);
-    default: break;
-    }
-    return false;
-}
-
-/*!
-    \internal
-    Compares two variants and returns true if \a arg1 >= \a arg2
-*/
-
-bool operator>=(const QVariant &arg1, const QVariant &arg2)
-{
-    if (arg1.type() != arg2.type())
-        qWarning("%s %d: Different types. This should never happen (%s vs %s)", __FILE__, __LINE__,
-                 arg1.typeName(), arg2.typeName());
-    switch (arg1.type()) {
-    case QVariant::Int:
-    case QVariant::Double:
-    case QVariant::Time:
-    case QVariant::Date:
-    case QVariant::DateTime: return (arg1 > arg2 || arg1 == arg2);
-    default: break;
-    }
-    return false;
-}
 
 /*!
     \internal
@@ -1749,7 +1686,7 @@ QVariant operator+(const QVariant &arg1, const QVariant &arg2)
     case QVariant::Double: ret = QVariant(arg1.toDouble() + arg2.toDouble()); break;
     case QVariant::DateTime: {
         QDateTime a2 = arg2.toDateTime();
-        QDateTime a1 = arg1.toDateTime().addDays(DATETIME_MIN.daysTo(a2));
+        QDateTime a1 = arg1.toDateTime().addDays(QDATETIME_MIN.daysTo(a2));
         a1.setTime(a1.time().addMSecs(QTime().msecsTo(a2.time())));
         ret = QVariant(a1);
     }
@@ -1806,10 +1743,11 @@ QVariant operator*(const QVariant &arg1, double multiplier)
     case QVariant::Int: ret = QVariant((int)(arg1.toInt() * multiplier)); break;
     case QVariant::Double: ret = QVariant(arg1.toDouble() * multiplier); break;
     case QVariant::DateTime: {
-        double days = DATE_MIN.daysTo(arg1.toDateTime().date()) * multiplier;
+        double days = QDATE_MIN.daysTo(arg1.toDateTime().date()) * multiplier;
         int daysInt = (int)days;
         days -= daysInt;
-        long msecs = (long)((TIME_MIN.msecsTo(arg1.toDateTime().time()) * multiplier) + (days * (24 * 3600 * 1000)));
+        long msecs = (long)((QTIME_MIN.msecsTo(arg1.toDateTime().time()) * multiplier)
+                            + (days * (24 * 3600 * 1000)));
         ret = QDateTime(QDate().addDays(int(days)), QTime().addMSecs(msecs));
         break;
     }
@@ -1836,15 +1774,78 @@ double operator/(const QVariant &arg1, const QVariant &arg2)
         a2 = arg2.toDouble();
         break;
     case QVariant::DateTime:
-        a1 = DATE_MIN.daysTo(arg1.toDate());
-        a2 = DATE_MIN.daysTo(arg2.toDate());
-        a1 += (double)TIME_MIN.msecsTo(arg1.toDateTime().time()) / (long)(3600 * 24 * 1000);
-        a2 += (double)TIME_MIN.msecsTo(arg2.toDateTime().time()) / (long)(3600 * 24 * 1000);
+        a1 = QDATE_MIN.daysTo(arg1.toDate());
+        a2 = QDATE_MIN.daysTo(arg2.toDate());
+        a1 += (double)QTIME_MIN.msecsTo(arg1.toDateTime().time()) / (long)(3600 * 24 * 1000);
+        a2 += (double)QTIME_MIN.msecsTo(arg2.toDateTime().time()) / (long)(3600 * 24 * 1000);
     default: break;
     }
 
     return (a1 != 0 && a2 != 0) ? (a1 / a2) : 0.0;
 }
+
+int QAbstractSpinBoxPrivate::variantCompare(const QVariant &arg1, const QVariant &arg2)
+{
+    if ((arg1.type() == QVariant::Time && arg2.type() == QVariant::Date)
+        || (arg1.type() == QVariant::Date && arg2.type() == QVariant::Time)) {
+        qFatal("%s %d: Different types. This should never happen (%s vs %s)", __FILE__, __LINE__,
+               arg1.typeName(), arg2.typeName());
+    }
+    switch (arg2.type()) {
+    case QVariant::Date:
+        if (arg1.toDate() == arg2.toDate()) {
+            return 0;
+        } else if (arg1.toDate() < arg2.toDate()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    case QVariant::Time:
+        if (arg1.toTime() == arg2.toTime()) {
+            return 0;
+        } else if (arg1.toTime() < arg2.toTime()) {
+            return -1;
+        } else {
+            return 1;
+        }
+
+
+    case QVariant::DateTime:
+        if (arg1.toDateTime() == arg2.toDateTime()) {
+            return 0;
+        } else if (arg1.toDateTime() < arg2.toDateTime()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    case QVariant::Int:
+        if (arg1.toInt() == arg2.toInt()) {
+            return 0;
+        } else if (arg1.toInt() < arg2.toInt()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    case QVariant::Double:
+        if (arg1.toDouble() == arg2.toDouble()) {
+            return 0;
+        } else if (arg1.toDouble() < arg2.toDouble()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    case QVariant::Invalid:
+        if (arg2.type() == QVariant::Invalid)
+            return 0;
+    default:
+        break;
+    }
+    qFatal("%s:%d Not supported types (%s, %s). This should not happen",
+           __FILE__, __LINE__, arg1.typeName(), arg2.typeName());
+
+    return -2;
+}
+
 
 #include "moc_qabstractspinbox.cpp"
 #endif // QT_NO_SPINBOX

@@ -35,6 +35,7 @@
 #include "qbuffer.h"
 #include "qapplication.h"
 #include <private/qinternal_p.h>
+#include <private/qwidget_p.h>
 #include "qevent.h"
 #include "qfile.h"
 #include "qfileinfo.h"
@@ -47,6 +48,9 @@
 #include "qx11info_x11.h"
 #include <private/qt_x11_p.h>
 #endif
+
+typedef void (*_qt_pixmap_cleanup_hook)(int);
+Q_GUI_EXPORT _qt_pixmap_cleanup_hook qt_pixmap_cleanup_hook = 0;
 
 /*!
     \enum QPixmap::ColorMode
@@ -730,6 +734,7 @@ int QPixmap::serialNumber() const
   Fills \a buf with \a r in \a widget. Then blits \a buf on \a res at
   position \a offset
  */
+#ifdef Q_WS_MAC
 static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf,
                               const QRect &r, const QPoint &offset)
 {
@@ -754,7 +759,7 @@ static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf,
         grabWidget_helper(child, res, buf, cr, offset + child->pos());
     }
 }
-
+#endif
 /*!
     \overload
 
@@ -773,7 +778,6 @@ static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf,
 
 QPixmap QPixmap::grabWidget(QWidget * widget, const QRect &rect)
 {
-
     if (!widget)
         return QPixmap();
 
@@ -786,12 +790,20 @@ QPixmap QPixmap::grabWidget(QWidget * widget, const QRect &rect)
     if (!r.intersects(widget->rect()))
         return QPixmap();
 
-    QPixmap res(r.size());
+     QPixmap res(r.size());
+
+#ifndef Q_WS_MAC
+    QWidget *tlw = widget->window();
+    widget->d_func()->drawWidget(&res, r, -r.topLeft(),
+                                 QWidgetPrivate::DrawRecursive | QWidgetPrivate::DrawAsRoot
+                                 | QWidgetPrivate::DrawPaintOnScreen | QWidgetPrivate::DrawInvisible);
+#else
     QPixmap buf(r.size());
     if(res.isNull() || buf.isNull())
         return res;
 
     grabWidget_helper(widget, res, buf, r, QPoint());
+#endif
     return res;
 }
 
@@ -1023,6 +1035,8 @@ bool QPixmap::isDetached() const
 void QPixmap::deref()
 {
     if(data && data->deref()) { // Destroy image if last ref
+        if (qt_pixmap_cleanup_hook)
+            qt_pixmap_cleanup_hook(data->ser_no);
         delete data;
         data = 0;
     }

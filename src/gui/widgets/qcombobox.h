@@ -25,8 +25,8 @@
 #define QCOMBOBOX_H
 
 #include <QtGui/qwidget.h>
-#include <QtCore/qabstractitemmodel.h>
 #include <QtGui/qabstractitemdelegate.h>
+#include <QtCore/qabstractitemmodel.h>
 #include <QtCore/qvariant.h>
 
 QT_MODULE(Gui)
@@ -46,7 +46,7 @@ class Q_GUI_EXPORT QComboBox : public QWidget
     Q_PROPERTY(bool editable READ isEditable WRITE setEditable)
     Q_PROPERTY(int count READ count)
     Q_PROPERTY(QString currentText READ currentText)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged USER true)
     Q_PROPERTY(int maxVisibleItems READ maxVisibleItems WRITE setMaxVisibleItems)
     Q_PROPERTY(int maxCount READ maxCount WRITE setMaxCount)
     Q_PROPERTY(InsertPolicy insertPolicy READ insertPolicy WRITE setInsertPolicy)
@@ -54,6 +54,7 @@ class Q_GUI_EXPORT QComboBox : public QWidget
     Q_PROPERTY(int minimumContentsLength READ minimumContentsLength WRITE setMinimumContentsLength)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
     Q_PROPERTY(bool autoCompletion READ autoCompletion WRITE setAutoCompletion)
+    Q_PROPERTY(Qt::CaseSensitivity autoCompletionCaseSensitivity READ autoCompletionCaseSensitivity WRITE setAutoCompletionCaseSensitivity)
     Q_PROPERTY(bool duplicatesEnabled READ duplicatesEnabled WRITE setDuplicatesEnabled)
     Q_PROPERTY(bool frame READ hasFrame WRITE setFrame)
     Q_PROPERTY(bool modelColumn READ modelColumn WRITE setModelColumn)
@@ -71,6 +72,9 @@ public:
 
     bool autoCompletion() const;
     void setAutoCompletion(bool enable);
+
+    Qt::CaseSensitivity autoCompletionCaseSensitivity() const;
+    void setAutoCompletionCaseSensitivity(Qt::CaseSensitivity sensitivity);
 
     bool duplicatesEnabled() const;
     void setDuplicatesEnabled(bool enable);
@@ -129,7 +133,7 @@ public:
     void setValidator(const QValidator *v);
     const QValidator *validator() const;
 #endif
-    
+
     QAbstractItemDelegate *itemDelegate() const;
     void setItemDelegate(QAbstractItemDelegate *delegate);
 
@@ -143,7 +147,6 @@ public:
     void setModelColumn(int visibleColumn);
 
     int currentIndex() const;
-    void setCurrentIndex(int index);
 
     QString currentText() const;
 
@@ -179,17 +182,20 @@ public:
 
     bool event(QEvent *event);
 
-public slots:
+public Q_SLOTS:
     void clear();
     void clearEditText();
     void setEditText(const QString &text);
+    void setCurrentIndex(int index);
 
-signals:
+Q_SIGNALS:
     void editTextChanged(const QString &);
     void activated(int index);
     void activated(const QString &);
     void highlighted(int index);
     void highlighted(const QString &);
+    void currentIndexChanged(int index);
+    void currentIndexChanged(const QString &);
 
 protected:
     void focusInEvent(QFocusEvent *e);
@@ -204,6 +210,7 @@ protected:
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *e);
     void wheelEvent(QWheelEvent *e);
+    void contextMenuEvent(QContextMenuEvent *e);
     void inputMethodEvent(QInputMethodEvent *);
     QVariant inputMethodQuery(Qt::InputMethodQuery) const;
 
@@ -227,7 +234,9 @@ public:
             setItemText(currentIndex(), text);
     }
     inline QT3_SUPPORT QString text(int index) const { return itemText(index); }
-    inline QT3_SUPPORT QPixmap pixmap(int index) const { return itemIcon(index).pixmap(QSize(22,22)); }
+
+    inline QT3_SUPPORT QPixmap pixmap(int index) const
+    { return itemIcon(index).pixmap(iconSize(), isEnabled() ? QIcon::Normal : QIcon::Disabled); }
     inline QT3_SUPPORT void insertStringList(const QStringList &list, int index = -1)
         { insertItems((index < 0 ? count() : index), list); }
     inline QT3_SUPPORT void insertItem(const QString &text, int index = -1)
@@ -245,7 +254,7 @@ public:
     inline QT3_SUPPORT void clearValidator() { setValidator(0); }
     inline QT3_SUPPORT void clearEdit() { clearEditText(); }
 
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void textChanged(const QString &);
 #endif
 
@@ -254,12 +263,15 @@ private:
     Q_DISABLE_COPY(QComboBox)
     Q_PRIVATE_SLOT(d_func(), void itemSelected(const QModelIndex &item))
     Q_PRIVATE_SLOT(d_func(), void emitHighlighted(const QModelIndex &))
+    Q_PRIVATE_SLOT(d_func(), void emitCurrentIndexChanged(int index))
     Q_PRIVATE_SLOT(d_func(), void returnPressed())
     Q_PRIVATE_SLOT(d_func(), void complete())
     Q_PRIVATE_SLOT(d_func(), void resetButton())
     Q_PRIVATE_SLOT(d_func(), void dataChanged(const QModelIndex &, const QModelIndex &))
+    Q_PRIVATE_SLOT(d_func(), void rowsAboutToBeInserted(const QModelIndex & parent, int start, int end))
     Q_PRIVATE_SLOT(d_func(), void rowsInserted(const QModelIndex & parent, int start, int end))
     Q_PRIVATE_SLOT(d_func(), void rowsAboutToBeRemoved(const QModelIndex & parent, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void rowsRemoved(const QModelIndex & parent, int start, int end))
     Q_PRIVATE_SLOT(d_func(), void modelDestroyed())
 };
 
@@ -274,4 +286,5 @@ inline void QComboBox::insertItem(int aindex, const QString &atext,
 { insertItem(aindex, QIcon(), atext, auserData); }
 
 #endif // QT_NO_COMBOBOX
+
 #endif // QCOMBOBOX_H

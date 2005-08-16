@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include <private/qwidget_p.h>
+#include "private/qwidget_p.h"
 
 class Q_GUI_EXPORT QFramePrivate : public QWidgetPrivate
 {

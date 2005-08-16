@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -21,11 +21,11 @@
 **
 ****************************************************************************/
 
-#include <qapplication.h>
-#include <qpainterpath.h>
-#include <qpainter.h>
-
 #include "mainwindow.h"
+
+#include <QApplication>
+#include <QPainterPath>
+#include <QPainter>
 
 void render_qt_text(QPainter *painter, int w, int h, const QColor &color) {
     QPainterPath path;

@@ -29,10 +29,9 @@
 #ifndef QGIFHANDLER_H
 #define QGIFHANDLER_H
 
-#include "qimageiohandler.h"
-
-#include <qbytearray.h>
-#include <qimage.h>
+#include <QtGui/qimageiohandler.h>
+#include <QtGui/qimage.h>
+#include <QtCore/qbytearray.h>
 
 class QGIFFormat;
 class QGifHandler : public QImageIOHandler
@@ -53,6 +52,7 @@ public:
     void setOption(ImageOption option, const QVariant &value);
     bool supportsOption(ImageOption option) const;
 
+    int imageCount() const;
     int loopCount() const;
     int nextImageDelay() const;
     int currentImageNumber() const;
@@ -60,13 +60,13 @@ public:
 private:
     QGIFFormat *gifFormat;
     QString fileName;
-    QByteArray buffer;
-    QImage lastImage;
+    mutable QByteArray buffer;
+    mutable QImage lastImage;
 
-    int nextDelay;
-    int loopCnt;
+    mutable int nextDelay;
+    mutable int loopCnt;
     int frameNumber;
-    QSize nextSize;
+    mutable QSize nextSize;
 };
 
-#endif
+#endif // QGIFHANDLER_H

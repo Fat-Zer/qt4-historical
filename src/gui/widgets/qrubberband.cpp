@@ -25,6 +25,7 @@
 #include "qevent.h"
 #include "qstylepainter.h"
 #include "qrubberband.h"
+#include "qtimer.h"
 
 #ifndef QT_NO_RUBBERBAND
 
@@ -43,6 +44,7 @@ class QRubberBandPrivate : public QWidgetPrivate
 public:
     QRect rect;
     QRubberBand::Shape shape;
+    QRegion clipping;
     QStyleOptionRubberBand getStyleOption() const;
     void updateMask();
 };
@@ -53,7 +55,11 @@ QStyleOptionRubberBand QRubberBandPrivate::getStyleOption() const
     QStyleOptionRubberBand opt;
     opt.init(q);
     opt.shape = shape;
+#ifndef Q_WS_MAC
     opt.opaque = true;
+#else
+    opt.opaque = q->windowFlags() & Qt::ToolTip;
+#endif
     return opt;
 }
 
@@ -72,17 +78,43 @@ QStyleOptionRubberBand QRubberBandPrivate::getStyleOption() const
     window below the rubber band, but before the rubber band has been
     "erased".
 
-    You can create a QRubberBand whenever you need to render a rubber
-    band around a given area (or to represent a single line), then
-    call setGeometry(), move() or resize() to position and size it.
-    Positions are specified in global coordinates, even if the rubber
-    band has a parent.
+    You can create a QRubberBand whenever you need to render a rubber band
+    around a given area (or to represent a single line), then call
+    setGeometry(), move() or resize() to position and size it. A common
+    pattern is to do this in conjunction with mouse events. For example:
 
-    Like other \l{QWidget}s, you must also call show() to make it
-    visible. Hiding or destroying the widget will make the rubber
-    band disappear. The rubber band can be a \l Rectangle or a \l
-    Line (vertical or horizontal), depending on the shape() it was
-    given when constructed.
+    \code
+        void Widget::mousePressEvent(QMouseEvent *e)
+        {
+            origin = e->pos(); // origin is a QPoint
+            if (!rubberBand)
+                rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+            rubberBand->setGeometry(QRect(origin, QSize()));
+            band->show();
+        }
+
+        void Widget::mouseMoveEvent(QMouseEvent *e)
+        {
+            band->setGeometry(QRect(origin, e->pos()).normalized());
+        }
+
+        void Widget::mouseReleaseEvent(QMouseEvent *e)
+        {
+            band->hide();
+            // determine selection, for example using QRect::intersects()
+            // and QRect::contains().
+        }
+    \endcode
+
+    If you pass a parent to QRubberBand's constructor, the rubber band will
+    display only inside its parent, but stays on top of other child widgets.
+    If no parent is passed, QRubberBand will act as a top-level widget.
+
+    Call show() to make the rubber band visible; also when the
+    rubber band is not a top-level. Hiding or destroying
+    the widget will make the rubber band disappear. The rubber band
+    can be a \l Rectangle or a \l Line (vertical or horizontal),
+    depending on the shape() it was given when constructed.
 */
 
 // ### DOC: How about some nice convenience constructors?
@@ -92,19 +124,21 @@ QStyleOptionRubberBand QRubberBandPrivate::getStyleOption() const
 /*!
     Constructs a rubber band of shape \a s, with parent \a p.
 
-    By default a rectangular QRubberBand (\a s is \c Rectangle) will
-    be set to auto mask, so that the boundary of the rectangle is all
-    that is visible. Some styles (for example native Mac OS X) will
-    change this and call QWidget::setWindowOpacity() to make the
-    window only partially opaque.
+    By default a rectangular rubber band (\a s is \c Rectangle) will
+    use a mask, so that a small border of the rectangle is all
+    that is visible. Some styles (e.g., native Mac OS X) will
+    change this and call QWidget::setWindowOpacity() to make a
+    semi-transparent filled selection rectangle.
 */
-QRubberBand::QRubberBand(Shape s, QWidget *p) :
-    QWidget(*new QRubberBandPrivate, p, Qt::ToolTip)
+QRubberBand::QRubberBand(Shape s, QWidget *p)
+    : QWidget(*new QRubberBandPrivate, p, (p && p->windowType() != Qt::Desktop) ? Qt::Widget : Qt::ToolTip)
 {
     Q_D(QRubberBand);
     d->shape = s;
     setAttribute(Qt::WA_TransparentForMouseEvents);
     setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(Qt::WA_WState_ExplicitShowHide);
+    setVisible(false);
 #ifdef Q_WS_MAC
     extern WindowPtr qt_mac_window_for(const QWidget *); //qwidget_mac.cpp
     ChangeWindowAttributes(qt_mac_window_for(this), kWindowNoShadowAttribute, 0);
@@ -112,7 +146,7 @@ QRubberBand::QRubberBand(Shape s, QWidget *p) :
 }
 
 /*!
-  Destructor.
+    Destructor.
 */
 QRubberBand::~QRubberBand()
 {
@@ -145,13 +179,19 @@ QRubberBand::Shape QRubberBand::shape() const
     return d->shape;
 }
 
+/*!
+    \internal
+*/
 void QRubberBandPrivate::updateMask()
 {
     Q_Q(QRubberBand);
     QStyleHintReturnMask mask;
     QStyleOptionRubberBand opt = getStyleOption();
-    if (q->style()->styleHint(QStyle::SH_RubberBand_Mask, &opt, q, &mask))
+    if (q->style()->styleHint(QStyle::SH_RubberBand_Mask, &opt, q, &mask)) {
         q->setMask(mask.region);
+    } else {
+        q->clearMask();
+    }
 }
 
 /*!
@@ -160,9 +200,7 @@ void QRubberBandPrivate::updateMask()
 void QRubberBand::paintEvent(QPaintEvent *)
 {
     Q_D(QRubberBand);
-#ifndef Q_WS_MAC
-    d->updateMask();
-#endif
+
     QStylePainter painter(this);
     painter.drawControl(QStyle::CE_RubberBand, d->getStyleOption());
 }
@@ -173,10 +211,46 @@ void QRubberBand::paintEvent(QPaintEvent *)
 void QRubberBand::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
-#ifdef Q_WS_MAC
+    switch (e->type()) {
+    case QEvent::ParentChange:
+        if (parent()) {
+            setWindowFlags(windowFlags() & ~Qt::ToolTip);
+        } else {
+            setWindowFlags(windowFlags() | Qt::ToolTip);
+        }
+        break;
+    default:
+        break;
+    }
+
+    raise();
+}
+
+/*!
+    \reimp
+*/
+void QRubberBand::showEvent(QShowEvent *e)
+{
+    raise();
+    e->ignore();
+}
+
+/*!
+    \reimp
+*/
+void QRubberBand::resizeEvent(QResizeEvent *)
+{
     Q_D(QRubberBand);
     d->updateMask();
-#endif
+}
+
+/*!
+    \reimp
+*/
+void QRubberBand::moveEvent(QMoveEvent *)
+{
+    Q_D(QRubberBand);
+    d->updateMask();
 }
 
 /*!
@@ -219,63 +293,21 @@ void QRubberBand::changeEvent(QEvent *e)
 /*!
     \fn void QRubberBand::setGeometry(int x, int y, int w, int h)
 
-    \overload
-
-    Changes the rubberband's geometry to have a top-left corner of (\a
-    x, \a y), a width of \a w, and a height of \a h.
-
-    \sa move() resize()
+    Same as QWidget::setGeometry().
 */
 
 /*!
-    \fn void QRubberBand::setGeometry(const QRect &rect)
-
-    Changes the rubberband's geometry to the geometry of the rectangle
-    \a rect. \a rect is relative of (and bounded by) by the parent
-    geometry.
-
-    \sa move() resize()
+    Same as QWidget::setGeometry().
 */
 void QRubberBand::setGeometry(const QRect &geom)
 {
-    Q_D(QRubberBand);
-    QRect mygeom = geom.normalized();
-    if(QWidget *p = parentWidget()) {
-        mygeom.moveTo(p->mapToGlobal(mygeom.topLeft()));
-        const QRect prect(p->mapToGlobal(QPoint(0, 0)), p->size());
-        if(!prect.contains(mygeom)) {
-            if(mygeom.left() < prect.left()) {
-                const int diff = prect.left()-mygeom.left();
-                d->rect.moveLeft(-diff);
-                mygeom.moveLeft(prect.left());
-                mygeom.setWidth(mygeom.width()-diff);
-            }
-            if(mygeom.top() < prect.top()) {
-                const int diff = prect.top()-mygeom.top();
-                d->rect.moveTop(-diff);
-                mygeom.moveTop(prect.top());
-                mygeom.setHeight(mygeom.height()-diff);
-            }
-            if(mygeom.left() > prect.right())
-                mygeom.moveLeft(prect.right());
-            if(mygeom.top() > prect.bottom())
-                mygeom.moveTop(prect.bottom());
-            if(mygeom.bottom() > prect.bottom()) {
-                const int diff = mygeom.bottom()-prect.bottom();
-                mygeom.setHeight(mygeom.height()-diff);
-            }
-            if(mygeom.right() > prect.right()) {
-                const int diff = mygeom.right()-prect.right();
-                mygeom.setWidth(mygeom.width()-diff);
-            }
-        }
-    }
-    d->rect = QRect(0, 0, mygeom.width(), mygeom.height());
-    QWidget::setGeometry(mygeom);
-#ifdef Q_WS_MAC
-    d->updateMask();
-#endif
-    update();
+    QWidget::setGeometry(geom);
+}
+
+/*! \reimp */
+bool QRubberBand::event(QEvent *e)
+{
+    return QWidget::event(e);
 }
 
 #endif // QT_NO_RUBBERBAND

@@ -24,7 +24,7 @@
 #ifndef QSOUND_H
 #define QSOUND_H
 
-#include "QtCore/qobject.h"
+#include <QtCore/qobject.h>
 
 QT_MODULE(Gui)
 
@@ -50,7 +50,7 @@ public:
 
     bool isFinished() const;
 
-public slots:
+public Q_SLOTS:
     void play();
     void stop();
 

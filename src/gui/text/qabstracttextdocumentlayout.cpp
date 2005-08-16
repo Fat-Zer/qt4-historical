@@ -159,8 +159,6 @@ QAbstractTextDocumentLayout::~QAbstractTextDocumentLayout()
 }
 
 /*!
-    \internal
-
     Registers the given \a component as a handler for items of the
     given \a formatType.
 */
@@ -181,8 +179,6 @@ void QAbstractTextDocumentLayout::registerHandler(int formatType, QObject *compo
 }
 
 /*!
-    \internal
-
     Returns a handler for objects of the given \a objectType.
 */
 QTextObjectInterface *QAbstractTextDocumentLayout::handlerForObject(int objectType) const

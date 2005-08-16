@@ -57,6 +57,7 @@ class Q_GUI_EXPORT QDirModel : public QAbstractItemModel
     Q_PROPERTY(bool resolveSymlinks READ resolveSymlinks WRITE setResolveSymlinks)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
     Q_PROPERTY(bool lazyChildCount READ lazyChildCount WRITE setLazyChildCount)
+//    Q_PROPERTY(bool ignoreHidden READ ignoreHidden WRITE setIgnoreHidden)
 
 public:
     enum Roles {
@@ -128,6 +129,12 @@ public:
     QIcon fileIcon(const QModelIndex &index) const;
     QFileInfo fileInfo(const QModelIndex &index) const;
 
+#ifdef Q_NO_USING_KEYWORD
+    inline QObject *parent() const { return QObject::parent(); }
+#else
+    using QObject::parent;
+#endif
+
 protected:
     QDirModel(QDirModelPrivate &, QObject *parent = 0);
 
@@ -137,4 +144,5 @@ private:
 };
 
 #endif // QT_NO_DIRMODEL
+
 #endif // QDIRMODEL_H

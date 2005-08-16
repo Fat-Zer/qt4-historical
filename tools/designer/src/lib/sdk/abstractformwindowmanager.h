@@ -35,7 +35,7 @@ class DomUI;
 class QWidget;
 class QDesignerDnDItemInterface;
 
-class QT_SDK_EXPORT QDesignerFormWindowManagerInterface: public QObject
+class QDESIGNER_SDK_EXPORT QDesignerFormWindowManagerInterface: public QObject
 {
     Q_OBJECT
 public:
@@ -71,16 +71,15 @@ public:
 
     virtual void dragItems(const QList<QDesignerDnDItemInterface*> &item_list) = 0;
 
-signals:
+Q_SIGNALS:
     void formWindowAdded(QDesignerFormWindowInterface *formWindow);
     void formWindowRemoved(QDesignerFormWindowInterface *formWindow);
     void activeFormWindowChanged(QDesignerFormWindowInterface *formWindow);
 
-public slots:
+public Q_SLOTS:
     virtual void addFormWindow(QDesignerFormWindowInterface *formWindow);
     virtual void removeFormWindow(QDesignerFormWindowInterface *formWindow);
     virtual void setActiveFormWindow(QDesignerFormWindowInterface *formWindow);
 };
 
 #endif // ABSTRACTFORMWINDOWMANAGER_H
-

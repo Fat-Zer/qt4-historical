@@ -67,8 +67,10 @@ QDockWidgetLayout::~QDockWidgetLayout()
 {
     for (int i = 0; i < layout_info.count(); ++i) {
 	const QDockWidgetLayoutInfo &info = layout_info.at(i);
-	if (info.is_sep)
+	if (info.is_sep) {
+            info.item->widget()->hide();
             info.item->widget()->deleteLater();
+        }
         if (!info.item->layout())
             delete info.item;
     }
@@ -87,14 +89,7 @@ void QDockWidgetLayout::saveState(QDataStream &stream) const
             const QDockWidget * const widget =
                 qobject_cast<QDockWidget *>(info.item->widget());
             stream << (uchar) WidgetMarker;
-            if (widget->objectName().isEmpty()) {
-                qWarning("QMainWindow::saveState(): 'objectName' not set for QDockWidget "
-                         "%p '%s', using 'windowTitle' instead.",
-                         widget, widget->windowTitle().toLocal8Bit().constData());
-                stream << widget->windowTitle();
-            } else {
-                stream << widget->objectName();
-            }
+            stream << widget->objectName();
             uchar flags = 0;
             if (!widget->isHidden())
                 flags |= StateFlagVisible;
@@ -160,30 +155,18 @@ bool QDockWidgetLayout::restoreState(QDataStream &stream)
                     }
                 }
                 if (!widget) {
-                    qWarning("QMainWindow::restoreState(): cannot find a QDockWidget named "
-                             "'%s', trying to match using 'windowTitle' instead.",
+                    qWarning("QMainWindow::restoreState(): cannot find a QDockWidget with "
+                             "matching 'objectName' (looking for '%s').",
                              objectName.toLocal8Bit().constData());
-                    // try matching the window title
-                    for (int t = 0; t < widgets.size(); ++t) {
-                        if (widgets.at(t)->windowTitle() == objectName) {
-                            widget = widgets.at(t);
-                            break;
-                        }
-                    }
-                    if (!widget) {
-                        qWarning("QMainWindow::restoreState(): cannot find a QDockWidget with "
-                                 "matching 'windowTitle' (looking for '%s').",
-                                 objectName.toLocal8Bit().constData());
-                        // discard size/position data for unknown widget
-                        QDockWidgetLayoutInfo info(0);
-                        stream >> info.cur_pos;
-                        stream >> info.cur_size;
-                        stream >> info.min_size;
-                        stream >> info.max_size;
-                        continue;
-                    }
+                    // discard size/position data for unknown widget
+                    QDockWidgetLayoutInfo info(0);
+                    stream >> info.cur_pos;
+                    stream >> info.cur_size;
+                    stream >> info.min_size;
+                    stream >> info.max_size;
+                    continue;
                 }
-
+                
                 QDockWidgetLayoutInfo &info = insert(-1, new QWidgetItem(widget));
                 if (flags & StateFlagFloating) {
                     widget->hide();
@@ -367,7 +350,7 @@ void QDockWidgetLayout::setGeometry(const QRect &rect)
     QVector<QLayoutStruct> a(layout_info.count());
     int x;
     const int separator_extent =
-	qApp->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
+	parentWidget()->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
 
     for (x = 0; x < layout_info.count(); ++x) {
         const QDockWidgetLayoutInfo &info = layout_info.at(x);
@@ -402,7 +385,7 @@ void QDockWidgetLayout::setGeometry(const QRect &rect)
                 ls.minimumSize = pick(orientation, info.item->minimumSize());
                 ls.maximumSize = pick(orientation, info.item->maximumSize());
 
-                if (canGrow(orientation, sp)) {
+                 if (canGrow(orientation, sp)) {
                     ls.sizeHint = ls.minimumSize;
                     ls.stretch = info.cur_size == -1
                                  ? pick(orientation, info.item->sizeHint())
@@ -431,10 +414,17 @@ void QDockWidgetLayout::setGeometry(const QRect &rect)
     VDEBUG("  final placement:");
     for (int i = 0; i < a.count(); ++i) {
 	const QLayoutStruct &ls = a.at(i);
-        if (ls.empty)
-            continue;
-
 	QDockWidgetLayoutInfo &info = layout_info[i];
+
+        if (ls.empty) {
+            if (info.item->layout()) {
+                // this is a hack, but we need to make sure that empty
+                // nested layouts have a chance to hide unneeded
+                // separators
+                info.item->setGeometry(QRect());
+            }
+            continue;
+        }
 
 	if (info.is_sep) {
 	    VDEBUG("    separator  cur %4d", ls.size);
@@ -472,7 +462,7 @@ QSize QDockWidgetLayout::minimumSize() const
 
         int size = 0, perp = 0;
         const int sep_extent =
-            QApplication::style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
+            parentWidget()->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
 
         for (int it = 0; it < layout_info.count(); ++it) {
             const QDockWidgetLayoutInfo &info = layout_info.at(it);
@@ -505,7 +495,7 @@ QSize QDockWidgetLayout::sizeHint() const
 
         int size = 0, perp = 0;
         const int sep_extent =
-            QApplication::style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
+            parentWidget()->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
 
         for (int it = 0; it < layout_info.count(); ++it) {
             const QDockWidgetLayoutInfo &info = layout_info.at(it);
@@ -1333,7 +1323,7 @@ static void locateDockWidget(QDockWidget *w, QDockWidgetLayout **layout, int *wh
             *layout = qobject_cast<QDockWidgetLayout *>(lout);
             locateDockWidget(w, layout, where);
         }
-        if (*where != -1) 
+        if (*where != -1)
             return;
     }
 }

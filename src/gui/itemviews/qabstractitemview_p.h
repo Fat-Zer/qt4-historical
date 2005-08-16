@@ -35,17 +35,15 @@
 // We mean it.
 //
 
-class QRubberBand;
-
-#include <private/qabstractscrollarea_p.h>
-#include <qapplication.h>
-#include <qdatetime.h>
-#include <qevent.h>
-#include <qmime.h>
-#include <qmap.h>
-#include <qtimer.h>
-#include <qregion.h>
-#include <qdebug.h>
+#include "private/qabstractscrollarea_p.h"
+#include "QtGui/qapplication.h"
+#include "QtCore/qdatetime.h"
+#include "QtGui/qevent.h"
+#include "QtGui/qmime.h"
+#include "QtCore/qmap.h"
+#include "QtCore/qtimer.h"
+#include "QtGui/qregion.h"
+#include "QtCore/qdebug.h"
 
 #ifndef QT_NO_ITEMVIEWS
 
@@ -59,6 +57,8 @@ public:
 
     void init();
 
+    void columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
+
     void fetchMore();
     bool shouldEdit(QAbstractItemView::EditTrigger trigger, const QModelIndex &index);
     bool shouldAutoScroll(const QPoint &pos);
@@ -70,6 +70,8 @@ public:
                                                               const QEvent *event) const;
     QItemSelectionModel::SelectionFlags extendedSelectionCommand(const QModelIndex &index,
                                                                  const QEvent *event) const;
+    QItemSelectionModel::SelectionFlags contiguousSelectionCommand(const QModelIndex &index,
+                                                                   const QEvent *event) const;
 
     inline QItemSelectionModel::SelectionFlags selectionBehaviorFlags() const
     {
@@ -92,19 +94,31 @@ public:
                 return true;
         return false;
     }
-#endif
-    
-    enum Position { Above, Below, On };
 
-    inline Position position(const QPoint &pos, const QRect &rect, int margin) const {
-        if (pos.y() - rect.top() < margin) return Above;
-        if (rect.bottom() - pos.y() < margin) return Below;
-        return On;
+    inline void paintDropIndicator(QPainter *painter)
+    {
+        if (showDropIndicator && state == QAbstractItemView::DraggingState)
+            if (dropIndicatorRect.height() == 0) // FIXME: should be painted by style
+                painter->drawLine(dropIndicatorRect.topLeft(), dropIndicatorRect.topRight());
+            else painter->drawRect(dropIndicatorRect);
     }
 
+    inline QAbstractItemView::DropIndicatorPosition position(const QPoint &pos,
+                                                             const QRect &rect,
+                                                             int margin) const {
+        if (pos.y() - rect.top() < margin) return QAbstractItemView::AboveItem;
+        if (rect.bottom() - pos.y() < margin) return QAbstractItemView::BelowItem;
+        if (rect.contains(pos, true)) return QAbstractItemView::OnItem;
+        return QAbstractItemView::OnViewport;
+    }
+#endif
+
     inline void releaseEditor(QWidget *editor) const {
+        QObject::disconnect(editor, SIGNAL(destroyed(QObject*)),
+                            q_func(), SLOT(editorDestroyed(QObject*)));
         editor->removeEventFilter(delegate);
-        editor->deleteLater();
+        editor->hide(); // change the focus to the next widget
+        QTimer::singleShot(0, editor, SLOT(deleteLater())); // delete even later
     }
 
     inline void executePostedLayout() const {
@@ -130,7 +144,7 @@ public:
         scrollDirtyRegion(dx, dy);
         viewport->scroll(dx, dy);
     }
-    
+
     void updateDirtyRegion() {
         updateTimer.stop();
         viewport->update(updateRegion);
@@ -164,12 +178,19 @@ public:
     QAbstractItemView::EditTriggers editTriggers;
 
     QPersistentModelIndex root;
+    QPersistentModelIndex hover;
     int horizontalStepsPerItem;
     int verticalStepsPerItem;
 
     bool tabKeyNavigation;
+
+#ifndef QT_NO_DRAGANDDROP
     bool showDropIndicator;
+    QRect dropIndicatorRect;
     bool dragEnabled;
+    QAbstractItemView::DropIndicatorPosition dropIndicatorPosition;
+#endif
+
     QString keyboardInput;
     QTime keyboardInputTime;
 
@@ -185,17 +206,11 @@ public:
     QSize iconSize;
     Qt::TextElideMode textElideMode;
 
-    QRubberBand *dropIndicator;
-
     QRegion updateRegion; // used for the internal update system
     QBasicTimer updateTimer;
 
     QPoint scrollDelayOffset;
 };
-
-/*
-  Template functions for vector manipulation.
-*/
 
 #include <qvector.h>
 
@@ -214,4 +229,5 @@ inline int qBinarySearch(const QVector<T> &vec, const T &item, int start, int en
 }
 
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QABSTRACTITEMVIEW_P_H

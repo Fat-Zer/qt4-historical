@@ -44,6 +44,8 @@ namespace Ui {
     class PromoteToCustomWidgetDialog;
 } // namespace Ui
 
+namespace qdesigner_internal {
+
 class PromoteToCustomWidgetDialog : public QDialog
 {
     Q_OBJECT
@@ -70,5 +72,7 @@ private:
     PromotedWidgetInfoList m_promoted_list;
     QString m_base_class_name;
 };
+
+} // namespace qdesigner_internal
 
 #endif // PROMOTETOCUSTOMWIDGETDIALOG_H

@@ -115,6 +115,9 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::Locale:
         v_construct<QLocale>(x, copy);
         break;
+    case QVariant::RegExp:
+        v_construct<QRegExp>(x, copy);
+        break;
     case QVariant::Int:
         x->data.i = copy ? *static_cast<const int *>(copy) : 0;
         break;
@@ -210,6 +213,9 @@ static void clear(QVariant::Private *d)
     case QVariant::Locale:
         v_clear<QLocale>(d);
         break;
+    case QVariant::RegExp:
+        v_clear<QRegExp>(d);
+        break;
     case QVariant::LongLong:
     case QVariant::ULongLong:
     case QVariant::Double:
@@ -268,6 +274,7 @@ static bool isNull(const QVariant::Private *d)
 #endif
     case QVariant::Url:
     case QVariant::Locale:
+    case QVariant::RegExp:
     case QVariant::StringList:
     case QVariant::Map:
     case QVariant::List:
@@ -341,6 +348,9 @@ static void load(QVariant::Private *d, QDataStream &s)
         break;
     case QVariant::Locale:
         s >> *v_cast<QLocale>(d);
+        break;
+    case QVariant::RegExp:
+        s >> *v_cast<QRegExp>(d);
         break;
     case QVariant::Int:
         s >> d->data.i;
@@ -439,6 +449,9 @@ static void save(const QVariant::Private *d, QDataStream &s)
     case QVariant::Locale:
         s << *v_cast<QLocale>(d);
         break;
+    case QVariant::RegExp:
+        s << *v_cast<QRegExp>(d);
+        break;
     case QVariant::Int:
         s << d->data.i;
         break;
@@ -535,6 +548,8 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         return *v_cast<QUrl>(a) == *v_cast<QUrl>(b);
     case QVariant::Locale:
         return *v_cast<QLocale>(a) == *v_cast<QLocale>(b);
+    case QVariant::RegExp:
+        return *v_cast<QRegExp>(a) == *v_cast<QRegExp>(b);
     case QVariant::Int:
         return a->data.i == b->data.i;
     case QVariant::UInt:
@@ -1018,7 +1033,7 @@ static bool canConvert(const QVariant::Private *d, QVariant::Type t)
 }
 
 #if !defined(QT_NO_DEBUG_STREAM) && !defined(Q_BROKEN_DEBUG_STREAM)
-void streamDebug(QDebug dbg, const QVariant &v)
+static void streamDebug(QDebug dbg, const QVariant &v)
 {
     switch (v.type()) {
     case QVariant::Int:
@@ -1237,10 +1252,11 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
 
     \value Invalid  no type
     \value BitArray  a QBitArray
-    \value ByteArray  a QByteArray
     \value Bitmap  a QBitmap
     \value Bool  a bool
     \value Brush  a QBrush
+    \value ByteArray  a QByteArray
+    \value Char  a QChar
     \value Color  a QColor
     \value Cursor  a QCursor
     \value Date  a QDate
@@ -1251,34 +1267,34 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
     \value Image  a QImage
     \value Int  an int
     \value KeySequence  a QKeySequence
-    \value LineF  a QLineF
     \value Line  a QLine
-    \value List  a QVariantList (QList<QVariant>)
-    \value LongLong a long long
-    \value ULongLong an unsigned long long
-    \value Map  a QVariantMap (QMap<QString, QVariant>)
+    \value LineF  a QLineF
+    \value List  a QVariantList
+    \value Locale  a QLocale
+    \value LongLong a \l qlonglong
+    \value Map  a QVariantMap
     \value Palette  a QPalette
     \value Pen  a QPen
     \value Pixmap  a QPixmap
     \value Point  a QPoint
+    \value PointArray  a QPointArray
     \value PointF  a QPointF
     \value Polygon a QPolygon
     \value Rect  a QRect
     \value RectF  a QRectF
+    \value RegExp  a QRegExp
     \value Region  a QRegion
     \value Size  a QSize
     \value SizeF  a QSizeF
     \value SizePolicy  a QSizePolicy
     \value String  a QString
     \value StringList  a QStringList
-    \value Time  a QTime
-    \value UInt  an unsigned int
-    \value TextLength  a QTextLength
     \value TextFormat  a QTextFormat
-    \value Char  a QChar
-    \value Locale  a QLocale
+    \value TextLength  a QTextLength
+    \value Time  a QTime
+    \value UInt  a \l uint
+    \value ULongLong a \l qulonglong
     \value Url  a QUrl
-    \value PointArray  a QPointArray
 
     \value UserType Base value for user-defined types.
 
@@ -1298,13 +1314,15 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
 /*!
     \fn QVariant::QVariant(int typeOrUserType, const void *copy)
 
-    \internal
-
     Constructs variant of type \a typeOrUserType, and initializes with
     \a copy if \a copy is not 0.
 
     Note that you have to pass the address of the variable you want stored.
-    That includes the usage of \c VoidStar, \c QObjectStar and \c QWidgetStar.
+
+    Usually, you never have to use this constructor, use qVariantFromValue()
+    instead to construct variants from the pointer types represented by
+    \c QMetaType::VoidStar, \c QMetaType::QObjectStar and
+    \c QMetaType::QWidgetStar.
 
     \sa qVariantFromValue(), Type
 */
@@ -1329,7 +1347,6 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
 void QVariant::create(int type, const void *copy)
 {
     d.type = type;
-    d.is_null = true;
     handler->construct(&d, copy);
 }
 
@@ -1561,22 +1578,28 @@ QVariant::QVariant(const char *val)
   Constructs a new variant with a locale value, \a l.
 */
 
+/*!
+  \fn QVariant::QVariant(const QRegExp &regExp)
+
+  Constructs a new variant with the regexp value \a regExp.
+*/
+
 QVariant::QVariant(Type type)
 { create(type, 0); }
 QVariant::QVariant(int typeOrUserType, const void *copy)
 { create(typeOrUserType, copy); d.is_null = false; }
 QVariant::QVariant(int val)
-{ create(Int, &val); }
+{ d.is_null = false; d.type = Int; d.data.i = val; }
 QVariant::QVariant(uint val)
-{ create(UInt, &val); }
+{ d.is_null = false; d.type = UInt; d.data.u = val; }
 QVariant::QVariant(qlonglong val)
-{ create(LongLong, &val); }
+{ d.is_null = false; d.type = LongLong; d.data.ll = val; }
 QVariant::QVariant(qulonglong val)
-{ create(ULongLong, &val); }
+{ d.is_null = false; d.type = ULongLong; d.data.ull = val; }
 QVariant::QVariant(bool val)
-{ create(Bool, &val); }
+{ d.is_null = false; d.type = Bool; d.data.b = val; }
 QVariant::QVariant(double val)
-{ create(Double, &val); }
+{ d.is_null = false; d.type = Double; d.data.d = val; }
 
 QVariant::QVariant(const QByteArray &val)
 { create(ByteArray, &val); }
@@ -1613,6 +1636,7 @@ QVariant::QVariant(const QSizeF &s) { create(SizeF, &s); }
 #endif
 QVariant::QVariant(const QUrl &u) { create(Url, &u); }
 QVariant::QVariant(const QLocale &l) { create(Locale, &l); }
+QVariant::QVariant(const QRegExp &regExp) { create(RegExp, &regExp); }
 
 /*!
     Returns the storage type of the value stored in the variant.
@@ -1716,7 +1740,7 @@ void QVariant::clear()
 
    (Search for the word 'Attention' in generator.cpp)
 */
-enum { CoreTypeCount = QVariant::PointF + 1 };
+enum { CoreTypeCount = QVariant::RegExp + 1 };
 static const char* const core_type_map[CoreTypeCount] =
 {
     0,
@@ -1745,7 +1769,8 @@ static const char* const core_type_map[CoreTypeCount] =
     "QLine",
     "QLineF",
     "QPoint",
-    "QPointF"
+    "QPointF",
+    "QRegExp"
 };
 
 enum { GuiTypeCount = QVariant::TextFormat - QVariant::Font + 2 };
@@ -1779,7 +1804,7 @@ const char *QVariant::typeToName(Type typ)
 {
     if (typ == UserType)
         return "UserType";
-    if (typ <= QVariant::PointF)
+    if (typ < int(CoreTypeCount))
         return core_type_map[typ];
     if (typ >= QVariant::Font - 1 && typ <= QVariant::TextFormat)
         return gui_type_map[int(typ) - QVariant::Font + 1];
@@ -1997,6 +2022,7 @@ Q_VARIANT_TO(ByteArray)
 Q_VARIANT_TO(Char)
 Q_VARIANT_TO(Url)
 Q_VARIANT_TO(Locale)
+Q_VARIANT_TO(RegExp)
 #ifndef QT_NO_GEOM_VARIANT
 Q_VARIANT_TO(Size)
 Q_VARIANT_TO(SizeF)
@@ -2134,6 +2160,14 @@ QVariantMap QVariant::toMap() const
   Returns the variant as a QLocale if the variant has type()
   Locale; otherwise returns an invalid QLocale.
  */
+
+/*!
+  \fn QRegExp QVariant::toRegExp() const
+  \since 4.1
+
+  Returns the variant as a QRegExp if the variant has type()
+  RegExp; otherwise returns an empty QRegExp.
+*/
 
 /*!
   \fn QRectF QVariant::toRectF() const
@@ -2788,7 +2822,8 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     \sa setValue(), value()
 */
 
-/*! \fn QVariant qVariantFromValue(const T &value)
+/*!
+    \fn QVariant qVariantFromValue(const T &value)
     \relates QVariant
 
     Returns a variant containing a copy of the given \a value
@@ -2797,6 +2832,14 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     This function is equivalent to QVariant::fromValue(\a value). It
     is provided as a work-around for MSVC 6, which doesn't support
     member template functions.
+
+    For example, a QObject pointer can be stored in a variant with the
+    following code:
+
+    \code
+    QObject *object = getObjectFromSomewhere();
+    QVariant data = qVariantFromValue(object);
+    \endcode
 
     \sa QVariant::fromValue()
 */
@@ -2849,5 +2892,19 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     member template functions.
 
     \sa QVariant::canConvert()
+*/
+
+/*!
+    \typedef QVariantList
+    \relates QVariant
+
+    Synonym for QList<QVariant>.
+*/
+
+/*!
+    \typedef QVariantMap
+    \relates QVariant
+
+    Synonym for QMap<QString, QVariant>.
 */
 

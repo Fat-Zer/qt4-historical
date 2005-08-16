@@ -24,21 +24,21 @@
 #ifndef QWIDGET_H
 #define QWIDGET_H
 
-#include "QtGui/qwindowdefs.h"
-#include "QtCore/qobject.h"
-#include "QtGui/qpaintdevice.h"
-#include "QtGui/qpalette.h"
-#include "QtGui/qfont.h"
-#include "QtGui/qfontmetrics.h"
-#include "QtGui/qfontinfo.h"
-#include "QtGui/qsizepolicy.h"
-#include "QtGui/qregion.h"
-#include "QtGui/qbrush.h"
-#include "QtGui/qcursor.h"
-#include "QtGui/qkeysequence.h"
+#include <QtGui/qwindowdefs.h>
+#include <QtCore/qobject.h>
+#include <QtGui/qpaintdevice.h>
+#include <QtGui/qpalette.h>
+#include <QtGui/qfont.h>
+#include <QtGui/qfontmetrics.h>
+#include <QtGui/qfontinfo.h>
+#include <QtGui/qsizepolicy.h>
+#include <QtGui/qregion.h>
+#include <QtGui/qbrush.h>
+#include <QtGui/qcursor.h>
+#include <QtGui/qkeysequence.h>
 
 #ifdef QT_INCLUDE_COMPAT
-#include "QtGui/qevent.h"
+#include <QtGui/qevent.h>
 #endif
 
 QT_MODULE(Gui)
@@ -88,7 +88,8 @@ public:
     uint in_set_window_state : 1;
     mutable uint fstrut_dirty : 1;
     uint context_menu_policy : 3;
-    uint unused : 16;
+    uint window_modality : 2;
+    uint unused : 14;
     QRect crect;
     mutable QPalette pal;
     QFont fnt;
@@ -114,6 +115,7 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
     Q_DECLARE_PRIVATE(QWidget)
 
     Q_PROPERTY(bool modal READ isModal)
+    Q_PROPERTY(Qt::WindowModality windowModality READ windowModality WRITE setWindowModality)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(QRect geometry READ geometry WRITE setGeometry)
     Q_PROPERTY(QRect frameGeometry READ frameGeometry)
@@ -163,15 +165,19 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
 #ifndef QT_NO_TOOLTIP
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip)
 #endif
+#ifndef QT_NO_STATUSTIP
     Q_PROPERTY(QString statusTip READ statusTip WRITE setStatusTip)
+#endif
+#ifndef QT_NO_WHATSTHIS
     Q_PROPERTY(QString whatsThis READ whatsThis WRITE setWhatsThis)
+#endif
 #ifndef QT_NO_ACCESSIBILITY
     Q_PROPERTY(QString accessibleName READ accessibleName WRITE setAccessibleName)
     Q_PROPERTY(QString accessibleDescription READ accessibleDescription WRITE setAccessibleDescription)
 #endif
     Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection RESET unsetLayoutDirection)
     QDOC_PROPERTY(Qt::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags)
-
+    Q_PROPERTY(bool autoFillBackground READ autoFillBackground WRITE setAutoFillBackground)
 
 public:
     explicit QWidget(QWidget* parent = 0, Qt::WFlags f = 0);
@@ -192,12 +198,14 @@ public:
     bool isWindow() const;
 
     bool isModal() const;
+    Qt::WindowModality windowModality() const;
+    void setWindowModality(Qt::WindowModality windowModality);
 
     bool isEnabled() const;
     bool isEnabledTo(QWidget*) const;
     bool isEnabledToTLW() const;
 
-public slots:
+public Q_SLOTS:
     void setEnabled(bool);
     void setDisabled(bool);
     void setWindowModified(bool);
@@ -306,12 +314,14 @@ public:
     void setToolTip(const QString &);
     QString toolTip() const;
 #endif
+#ifndef QT_NO_STATUSTIP
     void setStatusTip(const QString &);
     QString statusTip() const;
-
+#endif
+#ifndef QT_NO_WHATSTHIS
     void setWhatsThis(const QString &);
     QString whatsThis() const;
-
+#endif
 #ifndef QT_NO_ACCESSIBILITY
     QString accessibleName() const;
     void setAccessibleName(const QString &name);
@@ -326,7 +336,7 @@ public:
     inline bool isRightToLeft() const { return layoutDirection() == Qt::RightToLeft; }
     inline bool isLeftToRight() const { return layoutDirection() == Qt::LeftToRight; }
 
-public slots:
+public Q_SLOTS:
     inline void setFocus() { setFocus(Qt::OtherFocusReason); }
 
 public:
@@ -368,7 +378,7 @@ public:
     void repaintUnclipped(const QRegion &, bool erase = true);
 #endif
 
-public slots:
+public Q_SLOTS:
     void update();
     void repaint();
 
@@ -381,7 +391,7 @@ public:
     void repaint(const QRect &);
     void repaint(const QRegion &);
 
-public slots:
+public Q_SLOTS:
     // Widget management functions
 
     virtual void setVisible(bool visible);
@@ -463,7 +473,7 @@ public:
     void removeAction(QAction *action);
     QList<QAction*> actions() const;
 #endif
-    
+
     QWidget *parentWidget() const;
 
     void setWindowFlags(Qt::WindowFlags type);
@@ -503,7 +513,15 @@ public:
 
     bool isAncestorOf(const QWidget *child) const;
 
-signals:
+#ifdef QT_KEYPAD_NAVIGATION
+    bool hasEditFocus() const;
+    void setEditFocus(bool on);
+#endif
+
+    bool autoFillBackground() const;
+    void setAutoFillBackground(bool enabled);
+
+Q_SIGNALS:
     void customContextMenuRequested(const QPoint &pos);
 
 protected:
@@ -551,8 +569,6 @@ protected:
 #endif
 #if defined(Q_WS_QWS)
     virtual bool qwsEvent(QWSEvent *);
-    virtual const uchar *qwsScanLine(int) const;
-    virtual int qwsBytesPerLine() const;
 #endif
 
     // Misc. protected functions
@@ -582,6 +598,11 @@ private:
 
     bool testAttribute_helper(Qt::WidgetAttribute) const;
 
+    friend void qt_syncBackingStore(QWidget *);
+    friend void qt_syncBackingStore(QRegion, QWidget *);
+    friend void qt_syncBackingStore(QRegion, QWidget *, bool);
+    friend class QBackingStoreDevice;
+    friend class QWidgetBackingStore;
     friend class QApplication;
     friend class QApplicationPrivate;
     friend class QBaseApplication;
@@ -707,7 +728,7 @@ public:
 private:
     void drawText_helper(int x, int y, const QString &);
     void erase_helper(int x, int y, int w, int h);
-#endif
+#endif // QT3_SUPPORT
 
 protected:
     virtual void styleChange(QStyle&); // compat
@@ -758,7 +779,7 @@ inline bool QWidget::isEnabled() const
 { return !testAttribute(Qt::WA_Disabled); }
 
 inline bool QWidget::isModal() const
-{ return testAttribute(Qt::WA_ShowModal); }
+{ return data->window_modality != Qt::NonModal; }
 
 inline bool QWidget::isEnabledToTLW() const
 { return isEnabled(); }

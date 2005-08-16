@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include <qwidget.h>
+#include "QtGui/qwidget.h"
 
 #ifndef QT_NO_TOOLBAR
 
@@ -63,9 +63,10 @@ public:
     void mouseMoveEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *e);
 
-public slots:
+public Q_SLOTS:
     void setOrientation(Qt::Orientation orientation);
 };
 
 #endif // QT_NO_TOOLBAR
+
 #endif // QTOOLBARHANDLE_P_H

@@ -24,7 +24,7 @@
 #ifndef QABSTRACTSLIDER_H
 #define QABSTRACTSLIDER_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -38,7 +38,7 @@ class Q_GUI_EXPORT QAbstractSlider : public QWidget
     Q_PROPERTY(int maximum READ maximum WRITE setMaximum)
     Q_PROPERTY(int singleStep READ singleStep WRITE setSingleStep)
     Q_PROPERTY(int pageStep READ pageStep WRITE setPageStep)
-    Q_PROPERTY(int value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(int value READ value WRITE setValue NOTIFY valueChanged USER true)
     Q_PROPERTY(int sliderPosition READ sliderPosition WRITE setSliderPosition NOTIFY sliderMoved)
     Q_PROPERTY(bool tracking READ hasTracking WRITE setTracking)
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
@@ -96,11 +96,11 @@ public:
 
     void triggerAction(SliderAction action);
 
-public slots:
+public Q_SLOTS:
     void setValue(int);
     void setOrientation(Qt::Orientation);
 
-signals:
+Q_SIGNALS:
     void valueChanged(int value);
 
     void sliderPressed();
@@ -112,6 +112,8 @@ signals:
     void actionTriggered(int action);
 
 protected:
+    bool event(QEvent *e);
+
     void setRepeatAction(SliderAction action, int thresholdTime = 500, int repeatTime = 50);
     SliderAction repeatAction() const;
 

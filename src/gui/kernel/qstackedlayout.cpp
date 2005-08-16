@@ -187,6 +187,8 @@ int QStackedLayout::insertWidget(int index, QWidget *widget)
     if (d->index < 0) {
         setCurrentIndex(index);
     } else {
+        if (index <= d->index)
+            ++d->index;
         widget->hide();
         widget->lower();
     }
@@ -214,7 +216,7 @@ QLayoutItem *QStackedLayout::takeAt(int index)
     if (index == d->index) {
         d->index = -1;
         if ( d->list.count() > 0 ) {
-            int newIndex = index > 0 ? index - 1 : 0;
+            int newIndex = (index == d->list.count()) ? index-1 : index;
             setCurrentIndex(newIndex);
         }
     } else if (index < d->index) {

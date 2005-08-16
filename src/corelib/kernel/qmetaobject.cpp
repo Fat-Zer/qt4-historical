@@ -97,6 +97,7 @@
     \value QueryPropertyScriptable
     \value QueryPropertyStored
     \value QueryPropertyEditable
+    \value QueryPropertyUser
 */
 
 /*!
@@ -121,7 +122,9 @@ enum ProperyFlags  {
     Stored = 0x00010000,
     ResolveStored = 0x00020000,
     Editable = 0x00040000,
-    ResolveEditable = 0x00080000
+    ResolveEditable = 0x00080000,
+    User = 0x00100000,
+    ResolveUser = 0x00200000
 };
 
 enum MethodFlags  {
@@ -743,7 +746,12 @@ static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixSc
         if (strncmp("int", t+9, 3) == 0) {
             t += 9+3;
             result += "uint";
-        } else if (strncmp("long", t+9, 4) == 0) {
+        } else if (strncmp("long", t+9, 4) == 0
+                   // preserve '[unsigned] long long'
+                   && (strlen(t + 9 + 4) < 5
+                       || strcmp(t + 9 + 4, " long") != 0
+                      )
+                  ) {
             t += 9+4;
             result += "ulong";
         }
@@ -1727,13 +1735,21 @@ bool QMetaProperty::write(QObject *object, const QVariant &value) const
 */
 bool QMetaProperty::reset(QObject *object) const
 {
-    if (!object || !mobj)
+    if (!object || !mobj || !isResettable())
         return false;
     void *argv[] = { 0 };
     object->qt_metacall(QMetaObject::ResetProperty, idx + mobj->propertyOffset(), argv);
     return true;
 }
 
+
+bool QMetaProperty::isResettable() const
+{
+    if (!mobj)
+        return false;
+    int flags = mobj->d.data[handle + 2];
+    return flags & Resetable;
+}
 
 /*!
     Returns true if this property is readable; otherwise returns false.
@@ -1832,6 +1848,30 @@ bool QMetaProperty::isStored(const QObject *object) const
     if (object) {
         void *argv[] = { &b };
         const_cast<QObject*>(object)->qt_metacall(QMetaObject::QueryPropertyStored,
+                                                  idx + mobj->propertyOffset(), argv);
+    }
+    return b;
+}
+
+/*!
+    Returns true if the property is user editable for \a object; otherwise returns
+    false.
+
+    If no \a object is given, the function returns false if the
+    \c{Q_PROPERTY()}'s \c USER attribute is false; otherwise returns
+    true (if the attribute is true or is a function or expression).
+
+    \sa isDesignable(), isScriptable(), isEditable()
+*/
+bool QMetaProperty::isUser(const QObject *object) const
+{
+    if (!mobj)
+        return false;
+    int flags = mobj->d.data[handle + 2];
+    bool b = flags & User;
+    if (object) {
+        void *argv[] = { &b };
+        const_cast<QObject*>(object)->qt_metacall(QMetaObject::QueryPropertyUser,
                                                   idx + mobj->propertyOffset(), argv);
     }
     return b;

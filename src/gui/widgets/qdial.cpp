@@ -96,11 +96,10 @@ QStyleOptionSlider QDialPrivate::getStyleOption() const
     if (!showNotches) {
         opt.subControls &= ~QStyle::SC_DialTickmarks;
         opt.tickPosition = QSlider::TicksAbove;
-        opt.tickInterval = q->notchSize();
     } else {
         opt.tickPosition = QSlider::NoTicks;
-        opt.tickInterval = 0;
     }
+    opt.tickInterval = q->notchSize();
     return opt;
 }
 
@@ -210,7 +209,7 @@ QDial::QDial(QWidget *parent, const char *name)
     : QAbstractSlider(*new QDialPrivate, parent)
 {
     Q_D(QDial);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 
@@ -223,7 +222,7 @@ QDial::QDial(int minValue, int maxValue, int pageStep, int value,
     : QAbstractSlider(*new QDialPrivate, parent)
 {
     Q_D(QDial);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->minimum = minValue;
     d->maximum = maxValue;
     d->pageStep = pageStep;
@@ -409,10 +408,9 @@ qreal QDial::notchTarget() const
 
 void QDial::setNotchesVisible(bool visible)
 {
-    // d->showNotches = visible;
-    // update();
-    // ### fix after beta2
-    Q_UNUSED(visible);
+    Q_D(QDial);
+    d->showNotches = visible;
+    update();
 }
 
 /*!
@@ -447,6 +445,14 @@ QSize QDial::sizeHint() const
 }
 
 /*!
+  \reimp
+*/
+bool QDial::event(QEvent *e)
+{
+    return QAbstractSlider::event(e);
+}
+
+/*!
     \fn void QDial::dialPressed();
 
     Use QAbstractSlider::sliderPressed() instead.
@@ -465,4 +471,4 @@ QSize QDial::sizeHint() const
 */
 
 
-#endif // QT_FEATURE_DIAL
+#endif // QT_NO_DIAL

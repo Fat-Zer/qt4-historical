@@ -24,7 +24,7 @@
 #ifndef Q3DATAVIEW_H
 #define Q3DATAVIEW_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Qt3Support)
 
@@ -47,7 +47,7 @@ public:
     virtual void setRecord(QSqlRecord* record);
     QSqlRecord* record();
 
-public slots:
+public Q_SLOTS:
     virtual void refresh(QSqlRecord* buf);
     virtual void readFields();
     virtual void writeFields();
@@ -59,5 +59,6 @@ private:
     Q3DataViewPrivate* d;
 };
 
-#endif
-#endif
+#endif // QT_NO_SQL_VIEW_WIDGETS
+
+#endif // Q3DATAVIEW_H

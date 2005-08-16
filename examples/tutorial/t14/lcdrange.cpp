@@ -21,12 +21,6 @@
 **
 ****************************************************************************/
 
-/****************************************************************
-**
-** Implementation of LCDRange class, Qt tutorial 14
-**
-****************************************************************/
-
 #include <QLCDNumber>
 #include <QLabel>
 #include <QSlider>
@@ -50,6 +44,8 @@ LCDRange::LCDRange(const QString &text, QWidget *parent)
 void LCDRange::init()
 {
     QLCDNumber *lcd = new QLCDNumber(2);
+    lcd->setSegmentStyle(QLCDNumber::Filled);
+
     slider = new QSlider(Qt::Horizontal);
     slider->setRange(0, 99);
     slider->setValue(0);

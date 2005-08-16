@@ -258,7 +258,7 @@ QTabWidget::QTabWidget(QWidget *parent, const char *name, Qt::WFlags f)
     : QWidget(*new QTabWidgetPrivate, parent, f)
 {
     Q_D(QTabWidget);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 #endif
@@ -427,7 +427,9 @@ void QTabWidget::setTabEnabled(int index, bool enable)
 }
 
 /*!
-  Sets widget \a w to be the shown in the specified \a corner of the
+  \fn void QTabWidget::setCornerWidget(QWidget *widget, Qt::Corner corner)
+
+  Sets the given \a widget to be shown in the specified \a corner of the
   tab widget.
 
   Only the horizontal element of the \a corner will be used.
@@ -482,7 +484,7 @@ QWidget * QTabWidget::currentWidget() const
 }
 
 /*!
-    Makes\a widget the current widget. The \a widget must be a page in
+    Makes \a widget the current widget. The \a widget used must be a page in
     this tab widget.
 
     \sa addTab(), setCurrentIndex(), currentWidget()
@@ -543,8 +545,7 @@ void QTabWidget::resizeEvent(QResizeEvent *e)
 void QTabWidget::setTabBar(QTabBar* tb)
 {
     Q_D(QTabWidget);
-    if (!tb)
-        return;
+    Q_ASSERT(tb);
 
     if (tb->parentWidget() != this) {
         tb->setParent(this);
@@ -836,7 +837,7 @@ int QTabWidget::count() const
     return d->tabs->count();
 }
 
-
+#ifndef QT_NO_TOOLTIP
 /*!
     Sets the tab tool tip for the page at position \a index to \a tip.
 
@@ -859,6 +860,33 @@ QString QTabWidget::tabToolTip(int index) const
     Q_D(const QTabWidget);
     return d->tabs->tabToolTip(index);
 }
+#endif // QT_NO_TOOLTIP
+
+#ifndef QT_NO_WHATSTHIS
+/*!
+    \since 4.1
+
+    Sets the What's This help text for the page at position \a index
+    to \a text.
+*/
+void QTabWidget::setTabWhatsThis(int index, const QString &text)
+{
+    Q_D(QTabWidget);
+    d->tabs->setTabWhatsThis(index, text);
+}
+
+/*!
+    \since 4.1
+
+    Returns the What's This help text for the page at position \a index,
+    or an empty string if no help text has been set.
+*/
+QString QTabWidget::tabWhatsThis(int index) const
+{
+    Q_D(const QTabWidget);
+    return d->tabs->tabWhatsThis(index);
+}
+#endif // QT_NO_WHATSTHIS
 
 /*!
   This virtual handler is called after a new tab was added or
@@ -895,6 +923,12 @@ void QTabWidget::paintEvent(QPaintEvent *)
     opt = d->getStyleOption();
     opt.rect = d->panelRect;
     p.drawPrimitive(QStyle::PE_FrameTabWidget, opt);
+}
+
+/* \reimp */
+bool QTabWidget::event(QEvent *e)
+{
+    return QWidget::event(e);
 }
 
 /*!

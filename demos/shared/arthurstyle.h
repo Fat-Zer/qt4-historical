@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -24,28 +24,7 @@
 #ifndef ARTHURSTYLE_H
 #define ARTHURSTYLE_H
 
-#include <QtGui/qwindowsstyle.h>
-
-#include <qpainter.h>
-#include <qpushbutton.h>
-#include <qstyleoption.h>
-
-class ArthurGroupBoxStyleOption : public QStyleOption
-{
-public:
-    enum { Type = SO_CustomBase + 1 };
-    enum { Version = 1 };
-
-    QString title;
-
-    ArthurGroupBoxStyleOption() : QStyleOption(Version, Type) {}
-
-    ArthurGroupBoxStyleOption(const ArthurGroupBoxStyleOption &other)
-        : QStyleOption(Version, Type) { *this = other; }
-
-protected:
-    ArthurGroupBoxStyleOption(int version);
-};
+#include <QWindowsStyle>
 
 class ArthurStyle : public QWindowsStyle
 {

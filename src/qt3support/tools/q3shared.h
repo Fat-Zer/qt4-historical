@@ -24,7 +24,7 @@
 #ifndef Q3SHARED_H
 #define Q3SHARED_H
 
-#include "QtCore/qglobal.h"
+#include <QtCore/qglobal.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -35,6 +35,5 @@ struct Q_COMPAT_EXPORT Q3Shared
     bool deref()	{ return !--count; }
     uint count;
 };
-
 
 #endif // Q3SHARED_H

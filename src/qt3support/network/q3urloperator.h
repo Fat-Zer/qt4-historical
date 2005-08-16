@@ -24,13 +24,11 @@
 #ifndef Q3URLOPERATOR_H
 #define Q3URLOPERATOR_H
 
-#ifndef QT_H
-#include "QtCore/qobject.h"
-#include "Qt3Support/q3url.h"
-#include "Qt3Support/q3ptrlist.h"
-#include "Qt3Support/q3networkprotocol.h"
-#include "QtCore/qstringlist.h" // QString->QStringList conversion
-#endif // QT_H
+#include <QtCore/qobject.h>
+#include <Qt3Support/q3url.h>
+#include <Qt3Support/q3ptrlist.h>
+#include <Qt3Support/q3networkprotocol.h>
+#include <QtCore/qstringlist.h> // QString->QStringList conversion
 
 QT_MODULE(Qt3SupportLight)
 
@@ -75,7 +73,7 @@ public:
 
     virtual void stop();
 
-signals:
+Q_SIGNALS:
     void newChildren( const Q3ValueList<QUrlInfo> &, Q3NetworkOperation *res );
     void finished( Q3NetworkOperation *res );
     void start( Q3NetworkOperation *res );
@@ -95,7 +93,7 @@ protected:
     void getNetworkProtocol();
     void deleteNetworkProtocol();
 
-private slots:
+private Q_SLOTS:
     const Q3NetworkOperation *startOperation( Q3NetworkOperation *op );
     void copyGotData( const QByteArray &data, Q3NetworkOperation *op );
     void continueCopy( Q3NetworkOperation *op );

@@ -24,14 +24,16 @@
 #ifndef QLIST_H
 #define QLIST_H
 
-#include "QtCore/qiterator.h"
-#include "QtCore/qatomic.h"
-#include "QtCore/qalgorithms.h"
+#include <QtCore/qiterator.h>
+#include <QtCore/qatomic.h>
+#include <QtCore/qalgorithms.h>
 
 #ifndef QT_NO_STL
 #include <iterator>
 #include <list>
 #endif
+
+#include <new>
 
 QT_MODULE(Core)
 
@@ -172,8 +174,8 @@ public:
         typedef std::random_access_iterator_tag  iterator_category;
         typedef ptrdiff_t difference_type;
         typedef T value_type;
-        typedef T *pointer;
-        typedef T &reference;
+        typedef const T *pointer;
+        typedef const T &reference;
 
         inline const_iterator() : i(0) {}
         inline const_iterator(Node *n) : i(n) {}

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
 <head>
-    <title>Qt 4.0: Creating New Models</title>
+    <title>Qt 4.1: Creating New Models</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -58,6 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   class StringListModel : public QAbstractListModel
     {
         Q_OBJECT
+
     public:
         StringListModel(const QStringList &amp;strings, QObject *parent = 0)
             : QAbstractListModel(parent), stringList(strings) {}
@@ -67,10 +68,13 @@ body { background: #ffffff; color: black; }</style>
         QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
 
+    private:
+        QStringList stringList;
     };</pre>
 <p>Apart from the model's constructor, we only need to implement two functions: <a href="qabstractitemmodel.html#rowCount">rowCount()</a> returns the number of rows in the model and <a href="qabstractitemmodel.html#data">data()</a> returns an item of data corresponding to a specified model index.</p>
 <p>Well behaved models also implement <a href="qabstractitemmodel.html#headerData">headerData()</a> to give tree and table views something to display in their headers.</p>
 <p>Note that this is a non-hierarchical model, so we don't have to worry about the parent-child relationships. If our model was hierarchical, we would also have to implement the <a href="qabstractitemmodel.html#index">index()</a> and <a href="qabstractitemmodel.html#parent">parent()</a> functions.</p>
+<p>The list of strings are stored internally in the <tt>stringList</tt> private member variable.</p>
 <a name="dimensions-of-the-model"></a>
 <h3>Dimensions of The Model</h3>
 <p>We want the number of rows in the model to be the same as the number of strings in the string list. We implement the <a href="qabstractitemmodel.html#rowCount">rowCount()</a> function with this in mind:</p>
@@ -87,7 +91,7 @@ body { background: #ffffff; color: black; }</style>
         if (!index.isValid())
             return QVariant();
 
-        if (index.row() &lt; 0 || index.row() &gt;= stringList.size())
+        if (index.row() &gt;= stringList.size())
             return QVariant();
 
         if (role == Qt::DisplayRole)
@@ -185,6 +189,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

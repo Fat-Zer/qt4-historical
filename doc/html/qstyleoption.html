@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/styles/qstyleoption.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/styles/qstyleoption.cpp -->
 <head>
-    <title>Qt 4.0: QStyleOption Class Reference</title>
+    <title>Qt 4.1: QStyleOption Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,9 +19,10 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyleOption Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QStyleOption class stores the parameters used by <a href="qstyle.html">QStyle</a> functions. <a href="#details">More...</a></p>
-<pre>#include &lt;QStyleOption&gt;</pre><p>Inherited by <a href="qstyleoptionbutton.html">QStyleOptionButton</a>, <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a>, <a href="qstyleoptiondockwidget.html">QStyleOptionDockWidget</a>, <a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a>, <a href="qstyleoptionframe.html">QStyleOptionFrame</a>, <a href="qstyleoptionheader.html">QStyleOptionHeader</a>, <a href="qstyleoptionmenuitem.html">QStyleOptionMenuItem</a>, <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a>, <a href="qstyleoptionq3dockwindow.html">QStyleOptionQ3DockWindow</a>, <a href="qstyleoptionq3listviewitem.html">QStyleOptionQ3ListViewItem</a>, <a href="qstyleoptionrubberband.html">QStyleOptionRubberBand</a>, <a href="qstyleoptiontab.html">QStyleOptionTab</a>, <a href="qstyleoptiontabwidgetframe.html">QStyleOptionTabWidgetFrame</a>, <a href="qstyleoptiontoolbox.html">QStyleOptionToolBox</a>, and <a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a>.</p>
+<pre>#include &lt;QStyleOption&gt;</pre><p>Inherited by <a href="qstyleoptionbutton.html">QStyleOptionButton</a>, <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a>, <a href="qstyleoptiondockwidget.html">QStyleOptionDockWidget</a>, <a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a>, <a href="qstyleoptionframe.html">QStyleOptionFrame</a>, <a href="qstyleoptionheader.html">QStyleOptionHeader</a>, <a href="qstyleoptionmenuitem.html">QStyleOptionMenuItem</a>, <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a>, <a href="qstyleoptionq3dockwindow.html">QStyleOptionQ3DockWindow</a>, <a href="qstyleoptionq3listviewitem.html">QStyleOptionQ3ListViewItem</a>, <a href="qstyleoptionrubberband.html">QStyleOptionRubberBand</a>, <a href="qstyleoptiontab.html">QStyleOptionTab</a>, <a href="qstyleoptiontabbarbase.html">QStyleOptionTabBarBase</a>, <a href="qstyleoptiontabwidgetframe.html">QStyleOptionTabWidgetFrame</a>, <a href="qstyleoptiontoolbar.html">QStyleOptionToolBar</a>, <a href="qstyleoptiontoolbox.html">QStyleOptionToolBox</a>, and <a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a>.</p>
 <ul>
 <li><a href="qstyleoption-members.html">List of all members, including inherited members</a></li>
+<li><a href="qstyleoption-obsolete.html">Obsolete members</a></li>
 </ul>
 <a name="public-types"></a>
 <h3>Public Types</h3>
@@ -34,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qstyleoption.html#QStyleOption">QStyleOption</a></b> ( int <i>version</i> = QStyleOption::Version, int <i>type</i> = SO_Default )</li>
 <li><div class="fn"/><b><a href="qstyleoption.html#QStyleOption-2">QStyleOption</a></b> ( const QStyleOption &amp; <i>other</i> )</li>
 <li><div class="fn"/><b><a href="qstyleoption.html#dtor.QStyleOption">~QStyleOption</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qstyleoption.html#init">init</a></b> ( const QWidget * <i>widget</i> )</li>
+<li><div class="fn"/>void <b><a href="qstyleoption.html#initFrom">initFrom</a></b> ( const QWidget * <i>widget</i> )</li>
 <li><div class="fn"/>QStyleOption &amp; <b><a href="qstyleoption.html#operator-eq">operator=</a></b> ( const QStyleOption &amp; <i>other</i> )</li>
 </ul>
 <a name="public-variables"></a>
@@ -71,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   void MyPushButton::paintEvent()
     {
         QStyleOptionButton option;
-        option.init(this);
+        option.initFrom(this);
         option.state = isDown() ? QStyle::State_Sunken : QStyle::State_Raised;
         if (isDefault())
             option.features |= QStyleOptionButton::DefaultButton;
@@ -110,13 +111,14 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyleOption::SO_FocusRect</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Button</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top"><a href="qstyleoptionbutton.html">QStyleOptionButton</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Tab</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top"><a href="qstyleoptiontab.html">QStyleOptionTab</a></td></tr>
-<tr><td valign="top"><tt>QStyleOption::SO_TabWidgetFrame</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">QStyleOptionTabBarBase</td></tr>
-<tr><td valign="top"><tt>QStyleOption::SO_TabBarBase</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top"><a href="qstyleoptiontabwidgetframe.html">QStyleOptionTabWidgetFrame</a></td></tr>
+<tr><td valign="top"><tt>QStyleOption::SO_TabWidgetFrame</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top"><a href="qstyleoptiontabwidgetframe.html">QStyleOptionTabWidgetFrame</a></td></tr>
+<tr><td valign="top"><tt>QStyleOption::SO_TabBarBase</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top"><a href="qstyleoptiontabbarbase.html">QStyleOptionTabBarBase</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_MenuItem</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top"><a href="qstyleoptionmenuitem.html">QStyleOptionMenuItem</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Complex</tt></td><td align="center" valign="top"><tt>0xf0000</tt></td><td valign="top"><a href="qstyleoptioncomplex.html">QStyleOptionComplex</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Slider</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top"><a href="qstyleoptionslider.html">QStyleOptionSlider</a></td></tr>
-<tr><td valign="top"><tt>QStyleOption::SO_Frame</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top"><a href="qstyleoptionframe.html">QStyleOptionFrame</a></td></tr>
-<tr><td valign="top"><tt>QStyleOption::SO_ProgressBar</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top"><a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a></td></tr>
+<tr><td valign="top"><tt>QStyleOption::SO_Frame</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top"><a href="qstyleoptionframe.html">QStyleOptionFrame</a> <a href="qstyleoptionframev2.html">QStyleOptionFrameV2</a></td></tr>
+<tr><td valign="top"><tt>QStyleOption::SO_GroupBox</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top"><a href="qstyleoptiongroupbox.html">QStyleOptionGroupBox</a></td></tr>
+<tr><td valign="top"><tt>QStyleOption::SO_ProgressBar</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top"><a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> <a href="qstyleoptionprogressbarv2.html">QStyleOptionProgressBarV2</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Q3ListView</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top"><a href="qstyleoptionq3listview.html">QStyleOptionQ3ListView</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Q3ListViewItem</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top"><a href="qstyleoptionq3listviewitem.html">QStyleOptionQ3ListViewItem</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Header</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top"><a href="qstyleoptionheader.html">QStyleOptionHeader</a></td></tr>
@@ -126,6 +128,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyleOption::SO_ToolButton</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top"><a href="qstyleoptiontoolbutton.html">QStyleOptionToolButton</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_ComboBox</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top"><a href="qstyleoptioncombobox.html">QStyleOptionComboBox</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_ToolBox</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top"><a href="qstyleoptiontoolbox.html">QStyleOptionToolBox</a></td></tr>
+<tr><td valign="top"><tt>QStyleOption::SO_ToolBar</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top"><a href="qstyleoptiontoolbar.html">QStyleOptionToolBar</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_RubberBand</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top"><a href="qstyleoptionrubberband.html">QStyleOptionRubberBand</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_TitleBar</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top"><a href="qstyleoptiontitlebar.html">QStyleOptionTitleBar</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_ViewItem</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top"><a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a> (used in Interviews)</td></tr>
@@ -143,9 +146,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a copy of <i>other</i>.</p>
 <h3 class="fn"><a name="dtor.QStyleOption"></a>QStyleOption::~QStyleOption ()</h3>
 <p>Destroys the style option object.</p>
-<h3 class="fn"><a name="init"></a>void QStyleOption::init ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
+<h3 class="fn"><a name="initFrom"></a>void QStyleOption::initFrom ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Initializes the <a href="qstyleoption.html#state-var">state</a>, <a href="qstyleoption.html#direction-var">direction</a>, <a href="qstyleoption.html#rect-var">rect</a>, <a href="qstyleoption.html#palette-var">palette</a>, and <a href="qstyleoption.html#fontMetrics-var">fontMetrics</a> member variables based on <i>widget</i>.</p>
 <p>This function is provided only for convenience. You can also initialize the variables manually if you want.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qwidget.html#layoutDirection-prop">QWidget::layoutDirection</a>(), <a href="qwidget.html#rect-prop">QWidget::rect</a>(), <a href="qwidget.html#palette-prop">QWidget::palette</a>(), and <a href="qwidget.html#fontMetrics">QWidget::fontMetrics</a>().</p>
 <h3 class="fn"><a name="operator-eq"></a>QStyleOption &amp; QStyleOption::operator= ( const QStyleOption &amp; <i>other</i> )</h3>
 <p>Assign <i>other</i> to this <a href="qstyleoption.html">QStyleOption</a>.</p>
 <hr />
@@ -199,6 +204,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -21,17 +21,10 @@
 **
 ****************************************************************************/
 
-/****************************************************************
-**
-** Qt tutorial 11
-**
-****************************************************************/
-
 #include <QApplication>
 #include <QFont>
 #include <QGridLayout>
 #include <QHBoxLayout>
-#include <QLCDNumber>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -47,7 +40,7 @@ public:
 MyWidget::MyWidget(QWidget *parent)
     : QWidget(parent)
 {
-    QPushButton *quit = new QPushButton("&Quit");
+    QPushButton *quit = new QPushButton(tr("&Quit"));
     quit->setFont(QFont("Times", 18, QFont::Bold));
 
     connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
@@ -70,7 +63,7 @@ MyWidget::MyWidget(QWidget *parent)
     connect(cannonField, SIGNAL(forceChanged(int)),
             force, SLOT(setValue(int)));
 
-    QPushButton *shoot = new QPushButton("&Shoot");
+    QPushButton *shoot = new QPushButton(tr("&Shoot"));
     shoot->setFont(QFont("Times", 18, QFont::Bold));
 
     connect(shoot, SIGNAL(clicked()), cannonField, SLOT(shoot()));

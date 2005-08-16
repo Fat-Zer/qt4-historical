@@ -715,10 +715,10 @@ int Q3ListBoxPixmap::rtti() const
 
     \value NoSelection  Items cannot be selected.
 
-    In other words, \l Single is a real single-selection list box, \l
-    Multi is a real multi-selection list box, \l Extended is a list
+    In other words, \c Single is a real single-selection list box, \c
+    Multi is a real multi-selection list box, \c Extended is a list
     box in which users can select multiple items but usually want to
-    select either just one or a range of contiguous items, and \l
+    select either just one or a range of contiguous items, and \c
     NoSelection is for a list box where the user can look but not
     touch.
 */
@@ -741,7 +741,7 @@ int Q3ListBoxPixmap::rtti() const
     column mode. (Or as many columns as required by the row mode.)
 
     Example: When you call setRowMode(FitToHeight), columnMode()
-    automatically becomes \l Variable to accommodate the row mode
+    automatically becomes \c Variable to accommodate the row mode
     you've set.
 */
 
@@ -1388,6 +1388,7 @@ void Q3ListBox::clear()
     blockSignals(true);
     d->clearing = true;
     d->current = 0;
+    d->tmpCurrent = 0;
     Q3ListBoxItem * i = d->head;
     d->head = 0;
     while (i) {
@@ -3271,8 +3272,11 @@ void Q3ListBox::setBottomItem(int index)
 
 
 /*!
-    Returns the item at point \a p, which is in on-screen coordinates,
+    Returns the item at point \a p, specified in viewport coordinates,
     or a 0 if there is no item at \a p.
+
+    Use contentsToViewport() to convert between widget coordinates and
+    viewport coordinates.
 */
 
 Q3ListBoxItem * Q3ListBox::itemAt(const QPoint& p) const
@@ -3607,6 +3611,19 @@ void Q3ListBox::viewportPaintEvent(QPaintEvent * e)
         return;
     p.setClipRegion(r);
     p.fillRect(0, 0, w, h, viewport()->palette().brush(viewport()->backgroundRole()));
+
+    if(d->rubber && d->rubber->width() && d->rubber->height()) {
+        p.save();
+        p.setClipping(false);
+        // p.setRasterOp(NotROP); // ### fix - use qrubberband instead
+        QStyleOptionRubberBand opt;
+        opt.rect = d->rubber->normalized();
+        opt.palette = palette();
+        opt.shape = QRubberBand::Rectangle;
+        opt.opaque = false;
+        style()->drawControl(QStyle::CE_RubberBand, &opt, &p, this);
+        p.restore();
+    }
 }
 
 
@@ -3989,7 +4006,8 @@ void Q3ListBox::takeItem(const Q3ListBoxItem * item)
         emit highlighted(tmp2);
         emit currentChanged(i);
     }
-
+    if (d->tmpCurrent == item)
+        d->tmpCurrent = d->current;
     if (d->selectAnchor == item)
         d->selectAnchor = d->current;
 
@@ -4121,15 +4139,7 @@ void Q3ListBox::drawRubber()
         return;
     if (!d->rubber->width() && !d->rubber->height())
         return;
-    QPainter p(viewport());
-    // p.setRasterOp(NotROP); // ### fix - use qrubberband instead
-    QStyleOptionRubberBand opt;
-    opt.rect = d->rubber->normalized();
-    opt.palette = palette();
-    opt.shape = QRubberBand::Rectangle;
-    opt.opaque = false;
-    style()->drawControl(QStyle::CE_RubberBand, &opt, &p, this);
-    p.end();
+    update();
 }
 
 /*!

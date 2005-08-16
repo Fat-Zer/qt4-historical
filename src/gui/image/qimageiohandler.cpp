@@ -46,7 +46,7 @@
     the options in the ImageOption enum.
 
     To write your own image handler, you must at least reimplement
-    name(), canRead() and read(). Then create a QImageIOPlugin that
+    canRead() and read(). Then create a QImageIOPlugin that
     can create the handler. Finally, install your plugin, and
     QImageReader and QImageWriter will then automatically load the
     plugin, and start using it.
@@ -84,10 +84,16 @@
     handler does not support this option, QImageReader will apply the
     scaled clip rect after the image has been read.
 
-    \value Description The image description. A handler that supports
-    this option is expected to read the description from the image
-    metadata and return this as a QString, or when writing an image it
-    is expected to store the description in the image metadata.
+    \value Description The image description. Some image formats,
+    such as GIF, PNG and JPEG, allow embedding of text
+    or comments into the image data (e.g., for storing copyright
+    information). It's common that the text is stored in key-value
+    pairs, but some formats store all text in one continuous block.
+    QImageIOHandler returns the text as one
+    QString, where keys and values are separated by a ':', and
+    keys-value pairs are separated by two newlines (\\n\\n). For example,
+    "Title: Sunset\\n\\nAuthor: Jim Smith\\nSarah Jones\\n\\n". Formats that
+    store text in a single block can use "Description" as the key.
 
     \value CompressionRatio The compression ratio of the image data. A
     handler that supports this option is expected to set its
@@ -120,6 +126,14 @@
     formats can be stored as BigEndian or LittleEndian. A handler that
     supports Endianness uses the value of this option to determine how
     the image should be stored.
+
+    \value Animation Image formats that support animation return
+    true for this value in supportsOption(); otherwise, false is returned.
+
+    \value BackgroundColor Certain image formats allow the
+    background color to be specified. A handler that supports
+    BackgroundColor initializes the background color to this option
+    (a QColor) when reading an image.
 */
 
 /*!
@@ -133,11 +147,10 @@
     which are used internally by QImageReader and QImageWriter to add
     support for different image formats to Qt.
 
-    Writing an picture format plugin is achieved by subclassing this
-    base class, reimplementing the pure virtual functions keys(),
-    loadPicture(), savePicture(), and installIOHandler(), and
-    exporting the class with the Q_EXPORT_PLUGIN() macro. See
-    \l{How to Create Qt Plugins} for details.
+    Writing an image I/O plugin is achieved by subclassing this
+    base class, reimplementing the pure virtual functions capabilities(),
+    create(), and keys(), and exporting the class with the
+    Q_EXPORT_PLUGIN() macro. See \l{How to Create Qt Plugins} for details.
 
     An image format plugin can support three capabilities: reading (\l
     CanRead), writing (\l CanWrite) and \e incremental reading (\l
@@ -195,7 +208,7 @@ public:
     virtual ~QImageIOHandlerPrivate();
 
     QIODevice *device;
-    QByteArray format;
+    mutable QByteArray format;
 
     QImageIOHandler *q_ptr;
 };
@@ -240,6 +253,11 @@ QImageIOHandler::~QImageIOHandler()
     Sets the device of the QImageIOHandler to \a device. The image
     handler will use this device when reading and writing images.
 
+    The device can only be set once and must be set before calling
+    canRead(), read(), write(), etc. If you need to read multiple
+    files, construct multiple instances of the appropriate
+    QImageIOHandler subclass.
+
     \sa device()
 */
 void QImageIOHandler::setDevice(QIODevice *device)
@@ -271,6 +289,20 @@ void QImageIOHandler::setFormat(const QByteArray &format)
 }
 
 /*!
+    Sets the format of the QImageIOHandler to \a format. The format is
+    most useful for handlers that support multiple image formats.
+
+    This function is declared const so that it can be called from canRead().
+
+    \sa format()
+*/
+void QImageIOHandler::setFormat(const QByteArray &format) const
+{
+    Q_D(const QImageIOHandler);
+    d->format = format;
+}
+
+/*!
     Returns the format that is currently assigned to
     QImageIOHandler. If no format has been assigned, an empty string
     is returned.
@@ -295,25 +327,30 @@ QByteArray QImageIOHandler::format() const
 */
 
 /*!
-    \fn bool QImageIOHandler::canRead() const = 0
+    \fn bool QImageIOHandler::canRead() const
 
     Returns true if an image can be read from the device (i.e., the
     image format is supported, the device can be read from and the
     initial header information suggests that the image can be read);
     otherwise returns false.
 
-    \sa read()
+    When reimplementing canRead(), make sure that the I/O device
+    (device()) is left in its original state (e.g., by using peek()
+    rather than read()).
+
+    \sa read(), QIODevice::peek()
 */
 
 /*!
-    \fn QByteArray QImageIOHandler::name() const = 0
+    \obsolete
 
-    Returns the name of the image handler. For handlers that support
-    only one image format, this should be common identifier of that
-    format. For example, a JPEG handler should return "jpeg", and a
-    TIFF handler should return "tiff". The name should be returned in
-    lowercase; otherwise Qt will convert it to lowercase.
+    Use format() instead.
 */
+
+QByteArray QImageIOHandler::name() const
+{
+    return format();
+}
 
 /*!
     Writes the image \a image to the assigned device. Returns true on

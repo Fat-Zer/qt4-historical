@@ -21,14 +21,8 @@
 **
 ****************************************************************************/
 
-/****************************************************************
-**
-** Definition of CannonField class, Qt tutorial 11
-**
-****************************************************************/
-
-#ifndef CANNON_H
-#define CANNON_H
+#ifndef CANNONFIELD_H
+#define CANNONFIELD_H
 
 #include <QWidget>
 
@@ -74,4 +68,4 @@ private:
     float shootForce;
 };
 
-#endif // CANNON_H
+#endif

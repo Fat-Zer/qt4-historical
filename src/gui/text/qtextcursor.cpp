@@ -68,25 +68,37 @@ QTextCursorPrivate::~QTextCursorPrivate()
 
 QTextCursorPrivate::AdjustResult QTextCursorPrivate::adjustPosition(int positionOfChange, int charsAddedOrRemoved, QTextUndoCommand::Operation op)
 {
+    QTextCursorPrivate::AdjustResult result = QTextCursorPrivate::CursorMoved;
     // not(!) <= , so that inserting text adjusts the cursor correctly
     if (position < positionOfChange ||
-        (position == positionOfChange && op == QTextUndoCommand::KeepCursor))
-        return CursorUnchanged;
-
-    if (charsAddedOrRemoved < 0 && position < positionOfChange - charsAddedOrRemoved)
-        position = positionOfChange;
-    else
-        position += charsAddedOrRemoved;
-    if (charsAddedOrRemoved < 0 && anchor < positionOfChange - charsAddedOrRemoved) {
-        anchor = positionOfChange;
-        adjusted_anchor = positionOfChange;
+        (position == positionOfChange && op == QTextUndoCommand::KeepCursor)) {
+        result = CursorUnchanged;
     } else {
-        anchor += charsAddedOrRemoved;
-        adjusted_anchor += charsAddedOrRemoved;
+        if (charsAddedOrRemoved < 0 && position < positionOfChange - charsAddedOrRemoved)
+            position = positionOfChange;
+        else
+            position += charsAddedOrRemoved;
+        
+        currentCharFormat = -1;
     }
-    currentCharFormat = -1;
-
-    return CursorMoved;
+    
+    if (anchor >= positionOfChange
+        && (anchor != positionOfChange || op != QTextUndoCommand::KeepCursor)) {
+        if (charsAddedOrRemoved < 0 && anchor < positionOfChange - charsAddedOrRemoved)
+            anchor = positionOfChange;
+        else
+            anchor += charsAddedOrRemoved;
+    }
+    
+    if (adjusted_anchor >= positionOfChange
+        && (adjusted_anchor != positionOfChange || op != QTextUndoCommand::KeepCursor)) {
+        if (charsAddedOrRemoved < 0 && adjusted_anchor < positionOfChange - charsAddedOrRemoved)
+            adjusted_anchor = positionOfChange;
+        else
+            adjusted_anchor += charsAddedOrRemoved;
+    }
+    
+    return result;
 }
 
 void QTextCursorPrivate::setX()
@@ -104,6 +116,7 @@ void QTextCursorPrivate::remove()
 {
     if (anchor == position)
         return;
+    priv->beginEditBlock();
     currentCharFormat = -1;
     int pos1 = position;
     int pos2 = adjusted_anchor;
@@ -125,6 +138,7 @@ void QTextCursorPrivate::remove()
     }
 
     adjusted_anchor = anchor = position;
+    priv->endEditBlock();
 }
 
 void QTextCursorPrivate::clearCells(QTextTable *table, int startRow, int startCol, int numRows, int numCols, QTextUndoCommand::Operation op)
@@ -310,8 +324,7 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
 
         // skip if already at word start
         if (attributes[relativePos - 1].whiteSpace
-            && (attributes[relativePos].wordStop
-                || !attributes[relativePos].whiteSpace))
+            && !attributes[relativePos].whiteSpace)
             return false;
 
         // FALL THROUGH!
@@ -364,11 +377,13 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         if (!line.isValid() || line.textLength() == 0)
             break;
         newPosition = blockIt.position() + line.textStart() + line.textLength();
-        // currently we don't draw the space at the end, so move to the next
-        // reasonable position.
-        QString text = blockIt.text();
-        if (text.at(line.textStart() + line.textLength()-1).isSpace())
-            --newPosition;
+        if (line.lineNumber() < layout->lineCount() - 1) {
+            const QString text = blockIt.text();
+            // ###### this relies on spaces being the cause for linebreaks.
+            // this doesn't work with japanese
+            if (text.at(line.textStart() + line.textLength() - 1).isSpace())
+                --newPosition;
+        }
         break;
     }
     case QTextCursor::EndOfWord: {
@@ -380,7 +395,7 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         if (relativePos >= len)
             return false;
         relativePos++;
-        while (relativePos < len && !attributes[relativePos].wordStop
+        while (relativePos < len
                && !attributes[relativePos].whiteSpace
                && !engine->atWordSeparator(relativePos))
             relativePos++;
@@ -536,8 +551,7 @@ static void setBlockCharFormat(QTextDocumentPrivate *priv, int pos1, int pos2,
         end = end.next();
 
     for (; it != end; it = it.next()) {
-        const int charFmtPos = qMax(it.position() - 1, 0);
-        priv->setCharFormat(charFmtPos, 1, format, changeMode);
+        priv->setCharFormat(it.position() - 1, 1, format, changeMode);
     }
 }
 
@@ -811,6 +825,7 @@ void QTextCursorPrivate::setCharFormat(const QTextCharFormat &format, QTextDocum
            is not positioned within a string of selectable characters, no
            text is selected.
     \value LineUnderCursor Selects the line of text under the cursor.
+    \value BlockUnderCursor Selects the block of text under the cursor.
 */
 
 /*!
@@ -1134,18 +1149,31 @@ void QTextCursor::select(SelectionType selection)
         return;
 
     clearSelection();
-    if (selection == LineUnderCursor) {
-        movePosition(StartOfLine);
-        movePosition(EndOfLine, KeepAnchor);
-    } else if (selection == WordUnderCursor) {
-        const QTextBlock b = d->block();
-        const int relativePos = d->position - b.position();
 
-        if (relativePos == b.length() - 1)
-            return;
+    const QTextBlock block = d->block();
+    const int relativePos = d->position - block.position();
 
-        movePosition(StartOfWord);
-        movePosition(EndOfWord, KeepAnchor);
+    switch (selection) {
+        case LineUnderCursor:
+            movePosition(StartOfLine);
+            movePosition(EndOfLine, KeepAnchor);
+            break;
+        case WordUnderCursor:
+            if (relativePos == block.length() - 1)
+                break;
+
+            movePosition(StartOfWord);
+            movePosition(EndOfWord, KeepAnchor);
+            break;
+        case BlockUnderCursor:
+            movePosition(StartOfBlock);
+            // also select the paragraph separator
+            if (movePosition(PreviousBlock)) {
+                movePosition(EndOfBlock);
+                movePosition(NextBlock, KeepAnchor);
+            }
+            movePosition(EndOfBlock, KeepAnchor);
+            break;
     }
 }
 
@@ -1431,14 +1459,16 @@ QTextCharFormat QTextCursor::charFormat() const
     int idx = d->currentCharFormat;
     if (idx == -1) {
         int pos = d->position - 1;
-        if (pos < 0)
-            pos = 0;
-        Q_ASSERT(pos >= 0 && pos < d->priv->length());
+        if (pos == -1) {
+            idx = d->priv->blockCharFormatIndex(d->priv->blockMap().firstNode());
+        } else {
+            Q_ASSERT(pos >= 0 && pos < d->priv->length());
 
 
-        QTextDocumentPrivate::FragmentIterator it = d->priv->find(pos);
-        Q_ASSERT(!it.atEnd());
-        idx = it.value()->format;
+            QTextDocumentPrivate::FragmentIterator it = d->priv->find(pos);
+            Q_ASSERT(!it.atEnd());
+            idx = it.value()->format;
+        }
     }
 
     QTextCharFormat cfmt = d->priv->formatCollection()->charFormat(idx);
@@ -1698,7 +1728,7 @@ QTextTable *QTextCursor::insertTable(int rows, int cols)
 */
 QTextTable *QTextCursor::insertTable(int rows, int cols, const QTextTableFormat &format)
 {
-    if(!d || !d->priv)
+    if(!d || !d->priv || rows == 0 || cols == 0)
         return 0;
 
     int pos = d->position;

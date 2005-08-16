@@ -1,0 +1,120 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the QtSVG module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QSVGHANDLER_P_H
+#define QSVGHANDLER_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtXml/qxml.h"
+#include "QtCore/qhash.h"
+#include "QtCore/qstack.h"
+
+class QSvgNode;
+class QSvgTinyDocument;
+class QXmlAttributes;
+class QSvgStyleProperty;
+class QSvgHandler;
+
+typedef QSvgNode *(*FactoryMethod)(QSvgNode *,
+                                   const QXmlAttributes &,
+                                   QSvgHandler *);
+typedef bool (*ParseMethod)(QSvgNode *,
+                            const QXmlAttributes &,
+                            QSvgHandler *);
+
+typedef QSvgStyleProperty *(*StyleFactoryMethod)(QSvgNode *,
+                                                 const QXmlAttributes &,
+                                                 QSvgHandler *);
+typedef bool (*StyleParseMethod)(QSvgStyleProperty *,
+                                 const QXmlAttributes &,
+                                 QSvgHandler *);
+
+class QSvgHandler : public QXmlDefaultHandler
+{
+public:
+    enum LengthType {
+        PERCENT,
+        PX,
+        PC,
+        PT,
+        MM,
+        CM,
+        IN,
+        OTHER
+    };
+
+public:
+    QSvgHandler();
+
+    QSvgTinyDocument *document() const;
+
+    void setDefaultCoordinateSystem(LengthType type);
+    LengthType defaultCoordinateSystem() const;
+
+public:
+    bool startElement(const QString &namespaceURI, const QString &localName,
+                      const QString &qName, const QXmlAttributes &attributes);
+    bool endElement(const QString &namespaceURI, const QString &localName,
+                    const QString &qName);
+    bool characters(const QString &str);
+    bool fatalError(const QXmlParseException &exception);
+    QString errorString() const;
+private:
+    void init();
+
+    QSvgTinyDocument *m_doc;
+    QStack<QSvgNode*> m_nodes;
+
+    QList<QSvgNode*>  m_resolveNodes;
+
+    enum CurrentNode
+    {
+        Unknown,
+        Graphics,
+        Style
+    };
+    QStack<CurrentNode> m_skipNodes;
+
+    QSvgStyleProperty *m_style;
+
+    LengthType m_defaultCoords;
+private:
+    static QHash<QString, FactoryMethod> s_groupFactory;
+    static QHash<QString, FactoryMethod> s_graphicsFactory;
+    static QHash<QString, ParseMethod>   s_utilFactory;
+
+    static QHash<QString, StyleFactoryMethod>   s_styleFactory;
+    static QHash<QString, StyleParseMethod>     s_styleUtilFactory;
+};
+
+#endif // QSVGHANDLER_P_H

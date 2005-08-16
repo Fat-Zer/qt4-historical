@@ -24,13 +24,12 @@
 #ifndef QSTRING_H
 #define QSTRING_H
 
-#include "QtCore/qchar.h"
-#include "QtCore/qbytearray.h"
-#include "QtCore/qatomic.h"
-#include "QtCore/qnamespace.h"
-
+#include <QtCore/qchar.h>
+#include <QtCore/qbytearray.h>
+#include <QtCore/qatomic.h>
+#include <QtCore/qnamespace.h>
 #ifdef QT_INCLUDE_COMPAT
-#include <qcstring.h>
+#include <Qt3Support/q3cstring.h>
 #endif
 
 #ifndef QT_NO_STL
@@ -50,10 +49,8 @@ typedef std::basic_string<wchar_t> QStdWString;
 
 #endif // QT_NO_STL
 
-
 #include <stdarg.h>
 
-// POSIX defines truncate to truncate64
 #ifdef truncate
 #error qstring.h must be included before any header file that defines truncate
 #endif
@@ -71,7 +68,7 @@ class Q_CORE_EXPORT QString
 public:
     inline QString();
     QString(const QChar *unicode, int size);
-    explicit QString(QChar c);
+    QString(QChar c);
     QString(int size, QChar c);
     inline QString(const QLatin1String &latin1);
     inline QString(const QString &);
@@ -503,6 +500,7 @@ private:
     int toWCharArray(wchar_t *array) const;
     static QString fromWCharArray(const wchar_t *, int);
 #endif
+    static Data *fromLatin1_helper(const char *str, int size = -1);
     friend class QCharRef;
     friend class QTextCodec;
 };
@@ -512,6 +510,9 @@ class Q_CORE_EXPORT QLatin1String
 {
 public:
     inline explicit QLatin1String(const char *s) : chars(s) {}
+    inline QLatin1String &operator=(const QLatin1String &other)
+    { chars = other.chars; return *this; }
+
     inline const char *latin1() const { return chars; }
 
     inline bool operator==(const QString &s) const
@@ -532,8 +533,8 @@ private:
 };
 
 
-inline QString::QString(const QLatin1String &latin1) : d(&shared_null)
-{ d->ref.ref(); *this = fromLatin1(latin1.latin1()); }
+inline QString::QString(const QLatin1String &latin1) : d(fromLatin1_helper(latin1.latin1()))
+{ }
 inline int QString::length() const
 { return d->size; }
 inline const QChar QString::at(int i) const
@@ -792,10 +793,10 @@ inline const QString operator+(const QString &s, const QByteArray &ba)
 
 #ifndef QT_NO_STL
 inline std::string QString::toStdString() const
-{ return toAscii().data(); }
+{ const QByteArray asc = toAscii(); return std::string(asc.constData(), asc.length()); }
 
 inline QString QString::fromStdString(const std::string &s)
-{ return fromAscii(s.c_str()); }
+{ return fromAscii(s.data(), int(s.size())); }
 
 # ifndef QT_NO_STL_WCHAR
 inline QStdWString QString::toStdWString() const
@@ -806,7 +807,7 @@ inline QStdWString QString::toStdWString() const
     return str;
 }
 inline QString QString::fromStdWString(const QStdWString &s)
-{ return fromWCharArray(s.c_str(), int(s.length())); }
+{ return fromWCharArray(s.data(), int(s.size())); }
 # endif
 #endif
 

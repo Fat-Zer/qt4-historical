@@ -30,6 +30,7 @@
 #include <QtCore/QDir>
 
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QStyle>
 
 #include <QtCore/qdebug.h>
 
@@ -158,22 +159,6 @@ void QDesignerSettings::setUIMode(int mode)
 int QDesignerSettings::uiMode() const
 {
     return value(QLatin1String("UI/currentMode"), QDesignerWorkbench::TopLevelMode).toInt();
-}
-
-void QDesignerSettings::setUseBigIcons(bool useBig)
-{
-    setValue(QLatin1String("UI/useBigIcons"), useBig);
-}
-
-bool QDesignerSettings::useBigIcons() const
-{
-    return value(QLatin1String("UI/useBigIcons"),
-#ifdef Q_WS_MAC
-                 true
-#else
-                 false
-#endif
-            ).toBool();
 }
 
 QByteArray QDesignerSettings::mainWindowState() const

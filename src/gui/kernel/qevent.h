@@ -24,16 +24,16 @@
 #ifndef QEVENT_H
 #define QEVENT_H
 
-#include "QtGui/qwindowdefs.h"
-#include "QtCore/qobject.h"
-#include "QtGui/qregion.h"
-#include "QtCore/qnamespace.h"
-#include "QtCore/qstring.h"
-#include "QtGui/qkeysequence.h"
-#include "QtCore/qcoreevent.h"
-#include "QtGui/qmime.h"
-#include "QtGui/qdrag.h"
-#include "QtCore/qvariant.h"
+#include <QtGui/qwindowdefs.h>
+#include <QtCore/qobject.h>
+#include <QtGui/qregion.h>
+#include <QtCore/qnamespace.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qkeysequence.h>
+#include <QtCore/qcoreevent.h>
+#include <QtGui/qmime.h>
+#include <QtGui/qdrag.h>
+#include <QtCore/qvariant.h>
 
 QT_MODULE(Gui)
 
@@ -141,7 +141,7 @@ class Q_GUI_EXPORT QTabletEvent : public QInputEvent
 {
 public:
     enum TabletDevice { NoDevice, Puck, Stylus, Airbrush, FourDMouse,
-                        XFreeEraser /*internal*/ };
+                        XFreeEraser /*internal*/, RotationStylus };
     enum PointerType { UnknownPointer, Pen, Cursor, Eraser };
     QTabletEvent(Type t, const QPoint &pos, const QPoint &globalPos, const QPointF &hiResGlobalPos,
                  int device, int pointerType, qreal pressure, int xTilt, int yTilt,
@@ -267,17 +267,17 @@ protected:
     bool m_erased;
 };
 
-
-#ifdef Q_WS_QWS
-class QWSUpdateEvent : public QPaintEvent
+class QUpdateLaterEvent : public QEvent
 {
 public:
-    QWSUpdateEvent(const QRegion& paintRegion);
-    QWSUpdateEvent(const QRect &paintRect);
-    ~QWSUpdateEvent();
-};
-#endif
+    QUpdateLaterEvent(const QRegion& paintRegion);
+    ~QUpdateLaterEvent();
 
+    inline const QRegion &region() const { return m_region; }
+
+protected:
+    QRegion m_region;
+};
 
 class Q_GUI_EXPORT QMoveEvent : public QEvent
 {
@@ -457,6 +457,7 @@ public:
 
 
 protected:
+    friend class QApplication;
     QPoint p;
     Qt::MouseButtons mouseState;
     Qt::KeyboardModifiers modState;
@@ -628,13 +629,27 @@ class Q_GUI_EXPORT QWindowStateChangeEvent: public QEvent
 {
 public:
     QWindowStateChangeEvent(Qt::WindowStates aOldState);
+    QWindowStateChangeEvent(Qt::WindowStates aOldState, bool isOverride);
     ~QWindowStateChangeEvent();
 
     inline Qt::WindowStates oldState() const { return ostate; }
+    bool isOverride() const;
 
 private:
     Qt::WindowStates ostate;
 };
+
+#ifdef QT3_SUPPORT
+class QMenuBar;
+class Q_GUI_EXPORT QMenubarUpdatedEvent: public QEvent
+{
+public:
+    QMenubarUpdatedEvent(QMenuBar * const menBar);
+    inline QMenuBar *menuBar() { return m_menuBar; }
+private:
+    QMenuBar *m_menuBar;
+};
+#endif
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QEvent *);

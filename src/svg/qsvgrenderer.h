@@ -1,0 +1,76 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the QtSVG module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QSVGRENDERER_H
+#define QSVGRENDERER_H
+
+#include <QtCore/qobject.h>
+#include <QtCore/qsize.h>
+#include <QtCore/qrect.h>
+
+QT_MODULE(Svg)
+
+class QSvgRendererPrivate;
+class QPainter;
+class QByteArray;
+
+class Q_SVG_EXPORT QSvgRenderer : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QRect viewBox READ viewBox WRITE setViewBox)
+    Q_PROPERTY(int framesPerSecond READ framesPerSecond WRITE setFramesPerSecond)
+    Q_PROPERTY(int currentFrame READ currentFrame WRITE setCurrentFrame)
+public:
+    QSvgRenderer(QObject *parent=0);
+    QSvgRenderer(const QString &filename, QObject *parent=0);
+    QSvgRenderer(const QByteArray &contents, QObject *parent=0);
+    ~QSvgRenderer();
+
+    bool isValid() const;
+
+    QSize defaultSize() const;
+
+    QRect viewBox() const;
+    void setViewBox(const QRect &viewbox);
+
+    bool animated() const;
+    int framesPerSecond() const;
+    void setFramesPerSecond(int num);
+    int currentFrame() const;
+    void setCurrentFrame(int);
+    int animationDuration() const;//in seconds
+
+public Q_SLOTS:
+    bool load(const QString &filename);
+    bool load(const QByteArray &contents);
+    void render(QPainter *p);
+
+Q_SIGNALS:
+    void repaintNeeded();
+
+private:
+    Q_DECLARE_PRIVATE(QSvgRenderer)
+};
+
+#endif // QSVGRENDERER_H

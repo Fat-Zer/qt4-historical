@@ -36,6 +36,7 @@
 
 #include <QtGui/QAction>
 #include <QtGui/QLayout>
+#include <QtGui/QSplitter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QApplication>
 #include <QtGui/QIcon>
@@ -66,6 +67,7 @@ FormWindowManager::FormWindowManager(QDesignerFormEditorInterface *core, QObject
       m_activeFormWindow(0)
 {
     m_layoutChilds = false;
+    m_savedContextMenuPolicy = Qt::NoContextMenu;
 
     setupActions();
     qApp->installEventFilter(this);
@@ -146,14 +148,23 @@ bool FormWindowManager::eventFilter(QObject *o, QEvent *e)
         } break;
 
         case QEvent::WindowActivate: {
-            if (fw->isMainContainer(managedWidget)) {
-                core()->formWindowManager()->setActiveFormWindow(fw);
+            if (fw->parentWidget()->isWindow() && fw->isMainContainer(managedWidget) && activeFormWindow() != fw) {
+                setActiveFormWindow(fw);
             }
         } break;
 
         case QEvent::WindowDeactivate: {
             fw->repaintSelection();
         } break;
+
+        case QEvent::KeyPress: {
+            QKeyEvent *ke = static_cast<QKeyEvent*>(e);
+            if (ke->key() == Qt::Key_Escape) {
+                ke->accept();
+                return true;
+            }
+        }
+        // don't break...
 
         default: {
             if (fw->handleEvent(widget, managedWidget, e)) {
@@ -383,7 +394,7 @@ void FormWindowManager::slotActionLowerActivated()
 
 void FormWindowManager::slotActionRaiseActivated()
 {
-    m_activeFormWindow->lowerWidgets();
+    m_activeFormWindow->raiseWidgets();
 }
 
 void FormWindowManager::slotActionHorizontalLayoutActivated()
@@ -442,7 +453,9 @@ void FormWindowManager::slotActionBreakLayoutActivated()
 
         while (currentWidget && currentWidget != m_activeFormWindow) {
             if (QLayout *layout = LayoutInfo::managedLayout(core(), currentWidget)) {
-                if (!layoutBaseList.contains(layout->parentWidget())) {
+                // ### generalize (put in function)
+                if ((!layout->isEmpty() || qobject_cast<QSplitter*>(currentWidget))
+                     && !layoutBaseList.contains(layout->parentWidget())) {
                     layoutBaseList.prepend(layout->parentWidget());
                 }
             }
@@ -537,7 +550,9 @@ void FormWindowManager::slotUpdateActions()
                                     && layout == 0;
 
                 m_layoutChilds = layoutAvailable;
-                breakAvailable = (layout != 0 && !layout->isEmpty()) || LayoutInfo::isWidgetLaidout(m_core, widget);
+                // ### generalize (put in function)
+                breakAvailable = (layout != 0 && (!layout->isEmpty() || qobject_cast<QSplitter*>(widget)))
+                                  || LayoutInfo::isWidgetLaidout(m_core, widget);
             }
         } else {
             layoutAvailable = unlaidoutWidgetCount > 1;
@@ -638,23 +653,19 @@ void FormWindowManager::beginDrag(const QList<QDesignerDnDItemInterface*> &item_
 
     foreach(QDesignerDnDItemInterface *item, m_drag_item_list) {
         QWidget *deco = item->decoration();
-        QBitmap bitmap(deco->size());
-        QPainter p(&bitmap);
-        p.fillRect(bitmap.rect(), Qt::color1);
-        p.setPen(Qt::color0);
-        p.drawPoint(deco->mapFromGlobal(globalPos));
-        p.end();
-        deco->setMask(bitmap);
+        deco->setAttribute(Qt::WA_TransparentForMouseEvents);
         QPoint pos = deco->pos();
         QRect ag = qApp->desktop()->availableGeometry(deco);
         deco->move(qMin(qMax(pos.x(), ag.left()), ag.right()), qMin(qMax(pos.y(), ag.top()), ag.bottom()));
-        deco->show();
         deco->move(pos);
+        deco->show();
         deco->setWindowOpacity(0.8);
     }
 
 #ifndef Q_OS_WIN
     m_core->topLevel()->grabMouse();
+    m_savedContextMenuPolicy = m_core->topLevel()->contextMenuPolicy();
+    m_core->topLevel()->setContextMenuPolicy(Qt::NoContextMenu);
 #endif
 }
 
@@ -723,6 +734,7 @@ void FormWindowManager::endDrag(const QPoint &pos)
 {
 #ifndef Q_OS_WIN
     m_core->topLevel()->releaseMouse();
+    m_core->topLevel()->setContextMenuPolicy(m_savedContextMenuPolicy);
 #endif
 
     Q_ASSERT(!m_drag_item_list.isEmpty());

@@ -25,8 +25,8 @@
 #define QT3TO4_H
 
 #include <QString>
-#include <qlist.h>
-#include <qpair.h>
+#include <QList>
+#include <QPair>
 
 class Porting
 {

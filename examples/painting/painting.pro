@@ -2,6 +2,7 @@ TEMPLATE      = subdirs
 SUBDIRS       = basicdrawing \
                 concentriccircles \
                 painterpaths \
+                svgviewer \
                 transformations
 
 # install

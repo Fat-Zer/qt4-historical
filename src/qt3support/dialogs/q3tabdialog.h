@@ -24,8 +24,8 @@
 #ifndef Q3TABDIALOG_H
 #define Q3TABDIALOG_H
 
-#include "QtGui/qdialog.h"
-#include "QtGui/qicon.h"
+#include <QtGui/qdialog.h>
+#include <QtGui/qicon.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -93,7 +93,7 @@ protected:
     void setTabBar(QTabBar*);
     QTabBar* tabBar() const;
 
-signals:
+Q_SIGNALS:
     void aboutToShow();
 
     void applyButtonPressed();

@@ -45,6 +45,7 @@ class QTextBlock;
 class QTextCodec;
 class QUrl;
 class QVariant;
+class QRectF;
 
 template<typename T> class QVector;
 
@@ -89,6 +90,7 @@ class Q_GUI_EXPORT QTextDocument : public QObject
     Q_PROPERTY(bool modified READ isModified WRITE setModified DESIGNABLE false)
     Q_PROPERTY(QSizeF pageSize READ pageSize WRITE setPageSize)
     Q_PROPERTY(QFont defaultFont READ defaultFont WRITE setDefaultFont)
+    Q_PROPERTY(bool useDesignMetrics READ useDesignMetrics WRITE setUseDesignMetrics)
 
 public:
     explicit QTextDocument(QObject *parent = 0);
@@ -170,7 +172,10 @@ public:
 
     void markContentsDirty(int from, int length);
 
-signals:
+    void setUseDesignMetrics(bool b);
+    bool useDesignMetrics() const;
+
+Q_SIGNALS:
     void contentsChange(int from, int charsRemoves, int charsAdded);
     void contentsChanged();
     void undoAvailable(bool);
@@ -178,7 +183,7 @@ signals:
     void modificationChanged(bool m);
     void cursorPositionChanged(const QTextCursor &cursor);
 
-public slots:
+public Q_SLOTS:
     void undo();
     void redo();
     void appendUndoItem(QAbstractUndoItem *);
@@ -194,5 +199,7 @@ private:
     Q_DISABLE_COPY(QTextDocument)
     Q_DECLARE_PRIVATE(QTextDocument)
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QTextDocument::FindFlags)
 
 #endif // QTEXTDOCUMENT_H

@@ -24,7 +24,7 @@
 #include "qapplication.h"
 #include "qdesktopwidget.h"
 #include "qevent.h"
-#include <private/qeventdispatcher_win_p.h>
+#include "private/qeventdispatcher_win_p.h"
 #include "qeventloop.h"
 #include "qclipboard.h"
 #include "qcursor.h"
@@ -45,18 +45,20 @@
 #if defined(QT_NON_COMMERCIAL)
 #include "qnc_win.h"
 #endif
+#include "private/qwininputcontext_p.h"
+#include "private/qcursor_p.h"
+#include "private/qmath_p.h"
+#include "private/qapplication_p.h"
+#include "private/qinternal_p.h"
+#include "private/qbackingstore_p.h"
+#include "qdebug.h"
 
-#include <private/qwininputcontext_p.h>
-
-#include <private/qcursor_p.h>
-#include <private/qmath_p.h>
-
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
 #include "qmutex.h"
-#endif // QT_THREAD_SUPPORT
+#endif
 
 #ifndef QT_NO_ACCESSIBILITY
-#include <qaccessible.h>
+#include "qaccessible.h"
 #include <winable.h>
 #include <oleacc.h>
 #ifndef WM_GETOBJECT
@@ -66,15 +68,12 @@
 extern IAccessible *qt_createWindowsAccessible(QAccessibleInterface *object);
 #endif // QT_NO_ACCESSIBILITY
 
-#include "private/qapplication_p.h"
-
-#include "private/qinternal_p.h"
-
 #include <windowsx.h>
 #include <limits.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <math.h>
 
 #ifdef Q_OS_TEMP
 #include <sipapi.h>
@@ -91,7 +90,6 @@ extern bool qt_tabletChokeMouse;
 #define CSR_TYPE 20 // Some old Wacom wintab.h may not provide this constant.
 #endif
 #include <pktdef.h>
-#include <math.h>
 
 typedef HCTX (API *PtrWTOpen)(HWND, LPLOGCONTEXT, BOOL);
 typedef BOOL (API *PtrWTClose)(HCTX);
@@ -185,6 +183,7 @@ Q_CORE_EXPORT bool winPostMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
 #define APPCOMMAND_TREBLE_UP              23
 #endif
 
+UINT WM_QT_REPAINT = 0;
 static UINT WM95_MOUSEWHEEL = 0;
 
 #if(_WIN32_WINNT < 0x0400)
@@ -221,7 +220,7 @@ void qt_erase_background(HDC hdc, int x, int y, int w, int h,
     HPALETTE oldPal = 0;
     HPALETTE hpal = QColormap::hPal();
     if (hpal) {
-        oldPal = SelectPalette(hdc, hpal, false);
+        oldPal = SelectPalette(hdc, hpal, FALSE);
         RealizePalette(hdc);
     }
     if (brush.style() == Qt::LinearGradientPattern) {
@@ -240,7 +239,7 @@ void qt_erase_background(HDC hdc, int x, int y, int w, int h,
         DeleteObject(hbrush);
     }
     if (hpal) {
-        SelectPalette(hdc, oldPal, true);
+        SelectPalette(hdc, oldPal, TRUE);
         RealizePalette(hdc);
     }
 }
@@ -256,6 +255,8 @@ QRgb qt_colorref2qrgb(COLORREF col)
   Internal variables and functions
  *****************************************************************************/
 
+extern void qt_syncBackingStore(QRegion rgn, QWidget *widget);
+extern void qt_syncBackingStore(QRegion rgn, QWidget *widget, bool);
 extern Q_CORE_EXPORT char      appName[];
 extern Q_CORE_EXPORT char      appFileName[];
 extern Q_CORE_EXPORT HINSTANCE appInst;                        // handle to app instance
@@ -328,11 +329,12 @@ public:
     void eraseWindowBackground(HDC);
     inline void showChildren(bool spontaneous) { d_func()->showChildren(spontaneous); }
     inline void hideChildren(bool spontaneous) { d_func()->hideChildren(spontaneous); }
+    inline uint testWindowState(uint teststate){ return dataPtr()->window_state & teststate; }
 };
 
 static void qt_show_system_menu(QWidget* tlw)
 {
-    HMENU menu = GetSystemMenu(tlw->winId(), false);
+    HMENU menu = GetSystemMenu(tlw->winId(), FALSE);
     if (!menu)
         return; // no menu for this window
 
@@ -448,6 +450,11 @@ static void qt_set_windows_resources()
     pal.setColor(QPalette::Link, Qt::blue);
     pal.setColor(QPalette::LinkVisited, Qt::magenta);
 
+    pal.setColor(QPalette::Inactive, QPalette::Button, pal.button());
+    pal.setColor(QPalette::Inactive, QPalette::Background, pal.background());
+    pal.setColor(QPalette::Inactive, QPalette::Light, pal.light());
+    pal.setColor(QPalette::Inactive, QPalette::Dark, pal.dark());
+
     if (QSysInfo::WindowsVersion != QSysInfo::WV_NT && QSysInfo::WindowsVersion != QSysInfo::WV_95) {
         if (pal.midlight() == pal.button())
             pal.setColor(QPalette::Midlight, pal.button().color().light(110));
@@ -457,9 +464,12 @@ static void qt_set_windows_resources()
         }
     }
 
+    const QColor bg = pal.background().color();
     const QColor fg = pal.foreground().color(), btn = pal.button().color();
     QColor disabled((fg.red()+btn.red())/2,(fg.green()+btn.green())/2,
                      (fg.blue()+btn.blue())/2);
+    pal.setColorGroup(QPalette::Disabled, pal.foreground(), pal.button(), pal.light(),
+        pal.dark(), pal.mid(), pal.text(), pal.brightText(), pal.base(), pal.background() );
     pal.setColor(QPalette::Disabled, QPalette::Foreground, disabled);
     pal.setColor(QPalette::Disabled, QPalette::Text, disabled);
     pal.setColor(QPalette::Disabled, QPalette::ButtonText, disabled);
@@ -467,57 +477,11 @@ static void qt_set_windows_resources()
                   QColor(qt_colorref2qrgb(GetSysColor(COLOR_HIGHLIGHT))));
     pal.setColor(QPalette::Disabled, QPalette::HighlightedText,
                   QColor(qt_colorref2qrgb(GetSysColor(COLOR_HIGHLIGHTTEXT))));
+    pal.setColor(QPalette::Disabled, QPalette::Base, bg);
 
     QApplicationPrivate::setSystemPalette(pal);
 
-    QColor menuCol(qt_colorref2qrgb(GetSysColor(COLOR_MENU)));
-    QColor menuText(qt_colorref2qrgb(GetSysColor(COLOR_MENUTEXT)));
-    {
-        BOOL isFlat = 0;
-        if ((QSysInfo::WindowsVersion >= QSysInfo::WV_XP
-            && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based))
-            SystemParametersInfo(0x1022 /*SPI_GETFLATMENU*/, 0, &isFlat, 0);
-        QPalette menu(pal);
-        // we might need a special color group for the menu.
-        menu.setColor(QPalette::Active, QPalette::Button, menuCol);
-        menu.setColor(QPalette::Active, QPalette::Text, menuText);
-        menu.setColor(QPalette::Active, QPalette::Foreground, menuText);
-        menu.setColor(QPalette::Active, QPalette::ButtonText, menuText);
-        const QColor fg = menu.foreground().color(), btn = menu.button().color();
-        QColor disabled(qt_colorref2qrgb(GetSysColor(COLOR_GRAYTEXT)));
-        menu.setColor(QPalette::Disabled, QPalette::Foreground, disabled);
-        menu.setColor(QPalette::Disabled, QPalette::Text, disabled);
-        menu.setColor(QPalette::Disabled, QPalette::Highlight,
-                       QColor(qt_colorref2qrgb(GetSysColor(
-                                               (QSysInfo::WindowsVersion >= QSysInfo::WV_XP
-                                               && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based)
-                                               && isFlat ? COLOR_MENUHILIGHT
-                                                         : COLOR_HIGHLIGHT))));
-        menu.setColor(QPalette::Disabled, QPalette::HighlightedText, disabled);
-        menu.setColor(QPalette::Disabled, QPalette::Button,
-                      menu.color(QPalette::Active, QPalette::Button));
-        menu.setColor(QPalette::Inactive, QPalette::Button,
-                      menu.color(QPalette::Active, QPalette::Button));
-        menu.setColor(QPalette::Inactive, QPalette::Text,
-                      menu.color(QPalette::Active, QPalette::Text));
-        menu.setColor(QPalette::Inactive, QPalette::Foreground,
-                      menu.color(QPalette::Active, QPalette::Foreground));
-        menu.setColor(QPalette::Inactive, QPalette::ButtonText,
-                      menu.color(QPalette::Active, QPalette::ButtonText));
-        if (QSysInfo::WindowsVersion != QSysInfo::WV_NT && QSysInfo::WindowsVersion != QSysInfo::WV_95)
-            menu.setColor(QPalette::Inactive, QPalette::ButtonText,
-                          pal.color(QPalette::Inactive, QPalette::Dark));
-        QApplication::setPalette(menu, "QMenu");
-
-        if ((QSysInfo::WindowsVersion >= QSysInfo::WV_XP
-            && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based) && isFlat) {
-            QColor menubar(qt_colorref2qrgb(GetSysColor(COLOR_MENUBAR)));
-            menu.setColor(QPalette::Active, QPalette::Button, menubar);
-            menu.setColor(QPalette::Disabled, QPalette::Button, menubar);
-            menu.setColor(QPalette::Inactive, QPalette::Button, menubar);
-        }
-        QApplication::setPalette(menu, "QMenuBar");
-    }
+    QApplicationPrivate::initializeWidgetPaletteHash();
 
     QColor ttip(qt_colorref2qrgb(GetSysColor(COLOR_INFOBK)));
 
@@ -543,6 +507,57 @@ static void qt_set_windows_resources()
         tiplabel.setColor(QPalette::Disabled, QPalette::BrightText, Qt::white);
         QApplication::setPalette(tiplabel, "QTipLabel");
     }
+}
+
+void QApplicationPrivate::initializeWidgetPaletteHash()
+{
+    QPalette pal = *QApplicationPrivate::sys_pal;
+    QColor menuCol(qt_colorref2qrgb(GetSysColor(COLOR_MENU)));
+    QColor menuText(qt_colorref2qrgb(GetSysColor(COLOR_MENUTEXT)));
+    BOOL isFlat = 0;
+    if ((QSysInfo::WindowsVersion >= QSysInfo::WV_XP
+        && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based))
+        SystemParametersInfo(0x1022 /*SPI_GETFLATMENU*/, 0, &isFlat, 0);
+    QPalette menu(pal);
+    // we might need a special color group for the menu.
+    menu.setColor(QPalette::Active, QPalette::Button, menuCol);
+    menu.setColor(QPalette::Active, QPalette::Text, menuText);
+    menu.setColor(QPalette::Active, QPalette::Foreground, menuText);
+    menu.setColor(QPalette::Active, QPalette::ButtonText, menuText);
+    const QColor fg = menu.foreground().color(), btn = menu.button().color();
+    QColor disabled(qt_colorref2qrgb(GetSysColor(COLOR_GRAYTEXT)));
+    menu.setColor(QPalette::Disabled, QPalette::Foreground, disabled);
+    menu.setColor(QPalette::Disabled, QPalette::Text, disabled);
+    menu.setColor(QPalette::Disabled, QPalette::Highlight,
+                    QColor(qt_colorref2qrgb(GetSysColor(
+                                            (QSysInfo::WindowsVersion >= QSysInfo::WV_XP
+                                            && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based)
+                                            && isFlat ? COLOR_MENUHILIGHT
+                                                        : COLOR_HIGHLIGHT))));
+    menu.setColor(QPalette::Disabled, QPalette::HighlightedText, disabled);
+    menu.setColor(QPalette::Disabled, QPalette::Button,
+                    menu.color(QPalette::Active, QPalette::Button));
+    menu.setColor(QPalette::Inactive, QPalette::Button,
+                    menu.color(QPalette::Active, QPalette::Button));
+    menu.setColor(QPalette::Inactive, QPalette::Text,
+                    menu.color(QPalette::Active, QPalette::Text));
+    menu.setColor(QPalette::Inactive, QPalette::Foreground,
+                    menu.color(QPalette::Active, QPalette::Foreground));
+    menu.setColor(QPalette::Inactive, QPalette::ButtonText,
+                    menu.color(QPalette::Active, QPalette::ButtonText));
+    if (QSysInfo::WindowsVersion != QSysInfo::WV_NT && QSysInfo::WindowsVersion != QSysInfo::WV_95)
+        menu.setColor(QPalette::Inactive, QPalette::ButtonText,
+                        pal.color(QPalette::Inactive, QPalette::Dark));
+    QApplication::setPalette(menu, "QMenu");
+
+    if ((QSysInfo::WindowsVersion >= QSysInfo::WV_XP
+        && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based) && isFlat) {
+        QColor menubar(qt_colorref2qrgb(GetSysColor(COLOR_MENUBAR)));
+        menu.setColor(QPalette::Active, QPalette::Button, menubar);
+        menu.setColor(QPalette::Disabled, QPalette::Button, menubar);
+        menu.setColor(QPalette::Inactive, QPalette::Button, menubar);
+    }
+    QApplication::setPalette(menu, "QMenuBar");
 }
 
 /*****************************************************************************
@@ -636,8 +651,10 @@ void qt_init(QApplicationPrivate *priv, int)
 
     QT_WA({
         WM95_MOUSEWHEEL = RegisterWindowMessage(L"MSWHEEL_ROLLMSG");
+        WM_QT_REPAINT = RegisterWindowMessageW(L"WM_QT_REPAINT");
     } , {
         WM95_MOUSEWHEEL = RegisterWindowMessageA("MSWHEEL_ROLLMSG");
+        WM_QT_REPAINT = RegisterWindowMessageA("WM_QT_REPAINT");
     });
     initWinTabFunctions();
     QApplicationPrivate::inputContext = new QWinInputContext(0);
@@ -1018,36 +1035,13 @@ void qt_win_set_cursor(QWidget *w, const QCursor& /* c */)
   Routines to find a Qt widget from a screen position
  *****************************************************************************/
 
-static QWidget *findChildWidget(const QWidget *p, const QPoint &pos)
-{
-    QObjectList children = p->children();
-    for(int i = children.size(); i > 0 ;) {
-        --i;
-        QObject *o = children.at(i);
-        if (o->isWidgetType()) {
-            QWidget *w = (QWidget*)o;
-            if (w->isVisible() && w->geometry().contains(pos)) {
-                QWidget *c = findChildWidget(w, w->mapFromParent(pos));
-                return c ? c : w;
-            }
-        }
-    }
-    return 0;
-}
-
-QWidget *QApplication::topLevelAt(const QPoint &p)
-{
-    QWidget *c = QApplicationPrivate::widgetAt_sys(p.x(), p.y());
-    return c ? c->window() : 0;
-}
-
-QWidget *QApplicationPrivate::widgetAt_sys(int x, int y)
+QWidget *QApplication::topLevelAt(const QPoint &pos)
 {
     POINT p;
     HWND  win;
     QWidget *w;
-    p.x = x;
-    p.y = y;
+    p.x = pos.x();
+    p.y = pos.y();
     win = WindowFromPoint(p);
     if (!win)
         return 0;
@@ -1057,7 +1051,7 @@ QWidget *QApplicationPrivate::widgetAt_sys(int x, int y)
         win = GetParent(win);
         w = QWidget::find(win);
     }
-    return w;
+    return w ? w->window() : 0;
 }
 
 void QApplication::beep()
@@ -1122,6 +1116,10 @@ void qt_draw_tiled_pixmap(HDC hdc, int x, int y, int w, int h,
         delete tile;
 }
 
+QString QApplicationPrivate::appName() const
+{
+    return QCoreApplicationPrivate::appName();
+}
 
 
 /*****************************************************************************
@@ -1131,8 +1129,11 @@ void qt_draw_tiled_pixmap(HDC hdc, int x, int y, int w, int h,
 extern uint qGlobalPostedEventsCount();
 
 /*!
+    \internal
+    \since 4.1
+
     If \a gotFocus is true, \a widget will become the active window.
-    Otherwise the active window is reset to NULL.
+    Otherwise the active window is reset to 0.
 */
 void QApplication::winFocus(QWidget *widget, bool gotFocus)
 {
@@ -1281,7 +1282,7 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         sm_cancel = false;
         if (qt_session_manager_self)
             qApp->commitData(*qt_session_manager_self);
-        if (lParam == (LPARAM)ENDSESSION_LOGOFF) {
+        if (lParam & ENDSESSION_LOGOFF) {
             _flushall();
         }
         RETURN(!sm_cancel);
@@ -1428,6 +1429,8 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             if (!is_mouse_move || (is_mouse_move && !next_is_button))
                 qt_tabletChokeMouse = false;
         }
+    } else if (message == WM_QT_REPAINT) {
+        result = widget->translatePaintEvent(msg);
     } else if (message == WM95_MOUSEWHEEL) {
         result = widget->translateWheelEvent(msg);
     } else {
@@ -1617,7 +1620,11 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 #ifndef Q_OS_TEMP
             bool window_state_change = false;
             Qt::WindowStates oldstate = Qt::WindowStates(widget->dataPtr()->window_state);
-            switch(wParam) {
+            // MSDN:In WM_SYSCOMMAND messages, the four low-order bits of the wParam parameter are
+            // used internally by the system. To obtain the correct result when testing the value of
+            // wParam, an application must combine the value 0xFFF0 with the wParam value by using
+            // the bitwise AND operator.
+            switch(0xfff0 & wParam) {
             case SC_CONTEXTHELP:
 #ifndef QT_NO_WHATSTHIS
                 QWhatsThis::enterWhatsThisMode();
@@ -1649,8 +1656,8 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     widget->showChildren(true);
                     QShowEvent e;
                     qt_sendSpontaneousEvent(widget, &e);
-                } 
-                if (wParam == SC_MAXIMIZE)
+                }
+                if ((0xfff0 & wParam) == SC_MAXIMIZE)
                     widget->dataPtr()->window_state |= Qt::WindowMaximized;
                 else
                     widget->dataPtr()->window_state &= ~Qt::WindowMaximized;
@@ -1682,43 +1689,19 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             }
             break;
 
-#ifndef Q_OS_TEMP
-        case WM_NCLBUTTONDBLCLK:
-            if (wParam == HTCAPTION) {
-                bool window_state_changed = false;
-                Qt::WindowStates oldstate = widget->windowState();
-                if (widget->isMaximized()) {
-                    window_state_changed = true;
-                    widget->setWindowState(widget->windowState() & ~Qt::WindowMaximized);
-                } else if (widget->isMaximized()){
-                    window_state_changed = true;
-                    widget->setWindowState(widget->windowState() | Qt::WindowMaximized);
-                }
-
-                if (window_state_changed) {
-                    QWindowStateChangeEvent e(oldstate);
-                    qt_sendSpontaneousEvent(widget, &e);
-                }
-            }
-            result = false;
-            break;
-#endif
         case WM_PAINT:                                // paint event
-            result = widget->translatePaintEvent(msg);
-            break;
-
         case WM_ERASEBKGND:                        // erase window background
-            if (!widget->testAttribute(Qt::WA_PendingUpdate)
-                && !widget->testAttribute(Qt::WA_NoBackground)
-                && widget->windowType() != Qt::Popup
-                && widget->windowType() != Qt::ToolTip)
-                widget->eraseWindowBackground((HDC)wParam);
-            RETURN(true);
+            result = widget->translatePaintEvent(msg);
             break;
 
         case WM_MOVE:                                // move window
         case WM_SIZE:                                // resize window
             result = widget->translateConfigEvent(msg);
+            break;
+
+        case WM_ACTIVATEAPP:
+            if (wParam == FALSE)
+                QApplication::setActiveWindow(0);
             break;
 
         case WM_ACTIVATE:
@@ -1744,7 +1727,12 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     popup->close();
             }
 
-            qApp->winFocus(widget, LOWORD(wParam) != WA_INACTIVE);
+            // WM_ACTIVATEAPP handles the "true" false case, as this is only when the application
+            // looses focus. Doing it here would result in the widget getting focus to not know
+            // where it got it from; it would simply get a 0 value as the old focus widget.
+            if (LOWORD(wParam) != WA_INACTIVE)
+                qApp->winFocus(widget, true);
+
             // Windows tries to activate a modally blocked window.
             // This happens when restoring an application after "Show Desktop"
             if (app_do_modal && LOWORD(wParam) == WA_ACTIVE) {
@@ -1759,13 +1747,27 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 #ifndef Q_OS_TEMP
             case WM_MOUSEACTIVATE:
                 {
-                    const QWidget *tlw = widget->window();
-                    // Do not change activation if the clicked widget is inside a floating dock window
-                    if (tlw->inherits("QDockWidget") && qApp->activeWindow()
-                         && !qApp->activeWindow()->inherits("QDockWidget"))
-                        RETURN(MA_NOACTIVATE);
+                    QWidget *w = widget;
+                    if (!w->window()->focusWidget()) {
+                        while (w && (w->focusPolicy() & Qt::ClickFocus) == 0) {
+                            if (w->isTopLevel()) {
+                                QWidget *pw = w->parentWidget();
+                                while (pw) {
+                                    pw = pw->window();
+                                    if (pw && pw->isVisible() && pw->focusWidget()) {
+                                        SetWindowPos(pw->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+                                        RETURN(MA_NOACTIVATE);
+                                    }
+                                    pw = pw->parentWidget();
+                                }
+                                
+                                break;
+                            }
+                            w = w->parentWidget();
+                        }
+                    }
                 }
-                result = false;
+                RETURN(MA_ACTIVATE);
                 break;
 #endif
             case WM_SHOWWINDOW:
@@ -1775,6 +1777,18 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                         RETURN(0);
                 }
 #endif
+                if (widget->isWindow() && widget->testAttribute(Qt::WA_WState_Visible)
+                    && !widget->testWindowState(Qt::WindowMinimized)) {
+                    if (lParam == SW_PARENTOPENING) {
+                        QShowEvent e;
+                        qt_sendSpontaneousEvent(widget, &e);
+                        widget->showChildren(true);
+                    } else if (lParam == SW_PARENTCLOSING) {
+                        QHideEvent e;
+                        qt_sendSpontaneousEvent(widget, &e);
+                        widget->hideChildren(true);
+                    }
+                }
                 if  (!wParam && autoCaptureWnd == widget->winId())
                     releaseAutoCapture();
                 result = false;
@@ -1787,11 +1801,11 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         case WM_QUERYNEWPALETTE:                // realize own palette
             if (QColormap::hPal()) {
                 HDC hdc = GetDC(widget->winId());
-                HPALETTE hpalOld = SelectPalette(hdc, QColormap::hPal(), false);
+                HPALETTE hpalOld = SelectPalette(hdc, QColormap::hPal(), FALSE);
                 uint n = RealizePalette(hdc);
                 if (n)
-                    InvalidateRect(widget->winId(), 0, true);
-                SelectPalette(hdc, hpalOld, true);
+                    InvalidateRect(widget->winId(), 0, TRUE);
+                SelectPalette(hdc, hpalOld, TRUE);
                 RealizePalette(hdc);
                 ReleaseDC(widget->winId(), hdc);
                 RETURN(n);
@@ -1915,11 +1929,35 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             }
             result = false;
             break;
+        case WM_GETTEXT: {
+                int ret = 0;
+                QAccessibleInterface *acc = QAccessible::queryAccessibleInterface(widget);
+                if (acc) {
+                    QString text = acc->text(QAccessible::Name, 0);
+                    if (text.isEmpty())
+                        text = widget->objectName();
+                    ret = qMin<int>(wParam - 1, text.size());
+                    text.resize(ret);
+                    QT_WA({
+                        memcpy((void *)lParam, text.utf16(), (text.size() + 1) * 2);
+                    }, {
+                        memcpy((void *)lParam, text.toLocal8Bit().data(), text.size() + 1);
+                    });
+                    delete acc;
+                }
+                if (!ret) {
+                    result = false;
+                    break;
+                }
+                RETURN(ret);
+            }
+            break;
 #endif
         case WT_PACKET:
             if (ptrWTPacketsGet) {
                 if ((nPackets = ptrWTPacketsGet(qt_tablet_context, QT_TABLET_NPACKETQSIZE, &localPacketBuf))) {
-                    result = widget->translateTabletEvent(msg, localPacketBuf, nPackets);
+                    if (!qt_button_down) // flush the Queue but dont send the events if the mouse is down
+                        result = widget->translateTabletEvent(msg, localPacketBuf, nPackets);
                 }
             }
             break;
@@ -2201,12 +2239,12 @@ void QApplicationPrivate::closePopup(QWidget *popup)
     QApplicationPrivate::popupWidgets->removeAll(popup);
     POINT curPos;
     GetCursorPos(&curPos);
-    replayPopupMouseEvent = (!popup->geometry().contains(QPoint(curPos.x, curPos.y))
-                             && !popup->testAttribute(Qt::WA_NoMouseReplay));
 
     if (QApplicationPrivate::popupWidgets->isEmpty()) { // this was the last popup
         delete QApplicationPrivate::popupWidgets;
         QApplicationPrivate::popupWidgets = 0;
+        replayPopupMouseEvent = (!popup->geometry().contains(QPoint(curPos.x, curPos.y))
+                                && !popup->testAttribute(Qt::WA_NoMouseReplay));
         if (!popup->isEnabled())
             return;
         if (!qt_nograb())                        // grabbing not disabled
@@ -2487,9 +2525,8 @@ bool QETWidget::translateMouseEvent(const MSG &msg)
         pos = mapFromGlobal(QPoint(gpos.x, gpos.y));
 
         if (type == QEvent::MouseButtonPress || type == QEvent::MouseButtonDblClick) {        // mouse button pressed
-            // Magic for masked widgets
-            qt_button_down = findChildWidget(this, pos);
-            if (!qt_button_down || !qt_button_down->testAttribute(Qt::WA_MouseNoMask))
+            qt_button_down = childAt(pos);
+            if (!qt_button_down)
                 qt_button_down = this;
         }
     }
@@ -2507,7 +2544,7 @@ bool QETWidget::translateMouseEvent(const MSG &msg)
             else                                // send to last popup
                 pos = popup->mapFromGlobal(QPoint(gpos.x, gpos.y));
         }
-        QWidget *popupChild = findChildWidget(popup, pos);
+        QWidget *popupChild = popup->childAt(pos);
         bool releaseAfter = false;
         switch (type) {
             case QEvent::MouseButtonPress:
@@ -3088,8 +3125,8 @@ bool QETWidget::translateWheelEvent(const MSG &msg)
 //
 // Windows Wintab to QTabletEvent translation
 //
-typedef QHash<UINT, TabletDeviceData> TabletCursorInfo;
-Q_GLOBAL_STATIC(TabletCursorInfo, tCursorInfo)
+typedef QHash<UINT, QTabletDeviceData> QTabletCursorInfo;
+Q_GLOBAL_STATIC(QTabletCursorInfo, tCursorInfo)
 
 // the following is adapted from the wintab syspress example (public domain)
 /* -------------------------------------------------------------------------- */
@@ -3116,7 +3153,7 @@ static void tabletInit(UINT wActiveCsr, HCTX hTab)
         ptrWTGet(hTab, &lc);
 
         /* get the size of the pressure axis. */
-        TabletDeviceData tdd;
+        QTabletDeviceData tdd;
         ptrWTInfo(WTI_DEVICES + lc.lcDevice, DVC_NPRESSURE, &np);
         tdd.minPressure = int(np.axMin);
         tdd.maxPressure = int(np.axMax);
@@ -3161,6 +3198,9 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
     qreal rotation = 0.0;
     qreal tangentialPressure;
 
+    POINT point;
+    GetCursorPos(&point);
+
     // the most common event that we get...
     t = QEvent::TabletMove;
     for (i = 0; i < numPackets; i++) {
@@ -3183,6 +3223,9 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
             break;
         case 0x0006:
             dev = QTabletEvent::Puck;
+            break;
+        case 0x0804:
+            dev = QTabletEvent::RotationStylus;
             break;
         default:
             dev = QTabletEvent::NoDevice;
@@ -3217,10 +3260,15 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
         prsNew = 0.0;
         if (!tCursorInfo()->contains(localPacketBuf[i].pkCursor))
             tabletInit(localPacketBuf[i].pkCursor, qt_tablet_context);
-        TabletDeviceData tdd = tCursorInfo()->value(localPacketBuf[i].pkCursor);
+        QTabletDeviceData tdd = tCursorInfo()->value(localPacketBuf[i].pkCursor);
         QRect desktopArea = qt_desktopWidget->geometry();
         QPointF hiResGlobal = tdd.scaleCoord(ptNew.x, ptNew.y, desktopArea.left(), desktopArea.width(),
                                              desktopArea.top(), desktopArea.height());
+
+        // adjust to current on screen cursor pos. (only really needed when tablet is in mouse mode)
+        hiResGlobal.setX(hiResGlobal.x() - int(hiResGlobal.x() - .5) + point.x);
+        hiResGlobal.setY(hiResGlobal.y() - int(hiResGlobal.y() - .5) + point.y);
+
         if (btnNew) {
             if (pointerType == QTabletEvent::Pen || pointerType == QTabletEvent::Eraser)
                 prsNew = localPacketBuf[i].pkNormalPressure / qreal(tdd.maxPressure - tdd.minPressure);
@@ -3334,26 +3382,30 @@ bool QETWidget::sendKeyEvent(QEvent::Type type, int code,
 //
 // Paint event translation
 //
-bool QETWidget::translatePaintEvent(const MSG &)
+bool QETWidget::translatePaintEvent(const MSG &msg)
 {
     QRegion rgn(0, 0, 1, 1);
-    int res = GetUpdateRgn(winId(), rgn.handle(), false);
-    if (!GetUpdateRect(winId(), 0, false)  // The update bounding rect is invalid
+    int res = GetUpdateRgn(winId(), rgn.handle(), FALSE);
+    if (!GetUpdateRect(winId(), 0, FALSE)  // The update bounding rect is invalid
          || (res == ERROR)
          || (res == NULLREGION)) {
         d_func()->hd = 0;
+        setAttribute(Qt::WA_PendingUpdate, false);
         return false;
     }
+    if(msg.message == WM_ERASEBKGND) {
+        QWidgetBackingStore::blitToScreen(rgn, this);
+    } else {
+        setAttribute(Qt::WA_PendingUpdate, false);
+        PAINTSTRUCT ps;
+        d_func()->hd = BeginPaint(winId(), &ps);
 
-    PAINTSTRUCT ps;
-    d_func()->hd = BeginPaint(winId(), &ps);
-
-    // Mapping region from system to qt (32 bit) coordinate system.
-    rgn.translate(data->wrect.topLeft());
-    repaint(rgn);
-
-    d_func()->hd = 0;
-    EndPaint(winId(), &ps);
+        // Mapping region from system to qt (32 bit) coordinate system.
+        rgn.translate(data->wrect.topLeft());
+        qt_syncBackingStore(rgn, this, (msg.message == WM_QT_REPAINT));
+        d_func()->hd = 0;
+        EndPaint(winId(), &ps);
+    }
     return true;
 }
 
@@ -3410,8 +3462,12 @@ bool QETWidget::translateConfigEvent(const MSG &msg)
         if (isVisible()) {
             QResizeEvent e(newSize, oldSize);
             QApplication::sendSpontaneousEvent(this, &e);
-            if (!testAttribute(Qt::WA_StaticContents))
-                testAttribute(Qt::WA_WState_InPaintEvent)?update():repaint();
+            if (!testAttribute(Qt::WA_StaticContents)) {
+                if(QWidgetBackingStore::paintOnScreen(this))
+                    repaint();
+                else
+                    qt_syncBackingStore(d_func()->clipRect(), this);
+            }
         } else {
             QResizeEvent *e = new QResizeEvent(newSize, oldSize);
             QApplication::postEvent(this, e);

@@ -24,8 +24,8 @@
 #ifndef QDRAWUTIL_H
 #define QDRAWUTIL_H
 
-#include "QtCore/qnamespace.h"
-#include "QtCore/qstring.h" // char*->QString conversion
+#include <QtCore/qnamespace.h>
+#include <QtCore/qstring.h> // char*->QString conversion
 
 QT_MODULE(Gui)
 
@@ -95,7 +95,6 @@ Q_GUI_EXPORT void qDrawPlainRect(QPainter *p, const QRect &r, const QColor &,
 
 #ifdef QT3_SUPPORT
 //
-// Other obsolete drawing functions.
 // Use QStyle::itemRect(), QStyle::drawItem() and QStyle::drawArrow() instead.
 //
 Q_GUI_EXPORT QT3_SUPPORT QRect qItemRect(QPainter *p, Qt::GUIStyle gs, int x, int y, int w, int h,
@@ -111,6 +110,5 @@ Q_GUI_EXPORT QT3_SUPPORT void qDrawArrow(QPainter *p, Qt::ArrowType type, Qt::GU
                           int x, int y, int w, int h,
                           const QPalette &pal, bool enabled);
 #endif
-
 
 #endif // QDRAWUTIL_H

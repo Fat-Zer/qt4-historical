@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/qnamespace.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qnamespace.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Namespace Reference</title>
+    <title>Qt 4.1: Qt Namespace Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -58,7 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>enum <b><a href="qt.html#ItemDataRole-enum">ItemDataRole</a></b> { DisplayRole, DecorationRole, EditRole, ToolTipRole, ..., UserRole }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#ItemFlag-enum">ItemFlag</a></b> { ItemIsSelectable, ItemIsEditable, ItemIsDragEnabled, ItemIsDropEnabled, ..., ItemIsTristate }</li>
 <li><div class="fn"/>flags <b><a href="qt.html#ItemFlag-enum">ItemFlags</a></b></li>
-<li><div class="fn"/>enum <b><a href="qt.html#Key-enum">Key</a></b> { Key_Escape, Key_Tab, Key_Backtab, Key_Backspace, ..., Key_unknown }</li>
+<li><div class="fn"/>enum <b><a href="qt.html#Key-enum">Key</a></b> { Key_Escape, Key_Tab, Key_Backtab, Key_Backspace, ..., Key_Yes }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#KeyboardModifier-enum">KeyboardModifier</a></b> { NoModifier, ShiftModifier, ControlModifier, AltModifier, MetaModifier, KeypadModifier }</li>
 <li><div class="fn"/>flags <b><a href="qt.html#KeyboardModifier-enum">KeyboardModifiers</a></b></li>
 <li><div class="fn"/>enum <b><a href="qt.html#LayoutDirection-enum">LayoutDirection</a></b> { LeftToRight, RightToLeft }</li>
@@ -88,6 +88,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>enum <b><a href="qt.html#WhiteSpaceMode-enum">WhiteSpaceMode</a></b> { WhiteSpaceNormal, WhiteSpacePre, WhiteSpaceNoWrap }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#WidgetAttribute-enum">WidgetAttribute</a></b> { WA_AcceptDrops, WA_DeleteOnClose, WA_QuitOnClose, WA_KeyCompression, ..., WA_ShowModal }</li>
 <li><div class="fn"/>flags <b><a href="qt.html#WindowType-enum">WindowFlags</a></b></li>
+<li><div class="fn"/>enum <b><a href="qt.html#WindowModality-enum">WindowModality</a></b> { NonModal, WindowModal, ApplicationModal }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#WindowState-enum">WindowState</a></b> { WindowNoState, WindowMinimized, WindowMaximized, WindowFullScreen, WindowActive }</li>
 <li><div class="fn"/>flags <b><a href="qt.html#WindowState-enum">WindowStates</a></b></li>
 <li><div class="fn"/>enum <b><a href="qt.html#WindowType-enum">WindowType</a></b> { Widget, Window, Dialog, Sheet, ..., WMacNoSheet }</li>
@@ -351,7 +352,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Qt::PopupFocusReason</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The application opened/closed a popup that grabbed/released the keyboard focus.</td></tr>
 <tr><td valign="top"><tt>Qt::ShortcutFocusReason</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The user typed a label's buddy shortcut</td></tr>
 <tr><td valign="top"><tt>Qt::MenuBarFocusReason</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The menu bar took focus.</td></tr>
-<tr><td valign="top"><tt>Qt::OtherFocusReason</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Another reason, usually application-specific.</td></tr>
+<tr><td valign="top"><tt>Qt::OtherFocusReason</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Another reason, usually application-specific. No good reason, really.</td></tr>
 </table>
 <p>See also <a href="focus.html">Keyboard Focus</a>.</p>
 <h3 class="fn"><a name="GlobalColor-enum"></a>enum Qt::GlobalColor</h3>
@@ -476,6 +477,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Qt::ToolTipRole</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The data displayed in the item's tooltip.</td></tr>
 <tr><td valign="top"><tt>Qt::StatusTipRole</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The data displayed in the status bar.</td></tr>
 <tr><td valign="top"><tt>Qt::WhatsThisRole</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The data displayed for the item in &quot;What's This?&quot; mode.</td></tr>
+<tr><td valign="top"><tt>Qt::SizeHintRole</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">The size hint for the item that will be supplied to views.</td></tr>
 </table>
 <p>Roles describing appearance and meta data:</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -512,312 +514,323 @@ body { background: #ffffff; color: black; }</style>
 <p>The ItemFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;ItemFlag&gt;. It stores an OR combination of ItemFlag values.</p>
 <h3 class="fn"><a name="Key-enum"></a>enum Qt::Key</h3>
 <p>The key names used by Qt.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>Qt::Key_Escape</tt></td><td align="center" valign="top"><tt>0x01000000</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Tab</tt></td><td align="center" valign="top"><tt>0x01000001</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Backtab</tt></td><td align="center" valign="top"><tt>0x01000002</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Backspace</tt></td><td align="center" valign="top"><tt>0x01000003</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Return</tt></td><td align="center" valign="top"><tt>0x01000004</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Enter</tt></td><td align="center" valign="top"><tt>0x01000005</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Insert</tt></td><td align="center" valign="top"><tt>0x01000006</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Delete</tt></td><td align="center" valign="top"><tt>0x01000007</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Pause</tt></td><td align="center" valign="top"><tt>0x01000008</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Print</tt></td><td align="center" valign="top"><tt>0x01000009</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_SysReq</tt></td><td align="center" valign="top"><tt>0x0100000a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Clear</tt></td><td align="center" valign="top"><tt>0x0100000b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Home</tt></td><td align="center" valign="top"><tt>0x01000010</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_End</tt></td><td align="center" valign="top"><tt>0x01000011</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Left</tt></td><td align="center" valign="top"><tt>0x01000012</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Up</tt></td><td align="center" valign="top"><tt>0x01000013</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Right</tt></td><td align="center" valign="top"><tt>0x01000014</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Down</tt></td><td align="center" valign="top"><tt>0x01000015</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_PageUp</tt></td><td align="center" valign="top"><tt>0x01000016</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_PageDown</tt></td><td align="center" valign="top"><tt>0x01000017</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Shift</tt></td><td align="center" valign="top"><tt>0x01000020</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Control</tt></td><td align="center" valign="top"><tt>0x01000021</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Meta</tt></td><td align="center" valign="top"><tt>0x01000022</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Alt</tt></td><td align="center" valign="top"><tt>0x01000023</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_CapsLock</tt></td><td align="center" valign="top"><tt>0x01000024</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_NumLock</tt></td><td align="center" valign="top"><tt>0x01000025</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ScrollLock</tt></td><td align="center" valign="top"><tt>0x01000026</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F1</tt></td><td align="center" valign="top"><tt>0x01000030</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F2</tt></td><td align="center" valign="top"><tt>0x01000031</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F3</tt></td><td align="center" valign="top"><tt>0x01000032</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F4</tt></td><td align="center" valign="top"><tt>0x01000033</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F5</tt></td><td align="center" valign="top"><tt>0x01000034</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F6</tt></td><td align="center" valign="top"><tt>0x01000035</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F7</tt></td><td align="center" valign="top"><tt>0x01000036</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F8</tt></td><td align="center" valign="top"><tt>0x01000037</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F9</tt></td><td align="center" valign="top"><tt>0x01000038</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F10</tt></td><td align="center" valign="top"><tt>0x01000039</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F11</tt></td><td align="center" valign="top"><tt>0x0100003a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F12</tt></td><td align="center" valign="top"><tt>0x0100003b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F13</tt></td><td align="center" valign="top"><tt>0x0100003c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F14</tt></td><td align="center" valign="top"><tt>0x0100003d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F15</tt></td><td align="center" valign="top"><tt>0x0100003e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F16</tt></td><td align="center" valign="top"><tt>0x0100003f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F17</tt></td><td align="center" valign="top"><tt>0x01000040</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F18</tt></td><td align="center" valign="top"><tt>0x01000041</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F19</tt></td><td align="center" valign="top"><tt>0x01000042</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F20</tt></td><td align="center" valign="top"><tt>0x01000043</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F21</tt></td><td align="center" valign="top"><tt>0x01000044</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F22</tt></td><td align="center" valign="top"><tt>0x01000045</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F23</tt></td><td align="center" valign="top"><tt>0x01000046</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F24</tt></td><td align="center" valign="top"><tt>0x01000047</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F25</tt></td><td align="center" valign="top"><tt>0x01000048</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F26</tt></td><td align="center" valign="top"><tt>0x01000049</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F27</tt></td><td align="center" valign="top"><tt>0x0100004a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F28</tt></td><td align="center" valign="top"><tt>0x0100004b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F29</tt></td><td align="center" valign="top"><tt>0x0100004c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F30</tt></td><td align="center" valign="top"><tt>0x0100004d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F31</tt></td><td align="center" valign="top"><tt>0x0100004e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F32</tt></td><td align="center" valign="top"><tt>0x0100004f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F33</tt></td><td align="center" valign="top"><tt>0x01000050</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F34</tt></td><td align="center" valign="top"><tt>0x01000051</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F35</tt></td><td align="center" valign="top"><tt>0x01000052</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Super_L</tt></td><td align="center" valign="top"><tt>0x01000053</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Super_R</tt></td><td align="center" valign="top"><tt>0x01000054</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Menu</tt></td><td align="center" valign="top"><tt>0x01000055</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hyper_L</tt></td><td align="center" valign="top"><tt>0x01000056</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hyper_R</tt></td><td align="center" valign="top"><tt>0x01000057</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Help</tt></td><td align="center" valign="top"><tt>0x01000058</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Direction_L</tt></td><td align="center" valign="top"><tt>0x01000059</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Direction_R</tt></td><td align="center" valign="top"><tt>0x01000060</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Space</tt></td><td align="center" valign="top"><tt>0x20</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Any</tt></td><td align="center" valign="top"><tt>Key_Space</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Exclam</tt></td><td align="center" valign="top"><tt>0x21</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_QuoteDbl</tt></td><td align="center" valign="top"><tt>0x22</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_NumberSign</tt></td><td align="center" valign="top"><tt>0x23</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dollar</tt></td><td align="center" valign="top"><tt>0x24</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Percent</tt></td><td align="center" valign="top"><tt>0x25</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ampersand</tt></td><td align="center" valign="top"><tt>0x26</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Apostrophe</tt></td><td align="center" valign="top"><tt>0x27</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ParenLeft</tt></td><td align="center" valign="top"><tt>0x28</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ParenRight</tt></td><td align="center" valign="top"><tt>0x29</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Asterisk</tt></td><td align="center" valign="top"><tt>0x2a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Plus</tt></td><td align="center" valign="top"><tt>0x2b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Comma</tt></td><td align="center" valign="top"><tt>0x2c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Minus</tt></td><td align="center" valign="top"><tt>0x2d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Period</tt></td><td align="center" valign="top"><tt>0x2e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Slash</tt></td><td align="center" valign="top"><tt>0x2f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_0</tt></td><td align="center" valign="top"><tt>0x30</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_1</tt></td><td align="center" valign="top"><tt>0x31</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_2</tt></td><td align="center" valign="top"><tt>0x32</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_3</tt></td><td align="center" valign="top"><tt>0x33</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_4</tt></td><td align="center" valign="top"><tt>0x34</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_5</tt></td><td align="center" valign="top"><tt>0x35</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_6</tt></td><td align="center" valign="top"><tt>0x36</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_7</tt></td><td align="center" valign="top"><tt>0x37</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_8</tt></td><td align="center" valign="top"><tt>0x38</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_9</tt></td><td align="center" valign="top"><tt>0x39</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Colon</tt></td><td align="center" valign="top"><tt>0x3a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Semicolon</tt></td><td align="center" valign="top"><tt>0x3b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Less</tt></td><td align="center" valign="top"><tt>0x3c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Equal</tt></td><td align="center" valign="top"><tt>0x3d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Greater</tt></td><td align="center" valign="top"><tt>0x3e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Question</tt></td><td align="center" valign="top"><tt>0x3f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_At</tt></td><td align="center" valign="top"><tt>0x40</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_A</tt></td><td align="center" valign="top"><tt>0x41</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_B</tt></td><td align="center" valign="top"><tt>0x42</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_C</tt></td><td align="center" valign="top"><tt>0x43</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_D</tt></td><td align="center" valign="top"><tt>0x44</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_E</tt></td><td align="center" valign="top"><tt>0x45</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_F</tt></td><td align="center" valign="top"><tt>0x46</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_G</tt></td><td align="center" valign="top"><tt>0x47</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_H</tt></td><td align="center" valign="top"><tt>0x48</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_I</tt></td><td align="center" valign="top"><tt>0x49</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_J</tt></td><td align="center" valign="top"><tt>0x4a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_K</tt></td><td align="center" valign="top"><tt>0x4b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_L</tt></td><td align="center" valign="top"><tt>0x4c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_M</tt></td><td align="center" valign="top"><tt>0x4d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_N</tt></td><td align="center" valign="top"><tt>0x4e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_O</tt></td><td align="center" valign="top"><tt>0x4f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_P</tt></td><td align="center" valign="top"><tt>0x50</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Q</tt></td><td align="center" valign="top"><tt>0x51</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_R</tt></td><td align="center" valign="top"><tt>0x52</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_S</tt></td><td align="center" valign="top"><tt>0x53</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_T</tt></td><td align="center" valign="top"><tt>0x54</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_U</tt></td><td align="center" valign="top"><tt>0x55</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_V</tt></td><td align="center" valign="top"><tt>0x56</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_W</tt></td><td align="center" valign="top"><tt>0x57</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_X</tt></td><td align="center" valign="top"><tt>0x58</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Y</tt></td><td align="center" valign="top"><tt>0x59</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Z</tt></td><td align="center" valign="top"><tt>0x5a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BracketLeft</tt></td><td align="center" valign="top"><tt>0x5b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Backslash</tt></td><td align="center" valign="top"><tt>0x5c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BracketRight</tt></td><td align="center" valign="top"><tt>0x5d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_AsciiCircum</tt></td><td align="center" valign="top"><tt>0x5e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Underscore</tt></td><td align="center" valign="top"><tt>0x5f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_QuoteLeft</tt></td><td align="center" valign="top"><tt>0x60</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BraceLeft</tt></td><td align="center" valign="top"><tt>0x7b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Bar</tt></td><td align="center" valign="top"><tt>0x7c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BraceRight</tt></td><td align="center" valign="top"><tt>0x7d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_AsciiTilde</tt></td><td align="center" valign="top"><tt>0x7e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_nobreakspace</tt></td><td align="center" valign="top"><tt>0x0a0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_exclamdown</tt></td><td align="center" valign="top"><tt>0x0a1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_cent</tt></td><td align="center" valign="top"><tt>0x0a2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_sterling</tt></td><td align="center" valign="top"><tt>0x0a3</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_currency</tt></td><td align="center" valign="top"><tt>0x0a4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_yen</tt></td><td align="center" valign="top"><tt>0x0a5</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_brokenbar</tt></td><td align="center" valign="top"><tt>0x0a6</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_section</tt></td><td align="center" valign="top"><tt>0x0a7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_diaeresis</tt></td><td align="center" valign="top"><tt>0x0a8</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_copyright</tt></td><td align="center" valign="top"><tt>0x0a9</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ordfeminine</tt></td><td align="center" valign="top"><tt>0x0aa</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_guillemotleft</tt></td><td align="center" valign="top"><tt>0x0ab</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_notsign</tt></td><td align="center" valign="top"><tt>0x0ac</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_hyphen</tt></td><td align="center" valign="top"><tt>0x0ad</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_registered</tt></td><td align="center" valign="top"><tt>0x0ae</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_macron</tt></td><td align="center" valign="top"><tt>0x0af</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_degree</tt></td><td align="center" valign="top"><tt>0x0b0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_plusminus</tt></td><td align="center" valign="top"><tt>0x0b1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_twosuperior</tt></td><td align="center" valign="top"><tt>0x0b2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_threesuperior</tt></td><td align="center" valign="top"><tt>0x0b3</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_acute</tt></td><td align="center" valign="top"><tt>0x0b4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_mu</tt></td><td align="center" valign="top"><tt>0x0b5</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_paragraph</tt></td><td align="center" valign="top"><tt>0x0b6</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_periodcentered</tt></td><td align="center" valign="top"><tt>0x0b7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_cedilla</tt></td><td align="center" valign="top"><tt>0x0b8</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_onesuperior</tt></td><td align="center" valign="top"><tt>0x0b9</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_masculine</tt></td><td align="center" valign="top"><tt>0x0ba</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_guillemotright</tt></td><td align="center" valign="top"><tt>0x0bb</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_onequarter</tt></td><td align="center" valign="top"><tt>0x0bc</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_onehalf</tt></td><td align="center" valign="top"><tt>0x0bd</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_threequarters</tt></td><td align="center" valign="top"><tt>0x0be</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_questiondown</tt></td><td align="center" valign="top"><tt>0x0bf</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Agrave</tt></td><td align="center" valign="top"><tt>0x0c0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Aacute</tt></td><td align="center" valign="top"><tt>0x0c1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Acircumflex</tt></td><td align="center" valign="top"><tt>0x0c2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Atilde</tt></td><td align="center" valign="top"><tt>0x0c3</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Adiaeresis</tt></td><td align="center" valign="top"><tt>0x0c4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Aring</tt></td><td align="center" valign="top"><tt>0x0c5</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_AE</tt></td><td align="center" valign="top"><tt>0x0c6</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ccedilla</tt></td><td align="center" valign="top"><tt>0x0c7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Egrave</tt></td><td align="center" valign="top"><tt>0x0c8</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Eacute</tt></td><td align="center" valign="top"><tt>0x0c9</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ecircumflex</tt></td><td align="center" valign="top"><tt>0x0ca</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ediaeresis</tt></td><td align="center" valign="top"><tt>0x0cb</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Igrave</tt></td><td align="center" valign="top"><tt>0x0cc</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Iacute</tt></td><td align="center" valign="top"><tt>0x0cd</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Icircumflex</tt></td><td align="center" valign="top"><tt>0x0ce</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Idiaeresis</tt></td><td align="center" valign="top"><tt>0x0cf</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ETH</tt></td><td align="center" valign="top"><tt>0x0d0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ntilde</tt></td><td align="center" valign="top"><tt>0x0d1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ograve</tt></td><td align="center" valign="top"><tt>0x0d2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Oacute</tt></td><td align="center" valign="top"><tt>0x0d3</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ocircumflex</tt></td><td align="center" valign="top"><tt>0x0d4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Otilde</tt></td><td align="center" valign="top"><tt>0x0d5</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Odiaeresis</tt></td><td align="center" valign="top"><tt>0x0d6</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_multiply</tt></td><td align="center" valign="top"><tt>0x0d7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ooblique</tt></td><td align="center" valign="top"><tt>0x0d8</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ugrave</tt></td><td align="center" valign="top"><tt>0x0d9</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Uacute</tt></td><td align="center" valign="top"><tt>0x0da</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Ucircumflex</tt></td><td align="center" valign="top"><tt>0x0db</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Udiaeresis</tt></td><td align="center" valign="top"><tt>0x0dc</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Yacute</tt></td><td align="center" valign="top"><tt>0x0dd</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_THORN</tt></td><td align="center" valign="top"><tt>0x0de</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ssharp</tt></td><td align="center" valign="top"><tt>0x0df</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_division</tt></td><td align="center" valign="top"><tt>0x0f7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_ydiaeresis</tt></td><td align="center" valign="top"><tt>0x0ff</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Multi_key</tt></td><td align="center" valign="top"><tt>0x01001120</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Codeinput</tt></td><td align="center" valign="top"><tt>0x01001137</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_SingleCandidate</tt></td><td align="center" valign="top"><tt>0x0100113c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MultipleCandidate</tt></td><td align="center" valign="top"><tt>0x0100113d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_PreviousCandidate</tt></td><td align="center" valign="top"><tt>0x0100113e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Mode_switch</tt></td><td align="center" valign="top"><tt>0x0100117e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Kanji</tt></td><td align="center" valign="top"><tt>0x01001121</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Muhenkan</tt></td><td align="center" valign="top"><tt>0x01001122</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Henkan</tt></td><td align="center" valign="top"><tt>0x01001123</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Romaji</tt></td><td align="center" valign="top"><tt>0x01001124</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hiragana</tt></td><td align="center" valign="top"><tt>0x01001125</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Katakana</tt></td><td align="center" valign="top"><tt>0x01001126</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hiragana_Katakana</tt></td><td align="center" valign="top"><tt>0x01001127</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Zenkaku</tt></td><td align="center" valign="top"><tt>0x01001128</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hankaku</tt></td><td align="center" valign="top"><tt>0x01001129</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Zenkaku_Hankaku</tt></td><td align="center" valign="top"><tt>0x0100112a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Touroku</tt></td><td align="center" valign="top"><tt>0x0100112b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Massyo</tt></td><td align="center" valign="top"><tt>0x0100112c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Kana_Lock</tt></td><td align="center" valign="top"><tt>0x0100112d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Kana_Shift</tt></td><td align="center" valign="top"><tt>0x0100112e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Eisu_Shift</tt></td><td align="center" valign="top"><tt>0x0100112f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Eisu_toggle</tt></td><td align="center" valign="top"><tt>0x01001130</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul</tt></td><td align="center" valign="top"><tt>0x01001131</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Start</tt></td><td align="center" valign="top"><tt>0x01001132</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_End</tt></td><td align="center" valign="top"><tt>0x01001133</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Hanja</tt></td><td align="center" valign="top"><tt>0x01001134</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Jamo</tt></td><td align="center" valign="top"><tt>0x01001135</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Romaja</tt></td><td align="center" valign="top"><tt>0x01001136</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Jeonja</tt></td><td align="center" valign="top"><tt>0x01001138</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Banja</tt></td><td align="center" valign="top"><tt>0x01001139</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_PreHanja</tt></td><td align="center" valign="top"><tt>0x0100113a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_PostHanja</tt></td><td align="center" valign="top"><tt>0x0100113b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Hangul_Special</tt></td><td align="center" valign="top"><tt>0x0100113f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Grave</tt></td><td align="center" valign="top"><tt>0x01001250</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Acute</tt></td><td align="center" valign="top"><tt>0x01001251</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Circumflex</tt></td><td align="center" valign="top"><tt>0x01001252</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Tilde</tt></td><td align="center" valign="top"><tt>0x01001253</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Macron</tt></td><td align="center" valign="top"><tt>0x01001254</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Breve</tt></td><td align="center" valign="top"><tt>0x01001255</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Abovedot</tt></td><td align="center" valign="top"><tt>0x01001256</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Diaeresis</tt></td><td align="center" valign="top"><tt>0x01001257</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Abovering</tt></td><td align="center" valign="top"><tt>0x01001258</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Doubleacute</tt></td><td align="center" valign="top"><tt>0x01001259</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Caron</tt></td><td align="center" valign="top"><tt>0x0100125a</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Cedilla</tt></td><td align="center" valign="top"><tt>0x0100125b</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Ogonek</tt></td><td align="center" valign="top"><tt>0x0100125c</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Iota</tt></td><td align="center" valign="top"><tt>0x0100125d</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Voiced_Sound</tt></td><td align="center" valign="top"><tt>0x0100125e</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Semivoiced_Sound</tt></td><td align="center" valign="top"><tt>0x0100125f</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Belowdot</tt></td><td align="center" valign="top"><tt>0x01001260</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Hook</tt></td><td align="center" valign="top"><tt>0x01001261</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Dead_Horn</tt></td><td align="center" valign="top"><tt>0x01001262</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Back</tt></td><td align="center" valign="top"><tt>0x01000061</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Forward</tt></td><td align="center" valign="top"><tt>0x01000062</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Stop</tt></td><td align="center" valign="top"><tt>0x01000063</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Refresh</tt></td><td align="center" valign="top"><tt>0x01000064</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_VolumeDown</tt></td><td align="center" valign="top"><tt>0x01000070</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_VolumeMute</tt></td><td align="center" valign="top"><tt>0x01000071</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_VolumeUp</tt></td><td align="center" valign="top"><tt>0x01000072</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BassBoost</tt></td><td align="center" valign="top"><tt>0x01000073</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BassUp</tt></td><td align="center" valign="top"><tt>0x01000074</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_BassDown</tt></td><td align="center" valign="top"><tt>0x01000075</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_TrebleUp</tt></td><td align="center" valign="top"><tt>0x01000076</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_TrebleDown</tt></td><td align="center" valign="top"><tt>0x01000077</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MediaPlay</tt></td><td align="center" valign="top"><tt>0x01000080</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MediaStop</tt></td><td align="center" valign="top"><tt>0x01000081</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MediaPrevious</tt></td><td align="center" valign="top"><tt>0x01000082</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MediaNext</tt></td><td align="center" valign="top"><tt>0x01000083</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MediaRecord</tt></td><td align="center" valign="top"><tt>0x01000084</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_HomePage</tt></td><td align="center" valign="top"><tt>0x01000090</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Favorites</tt></td><td align="center" valign="top"><tt>0x01000091</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Search</tt></td><td align="center" valign="top"><tt>0x01000092</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Standby</tt></td><td align="center" valign="top"><tt>0x01000093</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_OpenUrl</tt></td><td align="center" valign="top"><tt>0x01000094</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchMail</tt></td><td align="center" valign="top"><tt>0x010000a0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchMedia</tt></td><td align="center" valign="top"><tt>0x010000a1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch0</tt></td><td align="center" valign="top"><tt>0x010000a2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch1</tt></td><td align="center" valign="top"><tt>0x010000a3</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch2</tt></td><td align="center" valign="top"><tt>0x010000a4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch3</tt></td><td align="center" valign="top"><tt>0x010000a5</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch4</tt></td><td align="center" valign="top"><tt>0x010000a6</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch5</tt></td><td align="center" valign="top"><tt>0x010000a7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch6</tt></td><td align="center" valign="top"><tt>0x010000a8</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch7</tt></td><td align="center" valign="top"><tt>0x010000a9</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch8</tt></td><td align="center" valign="top"><tt>0x010000aa</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_Launch9</tt></td><td align="center" valign="top"><tt>0x010000ab</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchA</tt></td><td align="center" valign="top"><tt>0x010000ac</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchB</tt></td><td align="center" valign="top"><tt>0x010000ad</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchC</tt></td><td align="center" valign="top"><tt>0x010000ae</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchD</tt></td><td align="center" valign="top"><tt>0x010000af</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchE</tt></td><td align="center" valign="top"><tt>0x010000b0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_LaunchF</tt></td><td align="center" valign="top"><tt>0x010000b1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_MediaLast</tt></td><td align="center" valign="top"><tt>0x0100ffff</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Key_unknown</tt></td><td align="center" valign="top"><tt>0x01ffffff</tt></td></tr>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>Qt::Key_Escape</tt></td><td align="center" valign="top"><tt>0x01000000</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Tab</tt></td><td align="center" valign="top"><tt>0x01000001</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Backtab</tt></td><td align="center" valign="top"><tt>0x01000002</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Backspace</tt></td><td align="center" valign="top"><tt>0x01000003</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Return</tt></td><td align="center" valign="top"><tt>0x01000004</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Enter</tt></td><td align="center" valign="top"><tt>0x01000005</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Insert</tt></td><td align="center" valign="top"><tt>0x01000006</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Delete</tt></td><td align="center" valign="top"><tt>0x01000007</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Pause</tt></td><td align="center" valign="top"><tt>0x01000008</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Print</tt></td><td align="center" valign="top"><tt>0x01000009</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_SysReq</tt></td><td align="center" valign="top"><tt>0x0100000a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Clear</tt></td><td align="center" valign="top"><tt>0x0100000b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Home</tt></td><td align="center" valign="top"><tt>0x01000010</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_End</tt></td><td align="center" valign="top"><tt>0x01000011</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Left</tt></td><td align="center" valign="top"><tt>0x01000012</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Up</tt></td><td align="center" valign="top"><tt>0x01000013</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Right</tt></td><td align="center" valign="top"><tt>0x01000014</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Down</tt></td><td align="center" valign="top"><tt>0x01000015</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_PageUp</tt></td><td align="center" valign="top"><tt>0x01000016</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_PageDown</tt></td><td align="center" valign="top"><tt>0x01000017</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Shift</tt></td><td align="center" valign="top"><tt>0x01000020</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Control</tt></td><td align="center" valign="top"><tt>0x01000021</tt></td><td valign="top">On Mac OS X, this corresponds to the Command keys.</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Meta</tt></td><td align="center" valign="top"><tt>0x01000022</tt></td><td valign="top">On Mac OS X, this corresponds to the Control keys.</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Alt</tt></td><td align="center" valign="top"><tt>0x01000023</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_CapsLock</tt></td><td align="center" valign="top"><tt>0x01000024</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_NumLock</tt></td><td align="center" valign="top"><tt>0x01000025</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ScrollLock</tt></td><td align="center" valign="top"><tt>0x01000026</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F1</tt></td><td align="center" valign="top"><tt>0x01000030</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F2</tt></td><td align="center" valign="top"><tt>0x01000031</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F3</tt></td><td align="center" valign="top"><tt>0x01000032</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F4</tt></td><td align="center" valign="top"><tt>0x01000033</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F5</tt></td><td align="center" valign="top"><tt>0x01000034</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F6</tt></td><td align="center" valign="top"><tt>0x01000035</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F7</tt></td><td align="center" valign="top"><tt>0x01000036</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F8</tt></td><td align="center" valign="top"><tt>0x01000037</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F9</tt></td><td align="center" valign="top"><tt>0x01000038</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F10</tt></td><td align="center" valign="top"><tt>0x01000039</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F11</tt></td><td align="center" valign="top"><tt>0x0100003a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F12</tt></td><td align="center" valign="top"><tt>0x0100003b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F13</tt></td><td align="center" valign="top"><tt>0x0100003c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F14</tt></td><td align="center" valign="top"><tt>0x0100003d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F15</tt></td><td align="center" valign="top"><tt>0x0100003e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F16</tt></td><td align="center" valign="top"><tt>0x0100003f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F17</tt></td><td align="center" valign="top"><tt>0x01000040</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F18</tt></td><td align="center" valign="top"><tt>0x01000041</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F19</tt></td><td align="center" valign="top"><tt>0x01000042</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F20</tt></td><td align="center" valign="top"><tt>0x01000043</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F21</tt></td><td align="center" valign="top"><tt>0x01000044</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F22</tt></td><td align="center" valign="top"><tt>0x01000045</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F23</tt></td><td align="center" valign="top"><tt>0x01000046</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F24</tt></td><td align="center" valign="top"><tt>0x01000047</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F25</tt></td><td align="center" valign="top"><tt>0x01000048</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F26</tt></td><td align="center" valign="top"><tt>0x01000049</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F27</tt></td><td align="center" valign="top"><tt>0x0100004a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F28</tt></td><td align="center" valign="top"><tt>0x0100004b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F29</tt></td><td align="center" valign="top"><tt>0x0100004c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F30</tt></td><td align="center" valign="top"><tt>0x0100004d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F31</tt></td><td align="center" valign="top"><tt>0x0100004e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F32</tt></td><td align="center" valign="top"><tt>0x0100004f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F33</tt></td><td align="center" valign="top"><tt>0x01000050</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F34</tt></td><td align="center" valign="top"><tt>0x01000051</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F35</tt></td><td align="center" valign="top"><tt>0x01000052</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Super_L</tt></td><td align="center" valign="top"><tt>0x01000053</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Super_R</tt></td><td align="center" valign="top"><tt>0x01000054</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Menu</tt></td><td align="center" valign="top"><tt>0x01000055</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hyper_L</tt></td><td align="center" valign="top"><tt>0x01000056</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hyper_R</tt></td><td align="center" valign="top"><tt>0x01000057</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Help</tt></td><td align="center" valign="top"><tt>0x01000058</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Direction_L</tt></td><td align="center" valign="top"><tt>0x01000059</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Direction_R</tt></td><td align="center" valign="top"><tt>0x01000060</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Space</tt></td><td align="center" valign="top"><tt>0x20</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Any</tt></td><td align="center" valign="top"><tt>Key_Space</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Exclam</tt></td><td align="center" valign="top"><tt>0x21</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_QuoteDbl</tt></td><td align="center" valign="top"><tt>0x22</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_NumberSign</tt></td><td align="center" valign="top"><tt>0x23</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dollar</tt></td><td align="center" valign="top"><tt>0x24</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Percent</tt></td><td align="center" valign="top"><tt>0x25</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ampersand</tt></td><td align="center" valign="top"><tt>0x26</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Apostrophe</tt></td><td align="center" valign="top"><tt>0x27</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ParenLeft</tt></td><td align="center" valign="top"><tt>0x28</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ParenRight</tt></td><td align="center" valign="top"><tt>0x29</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Asterisk</tt></td><td align="center" valign="top"><tt>0x2a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Plus</tt></td><td align="center" valign="top"><tt>0x2b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Comma</tt></td><td align="center" valign="top"><tt>0x2c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Minus</tt></td><td align="center" valign="top"><tt>0x2d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Period</tt></td><td align="center" valign="top"><tt>0x2e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Slash</tt></td><td align="center" valign="top"><tt>0x2f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_0</tt></td><td align="center" valign="top"><tt>0x30</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_1</tt></td><td align="center" valign="top"><tt>0x31</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_2</tt></td><td align="center" valign="top"><tt>0x32</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_3</tt></td><td align="center" valign="top"><tt>0x33</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_4</tt></td><td align="center" valign="top"><tt>0x34</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_5</tt></td><td align="center" valign="top"><tt>0x35</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_6</tt></td><td align="center" valign="top"><tt>0x36</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_7</tt></td><td align="center" valign="top"><tt>0x37</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_8</tt></td><td align="center" valign="top"><tt>0x38</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_9</tt></td><td align="center" valign="top"><tt>0x39</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Colon</tt></td><td align="center" valign="top"><tt>0x3a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Semicolon</tt></td><td align="center" valign="top"><tt>0x3b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Less</tt></td><td align="center" valign="top"><tt>0x3c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Equal</tt></td><td align="center" valign="top"><tt>0x3d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Greater</tt></td><td align="center" valign="top"><tt>0x3e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Question</tt></td><td align="center" valign="top"><tt>0x3f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_At</tt></td><td align="center" valign="top"><tt>0x40</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_A</tt></td><td align="center" valign="top"><tt>0x41</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_B</tt></td><td align="center" valign="top"><tt>0x42</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_C</tt></td><td align="center" valign="top"><tt>0x43</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_D</tt></td><td align="center" valign="top"><tt>0x44</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_E</tt></td><td align="center" valign="top"><tt>0x45</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_F</tt></td><td align="center" valign="top"><tt>0x46</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_G</tt></td><td align="center" valign="top"><tt>0x47</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_H</tt></td><td align="center" valign="top"><tt>0x48</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_I</tt></td><td align="center" valign="top"><tt>0x49</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_J</tt></td><td align="center" valign="top"><tt>0x4a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_K</tt></td><td align="center" valign="top"><tt>0x4b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_L</tt></td><td align="center" valign="top"><tt>0x4c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_M</tt></td><td align="center" valign="top"><tt>0x4d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_N</tt></td><td align="center" valign="top"><tt>0x4e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_O</tt></td><td align="center" valign="top"><tt>0x4f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_P</tt></td><td align="center" valign="top"><tt>0x50</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Q</tt></td><td align="center" valign="top"><tt>0x51</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_R</tt></td><td align="center" valign="top"><tt>0x52</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_S</tt></td><td align="center" valign="top"><tt>0x53</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_T</tt></td><td align="center" valign="top"><tt>0x54</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_U</tt></td><td align="center" valign="top"><tt>0x55</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_V</tt></td><td align="center" valign="top"><tt>0x56</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_W</tt></td><td align="center" valign="top"><tt>0x57</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_X</tt></td><td align="center" valign="top"><tt>0x58</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Y</tt></td><td align="center" valign="top"><tt>0x59</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Z</tt></td><td align="center" valign="top"><tt>0x5a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BracketLeft</tt></td><td align="center" valign="top"><tt>0x5b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Backslash</tt></td><td align="center" valign="top"><tt>0x5c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BracketRight</tt></td><td align="center" valign="top"><tt>0x5d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_AsciiCircum</tt></td><td align="center" valign="top"><tt>0x5e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Underscore</tt></td><td align="center" valign="top"><tt>0x5f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_QuoteLeft</tt></td><td align="center" valign="top"><tt>0x60</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BraceLeft</tt></td><td align="center" valign="top"><tt>0x7b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Bar</tt></td><td align="center" valign="top"><tt>0x7c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BraceRight</tt></td><td align="center" valign="top"><tt>0x7d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_AsciiTilde</tt></td><td align="center" valign="top"><tt>0x7e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_nobreakspace</tt></td><td align="center" valign="top"><tt>0x0a0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_exclamdown</tt></td><td align="center" valign="top"><tt>0x0a1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_cent</tt></td><td align="center" valign="top"><tt>0x0a2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_sterling</tt></td><td align="center" valign="top"><tt>0x0a3</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_currency</tt></td><td align="center" valign="top"><tt>0x0a4</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_yen</tt></td><td align="center" valign="top"><tt>0x0a5</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_brokenbar</tt></td><td align="center" valign="top"><tt>0x0a6</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_section</tt></td><td align="center" valign="top"><tt>0x0a7</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_diaeresis</tt></td><td align="center" valign="top"><tt>0x0a8</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_copyright</tt></td><td align="center" valign="top"><tt>0x0a9</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ordfeminine</tt></td><td align="center" valign="top"><tt>0x0aa</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_guillemotleft</tt></td><td align="center" valign="top"><tt>0x0ab</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_notsign</tt></td><td align="center" valign="top"><tt>0x0ac</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_hyphen</tt></td><td align="center" valign="top"><tt>0x0ad</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_registered</tt></td><td align="center" valign="top"><tt>0x0ae</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_macron</tt></td><td align="center" valign="top"><tt>0x0af</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_degree</tt></td><td align="center" valign="top"><tt>0x0b0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_plusminus</tt></td><td align="center" valign="top"><tt>0x0b1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_twosuperior</tt></td><td align="center" valign="top"><tt>0x0b2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_threesuperior</tt></td><td align="center" valign="top"><tt>0x0b3</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_acute</tt></td><td align="center" valign="top"><tt>0x0b4</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_mu</tt></td><td align="center" valign="top"><tt>0x0b5</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_paragraph</tt></td><td align="center" valign="top"><tt>0x0b6</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_periodcentered</tt></td><td align="center" valign="top"><tt>0x0b7</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_cedilla</tt></td><td align="center" valign="top"><tt>0x0b8</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_onesuperior</tt></td><td align="center" valign="top"><tt>0x0b9</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_masculine</tt></td><td align="center" valign="top"><tt>0x0ba</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_guillemotright</tt></td><td align="center" valign="top"><tt>0x0bb</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_onequarter</tt></td><td align="center" valign="top"><tt>0x0bc</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_onehalf</tt></td><td align="center" valign="top"><tt>0x0bd</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_threequarters</tt></td><td align="center" valign="top"><tt>0x0be</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_questiondown</tt></td><td align="center" valign="top"><tt>0x0bf</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Agrave</tt></td><td align="center" valign="top"><tt>0x0c0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Aacute</tt></td><td align="center" valign="top"><tt>0x0c1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Acircumflex</tt></td><td align="center" valign="top"><tt>0x0c2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Atilde</tt></td><td align="center" valign="top"><tt>0x0c3</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Adiaeresis</tt></td><td align="center" valign="top"><tt>0x0c4</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Aring</tt></td><td align="center" valign="top"><tt>0x0c5</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_AE</tt></td><td align="center" valign="top"><tt>0x0c6</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ccedilla</tt></td><td align="center" valign="top"><tt>0x0c7</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Egrave</tt></td><td align="center" valign="top"><tt>0x0c8</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Eacute</tt></td><td align="center" valign="top"><tt>0x0c9</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ecircumflex</tt></td><td align="center" valign="top"><tt>0x0ca</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ediaeresis</tt></td><td align="center" valign="top"><tt>0x0cb</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Igrave</tt></td><td align="center" valign="top"><tt>0x0cc</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Iacute</tt></td><td align="center" valign="top"><tt>0x0cd</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Icircumflex</tt></td><td align="center" valign="top"><tt>0x0ce</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Idiaeresis</tt></td><td align="center" valign="top"><tt>0x0cf</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ETH</tt></td><td align="center" valign="top"><tt>0x0d0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ntilde</tt></td><td align="center" valign="top"><tt>0x0d1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ograve</tt></td><td align="center" valign="top"><tt>0x0d2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Oacute</tt></td><td align="center" valign="top"><tt>0x0d3</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ocircumflex</tt></td><td align="center" valign="top"><tt>0x0d4</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Otilde</tt></td><td align="center" valign="top"><tt>0x0d5</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Odiaeresis</tt></td><td align="center" valign="top"><tt>0x0d6</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_multiply</tt></td><td align="center" valign="top"><tt>0x0d7</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ooblique</tt></td><td align="center" valign="top"><tt>0x0d8</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ugrave</tt></td><td align="center" valign="top"><tt>0x0d9</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Uacute</tt></td><td align="center" valign="top"><tt>0x0da</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Ucircumflex</tt></td><td align="center" valign="top"><tt>0x0db</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Udiaeresis</tt></td><td align="center" valign="top"><tt>0x0dc</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Yacute</tt></td><td align="center" valign="top"><tt>0x0dd</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_THORN</tt></td><td align="center" valign="top"><tt>0x0de</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ssharp</tt></td><td align="center" valign="top"><tt>0x0df</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_division</tt></td><td align="center" valign="top"><tt>0x0f7</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_ydiaeresis</tt></td><td align="center" valign="top"><tt>0x0ff</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Multi_key</tt></td><td align="center" valign="top"><tt>0x01001120</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Codeinput</tt></td><td align="center" valign="top"><tt>0x01001137</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_SingleCandidate</tt></td><td align="center" valign="top"><tt>0x0100113c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MultipleCandidate</tt></td><td align="center" valign="top"><tt>0x0100113d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_PreviousCandidate</tt></td><td align="center" valign="top"><tt>0x0100113e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Mode_switch</tt></td><td align="center" valign="top"><tt>0x0100117e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Kanji</tt></td><td align="center" valign="top"><tt>0x01001121</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Muhenkan</tt></td><td align="center" valign="top"><tt>0x01001122</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Henkan</tt></td><td align="center" valign="top"><tt>0x01001123</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Romaji</tt></td><td align="center" valign="top"><tt>0x01001124</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hiragana</tt></td><td align="center" valign="top"><tt>0x01001125</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Katakana</tt></td><td align="center" valign="top"><tt>0x01001126</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hiragana_Katakana</tt></td><td align="center" valign="top"><tt>0x01001127</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Zenkaku</tt></td><td align="center" valign="top"><tt>0x01001128</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hankaku</tt></td><td align="center" valign="top"><tt>0x01001129</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Zenkaku_Hankaku</tt></td><td align="center" valign="top"><tt>0x0100112a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Touroku</tt></td><td align="center" valign="top"><tt>0x0100112b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Massyo</tt></td><td align="center" valign="top"><tt>0x0100112c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Kana_Lock</tt></td><td align="center" valign="top"><tt>0x0100112d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Kana_Shift</tt></td><td align="center" valign="top"><tt>0x0100112e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Eisu_Shift</tt></td><td align="center" valign="top"><tt>0x0100112f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Eisu_toggle</tt></td><td align="center" valign="top"><tt>0x01001130</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul</tt></td><td align="center" valign="top"><tt>0x01001131</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Start</tt></td><td align="center" valign="top"><tt>0x01001132</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_End</tt></td><td align="center" valign="top"><tt>0x01001133</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Hanja</tt></td><td align="center" valign="top"><tt>0x01001134</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Jamo</tt></td><td align="center" valign="top"><tt>0x01001135</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Romaja</tt></td><td align="center" valign="top"><tt>0x01001136</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Jeonja</tt></td><td align="center" valign="top"><tt>0x01001138</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Banja</tt></td><td align="center" valign="top"><tt>0x01001139</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_PreHanja</tt></td><td align="center" valign="top"><tt>0x0100113a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_PostHanja</tt></td><td align="center" valign="top"><tt>0x0100113b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangul_Special</tt></td><td align="center" valign="top"><tt>0x0100113f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Grave</tt></td><td align="center" valign="top"><tt>0x01001250</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Acute</tt></td><td align="center" valign="top"><tt>0x01001251</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Circumflex</tt></td><td align="center" valign="top"><tt>0x01001252</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Tilde</tt></td><td align="center" valign="top"><tt>0x01001253</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Macron</tt></td><td align="center" valign="top"><tt>0x01001254</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Breve</tt></td><td align="center" valign="top"><tt>0x01001255</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Abovedot</tt></td><td align="center" valign="top"><tt>0x01001256</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Diaeresis</tt></td><td align="center" valign="top"><tt>0x01001257</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Abovering</tt></td><td align="center" valign="top"><tt>0x01001258</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Doubleacute</tt></td><td align="center" valign="top"><tt>0x01001259</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Caron</tt></td><td align="center" valign="top"><tt>0x0100125a</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Cedilla</tt></td><td align="center" valign="top"><tt>0x0100125b</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Ogonek</tt></td><td align="center" valign="top"><tt>0x0100125c</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Iota</tt></td><td align="center" valign="top"><tt>0x0100125d</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Voiced_Sound</tt></td><td align="center" valign="top"><tt>0x0100125e</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Semivoiced_Sound</tt></td><td align="center" valign="top"><tt>0x0100125f</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Belowdot</tt></td><td align="center" valign="top"><tt>0x01001260</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Hook</tt></td><td align="center" valign="top"><tt>0x01001261</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Dead_Horn</tt></td><td align="center" valign="top"><tt>0x01001262</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Back</tt></td><td align="center" valign="top"><tt>0x01000061</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Forward</tt></td><td align="center" valign="top"><tt>0x01000062</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Stop</tt></td><td align="center" valign="top"><tt>0x01000063</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Refresh</tt></td><td align="center" valign="top"><tt>0x01000064</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_VolumeDown</tt></td><td align="center" valign="top"><tt>0x01000070</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_VolumeMute</tt></td><td align="center" valign="top"><tt>0x01000071</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_VolumeUp</tt></td><td align="center" valign="top"><tt>0x01000072</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BassBoost</tt></td><td align="center" valign="top"><tt>0x01000073</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BassUp</tt></td><td align="center" valign="top"><tt>0x01000074</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_BassDown</tt></td><td align="center" valign="top"><tt>0x01000075</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_TrebleUp</tt></td><td align="center" valign="top"><tt>0x01000076</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_TrebleDown</tt></td><td align="center" valign="top"><tt>0x01000077</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MediaPlay</tt></td><td align="center" valign="top"><tt>0x01000080</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MediaStop</tt></td><td align="center" valign="top"><tt>0x01000081</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MediaPrevious</tt></td><td align="center" valign="top"><tt>0x01000082</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MediaNext</tt></td><td align="center" valign="top"><tt>0x01000083</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MediaRecord</tt></td><td align="center" valign="top"><tt>0x01000084</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_HomePage</tt></td><td align="center" valign="top"><tt>0x01000090</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Favorites</tt></td><td align="center" valign="top"><tt>0x01000091</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Search</tt></td><td align="center" valign="top"><tt>0x01000092</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Standby</tt></td><td align="center" valign="top"><tt>0x01000093</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_OpenUrl</tt></td><td align="center" valign="top"><tt>0x01000094</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchMail</tt></td><td align="center" valign="top"><tt>0x010000a0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchMedia</tt></td><td align="center" valign="top"><tt>0x010000a1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch0</tt></td><td align="center" valign="top"><tt>0x010000a2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch1</tt></td><td align="center" valign="top"><tt>0x010000a3</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch2</tt></td><td align="center" valign="top"><tt>0x010000a4</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch3</tt></td><td align="center" valign="top"><tt>0x010000a5</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch4</tt></td><td align="center" valign="top"><tt>0x010000a6</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch5</tt></td><td align="center" valign="top"><tt>0x010000a7</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch6</tt></td><td align="center" valign="top"><tt>0x010000a8</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch7</tt></td><td align="center" valign="top"><tt>0x010000a9</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch8</tt></td><td align="center" valign="top"><tt>0x010000aa</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Launch9</tt></td><td align="center" valign="top"><tt>0x010000ab</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchA</tt></td><td align="center" valign="top"><tt>0x010000ac</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchB</tt></td><td align="center" valign="top"><tt>0x010000ad</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchC</tt></td><td align="center" valign="top"><tt>0x010000ae</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchD</tt></td><td align="center" valign="top"><tt>0x010000af</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchE</tt></td><td align="center" valign="top"><tt>0x010000b0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_LaunchF</tt></td><td align="center" valign="top"><tt>0x010000b1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_MediaLast</tt></td><td align="center" valign="top"><tt>0x0100ffff</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_unknown</tt></td><td align="center" valign="top"><tt>0x01ffffff</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Call</tt></td><td align="center" valign="top"><tt>0x01100004</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Context1</tt></td><td align="center" valign="top"><tt>0x01100000</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Context2</tt></td><td align="center" valign="top"><tt>0x01100001</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Context3</tt></td><td align="center" valign="top"><tt>0x01100002</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Context4</tt></td><td align="center" valign="top"><tt>0x01100003</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Flip</tt></td><td align="center" valign="top"><tt>0x01100006</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Hangup</tt></td><td align="center" valign="top"><tt>0x01100005</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_No</tt></td><td align="center" valign="top"><tt>0x01010002</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Select</tt></td><td align="center" valign="top"><tt>0x01010000</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::Key_Yes</tt></td><td align="center" valign="top"><tt>0x01010001</tt></td><td valign="top">&nbsp;</td></tr>
 </table>
 <p>See also <a href="qkeyevent.html#key">QKeyEvent::key</a>().</p>
 <h3 class="flags"><a name="KeyboardModifier-enum"></a>enum Qt::KeyboardModifier<br />flags Qt::KeyboardModifiers</h3>
 <p>This enum describes the modifier keys.</p>
+<p><b>Note:</b> On Mac OS X, the <tt>ControlModifier</tt> value corresponds to the Command keys on the Macintosh keyboard, and the <tt>MetaModifier</tt> value corresponds to the Control keys.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::NoModifier</tt></td><td align="center" valign="top"><tt>0x00000000</tt></td><td valign="top">No modifier key is pressed.</td></tr>
@@ -855,6 +868,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The MatchFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;MatchFlag&gt;. It stores an OR combination of MatchFlag values.</p>
 <h3 class="fn"><a name="Modifier-enum"></a>enum Qt::Modifier</h3>
 <p>This enum provides shorter names for the keyboard modifier keys supported by Qt.</p>
+<p><b>Note:</b> On Mac OS X, the <tt>CTRL</tt> value corresponds to the Command keys on the Macintosh keyboard, and the <tt>META</tt> value corresponds to the Control keys.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::SHIFT</tt></td><td align="center" valign="top"><tt>Qt::ShiftModifier</tt></td><td valign="top">The Shift keys provided on all standard keyboards.</td></tr>
@@ -1036,25 +1050,26 @@ body { background: #ffffff; color: black; }</style>
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::WA_AcceptDrops</tt></td><td align="center" valign="top"><tt>78</tt></td><td valign="top">Allows data from drag and drop operations to be dropped onto the widget (see <a href="qwidget.html#acceptDrops-prop">QWidget::setAcceptDrops</a>()).</td></tr>
 <tr><td valign="top"><tt>Qt::WA_DeleteOnClose</tt></td><td align="center" valign="top"><tt>55</tt></td><td valign="top">Makes Qt delete this widget when the widget has accepted the close event (see <a href="qwidget.html#closeEvent">QWidget::closeEvent</a>()).</td></tr>
-<tr><td valign="top"><tt>Qt::WA_QuitOnClose</tt></td><td align="center" valign="top"><tt>76</tt></td><td valign="top">Makes Qt quit the application when the last widget with the attribute set has accepted closeEvent(). This behaviour can be adjusted with the <a href="qapplication.html#quitOnLastWindowClosed-prop">QApplication::quitOnLastWindowClosed</a> property. By default the attribute is set for all widgets of type <a href="qt.html#WindowType-enum">Qt::Window</a>.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_QuitOnClose</tt></td><td align="center" valign="top"><tt>76</tt></td><td valign="top">Makes Qt quit the application when the last widget with the attribute set has accepted closeEvent(). This behavior can be adjusted with the <a href="qapplication.html#quitOnLastWindowClosed-prop">QApplication::quitOnLastWindowClosed</a> property. By default the attribute is set for all widgets of type <a href="qt.html#WindowType-enum">Qt::Window</a>.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_KeyCompression</tt></td><td align="center" valign="top"><tt>33</tt></td><td valign="top">Enables key event compression if set, and disables it if not set. By default key compression is off, so widgets receive one key press event for each key press (or more, since autorepeat is usually on). If you turn it on and your program doesn't keep up with key input, Qt may try to compress key events so that more than one character can be processed in each event. For example, a word processor widget might receive 2, 3 or more characters in each <a href="qkeyevent.html#text">QKeyEvent::text</a>(), if the layout recalculation takes too long for the CPU. If a widget supports multiple character unicode input, it is always safe to turn the compression on. Qt performs key event compression only for printable characters. <a href="qt.html#Modifier-enum">Qt::Modifier</a> keys, cursor movement keys, function keys and miscellaneous action keys (e.g. Escape, Enter, Backspace, PrintScreen) will stop key event compression, even if there are more compressible key events available. Not all platforms support this compression, in which case turning it on will have no effect. This is set/cleared by the widget's author.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_PendingMoveEvent</tt></td><td align="center" valign="top"><tt>34</tt></td><td valign="top">Indicates that a move event is pending, e.g. when a hidden widget was moved. This is set/cleared by the Qt kernel</td></tr>
 <tr><td valign="top"><tt>Qt::WA_PendingResizeEvent</tt></td><td align="center" valign="top"><tt>35</tt></td><td valign="top">Indicates that a resize event is pending, e.g. when a hidden widget was resized. This is set/cleared by the Qt kernel.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_UnderMouse</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Indicates that the widget is under the mouse cursor. The value is not updated correctly during drag and drop operations. There is also a getter function <a href="qwidget.html#underMouse">QWidget::underMouse</a>(). This is set/cleared by the Qt kernel.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_Disabled</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Indicates that the widget is disabled, i.e. it does not receive any mouse or keyboard events. There is also a getter functions <a href="qwidget.html#enabled-prop">QWidget::isEnabled</a>(). This is set/cleared by the Qt kernel.</td></tr>
-<tr><td valign="top"><tt>Qt::WA_ContentsPropagated</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Allows the contents painted in a <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>() to be used as the background for children that inherit their background. This is set/cleared by the widget author or by the style.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_ContentsPropagated</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">This flag is superfluous and obsolete; it no longer has any effect. Since Qt 4.1, all widgets that do not set WA_PaintOnScreen propagate their contents.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_ForceDisabled</tt></td><td align="center" valign="top"><tt>32</tt></td><td valign="top">Indicates that the widget is explicitly disabled, i.e. it will remain disabled even when all its ancestors are set to the enabled state. This implies WA_Disabled. This is set/cleared by <a href="qwidget.html#enabled-prop">QWidget::setEnabled</a>() and <a href="qwidget.html#setDisabled">QWidget::setDisabled</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_SetPalette</tt></td><td align="center" valign="top"><tt>36</tt></td><td valign="top">Indicates that the widgets has a palette of its own. This is set/cleared by <a href="qwidget.html#palette-prop">QWidget::setPalette</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_SetFont</tt></td><td align="center" valign="top"><tt>37</tt></td><td valign="top">Indicates that the widgets has a font of its own. This is set/cleared by <a href="qwidget.html#font-prop">QWidget::setFont</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_SetCursor</tt></td><td align="center" valign="top"><tt>38</tt></td><td valign="top">Indicates that the widgets has a cursor of its own. This is set/cleared by <a href="qwidget.html#cursor-prop">QWidget::setCursor</a>() and <a href="qwidget.html#cursor-prop">QWidget::unsetCursor</a>().</td></tr>
-<tr><td valign="top"><tt>Qt::WA_NoBackground</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Indicates that the widget paints all its pixels when it receives a paint event. It is thus not required for operations like updating, resizing, scrolling and focus changes to call erase the widget before generating paint events. Using WA_NoBackground is a small optimization. It can help to reduce flicker on systems that do not provide double buffer support, and it avoids the computational cycles necessary to erase the background prior to paint. NOTE: Unlike WA_NoSystemBackground, WA_NoBackground makes an effort to avoid transparent window backgrounds. This is set/cleared by the widget's author.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_NoBackground</tt></td><td align="center" valign="top"><tt>WA_OpaquePaintEvent</tt></td><td valign="top">This value is obsolete. Use WA_OpaquePaintEvent instead.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_OpaquePaintEvent</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Indicates that the widget paints all its pixels when it receives a paint event. It is thus not required for operations like updating, resizing, scrolling and focus changes to call erase the widget before generating paint events. Using WA_NoBackground is a small optimization. It can help to reduce flicker on systems that do not provide double buffer support, and it avoids the computational cycles necessary to erase the background prior to paint. NOTE: Unlike WA_NoSystemBackground, WA_NoBackground makes an effort to avoid transparent window backgrounds. This is set/cleared by the widget's author.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_NoSystemBackground</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">Indicates that the widget has no background, i.e. when the widget receives paint events, the background is not automatically repainted. NOTE: Unlike WA_NoBackground, newly exposed areas are <i>never</i> filled with the background (e.g after showing a window for the first time the user can see &quot;through&quot; it until the application processes the paint events). Setting this flag implicitly disables double buffering for the widget. This is set/cleared by the widget's author.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_UpdatesDisabled</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">Indicates that updates are blocked (including the system background). This flag must never be set/cleared by the widget author. It is set/cleared by the Qt kernel.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_ForceUpdatesDisabled</tt></td><td align="center" valign="top"><tt>59</tt></td><td valign="top">Indicates that the widget is explicitly updates disabled, i.e. it will remain disabled even when all its ancestors are set to the updates enabled state. This implies WA_UpdatesDisabled. This is set/cleared by <a href="qwidget.html#updatesEnabled-prop">QWidget::setUpdatesEnabled</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_StaticContents</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Indicates that the widget contents are north-west aligned and static. On resize, such a widget will receive paint events only for the newly visible part of itself. This is set/cleared by the widget's author.</td></tr>
-<tr><td valign="top"><tt>Qt::WA_PaintOnScreen</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Indicates that the widget wants to draw directly onto the screen (implies no double buffering). This is not supported on all platforms. This is set/cleared by the widget's author.</td></tr>
-<tr><td valign="top"><tt>Qt::WA_PaintUnclipped</tt></td><td align="center" valign="top"><tt>52</tt></td><td valign="top">Makes all painters operating on this widget unclipped. Children of this widget or other widgets in front of it do not clip the area the painter can paint on.</td></tr>
-<tr><td valign="top"><tt>Qt::WA_PaintOutsidePaintEvent</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">Makes it possible to use <a href="qpainter.html">QPainter</a> to paint on the widget outside <a href="qwidget.html#paintEvent">paintEvent()</a>. This is currently not supported on Mac OS X. We recommend that you use this attribute only when porting Qt 3 code to Qt 4.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_PaintOnScreen</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Indicates that the widget wants to draw directly onto the screen. Widgets with this attribute set do not participate in composition management, i.e. they cannot be semi-transparent or shine through semi-transparent overlapping widgets. This is not supported on Mac OS X. The flag is set or cleared by the widget's author. This flag is required for rendering outside of Qt's paint system, e.g. should you want to use native X11 painting primitives.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_PaintUnclipped</tt></td><td align="center" valign="top"><tt>52</tt></td><td valign="top">Makes all painters operating on this widget unclipped. Children of this widget or other widgets in front of it do not clip the area the painter can paint on. This is not supported on Mac OS X.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_PaintOutsidePaintEvent</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">Makes it possible to use <a href="qpainter.html">QPainter</a> to paint on the widget outside <a href="qwidget.html#paintEvent">paintEvent()</a>. This is not supported on Mac OS X. We recommend that you use this attribute only when porting Qt 3 code to Qt 4.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_Hover</tt></td><td align="center" valign="top"><tt>74</tt></td><td valign="top">Forces Qt to generate paint events when the mouse enters or leaves the widget. This feature is typically used when implementing custom styles; see the <a href="widgets-styles.html">Styles</a> example for details.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_WindowModified</tt></td><td align="center" valign="top"><tt>41</tt></td><td valign="top">Indicates that the window is marked as modified. On some platforms this will mean nothing, on others (including Mac OS X and Windows) the window will take a modified appearance. This is set/cleared by <a href="qwidget.html#windowModified-prop">QWidget::setWindowModified</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_Resized</tt></td><td align="center" valign="top"><tt>42</tt></td><td valign="top">Indicates that the widget has an explicit size. This is set/cleared by <a href="qwidget.html#size-prop">QWidget::resize</a>() and by <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>().</td></tr>
@@ -1068,8 +1083,9 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Qt::WA_NoChildEventsForParent</tt></td><td align="center" valign="top"><tt>58</tt></td><td valign="top">Indicates that the widget does not want ChildAdded or ChildRemoved events sent to its parent. This is rarely necessary but can help to avoid automatic insertion widgets like splitters and layouts. This is set by a widget's author.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_NoChildEventsFromChildren</tt></td><td align="center" valign="top"><tt>39</tt></td><td valign="top">Indicates that the widget does not want to receive ChildAdded or ChildRemoved events sent from its children. This is set by a widget's author.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_MouseTracking</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Indicates that the widget has mouse tracking enabled. See <a href="qwidget.html#mouseTracking-prop">QWidget::mouseTracking</a>.</td></tr>
-<tr><td valign="top"><tt>Qt::WA_GroupLeader</tt></td><td align="center" valign="top"><tt>72</tt></td><td valign="top">Makes this window a group leader. A group leader should <i>not</i> have a parent (i.e. it should be a top-level window). Any decendant windows (direct or indirect) of a group leader are in its group; other windows are not. If you show a secondary window from the group (i.e. show a window whose top-most parent is a group leader), that window will be modal with respect to the other windows in the group, but modeless with respect to windows in other groups.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_GroupLeader</tt></td><td align="center" valign="top"><tt>72</tt></td><td valign="top"><i>This attribute has been deprecated.</i> Use <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> instead. Makes this window a group leader. A group leader should <i>not</i> have a parent (i.e. it should be a top-level window). Any decendant windows (direct or indirect) of a group leader are in its group; other windows are not. If you show a secondary window from the group (i.e. show a window whose top-most parent is a group leader), that window will be modal with respect to the other windows in the group, but modeless with respect to windows in other groups.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_KeyboardFocusChange</tt></td><td align="center" valign="top"><tt>77</tt></td><td valign="top">Set on a toplevel window when the users changes focus with the keyboard (tab, backtab, or shortcut).</td></tr>
+<tr><td valign="top"><tt>Qt::WA_WindowPropagation</tt></td><td align="center" valign="top"><tt>80</tt></td><td valign="top">Makes a toplevel window inherit font and palette from its parent.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_InputMethodEnabled</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Qt::WA_InputMethodTransparent</tt></td><td align="center" valign="top"><tt>75</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Qt::WA_MacNoClickThrough</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">&nbsp;</td></tr>
@@ -1077,8 +1093,18 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Qt::WA_NoMousePropagation</tt></td><td align="center" valign="top"><tt>73</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Qt::WA_RightToLeft</tt></td><td align="center" valign="top"><tt>56</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Qt::WA_SetLayoutDirection</tt></td><td align="center" valign="top"><tt>57</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>Qt::WA_ShowModal</tt></td><td align="center" valign="top"><tt>70</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>Qt::WA_ShowModal</tt></td><td align="center" valign="top"><tt>70</tt></td><td valign="top"><i>This attribute has been deprecated.</i> Use <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> instead.</td></tr>
 </table>
+<h3 class="fn"><a name="WindowModality-enum"></a>enum Qt::WindowModality</h3>
+<a name="modal"></a><p>This enum specifies the behavior of a modal window. A modal window is one that blocks input to other windows. Note that windows that are children of a modal window are not blocked.</p>
+<p>The values are:</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>Qt::NonModal</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The window is not modal and does not block input to other windows.</td></tr>
+<tr><td valign="top"><tt>Qt::WindowModal</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The window is modal to a single window heirarchy and blocks input to its parent window, all grand parent windows, and all siblings of its parent and grand parent windows.</td></tr>
+<tr><td valign="top"><tt>Qt::ApplicationModal</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The window is modal to the application and blocks input to all windows.</td></tr>
+</table>
+<p>See also <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> and <a href="qdialog.html">QDialog</a>.</p>
 <h3 class="flags"><a name="WindowState-enum"></a>enum Qt::WindowState<br />flags Qt::WindowStates</h3>
 <a name="window-state"></a><p>This enum type is used to specify the current state of a top-level window.</p>
 <p>The states are</p>
@@ -1098,7 +1124,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::Widget</tt></td><td align="center" valign="top"><tt>0x00000000</tt></td><td valign="top">This is the default type for <a href="qwidget.html">QWidget</a>. Widgets of this type are child widgets if they have a parent, and independent windows if they have no parent. See also Qt::Window and Qt::SubWindow.</td></tr>
 <tr><td valign="top"><tt>Qt::Window</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Indicates that the widget is a window, usually with a window system frame and a title bar, irrespective of whether the widget has a parent or not.</td></tr>
-<tr><td valign="top"><tt>Qt::Dialog</tt></td><td align="center" valign="top"><tt>0x00000002 | Window</tt></td><td valign="top">Indicates that the widget is a window that should be decorated as a dialog (i.e., typically no maximize or minimize buttons in the title bar). This is the default type for <a href="qdialog.html">QDialog</a>. If you want to use it as a modal dialog, it should be launched from another window, or have a parent and used with the <a href="qt.html#WidgetAttribute-enum">Qt::WA_ShowModal</a> attribute. If you make it modal, the dialog will prevent other top-level windows in the application from getting any input. We refer to a top-level window that has a parent as a <i>secondary</i> window. (See also <a href="qt.html#WidgetAttribute-enum">Qt::WA_GroupLeader</a>.)</td></tr>
+<tr><td valign="top"><tt>Qt::Dialog</tt></td><td align="center" valign="top"><tt>0x00000002 | Window</tt></td><td valign="top">Indicates that the widget is a window that should be decorated as a dialog (i.e., typically no maximize or minimize buttons in the title bar). This is the default type for <a href="qdialog.html">QDialog</a>. If you want to use it as a modal dialog, it should be launched from another window, or have a parent and used with the <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> property. If you make it modal, the dialog will prevent other top-level windows in the application from getting any input. We refer to a top-level window that has a parent as a <i>secondary</i> window.</td></tr>
 <tr><td valign="top"><tt>Qt::Sheet</tt></td><td align="center" valign="top"><tt>0x00000004 | Window</tt></td><td valign="top">Indicates that the widget is a Macintosh sheet.</td></tr>
 <tr><td valign="top"><tt>Qt::Drawer</tt></td><td align="center" valign="top"><tt>0x00000006 | Window</tt></td><td valign="top">Indicates that the widget is a Macintosh drawer.</td></tr>
 <tr><td valign="top"><tt>Qt::Popup</tt></td><td align="center" valign="top"><tt>0x00000008 | Window</tt></td><td valign="top">Indicates that the widget is a popup top-level window, i.e. that it is modal, but has a window system frame appropriate for popup menus.</td></tr>
@@ -1131,8 +1157,8 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Qt::WMouseNoMask</tt></td><td align="center" valign="top"><tt>0x00080000</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_MouseNoMask</a> instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WDestructiveClose</tt></td><td align="center" valign="top"><tt>0x00100000</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_DeleteOnClose</a> instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WStaticContents</tt></td><td align="center" valign="top"><tt>0x00200000</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_StaticContents</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::WGroupLeader</tt></td><td align="center" valign="top"><tt>0x00400000</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_GroupLeader</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::WShowModal</tt></td><td align="center" valign="top"><tt>0x00800000</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_ShowModal</a> instead.</td></tr>
+<tr><td valign="top"><tt>Qt::WGroupLeader</tt></td><td align="center" valign="top"><tt>0x00400000</tt></td><td valign="top">No longer needed.</td></tr>
+<tr><td valign="top"><tt>Qt::WShowModal</tt></td><td align="center" valign="top"><tt>0x00800000</tt></td><td valign="top">Use <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WNoMousePropagation</tt></td><td align="center" valign="top"><tt>0x01000000</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_NoMousePropagation</a> instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WType_TopLevel</tt></td><td align="center" valign="top"><tt>Window</tt></td><td valign="top">Use Qt::Window instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WType_Dialog</tt></td><td align="center" valign="top"><tt>Dialog</tt></td><td valign="top">Use Qt::Dialog instead.</td></tr>
@@ -1161,7 +1187,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Qt::WNoAutoErase</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No longer needed.</td></tr>
 <tr><td valign="top"><tt>Qt::WRepaintNoErase</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No longer needed.</td></tr>
 <tr><td valign="top"><tt>Qt::WNorthWestGravity</tt></td><td align="center" valign="top"><tt>WStaticContents</tt></td><td valign="top">Use <a href="qt.html#WidgetAttribute-enum">Qt::WA_StaticContents</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::WType_Modal</tt></td><td align="center" valign="top"><tt>Dialog | WShowModal</tt></td><td valign="top">Use Qt::Dialog and <a href="qt.html#WidgetAttribute-enum">Qt::WA_ShowModal</a> instead.</td></tr>
+<tr><td valign="top"><tt>Qt::WType_Modal</tt></td><td align="center" valign="top"><tt>Dialog | WShowModal</tt></td><td valign="top">Use Qt::Dialog and <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WStyle_Dialog</tt></td><td align="center" valign="top"><tt>Dialog</tt></td><td valign="top">Use Qt::Dialog instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WStyle_NoBorderEx</tt></td><td align="center" valign="top"><tt>FramelessWindowHint</tt></td><td valign="top">Use Qt::FramelessWindowHint instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WResizeNoErase</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No longer needed.</td></tr>
@@ -1183,6 +1209,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

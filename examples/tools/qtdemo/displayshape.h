@@ -52,6 +52,7 @@ public:
     virtual void setInteractive(bool enable);
     virtual void setMetaData(const QString &key, const QVariant &value);
     virtual void setPosition(const QPointF &point);
+    virtual void setSize(const QSizeF &size);
     virtual void setTarget(const QPointF &point);
 
 protected:
@@ -97,6 +98,7 @@ private:
     QFont font;
     QString text;
     QPen pen;
+    QPointF baselineStart;
     QRectF textRect;
     Qt::Alignment alignment;
 };
@@ -119,14 +121,14 @@ private:
     QImage source;
     QPointF offset;
     Qt::Alignment alignment;
-    qreal scale;
 };
 
 class DocumentShape : public DisplayShape
 {
 public:
-    DocumentShape(const QString &text, const QFont &font, const QPen &pen,
-                  const QPointF &position, const QSizeF &maxSize);
+    DocumentShape(const QString &text, const QFont &font,
+                  const QPointF &position, const QSizeF &maxSize,
+                  int alpha = 0);
     ~DocumentShape();
 
     bool animate();
@@ -134,12 +136,11 @@ public:
     QRectF rect() const;
 
 private:
-    qreal formatText();
+    void redraw();
 
-    QFont font;
-    QStringList paragraphs;
-    QList<QTextLayout*> layouts;
-    QPen pen;
+    QImage source;
+    int alpha;
+    QTextDocument textDocument;
 };
 
 #endif

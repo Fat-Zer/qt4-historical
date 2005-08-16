@@ -24,11 +24,13 @@
 #ifndef QLOCALE_H
 #define QLOCALE_H
 
-#include "QtCore/qstring.h"
+#include <QtCore/qstring.h>
 
 QT_MODULE(Core)
 
 class QDataStream;
+class QDate;
+class QTime;
 struct QLocalePrivate;
 
 class Q_CORE_EXPORT QLocale
@@ -179,7 +181,11 @@ public:
         Zhuang = 139,
         Zulu = 140,
         Nynorsk = 141,
-        LastLanguage = Nynorsk
+        Bosnian = 142,
+        Divehi = 143,
+        Manx = 144,
+        Cornish = 145,
+        LastLanguage = Cornish
     };
 
     enum Country {
@@ -424,8 +430,11 @@ public:
         Yugoslavia = 238,
         Zambia = 239,
         Zimbabwe = 240,
-        LastCountry = Zimbabwe
+        SerbiaAndMontenegro = 241,
+        LastCountry = SerbiaAndMontenegro
     };
+
+    enum FormatType { LongFormat, ShortFormat };
 
     QLocale();
     QLocale(const QString &name);
@@ -447,22 +456,31 @@ public:
     float toFloat(const QString &s, bool *ok = 0) const;
     double toDouble(const QString &s, bool *ok = 0) const;
 
-    QString toString(short i) const
-    { return toString(qlonglong(i)); }
-    QString toString(ushort i) const
-    { return toString(qulonglong(i)); }
-    QString toString(int i) const
-    { return toString(qlonglong(i)); }
-    QString toString(uint i) const
-    { return toString(qulonglong(i)); }
     QString toString(qlonglong i) const;
     QString toString(qulonglong i) const;
-    QString toString(float i, char f = 'g', int prec = 6) const
-    { return toString(double(i), f, prec); }
+    inline QString toString(short i) const;
+    inline QString toString(ushort i) const;
+    inline QString toString(int i) const;
+    inline QString toString(uint i) const;
     QString toString(double i, char f = 'g', int prec = 6) const;
+    inline QString toString(float i, char f = 'g', int prec = 6) const;
+    QString toString(const QDate &date, const QString &formatStr) const;
+    QString toString(const QDate &date, FormatType format = LongFormat) const;
+    QString toString(const QTime &time, const QString &formatStr) const;
+    QString toString(const QTime &time, FormatType format = LongFormat) const;
 
-    inline bool operator==(const QLocale &other) const { return d == other.d; }
-    inline bool operator!=(const QLocale &other) const { return d != other.d; }
+    QString dateFormat(FormatType format = LongFormat) const;
+    QString timeFormat(FormatType format = LongFormat) const;
+
+    QChar decimalPoint() const;
+    QChar groupSeparator() const;
+    QChar percent() const;
+    QChar zeroDigit() const;
+    QChar negativeSign() const;
+    QChar exponential() const;
+
+    inline bool operator==(const QLocale &other) const;
+    inline bool operator!=(const QLocale &other) const;
 
     static QString languageToString(Language language);
     static QString countryToString(Country country);
@@ -476,6 +494,21 @@ private:
     static const QLocalePrivate *default_d;
 };
 Q_DECLARE_TYPEINFO(QLocale, Q_MOVABLE_TYPE);
+
+inline QString QLocale::toString(short i) const
+    { return toString(qlonglong(i)); }
+inline QString QLocale::toString(ushort i) const
+    { return toString(qulonglong(i)); }
+inline QString QLocale::toString(int i) const
+    { return toString(qlonglong(i)); }
+inline QString QLocale::toString(uint i) const
+    { return toString(qulonglong(i)); }
+inline QString QLocale::toString(float i, char f, int prec) const
+    { return toString(double(i), f, prec); }
+inline bool QLocale::operator==(const QLocale &other) const
+    { return d == other.d; }
+inline bool QLocale::operator!=(const QLocale &other) const
+    { return d != other.d; }
 
 #ifndef QT_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QLocale &);

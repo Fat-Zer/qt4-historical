@@ -58,6 +58,7 @@ public:
 
     static int argc();
     static char **argv();
+    static QStringList arguments();
 
     static void setOrganizationDomain(const QString &orgDomain);
     static QString organizationDomain();
@@ -96,8 +97,8 @@ public:
 #endif // QT_NO_LIBRARY
 
 #ifndef QT_NO_TRANSLATION
-    static void installTranslator(QTranslator *);
-    static void removeTranslator(QTranslator *);
+    static void installTranslator(QTranslator * messageFile);
+    static void removeTranslator(QTranslator * messageFile);
 #endif
     enum Encoding { DefaultCodec, UnicodeUTF8 };
     static QString translate(const char * context,
@@ -132,10 +133,10 @@ public:
     EventFilter setEventFilter(EventFilter filter);
     bool filterEvent(void *message, long *result);
 
-public slots:
+public Q_SLOTS:
     static void quit();
 
-signals:
+Q_SIGNALS:
     void aboutToQuit();
     void unixSignal(int);
 
@@ -162,9 +163,8 @@ private:
     friend class QShortcutMap;
     friend class QWidget;
     friend class QWidgetPrivate;
-#if defined(Q_WS_WIN) || defined (Q_WS_MAC) || defined (Q_WS_QWS)
     friend bool qt_sendSpontaneousEvent(QObject*, QEvent*);
-#endif
+    friend Q_CORE_EXPORT QString qAppName();
 };
 
 inline bool QCoreApplication::sendEvent(QObject *receiver, QEvent *event)
@@ -189,6 +189,15 @@ inline QString QCoreApplication::translate(const char *, const char *sourceText,
     return QString::fromLatin1(sourceText);
 }
 #endif
+
+#define Q_DECLARE_TR_FUNCTIONS(context) \
+public: \
+    static inline QString tr(const char *sourceText, const char *comment = 0) \
+        { return QCoreApplication::translate(#context, sourceText, comment); } \
+    static inline QString trUtf8(const char *sourceText, const char *comment = 0) \
+        { return QCoreApplication::translate(#context, sourceText, comment, \
+                                             QCoreApplication::UnicodeUTF8); } \
+private:
 
 typedef void (*QtCleanUpFunction)();
 

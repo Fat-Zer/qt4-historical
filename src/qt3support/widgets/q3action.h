@@ -24,10 +24,10 @@
 #ifndef Q3ACTION_H
 #define Q3ACTION_H
 
-#include "QtGui/qicon.h"
-#include "QtGui/qkeysequence.h"
-#include "QtCore/qobject.h"
-#include "QtCore/qstring.h"
+#include <QtGui/qicon.h>
+#include <QtGui/qkeysequence.h>
+#include <QtCore/qobject.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -102,7 +102,7 @@ protected:
     virtual void addedTo(QWidget *actionWidget, QWidget *container);
     virtual void addedTo(int index, Q3PopupMenu *menu);
 
-public slots:
+public Q_SLOTS:
     void activate();
     void toggle();
     virtual void setOn(bool);
@@ -110,11 +110,11 @@ public slots:
     void setDisabled(bool);
     virtual void setVisible(bool);
 
-signals:
+Q_SIGNALS:
     void activated();
     void toggled(bool);
 
-private slots:
+private Q_SLOTS:
     void internalActivation();
     void toolButtonToggled(bool);
     void objectDestroyed();
@@ -171,11 +171,11 @@ protected:
     virtual void addedTo(QWidget *actionWidget, QWidget *container);
     virtual void addedTo(int index, Q3PopupMenu *menu);
 
-signals:
+Q_SIGNALS:
     void selected(Q3Action*);
     void activated(Q3Action *);
 
-private slots:
+private Q_SLOTS:
     void childToggled(bool);
     void childActivated();
     void childDestroyed();
@@ -194,6 +194,6 @@ private:
     Q_DISABLE_COPY(Q3ActionGroup)
 };
 
-#endif
+#endif // QT_NO_ACTION
 
-#endif
+#endif // Q3ACTION_H

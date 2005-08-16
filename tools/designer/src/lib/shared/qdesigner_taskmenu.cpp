@@ -38,20 +38,55 @@
 #include <QtDesigner/QDesignerLayoutDecorationExtension>
 
 #include <QtGui/QAction>
+#include <QtGui/QToolBar>
 #include <QtGui/QWidget>
+#include <QtGui/QMenuBar>
 #include <QtGui/QInputDialog>
 #include <QtGui/QMainWindow>
 #include <QtGui/QDockWidget>
+#include <QtGui/QStatusBar>
 #include <QtCore/QVariant>
 
 #include <QtCore/qdebug.h>
+
+namespace qdesigner_internal {
+
+static QMenuBar *findMenuBar(const QWidget *widget)
+{
+    QList<QObject*> children = widget->children();
+    foreach (QObject *obj, widget->children()) {
+        if (QMenuBar *mb = qobject_cast<QMenuBar*>(obj)) {
+            return mb;
+        }
+    }
+
+    return 0;
+}
+
+static QStatusBar *findStatusBar(const QWidget *widget)
+{
+    QList<QObject*> children = widget->children();
+    foreach (QObject *obj, widget->children()) {
+        if (QStatusBar *sb = qobject_cast<QStatusBar*>(obj)) {
+            return sb;
+        }
+    }
+
+    return 0;
+}
 
 QDesignerTaskMenu::QDesignerTaskMenu(QWidget *widget, QObject *parent)
     : QObject(parent),
       m_widget(widget)
 {
+    Q_ASSERT(qobject_cast<QDesignerFormWindowInterface*>(widget) == 0);
+
     m_separator = new QAction(this);
     m_separator->setSeparator(true);
+
+    m_separator2 = new QAction(this);
+    m_separator2->setSeparator(true);
+
 
     m_changeObjectNameAction = new QAction(tr("Change objectName..."), this);
     connect(m_changeObjectNameAction, SIGNAL(triggered()), this, SLOT(changeObjectName()));
@@ -64,6 +99,15 @@ QDesignerTaskMenu::QDesignerTaskMenu(QWidget *widget, QObject *parent)
 
     m_changeWhatsThis = new QAction(tr("Change whatsThis..."), this);
     connect(m_changeWhatsThis, SIGNAL(triggered()), this, SLOT(changeWhatsThis()));
+
+    m_addMenuBar = new QAction(tr("Create Menu Bar"), this);
+    connect(m_addMenuBar, SIGNAL(triggered()), this, SLOT(createMenuBar()));
+
+    m_addToolBar = new QAction(tr("Add Tool Bar"), this);
+    connect(m_addToolBar, SIGNAL(triggered()), this, SLOT(addToolBar()));
+
+    m_addStatusBar = new QAction(tr("Create Status Bar"), this);
+    connect(m_addStatusBar, SIGNAL(triggered()), this, SLOT(createStatusBar()));
 
     m_createDockWidgetAction = new QAction(tr("Create Dock Window"), this);
     connect(m_createDockWidgetAction, SIGNAL(triggered()), this, SLOT(createDockWidget()));
@@ -95,24 +139,81 @@ QDesignerFormWindowInterface *QDesignerTaskMenu::formWindow() const
     return result;
 }
 
+void QDesignerTaskMenu::createMenuBar()
+{
+    if (QDesignerFormWindowInterface *fw = formWindow()) {
+        QMainWindow *mw = qobject_cast<QMainWindow*>(fw->mainContainer());
+        if (!mw) {
+            // ### warning message
+            return;
+        }
+
+        CreateMenuBarCommand *cmd = new CreateMenuBarCommand(fw);
+        cmd->init(mw);
+        fw->commandHistory()->push(cmd);
+    }
+}
+
+void QDesignerTaskMenu::addToolBar()
+{
+    if (QDesignerFormWindowInterface *fw = formWindow()) {
+        QMainWindow *mw = qobject_cast<QMainWindow*>(fw->mainContainer());
+        if (!mw) {
+            // ### warning message
+            return;
+        }
+
+        AddToolBarCommand *cmd = new AddToolBarCommand(fw);
+        cmd->init(mw);
+        fw->commandHistory()->push(cmd);
+    }
+}
+
+void QDesignerTaskMenu::createStatusBar()
+{
+    if (QDesignerFormWindowInterface *fw = formWindow()) {
+        QMainWindow *mw = qobject_cast<QMainWindow*>(fw->mainContainer());
+        if (!mw) {
+            // ### warning message
+            return;
+        }
+
+        CreateStatusBarCommand *cmd = new CreateStatusBarCommand(fw);
+        cmd->init(mw);
+        fw->commandHistory()->push(cmd);
+    }
+}
+
 QList<QAction*> QDesignerTaskMenu::taskActions() const
 {
     QDesignerFormWindowInterface *formWindow = QDesignerFormWindowInterface::findFormWindow(widget());
     Q_ASSERT(formWindow);
 
+    bool isMainContainer = formWindow->mainContainer() == widget();
+
     QList<QAction*> actions;
 
+    if (const QMainWindow *mw = qobject_cast<const QMainWindow*>(formWindow->mainContainer()))  {
+        if (isMainContainer || mw->centralWidget() == widget()) {
+            if (!findMenuBar(mw)) {
+                actions.append(m_addMenuBar);
+            }
+
+            actions.append(m_addToolBar);
+            // ### create the status bar
+#if 0
+            if (!findStatusBar(mw))
+                actions.append(m_addStatusBar);
+#endif
+            actions.append(m_separator2);
+        }
+    }
     actions.append(m_changeObjectNameAction);
     actions.append(m_separator);
     actions.append(m_changeToolTip);
     actions.append(m_changeWhatsThis);
 
-#if 0
-    if (qobject_cast<const QMainWindow*>(formWindow->mainContainer()) != 0 && qobject_cast<QDockWidget*>(widget()) == 0)
-        actions.append(m_createDockWidgetAction);
-#endif
-
-    if (static_cast<void*>(m_widget) != static_cast<void*>(formWindow)) {
+    if (!isMainContainer) {
         actions.append(m_separator);
         if (qobject_cast<const QDesignerPromotedWidget*>(m_widget) == 0)
             actions.append(m_promoteToCustomWidgetAction);
@@ -143,35 +244,17 @@ void QDesignerTaskMenu::changeObjectName()
 
 void QDesignerTaskMenu::createDockWidget()
 {
-    QDesignerFormWindowInterface *formWindow = QDesignerFormWindowInterface::findFormWindow(widget());
-    Q_ASSERT(formWindow != 0);
+    if (QDesignerFormWindowInterface *fw = formWindow()) {
+        QMainWindow *mw = qobject_cast<QMainWindow*>(fw->mainContainer());
+        if (!mw) {
+            // ### warning message
+            return;
+        }
 
-    QMainWindow *mainWindow = qobject_cast<QMainWindow*>(formWindow->mainContainer());
-    Q_ASSERT(mainWindow != 0);
-
-    formWindow->beginCommand(tr("Create Dock Window"));
-
-    QDesignerWidgetFactoryInterface *widgetFactory = formWindow->core()->widgetFactory();
-    QDockWidget *dockWidget = (QDockWidget *) widgetFactory->createWidget(QLatin1String("QDockWidget"), formWindow->mainContainer());
-    Q_ASSERT(dockWidget);
-
-    InsertWidgetCommand *cmd = new InsertWidgetCommand(formWindow);
-    cmd->init(dockWidget);
-    formWindow->commandHistory()->push(cmd);
-
-    ReparentWidgetCommand *reparentCmd = new ReparentWidgetCommand(formWindow);
-    reparentCmd->init(widget(), dockWidget);
-    formWindow->commandHistory()->push(reparentCmd);
-
-    SetDockWidgetCommand *setDockWidgetCmd = new SetDockWidgetCommand(formWindow);
-    setDockWidgetCmd->init(dockWidget, m_widget);
-    formWindow->commandHistory()->push(setDockWidgetCmd);
-
-    AddDockWidgetCommand *addDockWidgetCmd = new AddDockWidgetCommand(formWindow);
-    addDockWidgetCmd->init(mainWindow, dockWidget);
-    formWindow->commandHistory()->push(addDockWidgetCmd);
-
-    formWindow->endCommand();
+        AddDockWidgetCommand *cmd = new AddDockWidgetCommand(fw);
+        cmd->init(mw);
+        fw->commandHistory()->push(cmd);
+    }
 }
 
 QDesignerTaskMenuFactory::QDesignerTaskMenuFactory(QExtensionManager *extensionManager)
@@ -287,3 +370,5 @@ void QDesignerTaskMenu::changeWhatsThis()
 {
     changeRichTextProperty(QLatin1String("whatsThis"));
 }
+
+} // namespace qdesigner_internal

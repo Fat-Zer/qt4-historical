@@ -35,9 +35,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef QT_THREAD_SUPPORT
-#  include <private/qmutexpool_p.h>
-#endif // QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
+#  include "private/qmutexpool_p.h"
+#endif
 
 /*
   If USE_MALLOC isn't defined, we use new[] and delete[] to allocate
@@ -693,10 +693,10 @@ void Q3GArray::sort(uint sz)
     if (numItems < 2)
 	return;
 
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
     QMutexLocker locker(qt_global_mutexpool ?
 			 qt_global_mutexpool->get(&cmp_item_size) : 0);
-#endif // QT_THREAD_SUPPORT
+#endif
 
     cmp_item_size = sz;
     qsort(shd->data, numItems, sz, cmp_arr);
@@ -712,10 +712,10 @@ int Q3GArray::bsearch(const char *d, uint sz) const
     if (!numItems)
 	return -1;
 
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
     QMutexLocker locker(qt_global_mutexpool ?
 			 qt_global_mutexpool->get(&cmp_item_size) : 0);
-#endif // QT_THREAD_SUPPORT
+#endif
 
     cmp_item_size = sz;
     char* r = (char*)::bsearch(d, shd->data, numItems, sz, cmp_arr);

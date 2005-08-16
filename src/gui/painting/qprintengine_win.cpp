@@ -213,7 +213,9 @@ bool QWin32PrintEngine::begin(QPaintDevice *)
     // ### set default colors and stuff...
 
     bool ok = d->state == QPrinter::Idle;
-    Q_ASSERT(d->hdc);
+
+    if (!d->hdc)
+        return false;
 
     // Assign the FILE: to get the query...
     if (d->fileName.isEmpty())
@@ -360,12 +362,45 @@ bool QWin32PrintEngine::abort()
     return false;
 }
 
+extern void qt_draw_text_item(const QPointF &pos, const QTextItemInt &ti, HDC hdc,
+                              bool convertToText);
+
+void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+{
+    Q_D(const QWin32PrintEngine);
+
+    QRgb brushColor = state->pen().brush().color().rgb();
+    bool fallBack = (d->txop >= QPainterPrivate::TxScale || state->pen().brush().style() != Qt::SolidPattern
+        || qAlpha(brushColor) != 0xff);
+    if (fallBack) {
+        QPaintEngine::drawTextItem(p, textItem);
+        return ;
+    }
+
+    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+
+    // We only want to convert the glyphs to text if the entire string is latin1
+    bool latin1String = true;
+    for (int i=0;  i < ti.num_chars; ++i) {
+        if (ti.chars[i].unicode() >= 0x100) {
+            latin1String = false;
+            break;
+        }
+    }
+
+    COLORREF cf = RGB(qRed(brushColor), qGreen(brushColor), qBlue(brushColor));
+    SelectObject(d->hdc, CreateSolidBrush(cf));
+    SelectObject(d->hdc, CreatePen(PS_SOLID, 1, cf));
+    SetTextColor(d->hdc, cf);
+    qt_draw_text_item(QPointF(d->matrix.dx(), d->matrix.dy()) + p,
+                      ti, d->hdc, latin1String);
+    DeleteObject(SelectObject(d->hdc,GetStockObject(HOLLOW_BRUSH)));
+    DeleteObject(SelectObject(d->hdc,GetStockObject(BLACK_PEN)));
+}
 
 int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
 {
     Q_D(const QWin32PrintEngine);
-    if (!isActive())
-        return 0;
     int val;
     int res = d->resolution;
 
@@ -450,6 +485,13 @@ void QWin32PrintEngine::updateState(const QPaintEngineState &state)
         d->brush_color = brush.color();
     }
 
+    if (state.state() & DirtyClipEnabled) {
+        if (state.isClipEnabled())
+            updateClipPath(painter()->clipPath(), Qt::ReplaceClip);
+        else
+            updateClipPath(QPainterPath(), Qt::NoClip);
+    }
+
     if (state.state() & DirtyClipPath) {
         updateClipPath(state.clipPath(), state.clipOperation());
     }
@@ -497,7 +539,16 @@ void QWin32PrintEngine::updateMatrix(const QMatrix &m)
     d->painterMatrix = m;
     d->matrix = d->painterMatrix * stretch;
 
-    d->complex_xform = m.m11() != 1 || m.m22() != 1 || m.m12() != 0 || m.m21() != 0;
+    if (d->matrix.m12() != 0 || d->matrix.m21() != 0)
+        d->txop = QPainterPrivate::TxRotShear;
+    else if (d->matrix.m11() != 1 || d->matrix.m22() != 1)
+        d->txop = QPainterPrivate::TxScale;
+    else if (d->matrix.dx() != 0 || d->matrix.dy() != 0)
+        d->txop = QPainterPrivate::TxTranslate;
+    else
+        d->txop = QPainterPrivate::TxNone;
+
+    d->complex_xform = (d->txop > QPainterPrivate::TxTranslate);
 }
 
 void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
@@ -520,7 +571,7 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
 
 
     QPixmap pixmap = originalPixmap;
-    bool stretched = sr.width() != pixmap.width() || sr.height() != pixmap.height();
+    bool stretched = r.width() != pixmap.width() || r.height() != pixmap.height();
 
     if (stretched) {
         pixmap = pixmap.copy(sr.toRect());
@@ -559,6 +610,7 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
         clipMask = clipMask * QMatrix(d->stretch_x, 0, 0, d->stretch_y,
                                       tx - xform_offset_x, ty - xform_offset_y);
         if (!clipMask.isEmpty()) {
+            old_region = CreateRectRgn(0, 0, 1, 1);
             int get_clip = GetClipRgn(d->hdc, old_region);
             if (get_clip == -1) {
                 qErrnoWarning("QWin32PrintEngine::drawPixmap(), failed to get old clip");
@@ -599,6 +651,8 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
         ExtSelectClipRgn(d->hdc, old_region, RGN_COPY);
     }
 
+    if (old_region != 0)
+        DeleteObject(old_region);
 }
 
 
@@ -685,9 +739,10 @@ void QWin32PrintEnginePrivate::fillPath(const QPainterPath &path, const QColor &
 void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor &color)
 {
     QPainterPathStroker stroker;
-    stroker.setDashPattern(pen.style());
+    stroker.setDashPattern(pen.dashPattern());
     stroker.setCapStyle(pen.capStyle());
     stroker.setJoinStyle(pen.joinStyle());
+    stroker.setMiterLimit(pen.miterLimit());
 
     QPainterPath stroke;
 
@@ -782,6 +837,12 @@ void QWin32PrintEnginePrivate::queryDefault()
     port = info.at(2);
 }
 
+QWin32PrintEnginePrivate::~QWin32PrintEnginePrivate()
+{
+    if (hdc)
+        release();
+}
+
 void QWin32PrintEnginePrivate::initialize()
 {
     if (hdc)
@@ -793,6 +854,8 @@ void QWin32PrintEnginePrivate::initialize()
 
     if (name.isEmpty())
         return;
+
+    txop = QPainterPrivate::TxNone;
 
     bool ok;
     QT_WA( {
@@ -811,14 +874,16 @@ void QWin32PrintEnginePrivate::initialize()
     DWORD infoSize, numBytes;
     QT_WA( {
         GetPrinterW(hPrinter, 2, NULL, 0, &infoSize);
-        pInfo = malloc(infoSize);
+        hMem = GlobalAlloc(GHND, infoSize);
+        pInfo = GlobalLock(hMem);
         if (!GetPrinterW(hPrinter, 2, (LPBYTE)pInfo, infoSize, &numBytes)) {
             qErrnoWarning("QWin32PrintEngine::initialize: GetPrinter failed");
             return;
         }
     }, {
         GetPrinterA(hPrinter, 2, NULL, 0, &infoSize);
-        pInfo = malloc(infoSize);
+        hMem = GlobalAlloc(GHND, infoSize);
+        pInfo = GlobalLock(hMem);
         if (!GetPrinterA(hPrinter, 2, (LPBYTE)pInfo, infoSize, &numBytes)) {
             qErrnoWarning("QWin32PrintEngine::initialize: GetPrinter failed");
             return;
@@ -839,9 +904,25 @@ void QWin32PrintEnginePrivate::initialize()
     } );
 
     Q_ASSERT(hPrinter);
-    Q_ASSERT(hdc);
     Q_ASSERT(devMode);
     Q_ASSERT(pInfo);
+
+    initHDC();
+
+#ifdef QT_DEBUG_DRAW
+    qDebug() << "QWin32PrintEngine::initialize()" << endl
+             << " - paperRect" << devPaperRect << endl
+             << " - pageRect" << devPageRect << endl
+             << " - stretch_x" << stretch_x << endl
+             << " - stretch_y" << stretch_y << endl
+             << " - origin_x" << origin_x << endl
+             << " - origin_y" << origin_y << endl;
+#endif
+}
+
+void QWin32PrintEnginePrivate::initHDC()
+{
+    Q_ASSERT(hdc);
 
     dpi_x = GetDeviceCaps(hdc, LOGPIXELSX);
     dpi_y = GetDeviceCaps(hdc, LOGPIXELSY);
@@ -873,16 +954,6 @@ void QWin32PrintEnginePrivate::initialize()
                         GetDeviceCaps(hdc, VERTRES));
 
     updateOrigin();
-
-#ifdef QT_DEBUG_DRAW
-    qDebug() << "QWin32PrintEngine::initialize()" << endl
-             << " - paperRect" << devPaperRect << endl
-             << " - pageRect" << devPageRect << endl
-             << " - stretch_x" << stretch_x << endl
-             << " - stretch_y" << stretch_y << endl
-             << " - origin_x" << origin_x << endl
-             << " - origin_y" << origin_y << endl;
-#endif
 }
 
 void QWin32PrintEnginePrivate::release()
@@ -893,7 +964,8 @@ void QWin32PrintEnginePrivate::release()
         GlobalUnlock(globalDevMode);
     } else {            // Devmode comes from initialize...
         // devMode is a part of the same memory block as pInfo so one free is enough...
-        free(pInfo);
+        GlobalUnlock(hMem);
+        GlobalFree(hMem);
         ClosePrinter(hPrinter);
     }
     DeleteDC(hdc);
@@ -901,6 +973,7 @@ void QWin32PrintEnginePrivate::release()
     hdc = 0;
     hPrinter = 0;
     pInfo = 0;
+    hMem = 0;
     devMode = 0;
 }
 
@@ -1123,15 +1196,17 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
 
     case PPK_ColorMode:
         {
-            if (!d->devMode)
+            if (!d->devMode) {
                 value = QPrinter::Color;
-            int mode;
-            QT_WA( {
-                mode = d->devModeW()->dmColor;
-            }, {
-                mode = d->devModeA()->dmColor;
-            } );
-            value = mode == DMCOLOR_COLOR ? QPrinter::Color : QPrinter::GrayScale;
+            } else {
+                int mode;
+                QT_WA( {
+                    mode = d->devModeW()->dmColor;
+                }, {
+                    mode = d->devModeA()->dmColor;
+                } );
+                value = mode == DMCOLOR_COLOR ? QPrinter::Color : QPrinter::GrayScale;
+            }
         }
         break;
 
@@ -1149,11 +1224,13 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
 
     case PPK_Orientation:
         {
-            if (!d->devMode)
+            if (!d->devMode) {
                 value = QPrinter::Portrait;
-            int o;
-            QT_WA( { o = d->devModeW()->dmOrientation; }, { o = d->devModeA()->dmOrientation; } );
-            value = o == DMORIENT_LANDSCAPE ? QPrinter::Landscape : QPrinter::Portrait;
+            } else {
+                int o;
+                QT_WA( { o = d->devModeW()->dmOrientation; }, { o = d->devModeA()->dmOrientation; } );
+                value = o == DMORIENT_LANDSCAPE ? QPrinter::Landscape : QPrinter::Portrait;
+            }
         }
         break;
 
@@ -1168,13 +1245,15 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
         break;
 
     case PPK_PageSize:
-        if (!d->devMode)
+        if (!d->devMode) {
             value = QPrinter::A4;
-        QT_WA( {
-            value = mapDevmodePageSize(d->devModeW()->dmPaperSize);
-        }, {
-            value = mapDevmodePageSize(d->devModeA()->dmPaperSize);
-        } );
+        } else {
+            QT_WA( {
+                value = mapDevmodePageSize(d->devModeW()->dmPaperSize);
+            }, {
+                value = mapDevmodePageSize(d->devModeA()->dmPaperSize);
+            } );
+        }
         break;
 
     case PPK_PaperRect:
@@ -1184,13 +1263,15 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
         break;
 
     case PPK_PaperSource:
-        if (!d->devMode)
+        if (!d->devMode) {
             value = QPrinter::Auto;
-        QT_WA( {
-            value = mapDevmodePaperSource(d->devModeW()->dmDefaultSource);
-        }, {
-            value = mapDevmodePaperSource(d->devModeA()->dmDefaultSource);
-        } );
+        } else {
+            QT_WA( {
+                value = mapDevmodePaperSource(d->devModeW()->dmDefaultSource);
+            }, {
+                value = mapDevmodePaperSource(d->devModeA()->dmDefaultSource);
+            } );
+        }
         break;
 
     case PPK_PrinterName:
@@ -1206,13 +1287,15 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
         break;
 
     case PPK_WindowsPageSize:
-        if (!d->devMode)
+        if (!d->devMode) {
             value = -1;
-        QT_WA( {
-            value = d->devModeW()->dmPaperSize;
-        }, {
-            value = d->devModeA()->dmPaperSize;
-        } );
+        } else {
+            QT_WA( {
+                value = d->devModeW()->dmPaperSize;
+            }, {
+                value = d->devModeA()->dmPaperSize;
+            } );
+        }
         break;
 
     default:
@@ -1331,6 +1414,8 @@ void QWin32PrintEnginePrivate::readDevmode(HGLOBAL globalDevmode)
             hdc = CreateDCA(program.toLatin1(), name.toLatin1(), 0, dm);
         } );
     }
+
+    initHDC();
 }
 
 #endif // QT_NO_PRINTER

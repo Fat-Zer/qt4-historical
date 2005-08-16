@@ -21,6 +21,8 @@
 **
 ****************************************************************************/
 
+#include <QtGui>
+
 #include "regexpdialog.h"
 
 RegExpDialog::RegExpDialog(QWidget *parent)
@@ -118,7 +120,8 @@ void RegExpDialog::refresh()
     QString text = textComboBox->currentText();
 
     QString escaped = patternComboBox->currentText();
-    escaped = escaped.replace("\\", "\\\\");
+    escaped.replace("\\", "\\\\");
+    escaped.replace("\"", "\\\"");
     escaped = "\"" + escaped + "\"";
     escapedPatternLineEdit->setText(escaped);
 

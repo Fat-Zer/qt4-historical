@@ -21,67 +21,46 @@
 **
 ****************************************************************************/
 
-#ifndef QDRAWHELPER_H
-#define QDRAWHELPER_H
+#ifndef QDRAWHELPER_P_H
+#define QDRAWHELPER_P_H
 
-#include <qglobal.h>
-#include <qcolor.h>
-#include <qpainter.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtCore/qglobal.h"
+#include "QtGui/qcolor.h"
+#include "QtGui/qpainter.h"
+#ifndef QT_FT_BEGIN_HEADER
+#define QT_FT_BEGIN_HEADER
+#define QT_FT_END_HEADER
+#endif
+#include "private/qrasterdefs_p.h"
 
 /*******************************************************************************
  * QSpan
  *
  * duplicate definition of FT_Span
  */
-struct QSpan
-{
-    short x;
-    ushort len;
-    uchar coverage;
-};
+typedef QT_FT_Span QSpan;
 
+struct SolidData;
+struct TextureData;
 struct GradientData;
 struct LinearGradientData;
 struct RadialGradientData;
 struct ConicalGradientData;
-extern uint qt_gradient_pixel(const GradientData *data, double pos);
+struct QSpanData;
+class QGradient;
 
-struct BlendColorData {
-    int y;
-    uint color;
-};
-
-typedef void (*BlendColor)(void *target, const QSpan *span, QPainter::CompositionMode mode, const BlendColorData *data);
-
-typedef void (*Blend)(void *target, const QSpan *span,
-                      const qreal dx, const qreal dy,
-                      const void *image_bits, const int image_width, const int image_height,
-                      QPainter::CompositionMode mode);
-
-typedef void (*BlendTransformed)(void *target, const QSpan *span,
-                                 const qreal ix, const qreal iy,
-                                 const qreal dx, const qreal dy,
-                                 const void *image_bits,
-                                 const int image_width, const int image_height,
-                                 QPainter::CompositionMode mode);
-
-typedef void (*BlendLinearGradient)(void *target,
-                                    const QSpan *span,
-                                    LinearGradientData *data,
-                                    qreal ybase, int y,
-                                    QPainter::CompositionMode mode);
-
-typedef void (*BlendRadialGradient)(void *target,
-                                    const QSpan *span,
-                                    RadialGradientData *data,
-                                    int y,
-                                    QPainter::CompositionMode mode);
-
-typedef void (*BlendConicalGradient)(void *target,
-                                     const QSpan *span,
-                                     ConicalGradientData *data,
-                                     int y,
-                                     QPainter::CompositionMode mode);
+typedef QT_FT_SpanFunc ProcessSpans;
 
 struct DrawHelper {
     enum Layout {
@@ -98,83 +77,191 @@ struct DrawHelper {
 #endif
         Layout_Count
     };
-    BlendColor blendColor;
-    Blend blend;
-    Blend blendTiled;
-    BlendTransformed blendTransformed;
-    BlendTransformed blendTransformedTiled;
-    BlendTransformed blendTransformedBilinear;
-    BlendTransformed blendTransformedBilinearTiled;
-    BlendLinearGradient blendLinearGradient;
-    BlendRadialGradient blendRadialGradient;
-    BlendConicalGradient blendConicalGradient;
+    ProcessSpans blendColor;
+    ProcessSpans blend;
+    ProcessSpans blendTiled;
+    ProcessSpans blendTransformed;
+    ProcessSpans blendTransformedTiled;
+    ProcessSpans blendTransformedBilinear;
+    ProcessSpans blendTransformedBilinearTiled;
+    ProcessSpans blendLinearGradient;
+    ProcessSpans blendRadialGradient;
+    ProcessSpans blendConicalGradient;
 };
 
 extern DrawHelper qDrawHelper[DrawHelper::Layout_Count];
+
+typedef void QT_FASTCALL (*CompositionFunction)(uint *dest, const uint *src, int length, uint const_alpha);
+typedef void QT_FASTCALL (*CompositionFunctionSolid)(uint *dest, int length, uint color, uint const_alpha);
+
+#ifdef QT_HAVE_SSE
+extern const CompositionFunction qt_functionForMode_SSE[];
+extern const CompositionFunctionSolid qt_functionForModeSolid_SSE[];
+#endif
+
 
 void qInitDrawhelperAsm();
 
 class QRasterBuffer;
 
+struct SolidData
+{
+    uint color;
+};
+
+struct TextureData
+{
+    const void *imageData;
+    int width;
+    int height;
+    bool hasAlpha;
+};
+
+
+struct LinearGradientData
+{
+    struct {
+        qreal x;
+        qreal y;
+    } origin;
+    struct {
+        qreal x;
+        qreal y;
+    } end;
+};
+
+struct RadialGradientData
+{
+    struct {
+        qreal x;
+        qreal y;
+    } center;
+    struct {
+        qreal x;
+        qreal y;
+    } focal;
+    qreal radius;
+};
+
+struct ConicalGradientData
+{
+    struct {
+        qreal x;
+        qreal y;
+    } center;
+    qreal angle;
+};
+
 struct GradientData
 {
-    QRasterBuffer *rasterBuffer;
     QGradient::Spread spread;
 
-    int stopCount;
-    qreal *stopPoints;
-    uint *stopColors;
+    union {
+        LinearGradientData linear;
+        RadialGradientData radial;
+        ConicalGradientData conical;
+    };
 
 #define GRADIENT_STOPTABLE_SIZE 1024
     uint colorTable[GRADIENT_STOPTABLE_SIZE];
 
     uint alphaColor : 1;
-
-    void initColorTable();
 };
 
-struct LinearGradientData : public GradientData
+struct QSpanData
 {
-    QPointF origin;
-    QPointF end;
-
-    void init();
-
-    qreal xincr;
-    qreal yincr;
-    BlendLinearGradient blendFunc;
-
-    QPainter::CompositionMode compositionMode;
-    QMatrix brushMatrix;
+    QRasterBuffer *rasterBuffer;
+    ProcessSpans blend;
+    ProcessSpans unclipped_blend;
+    qreal m11, m12, m21, m22, dx, dy;   // inverse xform matrix
+    enum Type {
+        None,
+        Solid,
+        Texture,
+        TiledTexture,
+        LinearGradient,
+        RadialGradient,
+        ConicalGradient
+    } type : 8;
+    int txop : 8;
+    bool bilinear;
+    union {
+        SolidData solid;
+        TextureData texture;
+        GradientData gradient;
+    };
+    void init(QRasterBuffer *rb);
+    void setup(const QBrush &brush);
+    void setupMatrix(const QMatrix &matrix, int txop, int bilinear);
+    void initTexture(const QImage *image);
+    void initGradient(const QGradient *g);
+    void adjustSpanMethods();
 };
 
-struct RadialGradientData : public GradientData
-{
-    QPointF center;
-    qreal radius;
-    QPointF focal;
+#define QT_MEMFILL_UINT(dest, length, color)\
+do {                                        \
+    /* Duff's device */                     \
+    uint *d = (dest);                       \
+    uint c = (color);                       \
+    register int n = ((length) + 7) / 8;    \
+    switch ((length) & 0x07)                \
+    {                                       \
+    case 0: do { *d++ = c;                  \
+    case 7:      *d++ = c;                  \
+    case 6:      *d++ = c;                  \
+    case 5:      *d++ = c;                  \
+    case 4:      *d++ = c;                  \
+    case 3:      *d++ = c;                  \
+    case 2:      *d++ = c;                  \
+    case 1:      *d++ = c;                  \
+    } while (--n > 0);                      \
+    }                                       \
+} while (0)
 
-    BlendRadialGradient blendFunc;
-    QPainter::CompositionMode compositionMode;
-    QMatrix imatrix;
-};
+#define QT_MEMFILL_USHORT(dest, length, color) \
+do {                                           \
+    /* Duff's device */                        \
+    ushort *d = (dest);                        \
+    ushort c = (color);                        \
+    register int n = ((length) + 7) / 8;       \
+    switch ((length) & 0x07)                   \
+    {                                          \
+    case 0: do { *d++ = c;                     \
+    case 7:      *d++ = c;                     \
+    case 6:      *d++ = c;                     \
+    case 5:      *d++ = c;                     \
+    case 4:      *d++ = c;                     \
+    case 3:      *d++ = c;                     \
+    case 2:      *d++ = c;                     \
+    case 1:      *d++ = c;                     \
+    } while (--n > 0);                         \
+    }                                          \
+} while (0)
 
-struct ConicalGradientData : public GradientData
-{
-    QPointF center;
-    qreal angle;
-    QMatrix imatrix;
-    void init(const QPointF &center, qreal angle, const QMatrix &matrix);
-    BlendConicalGradient blendFunc;
-    QPainter::CompositionMode compositionMode;
-};
+#define QT_MEMCPY_REV_UINT(dest, src, length) \
+do {                                          \
+    /* Duff's device */                       \
+    uint *d = (uint*)(dest) + length;         \
+    const uint *s = (uint*)(src) + length;    \
+    register int n = ((length) + 7) / 8;      \
+    switch ((length) & 0x07)                  \
+    {                                         \
+    case 0: do { *--d = *--s;                 \
+    case 7:      *--d = *--s;                 \
+    case 6:      *--d = *--s;                 \
+    case 5:      *--d = *--s;                 \
+    case 4:      *--d = *--s;                 \
+    case 3:      *--d = *--s;                 \
+    case 2:      *--d = *--s;                 \
+    case 1:      *--d = *--s;                 \
+    } while (--n > 0);                        \
+    }                                         \
+} while (0)
 
-
-inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
-
+static inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
 
 #if 1
-inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
+static inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
     uint t = (x & 0xff00ff) * a + (y & 0xff00ff) * b;
     t >>= 8;
     t &= 0xff00ff;
@@ -185,7 +272,7 @@ inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
     return x;
 }
 
-inline uint INTERPOLATE_PIXEL_255(uint x, uint a, uint y, uint b) {
+static inline uint INTERPOLATE_PIXEL_255(uint x, uint a, uint y, uint b) {
     uint t = (x & 0xff00ff) * a + (y & 0xff00ff) * b;
     t = (t + ((t >> 8) & 0xff00ff) + 0x800080) >> 8;
     t &= 0xff00ff;
@@ -197,7 +284,7 @@ inline uint INTERPOLATE_PIXEL_255(uint x, uint a, uint y, uint b) {
     return x;
 }
 
-inline uint BYTE_MUL(uint x, uint a) {
+static inline uint BYTE_MUL(uint x, uint a) {
     uint t = (x & 0xff00ff) * a;
     t = (t + ((t >> 8) & 0xff00ff) + 0x800080) >> 8;
     t &= 0xff00ff;
@@ -209,7 +296,7 @@ inline uint BYTE_MUL(uint x, uint a) {
     return x;
 }
 
-inline uint PREMUL(uint x) {
+static inline uint PREMUL(uint x) {
     uint a = x >> 24;
     uint t = (x & 0xff00ff) * a;
     t = (t + ((t >> 8) & 0xff00ff) + 0x800080) >> 8;
@@ -223,7 +310,7 @@ inline uint PREMUL(uint x) {
 }
 #else
 // possible implementation for 64 bit
-inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
+static inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
     ulong t = (((ulong(x)) | ((ulong(x)) << 24)) & 0x00ff00ff00ff00ff) * a;
     t += (((ulong(y)) | ((ulong(y)) << 24)) & 0x00ff00ff00ff00ff) * b;
     t >>= 8;
@@ -231,7 +318,7 @@ inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
     return (uint(t)) | (uint(t >> 24));
 }
 
-inline uint INTERPOLATE_PIXEL_255(uint x, uint a, uint y, uint b) {
+static inline uint INTERPOLATE_PIXEL_255(uint x, uint a, uint y, uint b) {
     ulong t = (((ulong(x)) | ((ulong(x)) << 24)) & 0x00ff00ff00ff00ff) * a;
     t += (((ulong(y)) | ((ulong(y)) << 24)) & 0x00ff00ff00ff00ff) * b;
     t = (t + ((t >> 8) & 0xff00ff00ff00ff) + 0x80008000800080);
@@ -239,14 +326,14 @@ inline uint INTERPOLATE_PIXEL_255(uint x, uint a, uint y, uint b) {
     return (uint(t)) | (uint(t >> 24));
 }
 
-inline uint BYTE_MUL(uint x, uint a) {
+static inline uint BYTE_MUL(uint x, uint a) {
     ulong t = (((ulong(x)) | ((ulong(x)) << 24)) & 0x00ff00ff00ff00ff) * a;
     t = (t + ((t >> 8) & 0xff00ff00ff00ff) + 0x80008000800080);
     t &= 0x00ff00ff00ff00ff;
     return (uint(t)) | (uint(t >> 24));
 }
 
-inline uint PREMUL(uint x) {
+static inline uint PREMUL(uint x) {
     uint a = x >> 24;
     ulong t = (((ulong(x)) | ((ulong(x)) << 24)) & 0x00ff00ff00ff00ff) * a;
     t = (t + ((t >> 8) & 0xff00ff00ff00ff) + 0x80008000800080);
@@ -299,4 +386,4 @@ const uint qt_bayer_matrix[16][16] = {
       0xa9, 0x69, 0x99, 0x59, 0xa5, 0x65, 0x95, 0x55}
 };
 
-#endif
+#endif // QDRAWHELPER_P_H

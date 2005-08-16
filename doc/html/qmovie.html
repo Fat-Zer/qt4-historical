@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/image/qmovie.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qmovie.cpp -->
 <head>
-    <title>Qt 4.0: QMovie Class Reference</title>
+    <title>Qt 4.1: QMovie Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -27,7 +27,17 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
+<li><div class="fn"/>enum <b><a href="qmovie.html#CacheMode-enum">CacheMode</a></b> { CacheNone, CacheAll }</li>
 <li><div class="fn"/>enum <b><a href="qmovie.html#MovieState-enum">MovieState</a></b> { NotRunning, Paused, Running }</li>
+</ul>
+<a name="properties"></a>
+<h3>Properties</h3>
+<ul>
+<li><div class="fn"/><b><a href="qmovie.html#cacheMode-prop">cacheMode</a></b> : CacheMode</li>
+<li><div class="fn"/><b><a href="qmovie.html#speed-prop">speed</a></b> : int</li>
+</ul>
+<ul>
+<li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -37,6 +47,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qmovie.html#QMovie-3">QMovie</a></b> ( const QString &amp; <i>fileName</i>, const QByteArray &amp; <i>format</i> = QByteArray(), QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qmovie.html#dtor.QMovie">~QMovie</a></b> ()</li>
 <li><div class="fn"/>QColor <b><a href="qmovie.html#backgroundColor">backgroundColor</a></b> () const</li>
+<li><div class="fn"/>CacheMode <b><a href="qmovie.html#cacheMode-prop">cacheMode</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qmovie.html#currentFrameNumber">currentFrameNumber</a></b> () const</li>
 <li><div class="fn"/>QImage <b><a href="qmovie.html#currentImage">currentImage</a></b> () const</li>
 <li><div class="fn"/>QPixmap <b><a href="qmovie.html#currentPixmap">currentPixmap</a></b> () const</li>
@@ -49,12 +60,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qmovie.html#jumpToFrame">jumpToFrame</a></b> ( int <i>frameNumber</i> )</li>
 <li><div class="fn"/>int <b><a href="qmovie.html#loopCount">loopCount</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qmovie.html#nextFrameDelay">nextFrameDelay</a></b> () const</li>
+<li><div class="fn"/>QSize <b><a href="qmovie.html#scaledSize">scaledSize</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#setBackgroundColor">setBackgroundColor</a></b> ( const QColor &amp; <i>color</i> )</li>
+<li><div class="fn"/>void <b><a href="qmovie.html#cacheMode-prop">setCacheMode</a></b> ( CacheMode <i>mode</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#setDevice">setDevice</a></b> ( QIODevice * <i>device</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#setFileName">setFileName</a></b> ( const QString &amp; <i>fileName</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#setFormat">setFormat</a></b> ( const QByteArray &amp; <i>format</i> )</li>
-<li><div class="fn"/>void <b><a href="qmovie.html#setSpeed">setSpeed</a></b> ( int <i>percentSpeed</i> )</li>
-<li><div class="fn"/>int <b><a href="qmovie.html#speed">speed</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qmovie.html#setScaledSize">setScaledSize</a></b> ( const QSize &amp; <i>size</i> )</li>
+<li><div class="fn"/>int <b><a href="qmovie.html#speed-prop">speed</a></b> () const</li>
 <li><div class="fn"/>MovieState <b><a href="qmovie.html#state">state</a></b> () const</li>
 </ul>
 <ul>
@@ -65,6 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>bool <b><a href="qmovie.html#jumpToNextFrame">jumpToNextFrame</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#setPaused">setPaused</a></b> ( bool <i>paused</i> )</li>
+<li><div class="fn"/>void <b><a href="qmovie.html#speed-prop">setSpeed</a></b> ( int <i>percentSpeed</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#start">start</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#stop">stop</a></b> ()</li>
 </ul>
@@ -76,6 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>void <b><a href="qmovie.html#error">error</a></b> ( QImageReader::ImageReaderError <i>error</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#finished">finished</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qmovie.html#frameChanged">frameChanged</a></b> ( int <i>frameNumber</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#resized">resized</a></b> ( const QSize &amp; <i>size</i> )</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#started">started</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qmovie.html#stateChanged">stateChanged</a></b> ( QMovie::MovieState <i>state</i> )</li>
@@ -84,10 +99,16 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 </ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>QList&lt;QByteArray&gt; <b><a href="qmovie.html#supportedFormats">supportedFormats</a></b> ()</li>
+</ul>
+<ul>
+<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+</ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
@@ -103,12 +124,21 @@ body { background: #ffffff; color: black; }</style>
     label.setMovie(movie);
     movie-&gt;start();</pre>
 <p>Whenever a new frame is available in the movie, QMovie will emit <a href="qmovie.html#updated">updated</a>(). If the size of the frame changes, <a href="qmovie.html#resized">resized</a>() is emitted. You can call <a href="qmovie.html#currentImage">currentImage</a>() or <a href="qmovie.html#currentPixmap">currentPixmap</a>() to get a copy of the current frame. When the movie is done, QMovie emits <a href="qmovie.html#finished">finished</a>(). If any error occurs during playback (i.e, the image file is corrupt), QMovie will emit <a href="qmovie.html#error">error</a>().</p>
-<p>You can control the speed of the movie playback by calling <a href="qmovie.html#setSpeed">setSpeed</a>(), which takes the percentage of the original speed as an argument. Pause the movie by calling setPaused(true). QMovie will then enter <a href="qmovie.html#MovieState-enum">Paused</a> state and emit <a href="qmovie.html#stateChanged">stateChanged</a>(). If you call setPaused(false), QMovie will reenter <a href="qmovie.html#MovieState-enum">Running</a> state and start the movie again. To stop the movie, call <a href="qmovie.html#stop">stop</a>().</p>
+<p>You can control the speed of the movie playback by calling <a href="qmovie.html#speed-prop">setSpeed</a>(), which takes the percentage of the original speed as an argument. Pause the movie by calling setPaused(true). QMovie will then enter <a href="qmovie.html#MovieState-enum">Paused</a> state and emit <a href="qmovie.html#stateChanged">stateChanged</a>(). If you call setPaused(false), QMovie will reenter <a href="qmovie.html#MovieState-enum">Running</a> state and start the movie again. To stop the movie, call <a href="qmovie.html#stop">stop</a>().</p>
 <p>Certain animation formats allow you to set the background color. You can call <a href="qmovie.html#setBackgroundColor">setBackgroundColor</a>() to set the color, or <a href="qmovie.html#backgroundColor">backgroundColor</a>() to retrieve the current background color.</p>
 <p><a href="qmovie.html#currentFrameNumber">currentFrameNumber</a>() returns the sequence number of the current frame. The first frame in the animation has the sequence number 0. <a href="qmovie.html#frameCount">frameCount</a>() returns the total number of frames in the animation, if the image format supports this. You can call <a href="qmovie.html#loopCount">loopCount</a>() to get the number of times the movie should loop before finishing. <a href="qmovie.html#nextFrameDelay">nextFrameDelay</a>() returns the number of milliseconds the current frame should be displayed.</p>
+<p>QMovie can be instructed to cache frames of an animation by calling <a href="qmovie.html#cacheMode-prop">setCacheMode</a>().</p>
+<p>Call <a href="qmovie.html#supportedFormats">supportedFormats</a>() for a list of formats that QMovie supports.</p>
 <p>See also <a href="qlabel.html">QLabel</a> and <a href="qimagereader.html">QImageReader</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
+<h3 class="fn"><a name="CacheMode-enum"></a>enum QMovie::CacheMode</h3>
+<p>This enum describes the different cache modes of <a href="qmovie.html">QMovie</a>.</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QMovie::CacheNone</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No frames are cached (the default).</td></tr>
+<tr><td valign="top"><tt>QMovie::CacheAll</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">All frames are cached.</td></tr>
+</table>
 <h3 class="fn"><a name="MovieState-enum"></a>enum QMovie::MovieState</h3>
 <p>This enum describes the different states of <a href="qmovie.html">QMovie</a>.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -117,6 +147,27 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QMovie::Paused</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The movie is paused, and <a href="qmovie.html">QMovie</a> stops emitting <a href="qmovie.html#updated">updated</a>() or <a href="qmovie.html#resized">resized</a>(). This state is entered after calling <a href="qmovie-qt3.html#pause">pause</a>() or setPaused(true). The current frame number it kept, and the movie will continue with the next frame when <a href="qmovie-qt3.html#unpause">unpause</a>() or setPaused(false) is called.</td></tr>
 <tr><td valign="top"><tt>QMovie::Running</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The movie is running.</td></tr>
 </table>
+<hr />
+<h2>Property Documentation</h2>
+<h3 class="fn"><a name="cacheMode-prop"></a>cacheMode : <a href="qmovie.html#CacheMode-enum">CacheMode</a></h3>
+<p>This property holds the movie's cache mode.</p>
+<p>Caching frames can be useful when the underlying animation format handler that <a href="qmovie.html">QMovie</a> relies on to decode the animation data does not support jumping to particular frames in the animation, or even &quot;rewinding&quot; the animation to the beginning (for looping). Furthermore, if the image data comes from a sequential device, it is not possible for the underlying animation handler to seek back to frames whose data has already been read (making looping altogether impossible). To aid in such situations, <a href="qmovie.html">QMovie</a> can be instructed to cache the frames, at the added memory cost of keeping the frames in memory for the lifetime of the <a href="qmovie.html">QMovie</a>.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>CacheMode cacheMode ()</b></li>
+<li><div class="fn"/><b>void setCacheMode ( CacheMode <i>mode</i> )</b></li>
+</ul>
+<p>See also <a href="qmovie.html#CacheMode-enum">QMovie::CacheMode</a>.</p>
+<h3 class="fn"><a name="speed-prop"></a>speed : int</h3>
+<p>This property holds the movie's speed.</p>
+<p>The speed is measured in percentage of the original movie speed. The default speed is 100%. Example:</p>
+<pre>&nbsp;   QMovie movie(&quot;racecar.gif&quot;);
+    movie.setSpeed(200); // 2x speed</pre>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>int speed () const</b></li>
+<li><div class="fn"/><b>void setSpeed ( int <i>percentSpeed</i> )</b></li>
+</ul>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QMovie"></a>QMovie::QMovie ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -155,9 +206,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="format"></a><a href="qbytearray.html">QByteArray</a> QMovie::format () const</h3>
 <p>Returns the format that <a href="qmovie.html">QMovie</a> uses when decoding image data. If no format has been assigned, an empty QByteArray() is returned.</p>
 <p>See also <a href="qmovie.html#setFormat">setFormat</a>().</p>
+<h3 class="fn"><a name="frameChanged"></a>void QMovie::frameChanged ( int <i>frameNumber</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>This signal is emitted when the frame number has changed to <i>frameNumber</i>. You can call <a href="qmovie.html#currentImage">currentImage</a>() or <a href="qmovie.html#currentPixmap">currentPixmap</a>() to get a copy of the frame.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="frameCount"></a>int QMovie::frameCount () const</h3>
 <p>Returns the number of frames in the movie.</p>
-<p>Certain animation formats do not support this feature, in which case -1 is returned.</p>
+<p>Certain animation formats do not support this feature, in which case 0 is returned.</p>
 <h3 class="fn"><a name="frameRect"></a><a href="qrect.html">QRect</a> QMovie::frameRect () const</h3>
 <p>Returns the rect of the last frame. If no frame has yet been updated, an invalid <a href="qrect.html">QRect</a> is returned.</p>
 <p>See also <a href="qmovie.html#currentImage">currentImage</a>() and <a href="qmovie.html#currentPixmap">currentPixmap</a>().</p>
@@ -168,11 +222,16 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="jumpToNextFrame"></a>bool QMovie::jumpToNextFrame ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Jumps to the next frame. Returns true on success; otherwise returns false.</p>
 <h3 class="fn"><a name="loopCount"></a>int QMovie::loopCount () const</h3>
-<p>Returns the number of times the movie will loop before it finishes.</p>
+<p>Returns the number of times the movie will loop before it finishes. If the movie will only play once (no looping), loopCount returns 0. If the movie loops forever, loopCount returns -1.</p>
+<p>Note that, if the image data comes from a sequential device (e.g. a socket), <a href="qmovie.html">QMovie</a> can only loop the movie if the <a href="qmovie.html#cacheMode-prop">cacheMode</a> is set to <a href="qmovie.html#CacheMode-enum">QMovie::CacheAll</a>.</p>
 <h3 class="fn"><a name="nextFrameDelay"></a>int QMovie::nextFrameDelay () const</h3>
 <p>Returns the number of milliseconds <a href="qmovie.html">QMovie</a> will wait before updating the next frame in the animation.</p>
 <h3 class="fn"><a name="resized"></a>void QMovie::resized ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the current frame has been resized to <i>size</i>. This effect is sometimes used in animations as an alternative to replacing the frame. You can call <a href="qmovie.html#currentImage">currentImage</a>() or <a href="qmovie.html#currentPixmap">currentPixmap</a>() to get a copy of the updated frame.</p>
+<h3 class="fn"><a name="scaledSize"></a><a href="qsize.html">QSize</a> QMovie::scaledSize ()</h3>
+<p>Returns the scaled size of frames.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qmovie.html#setScaledSize">setScaledSize</a>() and <a href="qimagereader.html#scaledSize">QImageReader::scaledSize</a>().</p>
 <h3 class="fn"><a name="setBackgroundColor"></a>void QMovie::setBackgroundColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
 <p>For image formats that support it, this function sets the background color to <i>color</i>.</p>
 <p>See also <a href="qmovie.html#backgroundColor">backgroundColor</a>().</p>
@@ -184,18 +243,15 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmovie.html#fileName">fileName</a>(), <a href="qmovie.html#setDevice">setDevice</a>(), and <a href="qmovie.html#setFormat">setFormat</a>().</p>
 <h3 class="fn"><a name="setFormat"></a>void QMovie::setFormat ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>format</i> )</h3>
 <p>Sets the format that <a href="qmovie.html">QMovie</a> will use when decoding image data, to <i>format</i>. By default, <a href="qmovie.html">QMovie</a> will attempt to guess the format of the image data.</p>
+<p>You can call <a href="qmovie.html#supportedFormats">supportedFormats</a>() for the full list of formats <a href="qmovie.html">QMovie</a> supports.</p>
 <p>See also <a href="qmovie.html#format">format</a>() and <a href="qimagereader.html#supportedImageFormats">QImageReader::supportedImageFormats</a>().</p>
 <h3 class="fn"><a name="setPaused"></a>void QMovie::setPaused ( bool <i>paused</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>If <i>paused</i> is true, <a href="qmovie.html">QMovie</a> will enter <a href="qmovie.html#MovieState-enum">Paused</a> state and emit stateChanged(Paused); otherwise it will enter <a href="qmovie.html#MovieState-enum">Running</a> state and emit stateChanged(Running).</p>
 <p>See also <a href="qmovie-qt3.html#paused">paused</a>() and <a href="qmovie.html#state">state</a>().</p>
-<h3 class="fn"><a name="setSpeed"></a>void QMovie::setSpeed ( int <i>percentSpeed</i> )</h3>
-<p>Sets the speed of the movie to <i>percentSpeed</i>, in percentage of the original speed. Example:</p>
-<pre>&nbsp;   QMovie movie(&quot;racecar.gif&quot;);
-    movie.setSpeed(200); // 2x speed</pre>
-<p>See also <a href="qmovie.html#speed">speed</a>().</p>
-<h3 class="fn"><a name="speed"></a>int QMovie::speed () const</h3>
-<p>Returns the current speed of the movie, in percentage of the original movie speed. By default, 100 is returned (i.e., 100% of the original speed).</p>
-<p>See also <a href="qmovie.html#setSpeed">setSpeed</a>().</p>
+<h3 class="fn"><a name="setScaledSize"></a>void QMovie::setScaledSize ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> )</h3>
+<p>Sets the scaled frame size to <i>size</i>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qmovie.html#scaledSize">scaledSize</a>() and <a href="qimagereader.html#setScaledSize">QImageReader::setScaledSize</a>().</p>
 <h3 class="fn"><a name="start"></a>void QMovie::start ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Starts the movie. <a href="qmovie.html">QMovie</a> will enter <a href="qmovie.html#MovieState-enum">Running</a> state, and start emitting <a href="qmovie.html#updated">updated</a>() and <a href="qmovie.html#resized">resized</a>() as the movie progresses.</p>
 <p>See also <a href="qmovie.html#stop">stop</a>() and <a href="qmovie.html#setPaused">setPaused</a>().</p>
@@ -205,15 +261,21 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the current state of <a href="qmovie.html">QMovie</a>.</p>
 <p>See also <a href="qmovie.html#MovieState-enum">MovieState</a> and <a href="qmovie.html#stateChanged">stateChanged</a>().</p>
 <h3 class="fn"><a name="stateChanged"></a>void QMovie::stateChanged ( <a href="qmovie.html#MovieState-enum">QMovie::MovieState</a> <i>state</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>This signal is emitted every time the state of the movie changes. The new state is specified by <i>state</i>.</p>
+<p>See also <a href="qmovie.html#state">QMovie::state</a>().</p>
 <h3 class="fn"><a name="stop"></a>void QMovie::stop ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Stops the movie. <a href="qmovie.html">QMovie</a> enters <a href="qmovie.html#MovieState-enum">NotRunning</a> state, and stops emitting <a href="qmovie.html#updated">updated</a>() and <a href="qmovie.html#resized">resized</a>(). If <a href="qmovie.html#start">start</a>() is called again, the movie will restart from the beginning.</p>
 <p>See also <a href="qmovie.html#start">start</a>().</p>
+<h3 class="fn"><a name="supportedFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QMovie::supportedFormats ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the list of image formats supported by <a href="qmovie.html">QMovie</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qimagereader.html#supportedImageFormats">QImageReader::supportedImageFormats</a>().</p>
 <h3 class="fn"><a name="updated"></a>void QMovie::updated ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the rect <i>rect</i> in the current frame has been updated. You can call <a href="qmovie.html#currentImage">currentImage</a>() or <a href="qmovie.html#currentPixmap">currentPixmap</a>() to get a copy of the updated frame.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -24,15 +24,15 @@
 #ifndef QMETATYPE_H
 #define QMETATYPE_H
 
-#include "QtCore/qglobal.h"
-#include "QtCore/qstring.h"
+#include <QtCore/qglobal.h>
+#include <QtCore/qatomic.h>
 
 #ifndef QT_NO_DATASTREAM
-#include "QtCore/qdatastream.h"
+#include <QtCore/qdatastream.h>
 #endif
 
 #ifdef Bool
-#error qmetatype.h must be included before any header file that define Bool
+#error qmetatype.h must be included before any header file that defines Bool
 #endif
 
 QT_MODULE(Core)
@@ -110,8 +110,8 @@ void qRegisterMetaTypeStreamOperators(const char *typeName, T * = 0)
     QMetaType::registerStreamOperators(typeName, reinterpret_cast<QMetaType::SaveOperator>(sptr),
                                        reinterpret_cast<QMetaType::LoadOperator>(lptr));
 }
-
 #endif
+
 template <typename T>
 int qRegisterMetaType(const char *typeName, T * = 0)
 {
@@ -127,56 +127,87 @@ int qRegisterMetaType(const char *typeName, T * = 0)
 template <typename T>
 struct QMetaTypeId
 {
+    enum { Defined = 0 };
 };
+
+template <typename T>
+inline int qMetaTypeId(T * = 0)
+{
+    return QMetaTypeId<T>::qt_metatype_id();
+}
 
 #define Q_DECLARE_METATYPE(TYPE) \
 template <> \
 struct QMetaTypeId< TYPE > \
 { \
+    enum { Defined = 1 }; \
     static int qt_metatype_id() \
     { \
-       static int id = qRegisterMetaType< TYPE >(#TYPE); \
+        static QBasicAtomic id = Q_ATOMIC_INIT(0); \
+        if (!id) \
+           id = qRegisterMetaType< TYPE >(#TYPE); \
        return id; \
     } \
 };
 
+class QString;
 template<> struct QMetaTypeId<QString>
-{ static inline int qt_metatype_id() { return QMetaType::QString; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::QString; } };
 template<> struct QMetaTypeId<int>
-{ static inline int qt_metatype_id() { return QMetaType::Int; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Int; } };
 template<> struct QMetaTypeId<uint>
-{ static inline int qt_metatype_id() { return QMetaType::UInt; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::UInt; } };
 template<> struct QMetaTypeId<bool>
-{ static inline int qt_metatype_id() { return QMetaType::Bool; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Bool; } };
 template<> struct QMetaTypeId<double>
-{ static inline int qt_metatype_id() { return QMetaType::Double; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Double; } };
+class QByteArray;
 template<> struct QMetaTypeId<QByteArray>
-{ static inline int qt_metatype_id() { return QMetaType::QByteArray; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::QByteArray; } };
+class QChar;
 template<> struct QMetaTypeId<QChar>
-{ static inline int qt_metatype_id() { return QMetaType::QChar; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::QChar; } };
 template<> struct QMetaTypeId<void>
-{ static inline int qt_metatype_id() { return QMetaType::Void; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Void; } };
 template<> struct QMetaTypeId<long>
-{ static inline int qt_metatype_id() { return QMetaType::Long; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Long; } };
 template<> struct QMetaTypeId<short>
-{ static inline int qt_metatype_id() { return QMetaType::Short; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Short; } };
 template<> struct QMetaTypeId<char>
-{ static inline int qt_metatype_id() { return QMetaType::Char; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Char; } };
 template<> struct QMetaTypeId<ulong>
-{ static inline int qt_metatype_id() { return QMetaType::ULong; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::ULong; } };
 template<> struct QMetaTypeId<ushort>
-{ static inline int qt_metatype_id() { return QMetaType::UShort; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::UShort; } };
 template<> struct QMetaTypeId<uchar>
-{ static inline int qt_metatype_id() { return QMetaType::UChar; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::UChar; } };
 template<> struct QMetaTypeId<float>
-{ static inline int qt_metatype_id() { return QMetaType::Float; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::Float; } };
 class QObject;
 template<> struct QMetaTypeId<QObject *>
-{ static inline int qt_metatype_id() { return QMetaType::QObjectStar; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::QObjectStar; } };
 class QWidget;
 template<> struct QMetaTypeId<QWidget *>
-{ static inline int qt_metatype_id() { return QMetaType::QWidgetStar; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::QWidgetStar; } };
 template<> struct QMetaTypeId<void *>
-{ static inline int qt_metatype_id() { return QMetaType::VoidStar; } };
+{ enum { Defined = 1 };
+  static inline int qt_metatype_id() { return QMetaType::VoidStar; } };
 
 #endif // QMETATYPE_H

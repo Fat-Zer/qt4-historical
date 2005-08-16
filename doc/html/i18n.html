@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/i18n.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/i18n.qdoc -->
 <head>
-    <title>Qt 4.0: Internationalization with Qt</title>
+    <title>Qt 4.1: Internationalization with Qt</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,6 +19,23 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Internationalization with Qt<br /><small></small></h1>
 <a name="internationalization"></a><a name="i18n"></a><p>The internationalization of an application is the process of making the application usable by people in countries other than one's own.</p>
+<ul><li><a href="#step-by-step">Step by Step</a></li>
+<ul><li><a href="#use-qstring-for-all-user-visible-text">Use QString for All User-Visible Text</a></li>
+<li><a href="#use-tr-for-all-literal-text">Use tr() for All Literal Text</a></li>
+<li><a href="#use-qkeysequence-for-accelerator-values">Use QKeySequence() for Accelerator Values</a></li>
+<li><a href="#use-qstring-arg-for-dynamic-text">Use QString::arg() for Dynamic Text</a></li>
+<li><a href="#produce-translations">Produce Translations</a></li>
+<li><a href="#support-for-encodings">Support for Encodings</a></li>
+<li><a href="#localize">Localize</a></li>
+</ul>
+<li><a href="#dynamic-translation">Dynamic Translation</a></li>
+<li><a href="#system-support">System Support</a></li>
+<ul><li><a href="#unix-x11">Unix/X11</a></li>
+<li><a href="#windows">Windows</a></li>
+</ul>
+<li><a href="#note-about-locales-on-x11">Note about Locales on X11</a></li>
+<li><a href="#relevant-qt-classes">Relevant Qt Classes</a></li>
+</ul>
 <p>In some cases internationalization is simple, for example, making a US application accessible to Australian or British users may require little more than a few spelling corrections. But to make a US application usable by Japanese users, or a Korean application usable by German users, will require that the software operate not only in different languages, but use different input techniques, character encodings and presentation conventions.</p>
 <p>Qt tries to make internationalization as painless as possible for developers. All input widgets and text drawing methods in Qt offer built-in support for all supported languages. The built-in font engine is capable of correctly and attractively rendering text that contains characters from a variety of different writing systems at the same time.</p>
 <p>Qt supports most languages in use today, in particular:</p>
@@ -218,6 +235,20 @@ body { background: #ffffff; color: black; }</style>
 <p>In the example, for the US we would leave the translation of &quot;AMPM&quot; as it is and thereby use the 12-hour clock branch; but in Europe we would translate it as something else and this will make the code use the 24-hour clock branch.</p>
 <p>For localized numbers use the <a href="qlocale.html">QLocale</a> class.</p>
 <p>Localizing images is not recommended. Choose clear icons that are appropriate for all localities, rather than relying on local puns or stretched metaphors. The exception is for images of left and right pointing arrows which may need to be reversed for Arabic and Hebrew locales.</p>
+<a name="dynamic-translation"></a>
+<h2>Dynamic Translation</h2>
+<p>Some applications, such as Qt Linguist, must be able to support changes to the user's language settings while they are still running. To make widgets aware of changes to the system language, reimplement the widget's <a href="qwidget.html#changeEvent">changeEvent()</a> function to check whether the event is a <a href="qevent.html#Type-enum">LanguageChange</a> event, and update the text displayed by widgets using the <a href="qobject.html#tr">tr()</a> function in the usual way. For example:</p>
+<pre>&nbsp;   void QWidget::changeEvent(QEvent *event)
+    {
+        if (e-&gt;type() == QEvent::LanguageChange) {
+            titleLabel-&gt;setText(tr(&quot;Document Title&quot;));
+            ...
+            okPushButton-&gt;setText(tr(&quot;&amp;OK&quot;));
+        } else
+            QWidget::changeEvent(event);
+    }</pre>
+<p>All other change events should be passed on by calling the default implementation of the function.</p>
+<p>The default event handler for <a href="qwidget.html">QWidget</a> subclasses responds to the <a href="qevent.html#Type-enum">QEvent::LanguageChange</a> event, and will call this function when necessary; other application components can also force widgets to update themselves by posting the <a href="qevent.html#Type-enum">LanguageChange</a> event to them.</p>
 <a name="system-support"></a>
 <h2>System Support</h2>
 <p>Some of the operating systems and windowing systems that Qt runs on only have limited support for Unicode. The level of support available in the underlying system has some influence on the support that Qt can provide on those platforms, although in general Qt applications need not be too concerned with platform-specific limitations.</p>
@@ -253,6 +284,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

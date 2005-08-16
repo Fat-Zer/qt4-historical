@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/image/qpicture.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qpicture.cpp -->
 <head>
-    <title>Qt 4.0: QPicture Class Reference</title>
+    <title>Qt 4.1: QPicture Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -64,8 +64,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-lt-lt-56">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-gt-gt-36">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QPicture &amp; <i>r</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-lt-lt-62">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-gt-gt-38">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QPicture &amp; <i>r</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -83,6 +83,7 @@ body { background: #ffffff; color: black; }</style>
             painter.drawPicture(0, 0, picture);    // draw the picture at (0,0)
             painter.end();                         // painting done</pre>
 <p>Pictures can also be drawn using <a href="qpicture.html#play">play</a>(). Some basic data about a picture is available, for example, <a href="qpicture.html#size">size</a>(), <a href="qpicture.html#isNull">isNull</a>() and <a href="qpicture.html#boundingRect">boundingRect</a>().</p>
+<p>See also <a href="qmovie.html">QMovie</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPicture"></a>QPicture::QPicture ( int <i>formatVersion</i> = -1 )</h3>
@@ -123,7 +124,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Internal implementation of the virtual QPaintDevice::metric() function.</p>
 <p>A picture has the following hard-coded values: dpi=72, numcolors=16777216 and depth=24.</p>
 <p><i>m</i> is the metric to get.</p>
-<p>Reimplemented from QPaintDevice.</p>
 <h3 class="fn"><a name="outputFormatList"></a><a href="qstringlist.html">QStringList</a> QPicture::outputFormatList ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of picture formats that are supported for picture output.</p>
 <p>Note that if you want to iterate over the list, you should iterate over a copy, e.g.</p>
@@ -161,16 +161,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Assigns picture <i>p</i> to this picture and returns a reference to this picture.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-56"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-62"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes picture <i>r</i> to the stream <i>s</i> and returns a reference to the stream.</p>
-<h3 class="fn"><a name="operator-gt-gt-36"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPicture &amp; <i>r</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-38"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPicture &amp; <i>r</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a picture from the stream <i>s</i> into picture <i>r</i> and returns a reference to the stream.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

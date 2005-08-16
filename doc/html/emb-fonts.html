@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/emb-fonts.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/emb-fonts.qdoc -->
 <head>
-    <title>Qt 4.0: Fonts in Qt/Embedded</title>
+    <title>Qt 4.1: Fonts in Qtopia Core</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -17,34 +17,34 @@ body { background: #ffffff; color: black; }</style>
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Fonts in Qt/Embedded<br /><small></small></h1>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Fonts in Qtopia Core<br /><small></small></h1>
 <a name="supported-formats"></a>
 <h2>Supported Formats</h2>
-<p>Qt/Embedded supports four font formats:</p>
+<p>Qtopia Core supports four font formats:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><b>TrueType (TTF)</b></td><td>The scalable font technology now standard on Microsoft Windows Mac OS X, and becoming popular on X11.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>Postscript Type1 (PFA/PFB)</b></td><td>Scalable fonts often used by printers, also popular on X11. These are similar in functionality to TTF fonts and are not discussed further in this document.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><b>Bitmap Distribution Format fonts (BDF)</b></td><td>A standard format for non-scalable fonts. A large number of BDF fonts are supplied as part of standard X11 distributions -- most of these can be used with Qt/Embedded. You should <i>not</i> use these in a production system: they are very slow to load and take up a <i>lot</i> of storage space. Instead, render the BDF to a QPF.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><b>Qt Prerendered Font (QPF)</b></td><td>A light-weight non-scalable font format specific to Qt/Embedded.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b>Bitmap Distribution Format fonts (BDF)</b></td><td>A standard format for non-scalable fonts. A large number of BDF fonts are supplied as part of standard X11 distributions -- most of these can be used with Qtopia Core. You should <i>not</i> use these in a production system: they are very slow to load and take up a <i>lot</i> of storage space. Instead, render the BDF to a QPF.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><b>Qt Prerendered Font (QPF)</b></td><td>A light-weight non-scalable font format specific to Qtopia Core.</td></tr>
 </table>
-<p>Support for each of these font formats (except QPF which is always enabled) can be enabled or disabled independently by using the <a href="emb-features.html">Qt/Embedded Feature Definition File</a>. There is support in Qt/Embedded for writing a QPF font file from any font, so you can initially enable TTF and BDF formats, save QPF files for the fonts and sizes you need, then remove TTF and BDF support.</p>
+<p>Support for each of these font formats (except QPF which is always enabled) can be enabled or disabled independently by using the <a href="emb-features.html">Qtopia Core Feature Definition File</a>. There is support in Qtopia Core for writing a QPF font file from any font, so you can initially enable TTF and BDF formats, save QPF files for the fonts and sizes you need, then remove TTF and BDF support.</p>
 <p>See <a href="emb-makeqpf.html">makeqpf</a> for a tool that helps produce QPF files from the TTF and BDF, or just run your application with the <tt>-savefonts</tt> option.</p>
 <a name="memory-requirements"></a>
 <h2>Memory Requirements</h2>
 <p>With TTF fonts, each character in the font at a given point size is only rendered when first used in a drawing or metrics operation. With BDF fonts all characters are rendered when the font is used. With QPF fonts, the characters are stored in the same format that Qt uses for drawing.</p>
 <p>For example, a 10-point Times font containing the ASCII characters uses around 1300 bytes when stored in QPF format.</p>
-<p>Taking advantage of the way the QPF format is structured, Qt/Embedded memory-maps the data rather than reading and parsing it. This reduces RAM consumption even further.</p>
+<p>Taking advantage of the way the QPF format is structured, Qtopia Core memory-maps the data rather than reading and parsing it. This reduces RAM consumption even further.</p>
 <p>Scalable fonts use a larger amount of memory per font, but these fonts provide a memory saving if many different sizes of each font are needed.</p>
 <a name="smooth-fonts"></a>
 <h2>Smooth Fonts</h2>
 <p>TTF, PFA, and QPF fonts can be rendered as <i>smooth</i> anti-aliased fonts to give superior readability, especially on low-resolution devices. The difference between smooth and non-smooth fonts is illustrated below (you may need to change your display to low resolution to see the difference):</p>
-<p align="center"><img src="images/unsmooth.png" alt="unsmooth" /></p><p align="center"><img src="images/smooth.png" alt="smooth" /></p><p>In Qt/Embedded 2.2.1, smooth fonts use eight times as much memory as non-smooth fonts. This multiplier will be reduced to a configurable 2 or 4 (i.e. 4-level and 16-level shading rather than the default 256-level shading).</p>
+<p align="center"><img src="images/unsmooth.png" alt="unsmooth" /></p><p align="center"><img src="images/smooth.png" alt="smooth" /></p><p>In Qtopia Core 2.2.1, smooth fonts use eight times as much memory as non-smooth fonts. This multiplier will be reduced to a configurable 2 or 4 (i.e. 4-level and 16-level shading rather than the default 256-level shading).</p>
 <a name="unicode"></a>
 <h2>Unicode</h2>
-<p>All fonts used by Qt/Embedded use the Unicode character encoding. Most fonts available today use this encoding, but they usually don't contain all the Unicode characters. A <i>complete</i> 16-point Unicode font uses over 1 MB of memory.</p>
+<p>All fonts used by Qtopia Core use the Unicode character encoding. Most fonts available today use this encoding, but they usually don't contain all the Unicode characters. A <i>complete</i> 16-point Unicode font uses over 1 MB of memory.</p>
 <a name="font-definition-file"></a>
 <h2>Font Definition File</h2>
-<p>When Qt/Embedded applications run, they look for a file called <tt>$QTDIR/lib/fonts/fontdir</tt> or <tt>/usr/local/qt-embedded/lib/fonts/fontdir</tt>. This file defines the fonts available to the application. It has the following format:</p>
+<p>When Qtopia Core applications run, they look for a file called <tt>$QTDIR/lib/fonts/fontdir</tt> or <tt>/usr/local/qt-embedded/lib/fonts/fontdir</tt>. This file defines the fonts available to the application. It has the following format:</p>
 <blockquote><p><i>name</i> <i>file</i> <i>renderer</i> <i>italic</i> <i>weight</i> <i>size</i> <i>flags</i></p>
 </blockquote>
 <p>where</p>
@@ -71,15 +71,15 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><i>italicflag</i></td><td><tt>i</tt> for italic, otherwise nothing.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><i>weight</i></td><td><tt>50</tt> is normal, <tt>75</tt> is bold, etc.</td></tr>
 </table>
-<p>If an application is run with the <tt>-savefonts</tt> command-line option, then whenever a font other than a QPF font is used, a corresponding QPF file is saved. This allows you to easily find the font usage of your applications and to generate QPF files so that you can eventually reduce the memory usage of your applications by disabling TTF and BDF support from Qt/Embedded, or by modifying the initialization of <tt>qws_savefonts</tt> in <tt>kernel/qapplication_qws.cpp</tt> of the Qt/Embedded library source code. In extreme cases of memory-saving, it is possible to save partially-rendered fonts (i.e. only the characters in &quot;Product Name&quot;) if you are certain that these are the only characters you will need from the font. See QMemoryManager::savePrerenderedFont() for this functionality.</p>
+<p>If an application is run with the <tt>-savefonts</tt> command-line option, then whenever a font other than a QPF font is used, a corresponding QPF file is saved. This allows you to easily find the font usage of your applications and to generate QPF files so that you can eventually reduce the memory usage of your applications by disabling TTF and BDF support from Qtopia Core, or by modifying the initialization of <tt>qws_savefonts</tt> in <tt>kernel/qapplication_qws.cpp</tt> of the Qtopia Core library source code. In extreme cases of memory-saving, it is possible to save partially-rendered fonts (i.e. only the characters in &quot;Product Name&quot;) if you are certain that these are the only characters you will need from the font. See QMemoryManager::savePrerenderedFont() for this functionality.</p>
 <a name="notes"></a>
 <h2>Notes</h2>
-<p>The font definition file, naming conventions for font files, and the format of QPF files may change in future versions of Qt/Embedded.</p>
-<p>When enabled, Qt/Embedded uses the powerful FreeType2 library to implement TrueType and Type1 support.</p>
+<p>The font definition file, naming conventions for font files, and the format of QPF files may change in future versions of Qtopia Core.</p>
+<p>When enabled, Qtopia Core uses the powerful FreeType2 library to implement TrueType and Type1 support.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

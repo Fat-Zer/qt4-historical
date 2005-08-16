@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/xml/qdom.cpp -->
 <head>
-    <title>Qt 4.0: QDomImplementation Class Reference</title>
+    <title>Qt 4.1: QDomImplementation Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -23,6 +23,11 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="qdomimplementation-members.html">List of all members, including inherited members</a></li>
 </ul>
+<a name="public-types"></a>
+<h3>Public Types</h3>
+<ul>
+<li><div class="fn"/>enum <b><a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a></b> { AcceptInvalidChars, DropInvalidChars, ReturnNullNode }</li>
+</ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
@@ -37,6 +42,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QDomImplementation &amp; <b><a href="qdomimplementation.html#operator-eq">operator=</a></b> ( const QDomImplementation &amp; <i>x</i> )</li>
 <li><div class="fn"/>bool <b><a href="qdomimplementation.html#operator-eq-eq">operator==</a></b> ( const QDomImplementation &amp; <i>x</i> ) const</li>
 </ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>InvalidDataPolicy <b><a href="qdomimplementation.html#invalidDataPolicy">invalidDataPolicy</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qdomimplementation.html#setInvalidDataPolicy">setInvalidDataPolicy</a></b> ( InvalidDataPolicy <i>policy</i> )</li>
+</ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
@@ -46,6 +57,17 @@ body { background: #ffffff; color: black; }</style>
 <p>You can create a new document type with <a href="qdomimplementation.html#createDocumentType">createDocumentType</a>() and a new document with <a href="qdomimplementation.html#createDocument">createDocument</a>().</p>
 <p>For further information about the Document Object Model see <a href="http://www.w3.org/TR/REC-DOM-Level-1/">Level 1</a> and <a href="http://www.w3.org/TR/DOM-Level-2-Core/">Level 2 Core</a>. For a more general introduction of the DOM implementation see the <a href="qdomdocument.html">QDomDocument</a> documentation.</p>
 <p>See also <a href="qdomimplementation.html#hasFeature">hasFeature</a>().</p>
+<hr />
+<h2>Member Type Documentation</h2>
+<h3 class="fn"><a name="InvalidDataPolicy-enum"></a>enum QDomImplementation::InvalidDataPolicy</h3>
+<p>This enum specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is called with invalid data.</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QDomImplementation::AcceptInvalidChars</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The data should be stored in the DOM object anyway. In this case the resulting XML document might not be well-formed. This is the default value and QDom's behavior in Qt &lt; 4.1.</td></tr>
+<tr><td valign="top"><tt>QDomImplementation::DropInvalidChars</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The invalid characters should be removed from the data.</td></tr>
+<tr><td valign="top"><tt>QDomImplementation::ReturnNullNode</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The factory function should return a null node.</td></tr>
+</table>
+<p>See also <a href="qdomimplementation.html#setInvalidDataPolicy">setInvalidDataPolicy</a>() and <a href="qdomimplementation.html#invalidDataPolicy">invalidDataPolicy</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QDomImplementation"></a>QDomImplementation::QDomImplementation ()</h3>
@@ -71,8 +93,32 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#a2c511"><th>Feature</th><th>Version</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>XML</td><td>1.0</td></tr>
 </table>
+<h3 class="fn"><a name="invalidDataPolicy"></a><a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a> QDomImplementation::invalidDataPolicy ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the invalid data policy, which specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is passed invalid data.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qdomimplementation.html#setInvalidDataPolicy">setInvalidDataPolicy</a>() and <a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a>.</p>
 <h3 class="fn"><a name="isNull"></a>bool QDomImplementation::isNull ()</h3>
 <p>Returns false if the object was created by <a href="qdomdocument.html#implementation">QDomDocument::implementation</a>(); otherwise returns true.</p>
+<h3 class="fn"><a name="setInvalidDataPolicy"></a>void QDomImplementation::setInvalidDataPolicy ( <a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a> <i>policy</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Sets the invalid data policy, which specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is passed invalid data.</p>
+<p>The <i>policy</i> is set for all instances of <a href="qdomdocument.html">QDomDocument</a> which already exist and which will be created in the future.</p>
+<pre>&nbsp;   QDomDocument doc;
+    QDomImplementation impl;
+
+    // This will create the element, but the resulting XML document will
+    // be invalid, because '~' is not a valid character in a tag name.
+    impl.setInvalidDataPolicy(QDomImplementation::AcceptInvalidData);
+    QDomElement elt1 = doc.createElement(&quot;foo~bar&quot;);
+
+    // This will create an element with the tag name &quot;foobar&quot;.
+    impl.setInvalidDataPolicy(QDomImplementation::DropInvalidData);
+    QDomElement elt2 = doc.createElement(&quot;foo~bar&quot;);
+
+    // This will create a null element.
+    impl.setInvalidDataPolicy(QDomImplementation::ReturnNullNode);
+    QDomElement elt3 = doc.createElement(&quot;foo~bar&quot;);</pre>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qdomimplementation.html#invalidDataPolicy">invalidDataPolicy</a>() and <a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a>.</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QDomImplementation::operator!= ( const QDomImplementation &amp; <i>x</i> ) const</h3>
 <p>Returns true if <i>x</i> and this DOM implementation object were created from different QDomDocuments; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq"></a>QDomImplementation &amp; QDomImplementation::operator= ( const QDomImplementation &amp; <i>x</i> )</h3>
@@ -83,6 +129,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

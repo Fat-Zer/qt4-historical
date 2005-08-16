@@ -24,8 +24,8 @@
 #ifndef QABSTRACTEVENTDISPATCHER_H
 #define QABSTRACTEVENTDISPATCHER_H
 
-#include "QtCore/qobject.h"
-#include "QtCore/qeventloop.h"
+#include <QtCore/qobject.h>
+#include <QtCore/qeventloop.h>
 
 QT_MODULE(Core)
 
@@ -69,7 +69,7 @@ public:
     EventFilter setEventFilter(EventFilter filter);
     bool filterEvent(void *message);
 
-signals:
+Q_SIGNALS:
     void aboutToBlock();
     void awake();
 

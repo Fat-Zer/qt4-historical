@@ -66,9 +66,14 @@ public:
 
     QPalette standardPalette() const;
 
+protected:
+    bool eventFilter(QObject *watched, QEvent *event);
+    void timerEvent(QTimerEvent *event);
+    
 private:
     QPlastiqueStylePrivate *d;
 };
 
 #endif // QT_NO_STYLE_PLASTIQUE
-#endif
+
+#endif // QPLASTIQUESTYLE_H

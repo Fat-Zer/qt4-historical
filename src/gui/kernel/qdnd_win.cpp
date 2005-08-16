@@ -339,6 +339,10 @@ QOleDataObject::QOleDataObject(QMimeData *mimeData)
     performedEffect = DROPEFFECT_NONE;
 }
 
+QOleDataObject::~QOleDataObject()
+{
+}
+
 void QOleDataObject::releaseQt()
 {
     data = 0;
@@ -588,9 +592,6 @@ QOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, L
     manager->dropData->currentDataObject = pDataObj;
     manager->dropData->currentDataObject->AddRef();
 
-    if (manager->dragPrivate()) manager->dragPrivate()->target = widget;
-    manager->emitTargetChanged(widget);
-
     lastPoint = widget->mapFromGlobal(QPoint(pt.x,pt.y));
     lastKeyState = grfKeyState;
 
@@ -601,7 +602,7 @@ QOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, L
 
 
     answerRect = e.answerRect();
-    if (e.isAccepted())
+    if (e.isAccepted() && e.dropAction() != Qt::IgnoreAction)
         choosenEffect = translateToWinDragEffects(e.dropAction());
     else
         choosenEffect = DROPEFFECT_NONE;
@@ -667,10 +668,7 @@ QOleDropTarget::DragLeave()
     QApplication::sendEvent(widget, &e);
 
     QDragManager *manager = QDragManager::self();
-    if (manager->dragPrivate()) manager->dragPrivate()->target = 0;
-    manager->emitTargetChanged(widget);
-
-
+    
     manager->dropData->currentDataObject->Release();
     manager->dropData->currentDataObject = 0;
 
@@ -880,7 +878,7 @@ void qt_olednd_unregister(QWidget* widget, QOleDropTarget *dst)
     dst->releaseQt();
     dst->Release();
 #ifndef Q_OS_TEMP
-    CoLockObjectExternal(dst, false, true);
+    CoLockObjectExternal(dst, FALSE, TRUE);
     RevokeDragDrop(widget->winId());
 #endif
 }
@@ -890,7 +888,7 @@ QOleDropTarget* qt_olednd_register(QWidget* widget)
     QOleDropTarget* dst = new QOleDropTarget(widget);
 #ifndef Q_OS_TEMP
     RegisterDragDrop(widget->winId(), dst);
-    CoLockObjectExternal(dst, true, true);
+    CoLockObjectExternal(dst, TRUE, TRUE);
 #endif
     return dst;
 }

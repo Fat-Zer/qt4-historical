@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -22,8 +22,8 @@
 ****************************************************************************/
 
 #include "model.h"
-#include <qicon.h>
-#include <qpixmap.h>
+#include <QIcon>
+#include <QPixmap>
 
 Model::Model(int rows, int columns, QObject *parent)
     : QAbstractItemModel(parent),

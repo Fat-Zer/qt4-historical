@@ -35,13 +35,16 @@
 // We mean it.
 //
 
-#include <qglobal.h>
-#ifdef QT3_SUPPORT
-#include <qpointer.h>
-#include <qprintdialog.h>
-#endif
+
+#include "QtCore/qglobal.h"
 
 #ifndef QT_NO_PRINTER
+
+#include "QtGui/qprinter.h"
+#ifdef QT3_SUPPORT
+#include "QtCore/qpointer.h"
+#include "QtGui/qprintdialog.h"
+#endif
 
 class QPrintEngine;
 
@@ -50,17 +53,26 @@ class QPrinterPrivate
 public:
     QPrinterPrivate()
         : printEngine(0)
+        , paintEngine(0)
 #if defined(QT3_SUPPORT) && !(defined(QT_NO_PRINTDIALOG))
         , printDialog(0)
 #endif
+        , use_default_engine(true)
     {
     }
 
+    void createDefaultEngines();
+
+    QPrinter::PrinterMode printerMode;
+    QPrinter::OutputFormat outputFormat;
     QPrintEngine *printEngine;
+    QPaintEngine *paintEngine;
 
 #if defined(QT3_SUPPORT) && !(defined(QT_NO_PRINTDIALOG))
     QPointer<QPrintDialog> printDialog;
 #endif
+
+    bool use_default_engine;
 };
 
 #endif // QT_NO_PRINTER

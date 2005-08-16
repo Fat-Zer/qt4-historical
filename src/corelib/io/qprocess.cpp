@@ -100,12 +100,13 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
     When the process exits, QProcess reenters the \l NotRunning state
     (the initial state), and emits finished().
 
-    The finished() signal provides the exit code of the process as an
-    argument, and you can also call exitCode() to obtain the exit code
-    of the last process that finished. If an error occurs at any point
-    in time, QProcess will emit the error() signal. You can also call
-    error() to find the type of error that occurred last, and state()
-    to find the current process state.
+    The finished() signal provides the exit code and exit status of
+    the process as arguments, and you can also call exitCode() to
+    obtain the exit code of the last process that finished, and
+    exitStatus() to obtain its exit status. If an error occurs at
+    any point in time, QProcess will emit the error() signal. You
+    can also call error() to find the type of error that occurred
+    last, and state() to find the current process state.
 
     Processes have two predefined output channels: The standard
     output channel (\c stdout) supplies regular console output, and
@@ -262,37 +263,59 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 */
 
 /*!
-    \fn QProcess::error(ProcessError error)
+    \enum QProcess::ExitStatus
+
+    This enum describes the different exit statuses of QProcess.
+
+    \value NormalExit The process exited normally.
+
+    \value CrashExit The process crashed.
+
+    \sa exitStatus()
+*/
+
+/*!
+    \fn void QProcess::error(QProcess::ProcessError error)
 
     This signal is emitted when an error occurs with the process. The
     specified \a error describes the type of error that occurred.
 */
 
 /*!
-    \fn QProcess::started()
+    \fn void QProcess::started()
 
     This signal is emitted by QProcess when the process has started,
     and state() returns \l Running.
 */
 
 /*!
-    \fn QProcess::stateChanged(ProcessState newState)
+    \fn void QProcess::stateChanged(QProcess::ProcessState newState)
 
     This signal is emitted whenever the state of QProcess changes. The
     \a newState argument is the state QProcess changed to.
 */
 
 /*!
-    \fn QProcess::finished(int exitCode)
+    \fn void QProcess::finished(int exitCode)
+    \obsolete
+    \overload
 
-    This signal is emitted when the process finishes. \a exitCode is
-    the exit code of the process. After the process has finished, the
-    buffers in QProcess are still intact. You can still read any data
-    that the process may have written before it finished.
+    Use finished(int exitCode, QProcess::ExitStatus status) instead.
 */
 
 /*!
-    \fn QProcess::readyReadStandardOutput()
+    \fn void QProcess::finished(int exitCode, QProcess::ExitStatus exitStatus)
+
+    This signal is emitted when the process finishes. \a exitCode is the exit
+    code of the process, and \a exitStatus is the exit status.  After the
+    process has finished, the buffers in QProcess are still intact. You can
+    still read any data that the process may have written before it finished.
+
+    \sa exitStatus()
+*/
+
+/*!
+    \fn void QProcess::readyReadStandardOutput()
 
     This signal is emitted when the process has made new data
     available through its standard output channel (\c stdout). It is
@@ -302,7 +325,7 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 */
 
 /*!
-    \fn QProcess::readyReadStandardError()
+    \fn void QProcess::readyReadStandardError()
 
     This signal is emitted when the process has made new data
     available through its standard error channel (\c stderr). It is
@@ -323,6 +346,7 @@ QProcessPrivate::QProcessPrivate()
     pid = 0;
     sequenceNumber = 0;
     exitCode = 0;
+    exitStatus = QProcess::NormalExit;
     standardReadSocketNotifier = 0;
     errorReadSocketNotifier = 0;
     writeSocketNotifier = 0;
@@ -579,6 +603,7 @@ bool QProcessPrivate::processDied()
     findExitCode();
 
     if (crashed) {
+        exitStatus = QProcess::CrashExit;
         processError = QProcess::Crashed;
         q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Process crashed")));
         emit q->error(processError);
@@ -589,6 +614,7 @@ bool QProcessPrivate::processDied()
     processState = QProcess::NotRunning;
     emit q->stateChanged(processState);
     emit q->finished(exitCode);
+    emit q->finished(exitCode, exitStatus);
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::processDied() process is dead");
 #endif
@@ -917,9 +943,17 @@ QProcess::ProcessState QProcess::state() const
 
 /*!
     Sets the environment that QProcess will use when starting a
-    process to \a environment.
+    process to \a environment. \a environment is a list of key=value
+    pairs. Example:
 
-    \sa environment()
+    \code
+        QProcess process;
+        process.setEnvironment(QProcess::systemEnvironment()
+                               << "TMPDIR=C:\\MyApp\\temp");
+        process.start("myapp");
+    \endcode
+
+    \sa environment(), systemEnvironment()
 */
 void QProcess::setEnvironment(const QStringList &environment)
 {
@@ -929,11 +963,11 @@ void QProcess::setEnvironment(const QStringList &environment)
 
 /*!
     Returns the environment that QProcess will use when starting a
-    process, or an empty QStringList if no environment has been set.
-    If no environment has been set, the environment of the calling
-    process will be used.
+    process, or an empty QStringList if no environment has been set
+    using setEnvironment(). If no environment has been set, the
+    environment of the calling process will be used.
 
-    \sa setEnvironment()
+    \sa setEnvironment(), systemEnvironment()
 */
 QStringList QProcess::environment() const
 {
@@ -1352,6 +1386,21 @@ int QProcess::exitCode() const
 }
 
 /*!
+    \since 4.1
+
+    Returns the exit status of the last process that finished.
+
+    On Windows, if the process was terminated with TerminateProcess()
+    from another application this function will still return NormalExit
+    unless the exit code is less than 0.
+*/
+QProcess::ExitStatus QProcess::exitStatus() const
+{
+    Q_D(const QProcess);
+    return d->exitStatus;
+}
+
+/*!
     Starts the program \a program with the arguments \a arguments in a
     new process, waits for it to finish, and then returns the exit
     code of the process. Any data the new process writes to the
@@ -1422,6 +1471,37 @@ bool QProcess::startDetached(const QString &program)
     args.removeFirst();
 
     return QProcessPrivate::startDetached(prog, args);
+}
+
+#ifdef Q_OS_MAC
+# include <crt_externs.h>
+# define environ (*_NSGetEnviron())
+#elif !defined(Q_OS_WIN)
+  extern char **environ;
+#endif
+
+/*!
+    \since 4.1
+
+    Returns the environment of the calling process as a list of
+    key=value pairs. Example:
+
+    \code
+        QStringList environment = QProcess::systemEnvironment();
+        // environment = {"PATH=/usr/bin:/usr/local/bin",
+                          "USER=greg", "HOME=/home/greg"}
+    \endcode
+
+    \sa environment(), setEnvironment()
+*/
+QStringList QProcess::systemEnvironment()
+{
+    QStringList tmp;
+    char *entry = 0;
+    int count = 0;
+    while ((entry = environ[count++]))
+        tmp << QString::fromLocal8Bit(entry);
+    return tmp;
 }
 
 #include "moc_qprocess.cpp"

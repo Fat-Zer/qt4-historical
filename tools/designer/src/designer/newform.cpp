@@ -55,7 +55,7 @@ NewForm::NewForm(QDesignerWorkbench *workbench, QWidget *parentWidget)
       m_workbench(workbench)
 {
     ui.setupUi(this);
-    ui.treeWidget->setItemDelegate(new SheetDelegate(ui.treeWidget, this));
+    ui.treeWidget->setItemDelegate(new qdesigner_internal::SheetDelegate(ui.treeWidget, this));
     ui.treeWidget->header()->hide();
     ui.treeWidget->header()->setStretchLastSection(true);
     ui.lblPreview->setBackgroundRole(QPalette::Base);
@@ -105,11 +105,11 @@ void NewForm::on_createButton_clicked()
         int maxUntitled = 0;
         int totalWindows = m_workbench->formWindowCount();
         // This will cause some problems with i18n, but for now I need the string to be "static"
-        QRegExp rx(QLatin1String("Untitled( (\\d+))*"));
+        QRegExp rx(QLatin1String("untitled( (\\d+))?"));
         for (int i = 0; i < totalWindows; ++i) {
             QString title = m_workbench->formWindow(i)->windowTitle();
             title = title.replace(QLatin1String("[*]"), QLatin1String(""));
-            if (rx.exactMatch(title)) {
+            if (rx.indexIn(title) != 1) {
                 if (maxUntitled == 0)
                     ++maxUntitled;
                 if (rx.numCaptures() > 1)
@@ -131,12 +131,13 @@ void NewForm::on_createButton_clicked()
             if (QWidget *container = editor->mainContainer())
                 formWindow->resize(container->size());
         }
-        QString newTitle = QString::fromUtf8("Untitled");
+        QString newTitle = QLatin1String("untitled");
         if (maxUntitled)
-            newTitle += QString::fromUtf8(" ") + QString::number(maxUntitled + 1);
+            newTitle += QLatin1String(" ") + QString::number(maxUntitled + 1);
 
         newTitle.append(QLatin1String("[*]"));
         formWindow->setWindowTitle(newTitle);
+        formWindow->editor()->setFileName("");
         formWindow->show();
     }
 }
@@ -157,22 +158,15 @@ QIcon NewForm::formPreviewIcon(const QString &fileName)
 
     QFile f(fileName);
     if (f.open(QFile::ReadOnly)) {
-        QDesignerFormBuilder formBuilder(workbench()->core());
+        qdesigner_internal::QDesignerFormBuilder formBuilder(workbench()->core());
 
         QWidget *fake = new QWidget(0);
+        fake->setAttribute(Qt::WA_WState_Visible);
+
         if (QWidget *widget = formBuilder.load(&f, fake)) {
-            QSize size = widget->size();
             widget->setParent(fake, 0);
-            widget->resize(size);
             widget->show();
             f.close();
-
-            QList<QLayout*> layouts = qFindChildren<QLayout*>(widget);
-            foreach (QLayout *layout, layouts)
-                layout->activate();
-
-            widget->ensurePolished();
-            qDesigner->processEvents();
 
             QPixmap pix = QPixmap::grabWidget(widget);
             QImage image = pix.toImage();

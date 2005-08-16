@@ -24,11 +24,9 @@
 #ifndef Q3SERVERSOCKET_H
 #define Q3SERVERSOCKET_H
 
-#ifndef QT_H
-#include "QtCore/qobject.h"
-#include "QtNetwork/qhostaddress.h"
-#include "Qt3Support/q3socketdevice.h" // ### remove or keep for users' convenience?
-#endif // QT_H
+#include <QtCore/qobject.h>
+#include <QtNetwork/qhostaddress.h>
+#include <Qt3Support/q3socketdevice.h> // ### remove or keep for users' convenience?
 
 QT_MODULE(Qt3Support)
 
@@ -59,7 +57,7 @@ public:
 protected:
     Q3SocketDevice *socketDevice();
 
-private slots:
+private Q_SLOTS:
     void incomingConnection( int socket );
 
 private:

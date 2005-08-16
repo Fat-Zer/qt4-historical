@@ -26,14 +26,12 @@
 
 #ifndef QT_NO_QOBJECT
 
-#include "QtCore/qobjectdefs.h"
-#include "QtCore/qnamespace.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qbytearray.h"
-#include "QtCore/qlist.h"
-
+#include <QtCore/qobjectdefs.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qbytearray.h>
+#include <QtCore/qlist.h>
 #ifdef QT_INCLUDE_COMPAT
-#include "QtCore/qcoreevent.h"
+#include <QtCore/qcoreevent.h>
 #endif
 
 QT_MODULE(Core)
@@ -205,7 +203,7 @@ public:
     QObjectUserData* userData(uint id) const;
 #endif // QT_NO_USERDATA
 
-signals:
+Q_SIGNALS:
     void destroyed(QObject * = 0);
 
 public:
@@ -214,7 +212,7 @@ public:
     inline bool inherits(const char *classname) const
         { return const_cast<QObject *>(this)->qt_metacast(classname) != 0; }
 
-public slots:
+public Q_SLOTS:
     void deleteLater();
 
 protected:

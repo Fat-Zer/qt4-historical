@@ -32,6 +32,8 @@
 #include "qapplication.h"
 #include "qstringlist.h"
 
+#include "qthread.h"
+
 #include <private/qunicodetables_p.h>
 #include "qfont_p.h"
 #include <private/qfontengine_p.h>
@@ -90,7 +92,7 @@ bool QFontDef::exactMatch(const QFontDef &other) const
     QString this_family, this_foundry, other_family, other_foundry;
     QFontDatabase::parseFontName(family, this_foundry, this_family);
     QFontDatabase::parseFontName(other.family, other_foundry, other_family);
-    
+
     return (styleHint     == other.styleHint
             && styleStrategy == other.styleStrategy
             && weight        == other.weight
@@ -111,7 +113,7 @@ extern HDC shared_dc;
 
 extern bool qt_is_gui_used;
 
-int qt_defaultDpi()
+Q_GUI_EXPORT int qt_defaultDpi()
 {
     if (!qt_is_gui_used)
         return 75;
@@ -370,11 +372,10 @@ QFontEngineData::~QFontEngineData()
     either.
 
     \code
-    QFont f1("Helvetica [Cronyx]");  // Qt 4.x and 3.x
-    QFont f2("Cronyx-Helvetica");    // Qt 2.x compatibility
+    QFont f("Helvetica [Cronyx]");
     \endcode
-    You can specify the foundry you want in the family name. Both fonts,
-    f1 and f2, in the above example will be set to "Helvetica
+    You can specify the foundry you want in the family name. The font f
+    in the above example will be set to "Helvetica
     [Cronyx]".
 
     To determine the attributes of the font actually used in the window
@@ -417,6 +418,12 @@ QFontEngineData::~QFontEngineData()
     \sa Weight
 */
 
+void qt_font_tread_test()
+{
+    if (QApplication::instance() && QThread::currentThread() != QApplication::instance()->thread())
+        qWarning("QFont: It is not safe to use text and fonts outside the gui thread");
+}
+
 /*!
   Constructs a font from \a font for use on the paint device \a pd.
 */
@@ -447,6 +454,8 @@ QFont::QFont(const QFont &font, QPaintDevice *pd)
 QFont::QFont(QFontPrivate *data)
     : resolve_mask(QFontPrivate::Complete)
 {
+    qt_font_tread_test();
+
     d = data;
     d->ref.ref();
 }
@@ -484,8 +493,7 @@ QFont::QFont()
     If \a pointSize is <= 0, it is set to 12.
 
     The \a family name may optionally also include a foundry name,
-    e.g. "Helvetica [Cronyx]". (The Qt 2.x syntax, i.e.
-    "Cronyx-Helvetica", is also supported.) If the \a family is
+    e.g. "Helvetica [Cronyx]". If the \a family is
     available from more than one foundry and the foundry isn't
     specified, an arbitrary foundry is chosen. If the family isn't
     available a family will be set using the \l{QFont}{font matching}
@@ -497,6 +505,8 @@ QFont::QFont()
 QFont::QFont(const QString &family, int pointSize, int weight, bool italic)
     :d(new QFontPrivate)
 {
+    qt_font_tread_test();
+
     resolve_mask = QFontPrivate::Family;
 
     if (pointSize <= 0) {
@@ -563,8 +573,7 @@ QString QFont::family() const
     may include a foundry name.
 
     The \a family name may optionally also include a foundry name,
-    e.g. "Helvetica [Cronyx]". (The Qt 2.x syntax, i.e.
-    "Cronyx-Helvetica", is also supported.) If the \a family is
+    e.g. "Helvetica [Cronyx]". If the \a family is
     available from more than one foundry and the foundry isn't
     specified, an arbitrary foundry is chosen. If the family isn't
     available a family will be set using the \l{QFont}{font matching}
@@ -1341,12 +1350,14 @@ static void initFontSubst()
 
 #if defined(Q_WS_X11)
         "arial",        "helvetica",
-        "helv",         "helvetica",
-        "tms rmn",      "times",
+        "times new roman", "times",
+        "courier new",  "courier",
+        "sans serif",   "helvetica",
 #elif defined(Q_WS_WIN)
-        "times",        "Times New Roman",
-        "courier",      "Courier New",
-        "helvetica",    "Arial",
+        "times",        "times new roman",
+        "courier",      "courier new",
+        "helvetica",    "arial",
+        "sans serif",   "arial",
 #endif
 
         0,              0
@@ -1381,7 +1392,7 @@ QString QFont::substitute(const QString &familyName)
 
     QFontSubst *fontSubst = globalFontSubst();
     Q_ASSERT(fontSubst != 0);
-    QFontSubst::Iterator it = fontSubst->find(familyName);
+    QFontSubst::Iterator it = fontSubst->find(familyName.toLower());
     if (it != fontSubst->constEnd() && !(*it).isEmpty())
         return (*it).first();
 
@@ -1404,7 +1415,7 @@ QStringList QFont::substitutes(const QString &familyName)
 
     QFontSubst *fontSubst = globalFontSubst();
     Q_ASSERT(fontSubst != 0);
-    return fontSubst->value(familyName, QStringList());
+    return fontSubst->value(familyName.toLower(), QStringList());
 }
 
 
@@ -1421,9 +1432,10 @@ void QFont::insertSubstitution(const QString &familyName,
 
     QFontSubst *fontSubst = globalFontSubst();
     Q_ASSERT(fontSubst != 0);
-    QStringList &list = (*fontSubst)[familyName];
-    if (!list.contains(substituteName))
-        list.append(substituteName);
+    QStringList &list = (*fontSubst)[familyName.toLower()];
+    QString s = substituteName.toLower();
+    if (!list.contains(s))
+        list.append(s);
 }
 
 
@@ -1995,7 +2007,7 @@ bool QFontInfo::fixedPitch() const
         QGlyphLayout g[2];
         int l = 2;
         engine->stringToCMap(ch, 2, g, &l, 0);
-        engine->fontDef.fixedPitch = g[0].advance.x() == g[1].advance.x();
+        engine->fontDef.fixedPitch = g[0].advance.x == g[1].advance.x;
         engine->fontDef.fixedPitchComputed = true;
     }
 #endif

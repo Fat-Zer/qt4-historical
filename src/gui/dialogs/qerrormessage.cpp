@@ -93,7 +93,7 @@ QSize QErrorMessageTextView::sizeHint() const
     the dialog in the usual way, and show it by calling the showMessage() slot or
     connecting signals to it.
 
-    For Qt/Embedded developers, the static qtHandler() installs a message handler
+    For Qtopia Core developers, the static qtHandler() installs a message handler
     using qInstallMsgHandler() and creates a QErrorMessage that displays qDebug(),
     qWarning() and qFatal() messages.
 
@@ -123,7 +123,7 @@ static void deleteStaticcQErrorMessage() // post-routine
 
 static bool metFatal = false;
 
-void jump(QtMsgType t, const char * m)
+static void jump(QtMsgType t, const char * m)
 {
     if (!qtMessageHandler)
         return;

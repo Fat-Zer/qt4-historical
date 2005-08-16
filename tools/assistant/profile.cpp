@@ -22,13 +22,13 @@
 ****************************************************************************/
 
 #include "profile.h"
-#include <qxml.h>
-#include <qtextcodec.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
-#include <qdir.h>
-#include <qlist.h>
-#include <qlibraryinfo.h>
+#include <QtXml>
+#include <QTextCodec>
+#include <QFileInfo>
+#include <QRegExp>
+#include <QDir>
+#include <QList>
+#include <QLibraryInfo>
 
 #define QT_TITLE         QLatin1String("Qt Reference Documentation")
 #define DESIGNER_TITLE   QLatin1String("Qt Designer Manual")
@@ -36,9 +36,13 @@
 #define LINGUIST_TITLE   QLatin1String("Qt Linguist Manual")
 #define QMAKE_TITLE      QLatin1String("qmake Manual")
 
-Profile *Profile::createDefaultProfile()
+Profile *Profile::createDefaultProfile(const QString &docPath)
 {
-    QString path = QLibraryInfo::location(QLibraryInfo::DocumentationPath) + QLatin1String("/html/");
+    QString path = QLibraryInfo::location(QLibraryInfo::DocumentationPath);
+    if (!docPath.isEmpty())
+        path = docPath;    
+    path = path + QLatin1String("/html/");    
+    
     Profile *profile = new Profile;
     profile->valid = true;
     profile->type = DefaultProfile;

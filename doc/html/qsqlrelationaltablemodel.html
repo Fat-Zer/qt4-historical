@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/sql/models/qsqlrelationaltablemodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/sql/models/qsqlrelationaltablemodel.cpp -->
 <head>
-    <title>Qt 4.0: QSqlRelationalTableModel Class Reference</title>
+    <title>Qt 4.1: QSqlRelationalTableModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -35,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>20 public functions inherited from <a href="qsqltablemodel.html#public-functions">QSqlTableModel</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qsqlquerymodel.html#public-functions">QSqlQueryModel</a></li>
+<li><div class="fn"/>15 public functions inherited from <a href="qsqlquerymodel.html#public-functions">QSqlQueryModel</a></li>
 <li><div class="fn"/>1 public function inherited from <a href="qabstracttablemodel.html#public-functions">QAbstractTableModel</a></li>
 <li><div class="fn"/>32 public functions inherited from <a href="qabstractitemmodel.html#public-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
@@ -47,12 +47,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>2 public slots inherited from <a href="qabstractitemmodel.html#public-slots">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 <li><div class="fn"/>4 signals inherited from <a href="qsqltablemodel.html#signals">QSqlTableModel</a></li>
-<li><div class="fn"/>3 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
+<li><div class="fn"/>12 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>8 protected functions inherited from <a href="qsqltablemodel.html#protected-functions">QSqlTableModel</a></li>
 <li><div class="fn"/>3 protected functions inherited from <a href="qsqlquerymodel.html#protected-functions">QSqlQueryModel</a></li>
-<li><div class="fn"/>12 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
+<li><div class="fn"/>13 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
@@ -75,7 +75,11 @@ body { background: #ffffff; color: black; }</style>
         view-&gt;setModel(model);
         view-&gt;setItemDelegate(new QSqlRelationalDelegate(view));</pre>
 <p>The <a href="sql-relationaltablemodel.html">sql/relationaltablemodel</a> example illustrates how to use QSqlRelationalTableModel in conjunction with <a href="qsqlrelationaldelegate.html">QSqlRelationalDelegate</a> to provide tables with foreigh key support.</p>
-<p align="center"><img src="images/relationaltable.png" /></p><p>Note: The table's primary key may not contain a relation to another table.</p>
+<p align="center"><img src="images/relationaltable.png" /></p><p>Notes:</p>
+<ul>
+<li>The table's primary key may not contain a relation to another table.</li>
+<li>If a relational table contains keys that refer to non-existent rows in the referenced table, the rows containing the invalid keys will not be exposed through the model. The user or the database is responsible for keeping referential integrity.</li>
+</ul>
 <p>See also <a href="qsqlrelation.html">QSqlRelation</a> and <a href="qsqlrelationaldelegate.html">QSqlRelationalDelegate</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -108,6 +112,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

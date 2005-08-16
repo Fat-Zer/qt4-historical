@@ -30,21 +30,26 @@
 #include <QtGui/qicon.h>
 #include <QtGui/qpixmap.h>
 #include <QtGui/qpalette.h>
+#include <QtCore/qobject.h>
 
 QT_MODULE(Gui)
-
 
 class QAction;
 class QDebug;
 class QTab;
 class QFontMetrics;
-
 class QStyleHintReturn;
 class QStyleOption;
 class QStyleOptionComplex;
+class QStylePrivate;
+
 class Q_GUI_EXPORT QStyle : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(QStyle)
+
+protected:
+    QStyle(QStylePrivate &dd);
 
 public:
     QStyle();
@@ -100,7 +105,11 @@ public:
         State_Item =          0x00100000,
         State_Sibling =       0x00200000,
         State_Editing =       0x00400000,
-        State_KeyboardFocusChange = 0x00800000
+        State_KeyboardFocusChange = 0x00800000,
+#ifdef QT_KEYPAD_NAVIGATION
+        State_HasEditFocus =  0x01000000,
+#endif
+        State_ReadOnly =      0x02000000
     };
     Q_DECLARE_FLAGS(State, StateFlag)
 
@@ -218,6 +227,8 @@ public:
         CE_FocusFrame,
         CE_ComboBoxLabel,
 
+        CE_ToolBar,
+
         // do not add any values below/greater than this
         CE_CustomBase = 0xf0000000
     };
@@ -275,6 +286,8 @@ public:
 
         SE_TabBarTearIndicator,
 
+        SE_TreeViewDisclosureItem,
+
         // do not add any values below/greater than this
         SE_CustomBase = 0xf0000000
     };
@@ -292,6 +305,7 @@ public:
         CC_TitleBar,
         CC_Q3ListView,
         CC_Dial,
+        CC_GroupBox,
 
         // do not add any values below/greater than this
         CC_CustomBase = 0xf0000000
@@ -344,6 +358,11 @@ public:
         SC_DialHandle =            0x00000002,
         SC_DialTickmarks =         0x00000004,
 
+        SC_GroupBoxCheckBox =      0x00000001,
+        SC_GroupBoxLabel =         0x00000002,
+        SC_GroupBoxContents =      0x00000004,
+        SC_GroupBoxFrame =         0x00000008,
+        
         SC_All =                   0xffffffff
     };
     Q_DECLARE_FLAGS(SubControls, SubControl)
@@ -451,6 +470,10 @@ public:
         PM_FocusFrameHMargin,
 
         PM_ToolTipLabelFrameWidth,
+        PM_CheckBoxLabelSpacing,
+        PM_TabBarIconSize,
+        PM_SizeGripSize,
+        PM_DockWidgetTitleMargin,
 
 
         // do not add any values below/greater than this
@@ -483,6 +506,7 @@ public:
         CT_TabWidget,
         CT_DialogButtons,
         CT_HeaderSection,
+        CT_GroupBox,
         // do not add any values below/greater than this
         CT_CustomBase = 0xf0000000
     };
@@ -554,6 +578,8 @@ public:
         SH_ItemView_EllipsisLocation,
         SH_ItemView_ShowDecorationSelected,
         SH_ItemView_ActivateItemOnSingleClick,
+        SH_ScrollBar_ContextMenu,
+        SH_ScrollBar_RollBetweenButtons,
         // Add new style hint values here
 
 #ifdef QT3_SUPPORT
@@ -615,6 +641,9 @@ public:
     virtual QPixmap standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt = 0,
                                    const QWidget *widget = 0) const = 0;
 
+    QIcon standardIcon(StandardPixmap standardIcon, const QStyleOption *option = 0,
+                       const QWidget *widget = 0) const;
+
     virtual QPixmap generatedIconPixmap(QIcon::Mode iconMode, const QPixmap &pixmap,
                                         const QStyleOption *opt) const = 0;
 
@@ -630,6 +659,9 @@ public:
     static QRect alignedRect(Qt::LayoutDirection direction, Qt::Alignment alignment,
                              const QSize &size, const QRect &rectangle);
 
+protected Q_SLOTS:
+    QIcon standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt = 0,
+                                     const QWidget *widget = 0) const;
 
 private:
     Q_DISABLE_COPY(QStyle)
@@ -642,5 +674,4 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QStyle::SubControls)
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, QStyle::State state);
 #endif
     
-
 #endif // QSTYLE_H

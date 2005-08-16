@@ -29,6 +29,7 @@
 #include "qeventloop.h"
 #include <qdatastream.h>
 #include <qdatetime.h>
+#include <qdebug.h>
 #include <qdir.h>
 #include <qfile.h>
 #include <qfileinfo.h>
@@ -51,6 +52,18 @@
 
 #if defined(Q_WS_WIN) || defined(Q_WS_MAC)
 extern QString qAppFileName();
+#endif
+
+#if !defined(Q_OS_WIN)
+QString QCoreApplicationPrivate::appName() const
+{
+    static QString applName;
+    if (applName.isEmpty() && argv[0]) {
+        char *p = strrchr(argv[0], '/');
+        applName = QString::fromLocal8Bit(p ? p + 1 : argv[0]);
+    }
+    return applName;
+}
 #endif
 
 bool QCoreApplicationPrivate::checkInstance(const char *function)
@@ -157,7 +170,8 @@ static QThread* mainThread() { return QThread::currentThread(); }
 #endif
 
 QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
-    : QObjectPrivate(), argc(aargc), argv(aargv), application_type(0), eventFilter(0)
+    : QObjectPrivate(), argc(aargc), argv(aargv), application_type(0), eventFilter(0),
+      in_exec(false)
 {
     static const char *const empty = "";
     if (argc == 0 || argv == 0) {
@@ -277,6 +291,13 @@ void QCoreApplicationPrivate::checkReceiverThread(QObject *receiver)
                .toLocal8Bit().data());
     Q_UNUSED(currentThread);
     Q_UNUSED(thr);
+}
+
+QString qAppName()
+{
+    if (!QCoreApplicationPrivate::checkInstance("qAppName"))
+        return QString();
+    return QCoreApplication::instance()->d_func()->appName();
 }
 
 /*!
@@ -461,6 +482,9 @@ QCoreApplication::~QCoreApplication()
   reimplementing this virtual function is just one of them. All five
   approaches are listed below:
   \list 1
+  \i Reimplementing paintEvent(), mousePressEvent() and so
+  on. This is the commonest, easiest and least powerful way.
+
   \i Reimplementing this function. This is very powerful, providing
   complete control; but only one subclass can be active at a time.
 
@@ -477,9 +501,6 @@ QCoreApplication::~QCoreApplication()
 
   \i Installing an event filter on the object. Such an event filter
   gets all the events except Tab and Shift-Tab key presses.
-
-  \i Reimplementing paintEvent(), mousePressEvent() and so
-  on. This is the commonest, easiest and least powerful way.
   \endlist
 
   \sa QObject::event(), installEventFilter()
@@ -565,7 +586,7 @@ bool QCoreApplication::closingDown()
     You can call this function occasionally when your program is busy
     performing a long operation (e.g. copying a file).
 
-    \sa exec(), QTimer, QEventLoop::processEvents()
+    \sa exec(), QTimer, QEventLoop::processEvents(), flush(), sendPostedEvents()
 */
 void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
@@ -634,9 +655,12 @@ int QCoreApplication::exec()
         qWarning("QApplication::exec() failed: the event loop is already running.");
         return -1;
     }
+    data->quitNow = false;
     QEventLoop eventLoop;
+    self->d_func()->in_exec = true;
     int returnCode = eventLoop.exec();
     if (self) {
+        self->d_func()->in_exec = false;
         emit self->aboutToQuit();
         sendPostedEvents(0, QEvent::DeferredDelete);
     }
@@ -706,7 +730,7 @@ void QCoreApplication::exit(int returnCode)
 
     \threadsafe
 
-    \sa sendEvent(), notify()
+    \sa sendEvent(), notify(), sendPostedEvent()
 */
 
 void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
@@ -824,19 +848,19 @@ bool QCoreApplication::compressEvent(QEvent *event, QObject *receiver, QPostEven
 
   If \a receiver is null, the events of \a event_type are sent for all
   objects. If \a event_type is 0, all the events are sent for \a receiver.
+
+  \sa flush(), postEvent()
 */
 
 void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 {
-
     bool doDeferredDeletion = (event_type == QEvent::DeferredDelete);
     if (event_type == -1) {
-        // uglehack - this is to detect that we were called by the event
-        // dispatcher. if possible it should be fixed for 4.1.
+        // we were called by the event dispatcher.
         doDeferredDeletion = true;
         event_type = 0;
     }
-    
+
     QThread *currentThread = QThread::currentThread();
     if (self) {
         // allow sendPostedEvents() to be called when QCoreApplication
@@ -874,14 +898,16 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 
     QMutexLocker locker(&data->postEventList.mutex);
 
+    // by default, we assume that the event dispatcher can go to sleep after
+    // processing all events. if any new events are posted while we send
+    // events, canWait will be set to false.
+    data->canWait = (data->postEventList.size() == 0);
+
     if (data->postEventList.size() == 0 || (receiver && !receiver->d_func()->postedEvents)) {
         --data->postEventList.recursion;
         return;
     }
 
-    // by default, we assume that the event dispatcher can go to sleep after
-    // processing all events. if any new events are posted while we send
-    // events, canWait will be set to false.
     data->canWait = true;
 
     // okay. here is the tricky loop. be careful about optimizing
@@ -898,10 +924,10 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 
         if (!pe.event)
             continue;
-        if (receiver && receiver != pe.receiver)
+        if ((receiver && receiver != pe.receiver) || (event_type && event_type != pe.event->type())) {
+            data->canWait = false;
             continue;
-        if (event_type && event_type != pe.event->type())
-            continue;
+        }
 
         if (pe.event->type() == QEvent::DeferredDelete) {
             const QEventLoop *const savedEventLoop = reinterpret_cast<QEventLoop *>(pe.event->d);
@@ -953,6 +979,9 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
     }
 
     --data->postEventList.recursion;
+    if (!data->postEventList.recursion && !data->canWait && data->eventDispatcher)
+        data->eventDispatcher->wakeUp();
+
     // clear the global list, i.e. remove everything that was
     // delivered.
     if (!data->postEventList.recursion && !event_type && !receiver) {
@@ -1143,7 +1172,7 @@ void QCoreApplication::quit()
 
 #ifndef QT_NO_TRANSLATION
 /*!
-  Adds the message file \a mf to the list of message files to be used
+  Adds the message file \a messageFile to the list of message files to be used
   for translations.
 
   Multiple message files can be installed. Translations are searched
@@ -1154,18 +1183,18 @@ void QCoreApplication::quit()
   \sa removeTranslator() translate() QTranslator::load()
 */
 
-void QCoreApplication::installTranslator(QTranslator * mf)
+void QCoreApplication::installTranslator(QTranslator * messageFile)
 {
-    if (!mf)
+    if (!messageFile)
         return;
 
     if (!QCoreApplicationPrivate::checkInstance("installTranslator"))
         return;
     QCoreApplicationPrivate *d = self->d_func();
-    d->translators.prepend(mf);
+    d->translators.prepend(messageFile);
 
 #ifndef QT_NO_TRANSLATION_BUILDER
-    if (mf->isEmpty())
+    if (messageFile->isEmpty())
         return;
 #endif
 
@@ -1174,21 +1203,21 @@ void QCoreApplication::installTranslator(QTranslator * mf)
 }
 
 /*!
-  Removes the message file \a mf from the list of message files used by
+  Removes the message file \a messageFile from the list of message files used by
   this application. (It does not delete the message file from the file
   system.)
 
   \sa installTranslator() translate(), QObject::tr()
 */
 
-void QCoreApplication::removeTranslator(QTranslator * mf)
+void QCoreApplication::removeTranslator(QTranslator * messageFile)
 {
-    if (!mf)
+    if (!messageFile)
         return;
     if (!QCoreApplicationPrivate::checkInstance("removeTranslator"))
         return;
     QCoreApplicationPrivate *d = self->d_func();
-    if (d->translators.removeAll(mf) && !self->closingDown()) {
+    if (d->translators.removeAll(messageFile) && !self->closingDown()) {
         QEvent ev(QEvent::LanguageChange);
         QCoreApplication::sendEvent(self, &ev);
     }
@@ -1239,11 +1268,11 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
 
     if (self && !self->d_func()->translators.isEmpty()) {
         QList<QTranslator*>::ConstIterator it;
-        QTranslator *mf;
+        QTranslator *messageFile;
         QString result;
         for (it = self->d_func()->translators.constBegin(); it != self->d_func()->translators.constEnd(); ++it) {
-            mf = *it;
-            result = mf->translate(context, sourceText, comment);
+            messageFile = *it;
+            result = messageFile->translate(context, sourceText, comment);
             if (!result.isEmpty())
                 return result;
         }
@@ -1263,8 +1292,8 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
     Returns the directory that contains the application executable.
 
     For example, if you have installed Qt in the \c{C:\Trolltech\Qt}
-    directory, and you run the \c{launcher} example, this function will
-    return "C:/Trolltech/Qt/examples/tools/launcher".
+    directory, and you run the \c{regexp} example, this function will
+    return "C:/Trolltech/Qt/examples/tools/regexp".
 
     On Mac OS X this will point to the directory actually containing the
     executable, which may be inside of an application bundle (if the
@@ -1289,8 +1318,8 @@ QString QCoreApplication::applicationDirPath()
     Returns the file path of the application executable.
 
     For example, if you have installed Qt in the \c{/usr/local/qt}
-    directory, and you run the \c{launcher} example, this function will
-    return "/usr/local/qt/examples/tools/launcher".
+    directory, and you run the \c{regexp} example, this function will
+    return "/usr/local/qt/examples/tools/regexp/regexp".
 
     \warning On Unix, this function assumes that argv[0] contains the file
     name of the executable (which it normally does). It also assumes that
@@ -1321,6 +1350,14 @@ QString QCoreApplication::applicationFilePath()
     QFileInfo fi(qAppFileName());
     return fi.exists() ? fi.canonicalFilePath() : QString();
 #else
+#  ifdef Q_OS_LINUX
+    // Try looking for a /proc/<pid>/exe symlink first which points to
+    // the absolute path of the executable
+    QFileInfo pfi(QString("/proc/%1/exe").arg(getpid()));
+    if (pfi.exists() && pfi.isSymLink())
+        return pfi.canonicalFilePath();
+#  endif
+
     QString argv0 = QFile::decodeName(QByteArray(argv()[0]));
     QString absPath;
 
@@ -1363,12 +1400,9 @@ QString QCoreApplication::applicationFilePath()
 }
 
 /*!
-    Returns the number of command line arguments.
+    \obsolete
 
-    The documentation for argv() describes how to process command line
-    arguments.
-
-    \sa argv()
+    Use arguments().size() instead.
 */
 int QCoreApplication::argc()
 {
@@ -1381,22 +1415,9 @@ int QCoreApplication::argc()
 
 
 /*!
-    Returns the command-line argument array.
+    \obsolete
 
-    argv()[0] is the program name, argv()[1] is the first
-    argument, and argv()[argc() - 1] is the last argument.
-
-    A QCoreApplication object is constructed by passing \e argc and
-    \e argv from the \c main() function. Some of the arguments may be
-    recognized as Qt options and removed from the argument vector.
-    For example, the X11 version of QApplication knows about \c
-    -display, \c -font, and a few more options.
-
-    QCoreApplication::instance() points to the QCoreApplication
-    object, and through which you can access argc() and argv() in
-    functions other than main().
-
-    \sa argc()
+    Use arguments() instead.
 */
 char **QCoreApplication::argv()
 {
@@ -1405,6 +1426,70 @@ char **QCoreApplication::argv()
         return 0;
     }
     return self->d_func()->argv;
+}
+
+/*!
+    \since 4.1
+
+    Returns the list of command-line arguments.
+
+    arguments().at(0) is the program name, arguments().at(1) is the
+    first argument, and arguments().last() is the last argument.
+
+    Calling this function is slow - you should store the result in a variable
+    when parsing the command line.
+
+    \warning On Unix, this list is built from the argc and argv parameters passed
+    to the constructor in the main() function. The string-data in argv is
+    interpreted using QString::fromLocal8Bit(); hence it is not possible to
+    pass i.e. Japanese command line arguments on a system that runs in a latin1
+    locale. Most modern Unix systems do not have this limitation, as they are
+    Unicode based.
+
+    On NT-based Windows, this limitation does not apply either.
+*/
+
+QStringList QCoreApplication::arguments()
+{
+    QStringList list;
+
+    if (!self) {
+        qWarning("QApplication::arguments() failed: please instantiate the QApplication object first");
+        return list;
+    }
+#ifdef Q_OS_WIN
+    QString cmdline = QT_WA_INLINE(QString::fromUtf16((unsigned short *)GetCommandLineW()), QString::fromLocal8Bit(GetCommandLineA()));
+    extern QStringList qWinCmdArgs(QString cmdLine);
+    list = qWinCmdArgs(cmdline);
+    if (self->d_func()->application_type) { // GUI app? Skip known - see qapplication.cpp
+        QStringList stripped;
+        for (int a = 0; a < list.count(); ++a) {
+            QString arg = list.at(a);
+            QByteArray l1arg = arg.toLatin1();
+            if (l1arg == "-qdevel" ||
+                l1arg == "-qdebug" ||
+                l1arg == "-reverse" ||
+                l1arg == "-widgetcount")
+                ;
+            else if (l1arg.startsWith("-style="))
+                ;
+            else if (l1arg == "-style" ||
+                l1arg == "-session")
+                ++a;
+            else
+                stripped += arg;
+        }
+        list = stripped;
+    }
+#else
+    const int ac = self->d_func()->argc;
+    char ** const av = self->d_func()->argv;
+    for (int a = 0; a < ac; ++a) {
+        list << QString::fromLocal8Bit(av[a]);
+    }
+#endif
+
+    return list;
 }
 
 /*!
@@ -1513,20 +1598,29 @@ QStringList QCoreApplication::libraryPaths()
         QStringList *app_libpaths = self->d_func()->app_libpaths = new QStringList;
         QString installPathPlugins =  QLibraryInfo::location(QLibraryInfo::PluginsPath);
         if (QFile::exists(installPathPlugins)) {
-#ifdef Q_WS_WIN
-            installPathPlugins.replace(QLatin1Char('\\'), QLatin1Char('/'));
-#endif
+            // Make sure we convert from backslashes to slashes.
+            installPathPlugins = QDir(installPathPlugins).canonicalPath();
             app_libpaths->append(installPathPlugins);
         }
 
         QString app_location(self->applicationFilePath());
         app_location.truncate(app_location.lastIndexOf(QLatin1Char('/')));
+        app_location = QDir(app_location).canonicalPath();
         if (app_location !=  QLibraryInfo::location(QLibraryInfo::PluginsPath) && QFile::exists(app_location))
             app_libpaths->append(app_location);
 
         const QByteArray libPathEnv = qgetenv("QT_PLUGIN_PATH");
-        if (!libPathEnv.isEmpty())
-            (*app_libpaths) += QString::fromLocal8Bit(libPathEnv.constData()).split(QLatin1String(":"), QString::SkipEmptyParts);
+        if (!libPathEnv.isEmpty()) {
+#ifdef Q_OS_WIN
+            QChar pathSep(';');
+#else
+            QChar pathSep(':');
+#endif
+            QStringList paths = QString::fromLatin1(libPathEnv).split(pathSep, QString::SkipEmptyParts);
+            for (QStringList::iterator it = paths.begin(); it != paths.end(); ++it) {
+                app_libpaths->append(QDir(*it).canonicalPath());
+            }
+        }
     }
     return *self->d_func()->app_libpaths;
 }
@@ -1777,13 +1871,14 @@ int QCoreApplication::loopLevel()
 
 /*!
     \fn void QCoreApplication::unixSignal(int number)
+    \internal
 
     This signal is emitted whenever a Unix signal is received by the
     application. The Unix signal received is specified by its \a number.
 */
 
 /*!
-    \fn qAddPostRoutine(QtCleanUpFunction ptr)
+    \fn void qAddPostRoutine(QtCleanUpFunction ptr)
     \relates QCoreApplication
 
     Adds a global routine that will be called from the QApplication
@@ -1817,7 +1912,7 @@ int QCoreApplication::loopLevel()
 
     For modules and libraries, using a reference-counted
     initialization manager or Qt's parent-child deletion mechanism may
-    be better. Here is an example of a private class which uses the
+    be better. Here is an example of a private class that uses the
     parent-child mechanism to call a cleanup function at the right
     time:
 
@@ -1849,5 +1944,43 @@ int QCoreApplication::loopLevel()
     \endcode
 
     By selecting the right parent object, this can often be made to
-    clean up the module's data at the exactly the right moment.
+    clean up the module's data at the right moment.
+*/
+
+/*!
+    \macro Q_DECLARE_TR_FUNCTIONS(context)
+    \relates QCoreApplication
+
+    The Q_DECLARE_TR_FUNCTIONS() macro declares and implements two
+    translation functions, \c tr() and \c trUtf8(), with these
+    signatures:
+
+    \code
+        static inline QString tr(const char *sourceText,
+                                 const char *comment = 0);
+        static inline QString trUtf8(const char *sourceText,
+                                     const char *comment = 0);
+    \endcode
+
+    This macro is useful if you want to use QObject::tr() or
+    QObject::trUtf8() in classes that don't inherit from QObject.
+
+    Q_DECLARE_TR_FUNCTIONS() must appear at the very top of the
+    class definition (before the first \c{public:} or \c{protected:}).
+    For example:
+
+    \code
+        class MyMfcView : public CView
+        {
+            Q_DECLARE_TR_FUNCTIONS(MyMfcView)
+
+        public:
+            MyMfcView();
+            ...
+        };
+    \endcode
+
+    The \e context parameter is normally the class name.
+
+    \sa Q_OBJECT, QObject::tr(), QObject::trUtf8()
 */

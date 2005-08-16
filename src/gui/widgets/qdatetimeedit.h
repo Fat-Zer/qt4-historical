@@ -38,7 +38,7 @@ class Q_GUI_EXPORT QDateTimeEdit : public QAbstractSpinBox
 
     Q_ENUMS(Section)
     Q_FLAGS(Sections)
-    Q_PROPERTY(QDateTime dateTime READ dateTime WRITE setDateTime NOTIFY dateTimeChanged)
+    Q_PROPERTY(QDateTime dateTime READ dateTime WRITE setDateTime NOTIFY dateTimeChanged USER true)
     Q_PROPERTY(QDate date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(QTime time READ time WRITE setTime NOTIFY timeChangedu)
     Q_PROPERTY(QDate maximumDate READ maximumDate WRITE setMaximumDate RESET clearMaximumDate)
@@ -110,12 +110,12 @@ public:
     virtual void stepBy(int steps);
 
     bool event(QEvent *e);
-signals:
+Q_SIGNALS:
     void dateTimeChanged(const QDateTime &date);
     void timeChanged(const QTime &date);
     void dateChanged(const QDate &date);
 
-public slots:
+public Q_SLOTS:
     void setDateTime(const QDateTime &dateTime);
     void setDate(const QDate &date);
     void setTime(const QTime &time);
@@ -128,6 +128,8 @@ protected:
     virtual void focusInEvent(QFocusEvent *e);
     virtual bool focusNextPrevChild(bool next);
     virtual QValidator::State validate(QString &input, int &pos) const;
+    virtual void fixup(QString &input) const;
+
     virtual QDateTime dateTimeFromText(const QString &text) const;
     virtual QString textFromDateTime(const QDateTime &dt) const;
     virtual StepEnabled stepEnabled() const;
@@ -155,6 +157,6 @@ public:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimeEdit::Sections)
 
-
 #endif // QT_NO_DATETIMEEDIT
+
 #endif // QDATETIMEEDIT_H

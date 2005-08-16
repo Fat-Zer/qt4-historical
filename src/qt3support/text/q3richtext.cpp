@@ -95,7 +95,7 @@ static inline int scale(int value, QPainter *painter)
 }
 
 
-inline bool isBreakable(Q3TextString *string, int pos)
+static inline bool isBreakable(Q3TextString *string, int pos)
 {
     if (string->at(pos).nobreak)
         return false;
@@ -1560,7 +1560,7 @@ struct Q3TextDocumentTag {
     } while(false);
 
 
-void Q3TextDocument::setRichText(const QString &text, const QString &context)
+void Q3TextDocument::setRichText(const QString &text, const QString &context, const Q3TextFormat *initialFormat)
 {
     preferRichText = true;
     if (!context.isEmpty())
@@ -1569,16 +1569,18 @@ void Q3TextDocument::setRichText(const QString &text, const QString &context)
     fParag = lParag = createParagraph(this);
     oTextValid = true;
     oText = text;
-    setRichTextInternal(text);
+    setRichTextInternal(text, 0, initialFormat);
     fParag->rtext = true;
 }
 
-void Q3TextDocument::setRichTextInternal(const QString &text, Q3TextCursor* cursor)
+void Q3TextDocument::setRichTextInternal(const QString &text, Q3TextCursor* cursor, const Q3TextFormat *initialFormat)
 {
     Q3TextParagraph* curpar = lParag;
     int pos = 0;
     QStack<Q3TextDocumentTag> tags;
-    Q3TextDocumentTag initag("", sheet_->item(""), *formatCollection()->defaultFormat());
+    if (!initialFormat)
+        initialFormat = formatCollection()->defaultFormat();
+    Q3TextDocumentTag initag("", sheet_->item(""), *initialFormat);
     if (bodyText.isValid())
         initag.format.setColor(bodyText);
     Q3TextDocumentTag curtag = initag;
@@ -1688,6 +1690,7 @@ void Q3TextDocument::setRichTextInternal(const QString &text, Q3TextCursor* curs
                         Q3TextFormat format = curtag.format.makeTextFormat(nstyle, attr, scaleFontsFactor);
                         curpar->append(QString(QChar(QChar::LineSeparator)));
                         curpar->setFormat(index, 1, &format);
+                        hasNewPar = false;
                     }  else if (tagname == "hr") {
                         emptyTag = space = true;
 #ifndef QT_NO_TEXTCUSTOMITEM
@@ -3138,6 +3141,7 @@ void Q3TextDocument::doLayout(QPainter *p, int w)
     withoutDoubleBuffer = (p != 0);
     QPainter * oldPainter = Q3TextFormat::painter();
     Q3TextFormat::setPainter(p);
+    tStopWidth = formatCollection()->defaultFormat()->width( 'x' ) * 8;
     flow_->setWidth(w);
     cw = w;
     vw = w;
@@ -3220,8 +3224,12 @@ void Q3TextDocument::drawParagraph(QPainter *painter, Q3TextParagraph *parag, in
 
     painter->translate(ir.x(), ir.y());
 
-    if (!parag->document()->parent())
+    if (!parag->document()->parent()) {
+        const QPoint oldOrigin = painter->brushOrigin();
+        painter->setBrushOrigin(-ir.topLeft());
         painter->fillRect(QRect(0, 0, ir.width(), ir.height()), parag->backgroundBrush(pal));
+        painter->setBrushOrigin(oldOrigin);
+    }
 
     painter->translate(-(ir.x() - parag->rect().x()),
                        -(ir.y() - parag->rect().y()));
@@ -3740,6 +3748,47 @@ void Q3TextString::insert(int index, Q3TextStringChar *c, bool doAddRefFormat )
     bidiDirty = true;
 }
 
+int Q3TextString::appendParagraphs( Q3TextParagraph *start, Q3TextParagraph *end )
+{
+    int paragCount = 0;
+    int newLength = data.size();
+    for (Q3TextParagraph *p = start; p != end; p = p->next()) {
+        newLength += p->length();
+        ++paragCount;
+    }
+
+    const int oldLength = data.size();
+    data.resize(newLength);
+
+    Q3TextStringChar *d = &data[oldLength];
+    for (Q3TextParagraph *p = start; p != end; p = p->next()) {
+        const Q3TextStringChar * const src = p->at(0);
+        int i = 0;
+        for (; i < p->length() - 1; ++i) {
+            d[i].c = src[i].c;
+            d[i].x = 0;
+            d[i].lineStart = 0;
+            d[i].rightToLeft = 0;
+            d[i].type = Q3TextStringChar::Regular;
+            d[i].nobreak = false;
+            d[i].p.format = src[i].format();
+            if (d[i].p.format)
+                d[i].p.format->addRef();
+        }
+        d[i].x = 0;
+        d[i].lineStart = 0;
+        d[i].nobreak = false;
+        d[i].type = Q3TextStringChar::Regular;
+        d[i].p.format = 0;
+        d[i].rightToLeft = 0;
+        d[i].c = '\n';
+        d += p->length();
+    }
+
+    bidiDirty = true;
+    return paragCount;
+}
+
 void Q3TextString::truncate(int index)
 {
     index = qMax(index, 0);
@@ -3855,7 +3904,6 @@ void Q3TextString::checkBidi() const
         ch->softBreak = ca->softBreak;
         ch->whiteSpace = ca->whiteSpace;
         ch->charStop = ca->charStop;
-        ch->wordStop = ca->wordStop;
         ch->bidiLevel = bidiLevel;
         ch->rightToLeft = (bidiLevel%2);
         --ch;
@@ -5895,7 +5943,7 @@ int Q3TextFormatterBreakWords::format(Q3TextDocument *doc, Q3TextParagraph *para
                 col = 0;
                 if (allowBreakInWords() || lastWasHardBreak) {
                     minw = qMax(minw, tminw);
-                    tminw = marg;
+                    tminw = marg + ww;
                 }
             } else { // ... otherwise if we had a breakable char, break there
                 DO_FLOW(lineStart);
@@ -7230,7 +7278,14 @@ QChar Q3TextDocument::parseHTMLSpecialChar(const QChar* doc, int length, int& po
     pos++;
 
     if (s.length() > 1 && s[0] == '#') {
-        int num = s.mid(1).toInt();
+        int off = 1;
+        int base = 10;
+        if (s[1] == 'x') {
+            off = 2;
+            base = 16;
+        }
+        bool ok;
+	int num = s.mid(off).toInt(&ok, base);
         if (num == 151) // ### hack for designer manual
             return '-';
         return num;
@@ -8055,8 +8110,7 @@ Q3TextTableCell::Q3TextTableCell(Q3TextTable* table,
     richtext->setUseFormatCollection(table->parent->useFormatCollection());
     richtext->setMimeSourceFactory(&factory);
     richtext->setStyleSheet(sheet);
-    richtext->setDefaultFormat(fmt.font(), fmt.color());
-    richtext->setRichText(doc, context);
+    richtext->setRichText(doc, context, &fmt);
     rowspan_ = 1;
     colspan_ = 1;
 

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/qt3support/itemviews/q3iconview.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/itemviews/q3iconview.cpp -->
 <head>
-    <title>Qt 4.0: Q3IconViewItem Class Reference</title>
+    <title>Qt 4.1: Q3IconViewItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -275,10 +275,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setSelected"></a>void Q3IconViewItem::setSelected ( bool <i>s</i>, bool <i>cb</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Selects or unselects the item, depending on <i>s</i>; it may also unselect other items, depending on <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() and <i>cb</i>.</p>
 <p>If <i>s</i> is false, the item is unselected.</p>
-<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Single, the item is selected and the item previously selected is unselected.</p>
-<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Extended, the item is selected. If <i>cb</i> is true, the selection state of the other items is left unchanged. If <i>cb</i> is false (the default) all other items are unselected.</p>
-<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Multi, the item is selected.</p>
-<p>Note that <i>cb</i> is used only if <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Extended; cb defaults to false.</p>
+<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <a href="q3iconview.html#SelectionMode-enum">Q3IconView::Single</a>, the item is selected and the item previously selected is unselected.</p>
+<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <a href="q3iconview.html#SelectionMode-enum">Q3IconView::Extended</a>, the item is selected. If <i>cb</i> is true, the selection state of the other items is left unchanged. If <i>cb</i> is false (the default) all other items are unselected.</p>
+<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <a href="q3iconview.html#SelectionMode-enum">Q3IconView::Multi</a>, the item is selected.</p>
+<p>Note that <i>cb</i> is used only if <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <a href="q3iconview.html#SelectionMode-enum">Q3IconView::Extended</a>; cb defaults to false.</p>
 <p>All items whose selection status changes repaint themselves.</p>
 <p>See also <a href="q3iconviewitem.html#isSelected">isSelected</a>().</p>
 <h3 class="fn"><a name="setSelected-2"></a>void Q3IconViewItem::setSelected ( bool <i>s</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -313,6 +313,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

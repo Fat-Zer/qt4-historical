@@ -31,7 +31,7 @@ class QWidget;
 class QVariant;
 class QString;
 
-class QT_SDK_EXPORT QDesignerFormWindowCursorInterface
+class QDESIGNER_SDK_EXPORT QDesignerFormWindowCursorInterface
 {
 public:
     enum MoveOperation

@@ -24,8 +24,8 @@
 #ifndef QDATETIME_H
 #define QDATETIME_H
 
-#include "QtCore/qstring.h"
-#include "QtCore/qnamespace.h"
+#include <QtCore/qstring.h>
+#include <QtCore/qnamespace.h>
 
 QT_MODULE(Core)
 
@@ -78,8 +78,8 @@ public:
     static QDate currentDate();
 #ifndef QT_NO_DATESTRING
     static QDate fromString(const QString &s, Qt::DateFormat f = Qt::TextDate);
-#endif
     static QDate fromString(const QString &s, const QString &format);
+#endif
     static bool isValid(int y, int m, int d);
     static bool isLeapYear(int year);
 #ifdef QT3_SUPPORT
@@ -100,6 +100,7 @@ private:
     uint jd;
 
     friend class QDateTime;
+    friend class QDateTimePrivate;
 #ifndef QT_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QDate &);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QDate &);
@@ -110,10 +111,10 @@ Q_DECLARE_TYPEINFO(QDate, Q_MOVABLE_TYPE);
 class Q_CORE_EXPORT QTime
 {
 public:
-    QTime() { ds = 0; }
+    QTime(): mds(NullTime) {}
     QTime(int h, int m, int s = 0, int ms = 0);
 
-    bool isNull() const { return ds == 0; }
+    bool isNull() const { return mds == NullTime; }
     bool isValid() const;
 
     int hour() const;
@@ -131,12 +132,12 @@ public:
     QTime addMSecs(int ms) const;
     int msecsTo(const QTime &) const;
 
-    bool operator==(const QTime &other) const { return ds == other.ds; }
-    bool operator!=(const QTime &other) const { return ds != other.ds; }
-    bool operator<(const QTime &other) const { return ds < other.ds; }
-    bool operator<=(const QTime &other) const { return ds <= other.ds; }
-    bool operator>(const QTime &other) const { return ds > other.ds; }
-    bool operator>=(const QTime &other) const { return ds >= other.ds; }
+    bool operator==(const QTime &other) const { return mds == other.mds; }
+    bool operator!=(const QTime &other) const { return mds != other.mds; }
+    bool operator<(const QTime &other) const { return mds < other.mds; }
+    bool operator<=(const QTime &other) const { return mds <= other.mds; }
+    bool operator>(const QTime &other) const { return mds > other.mds; }
+    bool operator>=(const QTime &other) const { return mds >= other.mds; }
 
     static QTime currentTime();
 #ifndef QT_NO_DATESTRING
@@ -155,9 +156,12 @@ public:
     int elapsed() const;
 
 private:
-    uint ds;
+    enum { NullTime = -1 };
+    inline int ds() const { return mds == -1 ? 0 : mds; }
+    int mds;
 
     friend class QDateTime;
+    friend class QDateTimePrivate;
 #ifndef QT_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QTime &);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QTime &);
@@ -197,6 +201,7 @@ public:
     QDateTime addMonths(int months) const;
     QDateTime addYears(int years) const;
     QDateTime addSecs(int secs) const;
+    QDateTime addMSecs(qint64 msecs) const;
     QDateTime toTimeSpec(Qt::TimeSpec spec) const;
     inline QDateTime toLocalTime() const { return toTimeSpec(Qt::LocalTime); }
     inline QDateTime toUTC() const { return toTimeSpec(Qt::UTC); }
@@ -231,6 +236,7 @@ public:
 #endif
 
 private:
+    friend class QDateTimePrivate;
     void detach();
     QDateTimePrivate *d;
 

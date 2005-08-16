@@ -23,19 +23,17 @@
 
 #include <metatranslator.h>
 
-#include <qfile.h>
-#include <qregexp.h>
-#include <qstring.h>
-#include <qtextstream.h>
-#include <qstack.h>
-#include <qxml.h>
+#include <QFile>
+#include <QRegExp>
+#include <QString>
+#include <QStack>
+#include <QtXml>
+#include <QTextCodec>
 
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-
-#include <QTextCodec>
 
 /* qmake ignore Q_OBJECT */
 
@@ -324,6 +322,8 @@ static int getToken()
                         yyCh = getChar();
 
                         if ( yyCh == '\n' ) {
+                            yyCh = getChar();
+                        } else if ( yyCh == 'r' ) { // Skip \r since Linguist also removes those.
                             yyCh = getChar();
                         } else if ( yyCh == 'x' ) {
                             QByteArray hex = "0";
@@ -808,10 +808,12 @@ bool UiHandler::startElement( const QString& /* namespaceURI */,
     } else if ( qName == QString("string") ) {
         flush();
         if (atts.value(QString("notr")).isEmpty() ||
-            atts.value(QString("notr")) != QString("true"))
+            atts.value(QString("notr")) != QString("true")) {
             trString = true;
-        else
+            comment = atts.value(QString("comment"));
+        } else {
             trString = false;
+        }
     }
     accum.truncate( 0 );
     return true;

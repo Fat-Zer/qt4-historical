@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/widgets/qworkspace.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qworkspace.cpp -->
 <head>
-    <title>Qt 4.0: QWorkspace Class Reference</title>
+    <title>Qt 4.1: QWorkspace Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -36,7 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qworkspace.html#scrollBarsEnabled-prop">scrollBarsEnabled</a></b> : bool</li>
 </ul>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -53,7 +53,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QWidgetList <b><a href="qworkspace.html#windowList">windowList</a></b> ( WindowOrder <i>order</i> = CreationOrder ) const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -62,6 +62,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>void <b><a href="qworkspace.html#activateNextWindow">activateNextWindow</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qworkspace.html#activatePreviousWindow">activatePreviousWindow</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qworkspace.html#arrangeIcons">arrangeIcons</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qworkspace.html#cascade">cascade</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qworkspace.html#closeActiveWindow">closeActiveWindow</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qworkspace.html#closeAllWindows">closeAllWindows</a></b> ()</li>
@@ -93,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QWorkspace widget provides a workspace window that be used in an MDI application.</p>
 <p>Multiple Document Interface (MDI) applications are typically composed of a main window containing a menu bar, a toolbar, and a central QWorkspace widget. The workspace itself is used to display a number of child windows, each of which is a widget.</p>
-<p>The workspace itself is an ordinary Qt widget. It has a standard constructor that takes a parent widget and an object name. Workspaces can be placed in any layout, but are typically given as the central widget in a <a href="qmainwindow.html">QMainWindow</a>:</p>
+<p>The workspace itself is an ordinary Qt widget. It has a standard constructor that takes a parent widget. Workspaces can be placed in any layout, but are typically given as the central widget in a <a href="qmainwindow.html">QMainWindow</a>:</p>
 <pre>&nbsp;   MainWindow::MainWindow()
     {
         workspace = new QWorkspace(this);
@@ -151,9 +152,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addWindow"></a><a href="qwidget.html">QWidget</a> * QWorkspace::addWindow ( <a href="qwidget.html">QWidget</a> * <i>w</i>, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>flags</i> = 0 )</h3>
 <p>Adds widget <i>w</i> as new sub window to the workspace. If <i>flags</i> are non-zero, they will override the flags set on the widget.</p>
 <p>Returns the widget used for the window frame.</p>
+<h3 class="fn"><a name="arrangeIcons"></a>void QWorkspace::arrangeIcons ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
+<p>Arranges all iconized windows at the bottom of the workspace.</p>
+<p>See also <a href="qworkspace.html#cascade">cascade</a>() and <a href="qworkspace.html#tile">tile</a>().</p>
 <h3 class="fn"><a name="cascade"></a>void QWorkspace::cascade ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Arranges all the child windows in a cascade pattern.</p>
-<p>See also <a href="qworkspace.html#tile">tile</a>().</p>
+<p>See also <a href="qworkspace.html#tile">tile</a>() and <a href="qworkspace.html#arrangeIcons">arrangeIcons</a>().</p>
 <h3 class="fn"><a name="closeActiveWindow"></a>void QWorkspace::closeActiveWindow ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Closes the child window that is currently active.</p>
 <p>See also <a href="qworkspace.html#closeAllWindows">closeAllWindows</a>().</p>
@@ -166,7 +170,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qworkspace.html#activeWindow">activeWindow</a>().</p>
 <h3 class="fn"><a name="tile"></a>void QWorkspace::tile ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Arranges all child windows in a tile pattern.</p>
-<p>See also <a href="qworkspace.html#cascade">cascade</a>().</p>
+<p>See also <a href="qworkspace.html#cascade">cascade</a>() and <a href="qworkspace.html#arrangeIcons">arrangeIcons</a>().</p>
 <h3 class="fn"><a name="windowActivated"></a>void QWorkspace::windowActivated ( <a href="qwidget.html">QWidget</a> * <i>w</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the child window <i>w</i> becomes active. Note that <i>w</i> can be 0, and that more than one signal may be emitted for a single activation event.</p>
 <p>See also <a href="qworkspace.html#activeWindow">activeWindow</a>() and <a href="qworkspace.html#windowList">windowList</a>().</p>
@@ -176,6 +180,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

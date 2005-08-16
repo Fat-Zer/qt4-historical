@@ -56,7 +56,7 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 
-class QT_SHARED_EXPORT QDesignerWidget : public QWidget
+class QDESIGNER_SHARED_EXPORT QDesignerWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -78,7 +78,7 @@ private:
     QPixmap grid;
 };
 
-class QT_SHARED_EXPORT QDesignerDialog : public QDialog
+class QDESIGNER_SHARED_EXPORT QDesignerDialog : public QDialog
 {
     Q_OBJECT
 public:
@@ -92,7 +92,7 @@ private:
     QDesignerFormWindowInterface *m_formWindow;
 };
 
-class QT_SHARED_EXPORT QDesignerLabel : public QLabel
+class QDESIGNER_SHARED_EXPORT QDesignerLabel : public QLabel
 {
     Q_OBJECT
     Q_PROPERTY(QByteArray buddy READ buddy WRITE setBuddy)
@@ -123,7 +123,7 @@ private:
     QByteArray myBuddy;
 };
 
-class QT_SHARED_EXPORT Line : public QFrame
+class QDESIGNER_SHARED_EXPORT Line : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)

@@ -35,12 +35,12 @@
 // We mean it.
 //
 
-#include <private/qwidget_p.h>
+#include "private/qwidget_p.h"
 
 #ifndef QT_NO_LINEEDIT
-#include <qtextlayout.h>
-#include <qbasictimer.h>
-#include <qstyleoption.h>
+#include "QtGui/qtextlayout.h"
+#include "QtGui/qstyleoption.h"
+#include "QtCore/qbasictimer.h"
 
 class QLineEditPrivate : public QWidgetPrivate
 {
@@ -182,8 +182,15 @@ public:
 #endif
 
     void clipboardChanged();
+    void deleteSelected();
     bool userInput;
+
+#ifdef QT_KEYPAD_NAVIGATION
+    QBasicTimer deleteAllTimer; // keypad navigation
+    QString origText;
+#endif
 };
 
 #endif // QT_NO_LINEEDIT
+
 #endif // QLINEEDIT_P_H

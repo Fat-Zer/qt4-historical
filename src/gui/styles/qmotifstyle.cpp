@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include "qmotifstyle.h"
+#include "qcdestyle.h"
 
 #if !defined(QT_NO_STYLE_MOTIF) || defined(QT_PLUGIN)
 
@@ -46,6 +47,7 @@
 #include "qfocusframe.h"
 #include "qdebug.h"
 #include "qpainterpath.h"
+#include "qmotifstyle_p.h"
 #include <limits.h>
 
 #ifdef Q_WS_X11
@@ -60,7 +62,7 @@ static const int motifItemVMargin       = 2;    // menu item ver text margin
 static const int motifArrowHMargin      = 6;    // arrow horizontal margin
 static const int motifTabSpacing        = 12;   // space between text and tab
 static const int motifCheckMarkHMargin  = 2;    // horiz. margins of check mark
-static const int motifCheckMarkSpace    = 12;
+static const int motifCheckMarkSpace    = 16;
 
 
 /*!
@@ -91,11 +93,24 @@ static const int motifCheckMarkSpace    = 12;
   highlighting, which is a simple inversion between the base and the
   text color.
 */
-QMotifStyle::QMotifStyle(bool useHighlightCols) : QCommonStyle()
+QMotifStyle::QMotifStyle(bool useHighlightCols)
+    : QCommonStyle(*new QMotifStylePrivate)
 {
     focus = 0;
     highlightCols = useHighlightCols;
 }
+
+
+/*!
+    \internal
+*/
+QMotifStyle::QMotifStyle(QMotifStylePrivate &dd, bool useHighlightColors)
+    : QCommonStyle(dd)
+{
+    focus = 0;
+    highlightCols = useHighlightColors;
+}
+
 
 /*!
   \overload
@@ -105,6 +120,71 @@ QMotifStyle::QMotifStyle(bool useHighlightCols) : QCommonStyle()
 QMotifStyle::~QMotifStyle()
 {
     delete focus;
+}
+
+/*
+Animate indeterminate progressbars only when visible
+*/
+bool QMotifStyle::eventFilter(QObject *o, QEvent *e)
+{
+#ifndef QT_NO_PROGRESSBAR
+    Q_D(QMotifStyle);
+    switch(e->type()) {
+    case QEvent::StyleChange:
+    case QEvent::Show:
+        if (QProgressBar *bar = qobject_cast<QProgressBar *>(o)) {
+            d->bars << bar;
+            if (d->bars.size() == 1) {
+                Q_ASSERT(d->animationFps> 0);
+                d->animateTimer = startTimer(1000 / d->animationFps);
+            }
+        }
+        break;
+    case QEvent::Destroy:
+        d->bars.removeAll(reinterpret_cast<QProgressBar *>(o));
+        break;
+    case QEvent::Hide:
+        if (QProgressBar *bar = qobject_cast<QProgressBar *>(o)) {
+            d->bars.removeAll(bar);
+            if (d->bars.isEmpty()) {
+                killTimer(d->animateTimer);
+                d->animateTimer = 0;
+            }
+        }
+    default:
+        break;
+    }
+#endif // QT_NO_PROGRESSBAR
+    return QStyle::eventFilter(o, e);
+}
+
+
+
+/*!
+    \reimp
+*/
+void QMotifStyle::timerEvent(QTimerEvent *event)
+{
+#ifndef QT_NO_PROGRESSBAR
+    Q_D(QMotifStyle);
+    if (event->timerId() == d->animateTimer) {
+        Q_ASSERT(d->animationFps > 0);
+        d->animateStep = d->startTime.elapsed() / (1000 / d->animationFps);
+        foreach (QProgressBar *bar, d->bars) {
+            if ((bar->minimum() == 0 && bar->maximum() == 0))
+                bar->update();
+        }
+    }
+#endif // QT_NO_PROGRESSBAR
+    event->ignore();
+}
+
+
+QMotifStylePrivate::QMotifStylePrivate()
+#ifndef QT_NO_PROGRESSBAR
+    : animationFps(25), animateTimer(0), animateStep(0)
+#endif
+{
 }
 
 /*!
@@ -168,10 +248,29 @@ void QMotifStyle::polish(QPalette& pal)
   \internal
   Keep QStyle::polish() visible.
 */
-void QMotifStyle::polish(QWidget* w)
+void QMotifStyle::polish(QWidget* widget)
 {
-    QStyle::polish(w);
+    QStyle::polish(widget);
+#ifndef QT_NO_PROGRESSBAR
+    if (qobject_cast<QProgressBar *>(widget))
+        widget->installEventFilter(this);
+#endif
 }
+
+/*!
+  \reimp
+  \internal
+  Keep QStyle::polish() visible.
+*/
+void QMotifStyle::unpolish(QWidget* widget)
+{
+    QCommonStyle::unpolish(widget);
+#ifndef QT_NO_PROGRESSBAR
+    if (qobject_cast<QProgressBar *>(widget))
+        widget->removeEventFilter(this);
+#endif
+}
+
 
 /*!
   \reimp
@@ -180,7 +279,18 @@ void QMotifStyle::polish(QWidget* w)
 */
 void QMotifStyle::polish(QApplication* a)
 {
-    QStyle::polish(a);
+    QCommonStyle::polish(a);
+}
+
+
+/*!
+  \reimp
+  \internal
+  Keep QStyle::polish() visible.
+*/
+void QMotifStyle::unpolish(QApplication* a)
+{
+    QCommonStyle::unpolish(a);
 }
 
 static void rot(QPolygon& a, int n)
@@ -327,8 +437,9 @@ void QMotifStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QP
             fill = QBrush(opt->palette.mid().color(), Qt::Dense4Pattern);
         else
             fill = opt->palette.brush(QPalette::Button);
-        qDrawShadePanel(p, opt->rect, opt->palette, bool(opt->state & (State_Sunken | State_On)),
-                        pixelMetric(PM_DefaultFrameWidth), &fill);
+         if ((opt->state & State_Enabled) || !(opt->state & State_AutoRaise))
+             qDrawShadePanel(p, opt->rect, opt->palette, bool(opt->state & (State_Sunken | State_On)),
+                             pixelMetric(PM_DefaultFrameWidth), &fill);
         break; }
 
     case PE_IndicatorCheckBox: {
@@ -662,8 +773,18 @@ void QMotifStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QP
         break; }
 
     case PE_IndicatorProgressChunk:
-        p->fillRect(opt->rect.x(), opt->rect.y() + 2, opt->rect.width(),
-                    opt->rect.height() - 4, opt->palette.brush(QPalette::Highlight));
+        {
+            bool vertical = false;
+            if (const QStyleOptionProgressBarV2 *pb2 = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(opt))
+                vertical = (pb2->orientation == Qt::Vertical);
+            if (!vertical) {
+                p->fillRect(opt->rect.x(), opt->rect.y() + 2, opt->rect.width(),
+                            opt->rect.height() - 4, opt->palette.brush(QPalette::Highlight));
+            } else {
+                p->fillRect(opt->rect.x() + 1, opt->rect.y(), opt->rect.width() - 4, opt->rect.height(),
+                            opt->palette.brush(QPalette::Highlight));
+            }
+        }
         break;
 
     default:
@@ -890,8 +1011,30 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
 
     case CE_ProgressBarLabel:
         if (const QStyleOptionProgressBar *pb = qstyleoption_cast<const QStyleOptionProgressBar *>(opt)) {
+            QMatrix oldMatrix = p->matrix();
+            QRect rect = pb->rect;
+            bool vertical = false;
+            bool invert = false;
+            bool bottomToTop = false;
+            if (const QStyleOptionProgressBarV2 *pb2 = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(opt)) {
+                vertical = (pb2->orientation == Qt::Vertical);
+                invert = pb2->invertedAppearance;
+                bottomToTop = pb2->bottomToTop;
+            }
+            if (vertical) {
+                QMatrix m;
+                rect = QRect(rect.left(), rect.top(), rect.height(), rect.width()); // flip width and height
+                if (bottomToTop) {
+                    m.translate(0.0, rect.width());
+                    m.rotate(-90);
+                } else {
+                    m.translate(rect.height(), 0.0);
+                    m.rotate(90);
+                }
+                p->setMatrix(m);
+            }
             const int unit_width = pixelMetric(PM_ProgressBarChunkWidth, opt, widget);
-            int u = opt->rect.width() / unit_width;
+            int u = rect.width() / unit_width;
             int p_v = pb->progress;
             int t_s = qMax(0, pb->maximum - pb->minimum);
             if (u > 0 && pb->progress >= INT_MAX / u && t_s >= u) {
@@ -902,20 +1045,25 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
             if (pb->textVisible && t_s) {
                 int nu = (u * p_v + t_s/2) / t_s;
                 int x = unit_width * nu;
-                QRect left(opt->rect.x(), opt->rect.y(), x, opt->rect.height());
-                QRect right(opt->rect.x() + x, opt->rect.y(), opt->rect.width() - x, opt->rect.height());
-                const QRect &highlighted = visualRect(pb->direction, pb->rect, left);
-                const QRect &background = visualRect(pb->direction, pb->rect, right);
+                QRect left(rect.x(), rect.y(), x, rect.height());
+                QRect right(rect.x() + x, rect.y(), rect.width() - x, rect.height());
+                Qt::LayoutDirection dir;
+                dir = vertical ? (bottomToTop ? Qt::LeftToRight : Qt::RightToLeft) : pb->direction;
+                if (invert)
+                    dir = (dir == Qt::LeftToRight) ? Qt::RightToLeft : Qt::LeftToRight;
+                const QRect highlighted = visualRect(dir, rect, left);
+                const QRect background = visualRect(dir, rect, right);
                 p->setPen(opt->palette.highlightedText().color());
                 p->setClipRect(highlighted);
-                p->drawText(opt->rect, Qt::AlignCenter | Qt::TextSingleLine, pb->text);
+                p->drawText(rect, Qt::AlignCenter | Qt::TextSingleLine, pb->text);
 
                 if (pb->progress != pb->maximum) {
                     p->setClipRect(background);
                     p->setPen(opt->palette.highlight().color());
-                    p->drawText(opt->rect, Qt::AlignCenter | Qt::TextSingleLine, pb->text);
+                    p->drawText(rect, Qt::AlignCenter | Qt::TextSingleLine, pb->text);
                 }
             }
+            p->setMatrix(oldMatrix);
             break;
         }
 
@@ -948,11 +1096,22 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
             int x, y, w, h;
             opt->rect.getRect(&x, &y, &w, &h);
 
-            if(menuitem->menuItemType == QStyleOptionMenuItem::Separator) {  // draw separator
+            if (menuitem->menuItemType == QStyleOptionMenuItem::Separator) {  // draw separator
+                int textWidth = 0;
+                if (!menuitem->text.isEmpty()) {
+                    p->fillRect(x, y, w, h, opt->palette.brush(QPalette::Button));
+                    drawItemText(p, menuitem->rect.adjusted(10, 0, -5, 0), Qt::AlignLeft | Qt::AlignVCenter,
+                                 menuitem->palette, menuitem->state & State_Enabled, menuitem->text,
+                                 QPalette::Text);
+                    textWidth = menuitem->fontMetrics.width(menuitem->text) + 10;
+                    y += menuitem->fontMetrics.lineSpacing() / 2;
+                }
                 p->setPen(opt->palette.dark().color());
-                p->drawLine(x, y, x+w, y);
+                p->drawLine(x, y, x + 5, y);
+                p->drawLine(x + 5 + textWidth, y, x+w, y);
                 p->setPen(opt->palette.light().color());
-                p->drawLine(x, y+1, x+w, y+1);
+                p->drawLine(x, y + 1, x + 5, y + 1);
+                p->drawLine(x + 5 + textWidth, y + 1, x+w, y + 1);
                 return;
             }
 
@@ -999,17 +1158,20 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                 p->drawPixmap(pmr.topLeft(), pixmap);
 
             } else  if (menuitem->checkType != QStyleOptionMenuItem::NotCheckable) {  // just "checking"...
-                int mw = maxpmw;
                 int mh = h - 2*motifItemFrame;
-                if (menuitem->checked) {
-                    QStyleOptionMenuItem newMenuItem = *menuitem;
-                    newMenuItem.state = State_None;
-                    if ((opt->state & State_Enabled))
-                        newMenuItem.state |= State_Enabled;
-                    if ((opt->state & State_Selected))
-                        newMenuItem.state |= State_On;
-                    newMenuItem.rect = QRect(xvis, y+motifItemFrame, mw, mh);
-                    drawPrimitive(PE_IndicatorMenuCheckMark, &newMenuItem, p, widget);
+
+                QStyleOptionButton newMenuItem;
+                newMenuItem.state = menuitem->checked ? State_On : State_None;
+                if (menuitem->state & State_Sunken)
+                    newMenuItem.state |= State_Sunken;
+                if ((opt->state & State_Enabled))
+                    newMenuItem.state |= State_Enabled;
+                if (menuitem->checkType & QStyleOptionMenuItem::Exclusive) {
+                    newMenuItem.rect.setRect(xvis + 2, y + motifItemFrame + mh / 4, 11, 11);
+                    drawPrimitive(PE_IndicatorRadioButton, &newMenuItem, p, widget);
+                } else {
+                    newMenuItem.rect.setRect(xvis + 5, y + motifItemFrame + mh / 4, 9, 9);
+                    drawPrimitive(PE_IndicatorCheckBox, &newMenuItem, p, widget);
                 }
             }
 
@@ -1034,6 +1196,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                 int m = motifItemVMargin;
                 int text_flags = Qt::AlignVCenter|Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
                 text_flags |= Qt::AlignLeft;
+                QFont oldFont = p->font();
                 if (t >= 0) {                         // draw tab text
                     QRect vr = visualRect(opt->direction, opt->rect,
                                           QRect(x+w-menuitem->tabWidth-motifItemHMargin-motifItemFrame,
@@ -1041,6 +1204,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                                                 h-2*motifItemVMargin));
                     int xv = vr.x();
                     QRect tr(xv, y+m, menuitem->tabWidth, h-2*m);
+                    p->setFont(menuitem->font);
                     p->drawText(tr, text_flags, s.mid(t+1));
                     if (!(opt->state & State_Enabled) && styleHint(SH_DitherDisabledText))
                         p->fillRect(tr, QBrush(p->background().color(), Qt::Dense5Pattern));
@@ -1048,6 +1212,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                 }
                 QRect tr(xvis, y+m, w - xm - menuitem->tabWidth + 1, h-2*m);
                 p->drawText(tr, text_flags, s.left(t));
+                p->setFont(oldFont);
                 if (!(opt->state & State_Enabled) && styleHint(SH_DitherDisabledText))
                     p->fillRect(tr, QBrush(p->background().color(), Qt::Dense5Pattern));
             }
@@ -1095,6 +1260,54 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
         p->restore();
         }
         break;
+#ifndef QT_NO_PROGRESSBAR
+    case CE_ProgressBarContents:
+        if (const QStyleOptionProgressBar *pb = qstyleoption_cast<const QStyleOptionProgressBar *>(opt)) {
+            QRect rect = pb->rect;
+            bool vertical = false;
+            bool inverted = false;
+
+            // Get extra style options if version 2
+            const QStyleOptionProgressBarV2 *pb2 = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(opt);
+            if (pb2) {
+                vertical = (pb2->orientation == Qt::Vertical);
+                inverted = pb2->invertedAppearance;
+            }
+
+            QMatrix m;
+            if (vertical) {
+                rect = QRect(rect.left(), rect.top(), rect.height(), rect.width()); // flip width and height
+                m.translate(rect.height(), 0.0);
+                m.rotate(90);
+            }
+
+            QPalette pal2 = pb->palette;
+            // Correct the highlight color if it is the same as the background
+            if (pal2.highlight() == pal2.background())
+                pal2.setColor(QPalette::Highlight, pb->palette.color(QPalette::Active,
+                                                                     QPalette::Highlight));
+            bool reverse = ((!vertical && (pb->direction == Qt::RightToLeft)) || vertical);
+            if (inverted)
+                reverse = !reverse;
+            int fw = 2;
+            int w = rect.width() - 2 * fw;
+            if (pb->minimum == 0 && pb->maximum == 0) {
+                QRect progressBar;
+                Q_D(const QMotifStyle);
+                 // draw busy indicator
+                 int x = (d->animateStep*8)% (w * 2);
+                 if (x > w)
+                     x = 2 * w - x;
+                 x = reverse ? rect.right() - x : x + rect.x();
+                 p->setMatrix(m);
+                 p->setPen(QPen(pal2.highlight().color(), 4));
+                 p->drawLine(x, rect.y() + 1, x, rect.height() - fw);
+
+            } else
+                QCommonStyle::drawControl(element, opt, p, widget);
+        }
+        break;
+#endif // QT_NO_PROGRESSBAR
     default:
         QCommonStyle::drawControl(element, opt, p, widget);
         break; }
@@ -1751,7 +1964,7 @@ QMotifStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
 
             if (mi->menuItemType == QStyleOptionMenuItem::Separator) {
                 w = 10;
-                h = motifSepHeight;
+                h = (mi->text.isEmpty()) ? motifSepHeight : mi->fontMetrics.lineSpacing();
             }
 
             // a little bit of border can never harm
@@ -2320,7 +2533,7 @@ bool QMotifStyle::event(QEvent *e)
         if(focus)
             focus->setWidget(0);
     }
-    return false;
+    return  QCommonStyle::event(e);
 }
 
 

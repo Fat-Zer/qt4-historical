@@ -20,8 +20,9 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#ifndef __PROJECTGENERATOR_H__
-#define __PROJECTGENERATOR_H__
+
+#ifndef PROJECTGENERATOR_H
+#define PROJECTGENERATOR_H
 
 #include "makefile.h"
 
@@ -45,5 +46,4 @@ public:
 inline ProjectGenerator::~ProjectGenerator()
 { }
 
-
-#endif /* __PROJECTGENERATOR_H__ */
+#endif // PROJECTGENERATOR_H

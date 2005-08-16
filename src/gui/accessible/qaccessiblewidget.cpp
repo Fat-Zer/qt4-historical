@@ -239,7 +239,7 @@ QRect QAccessibleWidget::rect(int child) const
 
 #include <private/qobject_p.h>
 
-class ConnectionObject : public QObject
+class QACConnectionObject : public QObject
 {
     Q_DECLARE_PRIVATE(QObject)
 public:
@@ -344,7 +344,7 @@ QAccessible::Relation QAccessibleWidget::relationTo(int child,
     if (object() == focus && isAncestor(o, focus))
         relation |= FocusChild;
 
-    ConnectionObject *connectionObject = (ConnectionObject*)object();
+    QACConnectionObject *connectionObject = (QACConnectionObject*)object();
     for (int sig = 0; sig < d->primarySignals.count(); ++sig) {
         if (connectionObject->isSender(o, d->primarySignals.at(sig).toAscii())) {
             relation |= Controller;
@@ -704,7 +704,7 @@ int QAccessibleWidget::navigate(RelationFlag relation, int entry,
         if (entry > 0) {
             // check all senders we are connected to,
             // and figure out which one are controllers to us
-            ConnectionObject *connectionObject = (ConnectionObject*)object();
+            QACConnectionObject *connectionObject = (QACConnectionObject*)object();
             QObjectList allSenders = connectionObject->senderList();
             QObjectList senders;
             for (int s = 0; s < allSenders.size(); ++s) {
@@ -723,7 +723,7 @@ int QAccessibleWidget::navigate(RelationFlag relation, int entry,
     case Controlled:
         if (entry > 0) {
             QObjectList allReceivers;
-            ConnectionObject *connectionObject = (ConnectionObject*)object();
+            QACConnectionObject *connectionObject = (QACConnectionObject*)object();
             for (int sig = 0; sig < d->primarySignals.count(); ++sig) {
                 QObjectList receivers = connectionObject->receiverList(d->primarySignals.at(sig).toAscii());
                 allReceivers += receivers;
@@ -756,6 +756,9 @@ int QAccessibleWidget::indexOfChild(const QAccessibleInterface *child) const
     return index;
 }
 
+// from qwidget.cpp
+extern QString qt_setWindowTitle_helperHelper(const QString &, QWidget*);
+
 /*! \reimp */
 QString QAccessibleWidget::text(Text t, int child) const
 {
@@ -763,14 +766,18 @@ QString QAccessibleWidget::text(Text t, int child) const
 
     switch (t) {
     case Name:
-        if (!d->name.isEmpty())
+        if (!d->name.isEmpty()) {
             str = d->name;
-        else if (!widget()->accessibleName().isEmpty())
+        } else if (!widget()->accessibleName().isEmpty()) {
             str = widget()->accessibleName();
-        else if (!child && widget()->isWindow())
-            str = widget()->windowTitle();
-        else
+        } else if (!child && widget()->isWindow()) {
+            if (widget()->isMinimized())
+                str = qt_setWindowTitle_helperHelper(widget()->windowIconText(), widget());
+            else
+                str = qt_setWindowTitle_helperHelper(widget()->windowTitle(), widget());
+        } else {
             str = qt_accStripAmp(buddyString(widget()));
+        }
         break;
     case Description:
         if (!d->description.isEmpty())
@@ -785,8 +792,10 @@ QString QAccessibleWidget::text(Text t, int child) const
     case Help:
         if (!d->help.isEmpty())
             str = d->help;
+#ifndef QT_NO_WHATSTHIS
         else
             str = widget()->whatsThis();
+#endif
         break;
     case Accelerator:
         if (!d->accelerator.isEmpty())

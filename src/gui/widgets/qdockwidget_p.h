@@ -35,43 +35,121 @@
 // We mean it.
 //
 
+#include "QtGui/qstyleoption.h"
 #include "private/qwidget_p.h"
+#include "QtGui/qboxlayout.h"
 
 #ifndef QT_NO_DOCKWIDGET
 
-class QBoxLayout;
-class QDockWidgetTitle;
+class QGridLayout;
 class QWidgetResizeHandler;
+class QRubberBand;
+class QDockWidgetTitleButton;
+class QSpacerItem;
+class QDockWidgetItem;
+
+//We need access to insertItem and addChildWidget in QDockWidget
+class QDockWidgetBoxLayout : public QVBoxLayout
+{
+public:
+#ifdef Q_NO_USING_KEYWORD
+    inline void addChildWidget(QWidget *widget) { QVBoxLayout::addChildWidget(widget); }
+    inline void insertItem(int index, QLayoutItem *item) { QVBoxLayout::insertItem(index, item); }
+#else
+    using QVBoxLayout::addChildWidget;
+    using QVBoxLayout::insertItem;
+#endif
+};
 
 class QDockWidgetPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QDockWidget)
 
+    struct DragState {
+        QRubberBand *rubberband;
+        QRect origin;   // starting position
+        QRect current;  // current size of the dockwidget (can be either placed or floating)
+        QPoint offset;
+        bool canDrop;
+    };
+
 public:
     inline QDockWidgetPrivate()
-	: QWidgetPrivate(), widget(0),
+	: QWidgetPrivate(), state(0), item(0),
           features(QDockWidget::DockWidgetClosable
                    | QDockWidget::DockWidgetMovable
                    | QDockWidget::DockWidgetFloatable),
-          allowedAreas(Qt::AllDockWidgetAreas), top(0), box(0), title(0), resizer(0)
+          allowedAreas(Qt::AllDockWidgetAreas), top(0), box(0),
+          topSpacer(0), floatButton(0), closeButton(0), resizer(0)
     { }
 
     void init();
     void toggleView(bool); // private slot
+    void toggleTopLevel(); // private slot
 
-    QWidget *widget;
+    QStyleOptionDockWidget getStyleOption();
+
+    void updateButtons();
+    void relayout();
+    DragState *state;
+
+    QDockWidgetItem *item;
 
     QDockWidget::DockWidgetFeatures features;
     Qt::DockWidgetAreas allowedAreas;
 
-    QBoxLayout *top, *box;
-    QDockWidgetTitle *title;
+    QGridLayout *top;
+    QDockWidgetBoxLayout *box;
+    QSpacerItem *topSpacer;
+    QRect titleArea;
+    QDockWidgetTitleButton *floatButton;
+    QDockWidgetTitleButton *closeButton;
 
     QWidgetResizeHandler *resizer;
 #ifndef QT_NO_ACTION
     QAction *toggleViewAction;
 #endif
+
+    QMainWindow *findMainWindow(QWidget *widget) const;
+
+    void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+};
+
+//This class adds the margin space to dockwidgets when they are not floating. 
+//We do this to ensure that the minimum sizeHint does not change when floating
+class QDockWidgetItem : public QWidgetItem
+{
+public:
+    inline QDockWidgetItem(QWidget *w)
+        : QWidgetItem(w)
+    { }
+    
+    QSize adjusted(QSize s) const 
+    {
+        QDockWidgetItem *w = const_cast<QDockWidgetItem *>(this);
+        QDockWidget * dockWidget = qobject_cast<QDockWidget *>(w->widget()->parentWidget());
+        Q_ASSERT_X(dockWidget != 0, "QDockWidget", "Internal error");
+        if(!dockWidget->isFloating() || (dockWidget->d_func()->state && dockWidget->d_func()->state->canDrop )) {
+            int fw = dockWidget->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth);
+            s += QSize(fw*2, fw*2);
+        }
+        return s;
+    }
+
+    inline QSize sizeHint() const
+    { 
+        return adjusted(QWidgetItem::sizeHint());
+    }
+        
+    inline QSize minimumSize() const
+    { 
+        return adjusted(QWidgetItem::minimumSize());
+    }
 };
 
 #endif // QT_NO_DOCKWIDGET
+
 #endif // QDOCKWIDGET_P_H

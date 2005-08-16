@@ -25,10 +25,9 @@
 #define UTILS_H
 
 #include "ui4.h"
-
-#include <qstring.h>
-#include <qlist.h>
-#include <qhash.h>
+#include <QString>
+#include <QList>
+#include <QHash>
 
 inline bool toBool(const QString &str)
 { return str.toLower() == QLatin1String("true"); }
@@ -85,4 +84,4 @@ inline QStringList unique(const QStringList &lst)
     return h.keys();
 }
 
-#endif
+#endif // UTILS_H

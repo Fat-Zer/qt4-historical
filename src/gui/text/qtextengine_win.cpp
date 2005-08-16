@@ -21,11 +21,10 @@
 **
 ****************************************************************************/
 
-#ifdef QT_THREAD_SUPPORT
-#  include <private/qmutexpool_p.h>
-#endif // QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
+#  include "private/qmutexpool_p.h"
+#endif
 #include "qlibrary.h"
-
 
 // these defines are from usp10.h
 typedef void *SCRIPT_CACHE;
@@ -126,7 +125,7 @@ const SCRIPT_PROPERTIES **script_properties = 0;
 int num_scripts = 0;
 int usp_latin_script = 0;
 
-static void uspAppendItems(QTextEngine *engine, int &start, int &stop, BidiControl &control, QChar::Direction dir);
+static void uspAppendItems(QTextEngine *engine, int &start, int &stop, QBidiControl &control, QChar::Direction dir);
 
 static void resolveUsp10()
 {
@@ -134,7 +133,7 @@ static void resolveUsp10()
     if (!resolvedUsp10) {
         // need to resolve the security info functions
 
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
         // protect initialization
         QMutexLocker locker(qt_global_mutexpool ?
                              qt_global_mutexpool->get((void*)&resolveUsp10) : 0);
@@ -412,7 +411,7 @@ static inline QUnicodeTables::Script scriptForWinLanguage(DWORD langid)
 // (b) seems to work wrongly when trying to use it with a base level != 0.
 //
 // This function does uses Uniscribe to do the script analysis and creates items from this.
-static void uspAppendItems(QTextEngine *engine, int &start, int &stop, BidiControl &control, QChar::Direction dir)
+static void uspAppendItems(QTextEngine *engine, int &start, int &stop, QBidiControl &control, QChar::Direction dir)
 {
     QScriptItemArray &items = engine->layoutData->items;
     const QChar *text = engine->layoutData->string.unicode();
@@ -480,7 +479,9 @@ static void uspAppendItems(QTextEngine *engine, int &start, int &stop, BidiContr
             } else if (b) {
                 b = false;
             } else {
-                continue;
+                if (j - rstart < 32000) 
+                    continue;
+                rstart = j;
             }
 
             item.position = j+start;
@@ -591,10 +592,10 @@ void QTextEngine::shapeText(int item) const
             QGlyphLayout *g = this->glyphs(&si);
             for(int i = 0; i < si.num_glyphs; ++i) {
                 g[i].glyph = glyphs[i];
-                g[i].advance.rx() = advances[i];
-                g[i].advance.ry() = 0;
-                g[i].offset.rx() = offsets[i].du;
-                g[i].offset.ry() = offsets[i].dv;
+                g[i].advance.x = advances[i];
+                g[i].advance.y = 0;
+                g[i].offset.x = offsets[i].du;
+                g[i].offset.y = offsets[i].dv;
                 g[i].attributes = glyphAttributes[i];
             }
             unsigned short *lc = this->logClusters(&si);
@@ -643,7 +644,7 @@ end:
     si.width = 0;
     QGlyphLayout *end = g + si.num_glyphs;
     while (g < end)
-        si.width += (g++)->advance.x();
+        si.width += (g++)->advance.x;
 
 
     si.ascent = fontEngine->ascent();
@@ -651,4 +652,3 @@ end:
 
     layoutData->used += si.num_glyphs;
 }
-

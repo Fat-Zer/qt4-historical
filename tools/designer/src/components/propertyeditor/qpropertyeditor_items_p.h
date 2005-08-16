@@ -285,17 +285,30 @@ public:
     void updateValue(QWidget *editor);
 };
 
-class QT_PROPERTYEDITOR_EXPORT StringProperty: public AbstractProperty<QString>
+class QT_PROPERTYEDITOR_EXPORT StringProperty: public AbstractPropertyGroup
 {
 public:
-    StringProperty(const QString &value, const QString &name);
+    StringProperty(const QString &value, const QString &name, bool hasComment = false, const QString &comment = QString());
 
+    bool checkValidObjectName() const;
+    void setCheckValidObjectName(bool b);
+
+    bool allowScope() const;
+    void setAllowScope(bool b);
+
+    QVariant value() const;
     void setValue(const QVariant &value);
     QString toString() const;
 
+    bool hasEditor() const;
     QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
     void updateEditorContents(QWidget *editor);
     void updateValue(QWidget *editor);
+
+private:
+    QString m_value;
+    bool m_checkValidObjectName;
+    bool m_allowScope;
 };
 
 class QT_PROPERTYEDITOR_EXPORT SeparatorProperty: public StringProperty
@@ -494,7 +507,7 @@ private:
 class QT_PROPERTYEDITOR_EXPORT PaletteProperty: public AbstractProperty<QPalette>
 {
 public:
-    PaletteProperty(const QPalette &value, const QString &name);
+    PaletteProperty(const QPalette &value, QWidget *selectedWidget, const QString &name);
 
     void setValue(const QVariant &value);
     QString toString() const;
@@ -502,6 +515,8 @@ public:
     QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
     void updateEditorContents(QWidget *editor);
     void updateValue(QWidget *editor);
+
+    QWidget *m_selectedWidget;
 };
 
 }  // namespace qdesigner_internal

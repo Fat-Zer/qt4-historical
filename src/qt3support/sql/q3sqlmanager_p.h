@@ -35,14 +35,14 @@
 // We mean it.
 //
 
-#include "qvariant.h"
-#include "qglobal.h"
-#include "qstring.h"
-#include "qstringlist.h"
-#include "qsql.h"
-#include "qsqlerror.h"
-#include "qsqlindex.h"
-#include "q3sqlcursor.h"
+#include "QtCore/qvariant.h"
+#include "QtCore/qglobal.h"
+#include "QtCore/qstring.h"
+#include "QtCore/qstringlist.h"
+#include "QtSql/qsql.h"
+#include "QtSql/qsqlerror.h"
+#include "QtSql/qsqlindex.h"
+#include "Qt3Support/q3sqlcursor.h"
 
 #ifndef QT_NO_SQL
 
@@ -133,6 +133,6 @@ private:
     Q3DataManagerPrivate* d;
 };
 
-#endif
+#endif // QT_NO_SQL
 
-#endif
+#endif // Q3SQLMANAGER_P_H

@@ -118,6 +118,9 @@
 #include <private/qrasterdefs_p.h>
 #include <private/qgrayraster_p.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+
   /* This macro is used to indicate that a function parameter is unused. */
   /* Its purpose is simply to reduce compiler warnings.  Note also that  */
   /* simply defining it as `(void)x' doesn't avoid warnings with certain */
@@ -148,9 +151,6 @@
 
   /* as usual, for the speed hungry :-) */
 
-#ifndef QT_FT_STATIC_RASTER
-
-
 #define RAS_ARG   PRaster  raster
 #define RAS_ARG_  PRaster  raster,
 
@@ -159,19 +159,6 @@
 
 #define ras       (*raster)
 
-
-#else /* QT_FT_STATIC_RASTER */
-
-
-#define RAS_ARG   /* empty */
-#define RAS_ARG_  /* empty */
-#define RAS_VAR   /* empty */
-#define RAS_VAR_  /* empty */
-
-  static TRaster  ras;
-
-
-#endif /* QT_FT_STATIC_RASTER */
 
 
   /* must be at least 6 bits! */
@@ -233,7 +220,7 @@
 
 
   /* maximal number of gray spans in a call to the span callback */
-#define QT_FT_MAX_GRAY_SPANS  32
+#define QT_FT_MAX_GRAY_SPANS  256
 
 
 #ifdef GRAYS_COMPACT
@@ -292,7 +279,6 @@
 
     QT_FT_Raster_Span_Func  render_span;
     void*                render_span_data;
-    int                  span_y;
 
     int  band_size;
     int  band_shoot;
@@ -1334,7 +1320,6 @@
                        int     acount )
   {
     QT_FT_Span*   span;
-    int        count;
     int        coverage;
 
 
@@ -1370,10 +1355,9 @@
     if ( coverage )
     {
       /* see if we can add this span to the current list */
-      count = ras.num_gray_spans;
-      span  = ras.gray_spans + count - 1;
-      if ( count > 0                          &&
-           ras.span_y == y                    &&
+      span  = ras.gray_spans + ras.num_gray_spans - 1;
+      if ( ras.num_gray_spans > 0             &&
+           span->y == y                    &&
            (int)span->x + span->len == (int)x &&
            span->coverage == coverage )
       {
@@ -1381,21 +1365,21 @@
         return;
       }
 
-      if ( ras.span_y != y || count >= QT_FT_MAX_GRAY_SPANS )
+      if ( ras.num_gray_spans >= QT_FT_MAX_GRAY_SPANS )
       {
-        if ( ras.render_span && count > 0 )
-          ras.render_span( ras.span_y, count, ras.gray_spans,
+        if ( ras.render_span )
+          ras.render_span( ras.num_gray_spans, ras.gray_spans,
                            ras.render_span_data );
         /* ras.render_span( span->y, ras.gray_spans, count ); */
 
 #ifdef DEBUG_GRAYS
 
-        if ( ras.span_y >= 0 )
+        if ( 1 )
         {
           int  n;
 
 
-          fprintf( stderr, "y=%3d ", ras.span_y );
+          fprintf( stderr, "y=%3d ", y );
           span = ras.gray_spans;
           for ( n = 0; n < count; n++, span++ )
             fprintf( stderr, "[%d..%d]:%02x ",
@@ -1406,9 +1390,7 @@
 #endif /* DEBUG_GRAYS */
 
         ras.num_gray_spans = 0;
-        ras.span_y         = y;
 
-        count = 0;
         span  = ras.gray_spans;
       }
       else
@@ -1417,6 +1399,7 @@
       /* add a gray span to the current list */
       span->x        = (short)x;
       span->len      = (unsigned short)acount;
+      span->y = (short)y;
       span->coverage = (unsigned char)coverage;
       ras.num_gray_spans++;
     }
@@ -1440,8 +1423,6 @@
     limit = cur + ras.num_cells;
 
     cover              = 0;
-    ras.span_y         = -1;
-    ras.num_gray_spans = 0;
 
     for (;;)
     {
@@ -1495,10 +1476,6 @@
         break;
     }
 
-    if ( ras.render_span && ras.num_gray_spans > 0 )
-      ras.render_span( ras.span_y, ras.num_gray_spans,
-                       ras.gray_spans, ras.render_span_data );
-
 #ifdef DEBUG_GRAYS
 
     {
@@ -1506,7 +1483,7 @@
       QT_FT_Span*  span;
 
 
-      fprintf( stderr, "y=%3d ", ras.span_y );
+      fprintf( stderr, "y=%3d ", y );
       span = ras.gray_spans;
       for ( n = 0; n < ras.num_gray_spans; n++, span++ )
         fprintf( stderr, "[%d..%d]:%02x ",
@@ -1805,6 +1782,7 @@
     TPos volatile    min, max, max_y;
     QT_FT_BBox*         clip;
 
+    ras.num_gray_spans = 0;
 
     /* Set up state in the raster object */
     gray_compute_cbox( RAS_VAR );
@@ -1925,6 +1903,10 @@
       }
     }
 
+    if ( ras.render_span && ras.num_gray_spans > 0 )
+      ras.render_span( ras.num_gray_spans,
+                       ras.gray_spans, ras.render_span_data );
+
     if ( ras.band_shoot > 8 && ras.band_size > 16 )
       ras.band_size = ras.band_size / 2;
 
@@ -2040,13 +2022,13 @@
   gray_raster_new( void*       memory,
                    QT_FT_Raster*  araster )
   {
-    static TRaster  the_raster;
+    if (memory)
+        fprintf(stderr, "gray_raster_new(), memory ignored");
 
-    QT_FT_UNUSED( memory );
+    memory = malloc(sizeof(TRaster));
+    QT_FT_MEM_ZERO(memory, sizeof(TRaster));
 
-
-    *araster = (QT_FT_Raster)&the_raster;
-    QT_FT_MEM_ZERO( &the_raster, sizeof ( the_raster ) );
+    *araster = (QT_FT_Raster) memory;
 
 #ifdef GRAYS_USE_GAMMA
     grays_init_gamma( (PRaster)*araster );
@@ -2059,8 +2041,7 @@
   static void
   gray_raster_done( QT_FT_Raster  raster )
   {
-    /* nothing */
-    QT_FT_UNUSED( raster );
+    free(raster);
   }
 
   static void
@@ -2088,6 +2069,5 @@
     (QT_FT_Raster_Render_Func)  gray_raster_render,
     (QT_FT_Raster_Done_Func)    gray_raster_done
   };
-
 
 /* END */

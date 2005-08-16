@@ -22,12 +22,11 @@
 ****************************************************************************/
 
 #include "qplatformdefs.h"
-
 #include "qtemporaryfile.h"
-#include <qfileengine.h>
-#include <private/qfile_p.h>
-#include <private/qfileengine_p.h>
-#include <private/qbufferedfsfileengine_p.h>
+#include "qabstractfileengine.h"
+#include "private/qfile_p.h"
+#include "private/qabstractfileengine_p.h"
+#include "private/qfsfileengine_p.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -44,23 +43,23 @@ public:
     QTemporaryFileEngine(const QString &file) : QFSFileEngine(file) { }
     ~QTemporaryFileEngine();
 
-    bool open(int flags);
+    bool open(QIODevice::OpenMode flags);
 };
 
 QTemporaryFileEngine::~QTemporaryFileEngine()
 {
 }
 
-bool QTemporaryFileEngine::open(int)
+bool QTemporaryFileEngine::open(QIODevice::OpenMode)
 {
     Q_D(QFSFileEngine);
 
     QString qfilename = d->file;
     if(!qfilename.endsWith(QLatin1String("XXXXXX")))
         qfilename += QLatin1String(".XXXXXX");
-    d->external_file = 0;
+    d->closeFileHandle = true;
     char *filename = qstrdup(qfilename.toLocal8Bit());
-    
+
 #ifdef HAS_MKSTEMP
     d->fd = mkstemp(filename);
 #else
@@ -79,12 +78,12 @@ bool QTemporaryFileEngine::open(int)
 #endif
     if(d->fd != -1) {
         d->file = QString::fromLocal8Bit(filename); //changed now!
-        free(filename);
+        delete [] filename;
         d->sequential = 0;
         return true;
     }
-    free(filename);
-    d->setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError, errno);
+    delete [] filename;
+    setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError, qt_error_string(errno));
     return false;
 }
 
@@ -281,7 +280,7 @@ QString QTemporaryFile::fileName() const
 {
     if(!isOpen())
         return QString();
-    return fileEngine()->fileName(QFileEngine::DefaultName);
+    return fileEngine()->fileName(QAbstractFileEngine::DefaultName);
 }
 
 /*!
@@ -327,8 +326,8 @@ void QTemporaryFile::setFileTemplate(const QString &name)
 */
 QTemporaryFile *QTemporaryFile::createLocalFile(QFile &file)
 {
-    if(QFileEngine *engine = file.fileEngine()) {
-        if(engine->fileFlags(QFileEngine::FlagsMask) & QFileEngine::LocalDiskFlag)
+    if (QAbstractFileEngine *engine = file.fileEngine()) {
+        if(engine->fileFlags(QAbstractFileEngine::FlagsMask) & QAbstractFileEngine::LocalDiskFlag)
             return 0; //local already
         //cache
         bool wasOpen = file.isOpen();
@@ -364,7 +363,7 @@ QTemporaryFile *QTemporaryFile::createLocalFile(QFile &file)
    \internal
 */
 
-QFileEngine *QTemporaryFile::fileEngine() const
+QAbstractFileEngine *QTemporaryFile::fileEngine() const
 {
     Q_D(const QTemporaryFile);
     if(!d->fileEngine)
@@ -380,7 +379,7 @@ bool QTemporaryFile::open(OpenMode flags)
 {
     Q_D(QTemporaryFile);
     if (QFile::open(flags)) {
-        d->fileName = d->fileEngine->fileName(QFileEngine::DefaultName);
+        d->fileName = d->fileEngine->fileName(QAbstractFileEngine::DefaultName);
         return true;
     }
     return false;

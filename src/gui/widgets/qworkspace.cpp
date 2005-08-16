@@ -124,7 +124,7 @@ public:
     QToolTip *toolTip;
 #endif
     bool act                    :1;
-    QWidget* window;
+    QPointer<QWidget> window;
     bool movable            :1;
     bool pressed            :1;
     bool autoraise          :1;
@@ -137,8 +137,9 @@ public:
 
 inline int QWorkspaceTitleBarPrivate::titleBarState() const
 {
+    Q_Q(const QWorkspaceTitleBar);
     uint state = window ? window->windowState() : static_cast<Qt::WindowStates>(Qt::WindowNoState);
-    state |= uint(act ? QStyle::State_Active : QStyle::State_None);
+    state |= uint((act && q->isActiveWindow()) ? QStyle::State_Active : QStyle::State_None);
     return (int)state;
 }
 
@@ -262,6 +263,13 @@ void QWorkspaceTitleBar::mousePressEvent(QMouseEvent *e)
     if (!d->act)
         emit doActivate();
     if (e->button() == Qt::LeftButton) {
+        if (style()->styleHint(QStyle::SH_TitleBar_NoBorder, 0, 0)
+            && !rect().adjusted(5, 5, -5, 0).contains(e->pos())) {
+            // propagate border events to the QWidgetResizeHandler
+            e->ignore();
+            return;
+        }
+
         d->pressed = true;
         QStyleOptionTitleBar opt = d->getStyleOption();
         QStyle::SubControl ctrl = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
@@ -320,7 +328,7 @@ void QWorkspaceTitleBar::mousePressEvent(QMouseEvent *e)
         default:
             break;
         }
-        repaint();
+        update();
     } else {
         d->pressed = false;
     }
@@ -342,7 +350,19 @@ void QWorkspaceTitleBar::contextMenuEvent(QContextMenuEvent *e)
 void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
 {
     Q_D(QWorkspaceTitleBar);
+    if (!d->window) {
+        // could have been deleted as part of a double click event on the sysmenu
+        return;
+    }
     if (e->button() == Qt::LeftButton && d->pressed) {
+        if (style()->styleHint(QStyle::SH_TitleBar_NoBorder, 0, 0)
+            && !rect().adjusted(5, 5, -5, 0).contains(e->pos())) {
+            // propagate border events to the QWidgetResizeHandler
+            e->ignore();
+            d->buttonDown = QStyle::SC_None;
+            d->pressed = false;
+            return;
+        }    
         e->accept();
         QStyleOptionTitleBar opt = d->getStyleOption();
         QStyle::SubControl ctrl = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
@@ -350,7 +370,7 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
         d->pressed = false;
         if (ctrl == d->buttonDown) {
             d->buttonDown = QStyle::SC_None;
-            repaint();
+            update();
             switch(ctrl) {
             case QStyle::SC_TitleBarShadeButton:
             case QStyle::SC_TitleBarUnshadeButton:
@@ -384,7 +404,7 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
             case QStyle::SC_TitleBarCloseButton:
                 if(d->flags & Qt::WindowSystemMenuHint) {
                     d->buttonDown = QStyle::SC_None;
-                    repaint();
+                    update();
                     emit doClose();
                     return;
                 }
@@ -402,11 +422,21 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
 void QWorkspaceTitleBar::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QWorkspaceTitleBar);
+    if ((e->buttons() & Qt::LeftButton) && style()->styleHint(QStyle::SH_TitleBar_NoBorder, 0, 0)
+        && !rect().adjusted(5, 5, -5, 0).contains(e->pos()) && !d->pressed) {
+        // propagate border events to the QWidgetResizeHandler
+        e->ignore();
+        return;
+    }
+    if (!e->buttons()) {
+        e->ignore();
+        return;
+    }
     e->accept();
     switch (d->buttonDown) {
     case QStyle::SC_None:
         if(autoRaise())
-            repaint();
+            update();
         break;
     case QStyle::SC_TitleBarSysMenu:
         break;
@@ -422,7 +452,7 @@ void QWorkspaceTitleBar::mouseMoveEvent(QMouseEvent *e)
             d->buttonDown = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt, e->pos(), this);
             if (d->buttonDown != last_ctrl)
                 d->buttonDown = QStyle::SC_None;
-            repaint();
+            update();
             d->buttonDown = last_ctrl;
         }
         break;
@@ -456,7 +486,7 @@ void QWorkspaceTitleBar::mouseMoveEvent(QMouseEvent *e)
             QStyle::SubControl last_ctrl = d->buttonDown;
             d->buttonDown = QStyle::SC_None;
             if(d->buttonDown != last_ctrl)
-                repaint();
+                update();
         }
         break;
     default:
@@ -557,14 +587,14 @@ void QWorkspaceTitleBar::leaveEvent(QEvent *)
 {
     Q_D(QWorkspaceTitleBar);
     if(autoRaise() && !d->pressed)
-        repaint();
+        update();
 }
 
 void QWorkspaceTitleBar::enterEvent(QEvent *)
 {
     Q_D(QWorkspaceTitleBar);
     if(autoRaise() && !d->pressed)
-        repaint();
+        update();
     QEvent e(QEvent::Leave);
     QApplication::sendEvent(parentWidget(), &e);
 }
@@ -603,19 +633,18 @@ bool QWorkspaceTitleBar::event(QEvent *e)
     if (d->inevent)
         return QWidget::event(e);
     d->inevent = true;
+    bool result = true;
     if (e->type() == QEvent::ApplicationPaletteChange) {
         d->readColors();
-        return true;
-    } else if (e->type() == QEvent::WindowActivate) {
-        setActive(d->act);
-    } else if (e->type() == QEvent::WindowDeactivate) {
-        bool wasActive = d->act;
-        setActive(false);
-        d->act = wasActive;
+    } else if (e->type() == QEvent::WindowActivate
+               || e->type() == QEvent::WindowDeactivate) {
+        if (d->act)
+            update();
+    } else {
+        result = QWidget::event(e);
     }
-
     d->inevent = false;
-    return QWidget::event(e);
+    return result;
 }
 
 void QWorkspaceTitleBar::setMovable(bool b)
@@ -663,7 +692,7 @@ QSize QWorkspaceTitleBar::sizeHint() const
     a number of child windows, each of which is a widget.
 
     The workspace itself is an ordinary Qt widget. It has a standard
-    constructor that takes a parent widget and an object name.
+    constructor that takes a parent widget.
     Workspaces can be placed in any layout, but are typically given
     as the central widget in a QMainWindow:
 
@@ -782,7 +811,6 @@ private:
     Q_DISABLE_COPY(QWorkspaceChild)
 
     QWidget *childWidget;
-    QWidget *backgroundWidget;
     QWidgetResizeHandler *widgetResizeHandler;
     QWorkspaceTitleBar *titlebar;
     QPointer<QWorkspaceTitleBar> iconw;
@@ -885,7 +913,7 @@ QWorkspace::QWorkspace(QWidget *parent, const char *name)
     : QWidget(*new QWorkspacePrivate, parent, 0)
 {
     Q_D(QWorkspace);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 #endif // QT3_SUPPORT
@@ -907,8 +935,8 @@ QWorkspacePrivate::init()
     becomeActive = 0;
     popup = new QMenu(q);
     toolPopup = new QMenu(q);
-    popup->setObjectName("qt_internal_mdi_popup");
-    toolPopup->setObjectName("qt_internal_mdi_tool_popup");
+    popup->setObjectName(QLatin1String("qt_internal_mdi_popup"));
+    toolPopup->setObjectName(QLatin1String("qt_internal_mdi_tool_popup"));
 
     actions[QWorkspacePrivate::RestoreAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarNormalButton)),
                                                          q->tr("&Restore"), q);
@@ -949,7 +977,7 @@ QWorkspacePrivate::init()
     toolPopup->addAction(actions[QWorkspacePrivate::ShadeAct]);
     toolPopup->addAction(actions[QWorkspacePrivate::CloseAct]);
 
-#ifndef QT_NO_SHORTCUT    
+#ifndef QT_NO_SHORTCUT
     // Set up shortcut bindings (id -> slot), most used first
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::Key_Tab), "activateNextWindow");
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), "activatePreviousWindow");
@@ -960,18 +988,19 @@ QWorkspacePrivate::init()
     shortcutMap.insert(q->grabShortcut(Qt::Key_Forward), "activateNextWindow");
     shortcutMap.insert(q->grabShortcut(Qt::Key_Back), "activatePreviousWindow");
 #endif // QT_NO_SHORTCUT
-    
-    q->setAttribute(Qt::WA_NoBackground, true);
+
+    q->setBackgroundRole(QPalette::Dark);
+    q->setAutoFillBackground(true);
     q->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
     hbar = vbar = 0;
     corner = 0;
     xoffset = yoffset = 0;
 
+    q->window()->installEventFilter(q);
+
     inTitleChange = false;
     updateWorkspace();
-
-    q->window()->installEventFilter(q);
 }
 
 /*!
@@ -1026,6 +1055,7 @@ void QWorkspace::setBackground(const QBrush &background)
 {
     Q_D(QWorkspace);
     d->background = background;
+    setAttribute(Qt::WA_OpaquePaintEvent, background.style() == Qt::NoBrush);
     update();
 }
 
@@ -1041,6 +1071,8 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
     Q_D(QWorkspace);
     if (!w)
         return 0;
+
+    w->setAutoFillBackground(true);
 
     bool customize =  (flags & (Qt::WindowTitleHint
             | Qt::WindowSystemMenuHint
@@ -1062,7 +1094,6 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
     bool wasMaximized = w->isMaximized();
     bool wasMinimized = w->isMinimized();
 #endif
-    bool hasBeenHidden = w->isHidden();
     bool hasSize = w->testAttribute(Qt::WA_Resized);
     int x = w->x();
     int y = w->y();
@@ -1072,7 +1103,7 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
         w->adjustSize();
 
     QWorkspaceChild* child = new QWorkspaceChild(w, this, flags);
-    child->setObjectName("qt_workspacechild");
+    child->setObjectName(QLatin1String("qt_workspacechild"));
     child->installEventFilter(this);
 
     connect(child, SIGNAL(popupOperationMenu(QPoint)),
@@ -1091,7 +1122,6 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
     if (hasPos)
         child->move(x, y);
 
-    w->setHidden(hasBeenHidden);
     return child;
 
 #if 0
@@ -1176,23 +1206,8 @@ void QWorkspacePrivate::activateWindow(QWidget* w, bool change_focus)
         return;
 
     if (maxWindow && maxWindow != active && active->windowWidget() &&
-        (active->windowWidget()->windowFlags() & Qt::WindowMaximizeButtonHint)) {
+        (active->windowWidget()->windowFlags() & Qt::WindowMaximizeButtonHint))
         active->showMaximized();
-        if (maxtools) {
-            QIcon icon = w->windowIcon();
-            if (!icon.isNull()) {
-                int iconSize = maxtools->size().height();
-                QPixmap pm(icon.pixmap(QSize(iconSize, iconSize)));
-                maxtools->setPixmap(pm);
-            } else
-            {
-                QPixmap pm(14,14);
-                pm.fill(Qt::color1);
-                pm.setMask(pm.createHeuristicMask());
-                maxtools->setPixmap(pm);
-            }
-        }
-    }
 
     active->internalRaise();
 
@@ -1430,13 +1445,13 @@ void QWorkspace::showEvent(QShowEvent *e)
         d->activateWindow(d->windows.first()->windowWidget());
     }
 
-    // force a frame repaint - this is a workaround for what seems to be a bug
-    // introduced when changing the QWidget::show() implementation. Might be
-    // a windows bug as well though.
-    for (int i = 0; i < d->windows.count(); ++i) {
-	QWorkspaceChild* c = d->windows.at(i);
-        c->update(c->rect());
-    }
+//     // force a frame repaint - this is a workaround for what seems to be a bug
+//     // introduced when changing the QWidget::show() implementation. Might be
+//     // a windows bug as well though.
+//     for (int i = 0; i < d->windows.count(); ++i) {
+// 	QWorkspaceChild* c = d->windows.at(i);
+//         c->update(c->rect());
+//     }
 
     d->updateWorkspace();
 }
@@ -1453,13 +1468,11 @@ void QWorkspace::hideEvent(QHideEvent *)
 void QWorkspace::paintEvent(QPaintEvent *)
 {
     Q_D(QWorkspace);
-    QPainter p(this);
 
-    QBrush bg = d->background;
-    if (bg.style() == Qt::NoBrush)
-        bg = palette().dark();
-
-    p.fillRect(0, 0, width(), height(), bg);
+    if (d->background.style() != Qt::NoBrush) {
+        QPainter p(this);
+        p.fillRect(0, 0, width(), height(), d->background);
+    }
 }
 
 void QWorkspacePrivate::minimizeWindow(QWidget* w)
@@ -1562,8 +1575,11 @@ void QWorkspacePrivate::maximizeWindow(QWidget* w)
     c->show();
     c->internalRaise();
     if (oldMaxWindow != c) {
-        if (oldMaxWindow)
+        if (oldMaxWindow) {
             oldMaxWindow->setGeometry(maxRestore);
+            oldMaxWindow->overrideWindowState(Qt::WindowNoState);
+            oldMaxWindow->windowWidget()->overrideWindowState(Qt::WindowNoState);
+        }
         maxRestore = r;
     }
 
@@ -1645,6 +1661,22 @@ QWidgetList QWorkspace::windowList(WindowOrder order) const
     return windows;
 }
 
+
+/*! \reimp */
+bool QWorkspace::event(QEvent *e)
+{
+    Q_D(QWorkspace);
+    if (e->type() == QEvent::Shortcut) {
+        QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
+        const char *theSlot = d->shortcutMap.value(se->shortcutId(), 0);
+        if (theSlot)
+            QMetaObject::invokeMethod(this, theSlot);
+    } else if (e->type() == QEvent::FocusIn || e->type() == QEvent::FocusOut){
+        return true;
+    }
+    return QWidget::event(e);
+}
+
 /*! \reimp */
 bool QWorkspace::eventFilter(QObject *o, QEvent * e)
 {
@@ -1721,14 +1753,6 @@ bool QWorkspace::eventFilter(QObject *o, QEvent * e)
         }
         d->updateWorkspace();
         break;
-    case QEvent::Shortcut:
-        {
-            QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
-            const char *theSlot = d->shortcutMap.value(se->shortcutId(), 0);
-            if (theSlot)
-                QMetaObject::invokeMethod(this, theSlot);
-        }
-        break;
     default:
         break;
     }
@@ -1775,14 +1799,14 @@ void QWorkspacePrivate::showMaximizeControls()
         if (!maxcontrols) {
             maxmenubar = b;
             maxcontrols = new QFrame(q->window());
-            maxcontrols->setObjectName("qt_maxcontrols");
+            maxcontrols->setObjectName(QLatin1String("qt_maxcontrols"));
             QHBoxLayout* l = new QHBoxLayout(maxcontrols);
             l->setMargin(maxcontrols->frameWidth());
             l->setSpacing(0);
             if (maxWindow->windowWidget() &&
                 (maxWindow->windowWidget()->windowFlags() & Qt::WindowMinimizeButtonHint)) {
                 QToolButton* iconB = new QToolButton(maxcontrols);
-                iconB->setObjectName("iconify");
+                iconB->setObjectName(QLatin1String("iconify"));
 #ifndef QT_NO_TOOLTIP
                 iconB->setToolTip(q->tr("Minimize"));
 #endif
@@ -1796,7 +1820,7 @@ void QWorkspacePrivate::showMaximizeControls()
             }
 
             QToolButton* restoreB = new QToolButton(maxcontrols);
-            restoreB->setObjectName("restore");
+            restoreB->setObjectName(QLatin1String("restore"));
 #ifndef QT_NO_TOOLTIP
             restoreB->setToolTip(q->tr("Restore Down"));
 #endif
@@ -1810,7 +1834,7 @@ void QWorkspacePrivate::showMaximizeControls()
 
             l->addSpacing(2);
             QToolButton* closeB = new QToolButton(maxcontrols);
-            closeB->setObjectName("close");
+            closeB->setObjectName(QLatin1String("close"));
 #ifndef QT_NO_TOOLTIP
             closeB->setToolTip(q->tr("Close"));
 #endif
@@ -1836,7 +1860,7 @@ void QWorkspacePrivate::showMaximizeControls()
         if (active) {
             if (!maxtools) {
                 maxtools = new QLabel(q->window());
-                maxtools->setObjectName("qt_maxtools");
+                maxtools->setObjectName(QLatin1String("qt_maxtools"));
                 maxtools->installEventFilter(q);
             }
             if (active->windowWidget() && !active->windowWidget()->windowIcon().isNull()) {
@@ -2041,8 +2065,8 @@ void QWorkspacePrivate::hideChild(QWorkspaceChild *c)
 {
     Q_Q(QWorkspace);
 
-    bool updatesEnabled = q->updatesEnabled();
-    q->setUpdatesEnabled(false);
+//     bool updatesEnabled = q->updatesEnabled();
+//     q->setUpdatesEnabled(false);
     focus.removeAll(c);
     QRect restore;
     if (maxWindow == c)
@@ -2060,7 +2084,7 @@ void QWorkspacePrivate::hideChild(QWorkspaceChild *c)
     c->hide();
     if (!restore.isEmpty())
         c->setGeometry(restore);
-    q->setUpdatesEnabled(updatesEnabled);
+//     q->setUpdatesEnabled(updatesEnabled);
 }
 
 /*!
@@ -2135,7 +2159,7 @@ void QWorkspace::activatePreviousWindow()
 /*!
     Arranges all the child windows in a cascade pattern.
 
-    \sa tile()
+    \sa tile(), arrangeIcons()
 */
 void QWorkspace::cascade()
 {
@@ -2203,7 +2227,7 @@ void QWorkspace::cascade()
 /*!
     Arranges all child windows in a tile pattern.
 
-    \sa cascade()
+    \sa cascade(), arrangeIcons()
 */
 void QWorkspace::tile()
 {
@@ -2310,6 +2334,36 @@ void QWorkspace::tile()
     blockSignals(false);
 }
 
+/*!
+    Arranges all iconized windows at the bottom of the workspace.
+
+    \sa cascade(), tile()
+*/
+void QWorkspace::arrangeIcons()
+{
+    Q_D(QWorkspace);
+
+    QRect cr = d->updateWorkspace();
+    int x = 0;
+    int y = -1;
+
+    QList<QWidget *>::Iterator it(d->icons.begin());
+    while (it != d->icons.end()) {
+        QWidget* i = *it;
+        if (y == -1)
+            y = cr.height() - i->height();
+        if (x > 0 && x + i->width() > cr.width()) {
+            x = 0;
+            y -= i->height();
+        }
+        i->move(x, y);
+        x += i->width();
+        ++it;
+    }
+    d->updateWorkspace();
+}
+
+
 QWorkspaceChild::QWorkspaceChild(QWidget* window, QWorkspace *parent, Qt::WFlags flags)
     : QWidget(parent,
              Qt::FramelessWindowHint | Qt::SubWindow)
@@ -2321,9 +2375,9 @@ QWorkspaceChild::QWorkspaceChild(QWidget* window, QWorkspace *parent, Qt::WFlags
     iconw = 0;
     shademode = false;
     titlebar = 0;
+    setAutoFillBackground(true);
 
-    backgroundWidget = new QWidget(this);
-    backgroundWidget->setAttribute(Qt::WA_NoSystemBackground);
+    setBackgroundRole(QPalette::Background);
     if (window) {
         if (flags)
             window->setParent(this, flags & ~Qt::WindowType_Mask);
@@ -2485,7 +2539,6 @@ void QWorkspaceChild::resizeEvent(QResizeEvent *)
                              ||childWidget->isMaximized());
 
     windowSize = cr.size();
-    backgroundWidget->setGeometry(cr);
     childWidget->move(cr.topLeft());
     if (doContentsResize)
         childWidget->resize(cr.size());
@@ -2534,8 +2587,8 @@ void QWorkspaceChild::activate()
 
 bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
 {
-    if (!isActive() && (e->type() == QEvent::MouseButtonPress ||
-        e->type() == QEvent::FocusIn)) {
+    if (!isActive() && o == childWidget && (e->type() == QEvent::MouseButtonPress ||
+                                            e->type() == QEvent::FocusIn)) {
         if (iconw) {
             ((QWorkspace*)parentWidget())->d_func()->normalizeWindow(windowWidget());
             if (iconw) {
@@ -2560,11 +2613,12 @@ bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
         if (windowWidget() && (windowWidget()->windowFlags() & Qt::WindowStaysOnTopHint)) {
             internalRaise();
             show();
-            backgroundWidget->lower();
         }
         ((QWorkspace*)parentWidget())->d_func()->showWindow(windowWidget());
         break;
     case QEvent::WindowStateChange: {
+        if (static_cast<QWindowStateChangeEvent*>(e)->isOverride())
+            break;
         Qt::WindowStates state = windowWidget()->windowState();
 
         if (state & Qt::WindowMinimized) {
@@ -2576,7 +2630,7 @@ bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
                 windowWidget()->resize(windowWidget()->maximumSize());
                 windowWidget()->overrideWindowState(Qt::WindowNoState);
                 if (titlebar)
-                    titlebar->repaint();
+                    titlebar->update();
                 break;
             }
             if ((windowWidget()->windowFlags() & Qt::WindowMaximizeButtonHint))
@@ -2632,15 +2686,15 @@ bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
         break;
 
     case QEvent::WindowDeactivate:
-        if (titlebar)
-            titlebar->setActive(false);
-        repaint();
+        if (titlebar && titlebar->isActive()) {
+            update();
+        }
         break;
 
     case QEvent::WindowActivate:
-        if (titlebar)
-            titlebar->setActive(act);
-        repaint();
+        if (titlebar && titlebar->isActive()) {
+            update();
+        }
         break;
 
     default:
@@ -2722,7 +2776,7 @@ void QWorkspaceChild::paintEvent(QPaintEvent *)
     opt.lineWidth = style()->pixelMetric(QStyle::PM_MDIFrameWidth, 0, this);
     opt.midLineWidth = 1;
 
-    if (titlebar && titlebar->isActive())
+    if (titlebar && titlebar->isActive() && isActiveWindow())
         opt.state |= QStyle::State_Active;
 
     style()->drawPrimitive(QStyle::PE_FrameWindow, &opt, &p, this);
@@ -2752,7 +2806,7 @@ void QWorkspaceChild::setActive(bool b)
         return;
 
     bool hasFocus = isChildOf(window()->focusWidget(), this);
-    if (act == b && hasFocus)
+    if (act == b && (act == hasFocus))
         return;
 
     act = b;
@@ -2820,7 +2874,7 @@ QWidget* QWorkspaceChild::iconWidget() const
         vbox->setMargin(0);
         QWorkspaceTitleBar *tb = new QWorkspaceTitleBar(windowWidget(), frame);
         vbox->addWidget(tb);
-        tb->setObjectName("_workspacechild_icon_");
+        tb->setObjectName(QLatin1String("_workspacechild_icon_"));
         QStyleOptionTitleBar opt = tb->getStyleOption();
         int th = style()->pixelMetric(QStyle::PM_TitleBarHeight, &opt, tb);
         int iconSize = style()->pixelMetric(QStyle::PM_MDIMinimizedWidth, 0, this);
@@ -3011,13 +3065,14 @@ void QWorkspace::setScrollBarsEnabled(bool enable)
     d->xoffset = d->yoffset = 0;
     if (enable) {
         d->vbar = new QScrollBar(Qt::Vertical, this);
-        d->vbar->setObjectName("vertical scrollbar");
+        d->vbar->setObjectName(QLatin1String("vertical scrollbar"));
         connect(d->vbar, SIGNAL(valueChanged(int)), this, SLOT(scrollBarChanged()));
         d->hbar = new QScrollBar(Qt::Horizontal, this);
-        d->hbar->setObjectName("horizontal scrollbar");
+        d->hbar->setObjectName(QLatin1String("horizontal scrollbar"));
         connect(d->hbar, SIGNAL(valueChanged(int)), this, SLOT(scrollBarChanged()));
         d->corner = new QWidget(this);
-        d->corner->setObjectName("qt_corner");
+        d->corner->setBackgroundRole(QPalette::Background);
+        d->corner->setObjectName(QLatin1String("qt_corner"));
         d->updateWorkspace();
     } else {
         delete d->vbar;

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/itemviews/qlistview.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/itemviews/qlistview.cpp -->
 <head>
-    <title>Qt 4.0: QListView Class Reference</title>
+    <title>Qt 4.1: QListView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -46,6 +46,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qlistview.html#movement-prop">movement</a></b> : Movement</li>
 <li><div class="fn"/><b><a href="qlistview.html#resizeMode-prop">resizeMode</a></b> : ResizeMode</li>
 <li><div class="fn"/><b><a href="qlistview.html#spacing-prop">spacing</a></b> : int</li>
+<li><div class="fn"/><b><a href="qlistview.html#uniformItemSizes-prop">uniformItemSizes</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qlistview.html#viewMode-prop">viewMode</a></b> : ViewMode</li>
 </ul>
 </td></tr>
@@ -54,7 +55,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>10 properties inherited from <a href="qabstractitemview.html#properties">QAbstractItemView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="qabstractscrollarea.html#properties">QAbstractScrollArea</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -79,33 +80,37 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qlistview.html#resizeMode-prop">setResizeMode</a></b> ( ResizeMode <i>mode</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistview.html#setRowHidden">setRowHidden</a></b> ( int <i>row</i>, bool <i>hide</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistview.html#spacing-prop">setSpacing</a></b> ( int <i>space</i> )</li>
+<li><div class="fn"/>void <b><a href="qlistview.html#uniformItemSizes-prop">setUniformItemSizes</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistview.html#viewMode-prop">setViewMode</a></b> ( ViewMode <i>mode</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistview.html#isWrapping-prop">setWrapping</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>int <b><a href="qlistview.html#spacing-prop">spacing</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qlistview.html#uniformItemSizes-prop">uniformItemSizes</a></b> () const</li>
 <li><div class="fn"/>ViewMode <b><a href="qlistview.html#viewMode-prop">viewMode</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>37 public functions inherited from <a href="qabstractitemview.html#public-functions">QAbstractItemView</a></li>
+<li><div class="fn"/>39 public functions inherited from <a href="qabstractitemview.html#public-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
 <ul>
+<li><div class="fn"/>virtual bool <b><a href="qlistview.html#event">event</a></b> ( QEvent * <i>e</i> )</li>
 <li><div class="fn"/>QRect <b><a href="qlistview.html#rectForIndex">rectForIndex</a></b> ( const QModelIndex &amp; <i>index</i> ) const</li>
+<li><div class="fn"/>void <b><a href="qlistview.html#setPositionForIndex">setPositionForIndex</a></b> ( const QPoint &amp; <i>position</i>, const QModelIndex &amp; <i>index</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>35 protected functions inherited from <a href="qabstractitemview.html#protected-functions">QAbstractItemView</a></li>
+<li><div class="fn"/>37 protected functions inherited from <a href="qabstractitemview.html#protected-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>17 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>6 public slots inherited from <a href="qabstractitemview.html#public-slots">QAbstractItemView</a></li>
+<li><div class="fn"/>8 public slots inherited from <a href="qabstractitemview.html#public-slots">QAbstractItemView</a></li>
 <li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 <li><div class="fn"/>6 signals inherited from <a href="qabstractitemview.html#signals">QAbstractItemView</a></li>
@@ -128,7 +133,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Items in these views are laid out in the direction specified by the <a href="qlistview.html#flow-prop">flow</a>() of the list view. The items may be fixed in place, or allowed to move, depending on the view's <a href="qlistview.html#movement-prop">movement</a>() state.</p>
 <p>If the items in the model cannot be completely laid out in the direction of flow, they can be wrapped at the boundary of the view widget; this depends on <a href="qlistview.html#isWrapping-prop">isWrapping</a>(). This property is useful when the items are being represented by an icon view.</p>
 <p>The <a href="qlistview.html#resizeMode-prop">resizeMode</a>() and <a href="qlistview.html#layoutMode-prop">layoutMode</a>() govern how and when the items are laid out. Items are spaced according to their <a href="qlistview.html#spacing-prop">spacing</a>(), and can exist within a notional grid of size specified by <a href="qlistview.html#gridSize-prop">gridSize</a>(). The items can be rendered as large or small icons depending on their <a href="qabstractitemview.html#iconSize-prop">iconSize</a>().</p>
-<p>See also <a href="model-view-programming.html">Model/View Programming</a>.</p>
+<p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qtreeview.html">QTreeView</a>, <a href="qtableview.html">QTableView</a>, and <a href="qlistwidget.html">QListWidget</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Flow-enum"></a>enum QListView::Flow</h3>
@@ -226,12 +231,21 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="spacing-prop"></a>spacing : int</h3>
 <p>This property holds the space between items in the layout.</p>
-<p>This property is the size of the empty space between items in the layout. This property is ignored if the items are laid out in a grid.</p>
+<p>This property is the size of the empty space between items in the layout.</p>
 <p>Setting this property when the view is visible will cause the items to be laid out again.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int spacing () const</b></li>
 <li><div class="fn"/><b>void setSpacing ( int <i>space</i> )</b></li>
+</ul>
+<h3 class="fn"><a name="uniformItemSizes-prop"></a>uniformItemSizes : bool</h3>
+<p>This property holds whether all items in the listview have the same size.</p>
+<p>This property should only be set to true if it is guarantied that all items in the view has the same size. This enables the view to do some optimizations.</p>
+<p>This property was introduced in Qt 4.1.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>bool uniformItemSizes () const</b></li>
+<li><div class="fn"/><b>void setUniformItemSizes ( bool <i>enable</i> )</b></li>
 </ul>
 <h3 class="fn"><a name="viewMode-prop"></a>viewMode : <a href="qlistview.html#ViewMode-enum">ViewMode</a></h3>
 <p>This property holds the view mode of the QListView.</p>
@@ -249,10 +263,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the view.</p>
 <h3 class="fn"><a name="clearPropertyFlags"></a>void QListView::clearPropertyFlags ()</h3>
 <p>Clears the property flags. See <a href="qlistview.html#viewMode-prop">viewMode</a>.</p>
+<h3 class="fn"><a name="event"></a>bool QListView::event ( <a href="qevent.html">QEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <h3 class="fn"><a name="isRowHidden"></a>bool QListView::isRowHidden ( int <i>row</i> ) const</h3>
 <p>Returns true if the <i>row</i> is hidden, otherwise returns false.</p>
 <h3 class="fn"><a name="rectForIndex"></a><a href="qrect.html">QRect</a> QListView::rectForIndex ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the rectangle of the item at position <i>index</i> in the model. The rectangle is in contents coordinates.</p>
+<h3 class="fn"><a name="setPositionForIndex"></a>void QListView::setPositionForIndex ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>Sets the contents position of the item at <i>index</i> in the model to the given <i>position</i>. If the list view's movement mode is Static, this function will have no effect.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="setRowHidden"></a>void QListView::setRowHidden ( int <i>row</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>row</i> will be hidden, otherwise the <i>row</i> will be shown.</p>
 <p>See also <a href="qlistview.html#isRowHidden">isRowHidden</a>().</p>
@@ -260,6 +278,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

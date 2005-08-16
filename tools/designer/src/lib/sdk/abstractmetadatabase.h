@@ -49,7 +49,7 @@ public:
     virtual void setEnabled(bool b) = 0;
 };
 
-class QT_SDK_EXPORT QDesignerMetaDataBaseInterface: public QObject
+class QDESIGNER_SDK_EXPORT QDesignerMetaDataBaseInterface: public QObject
 {
     Q_OBJECT
 public:
@@ -64,7 +64,7 @@ public:
 
     virtual QDesignerFormEditorInterface *core() const = 0;
 
-signals:
+Q_SIGNALS:
     void changed();
 };
 

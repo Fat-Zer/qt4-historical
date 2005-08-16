@@ -20,8 +20,9 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#ifndef __QFOCUSFRAME_H__
-#define __QFOCUSFRAME_H__
+
+#ifndef QFOCUSFRAME_H
+#define QFOCUSFRAME_H
 
 #include <QtGui/qwidget.h>
 
@@ -39,6 +40,8 @@ public:
     QWidget *widget() const;
 
 protected:
+    bool event(QEvent *e);
+
     bool eventFilter(QObject *, QEvent *);
     void paintEvent(QPaintEvent *);
 
@@ -47,5 +50,4 @@ private:
     Q_DISABLE_COPY(QFocusFrame)
 };
 
-
-#endif /* __QFOCUSFRAME_H__ */
+#endif // QFOCUSFRAME_H

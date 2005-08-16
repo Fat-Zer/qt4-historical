@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -24,13 +24,12 @@
 #ifndef TEXTEDIT_H
 #define TEXTEDIT_H
 
-#include <qmainwindow.h>
-#include <qmap.h>
-#include <qpointer.h>
+#include <QMainWindow>
+#include <QMap>
+#include <QPointer>
 
 class QAction;
 class QComboBox;
-class QTabWidget;
 class QTextEdit;
 class QTextCharFormat;
 class QMenu;
@@ -42,20 +41,24 @@ class TextEdit : public QMainWindow
 public:
     TextEdit(QWidget *parent = 0);
 
+protected:
+    virtual void closeEvent(QCloseEvent *e);
+
 private:
     void setupFileActions();
     void setupEditActions();
     void setupTextActions();
     bool load(const QString &f);
+    bool maybeSave();
+    void setCurrentFileName(const QString &fileName);
 
 private slots:
     void fileNew();
     void fileOpen();
-    void fileSave();
-    void fileSaveAs();
+    bool fileSave();
+    bool fileSaveAs();
     void filePrint();
-    void fileClose();
-    void fileExit();
+    void filePrintPdf();
 
     void textBold();
     void textUnderline();
@@ -66,8 +69,6 @@ private slots:
     void textColor();
     void textAlign(QAction *a);
 
-    void editorChanged();
-
     void currentCharFormatChanged(const QTextCharFormat &format);
 
     void clipboardDataChanged();
@@ -76,8 +77,6 @@ private:
     void fontChanged(const QFont &f);
     void colorChanged(const QColor &c);
     void alignmentChanged(Qt::Alignment a);
-
-    QTextEdit *createNewEditor(const QString &title = QString());
 
     QAction *actionSave,
         *actionTextBold,
@@ -95,13 +94,12 @@ private:
         *actionPaste;
 
     QComboBox *comboStyle,
-	*comboFont,
-	*comboSize;
-    QTabWidget *tabWidget;
-    QMap<QTextEdit*, QString> filenames;
+              *comboFont,
+              *comboSize;
 
     QToolBar *tb;
-    QPointer<QTextEdit> currentEditor;
+    QString fileName;
+    QTextEdit *textEdit;
 };
 
 #endif

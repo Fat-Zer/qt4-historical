@@ -24,16 +24,16 @@
 #ifndef ABSTRACTWIDGETBOX_H
 #define ABSTRACTWIDGETBOX_H
 
+#include <QtDesigner/sdk_global.h>
+
 #include <QtCore/QMetaType>
 #include <QtGui/QWidget>
 #include <QtGui/QIcon>
 
-#include <QtDesigner/sdk_global.h>
-
 class DomUI;
 class QDesignerDnDItemInterface;
 
-class QT_SDK_EXPORT QDesignerWidgetBoxInterface : public QWidget
+class QDESIGNER_SDK_EXPORT QDesignerWidgetBoxInterface : public QWidget
 {
     Q_OBJECT
 public:

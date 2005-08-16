@@ -34,9 +34,10 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QMessageBox>
 #include <QtGui/QLabel>
-
 #include <QtGui/qdrawutil.h>
+
 #include <QtCore/qdebug.h>
+
 #include <limits.h>
 
 #ifndef Q_MOC_RUN
@@ -64,6 +65,7 @@ private:
 EditorWithReset::EditorWithReset(const QString &prop_name, QWidget *parent)
     : QWidget(parent)
 {
+    setAutoFillBackground(true);
     m_prop_name = prop_name;
     m_child_editor = 0;
     m_layout = new QHBoxLayout(this);
@@ -105,6 +107,10 @@ QPropertyEditorDelegate::~QPropertyEditorDelegate()
 
 bool QPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
 {
+    QWidget *editor = qobject_cast<QWidget*>(object);
+    if (editor && qobject_cast<EditorWithReset*>(editor->parent()))
+        editor = editor->parentWidget();
+
     switch (event->type()) {
         case QEvent::KeyPress:
         case QEvent::KeyRelease: {
@@ -115,7 +121,7 @@ bool QPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
             if (ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Return) {
-                QWidget *widget = static_cast<QWidget*>(object);
+                QWidget *widget = qobject_cast<QWidget*>(object);
                 if (QSpinBox *spinBox = qobject_cast<QSpinBox*>(widget)) { // ### hack (remove me)
                     spinBox->interpretText();
                 }
@@ -123,14 +129,25 @@ bool QPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
         } break;
+
+        case QEvent::FocusOut:
+            if (!editor->isActiveWindow() || (QApplication::focusWidget() != editor)) {
+                QWidget *w = QApplication::focusWidget();
+                while (w) { // dont worry about focus changes internally in the editor
+                    if (w == editor)
+                        return false;
+                    w = w->parentWidget();
+                }
+
+                emit commitData(editor);
+            }
+            return false;
+
         default:
             break;
     }
 
-    QObject *editor = object;
-    if (qobject_cast<EditorWithReset*>(editor->parent()) != 0)
-        editor = editor->parent();
-    return QItemDelegate::eventFilter(editor, event);
+    return QItemDelegate::eventFilter(editor ? editor : object, event);
 }
 
 void QPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &index) const
@@ -160,8 +177,11 @@ void QPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         painter->fillRect(option.rect, bg);
     }
 
+    QPen savedPen = painter->pen();
 
     QItemDelegate::paint(painter, option, index);
+
+    painter->setPen(savedPen);
 
     if (index.column() == 1 || !property->isSeparator()) {
         painter->drawLine(option.rect.right(), option.rect.y(),

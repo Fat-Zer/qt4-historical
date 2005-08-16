@@ -48,6 +48,8 @@ public:
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
+
     QStringList stringList() const;
     void setStringList(const QStringList &strings);
 
@@ -57,4 +59,5 @@ private:
 };
 
 #endif // QT_NO_STRINGLISTMODEL
+
 #endif // QSTRINGLISTMODEL_H

@@ -30,6 +30,8 @@
 #include <QtCore/QVariant>
 #include <QtCore/qdebug.h>
 
+namespace qdesigner_internal {
+
 PromotedWidgetPropertySheet::PromotedWidgetPropertySheet(QDesignerPromotedWidget *promoted,
                                 QExtensionManager *extension_manager, QObject *parent)
     : QObject(parent)
@@ -196,3 +198,5 @@ QSize QDesignerPromotedWidget::minimumSizeHint() const
     return m_child->minimumSizeHint();
 }
 
+
+} // namespace qdesigner_internal

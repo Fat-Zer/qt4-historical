@@ -20,6 +20,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #include "metamakefile.h"
 #include "qregexp.h"
 #include "qdir.h"
@@ -429,4 +430,3 @@ MetaMakefileGenerator::createMetaGenerator(QMakeProject *proj)
     ret->init();
     return ret;
 }
-

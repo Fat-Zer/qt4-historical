@@ -57,7 +57,7 @@
         void MyPushButton::paintEvent()
         {
             QStyleOptionButton option;
-            option.init(this);
+            option.initFrom(this);
             option.state = isDown() ? QStyle::State_Sunken : QStyle::State_Raised;
             if (isDefault())
                 option.features |= QStyleOptionButton::DefaultButton;
@@ -106,21 +106,22 @@
     \enum QStyleOption::OptionType
 
     This enum is used internally by QStyleOption, its subclasses, and
-    qstyleoption_cast() to determine the type of style option. In general you do not need
-    to worry about this unless you want to create your own QStyleOption
-    subclass and your own styles.
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
 
     \value SO_Default QStyleOption
     \value SO_FocusRect \l QStyleOptionFocusRect
     \value SO_Button \l QStyleOptionButton
     \value SO_Tab \l QStyleOptionTab
-    \value SO_TabWidgetFrame \l QStyleOptionTabBarBase
-    \value SO_TabBarBase \l QStyleOptionTabWidgetFrame
+    \value SO_TabWidgetFrame \l QStyleOptionTabWidgetFrame
+    \value SO_TabBarBase \l QStyleOptionTabBarBase
     \value SO_MenuItem \l QStyleOptionMenuItem
     \value SO_Complex \l QStyleOptionComplex
     \value SO_Slider \l QStyleOptionSlider
-    \value SO_Frame \l QStyleOptionFrame
-    \value SO_ProgressBar \l QStyleOptionProgressBar
+    \value SO_Frame \l QStyleOptionFrame \l QStyleOptionFrameV2
+    \value SO_GroupBox \l QStyleOptionGroupBox
+    \value SO_ProgressBar \l QStyleOptionProgressBar \l QStyleOptionProgressBarV2
     \value SO_Q3ListView \l QStyleOptionQ3ListView
     \value SO_Q3ListViewItem \l QStyleOptionQ3ListViewItem
     \value SO_Header \l QStyleOptionHeader
@@ -130,6 +131,7 @@
     \value SO_ToolButton \l QStyleOptionToolButton
     \value SO_ComboBox \l QStyleOptionComboBox
     \value SO_ToolBox \l QStyleOptionToolBox
+    \value SO_ToolBar \l QStyleOptionToolBar
     \value SO_RubberBand \l QStyleOptionRubberBand
     \value SO_TitleBar \l QStyleOptionTitleBar
     \value SO_ViewItem \l QStyleOptionViewItem (used in Interviews)
@@ -168,11 +170,23 @@ QStyleOption::~QStyleOption()
 }
 
 /*!
+    \fn void QStyleOption::initFrom(const QWidget *widget)
+    \since 4.1
+
     Initializes the \l state, \l direction, \l rect, \l palette, and
     \l fontMetrics member variables based on \a widget.
 
     This function is provided only for convenience. You can also
     initialize the variables manually if you want.
+
+    \sa QWidget::layoutDirection(), QWidget::rect(),
+        QWidget::palette(), QWidget::fontMetrics()
+*/
+
+/*!
+    \obsolete
+
+    Use initFrom(\a widget) instead.
 */
 void QStyleOption::init(const QWidget *widget)
 {
@@ -187,6 +201,10 @@ void QStyleOption::init(const QWidget *widget)
         state |= QStyle::State_MouseOver;
     if (widget->window()->isActiveWindow())
         state |= QStyle::State_Active;
+#ifdef QT_KEYPAD_NAVIGATION
+    if (widget->hasEditFocus())
+        state |= QStyle::State_HasEditFocus;
+#endif
 
     direction = widget->layoutDirection();
     rect = widget->rect();
@@ -293,7 +311,7 @@ QStyleOption &QStyleOption::operator=(const QStyleOption &other)
 QStyleOptionFocusRect::QStyleOptionFocusRect()
     : QStyleOption(Version, SO_FocusRect)
 {
-    state |= QStyle::State_KeyboardFocusChange; // assume we had one, will be corrected in init()
+    state |= QStyle::State_KeyboardFocusChange; // assume we had one, will be corrected in initFrom()
 }
 
 /*!
@@ -302,7 +320,7 @@ QStyleOptionFocusRect::QStyleOptionFocusRect()
 QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
     : QStyleOption(version, SO_FocusRect)
 {
-    state |= QStyle::State_KeyboardFocusChange;  // assume we had one, will be corrected in init()
+    state |= QStyle::State_KeyboardFocusChange;  // assume we had one, will be corrected in initFrom()
 }
 
 /*!
@@ -330,11 +348,33 @@ QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
 
 /*!
     \class QStyleOptionFrame
+
     \brief The QStyleOptionFrame class is used to describe the
     parameters for drawing a frame.
 
     QStyleOptionFrame is used for drawing several built-in Qt widget,
-    including QFrame, QGroupBox, QLineEdit, and QMenu.
+    including QFrame, QGroupBox, QLineEdit, and QMenu. Note that to
+    describe the parameters necessary for drawing a frame in Qt 4.1 or
+    above, you must use the QStyleOptionFrameV2 subclass.
+
+    An instance of the QStyleOptionFrame class has \l type SO_Frame
+    and \l version 1.
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.  The
+    version is used by QStyleOption subclasses to implement extensions
+    without breaking compatibility. If you use qstyleoption_cast(),
+    you normally don't need to check it.
+
+    If you create your own QStyle subclass, you should handle both
+    QStyleOptionFrame and QStyleOptionFrameV2.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionFrameV2, QStyleOption
 */
 
 /*!
@@ -365,24 +405,240 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
     \variable QStyleOptionFrame::Type
 
     Equals SO_Frame.
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
 */
 
 /*!
     \variable QStyleOptionFrame::Version
 
     Equals 1.
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
 */
 
 /*!
     \variable QStyleOptionFrame::lineWidth
-    \brief The line width for drawing the panel.
+    \brief The line width for drawing the frame.
+
+    \sa QFrame::lineWidth
 */
 
 /*!
     \variable QStyleOptionFrame::midLineWidth
-    \brief The mid-line width for drawing the panel. This is usually used in
+    \brief The mid-line width for drawing the frame. This is usually used in
     drawing sunken or raised frames.
+
+    \sa QFrame::midLineWidth
 */
+
+/*!
+    \class QStyleOptionFrameV2
+
+    \brief The QStyleOptionFrameV2 class is used to describe the
+    parameters necessary for drawing a frame in Qt 4.1 or above.
+
+    \since 4.1
+
+    QStyleOptionFrameV2 inherits QStyleOptionFrame which is used for
+    drawing several built-in Qt widget, including QFrame, QGroupBox,
+    QLineEdit, and QMenu.
+
+    An instance of the QStyleOptionFrameV2 class has \l type SO_Frame
+    and \l version 2.  The type is used internally by QStyleOption,
+    its subclasses, and qstyleoption_cast() to determine the type of
+    style option. In general you do not need to worry about this
+    unless you want to create your own QStyleOption subclass and your
+    own styles. The version is used by QStyleOption subclasses to
+    implement extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    If you create your own QStyle subclass, you should handle both
+    QStyleOptionFrame and QStyleOptionFrameV2. One way to achieve this
+    is to use the QStyleOptionFrameV2 copy constructor. For example:
+
+    \code
+        if (const QStyleOptionFrame *frameOption =
+               qstyleoption_cast<const QStyleOptionFrame *>(option)) {
+            QStyleOptionFrameV2 frameOptionV2(*frameOption);
+
+            // draw the frame using frameOptionV2
+        }
+    \endcode
+
+    In the example above: If the \c frameOption's version is 1, \l
+    FrameFeature is set to \l None for \c frameOptionV2. If \c
+    frameOption's version is 2, the constructor will simply copy the
+    \c frameOption's \l FrameFeature value.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionFrame, QStyleOption
+*/
+
+/*!
+    Constructs a QStyleOptionFrameV2.
+*/
+QStyleOptionFrameV2::QStyleOptionFrameV2()
+    : QStyleOptionFrame(Version), features(None)
+{
+}
+
+/*!
+    \fn QStyleOptionFrameV2::QStyleOptionFrameV2(const QStyleOptionFrameV2 &other)
+
+    Constructs a QStyleOptionFrameV2 copy of the \a other style option.
+*/
+
+/*!
+    \internal
+*/
+QStyleOptionFrameV2::QStyleOptionFrameV2(int version)
+    : QStyleOptionFrame(version), features(None)
+{
+}
+
+/*!
+    Constructs a QStyleOptionFrameV2 copy of the \a other style option
+    which can be either of the QStyleOptionFrameV2 or
+    QStyleOptionFrame types.
+
+    If the \a other style option's version is 1, the new style option's \l
+    FrameFeature value is set to \l QStyleOptionFrameV2::None. If its
+    version is 2, its \l FrameFeature value is simply copied to the
+    new style option.
+
+    \sa version
+*/
+QStyleOptionFrameV2::QStyleOptionFrameV2(const QStyleOptionFrame &other)
+{
+    QStyleOptionFrame::operator=(other);
+
+    const QStyleOptionFrameV2 *f2 = qstyleoption_cast<const QStyleOptionFrameV2 *>(&other);
+    features = f2 ? f2->features : FrameFeatures(QStyleOptionFrameV2::None);
+    version = Version;
+}
+
+/*!
+    Assigns the \a other style option to this style option. The \a
+    other style option can be either of the QStyleOptionFrameV2 or
+    QStyleOptionFrame types.
+
+    If the \a{other} style option's version is 1, this style option's
+    \l FrameFeature value is set to \l QStyleOptionFrameV2::None. If
+    its version is 2, its \l FrameFeature value is simply copied to
+    this style option.
+*/
+QStyleOptionFrameV2 &QStyleOptionFrameV2::operator=(const QStyleOptionFrame &other)
+{
+    QStyleOptionFrame::operator=(other);
+
+    const QStyleOptionFrameV2 *f2 = qstyleoption_cast<const QStyleOptionFrameV2 *>(&other);
+    features = f2 ? f2->features : FrameFeatures(QStyleOptionFrameV2::None);
+    version = Version;
+    return *this;
+}
+
+/*!
+    \enum QStyleOptionFrameV2::FrameFeature
+
+    This enum describles the different types of features a frame can have.
+
+    \value None Indicates a normal frame.
+    \value Flat Indicates a flat frame.
+*/
+
+
+/*!
+    \class QStyleOptionGroupBox
+
+    \brief The QStyleOptionGroupBox class describes the parameters for
+    drawing a group box.
+
+    \since 4.1
+
+    The QStyleOptionGroupBox class is used to draw the group box'
+    frame, title, and optional check box.
+
+    It holds the lineWidth and the midLineWidth for drawing the panel,
+    the group box's \l {text}{title} and the title's \l
+    {textAlignment}{alignment} and \l {textColor}{color}.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
+
+*/
+
+/*!
+    \variable QStyleOptionGroupBox::lineWidth
+
+    \brief The line width for drawing the panel.
+
+    \sa QFrame::lineWidth
+*/
+
+/*!
+    \variable QStyleOptionGroupBox::midLineWidth
+    \brief The mid-line width for drawing the panel. This is usually used in
+    drawing sunken or raised group box frames.
+
+    \sa QFrame::midLineWidth
+*/
+
+/*!
+    \variable QStyleOptionGroupBox::text
+
+    The text of the group box.
+
+    \sa QGroupBox::title
+*/
+
+/*!
+    \variable QStyleOptionGroupBox::textAlignment
+
+    The alignment of the group box title.
+
+    \sa QGroupBox::alignment
+*/
+
+/*!
+    \variable QStyleOptionGroupBox::textColor
+
+    The color of the group box title.
+*/
+
+/*!
+    Constructs a QStyleOptionGroupBox. The members variables are
+    initialized to default values.
+*/
+QStyleOptionGroupBox::QStyleOptionGroupBox()
+    : QStyleOptionComplex(Version, Type), features(QStyleOptionFrameV2::None),
+      textAlignment(Qt::AlignLeft), lineWidth(0), midLineWidth(0)
+{
+}
+
+/*!
+    \fn QStyleOptionGroupBox::QStyleOptionGroupBox(const QStyleOptionGroupBox &other)
+
+    Constructs a copy of the \a other style option.
+*/
+
+/*!
+    \internal
+*/
+QStyleOptionGroupBox::QStyleOptionGroupBox(int version)
+    : QStyleOptionComplex(version, Type), features(QStyleOptionFrameV2::None),
+      textAlignment(Qt::AlignLeft), lineWidth(0), midLineWidth(0)
+{
+}
 
 /*!
     \class QStyleOptionHeader
@@ -606,14 +862,182 @@ QStyleOptionButton::QStyleOptionButton(int version)
     \brief The size of the icon for the button
 */
 
+
+#ifndef QT_NO_TOOLBAR
+/*!
+    \class QStyleOptionToolBar
+
+    \brief The QStyleOptionToolBar class is used to describe the
+    parameters for drawing a toolbar.
+
+    \since 4.1
+
+    The QStyleOptionToolBar class holds the lineWidth and the
+    midLineWidth for drawing the widget. It also stores information
+    about which \l {toolBarArea}{area} the toolbar should be located
+    in, whether it is movable or not, which position the toolbar line
+    should have (positionOfLine), and the toolbar's position within
+    the line (positionWithinLine).
+
+    In addition, the class provides a couple of enums: The
+    ToolBarFeature enum is used to describe whether a toolbar is
+    movable or not, and the ToolBarPosition enum is used to describe
+    the position of a toolbar line, as well as the toolbar's position
+    within the line.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
+*/
+
+/*!
+    Constructs a QStyleOptionToolBar. The members variables are
+    initialized to default values.
+*/
+
+QStyleOptionToolBar::QStyleOptionToolBar()
+    : QStyleOption(Version, SO_ToolBar), positionOfLine(OnlyOne), positionWithinLine(OnlyOne),
+      toolBarArea(Qt::TopToolBarArea), features(None), lineWidth(0), midLineWidth(0)
+{
+}
+
+/*!
+    \fn QStyleOptionToolBar::QStyleOptionToolBar(const QStyleOptionToolBar &other)
+
+    Constructs a copy of the \a other style option.
+*/
+
+/*!
+    \internal
+*/
+QStyleOptionToolBar::QStyleOptionToolBar(int version)
+: QStyleOption(version, SO_ToolBar), positionOfLine(OnlyOne), positionWithinLine(OnlyOne),
+  toolBarArea(Qt::TopToolBarArea), features(None), lineWidth(0), midLineWidth(0)
+{
+
+}
+
+/*!
+    \enum QStyleOptionToolBar::ToolBarPosition
+
+    \image qstyleoptiontoolbar-position.png
+
+    This enum is used to describe the position of a toolbar line, as
+    well as the toolbar's position within the line.
+
+    The order of the positions within a line starts at the top of a
+    vertical line, and from the left within a horizontal line. The
+    order of the positions for the lines is always from the the
+    parent widget's boundary edges.
+
+    \value Beginning The toolbar is located at the beginning of the line,
+           or the toolbar line is the first of several lines. There can
+           only be one toolbar (and only one line) with this position.
+    \value Middle The toolbar is located in the middle of the line,
+           or the toolbar line is in the middle of several lines. There can
+           several toolbars (and lines) with this position.
+    \value End The toolbar is located at the end of the line,
+           or the toolbar line is the last of several lines. There can
+           only be one toolbar (and only one line) with this position.
+    \value OnlyOne There is only one toolbar or line. This is the default value
+           of the positionOfLine and positionWithinLine variables.
+
+    \sa positionWithinLine, positionOfLine
+*/
+
+/*!
+    \enum QStyleOptionToolBar::ToolBarFeature
+
+    This enum is used to describe whether a toolbar is movable or not.
+
+    \value None The toolbar cannot be moved. The default value.
+    \value Movable The toolbar is movable, and a handle will appear when
+           holding the cursor over the toolbar's boundary.
+
+    \sa features, QToolBar::isMovable()
+*/
+
+/*!
+    \variable QStyleOptionToolBar::positionOfLine
+
+    This variable holds the position of the toolbar line.
+
+    The default value is QStyleOptionToolBar::OnlyOne.
+*/
+
+/*!
+    \variable QStyleOptionToolBar::positionWithinLine
+
+    This variable holds the position of the toolbar within a line.
+
+    The default value is QStyleOptionToolBar::OnlyOne.
+*/
+
+/*!
+    \variable QStyleOptionToolBar::toolBarArea
+
+    This variable holds the location for drawing the toolbar.
+
+    The default value is Qt::TopToolBarArea.
+
+    \sa Qt::ToolBarArea
+*/
+
+/*!
+    \variable QStyleOptionToolBar::features
+
+    This variable holds whether the toolbar is movable or not.
+
+    The default value is \l None.
+*/
+
+/*!
+    \variable QStyleOptionToolBar::lineWidth
+
+    This variable holds the line width for drawing the toolbar.
+
+    The default value is 0.
+*/
+
+/*!
+    \variable QStyleOptionToolBar::midLineWidth
+
+    This variable holds the mid-line width for drawing the toolbar.
+
+    The default value is 0.
+*/
+
+
+#endif
+
 #ifndef QT_NO_TABBAR
 /*!
     \class QStyleOptionTab
     \brief The QStyleOptionTab class is used to describe the
     parameters for drawing a tab bar.
 
-    The QStyleOptionTab class is used for drawing \l QTabBar and the
-    pane for \l QTabWidget.
+    The QStyleOptionTab class is used for drawing several built-in Qt
+    widgets including \l QTabBar and the panel for \l QTabWidget. Note
+    that to describe the parameters necessary for drawing a frame in
+    Qt 4.1 or above, you must use the QStyleOptionFrameV2 subclass.
+
+    An instance of the QStyleOptiontabV2 class has type \l SO_Tab and
+    \l version 1. The type is used internally by QStyleOption, its
+    subclasses, and qstyleoption_cast() to determine the type of style
+    option. In general you do not need to worry about this unless you
+    want to create your own QStyleOption subclass and your own
+    styles. The version is used by QStyleOption subclasses to
+    implement extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    If you create your own QStyle subclass, you should handle both
+    QStyleOptionTab and QStyleOptionTabV2.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionTabV2, QStyleOption
 */
 
 /*!
@@ -652,12 +1076,21 @@ QStyleOptionTab::QStyleOptionTab(int version)
     \variable QStyleOptionTab::Type
 
     Equals SO_Tab.
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
 */
 
 /*!
     \variable QStyleOptionTab::Version
 
     Equals 1.
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
 */
 
 /*! \enum QStyleOptionTab::TabPosition
@@ -738,14 +1171,148 @@ QStyleOptionTab::QStyleOptionTab(int version)
     \brief the position of the tab in the tab bar
 */
 
+/*!
+    \class QStyleOptionTabV2
+    \brief The QStyleOptionTabV2 class is used to describe the
+    parameters necessary for drawing a tabs in Qt 4.1 or above.
+
+    \since 4.1
+
+    An instance of the QStyleOptionTabV2 class has type \l SO_Tab and
+    \l version 2. The type is used internally by QStyleOption, its
+    subclasses, and qstyleoption_cast() to determine the type of style
+    option. In general you do not need to worry about this unless you
+    want to create your own QStyleOption subclass and your own
+    styles. The version is used by QStyleOption subclasses to
+    implement extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    If you create your own QStyle subclass, you should handle both
+    QStyleOptionTab and QStyleOptionTabV2. One way to achieve this is
+    to use the QStyleOptionTabV2 copy constructor. For example:
+
+    \code
+        if (const QStyleOptionTab *tabOption =
+               qstyleoption_cast<const QStyleOptionTab *>(option)) {
+            QStyleOptionTabV2 tabV2(*tabOption);
+
+            // draw the tab using tabV2
+        }
+    \endcode
+
+    in the example above: If \c tabOption's version is 1, the extra
+    member (\l iconSize) will be set to an invalid size for \c tabV2.
+    If \c tabOption's version is 2, the constructor will simply copy
+    the \c tab's iconSize.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionTab, QStyleOption
+*/
+
+/*!
+    \variable QStyleOptionTabV2::iconSize
+
+    The size for the icons. If this size is invalid and you need an
+    icon size, you can use QStyle::pixelMetric() to find the default
+    icon size for tab bars.
+
+    \sa QTabBar::iconSize() QStyle::pixelMetric()
+*/
+
+/*!
+    Constructs a QStyleOptionTabV2.
+*/
+QStyleOptionTabV2::QStyleOptionTabV2()
+    : QStyleOptionTab(Version)
+{
+}
+
+/*!
+    \internal
+*/
+QStyleOptionTabV2::QStyleOptionTabV2(int version)
+    : QStyleOptionTab(version)
+{
+}
+
+/*!
+    \fn QStyleOptionTabV2::QStyleOptionTabV2(const QStyleOptionTabV2 &other)
+
+    Constructs a copy of the \a other style option.
+*/
+
+/*!
+    Constructs a QStyleOptionTabV2 copy of the \a other style option
+    which can be either of the QStyleOptionTabV2 or QStyleOptionTab
+    types.
+
+    If the other style option's version is 1, the new style option's
+    \c iconSize is set to an invalid value. If its version is 2, its
+    \c iconSize value is simply copied to the new style option.
+*/
+QStyleOptionTabV2::QStyleOptionTabV2(const QStyleOptionTab &other)
+    : QStyleOptionTab(Version)
+{
+    if (const QStyleOptionTabV2 *tab = qstyleoption_cast<const QStyleOptionTabV2 *>(&other)) {
+        *this = *tab;
+    } else {
+        *((QStyleOptionTab *)this) = other;
+        version = Version;
+    }
+}
+
+/*!
+    Assigns the \a other style option to this QStyleOptionTabV2. The
+    \a other style option can be either of the QStyleOptionTabV2 or
+    QStyleOptionTab types.
+
+    If the other style option's version is 1, this style option's \c
+    iconSize is set to an invalid size. If its version is 2, its \c
+    iconSize value is simply copied to this style option.
+*/
+QStyleOptionTabV2 &QStyleOptionTabV2::operator=(const QStyleOptionTab &other)
+{
+    QStyleOptionTab::operator=(other);
+
+    if (const QStyleOptionTabV2 *tab = qstyleoption_cast<const QStyleOptionTabV2 *>(&other))
+        iconSize = tab->iconSize;
+    else
+        iconSize = QSize();
+    return *this;
+}
+
+
 #endif // QT_NO_TABBAR
 
 /*!
     \class QStyleOptionProgressBar
+
     \brief The QStyleOptionProgressBar class is used to describe the
     parameters necessary for drawing a progress bar.
 
-    The QStyleOptionProgressBar class is used to draw \l QProgressBar.
+    Since Qt 4.1, Qt uses the QStyleOptionProgressBarV2 subclass for
+    drawing QProgressBar.
+
+    An instance of the QStyleOptionProgressBar class has type
+    SO_ProgressBar and version 1.
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.  The
+    version is used by QStyleOption subclasses to implement extensions
+    without breaking compatibility. If you use qstyleoption_cast(),
+    you normally don't need to check it.
+
+    If you create your own QStyle subclass, you should handle both
+    QStyleOptionProgressBar and QStyleOptionProgressBarV2.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionProgressBarV2, QStyleOption
 */
 
 /*!
@@ -778,12 +1345,21 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     \variable QStyleOptionProgressBar::Type
 
     Equals SO_ProgressBar.
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
 */
 
 /*!
     \variable QStyleOptionProgressBar::Version
 
     Equals 1.
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
 */
 
 /*!
@@ -837,6 +1413,144 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     indicates that the progress hasn't started yet.
 
     \sa QProgressBar::value
+*/
+
+/*!
+    \class QStyleOptionProgressBarV2
+    \brief The QStyleOptionProgressBarV2 class is used to describe the
+    parameters necessary for drawing a progress bar in Qt 4.1 or above.
+
+    \since 4.1
+
+    An instance of this class has \l type SO_ProgressBar and \l
+    version 2.
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles. The
+    version is used by QStyleOption subclasses to implement extensions
+    without breaking compatibility. If you use qstyleoption_cast(),
+    you normally don't need to check it.
+
+    If you create your own QStyle subclass, you should handle both
+    QStyleOptionProgressBar and QStyleOptionProgressBarV2. One way
+    to achieve this is to use the QStyleOptionProgressBarV2 copy
+    constructor. For example:
+
+    \code
+        if (const QStyleOptionProgressBar *progressBarOption =
+               qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
+               QStyleOptionProgressBarV2 progressBarV2(*progressBarOption);
+
+            // draw the progress bar using progressBarV2
+        }
+    \endcode
+
+    In the example above: If the \c progressBarOption's version is 1,
+    the extra members (\l orientation, \l invertedAppearance, and \l
+    bottomToTop) are set to default values for \c progressBarV2. If
+    the \c progressBarOption's version is 2, the constructor will
+    simply copy the extra members to progressBarV2.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionProgressBar, QStyleOption
+*/
+
+/*!
+    Constructs a QStyleOptionProgressBarV2. The members variables are
+    initialized to default values.
+*/
+
+QStyleOptionProgressBarV2::QStyleOptionProgressBarV2()
+    : QStyleOptionProgressBar(2),
+      orientation(Qt::Horizontal), invertedAppearance(false), bottomToTop(false)
+{
+}
+
+/*!
+    \internal
+*/
+QStyleOptionProgressBarV2::QStyleOptionProgressBarV2(int version)
+    : QStyleOptionProgressBar(version),
+      orientation(Qt::Horizontal), invertedAppearance(false), bottomToTop(false)
+{
+}
+
+/*!
+    Constructs a copy of the \a other style option which can be either
+    of the QStyleOptionProgressBar and QStyleOptionProgressBarV2
+    types.
+
+    If the \a{other} style option's version is 1, the extra members (\l
+    orientation, \l invertedAppearance, and \l bottomToTop) are set
+    to default values for the new style option. If \a{other}'s version
+    is 2, the extra members are simply copied.
+
+    \sa version
+*/
+QStyleOptionProgressBarV2::QStyleOptionProgressBarV2(const QStyleOptionProgressBar &other)
+    : QStyleOptionProgressBar(2), orientation(Qt::Horizontal), invertedAppearance(false), bottomToTop(false)
+{
+    const QStyleOptionProgressBarV2 *pb2 = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(&other);
+    if (pb2)
+        *this = *pb2;
+    else
+        *((QStyleOptionProgressBar *)this) = other;
+}
+
+/*!
+    Constructs a copy of the \a other style option.
+*/
+QStyleOptionProgressBarV2::QStyleOptionProgressBarV2(const QStyleOptionProgressBarV2 &other)
+    : QStyleOptionProgressBar(2), orientation(Qt::Horizontal), invertedAppearance(false), bottomToTop(false)
+{
+    *this = other;
+}
+
+/*!
+    Assigns the \a other style option to this style option. The \a
+    other style option can be either of the QStyleOptionProgressBarV2
+    or QStyleOptionProgressBar types.
+
+    If the \a{other} style option's version is 1, the extra members
+    (\l orientation, \l invertedAppearance, and \l bottomToTop) are
+    set to default values for this style option. If \a{other}'s
+    version is 2, the extra members are simply copied to this style
+    option.
+*/
+QStyleOptionProgressBarV2 &QStyleOptionProgressBarV2::operator=(const QStyleOptionProgressBar &other)
+{
+    QStyleOptionProgressBar::operator=(other);
+
+    const QStyleOptionProgressBarV2 *pb2 = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(&other);
+    orientation = pb2 ? pb2->orientation : Qt::Horizontal;
+    invertedAppearance = pb2 ? pb2->invertedAppearance : false;
+    bottomToTop = pb2 ? pb2->bottomToTop : false;
+    return *this;
+}
+
+/*!
+    \variable QStyleOptionProgressBarV2::orientation
+    \brief the progress bar's orientation (horizontal or vertical)
+
+    \sa QProgressBar::orientation
+*/
+
+/*!
+    \variable QStyleOptionProgressBarV2::invertedAppearance
+    \brief whether the progress bar's appearance is inverted
+
+    \sa QProgressBar::invertedAppearance
+*/
+
+/*!
+    \variable QStyleOptionProgressBarV2::bottomToTop
+    \brief whether the text reads from bottom to top when the progress bar is vertical
+
+    \sa QProgressBar::textDirection
 */
 
 /*!
@@ -2187,6 +2901,19 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
 
 #ifndef QT_NO_TABBAR
 
+/*!
+    \class QStyleOptionTabBarBase
+    \brief The QStyleOptionTabBarBase class is used to describe the
+    the base of a tabbar. That is the part that the tabbar usually overlaps with.
+
+   This is drawn by a standalone QTabBar (one that isn't part of a QTabWidget).
+
+   \sa QTabBar::drawBase()
+*/
+
+/*!
+    Construct a QStyleOptionTabBarBase. The members are given default values.
+*/
 QStyleOptionTabBarBase::QStyleOptionTabBarBase()
     : QStyleOption(Version, SO_TabBarBase), shape(QTabBar::RoundedNorth)
 {
@@ -2199,6 +2926,11 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
 }
 
 /*!
+    \fn QStyleOptionTabBarBase::QStyleOptionTabBarBase(const QStyleOptionTabBarBase &other)
+
+    Constructs a copy of \a other.
+*/
+/*!
     \variable QStyleOptionTabBarBase::Type
 
     Equals SO_TabBarBase.
@@ -2208,6 +2940,26 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
     \variable QStyleOptionTabBarBase::Version
 
     Equals 1.
+*/
+
+/*!
+    \variable QStyleOptionTabBarBase::shape
+
+    The shape of the tabbar.
+*/
+
+/*!
+    \variable QStyleOptionTabBarBase::tabBarRect
+
+    The rectangle containing all the tabs.
+*/
+
+/*!
+    \variable QStyleOptionTabBarBase::selectedTabRect
+
+    The rectangle containing the selected tab
+
+    This is within the bounds of the tabBarRect.
 */
 
 #endif // QT_NO_TABBAR
@@ -2415,6 +3167,10 @@ QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType)
         debug << "SO_TitleBar"; break;
     case QStyleOption::SO_CustomBase:
         debug << "SO_CustomBase"; break;
+    case QStyleOption::SO_GroupBox:
+        debug << "SO_GroupBox"; break;
+    case QStyleOption::SO_ToolBar:
+        debug << "SO_ToolBar"; break;
     case QStyleOption::SO_ComplexCustomBase:
         debug << "SO_ComplexCustomBase"; break;
         break;

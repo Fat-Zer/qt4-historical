@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -37,9 +37,6 @@ Browser::Browser(QWidget *parent)
                                  tr("This demo requires at least one Qt database driver. "
                                     "Please check the documentation how to build the "
                                     "Qt SQL plugins."));
-    else {
-        QMetaObject::invokeMethod(this, "addConnection", Qt::QueuedConnection);
-    }
 
     emit statusMessage(tr("Ready."));
 }
@@ -63,6 +60,26 @@ void Browser::exec()
                     model->query().numRowsAffected()));
 }
 
+QSqlError Browser::addConnection(const QString &driver, const QString &dbName, const QString &host,
+                            const QString &user, const QString &passwd, int port)
+{
+    static int cCount = 0;
+
+    QSqlError err;
+    QSqlDatabase db = QSqlDatabase::addDatabase(driver, QString("Browser%1").arg(++cCount));
+    db.setDatabaseName(dbName);
+    db.setHostName(host);
+    db.setPort(port);
+    if (!db.open(user, passwd)) {
+        err = db.lastError();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(QString("Browser%1").arg(cCount));
+    }
+    connectionWidget->refresh();
+
+    return err;
+}
+
 void Browser::addConnection()
 {
     QSqlConnectionDialog dialog(this);
@@ -80,32 +97,26 @@ void Browser::addConnection()
         QSqlQuery q("", db);
         q.exec("drop table Movies");
         q.exec("drop table Names");
-        q.exec("create table Movies (id int primary key, Title varchar(50), Director varchar(20), Rating number(2,2))");
+        q.exec("create table Movies (id integer primary key, Title varchar, Director varchar, Rating number)");
         q.exec("insert into Movies values (0, 'Metropolis', 'Fritz Lang', '8.4')");
         q.exec("insert into Movies values (1, 'Nosferatu, eine Symphonie des Grauens', 'F.W. Murnau', '8.1')");
         q.exec("insert into Movies values (2, 'Bis ans Ende der Welt', 'Wim Wenders', '6.5')");
         q.exec("insert into Movies values (3, 'Hardware', 'Richard Stanley', '5.2')");
         q.exec("insert into Movies values (4, 'Mitchell', 'Andrew V. McLaglen', '2.1')");
-        q.exec("create table Names (id int primary key, Firstname varchar(20), Lastname varchar(20), City varchar(20))");
+        q.exec("create table Names (id integer primary key, Firstname varchar, Lastname varchar, City varchar)");
         q.exec("insert into Names values (0, 'Sala', 'Palmer', 'Morristown')");
         q.exec("insert into Names values (1, 'Christopher', 'Walker', 'Morristown')");
         q.exec("insert into Names values (2, 'Donald', 'Duck', 'Andeby')");
         q.exec("insert into Names values (3, 'Buck', 'Rogers', 'Paris')");
         q.exec("insert into Names values (4, 'Sherlock', 'Holmes', 'London')");
+        connectionWidget->refresh();
     } else {
-        static int cCount = 0;
-        QSqlDatabase db = QSqlDatabase::addDatabase(dialog.driverName(),
-                                                    QString("Browser%1").arg(++cCount));
-        db.setDatabaseName(dialog.databaseName());
-        db.setHostName(dialog.hostName());
-        db.setUserName(dialog.userName());
-        db.setPassword(dialog.password());
-        db.setPort(dialog.port());
-        if (!db.open())
+        QSqlError err = addConnection(dialog.driverName(), dialog.databaseName(), dialog.hostName(),
+                           dialog.userName(), dialog.password(), dialog.port());
+        if (err.type() != QSqlError::NoError)
             QMessageBox::warning(this, tr("Unable to open database"), tr("An error occured while "
-                                                                         "opening the connection: ") + db.lastError().text());
+                                      "opening the connection: ") + err.text());
     }
-    connectionWidget->refresh();
 }
 
 void Browser::showTable(const QString &t)
@@ -116,5 +127,41 @@ void Browser::showTable(const QString &t)
     if (model->lastError().type() != QSqlError::NoError)
         emit statusMessage(model->lastError().text());
     table->setModel(model);
+    table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+}
+
+void Browser::showMetaData(const QString &t)
+{
+    QSqlRecord rec = connectionWidget->currentDatabase().record(t);
+    QStandardItemModel *model = new QStandardItemModel(table);
+
+    model->insertRows(0, rec.count());
+    model->insertColumns(0, 7);
+
+    model->setHeaderData(0, Qt::Horizontal, "Fieldname");
+    model->setHeaderData(1, Qt::Horizontal, "Type");
+    model->setHeaderData(2, Qt::Horizontal, "Length");
+    model->setHeaderData(3, Qt::Horizontal, "Precision");
+    model->setHeaderData(4, Qt::Horizontal, "Required");
+    model->setHeaderData(5, Qt::Horizontal, "AutoValue");
+    model->setHeaderData(6, Qt::Horizontal, "DefaultValue");
+
+
+    for (int i = 0; i < rec.count(); ++i) {
+        QSqlField fld = rec.field(i);
+        model->setData(model->index(i, 0), fld.name());
+        model->setData(model->index(i, 1), fld.typeID() == -1
+                ? QString(QVariant::typeToName(fld.type()))
+                : QString("%1 (%2)").arg(QVariant::typeToName(fld.type())).arg(fld.typeID()));
+        model->setData(model->index(i, 2), fld.length());
+        model->setData(model->index(i, 3), fld.precision());
+        model->setData(model->index(i, 4), fld.requiredStatus() == -1 ? QVariant("?")
+                : QVariant(bool(fld.requiredStatus())));
+        model->setData(model->index(i, 5), fld.isAutoValue());
+        model->setData(model->index(i, 6), fld.defaultValue());
+    }
+
+    table->setModel(model);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 

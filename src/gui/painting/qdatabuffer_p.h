@@ -19,7 +19,7 @@
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
-**/
+****************************************************************************/
 
 #ifndef QDATABUFFER_P_H
 #define QDATABUFFER_P_H
@@ -35,14 +35,14 @@
 // We mean it.
 //
 
-#include <QtCore/qbytearray.h>
+#include "QtCore/qbytearray.h"
 
 template <typename Type> class QDataBuffer
 {
 public:
-    QDataBuffer()
+    QDataBuffer(int res = 64)
     {
-        capacity = 64;
+        capacity = res;
         buffer = (Type*) qMalloc(capacity * sizeof(Type));
         siz = 0;
     }
@@ -71,6 +71,8 @@ public:
         buffer[siz] = t;
         ++siz;
     }
+
+    inline QDataBuffer &operator<<(const Type &t) { add(t); return *this; }
 
 private:
     int capacity;

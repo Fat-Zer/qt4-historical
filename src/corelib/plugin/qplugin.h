@@ -58,13 +58,20 @@ typedef QObject *(*QtPluginInstanceFunction)();
             return _instance; \
         }
 
-#if defined(QT_STATICPLUGIN)
 #  define Q_EXPORT_PLUGIN(PLUGIN) \
-            Q_DECL_EXPORT QObject *qt_plugin_instance_##PLUGIN() \
-            Q_PLUGIN_INSTANCE(PLUGIN)
+            Q_EXPORT_PLUGIN2(PLUGIN, PLUGIN)
 
 #  define Q_EXPORT_STATIC_PLUGIN(PLUGIN) \
-            Q_EXPORT_PLUGIN(PLUGIN)
+            Q_EXPORT_STATIC_PLUGIN2(PLUGIN, PLUGIN)
+
+#if defined(QT_STATICPLUGIN)
+
+#  define Q_EXPORT_PLUGIN2(PLUGIN, PLUGINCLASS) \
+            Q_DECL_EXPORT QObject *qt_plugin_instance_##PLUGIN() \
+            Q_PLUGIN_INSTANCE(PLUGINCLASS)
+
+#  define Q_EXPORT_STATIC_PLUGIN2(PLUGIN, PLUGINCLASS) \
+            Q_EXPORT_PLUGIN2(PLUGIN, PLUGINCLASS)
 
 #else
 // NOTE: if you change pattern, you MUST change the pattern in
@@ -91,17 +98,15 @@ typedef QObject *(*QtPluginInstanceFunction)();
 #     define Q_STANDARD_CALL
 #  endif
 
-#  define Q_EXPORT_PLUGIN(PLUGIN)      \
+#  define Q_EXPORT_PLUGIN2(PLUGIN, PLUGINCLASS)      \
             Q_PLUGIN_VERIFICATION_DATA \
             Q_EXTERN_C Q_DECL_EXPORT \
             const char * Q_STANDARD_CALL qt_plugin_query_verification_data() \
             { return qt_plugin_verification_data; } \
             Q_EXTERN_C Q_DECL_EXPORT QObject * Q_STANDARD_CALL qt_plugin_instance() \
-            Q_PLUGIN_INSTANCE(PLUGIN)
+            Q_PLUGIN_INSTANCE(PLUGINCLASS)
 
-#  define Q_EXPORT_STATIC_PLUGIN(PLUGIN) \
-            Q_DECL_EXPORT QObject *qt_plugin_instance_##PLUGIN() \
-            Q_PLUGIN_INSTANCE(PLUGIN)
+#  define Q_EXPORT_STATIC_PLUGIN2(PLUGIN, PLUGINCLASS)
 
 #endif
 

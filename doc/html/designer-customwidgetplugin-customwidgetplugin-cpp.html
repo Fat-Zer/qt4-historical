@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Qt 4.0: customwidgetplugin.cpp Example File (designer/customwidgetplugin/customwidgetplugin.cpp)</title>
+    <title>Qt 4.1: customwidgetplugin.cpp Example File (designer/customwidgetplugin/customwidgetplugin.cpp)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,21 +19,21 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">customwidgetplugin.cpp Example File<br /><sup><sup>designer/customwidgetplugin/customwidgetplugin.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
     ** This file may be used under the terms of the GNU General Public
-** License version 2.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of
-** this file.  Please review the following information to ensure GNU
-** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
-**
-** If you are unsure which license is appropriate for your use, please
-** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+    ** License version 2.0 as published by the Free Software Foundation
+    ** and appearing in the file LICENSE.GPL included in the packaging of
+    ** this file.  Please review the following information to ensure GNU
+    ** General Public Licensing requirements will be met:
+    ** http://www.trolltech.com/products/qt/opensource.html
+    **
+    ** If you are unsure which license is appropriate for your use, please
+    ** review the following information:
+    ** http://www.trolltech.com/products/qt/licensing.html or contact the
+    ** sales department at sales@trolltech.com.
     **
     ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
     ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -43,13 +43,15 @@ body { background: #ffffff; color: black; }</style>
     #include &quot;analogclock.h&quot;
     #include &quot;customwidgetplugin.h&quot;
 
+    #include &lt;QtPlugin&gt;
+
     AnalogClockPlugin::AnalogClockPlugin(QObject *parent)
         : QObject(parent)
     {
         initialized = false;
     }
 
-    void AnalogClockPlugin::initialize(QDesignerFormEditorInterface * /*core*/)
+    void AnalogClockPlugin::initialize(QDesignerFormEditorInterface * /* core */)
     {
         if (initialized)
             return;
@@ -69,12 +71,12 @@ body { background: #ffffff; color: black; }</style>
 
     QString AnalogClockPlugin::name() const
     {
-        return QLatin1String(&quot;AnalogClock&quot;);
+        return &quot;AnalogClock&quot;;
     }
 
     QString AnalogClockPlugin::group() const
     {
-        return QLatin1String(&quot;Display Widgets [Examples]&quot;);
+        return &quot;Display Widgets [Examples]&quot;;
     }
 
     QIcon AnalogClockPlugin::icon() const
@@ -84,12 +86,12 @@ body { background: #ffffff; color: black; }</style>
 
     QString AnalogClockPlugin::toolTip() const
     {
-        return QString();
+        return &quot;&quot;;
     }
 
     QString AnalogClockPlugin::whatsThis() const
     {
-        return QString();
+        return &quot;&quot;;
     }
 
     bool AnalogClockPlugin::isContainer() const
@@ -99,40 +101,40 @@ body { background: #ffffff; color: black; }</style>
 
     QString AnalogClockPlugin::domXml() const
     {
-        return QLatin1String(&quot;&lt;widget class=\&quot;AnalogClock\&quot; name=\&quot;analogClock\&quot;&gt;\n&quot;
-                             &quot; &lt;property name=\&quot;geometry\&quot;&gt;\n&quot;
-                             &quot;  &lt;rect&gt;\n&quot;
-                             &quot;   &lt;x&gt;0&lt;/x&gt;\n&quot;
-                             &quot;   &lt;y&gt;0&lt;/y&gt;\n&quot;
-                             &quot;   &lt;width&gt;100&lt;/width&gt;\n&quot;
-                             &quot;   &lt;height&gt;100&lt;/height&gt;\n&quot;
-                             &quot;  &lt;/rect&gt;\n&quot;
-                             &quot; &lt;/property&gt;\n&quot;
-                             &quot; &lt;property name=\&quot;toolTip\&quot; &gt;\n&quot;
-                             &quot;  &lt;string&gt;The current time&lt;/string&gt;\n&quot;
-                             &quot; &lt;/property&gt;\n&quot;
-                             &quot; &lt;property name=\&quot;whatsThis\&quot; &gt;\n&quot;
-                             &quot;  &lt;string&gt;The analog clock widget displays &quot;
-                             &quot;the current time.&lt;/string&gt;\n&quot;
-                             &quot; &lt;/property&gt;\n&quot;
-                             &quot;&lt;/widget&gt;\n&quot;);
+        return &quot;&lt;widget class=\&quot;AnalogClock\&quot; name=\&quot;analogClock\&quot;&gt;\n&quot;
+               &quot; &lt;property name=\&quot;geometry\&quot;&gt;\n&quot;
+               &quot;  &lt;rect&gt;\n&quot;
+               &quot;   &lt;x&gt;0&lt;/x&gt;\n&quot;
+               &quot;   &lt;y&gt;0&lt;/y&gt;\n&quot;
+               &quot;   &lt;width&gt;100&lt;/width&gt;\n&quot;
+               &quot;   &lt;height&gt;100&lt;/height&gt;\n&quot;
+               &quot;  &lt;/rect&gt;\n&quot;
+               &quot; &lt;/property&gt;\n&quot;
+               &quot; &lt;property name=\&quot;toolTip\&quot; &gt;\n&quot;
+               &quot;  &lt;string&gt;The current time&lt;/string&gt;\n&quot;
+               &quot; &lt;/property&gt;\n&quot;
+               &quot; &lt;property name=\&quot;whatsThis\&quot; &gt;\n&quot;
+               &quot;  &lt;string&gt;The analog clock widget displays &quot;
+               &quot;the current time.&lt;/string&gt;\n&quot;
+               &quot; &lt;/property&gt;\n&quot;
+               &quot;&lt;/widget&gt;\n&quot;;
     }
 
     QString AnalogClockPlugin::includeFile() const
     {
-        return QLatin1String(&quot;analogclock.h&quot;);
+        return &quot;analogclock.h&quot;;
     }
 
     QString AnalogClockPlugin::codeTemplate() const
     {
-        return QString();
+        return &quot;&quot;;
     }
 
-    Q_EXPORT_PLUGIN(AnalogClockPlugin)</pre>
+    Q_EXPORT_PLUGIN2(customwidgetplugin, AnalogClockPlugin)</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

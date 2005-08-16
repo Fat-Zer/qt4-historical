@@ -35,10 +35,10 @@
 // We mean it.
 //
 
-#include "qnamespace.h"
-#include "qlist.h"
-#include "qiodevice.h"
-#include "qbytearray.h"
+#include "QtCore/qnamespace.h"
+#include "QtCore/qlist.h"
+#include "QtCore/qiodevice.h"
+#include "QtCore/qbytearray.h"
 
 class QWidget;
 class QPainter;
@@ -52,7 +52,8 @@ public:
                                           curr_buff(0), buff_growth(growth) { }
 
     char *alloc(uint buflen);
-    char *take(uint maxsize, uint *realsize=0);
+    QByteArray take(uint size);
+    char *take(uint maxsize, uint *realsize);
     inline void free(uint buflen);
     void push(char c);
     inline void truncate(uint len) { curr_used -= len; }
@@ -71,11 +72,12 @@ inline char *QCircularBuffer::alloc(uint size)
         if(curr_buff == start_buff && buf[curr_buff].size()) {
             buf[curr_buff].resize(start_off + curr_used);
             curr_buff = !curr_buff;
-            if(!buf[curr_buff].size())
-                buf[curr_buff].resize(buff_growth*2);
+            if((uint)buf[curr_buff].size() < size)
+                buf[curr_buff].resize(qMax(size, buff_growth*2));
         } else {
-            int sz = buf[curr_buff].size();
-            buf[curr_buff].resize(qMax((uint)sz + (sz / 2), (buff_growth*2)));
+            const uint buf_sz = buf[curr_buff].size();
+            uint sz = qMax((uint)buf_sz + (buf_sz / 2), (buff_growth*2));
+            buf[curr_buff].resize(qMax(sz, buf_sz+size));
         }
     }
     int off = curr_used;
@@ -86,14 +88,34 @@ inline char *QCircularBuffer::alloc(uint size)
         off += start_off;
     return buf[curr_buff].data()+off;
 }
-inline char *QCircularBuffer::take(uint size, uint *real_size)
+inline QByteArray QCircularBuffer::take(uint size)
 {
     if(size > curr_used) {
         qWarning("Warning: asked to take too much %d [%d]", size, curr_used);
         size = curr_used;
     }
-    if(real_size)
-        *real_size = qMin(size, buf[start_buff].size() - start_off);
+    QByteArray ret;
+    ret.resize(size);
+    const uint firstBufferSize = qMin(size, buf[start_buff].size() - start_off);
+    if(firstBufferSize)
+        memcpy(ret.data(), buf[start_buff].constData()+start_off, firstBufferSize);
+    if(firstBufferSize < size) {
+        if(start_buff != curr_buff) {
+            memcpy(ret.data()+firstBufferSize, buf[curr_buff].constData(), size-firstBufferSize);
+        } else {
+            memcpy(ret.data()+firstBufferSize, buf[start_buff].constData(), size-firstBufferSize);
+        }
+    }
+    return ret;
+}
+inline char *QCircularBuffer::take(uint size, uint *real_size)
+{
+    Q_ASSERT(real_size);
+    if(size > curr_used) {
+        qWarning("Warning: asked to take too much %d [%d]", size, curr_used);
+        size = curr_used;
+    }
+    *real_size = qMin(size, buf[start_buff].size() - start_off);
     return buf[start_buff].data()+start_off;
 }
 
@@ -114,7 +136,7 @@ inline void QCircularBuffer::free(uint size)
         start_off += size;
     } else if(start_buff != curr_buff) {
         start_buff = curr_buff;
-        start_off = start_size - size;
+        start_off = size - start_size;
     } else {
         start_off = 0;
     }

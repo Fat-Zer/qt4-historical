@@ -24,10 +24,9 @@
 #ifndef QLABEL_H
 #define QLABEL_H
 
-#include "QtGui/qframe.h"
+#include <QtGui/qframe.h>
 
 QT_MODULE(Gui)
-
 
 class QLabelPrivate;
 
@@ -82,7 +81,7 @@ public:
 #endif
     int heightForWidth(int) const;
 
-public slots:
+public Q_SLOTS:
     void setText(const QString &);
     void setPixmap(const QPixmap &);
 #ifndef QT_NO_PICTURE
@@ -123,6 +122,5 @@ private:
 
     friend class QTipLabel;
 };
-
 
 #endif // QLABEL_H

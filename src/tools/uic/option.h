@@ -24,7 +24,7 @@
 #ifndef OPTION_H
 #define OPTION_H
 
-#include <qstring.h>
+#include <QString>
 
 struct Option
 {

@@ -24,7 +24,7 @@
 #ifndef QBUTTONGROUP_H
 #define QBUTTONGROUP_H
 
-#include "QtCore/qobject.h"
+#include <QtCore/qobject.h>
 
 QT_MODULE(Gui)
 
@@ -47,6 +47,7 @@ public:
     bool exclusive() const;
 
     void addButton(QAbstractButton *);
+    void addButton(QAbstractButton *, int id);
     void removeButton(QAbstractButton *);
 
     QList<QAbstractButton*> buttons() const;
@@ -54,8 +55,14 @@ public:
     QAbstractButton * checkedButton() const;
     // no setter on purpose!
 
-signals:
+    QAbstractButton *button(int id) const;
+    void setId(QAbstractButton *button, int id);
+    int id(QAbstractButton *button) const;
+    int checkedId() const;
+
+Q_SIGNALS:
     void buttonClicked(QAbstractButton *);
+    void buttonClicked(int);
 
 #ifdef QT3_SUPPORT
 public:
@@ -71,4 +78,5 @@ private:
 };
 
 #endif // QT_NO_BUTTONGROUP
+
 #endif // QBUTTONGROUP_H

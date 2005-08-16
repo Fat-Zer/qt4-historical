@@ -21,9 +21,6 @@
 **
 ****************************************************************************/
 
-#ifndef QT_CLEAN_NAMESPACE
-#define QT_CLEAN_NAMESPACE
-#endif
 #include <qimageiohandler.h>
 #include <qstringlist.h>
 
@@ -72,6 +69,7 @@ QImageIOHandler *QJpegPlugin::create(QIODevice *device, const QByteArray &format
     return handler;
 }
 
-Q_EXPORT_PLUGIN(QJpegPlugin)
+Q_EXPORT_STATIC_PLUGIN(QJpegPlugin)
+Q_EXPORT_PLUGIN2(qjpeg, QJpegPlugin)
 
 #endif // QT_NO_IMAGEFORMATPLUGIN

@@ -24,12 +24,11 @@
 #ifndef QSQLDRIVER_H
 #define QSQLDRIVER_H
 
-#include "QtCore/qobject.h"
-#include "QtCore/qstring.h"
-
-#include "QtSql/qsql.h"
+#include <QtCore/qobject.h>
+#include <QtCore/qstring.h>
+#include <QtSql/qsql.h>
 #ifdef QT3_SUPPORT
-#include "QtSql/qsqlquery.h"
+#include <QtSql/qsqlquery.h>
 #endif
 
 QT_MODULE(Sql)
@@ -52,7 +51,8 @@ class Q_SQL_EXPORT QSqlDriver : public QObject
 
 public:
     enum DriverFeature { Transactions, QuerySize, BLOB, Unicode, PreparedQueries,
-                         NamedPlaceholders, PositionalPlaceholders, LastInsertId };
+                         NamedPlaceholders, PositionalPlaceholders, LastInsertId,
+                         BatchOperations };
 
     enum StatementType { WhereStatement, SelectStatement, UpdateStatement,
                          InsertStatement, DeleteStatement };

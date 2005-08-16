@@ -37,6 +37,7 @@
 
 #include "shared_global_p.h"
 
+#include <QtCore/QDir>
 #include <QtGui/QDialog>
 
 class QDesignerFormWindowInterface;
@@ -48,7 +49,11 @@ namespace Ui
     class FindIconDialog;
 } // namespace Ui
 
-class QT_SHARED_EXPORT FindIconDialog : public QDialog
+namespace qdesigner_internal {
+
+class ResourceEditor;
+
+class QDESIGNER_SHARED_EXPORT FindIconDialog : public QDialog
 {
     Q_OBJECT
 
@@ -60,23 +65,42 @@ public:
     QString qrcPath() const;
     QString filePath() const;
 
+    virtual void accept();
+
 private slots:
-    void updateBoxes();
-    void imageFileSelected(QListWidgetItem*);
-    void browseFileDir();
     void setActiveBox();
-    void resourceSelected(const QModelIndex&);
     void updateButtons();
+
+    void setFile(const QString &path);
+    void setQrc(const QString &qrc, const QString &file);
+    void cdUp();
+
+    void itemActivated(QListWidgetItem *item);
+    void currentItemChanged(QListWidgetItem *item);
+    void itemActivated(const QString &qrc_path, const QString &file_name);
+    void itemChanged(const QString &qrc_path, const QString &file_name);
 
 private:
     enum InputBox { FileBox, ResourceBox };
 
-    void activateBox(InputBox box);
+    void setActiveBox(InputBox box);
     InputBox activeBox() const;
 
     Ui::FindIconDialog *ui;
-    QString m_icon_file_name;
     QDesignerFormWindowInterface *m_form;
+
+    void setViewDir(const QString &path);
+    QDir m_view_dir;
+    struct FileData {
+        QString file;
+    } m_file_data;
+    struct ResourceData {
+        QString file;
+        QString qrc;
+    } m_resource_data;
+    ResourceEditor *m_resource_editor;
 };
+
+} // namespace qdesigner_internal
 
 #endif // FINDICONDIALOG_H

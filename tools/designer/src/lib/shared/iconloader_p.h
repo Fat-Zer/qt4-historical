@@ -41,6 +41,8 @@
 #include <QtGui/QIcon>
 #include <QtGui/QPixmap>
 
+namespace qdesigner_internal {
+
 inline QIcon createIconSet(const QString &name)
 {
     QStringList candidates = QStringList()
@@ -59,5 +61,7 @@ inline QIcon createIconSet(const QString &name)
 
     return QIcon();
 }
+
+} // namespace qdesigner_internal
 
 #endif // ICONLOADER_H

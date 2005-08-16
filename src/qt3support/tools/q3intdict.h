@@ -24,7 +24,7 @@
 #ifndef Q3INTDICT_H
 #define Q3INTDICT_H
 
-#include "Qt3Support/q3gdict.h"
+#include <Qt3Support/q3gdict.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -97,4 +97,4 @@ public:
     type *operator+=(uint j)  { return (type *)Q3GDictIterator::operator+=(j);}
 };
 
-#endif // QINTDICT_H
+#endif // Q3INTDICT_H

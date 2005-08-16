@@ -37,6 +37,7 @@
     \class QItemEditorFactory
     \brief The QItemEditorFactory class provides widgets for editing item data
     in views and delegates.
+    \ingroup model-view
 
     When editing the data shown by an item delegate, the QItemDelegate responsible
     requests an editor widget from its item editor factory. The default factory is
@@ -44,7 +45,7 @@
     specialized editing behavior, such as row or column-specific editors, or editors
     for certain types of data.
 
-    \sa QItemDelegate
+    \sa QItemDelegate, {Model/View Programming}
 */
 
 /*!
@@ -108,8 +109,8 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
     case QVariant::Bool: {
         QComboBox *cb = new QComboBox(parent);
         cb->setFrame(false);
-        cb->addItem("False");
-        cb->addItem("True");
+        cb->addItem(QObject::tr("False"));
+        cb->addItem(QObject::tr("True"));
         return cb; }
 #endif
 #ifndef QT_NO_SPINBOX
@@ -147,12 +148,6 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
         sb->setFrame(false);
         return sb; }
 #endif
-#ifndef QT_NO_COMBOBOX
-    case QVariant::StringList: {
-        QComboBox *cb = new QComboBox(parent);
-        cb->setFrame(false);
-        return cb; }
-#endif
 #ifndef QT_NO_LINEEDIT
     case QVariant::String:
     default: {
@@ -180,8 +175,6 @@ QByteArray QDefaultItemEditorFactory::valuePropertyName(QVariant::Type type) con
         return "time";
     case QVariant::DateTime:
         return "dateTime";
-    case QVariant::StringList:
-        return "contents";
     case QVariant::String:
     default:
         // the default editor is a lineedit
@@ -224,13 +217,14 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     \class QItemEditorCreatorBase
     \brief The QItemEditorCreatorBase class provides an abstract base class that
     must be subclassed when implementing new item editor creators.
+    \ingroup model-view
 
     Item editor creators are specialized widget factories that provide editor widgets
     for specific types of item data. QItemEditorFactory finds the appropriate factory
     for editors using a QVariant-based scheme to associate data types with editor
     creators.
 
-    \sa QItemEditorFactory
+    \sa QItemEditorFactory, {Model/View Programming}
 */
 
 /*!

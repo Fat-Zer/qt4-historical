@@ -28,6 +28,7 @@
 #include "qstylepainter.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
+#include "qevent.h"
 
 #include "private/qabstractbutton_p.h"
 
@@ -35,9 +36,10 @@ class QCheckBoxPrivate : public QAbstractButtonPrivate
 {
     Q_DECLARE_PUBLIC(QCheckBox)
 public:
-    QCheckBoxPrivate():tristate(false), noChange(false){}
+    QCheckBoxPrivate():tristate(false), noChange(false), hovering(true){}
     uint tristate : 1;
     uint noChange : 1;
+    uint hovering : 1;
     void init();
     QStyleOptionButton getStyleOption() const;
 };
@@ -88,10 +90,11 @@ public:
 
 /*!
     \enum QCheckBox::ToggleState
+    \compat
 
-    \value Off
-    \value NoChange
-    \value On
+    \value Off  Use Qt::Unchecked instead.
+    \value NoChange  Use Qt::PartiallyChecked instead.
+    \value On  Use Qt::Checked instead.
 */
 
 /*!
@@ -116,6 +119,7 @@ void QCheckBoxPrivate::init()
 {
     Q_Q(QCheckBox);
     q->setCheckable(true);
+    q->setMouseTracking(true);
 }
 
 QStyleOptionButton QCheckBoxPrivate::getStyleOption() const
@@ -129,6 +133,12 @@ QStyleOptionButton QCheckBoxPrivate::getStyleOption() const
         opt.state |= QStyle::State_NoChange;
     else
         opt.state |= checked ? QStyle::State_On : QStyle::State_Off;
+    if (q->testAttribute(Qt::WA_Hover) &&  q->underMouse()) {
+        if (hovering) 
+            opt.state |= QStyle::State_MouseOver;
+        else
+            opt.state &= ~QStyle::State_MouseOver;
+    }
     opt.text = text;
     opt.icon = icon;
     opt.iconSize = q->iconSize();
@@ -236,6 +246,26 @@ void QCheckBox::paintEvent(QPaintEvent *)
     p.drawControl(QStyle::CE_CheckBox, opt);
 }
 
+/*!
+    \reimp
+*/
+void QCheckBox::mouseMoveEvent(QMouseEvent *e)
+{
+    Q_D(QCheckBox);
+    if (testAttribute(Qt::WA_Hover)) {
+        bool hit = false;
+        if (underMouse())
+            hit = hitButton(e->pos());
+
+        if (hit != d->hovering) {
+            update(rect());
+            d->hovering = hit;
+        }
+    }
+
+    QAbstractButton::mouseMoveEvent(e);
+}
+
 
 /*!\reimp*/
 bool QCheckBox::hitButton(const QPoint &pos) const
@@ -265,6 +295,14 @@ void QCheckBox::nextCheckState()
     }
 }
 
+/*!
+    \reimp
+*/
+bool QCheckBox::event(QEvent *e)
+{
+    return QAbstractButton::event(e);
+}
+
 #ifdef QT3_SUPPORT
 /*!
     Use one of the constructors that doesn't take the \a name
@@ -274,7 +312,7 @@ QCheckBox::QCheckBox(QWidget *parent, const char* name)
     : QAbstractButton (*new QCheckBoxPrivate, parent)
 {
     Q_D(QCheckBox);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 
@@ -286,7 +324,7 @@ QCheckBox::QCheckBox(const QString &text, QWidget *parent, const char* name)
     : QAbstractButton (*new QCheckBoxPrivate, parent)
 {
     Q_D(QCheckBox);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
     setText(text);
 }

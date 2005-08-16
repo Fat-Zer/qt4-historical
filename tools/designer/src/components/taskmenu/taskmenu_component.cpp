@@ -27,6 +27,9 @@
 #include "label_taskmenu.h"
 #include "lineedit_taskmenu.h"
 #include "listwidget_taskmenu.h"
+#include "treewidget_taskmenu.h"
+#include "tablewidget_taskmenu.h"
+#include "containerwidget_taskmenu.h"
 #include "combobox_taskmenu.h"
 #include "textedit_taskmenu.h"
 
@@ -43,6 +46,9 @@ TaskMenuComponent::TaskMenuComponent(QDesignerFormEditorInterface *core, QObject
 
     QExtensionManager *mgr = core->extensionManager();
 
+    ContainerWidgetTaskMenuFactory *containerwidget_factory = new ContainerWidgetTaskMenuFactory(mgr);
+    mgr->registerExtensions(containerwidget_factory, Q_TYPEID(QDesignerTaskMenuExtension));
+
     ButtonTaskMenuFactory *button_factory = new ButtonTaskMenuFactory(mgr);
     mgr->registerExtensions(button_factory, Q_TYPEID(QDesignerTaskMenuExtension));
 
@@ -57,6 +63,12 @@ TaskMenuComponent::TaskMenuComponent(QDesignerFormEditorInterface *core, QObject
 
     ListWidgetTaskMenuFactory *listWidget_factory = new ListWidgetTaskMenuFactory(mgr);
     mgr->registerExtensions(listWidget_factory, Q_TYPEID(QDesignerTaskMenuExtension));
+
+    TreeWidgetTaskMenuFactory *treeWidget_factory = new TreeWidgetTaskMenuFactory(mgr);
+    mgr->registerExtensions(treeWidget_factory, Q_TYPEID(QDesignerTaskMenuExtension));
+
+    TableWidgetTaskMenuFactory *tableWidget_factory = new TableWidgetTaskMenuFactory(mgr);
+    mgr->registerExtensions(tableWidget_factory, Q_TYPEID(QDesignerTaskMenuExtension));
 
     ComboBoxTaskMenuFactory *comboBox_factory = new ComboBoxTaskMenuFactory(mgr);
     mgr->registerExtensions(comboBox_factory, Q_TYPEID(QDesignerTaskMenuExtension));

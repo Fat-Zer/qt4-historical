@@ -21,11 +21,10 @@
 **
 ****************************************************************************/
 
-
 #ifndef Q3GRID_H
 #define Q3GRID_H
 
-#include "Qt3Support/q3frame.h"
+#include <Qt3Support/q3frame.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -50,6 +49,5 @@ protected:
 private:
     Q_DISABLE_COPY(Q3Grid)
 };
-
 
 #endif // Q3GRID_H

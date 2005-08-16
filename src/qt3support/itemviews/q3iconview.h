@@ -24,16 +24,16 @@
 #ifndef Q3ICONVIEW_H
 #define Q3ICONVIEW_H
 
-#include "Qt3Support/q3scrollview.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qrect.h"
-#include "QtCore/qpoint.h"
-#include "QtCore/qsize.h"
-#include "QtGui/qfont.h" // QString->QFont conversion
-#include "Qt3Support/q3dragobject.h"
-#include "QtGui/qbitmap.h"
-#include "QtGui/qpicture.h"
-#include "Qt3Support/q3valuelist.h"
+#include <Qt3Support/q3scrollview.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qrect.h>
+#include <QtCore/qpoint.h>
+#include <QtCore/qsize.h>
+#include <QtGui/qfont.h> // QString->QFont conversion
+#include <Qt3Support/q3dragobject.h>
+#include <QtGui/qbitmap.h>
+#include <QtGui/qpicture.h>
+#include <Qt3Support/q3valuelist.h>
 
 QT_MODULE(Qt3Support)
 
@@ -377,13 +377,13 @@ public:
 
     QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
 
-public slots:
+public Q_SLOTS:
     virtual void arrangeItemsInGrid(const QSize &grid, bool update = true);
     virtual void arrangeItemsInGrid(bool update = true);
     virtual void setContentsPos(int x, int y);
     virtual void updateContents();
 
-signals:
+Q_SIGNALS:
     void selectionChanged();
     void selectionChanged(Q3IconViewItem *item);
     void currentChanged(Q3IconViewItem *item);
@@ -409,12 +409,12 @@ signals:
     void itemRenamed(Q3IconViewItem *item, const QString &);
     void itemRenamed(Q3IconViewItem *item);
 
-protected slots:
+protected Q_SLOTS:
     virtual void doAutoScroll();
     virtual void adjustItems();
     virtual void slotUpdate();
 
-private slots:
+private Q_SLOTS:
     void movedContents(int dx, int dy);
 
 protected:

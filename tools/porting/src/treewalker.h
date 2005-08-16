@@ -22,8 +22,8 @@
 **
 ****************************************************************************/
 
-#ifndef __treewalker_h
-#define __treewalker_h
+#ifndef TREEWALKER_H
+#define TREEWALKER_H
 
 #include "ast.h"
 
@@ -210,4 +210,4 @@ inline void TreeWalker::parseNode(AST *node)
     }
 }
 
-#endif // __treewalker_h
+#endif // TREEWALKER_H

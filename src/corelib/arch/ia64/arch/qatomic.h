@@ -29,24 +29,26 @@
 #if defined(Q_CC_INTEL)
 
 // intrinsics provided by the Intel C++ Compiler
-extern "C" {
-    int _InterlockedExchange(volatile int *, int);
-    int _InterlockedCompareExchange(volatile int *, int, int);
-    int _InterlockedIncrement(volatile int *addend);
-    int _InterlockedDecrement(volatile int *addend);
-    void * _InterlockedCompareExchangePointer(void * volatile *, void *, void *);
-    void * _InterlockedExchangePointer(void * volatile *, void *);
-}
+#include <ia64intrin.h>
 
 inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval)
 { return static_cast<int>(_InterlockedCompareExchange(ptr, newval, expected)) == expected; }
 
+inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
+{
+    return static_cast<int>(_InterlockedCompareExchange_acq(reinterpret_cast<volatile uint *>(ptr),
+                                                          newval, expected)) == expected; }
+
+inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval)
+{
+    return static_cast<int>(_InterlockedCompareExchange_rel(reinterpret_cast<volatile uint *>(ptr),
+                                                          newval, expected)) == expected; }
+
 inline int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval)
 {
-    return _InterlockedCompareExchangePointer(reinterpret_cast<void * volatile *>(ptr),
+    return _InterlockedCompareExchangePointer(reinterpret_cast<void * volatile*>(ptr),
                                               newval, expected) == expected;
 }
-
 
 inline int q_atomic_increment(volatile int *ptr)
 { return _InterlockedIncrement(ptr); }
@@ -72,6 +74,23 @@ inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval
     asm volatile("mov ar.ccv=%2\n"
                  ";;\n"
                  "cmpxchg4.acq %0=%1,%3,ar.ccv\n"
+                 : "=r" (ret), "+m" (*ptr)
+                 : "r" (expected), "r" (newval)
+                 : "memory");
+    return ret == expected;
+}
+
+inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
+{
+    return q_atomic_test_and_set_int(ptr, expected, newval);
+}
+
+inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval)
+{
+    int ret;
+    asm volatile("mov ar.ccv=%2\n"
+                 ";;\n"
+                 "cmpxchg4.rel %0=%1,%3,ar.ccv\n"
                  : "=r" (ret), "+m" (*ptr)
                  : "r" (expected), "r" (newval)
                  : "memory");

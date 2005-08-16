@@ -33,7 +33,7 @@
 
 class QExtensionManager;
 
-class QT_EXTENSION_EXPORT QExtensionFactory : public QObject, public QAbstractExtensionFactory
+class QDESIGNER_EXTENSION_EXPORT QExtensionFactory : public QObject, public QAbstractExtensionFactory
 {
     Q_OBJECT
     Q_INTERFACES(QAbstractExtensionFactory)
@@ -43,7 +43,7 @@ public:
     virtual QObject *extension(QObject *object, const QString &iid) const;
     QExtensionManager *extensionManager() const;
 
-private slots:
+private Q_SLOTS:
     void objectDestroyed(QObject *object);
 
 protected:

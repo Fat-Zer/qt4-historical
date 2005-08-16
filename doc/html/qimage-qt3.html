@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/gui/image/qimage.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qimage.cpp -->
 <head>
-    <title>Qt 4.0: Qt 3 Support Members for QImage</title>
+    <title>Qt 4.1: Qt 3 Support Members for QImage</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -18,7 +18,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QImage</h1>
-<p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
+<p><b>The following class members are part of the <a href="qt3support.html">Qt 3 support layer</a>.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qimage.html">QImage class reference</a></li></ul></p>
 <h3>Public Functions</h3>
 <ul>
@@ -83,7 +83,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs an image that uses an existing memory buffer. The buffer must remain valid for the life of the <a href="qimage.html">QImage</a>. The image does not delete the buffer at destruction. The buffer is passed as <i>data</i>. The image's width is <i>w</i> and its height is <i>h</i>. The color depth is <i>depth</i>. <i>bpl</i> specifies the number of bytes per line.</p>
 <p>If <i>colortable</i> is 0, a color table sufficient for <i>numColors</i> will be allocated (and destructed later).</p>
 <p>The endianness is specified by <i>bitOrder</i>.</p>
-<p><b>Warning:</b> This constructor is only available in Qt/Embedded.</p>
+<p><b>Warning:</b> This constructor is only available in Qtopia Core.</p>
 <h3 class="fn"><a name="QImage-12"></a>QImage::QImage ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i> )</h3>
 <p>Use QImage::fromData(<i>data</i>) instead.</p>
 <p>For example, if you have code like</p>
@@ -158,10 +158,10 @@ body { background: #ffffff; color: black; }</style>
 <p>The alpha buffer is used to set a mask when a <a href="qimage.html">QImage</a> is translated to a <a href="qpixmap.html">QPixmap</a>.</p>
 <p>See also <a href="qimage-qt3.html#hasAlphaBuffer">hasAlphaBuffer</a>() and <a href="qimage.html#createAlphaMask">createAlphaMask</a>().</p>
 <h3 class="fn"><a name="smoothScale"></a>QImage QImage::smoothScale ( int <i>width</i>, int <i>height</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> = Qt::IgnoreAspectRatio ) const</h3>
-<p>Use scale(<i>width</i>, <i>height</i>, <i>mode</i>, <a href="qt.html#TransformationMode-enum">Qt::SmoothTransformation</a>) instead.</p>
+<p>Use scaled(<i>width</i>, <i>height</i>, <i>mode</i>, <a href="qt.html#TransformationMode-enum">Qt::SmoothTransformation</a>) instead.</p>
 <h3 class="fn"><a name="smoothScale-2"></a>QImage QImage::smoothScale ( const <a href="qsize.html">QSize</a> &amp; <i>size</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> = Qt::IgnoreAspectRatio ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Use scale(<i>size</i>, <i>mode</i>, <a href="qt.html#TransformationMode-enum">Qt::SmoothTransformation</a>) instead.</p>
+<p>Use scaled(<i>size</i>, <i>mode</i>, <a href="qt.html#TransformationMode-enum">Qt::SmoothTransformation</a>) instead.</p>
 <h3 class="fn"><a name="swapRGB"></a>QImage QImage::swapRGB () const</h3>
 <p>Returns a <a href="qimage.html">QImage</a> in which the values of the red and blue components of all pixels have been swapped, effectively converting an RGB image to a BGR image. The original <a href="qimage.html">QImage</a> is not changed.</p>
 <h3 class="fn"><a name="systemBitOrder"></a><a href="qimage.html#Endian-enum">Endian</a> QImage::systemBitOrder ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -184,6 +184,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

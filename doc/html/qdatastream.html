@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/io/qdatastream.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/io/qdatastream.cpp -->
 <head>
-    <title>Qt 4.0: QDataStream Class Reference</title>
+    <title>Qt 4.1: QDataStream Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -29,7 +29,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>enum <b><a href="qdatastream.html#ByteOrder-enum">ByteOrder</a></b> { BigEndian, LittleEndian }</li>
 <li><div class="fn"/>enum <b><a href="qdatastream.html#Status-enum">Status</a></b> { Ok, ReadPastEnd, ReadCorruptData }</li>
-<li><div class="fn"/>enum <b><a href="qdatastream.html#Version-enum">Version</a></b> { Qt_1_0, Qt_2_0, Qt_2_1, Qt_3_0, ..., Qt_4_0 }</li>
+<li><div class="fn"/>enum <b><a href="qdatastream.html#Version-enum">Version</a></b> { Qt_1_0, Qt_2_0, Qt_2_1, Qt_3_0, ..., Qt_4_1 }</li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -49,6 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qdatastream.html#setDevice">setDevice</a></b> ( QIODevice * <i>d</i> )</li>
 <li><div class="fn"/>void <b><a href="qdatastream.html#setStatus">setStatus</a></b> ( Status <i>status</i> )</li>
 <li><div class="fn"/>void <b><a href="qdatastream.html#setVersion">setVersion</a></b> ( int <i>v</i> )</li>
+<li><div class="fn"/>int <b><a href="qdatastream.html#skipRawData">skipRawData</a></b> ( int <i>len</i> )</li>
 <li><div class="fn"/>Status <b><a href="qdatastream.html#status">status</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qdatastream.html#unsetDevice">unsetDevice</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qdatastream.html#version">version</a></b> () const</li>
@@ -183,7 +184,8 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QDataStream::Qt_3_0</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Version 4 (Qt 3.0)</td></tr>
 <tr><td valign="top"><tt>QDataStream::Qt_3_1</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Version 5 (Qt 3.1, 3.2)</td></tr>
 <tr><td valign="top"><tt>QDataStream::Qt_3_3</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Version 6 (Qt 3.3)</td></tr>
-<tr><td valign="top"><tt>QDataStream::Qt_4_0</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Version 7 (Qt 4.0)</td></tr>
+<tr><td valign="top"><tt>QDataStream::Qt_4_0</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Version 7 (Qt 4.0, Qt 4.1)</td></tr>
+<tr><td valign="top"><tt>QDataStream::Qt_4_1</tt></td><td align="center" valign="top"><tt>Qt_4_0</tt></td><td valign="top">Version 7 (Qt 4.0, Qt 4.1)</td></tr>
 </table>
 <p>See also <a href="qdatastream.html#setVersion">setVersion</a>() and <a href="qdatastream.html#version">version</a>().</p>
 <hr />
@@ -257,6 +259,11 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QDataStream out(file);
     out.setVersion(QDataStream::Qt_4_0);</pre>
 <p>See also <a href="qdatastream.html#version">version</a>() and <a href="qdatastream.html#Version-enum">Version</a>.</p>
+<h3 class="fn"><a name="skipRawData"></a>int QDataStream::skipRawData ( int <i>len</i> )</h3>
+<p>Skips <i>len</i> bytes from the device. Returns the number of bytes actually skipped, or -1 on error.</p>
+<p>This is equivalent to calling <a href="qdatastream.html#readRawData">readRawData</a>() on a buffer of length <i>len</i> and ignoring the buffer.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qiodevice.html#seek">QIODevice::seek</a>().</p>
 <h3 class="fn"><a name="status"></a><a href="qdatastream.html#Status-enum">Status</a> QDataStream::status () const</h3>
 <p>Returns the status of the data stream.</p>
 <p>See also <a href="qdatastream.html#Status-enum">Status</a>, <a href="qdatastream.html#setStatus">setStatus</a>(), and <a href="qdatastream.html#resetStatus">resetStatus</a>().</p>
@@ -271,7 +278,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>len</i> is serialized as a quint32, followed by <i>len</i> bytes from <i>s</i>. Note that the data is <i>not</i> encoded.</p>
 <p>See also <a href="qdatastream.html#writeRawData">writeRawData</a>() and <a href="qdatastream.html#readBytes">readBytes</a>().</p>
 <h3 class="fn"><a name="writeRawData"></a>int QDataStream::writeRawData ( const char * <i>s</i>, int <i>len</i> )</h3>
-<p>Writes <i>len</i> bytes from <i>s</i> to the stream and returns a reference to the stream. The data is <i>not</i> encoded.</p>
+<p>Writes <i>len</i> bytes from <i>s</i> to the stream. Returns the number of bytes actually written, or -1 on error. The data is <i>not</i> encoded.</p>
 <p>See also <a href="qdatastream.html#writeBytes">writeBytes</a>(), <a href="qiodevice.html#write">QIODevice::write</a>(), and <a href="qdatastream.html#readRawData">readRawData</a>().</p>
 <h3 class="fn"><a name="operator-lt-lt"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#qint8-typedef">qint8</a> <i>i</i> )</h3>
 <p>Writes a signed byte, <i>i</i>, to the stream and returns a reference to the stream.</p>
@@ -349,6 +356,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

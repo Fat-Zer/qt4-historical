@@ -28,8 +28,8 @@
 #include <qbytearray.h>
 #include <qfile.h>
 #include <qdir.h>
-#include <time.h>
 #include <qdatetime.h>
+#include <time.h>
 
 QString mkdir_p_asstring(const QString &dir);
 
@@ -479,10 +479,10 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
               << "-$(MOVE) $(TARGET) $(DESTDIR)$(TARGETD)" << "\n\t"
               << mkdir_p_asstring("`dirname $(DESTDIR)$(TARGET0)`") << "\n\t"
               << varGlue("QMAKE_LN_SHLIB","-"," "," Versions/" +
-                         project->first("VER_MAJ") + "." + project->first("VER_MIN") +
+                         project->first("VER_MAJ") + ".0" +
                          "/$(TARGET) $(DESTDIR)$(TARGET0)") << "\n\t"
               << "-$(DEL_FILE) " << destdir << "Versions/Current" << "\n\t"
-              << varGlue("QMAKE_LN_SHLIB","-"," ", " " + project->first("VER_MAJ") + "." + project->first("VER_MIN") +
+              << varGlue("QMAKE_LN_SHLIB","-"," ", " " + project->first("VER_MAJ") + ".0" +
                          " " + destdir + "Versions/Current") << "\n\t";
             if(!project->isEmpty("QMAKE_POST_LINK"))
                 t << "\n\t" << var("QMAKE_POST_LINK");
@@ -645,6 +645,7 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
                   << "@$(COPY_FILE) " << icon << " " << dir << endl;
             }
         } else {
+
             t << "@$(DEL_FILE) " << info_plist_out << "\n\t"
               << "@sed "
               << "-e \"s,@LIBRARY@," << var("QMAKE_ORIG_TARGET") << ",g\" "
@@ -663,7 +664,7 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
                 QString path = bundle_dir;
                 if(!project->isEmpty(bundle_data[i] + ".version")) {
                     QString version = project->first(bundle_data[i] + ".version") + "/" +
-                                      project->first("VER_MAJ") + "." + project->first("VER_MIN") + "/";
+                                      project->first("VER_MAJ") + ".0/";
                     t << Option::fixPathToLocalOS(path + project->first(bundle_data[i] + ".path")) << ": " << "\n\t"
                       << mkdir_p_asstring(path) << "\n\t"
                       << "@$(SYMLINK) " << version << project->first(bundle_data[i] + ".path") << " " << path << endl;
@@ -675,8 +676,12 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
                     const QString dst = path + Option::dir_sep + fileInfo(files[file]).fileName();
                     t << dst << ": " << files[file] << "\n\t"
                       << mkdir_p_asstring(path) << "\n\t"
-                      << "@$(DEL_FILE) " << dst << "\n\t"
-                      << "@$(COPY_FILE) " << files[file] << " " << dst << endl;
+                      << "@$(DEL_FILE) " << dst << "\n\t";
+                    QFileInfo fi(fileInfo(files[file]));
+                    if(fi.isDir())
+                        t << "@$(COPY_DIR) " << files[file] << " " << dst << endl;
+                    else
+                        t << "@$(COPY_FILE) " << files[file] << " " << dst << endl;
                 }
             }
         }
@@ -775,7 +780,10 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
     }
     if(doPrecompiledHeaders() && !project->isEmpty("PRECOMPILED_HEADER")) {
         QString header_prefix = project->first("QMAKE_PRECOMP_PREFIX");
-        QString precomph_out_dir = project->first("QMAKE_ORIG_TARGET") + ".gch" + Option::dir_sep;
+        QString precomph_out_dir;
+        if(!project->isEmpty("OBJECTS_DIR"))
+            precomph_out_dir = project->first("OBJECTS_DIR");
+        precomph_out_dir += project->first("QMAKE_ORIG_TARGET") + ".gch" + Option::dir_sep;
         t << "-$(DEL_FILE) " << precomph_out_dir << header_prefix + "c "
           << precomph_out_dir << header_prefix << "c++" << "\n\t";
     }
@@ -827,8 +835,12 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
             flags += " $(" + comps[i] + "FLAGS)";
 
             QString header_prefix = project->first("QMAKE_PRECOMP_PREFIX");
-            QString outdir = project->first("QMAKE_ORIG_TARGET") + ".gch" + Option::dir_sep, outfile = outdir;
-            QString compiler;
+            QString outdir;
+            if(!project->isEmpty("OBJECTS_DIR"))
+                outdir = project->first("OBJECTS_DIR");
+            outdir += project->first("QMAKE_ORIG_TARGET") + ".gch" + Option::dir_sep;
+
+            QString compiler, outfile = outdir;
             if(comps[i] == "C") {
                 outfile += header_prefix + "c";
                 compiler = "$(CC) ";
@@ -943,7 +955,7 @@ void UnixMakefileGenerator::init2()
                                                    "/" + project->first("TARGET"));
             project->variables()["TARGET_x.y"].append(project->first("QMAKE_BUNDLE_NAME") +
                                                       "/Versions/" +
-                                                      project->first("VER_MAJ") + "." + project->first("VER_MIN") + "/" +
+                                                      project->first("VER_MAJ") + ".0/" +
                                                       project->first("TARGET"));
         } else {
             project->variables()["TARGET_"].append("lib" + project->first("TARGET") + "." +
@@ -1070,7 +1082,7 @@ void UnixMakefileGenerator::init2()
                         alldeps += Option::fixPathToLocalOS(path + Option::dir_sep +
                                                             project->first(bundle_data[i] + ".path"));
                         path += project->first(bundle_data[i] + ".version") + "/" +
-                                project->first("VER_MAJ") + "." + project->first("VER_MIN") + "/";
+                                project->first("VER_MAJ") + ".0/";
                     }
                     path += project->first(bundle_data[i] + ".path");
                     path = Option::fixPathToLocalOS(path);
@@ -1242,7 +1254,7 @@ UnixMakefileGenerator::writePkgConfigFile()     // ### does make sense only for 
         name.replace(0, 1, name[0].toUpper());
     }
     t << "Name: " << name << endl;
-    QString desc = project->first("QMAKE_PKGCONFIG_DESCRIPTION");
+    QString desc = project->variables()["QMAKE_PKGCONFIG_DESCRIPTION"].join(" ");
     if(desc.isEmpty()) {
         if(name.isEmpty()) {
             desc = project->first("QMAKE_ORIG_TARGET").toLower();
@@ -1280,6 +1292,7 @@ UnixMakefileGenerator::writePkgConfigFile()     // ### does make sense only for 
         // << var("QMAKE_CXXFLAGS") << " "
       << varGlue("PRL_EXPORT_DEFINES","-D"," -D"," ")
       << project->variables()["PRL_EXPORT_CXXFLAGS"].join(" ")
+      << project->variables()["QMAKE_PKGCONFIG_CFLAGS"].join(" ")
         //      << varGlue("DEFINES","-D"," -D"," ")
       << " -I${includedir}";
 }

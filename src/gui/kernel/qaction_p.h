@@ -35,9 +35,9 @@
 // We mean it.
 //
 
-#include "qaction.h"
-#include <private/qobject_p.h>
-#include "qmenu.h"
+#include "QtGui/qaction.h"
+#include "QtGui/qmenu.h"
+#include "private/qobject_p.h"
 
 #ifndef QT_NO_ACTION
 
@@ -93,4 +93,5 @@ public:
 };
 
 #endif // QT_NO_ACTION
+
 #endif // QACTION_P_H

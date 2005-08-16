@@ -24,9 +24,9 @@
 #ifndef SYMBOLS_H
 #define SYMBOLS_H
 
-#include <qstring.h>
-#include <qvector.h>
 #include "token.h"
+#include <QString>
+#include <QVector>
 
 struct Symbol
 {

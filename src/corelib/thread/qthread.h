@@ -57,6 +57,9 @@ public:
         InheritPriority
     };
 
+    void setPriority(Priority priority);
+    Priority priority() const;
+
     bool isFinished() const;
     bool isRunning() const;
 
@@ -65,7 +68,7 @@ public:
 
     void exit(int retcode = 0);
 
-public slots:
+public Q_SLOTS:
     void start(QThread::Priority = InheritPriority);
     void terminate();
     void quit();
@@ -74,7 +77,7 @@ public:
     // default argument causes thread to block indefinately
     bool wait(unsigned long time = ULONG_MAX);
 
-signals:
+Q_SIGNALS:
     void started();
     void finished();
     void terminated();
@@ -125,4 +128,5 @@ private:
 };
 
 #endif // QT_NO_THREAD
+
 #endif // QTHREAD_H

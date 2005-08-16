@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef __OPTION_H__
-#define __OPTION_H__
+#ifndef OPTION_H
+#define OPTION_H
 
 #include "project.h"
 #include <qstring.h>
@@ -183,4 +183,4 @@ public:
     static QString location(LibraryLocation);
 };
 
-#endif /* __OPTION_H__ */
+#endif // OPTION_H

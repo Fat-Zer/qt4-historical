@@ -22,15 +22,13 @@
 **
 ****************************************************************************/
 
-// c++ support
 #include "parser.h"
 #include "tokens.h"
 #include "errors.h"
 
-// qt
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qdatetime.h>
+#include <QString>
+#include <QStringList>
+#include <QDateTime>
 
 #define TT (tokenStream->currentTokenText().data())
 
@@ -4504,4 +4502,3 @@ void Parser::advance()
             break;
     }
 }
-

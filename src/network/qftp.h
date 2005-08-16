@@ -24,9 +24,9 @@
 #ifndef QFTP_H
 #define QFTP_H
 
-#include "QtCore/qstring.h" // char*->QString conversion
-#include "QtNetwork/qurlinfo.h"
-#include "QtCore/qobject.h"
+#include <QtCore/qstring.h>
+#include <QtNetwork/qurlinfo.h>
+#include <QtCore/qobject.h>
 
 QT_MODULE(Network)
 
@@ -119,10 +119,10 @@ public:
     Error error() const;
     QString errorString() const;
 
-public slots:
+public Q_SLOTS:
     void abort();
 
-signals:
+Q_SIGNALS:
     void stateChanged(int);
     void listInfo(const QUrlInfo&);
     void readyRead();

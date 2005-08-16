@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/kernel/qobject.cpp -->
 <head>
-    <title>Qt 4.0: QObject Class Reference</title>
+    <title>Qt 4.1: QObject Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QObject Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QObject class is the base class of all Qt objects. <a href="#details">More...</a></p>
-<pre>#include &lt;QObject&gt;</pre><p>Inherited by <a href="q3accel.html">Q3Accel</a>, <a href="q3action.html">Q3Action</a>, <a href="q3canvas.html">Q3Canvas</a>, <a href="q3dns.html">Q3Dns</a>, <a href="q3dragobject.html">Q3DragObject</a>, <a href="q3editorfactory.html">Q3EditorFactory</a>, <a href="q3fileiconprovider.html">Q3FileIconProvider</a>, <a href="q3networkoperation.html">Q3NetworkOperation</a>, <a href="q3networkprotocol.html">Q3NetworkProtocol</a>, <a href="q3process.html">Q3Process</a>, <a href="q3serversocket.html">Q3ServerSocket</a>, <a href="q3signal.html">Q3Signal</a>, <a href="q3sqlform.html">Q3SqlForm</a>, <a href="q3stylesheet.html">Q3StyleSheet</a>, <a href="q3urloperator.html">Q3UrlOperator</a>, <a href="q3whatsthis.html">Q3WhatsThis</a>, <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>, <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a>, <a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a>, <a href="qaccessibleplugin.html">QAccessiblePlugin</a>, <a href="qaction.html">QAction</a>, <a href="qactiongroup.html">QActionGroup</a>, <a href="qassistantclient.html">QAssistantClient</a>, <a href="qaxfactory.html">QAxFactory</a>, <a href="qaxobject.html">QAxObject</a>, <a href="qaxscript.html">QAxScript</a>, <a href="qaxscriptmanager.html">QAxScriptManager</a>, <a href="qbuttongroup.html">QButtonGroup</a>, <a href="qclipboard.html">QClipboard</a>, <a href="qcopchannel.html">QCopChannel</a>, <a href="qcoreapplication.html">QCoreApplication</a>, <a href="qdecorationplugin.html">QDecorationPlugin</a>, <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a>, <a href="qdesignerformwindowmanagerinterface.html">QDesignerFormWindowManagerInterface</a>, <a href="qdrag.html">QDrag</a>, <a href="qeventloop.html">QEventLoop</a>, <a href="qextensionfactory.html">QExtensionFactory</a>, <a href="qextensionmanager.html">QExtensionManager</a>, <a href="qftp.html">QFtp</a>, <a href="qhttp.html">QHttp</a>, <a href="qiconengineplugin.html">QIconEnginePlugin</a>, <a href="qimageioplugin.html">QImageIOPlugin</a>, <a href="qinputcontext.html">QInputContext</a>, <a href="qinputcontextplugin.html">QInputContextPlugin</a>, <a href="qiodevice.html">QIODevice</a>, <a href="qitemselectionmodel.html">QItemSelectionModel</a>, <a href="qkbddriverplugin.html">QKbdDriverPlugin</a>, <a href="qlayout.html">QLayout</a>, <a href="qlibrary.html">QLibrary</a>, <a href="qmimedata.html">QMimeData</a>, <a href="qmousedriverplugin.html">QMouseDriverPlugin</a>, <a href="qmovie.html">QMovie</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, <a href="qpictureformatplugin.html">QPictureFormatPlugin</a>, <a href="qpluginloader.html">QPluginLoader</a>, <a href="qscreendriverplugin.html">QScreenDriverPlugin</a>, <a href="qsessionmanager.html">QSessionManager</a>, <a href="qsettings.html">QSettings</a>, <a href="qshortcut.html">QShortcut</a>, <a href="qsignalmapper.html">QSignalMapper</a>, <a href="qsocketnotifier.html">QSocketNotifier</a>, <a href="qsound.html">QSound</a>, <a href="qsqldriver.html">QSqlDriver</a>, <a href="qsqldriverplugin.html">QSqlDriverPlugin</a>, <a href="qstyle.html">QStyle</a>, <a href="qstyleplugin.html">QStylePlugin</a>, <a href="qtcpserver.html">QTcpServer</a>, <a href="qtextcodecplugin.html">QTextCodecPlugin</a>, <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextobject.html">QTextObject</a>, <a href="qthread.html">QThread</a>, <a href="qtimer.html">QTimer</a>, <a href="qtranslator.html">QTranslator</a>, <a href="qvalidator.html">QValidator</a>, <a href="qwidget.html">QWidget</a>, <a href="qwsinputmethod.html">QWSInputMethod</a>, and <a href="qwsserver.html">QWSServer</a>.</p>
+<pre>#include &lt;QObject&gt;</pre><p>Inherited by <a href="q3accel.html">Q3Accel</a>, <a href="q3action.html">Q3Action</a>, <a href="q3canvas.html">Q3Canvas</a>, <a href="q3dns.html">Q3Dns</a>, <a href="q3dragobject.html">Q3DragObject</a>, <a href="q3editorfactory.html">Q3EditorFactory</a>, <a href="q3fileiconprovider.html">Q3FileIconProvider</a>, <a href="q3networkoperation.html">Q3NetworkOperation</a>, <a href="q3networkprotocol.html">Q3NetworkProtocol</a>, <a href="q3process.html">Q3Process</a>, <a href="q3serversocket.html">Q3ServerSocket</a>, <a href="q3signal.html">Q3Signal</a>, <a href="q3sqlform.html">Q3SqlForm</a>, <a href="q3stylesheet.html">Q3StyleSheet</a>, <a href="q3urloperator.html">Q3UrlOperator</a>, <a href="q3whatsthis.html">Q3WhatsThis</a>, <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>, <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a>, <a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a>, <a href="qaccessibleplugin.html">QAccessiblePlugin</a>, <a href="qaction.html">QAction</a>, <a href="qactiongroup.html">QActionGroup</a>, <a href="qassistantclient.html">QAssistantClient</a>, <a href="qaxfactory.html">QAxFactory</a>, <a href="qaxobject.html">QAxObject</a>, <a href="qaxscript.html">QAxScript</a>, <a href="qaxscriptmanager.html">QAxScriptManager</a>, <a href="qbuttongroup.html">QButtonGroup</a>, <a href="qclipboard.html">QClipboard</a>, <a href="qcopchannel.html">QCopChannel</a>, <a href="qcoreapplication.html">QCoreApplication</a>, <a href="qdecorationplugin.html">QDecorationPlugin</a>, <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a>, <a href="qdesignerformwindowmanagerinterface.html">QDesignerFormWindowManagerInterface</a>, <a href="qdirectpainter.html">QDirectPainter</a>, <a href="qdrag.html">QDrag</a>, <a href="qeventloop.html">QEventLoop</a>, <a href="qextensionfactory.html">QExtensionFactory</a>, <a href="qextensionmanager.html">QExtensionManager</a>, <a href="qftp.html">QFtp</a>, <a href="qhttp.html">QHttp</a>, <a href="qiconengineplugin.html">QIconEnginePlugin</a>, <a href="qimageioplugin.html">QImageIOPlugin</a>, <a href="qinputcontext.html">QInputContext</a>, <a href="qinputcontextplugin.html">QInputContextPlugin</a>, <a href="qiodevice.html">QIODevice</a>, <a href="qitemselectionmodel.html">QItemSelectionModel</a>, <a href="qkbddriverplugin.html">QKbdDriverPlugin</a>, <a href="qlayout.html">QLayout</a>, <a href="qlibrary.html">QLibrary</a>, <a href="qmimedata.html">QMimeData</a>, <a href="qmousedriverplugin.html">QMouseDriverPlugin</a>, <a href="qmovie.html">QMovie</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, <a href="qpictureformatplugin.html">QPictureFormatPlugin</a>, <a href="qpluginloader.html">QPluginLoader</a>, <a href="qscreendriverplugin.html">QScreenDriverPlugin</a>, <a href="qsessionmanager.html">QSessionManager</a>, <a href="qsettings.html">QSettings</a>, <a href="qshortcut.html">QShortcut</a>, <a href="qsignalmapper.html">QSignalMapper</a>, <a href="qsignalspy.html">QSignalSpy</a>, <a href="qsocketnotifier.html">QSocketNotifier</a>, <a href="qsound.html">QSound</a>, <a href="qsqldriver.html">QSqlDriver</a>, <a href="qsqldriverplugin.html">QSqlDriverPlugin</a>, <a href="qstyle.html">QStyle</a>, <a href="qstyleplugin.html">QStylePlugin</a>, <a href="qsvgrenderer.html">QSvgRenderer</a>, <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a>, <a href="qtcpserver.html">QTcpServer</a>, <a href="qtextcodecplugin.html">QTextCodecPlugin</a>, <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextobject.html">QTextObject</a>, <a href="qthread.html">QThread</a>, <a href="qtimer.html">QTimer</a>, <a href="qtranslator.html">QTranslator</a>, <a href="quiloader.html">QUiLoader</a>, <a href="qvalidator.html">QValidator</a>, <a href="qwidget.html">QWidget</a>, <a href="qwsinputmethod.html">QWSInputMethod</a>, and <a href="qwsserver.html">QWSServer</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>, except <a href="qobject.html#connect">connect</a>(), <a href="qobject.html#connect-2">connect</a>(), <a href="qobject.html#disconnect">disconnect</a>(), and <a href="qobject.html#disconnect-2">disconnect</a>().</p>
 <ul>
 <li><a href="qobject-members.html">List of all members, including inherited members</a></li>
@@ -96,6 +96,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
+<li><div class="fn"/>typedef <b><a href="qobject.html#QObjectList-typedef">QObjectList</a></b></li>
 <li><div class="fn"/>T <b><a href="qobject.html#qFindChild-3">qFindChild</a></b> ( const QObject * <i>obj</i>, const QString &amp; <i>name</i> )</li>
 <li><div class="fn"/>QList&lt;T&gt; <b><a href="qobject.html#qFindChildren-4">qFindChildren</a></b> ( const QObject * <i>obj</i>, const QString &amp; <i>name</i> )</li>
 <li><div class="fn"/>QList&lt;T&gt; <b><a href="qobject.html#qFindChildren-7">qFindChildren</a></b> ( const QObject * <i>obj</i>, const QRegExp &amp; <i>regExp</i> )</li>
@@ -123,7 +124,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Last but not least, QObject provides the basic timer support in Qt; see <a href="qtimer.html">QTimer</a> for high-level support for timers.</p>
 <p>Notice that the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro is mandatory for any object that implements signals, slots or properties. You also need to run the <a href="moc.html#moc">Meta Object Compiler</a> on the source file. We strongly recommend the use of this macro in all subclasses of QObject regardless of whether or not they actually use signals, slots and properties, since failure to do so may lead certain functions to exhibit strange behavior.</p>
 <p>All Qt widgets inherit QObject. The convenience function <a href="qobject.html#isWidgetType">isWidgetType</a>() returns whether an object is actually a widget. It is much faster than <a href="qobject.html#qobject_cast">qobject_cast</a>&lt;<a href="qwidget.html">QWidget</a>&gt;(<i>obj</i>) or <i>obj</i>-&gt;<a href="qobject.html#inherits">inherits</a>(&quot;<a href="qwidget.html">QWidget</a>&quot;).</p>
-<p>Some QObject functions, e.g. <a href="qobject.html#children">children</a>(), return a QObjectList. QObjectList is a typedef for <a href="qlist.html">QList</a>&lt;QObject *&gt;.</p>
+<p>Some QObject functions, e.g. <a href="qobject.html#children">children</a>(), return a <a href="qobject.html#QObjectList-typedef">QObjectList</a>. <a href="qobject.html#QObjectList-typedef">QObjectList</a> is a typedef for <a href="qlist.html">QList</a>&lt;QObject *&gt;.</p>
 <p>See also <a href="qmetaobject.html">QMetaObject</a>, <a href="qpointer.html">QPointer</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, and <a href="objecttrees.html">Object Trees and Object Ownership</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -150,7 +151,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the object, deleting all its child objects.</p>
 <p>All signals to and from the object are automatically disconnected.</p>
 <p><b>Warning:</b> All child objects are deleted. If any of these objects are on the stack or global, sooner or later your program will crash. We do not recommend holding pointers to child objects from outside the parent. If you still do, the <a href="qobject.html#destroyed">destroyed</a>() signal gives you an opportunity to detect when an object is destroyed.</p>
-<p><b>Warning:</b> Deleting a <a href="qobject.html">QObject</a> while pending events are waiting to be delivered can cause a crash. You must not delete the <a href="qobject.html">QObject</a> directly from a thread that is not the GUI thread. Use the <a href="qobject.html#deleteLater">deleteLater</a>() method instead, which will cause the event loop to delete the object after all pending events have been delivered to the object.</p>
+<p><b>Warning:</b> Deleting a <a href="qobject.html">QObject</a> while pending events are waiting to be delivered can cause a crash. You must not delete the <a href="qobject.html">QObject</a> directly if it exists in a different thread than the one currently executing. Use the <a href="qobject.html#deleteLater">deleteLater</a>() method instead, which will cause the event loop to delete the object after all pending events have been delivered to it.</p>
 <p>See also <a href="qobject.html#deleteLater">deleteLater</a>().</p>
 <h3 class="fn"><a name="blockSignals"></a>bool QObject::blockSignals ( bool <i>block</i> )</h3>
 <p>Blocks signals if <i>block</i> is true, or unblocks signals if <i>block</i> is false.</p>
@@ -163,8 +164,8 @@ body { background: #ffffff; color: black; }</style>
 <p>For every child widget, you receive one <a href="qevent.html#Type-enum">ChildAdded</a> event, zero or more <a href="qevent.html#Type-enum">ChildPolished</a> events, and one <a href="qevent.html#Type-enum">ChildRemoved</a> event.</p>
 <p>The <a href="qevent.html#Type-enum">ChildPolished</a> event is omitted if a child is removed immediately after it is added. If a child is polished several times during construction and destruction, you may receive several child polished events for the same child, each time with a different virtual table.</p>
 <p>See also <a href="qobject.html#event">event</a>().</p>
-<h3 class="fn"><a name="children"></a>const QObjectList &amp; QObject::children () const</h3>
-<p>Returns a list of child objects. The QObjectList class is defined in the <tt>&lt;QObject&gt;</tt> header file as the following:</p>
+<h3 class="fn"><a name="children"></a>const <a href="qobject.html#QObjectList-typedef">QObjectList</a> &amp; QObject::children () const</h3>
+<p>Returns a list of child objects. The <a href="qobject.html#QObjectList-typedef">QObjectList</a> class is defined in the <tt>&lt;QObject&gt;</tt> header file as the following:</p>
 <pre>&nbsp;   typedef QList&lt;QObject*&gt; QObjectList;</pre>
 <p>The first child added is the <a href="qlist.html#first">first</a> object in the list and the last child added is the <a href="qlist.html#last">last</a> object in the list, i.e. new children are appended at the end.</p>
 <p>Note that the list order changes when <a href="qwidget.html">QWidget</a> children are <a href="qwidget.html#raise">raised</a> or <a href="qwidget.html#lower">lowered</a>. A widget that is raised becomes the last object in the list, and a widget that is lowered becomes the first object in the list.</p>
@@ -207,7 +208,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The function returns true if it successfully connects the signal to the slot. It will return false if it cannot create the connection, for example, if <a href="qobject.html">QObject</a> is unable to verify the existence of either <i>signal</i> or <i>method</i>, or if their signatures aren't compatible.</p>
 <p>A signal is emitted for every connection you make, so if you duplicate a connection, two signals will be emitted. You can always break a connection using <a href="qobject.html#disconnect">disconnect</a>().</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
-<p>See also <a href="qobject.html#disconnect">disconnect</a>().</p>
+<p>See also <a href="qobject.html#disconnect">disconnect</a>() and <a href="qobject.html#sender">sender</a>().</p>
 <h3 class="fn"><a name="connect-2"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoCompatConnection ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Connects <i>signal</i> from the <i>sender</i> object to this object's <i>method</i>.</p>
@@ -314,7 +315,8 @@ body { background: #ffffff; color: black; }</style>
     {
         if (obj == textEdit) {
             if (event-&gt;type() == QEvent::KeyPress) {
-                qDebug(&quot;Ate key press&quot;);
+                QKeyEvent *keyEvent = static_cast&lt;QKeyEvent*&gt;(event);
+                qDebug() &lt;&lt; &quot;Ate key press&quot; &lt;&lt; keyEvent-&gt;key();
                 return true;
             } else {
                 return false;
@@ -507,6 +509,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qobject.html#tr">tr</a>(), <a href="qcoreapplication.html#translate">QApplication::translate</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <hr />
 <h2>Related Non-Members</h2>
+<h3 class="fn"><a name="QObjectList-typedef"></a>typedef QObjectList</h3>
+<p>Synonym for <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a>&gt;.</p>
 <h3 class="fn"><a name="qFindChild-3"></a>T qFindChild ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChild">findChild</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
@@ -573,7 +577,7 @@ body { background: #ffffff; color: black; }</style>
         ...
     };</pre>
 <p>See the <a href="tools-plugandpaintplugins-basictools.html">Plug &amp; Paint Basic Tools</a> example for details.</p>
-<p>See also <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>(), Q_EXPORT_PLUGINS(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
+<p>See also <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>(), <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <h3 class="fn"><a name="Q_OBJECT"></a>Q_OBJECT</h3>
 <p>The Q_OBJECT macro must appear in the private section of a class definition that declares its own signals and slots or that uses other services provided by Qt's meta-object system.</p>
 <p>For example:</p>
@@ -614,6 +618,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

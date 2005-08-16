@@ -79,6 +79,7 @@ static bool setData(const QByteArray &data, STGMEDIUM *pmedium)
     GlobalUnlock(hData);
     pmedium->tymed = TYMED_HGLOBAL;
     pmedium->hGlobal = hData;
+    pmedium->pUnkForRelease = 0;
     return true;
 }
 
@@ -488,16 +489,14 @@ public:
     bool convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM *pmedium) const;
     QVector<FORMATETC> formatsForMime(const QString &mimeType, const QMimeData *mimeData) const;
 private:
+    int CF_INETURL_W; // wide char version
     int CF_INETURL;
 };
 
 QWindowsMimeURI::QWindowsMimeURI()
 {
-    QT_WA({
-        CF_INETURL = QWindowsMime::registerMimeType("UniformResourceLocatorW");
-    } , {
-        CF_INETURL = QWindowsMime::registerMimeType("UniformResourceLocator");
-    });
+    CF_INETURL_W = QWindowsMime::registerMimeType("UniformResourceLocatorW");
+    CF_INETURL = QWindowsMime::registerMimeType("UniformResourceLocator");
 }
 
 bool QWindowsMimeURI::canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const
@@ -509,7 +508,7 @@ bool QWindowsMimeURI::canConvertFromMime(const FORMATETC &formatetc, const QMime
                 return true;
         }
     }
-    return getCf(formatetc) == CF_INETURL && mimeData->hasFormat("text/uri-list");
+    return (getCf(formatetc) == CF_INETURL_W || getCf(formatetc) == CF_INETURL) && mimeData->hasFormat("text/uri-list");
 }
 
 bool QWindowsMimeURI::convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM *pmedium) const
@@ -563,17 +562,17 @@ bool QWindowsMimeURI::convertFromMime(const FORMATETC &formatetc, const QMimeDat
                 *f = 0;
             });
             return setData(result, pmedium);
-        } else if (getCf(formatetc) == CF_INETURL) {
+        } else if (getCf(formatetc) == CF_INETURL_W) {
             QList<QUrl> urls = mimeData->urls();
             QByteArray result;
-            QT_WA({
-                QString url = urls.at(0).toString();
-                result = QByteArray((const char *)url.utf16(), url.length() * 2);
-                result.append('\0');
-                result.append('\0');
-            } , {
-                result = urls.at(0).toString().toLocal8Bit();
-            });
+            QString url = urls.at(0).toString();
+            result = QByteArray((const char *)url.utf16(), url.length() * 2);
+            result.append('\0');
+            result.append('\0');
+            return setData(result, pmedium);
+        } else if (getCf(formatetc) == CF_INETURL) {
+            QList<QUrl> urls = mimeData->urls();
+            QByteArray result = urls.at(0).toString().toLocal8Bit();
             return setData(result, pmedium);
         }
     }
@@ -583,19 +582,14 @@ bool QWindowsMimeURI::convertFromMime(const FORMATETC &formatetc, const QMimeDat
 
 bool QWindowsMimeURI::canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const
 {
-    if (mimeType == "text/uri-list") {
-        if (canGetData(CF_HDROP, pDataObj))
-            return true;
-        else if (canGetData(CF_INETURL, pDataObj))
-            return true;
-    }
-    return false;
+    return mimeType == "text/uri-list" 
+           && (canGetData(CF_HDROP, pDataObj) || canGetData(CF_INETURL_W, pDataObj) || canGetData(CF_INETURL, pDataObj));
 }
 
 QString QWindowsMimeURI::mimeForFormat(const FORMATETC &formatetc) const
 {
     QString format;
-    if (getCf(formatetc) == CF_HDROP || getCf(formatetc) == CF_INETURL)
+    if (getCf(formatetc) == CF_HDROP || getCf(formatetc) == CF_INETURL_W || getCf(formatetc) == CF_INETURL)
         format = "text/uri-list";
     return format;
 }
@@ -606,6 +600,8 @@ QVector<FORMATETC> QWindowsMimeURI::formatsForMime(const QString &mimeType, cons
     if (mimeType == "text/uri-list") {
         if (canConvertFromMime(setCf(CF_HDROP), mimeData))
             formatics += setCf(CF_HDROP);
+        if (canConvertFromMime(setCf(CF_INETURL_W), mimeData))
+            formatics += setCf(CF_INETURL_W);
         if (canConvertFromMime(setCf(CF_INETURL), mimeData))
             formatics += setCf(CF_INETURL);
     }
@@ -645,15 +641,16 @@ QVariant QWindowsMimeURI::convertToMime(const QString &mimeType, LPDATAOBJECT pD
                 return urls.at(0);
             else if (!urls.isEmpty())
                 return urls;
-        } else if (canGetData(CF_INETURL, pDataObj)) {
+        } else if (canGetData(CF_INETURL_W, pDataObj)) {
+            QByteArray data = getData(CF_INETURL_W, pDataObj);
+            if (data.isEmpty())
+                return QVariant();
+            return QUrl(QString::fromUtf16((const unsigned short *)data.constData()));
+         } else if (canGetData(CF_INETURL, pDataObj)) {
             QByteArray data = getData(CF_INETURL, pDataObj);
             if (data.isEmpty())
                 return QVariant();
-            QT_WA({
-                return QUrl(QString::fromUtf16((const unsigned short *)data.constData()));
-            } , {
-                return QUrl(QString::fromLocal8Bit(data.constData()));
-            });
+            return QUrl(QString::fromLocal8Bit(data.constData()));
         }
     }
     return QVariant();
@@ -1024,7 +1021,7 @@ bool QLastResortMimes::convertFromMime(const FORMATETC &formatetc, const QMimeDa
         && setData(QInternalMimeData::renderDataHelper(formats.value(getCf(formatetc)), mimeData), pmedium);
 }
 
-QVector<FORMATETC> QLastResortMimes::formatsForMime(const QString &mimeType, const QMimeData *mimeData) const
+QVector<FORMATETC> QLastResortMimes::formatsForMime(const QString &mimeType, const QMimeData * /*mimeData*/) const
 {
     QVector<FORMATETC> formatetcs;
     if (!formats.keys(mimeType).isEmpty()) {

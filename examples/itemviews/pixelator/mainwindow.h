@@ -37,12 +37,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
 
-    bool openImage(const QString &fileName);
+    void openImage(const QString &fileName);
 
 public slots:
     void chooseImage();
     void printImage();
     void showAboutBox();
+    void updateView();
 
 private:
     QAbstractItemModel *model;

@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QFONTDATA_P_H
-#define QFONTDATA_P_H
+#ifndef QFONT_P_H
+#define QFONT_P_H
 
 //
 //  W A R N I N G
@@ -39,6 +39,7 @@
 #include "qmap.h"
 #include "qobject.h"
 #include <private/qunicodetables_p.h>
+#include <qfontdatabase.h>
 
 // forwards
 class QFontEngine;
@@ -142,14 +143,16 @@ public:
     QFontPrivate(const QFontPrivate &other);
     ~QFontPrivate();
 
+#ifndef Q_WS_X11
     void load(int script);
+#endif
 #if defined(Q_WS_X11) || defined(Q_WS_WIN)
     inline QFontEngine *engineForScript(int script) const
     {
         if (script >= QUnicodeTables::Inherited)
             script = QUnicodeTables::Common;
         if (!engineData || !engineData->engines[script])
-            const_cast<QFontPrivate *>(this)->load(script);
+            QFontDatabase::load(this, script);
         return engineData->engines[script];
     }
 #else
@@ -165,7 +168,7 @@ public:
 
     QAtomic ref;
     QFontDef request;
-    QFontEngineData *engineData;
+    mutable QFontEngineData *engineData;
     int dpi;
     int screen;
 
@@ -267,4 +270,4 @@ public:
     int timer_id;
 };
 
-#endif // QFONTDATA_P_H
+#endif // QFONT_P_H

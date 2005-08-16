@@ -35,8 +35,8 @@
 // We mean it.
 //
 
-#include <qbytearray.h>
-#include <qlist.h>
+#include "QtCore/qbytearray.h"
+#include "QtCore/qlist.h"
 
 class Q_COMPAT_EXPORT Q3Membuf
 {
@@ -78,4 +78,4 @@ inline bool Q3Membuf::canReadLine() const
 inline qint64 Q3Membuf::size() const
 { return _size; }
 
-#endif
+#endif // Q3MEMBUF_P_H

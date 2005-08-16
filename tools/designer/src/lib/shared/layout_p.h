@@ -41,6 +41,7 @@
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
 #include <QtCore/QMap>
+#include <QtCore/QHash>
 
 #include <QtGui/QLayout>
 #include <QtGui/QGridLayout>
@@ -48,11 +49,13 @@
 
 class QDesignerFormWindowInterface;
 
-void QT_SHARED_EXPORT add_to_box_layout(QBoxLayout *box, QWidget *widget);
-void QT_SHARED_EXPORT insert_into_box_layout(QBoxLayout *box, int index, QWidget *widget);
-void QT_SHARED_EXPORT add_to_grid_layout(QGridLayout *grid, QWidget *widget, int r, int c, int rs, int cs, Qt::Alignment align = 0);
+namespace qdesigner_internal {
 
-class QT_SHARED_EXPORT Layout : public QObject
+void QDESIGNER_SHARED_EXPORT add_to_box_layout(QBoxLayout *box, QWidget *widget);
+void QDESIGNER_SHARED_EXPORT insert_into_box_layout(QBoxLayout *box, int index, QWidget *widget);
+void QDESIGNER_SHARED_EXPORT add_to_grid_layout(QGridLayout *grid, QWidget *widget, int r, int c, int rs, int cs, Qt::Alignment align = 0);
+
+class QDESIGNER_SHARED_EXPORT Layout : public QObject
 {
     Q_OBJECT
 public:
@@ -79,7 +82,7 @@ protected:
     QList<QWidget*> m_widgets;
     QWidget *m_parentWidget;
     QPoint startPoint;
-    QMap<QPointer<QWidget>, QRect> geometries;
+    QHash<QWidget *, QRect> geometries;
     QWidget *layoutBase;
     QDesignerFormWindowInterface *formWindow;
     QRect oldGeometry;
@@ -92,7 +95,7 @@ protected slots:
 
 };
 
-class QT_SHARED_EXPORT HorizontalLayout : public Layout
+class QDESIGNER_SHARED_EXPORT HorizontalLayout : public Layout
 {
 public:
     HorizontalLayout(const QList<QWidget*> &wl, QWidget *p, QDesignerFormWindowInterface *fw, QWidget *lb, bool splitter = false);
@@ -101,7 +104,7 @@ public:
     virtual void sort();
 };
 
-class QT_SHARED_EXPORT VerticalLayout : public Layout
+class QDESIGNER_SHARED_EXPORT VerticalLayout : public Layout
 {
 public:
     VerticalLayout(const QList<QWidget*> &wl, QWidget *p, QDesignerFormWindowInterface *fw, QWidget *lb, bool splitter = false);
@@ -110,7 +113,7 @@ public:
     virtual void sort();
 };
 
-class QT_SHARED_EXPORT StackedLayout : public Layout
+class QDESIGNER_SHARED_EXPORT StackedLayout : public Layout
 {
 public:
     StackedLayout(const QList<QWidget*> &wl, QWidget *p, QDesignerFormWindowInterface *fw, QWidget *lb, bool splitter = false);
@@ -122,7 +125,7 @@ public:
 
 class Grid;
 
-class QT_SHARED_EXPORT GridLayout : public Layout
+class QDESIGNER_SHARED_EXPORT GridLayout : public Layout
 {
 public:
     GridLayout(const QList<QWidget*> &wl, QWidget *p, QDesignerFormWindowInterface *fw, QWidget *lb, const QSize &res);
@@ -141,14 +144,14 @@ protected:
 
 };
 
-class QT_SHARED_EXPORT WidgetVerticalSorter
+class QDESIGNER_SHARED_EXPORT WidgetVerticalSorter
 {
 public:
     bool operator()(const QWidget *a, const QWidget *b) const
     { return a->y() < b->y(); }
 };
 
-class QT_SHARED_EXPORT WidgetHorizontalSorter
+class QDESIGNER_SHARED_EXPORT WidgetHorizontalSorter
 {
 public:
     bool operator()(const QWidget *a, const QWidget *b) const
@@ -198,5 +201,7 @@ inline int indexOfWidget(QLayout *layout, QWidget *widget)
 }
 
 } // namespace Utils
+
+} // namespace qdesigner_internal
 
 #endif // LAYOUT_H

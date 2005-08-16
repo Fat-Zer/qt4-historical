@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/doc/src/q3dict.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/q3dict.qdoc -->
 <head>
-    <title>Qt 4.0: Q3Dict Class Reference</title>
+    <title>Qt 4.1: Q3Dict Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -65,7 +65,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If you want to use non-Unicode, plain 8-bit <tt>char*</tt> keys, use the <a href="q3asciidict.html">Q3AsciiDict</a> template. A Q3Dict has the same performance as a <a href="q3asciidict.html">Q3AsciiDict</a>. If you want to have a dictionary that maps QStrings to QStrings use <a href="qmap.html">QMap</a>.</p>
 <p>The <a href="q3dict.html#size">size</a>() of the dictionary is very important. In order to get good performance, you should use a suitably large prime number. Suitable means equal to or larger than the maximum expected number of dictionary items. Size is set in the constructor but may be changed with <a href="q3dict.html#resize">resize</a>().</p>
 <p>Items are inserted with <a href="q3dict.html#insert">insert</a>(); 0 pointers cannot be inserted. Items are removed with <a href="q3dict.html#remove">remove</a>(). All the items in a dictionary can be removed with <a href="q3dict.html#clear">clear</a>(). The number of items in the dictionary is returned by <a href="q3dict.html#count">count</a>(). If the dictionary contains no items <a href="q3dict.html#isEmpty">isEmpty</a>() returns TRUE. You can change an item's value with <a href="q3dict.html#replace">replace</a>(). Items are looked up with operator[](), or with <a href="q3dict.html#find">find</a>() which return a pointer to the value or 0 if the given key does not exist. You can take an item out of the dictionary with <a href="q3dict.html#take">take</a>().</p>
-<p>Calling setAutoDelete(TRUE) for a dictionary tells it to delete items that are removed. The default behaviour is not to delete items when they are removed.</p>
+<p>Calling setAutoDelete(TRUE) for a dictionary tells it to delete items that are removed. The default behavior is not to delete items when they are removed.</p>
 <p>When an item is inserted, the key is converted (hashed) to an integer index into an internal hash array. This makes lookup very fast.</p>
 <p>Items with equal keys are allowed. When inserting two items with the same key, only the last inserted item will be accessible (last in, first out) until it is removed.</p>
 <p>The <a href="q3dictiterator.html">Q3DictIterator</a> class can traverse the dictionary, but only in an arbitrary order. Multiple iterators may independently traverse the same dictionary.</p>
@@ -157,6 +157,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -24,9 +24,9 @@
 #ifndef QURLINFO_H
 #define QURLINFO_H
 
-#include "QtCore/qdatetime.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qiodevice.h"
+#include <QtCore/qdatetime.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qiodevice.h>
 
 QT_MODULE(Network)
 
@@ -98,4 +98,5 @@ private:
 };
 
 #endif // QT_NO_URLINFO
+
 #endif // QURLINFO_H

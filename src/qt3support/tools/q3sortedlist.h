@@ -24,7 +24,7 @@
 #ifndef Q3SORTEDLIST_H
 #define Q3SORTEDLIST_H
 
-#include "Qt3Support/q3ptrlist.h"
+#include <Qt3Support/q3ptrlist.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -42,4 +42,4 @@ public:
       { if ( *((type*)s1) == *((type*)s2) ) return 0; return ( *((type*)s1) < *((type*)s2) ? -1 : 1 ); }
 };
 
-#endif
+#endif // Q3SORTEDLIST_H

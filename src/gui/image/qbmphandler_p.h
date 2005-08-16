@@ -21,10 +21,21 @@
 **
 ****************************************************************************/
 
-#ifndef QBMPHANDLER_H
-#define QBMPHANDLER_H
+#ifndef QBMPHANDLER_P_H
+#define QBMPHANDLER_P_H
 
-#include "qimageiohandler.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtGui/qimageiohandler.h"
 
 #ifndef QT_NO_IMAGEFORMAT_BMP
 class Q_GUI_EXPORT QBmpHandler : public QImageIOHandler
@@ -40,4 +51,4 @@ public:
 };
 #endif
 
-#endif
+#endif // QBMPHANDLER_P_H

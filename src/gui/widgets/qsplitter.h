@@ -24,8 +24,8 @@
 #ifndef QSPLITTER_H
 #define QSPLITTER_H
 
-#include "QtGui/qframe.h"
-#include "QtGui/qsizepolicy.h"
+#include <QtGui/qframe.h>
+#include <QtGui/qsizepolicy.h>
 
 QT_MODULE(Gui)
 
@@ -87,7 +87,7 @@ public:
 
     void setStretchFactor(int index, int stretch);
 
-signals:
+Q_SIGNALS:
     void splitterMoved(int pos, int index);
 
 protected:

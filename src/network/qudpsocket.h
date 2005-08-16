@@ -24,8 +24,8 @@
 #ifndef QUDPSOCKET_H
 #define QUDPSOCKET_H
 
-#include "QtNetwork/qabstractsocket.h"
-#include "QtNetwork/qhostaddress.h"
+#include <QtNetwork/qabstractsocket.h>
+#include <QtNetwork/qhostaddress.h>
 
 QT_MODULE(Network)
 
@@ -37,11 +37,22 @@ class Q_NETWORK_EXPORT QUdpSocket : public QAbstractSocket
 {
     Q_OBJECT
 public:
+    enum BindFlag {
+        DefaultForPlatform = 0x0,
+        ShareAddress = 0x1,
+        DontShareAddress = 0x2,
+        ReuseAddressHint = 0x4
+    };
+    Q_DECLARE_FLAGS(BindMode, BindFlag)
+
     explicit QUdpSocket(QObject *parent = 0);
     virtual ~QUdpSocket();
 
     bool bind(const QHostAddress &address, quint16 port);
     bool bind(quint16 port = 0);
+    bool bind(const QHostAddress &address, quint16 port, BindMode mode);
+    bool bind(quint16 port, BindMode mode);
+    // ### Qt 5: Merge the bind functions
 
     bool hasPendingDatagrams() const;
     qint64 pendingDatagramSize() const;
@@ -56,4 +67,5 @@ private:
 };
 
 #endif // QT_NO_UDPSOCKET
+
 #endif // QUDPSOCKET_H

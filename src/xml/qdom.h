@@ -24,7 +24,7 @@
 #ifndef QDOM_H
 #define QDOM_H
 
-#include "QtCore/qstring.h"
+#include <QtCore/qstring.h>
 
 QT_MODULE(Xml)
 
@@ -88,6 +88,10 @@ public:
     bool hasFeature(const QString& feature, const QString& version) const;
     QDomDocumentType createDocumentType(const QString& qName, const QString& publicId, const QString& systemId);
     QDomDocument createDocument(const QString& nsURI, const QString& qName, const QDomDocumentType& doctype);
+
+    enum InvalidDataPolicy { AcceptInvalidChars = 0, DropInvalidChars, ReturnNullNode };
+    static InvalidDataPolicy invalidDataPolicy();
+    static void setInvalidDataPolicy(InvalidDataPolicy policy);
 
     // Qt extension
     bool isNull();
@@ -203,6 +207,9 @@ public:
     QDomElement previousSiblingElement(const QString &tagName = QString()) const;
     QDomElement nextSiblingElement(const QString &taName = QString()) const;
 
+    int lineNumber() const;
+    int columnNumber() const;
+
 protected:
     QDomNodePrivate* impl;
     QDomNode(QDomNodePrivate*);
@@ -226,10 +233,13 @@ public:
 
     // DOM functions
     QDomNode item(int index) const;
+    inline QDomNode at(int index) const { return item(index); } // Qt API consistency
 
     // DOM read only attributes
     uint length() const;
     inline int count() const { return length(); } // Qt API consitancy
+    inline int size() const { return length(); } // Qt API consistency
+    inline bool isEmpty() const { return length() == 0; } // Qt API consistency
 
 private:
     QDomNodeListPrivate* impl;
@@ -340,7 +350,9 @@ public:
 
     // DOM read only attributes
     uint length() const;
-    uint count() const { return length(); } // Qt API consitancy
+    int count() const { return length(); } // Qt API consitancy
+    inline int size() const { return length(); } // Qt API consistency
+    inline bool isEmpty() const { return length() == 0; } // Qt API consistency
 
     // Qt extension
     bool contains(const QString& name) const;
@@ -447,6 +459,7 @@ public:
         { setAttribute(name, qlonglong(value)); }
     inline void setAttribute(const QString& name, uint value)
         { setAttribute(name, qulonglong(value)); }
+    void setAttribute(const QString& name, float value);
     void setAttribute(const QString& name, double value);
     void removeAttribute(const QString& name);
     QDomAttr attributeNode(const QString& name);

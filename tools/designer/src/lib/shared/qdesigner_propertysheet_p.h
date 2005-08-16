@@ -32,8 +32,8 @@
 // We mean it.
 //
 
-#ifndef DEFAULT_PROPERTYSHEET_H
-#define DEFAULT_PROPERTYSHEET_H
+#ifndef QDESIGNER_PROPERTYSHEET_H
+#define QDESIGNER_PROPERTYSHEET_H
 
 #include "shared_global_p.h"
 #include <QtDesigner/propertysheet.h>
@@ -41,7 +41,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QPair>
 
-class QT_SHARED_EXPORT QDesignerPropertySheet: public QObject, public QDesignerPropertySheetExtension
+class QDESIGNER_SHARED_EXPORT QDesignerPropertySheet: public QObject, public QDesignerPropertySheetExtension
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerPropertySheetExtension)
@@ -110,7 +110,7 @@ protected:
     QHash<QString, int> m_addIndex;
 };
 
-class QT_SHARED_EXPORT QDesignerPropertySheetFactory: public QExtensionFactory
+class QDESIGNER_SHARED_EXPORT QDesignerPropertySheetFactory: public QExtensionFactory
 {
     Q_OBJECT
     Q_INTERFACES(QAbstractExtensionFactory)
@@ -121,4 +121,4 @@ protected:
     virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
 };
 
-#endif // DEFAULT_PROPERTYSHEET_H
+#endif // QDESIGNER_PROPERTYSHEET_H

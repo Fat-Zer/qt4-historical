@@ -53,17 +53,10 @@ static const double Q_PI   = 3.14159265358979323846;   // pi
 static const double Q_2PI  = 6.28318530717958647693;   // 2*pi
 static const double Q_PI2  = 1.57079632679489661923;   // pi/2
 
+inline int qFloor(double d)
+{ return d >= 0.0 ? int(d) : int(d - 0.9999); }
+
 #ifdef Q_WS_X11
-#if defined(Q_CC_GNU) && defined(Q_OS_AIX)
-// AIX 4.2 gcc 2.7.2.3 gets internal error.
-inline int qRoundAIX(double d)
-{
-    return qRound(d);
-}
-#define qRound qRoundAIX
-#endif
-
-
 #if defined(Q_CC_GNU) && defined(__i386__)
 
 inline double qCos_x86(double a)
@@ -116,8 +109,8 @@ inline double qSinCos(double a, bool calcCos=false)
 #define qSin(a) qSinCos(a, false)
 #define qCos(a) qSinCos(a, true)
 
-#endif
-#endif //WS_X11
+#endif //GNU_CC && I386
+#endif //Q_WS_X11
 
 #ifndef qSin
 # define qSin sin

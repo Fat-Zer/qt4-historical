@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/tools/designer/src/lib/uilib/formbuilder.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/tools/designer/src/lib/uilib/formbuilder.cpp -->
 <head>
-    <title>Qt 4.0: QFormBuilder Class Reference</title>
+    <title>Qt 4.1: QFormBuilder Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -27,6 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/><b><a href="qformbuilder.html#QFormBuilder">QFormBuilder</a></b> ()</li>
+<li><div class="fn"/>virtual <b><a href="qformbuilder.html#dtor.QFormBuilder">~QFormBuilder</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qformbuilder.html#addPluginPath">addPluginPath</a></b> ( const QString &amp; <i>pluginPath</i> )</li>
 <li><div class="fn"/>void <b><a href="qformbuilder.html#clearPluginPaths">clearPluginPaths</a></b> ()</li>
 <li><div class="fn"/>QList&lt;QDesignerCustomWidgetInterface *&gt; <b><a href="qformbuilder.html#customWidgets">customWidgets</a></b> () const</li>
@@ -40,8 +41,27 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QFormBuilder class is used to dynamically construct user interfaces from .ui files at run-time.</p>
-<p>The QFormBuilder class provides a mechanism for dynamically creating user interfaces at run-time, based on <tt>.ui</tt> files created with <i>Qt Designer</i>.</p>
-<p>This class extends the <a href="qabstractformbuilder.html">QAbstractFormBuilder</a> base class with a number of functions that are used to support custom widget plugins:</p>
+<p>The QFormBuilder class provides a mechanism for dynamically creating user interfaces at run-time, based on <tt>.ui</tt> files created with <i>Qt Designer</i>. For example:</p>
+<pre>&nbsp;   MyForm::MyForm(QWidget *parent)
+        : QWidget(parent)
+    {
+        QFormBuilder builder;
+        QFile file(&quot;:/forms/myWidget.ui&quot;);
+        file.open(QFile::ReadOnly);
+        QWidget *myWidget = builder.load(&amp;file, this);
+        file.close();
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout-&gt;addWidget(myWidget);
+        setLayout(layout);
+    }</pre>
+<p>By including the user interface in the example's resources (<tt>myForm.grc</tt>), we ensure that it will be present when the example is run:</p>
+<pre>&nbsp;   &lt;!DOCTYPE RCC&gt;&lt;RCC version=&quot;1.0&quot;&gt;
+    &lt;qresource prefix=&quot;/forms&quot;&gt;
+       &lt;file&gt;mywidget.ui&lt;/file&gt;
+    &lt;/qresource&gt;
+    &lt;/RCC&gt;</pre>
+<p>QFormBuilder extends the <a href="qabstractformbuilder.html">QAbstractFormBuilder</a> base class with a number of functions that are used to support custom widget plugins:</p>
 <ul>
 <li><a href="qformbuilder.html#pluginPaths">pluginPaths</a>() returns the list of paths that the form builder searches when loading custom widget plugins.</li>
 <li><a href="qformbuilder.html#addPluginPath">addPluginPath</a>() allows additional paths to be registered with the form builder.</li>
@@ -49,29 +69,32 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qformbuilder.html#clearPluginPaths">clearPluginPaths</a>() removes all paths registered with the form builder.</li>
 <li><a href="qformbuilder.html#customWidgets">customWidgets</a>() returns a list of interfaces to plugins that can be used to create new instances of registered custom widgets.</li>
 </ul>
-<p>See also <a href="qabstractformbuilder.html">QAbstractFormBuilder</a>.</p>
+<p>The QFormBuilder class is typically used by custom components and applications that embed <i>Qt Designer</i>. Standalone applications that need to dynamically generate user interfaces at run-time use the <a href="quiloader.html">QUiLoader</a> class, found in the <a href="qtuitools.html">QtUiTools</a> module.</p>
+<p>See also <a href="qabstractformbuilder.html">QAbstractFormBuilder</a> and <a href="qtuitools.html">QtUiTools Module</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QFormBuilder"></a>QFormBuilder::QFormBuilder ()</h3>
 <p>Constructs a new form builder.</p>
+<h3 class="fn"><a name="dtor.QFormBuilder"></a>QFormBuilder::~QFormBuilder ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Destroys the form builder.</p>
 <h3 class="fn"><a name="addPluginPath"></a>void QFormBuilder::addPluginPath ( const <a href="qstring.html">QString</a> &amp; <i>pluginPath</i> )</h3>
 <p>Adds a new plugin path specified by <i>pluginPath</i> to the list of paths that will be searched by the form builder when loading a custom widget plugin.</p>
 <p>See also <a href="qformbuilder.html#setPluginPath">setPluginPath</a>() and <a href="qformbuilder.html#clearPluginPaths">clearPluginPaths</a>().</p>
 <h3 class="fn"><a name="clearPluginPaths"></a>void QFormBuilder::clearPluginPaths ()</h3>
 <p>Clears the list of paths that the form builder uses to search for custom widget plugins.</p>
-<p>See also <a href="qformbuilder.html#pluginPaths">pluginPaths</a>(), <a href="qformbuilder.html#addPluginPath">addPluginPath</a>(), and <a href="qformbuilder.html#setPluginPath">setPluginPath</a>().</p>
+<p>See also <a href="qformbuilder.html#pluginPaths">pluginPaths</a>().</p>
 <h3 class="fn"><a name="customWidgets"></a><a href="qlist.html">QList</a>&lt;<a href="qdesignercustomwidgetinterface.html">QDesignerCustomWidgetInterface</a> *&gt; QFormBuilder::customWidgets () const</h3>
-<p>Returns the list of interfaces to the custom widgets registered with the form builder.</p>
+<p>Returns a list of the available plugins.</p>
 <h3 class="fn"><a name="pluginPaths"></a><a href="qstringlist.html">QStringList</a> QFormBuilder::pluginPaths () const</h3>
 <p>Returns the list of paths the form builder searches for plugins.</p>
-<p>See also <a href="qformbuilder.html#addPluginPath">addPluginPath</a>(), <a href="qformbuilder.html#clearPluginPaths">clearPluginPaths</a>(), and <a href="qformbuilder.html#setPluginPath">setPluginPath</a>().</p>
+<p>See also <a href="qformbuilder.html#addPluginPath">addPluginPath</a>().</p>
 <h3 class="fn"><a name="setPluginPath"></a>void QFormBuilder::setPluginPath ( const <a href="qstringlist.html">QStringList</a> &amp; <i>pluginPaths</i> )</h3>
 <p>Sets the list of plugin paths to the list specified by <i>pluginPaths</i>.</p>
-<p>See also <a href="qformbuilder.html#addPluginPath">addPluginPath</a>(), <a href="qformbuilder.html#clearPluginPaths">clearPluginPaths</a>(), and <a href="qformbuilder.html#pluginPaths">pluginPaths</a>().</p>
+<p>See also <a href="qformbuilder.html#addPluginPath">addPluginPath</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

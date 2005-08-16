@@ -28,6 +28,7 @@
 #include "qpainter.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
+#include "qapplication.h"
 
 #include "qframe_p.h"
 
@@ -101,7 +102,7 @@ QFramePrivate::QFramePrivate()
 /*!
     \enum QFrame::Shape
 
-    This enum type defines the shapes of a QFrame's frame.
+    This enum type defines the shapes of frame available.
 
     \value NoFrame  QFrame draws nothing
     \value Box  QFrame draws a box around its contents
@@ -136,7 +137,8 @@ QFramePrivate::QFramePrivate()
 /*!
     \enum QFrame::Shadow
 
-    This enum type defines the 3D effect used for QFrame's frame.
+    This enum type defines the types of shadow that are used to give
+    a 3D effect to frames.
 
     \value Plain  the frame and contents appear level with the
     surroundings; draws using the palette foreground color (without
@@ -198,7 +200,7 @@ QFrame::QFrame(QFramePrivate &dd, QWidget* parent, Qt::WFlags f)
 QFrame::QFrame(QWidget *parent, const char *name, Qt::WFlags f)
     : QWidget(*new QFramePrivate, parent, f)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 #endif
 
@@ -479,8 +481,18 @@ QSize QFrame::sizeHint() const
 /*!\reimp
 */
 
-void QFrame::paintEvent(QPaintEvent *)
+void QFrame::paintEvent(QPaintEvent *event)
 {
+    Q_D(QFrame);
+    const QRect er = event->rect();
+    const QRect tr = this->rect();
+    const int fw = d->frameWidth;
+    if (er.left() >= tr.left() + fw
+        && er.top() >= tr.top() + fw
+        && er.right() <= tr.right() - fw
+        && er.bottom() <= tr.bottom() - fw)
+        return;
+
     QPainter paint(this);
     drawFrame(&paint);
 }
@@ -568,6 +580,16 @@ void QFrame::drawFrame(QPainter *p)
         }
         break;
     }
+
+#ifdef QT_KEYPAD_NAVIGATION
+    if (QApplication::keypadNavigationEnabled() && hasFocus()) {
+        QStyleOptionFocusRect fopt;
+        fopt.init(this);
+        fopt.state |= QStyle::State_KeyboardFocusChange;
+        fopt.rect = frameRect();
+        style()->drawPrimitive(QStyle::PE_FrameFocusRect, &fopt, p, this);
+    }
+#endif
 }
 
 
@@ -581,4 +603,8 @@ void QFrame::changeEvent(QEvent *ev)
     QWidget::changeEvent(ev);
 }
 
-
+/*! \reimp */
+bool QFrame::event(QEvent *e)
+{
+    return QWidget::event(e);
+}

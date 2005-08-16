@@ -40,6 +40,16 @@ inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval
     return static_cast<int>(ret);
 }
 
+inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
+{
+    return q_atomic_test_and_set_int(ptr, expected, newval);
+}
+
+inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval)
+{
+    return q_atomic_test_and_set_int(ptr, expected, newval);
+}
+
 inline int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval)
 {
     return q_atomic_test_and_set_int(reinterpret_cast<volatile int *>(ptr),
@@ -62,7 +72,7 @@ inline int q_atomic_increment(volatile int *ptr)
 inline int q_atomic_decrement(volatile int *ptr)
 {
     unsigned char ret;
-    asm volatile("lock\n" 
+    asm volatile("lock\n"
                  "decl %0\n"
                  "setne %1"
                  : "=m" (*ptr), "=qm" (ret)
@@ -96,6 +106,16 @@ extern "C" {
     Q_CORE_EXPORT int q_atomic_set_int(volatile int *ptr, int newval);
     Q_CORE_EXPORT void *q_atomic_set_ptr(volatile void *ptr, void *newval);
 } // extern "C"
+
+inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
+{
+    return q_atomic_test_and_set_int(ptr, expected, newval);
+}
+
+inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval)
+{
+    return q_atomic_test_and_set_int(ptr, expected, newval);
+}
 
 #endif
 

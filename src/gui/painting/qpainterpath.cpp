@@ -293,10 +293,11 @@ QPainterPath::~QPainterPath()
 }
 
 /*!
-    Closes the current subpath. If the subpath does not contain any
-    elements, the function does nothing. A new subpath is automatically
-    begun when the current subpath is closed. The current point of the
-    new path is (0, 0).
+    Closes the current subpath by drawing a line to the beginning of
+    the subpath. If the subpath does not contain any elements, the
+    function does nothing. A new subpath is automatically begun when
+    the current subpath is closed. The current point of the new path
+    is (0, 0).
  */
 void QPainterPath::closeSubpath()
 {
@@ -308,7 +309,6 @@ void QPainterPath::closeSubpath()
     detach();
 
     d_func()->close();
-    moveTo(QPointF(0, 0));
 }
 
 /*!
@@ -342,6 +342,9 @@ void QPainterPath::moveTo(const QPointF &p)
 
     QPainterPathData *d = d_func();
     Q_ASSERT(!d->elements.isEmpty());
+
+    d->require_moveTo = false;
+
     if (d->elements.last().type == MoveToElement) {
         d->elements.last().x = p.x();
         d->elements.last().y = p.y();
@@ -383,6 +386,7 @@ void QPainterPath::lineTo(const QPointF &p)
 
     QPainterPathData *d = d_func();
     Q_ASSERT(!d->elements.isEmpty());
+    d->maybeMoveTo();
     if (p == QPointF(d->elements.last()))
         return;
     Element elm = { p.x(), p.y(), LineToElement };
@@ -426,10 +430,13 @@ void QPainterPath::cubicTo(const QPointF &c1, const QPointF &c2, const QPointF &
     QPainterPathData *d = d_func();
     Q_ASSERT(!d->elements.isEmpty());
 
+
     // Abort on empty curve as a stroker cannot handle this and the
     // curve is irrelevant anyway.
     if (d->elements.last() == c1 && c1 == c2 && c2 == e)
         return;
+
+    d->maybeMoveTo();
 
     Element ce1 = { c1.x(), c1.y(), CurveToElement };
     Element ce2 = { c2.x(), c2.y(), CurveToDataElement };
@@ -565,7 +572,9 @@ void QPainterPath::arcTo(const QRectF &rect, qreal startAngle, qreal sweepLength
 */
 QPointF QPainterPath::currentPosition() const
 {
-    return isEmpty() ? QPointF() : QPointF(d_func()->elements.last().x, d_func()->elements.last().y);
+    return !d_ptr || d_func()->elements.isEmpty()
+        ? QPointF()
+        : QPointF(d_func()->elements.last().x, d_func()->elements.last().y);
 }
 
 
@@ -608,11 +617,12 @@ void QPainterPath::addRect(const QRectF &r)
     Element l4 = { r.x(), r.y(), LineToElement };
 
     d_func()->elements << l1 << l2 << l3 << l4;
+    d_func()->require_moveTo = true;
 }
 
 /*!
     Adds the \a polygon to path as a new subpath. Current position
-    after the rect has been added is the last point in \a polygon.
+    after the polygon has been added is the last point in \a polygon.
 */
 void QPainterPath::addPolygon(const QPolygonF &polygon)
 {
@@ -675,6 +685,7 @@ void QPainterPath::addEllipse(const QRectF &boundingRect)
     cubicTo(pts[3], pts[4], pts[5]);           // 270 -> 180
     cubicTo(pts[6], pts[7], pts[8]);           // 180 -> 90
     cubicTo(pts[9], pts[10], pts[11]);         // 90 - >0
+    d_func()->require_moveTo = true;
 }
 
 /*!
@@ -730,21 +741,21 @@ void QPainterPath::addText(const QPointF &point, const QFont &f, const QString &
                                  ? QTextItem::RenderFlags(QTextItem::RightToLeft)
                                  : QTextItem::RenderFlags(0));
 
-            const qreal lw = fe->lineThickness();
+            const qreal lw = fe->lineThickness().toReal();
             if (f.d->underline) {
-                qreal pos = fe->underlinePosition();
-                addRect(x, y + pos, si.width, lw);
+                qreal pos = fe->underlinePosition().toReal();
+                addRect(x, y + pos, si.width.toReal(), lw);
             }
             if (f.d->overline) {
-                qreal pos = fe->ascent() + 1;
-                addRect(x, y - pos, si.width, lw);
+                qreal pos = fe->ascent().toReal() + 1;
+                addRect(x, y - pos, si.width.toReal(), lw);
             }
             if (f.d->strikeOut) {
-                qreal pos = fe->ascent() / 3;
-                addRect(x, y - pos, si.width, lw);
+                qreal pos = fe->ascent().toReal() / 3;
+                addRect(x, y - pos, si.width.toReal(), lw);
             }
         }
-        x += si.width;
+        x += si.width.toReal();
     }
 }
 
@@ -769,6 +780,8 @@ void QPainterPath::addPath(const QPainterPath &other)
     int cStart = d->elements.size() + other.d_func()->cStart;
     d->elements += other.d_func()->elements;
     d->cStart = cStart;
+
+    d->require_moveTo = other.d_func()->isClosed();
 }
 
 
@@ -1160,6 +1173,9 @@ QPolygonF QPainterPath::toFillPolygon(const QMatrix &matrix) const
 
     \sa toSubpathPolygons(), toFillPolygon()
 */
+
+// #define QPP_FILLPOLYGONS_DEBUG
+
 QList<QPolygonF> QPainterPath::toFillPolygons(const QMatrix &matrix) const
 {
     QList<QPolygonF> polys;
@@ -1174,20 +1190,27 @@ QList<QPolygonF> QPainterPath::toFillPolygons(const QMatrix &matrix) const
     for (int i=0; i<count; ++i)
         bounds += subpaths.at(i).boundingRect();
 
+#ifdef QPP_FILLPOLYGONS_DEBUG
+    printf("QPainterPath::toFillPolygons, subpathCount=%d\n", count);
+    for (int i=0; i<bounds.size(); ++i)
+        qDebug() << " bounds" << i << bounds.at(i);
+#endif
+
     QVector< QList<int> > isects;
     isects.resize(count);
 
+    // find all intersections
     for (int j=0; j<count; ++j) {
         QRectF cbounds = bounds.at(j);
-        for (int i=j+1; i<count; ++i) {
+        for (int i=0; i<count; ++i) {
             if (cbounds.intersects(bounds.at(i))) {
                 isects[j] << i;
             }
         }
     }
 
-
-#if QPP_FILLPOLYGONS_DEBUG
+#ifdef QPP_FILLPOLYGONS_DEBUG
+    printf("Intersections before flattening:\n");
     for (int i = 0; i < count; ++i) {
         printf("%d: ", i);
         for (int j = 0; j < isects[i].size(); ++j) {
@@ -1197,41 +1220,44 @@ QList<QPolygonF> QPainterPath::toFillPolygons(const QMatrix &matrix) const
     }
 #endif
 
+    // flatten the sets of intersections
     for (int i=0; i<count; ++i) {
-        if (isects[i].isEmpty()) {
-            polys += subpaths.at(i);
-            // Close if not closed...
-            if (!subpaths.at(i).isClosed())
-                polys[polys.size()-1] += subpaths.at(i).first();
-        } else {
-            QList<int> l = isects[i];
-            if (l.first() == -1)
+        const QList<int> &current_isects = isects.at(i);
+        for (int j=0; j<current_isects.size(); ++j) {
+            int isect_j = current_isects.at(j);
+            if (isect_j == i)
                 continue;
-            QPolygonF buildUp = subpaths.at(i);
-            QPointF rewindPt = buildUp.first();
-            // Close if not closed...
-            if (!buildUp.isClosed())
-                buildUp += rewindPt;
-
-            for (int il=0; il<l.size(); ++il) {
-                const QList<int> &currentISects = isects.at(l.at(il));
-
-                // Insert only unique new polys
-                for (int ai=0; ai<currentISects.size(); ++ai)
-                    if (!l.contains(currentISects.at(ai)) && currentISects.at(ai) != -1)
-                        l.append(currentISects.at(ai));
-
-                // They are added to current so skip for later.
-                isects[l.at(il)].clear();
-                isects[l.at(il)] += -1;
-
-                // Add path to current buildup.
-                buildUp += subpaths.at(l.at(il));
-                if (!subpaths.at(l.at(il)).isClosed())
-                    buildUp += subpaths.at(l.at(il)).first();
-                buildUp += rewindPt;
+            for (int k=0; k<isects[isect_j].size(); ++k) {
+                int isect_k = isects[isect_j][k];
+                if (isect_k != i && !isects.at(i).contains(isect_k)) {
+                    isects[i] += isect_k;
+                }
             }
+            isects[isect_j].clear();
+        }
+    }
 
+#ifdef QPP_FILLPOLYGONS_DEBUG
+    printf("Intersections after flattening:\n");
+    for (int i = 0; i < count; ++i) {
+        printf("%d: ", i);
+        for (int j = 0; j < isects[i].size(); ++j) {
+            printf("%d ", isects[i][j]);
+        }
+        printf("\n");
+    }
+#endif
+
+    // Join the intersected subpaths as rewinded polygons
+    for (int i=0; i<count; ++i) {
+        const QList<int> &subpath_list = isects[i];
+        if (!subpath_list.isEmpty()) {
+            QPolygonF buildUp;
+            for (int j=0; j<subpath_list.size(); ++j) {
+                buildUp += subpaths.at(subpath_list.at(j));
+                if (!buildUp.isClosed())
+                    buildUp += buildUp.first();
+            }
             polys += buildUp;
         }
     }
@@ -1776,6 +1802,55 @@ void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
                                      qt_fixed_to_real(ex), qt_fixed_to_real(ey));
 }
 
+/*!
+    \since 4.1
+    \class QPainterPathStroker
+
+    \brief The QPainterPathStroker class is used to generate fillable
+    outlines for a given painter path.
+
+    By calling the createStroke() function, passing a given
+    QPainterPath as argument, a new painter path representing the
+    outline of the given path is created. The newly created painter
+    path can then be filled to draw the original painter path's
+    outline.
+
+    You can control the various design aspects (width, cap styles,
+    join styles and dash pattern) of the outlining using the following
+    functions:
+
+    \list
+    \o setWidth()
+    \o setCapStyle()
+    \o setJoinStyle()
+    \o setDashPattern()
+    \endlist
+
+    The setDashPattern() function accepts both a Qt::PenStyle object
+    and a vector representation of the pattern as argument.
+
+    In addition you can specify a curve's threshold, controlling the
+    granularity with which a curve is drawn, using the
+    setCurveThreshold() fucntion. The default threshold is a well
+    adjusted value (0.25), and normally you should not need to modify
+    it. However, you can make the curve's appearance smoother by
+    decreasing its value.
+
+    You can also control the miter limit for the generated outline
+    using the setMiterLimit() function. The miter limit describes how
+    far from each join the miter join can extend. The limit is
+    specified in the units of width so the pixelwise miter limit will
+    be \c {miterlimit * width}. This value is only used if the join
+    style is Qt::MiterJoin.
+
+    The painter path generated by the createStroke() function should
+    only be used for outlining the given painter path. Otherwise it
+    may cause unexpected behavior. Generated outlines also require the
+    Qt::WindingFill rule which is set by default.
+
+    \sa QPen, QBrush
+*/
+
 class QPainterPathStrokerPrivate
 {
 public:
@@ -1790,12 +1865,17 @@ public:
     QVector<qfixed> dashPattern;
 };
 
-
+/*!
+   Creates a new stroker.
+ */
 QPainterPathStroker::QPainterPathStroker()
     : d_ptr(new QPainterPathStrokerPrivate)
 {
 }
 
+/*!
+    Destroys the stroker.
+*/
 QPainterPathStroker::~QPainterPathStroker()
 {
     delete d_ptr;
@@ -1803,7 +1883,17 @@ QPainterPathStroker::~QPainterPathStroker()
 
 
 /*!
-  Creates a new stroke from the path \a input.
+    Generates a new path that is a fillable area representing the
+    outline of the given \a path.
+
+    The various design aspects of the outline are based on the
+    stroker's properties: width(), capStyle(), joinStyle(),
+    dashPattern(), curveThreshold() and miterLimit().
+
+    The generated path should only be used for outlining the given
+    painter path. Otherwise it may cause unexpected
+    behavior. Generated outlines also require the Qt::WindingFill rule
+    which is set by default.
 */
 QPainterPath QPainterPathStroker::createStroke(const QPainterPath &path) const
 {
@@ -1820,6 +1910,12 @@ QPainterPath QPainterPathStroker::createStroke(const QPainterPath &path) const
     return stroke;
 }
 
+/*!
+    Sets the width of the generated outline painter path to \a width.
+
+    The generated outlines will extend approximately 50% of \a width
+    to each side of the given input path's original outline.
+*/
 void QPainterPathStroker::setWidth(qreal width)
 {
     Q_D(QPainterPathStroker);
@@ -1828,57 +1924,111 @@ void QPainterPathStroker::setWidth(qreal width)
     d->stroker.setStrokeWidth(qt_real_to_fixed(width));
 }
 
+/*!
+    Returns the width of the generated outlines.
+*/
 qreal QPainterPathStroker::width() const
 {
     return qt_fixed_to_real(d_func()->stroker.strokeWidth());
 }
 
+
+/*!
+    Sets the cap style of the generated outlines to \a style.  If a
+    dash pattern is set, each segment of the pattern is subject to the
+    cap \a style.
+*/
 void QPainterPathStroker::setCapStyle(Qt::PenCapStyle style)
 {
     d_func()->stroker.setCapStyle(style);
 }
 
+
+/*!
+    Returns the cap style of the generated outlines.
+*/
 Qt::PenCapStyle QPainterPathStroker::capStyle() const
 {
     return d_func()->stroker.capStyle();
 }
 
+/*!
+    Sets the join style of the generated outlines to \a style.
+*/
 void QPainterPathStroker::setJoinStyle(Qt::PenJoinStyle style)
 {
     d_func()->stroker.setJoinStyle(style);
 }
 
+/*!
+    Returns the join style of the generated outlines.
+*/
 Qt::PenJoinStyle QPainterPathStroker::joinStyle() const
 {
     return d_func()->stroker.joinStyle();
 }
 
+/*!
+    Sets the miter limit of the generated outlines to \a limit.
+
+    The miter limit describes how far from each join the miter join
+    can extend. The limit is specified in units of the currently set
+    width. So the pixelwise miter limit will be \c { miterlimit *
+    width}.
+
+    This value is only used if the join style is Qt::MiterJoin.
+*/
 void QPainterPathStroker::setMiterLimit(qreal limit)
 {
     d_func()->stroker.setMiterLimit(qt_real_to_fixed(limit));
 }
 
+/*!
+    Returns the miter limit for the generated outlines.
+*/
 qreal QPainterPathStroker::miterLimit() const
 {
     return qt_fixed_to_real(d_func()->stroker.miterLimit());
 }
 
 
+/*!
+    Specifies the curve flattening \a threshold, controlling the
+    granularity with which the generated outlines' curve is drawn.
+
+    The default threshold is a well adjusted value (0.25), and
+    normally you should not need to modify it. However, you can make
+    the curve's appearance smoother by decreasing its value.
+*/
 void QPainterPathStroker::setCurveThreshold(qreal threshold)
 {
     d_func()->stroker.setCurveThreshold(qt_real_to_fixed(threshold));
 }
 
+/*!
+    Returns the curve flattening threshold for the generated
+    outlines.
+*/
 qreal QPainterPathStroker::curveThreshold() const
 {
     return qt_fixed_to_real(d_func()->stroker.curveThreshold());
 }
 
+/*!
+    Sets the dash pattern for the generated outlines to \a style.
+*/
 void QPainterPathStroker::setDashPattern(Qt::PenStyle style)
 {
     d_func()->dashPattern = QDashStroker::patternForStyle(style);
 }
 
+/*!
+    \overload
+
+    Sets the dash pattern for the generated outlines to \a
+    dashPattern.  This function makes it possible to specify custom
+    dash patterns.
+*/
 void QPainterPathStroker::setDashPattern(const QVector<qreal> &dashPattern)
 {
     d_func()->dashPattern.clear();
@@ -1886,6 +2036,9 @@ void QPainterPathStroker::setDashPattern(const QVector<qreal> &dashPattern)
         d_func()->dashPattern << qt_real_to_fixed(dashPattern.at(i));
 }
 
+/*!
+    Returns the dash pattern for the generated outlines.
+*/
 QVector<qreal> QPainterPathStroker::dashPattern() const
 {
     return d_func()->dashPattern;

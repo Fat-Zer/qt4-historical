@@ -15,6 +15,7 @@ HEADERS +=  \
 	tools/qlist.h \
 	tools/qlocale.h \
 	tools/qlocale_p.h \
+	tools/qlocale_data_p.h \
 	tools/qmap.h \
         tools/qpoint.h \
 	tools/qqueue.h \
@@ -77,4 +78,4 @@ contains(QT_CONFIG, zlib) {
 #  win32:LIBS += libz.lib
 }
 
-
+unix:LIBS += -lm

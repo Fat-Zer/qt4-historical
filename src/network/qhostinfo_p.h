@@ -24,16 +24,27 @@
 #ifndef QHOSTINFO_P_H
 #define QHOSTINFO_P_H
 
-#include <qcoreapplication.h>
-#include <private/qcoreapplication_p.h>
-#include "qhostinfo.h"
-#include <qmutex.h>
-#include <qwaitcondition.h>
-#include <qobject.h>
-#include <qpointer.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtCore/qcoreapplication.h"
+#include "private/qcoreapplication_p.h"
+#include "QtNetwork/qhostinfo.h"
+#include "QtCore/qmutex.h"
+#include "QtCore/qwaitcondition.h"
+#include "QtCore/qobject.h"
+#include "QtCore/qpointer.h"
 
 #if !defined QT_NO_THREAD
-#include <qthread.h>
+#include "QtCore/qthread.h"
 #    define QHostInfoAgentBase QThread
 #else
 #    define QHostInfoAgentBase QObject
@@ -49,7 +60,7 @@ public:
     }
 
     int lookupId;
-signals:
+Q_SIGNALS:
     void resultsReady(const QHostInfo &info);
 };
 
@@ -74,6 +85,7 @@ public:
         connect(QCoreApplication::instance(), SIGNAL(destroyed(QObject *)), this, SLOT(cleanup()));
         QCoreApplicationPrivate::moveToMainThread(this);
         quit = false;
+        pendingQueryId = -1;
     }
     inline ~QHostInfoAgent()
     { cleanup(); }
@@ -95,13 +107,15 @@ public:
             QHostInfoResult *result = queries.at(i)->object;
             if (result->lookupId == id) {
                 result->disconnect();
-                queries.removeAt(i);
-                break;
-            }                
+                delete queries.takeAt(i);
+                return;
+            }
         }
+        if (pendingQueryId == id)
+            pendingQueryId = -1;
     }
 
-public slots:
+public Q_SLOTS:
     inline void cleanup()
     {
         {
@@ -121,6 +135,7 @@ private:
     QMutex mutex;
     QWaitCondition cond;
     bool quit;
+    int pendingQueryId;
 };
 
 class QHostInfoPrivate

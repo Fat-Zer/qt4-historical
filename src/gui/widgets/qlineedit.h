@@ -24,16 +24,15 @@
 #ifndef QLINEEDIT_H
 #define QLINEEDIT_H
 
-class QValidator;
-class QMenu;
-
-#include "QtGui/qframe.h"
-#include "QtCore/qstring.h"
+#include <QtGui/qframe.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Gui)
 
 #ifndef QT_NO_LINEEDIT
 
+class QValidator;
+class QMenu;
 class QLineEditPrivate;
 
 class Q_GUI_EXPORT QLineEdit : public QWidget
@@ -42,7 +41,7 @@ class Q_GUI_EXPORT QLineEdit : public QWidget
 
     Q_ENUMS(EchoMode)
     Q_PROPERTY(QString inputMask READ inputMask WRITE setInputMask)
-    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged USER true)
     Q_PROPERTY(int maxLength READ maxLength WRITE setMaxLength)
     Q_PROPERTY(bool frame READ hasFrame WRITE setFrame)
     Q_PROPERTY(EchoMode echoMode READ echoMode WRITE setEchoMode)
@@ -127,7 +126,7 @@ public:
     void setInputMask(const QString &inputMask);
     bool hasAcceptableInput() const;
 
-public slots:
+public Q_SLOTS:
     void setText(const QString &);
     void clear();
     void selectAll();
@@ -146,7 +145,7 @@ public:
     QMenu *createStandardContextMenu();
 #endif
     
-signals:
+Q_SIGNALS:
     void textChanged(const QString &);
     void textEdited(const QString &);
     void cursorPositionChanged(int, int);
@@ -200,7 +199,7 @@ public:
     QT3_SUPPORT int characterAt(int, QChar*) const;
     QT3_SUPPORT bool getSelection(int *, int *);
 
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void lostFocus();
 #endif
 
@@ -208,6 +207,7 @@ private:
     Q_DISABLE_COPY(QLineEdit)
     Q_DECLARE_PRIVATE(QLineEdit)
     Q_PRIVATE_SLOT(d_func(), void clipboardChanged())
+    Q_PRIVATE_SLOT(d_func(), void deleteSelected())
 };
 
 #endif // QT_NO_LINEEDIT

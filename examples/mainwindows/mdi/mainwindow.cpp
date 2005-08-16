@@ -129,6 +129,7 @@ void MainWindow::updateMenus()
     closeAllAct->setEnabled(hasMdiChild);
     tileAct->setEnabled(hasMdiChild);
     cascadeAct->setEnabled(hasMdiChild);
+    arrangeAct->setEnabled(hasMdiChild);
     nextAct->setEnabled(hasMdiChild);
     previousAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
@@ -147,6 +148,7 @@ void MainWindow::updateWindowMenu()
     windowMenu->addSeparator();
     windowMenu->addAction(tileAct);
     windowMenu->addAction(cascadeAct);
+    windowMenu->addAction(arrangeAct);
     windowMenu->addSeparator();
     windowMenu->addAction(nextAct);
     windowMenu->addAction(previousAct);
@@ -160,11 +162,11 @@ void MainWindow::updateWindowMenu()
 
         QString text;
         if (i < 9) {
-            text = tr("&%1. %2").arg(i + 1)
-                                .arg(child->userFriendlyCurrentFile());
-        } else {
-            text = tr("%1. %2").arg(i + 1)
+            text = tr("&%1 %2").arg(i + 1)
                                .arg(child->userFriendlyCurrentFile());
+        } else {
+            text = tr("%1 %2").arg(i + 1)
+                              .arg(child->userFriendlyCurrentFile());
         }
         QAction *action  = windowMenu->addAction(text);
         action->setCheckable(true);
@@ -249,6 +251,10 @@ void MainWindow::createActions()
     cascadeAct = new QAction(tr("&Cascade"), this);
     cascadeAct->setStatusTip(tr("Cascade the windows"));
     connect(cascadeAct, SIGNAL(triggered()), workspace, SLOT(cascade()));
+
+    arrangeAct = new QAction(tr("Arrange &icons"), this);
+    arrangeAct->setStatusTip(tr("Arrange the icons"));
+    connect(arrangeAct, SIGNAL(triggered()), workspace, SLOT(arrangeIcons()));
 
     nextAct = new QAction(tr("Ne&xt"), this);
     nextAct->setShortcut(tr("Ctrl+F6"));

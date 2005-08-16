@@ -25,6 +25,7 @@
 #include "abstractformwindow.h"
 #include "qdesigner_command_p.h"
 #include "qtundo_p.h"
+#include "orderdialog_p.h"
 
 #include <QtDesigner/QtDesigner>
 #include <QtDesigner/QExtensionManager>
@@ -33,6 +34,8 @@
 #include <QtGui/QAction>
 #include <QtGui/qevent.h>
 #include <QtCore/qdebug.h>
+
+using namespace qdesigner_internal;
 
 QDesignerStackedWidget::QDesignerStackedWidget(QWidget *parent)
     : QStackedWidget(parent), m_actionDeletePage(0)
@@ -69,8 +72,16 @@ QDesignerStackedWidget::QDesignerStackedWidget(QWidget *parent)
     m_actionDeletePage = new QAction(tr("Delete Page"), this);
     connect(m_actionDeletePage, SIGNAL(triggered()), this, SLOT(removeCurrentPage()));
 
-    m_actionInsertPage = new QAction(tr("Add Page"), this);
+    m_actionInsertPage = new QAction(tr("Before Current Page"), this);
     connect(m_actionInsertPage, SIGNAL(triggered()), this, SLOT(addPage()));
+
+    m_actionInsertPageAfter = new QAction(tr("After Current Page"), this);
+    connect(m_actionInsertPageAfter, SIGNAL(triggered()), this, SLOT(addPageAfter()));
+
+    m_actionChangePageOrder = new QAction(tr("Change Page Order..."), this);
+    connect(m_actionChangePageOrder, SIGNAL(triggered()), this, SLOT(changeOrder()));
+
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 }
 
 void QDesignerStackedWidget::removeCurrentPage()
@@ -85,11 +96,49 @@ void QDesignerStackedWidget::removeCurrentPage()
     }
 }
 
+void QDesignerStackedWidget::changeOrder()
+{
+    QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this);
+    
+    if (!fw)
+        return;
+
+    OrderDialog *dlg = new OrderDialog(fw, this);
+
+    QList<QWidget*> wList;
+    for(int i=0; i<count(); ++i) {
+        wList.append(widget(i));
+    }
+    dlg->setPageList(&wList);
+
+    if (dlg->exec() == QDialog::Accepted)
+    {
+        fw->beginCommand(tr("Change Page Order"));
+        for(int i=0; i<wList.count(); ++i) {
+            if (wList.at(i) == widget(i))
+                continue;
+            MoveStackedWidgetCommand *cmd = new MoveStackedWidgetCommand(fw);
+            cmd->init(this, wList.at(i), i);
+            fw->commandHistory()->push(cmd);
+        }
+        fw->endCommand();
+    }
+}
+
 void QDesignerStackedWidget::addPage()
 {
     if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this)) {
         AddStackedWidgetPageCommand *cmd = new AddStackedWidgetPageCommand(fw);
-        cmd->init(this);
+        cmd->init(this, AddStackedWidgetPageCommand::InsertBefore);
+        fw->commandHistory()->push(cmd);
+    }
+}
+
+void QDesignerStackedWidget::addPageAfter()
+{
+    if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this)) {
+        AddStackedWidgetPageCommand *cmd = new AddStackedWidgetPageCommand(fw);
+        cmd->init(this, AddStackedWidgetPageCommand::InsertAfter);
         fw->commandHistory()->push(cmd);
     }
 }
@@ -197,3 +246,14 @@ void QDesignerStackedWidget::setCurrentPageName(const QString &pageName)
         w->setObjectName(pageName);
     }
 }
+
+void QDesignerStackedWidget::slotCurrentChanged(int index)
+{
+    if (widget(index)) {
+        if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this)) {
+            fw->clearSelection();
+            fw->selectWidget(this, true);
+        }
+    }
+}
+

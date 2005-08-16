@@ -62,7 +62,10 @@ class Q_GUI_EXPORT QTextEdit : public QAbstractScrollArea
     QDOC_PROPERTY(QTextOption::WrapMode wordWrapMode READ wordWrapMode WRITE setWordWrapMode)
     Q_PROPERTY(int lineWrapColumnOrWidth READ lineWrapColumnOrWidth WRITE setLineWrapColumnOrWidth)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
-    Q_PROPERTY(QString html READ toHtml WRITE setHtml)
+    Q_PROPERTY(QString html READ toHtml WRITE setHtml NOTIFY textChanged USER true)
+    Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
+    Q_PROPERTY(int tabStopWidth READ tabStopWidth WRITE setTabStopWidth)
+    Q_PROPERTY(bool acceptRichText READ acceptRichText WRITE setAcceptRichText)
 public:
     enum LineWrapMode {
         NoWrap,
@@ -158,8 +161,6 @@ public:
     inline QString toHtml() const
     { return document()->toHtml(); }
 
-    void append(const QString &text);
-
     void ensureCursorVisible();
 
     virtual QVariant loadResource(int type, const QUrl &name);
@@ -173,7 +174,16 @@ public:
 
     QString anchorAt(const QPoint& pos) const;
 
-public slots:
+    bool overwriteMode() const;
+    void setOverwriteMode(bool overwrite);
+
+    int tabStopWidth() const;
+    void setTabStopWidth(int width);
+    
+    bool acceptRichText() const;
+    void setAcceptRichText(bool accept);
+
+public Q_SLOTS:
     void setFontPointSize(qreal s);
     void setFontFamily(const QString &fontFamily);
     void setFontWeight(int w);
@@ -198,12 +208,14 @@ public slots:
     void insertPlainText(const QString &text);
     void insertHtml(const QString &text);
 
+    void append(const QString &text);
+
     void scrollToAnchor(const QString &name);
 
     void zoomIn(int range = 1);
     void zoomOut(int range = 1);
 
-signals:
+Q_SIGNALS:
     void textChanged();
     void undoAvailable(bool b);
     void redoAvailable(bool b);
@@ -213,9 +225,13 @@ signals:
     void cursorPositionChanged();
 
 protected:
+    virtual bool event(QEvent *e);
     virtual void timerEvent(QTimerEvent *e);
     virtual void keyPressEvent(QKeyEvent *e);
-    virtual void resizeEvent(QResizeEvent *);
+#ifdef QT_KEYPAD_NAVIGATION
+    virtual void keyReleaseEvent(QKeyEvent *e);
+#endif
+    virtual void resizeEvent(QResizeEvent *e);
     virtual void paintEvent(QPaintEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseMoveEvent(QMouseEvent *e);
@@ -246,8 +262,10 @@ protected:
 
     QTextEdit(QTextEditPrivate &dd, QWidget *parent);
 
+    virtual void scrollContentsBy(int dx, int dy);
+
 #ifdef QT3_SUPPORT
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void currentFontChanged(const QFont &f);
     QT_MOC_COMPAT void currentColorChanged(const QColor &c);
 
@@ -266,6 +284,9 @@ public:
     inline QT3_SUPPORT void sync() {}
 
     QT3_SUPPORT void moveCursor(CursorAction action, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
+    inline QT3_SUPPORT void moveCursor(CursorAction action, bool select) {
+        moveCursor(action, select ? QTextCursor::KeepAnchor : QTextCursor::MoveAnchor);
+    }
 
     enum KeyboardAction {
         ActionBackspace,
@@ -314,7 +335,7 @@ public:
     inline QT3_SUPPORT QColor color() const
     { return textColor(); }
 
-public slots:
+public Q_SLOTS:
     inline QT_MOC_COMPAT void setModified(bool m = true)
     { document()->setModified(m); }
     inline QT_MOC_COMPAT void undo() const
@@ -333,7 +354,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void updateCurrentCharFormatAndSelection())
     Q_PRIVATE_SLOT(d_func(), void adjustScrollbars())
     Q_PRIVATE_SLOT(d_func(), void emitCursorPosChanged(const QTextCursor &))
+    Q_PRIVATE_SLOT(d_func(), void deleteSelected())
 };
 
 #endif // QT_NO_TEXTEDIT
+
 #endif // QTEXTEDIT_H

@@ -34,14 +34,14 @@
 #include "qstringlist.h"
 #include "qlibrary.h"
 
-#ifdef QT_THREAD_SUPPORT
-#  include <private/qmutexpool_p.h>
-#endif // QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
+#  include "private/qmutexpool_p.h"
+#endif
 
-#include "shlobj.h"
+#include <shlobj.h>
 
 #ifdef Q_OS_TEMP
-#include "commdlg.h"
+#include <commdlg.h>
 #endif
 
 
@@ -61,7 +61,7 @@ static void resolveLibs()
     static bool triedResolve = false;
 
     if (!triedResolve) {
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
         // protect initialization
         QMutexLocker locker(qt_global_mutexpool ?
                              qt_global_mutexpool->get(&triedResolve) : 0);
@@ -591,9 +591,9 @@ static int __stdcall winGetExistDirCallbackProc(HWND hwnd,
         if (!initDir->isEmpty()) {
             // ### Lars asks: is this correct for the A version????
             QT_WA({
-                SendMessage(hwnd, BFFM_SETSELECTION, true, Q_ULONG(initDir->ucs2()));
+                SendMessage(hwnd, BFFM_SETSELECTION, TRUE, Q_ULONG(initDir->ucs2()));
             } , {
-                SendMessageA(hwnd, BFFM_SETSELECTION, true, Q_ULONG(initDir->ucs2()));
+                SendMessageA(hwnd, BFFM_SETSELECTION, TRUE, Q_ULONG(initDir->ucs2()));
             });
         }
     } else if (uMsg == BFFM_SELCHANGED) {

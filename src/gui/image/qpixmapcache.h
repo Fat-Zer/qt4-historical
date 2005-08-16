@@ -24,11 +24,11 @@
 #ifndef QPIXMAPCACHE_H
 #define QPIXMAPCACHE_H
 
-#include "QtGui/qpixmap.h"
+#include <QtGui/qpixmap.h>
 
 QT_MODULE(Gui)
 
-class Q_GUI_EXPORT QPixmapCache                                // global pixmap cache
+class Q_GUI_EXPORT QPixmapCache
 {
 public:
     static int cacheLimit();

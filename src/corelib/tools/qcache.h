@@ -24,7 +24,7 @@
 #ifndef QCACHE_H
 #define QCACHE_H
 
-#include "QtCore/qhash.h"
+#include <QtCore/qhash.h>
 
 QT_MODULE(Core)
 
@@ -165,4 +165,4 @@ void QCache<Key,T>::trim(int m)
     }
 }
 
-#endif
+#endif // QCACHE_H

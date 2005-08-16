@@ -259,9 +259,6 @@ QMouseEvent::QMouseEvent(Type type, const QPoint &pos, const QPoint &globalPos,
 
     Returns the button that caused the event.
 
-    Possible return values are Qt::LeftButton, Qt::RightButton,
-    Qt::MidButton, and Qt::NoButton.
-
     Note that the returned value is always Qt::NoButton for mouse
     move events.
 
@@ -827,7 +824,7 @@ Qt::FocusReason QFocusEvent::reason()
     erased with the widget's background; otherwise returns false.
 
     Qt 4 \e always erases regions that require painting. The exception
-    to this rule is if the widget sets the Qt::WA_NoBackground or
+    to this rule is if the widget sets the Qt::WA_OpaquePaintEvent or
     Qt::WA_NoSystemBackground attributes. If either one of those
     attributes is set \e and the window system does not make use of
     subwidget alpha composition (currently X11 and Windows, but this
@@ -892,19 +889,14 @@ QPaintEvent::~QPaintEvent()
 */
 
 
-#ifdef Q_WS_QWS
-QWSUpdateEvent::QWSUpdateEvent(const QRegion& paintRegion)
-    : QPaintEvent(paintRegion)
-{ t = QWSUpdate; }
-
-QWSUpdateEvent::QWSUpdateEvent(const QRect &paintRect)
-    : QPaintEvent(paintRect)
-{ t = QWSUpdate; }
-
-QWSUpdateEvent::~QWSUpdateEvent()
+QUpdateLaterEvent::QUpdateLaterEvent(const QRegion& paintRegion)
+    : QEvent(UpdateLater), m_region(paintRegion)
 {
 }
-#endif
+
+QUpdateLaterEvent::~QUpdateLaterEvent()
+{
+}
 
 
 /*!
@@ -1572,6 +1564,8 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
     \value Stylus  A Stylus.
     \value Airbrush An airbrush
     \value FourDMouse A 4D Mouse.
+    \value RotationStylus A special stylus that also knows about rotation
+           (a 6D stylus). \since 4.1
     \omitvalue XFreeEraser
 */
 
@@ -2041,7 +2035,7 @@ QWidget* QDropEvent::source() const
 
 void QDropEvent::setDropAction(Qt::DropAction action)
 {
-    if (!(action & act))
+    if (!(action & act) && action != Qt::IgnoreAction)
         action = Qt::CopyAction;
     drop_action = action;
 }
@@ -2917,7 +2911,44 @@ QWindowStateChangeEvent::QWindowStateChangeEvent(Qt::WindowStates s)
 }
 
 /*! \internal
+ */
+QWindowStateChangeEvent::QWindowStateChangeEvent(Qt::WindowStates s, bool isOverride)
+    : QEvent(WindowStateChange), ostate(s)
+{
+    if (isOverride)
+        d = (QEventPrivate*)(this);
+}
+
+/*! \internal
+ */
+bool QWindowStateChangeEvent::isOverride() const
+{
+    return (d != 0);
+}
+
+/*! \internal
 */
 QWindowStateChangeEvent::~QWindowStateChangeEvent()
 {
 }
+
+#ifdef QT3_SUPPORT
+
+/*!
+    \class QMenubarUpdatedEvent
+    \internal
+    Event sent by QMenuBar to tell Q3Workspace to update itself.
+*/
+
+/*! \internal
+
+*/
+QMenubarUpdatedEvent::QMenubarUpdatedEvent(QMenuBar * const menuBar)
+:QEvent(QEvent::MenubarUpdated), m_menuBar(menuBar) {}
+
+/*!
+    \fn QMenuBar *QMenubarUpdatedEvent::menuBar()
+    \internal
+*/
+
+#endif

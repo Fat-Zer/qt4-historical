@@ -323,7 +323,6 @@ bool QSQLite2Driver::hasFeature(DriverFeature f) const
         return true;
     case Unicode:
         return d->utf8;
-//   case BLOB:
     default:
         return false;
     }

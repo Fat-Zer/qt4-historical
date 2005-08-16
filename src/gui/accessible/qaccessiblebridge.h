@@ -24,8 +24,8 @@
 #ifndef QACCESSIBLEBRIDGE_H
 #define QACCESSIBLEBRIDGE_H
 
-#include "QtCore/qplugin.h"
-#include "QtCore/qfactoryinterface.h"
+#include <QtCore/qplugin.h>
+#include <QtCore/qfactoryinterface.h>
 
 QT_MODULE(Gui)
 
@@ -63,4 +63,4 @@ public:
 
 #endif // QT_NO_ACCESSIBILITY
 
-#endif // QSQLDRIVERPLUGIN_H
+#endif // QACCESSIBLEBRIDGE_H

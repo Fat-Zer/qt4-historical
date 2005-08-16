@@ -24,8 +24,8 @@
 #ifndef QICONENGINEPLUGIN_H
 #define QICONENGINEPLUGIN_H
 
-#include "QtCore/qplugin.h"
-#include "QtCore/qfactoryinterface.h"
+#include <QtCore/qplugin.h>
+#include <QtCore/qfactoryinterface.h>
 
 QT_MODULE(Gui)
 

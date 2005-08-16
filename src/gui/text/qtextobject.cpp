@@ -28,6 +28,7 @@
 #include "qtextdocument_p.h"
 #include "qtextcursor.h"
 #include "qtextlist.h"
+#include "qabstracttextdocumentlayout.h"
 #include "qdebug.h"
 
 // ### DOC: We ought to explain the CONCEPT of objectIndexes if
@@ -162,6 +163,8 @@ QTextDocumentPrivate *QTextObject::docHandle() const
     \class QTextBlockGroup
     \brief The QTextBlockGroup class provides a container for text blocks within
     a QTextDocument.
+
+    \ingroup text
 
     Block groups can be used to organize blocks of text within a document.
     They maintain an up-to-date list of the text blocks that belong to
@@ -573,6 +576,8 @@ void QTextFramePrivate::remove_me()
     \brief The QTextFrame::iterator class provides an iterator for reading
     the contents of a QTextFrame.
 
+    \ingroup text
+
     A frame consists of an arbitrary sequence of \l{QTextBlock}s and
     child \l{QTextFrame}s. This class provides a way to iterate over the
     child objects of a frame, and read their contents. It does not provide
@@ -760,16 +765,21 @@ QTextFrame::iterator &QTextFrame::iterator::operator--()
 
 /*!
     \class QTextBlockUserData
-    \brief The QTextBlockUserData class can be used to store custom data in blocks of text.
-    \internal
+    \brief The QTextBlockUserData class is used to associate custom data with blocks of text.
+    \since 4.1
 
     \ingroup text
 
-    QTextBlockUserData is an abstract interface that you can inherit from and attach to
-    a block of text using QTextBlock::setUserData(), making it possible to store additional
-    data per text block.
-*/
+    QTextBlockUserData provides an abstract interface for container classes that are used
+    to associate application-specific user data with text blocks in a QTextDocument.
 
+    Generally, this subclasses of this class provide functions to allow data to be stored
+    and retrieved, and instances are attached to blocks of text using
+    QTextBlock::setUserData(). This makes it possible to store additional data per text
+    block in a way that can be retrieved safely by the application.
+
+    \sa QTextBlock
+*/
 QTextBlockUserData::~QTextBlockUserData()
 {
 }
@@ -867,6 +877,8 @@ QTextBlockUserData::~QTextBlockUserData()
     \class QTextBlock::iterator
     \brief The QTextBlock::iterator class provides an iterator for reading
     the contents of a QTextBlock.
+
+    \ingroup text
 
     A block consists of a sequence of text fragments. This class provides
     a way to iterate over these, and read their contents. It does not provide
@@ -1035,11 +1047,7 @@ QTextCharFormat QTextBlock::charFormat() const
     if (!p || !n)
         return QTextFormat().toCharFormat();
 
-    const QTextDocumentPrivate::FragmentMap &fm = p->fragmentMap();
-    int pos = p->blockMap().position(n);
-    if (pos > 0)
-        --pos;
-    return p->formatCollection()->charFormat(fm.find(pos)->format);
+    return p->formatCollection()->charFormat(charFormatIndex());
 }
 
 /*!
@@ -1053,11 +1061,7 @@ int QTextBlock::charFormatIndex() const
     if (!p || !n)
         return -1;
 
-    const QTextDocumentPrivate::FragmentMap &fm = p->fragmentMap();
-    int pos = p->blockMap().position(n);
-    if (pos > 0)
-        --pos;
-    return fm.find(pos)->format;
+    return p->blockCharFormatIndex(n);
 }
 
 /*!
@@ -1109,6 +1113,8 @@ QTextList *QTextBlock::textList() const
 }
 
 /*!
+    \since 4.1
+
     Returns a pointer to a QTextBlockUserData object if previously set with
     setUserData() or a null pointer.
 */
@@ -1122,12 +1128,27 @@ QTextBlockUserData *QTextBlock::userData() const
 }
 
 /*!
-    Attaches the given \a data object to the text block, which can be used
-    to store custom settings. For example a programming editor may want to
-    store additional information like debugger breakpoints in an object derived
-    from QTextBlockUserData.
-    The ownership is passed to the underlying text document, the provided object
-    will be deleted if the corresponding text block gets deleted.
+    \since 4.1
+
+    Attaches the given \a data object to the text block.
+
+    QTextBlockUserData can be used to store custom settings.  The
+    ownership is passed to the underlying text document, i.e. the
+    provided QTextBlockUserData object will be deleted if the
+    corresponding text block gets deleted.
+
+    For example, if you write a programming editor in an IDE, you may
+    want to let your user set breakpoints visually in your code for an
+    integrated debugger. In a programming editor a line of text
+    usually corresponds to one QTextBlock. The QTextBlockUserData
+    interface allows the developer to store data for each QTextBlock,
+    like for example in which lines of the source code the user has a
+    breakpoint set. Of course this could also be stored externally,
+    but by storing it inside the QTextDocument, it will for example be
+    automatically deleted when the user deletes the associated
+    line. It's really just a way to store custom information in the
+    QTextDocument without using custom properties in QTextFormat which
+    would affect the undo/redo stack.
 */
 void QTextBlock::setUserData(QTextBlockUserData *data)
 {
@@ -1139,6 +1160,8 @@ void QTextBlock::setUserData(QTextBlockUserData *data)
 }
 
 /*!
+    \since 4.1
+
     Returns the integer value previously set with setUserState() or -1.
 */
 int QTextBlock::userState() const
@@ -1151,6 +1174,8 @@ int QTextBlock::userState() const
 }
 
 /*!
+    \since 4.1
+
     Stores the specified \a state integer value in the text block. This may be
     useful for example in a syntax highlighter to store a text parsing state.
 */
@@ -1293,6 +1318,8 @@ QTextBlock::iterator &QTextBlock::iterator::operator--()
     \brief The QTextFragment class holds a piece of text in a
     QTextDocument with a single QTextCharFormat.
 
+    \ingroup text
+
     A text fragment describes a piece of text that is stored with a single
     character format. Text in which the character format changes can be
     represented by sequences of text fragments with different formats.
@@ -1315,7 +1342,7 @@ QTextBlock::iterator &QTextBlock::iterator::operator--()
     of the start of the fragment. To determine whether the fragment contains
     a particular position within the document, use the contains() function.
 
-    \sa QTextDocument
+    \sa QTextDocument, {Rich Text Document Structure}
 */
 
 /*!
@@ -1446,7 +1473,7 @@ int QTextFragment::charFormatIndex() const
 /*!
     Returns the text fragment's as plain text.
 
-    \sa length() charFormat()
+    \sa length(), charFormat()
 */
 QString QTextFragment::text() const
 {

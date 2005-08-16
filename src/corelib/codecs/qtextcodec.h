@@ -24,8 +24,8 @@
 #ifndef QTEXTCODEC_H
 #define QTEXTCODEC_H
 
-#include "QtCore/qstring.h"
-#include "QtCore/qlist.h"
+#include <QtCore/qstring.h>
+#include <QtCore/qlist.h>
 
 QT_MODULE(Core)
 
@@ -39,6 +39,7 @@ class QTextEncoder;
 
 class Q_CORE_EXPORT QTextCodec
 {
+    Q_DISABLE_COPY(QTextCodec)
 public:
     static QTextCodec* codecForName(const QByteArray &name);
     static QTextCodec* codecForName(const char *name) { return codecForName(QByteArray(name)); }
@@ -55,6 +56,8 @@ public:
 
     static QTextCodec* codecForCStrings();
     static void setCodecForCStrings(QTextCodec *c);
+
+    static QTextCodec *codecForHtml(const QByteArray &ba);
 
     QTextDecoder* makeDecoder() const;
     QTextEncoder* makeEncoder() const;
@@ -81,6 +84,8 @@ public:
         int invalidChars;
         uint state_data[3];
         void *d;
+    private:
+        Q_DISABLE_COPY(ConverterState)
     };
 
     QString toUnicode(const char *in, int length, ConverterState *state = 0) const
@@ -122,8 +127,9 @@ inline QTextCodec* QTextCodec::codecForCStrings() { return QString::codecForCStr
 inline void QTextCodec::setCodecForCStrings(QTextCodec *c) { QString::codecForCStrings = c; }
 
 class Q_CORE_EXPORT QTextEncoder {
+    Q_DISABLE_COPY(QTextEncoder)
 public:
-    explicit QTextEncoder(const QTextCodec *codec) : c(codec) {}
+    explicit QTextEncoder(const QTextCodec *codec) : c(codec), state() {}
     ~QTextEncoder();
     QByteArray fromUnicode(const QString& str);
     QByteArray fromUnicode(const QChar *uc, int len);
@@ -136,8 +142,9 @@ private:
 };
 
 class Q_CORE_EXPORT QTextDecoder {
+    Q_DISABLE_COPY(QTextDecoder)
 public:
-    explicit QTextDecoder(const QTextCodec *codec) : c(codec) {}
+    explicit QTextDecoder(const QTextCodec *codec) : c(codec), state() {}
     ~QTextDecoder();
     QString toUnicode(const char* chars, int len);
     QString toUnicode(const QByteArray &ba);

@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include "qtextcodec.h"
+#include "QtCore/qtextcodec.h"
 
 #ifndef QT_NO_CODECS
 

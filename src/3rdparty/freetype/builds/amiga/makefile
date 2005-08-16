@@ -3,6 +3,19 @@
 # (gcc 2.95.3 hosted on 68k-Amiga producing MorphOS-PPC-binaries from
 # http://www.morphos.de)
 #
+
+
+# Copyright 2005 by
+# Werner Lemberg and Detlef Würkner.
+#
+# This file is part of the FreeType project, and may only be used, modified,
+# and distributed under the terms of the FreeType project license,
+# LICENSE.TXT.  By continuing to use, modify, or distribute this file you
+# indicate that you have read the license and understand and accept it
+# fully.
+
+
+#
 # to build from the builds/amiga directory call
 #
 #  make assign
@@ -11,18 +24,19 @@
 # Your programs source code should start with this
 # (uncomment the parts you do not need to keep the program small):
 # ---8<---
-#define FT_USE_AUTOHINT // autohinter
-#define FT_USE_RASTER   // monochrome rasterizer
-#define FT_USE_SMOOTH   // anti-aliasing rasterizer
-#define FT_USE_TT       // truetype font driver
-#define FT_USE_T1       // type1 font driver
-#define FT_USE_T42      // type42 font driver
-#define FT_USE_T1CID    // cid-keyed type1 font driver
-#define FT_USE_CFF      // opentype font driver
-#define FT_USE_BDF      // bdf bitmap font driver
-#define FT_USE_PCF      // pcf bitmap font driver
-#define FT_USE_PFR      // pfr font driver
-#define FT_USE_WINFNT   // windows .fnt|.fon bitmap font driver
+#define FT_USE_AUTOFIT // autofitter
+#define FT_USE_RASTER  // monochrome rasterizer
+#define FT_USE_SMOOTH  // anti-aliasing rasterizer
+#define FT_USE_TT      // truetype font driver
+#define FT_USE_T1      // type1 font driver
+#define FT_USE_T42     // type42 font driver
+#define FT_USE_T1CID   // cid-keyed type1 font driver
+#define FT_USE_CFF     // opentype font driver
+#define FT_USE_BDF     // bdf bitmap font driver
+#define FT_USE_PCF     // pcf bitmap font driver
+#define FT_USE_PFR     // pfr font driver
+#define FT_USE_WINFNT  // windows .fnt|.fon bitmap font driver
+#define FT_USE_OTV     // opentype validator
 #include "FT:src/base/ftinit.c"
 # ---8<---
 #
@@ -69,28 +83,46 @@ ftdebugpure.ppc.o: src/base/ftdebug.c
 #
 # FreeType2 library base extensions
 #
-ftglyph.ppc.o: $(FTSRC)/base/ftglyph.c
+ftbbox.ppc.o: $(FTSRC)/base/ftbbox.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-ftbbox.ppc.o: $(FTSRC)/base/ftbbox.c
+ftbdf.ppc.o: $(FTSRC)/base/ftbdf.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+ftbitmap.ppc.o: $(FTSRC)/base/ftbitmap.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+ftglyph.ppc.o: $(FTSRC)/base/ftglyph.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 ftmm.ppc.o: $(FTSRC)/base/ftmm.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+ftotval.ppc.o: $(FTSRC)/base/ftotval.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+ftpfr.ppc.o: $(FTSRC)/base/ftpfr.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+ftstroke.ppc.o: $(FTSRC)/base/ftstroke.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
 ftsynth.ppc.o: $(FTSRC)/base/ftsynth.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-#
-# FreeType2 library autohinting module
-#
-autohint.ppc.o: $(FTSRC)/autohint/autohint.c
+fttype1.ppc.o: $(FTSRC)/base/fttype1.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+ftwinfnt.ppc.o: $(FTSRC)/base/ftwinfnt.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+ftxf86.ppc.o: $(FTSRC)/base/ftxf86.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 #
-# FreeType2 library autohinting module extensions
+# FreeType2 library autofitting module
 #
-ahoptim.ppc.o: $(FTSRC)/autohint/ahoptim.c
+autofit.ppc.o: $(FTSRC)/autofit/autofit.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 #
@@ -130,7 +162,7 @@ sfnt.ppc.o: $(FTSRC)/sfnt/sfnt.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 #
-# FreeType2 library glyph and image caching system (still experimental)
+# FreeType2 library glyph and image caching system
 #
 ftcache.ppc.o: $(FTSRC)/cache/ftcache.c
 	$(CC) -c $(CFLAGS) -o $@ $<
@@ -178,6 +210,18 @@ pcf.ppc.o: $(FTSRC)/pcf/pcf.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 #
+# FreeType2 library gzip support for compressed PCF bitmap fonts
+#
+gzip.ppc.o: $(FTSRC)/gzip/ftgzip.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+#
+# FreeType2 library compress support for compressed PCF bitmap fonts
+#
+lzw.ppc.o: $(FTSRC)/lzw/ftlzw.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+#
 # FreeType2 library PFR font driver
 #
 pfr.ppc.o: $(FTSRC)/pfr/pfr.c
@@ -189,11 +233,21 @@ pfr.ppc.o: $(FTSRC)/pfr/pfr.c
 winfnt.ppc.o: $(FTSRC)/winfonts/winfnt.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
-BASEPPC = ftbase.ppc.o ftglyph.ppc.o ftbbox.ppc.o ftmm.ppc.o ftsynth.ppc.o
+#
+# FreeType2 library OpenType validator
+#
+otvalid.ppc.o: $(FTSRC)/otvalid/otvalid.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+BASEPPC = ftbase.ppc.o ftbbox.ppc.o ftbdf.ppc.o ftbitmap.ppc.o ftglyph.ppc.o \
+	  ftmm.ppc.o ftotval.ppc.o ftpfr.ppc.o ftstroke.ppc.o ftsynth.ppc.o \
+	  fttype1.ppc.o ftwinfnt.ppc.o ftxf86.ppc.o
 
 DEBUGPPC = ftdebug.ppc.o ftdebugpure.ppc.o
 
-AHINTPPC = autohint.ppc.o ahoptim.ppc.o
+AFITPPC = autofit.ppc.o
+
+OTVPPC = otvalid.ppc.o
 
 PSPPC = psaux.ppc.o psnames.ppc.o pshinter.ppc.o
 
@@ -202,6 +256,10 @@ RASTERPPC = raster.ppc.o smooth.ppc.o
 FONTDPPC = cff.ppc.o type1.ppc.o type42.ppc.o type1cid.ppc.o truetype.ppc.o\
 	   bdf.ppc.o pcf.ppc.o pfr.ppc.o winfnt.ppc.o
 
-libft2_ppc.a:    $(BASEPPC) $(AHINTPPC) $(PSPPC) $(RASTERPPC) sfnt.ppc.o ftcache.ppc.o $(FONTDPPC)
-	$(AR) $@ $(BASEPPC) $(AHINTPPC) $(PSPPC) $(RASTERPPC) sfnt.ppc.o ftcache.ppc.o $(FONTDPPC)
+libft2_ppc.a:    $(BASEPPC) $(AFITPPC) $(OTVPPC) $(PSPPC) $(RASTERPPC) sfnt.ppc.o ftcache.ppc.o $(FONTDPPC) gzip.ppc.o lzw.ppc.o
+	$(AR) $@ $(BASEPPC) $(AFITPPC) $(OTVPPC) $(PSPPC) $(RASTERPPC) sfnt.ppc.o ftcache.ppc.o $(FONTDPPC) gzip.ppc.o lzw.ppc.o
 	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+
+#Local Variables:
+#coding: latin-1
+#End:

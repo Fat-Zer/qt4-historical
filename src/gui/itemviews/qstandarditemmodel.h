@@ -64,10 +64,17 @@ public:
 
     void clear();
 
+#ifdef Q_NO_USING_KEYWORD
+    inline QObject *parent() const { return QObject::parent(); }
+#else
+    using QObject::parent;
+#endif
+
 private:
     Q_DECLARE_PRIVATE(QStandardItemModel)
     Q_DISABLE_COPY(QStandardItemModel)
 };
 
 #endif // QT_NO_STANDARDITEMMODEL
+
 #endif //QSTANDARDITEMMODEL_H

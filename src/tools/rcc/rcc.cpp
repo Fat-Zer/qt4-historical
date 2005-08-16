@@ -21,19 +21,13 @@
 **
 ****************************************************************************/
 
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qlocale.h>
-#include <qdatetime.h>
-#include <qtextstream.h>
-#include <qbytearray.h>
-#include <qhash.h>
-#include <qdir.h>
-#include <qstack.h>
-#include <qdom.h>
 #include "rcc.h"
+#include <QFile>
+#include <QDateTime>
+#include <QByteArray>
+#include <QDir>
+#include <QStack>
+#include <QDomDocument>
 
 static bool qt_rcc_write_number(FILE *out, quint32 number, int width, RCCResourceLibrary::Format format)
 {
@@ -140,7 +134,7 @@ qint64 RCCFileInfo::writeDataBlob(FILE *out, qint64 offset, RCCResourceLibrary::
 
 #ifndef QT_NO_COMPRESS
     // Check if compression is useful for this file
-    if (mCompressLevel != 0) {
+    if (mCompressLevel != 0 && data.size() != 0) {
         QByteArray compressed = qCompress(reinterpret_cast<uchar *>(data.data()), data.size(), mCompressLevel);
 
         int compressRatio = int(100.0f * (float(data.size() - compressed.size()) / float(data.size())));
@@ -453,7 +447,7 @@ RCCResourceLibrary::writeHeader(FILE *out)
         fprintf(out, "**      by: The Resource Compiler for Qt version %s\n", QT_VERSION_STR);
         fprintf(out, "**\n");
         fprintf(out, "** WARNING! All changes made in this file will be lost!\n");
-        fprintf(out,  "*****************************************************************************/\n");
+        fprintf(out,  "*****************************************************************************/\n\n");
         fprintf(out, "#include <QtCore/qglobal.h>\n\n");
     } else if(mFormat == Binary) {
         fprintf(out,"qres");
@@ -601,13 +595,27 @@ RCCResourceLibrary::writeInitializer(FILE *out)
             initName.prepend("_");
             initName.replace(QRegExp("[^a-zA-Z0-9_]"), "_");
         }
+
+        //init
         fprintf(out, "int qInitResources%s()\n{\n", initName.toLatin1().constData());
-        fprintf(out, "    extern bool qRegisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);\n");
+        fprintf(out, "    extern bool qRegisterResourceData(int, const unsigned char *, "
+                "const unsigned char *, const unsigned char *);\n");
         fprintf(out, "    qRegisterResourceData(0x01, qt_resource_struct, "
                      "qt_resource_name, qt_resource_data);\n");
         fprintf(out, "    return 1;\n");
         fprintf(out, "}\n");
         fprintf(out, "Q_CONSTRUCTOR_FUNCTION(qInitResources%s)\n",
+                initName.toLatin1().constData());
+
+        //cleanup
+        fprintf(out, "int qCleanupResources%s()\n{\n", initName.toLatin1().constData());
+        fprintf(out, "    extern bool qUnregisterResourceData(int, const unsigned char *, "
+                "const unsigned char *, const unsigned char *);\n");
+        fprintf(out, "    qUnregisterResourceData(0x01, qt_resource_struct, "
+                     "qt_resource_name, qt_resource_data);\n");
+        fprintf(out, "    return 1;\n");
+        fprintf(out, "}\n");
+        fprintf(out, "Q_DESTRUCTOR_FUNCTION(qCleanupResources%s)\n",
                 initName.toLatin1().constData());
     } else if(mFormat == Binary) {
         const long old_pos = ftell(out);
@@ -620,5 +628,3 @@ RCCResourceLibrary::writeInitializer(FILE *out)
     }
     return true;
 }
-
-

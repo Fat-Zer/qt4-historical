@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-win-opensource-src-4.0.1/src/network/qudpsocket.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/network/qudpsocket.cpp -->
 <head>
-    <title>Qt 4.0: List of All Members for QUdpSocket</title>
+    <title>Qt 4.1: List of All Members for QUdpSocket</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -21,6 +21,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This is the complete list of members for <a href="qudpsocket.html">QUdpSocket</a>, including inherited members.</p>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
+<li><div class="fn"/>enum <a href="qudpsocket.html#BindFlag-enum">BindFlag</a></li>
+<li><div class="fn"/>flags <a href="qudpsocket.html#BindFlag-enum">BindMode</a></li>
 <li><div class="fn"/>enum <a href="qabstractsocket.html#NetworkLayerProtocol-enum">NetworkLayerProtocol</a></li>
 <li><div class="fn"/>flags <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a></li>
 <li><div class="fn"/>enum <a href="qiodevice.html#OpenModeFlag-enum">OpenModeFlag</a></li>
@@ -33,7 +35,9 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qiodevice.html#aboutToClose">aboutToClose</a> ()</li>
 <li><div class="fn"/><a href="qiodevice.html#atEnd">atEnd</a> () const : bool</li>
 <li><div class="fn"/><a href="qudpsocket.html#bind">bind</a> ( const QHostAddress &amp;, quint16 ) : bool</li>
-<li><div class="fn"/><a href="qudpsocket.html#bind-2">bind</a> ( quint16 ) : bool</li>
+<li><div class="fn"/><a href="qudpsocket.html#bind-2">bind</a> ( const QHostAddress &amp;, quint16, BindMode ) : bool</li>
+<li><div class="fn"/><a href="qudpsocket.html#bind-3">bind</a> ( quint16 ) : bool</li>
+<li><div class="fn"/><a href="qudpsocket.html#bind-4">bind</a> ( quint16, BindMode ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#blockSignals">blockSignals</a> ( bool ) : bool</li>
 <li><div class="fn"/><a href="qabstractsocket.html#bytesAvailable">bytesAvailable</a> () const : qint64</li>
 <li><div class="fn"/><a href="qabstractsocket.html#bytesToWrite">bytesToWrite</a> () const : qint64</li>
@@ -47,15 +51,16 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#connectNotify">connectNotify</a> ( const char * )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#connectToHost">connectToHost</a> ( const QString &amp;, quint16, OpenMode )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#connectToHost-2">connectToHost</a> ( const QHostAddress &amp;, quint16, OpenMode )</li>
+<li><div class="fn"/><a href="qabstractsocket.html#connectToHostImplementation">connectToHostImplementation</a> ( const QString &amp;, quint16, OpenMode )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#connected">connected</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#customEvent">customEvent</a> ( QEvent * )</li>
-<li><div class="fn"/><a href="qobject.html#d_ptr-var">d_ptr</a> : QObjectData *</li>
 <li><div class="fn"/><a href="qobject.html#deleteLater">deleteLater</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#destroyed">destroyed</a> ( QObject * )</li>
 <li><div class="fn"/><a href="qobject.html#disconnect">disconnect</a> ( const QObject *, const char *, const QObject *, const char * ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#disconnect-2">disconnect</a> ( const char *, const QObject *, const char * ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#disconnect-3">disconnect</a> ( const QObject *, const char * ) : bool</li>
 <li><div class="fn"/><a href="qabstractsocket.html#disconnectFromHost">disconnectFromHost</a> ()</li>
+<li><div class="fn"/><a href="qabstractsocket.html#disconnectFromHostImplementation">disconnectFromHostImplementation</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#disconnectNotify">disconnectNotify</a> ( const char * )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#disconnected">disconnected</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#dumpObjectInfo">dumpObjectInfo</a> ()</li>
@@ -83,20 +88,23 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qiodevice.html#isWritable">isWritable</a> () const : bool</li>
 <li><div class="fn"/><a href="qobject.html#killTimer">killTimer</a> ( int )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#localAddress">localAddress</a> () const : QHostAddress</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qabstractsocket.html#localPort">localPort</a> () const : quint16</li>
 <li><div class="fn"/><a href="qobject.html#metaObject">metaObject</a> () const : const QMetaObject *</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qobject.html#moveToThread">moveToThread</a> ( QThread * )</li>
 <li><div class="fn"/><a href="qobject.html#objectName-prop">objectName</a> () const : QString</li>
 <li><div class="fn"/><a href="qiodevice.html#open">open</a> ( OpenMode ) : bool</li>
 <li><div class="fn"/><a href="qiodevice.html#openMode">openMode</a> () const : OpenMode</li>
 <li><div class="fn"/><a href="qobject.html#parent">parent</a> () const : QObject *</li>
+<li><div class="fn"/><a href="qiodevice.html#peek">peek</a> ( char *, qint64 ) : qint64</li>
+<li><div class="fn"/><a href="qiodevice.html#peek-2">peek</a> ( qint64 ) : QByteArray</li>
 <li><div class="fn"/><a href="qabstractsocket.html#peerAddress">peerAddress</a> () const : QHostAddress</li>
 <li><div class="fn"/><a href="qabstractsocket.html#peerName">peerName</a> () const : QString</li>
 <li><div class="fn"/><a href="qabstractsocket.html#peerPort">peerPort</a> () const : quint16</li>
 <li><div class="fn"/><a href="qudpsocket.html#pendingDatagramSize">pendingDatagramSize</a> () const : qint64</li>
 <li><div class="fn"/><a href="qiodevice.html#pos">pos</a> () const : qint64</li>
 <li><div class="fn"/><a href="qobject.html#property">property</a> ( const char * ) const : QVariant</li>
+<li><div class="fn"/><a href="qabstractsocket.html#proxy">proxy</a> () const : QNetworkProxy</li>
 <li><div class="fn"/><a href="qiodevice.html#putChar">putChar</a> ( char ) : bool</li>
 <li><div class="fn"/><a href="qiodevice.html#read">read</a> ( char *, qint64 ) : qint64</li>
 <li><div class="fn"/><a href="qiodevice.html#read-2">read</a> ( qint64 ) : QByteArray</li>
@@ -114,10 +122,16 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qiodevice.html#seek">seek</a> ( qint64 ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#sender">sender</a> () const : QObject *</li>
 <li><div class="fn"/><a href="qiodevice.html#setErrorString">setErrorString</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qabstractsocket.html#setLocalAddress">setLocalAddress</a> ( const QHostAddress &amp; )</li>
+<li><div class="fn"/><a href="qabstractsocket.html#setLocalPort">setLocalPort</a> ( quint16 )</li>
 <li><div class="fn"/><a href="qobject.html#objectName-prop">setObjectName</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qiodevice.html#setOpenMode">setOpenMode</a> ( OpenMode )</li>
 <li><div class="fn"/><a href="qobject.html#setParent">setParent</a> ( QObject * )</li>
+<li><div class="fn"/><a href="qabstractsocket.html#setPeerAddress">setPeerAddress</a> ( const QHostAddress &amp; )</li>
+<li><div class="fn"/><a href="qabstractsocket.html#setPeerName">setPeerName</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qabstractsocket.html#setPeerPort">setPeerPort</a> ( quint16 )</li>
 <li><div class="fn"/><a href="qobject.html#setProperty">setProperty</a> ( const char *, const QVariant &amp; ) : bool</li>
+<li><div class="fn"/><a href="qabstractsocket.html#setProxy">setProxy</a> ( const QNetworkProxy &amp; )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#setReadBufferSize">setReadBufferSize</a> ( qint64 )</li>
 <li><div class="fn"/><a href="qabstractsocket.html#setSocketDescriptor">setSocketDescriptor</a> ( int, SocketState, OpenMode ) : bool</li>
 <li><div class="fn"/><a href="qabstractsocket.html#setSocketError">setSocketError</a> ( SocketError )</li>
@@ -130,7 +144,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#startTimer">startTimer</a> ( int ) : int</li>
 <li><div class="fn"/><a href="qabstractsocket.html#state">state</a> () const : SocketState</li>
 <li><div class="fn"/><a href="qabstractsocket.html#stateChanged">stateChanged</a> ( QAbstractSocket::SocketState )</li>
-<li><div class="fn"/><a href="qobject.html#staticQtMetaObject-var">staticQtMetaObject</a> : const QMetaObject</li>
 <li><div class="fn"/><a href="qobject.html#thread">thread</a> () const : QThread *</li>
 <li><div class="fn"/><a href="qobject.html#timerEvent">timerEvent</a> ( QTimerEvent * )</li>
 <li><div class="fn"/><a href="qobject.html#tr">tr</a> ( const char *, const char * ) : QString</li>
@@ -152,6 +165,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

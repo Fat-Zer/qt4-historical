@@ -123,7 +123,7 @@ QString StyledButton::pixmapFileName() const
 void StyledButton::onEditor()
 {
     if (btype == ColorButton) {
-        QColor c = QColorDialog::getColor();
+        QColor c = QColorDialog::getColor(mBrush.color(), this);
         if (c.isValid()) {
             mBrush.setColor(c);
             emit changed();
