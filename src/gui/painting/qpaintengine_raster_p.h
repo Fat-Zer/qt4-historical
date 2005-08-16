@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -128,9 +128,9 @@ private:
     void init();
 
 #if defined(Q_WS_WIN)
-    bool drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax, 
+    bool drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax,
         int ymax, const QTextItem &textItem, bool clearType, qreal leftBearingReserve);
-#endif    
+#endif
 };
 
 
@@ -153,11 +153,6 @@ public:
         m.translate(brushOffset.x(), brushOffset.y());
         return m;
     }
-#ifdef Q_WS_X11
-    void drawMulti(const QPointF &p, const QTextItem &textItem);
-    void drawBox(const QPointF &p, const QTextItem &textItem);
-    void drawXLFD(const QPointF &p, const QTextItem &textItem);
-#endif
 
     QPointF brushOffset;
     QBrush brush;
@@ -169,6 +164,7 @@ public:
     QRasterBuffer *rasterBuffer;
 #ifdef Q_WS_WIN
     QRasterBuffer *fontRasterBuffer;
+    uint clear_type_text : 1;
 #endif
 
     QPainterPath baseClip;
@@ -253,7 +249,16 @@ class QRasterBuffer
 {
 public:
 #if defined(Q_WS_WIN)
-    QRasterBuffer() : clip(0), m_hdc(0), m_bitmap(0), m_width(0), m_height(0), m_buffer(0){ init(); }
+    QRasterBuffer()
+        : clip(0),
+          m_hdc(0),
+          m_bitmap(0),
+          m_width(0),
+          m_height(0),
+          m_buffer(0)
+    {
+        init();
+    }
 
     HDC hdc() const { return m_hdc; }
 #elif defined(Q_WS_X11)
@@ -261,7 +266,7 @@ public:
 #elif defined(Q_WS_QWS)
     QRasterBuffer() : clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
 #elif defined(Q_WS_MAC)
-    QRasterBuffer() : clip(0), m_data(0), m_width(0), m_height(0), m_buffer(0) { init(); }
+    QRasterBuffer() : m_data(0), clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
 # if defined(QMAC_NO_COREGRAPHICS)
     GWorldPtr m_data;
 # else
@@ -278,6 +283,10 @@ public:
 #endif
     void prepare(int w, int h);
     void prepareBuffer(int w, int h);
+
+#ifdef Q_WS_WIN
+    void setupHDC(bool clear_type);
+#endif
 
     void resetBuffer(int val=0);
 
@@ -297,6 +306,7 @@ public:
     uchar *buffer() const { return m_buffer; }
 
     QClipData *clip;
+    QClipData *disabled_clip;
     bool clipEnabled;
     bool opaqueBackground;
 

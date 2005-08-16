@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -827,6 +827,7 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
             glGenProgramsARB(1, &d->radial_frag_program);
             glGenProgramsARB(1, &d->conical_frag_program);
 
+            glGetError(); // reset the error state
             glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, d->radial_frag_program);
             glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB,
                                strlen(radial_program), (const GLbyte *) radial_program);
@@ -1204,15 +1205,28 @@ void QOpenGLPaintEngine::drawRects(const QRectF *rects, int rectCount)
         if (d->has_pen) {
             d->setGradientOps(d->pen_brush_style);
             glColor4ubv(d->pen_color);
-            d->beginPath(QPaintEngine::WindingMode);
-            d->stroker->begin(d);
-            d->stroker->moveTo(qt_real_to_fixed(left), qt_real_to_fixed(top));
-            d->stroker->lineTo(qt_real_to_fixed(right), qt_real_to_fixed(top));
-            d->stroker->lineTo(qt_real_to_fixed(right), qt_real_to_fixed(bottom));
-            d->stroker->lineTo(qt_real_to_fixed(left), qt_real_to_fixed(bottom));
-            d->stroker->lineTo(qt_real_to_fixed(left), qt_real_to_fixed(top));
-            d->stroker->end();
-            d->endPath();
+            if (d->has_fast_pen) {
+                glColor4ubv(d->pen_color);
+                glBegin(GL_LINE_STRIP);
+                {
+                    glVertex2d(left, top);
+                    glVertex2d(right, top);
+                    glVertex2d(right, bottom);
+                    glVertex2d(left, bottom);
+                    glVertex2d(left, top);
+                }
+                glEnd();
+            } else {
+                d->beginPath(QPaintEngine::WindingMode);
+                d->stroker->begin(d);
+                d->stroker->moveTo(qt_real_to_fixed(left), qt_real_to_fixed(top));
+                d->stroker->lineTo(qt_real_to_fixed(right), qt_real_to_fixed(top));
+                d->stroker->lineTo(qt_real_to_fixed(right), qt_real_to_fixed(bottom));
+                d->stroker->lineTo(qt_real_to_fixed(left), qt_real_to_fixed(bottom));
+                d->stroker->lineTo(qt_real_to_fixed(left), qt_real_to_fixed(top));
+                d->stroker->end();
+                d->endPath();
+            }
         }
     }
 }

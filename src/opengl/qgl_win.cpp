@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -816,7 +816,8 @@ int QGLContext::choosePixelFormat(void* dummyPfd, HDC pdc)
             iAttributes[i++] = d->glFormat.stencilBufferSize() == -1 ? 8 : d->glFormat.stencilBufferSize();
         }
         int si = 0;
-        if (d->glFormat.sampleBuffers()) {
+        bool trySampleBuffers = QGLExtensions::glExtensions & QGLExtensions::SampleBuffers;
+        if (trySampleBuffers && d->glFormat.sampleBuffers()) {
             iAttributes[i++] = WGL_SAMPLE_BUFFERS_ARB;
             iAttributes[i++] = TRUE;
             iAttributes[i++] = WGL_SAMPLES_ARB;
@@ -828,13 +829,15 @@ int QGLContext::choosePixelFormat(void* dummyPfd, HDC pdc)
         do {
             valid = wglChoosePixelFormatARB(pdc, iAttributes.constData(), 0, 1,
                                             &pixelFormat, &numFormats);
-            if ((!valid || numFormats < 1) && d->glFormat.sampleBuffers())
+            if (trySampleBuffers  && (!valid || numFormats < 1) && d->glFormat.sampleBuffers())
                 iAttributes[si] /= 2; // try different no. samples - we aim for the best one
             else
                 break;
         } while ((!valid || numFormats < 1) && iAttributes[si] > 1);
         chosenPfi = pixelFormat;
-    } else {
+    }
+
+    if (!chosenPfi) { // fallback if wglChoosePixelFormatARB() failed
         int pmDepth = deviceIsPixmap() ? ((QPixmap*)d->paintDevice)->depth() : 0;
         PIXELFORMATDESCRIPTOR* p = (PIXELFORMATDESCRIPTOR*)dummyPfd;
         memset(p, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -1027,10 +1030,12 @@ void QGLContext::makeCurrent()
 void QGLContext::doneCurrent()
 {
     Q_D(QGLContext);
-    if (currentCtx != this)
-        return;
     currentCtx = 0;
     wglMakeCurrent(0, 0);
+    if (deviceIsPixmap() && d->hbitmap) {
+        QPixmap *pm = static_cast<QPixmap *>(d->paintDevice);
+        *pm = QPixmap::fromWinHBITMAP(d->hbitmap);
+    }
     if (d->win && d->dc)
         ReleaseDC(d->win, d->dc);
     d->dc = 0;
@@ -1084,7 +1089,6 @@ uint QGLContext::colorIndex(const QColor& c) const
 
 void QGLContext::generateFontDisplayLists(const QFont & fnt, int listBase)
 {
-    Q_D(QGLContext);
     if (!isValid())
         return;
 

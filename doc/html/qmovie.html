@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qmovie.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/image/qmovie.cpp -->
 <head>
     <title>Qt 4.1: QMovie Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -115,7 +115,6 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QMovie class is a convenience class for playing movies with <a href="qimagereader.html">QImageReader</a>.</p>
-<p>QMovie is a convenience class that uses <a href="qimagereader.html">QImageReader</a> internally to play movies.</p>
 <p>First, create a QMovie object by passing either the name of a file or a pointer to a <a href="qiodevice.html">QIODevice</a> containing an animated image format to QMovie's constructor. You can call <a href="qmovie.html#isValid">isValid</a>() to check if the image data is valid, before starting the movie. To start the movie, call <a href="qmovie.html#start">start</a>(). QMovie will enter <a href="qmovie.html#MovieState-enum">Running</a> state, and emit <a href="qmovie.html#started">started</a>() and <a href="qmovie.html#stateChanged">stateChanged</a>(). To get the current state of the movie, call <a href="qmovie.html#state">state</a>().</p>
 <p>To display the movie in your application, you can pass your QMovie object to <a href="qlabel.html#setMovie">QLabel::setMovie</a>(). Example:</p>
 <pre>&nbsp;   QLabel label;
@@ -134,19 +133,19 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="CacheMode-enum"></a>enum QMovie::CacheMode</h3>
 <p>This enum describes the different cache modes of <a href="qmovie.html">QMovie</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QMovie::CacheNone</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No frames are cached (the default).</td></tr>
 <tr><td valign="top"><tt>QMovie::CacheAll</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">All frames are cached.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="MovieState-enum"></a>enum QMovie::MovieState</h3>
 <p>This enum describes the different states of <a href="qmovie.html">QMovie</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QMovie::NotRunning</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The movie is not running. This is <a href="qmovie.html">QMovie</a>'s initial state, and the state it enters after <a href="qmovie.html#stop">stop</a>() has been called or the movie is finished.</td></tr>
 <tr><td valign="top"><tt>QMovie::Paused</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The movie is paused, and <a href="qmovie.html">QMovie</a> stops emitting <a href="qmovie.html#updated">updated</a>() or <a href="qmovie.html#resized">resized</a>(). This state is entered after calling <a href="qmovie-qt3.html#pause">pause</a>() or setPaused(true). The current frame number it kept, and the movie will continue with the next frame when <a href="qmovie-qt3.html#unpause">unpause</a>() or setPaused(false) is called.</td></tr>
 <tr><td valign="top"><tt>QMovie::Running</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The movie is running.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="cacheMode-prop"></a>cacheMode : <a href="qmovie.html#CacheMode-enum">CacheMode</a></h3>
@@ -254,6 +253,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmovie.html#scaledSize">scaledSize</a>() and <a href="qimagereader.html#setScaledSize">QImageReader::setScaledSize</a>().</p>
 <h3 class="fn"><a name="start"></a>void QMovie::start ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Starts the movie. <a href="qmovie.html">QMovie</a> will enter <a href="qmovie.html#MovieState-enum">Running</a> state, and start emitting <a href="qmovie.html#updated">updated</a>() and <a href="qmovie.html#resized">resized</a>() as the movie progresses.</p>
+<p>If <a href="qmovie.html">QMovie</a> is in the <a href="qmovie.html#MovieState-enum">Paused</a> state, this function is equivalent to calling setPaused(false). If <a href="qmovie.html">QMovie</a> is already in the <a href="qmovie.html#MovieState-enum">Running</a> state, this function does nothing.</p>
 <p>See also <a href="qmovie.html#stop">stop</a>() and <a href="qmovie.html#setPaused">setPaused</a>().</p>
 <h3 class="fn"><a name="started"></a>void QMovie::started ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted after <a href="qmovie.html#start">QMovie::start</a>() has been called, and <a href="qmovie.html">QMovie</a> has entered <a href="qmovie.html#MovieState-enum">QMovie::Running</a> state.</p>
@@ -265,7 +265,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmovie.html#state">QMovie::state</a>().</p>
 <h3 class="fn"><a name="stop"></a>void QMovie::stop ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Stops the movie. <a href="qmovie.html">QMovie</a> enters <a href="qmovie.html#MovieState-enum">NotRunning</a> state, and stops emitting <a href="qmovie.html#updated">updated</a>() and <a href="qmovie.html#resized">resized</a>(). If <a href="qmovie.html#start">start</a>() is called again, the movie will restart from the beginning.</p>
-<p>See also <a href="qmovie.html#start">start</a>().</p>
+<p>If <a href="qmovie.html">QMovie</a> is already in the <a href="qmovie.html#MovieState-enum">NotRunning</a> state, this function does nothing.</p>
+<p>See also <a href="qmovie.html#start">start</a>() and <a href="qmovie.html#setPaused">setPaused</a>().</p>
 <h3 class="fn"><a name="supportedFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QMovie::supportedFormats ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of image formats supported by <a href="qmovie.html">QMovie</a>.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -274,8 +275,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the rect <i>rect</i> in the current frame has been updated. You can call <a href="qmovie.html#currentImage">currentImage</a>() or <a href="qmovie.html#currentPixmap">currentPixmap</a>() to get a copy of the updated frame.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

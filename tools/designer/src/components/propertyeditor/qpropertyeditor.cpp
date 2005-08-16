@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -130,7 +130,11 @@ void QPropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const Q
             opt.state |= QStyle::State_Open;
         style()->drawPrimitive(QStyle::PE_IndicatorBranch, &opt, painter, this);
     }
+    QPen savedPen = painter->pen();
+    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &opt));
+    painter->setPen(QPen(color));
     painter->drawLine(rect.x(), rect.bottom(), rect.right(), rect.bottom());
+    painter->setPen(savedPen);
 }
 
 void QPropertyEditor::keyPressEvent(QKeyEvent *ev)

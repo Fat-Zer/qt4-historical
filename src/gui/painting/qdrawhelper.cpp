@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -2098,7 +2098,7 @@ DrawHelper qDrawHelper[DrawHelper::Layout_Count] =
 
 
 
-#if defined(QT_HAVE_SSE) && (!defined(__APPLE__) || defined(__i386__))
+#if (defined(QT_HAVE_SSE) && (!defined(__APPLE__) || defined(__i386__))) || defined(QT_HAVE_IWMMXT)
 
 enum CPUFeatures {
     None = 0,

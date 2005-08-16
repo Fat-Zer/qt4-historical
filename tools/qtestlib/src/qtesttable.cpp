@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -60,9 +60,11 @@ public:
     QTestData *dataAt(int index);
 
     static QTestTable *currentTestTable;
+    static QTestTable *gTable;
 };
 
 QTestTable *QTestTablePrivate::currentTestTable = 0;
+QTestTable *QTestTablePrivate::gTable = 0;
 
 QTestTablePrivate::ElementList *QTestTablePrivate::elementAt(int index)
 {
@@ -225,8 +227,15 @@ int QTestTable::indexOf(const char *elementName) const
 
 QTestTable *QTestTable::globalTestTable()
 {
-    static QTestTable *gTable = new QTestTable();
-    return gTable;
+    if (!QTestTablePrivate::gTable)
+        QTestTablePrivate::gTable = new QTestTable();
+    return QTestTablePrivate::gTable;
+}
+
+void QTestTable::clearGlobalTestTable()
+{
+    delete QTestTablePrivate::gTable;
+    QTestTablePrivate::gTable = 0;
 }
 
 QTestTable *QTestTable::currentTestTable()

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -125,7 +125,7 @@
 
     \value DefaultForPlatform The default option for the current platform.
     On Unix and Mac OS X, this is equivalent to (DontShareAddress
-    + ReuseAddressHint), and on Windows, it's equivalent to ShareAddress.
+    + ReuseAddressHint), and on Windows, its equivalent to ShareAddress.
 */
 
 #include "qhostaddress.h"

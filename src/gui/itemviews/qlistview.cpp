@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -402,6 +402,8 @@ void QListView::clearPropertyFlags()
 
 /*!
   Returns true if the \a row is hidden, otherwise returns false.
+
+  \sa setRowHidden
 */
 
 bool QListView::isRowHidden(int row) const
@@ -429,6 +431,9 @@ void QListView::setRowHidden(int row, bool hide)
 */
 QRect QListView::visualRect(const QModelIndex &index) const
 {
+    if (!index.isValid() || isIndexHidden(index))
+        return QRect();
+    
     Q_D(const QListView);
     d->executePostedLayout();
     return d->mapToViewport(rectForIndex(index));
@@ -481,7 +486,7 @@ void QListView::scrollTo(const QModelIndex &index, ScrollHint hint)
 void QListView::reset()
 {
     Q_D(QListView);
-    d->prepareItemsLayout();
+    d->clear();
     d->hiddenRows.clear();
     QAbstractItemView::reset();
 }
@@ -574,6 +579,13 @@ void QListView::rowsInserted(const QModelIndex &parent, int start, int end)
 {
     Q_D(QListView);
     // if the parent is above rootIndex() in the tree, nothing will happen
+    if (parent == rootIndex()) {
+        int count = (end - start + 1);
+        for (int i = d->hiddenRows.count() - 1; i >= 0; --i)
+            if (d->hiddenRows.at(i) > start)
+                d->hiddenRows[i] += count;
+    }
+    d->clear();
     d->doDelayedItemsLayout();
     QAbstractItemView::rowsInserted(parent, start, end);
 }
@@ -586,8 +598,20 @@ void QListView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int e
     Q_D(QListView);
     // if the parent is above rootIndex() in the tree, nothing will happen
     QAbstractItemView::rowsAboutToBeRemoved(parent, start, end);
+    if (parent == rootIndex()) {
+        int count = (end - start + 1);
+        for (int i = d->hiddenRows.count() - 1; i >= 0; --i) {
+            if (d->hiddenRows.at(i) > start) {
+                if (d->hiddenRows.at(i) < end) {
+                    d->hiddenRows.remove(i);
+                } else {
+                    d->hiddenRows[i] -= count;
+                }
+            }
+        }
+    }
+    d->clear();
     d->doDelayedItemsLayout();
-    d->prepareItemsLayout(); // cleanup
 }
 
 /*!
@@ -852,21 +876,6 @@ void QListView::paintEvent(QPaintEvent *e)
     const QStyle::State state = option.state;
     const QAbstractItemView::State viewState = this->state();
 
-    // Find the initial value for bPaintAlternateBase
-    bool bPaintAlternateBase = false;   // should only be inverted for *visible* rows
-    if (alternate) {
-        int ypos = e->rect().translated(0, verticalOffset()).top();
-        int v = 0;
-        for (int i = 0;;++i) {
-            if (isRowHidden(i))
-                continue;
-            v += sizeHintForRow(i);
-            if (v > ypos || v == -1)
-                break;
-            bPaintAlternateBase = !bPaintAlternateBase;
-        }
-    }
-
     QVector<QModelIndex>::const_iterator end = toBeRendered.constEnd();
     for (QVector<QModelIndex>::const_iterator it = toBeRendered.constBegin(); it != end; ++it) {
         Q_ASSERT((*it).isValid());
@@ -887,9 +896,8 @@ void QListView::paintEvent(QPaintEvent *e)
             option.state &= ~QStyle::State_MouseOver;
 
         if (alternate) {
-            option.palette.setBrush(QPalette::Base, bPaintAlternateBase ? alternateBrush : baseBrush );
-            painter.fillRect(option.rect, bPaintAlternateBase ? alternateBrush : baseBrush );
-            bPaintAlternateBase = !bPaintAlternateBase;
+            option.palette.setBrush(QPalette::Base, (*it).row() & 1 ? alternateBrush : baseBrush);
+            painter.fillRect(option.rect, (*it).row() & 1 ? alternateBrush : baseBrush);
         }
         delegate->paint(&painter, option, *it);
     }
@@ -1310,20 +1318,31 @@ QListViewPrivate::QListViewPrivate()
       uniformItemSizes(false)
 {}
 
-void QListViewPrivate::prepareItemsLayout()
+void QListViewPrivate::clear()
 {
-    Q_Q(QListView);
     // initialization of data structs
     batchStartRow = 0;
     batchSavedPosition = 0;
     batchSavedDeltaSeg = 0;
     cachedItemSize = QSize();
+    tree.destroy();
+    items.clear();
+    flowPositions.clear();
+    segmentPositions.clear();
+    segmentStartRows.clear();
+}
+
+void QListViewPrivate::prepareItemsLayout()
+{
+    Q_Q(QListView);
+    clear();
     layoutBounds = viewport->rect();
 
     if (resizeMode == QListView::Adjust) {
-        int margin = q->style()->pixelMetric(QStyle::PM_ScrollBarExtent);
-        int dw = q->verticalScrollBar()->isVisible() ? 0 : margin;
-        int dh = q->horizontalScrollBar()->isVisible() ? 0 : margin;
+        int verticalMargin = q->style()->pixelMetric(QStyle::PM_ScrollBarExtent, 0, q->verticalScrollBar());
+        int dw = q->verticalScrollBar()->isVisible() ? 0 : verticalMargin;
+        int horizontalMargin = q->style()->pixelMetric(QStyle::PM_ScrollBarExtent, 0, q->horizontalScrollBar());
+        int dh = q->horizontalScrollBar()->isVisible() ? 0 : horizontalMargin;
         layoutBounds.adjust(0, 0, -dw, -dh);
     }
 
@@ -1333,16 +1352,9 @@ void QListViewPrivate::prepareItemsLayout()
         rowCount = 0; // no contents
     if (movement == QListView::Static) {
         flowPositions.resize(rowCount);
-        tree.destroy();
-	items.clear();
     } else {
-        flowPositions.clear();
-        tree.destroy(); // clear out all items and leaves
-	items.clear();
         tree.create(qMax(rowCount - hiddenRows.count(), 0));
     }
-    segmentPositions.clear();
-    segmentStartRows.clear();
 }
 
 QPoint QListViewPrivate::initStaticLayout(const QRect &bounds, int spacing, int first)

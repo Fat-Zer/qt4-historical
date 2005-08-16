@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/io/qdatastream.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/corelib/io/qdatastream.cpp -->
 <head>
     <title>Qt 4.1: QDataStream Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -161,22 +161,22 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ByteOrder-enum"></a>enum QDataStream::ByteOrder</h3>
 <p>The byte order used for reading/writing the data.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDataStream::BigEndian</tt></td><td align="center" valign="top"><tt>QSysInfo::BigEndian</tt></td><td valign="top">Most significant byte first (the default)</td></tr>
 <tr><td valign="top"><tt>QDataStream::LittleEndian</tt></td><td align="center" valign="top"><tt>QSysInfo::LittleEndian</tt></td><td valign="top">Less significant byte first</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Status-enum"></a>enum QDataStream::Status</h3>
 <p>This enum describes the current status of the data stream.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDataStream::Ok</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The data stream is operating normally.</td></tr>
 <tr><td valign="top"><tt>QDataStream::ReadPastEnd</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The data stream has read past the end of the data in the underlying device.</td></tr>
 <tr><td valign="top"><tt>QDataStream::ReadCorruptData</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The data stream has read corrupt data.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Version-enum"></a>enum QDataStream::Version</h3>
 <p>This enum provides symbolic synonyms for the data serialization format version numbers.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDataStream::Qt_1_0</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Version 1 (Qt 1.x)</td></tr>
 <tr><td valign="top"><tt>QDataStream::Qt_2_0</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Version 2 (Qt 2.0)</td></tr>
@@ -186,7 +186,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QDataStream::Qt_3_3</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Version 6 (Qt 3.3)</td></tr>
 <tr><td valign="top"><tt>QDataStream::Qt_4_0</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Version 7 (Qt 4.0, Qt 4.1)</td></tr>
 <tr><td valign="top"><tt>QDataStream::Qt_4_1</tt></td><td align="center" valign="top"><tt>Qt_4_0</tt></td><td valign="top">Version 7 (Qt 4.0, Qt 4.1)</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qdatastream.html#setVersion">setVersion</a>() and <a href="qdatastream.html#version">version</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -245,7 +245,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the version number of the data serialization format to <i>v</i>.</p>
 <p>You don't <i>have</i> to set a version if you are using the current version of Qt, but for your own custom binary formats we recommend that you do; see <a href="qdatastream.html#versioning">Versioning</a> in the Detailed Description.</p>
 <p>In order to accommodate new functionality, the datastream serialization format of some Qt classes has changed in some versions of Qt. If you want to read data that was created by an earlier version of Qt, or write data that can be read by a program that was compiled with an earlier version of Qt, use this function to modify the serialization format used by <a href="qdatastream.html">QDataStream</a>.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt Version</th><th><a href="qdatastream.html">QDataStream</a> Version</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Qt 4.0</td><td>7</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Qt 3.3</td><td>6</td></tr>
@@ -254,7 +254,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Qt 2.1, 2.2, 2.3</td><td>3</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Qt 2.0</td><td>2</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Qt 1.x</td><td>1</td></tr>
-</table>
+</table></p>
 <p>The <a href="qdatastream.html#Version-enum">Version</a> enum provides symbolic constants for the different versions of Qt. For example:</p>
 <pre>&nbsp;   QDataStream out(file);
     out.setVersion(QDataStream::Qt_4_0);</pre>
@@ -283,79 +283,79 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-lt-lt"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#qint8-typedef">qint8</a> <i>i</i> )</h3>
 <p>Writes a signed byte, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-2"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( bool <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a boolean value, <i>i</i>, to the stream. Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-3"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#quint8-typedef">quint8</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes an unsigned byte, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-4"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#quint16-typedef">quint16</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes an unsigned 16-bit integer, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-5"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#qint16-typedef">qint16</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a signed 16-bit integer, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-6"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#qint32-typedef">qint32</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a signed 32-bit integer, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-7"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#quint64-typedef">quint64</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes an unsigned 64-bit integer, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-8"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a signed 64-bit integer, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-9"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#quint32-typedef">quint32</a> <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes an unsigned integer, <i>i</i>, to the stream as a 32-bit unsigned integer (quint32). Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-10"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( float <i>f</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a 32-bit floating point number, <i>f</i>, to the stream using the standard IEEE 754 format. Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-11"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( double <i>f</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a 64-bit floating point number, <i>f</i>, to the stream using the standard IEEE 754 format. Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-12"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( const char * <i>s</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the '\0'-terminated string <i>s</i> to the stream and returns a reference to the stream.</p>
 <p>The string is serialized using <a href="qdatastream.html#writeBytes">writeBytes</a>().</p>
 <h3 class="fn"><a name="operator-gt-gt"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#qint8-typedef">qint8</a> &amp; <i>i</i> )</h3>
 <p>Reads a signed byte from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-2"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( bool &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a boolean value from the stream into <i>i</i>. Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-3"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#quint8-typedef">quint8</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an unsigned byte from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-4"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#quint16-typedef">quint16</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an unsigned 16-bit integer from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-5"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#qint16-typedef">qint16</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a signed 16-bit integer from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-6"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#quint32-typedef">quint32</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an unsigned 32-bit integer from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-7"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#qint32-typedef">qint32</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a signed 32-bit integer from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-8"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#quint64-typedef">quint64</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an unsigned 64-bit integer from the stream, into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-9"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#qint64-typedef">qint64</a> &amp; <i>i</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a signed 64-bit integer from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-10"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( float &amp; <i>f</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a 32-bit floating point number from the stream into <i>f</i>, using the standard IEEE 754 format. Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-11"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( double &amp; <i>f</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a 64-bit floating point number from the stream into <i>f</i>, using the standard IEEE 754 format. Returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-12"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( char *&amp; <i>s</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the '\0'-terminated string <i>s</i> from the stream and returns a reference to the stream.</p>
 <p>Space for the string is allocated using <tt>new</tt> -- the caller must destroy it with <tt>delete[]</tt>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

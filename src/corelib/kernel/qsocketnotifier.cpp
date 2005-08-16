@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -66,8 +66,10 @@
        We recommend against using this.
     \endlist
 
-    If you need to monitor both reads and writes for the same file
-    descriptor, you must create two socket notifiers.
+    \bold{Note:} If you need to monitor both reads and writes for the
+    same file descriptor, you must create two socket notifiers. It is
+    not possible to install two socket notifiers of the same type
+    (\l Read, \l Write, \l Exception) on the same socket.
 
     \sa QFile, QProcess, QTcpSocket, QUdpSocket
 */

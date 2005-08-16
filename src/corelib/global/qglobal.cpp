@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -33,62 +33,6 @@
 #if defined(Q_CC_MSVC) && !defined(Q_OS_TEMP)
 #include <crtdbg.h>
 #endif
-
-/*!
-    \macro Q_DECLARE_TYPEINFO(Type, Flags)
-    \relates <QtGlobal>
-
-    You can use this macro to specify information about a custom type
-    \a Type. With accurate type information, Qt's \l{generic
-    containers} can choose appropriate storage methods and algorithms.
-
-    \a Flag can be one of the following:
-
-    \list
-    \o \c Q_PRIMITIVE_TYPE specifies that \a Type is a POD (plain old
-       data) type with no constructor or destructor.
-    \o \c Q_MOVABLE_TYPE specifies that \a Type has a constructor
-       and/or a destructor but can be moved in memory using \c
-       memcpy().
-    \o \c Q_COMPLEX_TYPE (the default) specifies that \a Type has
-       constructors and/or a destructor and that it may not be moved
-       in memory.
-    \endlist
-
-    Example of a "primitive" type:
-
-    \code
-        struct Point2D
-        {
-            int x;
-            int y;
-        };
-
-        Q_DECLARE_TYPEINFO(Point2D, Q_PRIMITIVE_TYPE);
-    \endcode
-
-    Example of a movable type:
-
-    \code
-        class Point2D
-        {
-        public:
-            Point2D() { data = new int[2]; }
-            Point2D(const Point2D &other) { ... }
-            ~Point2D() { delete[] data; }
-
-            Point2D &operator=(const Point2D &other) { ... }
-
-            int x() const { return data[0]; }
-            int y() const { return data[1]; }
-
-        private:
-            int *data;
-        };
-
-        Q_DECLARE_TYPEINFO(Point2D, Q_MOVABLE_TYPE);
-    \endcode
-*/
 
 /*!
     \class QFlag
@@ -693,26 +637,32 @@
 /*! \fn int qRound(qreal value)
     \relates <QtGlobal>
 
-    Rounds \a value up to the nearest integer. For example:
+    Rounds \a value to the nearest integer. For example:
 
     \code
-        qreal value = 2.3;
+        qreal valueA = 2.3;
+        qreal valueB = 2.7;
 
-        int roundedValue = qRound(value);
-        \\ roundedValue = 3
+        int roundedValueA = qRound(valueA);
+        \\ roundedValueA = 2
+        int roundedValueB = qRound(valueB);
+        \\ roundedValueB = 3
     \endcode
 */
 
 /*! \fn qint64 qRound64(qreal value)
     \relates <QtGlobal>
 
-    Rounds \a value up to the nearest 64-bit integer. For example:
+    Rounds \a value to the nearest 64-bit integer. For example:
 
     \code
-        qreal value = 42949672960,7;
+        qreal valueA = 42949672960.3;
+        qreal valueB = 42949672960.7;
 
-        int roundedValue = qRound(value);
-        \\ roundedValue = 42949672961
+        int roundedValueA = qRound(valueA);
+        \\ roundedValueA = 42949672960
+        int roundedValueB = qRound(valueB);
+        \\ roundedValueB = 42949672961
     \endcode
 */
 
@@ -1027,7 +977,8 @@ bool qSharedBuild()
     \value WV_NT    Windows NT
     \value WV_2000  Windows 2000
     \value WV_XP    Windows XP
-    \value WV_2003  Windows XP 2003
+    \value WV_2003  Windows Server 2003
+    \value WV_VISTA Windows Vista
 
     CE-based versions:
 
@@ -1067,6 +1018,42 @@ bool qSharedBuild()
     \value MV_TIGER    Apple codename for MV_10_4
 
     \sa WinVersion
+*/
+
+/*!
+    \macro Q_WS_MAC
+    \relates <QtGlobal>
+
+    Defined on Mac OS X.
+
+    \sa Q_WS_WIN, Q_WS_X11, Q_WS_QWS
+*/
+
+/*!
+    \macro Q_WS_WIN
+    \relates <QtGlobal>
+
+    Defined on Windows.
+
+    \sa Q_WS_MAC, Q_WS_X11, Q_WS_QWS
+*/
+
+/*!
+    \macro Q_WS_X11
+    \relates <QtGlobal>
+
+    Defined on X11.
+
+    \sa Q_WS_MAC, Q_WS_WIN, Q_WS_QWS
+*/
+
+/*!
+    \macro Q_WS_QWS
+    \relates <QtGlobal>
+
+    Defined on Qtopia Core.
+
+    \sa Q_WS_MAC, Q_WS_WIN, Q_WS_X11
 */
 
 /*!
@@ -1412,50 +1399,6 @@ bool qSharedBuild()
     Optimizing C++ Compilers.
 */
 
-/*!
-    \macro Q_OS_MACX
-    \relates <QtGlobal>
-
-    Defined for Mac OS X.
-*/
-
-/*!
-    \macro Q_OS_MAC9
-    \relates <QtGlobal>
-
-    Defined for Mac OS 9.
-*/
-
-/*!
-    \macro Q_OS_QWS
-    \relates <QtGlobal>
-
-    Defined for Qtopia Core.
-*/
-
-/*!
-    \macro Q_OS_X11
-    \relates <QtGlobal>
-
-    Defined for the X Window System.
-*/
-
-/*!
-    \macro Q_OS_PM
-    \relates <QtGlobal>
-    \internal
-
-    Defined for unsupported.
-*/
-
-/*!
-    \macro Q_OS_WIN16
-    \relates <QtGlobal>
-    \internal
-
-    Defined for unsupported.
-*/
-
 #if !defined(Q_BYTE_ORDER) && defined(QT_BUILD_QMAKE)
 // needed to bootstrap qmake
 static const unsigned int qt_one = 1;
@@ -1601,6 +1544,31 @@ static QSysInfo::WinVersion winVersion()
             winver = QSysInfo::WV_NT_based;
         }
     }
+
+#ifdef QT_DEBUG
+    {
+        QByteArray override = qgetenv("QT_WINVER_OVERRIDE");
+        if (override.isEmpty())
+            return winver;
+
+        if (override == "Me")
+            winver = QSysInfo::WV_Me;
+        if (override == "95")
+            winver = QSysInfo::WV_95;
+        else if (override == "98")
+            winver = QSysInfo::WV_98;
+        else if (override == "NT")
+            winver = QSysInfo::WV_NT;
+        else if (override == "2000")
+            winver = QSysInfo::WV_2000;
+        else if (override == "2003")
+            winver = QSysInfo::WV_2003;
+        else if (override == "XP")
+            winver = QSysInfo::WV_XP;
+        else if (override == "VISTA")
+            winver = QSysInfo::WV_VISTA;
+    }
+#endif
 
     return winver;
 }
@@ -2343,7 +2311,7 @@ QByteArray qgetenv(const char *varName)
     \relates <QtGlobal>
 
     Returns \a str as a \c{const char *}. This is equivalent to
-    \a{str}.toAscii().constData().
+    \a{str}.toLocal8bit().constData().
 
     Example:
 
@@ -2352,6 +2320,62 @@ QByteArray qgetenv(const char *varName)
     \endcode
 
     \sa qDebug(), qWarning(), qCritical(), qFatal()
+*/
+
+/*!
+    \macro Q_DECLARE_TYPEINFO(Type, Flags)
+    \relates <QtGlobal>
+
+    You can use this macro to specify information about a custom type
+    \a Type. With accurate type information, Qt's \l{generic
+    containers} can choose appropriate storage methods and algorithms.
+
+    \a Flags can be one of the following:
+
+    \list
+    \o \c Q_PRIMITIVE_TYPE specifies that \a Type is a POD (plain old
+       data) type with no constructor or destructor.
+    \o \c Q_MOVABLE_TYPE specifies that \a Type has a constructor
+       and/or a destructor but can be moved in memory using \c
+       memcpy().
+    \o \c Q_COMPLEX_TYPE (the default) specifies that \a Type has
+       constructors and/or a destructor and that it may not be moved
+       in memory.
+    \endlist
+
+    Example of a "primitive" type:
+
+    \code
+        struct Point2D
+        {
+            int x;
+            int y;
+        };
+
+        Q_DECLARE_TYPEINFO(Point2D, Q_PRIMITIVE_TYPE);
+    \endcode
+
+    Example of a movable type:
+
+    \code
+        class Point2D
+        {
+        public:
+            Point2D() { data = new int[2]; }
+            Point2D(const Point2D &other) { ... }
+            ~Point2D() { delete[] data; }
+
+            Point2D &operator=(const Point2D &other) { ... }
+
+            int x() const { return data[0]; }
+            int y() const { return data[1]; }
+
+        private:
+            int *data;
+        };
+
+        Q_DECLARE_TYPEINFO(Point2D, Q_MOVABLE_TYPE);
+    \endcode
 */
 
 /*!

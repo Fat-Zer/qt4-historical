@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -122,15 +122,8 @@ bool QDesignerFormWindowCommand::hasLayout(QWidget *widget) const
     return false;
 }
 
-void QDesignerFormWindowCommand::checkObjectName(QObject *object)
+void QDesignerFormWindowCommand::checkObjectName(QObject *)
 {
-    if (object->objectName().isEmpty())
-        qWarning("invalid object name");
-
-    QDesignerFormEditorInterface *core = formWindow()->core();
-    if (QDesignerMetaDataBaseItemInterface *item = core->metaDataBase()->item(object)) {
-        item->setName(object->objectName());
-    }
 }
 
 void QDesignerFormWindowCommand::updateBuddies(const QString &old_name,
@@ -156,15 +149,6 @@ void QDesignerFormWindowCommand::updateBuddies(const QString &old_name,
 void QDesignerFormWindowCommand::checkSelection(QWidget *widget)
 {
     Q_UNUSED(widget);
-
-#if 0 // ### port me
-    QDesignerFormEditorInterface *core = formWindow()->core();
-
-    formWindow()->updateSelection(widget);
-
-    if (LayoutInfo::layoutType(core, widget) != LayoutInfo::NoLayout)
-        formWindow()->updateChildSelections(widget);
-#endif
 }
 
 void QDesignerFormWindowCommand::checkParent(QWidget *widget, QWidget *parentWidget)
@@ -414,7 +398,7 @@ InsertWidgetCommand::InsertWidgetCommand(QDesignerFormWindowInterface *formWindo
 {
 }
 
-void InsertWidgetCommand::init(QWidget *widget)
+void InsertWidgetCommand::init(QWidget *widget, bool already_in_form)
 {
     m_widget = widget;
 
@@ -426,6 +410,19 @@ void InsertWidgetCommand::init(QWidget *widget)
 
     m_insertMode = deco ? deco->currentInsertMode() : QDesignerLayoutDecorationExtension::InsertWidgetMode;
     m_cell = deco ? deco->currentCell() : qMakePair(0, 0);
+    m_widgetWasManaged = already_in_form;
+}
+
+static void recursiveUpdate(QWidget *w)
+{
+    w->update();
+
+    const QObjectList &l = w->children();
+    QObjectList::const_iterator it = l.begin();
+    for (; it != l.end(); ++it) {
+        if (QWidget *w = qobject_cast<QWidget*>(*it))
+            recursiveUpdate(w);
+    }
 }
 
 void InsertWidgetCommand::redo()
@@ -454,9 +451,15 @@ void InsertWidgetCommand::redo()
         deco->insertWidget(m_widget, m_cell);
     }
 
-    formWindow()->manageWidget(m_widget);
+    if (!m_widgetWasManaged)
+        formWindow()->manageWidget(m_widget);
     m_widget->show();
     formWindow()->emitSelectionChanged();
+
+    if (parentWidget && parentWidget->layout()) {
+        recursiveUpdate(parentWidget);
+        parentWidget->layout()->invalidate();
+    }
 }
 
 void InsertWidgetCommand::undo()
@@ -471,8 +474,10 @@ void InsertWidgetCommand::undo()
         deco->simplify();
     }
 
-    formWindow()->unmanageWidget(m_widget);
-    m_widget->hide();
+    if (!m_widgetWasManaged) {
+        formWindow()->unmanageWidget(m_widget);
+        m_widget->hide();
+    }
     formWindow()->emitSelectionChanged();
 }
 
@@ -575,10 +580,20 @@ void DeleteWidgetCommand::init(QWidget *widget)
 void DeleteWidgetCommand::redo()
 {
     QDesignerFormEditorInterface *core = formWindow()->core();
-    QDesignerLayoutDecorationExtension *deco = qt_extension<QDesignerLayoutDecorationExtension*>(core->extensionManager(), m_parentWidget);
 
-    if (deco)
+    if (QDesignerContainerExtension *c = qt_extension<QDesignerContainerExtension*>(core->extensionManager(), m_parentWidget)) {
+        for (int i=0; i<c->count(); ++i) {
+            if (c->widget(i) == m_widget) {
+                c->remove(i);
+                formWindow()->emitSelectionChanged();
+                return;
+            }
+        }
+    }
+
+    if (QDesignerLayoutDecorationExtension *deco = qt_extension<QDesignerLayoutDecorationExtension*>(core->extensionManager(), m_parentWidget)) {
         deco->removeWidget(m_widget);
+    }
 
     // Unmanage the managed children first
     foreach (QWidget *child, m_managedChildren)
@@ -599,7 +614,16 @@ void DeleteWidgetCommand::redo()
 
 void DeleteWidgetCommand::undo()
 {
+    QDesignerFormEditorInterface *core = formWindow()->core();
+
     m_widget->setParent(m_parentWidget);
+
+    if (QDesignerContainerExtension *c = qt_extension<QDesignerContainerExtension*>(core->extensionManager(), m_parentWidget)) {
+        c->addWidget(m_widget);
+        formWindow()->emitSelectionChanged();
+        return;
+    }
+
     m_widget->setGeometry(m_geometry);
     formWindow()->manageWidget(m_widget);
 
@@ -866,9 +890,8 @@ void LayoutCommand::undo()
         deco = qt_extension<QDesignerLayoutDecorationExtension*>(core->extensionManager(), p);
     }
 
-    delete deco; // release the extension
-
     m_layout->undoLayout();
+    delete deco; // release the extension
 
     // ### generalize (put in function)
     if (!m_layoutBase && lb != 0 && !(qobject_cast<QLayoutWidget*>(lb) || qobject_cast<QSplitter*>(lb))) {
@@ -928,10 +951,9 @@ void BreakLayoutCommand::redo()
     if (!deco && hasLayout(p))
         deco = qt_extension<QDesignerLayoutDecorationExtension*>(core->extensionManager(), p);
 
-    delete deco; // release the extension
-
     formWindow()->clearSelection(false);
     m_layout->breakLayout();
+    delete deco; // release the extension
 
     foreach (QWidget *widget, m_widgets) {
         widget->resize(widget->size().expandedTo(QSize(16, 16)));
@@ -2246,7 +2268,7 @@ void ChangeListContentsCommand::changeContents(QComboBox *comboBox,
     QListIterator<QPair<QString, QIcon> > it(itemsState);
     while (it.hasNext()) {
         QPair<QString, QIcon> pair = it.next();
-        comboBox->addItem(pair.first);
+        comboBox->addItem(pair.second, pair.first);
         comboBox->setItemData(comboBox->count() - 1, pair.second);
     }
 }

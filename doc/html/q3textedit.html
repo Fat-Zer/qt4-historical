@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/text/q3textedit.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/text/q3textedit.cpp -->
 <head>
     <title>Qt 4.1: Q3TextEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -38,7 +38,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3textedit.html#autoFormatting-prop">autoFormatting</a></b> : AutoFormattingFlag</li>
 <li><div class="fn"/><b><a href="q3textedit.html#documentTitle-prop">documentTitle</a></b> : const QString</li>
@@ -62,7 +62,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3textedit.html#wrapPolicy-prop">wrapPolicy</a></b> : WrapPolicy</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
@@ -134,7 +134,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -243,6 +243,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -267,13 +268,13 @@ body { background: #ffffff; color: black; }</style>
 <h3>Introduction and Concepts</h3>
 <p>Q3TextEdit is an advanced WYSIWYG viewer/editor supporting rich text formatting using HTML-style tags. It is optimized to handle large documents and to respond quickly to user input.</p>
 <p>Q3TextEdit has four modes of operation:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Mode</th><th>Command</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Plain Text Editor</td><td>setTextFormat(<a href="qt.html#TextFormat-enum">Qt::PlainText</a>)</td><td>Set text with <a href="q3textedit.html#text-prop">setText</a>(); <a href="q3textedit.html#text-prop">text</a>() returns plain text. Text attributes (e.g. colors) can be set, but plain text is always returned.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Rich Text Editor</td><td>setTextFormat(<a href="qt.html#TextFormat-enum">Qt::RichText</a>)</td><td>Set text with <a href="q3textedit.html#text-prop">setText</a>(); <a href="q3textedit.html#text-prop">text</a>() returns rich text. Rich text editing is fairly limited. You can't set margins or insert images for example (although you can read and correctly display files that have margins set and that include images). This mode is mostly useful for editing small amounts of rich text.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Text Viewer</td><td>setReadOnly(true)</td><td>Set text with <a href="q3textedit.html#text-prop">setText</a>() or <a href="q3textedit.html#append">append</a>() (which has no undo history so is faster and uses less memory); <a href="q3textedit.html#text-prop">text</a>() returns plain or rich text depending on the <a href="q3textedit.html#textFormat-prop">textFormat</a>(). This mode can correctly display a large subset of HTML tags.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Log Viewer</td><td>setTextFormat(<a href="qt.html#TextFormat-enum">Qt::LogText</a>)</td><td>Append text using <a href="q3textedit.html#append">append</a>(). The widget is set to be read only and rich text support is disabled although a few HTML tags (for color, bold, italic and underline) may be used. (See <a href="#logtextmode">Qt::LogText mode</a> for details.)</td></tr>
-</table>
+</table></p>
 <p>Q3TextEdit can be used as a syntax highlighting editor when used in conjunction with <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a>.</p>
 <p>We recommend that you always call <a href="q3textedit.html#textFormat-prop">setTextFormat</a>() to set the mode you want to use. If you use <a href="qt.html#TextFormat-enum">Qt::AutoText</a> then <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#append">append</a>() will try to determine whether the text they are given is plain text or rich text. If you use <a href="qt.html#TextFormat-enum">Qt::RichText</a> then <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#append">append</a>() will assume that the text they are given is rich text. <a href="q3textedit.html#insert">insert</a>() simply inserts the text it is given.</p>
 <p>Q3TextEdit works on paragraphs and characters. A paragraph is a formatted string which is word-wrapped to fit into the width of the widget. By default when reading plain text, one newline signify a paragraph. A document consists of zero or more paragraphs, indexed from 0. Characters are indexed on a per-paragraph basis, also indexed from 0. The words in the paragraph are aligned in accordance with the paragraph's <a href="q3textedit.html#alignment">alignment</a>(). Paragraphs are separated by hard line breaks. Each character within a paragraph has its own attributes, for example, font and color.</p>
@@ -313,7 +314,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="read-only-key-bindings"></a>
 <h4>Read-only key bindings</h4>
 <p>When Q3TextEdit is used read-only the key-bindings are limited to navigation, and text may only be selected with the mouse:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypresses</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ArrowType-enum">Qt::UpArrow</a></td><td>Move one line up</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#ArrowType-enum">Qt::DownArrow</a></td><td>Move one line down</td></tr>
@@ -325,7 +326,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>End</td><td>Move to the end of the text</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Shift+Wheel</td><td>Scroll the page horizontally (the Wheel is the mouse wheel)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Wheel</td><td>Zoom the text</td></tr>
-</table>
+</table></p>
 <p>The text edit may be able to provide some meta-information. For example, the <a href="q3textedit.html#documentTitle-prop">documentTitle</a>() function will return the text from within HTML <tt>&lt;title&gt;</tt> tags.</p>
 <p>The text displayed in a text edit has a <i>context</i>. The context is a path which the text edit's <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> uses to resolve the locations of files and images. It is passed to the <a href="q3textedit.html#mimeSourceFactory">mimeSourceFactory</a>() when quering data. (See <a href="q3textedit.html#Q3TextEdit">Q3TextEdit</a>() and <a href="q3textedit.html#context">context</a>().)</p>
 <a name="logtextmode"></a><a name="using-q3textedit-in-qt-logtext-mode"></a>
@@ -360,7 +361,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="editing-key-bindings"></a>
 <h4>Editing key bindings</h4>
 <p>The list of key-bindings which are implemented for editing:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypresses</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Backspace</td><td>Delete the character to the left of the cursor</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Delete</td><td>Delete the character to the right of the cursor</td></tr>
@@ -394,22 +395,22 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+End</td><td>Move the cursor to the end of the text</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Shift+Wheel</td><td>Scroll the page horizontally (the Wheel is the mouse wheel)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Wheel</td><td>Zoom the text</td></tr>
-</table>
+</table></p>
 <p>To select (mark) text hold down the Shift key whilst pressing one of the movement keystrokes, for example, <i>Shift+Right Arrow</i> will select the character to the right, and <i>Shift+Ctrl+Right Arrow</i> will select the word to the right, etc.</p>
 <p>By default the text edit widget operates in insert mode so all text that the user enters is inserted into the text edit and any text to the right of the cursor is moved out of the way. The mode can be changed to overwrite, where new text overwrites any text to the right of the cursor, using <a href="q3textedit.html#overwriteMode-prop">setOverwriteMode</a>().</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="AutoFormattingFlag-enum"></a>enum Q3TextEdit::AutoFormattingFlag<br />flags Q3TextEdit::AutoFormatting</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AutoNone</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Do not perform any automatic formatting</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AutoBulletList</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Only automatically format bulletted lists</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AutoAll</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Apply all available autoformatting</td></tr>
-</table>
+</table></p>
 <p>The AutoFormatting type is a typedef for <a href="qflags.html">QFlags</a>&lt;AutoFormattingFlag&gt;. It stores an OR combination of AutoFormattingFlag values.</p>
 <h3 class="fn"><a name="CursorAction-enum"></a>enum Q3TextEdit::CursorAction</h3>
 <p>This enum is used by <a href="q3textedit.html#moveCursor">moveCursor</a>() to specify in which direction the cursor should be moved:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TextEdit::MoveBackward</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Moves the cursor one character backward</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::MoveWordBackward</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Moves the cursor one word backward</td></tr>
@@ -423,10 +424,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3TextEdit::MoveEnd</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">Moves the cursor to the end of the document</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::MovePgUp</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">Moves the cursor one viewport page up</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::MovePgDown</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">Moves the cursor one viewport page down</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="KeyboardAction-enum"></a>enum Q3TextEdit::KeyboardAction</h3>
 <p>This enum is used by <a href="q3textedit.html#doKeyboardAction">doKeyboardAction</a>() to specify which action should be executed:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TextEdit::ActionBackspace</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Delete the character to the left of the cursor.</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::ActionDelete</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Delete the character to the right of the cursor.</td></tr>
@@ -434,34 +435,34 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3TextEdit::ActionKill</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">If the cursor is not at the end of the paragraph, delete the text from the cursor position until the end of the paragraph. If the cursor is at the end of the paragraph, delete the hard line break at the end of the paragraph: this will cause this paragraph to be joined with the following paragraph.</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::ActionWordBackspace</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Delete the word to the left of the cursor position.</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::ActionWordDelete</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Delete the word to the right of the cursor position</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="VerticalAlignment-enum"></a>enum Q3TextEdit::VerticalAlignment</h3>
 <p>This enum is used to set the vertical alignment of the text.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AlignNormal</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Normal alignment</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AlignSuperScript</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Superscript</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AlignSubScript</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Subscript</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="WordWrap-enum"></a>enum Q3TextEdit::WordWrap</h3>
 <p>This enum defines the <a href="q3textedit.html">Q3TextEdit</a>'s word wrap modes.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TextEdit::NoWrap</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Do not wrap the text.</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::WidgetWidth</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Wrap the text at the current width of the widget (this is the default). Wrapping is at whitespace by default; this can be changed with <a href="q3textedit.html#wrapPolicy-prop">setWrapPolicy</a>().</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::FixedPixelWidth</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Wrap the text at a fixed number of pixels from the widget's left side. The number of pixels is set with <a href="q3textedit.html#wrapColumnOrWidth-prop">wrapColumnOrWidth</a>().</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::FixedColumnWidth</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Wrap the text at a fixed number of character columns from the widget's left side. The number of characters is set with <a href="q3textedit.html#wrapColumnOrWidth-prop">wrapColumnOrWidth</a>(). This is useful if you need formatted text that can also be displayed gracefully on devices with monospaced fonts, for example a standard VT100 terminal, where you might set <a href="q3textedit.html#wrapColumnOrWidth-prop">wrapColumnOrWidth</a>() to 80.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3textedit.html#wordWrap-prop">setWordWrap</a>() and <a href="q3textedit.html#wordWrap-prop">wordWrap</a>().</p>
 <h3 class="fn"><a name="WrapPolicy-enum"></a>enum Q3TextEdit::WrapPolicy</h3>
 <p>This enum defines where text can be wrapped in word wrap mode.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AtWhiteSpace</tt></td><td align="center" valign="top"><tt>AtWordBoundary</tt></td><td valign="top">Don't use this deprecated value (it is a synonym for <tt>AtWordBoundary</tt> which you should use instead).</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::Anywhere</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Break anywhere, including within words.</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AtWordBoundary</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Break lines at word boundaries, e.g. spaces or newlines</td></tr>
 <tr><td valign="top"><tt>Q3TextEdit::AtWordOrDocumentBoundary</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Break lines at whitespace, e.g. spaces or newlines if possible. Break it anywhere otherwise.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3textedit.html#wrapPolicy-prop">setWrapPolicy</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -677,7 +678,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is called to create a right mouse button popup menu at the document position <i>pos</i>. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
 <p><b>Warning:</b> The <a href="porting4.html#qpopupmenu">QPopupMenu</a> ID values 0-7 are reserved, and they map to the standard operations. When inserting items into your custom popup menu, be sure to specify ID values larger than 7.</p>
 <h3 class="fn"><a name="createPopupMenu-2"></a><a href="q3popupmenu.html">Q3PopupMenu</a> * Q3TextEdit::createPopupMenu ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is called to create a right mouse button popup menu. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
 <p>This function is only called if createPopupMenu(const <a href="qpoint.html">QPoint</a> &amp;) returns 0.</p>
 <h3 class="fn"><a name="currentAlignmentChanged"></a>void Q3TextEdit::currentAlignmentChanged ( int <i>a</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -700,7 +701,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The new vertical alignment is <i>a</i>.</p>
 <p>See also <a href="q3textedit.html#setVerticalAlignment">setVerticalAlignment</a>().</p>
 <h3 class="fn"><a name="cursorPositionChanged-2"></a>void Q3TextEdit::cursorPositionChanged ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted if the position of the cursor has changed. <i>para</i> contains the paragraph index and <i>pos</i> contains the character position within the paragraph.</p>
 <p>See also <a href="q3textedit.html#setCursorPosition">setCursorPosition</a>().</p>
 <h3 class="fn"><a name="cut"></a>void Q3TextEdit::cut ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
@@ -753,7 +754,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the widget is in <a href="qt.html#TextFormat-enum">Qt::LogText</a> mode this function will do nothing.</p>
 <p>See also <a href="q3textedit.html#paste">paste</a>() and <a href="q3textedit.html#pasteSubType">pasteSubType</a>().</p>
 <h3 class="fn"><a name="insert-2"></a>void Q3TextEdit::insert ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, bool <i>indent</i>, bool <i>checkNewLine</i> = true, bool <i>removeSelected</i> = true )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts the given <i>text</i>. If <i>indent</i> is true the paragraph that contains the text is reindented; if <i>checkNewLine</i> is true the <i>text</i> is checked for newlines and relaid out. If <i>removeSelected</i> is true and there is a selection, the insertion replaces the selected text.</p>
 <h3 class="fn"><a name="insertAt"></a>void Q3TextEdit::insertAt ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>para</i>, int <i>index</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Inserts <i>text</i> in the paragraph <i>para</i> at position <i>index</i>.</p>
@@ -919,22 +920,22 @@ body { background: #ffffff; color: black; }</style>
 <p>Zooms in on the text by by making the base font size <i>range</i> points larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomOut">zoomOut</a>().</p>
 <h3 class="fn"><a name="zoomIn-2"></a>void Q3TextEdit::zoomIn ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Zooms in on the text by by making the base font size one point larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomOut">zoomOut</a>().</p>
 <h3 class="fn"><a name="zoomOut"></a>void Q3TextEdit::zoomOut ( int <i>range</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms out on the text by making the base font size <i>range</i> points smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomIn">zoomIn</a>().</p>
 <h3 class="fn"><a name="zoomOut-2"></a>void Q3TextEdit::zoomOut ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Zooms out on the text by by making the base font size one point smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomIn">zoomIn</a>().</p>
 <h3 class="fn"><a name="zoomTo"></a>void Q3TextEdit::zoomTo ( int <i>size</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms the text by making the base font size <i>size</i> points and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

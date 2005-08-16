@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -623,6 +623,7 @@ private:
     friend class QQuickDrawPaintEngine;
     friend class QCoreGraphicsPaintEnginePrivate;
     friend QPoint qt_mac_posInWindow(const QWidget *w);
+    friend bool qt_mac_is_metal(const QWidget *w);
 #endif
 #ifdef Q_WS_QWS
     friend class QWSManager;

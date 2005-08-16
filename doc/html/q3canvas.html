@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/canvas/q3canvas.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/canvas/q3canvas.cpp -->
 <head>
     <title>Qt 4.1: Q3Canvas Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -143,10 +143,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="Q3Canvas-3"></a>Q3Canvas::Q3Canvas ( <a href="qpixmap.html">QPixmap</a> <i>p</i>, int <i>h</i>, int <i>v</i>, int <i>tilewidth</i>, int <i>tileheight</i> )</h3>
 <p>Constructs a <a href="q3canvas.html">Q3Canvas</a> which will be composed of <i>h</i> tiles horizontally and <i>v</i> tiles vertically. Each tile will be an image <i>tilewidth</i> by <i>tileheight</i> pixels taken from pixmap <i>p</i>.</p>
 <p>The pixmap <i>p</i> is a list of tiles, arranged left to right, (and in the case of pixmaps that have multiple rows of tiles, top to bottom), with tile 0 in the top-left corner, tile 1 next to the right, and so on, e.g.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td>0</td><td>1</td><td>2</td><td>3</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-</table>
+</table></p>
 <p>The <a href="q3canvas.html">Q3Canvas</a> is initially sized to show exactly the given number of tiles horizontally and vertically. If it is resized to be larger, the entire matrix of tiles will be repeated as often as necessary to cover the area. If it is smaller, tiles to the right and bottom will not be visible.</p>
 <p>See also <a href="q3canvas.html#setTiles">setTiles</a>().</p>
 <h3 class="fn"><a name="dtor.Q3Canvas"></a>Q3Canvas::~Q3Canvas ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -171,10 +171,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="collisions"></a><a href="q3canvasitemlist.html">Q3CanvasItemList</a> Q3Canvas::collisions ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
 <p>Returns a list of canvas items that collide with the point <i>p</i>. The list is ordered by z coordinates, from highest z coordinate (front-most item) to lowest z coordinate (rear-most item).</p>
 <h3 class="fn"><a name="collisions-2"></a><a href="q3canvasitemlist.html">Q3CanvasItemList</a> Q3Canvas::collisions ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list of items which collide with the rectangle <i>r</i>. The list is ordered by z coordinates, from highest z coordinate (front-most item) to lowest z coordinate (rear-most item).</p>
 <h3 class="fn"><a name="collisions-3"></a><a href="q3canvasitemlist.html">Q3CanvasItemList</a> Q3Canvas::collisions ( const <a href="q3pointarray.html">Q3PointArray</a> &amp; <i>chunklist</i>, const <a href="q3canvasitem.html">Q3CanvasItem</a> * <i>item</i>, bool <i>exact</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list of canvas items which intersect with the chunks listed in <i>chunklist</i>, excluding <i>item</i>. If <i>exact</i> is true, only those which actually <a href="q3canvasitem.html#collidesWith">collide with</a> <i>item</i> are returned; otherwise canvas items are included just for being in the chunks.</p>
 <p>This is a utility function mainly used to implement the simpler <a href="q3canvasitem.html#collisions">Q3CanvasItem::collisions</a>() function.</p>
 <h3 class="fn"><a name="drawArea"></a>void Q3Canvas::drawArea ( const <a href="qrect.html">QRect</a> &amp; <i>clip</i>, <a href="qpainter.html">QPainter</a> * <i>painter</i>, bool <i>dbuf</i> = false )</h3>
@@ -199,7 +199,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the pixel position (<i>x</i>, <i>y</i>) is on the canvas; otherwise returns false.</p>
 <p>See also <a href="q3canvas.html#validChunk">validChunk</a>().</p>
 <h3 class="fn"><a name="onCanvas-2"></a>bool Q3Canvas::onCanvas ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the pixel position <i>p</i> is on the canvas; otherwise returns false.</p>
 <p>See also <a href="q3canvas.html#validChunk">validChunk</a>().</p>
 <h3 class="fn"><a name="rect"></a><a href="qrect.html">QRect</a> Q3Canvas::rect () const</h3>
@@ -232,18 +232,18 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setTile"></a>void Q3Canvas::setTile ( int <i>x</i>, int <i>y</i>, int <i>tilenum</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the tile at (<i>x</i>, <i>y</i>) to use tile number <i>tilenum</i>, which is an index into the tile pixmaps. The canvas will update appropriately when <a href="q3canvas.html#update">update</a>() is next called.</p>
 <p>The images are taken from the pixmap set by <a href="q3canvas.html#setTiles">setTiles</a>() and are arranged left to right, (and in the case of pixmaps that have multiple rows of tiles, top to bottom), with tile 0 in the top-left corner, tile 1 next to the right, and so on, e.g.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td>0</td><td>1</td><td>2</td><td>3</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3canvas.html#tile">tile</a>() and <a href="q3canvas.html#setTiles">setTiles</a>().</p>
 <h3 class="fn"><a name="setTiles"></a>void Q3Canvas::setTiles ( <a href="qpixmap.html">QPixmap</a> <i>p</i>, int <i>h</i>, int <i>v</i>, int <i>tilewidth</i>, int <i>tileheight</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <a href="q3canvas.html">Q3Canvas</a> to be composed of <i>h</i> tiles horizontally and <i>v</i> tiles vertically. Each tile will be an image <i>tilewidth</i> by <i>tileheight</i> pixels from pixmap <i>p</i>.</p>
 <p>The pixmap <i>p</i> is a list of tiles, arranged left to right, (and in the case of pixmaps that have multiple rows of tiles, top to bottom), with tile 0 in the top-left corner, tile 1 next to the right, and so on, e.g.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td>0</td><td>1</td><td>2</td><td>3</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-</table>
+</table></p>
 <p>If the canvas is larger than the matrix of tiles, the entire matrix is repeated as necessary to cover the whole canvas. If it is smaller, tiles to the right and bottom are not visible.</p>
 <p>The width and height of <i>p</i> must be a multiple of <i>tilewidth</i> and <i>tileheight</i>. If they are not the function will do nothing.</p>
 <p>If you want to unset any tiling set, then just pass in a null pixmap and 0 for <i>h</i>, <i>v</i>, <i>tilewidth</i>, and <i>tileheight</i>.</p>
@@ -273,15 +273,15 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the chunk position (<i>x</i>, <i>y</i>) is on the canvas; otherwise returns false.</p>
 <p>See also <a href="q3canvas.html#onCanvas">onCanvas</a>().</p>
 <h3 class="fn"><a name="validChunk-2"></a>bool Q3Canvas::validChunk ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the chunk position <i>p</i> is on the canvas; otherwise returns false.</p>
 <p>See also <a href="q3canvas.html#onCanvas">onCanvas</a>().</p>
 <h3 class="fn"><a name="width"></a>int Q3Canvas::width () const</h3>
 <p>Returns the width of the canvas, in pixels.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

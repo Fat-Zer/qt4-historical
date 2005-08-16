@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -39,6 +39,7 @@ ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent)
         pmp.end();
         QPalette pal = palette();
         pal.setBrush(backgroundRole(), QBrush(pm));
+        setAutoFillBackground(true);
         setPalette(pal);
 
     } else {

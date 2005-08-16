@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -54,6 +54,7 @@ public:
           sortIndicatorSection(0),
           sortIndicatorShown(false),
           lastPos(-1),
+          firstPos(-1),
           section(-1),
           target(-1),
           pressed(-1),
@@ -63,6 +64,7 @@ public:
           highlightSelected(false),
           stretchLastSection(false),
           stretchSections(0),
+          customSections(0),
           sectionIndicatorOffset(0),
           sectionIndicator(0),
           globalResizeMode(QHeaderView::Interactive) {}
@@ -85,6 +87,12 @@ public:
     inline int logicalIndex(int visualIndex) const
         { return logicalIndices.isEmpty() ? visualIndex : logicalIndices.at(visualIndex); }
 
+    inline bool hasAutoResizeSections() const
+        { return stretchSections || stretchLastSection;/* || customSections;*/ }
+
+    inline void invalidateCachedSizeHint() const
+        { cachedSizeHint = QSize(); }
+
     enum State { NoState, ResizeSection, MoveSection } state;
 
     int offset;
@@ -105,14 +113,17 @@ public:
         logicalIndices.clear();
         sectionSelection.clear();
         hiddenSectionSize.clear();
+        cachedSizeHint = QSize();
     }
     mutable QVector<HeaderSection> sections; // HeaderSection = sections.at(visualIndex)
     mutable QVector<int> visualIndices; // visualIndex = visualIndices.at(logicalIndex)
     mutable QVector<int> logicalIndices; // logicalIndex = row or column in the model
     mutable QBitArray sectionSelection;
     mutable QHash<int, int> hiddenSectionSize; // from logical index to section size
+    mutable QSize cachedSizeHint;
 
     int lastPos;
+    int firstPos;
     int section; // used for resizing and moving sections
     int target;
     int pressed;
@@ -122,6 +133,7 @@ public:
     bool highlightSelected;
     bool stretchLastSection;
     int stretchSections;
+    int customSections;
     int sectionIndicatorOffset;
     int defaultSectionSize;
     Qt::Alignment defaultAlignment;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -79,8 +79,12 @@ class QTextListPrivate : public QTextBlockGroupPrivate
 
 /*!
     \fn bool QTextList::isEmpty() const
+    \obsolete
 
     Returns true if the list has no items; otherwise returns false.
+
+    \bold{Note:} Empty lists are automatically deleted by the QTextDocument that owns
+    them.
 
     \sa count()
 */
@@ -192,7 +196,11 @@ QString QTextList::itemText(const QTextBlock &blockIt) const
 }
 
 /*!
-    Removes the item at item position \a i from the list.
+    Removes the item at item position \a i from the list. When the last item in the
+    list is removed, the list is automatically deleted by the QTextDocument that owns
+    it.
+
+    \sa add(), remove()
 */
 void QTextList::removeItem(int i)
 {
@@ -207,6 +215,8 @@ void QTextList::removeItem(int i)
 
 /*!
     Removes the given \a block from the list.
+
+    \sa add(), removeItem()
 */
 void QTextList::remove(const QTextBlock &block)
 {
@@ -218,6 +228,8 @@ void QTextList::remove(const QTextBlock &block)
 
 /*!
     Makes the given \a block part of the list.
+
+    \sa remove(), removeItem()
 */
 void QTextList::add(const QTextBlock &block)
 {

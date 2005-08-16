@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -84,8 +84,8 @@ TextEdit::TextEdit(QWidget *parent)
     actionUndo->setEnabled(textEdit->document()->isUndoAvailable());
     actionRedo->setEnabled(textEdit->document()->isRedoAvailable());
 
-    connect(actionUndo, SIGNAL(triggered()), textEdit->document(), SLOT(undo()));
-    connect(actionRedo, SIGNAL(triggered()), textEdit->document(), SLOT(redo()));
+    connect(actionUndo, SIGNAL(triggered()), textEdit, SLOT(undo()));
+    connect(actionRedo, SIGNAL(triggered()), textEdit, SLOT(redo()));
 
     actionCut->setEnabled(false);
     actionCopy->setEnabled(false);

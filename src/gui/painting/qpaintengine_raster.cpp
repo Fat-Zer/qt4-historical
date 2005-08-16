@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -79,7 +79,6 @@
 #define qreal_to_fixed_26_6(f) (int(f * 64))
 #define qt_swap_int(x, y) { int tmp = (x); (x) = (y); (y) = tmp; }
 #define qt_swap_qreal(x, y) { qreal tmp = (x); (x) = (y); (y) = tmp; }
-
 
 #ifdef Q_WS_WIN
 void qt_draw_text_item(const QPointF &point, const QTextItemInt &ti, HDC hdc,
@@ -258,7 +257,7 @@ public:
     QDataBuffer<QPointF> m_elements_dev;
     QDataBuffer<QT_FT_Vector> m_points;
     QDataBuffer<char> m_tags;
-    QDataBuffer<short> m_contours;
+    QDataBuffer<int> m_contours;
 
     QPolygonClipper<QRasterFloatPoint, QRasterFloatPoint, qreal> m_clipper;
     QDataBuffer<QPointF> m_polygon_dev;
@@ -526,7 +525,7 @@ void QRasterPaintEngine::init()
 {
     Q_D(QRasterPaintEngine);
 
-    d->rasterPoolSize = 255 * 255;
+    d->rasterPoolSize = 4096;
     d->rasterPoolBase =
 #if defined(Q_WS_WIN64)
         (unsigned char *) _aligned_malloc(d->rasterPoolSize, __alignof(void*));
@@ -601,7 +600,28 @@ bool QRasterPaintEngine::begin(QPaintDevice *device)
     d->fast_pen = true;
     d->int_xform = true;
 
+#if defined(Q_WS_WIN)
+    d->clear_type_text = false;
+    QT_WA({
+        UINT result;
+        BOOL ok;
+        ok = SystemParametersInfoW(SPI_GETFONTSMOOTHINGTYPE, 0, &result, 0);
+        if (ok)
+            d->clear_type_text = (result == FE_FONTSMOOTHINGCLEARTYPE);
+    }, {
+        UINT result;
+        BOOL ok;
+        ok = SystemParametersInfoA(SPI_GETFONTSMOOTHINGTYPE, 0, &result, 0);
+        if (ok)
+            d->clear_type_text = (result == FE_FONTSMOOTHINGCLEARTYPE);
+    });
+#endif
+
     d->rasterBuffer->init();
+
+#if defined(Q_WS_WIN)
+    d->fontRasterBuffer->setupHDC(d->clear_type_text);
+#endif
 
     d->deviceRect = QRect(0, 0, device->width(), device->height());
 
@@ -620,6 +640,7 @@ bool QRasterPaintEngine::begin(QPaintDevice *device)
                                                 -d->deviceRect.x(),
                                                 -d->deviceRect.y());
         }
+        gccaps &= ~PaintOutsidePaintEvent;
     }
 #if defined(Q_WS_QWS)
     else if (device->devType() == QInternal::Pixmap) {
@@ -720,6 +741,11 @@ bool QRasterPaintEngine::end()
 
     if (d->flushOnEnd)
         flush(d->pdev, QPoint());
+
+    if (d->rasterBuffer->disabled_clip) {
+        delete d->rasterBuffer->disabled_clip;
+        d->rasterBuffer->disabled_clip = 0;
+    }
 
     setActive(false);
 
@@ -930,9 +956,30 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
     }
 
     if (flags & DirtyClipEnabled) {
-        d->rasterBuffer->clipEnabled = state.isClipEnabled();
-        d->penData.adjustSpanMethods();
-        d->brushData.adjustSpanMethods();
+        if (state.isClipEnabled() != d->rasterBuffer->clipEnabled) {
+            d->rasterBuffer->clipEnabled = state.isClipEnabled();
+
+            // The tricky case... When we disable clipping we still do
+            // system clip so we need to rasterize the system clip and
+            // replace the current clip with it. Since people might
+            // choose to set clipping to true later on we have to the
+            // current one (in disabled_clip).
+            if (!d->baseClip.isEmpty()) {
+                if (!d->rasterBuffer->clipEnabled) {
+                    Q_ASSERT(!d->rasterBuffer->disabled_clip);
+                    d->rasterBuffer->disabled_clip = d->rasterBuffer->clip;
+                    d->rasterBuffer->clip = 0;
+                    updateClipPath(QPainterPath(), Qt::NoClip);
+                } else {
+                    Q_ASSERT(d->rasterBuffer->disabled_clip);
+                    d->rasterBuffer->resetClip();
+                    d->rasterBuffer->clip = d->rasterBuffer->disabled_clip;
+                    d->rasterBuffer->disabled_clip = 0;
+                }
+            }
+            d->penData.adjustSpanMethods();
+            d->brushData.adjustSpanMethods();
+        }
     }
 
     if (flags & DirtyClipPath) {
@@ -961,7 +1008,9 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
     }
 
     if (update_fast_pen) {
-        d->fast_pen = d->pen.style() == Qt::SolidLine && !d->antialiased
+        d->fast_pen = d->pen.style() == Qt::SolidLine
+                      && !d->antialiased
+                      && d->pen.brush().isOpaque()
                       && (d->pen.widthF() == 0
                           || d->pen.widthF() <= 1 && d->txop <= QPainterPrivate::TxTranslate);
     }
@@ -1552,160 +1601,21 @@ void QRasterPaintEngine::qwsFillRect(int x, int y, int w, int h)
 void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
 {
     QPaintEngine::drawTextItem(p, textItem);
-    return;
-
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
-
-#ifdef QT_DEBUG_DRAW
-    printf(" - QRasterPaintEngine::drawTextItem(), (%.2f,%.2f), string=%s\n",
-           p.x(), p.y(), QString::fromRawData(ti.chars, ti.num_chars).toLatin1().data());
-#endif
-    Q_D(QRasterPaintEngine);
-
-    switch(ti.fontEngine->type()) {
-    case QFontEngine::Multi:
-        d->drawMulti(p, ti);
-        break;
-    case QFontEngine::XLFD:
-        d->drawXLFD(p, ti);
-        break;
-    case QFontEngine::Box:
-        d->drawBox(p, ti);
-        break;
-#ifndef QT_NO_FONTCONFIG
-    case QFontEngine::Freetype: {
-            bool aa = d->antialiased;
-            d->antialiased = !d->mono_surface;
-            QPaintEngine::drawTextItem(p, ti);
-            d->antialiased = aa;
-        }
-        break;
-#endif
-    default:
-        Q_ASSERT(false);
-    }
-}
-
-void QRasterPaintEnginePrivate::drawMulti(const QPointF &p, const QTextItem &textItem)
-{
-    Q_Q(QRasterPaintEngine);
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
-    QFontEngineMulti *multi = static_cast<QFontEngineMulti *>(ti.fontEngine);
-    QGlyphLayout *glyphs = ti.glyphs;
-    int which = glyphs[0].glyph >> 24;
-
-    qreal x = p.x();
-    qreal y = p.y();
-
-    int start = 0;
-    int end, i;
-    for (end = 0; end < ti.num_glyphs; ++end) {
-        const int e = glyphs[end].glyph >> 24;
-        if (e == which)
-            continue;
-
-        // set the high byte to zero
-        for (i = start; i < end; ++i)
-            glyphs[i].glyph = glyphs[i].glyph & 0xffffff;
-
-        // draw the text
-        QTextItemInt ti2 = ti;
-        ti2.glyphs = ti.glyphs + start;
-        ti2.num_glyphs = end - start;
-        ti2.fontEngine = multi->engine(which);
-        ti2.f = ti.f;
-        q->drawTextItem(QPointF(x, y), ti2);
-
-        QFixed xadd;
-        // reset the high byte for all glyphs and advance to the next sub-string
-        const int hi = which << 24;
-        for (i = start; i < end; ++i) {
-            glyphs[i].glyph = hi | glyphs[i].glyph;
-            xadd += glyphs[i].advance.x;
-        }
-        x += xadd.toReal();
-
-        // change engine
-        start = end;
-        which = e;
-    }
-
-    // set the high byte to zero
-    for (i = start; i < end; ++i)
-        glyphs[i].glyph = glyphs[i].glyph & 0xffffff;
-
-    // draw the text
-    QTextItemInt ti2 = ti;
-    ti2.glyphs = ti.glyphs + start;
-    ti2.num_glyphs = end - start;
-    ti2.fontEngine = multi->engine(which);
-    ti2.f = ti.f;
-    q->drawTextItem(QPointF(x,y), ti2);
-
-    // reset the high byte for all glyphs
-    const int hi = which << 24;
-    for (i = start; i < end; ++i)
-        glyphs[i].glyph = hi | glyphs[i].glyph;
-}
-
-void QRasterPaintEnginePrivate::drawXLFD(const QPointF &p, const QTextItem &textItem)
-{
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
-
-    // xlfd: draw into bitmap, convert to image and rasterize that
-
-    if (!penData.blend)
-        return;
-
-    QRectF logRect(p.x(), p.y() - ti.ascent.toReal(), ti.width.toReal(), (ti.ascent + ti.descent).toReal());
-    QRect devRect = matrix.mapRect(logRect).toRect();
-
-    if(devRect.width() == 0 || devRect.height() == 0)
-        return;
-
-    int w = qRound(ti.width);
-    int h = qRound(ti.ascent + ti.descent + 1);
-    QBitmap bm(w, h);
-    {
-        QPainter painter(&bm);
-        painter.fillRect(0, 0, w, h, Qt::color0);
-        painter.setPen(Qt::color1);
-
-        QTextItemInt item;
-        item.flags = 0;
-        item.descent = ti.descent;
-        item.ascent = ti.ascent;
-        item.width = ti.width;
-        item.chars = 0;
-        item.num_chars = 0;
-        item.glyphs = ti.glyphs;
-        item.num_glyphs = ti.num_glyphs;
-        item.fontEngine = ti.fontEngine;
-        item.f = 0;
-
-        painter.drawTextItem(QPointF(0, ti.ascent.toReal()), item);
-    }
-
-    drawBitmap(devRect.topLeft(), bm, &penData);
-}
-
-void QRasterPaintEnginePrivate::drawBox(const QPointF &, const QTextItem &)
-{
-    // nothing for now
+    // #####
 }
 
 #else
 
 #if defined(Q_WS_WIN)
-bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax, 
+bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax,
                                               int ymax, const QTextItem &textItem, bool clearType,
                                               qreal leftBearingReserve)
-{   
+{
     Q_D(QRasterPaintEngine);
     const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
 
     if (d->mono_surface) {
-        // Some extra work to get proper rasterization of text on monochrome targets    
+        // Some extra work to get proper rasterization of text on monochrome targets
         HBITMAP bitmap = CreateBitmap(devRect.width(), devRect.height(), 1, 1, 0);
         HDC hdc = CreateCompatibleDC(qt_win_display_dc());
         HGDIOBJ null_bitmap = SelectObject(hdc, bitmap);
@@ -1716,7 +1626,7 @@ bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, in
         // Fill buffer with stuff
         SelectObject(hdc, GetStockObject(BLACK_BRUSH));
         SelectObject(hdc, GetStockObject(BLACK_PEN));
-        SetTextColor(hdc, RGB(0,0,0));            
+        SetTextColor(hdc, RGB(0,0,0));
         qt_draw_text_item(QPoint(qRound(leftBearingReserve), ti.ascent.toInt()), ti, hdc);
 
         BitBlt(d->fontRasterBuffer->hdc(), 0, 0, devRect.width(), devRect.height(),
@@ -1751,14 +1661,20 @@ bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, in
         }
 
         // Draw the text item
-        COLORREF cf = RGB(qRed(penColor), qGreen(penColor), qBlue(penColor));
-        SelectObject(d->fontRasterBuffer->hdc(), CreateSolidBrush(cf));
-        SelectObject(d->fontRasterBuffer->hdc(), CreatePen(PS_SOLID, 1, cf));
-        SetTextColor(d->fontRasterBuffer->hdc(), cf);            
-        qt_draw_text_item(QPoint(qRound(leftBearingReserve), ti.ascent.toInt()), ti, 
-            d->fontRasterBuffer->hdc());
-        DeleteObject(SelectObject(d->fontRasterBuffer->hdc(),GetStockObject(HOLLOW_BRUSH)));
-        DeleteObject(SelectObject(d->fontRasterBuffer->hdc(),GetStockObject(BLACK_PEN)));
+        if (d->clear_type_text) {
+            COLORREF cf = RGB(qRed(penColor), qGreen(penColor), qBlue(penColor));
+            SelectObject(d->fontRasterBuffer->hdc(), CreateSolidBrush(cf));
+            SelectObject(d->fontRasterBuffer->hdc(), CreatePen(PS_SOLID, 1, cf));
+            SetTextColor(d->fontRasterBuffer->hdc(), cf);
+        }
+
+        qt_draw_text_item(QPoint(qRound(leftBearingReserve), ti.ascent.toInt()), ti,
+                          d->fontRasterBuffer->hdc());
+
+        if (d->clear_type_text) {
+            DeleteObject(SelectObject(d->fontRasterBuffer->hdc(),GetStockObject(NULL_BRUSH)));
+            DeleteObject(SelectObject(d->fontRasterBuffer->hdc(),GetStockObject(BLACK_PEN)));
+        }
 
         // Clean up alpha channel
         if (clearType) {
@@ -1767,20 +1683,20 @@ bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, in
                 QRgb *rbScanline = (QRgb *) d->rasterBuffer->scanLine(y);
                 for (int x=xmin; x<xmax; ++x) {
                     // If alpha is 0, then Windows has drawn text on top of the pixel, so set
-                    // the pixel to opaque. Otherwise, Windows has not touched the pixel, so 
+                    // the pixel to opaque. Otherwise, Windows has not touched the pixel, so
                     // we can set it to transparent so the background shines through instead.
                     switch (qAlpha(scanline[x - devRect.x()])) {
-                    case 0x0: 
+                    case 0x0:
                         // Special case: If Windows has drawn on top of a transparent pixel, then
                         // we bail out. This is an attempt at avoiding the problem where Windows
-                        // has no background to use for composition, but also minimizing the 
-                        // number of cases hit by the fall back. 
-                        // ### This is far from optimal.                        
+                        // has no background to use for composition, but also minimizing the
+                        // number of cases hit by the fall back.
+                        // ### This is far from optimal.
                         if (qAlpha(rbScanline[x]) == 0) {
                             return drawTextInFontBuffer(devRect, xmin, ymin, xmax, ymax, textItem,
                                 false, leftBearingReserve);
                         }
-                        scanline[x - devRect.x()] |= 0xff000000; 
+                        scanline[x - devRect.x()] |= 0xff000000;
                         break ;
                     default: scanline[x - devRect.x()] = 0x0; break ;
                     };
@@ -1790,7 +1706,7 @@ bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, in
     }
 
     return clearType;
-} 
+}
 #endif // Q_WS_WIN
 
 
@@ -1808,33 +1724,18 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
     if (!d->penData.blend)
         return;
 
-    bool clearType = false;
-    QT_WA({
-        UINT result;
-        BOOL ok;
-        ok = SystemParametersInfoW(SPI_GETFONTSMOOTHINGTYPE, 0, &result, 0);
-        if (ok)
-            clearType = (result == FE_FONTSMOOTHINGCLEARTYPE);
-    }, {
-        UINT result;
-        BOOL ok;
-        ok = SystemParametersInfoA(SPI_GETFONTSMOOTHINGTYPE, 0, &result, 0);
-        if (ok)
-            clearType = (result == FE_FONTSMOOTHINGCLEARTYPE);
-    });
+    if (d->txop >= QPainterPrivate::TxScale) {
+        QPaintEngine::drawTextItem(p, textItem);
+        return;
+    }
 
     // Only support cleartype for solid pens, 32 bit target buffers and when the pen color is
     // opaque
-    clearType = clearType && (d->penData.type == QSpanData::Solid)
-        && d->deviceDepth == 32 && qAlpha(d->penData.solid.color) == 255;
+    bool clearType = d->clear_type_text
+                     && d->penData.type == QSpanData::Solid
+                     && d->deviceDepth == 32
+                     &&  qAlpha(d->penData.solid.color) == 255;
 
-    if (d->txop >= QPainterPrivate::TxScale) {
-        bool antialiased = d->antialiased;
-        d->antialiased = true;
-        QPaintEngine::drawTextItem(p, textItem);
-        d->antialiased = antialiased;
-        return;
-    }
 
     QFixed x_buffering = ti.ascent;
 
@@ -1860,8 +1761,8 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
         return;
 
     // Fill the font raster buffer with text
-    clearType = drawTextInFontBuffer(devRect, xmin, ymin, xmax, ymax, textItem, clearType,
-        leftBearingReserve);
+    clearType = drawTextInFontBuffer(devRect, xmin, ymin, xmax, ymax, textItem,
+                                     clearType, leftBearingReserve);
 
     const int NSPANS = 256;
     QSpan spans[NSPANS];
@@ -1902,7 +1803,7 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
         data.dy = -devRect.y();
         data.adjustSpanMethods();
         fillRect(QRect(xmin, ymin, xmax - xmin, ymax - ymin), &data);
-    } else {
+    } else if (d->clear_type_text) {
         for (int y=ymin; y<ymax; ++y) {
             QRgb *scanline = (QRgb *) d->fontRasterBuffer->scanLine(y - devRect.y()) - devRect.x();
             // Generate spans for this y coord
@@ -1916,6 +1817,31 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
 
                 // extend span until we find a different one.
                 while (x < xmax && qGray(scanline[x]) == prev) ++x;
+                span.len = x - span.x;
+
+                if (current == NSPANS) {
+                    d->penData.blend(current, spans, &d->penData);
+                    current = 0;
+                }
+                spans[current++] = span;
+            }
+        }
+    } else {
+        // For the noncleartype/grayscale text we can look at only one color component,
+        // and save a bit of qGray effort...
+        for (int y=ymin; y<ymax; ++y) {
+            QRgb *scanline = (QRgb *) d->fontRasterBuffer->scanLine(y - devRect.y()) - devRect.x();
+            // Generate spans for this y coord
+            for (int x = xmin; x<xmax; ) {
+                // Skip those with 0 coverage (black on white so inverted)
+                while (x < xmax && qBlue(scanline[x]) == 255) ++x;
+                if (x >= xmax) break;
+
+                int prev = qBlue(scanline[x]);
+                QT_FT_Span span = { x, 0, y, 255 - prev };
+
+                // extend span until we find a different one.
+                while (x < xmax && qBlue(scanline[x]) == prev) ++x;
                 span.len = x - span.x;
 
                 if (current == NSPANS) {
@@ -1959,6 +1885,10 @@ void QRasterPaintEngine::drawPoints(const QPointF *points, int pointCount)
         QBrush oldBrush = d->brush;
         d->brush = Qt::NoBrush;
 
+        bool flat_pen = d->pen.capStyle() == Qt::FlatCap;
+        if (flat_pen)
+            d->basicStroker.setCapStyle(Qt::SquareCap);
+
         const QPointF *end = points + pointCount;
         while (points < end) {
             QPainterPath path;
@@ -1969,6 +1899,9 @@ void QRasterPaintEngine::drawPoints(const QPointF *points, int pointCount)
         }
 
         d->brush = oldBrush;
+
+        if (flat_pen)
+            d->basicStroker.setCapStyle(Qt::FlatCap);
 
     } else {
         if (!d->penData.blend)
@@ -2152,7 +2085,7 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                 int src_x = x + x_offset;
                 uchar pixel = src[src_x >> 3];
                 if (!pixel) {
-                    x += 7;
+                    x += 7 - (x%8);
                     continue;
                 }
                 if (pixel & (0x1 << (src_x & 7))) {
@@ -2179,7 +2112,7 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                 int src_x = x + x_offset;
                 uchar pixel = src[src_x >> 3];
                 if (!pixel) {
-                    x += 7;
+                    x += 7 - (x%8);
                     continue;
                 }
                 if (pixel & (0x80 >> (x & 7))) {
@@ -2317,22 +2250,53 @@ void QRasterPaintEnginePrivate::rasterize(QT_FT_Outline *outline,
     rasterParams.user = data;
     rasterParams.clip_box = clip_box;
 
-    if (antialiased) {
-        rasterParams.flags |= (QT_FT_RASTER_FLAG_AA | QT_FT_RASTER_FLAG_DIRECT);
-        rasterParams.gray_spans = callback;
-        int error = qt_ft_grays_raster.raster_render(*grayRaster, &rasterParams);
-        if (error) {
-            printf("QRasterPaintEnginePrivate::rasterize(), gray raster failed: %d\n", error);
+    bool done = false;
+    int error;
+
+    while (!done) {
+
+        if (antialiased) {
+            rasterParams.flags |= (QT_FT_RASTER_FLAG_AA | QT_FT_RASTER_FLAG_DIRECT);
+            rasterParams.gray_spans = callback;
+            error = qt_ft_grays_raster.raster_render(*grayRaster, &rasterParams);
+        } else {
+            rasterParams.flags |= QT_FT_RASTER_FLAG_DIRECT;
+            rasterParams.black_spans = callback;
+            error = qt_ft_standard_raster.raster_render(*blackRaster, &rasterParams);
         }
-    } else {
-        rasterParams.flags |= QT_FT_RASTER_FLAG_DIRECT;
-        rasterParams.black_spans = callback;
-        int error = qt_ft_standard_raster.raster_render(*blackRaster, &rasterParams);
-        if (error) {
-            qWarning("QRasterPaintEnginePrivate::rasterize(), black raster failed: %d", error);
+
+        // Out of memory, reallocate some more and try again...
+        if (error == -6) { // -6 is Result_err_OutOfMemory
+            int new_size = rasterPoolSize * 2;
+            if (new_size > 1024 * 1024) {
+                qWarning("QPainter: Rasterization of primitive failed");
+                return;
+            }
+
+#if defined(Q_WS_WIN64)
+            _aligned_free(rasterPoolBase);
+#else
+            free(rasterPoolBase);
+#endif
+
+            rasterPoolSize = new_size;
+            rasterPoolBase =
+#if defined(Q_WS_WIN64)
+                (unsigned char *) _aligned_malloc(rasterPoolSize, __alignof(void*));
+#else
+            (unsigned char *) malloc(rasterPoolSize);
+#endif
+
+            qt_ft_grays_raster.raster_new(0, grayRaster);
+            qt_ft_grays_raster.raster_reset(*grayRaster, rasterPoolBase, rasterPoolSize);
+
+            qt_ft_standard_raster.raster_new(0, blackRaster);
+            qt_ft_standard_raster.raster_reset(*blackRaster, rasterPoolBase, rasterPoolSize);
+
+        } else {
+            done = true;
         }
     }
-
 }
 
 
@@ -2419,6 +2383,7 @@ void QRasterBuffer::init()
 {
     clipEnabled = false;
     opaqueBackground = false;
+    disabled_clip = 0;
 
     compositionMode = QPainter::CompositionMode_SourceOver;
     delete clip;
@@ -2427,6 +2392,17 @@ void QRasterBuffer::init()
     bgBrush = Qt::white;
 }
 
+
+#if defined(Q_WS_WIN)
+void QRasterBuffer::setupHDC(bool clear_type)
+{
+    if (!clear_type) {
+        SelectObject(m_hdc, GetStockObject(BLACK_BRUSH));
+        SelectObject(m_hdc, GetStockObject(BLACK_PEN));
+        SetTextColor(m_hdc, RGB(0, 0, 0));
+    }
+}
+#endif
 
 void QRasterBuffer::prepare(int w, int h)
 {
@@ -3049,7 +3025,8 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
         bool fast = !has_kerning;
         QFixed w = 0;
         for(int i = 0; i < ti.num_glyphs; i++) {
-            if (glyphs[i].offset.x != 0 || glyphs[i].offset.y != 0 || glyphs[i].space_18d6 != 0) {
+            if (glyphs[i].offset.x != 0 || glyphs[i].offset.y != 0 || glyphs[i].space_18d6 != 0
+                || glyphs[i].attributes.dontPrint) {
                 fast = false;
                 break;
             }
@@ -3069,17 +3046,35 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
             x += w.toReal();
         } else {
             QVarLengthArray<QFixedPoint> positions;
-            QVarLengthArray<glyph_t> glyphs;
+            QVarLengthArray<glyph_t> _glyphs;
             QMatrix matrix;
             matrix.translate(p.x(), p.y());
-            ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, glyphs, positions);
+            ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, _glyphs, positions);
 
-            int i = 0;
-            while(i < glyphs.size()) {
-                wchar_t g = glyphs[i];
-                ExtTextOutW(hdc, qRound(positions[i].x), qRound(positions[i].y), options, 0,
-                            convertToText ? convertedGlyphs + i : &g, 1, 0);
-                ++i;
+            bool outputEntireItem = QT_WA_INLINE(ti.num_glyphs > 0, false);
+
+            if (outputEntireItem) {
+                options |= ETO_PDY;
+                QVarLengthArray<INT> glyphDistances(ti.num_glyphs * 2);
+                QVarLengthArray<wchar_t> g(ti.num_glyphs);
+                for (int i=0; i<ti.num_glyphs - 1; ++i) {
+                    glyphDistances[i * 2] = qRound(positions[i + 1].x) - qRound(positions[i].x);
+                    glyphDistances[i * 2 + 1] = qRound(positions[i + 1].y) - qRound(positions[i].y);
+                    g[i] = _glyphs[i];
+                }
+                glyphDistances[(ti.num_glyphs - 1) * 2] = 0;
+                glyphDistances[(ti.num_glyphs - 1) * 2 + 1] = 0;
+                g[ti.num_glyphs - 1] = _glyphs[ti.num_glyphs - 1];
+                ExtTextOutW(hdc, qRound(positions[0].x), qRound(positions[0].y), options, 0,
+                            convertToText ? convertedGlyphs : g.data(), ti.num_glyphs, glyphDistances.data());
+            } else {
+                int i = 0;
+                while(i < _glyphs.size()) {
+                    wchar_t g = _glyphs[i];
+                    ExtTextOutW(hdc, qRound(positions[i].x), qRound(positions[i].y), options, 0,
+                                convertToText ? convertedGlyphs + i : &g, 1, 0);
+                    ++i;
+                }
             }
         }
     }
@@ -3103,90 +3098,11 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
     }
 }
 
-static void draw_text_item_multi(const QPointF &p, const QTextItemInt &ti, HDC hdc,
-                                 bool convertToText)
-{
-    QFontEngineMulti *multi = static_cast<QFontEngineMulti *>(ti.fontEngine);
-
-    if (!ti.num_glyphs) {
-        if (ti.flags) {
-            QTextItemInt ti2 = ti;
-            ti2.fontEngine = multi->engine(0);
-            ti2.f = ti.f;
-            draw_text_item_win(p, ti2, hdc, convertToText);
-        }
-        return;
-    }
-
-    QGlyphLayout *glyphs = ti.glyphs;
-    int which = glyphs[0].glyph >> 24;
-
-    qreal x = p.x();
-    qreal y = p.y();
-
-    int start = 0;
-    int end, i;
-    for (end = 0; end < ti.num_glyphs; ++end) {
-        const int e = glyphs[end].glyph >> 24;
-        if (e == which)
-            continue;
-
-        // set the high byte to zero
-        for (i = start; i < end; ++i)
-            glyphs[i].glyph = glyphs[i].glyph & 0xffffff;
-
-        // draw the text
-        QTextItemInt ti2 = ti;
-        ti2.glyphs = ti.glyphs + start;
-        ti2.num_glyphs = end - start;
-        ti2.fontEngine = multi->engine(which);
-        ti2.f = ti.f;
-        draw_text_item_win(QPointF(x, y), ti2, hdc, convertToText);
-
-        QFixed x_add;
-        // reset the high byte for all glyphs and advance to the next sub-string
-        const int hi = which << 24;
-        for (i = start; i < end; ++i) {
-            glyphs[i].glyph = hi | glyphs[i].glyph;
-            x_add += glyphs[i].advance.x;
-        }
-        x += x_add.toReal();
-
-        // change engine
-        start = end;
-        which = e;
-    }
-
-    // set the high byte to zero
-    for (i = start; i < end; ++i)
-        glyphs[i].glyph = glyphs[i].glyph & 0xffffff;
-
-    // draw the text
-    QTextItemInt ti2 = ti;
-    ti2.glyphs = ti.glyphs + start;
-    ti2.num_glyphs = end - start;
-    ti2.fontEngine = multi->engine(which);
-    ti2.f = ti.f;
-    draw_text_item_win(QPointF(x, y), ti2, hdc, convertToText);
-
-    // reset the high byte for all glyphs
-    const int hi = which << 24;
-    for (i = start; i < end; ++i)
-        glyphs[i].glyph = hi | glyphs[i].glyph;
-}
-
 void qt_draw_text_item(const QPointF &pos, const QTextItemInt &ti, HDC hdc,
                        bool convertToText)
 {
-    switch(ti.fontEngine->type()) {
-    case QFontEngine::Multi:
-        draw_text_item_multi(pos, ti, hdc, convertToText);
-        break;
-    case QFontEngine::Win:
-    default:
-        draw_text_item_win(pos, ti, hdc, convertToText);
-        break;
-    }
+    Q_ASSERT(ti.fontEngine->type() != QFontEngine::Multi);
+    draw_text_item_win(pos, ti, hdc, convertToText);
 }
 
 

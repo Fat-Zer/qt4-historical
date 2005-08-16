@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -74,7 +74,6 @@ public:
     QTableWidgetItem *verticalHeaderItem(int section);
 
     QModelIndex index(const QTableWidgetItem *item) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
     void setRowCount(int rows);
     void setColumnCount(int columns);
@@ -144,10 +143,9 @@ QTableModel::~QTableModel()
 
 bool QTableModel::insertRows(int row, int count, const QModelIndex &)
 {
-    if (row < 0)
-        row = 0;
-    else if (row > vertical.count())
-        row = vertical.count();
+    if (count < 1 || row < 0 || row > vertical.count())
+        return false;
+
     beginInsertRows(QModelIndex(), row, row + count - 1);
     int rc = vertical.count();
     int cc = horizontal.count();
@@ -162,10 +160,9 @@ bool QTableModel::insertRows(int row, int count, const QModelIndex &)
 
 bool QTableModel::insertColumns(int column, int count, const QModelIndex &)
 {
-    if (column < 0)
-        column = 0;
-    else if (column > horizontal.count())
-        column = horizontal.count();
+    if (count < 1 || column < 0 || column > horizontal.count())
+        return false;
+
     beginInsertColumns(QModelIndex(), column, column + count - 1);
     int rc = vertical.count();
     int cc = horizontal.count();
@@ -181,57 +178,57 @@ bool QTableModel::insertColumns(int column, int count, const QModelIndex &)
 
 bool QTableModel::removeRows(int row, int count, const QModelIndex &)
 {
-    if (row >= 0 && row < vertical.count()) {
-        beginRemoveRows(QModelIndex(), row, row + count - 1);
-        int i = tableIndex(row, 0);
-        int n = count * columnCount();
-        QTableWidgetItem *oldItem = 0;
-        for (int j=i; j<n+i; ++j) {
+    if (count < 1 || row < 0 || row + count > vertical.count())
+        return false;
+
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
+    int i = tableIndex(row, 0);
+    int n = count * columnCount();
+    QTableWidgetItem *oldItem = 0;
+    for (int j=i; j<n+i; ++j) {
+        oldItem = table.at(j);
+        if (oldItem)
+            oldItem->model = 0;
+        delete oldItem;
+    }
+    table.remove(qMax(i, 0), n);
+    for (int v=row; v<row+count; ++v) {
+        oldItem = vertical.at(v);
+        if (oldItem)
+            oldItem->model = 0;
+        delete oldItem;
+    }
+    vertical.remove(row, count);
+    endRemoveRows();
+    return true;
+}
+
+bool QTableModel::removeColumns(int column, int count, const QModelIndex &)
+{
+    if (count < 1 || column < 0 || column + count >  horizontal.count())
+        return false;
+
+    beginRemoveColumns(QModelIndex(), column, column + count - 1);
+    QTableWidgetItem *oldItem = 0;
+    for (int row = rowCount() - 1; row >= 0; --row) {
+        int i = tableIndex(row, column);
+        for (int j=i; j<i+count; ++j) {
             oldItem = table.at(j);
             if (oldItem)
                 oldItem->model = 0;
             delete oldItem;
         }
-        table.remove(qMax(i, 0), n);
-        for (int v=row; v<row+count; ++v) {
-            oldItem = vertical.at(v);
-            if (oldItem)
-                oldItem->model = 0;
-            delete oldItem;
-        }
-        vertical.remove(row, count);
-        endRemoveRows();
-        return true;
+        table.remove(i, count);
     }
-    return false;
-}
-
-bool QTableModel::removeColumns(int column, int count, const QModelIndex &)
-{
-    if (column >= 0 && column < horizontal.count()) {
-        beginRemoveColumns(QModelIndex(), column, column + count - 1);
-        QTableWidgetItem *oldItem = 0;
-        for (int row = rowCount() - 1; row >= 0; --row) {
-            int i = tableIndex(row, column);
-            for (int j=i; j<i+count; ++j) {
-                oldItem = table.at(j);
-                if (oldItem)
-                    oldItem->model = 0;
-                delete oldItem;
-            }
-            table.remove(i, count);
-        }
-        for (int h=column; h<column+count; ++h) {
-            oldItem = horizontal.at(h);
-            if (oldItem)
-                oldItem->model = 0;
-            delete oldItem;
-        }
-        horizontal.remove(column, count);
-        endRemoveColumns();
-        return true;
+    for (int h=column; h<column+count; ++h) {
+        oldItem = horizontal.at(h);
+        if (oldItem)
+            oldItem->model = 0;
+        delete oldItem;
     }
-    return false;
+    horizontal.remove(column, count);
+    endRemoveColumns();
+    return true;
 }
 
 void QTableModel::setItem(int row, int column, QTableWidgetItem *item)
@@ -252,7 +249,7 @@ void QTableModel::setItem(int row, int column, QTableWidgetItem *item)
     if (item)
         item->model = this;
     table[i] = item;
-    QModelIndex idx = index(row, column);
+    QModelIndex idx = QAbstractTableModel::index(row, column);
     emit dataChanged(idx, idx);
 }
 
@@ -379,16 +376,7 @@ QModelIndex QTableModel::index(const QTableWidgetItem *item) const
     int i = table.indexOf(const_cast<QTableWidgetItem*>(item));
     int row = i / columnCount();
     int col = i % columnCount();
-    return index(row, col);
-}
-
-QModelIndex QTableModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (hasIndex(row, column, parent)) {
-        QTableWidgetItem *item = table.at(tableIndex(row, column));
-        return createIndex(row, column, item);
-    }
-    return QModelIndex();
+    return QAbstractTableModel::index(row, col);
 }
 
 void QTableModel::setRowCount(int rows)
@@ -455,6 +443,9 @@ bool QTableModel::setData(const QModelIndex &index, const QVariant &value, int r
 
 Qt::ItemFlags QTableModel::flags(const QModelIndex &index) const
 {
+    if (!index.isValid())
+        return Qt::ItemIsDropEnabled;
+
     QTableWidgetItem *itm = item(index);
     if (itm)
         return itm->flags();
@@ -474,6 +465,7 @@ void QTableModel::sort(int column, Qt::SortOrder order)
 
     for (int row = 0; row < rowCount(); ++row) {
         QTableWidgetItem *itm = item(row, column);
+                
         if (itm)
             sortable.append(QPair<QTableWidgetItem*,int>(itm, row));
         else
@@ -484,6 +476,8 @@ void QTableModel::sort(int column, Qt::SortOrder order)
     qSort(sortable.begin(), sortable.end(), compare);
 
     QVector<QTableWidgetItem*> sorted_table(table.count());
+    QModelIndexList from;
+    QModelIndexList to;
     for (int i = 0; i < rowCount(); ++i) {
         int r = (i < sortable.count()
                  ? sortable.at(i).second
@@ -491,13 +485,13 @@ void QTableModel::sort(int column, Qt::SortOrder order)
         for (int c = 0; c < columnCount(); ++c) {
             QTableWidgetItem *itm = item(r, c);
             sorted_table[tableIndex(i, c)] = itm;
-            QModelIndex from = createIndex(r, c, itm);
-            QModelIndex to = createIndex(i, c, itm);
-            changePersistentIndex(from, to);
+            from << createIndex(r, c, 0);
+            to << createIndex(i, c, 0);
         }
     }
 
     table = sorted_table;
+    changePersistentIndexList(from, to); // ### slow
 
     emit layoutChanged();
 }
@@ -533,6 +527,10 @@ QVariant QTableModel::headerData(int section, Qt::Orientation orientation, int r
 bool QTableModel::setHeaderData(int section, Qt::Orientation orientation,
                                 const QVariant &value, int role)
 {
+    if ((orientation == Qt::Horizontal && horizontal.size() == 0) ||
+        (orientation == Qt::Vertical && vertical.size() == 0))
+        return false;
+
     QTableWidgetItem *itm = 0;
     if (orientation == Qt::Horizontal)
         itm = horizontal.at(section);
@@ -859,7 +857,7 @@ QTableWidgetSelectionRange::~QTableWidgetSelectionRange()
 
     Returns the item's icon.
 
-    \sa setIcon()
+    \sa setIcon(), {QAbstractItemView::iconSize}{iconSize}
 */
 
 /*!
@@ -867,7 +865,7 @@ QTableWidgetSelectionRange::~QTableWidgetSelectionRange()
 
     Sets the item's icon to the \a icon specified.
 
-    \sa icon() setText()
+    \sa icon(), setText(), {QAbstractItemView::iconSize}{iconSize}
 */
 
 /*!
@@ -1493,7 +1491,7 @@ QTableWidget::QTableWidget(QWidget *parent)
     : QTableView(*new QTableWidgetPrivate, parent)
 {
     Q_D(QTableWidget);
-    setModel(new QTableModel(0, 0, this));
+    QTableView::setModel(new QTableModel(0, 0, this));
     d->setup();
 }
 
@@ -1504,7 +1502,7 @@ QTableWidget::QTableWidget(int rows, int columns, QWidget *parent)
     : QTableView(*new QTableWidgetPrivate, parent)
 {
     Q_D(QTableWidget);
-    setModel(new QTableModel(rows, columns, this));
+    QTableView::setModel(new QTableModel(rows, columns, this));
     d->setup();
 }
 
@@ -1525,6 +1523,8 @@ QTableWidget::~QTableWidget()
 void QTableWidget::setRowCount(int rows)
 {
     Q_D(QTableWidget);
+    if (rows < 0)
+        return;
     d->model()->setRowCount(rows);
 }
 
@@ -1548,6 +1548,8 @@ int QTableWidget::rowCount() const
 void QTableWidget::setColumnCount(int columns)
 {
     Q_D(QTableWidget);
+    if (columns < 0)
+        return;
     d->model()->setColumnCount(columns);
 }
 
@@ -1771,6 +1773,8 @@ QTableWidgetItem *QTableWidget::currentItem() const
 /*!
     Sets the current item to \a item.
 
+    Depending on the current selection mode, the item may also be selected.
+
     \sa currentItem(), setCurrentCell()
 */
 void QTableWidget::setCurrentItem(QTableWidgetItem *item)
@@ -1784,6 +1788,8 @@ void QTableWidget::setCurrentItem(QTableWidgetItem *item)
 
     Sets the current cell to be the cell at position (\a row, \a
     column).
+
+    Depending on the current selection mode, the cell may also be selected.
 
     \sa setCurrentItem(), currentRow(), currentColumn()
 */
@@ -2109,6 +2115,7 @@ void QTableWidget::removeColumn(int column)
 
 /*!
   Removes all items and selections in the view.
+  The table dimentions stay the same.
 */
 
 void QTableWidget::clear()
@@ -2211,9 +2218,9 @@ QTableWidgetItem *QTableWidget::itemFromIndex(const QModelIndex &index) const
 /*!
     \internal
 */
-void QTableWidget::setModel(QAbstractItemModel *model)
+void QTableWidget::setModel(QAbstractItemModel * /*model*/)
 {
-    QTableView::setModel(model);
+    qFatal("QTableWidget::setModel() - Changing the model of the QTableWidget is not allowed.");
 }
 
 /* \reimp */

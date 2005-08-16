@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -29,7 +29,6 @@
 #include "qstring.h"
 #include "qregexp.h"
 #include "qvector.h"
-#include "qdebug.h"
 
 #include <stdlib.h>
 
@@ -186,13 +185,11 @@ static int qt_cmp_si(const void *n1, const void *n2)
     QDirSortItem* f1 = (QDirSortItem*)n1;
     QDirSortItem* f2 = (QDirSortItem*)n2;
 
-    if (f1->item.isDir() != f2->item.isDir()) {
-        if (qt_cmp_si_sort_flags & QDir::DirsFirst)
-            return f1->item.isDir() ? -1 : 1;
-        if (qt_cmp_si_sort_flags & QDir::DirsLast)
-            return f1->item.isDir() ? 1 : -1;
-    }
-
+    if ((qt_cmp_si_sort_flags & QDir::DirsFirst) && (f1->item.isDir() != f2->item.isDir()))
+        return f1->item.isDir() ? -1 : 1;
+    if ((qt_cmp_si_sort_flags & QDir::DirsLast) && (f1->item.isDir() != f2->item.isDir()))
+        return f1->item.isDir() ? 1 : -1;
+            
     int r = 0;
     int sortBy = (qt_cmp_si_sort_flags & QDir::SortByMask)
                  | (qt_cmp_si_sort_flags & QDir::Type);
@@ -216,8 +213,8 @@ static int qt_cmp_si(const void *n1, const void *n2)
                                : f2->item.suffix();
 
 	r = qt_cmp_si_sort_flags & QDir::LocaleAware
-            ? f1->suffix_cache.localeAwareCompare(f2->filename_cache)
-            : f1->suffix_cache.compare(f2->filename_cache);
+            ? f1->suffix_cache.localeAwareCompare(f2->suffix_cache)
+            : f1->suffix_cache.compare(f2->suffix_cache);
       }
         break;
       default:
@@ -829,7 +826,7 @@ bool QDir::cd(const QString &dirName)
     }
     {
         QFileInfo fi(newPath);
-        if(!fi.exists())
+        if (!(fi.exists() && fi.isDir()))
             return false;
     }
 
@@ -1010,6 +1007,7 @@ QDir::SortFlags QDir::sorting() const
     \value DirsLast Put the files first, then the directories.
     \value Reversed  Reverse the sort order.
     \value IgnoreCase  Sort case-insensitively.
+    \value LocaleAware Sort items appropriately using the current locale settings.
 
     \omitvalue SortByMask
     \omitvalue DefaultSort
@@ -1154,7 +1152,8 @@ QStringList QDir::entryList(const QStringList &nameFilters, Filters filters,
         d->updateFileLists();
         return d->data->files;
     }
-    QStringList l = d->data->fileEngine->entryList(filters, nameFilters), ret;
+    QStringList l = d->data->fileEngine->entryList(filters, nameFilters);
+    QStringList ret;
     d->sortFileList(sort, l, &ret, 0);
     return ret;
 }

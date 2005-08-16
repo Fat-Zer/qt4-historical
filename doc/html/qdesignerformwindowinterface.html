@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/tools/designer/src/lib/sdk/abstractformwindow.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/tools/designer/src/lib/sdk/abstractformwindow.cpp -->
 <head>
     <title>Qt 4.1: QDesignerFormWindowInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -69,7 +69,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -123,6 +123,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -155,13 +156,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="FeatureFlag-enum"></a>enum QDesignerFormWindowInterface::FeatureFlag<br />flags QDesignerFormWindowInterface::Feature</h3>
 <p>This enum describes the features that are available and can be controlled by the form window interface. These values are used when querying the form window to determine which features it supports:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDesignerFormWindowInterface::EditFeature</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Form editing</td></tr>
 <tr><td valign="top"><tt>QDesignerFormWindowInterface::GridFeature</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Grid display and snap-to-grid facilities for editing</td></tr>
 <tr><td valign="top"><tt>QDesignerFormWindowInterface::TabOrderFeature</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Tab order management</td></tr>
 <tr><td valign="top"><tt>QDesignerFormWindowInterface::DefaultFeature</tt></td><td align="center" valign="top"><tt>EditFeature | GridFeature</tt></td><td valign="top">Support for default features (form editing and grid)</td></tr>
-</table>
+</table></p>
 <p>The Feature type is a typedef for <a href="qflags.html">QFlags</a>&lt;FeatureFlag&gt;. It stores an OR combination of FeatureFlag values.</p>
 <p>See also <a href="qdesignerformwindowinterface.html#hasFeature">hasFeature</a>() and <a href="qdesignerformwindowinterface.html#features">features</a>().</p>
 <hr />
@@ -280,7 +281,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Data can be read from <a href="qfile.html">QFile</a> objects or any other subclass of <a href="qiodevice.html">QIODevice</a>.</p>
 <p>See also <a href="qdesignerformwindowinterface.html#contents">contents</a>().</p>
 <h3 class="fn"><a name="setContents-2"></a>void QDesignerFormWindowInterface::setContents ( const <a href="qstring.html">QString</a> &amp; <i>contents</i> )&nbsp;&nbsp;<tt> [pure virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the contents of the form using data read from the specified <i>contents</i> string.</p>
 <p>See also <a href="qdesignerformwindowinterface.html#contents">contents</a>().</p>
 <h3 class="fn"><a name="setDirty"></a>void QDesignerFormWindowInterface::setDirty ( bool <i>dirty</i> )&nbsp;&nbsp;<tt> [pure virtual slot]</tt></h3>
@@ -328,8 +329,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdesignerformwindowinterface.html#unmanageWidget">unmanageWidget</a>() and <a href="qdesignerformwindowinterface.html#aboutToUnmanageWidget">aboutToUnmanageWidget</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -90,7 +90,7 @@ protected:
                           int posInDocument, const QTextFormat &format);
     virtual void timerEvent(QTimerEvent *e);
 private:
-    void doLayout(int from, int oldLength, int length);
+    QRectF doLayout(int from, int oldLength, int length);
     void layoutFinished();
 };
 

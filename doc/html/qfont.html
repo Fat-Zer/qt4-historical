@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/text/qfont.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/text/qfont.cpp -->
 <head>
     <title>Qt 4.1: QFont Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -105,7 +105,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-lt-lt-89">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QFont &amp; <i>font</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-lt-lt-93">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QFont &amp; <i>font</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-gt-gt-55">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QFont &amp; <i>font</i> )</li>
 </ul>
 <a name="details"></a>
@@ -164,7 +164,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Stretch-enum"></a>enum QFont::Stretch</h3>
 <p>Predefined stretch values that follow the CSS naming convention. The higher the value, the more stretched the text is.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFont::UltraCondensed</tt></td><td align="center" valign="top"><tt>50</tt></td><td valign="top">50</td></tr>
 <tr><td valign="top"><tt>QFont::ExtraCondensed</tt></td><td align="center" valign="top"><tt>62</tt></td><td valign="top">62</td></tr>
@@ -175,20 +175,20 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFont::Expanded</tt></td><td align="center" valign="top"><tt>125</tt></td><td valign="top">125</td></tr>
 <tr><td valign="top"><tt>QFont::ExtraExpanded</tt></td><td align="center" valign="top"><tt>150</tt></td><td valign="top">150</td></tr>
 <tr><td valign="top"><tt>QFont::UltraExpanded</tt></td><td align="center" valign="top"><tt>200</tt></td><td valign="top">200</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qfont.html#setStretch">setStretch</a>() and <a href="qfont.html#stretch">stretch</a>().</p>
 <h3 class="fn"><a name="Style-enum"></a>enum QFont::Style</h3>
 <p>This enum describes the different styles of glyphs that are used to display text.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFont::StyleNormal</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Normal glyphs used in unstyled text.</td></tr>
 <tr><td valign="top"><tt>QFont::StyleItalic</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Italic glyphs that are specifically designed for the purpose of representing italicized text.</td></tr>
 <tr><td valign="top"><tt>QFont::StyleOblique</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Glyphs with an italic appearance that are typically based on the unstyled glyphs, but are not fine-tuned for the purpose of representing italicized text.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qfont.html#Weight-enum">Weight</a>.</p>
 <h3 class="fn"><a name="StyleHint-enum"></a>enum QFont::StyleHint</h3>
 <p>Style hints are used by the <a href="qfont.html">font matching</a> algorithm to find an appropriate default family if a selected font family is not available.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFont::AnyStyle</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">leaves the font matching algorithm to choose the family. This is the default.</td></tr>
 <tr><td valign="top"><tt>QFont::SansSerif</tt></td><td align="center" valign="top"><tt>Helvetica</tt></td><td valign="top">the font matcher prefer sans serif fonts.</td></tr>
@@ -200,11 +200,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFont::OldEnglish</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">the font matcher prefers decorative fonts.</td></tr>
 <tr><td valign="top"><tt>QFont::Decorative</tt></td><td align="center" valign="top"><tt>OldEnglish</tt></td><td valign="top">is a synonym for <tt>OldEnglish</tt>.</td></tr>
 <tr><td valign="top"><tt>QFont::System</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">the font matcher prefers system fonts.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="StyleStrategy-enum"></a>enum QFont::StyleStrategy</h3>
 <p>The style strategy tells the <a href="qfont.html">font matching</a> algorithm what type of fonts should be used to find an appropriate default family.</p>
 <p>The following strategies are available:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFont::PreferDefault</tt></td><td align="center" valign="top"><tt>0x0001</tt></td><td valign="top">the default style strategy. It does not prefer any type of font.</td></tr>
 <tr><td valign="top"><tt>QFont::PreferBitmap</tt></td><td align="center" valign="top"><tt>0x0002</tt></td><td valign="top">prefers bitmap fonts (as opposed to outline fonts).</td></tr>
@@ -214,24 +214,24 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFont::NoAntialias</tt></td><td align="center" valign="top"><tt>0x0100</tt></td><td valign="top">don't antialias the fonts.</td></tr>
 <tr><td valign="top"><tt>QFont::PreferAntialias</tt></td><td align="center" valign="top"><tt>0x0080</tt></td><td valign="top">antialias if possible.</td></tr>
 <tr><td valign="top"><tt>QFont::OpenGLCompatible</tt></td><td align="center" valign="top"><tt>0x0200</tt></td><td valign="top">forces the use of OpenGL compatible fonts.</td></tr>
-</table>
+</table></p>
 <p>Any of these may be OR-ed with one of these flags:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFont::PreferMatch</tt></td><td align="center" valign="top"><tt>0x0020</tt></td><td valign="top">prefer an exact match. The font matcher will try to use the exact font size that has been specified.</td></tr>
 <tr><td valign="top"><tt>QFont::PreferQuality</tt></td><td align="center" valign="top"><tt>0x0040</tt></td><td valign="top">prefer the best quality font. The font matcher will use the nearest standard point size that the font supports.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Weight-enum"></a>enum QFont::Weight</h3>
 <p>Qt uses a weighting scale from 0 to 99 similar to, but not the same as, the scales used in Windows or CSS. A weight of 0 is ultralight, whilst 99 will be an extremely black.</p>
 <p>This enum contains the predefined font weights:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFont::Light</tt></td><td align="center" valign="top"><tt>25</tt></td><td valign="top">25</td></tr>
 <tr><td valign="top"><tt>QFont::Normal</tt></td><td align="center" valign="top"><tt>50</tt></td><td valign="top">50</td></tr>
 <tr><td valign="top"><tt>QFont::DemiBold</tt></td><td align="center" valign="top"><tt>63</tt></td><td valign="top">63</td></tr>
 <tr><td valign="top"><tt>QFont::Bold</tt></td><td align="center" valign="top"><tt>75</tt></td><td valign="top">75</td></tr>
 <tr><td valign="top"><tt>QFont::Black</tt></td><td align="center" valign="top"><tt>87</tt></td><td valign="top">87</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QFont"></a>QFont::QFont ()</h3>
@@ -445,18 +445,18 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qfont.html#operator-not-eq">operator!=</a>() and <a href="qfont.html#isCopyOf">isCopyOf</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-89"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QFont &amp; <i>font</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-93"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QFont &amp; <i>font</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the font <i>font</i> to the data stream <i>s</i>. (toString() writes to a text stream.)</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-55"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QFont &amp; <i>font</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the font <i>font</i> from the data stream <i>s</i>. (fromString() reads from a text stream.)</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

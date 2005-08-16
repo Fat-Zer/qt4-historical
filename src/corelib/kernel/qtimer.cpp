@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -293,7 +293,7 @@ void QSingleShotTimer::timerEvent(QTimerEvent *)
     \endcode
 
     This sample program automatically terminates after 10 minutes
-    (600000 milliseconds).
+    (600,000 milliseconds).
 
     The \a receiver is the receiving object and the \a member is the
     slot. The time interval is \a msec milliseconds.

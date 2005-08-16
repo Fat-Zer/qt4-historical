@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -878,6 +878,7 @@ bool QSqlResult::execBatch(bool arrayBind)
 {
     if (driver()->hasFeature(QSqlDriver::BatchOperations)) {
         virtual_hook(BatchOperation, &arrayBind);
+        d->resetBindCount();
         return d->error.type() == QSqlError::NoError;
     } else {
         QVector<QVariant> values = d->values;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -324,6 +324,14 @@ QHostAddress::QHostAddress(const QString &address)
     d->isParsed = false;
 }
 
+/*!
+    \fn QHostAddress::QHostAddress(const sockaddr *sockaddr)
+
+    Constructs an IPv4 or IPv6 address using the address specified by
+    the native structure \a sockaddr.
+
+    \sa setAddress()
+*/
 QHostAddress::QHostAddress(const struct sockaddr *sockaddr)
 {
     if (sockaddr->sa_family == AF_INET)
@@ -453,6 +461,7 @@ bool QHostAddress::setAddress(const QString &address)
 }
 
 /*!
+    \fn void QHostAddress::setAddress(const sockaddr *sockaddr)
     \overload
 
     Sets the IPv4 or IPv6 address specified by the native structure \a

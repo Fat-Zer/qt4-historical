@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
-** Copyright (C) 2002-2005 Bjoern Bergstroem
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 2002-2006 Bjoern Bergstroem
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **

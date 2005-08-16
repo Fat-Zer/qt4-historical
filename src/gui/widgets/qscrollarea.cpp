@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -28,6 +28,7 @@
 #include "qscrollbar.h"
 #include "private/qabstractscrollarea_p.h"
 #include "qlayout.h"
+#include "qstyle.h"
 #include "qapplication.h"
 #include "private/qlayoutengine_p.h"
 class QScrollAreaPrivate: public QAbstractScrollAreaPrivate
@@ -35,12 +36,15 @@ class QScrollAreaPrivate: public QAbstractScrollAreaPrivate
     Q_DECLARE_PUBLIC(QScrollArea)
 
 public:
-    QScrollAreaPrivate(): resizable(false){}
+    QScrollAreaPrivate(): resizable(false), alignment(0){}
     void updateScrollBars();
+    void updateWidgetPosition();
     QPointer<QWidget> widget;
     mutable QSize widgetSize;
     bool resizable;
+    Qt::Alignment alignment;
 };
+
 
 /*!
     \class QScrollArea
@@ -58,7 +62,7 @@ public:
     setWidget(). For example:
 
     \code
-        QLabel imageLabel = new QLabel;
+        QLabel *imageLabel = new QLabel;
         QImage image("happyguy.png");
         imageLabel->setPixmap(QPixmap::fromImage(image));
 
@@ -95,9 +99,10 @@ public:
     scroll bars' values whenever the scroll area's contents change,
     using the QScrollBar::setValue() function.
 
-    You can retrieve the child widget usning the widget()
-    function. The view can be made to be resizable with the
-    setWidgetResizable() function.
+    You can retrieve the child widget using the widget() function. The
+    view can be made to be resizable with the setWidgetResizable()
+    function. The alignment of the widget can be specified with
+    setAlignment().
 
     When using a scroll area to display the contents of a custom
     widget, it is important to ensure that the
@@ -139,6 +144,16 @@ QScrollArea::~QScrollArea()
 {
 }
 
+void QScrollAreaPrivate::updateWidgetPosition()
+{
+    Q_Q(QScrollArea);
+    Qt::LayoutDirection dir = q->layoutDirection();
+    QRect scrolled = QStyle::visualRect(dir, viewport->rect(), QRect(QPoint(-hbar->value(), -vbar->value()), widget->size()));
+    QRect aligned = QStyle::alignedRect(dir, alignment, widget->size(), viewport->rect());
+    widget->move(widget->width() < viewport->width() ? aligned.x() : scrolled.x(),
+                 widget->height() < viewport->height() ? aligned.y() : scrolled.y());
+}
+
 void QScrollAreaPrivate::updateScrollBars()
 {
     Q_Q(QScrollArea);
@@ -161,6 +176,8 @@ void QScrollAreaPrivate::updateScrollBars()
     hbar->setPageStep(p.width());
     vbar->setRange(0, v.height() - p.height());
     vbar->setPageStep(p.height());
+    updateWidgetPosition();
+
 }
 
 /*!
@@ -198,10 +215,8 @@ void QScrollArea::setWidget(QWidget *w)
     d->vbar->setValue(0);
     if (w->parentWidget() != d->viewport)
         w->setParent(d->viewport);
-    else
-        w->move(0,0);
-     if (!w->testAttribute(Qt::WA_Resized))
-         w->resize(w->sizeHint());
+    if (!w->testAttribute(Qt::WA_Resized))
+        w->resize(w->sizeHint());
     d->widget = w;
     d->widget->setAutoFillBackground(true);
     w->installEventFilter(this);
@@ -232,7 +247,7 @@ QWidget *QScrollArea::takeWidget()
 bool QScrollArea::event(QEvent *e)
 {
     Q_D(QScrollArea);
-    if (e->type() == QEvent::StyleChange) {
+    if (e->type() == QEvent::StyleChange || e->type() == QEvent::LayoutRequest) {
         d->updateScrollBars();
     }
 #ifdef QT_KEYPAD_NAVIGATION
@@ -277,8 +292,8 @@ bool QScrollArea::eventFilter(QObject *o, QEvent *e)
 #endif
     if (o == d->widget && e->type() == QEvent::Resize) {
         d->updateScrollBars();
-        d->widget->move(-d->hbar->value(), -d->vbar->value());
-	}
+    }
+
     return false;
 }
 
@@ -289,8 +304,7 @@ void QScrollArea::resizeEvent(QResizeEvent *)
 {
     Q_D(QScrollArea);
     d->updateScrollBars();
-    if (d->widget)
-        d->widget->move(-d->hbar->value(), -d->vbar->value());
+
 }
 
 
@@ -301,7 +315,7 @@ void QScrollArea::scrollContentsBy(int, int)
     Q_D(QScrollArea);
     if (!d->widget)
         return;
-    d->widget->move(-d->hbar->value(), -d->vbar->value());
+    d->updateWidgetPosition();
 }
 
 
@@ -401,30 +415,53 @@ bool QScrollArea::focusNextPrevChild(bool next)
     \code
         QScrollArea sa;
         sa.setBackgroundRole(QPalette::Dark);
-        sa.setWidget(childWidget);                     
+        sa.setWidget(childWidget);
         sa.show();
 
         sa.setFocus();
         sa.ensureVisible(640, 480, 10, 10);
 
         qapp.exec();
-    \endcode    
+    \endcode
 */
 void QScrollArea::ensureVisible(int x, int y, int xmargin, int ymargin)
 {
-    Q_D(QScrollArea);   
-        
-    if (x < d->hbar->value() - xmargin){
-        d->hbar->setValue(qMax(0, x - xmargin));
-    } else if (x > d->hbar->value() + d->viewport->width() - xmargin) {
-        d->hbar->setValue(qMin(x - d->viewport->width() + xmargin, d->hbar->maximum()));
+    Q_D(QScrollArea);
+
+    int logicalX = QStyle::visualPos(layoutDirection(), d->viewport->rect(), QPoint(x, y)).x();
+
+    if (logicalX < d->hbar->value() - xmargin){
+        d->hbar->setValue(qMax(0, logicalX - xmargin));
+    } else if (logicalX > d->hbar->value() + d->viewport->width() - xmargin) {
+        d->hbar->setValue(qMin(logicalX - d->viewport->width() + xmargin, d->hbar->maximum()));
     }
-    
+
     if (y < d->vbar->value() - ymargin){
         d->vbar->setValue(qMax(0, y - ymargin));
     } else if (y > d->vbar->value() + d->viewport->height() - ymargin) {
         d->vbar->setValue(qMin(y - d->viewport->height() + ymargin, d->vbar->maximum()));
-    }                   
+    }
 }
+
+
+#if QT_VERSION >= 0x040200
+/*
+    \property QScrollArea::alignment
+    \brief the alignment of the scroll area's widget
+*/
+
+void QScrollArea::setAlignment(Qt::Alignment alignment)
+{
+    Q_D(QScrollArea);
+    d->alignment = alignment;
+    d->updateWidgetPosition();
+}
+
+Qt::Alignment QScrollArea::alignment() const
+{
+    Q_D(const QScrollArea);
+    return d->alignment;
+}
+#endif
 
 #endif // QT_NO_SCROLLAREA

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: qmake Function Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <h1 align="center">qmake Function Reference<br /><small></small></h1>
 <p><tt>qmake</tt> provides built-in functions to allow the contents of variables to be processed, and to enable tests to be performed during the configuration process. Functions that process the contents of variables typically return values that can be assigned to other variables, and these values are obtained by prefixing function with the <tt>$$</tt> operator. Functions that perform tests are usually used as the conditional parts of scopes; these are indicated in the function descriptions below.</p>
-<table width="100%">
+<p><table width="100%">
 <tr valign="top"><td width="50%">
 <ul><li><a href="#basename-file">basename(file)</a></li>
 <li><a href="#config-config">CONFIG(config)</a></li>
@@ -35,6 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#count-variablename-number">count(variablename, number)</a></li>
 <li><a href="#dirname-file">dirname(file)</a></li>
 <li><a href="#error-string">error(string)</a></li>
+<li><a href="#eval-string">eval(string)</a></li>
 <li><a href="#exists-filename">exists(filename)</a></li>
 <li><a href="#find-variablename-substr">find(variablename, substr)</a></li>
 <li><a href="#for-iterate-list">for(iterate, list)</a></li>
@@ -52,7 +53,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#unique-variablename">unique(variablename)</a></li>
 <li><a href="#warning-string">warning(string)</a></li>
 </ul>
-</td></tr></table>
+</td></tr></table></p>
 <a name="basename-file"></a>
 <h2>basename(file)</h2>
 <p>Returns the basename of the file specified. For example:</p>
@@ -98,6 +99,15 @@ body { background: #ffffff; color: black; }</style>
 <p>This function never returns a value. <tt>qmake</tt> displays the given <i>string</i> to the user, and exits. This function should only be used for unrecoverable errors.</p>
 <p>For example:</p>
 <pre>&nbsp;    error(An error has occurred in the configuration process.)</pre>
+<a name="eval-string"></a>
+<h2>eval(string)</h2>
+<p>[Conditional]</p>
+<p>Evaluates the contents of the string using <tt>qmake</tt>'s syntax rules and returns true. Definitions and assignments can be used in the string to modify the values of existing variables or create new definitions.</p>
+<p>For example:</p>
+<pre>&nbsp;   eval(TARGET = myapp) {
+        message($$TARGET)
+    }</pre>
+<p>Note that quotation marks can be used to delimit the string, and that the return value can be discarded if it is not needed.</p>
 <a name="exists-filename"></a>
 <h2>exists(filename)</h2>
 <p>[Conditional]</p>
@@ -189,8 +199,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

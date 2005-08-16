@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qabstractscrollarea.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qabstractscrollarea.cpp -->
 <head>
     <title>Qt 4.1: QAbstractScrollArea Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -53,7 +53,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
@@ -79,6 +79,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -180,12 +181,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qwidget.html#paintEvent">QWidget</a>.</p>
 <p>See also <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>().</p>
 <h3 class="fn"><a name="resizeEvent"></a>void QAbstractScrollArea::resizeEvent ( <a href="qresizeevent.html">QResizeEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler can be reimplemented in a subclass to receive resize events (passed in <i>event</i>), for the <a href="qabstractscrollarea.html#viewport">viewport</a>() widget. When resizeEvent() is called, the viewport already has its new geometry. The old size is accessible through <a href="qresizeevent.html#oldSize">QResizeEvent::oldSize</a>().</p>
+<p>This event handler can be reimplemented in a subclass to receive resize events (passed in <i>event</i>), for the <a href="qabstractscrollarea.html#viewport">viewport</a>() widget.</p>
+<p>When resizeEvent() is called, the viewport already has its new geometry: Its new size is accessible through the <a href="qresizeevent.html#size">QResizeEvent::size</a>() function, and the old size through <a href="qresizeevent.html#oldSize">QResizeEvent::oldSize</a>().</p>
 <p>Reimplemented from <a href="qwidget.html#resizeEvent">QWidget</a>.</p>
 <p>See also <a href="qwidget.html#resizeEvent">QWidget::resizeEvent</a>().</p>
 <h3 class="fn"><a name="scrollContentsBy"></a>void QAbstractScrollArea::scrollContentsBy ( int <i>dx</i>, int <i>dy</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Scrolls the viewport's contents by <i>dx</i>, <i>dy</i>.</p>
-<p>The default implementation simply updates the entire <a href="qabstractscrollarea.html#viewport">viewport</a>().</p>
+<p>This virtual handler is called when the scroll bars are moved by <i>dx</i>, <i>dy</i>, and consequently the viewport's contents should be scrolled accordingly.</p>
+<p>The default implementation simply calls <a href="qwidget.html#update">update</a>() on the entire <a href="qabstractscrollarea.html#viewport">viewport</a>(), subclasses can reimplement this handler for optimization purposes, or - like <a href="qscrollarea.html">QScrollArea</a> - to move a contents widget. The paramters <i>dx</i> and <i>dy</i> are there for convenience, so that the class knows how much should be scrolled (useful e.g. when doing pixel-shifts). You may just as well ignore these values and scroll directly to the position the scroll bars indicate.</p>
+<p>Calling this function in order to scroll programmatically is an error, use the scroll bars instead (e.g. by calling <a href="qabstractslider.html#value-prop">QScrollBar::setValue</a>() directly).</p>
 <h3 class="fn"><a name="setViewportMargins"></a>void QAbstractScrollArea::setViewportMargins ( int <i>left</i>, int <i>top</i>, int <i>right</i>, int <i>bottom</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the margins around the scrolling area to <i>left</i>, <i>top</i>, <i>right</i> and <i>bottom</i>. This is useful for applications such as spreadsheets with &quot;locked&quot; rows and columns. The marginal space is is left blank; put widgets in the unused area.</p>
 <p>By default all margins are zero.</p>
@@ -204,8 +207,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#wheelEvent">QWidget::wheelEvent</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

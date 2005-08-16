@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/kernel/qdesktopwidget_win.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/kernel/qdesktopwidget_win.cpp -->
 <head>
     <title>Qt 4.1: QDesktopWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -44,7 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="signals"></a>
 <h3>Signals</h3>
@@ -66,6 +66,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -89,11 +90,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the available geometry of the screen with index <i>screen</i>. What is available will be subrect of <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>() based on what the platform decides is available (for example excludes the <a href="qt.html#Dock-enum">Qt::Dock</a> and menu bar on Mac OS X, or the taskbar on Windows).</p>
 <p>See also <a href="qdesktopwidget.html#screenNumber">screenNumber</a>() and <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>().</p>
 <h3 class="fn"><a name="availableGeometry-2"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::availableGeometry ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the available geometry of the screen which contains <i>widget</i>.</p>
 <p>See also <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>().</p>
 <h3 class="fn"><a name="availableGeometry-3"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::availableGeometry ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the available geometry of the screen which contains <i>p</i>.</p>
 <p>See also <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>().</p>
 <h3 class="fn"><a name="isVirtualDesktop"></a>bool QDesktopWidget::isVirtualDesktop () const</h3>
@@ -115,24 +116,24 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the geometry of the screen with index <i>screen</i>.</p>
 <p>See also <a href="qdesktopwidget.html#screenNumber">screenNumber</a>().</p>
 <h3 class="fn"><a name="screenGeometry-2"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::screenGeometry ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the geometry of the screen which contains <i>widget</i>.</p>
 <h3 class="fn"><a name="screenGeometry-3"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::screenGeometry ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the geometry of the screen which contains <i>p</i>.</p>
 <h3 class="fn"><a name="screenNumber"></a>int QDesktopWidget::screenNumber ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const</h3>
 <p>Returns the index of the screen that contains the largest part of <i>widget</i>, or -1 if the widget not on a screen.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>().</p>
 <h3 class="fn"><a name="screenNumber-2"></a>int QDesktopWidget::screenNumber ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the index of the screen that contains <i>point</i>, or -1 if no screen contains the point.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>().</p>
 <h3 class="fn"><a name="workAreaResized"></a>void QDesktopWidget::workAreaResized ( int <i>screen</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the work area available on <i>screen</i> changes.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

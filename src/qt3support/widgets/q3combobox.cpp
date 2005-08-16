@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -173,6 +173,13 @@
     content size limit, the item at the other end of the list is
     deleted. The definition of "other end" is
     implementation-dependent.
+
+    \omitvalue NoInsert
+    \omitvalue InsertAtTop
+    \omitvalue InsertAtCurrent
+    \omitvalue InsertAtBottom
+    \omitvalue InsertAfterCurrent
+    \omitvalue InsertBeforeCurrent
 */
 
 
@@ -292,7 +299,7 @@
     cleared if this property is set to true for a 1.x Motif style
     combobox. To avoid this, use setEditable() before inserting any
     items. Also note that the 1.x version of Motif didn't have any
-    editable comboboxes, so the combobox will change it's appearance
+    editable comboboxes, so the combobox will change its appearance
     to a 2.0 style Motif combobox is it is set to be editable.
 */
 
@@ -1625,7 +1632,9 @@ void Q3ComboBox::popup()
 
 
 /*!
-  \reimp
+  Updates the widget mask.
+
+  \sa QWidget::setMask()
 */
 void Q3ComboBox::updateMask()
 {
@@ -2015,7 +2024,10 @@ void Q3ComboBox::returnPressed()
 }
 
 
-/*! \reimp
+/*!
+  Enables the combobox if \a enable is true; otherwise disables it.
+
+  \sa QWidget::enabled
 */
 
 void Q3ComboBox::setEnabled( bool enable )
@@ -2290,7 +2302,9 @@ void Q3ComboBox::setLineEdit( QLineEdit *edit )
 }
 
 /*!
-    \reimp
+  Hides the combobox.
+
+  \sa QWidget::hide()
 */
 void Q3ComboBox::hide()
 {

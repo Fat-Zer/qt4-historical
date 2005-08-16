@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -588,7 +588,12 @@ QRect QDesignerWorkbench::availableGeometry() const
     if (m_workspace)
         return m_workspace->geometry();
 
-    return qDesigner->desktop()->availableGeometry(0);
+    QDesktopWidget *desktop = qDesigner->desktop();
+
+    QWidget *window = findToolWindow(core()->widgetBox());
+    if (window)
+        return desktop->availableGeometry(desktop->screenNumber(window));
+    return desktop->availableGeometry(0);
 }
 
 int QDesignerWorkbench::marginHint() const

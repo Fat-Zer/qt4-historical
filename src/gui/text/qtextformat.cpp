@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -230,8 +230,14 @@ void QTextFormatPrivate::resolveFont(const QFont &defaultFont)
 
         const int htmlFontSize = qBound(0, props.value(QTextFormat::FontSizeAdjustment).toInt() + 3 - 1, 6);
 
-        qreal pointSize = scaleFactors[htmlFontSize] * defaultFont.pointSizeF();
-        fnt.setPointSizeF(pointSize);
+
+        if (defaultFont.pointSize() <= 0) {
+            qreal pixelSize = scaleFactors[htmlFontSize] * defaultFont.pixelSize();
+            fnt.setPixelSize(qRound(pixelSize));
+        } else {
+            qreal pointSize = scaleFactors[htmlFontSize] * defaultFont.pointSizeF();
+            fnt.setPointSizeF(pointSize);
+        }
     }
 
     fnt.resolve(oldMask);
@@ -367,16 +373,19 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
 
     \value FontFamily
     \value FontPointSize
-    \value FontSizeAdjustment
+    \omitvalue FontSizeAdjustment
+    \value FontSizeIncrement
     \value FontWeight
     \value FontItalic
     \value FontUnderline
     \value FontOverline
     \value FontStrikeOut
     \value FontFixedPitch
+    \value FontPixelSize
 
     \value TextUnderlineColor
     \value TextVerticalAlignment
+    \value TextOutline
 
     \value IsAnchor
     \value AnchorHref
@@ -412,8 +421,6 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value ImageWidth
     \value ImageHeight
 
-    \omitvalue DocumentFragmentMark
-
     \value UserProperty
 */
 
@@ -423,6 +430,7 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value NoObject
     \value ImageObject
     \value TableObject
+    \value UserObject The first object that can be used for application-specific purposes.
 */
 
 /*!
@@ -964,7 +972,7 @@ bool QTextFormat::operator==(const QTextFormat &rhs) const
     setFontStrikeOut(), and setFontFixedPitch() provide additional effects for
     text.
 
-    The color is set with setTextColor(). If the text is intended to be used
+    The color is set with setForeground(). If the text is intended to be used
     as an anchor (for hyperlinks), this can be enabled with setAnchor(). The
     setAnchorHref() and setAnchorName() functions are used to specify the
     information about the hyperlink's destination and the anchor's name.
@@ -1158,6 +1166,20 @@ QTextCharFormat::QTextCharFormat() : QTextFormat(CharFormat) {}
     returns false.
 
     \sa font()
+*/
+
+
+/*!
+    \fn QPen QTextCharFormat::textOutline() const
+
+    Returns the pen used to draw the outlines of characters in this format.
+*/
+
+
+/*!
+    \fn void QTextCharFormat::setTextOutline(const QPen &pen)
+
+    Sets the pen used to draw the outlines of characters to the given \a pen.
 */
 
 

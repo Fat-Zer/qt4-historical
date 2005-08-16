@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -464,7 +464,7 @@ void QMainWindowLayout::saveState(QDataStream &stream) const
 {
 #ifndef QT_NO_TOOLBAR
     // save toolbar state
-    stream << (uchar) ToolBarStateMarker;
+    stream << (uchar) ToolBarStateMarkerEx;
     stream << tb_layout_info.size(); // number of toolbar lines
     if (!tb_layout_info.isEmpty()) {
         for (int line = 0; line < tb_layout_info.size(); ++line) {
@@ -474,11 +474,17 @@ void QMainWindowLayout::saveState(QDataStream &stream) const
             for (int i = 0; i < lineInfo.list.size(); ++i) {
                 const ToolBarLayoutInfo &info = lineInfo.list.at(i);
                 QWidget *widget = info.item->widget();
-                stream << widget->objectName();
+                QString objectName = widget->objectName();
+                if (objectName.isEmpty()) {
+                    qWarning("QMainWindow::saveState(): 'objectName' not set for QToolBar %p '%s'",
+                             widget, widget->windowTitle().toLocal8Bit().constData());
+                }
+                stream << objectName;
                 stream << (uchar) !widget->isHidden();
                 stream << info.pos;
                 stream << info.size;
                 stream << info.offset;
+                stream << info.user_pos;
             }
         }
     }
@@ -517,7 +523,7 @@ bool QMainWindowLayout::restoreState(QDataStream &stream)
     // restore toolbar layout
     uchar tmarker;
     stream >> tmarker;
-    if (tmarker != ToolBarStateMarker)
+    if (tmarker != ToolBarStateMarker && tmarker != ToolBarStateMarkerEx)
         return false;
 
     int lines;
@@ -538,6 +544,13 @@ bool QMainWindowLayout::restoreState(QDataStream &stream)
             stream >> info.pos;
             stream >> info.size;
             stream >> info.offset;
+            if (tmarker == ToolBarStateMarkerEx)
+                stream >> info.user_pos;
+
+            if (objectName.isEmpty()) {
+                qWarning("QMainWindow::restoreState: Cannot restore a QToolBar with an empty 'objectName'");
+                continue;
+            }
 
             // find toolbar
             QToolBar *toolbar = 0;
@@ -944,7 +957,8 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
                   QSize(r.width(), statusbar->heightForWidth(r.width()))
                   .expandedTo(statusbar->minimumSize()));
         sbr.moveBottom(r.bottom());
-        statusbar->setGeometry(sbr);
+        QRect vr = QStyle::visualRect(QApplication::layoutDirection(), _r, sbr);
+        statusbar->setGeometry(vr);
         r.setBottom(sbr.top() - 1);
     }
 
@@ -1331,7 +1345,7 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
             }
 
 	    QRect tb(info.pos, info.size);
-	    tb = QStyle::visualRect(QApplication::layoutDirection(), tb_rect[line], tb);
+            tb = QStyle::visualRect(QApplication::layoutDirection(), tb_rect[line], tb);
 	    if (!tb.isEmpty() && relayout_type == QInternal::RelayoutNormal)
 		info.item->setGeometry(tb);
 	}
@@ -1495,7 +1509,8 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
 
     for (int i = 0; i < 4; ++i) {
         if (!layout_info[i].item) continue;
-        layout_info[i].size = rect[i].size();
+        if (rect[i].isValid())
+            layout_info[i].size = rect[i].size();
         QRect x, s;
 
         switch (i) {
@@ -1543,10 +1558,14 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
             Q_ASSERT(false);
         }
 
-        if (relayout_type == QInternal::RelayoutNormal || layout_info[i].is_dummy)
-            layout_info[i].item->setGeometry(x);
-        if (relayout_type == QInternal::RelayoutNormal)
-            layout_info[i].sep->setGeometry(s);
+        if (relayout_type == QInternal::RelayoutNormal || layout_info[i].is_dummy) {
+            QRect vr = QStyle::visualRect(QApplication::layoutDirection(), r, x);
+            layout_info[i].item->setGeometry(vr);
+        }
+        if (relayout_type == QInternal::RelayoutNormal) {
+            QRect vr = QStyle::visualRect(QApplication::layoutDirection(), r, s);
+            layout_info[i].sep->setGeometry(vr);
+        }
     }
 
     if (layout_info[CENTER].item) {
@@ -1556,8 +1575,10 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
                     right.left() - 1,
                     bottom.top() - 1);
         layout_info[CENTER].size = c.size();
-        if (relayout_type == QInternal::RelayoutNormal)
-            layout_info[CENTER].item->setGeometry(c);
+        if (relayout_type == QInternal::RelayoutNormal) {
+            QRect vr = QStyle::visualRect(QApplication::layoutDirection(), r, c);
+            layout_info[CENTER].item->setGeometry(vr);
+        }
     }
 }
 
@@ -1880,6 +1901,9 @@ int QMainWindowLayout::constrain(QDockWidgetLayout *dock, int delta)
         delta = -delta;
     }
 
+    if ((pos == LEFT || pos == RIGHT) && QApplication::layoutDirection() == Qt::RightToLeft)
+        delta = -delta;
+
     // remove delta from 'dock'
     int current = pick(pos, info[pos].size)
                   + pick(pos, info[CENTER].size)
@@ -1963,9 +1987,13 @@ Qt::DockWidgetAreas areasForMousePosition(const QRect &r, const QPoint &p, bool 
         VDEBUG() << "    below threshold";
         if (delta == dl || delta == dr) {
             if (delta == dl)
-                areas = Qt::LeftDockWidgetArea;
+                areas = QApplication::layoutDirection() == Qt::LeftToRight
+                        ? Qt::LeftDockWidgetArea
+                        : Qt::RightDockWidgetArea;
             else
-                areas = Qt::RightDockWidgetArea;
+                areas = QApplication::layoutDirection() == Qt::LeftToRight
+                        ? Qt::RightDockWidgetArea
+                        : Qt::LeftDockWidgetArea;
 
             if (dt < threshold)
                 areas |= Qt::TopDockWidgetArea;
@@ -1978,16 +2006,24 @@ Qt::DockWidgetAreas areasForMousePosition(const QRect &r, const QPoint &p, bool 
                 areas = Qt::BottomDockWidgetArea;
 
             if (dl < threshold)
-                areas |= Qt::LeftDockWidgetArea;
+                areas |= QApplication::layoutDirection() == Qt::LeftToRight
+                         ? Qt::LeftDockWidgetArea
+                         : Qt::RightDockWidgetArea;
             else if (dr < threshold)
-                areas |= Qt::RightDockWidgetArea;
+                areas |= QApplication::layoutDirection() == Qt::LeftToRight
+                         ? Qt::RightDockWidgetArea
+                         : Qt::LeftDockWidgetArea;
         }
     } else if (!floatable) {
         VDEBUG() << "    not floatable";
         areas = ((dx > dy)
-                 ? ((p.x() < r.center().x())
-                    ? Qt::LeftDockWidgetArea
-                    : Qt::RightDockWidgetArea)
+                 ? ((QApplication::layoutDirection() == Qt::LeftToRight)
+                    ? ((p.x() < r.center().x())
+                       ? Qt::LeftDockWidgetArea
+                       : Qt::RightDockWidgetArea)
+                    :((p.x() < r.center().x())
+                      ? Qt::RightDockWidgetArea
+                      : Qt::LeftDockWidgetArea))
                  : ((p.y() < r.center().y())
                     ? Qt::TopDockWidgetArea
                     : Qt::BottomDockWidgetArea));
@@ -2048,9 +2084,10 @@ Qt::DockWidgetArea QMainWindowLayout::locateDockWidget(QDockWidget *dockwidget,
 }
 
 QRect QMainWindowLayout::placeDockWidget(QDockWidget *dockwidget,
-                                         const QRect &r,
+                                         const QRect &__r,
                                          const QPoint &mouse)
 {
+
     DEBUG("QMainWindowLayout::placeDockWidget");
 
     Qt::DockWidgetArea area = locateDockWidget(dockwidget, mouse);
@@ -2061,13 +2098,26 @@ QRect QMainWindowLayout::placeDockWidget(QDockWidget *dockwidget,
         return target;
     }
 
+    QRect _r = __r;
+    Qt::DockWidgetArea currentArea = dockWidgetArea(dockwidget);
+    if (((currentArea == Qt::LeftDockWidgetArea || currentArea == Qt::RightDockWidgetArea)
+         && (area == Qt::TopDockWidgetArea || area == Qt::BottomDockWidgetArea))
+        || ((currentArea == Qt::TopDockWidgetArea || currentArea == Qt::BottomDockWidgetArea)
+            && (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea))) {
+        // changing area, reset to size hint
+        _r.setSize(dockwidget->sizeHint());
+        _r.moveCenter(QPoint(mouse.x(), _r.y()));
+    }
+    QRect r = QStyle::visualRect(QApplication::layoutDirection(), geometry(), _r);
+
     // if there is a window dock layout already here, forward the place
     const int pos = positionForArea(area);
     if (layout_info[pos].item && !layout_info[pos].item->isEmpty()) {
         DEBUG("  forwarding...");
         QDockWidgetLayout *l = qobject_cast<QDockWidgetLayout *>(layout_info[pos].item->layout());
         Q_ASSERT(l != 0);
-        target = l->place(dockwidget, r, mouse);
+
+        target = l->place(dockwidget, _r, mouse);
         DEBUG("END of QMainWindowLayout::placeDockWidget (forwarded)");
         return target;
     }
@@ -2078,7 +2128,7 @@ QRect QMainWindowLayout::placeDockWidget(QDockWidget *dockwidget,
     // see if the tool window will fix in the main window
     const QSize cur = parentWidget()->size();
 
-    QMainWindowLayoutItem layoutitem(dockwidget, r);
+    QMainWindowLayoutItem layoutitem(dockwidget, _r);
     layout_info[pos].item = &layoutitem;
     layout_info[pos].size = r.size();
     DEBUG() << "  pos" << pos << " size" << layout_info[pos].size;
@@ -2108,8 +2158,8 @@ QRect QMainWindowLayout::placeDockWidget(QDockWidget *dockwidget,
 }
 
 void QMainWindowLayout::dropDockWidget(QDockWidget *dockwidget,
-                                        const QRect &r,
-                                        const QPoint &mouse)
+                                       const QRect &__r,
+                                       const QPoint &mouse)
 {
     DEBUG("QMainWindowLayout::dropDockWidget");
 
@@ -2120,13 +2170,25 @@ void QMainWindowLayout::dropDockWidget(QDockWidget *dockwidget,
         return;
     }
 
+    QRect _r = __r;
+    Qt::DockWidgetArea currentArea = dockWidgetArea(dockwidget);
+    if (((currentArea == Qt::LeftDockWidgetArea || currentArea == Qt::RightDockWidgetArea)
+         && (area == Qt::TopDockWidgetArea || area == Qt::BottomDockWidgetArea))
+        || ((currentArea == Qt::TopDockWidgetArea || currentArea == Qt::BottomDockWidgetArea)
+            && (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea))) {
+        // changing area, reset to size hint
+        _r.setSize(dockwidget->sizeHint());
+        _r.moveCenter(QPoint(mouse.x(), _r.y()));
+    }
+    QRect r = QStyle::visualRect(QApplication::layoutDirection(), geometry(), _r);
+
     // if there is a window dock layout already here, forward the drop
     const int pos = positionForArea(area);
     if (layout_info[pos].item && !layout_info[pos].item->isEmpty()) {
         DEBUG() << "  forwarding...";
         QDockWidgetLayout *l = qobject_cast<QDockWidgetLayout *>(layout_info[pos].item->layout());
         Q_ASSERT(l);
-        l->drop(dockwidget, r, mouse);
+        l->drop(dockwidget, _r, mouse);
         relayout();
         DEBUG() << "END of QMainWindowLayout::dropDockWidget (forwarded)";
         return;
@@ -2204,9 +2266,9 @@ int QMainWindowLayout::locateToolBar(QToolBar *toolbar, const QPoint &mouse) con
         }
     } else {
         if (p.y() < p2.y() && toolbar->isAreaAllowed(Qt::TopToolBarArea)) {
-                pos = TOP;
+            pos = TOP;
         } else if (p.y() >= p2.y() && toolbar->isAreaAllowed(Qt::BottomToolBarArea)) {
-                pos = BOTTOM;
+            pos = BOTTOM;
         } else {
             if (p.x() < p2.x() && toolbar->isAreaAllowed(Qt::LeftToolBarArea))
                 pos = LEFT;
@@ -2238,8 +2300,9 @@ int QMainWindowLayout::locateToolBar(QToolBar *toolbar, const QPoint &mouse) con
     return pos;
 }
 
-void QMainWindowLayout::dropToolBar(QToolBar *toolbar, const QPoint &mouse, const QPoint &offset)
+bool QMainWindowLayout::dropToolBar(QToolBar *toolbar, const QPoint &mouse, const QPoint &offset)
 {
+    bool toolBarPositionSwapped = false;
     POSITION where = static_cast<POSITION>(locateToolBar(toolbar, mouse));
 
     if (positionForArea(toolBarArea(toolbar)) == where) {
@@ -2276,20 +2339,14 @@ void QMainWindowLayout::dropToolBar(QToolBar *toolbar, const QPoint &mouse, cons
 	}
 
 	if (pick(where, offset) < -magic_offset) { // move left/up
-	    TBDEBUG() << "left/up" << offset << "line: " << l << where;
+	    toolBarPositionSwapped = true;
+        TBDEBUG() << "left/up" << offset << "line: " << l << where;
 	    if (l > 0 && tb_layout_info.at(l-1).pos == where) { // is this the first line in this tb area?
                 tb_layout_info[l].list.removeAt(i);
                 if (tb_layout_info[l].list.size() == 0)
                     tb_layout_info.removeAt(l);
                 if (tb_layout_info.at(l-1).pos == where) {
                     TBDEBUG() << "1. appending to existing" << info.item->widget() << info.item->widget()->geometry();
-                    if (tb_layout_info[l-1].list.size() > 0) {
-                        const ToolBarLayoutInfo &tmp = tb_layout_info.at(l-1).list.last();
-                        if (pick_perp(where, tmp.pos) == pick_perp(where, info.pos))
-                            info.offset = info.pos - (tmp.pos + QPoint(tmp.size.width(), tmp.size.height()) - offset);
-                        else if (pick_perp(where, tmp.pos) < pick_perp(where, info.pos))
-                            info.offset = -(tmp.pos + QPoint(tmp.size.width(), tmp.size.height()) - info.pos + offset);
-                    }
                     tb_layout_info[l-1].list.append(info);
 
                 } else {
@@ -2311,19 +2368,13 @@ void QMainWindowLayout::dropToolBar(QToolBar *toolbar, const QPoint &mouse, cons
                 TBDEBUG() << "3. inserting new" << l << toolbar;
             }
         } else if (pick(where, offset) > pick(where, info.size) + magic_offset) { // move right/down
+            toolBarPositionSwapped = true;
             TBDEBUG() << "right/down" << offset << "line: " << l;
             if (l < tb_layout_info.size()-1 && tb_layout_info.at(l+1).pos == where) {
-                tb_layout_info[l].list.removeAt(i);
+	            tb_layout_info[l].list.removeAt(i);
                 if (tb_layout_info.at(l).list.size() == 0)
                     tb_layout_info.removeAt(l--);
                 if (tb_layout_info.at(l+1).pos == where) {
-                    if (tb_layout_info[l+1].list.size() > 0) {
-                        const ToolBarLayoutInfo &tmp = tb_layout_info.at(l+1).list.last();
-                        if (pick_perp(where, tmp.pos) == pick_perp(where, info.pos))
-                            info.offset = info.pos -(tmp.pos + QPoint(tmp.size.width(), tmp.size.height()) - offset);
-                        else if (pick_perp(where, tmp.pos) < pick_perp(where, info.pos))
-                            info.offset = -(tmp.pos + QPoint(tmp.size.width(), tmp.size.height()) - info.pos + offset);
-                    }
                     tb_layout_info[l+1].list.append(info);
                     TBDEBUG() << "1. appending to exisitng";
                 } else {
@@ -2346,24 +2397,26 @@ void QMainWindowLayout::dropToolBar(QToolBar *toolbar, const QPoint &mouse, cons
             }
         }
     } else {
+        toolBarPositionSwapped = true;
         TBDEBUG() << "changed area";
-
-        //We have to update all toolbars in affected areas, since
-        //QStyleOptionToolbar can handle toolbars differently depending on their positions
-        int currentPos = positionForArea(toolBarArea(toolbar));
-
-        for (int i = 0; i < tb_layout_info.size(); ++i) {
-            const ToolBarLineInfo &lineInfo = tb_layout_info.at(i);
-            if (lineInfo.pos == currentPos || lineInfo.pos == where) {
-                for (int j = 0; j < lineInfo.list.size(); ++j)
-                    lineInfo.list.at(j).item->widget()->update();
-            }
-        }
         addToolBar(static_cast<Qt::ToolBarArea>(areaForPosition(where)), toolbar, false);
-        dropToolBar(toolbar, mouse, QPoint());
-        return;
+        return toolBarPositionSwapped;
     }
     relayout();
+    return toolBarPositionSwapped;
+}
+
+void QMainWindowLayout::updateToolbarsInArea(Qt::ToolBarArea area)
+{
+    POSITION pos = positionForArea(area);
+    for (int i = 0; i < tb_layout_info.size(); ++i) {
+        const ToolBarLineInfo &lineInfo = tb_layout_info.at(i);
+        if ( lineInfo.pos == pos ) {
+            for (int j = 0; j < lineInfo.list.size(); ++j) {
+                lineInfo.list.at(j).item->widget()->update();
+            }
+        }
+    }
 }
 
 void QMainWindowLayout::removeToolBarInfo(QToolBar *toolbar)

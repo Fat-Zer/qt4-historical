@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -172,7 +172,7 @@ QModelIndex IndexListModel::filter(const QString &s, const QString &real)
             if (perfectMatch == -1 && (key.startsWith(real, Qt::CaseInsensitive))) {
                 if (goodMatch == -1)
                     goodMatch = list.count() - 1;
-                if (s.length() == key.length())
+                if (real.length() == key.length())
                     perfectMatch = list.count() - 1;
             }  else if (perfectMatch > -1 && s == key) {
                 perfectMatch = list.count() - 1;

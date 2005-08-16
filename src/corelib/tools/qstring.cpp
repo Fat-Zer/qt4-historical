@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -3194,6 +3194,8 @@ QString QString::fromLocal8Bit(const char *str, int size)
 {
     if (!str)
         return QString();
+    if (size == 0 || (!*str && size < 0))
+        return QLatin1String("");
 #if defined(Q_OS_WIN32)
     if(QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
         return qt_winMB2QString(str, size);
@@ -4183,13 +4185,13 @@ QString QString::toUpper() const
     The format string supports most of the conversion specifiers
     provided by printf() in the standard C++ library. It doesn't
     honor the length modifiers (e.g. \c h for \c short, \c ll for
-    \c{long long}). If you need those, use the standard sprintf()
+    \c{long long}). If you need those, use the standard snprintf()
     function instead:
 
     \code
-        char buf[BufSize];
-        ::sprintf(buf, "%lld", 123456789LL);
-        QString str = QString::fromAscii(buf);
+        char buf[BufSize];
+        ::snprintf(buf, BufSize, "%lld", 123456789LL);
+        QString str = QString::fromAscii(buf);
     \endcode
 
     \warning We do not recommend using QString::sprintf() in new Qt
@@ -5522,7 +5524,7 @@ static QString replaceArgEscapes(const QString &s, const ArgEscapeData &d, int f
 
 /*!
     This function returns a copy of this string where \a a replaces
-    the lowest numbered occurrence of \c %1, \c %2, ..., \c %9.
+    the lowest numbered occurrence of \c %1, \c %2, ..., \c %99.
 
     The \a fieldWidth value specifies the minimum amount of space that
     \a a is padded to and filled with the character \a fillChar. A
@@ -5547,6 +5549,7 @@ static QString replaceArgEscapes(const QString &s, const ArgEscapeData &d, int f
 
     If there is no place marker (\c %1, \c %2, etc.), a warning
     message is output and the result is undefined.
+    Note that only placeholders between \c %1 and \c %99 are supported.
 */
 QString QString::arg(const QString &a, int fieldWidth, const QChar &fillChar) const
 {
@@ -6558,4 +6561,33 @@ QDataStream &operator>>(QDataStream &in, QString &str)
     \fn QString::operator const char *() const
 
     Use toAscii().constData() instead.
+*/
+
+/*!
+    \class QConstString
+    \brief The QConstString is a wrapper for constant Unicode string data.
+    \compat
+
+    In Qt 4, QConstString is replaced by QString::fromRawData(), a
+    static function that constructs a QString object based on Unicode
+    string data.
+
+    Because QString::fromRawData() has slightly more stringent
+    constranints than QConstString had in Qt 3, the new QConstString
+    class takes a deep copy of the string data.
+
+    \sa QString::fromRawData()
+*/
+
+/*!
+    \fn QConstString::QConstString(const QChar *unicode, int size)
+
+    Use QString(\a unicode, \a size) or
+    QString::fromRawData(\a unicode, \a size) instead.
+*/
+
+/*!
+    \fn const QString &QConstString::string() const
+
+    Returns \c *this. Not necessary in Qt 4.
 */

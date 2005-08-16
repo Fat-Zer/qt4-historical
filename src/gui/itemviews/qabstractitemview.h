@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -272,6 +272,10 @@ private:
     Q_DECLARE_PRIVATE(QAbstractItemView)
     Q_DISABLE_COPY(QAbstractItemView)
     Q_PRIVATE_SLOT(d_func(), void columnsAboutToBeRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void columnsRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void rowsRemoved(const QModelIndex&, int, int))
+
+    friend class QTreeViewPrivate;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractItemView::EditTriggers)
 

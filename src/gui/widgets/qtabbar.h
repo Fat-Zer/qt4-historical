@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -135,6 +135,7 @@ Q_SIGNALS:
     QT_MOC_COMPAT void selected(int);
 #endif
 
+    friend class QAccessibleTabBar;
 private:
     Q_DISABLE_COPY(QTabBar)
     Q_DECLARE_PRIVATE(QTabBar)

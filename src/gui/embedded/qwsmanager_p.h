@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -40,6 +40,8 @@
 
 #ifndef QT_NO_QWS_MANAGER
 
+#include "QtCore/qhash.h"
+
 class QWidget;
 class QMenu;
 
@@ -48,9 +50,6 @@ class QWSManagerPrivate : public QObjectPrivate
     Q_DECLARE_PUBLIC(QWSManager)
 public:
     QWSManagerPrivate();
-
-    bool doPaint(int decorationRegion = QDecoration::All, QDecoration::DecorationState state = QDecoration::Normal);
-
 
     int activeRegion;
     QWidget *managed;
@@ -84,6 +83,13 @@ public:
     bool newCachedRegion(const QPoint &pos);
     int cachedRegionAt()
     { return cached_region.regionType; }
+
+    void dirtyRegion(int decorationRegion,
+                     QDecoration::DecorationState state);
+    QRegion paint(QPixmap *pixmap);
+
+    QList<int> dirtyRegions;
+    QList<QDecoration::DecorationState> dirtyStates;
 };
 
 #endif // QT_NO_QWS_MANAGER

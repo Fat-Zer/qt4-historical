@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -479,17 +479,29 @@ QWheelEvent::QWheelEvent(const QPoint &pos, const QPoint& globalPos, int delta, 
 /*!
     \fn int QWheelEvent::delta() const
 
-    Returns the distance that the wheel is rotated, given in
-    multiples or divisions of \c WHEEL_DELTA. A positive value
-    indicates that the wheel was rotated forwards away from the
-    user; a negative value indicates that the wheel was rotated
-    backwards toward the user.
+    Returns the distance that the wheel is rotated, in eights of a
+    degree. A positive value indicates that the wheel was rotated
+    forwards away from the user; a negative value indicates that the
+    wheel was rotated backwards toward the user.
 
-    The \c WHEEL_DELTA constant was defined to be 120 by the wheel
-    mouse vendors to allow finer-resolution wheels to be built in
-    the future, such as a freely rotating wheel with no notches.
-    The expectation is that such a device would send more messages
-    per rotation, but with a smaller value in each message.
+    Most mouse types work in steps of 15 degrees, in which case the
+    delta value is a multiple of 120 (== 15 * 8).
+
+    Example:
+
+    \code
+        void MyWidget::wheelEvent(QWheelEvent *event)
+        {
+            int numDegrees = event->delta() / 8;
+            int numSteps = numDegrees / 15;
+
+            if (event->orientation() == Qt::Horizontal) {
+                scrollHorizontally(numSteps);
+            } else {
+                scrollVertically(numSteps);
+            }
+        }
+    \endcode
 */
 
 /*!
@@ -1375,12 +1387,14 @@ Qt::ButtonState QContextMenuEvent::state() const
     honour the backgroundColor, textColor and fontUnderline properties
     of the format.
 
-    \value Cursor
-    If set, a cursor should be shown inside the preedit string at
-    position start. If value is a QVariant of type QColor this color
-    will be used for rendering the cursor, otherwise the color of the
+    \value Cursor If set, a cursor should be shown inside the preedit
+    string at position start. The length variable determines whether
+    the cursor is visible or not. If the length is 0 the cursor is
+    invisible. If value is a QVariant of type QColor this color will
+    be used for rendering the cursor, otherwise the color of the
     surrounding text will be used. There should be at most one Cursor
-    attribute per event. If several are specified the behaviour is undefined.
+    attribute per event. If several are specified the behaviour is
+    undefined.
 
     \value Language
     The variant contains a QLocale object specifying the language of a

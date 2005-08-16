@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/widgets/q3scrollview.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/widgets/q3scrollview.cpp -->
 <head>
     <title>Qt 4.1: Q3ScrollView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3scrollview.html#contentsHeight-prop">contentsHeight</a></b> : const int</li>
 <li><div class="fn"/><b><a href="q3scrollview.html#contentsWidth-prop">contentsWidth</a></b> : const int</li>
@@ -49,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3scrollview.html#visibleWidth-prop">visibleWidth</a></b> : const int</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
@@ -113,7 +113,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -169,6 +169,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -240,21 +241,21 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ResizePolicy-enum"></a>enum Q3ScrollView::ResizePolicy</h3>
 <p>This enum type is used to control a <a href="q3scrollview.html">Q3ScrollView</a>'s reaction to resize events.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3ScrollView::Default</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">the <a href="q3scrollview.html">Q3ScrollView</a> selects one of the other settings automatically when it has to. In this version of Qt, <a href="q3scrollview.html">Q3ScrollView</a> changes to <tt>Manual</tt> if you resize the contents with <a href="q3scrollview.html#resizeContents">resizeContents</a>() and to <tt>AutoOne</tt> if a child is added.</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::Manual</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the contents stays the size set by <a href="q3scrollview.html#resizeContents">resizeContents</a>().</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::AutoOne</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">if there is only one child widget the contents stays the size of that widget. Otherwise the behavior is undefined.</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::AutoOneFit</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">if there is only one child widget the contents stays the size of that widget's <a href="qwidget.html#sizeHint-prop">sizeHint</a>(). If the scrollview is resized larger than the child's <a href="qwidget.html#sizeHint-prop">sizeHint</a>(), the child will be resized to fit. If there is more than one child, the behavior is undefined.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="ScrollBarMode-enum"></a>enum Q3ScrollView::ScrollBarMode</h3>
 <p>This enum type describes the various modes of <a href="q3scrollview.html">Q3ScrollView</a>'s scroll bars.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3ScrollView::Auto</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top"><a href="q3scrollview.html">Q3ScrollView</a> shows a scroll bar when the content is too large to fit and not otherwise. This is the default.</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::AlwaysOff</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="q3scrollview.html">Q3ScrollView</a> never shows a scroll bar.</td></tr>
 <tr><td valign="top"><tt>Q3ScrollView::AlwaysOn</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top"><a href="q3scrollview.html">Q3ScrollView</a> always shows a scroll bar.</td></tr>
-</table>
+</table></p>
 <p>(The modes for the horizontal and vertical scroll bars are independent.)</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -345,7 +346,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="center"></a>void Q3ScrollView::center ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Scrolls the content so that the point (<i>x</i>, <i>y</i>) is in the center of visible area.</p>
 <h3 class="fn"><a name="center-2"></a>void Q3ScrollView::center ( int <i>x</i>, int <i>y</i>, float <i>xmargin</i>, float <i>ymargin</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Scrolls the content so that the point (<i>x</i>, <i>y</i>) is visible with the <i>xmargin</i> and <i>ymargin</i> margins (as fractions of visible the area).</p>
 <p>For example:</p>
 <ul>
@@ -392,7 +393,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="contentsToViewport"></a>void Q3ScrollView::contentsToViewport ( int <i>x</i>, int <i>y</i>, int &amp; <i>vx</i>, int &amp; <i>vy</i> ) const</h3>
 <p>Translates a point (<i>x</i>, <i>y</i>) in the contents to a point (<i>vx</i>, <i>vy</i>) on the <a href="q3scrollview.html#viewport">viewport</a>() widget.</p>
 <h3 class="fn"><a name="contentsToViewport-2"></a><a href="qpoint.html">QPoint</a> Q3ScrollView::contentsToViewport ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the point <i>p</i> translated to a point on the <a href="q3scrollview.html#viewport">viewport</a>() widget.</p>
 <h3 class="fn"><a name="contentsWheelEvent"></a>void Q3ScrollView::contentsWheelEvent ( <a href="qwheelevent.html">QWheelEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler is called whenever the <a href="q3scrollview.html">Q3ScrollView</a> receives a <a href="qwidget.html#wheelEvent">wheelEvent</a>() in <i>e</i>: the mouse position is translated to be a point on the contents.</p>
@@ -431,7 +432,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="ensureVisible"></a>void Q3ScrollView::ensureVisible ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Scrolls the content so that the point (<i>x</i>, <i>y</i>) is visible with at least 50-pixel margins (if possible, otherwise centered).</p>
 <h3 class="fn"><a name="ensureVisible-2"></a>void Q3ScrollView::ensureVisible ( int <i>x</i>, int <i>y</i>, int <i>xmargin</i>, int <i>ymargin</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Scrolls the content so that the point (<i>x</i>, <i>y</i>) is visible with at least the <i>xmargin</i> and <i>ymargin</i> margins (if possible, otherwise centered).</p>
 <h3 class="fn"><a name="eventFilter"></a>bool Q3ScrollView::eventFilter ( <a href="qobject.html">QObject</a> * <i>obj</i>, <a href="qevent.html">QEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event filter ensures the scroll bars are updated when a single contents widget is resized, shown, hidden or destroyed; it passes mouse events to the <a href="q3scrollview.html">Q3ScrollView</a>. The event is in <i>e</i> and the object is in <i>obj</i>.</p>
@@ -462,10 +463,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Calls <a href="qwidget.html#repaint">repaint</a>() on a rectangle defined by <i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>, translated appropriately. If the rectangle is not visible, nothing is repainted. If <i>erase</i> is true the background is cleared using the background color.</p>
 <p>See also <a href="q3scrollview.html#updateContents">updateContents</a>().</p>
 <h3 class="fn"><a name="repaintContents-2"></a>void Q3ScrollView::repaintContents ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, bool <i>erase</i> = true )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Repaints the contents of rectangle <i>r</i>. If <i>erase</i> is true the background is cleared using the background color.</p>
 <h3 class="fn"><a name="repaintContents-3"></a>void Q3ScrollView::repaintContents ( bool <i>erase</i> = true )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Repaints the contents. If <i>erase</i> is true the background is cleared using the background color.</p>
 <h3 class="fn"><a name="resizeContents"></a>void Q3ScrollView::resizeContents ( int <i>w</i>, int <i>h</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the size of the contents area to <i>w</i> pixels wide and <i>h</i> pixels high and updates the viewport accordingly.</p>
@@ -509,10 +510,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Calls <a href="qwidget.html#update">update</a>() on a rectangle defined by <i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>, translated appropriately. If the rectangle is not visible, nothing is repainted.</p>
 <p>See also <a href="q3scrollview.html#repaintContents">repaintContents</a>().</p>
 <h3 class="fn"><a name="updateContents-2"></a>void Q3ScrollView::updateContents ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Updates the contents in rectangle <i>r</i></p>
 <h3 class="fn"><a name="updateContents-3"></a>void Q3ScrollView::updateContents ()</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="updateScrollBars"></a>void Q3ScrollView::updateScrollBars ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Updates scroll bars: all possibilities are considered. You should never need to call this in your code.</p>
 <h3 class="fn"><a name="verticalScrollBar"></a><a href="qscrollbar.html">QScrollBar</a> * Q3ScrollView::verticalScrollBar () const</h3>
@@ -538,12 +539,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="viewportToContents"></a>void Q3ScrollView::viewportToContents ( int <i>vx</i>, int <i>vy</i>, int &amp; <i>x</i>, int &amp; <i>y</i> ) const</h3>
 <p>Translates a point (<i>vx</i>, <i>vy</i>) on the <a href="q3scrollview.html#viewport">viewport</a>() widget to a point (<i>x</i>, <i>y</i>) in the contents.</p>
 <h3 class="fn"><a name="viewportToContents-2"></a><a href="qpoint.html">QPoint</a> Q3ScrollView::viewportToContents ( const <a href="qpoint.html">QPoint</a> &amp; <i>vp</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the point on the viewport <i>vp</i> translated to a point in the contents.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

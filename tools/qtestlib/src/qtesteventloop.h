@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -32,8 +32,8 @@
 class QTestEventLoop : public QObject
 {
 public:
-    inline QTestEventLoop(QObject *parent = 0)
-        : QObject(parent), inLoop(false), _timeout(false), timerId(-1), loop(0) {}
+    inline QTestEventLoop(QObject *aParent = 0)
+        : QObject(aParent), inLoop(false), _timeout(false), timerId(-1), loop(0) {}
     inline void enterLoop(int secs);
     inline void exitLoop();
 

@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">highlighter.cpp Example File<br /><sup><sup>richtext/syntaxhighlighter/highlighter.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -47,79 +47,91 @@ body { background: #ffffff; color: black; }</style>
     Highlighter::Highlighter(QTextDocument *parent)
         : QSyntaxHighlighter(parent)
     {
-        QTextCharFormat keywordFormat;
+        HighlightingRule rule;
+
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
         QStringList keywordPatterns;
-        keywordPatterns &lt;&lt; &quot;\\bchar\\b&quot; &lt;&lt; &quot;\\bclass\\b&quot; &lt;&lt; &quot;\\bconst\\b&quot; &lt;&lt; &quot;\\bdouble\\b&quot;
-                        &lt;&lt; &quot;\\benum\\b&quot; &lt;&lt; &quot;\\bexplicit\\b&quot; &lt;&lt; &quot;\\bfriend\\b&quot; &lt;&lt; &quot;\\binline\\b&quot;
-                        &lt;&lt; &quot;\\bint\\b&quot; &lt;&lt; &quot;\\blong\\b&quot; &lt;&lt; &quot;\\bnamespace\\b&quot; &lt;&lt; &quot;\\boperator\\b&quot;
+        keywordPatterns &lt;&lt; &quot;\\bchar\\b&quot; &lt;&lt; &quot;\\bclass\\b&quot; &lt;&lt; &quot;\\bconst\\b&quot;
+                        &lt;&lt; &quot;\\bdouble\\b&quot; &lt;&lt; &quot;\\benum\\b&quot; &lt;&lt; &quot;\\bexplicit\\b&quot;
+                        &lt;&lt; &quot;\\bfriend\\b&quot; &lt;&lt; &quot;\\binline\\b&quot; &lt;&lt; &quot;\\bint\\b&quot;
+                        &lt;&lt; &quot;\\blong\\b&quot; &lt;&lt; &quot;\\bnamespace\\b&quot; &lt;&lt; &quot;\\boperator\\b&quot;
                         &lt;&lt; &quot;\\bprivate\\b&quot; &lt;&lt; &quot;\\bprotected\\b&quot; &lt;&lt; &quot;\\bpublic\\b&quot;
                         &lt;&lt; &quot;\\bshort\\b&quot; &lt;&lt; &quot;\\bsignals\\b&quot; &lt;&lt; &quot;\\bsigned\\b&quot;
-                        &lt;&lt; &quot;\\bslots\\b&quot; &lt;&lt; &quot;\\bstatic\\b&quot; &lt;&lt; &quot;\\bstruct\\b&quot; &lt;&lt; &quot;\\btemplate\\b&quot;
-                        &lt;&lt; &quot;\\btypedef\\b&quot; &lt;&lt; &quot;\\btypename\\b&quot; &lt;&lt; &quot;\\bunion\\b&quot; &lt;&lt; &quot;\\bunsigned\\b&quot;
-                        &lt;&lt; &quot;\\bvirtual\\b&quot;&lt;&lt; &quot;\\bvoid\\b&quot; &lt;&lt; &quot;\\bvolatile\\b&quot;;
-        foreach (QString pattern, keywordPatterns)
-            mappings[pattern] = keywordFormat;
+                        &lt;&lt; &quot;\\bslots\\b&quot; &lt;&lt; &quot;\\bstatic\\b&quot; &lt;&lt; &quot;\\bstruct\\b&quot;
+                        &lt;&lt; &quot;\\btemplate\\b&quot; &lt;&lt; &quot;\\btypedef\\b&quot; &lt;&lt; &quot;\\btypename\\b&quot;
+                        &lt;&lt; &quot;\\bunion\\b&quot; &lt;&lt; &quot;\\bunsigned\\b&quot; &lt;&lt; &quot;\\bvirtual\\b&quot;
+                        &lt;&lt; &quot;\\bvoid\\b&quot; &lt;&lt; &quot;\\bvolatile\\b&quot;;
+        foreach (QString pattern, keywordPatterns) {
+            rule.pattern = QRegExp(pattern);
+            rule.format = keywordFormat;
+            highlightingRules.append(rule);
+        }
 
-        QTextCharFormat classFormat;
         classFormat.setFontWeight(QFont::Bold);
         classFormat.setForeground(Qt::darkMagenta);
-        mappings[&quot;\\bQ[A-Za-z]+\\b&quot;] = classFormat;
+        rule.pattern = QRegExp(&quot;\\bQ[A-Za-z]+\\b&quot;);
+        rule.format = classFormat;
+        highlightingRules.append(rule);
 
-        QTextCharFormat singleLineCommentFormat;
         singleLineCommentFormat.setForeground(Qt::red);
-        mappings[&quot;//[^\n]*&quot;] = singleLineCommentFormat;
+        rule.pattern = QRegExp(&quot;//[^\n]*&quot;);
+        rule.format = singleLineCommentFormat;
+        highlightingRules.append(rule);
 
         multiLineCommentFormat.setForeground(Qt::red);
 
-        QTextCharFormat quotationFormat;
         quotationFormat.setForeground(Qt::darkGreen);
-        mappings[&quot;\&quot;.*\&quot;&quot;] = quotationFormat;
+        rule.pattern = QRegExp(&quot;\&quot;.*\&quot;&quot;);
+        rule.format = quotationFormat;
+        highlightingRules.append(rule);
 
-        QTextCharFormat functionFormat;
         functionFormat.setFontItalic(true);
         functionFormat.setForeground(Qt::blue);
-        mappings[&quot;\\b[A-Za-z0-9_]+\\(.*\\)&quot;] = functionFormat;
+        rule.pattern = QRegExp(&quot;\\b[A-Za-z0-9_]+(?=\\()&quot;);
+        rule.format = functionFormat;
+        highlightingRules.append(rule);
+
+        commentStartExpression = QRegExp(&quot;/\\*&quot;);
+        commentEndExpression = QRegExp(&quot;\\*/&quot;);
     }
 
     void Highlighter::highlightBlock(const QString &amp;text)
     {
-        foreach (QString pattern, mappings.keys()) {
-            QRegExp expression(pattern);
+        foreach (HighlightingRule rule, highlightingRules) {
+            QRegExp expression(rule.pattern);
             int index = text.indexOf(expression);
             while (index &gt;= 0) {
                 int length = expression.matchedLength();
-                setFormat(index, length, mappings[pattern]);
+                setFormat(index, length, rule.format);
                 index = text.indexOf(expression, index + length);
             }
         }
         setCurrentBlockState(0);
 
-        QRegExp startExpression( &quot;/\\*&quot;);
-        QRegExp endExpression(&quot;\\*/&quot;);
-
         int startIndex = 0;
         if (previousBlockState() != 1)
-            startIndex = text.indexOf(startExpression);
+            startIndex = text.indexOf(commentStartExpression);
 
         while (startIndex &gt;= 0) {
-           int endIndex = text.indexOf(endExpression, startIndex);
+           int endIndex = text.indexOf(commentEndExpression, startIndex);
            int commentLength;
            if (endIndex == -1) {
                setCurrentBlockState(1);
                commentLength = text.length() - startIndex;
            } else {
-               commentLength = endIndex - startIndex + endExpression.matchedLength();
+               commentLength = endIndex - startIndex
+                               + commentEndExpression.matchedLength();
            }
            setFormat(startIndex, commentLength, multiLineCommentFormat);
-           startIndex = text.indexOf(startExpression, startIndex + commentLength);
+           startIndex = text.indexOf(commentStartExpression,
+                                                   startIndex + commentLength);
         }
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

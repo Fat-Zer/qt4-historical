@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -204,6 +204,19 @@ QLayoutItem *QStackedLayout::itemAt(int index) const
     return d->list.value(index);
 }
 
+// Code that enables proper handling of the case that takeAt() is
+// called somewhere inside QObject destructor (can't call hide()
+// on the object then)
+
+class QtFriendlyLayoutWidget : public QWidget
+{
+public:
+    inline bool wasDeleted() const { return d_ptr->wasDeleted; }
+};
+
+static bool qt_wasDeleted(const QWidget *w) { return static_cast<const QtFriendlyLayoutWidget*>(w)->wasDeleted(); }
+
+
 /*!
     \reimp
 */
@@ -223,6 +236,8 @@ QLayoutItem *QStackedLayout::takeAt(int index)
         --d->index;
     }
     emit widgetRemoved(index);
+    if (item->widget() && !qt_wasDeleted(item->widget()))
+        item->widget()->hide();
     return item;
 }
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
     <title>Qt 4.1: QWSInputMethod Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -22,6 +22,11 @@ body { background: #ffffff; color: black; }</style>
 <pre>#include &lt;QWSInputMethod&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qwsinputmethod-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h3>Public Types</h3>
+<ul>
+<li><div class="fn"/>enum <b><a href="qwsinputmethod.html#UpdateType-enum">UpdateType</a></b> { Update, FocusIn, FocusOut, Reset, Destroyed }</li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -65,6 +70,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qwsinputmethod.html#sendIMEvent">sendIMEvent</a>() to send composition events.</p>
 <p>Use QWSServer::setCurrentInputMethod() to install an input method.</p>
 <p>This class is still subject to change.</p>
+<hr />
+<h2>Member Type Documentation</h2>
+<h3 class="fn"><a name="UpdateType-enum"></a>enum QWSInputMethod::UpdateType</h3>
+<p>This enum describes different types of update events received by updateHandler.</p>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QWSInputMethod::Update</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The input widget is updated in some way; use <a href="qwsinputmethod.html#sendQuery">sendQuery</a>() with <a href="qt.html#InputMethodQuery-enum">Qt::ImMicroFocus</a> as an argument for more information.</td></tr>
+<tr><td valign="top"><tt>QWSInputMethod::FocusIn</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A new input widget receives focus.</td></tr>
+<tr><td valign="top"><tt>QWSInputMethod::FocusOut</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The input widget loses focus.</td></tr>
+<tr><td valign="top"><tt>QWSInputMethod::Reset</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The input method should be reset.</td></tr>
+<tr><td valign="top"><tt>QWSInputMethod::Destroyed</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The input widget is destroyed.</td></tr>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QWSInputMethod"></a>QWSInputMethod::QWSInputMethod ()</h3>
@@ -110,11 +127,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="updateHandler"></a>void QWSInputMethod::updateHandler ( int <i>type</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Handles update events, including resets and focus changes.</p>
 <p>Reimplementations must call the base implementation for all cases that it does not handle itself.</p>
-<p><i>type</i> is a value defined in <a href="qwsimupdatecommand.html#UpdateType-enum">QWSIMUpdateCommand::UpdateType</a>.</p>
+<p><i>type</i> is a value defined in <a href="qwsinputmethod.html#UpdateType-enum">UpdateType</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the plugins of the Qt Toolkit.
 **
@@ -189,14 +189,13 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
 
     struct my_jpeg_source_mgr *iod_src = new my_jpeg_source_mgr(device);
     struct my_error_mgr jerr;
-    memset(&jerr, 0, sizeof(jerr));
-    jerr.error_exit = my_error_exit;
 
     jpeg_create_decompress(&cinfo);
 
     cinfo.src = iod_src;
 
     cinfo.err = jpeg_std_error(&jerr);
+    jerr.error_exit = my_error_exit;
 
     if (!setjmp(jerr.setjmp_buffer)) {
 #if defined(Q_OS_UNIXWARE)
@@ -215,11 +214,11 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
 
         if (params.contains("GetHeaderInformation")) {
 
-            // Create QImage's without allocating the data
+            // Create QImage but don't read the pixels
             if (cinfo.output_components == 3 || cinfo.output_components == 4) {
-                image = QImage(NULL, cinfo.output_width, cinfo.output_height, QImage::Format_RGB32);
+                image = QImage(cinfo.output_width, cinfo.output_height, QImage::Format_RGB32);
             } else if (cinfo.output_components == 1) {
-                image = QImage(NULL, cinfo.output_width, cinfo.output_height, QImage::Format_Indexed8);
+                image = QImage(cinfo.output_width, cinfo.output_height, QImage::Format_Indexed8);
             } else {
                 // Unsupported format
             }
@@ -227,7 +226,7 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
 
         } else if (params.contains("Scale")) {
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-			sscanf_s(params.toLatin1().data(), "Scale(%i, %i, %1023s)",
+            sscanf_s(params.toLatin1().data(), "Scale(%i, %i, %1023s)",
                    &sWidth, &sHeight, sModeStr, sizeof(sModeStr));
 #else
             sscanf(params.toLatin1().data(), "Scale(%i, %i, %1023s)",
@@ -433,6 +432,7 @@ inline my_jpeg_destination_mgr::my_jpeg_destination_mgr(QIODevice *device)
 
 static bool write_jpeg_image(const QImage &sourceImage, QIODevice *device, int sourceQuality)
 {
+    bool success = false;
     QImage image = sourceImage;
 
     struct jpeg_compress_struct cinfo;
@@ -443,7 +443,6 @@ static bool write_jpeg_image(const QImage &sourceImage, QIODevice *device, int s
     struct my_error_mgr jerr;
 
     cinfo.err = jpeg_std_error(&jerr);
-
     jerr.error_exit = my_error_exit;
 
     if (!setjmp(jerr.setjmp_buffer)) {
@@ -568,11 +567,15 @@ static bool write_jpeg_image(const QImage &sourceImage, QIODevice *device, int s
 
         jpeg_finish_compress(&cinfo);
         jpeg_destroy_compress(&cinfo);
+        success = true;
+    } else {
+        jpeg_destroy_compress(&cinfo);
+        success = false;
     }
 
     delete iod_dest;
     delete [] row_pointer[0];
-    return true;
+    return success;
 }
 
 QJpegHandler::QJpegHandler()
@@ -613,13 +616,23 @@ bool QJpegHandler::write(const QImage &image)
 
 bool QJpegHandler::supportsOption(ImageOption option) const
 {
-    return option == Quality;// || option == Parameters;
+    return option == Quality
+        || option == Size;// || option == Parameters;
 }
 
 QVariant QJpegHandler::option(ImageOption option) const
 {
-    if (option == Quality)
+    if (option == Quality) {
         return quality;
+    } else if (option == Size) {
+        if (canRead() && !device()->isSequential()) {
+            qint64 pos = device()->pos();
+            QImage image;
+            read_jpeg_image(device(), &image, "GetHeaderInformation");
+            device()->seek(pos);
+            return image.size();
+        }
+    }
 //    else if (option == Parameters)
 //        return parameters;
     return QVariant();

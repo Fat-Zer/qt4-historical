@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -166,8 +166,8 @@ void PaletteEditor::updatePreviewPalette()
     // build the preview palette
     QPalette currentPalette = palette();
     QPalette previewPalette;
-    for (QPalette::ColorRole r = QPalette::Foreground;
-                r < QPalette::NColorRoles; reinterpret_cast<int&>(r)++) {
+    for (int i = QPalette::Foreground; i < QPalette::NColorRoles; i++) {
+        QPalette::ColorRole r = (QPalette::ColorRole)i;
         QColor c = currentPalette.color(g, r);
         previewPalette.setColor(QPalette::Active, r, c);
         previewPalette.setColor(QPalette::Inactive, r, c);
@@ -219,9 +219,8 @@ PaletteModel::PaletteModel(QObject *parent)
     int index = meta->indexOfProperty("colorRole");
     QMetaProperty p = meta->property(index);
     QMetaEnum e = p.enumerator();
-    for (QPalette::ColorRole r = QPalette::Foreground; r < QPalette::NColorRoles;
-                reinterpret_cast<int&>(r)++) {
-        m_roleNames[r] = QLatin1String(e.key(reinterpret_cast<int&>(r)));
+    for (int r = QPalette::Foreground; r < QPalette::NColorRoles; r++) {
+        m_roleNames[(QPalette::ColorRole)r] = QLatin1String(e.key(r));
     }
     m_compute = true;
 }
@@ -437,8 +436,9 @@ RoleEditor::RoleEditor(QWidget *parent)
 
     m_label = new QLabel(this);
     layout->addWidget(m_label);
-    m_label->setBackgroundRole(QPalette::Base);
-    m_label->setIndent(1); // ### hardcode it should have the same value of textMargin in QItemDelegate
+    m_label->setAutoFillBackground(true);
+    m_label->setIndent(3); // ### hardcode it should have the same value of textMargin in QItemDelegate
+    setFocusProxy(m_label);
 
     QToolButton *button = new QToolButton(this);
     button->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -456,12 +456,11 @@ void RoleEditor::setLabel(const QString &label)
 
 void RoleEditor::setEdited(bool on)
 {
+    QFont font;
     if (on == true) {
-        QFont font = m_label->font();
         font.setBold(on);
-        m_label->setFont(font);
-    } else
-        m_label->setFont(QFont());
+    }
+    m_label->setFont(font);
     m_edited = on;
 }
 

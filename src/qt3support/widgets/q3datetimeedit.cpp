@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1273,7 +1273,7 @@ void Q3DateEdit::stepUp()
         }
     }
     if (accepted) {
-        d->changed = true;
+        d->changed = false;
         emit valueChanged(date());
     }
     d->ed->repaint(d->ed->rect());
@@ -1306,7 +1306,7 @@ void Q3DateEdit::stepDown()
         }
     }
     if (accepted) {
-        d->changed = true;
+        d->changed = false;
         emit valueChanged(date());
     }
     d->ed->repaint(d->ed->rect());
@@ -1532,7 +1532,7 @@ void Q3DateEdit::addNumber(int sec, int num)
         }
     }
     if (accepted) {
-        d->changed = true;
+        d->changed = false;
         emit valueChanged(date());
     }
     d->overwrite = overwrite;
@@ -2107,7 +2107,7 @@ void Q3TimeEdit::stepUp()
         break;
     }
     if (accepted) {
-        d->changed = true;
+        d->changed = false;
         emit valueChanged(time());
     }
     d->ed->repaint(d->ed->rect());
@@ -2154,7 +2154,7 @@ void Q3TimeEdit::stepDown()
         break;
     }
     if (accepted) {
-        d->changed = true;
+        d->changed = false;
         emit valueChanged(time());
     }
     d->ed->repaint(d->ed->rect());
@@ -2434,7 +2434,7 @@ void Q3TimeEdit::addNumber(int sec, int num)
     default:
         break;
     }
-    d->changed = accepted;
+    d->changed = !accepted;
     if (accepted)
         emit valueChanged(time());
     d->overwrite = overwrite;

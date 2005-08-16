@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qt4-intro.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qt4-intro.qdoc -->
 <head>
     <title>Qt 4.1: What's New in Qt 4</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -64,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <li>Support for <a href="qnetworkproxy.html">network proxy</a> servers using the SOCKS5 protocol.</li>
 <li>Support for OLE verbs and MIME data handling in <a href="activeqt.html#activeqt">ActiveQt</a>.</li>
 </ul>
-<p>For more information about improvements in the current release, see the <a href="http://www.trolltech.com/developer/changes/changes-4.1.0.html">detailed list of changes</a>.</p>
+<p>For more information about improvements in the current release, see the <a href="http://www.trolltech.com/developer/changes/changes-4.1.1.html">detailed list of changes</a>.</p>
 <a name="significant-improvements"></a>
 <h2>Significant Improvements</h2>
 <p>The following modules have been significantly improved for Qt 4:</p>
@@ -79,7 +79,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="build-system"></a>
 <h2>Build System</h2>
 <p>Unlike previous Qt releases, Qt 4 is a collection of smaller libraries:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Library</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtcore.html">QtCore</a></td><td>Core non-GUI functionality</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qtgui.html">QtGui</a></td><td>Core GUI functionality</td></tr>
@@ -95,7 +95,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qtdesigner.html">QtDesigner</a></td><td>Classes for extending and embedding Qt Designer</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtuitools.html">QtUiTools</a></td><td>Classes for dynamic GUI generation</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qttest.html">QtTest</a></td><td>Tool classes for unit testing</td></tr>
-</table>
+</table></p>
 <p><a href="qtcore.html">QtCore</a> contains tool classes like <a href="qstring.html">QString</a>, <a href="qlist.html">QList</a>, and <a href="qfile.html">QFile</a>, as well as kernel classes like <a href="qobject.html">QObject</a> and <a href="qtimer.html">QTimer</a>. The <a href="qapplication.html">QApplication</a> class has been refactored so that it can be used in non-GUI applications. It is split into <a href="qcoreapplication.html">QCoreApplication</a> (in <a href="qtcore.html">QtCore</a>) and <a href="qapplication.html">QApplication</a> (in <a href="qtgui.html">QtGui</a>).</p>
 <p>This split makes it possible to develop server applications using Qt without linking in any unnecessary GUI-related code and without requiring GUI-related system libraries to be present on the target machine (e.g. Xlib on X11, Carbon on Mac OS X).</p>
 <p>If you use qmake to generate your makefiles, qmake will by default link your application against <a href="qtcore.html">QtCore</a> and <a href="qtgui.html">QtGui</a>. To remove the dependency upon <a href="qtgui.html">QtGui</a>, add the line</p>
@@ -201,8 +201,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

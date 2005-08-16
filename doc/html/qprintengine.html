@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/painting/qprinter.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/painting/qprinter.cpp -->
 <head>
     <title>Qt 4.1: QPrintEngine Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -48,7 +48,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="PrintEnginePropertyKey-enum"></a>enum QPrintEngine::PrintEnginePropertyKey</h3>
 <p>This enum is used to communicate properties between the print engine and <a href="qprinter.html">QPrinter</a>. A property may or may not be supported by a given print engine.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_CollateCopies</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A bool value describing wether the printout should be collated or not.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_ColorMode</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Refers to <a href="qprinter.html#ColorMode-enum">QPrinter::ColorMode</a>, either color or monochrome.</td></tr>
@@ -71,14 +71,14 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPrintEngine::PPK_WindowsPageSize</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">An integer specifying a DM_PAPER entry on Windows.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_SuppressSystemPrintStatus</tt></td><td align="center" valign="top"><tt>20</tt></td><td valign="top">Suppress the built-in dialog for showing printing progress. As of 4.1 this only has effect on Mac OS X where, by default, a status dialog is shown.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_CustomBase</tt></td><td align="center" valign="top"><tt>0xff00</tt></td><td valign="top">Basis for extension.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="dtor.QPrintEngine"></a>QPrintEngine::~QPrintEngine ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the print engine.</p>
 <h3 class="fn"><a name="abort"></a>bool QPrintEngine::abort ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Instructs the print engine to abort the printing process. Returns true if successful; otherwise returns false.</p>
-<h3 class="fn"><a name="metric"></a>int QPrintEngine::metric ( QPaintDevice::PaintDeviceMetric <i>id</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="metric"></a>int QPrintEngine::metric ( <a href="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PaintDeviceMetric</a> <i>id</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the metric for the given <i>id</i>.</p>
 <h3 class="fn"><a name="newPage"></a>bool QPrintEngine::newPage ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Instructs the print engine to start a new page. Returns true if the printer was able to create the new page; otherwise returns false.</p>
@@ -92,8 +92,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qprintengine.html#property">property</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

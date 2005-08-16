@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/opengl/qgl.cpp -->
 <head>
     <title>Qt 4.1: QGLContext Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -93,13 +93,13 @@ body { background: #ffffff; color: black; }</style>
 <p>The texture that is generated is cached, so multiple calls to bindTexture() with the same <a href="qimage.html">QImage</a> will return the same texture id.</p>
 <p>See also <a href="qglcontext.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="bindTexture-2"></a>GLuint QGLContext::bindTexture ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the DirectDrawSurface (DDS) compressed file <i>fileName</i> and generates a 2D GL texture from it.</p>
 <p>Only the DXT1, DXT3 and DXT5 DDS formats are supported.</p>
 <p>Note that this will only work if the implementation supports the <tt>GL_ARB_texture_compression</tt> and <tt>GL_EXT_texture_compression_s3tc</tt> extensions.</p>
 <p>See also <a href="qglcontext.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="bindTexture-3"></a>GLuint QGLContext::bindTexture ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, GLenum <i>target</i> = GL_TEXTURE_2D, GLint <i>format</i> = GL_RGBA8 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Generates and binds a 2D GL texture based on <i>pixmap</i>.</p>
 <h3 class="fn"><a name="chooseContext"></a>bool QGLContext::chooseContext ( const QGLContext * <i>shareContext</i> = 0 )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This semi-internal function is called by <a href="qglcontext.html#create">create</a>(). It creates a system-dependent OpenGL handle that matches the <a href="qglcontext.html#format">format</a>() of <i>shareContext</i> as closely as possible.</p>
@@ -197,8 +197,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qglcontext.html#setWindowCreated">setWindowCreated</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

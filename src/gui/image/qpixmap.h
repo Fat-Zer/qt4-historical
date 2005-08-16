@@ -1,6 +1,6 @@
 /****************************************************************************
  **
- ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+ ** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
  **
  ** This file is part of the QtGui module of the Qt Toolkit.
  **
@@ -146,7 +146,7 @@ public:
     Qt::HANDLE x11PictureHandle() const;
 #endif
 
-#if !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
     Qt::HANDLE handle() const;
 #endif
 
@@ -196,6 +196,7 @@ private:
     friend CGContextRef qt_mac_cg_context(const QPaintDevice *);
     friend CGImageRef qt_mac_create_imagemask(const QPixmap &);
     friend IconRef qt_mac_create_iconref(const QPixmap &);
+    friend QPixmap qt_mac_unmultiplyPixmapAlpha(const QPixmap &);
 #endif
     friend struct QPixmapData;
     friend class QBitmap;
@@ -210,10 +211,10 @@ private:
 #if !defined(QT_NO_DATASTREAM)
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 #endif
+    friend Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap);
 };
 
 Q_DECLARE_SHARED(QPixmap)
-
 
 inline QPixmap QPixmap::copy(int ax, int ay, int awidth, int aheight) const
 {

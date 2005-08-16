@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -158,7 +158,7 @@ static struct {
     { Qt::Key_MediaPrevious,QT_TRANSLATE_NOOP("QShortcut", "Media Previous") },
     { Qt::Key_MediaNext,    QT_TRANSLATE_NOOP("QShortcut", "Media Next") },
     { Qt::Key_MediaRecord,  QT_TRANSLATE_NOOP("QShortcut", "Media Record") },
-    { Qt::Key_HomePage,     QT_TRANSLATE_NOOP("QShortcut", "Home") },
+    { Qt::Key_HomePage,     QT_TRANSLATE_NOOP("QShortcut", "Home Page") },
     { Qt::Key_Favorites,    QT_TRANSLATE_NOOP("QShortcut", "Favorites") },
     { Qt::Key_Search,       QT_TRANSLATE_NOOP("QShortcut", "Search") },
     { Qt::Key_Standby,      QT_TRANSLATE_NOOP("QShortcut", "Standby") },

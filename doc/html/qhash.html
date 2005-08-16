@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/corelib/tools/qhash.cpp -->
 <head>
     <title>Qt 4.1: QHash Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -223,7 +223,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the hash.</p>
 <p>See also <a href="qhash.html#constBegin">constBegin</a>() and <a href="qhash.html#end">end</a>().</p>
 <h3 class="fn"><a name="begin-2"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::begin () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="capacity"></a>int QHash::capacity () const</h3>
 <p>Returns the number of buckets in the <a href="qhash.html">QHash</a>'s internal hash table.</p>
 <p>The sole purpose of this function is to provide a means of fine tuning <a href="qhash.html">QHash</a>'s memory usage. In general, you will rarely ever need to call this function. If you want to know how many items are in the hash, call <a href="qhash.html#size">size</a>().</p>
@@ -249,7 +249,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the number of items associated with key <i>key</i>.</p>
 <p>See also <a href="qhash.html#contains">contains</a>() and <a href="qhash.html#insertMulti">insertMulti</a>().</p>
 <h3 class="fn"><a name="count-2"></a>int QHash::count () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qhash.html#size">size</a>().</p>
 <h3 class="fn"><a name="empty"></a>bool QHash::empty () const</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qhash.html#isEmpty">isEmpty</a>().</p>
@@ -257,7 +257,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the hash.</p>
 <p>See also <a href="qhash.html#begin">begin</a>() and <a href="qhash.html#constEnd">constEnd</a>().</p>
 <h3 class="fn"><a name="end-2"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::end () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="erase"></a><a href="qhash-iterator.html">iterator</a> QHash::erase ( <a href="qhash-iterator.html">iterator</a> <i>pos</i> )</h3>
 <p>Removes the (key, value) pair associated with the iterator <i>pos</i> from the hash, and returns an iterator to the next item in the hash.</p>
 <p>See also <a href="qhash.html#remove">remove</a>().</p>
@@ -274,7 +274,7 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p>See also <a href="qhash.html#value">value</a>() and <a href="qhash.html#values">values</a>().</p>
 <h3 class="fn"><a name="find-2"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::find ( const Key &amp; <i>key</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="insert"></a><a href="qhash-iterator.html">iterator</a> QHash::insert ( const Key &amp; <i>key</i>, const T &amp; <i>value</i> )</h3>
 <p>Inserts a new item with the key <i>key</i> and a value of <i>value</i>.</p>
 <p>If there is already an item with the key <i>key</i>, that item's value is replaced with <i>value</i>.</p>
@@ -297,7 +297,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The order is guaranteed to be the same as that used by <a href="qhash.html#values">values</a>().</p>
 <p>See also <a href="qhash.html#values">values</a>() and <a href="qhash.html#key">key</a>().</p>
 <h3 class="fn"><a name="keys-2"></a><a href="qlist.html">QList</a>&lt;Key&gt; QHash::keys ( const T &amp; <i>value</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list containing all the keys associated with value <i>value</i>, in an arbitrary order.</p>
 <p>This function can be slow (<a href="containers.html#linear-time">linear time</a>), because <a href="qhash.html">QHash</a>'s internal data structure is optimized for fast lookup by key, not by value.</p>
 <h3 class="fn"><a name="remove"></a>int QHash::remove ( const Key &amp; <i>key</i> )</h3>
@@ -333,14 +333,14 @@ body { background: #ffffff; color: black; }</style>
 <p>If the hash contains no item with key <i>key</i>, the function returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If there are multiple items for <i>key</i> in the hash, the value of the most recently inserted one is returned.</p>
 <p>See also <a href="qhash.html#key">key</a>(), <a href="qhash.html#values">values</a>(), <a href="qhash.html#contains">contains</a>(), and <a href="qhash.html#operator-5b-5d">operator[]</a>().</p>
 <h3 class="fn"><a name="value-2"></a>const T QHash::value ( const Key &amp; <i>key</i>, const T &amp; <i>defaultValue</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>If the hash contains no item with the given <i>key</i>, the function returns <i>defaultValue</i>.</p>
 <h3 class="fn"><a name="values"></a><a href="qlist.html">QList</a>&lt;T&gt; QHash::values () const</h3>
 <p>Returns a list containing all the values in the hash, in an arbitrary order. If a key is associated multiple values, all of its values will be in the list, and not just the most recently inserted one.</p>
 <p>The order is guaranteed to be the same as that used by <a href="qhash.html#keys">keys</a>().</p>
 <p>See also <a href="qhash.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="values-2"></a><a href="qlist.html">QList</a>&lt;T&gt; QHash::values ( const Key &amp; <i>key</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list of all the values associated with key <i>key</i>, from the most recently inserted to the least recently inserted.</p>
 <p>See also <a href="qhash.html#count">count</a>() and <a href="qhash.html#insertMulti">insertMulti</a>().</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QHash::operator!= ( const QHash&lt;Key, T&gt; &amp; <i>other</i> ) const</h3>
@@ -360,55 +360,69 @@ body { background: #ffffff; color: black; }</style>
 <p>If the hash contains no item with key <i>key</i>, the function inserts a <a href="containers.html#default-constructed-values">default-constructed value</a> into the hash with key <i>key</i>, and returns a reference to it. If the hash contains multiple items with key <i>key</i>, this function returns a reference to the most recently inserted value.</p>
 <p>See also <a href="qhash.html#insert">insert</a>() and <a href="qhash.html#value">value</a>().</p>
 <h3 class="fn"><a name="operator-5b-5d-2"></a>const T QHash::operator[] ( const Key &amp; <i>key</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qhash.html#value">value</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="qHash-2x"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-5"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uchar-typedef">uchar</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-6"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( signed char <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-7"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#ushort-typedef">ushort</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-8"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( short <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-9"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uint-typedef">uint</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-10"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( int <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-11"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#ulong-typedef">ulong</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-12"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( long <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-13"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#quint64-typedef">quint64</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-14"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-15"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qchar.html">QChar</a> <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-16"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-17"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-18"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const T * <i>key</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="operator-lt-lt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the hash <i>hash</i> to stream <i>out</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a hash from stream <i>in</i> into <i>hash</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

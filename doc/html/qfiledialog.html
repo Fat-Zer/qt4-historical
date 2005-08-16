@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/dialogs/qfiledialog.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/dialogs/qfiledialog.cpp -->
 <head>
     <title>Qt 4.1: QFileDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -37,7 +37,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qfiledialog.html#acceptMode-prop">acceptMode</a></b> : AcceptMode</li>
 <li><div class="fn"/><b><a href="qfiledialog.html#confirmOverwrite-prop">confirmOverwrite</a></b> : bool</li>
@@ -49,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qfiledialog.html#viewMode-prop">viewMode</a></b> : ViewMode</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qdialog.html#properties">QDialog</a></li>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
@@ -98,7 +98,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="signals"></a>
 <h3>Signals</h3>
@@ -130,6 +130,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -164,50 +165,50 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="AcceptMode-enum"></a>enum QFileDialog::AcceptMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QFileDialog::AcceptOpen</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QFileDialog::AcceptSave</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="DialogLabel-enum"></a>enum QFileDialog::DialogLabel</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QFileDialog::LookIn</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QFileDialog::FileName</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
 <tr><td valign="top"><tt>QFileDialog::FileType</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
 <tr><td valign="top"><tt>QFileDialog::Accept</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
 <tr><td valign="top"><tt>QFileDialog::Reject</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="FileMode-enum"></a>enum QFileDialog::FileMode</h3>
 <p>This enum is used to indicate what the user may select in the file dialog; i.e. what the dialog will return if the user clicks OK.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFileDialog::AnyFile</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The name of a file, whether it exists or not.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::ExistingFile</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The name of a single existing file.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::Directory</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The name of a directory. Both files and directories are displayed.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::DirectoryOnly</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The name of a directory. The file dialog will only display directories.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::ExistingFiles</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The names of zero or more existing files.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qfiledialog.html#fileMode-prop">setFileMode</a>().</p>
 <h3 class="fn"><a name="Mode-typedef"></a>typedef QFileDialog::Mode</h3>
 <p>Use <a href="qfiledialog.html#FileMode-enum">QFileDialog::FileMode</a> instead.</p>
 <h3 class="flags"><a name="Option-enum"></a>enum QFileDialog::Option<br />flags QFileDialog::Options</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFileDialog::ShowDirsOnly</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Only show directories in the file dialog. By default both files and directories are shown.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::DontResolveSymlinks</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Don't resolve symlinks in the file dialog. By default symlinks are resolved.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::DontConfirmOverwrite</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Don't ask for confirmation if an existing file is selected. By default confirmation is requested.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::DontUseSheet</tt></td><td align="center" valign="top"><tt>0x08</tt></td><td valign="top">Don't make the native file dialog a sheet. By default on Mac OS X, the native file dialog is made a sheet if it has a parent that can take a sheet.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::DontUseNativeDialog</tt></td><td align="center" valign="top"><tt>0x10</tt></td><td valign="top">Don't use the native file dialog. By default on Mac OS X and Windows, the native file dialog is used.</td></tr>
-</table>
+</table></p>
 <p>The Options type is a typedef for <a href="qflags.html">QFlags</a>&lt;Option&gt;. It stores an OR combination of Option values.</p>
 <h3 class="fn"><a name="ViewMode-enum"></a>enum QFileDialog::ViewMode</h3>
 <p>This enum describes the view mode of the file dialog; i.e. what information about each file will be displayed.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFileDialog::Detail</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Displays an icon, a name, and details for each item in the directory.</td></tr>
 <tr><td valign="top"><tt>QFileDialog::List</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Displays only an icon and a name for each item in the directory.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qfiledialog.html#viewMode-prop">setViewMode</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -377,7 +378,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the file dialog's current <i>directory</i>.</p>
 <p>See also <a href="qfiledialog.html#directory">directory</a>().</p>
 <h3 class="fn"><a name="setDirectory-2"></a>void QFileDialog::setDirectory ( const <a href="qdir.html">QDir</a> &amp; <i>directory</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="setFilter"></a>void QFileDialog::setFilter ( const <a href="qstring.html">QString</a> &amp; <i>filter</i> )</h3>
 <p>Sets the filter used in the file dialog to the given <i>filter</i>.</p>
 <p>If <i>filter</i> contains a pair of parentheses containing one or more of <b>anything*something</b>, separated by spaces or by semicolons then only the text contained in the parentheses is used as the filter. This means that these calls are all equivalent:</p>
@@ -410,8 +411,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qfiledialog.html#labelText">labelText</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

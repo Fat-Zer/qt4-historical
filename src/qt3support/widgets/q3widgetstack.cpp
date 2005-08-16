@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -138,6 +138,8 @@ Q3WidgetStack::~Q3WidgetStack()
     If you pass an id that is already used, then a unique negative
     integer will be generated to prevent two widgets having the same
     id.
+
+    If \a w already exists in the stack the widget will be removed first.
 
     If \a w is not a child of this Q3WidgetStack moves it using
     reparent().

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -181,14 +181,15 @@ void QPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     QItemDelegate::paint(painter, option, index);
 
-    painter->setPen(savedPen);
-
+    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &option));
+    painter->setPen(QPen(color));
     if (index.column() == 1 || !property->isSeparator()) {
-        painter->drawLine(option.rect.right(), option.rect.y(),
-                option.rect.right(), option.rect.bottom());
+        int right = (option.direction == Qt::LeftToRight) ? option.rect.right() : option.rect.left();
+        painter->drawLine(right, option.rect.y(), right, option.rect.bottom());
     }
     painter->drawLine(option.rect.x(), option.rect.bottom(),
             option.rect.right(), option.rect.bottom());
+    painter->setPen(savedPen);
 }
 
 QSize QPropertyEditorDelegate::sizeHint(const QStyleOptionViewItem &opt, const QModelIndex &index) const

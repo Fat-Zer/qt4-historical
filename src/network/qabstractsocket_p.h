@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -90,6 +90,9 @@ public:
     void setupSocketNotifiers();
     bool readFromSocket();
 
+#ifdef Q_OS_LINUX
+    qint64 addToBytesAvailable;
+#endif
     qint64 readBufferMaxSize;
     QRingBuffer readBuffer;
     QRingBuffer writeBuffer;

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/network/q3http.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/network/q3http.cpp -->
 <head>
     <title>Qt 4.1: Q3Http Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -166,7 +166,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Error-enum"></a>enum Q3Http::Error</h3>
 <p>This enum identifies the error that occurred.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Http::NoError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No error occurred.</td></tr>
 <tr><td valign="top"><tt>Q3Http::HostNotFound</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The host name lookup failed.</td></tr>
@@ -176,11 +176,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3Http::WrongContentLength</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The client could not read the content correctly because an error with respect to the content length occurred.</td></tr>
 <tr><td valign="top"><tt>Q3Http::Aborted</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">The request was aborted with <a href="q3http.html#abort">abort</a>().</td></tr>
 <tr><td valign="top"><tt>Q3Http::UnknownError</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">An error other than those specified above occurred.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3http.html#error">error</a>().</p>
 <h3 class="fn"><a name="State-enum"></a>enum Q3Http::State</h3>
 <p>This enum is used to specify the state the client is in:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Http::Unconnected</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is no connection to the host.</td></tr>
 <tr><td valign="top"><tt>Q3Http::HostLookup</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A host name lookup is in progress.</td></tr>
@@ -189,7 +189,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3Http::Reading</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The client's request has been sent and the client is reading the server's response.</td></tr>
 <tr><td valign="top"><tt>Q3Http::Connected</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The connection to the host is open, but the client is neither sending a request, nor waiting for a response.</td></tr>
 <tr><td valign="top"><tt>Q3Http::Closing</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The connection is closing down, but is not yet closed. (The state will be <tt>Unconnected</tt> when the connection is closed.)</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3http.html#stateChanged">stateChanged</a>() and <a href="q3http.html#state">state</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -280,7 +280,7 @@ body { background: #ffffff; color: black; }</style>
 <p>When the request is started the <a href="q3http.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="q3http.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="q3http.html#setHost">setHost</a>(), <a href="q3http.html#get">get</a>(), <a href="q3http.html#head">head</a>(), <a href="q3http.html#request">request</a>(), <a href="q3http.html#requestStarted">requestStarted</a>(), <a href="q3http.html#requestFinished">requestFinished</a>(), and <a href="q3http.html#done">done</a>().</p>
 <h3 class="fn"><a name="post-2"></a>int Q3Http::post ( const <a href="qstring.html">QString</a> &amp; <i>path</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>data</i> is used as the content data of the HTTP request.</p>
 <h3 class="fn"><a name="readAll"></a><a href="qbytearray.html">QByteArray</a> Q3Http::readAll ()</h3>
 <p>Reads all the bytes from the response content and returns them.</p>
@@ -304,7 +304,7 @@ body { background: #ffffff; color: black; }</style>
 <p>When the request is started the <a href="q3http.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="q3http.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="q3http.html#setHost">setHost</a>(), <a href="q3http.html#get">get</a>(), <a href="q3http.html#post">post</a>(), <a href="q3http.html#head">head</a>(), <a href="q3http.html#requestStarted">requestStarted</a>(), <a href="q3http.html#requestFinished">requestFinished</a>(), and <a href="q3http.html#done">done</a>().</p>
 <h3 class="fn"><a name="request-2"></a>int Q3Http::request ( const <a href="q3httprequestheader.html">Q3HttpRequestHeader</a> &amp; <i>header</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, <a href="qiodevice.html">QIODevice</a> * <i>to</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>data</i> is used as the content data of the HTTP request.</p>
 <h3 class="fn"><a name="requestFinished"></a>void Q3Http::requestFinished ( int <i>id</i>, bool <i>error</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when processing the request identified by <i>id</i> has finished. <i>error</i> is true if an error occurred during the processing; otherwise <i>error</i> is false.</p>
@@ -329,8 +329,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3http.html#get">get</a>(), <a href="q3http.html#post">post</a>(), <a href="q3http.html#head">head</a>(), <a href="q3http.html#request">request</a>(), <a href="q3http.html#closeConnection">closeConnection</a>(), <a href="q3http.html#state">state</a>(), and <a href="q3http.html#State-enum">State</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

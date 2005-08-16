@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -37,6 +37,9 @@
 //
 
 #include "private/qabstractitemmodel_p.h"
+
+#ifndef QT_NO_PROXYMODEL
+
 #include "QtCore/qabstractitemmodel.h"
 
 class QEmptySourceModel : public QAbstractItemModel
@@ -60,4 +63,5 @@ public:
     QEmptySourceModel empty;
 };
 
+#endif // QT_NO_PROXYMODEL
 #endif // QABSTRACTPROXYMODEL_P_H

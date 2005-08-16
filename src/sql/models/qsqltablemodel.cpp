@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -1091,9 +1091,13 @@ bool QSqlTableModel::insertRecord(int row, const QSqlRecord &record)
 
 /*! \reimp
 */
-int QSqlTableModel::rowCount(const QModelIndex &) const
+int QSqlTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QSqlTableModel);
+
+    if (parent.isValid())
+        return 0;
+
     int rc = QSqlQueryModel::rowCount();
     if (d->strategy == OnManualSubmit) {
         for (QSqlTableModelPrivate::CacheMap::ConstIterator it = d->cache.constBegin();

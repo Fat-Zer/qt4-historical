@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/itemviews/qheaderview.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/itemviews/qheaderview.cpp -->
 <head>
     <title>Qt 4.1: QHeaderView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -30,7 +30,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qheaderview.html#defaultAlignment-prop">defaultAlignment</a></b> : Qt::Alignment</li>
 <li><div class="fn"/><b><a href="qheaderview.html#defaultSectionSize-prop">defaultSectionSize</a></b> : int</li>
@@ -40,7 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qheaderview.html#stretchLastSection-prop">stretchLastSection</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>10 properties inherited from <a href="qabstractitemview.html#properties">QAbstractItemView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="qabstractscrollarea.html#properties">QAbstractScrollArea</a></li>
@@ -106,7 +106,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -149,6 +149,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>17 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-slots"></a>
 <h3>Protected Slots</h3>
@@ -182,12 +183,12 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ResizeMode-enum"></a>enum QHeaderView::ResizeMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QHeaderView::Interactive</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Don't automatically change the size (let the user do it manually).</td></tr>
 <tr><td valign="top"><tt>QHeaderView::Stretch</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Fill all the available visible space.</td></tr>
 <tr><td valign="top"><tt>QHeaderView::Custom</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Don't automatically change the size here, leave it to some other object.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="defaultAlignment-prop"></a>defaultAlignment : <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></h3>
@@ -219,13 +220,15 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>bool isSortIndicatorShown () const</b></li>
 <li><div class="fn"/><b>void setSortIndicatorShown ( bool <i>show</i> )</b></li>
 </ul>
+<p>See also <a href="qheaderview.html#setClickable">setClickable</a>().</p>
 <h3 class="fn"><a name="stretchLastSection-prop"></a>stretchLastSection : bool</h3>
-<p>This property holds whether the last visible section in the header takes up all the available space.</p>
+<p>This property holds whether the last visible section in the header takes up all the available space. The default value is false.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool stretchLastSection () const</b></li>
 <li><div class="fn"/><b>void setStretchLastSection ( bool <i>stretch</i> )</b></li>
 </ul>
+<p>See also <a href="qheaderview.html#setResizeMode">setResizeMode</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QHeaderView"></a>QHeaderView::QHeaderView ( <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
@@ -266,10 +269,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the section that covers the given <i>position</i> in the viewport.</p>
 <p>See also <a href="qheaderview.html#visualIndexAt">visualIndexAt</a>().</p>
 <h3 class="fn"><a name="logicalIndexAt-2"></a>int QHeaderView::logicalIndexAt ( int <i>x</i>, int <i>y</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the logical index of the section at the given coordinate. If the header is horizontal <i>x</i> will be used, otherwise <i>y</i> will be used to find the logical index.</p>
 <h3 class="fn"><a name="logicalIndexAt-3"></a>int QHeaderView::logicalIndexAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the logical index of the section at the position given in <i>pos</i>. If the header is horizontal the x-coordinate will be used to find the logical index; otherwise the y-coordinate will be used.</p>
 <h3 class="fn"><a name="moveSection"></a>void QHeaderView::moveSection ( int <i>from</i>, int <i>to</i> )</h3>
 <p>Moves the section at visual index <i>from</i> to occupy visual index <i>to</i>.</p>
@@ -334,7 +337,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qheaderview.html#moveSection">moveSection</a>().</p>
 <h3 class="fn"><a name="setClickable"></a>void QHeaderView::setClickable ( bool <i>clickable</i> )</h3>
 <p>If <i>clickable</i> is true, the header will respond to single clicks.</p>
-<p>See also <a href="qheaderview.html#isClickable">isClickable</a>().</p>
+<p>See also <a href="qheaderview.html#isClickable">isClickable</a>() and showSortIndicator().</p>
 <h3 class="fn"><a name="setMovable"></a>void QHeaderView::setMovable ( bool <i>movable</i> )</h3>
 <p>If <i>movable</i> is true, the header may be moved by the user; otherwise it is fixed in place.</p>
 <p>See also <a href="qheaderview.html#isMovable">isMovable</a>().</p>
@@ -345,7 +348,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the constraints on how the header can be resized to those described by the given <i>mode</i>.</p>
 <p>See also <a href="qheaderview.html#resizeMode">resizeMode</a>().</p>
 <h3 class="fn"><a name="setResizeMode-2"></a>void QHeaderView::setResizeMode ( int <i>logicalIndex</i>, <a href="qheaderview.html#ResizeMode-enum">ResizeMode</a> <i>mode</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the constraints on how the section specified by <i>logicalIndex</i> in the header can be resized to those described by the given <i>mode</i>.</p>
 <h3 class="fn"><a name="setSectionHidden"></a>void QHeaderView::setSectionHidden ( int <i>logicalIndex</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the section specified by <i>logicalIndex</i> is hidden, otherwise the section is shown.</p>
@@ -382,8 +385,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qheaderview.html#logicalIndexAt">logicalIndexAt</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1192,8 +1192,7 @@ void QGridLayout::addWidget(QWidget *widget, int row, int column, Qt::Alignment 
     }
     addChildWidget(widget);
     QWidgetItem *b = new QWidgetItem(widget);
-    b->setAlignment(alignment);
-    addItem(b, row, column);
+    addItem(b, row, column, 1, 1, alignment);
 }
 
 /*!

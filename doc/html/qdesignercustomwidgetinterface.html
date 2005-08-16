@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qtdesigner.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qtdesigner.qdoc -->
 <head>
     <title>Qt 4.1: QDesignerCustomWidgetInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -70,8 +70,8 @@ body { background: #ffffff; color: black; }</style>
         bool initialized;
     };</pre>
 <p>Note that the only part of the class definition that is specific to this particular custom widget is the class name. In addition, since we are implementing an interface, we must ensure that it's made known to the meta object system using the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use the <a href="qobject.html#qobject_cast">qobject_cast</a>() function to query for supported interfaces using nothing but a <a href="qobject.html">QObject</a> pointer.</p>
-<p>In the implementation of the class you must remember to export your custom widget plugin to <i>Qt Designer</i> using the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro:</p>
-<pre>&nbsp;    Q_EXPORT_PLUGIN(MyCustomWidget)</pre>
+<p>In the implementation of the class you must remember to export your custom widget plugin to <i>Qt Designer</i> using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro:</p>
+<pre>&nbsp;       Q_EXPORT_PLUGIN2(MyCustomWidget)</pre>
 <p>This macro ensures that <i>Qt Designer</i> can access and construct the custom widget. Without this macro, there is no way for Qt Designer to use it.</p>
 <p>When implementing a custom widget plugin, you build it as a separate library. If you want to include several custom widget plugins in the same library, you must in addition subclass <a href="qdesignercustomwidgetcollectioninterface.html">QDesignerCustomWidgetCollectionInterface</a>.</p>
 <p><b>Warning:</b> If your custom widget plugin contains <a href="qvariant.html">QVariant</a> properties, be aware that only the following <a href="qvariant.html#Type-enum">types</a> are supported:</p>
@@ -128,8 +128,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a description of the widget that can be used by <i>Qt Designer</i> in &quot;What's This?&quot; help for the widget.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

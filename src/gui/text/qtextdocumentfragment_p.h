@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -128,13 +128,16 @@ private:
 #ifdef Q_CC_SUN
     friend struct QTextHtmlImporter::Table;
 #endif
-    struct TableIterator
+    struct TableCellIterator
     {
-        inline TableIterator(QTextTable *t = 0) : table(t), row(0), column(0) {}
+        inline TableCellIterator(QTextTable *t = 0) : table(t), row(0), column(0) {}
 
-        inline TableIterator &operator++() {
+        inline TableCellIterator &operator++() {
             do {
-                column += table->cellAt(row, column).columnSpan();
+                const QTextTableCell cell = table->cellAt(row, column);
+                if (!cell.isValid())
+                    break;
+                column += cell.columnSpan();
                 if (column >= table->columns()) {
                     column = 0;
                     ++row;
@@ -155,14 +158,13 @@ private:
 
     struct Table
     {
-        Table() : rows(0), columns(0), lastRow(-1), lastColumn(-1), currentRow(0) {}
-        QPointer<QTextTable> table;
+        Table() : isTextFrame(false), rows(0), columns(0), currentRow(0) {}
+        QPointer<QTextFrame> frame;
+        bool isTextFrame;
         int rows;
         int columns;
-        QPointer<QTextFrame> lastFrame;
-        int lastRow, lastColumn;
-        int currentRow;
-        TableIterator currentPosition;
+        int currentRow; // ... for buggy html (see html_skipCell testcase)
+        TableCellIterator currentCell;
     };
     QVector<Table> tables;
 

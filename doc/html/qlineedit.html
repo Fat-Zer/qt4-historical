@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qlineedit.cpp -->
 <head>
     <title>Qt 4.1: QLineEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -31,7 +31,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qlineedit.html#acceptableInput-prop">acceptableInput</a></b> : const bool</li>
 <li><div class="fn"/><b><a href="qlineedit.html#alignment-prop">alignment</a></b> : Qt::Alignment</li>
@@ -52,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qlineedit.html#undoAvailable-prop">undoAvailable</a></b> : const bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -110,7 +110,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -151,6 +151,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -171,7 +172,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Note that if there is a validator set on the line edit, the <a href="qlineedit.html#returnPressed">returnPressed</a>()/<a href="qlineedit.html#editingFinished">editingFinished</a>() signals will only be emitted if the validator returns <a href="qvalidator.html#State-enum">QValidator::Acceptable</a>.</p>
 <p>By default, QLineEdits have a frame as specified by the Windows and Motif style guides; you can turn it off by calling setFrame(false).</p>
 <p>The default key bindings are described below. The line edit also provides a context menu (usually invoked by a right mouse click) that presents some of these editing options. <a name="desc"></a></p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypress</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Left Arrow</td><td>Moves the cursor one character to the left.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Shift+Left Arrow</td><td>Moves and selects text one character to the left.</td></tr>
@@ -198,7 +199,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Shift+Delete</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Z</td><td>Undoes the last operation.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+Y</td><td>Redoes the last undone operation.</td></tr>
-</table>
+</table></p>
 <p>Any other key sequence that represents a valid character, will cause the character to be inserted into the line edit.</p>
 <p><img src="images/macintosh-lineedit.png" alt="Screenshot in Macintosh style" /> <img src="images/windows-lineedit.png" alt="Screenshot in Windows style" /></p>
 <p>See also <a href="qtextedit.html">QTextEdit</a>, <a href="qlabel.html">QLabel</a>, <a href="qcombobox.html">QComboBox</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Field, Entry</a>.</p>
@@ -206,12 +207,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="EchoMode-enum"></a>enum QLineEdit::EchoMode</h3>
 <p>This enum type describes how a line edit should display its contents.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QLineEdit::Normal</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Display characters as they are entered. This is the default.</td></tr>
 <tr><td valign="top"><tt>QLineEdit::NoEcho</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Do not display anything. This may be appropriate for passwords where even the length of the password should be kept secret.</td></tr>
 <tr><td valign="top"><tt>QLineEdit::Password</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Display asterisks instead of the characters actually entered.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qlineedit.html#echoMode-prop">setEchoMode</a>() and <a href="qlineedit.html#echoMode-prop">echoMode</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -287,7 +288,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the <a href="qlineedit.html">QLineEdit</a>'s validation mask. Validators can be used instead of, or in conjunction with masks; see <a href="qlineedit.html#setValidator">setValidator</a>().</p>
 <p>Unset the mask and return to normal <a href="qlineedit.html">QLineEdit</a> operation by passing an empty string (&quot;&quot;) or just calling setInputMask() with no arguments.</p>
 <p>The mask format understands these mask characters:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Character</th><th>Meaning</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>A</tt></td><td>ASCII alphabetic character required. A-Z, a-z.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>a</tt></td><td>ASCII alphabetic character permitted but not required.</td></tr>
@@ -308,16 +309,16 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;</tt></td><td>All following alphabetic characters are lowercased.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>!</tt></td><td>Switch off case conversion.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>\</tt></td><td>Use <tt>\</tt> to escape the special characters listed above to use them as separators.</td></tr>
-</table>
+</table></p>
 <p>The mask consists of a string of mask characters and separators, optionally followed by a semicolon and the character used for blanks: the blank characters are always removed from the text after editing. The default blank character is space.</p>
 <p>Examples:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Mask</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>000.000.000.000;_</tt></td><td>IP address; blanks are <tt>_</tt>.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>HH:HH:HH:HH:HH:HH;_</tt></td><td>MAC address</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>0000-00-00</tt></td><td>ISO Date; blanks are <tt>space</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&gt;AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#</tt></td><td>License number; blanks are <tt>-</tt> and all (alphabetic) characters are converted to uppercase.</td></tr>
-</table>
+</table></p>
 <p>To get range control (e.g. for an IP address) use masks together with <a href="qlineedit.html#setValidator">validators</a>.</p>
 <p>Access functions:</p>
 <ul>
@@ -513,8 +514,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlineedit.html#setValidator">setValidator</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

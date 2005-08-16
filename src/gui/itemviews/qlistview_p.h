@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -82,6 +82,7 @@ public:
     QListViewPrivate();
     ~QListViewPrivate() {}
 
+    void clear();
     void prepareItemsLayout();
 
     QPoint initStaticLayout(const QRect &bounds, int spacing, int first);

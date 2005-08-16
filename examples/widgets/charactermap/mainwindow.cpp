@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -47,11 +47,11 @@ MainWindow::MainWindow()
 
     clipboard = QApplication::clipboard();
 
-    connect(fontCombo, SIGNAL(activated(const QString &)),
+    connect(fontCombo, SIGNAL(currentIndexChanged(const QString &)),
             this, SLOT(findStyles()));
-    connect(fontCombo, SIGNAL(activated(const QString &)),
+    connect(fontCombo, SIGNAL(currentIndexChanged(const QString &)),
             characterWidget, SLOT(updateFont(const QString &)));
-    connect(styleCombo, SIGNAL(activated(const QString &)),
+    connect(styleCombo, SIGNAL(currentIndexChanged(const QString &)),
             characterWidget, SLOT(updateStyle(const QString &)));
     connect(characterWidget, SIGNAL(characterSelected(const QString &)),
             this, SLOT(insertCharacter(const QString &)));
@@ -100,8 +100,12 @@ void MainWindow::findStyles()
     foreach (style, fontDatabase.styles(fontCombo->currentText()))
         styleCombo->addItem(style);
 
-    if (styleCombo->findText(currentItem) == -1)
+    int styleIndex = styleCombo->findText(currentItem);
+
+    if (styleIndex == -1)
         styleCombo->setCurrentIndex(0);
+    else
+        styleCombo->setCurrentIndex(styleIndex);
 }
 
 void MainWindow::insertCharacter(const QString &character)

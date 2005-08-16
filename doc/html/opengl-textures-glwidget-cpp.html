@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">glwidget.cpp Example File<br /><sup><sup>opengl/textures/glwidget.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -159,12 +159,15 @@ body { background: #ffffff; color: black; }</style>
             { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
         };
 
+        GLuint textures[6];
+        for (int j=0; j &lt; 6; ++j)
+            textures[j] = bindTexture(QPixmap(QString(&quot;:/images/side%1.png&quot;).arg(j + 1)),
+                                      GL_TEXTURE_2D);
+
         GLuint list = glGenLists(1);
         glNewList(list, GL_COMPILE);
-
         for (int i = 0; i &lt; 6; ++i) {
-            bindTexture(QPixmap(QString(&quot;:/images/side%1.png&quot;).arg(i + 1)));
-
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
             glBegin(GL_QUADS);
             for (int j = 0; j &lt; 4; ++j) {
                 glTexCoord2d(j == 0 || j == 3, j == 0 || j == 1);
@@ -179,8 +182,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

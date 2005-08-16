@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/text/q3textbrowser.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/text/q3textbrowser.cpp -->
 <head>
     <title>Qt 4.1: Q3TextBrowser Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -50,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -95,6 +95,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -150,12 +151,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Changes the document displayed to be the first document the browser displayed.</p>
 <h3 class="fn"><a name="keyPressEvent"></a>void Q3TextBrowser::keyPressEvent ( <a href="qkeyevent.html">QKeyEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>The event <i>e</i> is used to provide the following keyboard shortcuts:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypress</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Alt+Left Arrow</td><td><a href="q3textbrowser.html#backward">backward</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Alt+Right Arrow</td><td><a href="q3textbrowser.html#forward">forward</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Alt+Up Arrow</td><td><a href="q3textbrowser.html#home">home</a>()</td></tr>
-</table>
+</table></p>
 <p>Reimplemented from <a href="qwidget.html#keyPressEvent">QWidget</a>.</p>
 <h3 class="fn"><a name="linkClicked"></a>void Q3TextBrowser::linkClicked ( const <a href="qstring.html">QString</a> &amp; <i>link</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the user clicks a link. The <i>link</i> is the value of the <tt>href</tt> i.e. the name of the target document.</p>
@@ -164,15 +165,15 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="reload"></a>void Q3TextBrowser::reload ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Reloads the current set source.</p>
 <h3 class="fn"><a name="setText-2"></a>void Q3TextBrowser::setText ( const <a href="qstring.html">QString</a> &amp; <i>txt</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the text to <i>txt</i>.</p>
 <h3 class="fn"><a name="sourceChanged"></a>void Q3TextBrowser::sourceChanged ( const <a href="qstring.html">QString</a> &amp; <i>src</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the mime source has changed, <i>src</i> being the new source.</p>
 <p>Source changes happen both programmatically when calling <a href="q3textbrowser.html#source-prop">setSource</a>(), <a href="q3textbrowser.html#forward">forward</a>(), backword() or <a href="q3textbrowser.html#home">home</a>() or when the user clicks on links or presses the equivalent key sequences.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

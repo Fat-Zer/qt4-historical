@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/q3ptrlist.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/q3ptrlist.qdoc -->
 <head>
     <title>Qt 4.1: Q3PtrList Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -169,7 +169,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is very efficient. It starts scanning from the first item, last item, or current item, whichever is closest to <i>index</i>.</p>
 <p>See also <a href="q3ptrlist.html#current">current</a>().</p>
 <h3 class="fn"><a name="at-2"></a>int Q3PtrList::at () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the index of the current list item. The returned value is -1 if the current item is 0.</p>
 <p>See also <a href="q3ptrlist.html#current">current</a>().</p>
 <h3 class="fn"><a name="clear"></a>void Q3PtrList::clear ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -291,7 +291,7 @@ body { background: #ffffff; color: black; }</style>
 <p>All list iterators that refer to the removed item will be set to point to the new current item.</p>
 <p>See also <a href="q3ptrlist.html#take">take</a>(), <a href="q3ptrlist.html#clear">clear</a>(), <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(), <a href="q3ptrlist.html#current">current</a>(), and <a href="q3ptrlist.html#removeRef">removeRef</a>().</p>
 <h3 class="fn"><a name="remove-2"></a>bool Q3PtrList::remove ()</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes the current list item.</p>
 <p>Returns TRUE if successful, i.e. if the current item isn't 0; otherwise returns FALSE.</p>
 <p>The removed item is deleted if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled.</p>
@@ -299,7 +299,7 @@ body { background: #ffffff; color: black; }</style>
 <p>All list iterators that refer to the removed item will be set to point to the new current item.</p>
 <p>See also <a href="q3ptrlist.html#take">take</a>(), <a href="q3ptrlist.html#clear">clear</a>(), <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(), <a href="q3ptrlist.html#current">current</a>(), and <a href="q3ptrlist.html#removeRef">removeRef</a>().</p>
 <h3 class="fn"><a name="remove-3"></a>bool Q3PtrList::remove ( const type * <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes the first occurrence of <i>item</i> from the list.</p>
 <p>Returns TRUE if successful, i.e. if <i>item</i> is in the list; otherwise returns FALSE.</p>
 <p>The removed item is deleted if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled.</p>
@@ -354,7 +354,7 @@ body { background: #ffffff; color: black; }</style>
 <p>All list iterators that refer to the taken item will be set to point to the new current item.</p>
 <p>See also <a href="q3ptrlist.html#remove">remove</a>(), <a href="q3ptrlist.html#clear">clear</a>(), and <a href="q3ptrlist.html#current">current</a>().</p>
 <h3 class="fn"><a name="take-2"></a>type * Q3PtrList::take ()</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Takes the current item out of the list without deleting it (even if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled).</p>
 <p>Returns a pointer to the item taken out of the list, or 0 if the current item is 0.</p>
 <p>The item after the removed item becomes the new current list item if the removed item is not the last item in the list. If the last item is removed, the new last item becomes the current item. The current item is set to 0 if the list becomes empty.</p>
@@ -383,8 +383,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Compares this list with <i>list</i>. Returns TRUE if the lists contain the same data; otherwise returns FALSE.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

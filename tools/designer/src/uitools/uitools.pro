@@ -4,7 +4,7 @@ QT += xml
 CONFIG += qt staticlib
 DESTDIR = ../../../../lib
 DLLDESTDIR = ../../../../bin
-
+CONFIG += debug_and_release
 CONFIG(debug, debug|release) {
     unix:TARGET = $$member(TARGET, 0)_debug
     else:TARGET = $$member(TARGET, 0)d
@@ -30,3 +30,6 @@ include($$QT_SOURCE_TREE/include/QtUiTools/headers.pri)
 quitools_headers.files = $$SYNCQT.HEADER_FILES $$SYNCQT.HEADER_CLASSES
 quitools_headers.path = $$[QT_INSTALL_HEADERS]/QtUiTools
 INSTALLS        += quitools_headers
+
+target.path=$$[QT_INSTALL_LIBS]
+INSTALLS        += target

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -103,7 +103,7 @@
         Q_DECLARE_INTERFACE(Foo::MyInterface, "org.examples.MyInterface")
     \endcode
 
-    \sa Q_INTERFACES(), Q_EXPORT_PLUGIN(), {How to Create Qt Plugins}
+    \sa Q_INTERFACES(), Q_EXPORT_PLUGIN2(), {How to Create Qt Plugins}
 */
 
 /*!
@@ -111,7 +111,7 @@
     \relates QPluginLoader
     \obsolete
 
-    Use Q_EXPORT_PLUGIN2 instead. This macro is equivalent to
+    Use Q_EXPORT_PLUGIN2() instead. This macro is equivalent to
     Q_EXPORT_PLUGIN2(\a ClassName, \a ClassName).
 */
 
@@ -136,43 +136,48 @@
 */
 
 /*!
-    \macro Q_IMPORT_PLUGIN(ClassName)
+    \macro Q_IMPORT_PLUGIN(PluginName)
     \relates QPluginLoader
 
-    This macro imports the plugin class \a ClassName. Inserting this macro
+    This macro imports the plugin named \a PluginName. Inserting this macro
     into your application's source code will allow you to
     make use of a static plugin.
 
     Example:
 
     \code
-        Q_IMPORT_PLUGIN(QJpegPlugin)
+        Q_IMPORT_PLUGIN(qjpegplugin)
     \endcode
 
     Static plugins must also be included by the linker when your
-    application is built. With qmake, you can use QTPLUGIN to add
-    the required plugins to your build.
-
-    Example:
+    application is built. With qmake, you can use \c QTPLUGIN to add
+    the required plugins to your build. For example:
 
     \code
-        TEMPLATE = app
-        QTPLUGIN += jpeg gif mng # image formats
-        QTPLUGIN += cn tw        # codecs
+        TEMPLATE      = app
+        QTPLUGIN     += qjpeg qgif qmng    # image formats
+        QTPLUGIN     += cn tw           # codecs
     \endcode
 
     Depending on your build, Qt provides the following static plugins:
 
     \table
     \header
-    \i Plugin class     \i Type     \i Description         \i QTPLUGIN entry
+    \i Plugin name  \i Type         \i Description         \i QTPLUGIN entry
     \row
-    \i QJpegPlugin      \i Image format \i The JPEG image format \i jpeg
+    \i \c qjpeg     \i Image format \i The JPEG image format \i qjpeg
     \row
-    \i QGifPlugin      \i Image format \i The GIF image format \i gif
+    \i \c qgif      \i Image format \i The GIF image format \i qgif
     \row
-    \i QMngPlugin      \i Image format \i The MNG image format \i mng
+    \i \c qmng      \i Image format \i The MNG image format \i qmng
     \endtable
+
+    You should also ensure that the linker will use the correct linker
+    path by adding the following line to your application's project file:
+
+    \code
+        QMAKE_LFLAGS += -L$$[QT_INSTALL_PLUGINS]/imageformats
+    \endcode
 
     \sa {How to Create Qt Plugins}, {Using qmake}
 */
@@ -361,13 +366,18 @@ QString QPluginLoader::fileName() const
 typedef QList<QtPluginInstanceFunction> StaticInstanceFunctionList;
 Q_GLOBAL_STATIC(StaticInstanceFunctionList, staticInstanceFunctionList)
 
+/*!
+    \relates QPluginLoader
+
+    Registers the given \a function with the plugin loader.
+*/
 void Q_CORE_EXPORT qRegisterStaticPluginInstanceFunction(QtPluginInstanceFunction function)
 {
     staticInstanceFunctionList()->append(function);
 }
 
 /*!
-
+    Returns a list of static plugin instances held by the plugin loader.
 */
 QObjectList QPluginLoader::staticInstances()
 {

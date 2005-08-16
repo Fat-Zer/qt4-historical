@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -214,6 +214,9 @@ bool QListModel::setData(const QModelIndex &index, const QVariant &value, int ro
 
 bool QListModel::insertRows(int row, int count, const QModelIndex &)
 {
+    if (count < 1 || row < 0 || row > rowCount())
+        return false;
+
     beginInsertRows(QModelIndex(), row, row + count - 1);
     QListWidget *view = ::qobject_cast<QListWidget*>(QObject::parent());
     QListWidgetItem *itm = 0;
@@ -238,6 +241,9 @@ bool QListModel::insertRows(int row, int count, const QModelIndex &)
 
 bool QListModel::removeRows(int row, int count, const QModelIndex &)
 {
+    if (count < 1 || row < 0 || (row + count) > rowCount())
+        return false;
+
     if (row >= 0 && row < rowCount()) {
         beginRemoveRows(QModelIndex(), row, row + count - 1);
         QListWidgetItem *itm = 0;
@@ -661,7 +667,7 @@ QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
 
     Returns the list item's icon.
 
-    \sa setIcon()
+    \sa setIcon(), {QAbstractItemView::iconSize}{iconSize}
 */
 
 /*!
@@ -760,7 +766,7 @@ QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
 
     Sets the icon for the list item to the given \a icon.
 
-    \sa icon()
+    \sa icon(), text(), {QAbstractItemView::iconSize}{iconSize}
 */
 
 /*!
@@ -845,7 +851,7 @@ public:
 void QListWidgetPrivate::setup()
 {
     Q_Q(QListWidget);
-    q->setModel(new QListModel(q));
+    q->QListView::setModel(new QListModel(q));
     // view signals
     QObject::connect(q, SIGNAL(pressed(QModelIndex)), q, SLOT(emitItemPressed(QModelIndex)));
     QObject::connect(q, SIGNAL(clicked(QModelIndex)), q, SLOT(emitItemClicked(QModelIndex)));
@@ -1060,7 +1066,7 @@ void QListWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
 
     This signal is emitted whenever the selection changes.
 
-    \sa selectedItems() isItemSelected()
+    \sa selectedItems() isItemSelected() currentItemChanged()
 */
 
 /*!
@@ -1187,6 +1193,8 @@ QListWidgetItem *QListWidget::currentItem() const
 
 /*!
   Sets the current item to \a item.
+
+  Depending on the current selection mode, the item may also be selected.
 */
 void QListWidget::setCurrentItem(QListWidgetItem *item)
 {
@@ -1197,6 +1205,8 @@ void QListWidget::setCurrentItem(QListWidgetItem *item)
 /*!
   \property QListWidget::currentRow
   \brief the row of the current item.
+
+  Depending on the current selection mode, the row may also be selected.
 */
 
 int QListWidget::currentRow() const
@@ -1311,6 +1321,12 @@ QWidget *QListWidget::itemWidget(QListWidgetItem *item) const
     \since 4.1
 
     Sets the \a widget to be displayed in the give \a item.
+
+    This function should only be used to display static content in the place of a list
+    widget item. If you want to display custom dynamic content or implement a custom
+    editor widget, use QListView and subclass QItemDelegate instead.
+
+    \sa {Delegate Classes}
 */
 void QListWidget::setItemWidget(QListWidgetItem *item, QWidget *widget)
 {
@@ -1507,9 +1523,9 @@ QListWidgetItem *QListWidget::itemFromIndex(const QModelIndex &index) const
 /*!
   \internal
 */
-void QListWidget::setModel(QAbstractItemModel *model)
+void QListWidget::setModel(QAbstractItemModel * /*model*/)
 {
-    QListView::setModel(model);
+    qFatal("QListWidget::setModel() - Changing the model of the QListWidget is not allowed.");
 }
 
 /* \reimp */

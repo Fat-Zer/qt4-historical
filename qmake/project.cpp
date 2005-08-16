@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -24,6 +24,8 @@
 #include "project.h"
 #include "property.h"
 #include "option.h"
+#include "cachekeys.h"
+
 #include <qdatetime.h>
 #include <qfile.h>
 #include <qfileinfo.h>
@@ -94,6 +96,7 @@ bool ParsableBlock::eval(QMakeProject *p, QMap<QString, QStringList> &place)
 {
     //save state
     parser_info pi = ::parser;
+    const int block_count = p->scope_blocks.count();
 
     //execute
     bool ret = true;
@@ -105,6 +108,8 @@ bool ParsableBlock::eval(QMakeProject *p, QMap<QString, QStringList> &place)
 
     //restore state
     ::parser = pi;
+    while(p->scope_blocks.count() > block_count)
+        p->scope_blocks.pop();
     return ret;
 }
 
@@ -137,7 +142,11 @@ bool FunctionBlock::exec(const QStringList &args,
     cause_return = false;
 
     //execute
+#if 0
     vars = proj->variables();
+#else
+    vars = place;
+#endif
     vars["ARGS"] = args;
     for(int i = 0; i < args.count(); i++)
         vars[QString::number(i+1)] = QStringList(args[i]);
@@ -509,10 +518,39 @@ static QStringList split_value_list(const QString &vals, bool do_semicolon=false
     return ret;
 }
 
+class QMakeProjectEnv
+{
+    QStringList envs;
+    void init(const QMap<QString, QStringList> &values) {
+#ifdef Q_OS_UNIX
+        for(QMap<QString, QStringList>::ConstIterator it = values.begin(); it != values.end(); ++it) {
+            const QString var = it.key(), val = it.value().join(" ");
+            if(!var.startsWith(".")) {
+                const QString env_var = Option::sysenv_mod + var;
+                if(!putenv(strdup(QString(env_var + "=" + val).toAscii().data())))
+                    envs.append(env_var);
+            }
+        }
+#endif
+    }
+public:
+    QMakeProjectEnv(QMakeProject *p) { init(p->variables()); }
+    QMakeProjectEnv(const QMap<QString, QStringList> &variables) { init(variables); }
+    ~QMakeProjectEnv() {
+#ifdef Q_OS_UNIX
+        for(QStringList::ConstIterator it = envs.begin();it != envs.end(); ++it) {
+            putenv(strdup(QString(*it + "=").toAscii().data()));
+        }
+#endif
+    }
+};
+
 QMakeProject::~QMakeProject()
 {
     if(own_prop)
         delete prop;
+    qDeleteAll(replaceFunctions);
+    qDeleteAll(testFunctions);
 }
 
 
@@ -563,8 +601,11 @@ QMakeProject::parse(const QString &t, QMap<QString, QStringList> &place)
                     return false;
                 }
                 ScopeBlock sb = scope_blocks.pop();
-                if(sb.iterate)
+                if(sb.iterate) {
                     sb.iterate->exec(this, place);
+                    delete sb.iterate;
+                    sb.iterate = false;
+                }
                 if(!scope_blocks.top().ignore) {
                     debug_msg(1, "Project Parser: %s:%d : Leaving block %d", parser.file.toLatin1().constData(),
                               parser.line_no, scope_blocks.count()+1);
@@ -889,8 +930,8 @@ QMakeProject::parse(const QString &t, QMap<QString, QStringList> &place)
         else
             next_block.else_status = ScopeBlock::TestFound;
         scope_blocks.push(next_block);
-        debug_msg(1, "Project Parser: %s:%d : Entering block %d (%d).", parser.file.toLatin1().constData(),
-                  parser.line_no, scope_blocks.count(), scope_failed);
+        debug_msg(1, "Project Parser: %s:%d : Entering block %d (%d). [%s]", parser.file.toLatin1().constData(),
+                  parser.line_no, scope_blocks.count(), scope_failed, s.toLatin1().constData());
     } else if(iterator) {
         iterator->parser.append(var+QString(d));
         bool ret = iterator->exec(this, place);
@@ -1076,12 +1117,12 @@ QMakeProject::read(const QString &file, QMap<QString, QStringList> &place)
         ret = read(t, place);
         if(!using_stdin)
             qfile.close();
-        parser = pi;
+    }
+    if(scope_blocks.count() != 1) {
+        qmake_error_msg("Unterminated conditional block at end of file");
+        ret = false;
     }
     parser = pi;
-    if(scope_blocks.count() != 1)
-        warn_msg(WarnParser, "%s: Unterminated conditional at end of file.",
-                 file.toLatin1().constData());
     return ret;
 }
 
@@ -1141,7 +1182,7 @@ QMakeProject::read(uchar cmd)
                 for(QStringList::ConstIterator it = mkspec_roots.begin(); it != mkspec_roots.end(); ++it) {
                     QString mkspec = (*it) + QDir::separator() + "default";
                     QFileInfo default_info(mkspec);
-                    if(default_info.exists() && default_info.isSymLink()) {
+                    if(default_info.exists() && default_info.isDir()) {
                         Option::mkfile::qmakespec = mkspec;
                         break;
                     }
@@ -1370,8 +1411,10 @@ QMakeProject::isActiveConfig(const QString &x, bool regex, QMap<QString, QString
 #ifdef Q_OS_UNIX
     else if(spec == "default") {
         static char *buffer = NULL;
-        if(!buffer)
+        if(!buffer) {
             buffer = (char *)malloc(1024);
+            qmakeAddCacheClear(qmakeFreeCacheClear, (void**)&buffer);
+        }
         int l = readlink(Option::mkfile::qmakespec.toLatin1(), buffer, 1024);
         if(l != -1) {
             buffer[l] = '\0';
@@ -1446,8 +1489,10 @@ QMakeProject::doProjectInclude(QString file, uchar flags, QMap<QString, QStringL
         if(file.indexOf(Option::dir_sep) == -1 || !QFile::exists(file)) {
             bool found = false;
             static QStringList *feature_roots = 0;
-            if(!feature_roots)
+            if(!feature_roots) {
                 feature_roots = new QStringList(qmake_feature_paths(prop));
+                qmakeAddCacheClear(qmakeDeleteCacheClear_QStringList, (void**)&feature_roots);
+            }
             debug_msg(2, "Looking for feature '%s' in (%s)", file.toLatin1().constData(),
 			feature_roots->join("::").toLatin1().constData());
             int start_root = 0;
@@ -1572,6 +1617,7 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
     static QMap<QString, int> *expands = 0;
     if(!expands) {
         expands = new QMap<QString, int>;
+        qmakeAddCacheClear(qmakeDeleteCacheClear_QMapStringInt, (void**)&expands);
         expands->insert("member", E_MEMBER);
         expands->insert("first", E_FIRST);
         expands->insert("last", E_LAST);
@@ -1720,11 +1766,23 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
         }
         break; }
     case E_EVAL: {
-        for(QStringList::ConstIterator arg_it = args.begin();
-            arg_it != args.end(); ++arg_it) {
-            if(!ret.isEmpty())
-                ret += Option::field_sep;
-            ret += place[(*arg_it)].join(QString(Option::field_sep));
+        if(args.count() < 1 || args.count() > 2) {
+            fprintf(stderr, "%s:%d: eval(variable) requires one argument.\n",
+                    parser.file.toLatin1().constData(), parser.line_no);
+
+        } else {
+            const QMap<QString, QStringList> *source = &place;
+            if(args.count() == 2) {
+                if(args.at(1) == "Global") {
+                    source = &vars;
+                } else if(args.at(1) == "Local") {
+                    source = &place;
+                } else {
+                    fprintf(stderr, "%s:%d: unexpected source to eval.\n", parser.file.toLatin1().constData(),
+                            parser.line_no);
+                }
+            }
+            ret += source->value(args.at(0)).join(QString(Option::field_sep));
         }
         break; }
     case E_LIST: {
@@ -1787,8 +1845,9 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
     case E_BASENAME:
     case E_DIRNAME:
     case E_SECTION: {
+        bool regexp = false;
         QString sep, var;
-        int beg=0, end=-1;;
+        int beg=0, end=-1;
         if(func_t == E_SECTION) {
             if(args.count() != 3 && args.count() != 4) {
                 fprintf(stderr, "%s:%d section(var, sep, begin, end) requires three argument\n",
@@ -1806,7 +1865,8 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
                         parser.file.toLatin1().constData(), parser.line_no, func.toLatin1().constData());
             } else {
                 var = args[0];
-                sep = Option::dir_sep;
+                regexp = true;
+                sep = "[" + QRegExp::escape(Option::dir_sep) + "/]";
                 if(func_t == E_DIRNAME)
                     end = -2;
                 else
@@ -1816,9 +1876,13 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
         if(!var.isNull()) {
             const QStringList &l = place[varMap(var)];
             for(QStringList::ConstIterator it = l.begin(); it != l.end(); ++it) {
+                QString separator = sep;
                 if(!ret.isEmpty())
                     ret += Option::field_sep;
-                ret += (*it).section(sep, beg, end);
+                if(regexp)
+                    ret += (*it).section(QRegExp(separator), beg, end);
+                else
+                    ret += (*it).section(separator, beg, end);
             }
         }
         break; }
@@ -1844,13 +1908,8 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
             fprintf(stderr, "%s:%d system(execut) requires one argument.\n",
                     parser.file.toLatin1().constData(), parser.line_no);
         } else {
-#ifdef Q_OS_UNIX
-            for(QMap<QString, QStringList>::ConstIterator it = place.begin();
-                it != place.end(); ++it) {
-                if(!it.key().startsWith("."))
-                    putenv(const_cast<char*>(QString(Option::sysenv_mod + it.key() + '=' + it.value().join(" ")).toAscii().constData()));
-            }
-#endif
+            QMakeProjectEnv env(place);
+
             char buff[256];
             FILE *proc = QT_POPEN(args[0].toLatin1(), "r");
             bool singleLine = true;
@@ -1867,14 +1926,6 @@ QMakeProject::doProjectExpand(QString func, QStringList args,
                 buff[read_in] = '\0';
                 ret += buff;
             }
-#ifdef Q_OS_UNIX
-            for(QMap<QString, QStringList>::ConstIterator it = place.begin();
-                it != place.end(); ++it) {
-                if(!it.key().startsWith("."))
-                    putenv(const_cast<char*>(QString(Option::sysenv_mod
-                                                     + it.key()).toAscii().constData()));
-            }
-#endif
         }
         break; }
     case E_UNIQUE: {
@@ -2116,21 +2167,8 @@ QMakeProject::doProjectTest(QString func, QStringList args, QMap<QString, QStrin
                     parser.line_no);
             return false;
         }
-#ifdef Q_OS_UNIX
-        for(QMap<QString, QStringList>::ConstIterator it = place.begin();
-            it != place.end(); ++it) {
-            if(!it.key().startsWith("."))
-                putenv((Option::sysenv_mod + it.key() + '=' + it.value().join(" ")).toAscii().data());
-        }
-#endif
+        QMakeProjectEnv env(place);
         bool ret = system(args.first().toLatin1().constData()) == 0;
-#ifdef Q_OS_UNIX
-        for(QMap<QString, QStringList>::ConstIterator it = place.begin();
-            it != place.end(); ++it) {
-            if(!it.key().startsWith("."))
-                putenv((Option::sysenv_mod + it.key()).toAscii().data());
-        }
-#endif
         return ret;
     } else if(func == "return") {
         if(function_blocks.isEmpty()) {

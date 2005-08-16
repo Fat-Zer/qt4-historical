@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -148,7 +148,6 @@ public:
 
 #ifdef QT3_SUPPORT
     static QT3_SUPPORT QTime currentTime(Qt::TimeSpec spec);
-    static QT3_SUPPORT QDate currentDate(Qt::TimeSpec spec);
 #endif
 
     void start();

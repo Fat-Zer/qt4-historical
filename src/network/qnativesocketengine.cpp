@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -156,13 +156,13 @@ void QNativeSocketEnginePrivate::setError(QAbstractSocket::SocketError error, Er
 
     switch (errorString) {
     case NonBlockingInitFailedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize a non-blocking socket");
+        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize non-blocking socket");
         break;
     case BroadcastingInitFailedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize broadcasting socket");
+        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize broadcast socket");
         break;
     case NoIpV6ErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Attempt to use an IPv6 socket on a platform with no IPv6 support");
+        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Attempt to use IPv6 socket on a platform with no IPv6 support");
         break;
     case RemoteHostClosedErrorString:
         socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "The remote host closed the connection");
@@ -353,7 +353,7 @@ bool QNativeSocketEngine::initialize(int socketDescriptor, QAbstractSocket::Sock
             return false;
         }
 
-        // Set the broadcasting flag if it's a Udp socket.
+        // Set the broadcasting flag if it's a UDP socket.
         if (d->socketType == QAbstractSocket::UdpSocket
             && !setOption(BroadcastSocketOption, 1)) {
             d->setError(QAbstractSocket::UnsupportedSocketOperationError,
@@ -668,6 +668,13 @@ qint64 QNativeSocketEngine::read(char *data, qint64 maxSize)
 void QNativeSocketEngine::close()
 {
     Q_D(QNativeSocketEngine);
+    if (d->readNotifier)
+        d->readNotifier->setEnabled(false);
+    if (d->writeNotifier)
+        d->writeNotifier->setEnabled(false);
+    if (d->exceptNotifier)
+        d->exceptNotifier->setEnabled(false);
+        
     if(d->socketDescriptor != -1) {
         d->nativeClose();
         d->socketDescriptor = -1;
@@ -871,8 +878,13 @@ void QNativeSocketEngine::setReadNotificationEnabled(bool enable)
     } else if (enable && QAbstractEventDispatcher::instance(thread())) {
         d->readNotifier = new QSocketNotifier(d->socketDescriptor,
                                               QSocketNotifier::Read, this);
+#ifdef Q_OS_WIN
+        QObject::connect(d->readNotifier, SIGNAL(activated(int)),
+                         this, SLOT(systemReadNotification()));
+#else
         QObject::connect(d->readNotifier, SIGNAL(activated(int)),
                          this, SIGNAL(readNotification()));
+#endif
         d->readNotifier->setEnabled(true);
     }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qtdesigner.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qtdesigner.qdoc -->
 <head>
     <title>Qt 4.1: QDesignerCustomWidgetCollectionInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -68,8 +68,8 @@ body { background: #ffffff; color: black; }</style>
         return widgets;
     }
 
-    Q_EXPORT_PLUGIN(MyCustomWidgets)</pre>
-<p>Note that instead of exporting each custom widget plugin using the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro, you export the entire collection. The <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro ensures that <i>Qt Designer</i> can access and construct the custom widgets. Without this macro, there is no way for <i>Qt Designer</i> to use them.</p>
+    Q_EXPORT_PLUGIN2(MyCustomWidgets)</pre>
+<p>Note that instead of exporting each custom widget plugin using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro, you export the entire collection. The <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro ensures that <i>Qt Designer</i> can access and construct the custom widgets. Without this macro, there is no way for <i>Qt Designer</i> to use them.</p>
 <p>See also <a href="qdesignercustomwidgetinterface.html">QDesignerCustomWidgetInterface</a> and <a href="designer-creating-custom-widgets.html">Creating Custom Widgets for Qt Designer</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -79,8 +79,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a list of interfaces to the collection's custom widgets.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

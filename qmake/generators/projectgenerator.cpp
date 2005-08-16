@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -391,10 +391,7 @@ ProjectGenerator::addFile(QString file)
     QString where;
     for(int cppit = 0; cppit < Option::cpp_ext.size(); ++cppit) {
         if(file.endsWith(Option::cpp_ext[cppit])) {
-            if(exists(file.left(file.length() - Option::cpp_ext[cppit].length()) + Option::ui_ext))
-                return false;
-            else
-                where = "SOURCES";
+            where = "SOURCES";
             break;
         }
     }

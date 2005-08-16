@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -87,10 +87,10 @@
     appended to QAbstractSocket's internal read buffer. To limit the
     size of the read buffer, call setReadBufferSize().
 
-    To close the socket, call close(). QAbstractSocket enters
+    To close the socket, call disconnectFromHost(). QAbstractSocket enters
     QAbstractSocket::ClosingState, then emits closing(). After all pending data
     has been written to the socket, QAbstractSocket actually closes
-    the socket, enters QAbstractSocket::ClosedState, and emits closed(). If you
+    the socket, enters QAbstractSocket::ClosedState, and emits disconnected(). If you
     want to abort a connection immediately, discarding all pending
     data, call abort() instead.
 
@@ -112,7 +112,7 @@
     \o waitForBytesWritten() blocks until one payload of data has been
     written to the socket.
 
-    \o waitForClosed() blocks until the connection has closed.
+    \o waitForDisconnected() blocks until the connection has closed.
     \endlist
 
     Programming with a blocking socket is radically different from
@@ -146,7 +146,7 @@
     This signal is emitted after connectToHost() has been called and
     a connection has been successfully established.
 
-    \sa connectToHost(), connectionClosed()
+    \sa connectToHost(), disconnected()
 */
 
 /*!
@@ -154,7 +154,7 @@
 
     This signal is emitted when the socket has been disconnected.
 
-    \sa connectToHost(), close()
+    \sa connectToHost(), disconnectFromHost(), abort()
 */
 
 /*!
@@ -527,7 +527,7 @@ bool QAbstractSocketPrivate::canReadNotification()
 bool QAbstractSocketPrivate::canWriteNotification()
 {
 #if defined (Q_OS_WIN)
-    if (socketEngine->isWriteNotificationEnabled())
+    if (socketEngine && socketEngine->isWriteNotificationEnabled())
         socketEngine->setWriteNotificationEnabled(false);
 #endif
 
@@ -547,7 +547,7 @@ bool QAbstractSocketPrivate::canWriteNotification()
     int tmp = writeBuffer.size();
     flush();
 
-    if ( socketEngine ) {
+    if (socketEngine) {
 #if defined (Q_OS_WIN)
 	if (!writeBuffer.isEmpty())
 	    socketEngine->setWriteNotificationEnabled(true);
@@ -838,6 +838,10 @@ bool QAbstractSocketPrivate::readFromSocket()
     Q_Q(QAbstractSocket);
     // Find how many bytes we can read from the socket layer.
     qint64 bytesToRead = socketEngine->bytesAvailable();
+#ifdef Q_OS_LINUX
+    if (bytesToRead > 0) // ### See setSocketDescriptor()
+        bytesToRead += addToBytesAvailable;
+#endif    
     if (readBufferMaxSize && bytesToRead > (readBufferMaxSize - readBuffer.size()))
         bytesToRead = readBufferMaxSize - readBuffer.size();
 
@@ -988,6 +992,10 @@ void QAbstractSocket::connectToHostImplementation(const QString &hostName, quint
     d->localAddress.clear();
     d->peerAddress.clear();
     d->peerName = hostName;
+#ifdef Q_OS_LINUX
+    // ### See setSocketDescriptor().
+    d->addToBytesAvailable = 0;
+#endif
     if (d->hostLookupId != -1) {
         QHostInfo::abortHostLookup(d->hostLookupId);
         d->hostLookupId = -1;
@@ -1168,6 +1176,9 @@ int QAbstractSocket::socketDescriptor() const
     The socket is opened in the mode specified by \a openMode, and
     enters the socket state specified by \a socketState.
 
+    \bold{Note:} It is not possible to initialize two abstract sockets
+    with the same native socket descriptor.
+
     \sa socketDescriptor()
 */
 bool QAbstractSocket::setSocketDescriptor(int socketDescriptor, SocketState socketState,
@@ -1198,6 +1209,17 @@ bool QAbstractSocket::setSocketDescriptor(int socketDescriptor, SocketState sock
     d->peerPort = d->socketEngine->peerPort();
     d->localAddress = d->socketEngine->localAddress();
     d->peerAddress = d->socketEngine->peerAddress();
+
+#ifdef Q_OS_LINUX
+    // ### This is a workaround for certain broken Linux kernels, when using
+    // QTcpSocket with a Unix domain socket. It was introduced around 2.6.9,
+    // and fixed at some point after that.
+    // http://archive.linux-usenet.com/index-t-73300.html
+    // We can provide a better workaround for this: readFromSocket() can loop
+    // while reading, but this must happen without triggering an implicit
+    // close because of reading after the socket has closed.
+    d->addToBytesAvailable = 4096;
+#endif
 
     return true;
 }
@@ -1430,14 +1452,14 @@ bool QAbstractSocket::waitForBytesWritten(int msecs)
     to be closed:
 
     \code
-        socket->disconnect();
+        socket->disconnectFromHost();
         if (socket->waitForDisconnected(1000))
             qDebug("Disconnected!");
     \endcode
 
     If msecs is -1, this function will not time out.
 
-    \sa disconnect(), close()
+    \sa disconnectFromHost(), close()
 */
 bool QAbstractSocket::waitForDisconnected(int msecs)
 {
@@ -1488,10 +1510,10 @@ bool QAbstractSocket::waitForDisconnected(int msecs)
 
 /*!
     Aborts the current connection and resets the socket. Unlike
-    close(), this function immediately closes the socket, clearing
+    disconnectFromHost(), this function immediately closes the socket, clearing
     any pending data in the write buffer.
 
-    \sa close()
+    \sa disconnectFromHost(), close()
 */
 void QAbstractSocket::abort()
 {
@@ -1520,8 +1542,24 @@ bool QAbstractSocket::isSequential() const
 
 /*! \reimp
 
-    Returns true if the socket connection is closed, and no more data is
-    available for reading; otherwise returns false.
+     Returns true if no more data is currently
+     available for reading; otherwise returns false.
+
+     This function is most commonly used when reading data from the
+     socket in a loop. For example:
+ 
+     \code
+         // This slot is connected to QAbstractSocket::readyRead()
+         void SocketClass::readyReadSlot()
+         {
+             while (!socket.atEnd()) {
+                 QByteArray data = socket.read(100);
+                 ....
+             }
+         }
+     \endcode
+ 
+     \sa bytesAvailable(), readyRead()
  */
 bool QAbstractSocket::atEnd() const
 {
@@ -1722,10 +1760,7 @@ void QAbstractSocket::setPeerName(const QString &name)
 }
 
 /*!
-    Attempts to close the socket. If there is pending data waiting to
-    be written, QAbstractSocket will enter ClosingState and wait
-    until all data has been written. Eventually, it will enter
-    UnconnectedState and emit the disconnected() signal.
+    Disconnects the socket's connection with the host.
 
     \sa abort()
 */
@@ -1743,7 +1778,10 @@ void QAbstractSocket::close()
 }
 
 /*!
-    Disconnects the socket's connection with the host.
+    Attempts to close the socket. If there is pending data waiting to
+    be written, QAbstractSocket will enter ClosingState and wait
+    until all data has been written. Eventually, it will enter
+    UnconnectedState and emit the disconnected() signal.
 
     \sa connectToHost()
 */
@@ -1863,6 +1901,12 @@ qint64 QAbstractSocket::readBufferSize() const
     want to protect your socket against receiving too much data,
     which may eventually cause your application to run out of memory.
 
+    Only QTcpSocket uses QAbstractSocket's internal buffer; QUdpSocket
+    does not use any buffering at all, but rather relies on the
+    implicit buffering provided by the operating system.
+    Because of this, calling this function on QUdpSocket has no
+    effect.
+    
     \sa readBufferSize(), read()
 */
 void QAbstractSocket::setReadBufferSize(qint64 size)
@@ -2021,7 +2065,7 @@ QNetworkProxy QAbstractSocket::proxy() const
 /*!
     \fn void QAbstractSocket::connectionClosed()
 
-    Use closing() instead.
+    Use closed() instead.
 */
 
 /*!

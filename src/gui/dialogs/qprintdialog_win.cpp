@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -68,7 +68,13 @@ static PRINTDLGA *qt_win_make_PRINTDLGA(QWidget *parent, QPrintDialogPrivate *d,
     memset(pd, 0, sizeof(PRINTDLGA));
     pd->lStructSize = sizeof(PRINTDLGA);
 
-    pd->hDevMode = d->ep->devMode;
+    int size = sizeof(DEVMODEA) + d->ep->devModeA()->dmDriverExtra;
+    pd->hDevMode = GlobalAlloc(GHND, size);
+    {
+        void *dest = GlobalLock(pd->hDevMode);
+        memcpy(dest, d->ep->devMode, size);
+        GlobalUnlock(pd->hDevMode);
+    }
     pd->hDevNames  = tempDevNames;
 
     pd->Flags = PD_RETURNDC;
@@ -145,7 +151,13 @@ static PRINTDLGW *qt_win_make_PRINTDLGW(QWidget *parent, QPrintDialogPrivate *d,
     memset(pd, 0, sizeof(PRINTDLGW));
     pd->lStructSize = sizeof(PRINTDLGW);
 
-    pd->hDevMode = d->ep->devMode;
+    int size = sizeof(DEVMODEW) + d->ep->devModeW()->dmDriverExtra;
+    pd->hDevMode = GlobalAlloc(GHND, size);
+    {
+        void *dest = GlobalLock(pd->hDevMode);
+        memcpy(dest, d->ep->devMode, size);
+        GlobalUnlock(pd->hDevMode);
+    }
     pd->hDevNames  = tempDevNames;
 
     pd->Flags = PD_RETURNDC;
@@ -248,11 +260,10 @@ int QPrintDialog::exec()
     else
         parent = qApp->activeWindow();
 
-    if (parent) {
-	QEvent e(QEvent::WindowBlocked);
-	QApplication::sendEvent(parent, &e);
-        QApplicationPrivate::enterModal(parent);
-    }
+    QWidget modal_widget;
+    modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
+    modal_widget.setParent(parent, Qt::Window);
+    QApplicationPrivate::enterModal(&modal_widget);
 
     HGLOBAL *tempDevNames = d->ep->createDevNames();
 
@@ -272,11 +283,7 @@ int QPrintDialog::exec()
             result = false;
     });
 
-    if (parent) {
-        QApplicationPrivate::leaveModal(parent);
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(parent, &e);
-    }
+    QApplicationPrivate::leaveModal(&modal_widget);
 
     qt_win_eatMouseMove();
 

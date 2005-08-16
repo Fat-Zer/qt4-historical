@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include "qdesigner_dockwidget_p.h"
+#include "layoutinfo_p.h"
 #include <QtDesigner/QtDesigner>
 #include <QtGui/QMainWindow>
 #include <QLayout>
@@ -85,6 +86,13 @@ void QDesignerDockWidget::setDockWidgetArea(Qt::DockWidgetArea dockWidgetArea)
 
 bool QDesignerDockWidget::inMainWindow() const
 {
+    if (parentWidget() && parentWidget()->layout()) {
+        QLayout *layout = parentWidget()->layout();
+
+        if (layout->indexOf(const_cast<QDesignerDockWidget*>(this)) != -1)
+            return false;
+    }
+
     return findMainWindow() != 0;
 }
 

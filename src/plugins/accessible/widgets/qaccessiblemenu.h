@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the plugins of the Qt Toolkit.
 **
@@ -45,6 +45,7 @@ public:
     Role role(int child) const;
     State state(int child) const;
 
+    QString actionText(int action, QAccessible::Text text, int child) const;
     bool doAction(int action, int child, const QVariantList &params);
 
 protected:
@@ -66,6 +67,7 @@ public:
     Role role(int child) const;
     State state(int child) const;
 
+    QString actionText(int action, QAccessible::Text text, int child) const;
     bool doAction(int action, int child, const QVariantList &params);
 
 protected:

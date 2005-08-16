@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/examples/calculator.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/examples/calculator.qdoc -->
 <head>
     <title>Qt 4.1: Calculator Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -85,7 +85,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>Additive and multiplicative operators are treated differently because they have different precedences. For example, <b>1 + 2 ÷ 3</b> is interpreted as <b>1 + (2 ÷ 3)</b> because <b>÷</b> has higher precedence than <b>+</b>.</p>
 <p>The table below shows the evolution of the calculator state as the user enters a mathematical expression.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>User Input</th><th>Display</th><th>Sum so Far</th><th>Add. Op.</th><th>Factor so Far</th><th>Mult. Op.</th><th>Waiting for Operand?</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td></td><td>0</td><td>0</td><td></td><td></td><td></td><td><tt>true</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>1</b></td><td>1</td><td>0</td><td></td><td></td><td></td><td><tt>false</tt></td></tr>
@@ -96,7 +96,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>1 + 2 ÷ 3 -</b></td><td>1.66667</td><td>1.66667</td><td><b>-</b></td><td></td><td></td><td><tt>true</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>1 + 2 ÷ 3 - 4</b></td><td>4</td><td>1.66667</td><td><b>-</b></td><td></td><td></td><td><tt>false</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>1 + 2 ÷ 3 - 4 =</b></td><td>-2.33333</td><td>0</td><td></td><td></td><td></td><td><tt>true</tt></td></tr>
-</table>
+</table></p>
 <p>Unary operators, such as <b>Sqrt</b>, require no special handling; they can be applied immediately since the operand is already known when the operator button is clicked.</p>
 <pre>&nbsp;       QLineEdit *display;
 
@@ -526,8 +526,8 @@ body { background: #ffffff; color: black; }</style>
 <p align="center"><img src="images/calculator-ugly.png" alt="The Calculator example with default size policies and size hints" /></p><p>This completes the Calculator example. Trolltech will send a T-shirt to the first finder of a bug in the example.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

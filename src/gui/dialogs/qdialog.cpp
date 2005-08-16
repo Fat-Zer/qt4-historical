@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -311,7 +311,7 @@ void QDialog::hideSpecial()
         } else if (!showX && pb->text() == qApp->translate("QMessageBox", mb_texts[QMessageBox::Cancel])) {
             pb->hide();
             showX = true;
-        } else if (!showQ && pb->text() == qApp->tr("Help")) {
+        } else if (!showQ && pb->text() == qApp->translate("QMessageBox", "Help")) {
             pb->hide();
             showQ = true;
         }
@@ -361,9 +361,6 @@ void QDialog::setResult(int r)
 
     Users cannot interact with any other window in the same
     application until they close the dialog.
-
-    Note that exec() ignores the value of the QWidget::windowModality
-    property and always pops up dialogs as Qt::ApplicationModal.
 
   \sa show(), result()
 */
@@ -566,7 +563,7 @@ bool QDialog::event(QEvent *e)
         QString bName =
             (e->type() == QEvent::OkRequest)
             ? qApp->translate("QMessageBox", mb_texts[QMessageBox::Ok])
-            : qApp->tr("Help");
+            : qApp->translate("QMessageBox", "Help");
         QList<QPushButton*> list = qFindChildren<QPushButton*>(this);
         for (int i=0; i<list.size(); ++i) {
             QPushButton *pb = list.at(i);

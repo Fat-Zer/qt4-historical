@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -110,6 +110,7 @@ class QWorkspaceTitleBarPrivate : public QWidgetPrivate
 public:
     QWorkspaceTitleBarPrivate()
         :
+        lastControl(QStyle::SC_None),
 #ifndef QT_NO_TOOLTIP
         toolTip(0),
 #endif
@@ -119,6 +120,7 @@ public:
 
     Qt::WFlags flags;
     QStyle::SubControl buttonDown;
+    QStyle::SubControl lastControl;
     QPoint moveOffset;
 #ifndef QT_NO_TOOLTIP
     QToolTip *toolTip;
@@ -159,6 +161,7 @@ QStyleOptionTitleBar QWorkspaceTitleBarPrivate::getStyleOption() const
     opt.activeSubControls = QStyle::SC_None;
     opt.titleBarState = titleBarState();
     opt.titleBarFlags = flags;
+    opt.state &= ~QStyle::State_MouseOver;
     return opt;
 }
 
@@ -172,8 +175,8 @@ QWorkspaceTitleBar::QWorkspaceTitleBar(QWidget *w, QWidget *parent, Qt::WFlags f
     d->window = w;
     d->buttonDown = QStyle::SC_None;
     d->act = 0;
-    if (w) {
-        if (w->minimumSize() == w->maximumSize())
+    if (w) { 
+        if (w->maximumSize() != QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX))
             d->flags &= ~Qt::WindowMaximizeButtonHint;
         setWindowTitle(w->windowTitle());
     }
@@ -301,7 +304,6 @@ void QWorkspaceTitleBar::mousePressEvent(QMouseEvent *e)
             break;
 
         case QStyle::SC_TitleBarNormalButton:
-            if (d->flags & Qt::WindowMinMaxButtonsHint)
                 d->buttonDown = ctrl;
             break;
 
@@ -362,15 +364,18 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
             d->buttonDown = QStyle::SC_None;
             d->pressed = false;
             return;
-        }    
+        }
         e->accept();
         QStyleOptionTitleBar opt = d->getStyleOption();
         QStyle::SubControl ctrl = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
                                                                  e->pos(), this);
-        d->pressed = false;
+
+        if (d->pressed) {
+            update();
+            d->pressed = false;
+        }
         if (ctrl == d->buttonDown) {
             d->buttonDown = QStyle::SC_None;
-            update();
             switch(ctrl) {
             case QStyle::SC_TitleBarShadeButton:
             case QStyle::SC_TitleBarUnshadeButton:
@@ -379,7 +384,7 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
                 break;
 
             case QStyle::SC_TitleBarNormalButton:
-                if(d->flags & Qt::WindowMaximizeButtonHint)
+                if(d->flags & Qt::WindowMinMaxButtonsHint)
                     emit doNormal();
                 break;
 
@@ -404,7 +409,6 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
             case QStyle::SC_TitleBarCloseButton:
                 if(d->flags & Qt::WindowSystemMenuHint) {
                     d->buttonDown = QStyle::SC_None;
-                    update();
                     emit doClose();
                     return;
                 }
@@ -422,41 +426,26 @@ void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
 void QWorkspaceTitleBar::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QWorkspaceTitleBar);
+    e->ignore();
     if ((e->buttons() & Qt::LeftButton) && style()->styleHint(QStyle::SH_TitleBar_NoBorder, 0, 0)
         && !rect().adjusted(5, 5, -5, 0).contains(e->pos()) && !d->pressed) {
         // propagate border events to the QWidgetResizeHandler
-        e->ignore();
         return;
     }
-    if (!e->buttons()) {
-        e->ignore();
-        return;
+
+    QStyleOptionTitleBar opt = d->getStyleOption();
+    QStyle::SubControl under_mouse = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
+                                                                    e->pos(), this);
+    if(under_mouse != d->lastControl) {
+        d->lastControl = under_mouse;
+        update();
     }
-    e->accept();
+
     switch (d->buttonDown) {
     case QStyle::SC_None:
-        if(autoRaise())
-            update();
         break;
     case QStyle::SC_TitleBarSysMenu:
         break;
-    case QStyle::SC_TitleBarShadeButton:
-    case QStyle::SC_TitleBarUnshadeButton:
-    case QStyle::SC_TitleBarNormalButton:
-    case QStyle::SC_TitleBarMinButton:
-    case QStyle::SC_TitleBarMaxButton:
-    case QStyle::SC_TitleBarCloseButton:
-        {
-            QStyle::SubControl last_ctrl = d->buttonDown;
-            QStyleOptionTitleBar opt = d->getStyleOption();
-            d->buttonDown = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt, e->pos(), this);
-            if (d->buttonDown != last_ctrl)
-                d->buttonDown = QStyle::SC_None;
-            update();
-            d->buttonDown = last_ctrl;
-        }
-        break;
-
     case QStyle::SC_TitleBarLabel:
         if (d->buttonDown == QStyle::SC_TitleBarLabel && d->movable && d->pressed) {
             if ((d->moveOffset - mapToParent(e->pos())).manhattanLength() >= 4) {
@@ -482,12 +471,8 @@ void QWorkspaceTitleBar::mouseMoveEvent(QMouseEvent *e)
                 if (!parentWidget()->isMaximized())
                     parentWidget()->move(pp);
             }
-        } else {
-            QStyle::SubControl last_ctrl = d->buttonDown;
-            d->buttonDown = QStyle::SC_None;
-            if(d->buttonDown != last_ctrl)
-                update();
         }
+        e->accept();
         break;
     default:
         break;
@@ -547,10 +532,12 @@ void QWorkspaceTitleBar::paintEvent(QPaintEvent *)
     }
 
     QStyle::SubControl under_mouse = QStyle::SC_None;
-    if(autoRaise() && underMouse()) {
-        under_mouse = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
+    under_mouse = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
                                                      mapFromGlobal(QCursor::pos()), this);
-        opt.activeSubControls |= under_mouse;
+    if ((d->buttonDown == under_mouse) && d->pressed) {
+        opt.state |= QStyle::State_Sunken;
+    } else if( autoRaise() && under_mouse != QStyle::SC_None && !d->pressed) {
+        opt.activeSubControls = under_mouse;
         opt.state |= QStyle::State_MouseOver;
     }
     opt.palette.setCurrentColorGroup(usesActiveColor() ? QPalette::Active : QPalette::Inactive);
@@ -586,6 +573,7 @@ void QWorkspaceTitleBar::mouseDoubleClickEvent(QMouseEvent *e)
 void QWorkspaceTitleBar::leaveEvent(QEvent *)
 {
     Q_D(QWorkspaceTitleBar);
+    d->lastControl = QStyle::SC_None;
     if(autoRaise() && !d->pressed)
         update();
 }
@@ -630,21 +618,14 @@ QWidget *QWorkspaceTitleBar::window() const
 bool QWorkspaceTitleBar::event(QEvent *e)
 {
     Q_D(QWorkspaceTitleBar);
-    if (d->inevent)
-        return QWidget::event(e);
-    d->inevent = true;
-    bool result = true;
     if (e->type() == QEvent::ApplicationPaletteChange) {
         d->readColors();
     } else if (e->type() == QEvent::WindowActivate
                || e->type() == QEvent::WindowDeactivate) {
         if (d->act)
             update();
-    } else {
-        result = QWidget::event(e);
     }
-    d->inevent = false;
-    return result;
+    return QWidget::event(e);
 }
 
 void QWorkspaceTitleBar::setMovable(bool b)
@@ -802,12 +783,12 @@ protected:
     void moveEvent(QMoveEvent *);
     bool eventFilter(QObject *, QEvent *);
 
-    bool focusNextPrevChild(bool);
-
     void paintEvent(QPaintEvent *);
     void changeEvent(QEvent *);
 
 private:
+    void updateMask();
+
     Q_DISABLE_COPY(QWorkspaceChild)
 
     QWidget *childWidget;
@@ -939,24 +920,24 @@ QWorkspacePrivate::init()
     toolPopup->setObjectName(QLatin1String("qt_internal_mdi_tool_popup"));
 
     actions[QWorkspacePrivate::RestoreAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarNormalButton)),
-                                                         q->tr("&Restore"), q);
-    actions[QWorkspacePrivate::MoveAct] = new QAction(q->tr("&Move"), q);
-    actions[QWorkspacePrivate::ResizeAct] = new QAction(q->tr("&Size"), q);
+                                                         QWorkspace::tr("&Restore"), q);
+    actions[QWorkspacePrivate::MoveAct] = new QAction(QWorkspace::tr("&Move"), q);
+    actions[QWorkspacePrivate::ResizeAct] = new QAction(QWorkspace::tr("&Size"), q);
     actions[QWorkspacePrivate::MinimizeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarMinButton)),
-                                                          q->tr("Mi&nimize"), q);
+                                                          QWorkspace::tr("Mi&nimize"), q);
     actions[QWorkspacePrivate::MaximizeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarMaxButton)),
-                                                          q->tr("Ma&ximize"), q);
+                                                          QWorkspace::tr("Ma&ximize"), q);
     actions[QWorkspacePrivate::CloseAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarCloseButton)),
-                                                          q->tr("&Close")
+                                                          QWorkspace::tr("&Close")
 #ifndef QT_NO_SHORTCUT
                                                           +"\t"+(QString)QKeySequence(Qt::CTRL+Qt::Key_F4)
 #endif
                                                           ,q);
     QObject::connect(actions[QWorkspacePrivate::CloseAct], SIGNAL(triggered()), q, SLOT(closeActiveWindow()));
-    actions[QWorkspacePrivate::StaysOnTopAct] = new QAction(q->tr("Stay on &Top"), q);
+    actions[QWorkspacePrivate::StaysOnTopAct] = new QAction(QWorkspace::tr("Stay on &Top"), q);
     actions[QWorkspacePrivate::StaysOnTopAct]->setChecked(true);
     actions[QWorkspacePrivate::ShadeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton)),
-                                                          q->tr("Sh&ade"), q);
+                                                          QWorkspace::tr("Sh&ade"), q);
 
     QObject::connect(popup, SIGNAL(aboutToShow()), q, SLOT(updateActions()));
     QObject::connect(popup, SIGNAL(triggered(QAction*)), q, SLOT(operationMenuActivated(QAction*)));
@@ -1578,7 +1559,8 @@ void QWorkspacePrivate::maximizeWindow(QWidget* w)
         if (oldMaxWindow) {
             oldMaxWindow->setGeometry(maxRestore);
             oldMaxWindow->overrideWindowState(Qt::WindowNoState);
-            oldMaxWindow->windowWidget()->overrideWindowState(Qt::WindowNoState);
+            if(oldMaxWindow->windowWidget())
+                oldMaxWindow->windowWidget()->overrideWindowState(Qt::WindowNoState);
         }
         maxRestore = r;
     }
@@ -1632,11 +1614,11 @@ QWorkspaceChild* QWorkspacePrivate::findChild(QWidget* w)
 }
 
 /*!
-    Returns a list of all child windows. If \a order is CreationOrder
-    (the default), the windows are listed in the order in which they
-    were inserted into the workspace. If \a order is StackingOrder,
-    the windows are listed in their stacking order, with the topmost
-    window as the last item in the list.
+    Returns a list of all visible or minimized child windows. If \a
+    order is CreationOrder (the default), the windows are listed in
+    the order in which they were inserted into the workspace. If \a
+    order is StackingOrder, the windows are listed in their stacking
+    order, with the topmost window as the last item in the list.
 */
 QWidgetList QWorkspace::windowList(WindowOrder order) const
 {
@@ -1759,6 +1741,20 @@ bool QWorkspace::eventFilter(QObject *o, QEvent * e)
     return QWidget::eventFilter(o, e);
 }
 
+static QMenuBar *findMenuBar(QWidget *w)
+{
+    // don't search recursively to avoid finding a menubar of a
+    // mainwindow that happens to be a workspace window (like
+    // a mainwindow in designer)
+    QList<QObject *> children = w->children();
+    for (int i = 0; i < children.count(); ++i) {
+        QMenuBar *bar = qobject_cast<QMenuBar *>(children.at(i));
+        if (bar)
+            return bar;
+    }
+    return 0;
+}
+
 void QWorkspacePrivate::showMaximizeControls()
 {
     Q_Q(QWorkspace);
@@ -1771,7 +1767,7 @@ void QWorkspacePrivate::showMaximizeControls()
     QString docTitle = maxWindow->windowWidget()->windowTitle();
     if (topTitle.size() && docTitle.size()) {
         inTitleChange = true;
-        q->window()->setWindowTitle(q->tr("%1 - [%2]").arg(topTitle).arg(docTitle));
+        q->window()->setWindowTitle(QWorkspace::tr("%1 - [%2]").arg(topTitle).arg(docTitle));
         inTitleChange = false;
     }
     q->window()->setWindowModified(maxWindow->windowWidget()->isWindowModified());
@@ -1781,17 +1777,16 @@ void QWorkspacePrivate::showMaximizeControls()
 
         // Do a breadth-first search first on every parent,
         QWidget* w = q->parentWidget();
-        QList<QMenuBar*> l;
-        while (l.isEmpty() && w) {
-            l = qFindChildren<QMenuBar*>(w);
+        while (w) {
+            b = findMenuBar(w);
+            if (b)
+                break;
             w = w->parentWidget();
         }
 
-        // and query recursively if nothing is found.
-        if (!l.size())
-            l = qFindChildren<QMenuBar*>(q->window());
-        if (l.size())
-            b = l.at(0);
+        // last attempt.
+        if (!b)
+            b = findMenuBar(q->window());
 
         if (!b)
             return;
@@ -1808,7 +1803,7 @@ void QWorkspacePrivate::showMaximizeControls()
                 QToolButton* iconB = new QToolButton(maxcontrols);
                 iconB->setObjectName(QLatin1String("iconify"));
 #ifndef QT_NO_TOOLTIP
-                iconB->setToolTip(q->tr("Minimize"));
+                iconB->setToolTip(QWorkspace::tr("Minimize"));
 #endif
                 l->addWidget(iconB);
                 iconB->setFocusPolicy(Qt::NoFocus);
@@ -1822,7 +1817,7 @@ void QWorkspacePrivate::showMaximizeControls()
             QToolButton* restoreB = new QToolButton(maxcontrols);
             restoreB->setObjectName(QLatin1String("restore"));
 #ifndef QT_NO_TOOLTIP
-            restoreB->setToolTip(q->tr("Restore Down"));
+            restoreB->setToolTip(QWorkspace::tr("Restore Down"));
 #endif
             l->addWidget(restoreB);
             restoreB->setFocusPolicy(Qt::NoFocus);
@@ -1836,7 +1831,7 @@ void QWorkspacePrivate::showMaximizeControls()
             QToolButton* closeB = new QToolButton(maxcontrols);
             closeB->setObjectName(QLatin1String("close"));
 #ifndef QT_NO_TOOLTIP
-            closeB->setToolTip(q->tr("Close"));
+            closeB->setToolTip(QWorkspace::tr("Close"));
 #endif
             l->addWidget(closeB);
             closeB->setFocusPolicy(Qt::NoFocus);
@@ -2009,21 +2004,23 @@ void QWorkspacePrivate::updateActions()
         actions[QWorkspacePrivate::MoveAct]->setEnabled(false);
         actions[QWorkspacePrivate::ResizeAct]->setEnabled(false);
         actions[QWorkspacePrivate::MaximizeAct]->setEnabled(false);
+        actions[QWorkspacePrivate::RestoreAct]->setEnabled(true);
     } else if (active->isVisible()){
         actions[QWorkspacePrivate::RestoreAct]->setEnabled(false);
     } else {
         actions[QWorkspacePrivate::MoveAct]->setEnabled(false);
         actions[QWorkspacePrivate::ResizeAct]->setEnabled(false);
         actions[QWorkspacePrivate::MinimizeAct]->setEnabled(false);
+        actions[QWorkspacePrivate::RestoreAct]->setEnabled(true);
     }
     if (active->shademode) {
         actions[QWorkspacePrivate::ShadeAct]->setIcon(
             QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarUnshadeButton)));
-        actions[QWorkspacePrivate::ShadeAct]->setText(q->tr("&Unshade"));
+        actions[QWorkspacePrivate::ShadeAct]->setText(QWorkspace::tr("&Unshade"));
     } else {
         actions[QWorkspacePrivate::ShadeAct]->setIcon(
             QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton)));
-        actions[QWorkspacePrivate::ShadeAct]->setText(q->tr("Sh&ade"));
+        actions[QWorkspacePrivate::ShadeAct]->setText(QWorkspace::tr("Sh&ade"));
     }
     actions[QWorkspacePrivate::StaysOnTopAct]->setEnabled(!active->shademode && canResize);
     actions[QWorkspacePrivate::StaysOnTopAct]->setChecked(
@@ -2508,13 +2505,7 @@ void QWorkspaceChild::resizeEvent(QResizeEvent *)
     QRect r = contentsRect();
     QRect cr;
 
-    QStyleOptionTitleBar titleBarOptions;
-    titleBarOptions.rect = rect();
-    titleBarOptions.titleBarFlags = childWidget->windowFlags();
-    titleBarOptions.titleBarState = childWidget->windowState();
-    QStyleHintReturnMask mask;
-    if (style()->styleHint(QStyle::SH_WindowFrame_Mask, &titleBarOptions, this, &mask))
-        setMask(mask.region);
+    updateMask();
 
     if (titlebar) {
         int th = titlebar->sizeHint().height();
@@ -2587,8 +2578,8 @@ void QWorkspaceChild::activate()
 
 bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
 {
-    if (!isActive() && o == childWidget && (e->type() == QEvent::MouseButtonPress ||
-                                            e->type() == QEvent::FocusIn)) {
+    if (!isActive()
+        && (e->type() == QEvent::MouseButtonPress || e->type() == QEvent::FocusIn)) {
         if (iconw) {
             ((QWorkspace*)parentWidget())->d_func()->normalizeWindow(windowWidget());
             if (iconw) {
@@ -2704,33 +2695,6 @@ bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
     return QWidget::eventFilter(o, e);
 }
 
-bool QWorkspaceChild::focusNextPrevChild(bool next)
-{
-    extern Q_GUI_EXPORT bool qt_tab_all_widgets;
-    uint focus_flag = qt_tab_all_widgets ? Qt::TabFocus : Qt::StrongFocus;
-
-    QWidget *f = focusWidget();
-    if (!f)
-        f = this;
-
-    QWidget *w = f;
-    QWidget *test = f->nextInFocusChain();
-    while (test != f) {
-        if ((test->focusPolicy() & focus_flag) == focus_flag
-            && !(test->focusProxy()) && test->isVisibleTo(this)
-            && test->isEnabled() && isAncestorOf(w)) {
-            w = test;
-            if (next)
-                break;
-        }
-        test = test->nextInFocusChain();
-    }
-    if (w == f)
-        return false;
-    w->setFocus();
-    return true;
-}
-
 void QWorkspaceChild::childEvent(QChildEvent* e)
 {
     if (e->type() == QEvent::ChildRemoved && e->child() == childWidget) {
@@ -2796,6 +2760,7 @@ void QWorkspaceChild::changeEvent(QEvent *ev)
                 frame->resize(196, 20);
             }
         }
+        updateMask();
     }
     QWidget::changeEvent(ev);
 }
@@ -2864,6 +2829,35 @@ bool QWorkspaceChild::isWindowOrIconVisible() const
     return childWidget && (!isHidden()  || (iconw && !iconw->isHidden()));
 }
 
+void QWorkspaceChild::updateMask()
+{
+    QStyleOptionTitleBar titleBarOptions;
+    titleBarOptions.rect = rect();
+    titleBarOptions.titleBarFlags = windowFlags();
+    titleBarOptions.titleBarState = windowState();
+
+    QStyleHintReturnMask frameMask;
+    if (style()->styleHint(QStyle::SH_WindowFrame_Mask, &titleBarOptions, this, &frameMask)) {
+        setMask(frameMask.region);
+    } else if (!mask().isEmpty()) {
+        clearMask();
+    }
+
+    if (iconw) {
+        QFrame *frame = qobject_cast<QFrame *>(iconw->parentWidget());
+        Q_ASSERT(frame);
+
+        titleBarOptions.rect = frame->rect();
+        titleBarOptions.titleBarFlags = frame->windowFlags();
+        titleBarOptions.titleBarState = frame->windowState() | Qt::WindowMinimized;
+        if (style()->styleHint(QStyle::SH_WindowFrame_Mask, &titleBarOptions, frame, &frameMask)) {
+            frame->setMask(frameMask.region);
+        } else if (!frame->mask().isEmpty()) {
+            frame->clearMask();
+        }
+    }
+}
+
 QWidget* QWorkspaceChild::iconWidget() const
 {
     if (!iconw) {
@@ -2885,15 +2879,8 @@ QWidget* QWorkspaceChild::iconWidget() const
             frame->resize(iconSize, th);
         }
 
-        QStyleOptionTitleBar titleBarOptions;
-        titleBarOptions.rect = frame->rect();
-        titleBarOptions.titleBarFlags = frame->windowFlags();
-        titleBarOptions.titleBarState = frame->windowState() | Qt::WindowMinimized;
-        QStyleHintReturnMask mask;
-        if (style()->styleHint(QStyle::SH_WindowFrame_Mask, &titleBarOptions, frame, &mask))
-            frame->setMask(mask.region);
-
         that->iconw = tb;
+        that->updateMask();
         iconw->setActive(isActive());
 
         connect(iconw, SIGNAL(doActivate()),

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -270,8 +270,8 @@ void QDial::mousePressEvent(QMouseEvent *e)
     e->accept();
     setSliderPosition(d->valueFromPoint(e->pos()));
     // ### This isn't quite right,
-    // we should be doing a hittest and only setting this if it's
-    // the actuall dial thingie (similar to what QSlider does), but we have no
+    // we should be doing a hit test and only setting this if it's
+    // the actual dial thingie (similar to what QSlider does), but we have no
     // subControls for QDial.
     setSliderDown(true);
 }
@@ -372,7 +372,7 @@ int QDial::notchSize() const
     if (d->maximum > d->minimum + d->pageStep)
         l = (int)(0.5 + l * d->pageStep / (d->maximum - d->minimum));
     // length of a singleStep arc
-    l = l * d->singleStep / d->pageStep;
+    l = l * d->singleStep / (d->pageStep ? d->pageStep : 1);
     if (l < 1)
         l = 1;
     // how many times singleStep can be draw in d->target pixels

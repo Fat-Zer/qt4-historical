@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -561,6 +561,7 @@ static void parseFontName(const QString &name, QString &foundry, QString &family
 
 struct QtFontDesc
 {
+    inline QtFontDesc() : family(0), foundry(0), style(0), size(0), encoding(0) {}
     QtFontFamily *family;
     QtFontFoundry *foundry;
     QtFontStyle *style;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -464,10 +464,18 @@ QMetaCallEvent::~QMetaCallEvent()
 
     QObjects can receive events through event() and filter the events
     of other objects. See installEventFilter() and eventFilter() for
-    details. A convenience handler, childEvent(), can be
-    reimplemented to catch child events. Events are delivered in the
-    thread in which the object was created; see \l{Thread Support in
-    Qt} and thread() for details.
+    details. A convenience handler, childEvent(), can be reimplemented
+    to catch child events.
+
+    Events are delivered in the thread in which the object was
+    created; see \l{Thread Support in Qt} and thread() for details.
+    Note that for QObjects that are created before QApplication,
+    thread() returns zero. This means that the main thread will only
+    handle posted events for these objects; other event processing is
+    not done at all for objects with no thread. Use the
+    moveToThread() function to change the thread affinity for an
+    object and its children (the object cannot be moved if it has a
+    parent).
 
     Last but not least, QObject provides the basic timer support in
     Qt; see QTimer for high-level support for timers.
@@ -851,8 +859,7 @@ static QObject *qChildHelper(const char *objName, const char *inheritsClass,
     depth-first search of the object's children.
 
     If there is no such object, this function returns 0. If there are
-    more than one, the first one found is retured; if you need all of
-    them, use queryList().
+    more than one, the first one found is returned.
 */
 QObject* QObject::child(const char *objName, const char *inheritsClass,
                          bool recursiveSearch) const
@@ -2726,7 +2733,7 @@ void QMetaObject::activate(QObject *sender, const QMetaObject *m,
 #ifndef QT_NO_PROPERTIES
 
 /*!
-  Sets the value of the obj1ect's \a name property to \a value.
+  Sets the value of the object's \a name property to \a value.
 
   Returns true if the operation was successful; otherwise returns
   false.
@@ -3023,7 +3030,7 @@ QDebug operator<<(QDebug dbg, const QObject *o) {
     See the \l{tools/plugandpaintplugins/basictools}{Plug & Paint
     Basic Tools} example for details.
 
-    \sa Q_DECLARE_INTERFACE(), Q_EXPORT_PLUGIN(), {How to Create Qt Plugins}
+    \sa Q_DECLARE_INTERFACE(), Q_EXPORT_PLUGIN2(), {How to Create Qt Plugins}
 */
 
 /*!

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -591,36 +591,26 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
     HDC hbitmap_hdc = CreateCompatibleDC(qt_win_display_dc());
     HGDIOBJ null_bitmap = SelectObject(hbitmap_hdc, hbitmap);
 
-    int tx = qRound((targetRect.x() + d->origin_x) * d->stretch_x);
-    int ty = qRound((targetRect.y() + d->origin_y) * d->stretch_y);
+    QPointF topLeft = targetRect.topLeft() * d->painterMatrix;
+    int tx = qRound(topLeft.x() * d->stretch_x + d->origin_x);
+    int ty = qRound(topLeft.y() * d->stretch_y + d->origin_y);
     int tw = qRound(pixmap.width() * d->stretch_x);
     int th = qRound(pixmap.height() * d->stretch_y);
-
-    tx += d->painterMatrix.dx() * d->stretch_x;
-    ty += d->painterMatrix.dy() * d->stretch_y;
 
     xform_offset_x *= d->stretch_x;
     xform_offset_y *= d->stretch_y;
 
-    HRGN old_region = 0;
-    bool clip_was_changed = false;
+    int dc_state = SaveDC(d->hdc);
+
     if (pixmap.hasAlpha()) {
         QPainterPath clipMask;
         clipMask.addRegion(QRegion(pixmap.mask()));
         clipMask = clipMask * QMatrix(d->stretch_x, 0, 0, d->stretch_y,
                                       tx - xform_offset_x, ty - xform_offset_y);
         if (!clipMask.isEmpty()) {
-            old_region = CreateRectRgn(0, 0, 1, 1);
-            int get_clip = GetClipRgn(d->hdc, old_region);
-            if (get_clip == -1) {
-                qErrnoWarning("QWin32PrintEngine::drawPixmap(), failed to get old clip");
-            } else {
-                clip_was_changed = true;
-                int clip_op = get_clip == 0 ? RGN_COPY : RGN_AND;
-                d->composeGdiPath(clipMask);
-                if (!SelectClipPath(d->hdc, clip_op))
-                    qErrnoWarning("QWin32PrintEngine::drawPixmap(), failed to set mask");
-            }
+            d->composeGdiPath(clipMask);
+            if (!SelectClipPath(d->hdc, RGN_AND))
+                qErrnoWarning("QWin32PrintEngine::drawPixmap(), failed to set mask");
         }
     }
 
@@ -630,29 +620,11 @@ void QWin32PrintEngine::drawPixmap(const QRectF &targetRect,
                     hbitmap_hdc, 0, 0, pixmap.width(), pixmap.height(), SRCCOPY))
         qErrnoWarning("QWin32PrintEngine::drawPixmap, StretchBlt failed");
 
-
-//     const BLENDFUNCTION bf = { AC_SRC_OVER,       // BlendOp
-//                                0,                 // BlendFlags, must be zero
-//                                255,               // SourceConstantAlpha, we use pr pixel
-//                                AC_SRC_ALPHA       // AlphaFormat
-//     };
-
-//     if (!qAlphaBlend(d->hdc, tx, ty, tw, th, hbitmap_hdc, sx, sy, sw, sh, bf)) {
-//         qWarning("QWin32PrintEngine::drawPixmap(), alpha blending was successful...");
-//     }
-
     SelectObject(hbitmap_hdc, null_bitmap);
     DeleteObject(hbitmap);
     DeleteDC(hbitmap_hdc);
 
-    if (clip_was_changed) {
-        // Restore the old region, note that a null region in GDI means no clip,
-        // so if we did change, but didn't have a region this will just work
-        ExtSelectClipRgn(d->hdc, old_region, RGN_COPY);
-    }
-
-    if (old_region != 0)
-        DeleteObject(old_region);
+    RestoreDC(d->hdc, dc_state);
 }
 
 
@@ -730,6 +702,37 @@ void QWin32PrintEnginePrivate::fillPath_dev(const QPainterPath &path, const QCol
     DeleteObject(SelectObject(hdc, old_brush));
 }
 
+void QWin32PrintEnginePrivate::strokePath_dev(const QPainterPath &path, const QColor &color,
+                                              Qt::PenStyle penStyle)
+{
+    composeGdiPath(path);
+
+    int gdiPenStyle;
+    switch (penStyle)
+    {
+    case Qt::DashLine:
+        gdiPenStyle = PS_DASH;
+        break;
+    case Qt::DashDotLine:
+        gdiPenStyle = PS_DASHDOT;
+        break;
+    case Qt::DashDotDotLine:
+        gdiPenStyle = PS_DASHDOTDOT;
+        break;
+    case Qt::DotLine:
+        gdiPenStyle = PS_DOT;
+        break;
+    default:
+        gdiPenStyle = PS_SOLID;
+        break;
+    };
+
+    HPEN pen = CreatePen(gdiPenStyle, 0, RGB(color.red(), color.green(), color.blue()));
+    HGDIOBJ old_pen = SelectObject(hdc, pen);
+    StrokePath(hdc);
+    DeleteObject(SelectObject(hdc, old_pen));
+}
+
 
 void QWin32PrintEnginePrivate::fillPath(const QPainterPath &path, const QColor &color)
 {
@@ -748,17 +751,17 @@ void QWin32PrintEnginePrivate::strokePath(const QPainterPath &path, const QColor
 
     qreal width = pen.widthF();
     if (width == 0) {
-        stroker.setWidth(1);
-        stroke = stroker.createStroke(path * matrix);
+        // We do not support custom dash patterns for stroked paths with solid colored, cosmetic pens
+        strokePath_dev(path * matrix, color, pen.style());
     } else {
         stroker.setWidth(width);
         stroke = stroker.createStroke(path) * matrix;
+        if (stroke.isEmpty())
+            return;
+
+        fillPath_dev(stroke, color);
     }
 
-    if (stroke.isEmpty())
-        return;
-
-    fillPath_dev(stroke, color);
 }
 
 
@@ -1151,11 +1154,19 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         d->initialize();
         break;
 
-    case PPK_Resolution:
-        d->resolution = value.toInt();
-        d->stretch_x = d->resolution / double(d->dpi_display);
-        d->stretch_y = d->resolution / double(d->dpi_display);
-        // ### matrix update?
+    case PPK_Resolution: 
+        {
+            int oldRes = d->resolution;
+            d->resolution = value.toInt();
+
+            if (d->mode == QPrinter::ScreenResolution) {
+                d->stretch_x = d->resolution / double(d->dpi_display);
+                d->stretch_y = d->resolution / double(d->dpi_display);
+            } else {
+                d->stretch_x = d->stretch_x * double(oldRes) / double(d->resolution);
+                d->stretch_y = d->stretch_y * double(oldRes) / double(d->resolution);
+            }
+        }
         break;
 
     case PPK_SelectionOption:
@@ -1240,7 +1251,11 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
 
     case PPK_PageRect:
         {
-            value = QMatrix(1/d->stretch_x, 0, 0, 1/d->stretch_y, 0, 0).mapRect(d->devPageRect);
+            QRect rect(QMatrix(1/d->stretch_x, 0, 0, 1/d->stretch_y, 0, 0).mapRect(d->devPageRect));
+            if (property(PPK_Orientation) == QPrinter::Portrait)
+                value = rect;
+            else
+                value = QRect(rect.top(), rect.left(), rect.height(), rect.width());
         }
         break;
 
@@ -1258,7 +1273,11 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
 
     case PPK_PaperRect:
         {
-            value = QMatrix(1/d->stretch_x, 0, 0, 1/d->stretch_y, 0, 0).mapRect(d->devPaperRect);
+            QRect rect(QMatrix(1/d->stretch_x, 0, 0, 1/d->stretch_y, 0, 0).mapRect(d->devPaperRect));
+            if (property(PPK_Orientation) == QPrinter::Portrait)
+                value = rect;
+            else
+                value = QRect(rect.top(), rect.left(), rect.height(), rect.width());            
         }
         break;
 

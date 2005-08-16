@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -43,6 +43,7 @@ Qt {
     Q_FLAGS(Orientations)
     Q_FLAGS(DockWidgetAreas)
     Q_ENUMS(DockWidgetArea)
+    Q_ENUMS(TextElideMode)
 public:
 #endif
     enum GlobalColor {

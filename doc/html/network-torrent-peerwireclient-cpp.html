@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">peerwireclient.cpp Example File<br /><sup><sup>network/torrent/peerwireclient.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -527,7 +527,10 @@ body { background: #ffffff; color: black; }</style>
             case HavePacket: {
                 // The peer has a new piece available.
                 quint32 index = fromNetworkData(&amp;packet.data()[1]);
-                peerPieces.setBit(int(index));
+                if (index &lt; quint32(peerPieces.size())) {
+                    // Only accept indexes within the valid range.
+                    peerPieces.setBit(int(index));
+                }
                 emit piecesAvailable(availablePieces());
                 break;
             }
@@ -535,8 +538,16 @@ body { background: #ffffff; color: black; }</style>
                 // The peer has the following pieces available.
                 for (int i = 1; i &lt; packet.size(); ++i) {
                     for (int bit = 0; bit &lt; 8; ++bit) {
-                        if (packet.at(i) &amp; (1 &lt;&lt; (7 - bit)))
-                            peerPieces.setBit(int(((i - 1) * 8) + bit));
+                        if (packet.at(i) &amp; (1 &lt;&lt; (7 - bit))) {
+                            int bitIndex = int(((i - 1) * 8) + bit);
+                            if (bitIndex &gt;= 0 &amp;&amp; bitIndex &lt; peerPieces.size()) {
+                                // Occasionally, broken clients claim to have
+                                // pieces whose index is outside the valid range.
+                                // The most common mistake is the index == size
+                                // case.
+                                peerPieces.setBit(bitIndex);
+                            }
+                        }
                     }
                 }
                 emit piecesAvailable(availablePieces());
@@ -612,8 +623,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

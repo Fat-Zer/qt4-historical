@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -54,12 +54,6 @@
     which acts as a factory method for creating text objects.
 
     \sa QTextDocument
-*/
-
-/*!
-    \fn int QTextObject::formatType() const
-
-    \internal
 */
 
 /*!
@@ -623,6 +617,8 @@ QTextFrame::iterator QTextFrame::end() const
 QTextFrame::iterator::iterator()
 {
     f = 0;
+    b = 0;
+    e = 0;
     cf = 0;
     cb = 0;
 }
@@ -684,6 +680,8 @@ QTextFrame *QTextFrame::iterator::currentFrame() const
 */
 QTextBlock QTextFrame::iterator::currentBlock() const
 {
+    if (!f)
+        return QTextBlock();
     return QTextBlock(f->docHandle(), cb);
 }
 
@@ -778,7 +776,14 @@ QTextFrame::iterator &QTextFrame::iterator::operator--()
     QTextBlock::setUserData(). This makes it possible to store additional data per text
     block in a way that can be retrieved safely by the application.
 
+    Each subclass should provide a reimplementation of the destructor to ensure that any
+    private data is automatically cleaned up when user data objects are deleted.
+
     \sa QTextBlock
+*/
+
+/*!
+    Destroys the user data.
 */
 QTextBlockUserData::~QTextBlockUserData()
 {
@@ -1076,13 +1081,14 @@ QString QTextBlock::text() const
 
     const QString buffer = p->buffer();
     QString text;
+    text.reserve(length());
 
     const int pos = position();
     QTextDocumentPrivate::FragmentIterator it = p->find(pos);
     QTextDocumentPrivate::FragmentIterator end = p->find(pos + length() - 1); // -1 to omit the block separator char
     for (; it != end; ++it) {
         const QTextFragmentData * const frag = it.value();
-        text += QString(buffer.constData() + frag->stringPosition, frag->size);
+        text += QString::fromRawData(buffer.constData() + frag->stringPosition, frag->size);
     }
 
     return text;

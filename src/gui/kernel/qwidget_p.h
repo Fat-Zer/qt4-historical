@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -204,7 +204,8 @@ public:
 
     QRect clipRect() const;
     QRegion clipRegion() const;
-    void subtractOpaqueChildren(QRegion &rgn, const QRect &clipRect, const QPoint &offset) const;
+    void subtractOpaqueChildren(QRegion &rgn, const QRegion &clipRgn, const QPoint &offset) const;
+    void updateIsOpaque();
     bool isOpaque() const;
     bool hasBackground() const;
 
@@ -219,7 +220,6 @@ public:
     void setWindowIcon_sys(bool forceReset = false);
 
     void focusInputContext();
-    void unfocusInputContext();
 
 #if defined(Q_WS_X11)
     void checkChildrenDnd();

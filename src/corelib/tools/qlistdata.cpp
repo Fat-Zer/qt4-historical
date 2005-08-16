@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -127,13 +127,36 @@ void **QListData::insert(int i)
         return prepend();
     if (i >= d->end - d->begin)
         return append();
-    if (d->end + 1 > d->alloc)
-        realloc(grow(d->alloc + 1));
-    i += d->begin;
-    ::memmove(d->array + i + 1, d->array + i,
-               (d->end-i) * sizeof(void*));
-    d->end++;
-    return d->array + i;
+
+    bool leftward = false;
+    int size = d->end - d->begin;
+
+    if (d->begin == 0) {
+        if (d->end == d->alloc) {
+            // If the array is full, we expand it and move some items rightward
+            realloc(grow(d->alloc + 1));
+        } else {
+            // If there is free space at the end of the array, we move some items rightward
+        }
+    } else {
+        if (d->end == d->alloc) {
+            // If there is free space at the beginning of the array, we move some items leftward
+            leftward = true;
+        } else {
+            // If there is free space at both ends, we move as few items as possible
+            leftward = (i < size - i);
+        }
+    }
+
+    if (leftward) {
+        --d->begin;
+        ::memmove(d->array + d->begin, d->array + d->begin + 1, i * sizeof(void *));
+    } else {
+        ::memmove(d->array + d->begin + i + 1, d->array + d->begin + i,
+                  (size - i) * sizeof(void *));
+        ++d->end;
+    }
+    return d->array + d->begin + i;
 }
 
 void QListData::remove(int i)
@@ -378,7 +401,7 @@ void **QListData::erase(void **xi)
     Constructs an empty list.
 */
 
-/*! \fn QList::QList(const QList &other)
+/*! \fn QList::QList(const QList<T> &other)
 
     Constructs a copy of \a other.
 
@@ -396,13 +419,13 @@ void **QListData::erase(void **xi)
     iterators of this list become invalid.
 */
 
-/*! \fn QList &QList::operator=(const QList &other)
+/*! \fn QList<T> &QList::operator=(const QList<T> &other)
 
     Assigns \a other to this list and returns a reference to this
     list.
 */
 
-/*! \fn bool QList::operator==(const QList &other) const
+/*! \fn bool QList::operator==(const QList<T> &other) const
 
     Returns true if \a other is equal to this list; otherwise returns
     false.
@@ -416,7 +439,7 @@ void **QListData::erase(void **xi)
     \sa operator!=()
 */
 
-/*! \fn bool QList::operator!=(const QList &other) const
+/*! \fn bool QList::operator!=(const QList<T> &other) const
 
     Returns true if \a other is not equal to this list; otherwise
     returns false.
@@ -980,7 +1003,7 @@ void **QListData::erase(void **xi)
     to isEmpty().
 */
 
-/*! \fn QList &QList::operator+=(const QList &other)
+/*! \fn QList<T> &QList::operator+=(const QList<T> &other)
 
     Appends the items of the \a other list to this list and returns a
     reference to this list.
@@ -997,7 +1020,7 @@ void **QListData::erase(void **xi)
     \sa append(), operator<<()
 */
 
-/*! \fn QList QList::operator+(const QList &other) const
+/*! \fn QList<T> QList::operator+(const QList<T> &other) const
 
     Returns a list that contains all the items in this list followed
     by all the items in the \a other list.
@@ -1005,7 +1028,7 @@ void **QListData::erase(void **xi)
     \sa operator+=()
 */
 
-/*! \fn QList &QList::operator<<(const QList &other)
+/*! \fn QList<T> &QList::operator<<(const QList<T> &other)
 
     Appends the items of the \a other list to this list and returns a
     reference to this list.

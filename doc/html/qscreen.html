@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/embedded/qscreen_qws.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/embedded/qscreen_qws.cpp -->
 <head>
     <title>Qt 4.1: QScreen Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -86,11 +86,11 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="PixelType-enum"></a>enum QScreen::PixelType</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QScreen::NormalPixel</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QScreen::BGRPixel</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QScreen"></a>QScreen::QScreen ( int <i>display_id</i> )</h3>
@@ -103,10 +103,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a pointer to the start of the framebuffer.</p>
 <h3 class="fn"><a name="blank"></a>void QScreen::blank ( bool <i>on</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>on</i> is true, blank the screen. Otherwise unblank it.</p>
-<h3 class="fn"><a name="clut"></a>QRgb * QScreen::clut ()</h3>
+<h3 class="fn"><a name="clut"></a><a href="qcolor.html#QRgb-typedef">QRgb</a> * QScreen::clut ()</h3>
 <p>Returns the screen's color lookup table (color palette). This is only valid in paletted modes (8bpp and lower).</p>
 <h3 class="fn"><a name="connect"></a>bool QScreen::connect ( const <a href="qstring.html">QString</a> &amp; <i>displaySpec</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>This function is called by every Qtopia Core application on startup. It maps in the framebuffer and in the accelerated drivers the graphics card control registers. <i>displaySpec</i> has the following syntax: &lt;p&gt; &lt;tt&gt;[screen driver][:driver specific options][:display number]&lt;/tt&gt; &lt;p&gt; for example if you want to use the mach64 driver on fb1 as display 2: &lt;p&gt; &lt;tt&gt;Mach64:/dev/fb1:2&lt;/tt&gt; &lt;p&gt; <i>displaySpec</i> is passed in via the QWS_DISPLAY environment variable or the -display command line parameter.</p>
+<p>This function is called by every Qtopia Core application on startup. It maps in the framebuffer and in the accelerated drivers the graphics card control registers. <i>displaySpec</i> has the following syntax:</p>
+<pre>&nbsp;   [screen driver][:driver specific options][:display number]</pre>
+<p>for example if you want to use the mach64 driver on fb1 as display 2:</p>
+<pre>&nbsp;   Mach64:/dev/fb1:2</pre>
+<p><i>displaySpec</i> is passed in via the QWS_DISPLAY environment variable or the -display command line parameter.</p>
 <h3 class="fn"><a name="depth"></a>int QScreen::depth () const</h3>
 <p>Gives the depth in bits per pixel of the framebuffer. This is the number of bits each pixel takes up rather than the number of significant bits, so 24bpp and 32bpp express the same range of colors (8 bits of red, green and blue)</p>
 <h3 class="fn"><a name="deviceHeight"></a>int QScreen::deviceHeight () const</h3>
@@ -131,37 +135,37 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="mapFromDevice"></a><a href="qsize.html">QSize</a> QScreen::mapFromDevice ( const <a href="qsize.html">QSize</a> &amp; <i>s</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Map a framebuffer coordinate to the coordinate space used by the application. Used by the rotated driver; the <a href="qscreen.html">QScreen</a> implementation simply returns <i>s</i>.</p>
 <h3 class="fn"><a name="mapFromDevice-2"></a><a href="qpoint.html">QPoint</a> QScreen::mapFromDevice ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Map a framebuffer coordinate to the coordinate space used by the application. Used by the rotated driver; the <a href="qscreen.html">QScreen</a> implementation simply returns the given <i>point</i> and ignores the <i>size</i> argument.</p>
 <h3 class="fn"><a name="mapFromDevice-3"></a><a href="qrect.html">QRect</a> QScreen::mapFromDevice ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Map a framebuffer coordinate to the coordinate space used by the application. Used by the rotated driver; the <a href="qscreen.html">QScreen</a> implementation simply returns the given <i>rect</i> and ignores the <i>size</i> argument.</p>
 <h3 class="fn"><a name="mapFromDevice-4"></a><a href="qimage.html">QImage</a> QScreen::mapFromDevice ( const <a href="qimage.html">QImage</a> &amp; <i>i</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Transforms an image so that it matches the application coordinate space (e.g. rotating it 90 degrees counter-clockwise). The <a href="qscreen.html">QScreen</a> implementation simply returns <i>i</i>.</p>
 <h3 class="fn"><a name="mapFromDevice-5"></a><a href="qregion.html">QRegion</a> QScreen::mapFromDevice ( const <a href="qregion.html">QRegion</a> &amp; <i>region</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Transforms a region so that it matches the application coordinate space (e.g. rotating it 90 degrees counter-clockwise). The <a href="qscreen.html">QScreen</a> implementation simply returns the given <i>region</i> and ignores the <i>size</i> argument.</p>
 <h3 class="fn"><a name="mapToDevice"></a><a href="qsize.html">QSize</a> QScreen::mapToDevice ( const <a href="qsize.html">QSize</a> &amp; <i>s</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Map a user coordinate to the one to actually draw. Used by the rotated driver; the <a href="qscreen.html">QScreen</a> implementation simply returns <i>s</i>.</p>
 <h3 class="fn"><a name="mapToDevice-2"></a><a href="qpoint.html">QPoint</a> QScreen::mapToDevice ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Map a user coordinate to the one to actually draw. Used by the rotated driver; the <a href="qscreen.html">QScreen</a> implementation simply returns the given <i>point</i> and ignores the <i>size</i> argument.</p>
 <h3 class="fn"><a name="mapToDevice-3"></a><a href="qrect.html">QRect</a> QScreen::mapToDevice ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Map a user coordinate to the one to actually draw. Used by the rotated driver; the <a href="qscreen.html">QScreen</a> implementation simply returns the given <i>rect</i> and ignores the <i>size</i> argument.</p>
 <h3 class="fn"><a name="mapToDevice-4"></a><a href="qimage.html">QImage</a> QScreen::mapToDevice ( const <a href="qimage.html">QImage</a> &amp; <i>i</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Transforms an image so that it fits the device coordinate space (e.g. rotating it 90 degrees clockwise). The <a href="qscreen.html">QScreen</a> implementation simply returns <i>i</i>.</p>
 <h3 class="fn"><a name="mapToDevice-5"></a><a href="qregion.html">QRegion</a> QScreen::mapToDevice ( const <a href="qregion.html">QRegion</a> &amp; <i>region</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Transforms a region so that it fits the device coordinate space (e.g. rotating it 90 degrees clockwise). The <a href="qscreen.html">QScreen</a> implementation simply returns the given <i>region</i> and ignores the <i>size</i> argument.</p>
 <h3 class="fn"><a name="numCols"></a>int QScreen::numCols ()</h3>
 <p>Returns the number of entries in the color table returned by <a href="qscreen.html#clut">clut</a>().</p>
 <h3 class="fn"><a name="onCard"></a>bool QScreen::onCard ( const unsigned char * <i>p</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if the buffer pointed to by <i>p</i> is within graphics card memory, false if it's in main RAM.</p>
 <h3 class="fn"><a name="onCard-2"></a>bool QScreen::onCard ( const unsigned char * <i>p</i>, <a href="qtglobal.html#ulong-typedef">ulong</a> &amp; <i>offset</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This checks whether the buffer specified by <i>p</i> is on the card (as per the other version of onCard) and returns an offset in bytes from the start of graphics card memory in <i>offset</i> if it is.</p>
 <h3 class="fn"><a name="opType"></a>int * QScreen::opType ()</h3>
 <p>Returns the screen's operation type.</p>
@@ -196,8 +200,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Gives the width in pixels of the framebuffer.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

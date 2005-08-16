@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -28,9 +28,6 @@
     with QImageReader.
 
     \ingroup multimedia
-
-    QMovie is a convenience class that uses QImageReader internally to play
-    movies.
 
     First, create a QMovie object by passing either the name of a file or a
     pointer to a QIODevice containing an animated image format to QMovie's
@@ -210,6 +207,7 @@ public:
 class QMoviePrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QMovie)
+
 public:
     QMoviePrivate(QMovie *qq);
     bool isDone();
@@ -220,9 +218,16 @@ public:
     int frameCount() const;
     bool jumpToNextFrame();
     QFrameInfo infoForFrame(int frameNumber);
+    void reset();
+
+    inline void enterState(QMovie::MovieState newState) {
+        movieState = newState;
+        emit q_func()->stateChanged(newState);
+    }
 
     // private slots
     void loadNextFrame();
+    void loadNextFrame(bool starting);
 
     QImageReader *reader;
     int speed;
@@ -253,6 +258,23 @@ QMoviePrivate::QMoviePrivate(QMovie *qq)
 {
     q_ptr = qq;
     nextImageTimer.setSingleShot(true);
+}
+
+/*! \internal
+ */
+void QMoviePrivate::reset()
+{
+    nextImageTimer.stop();
+    if (reader->device())
+        initialDevicePos = reader->device()->pos();
+    currentFrameNumber = -1;
+    nextFrameNumber = 0;
+    greatestFrameNumber = -1;
+    nextDelay = 0;
+    playCounter = -1;
+    haveReadAll = false;
+    isFirstIteration = true;
+    frameMap.clear();
 }
 
 /*! \internal
@@ -395,6 +417,10 @@ bool QMoviePrivate::next()
     if (info.isEndMarker()) {
         // We reached the end of the animation.
         if (isFirstIteration) {
+            if (nextFrameNumber == 0) {
+                // No frames could be read at all (error).
+                return false;
+            }
             // End of first iteration. Initialize play counter
             playCounter = reader->loopCount();
             isFirstIteration = false;
@@ -424,12 +450,15 @@ bool QMoviePrivate::next()
  */
 void QMoviePrivate::loadNextFrame()
 {
+    loadNextFrame(false);
+}
+
+void QMoviePrivate::loadNextFrame(bool starting)
+{
     Q_Q(QMovie);
     if (next()) {
-        // Frame was read successfully
-        if (movieState == QMovie::NotRunning) {
-            movieState = QMovie::Running;
-            emit q->stateChanged(movieState);
+        if (starting && movieState == QMovie::NotRunning) {
+            enterState(QMovie::Running);
             emit q->started();
         }
 
@@ -441,28 +470,23 @@ void QMoviePrivate::loadNextFrame()
         emit q->updated(frameRect);
         emit q->frameChanged(currentFrameNumber);
 
-        nextImageTimer.start(nextDelay);
-        return;
+        if (movieState == QMovie::Running)
+            nextImageTimer.start(nextDelay);
     } else {
         // Could not read another frame
         if (!isDone()) {
             emit q->error(reader->error());
-            if (movieState != QMovie::NotRunning) {
-                movieState = QMovie::NotRunning;
-                emit q->stateChanged(movieState);
-                emit q->finished();
-                return;
-            }
+        }
+
+        // Graceful finish
+        if (movieState != QMovie::Paused) {
+            nextFrameNumber = 0;
+            isFirstIteration = true;
+            playCounter = -1;
+            enterState(QMovie::NotRunning);
+            emit q->finished();
         }
     }
-
-    // Graceful finish
-    nextFrameNumber = 0;
-    isFirstIteration = true;
-    playCounter = -1;
-    movieState = QMovie::NotRunning;
-    emit q->stateChanged(movieState);
-    emit q->finished();
 }
 
 /*!
@@ -478,6 +502,10 @@ bool QMoviePrivate::isValid() const
 */
 bool QMoviePrivate::jumpToFrame(int frameNumber)
 {
+    if (frameNumber < 0)
+        return false;
+    if (currentFrameNumber == frameNumber)
+        return true;
     nextFrameNumber = frameNumber;
     if (movieState == QMovie::Running)
         nextImageTimer.stop();
@@ -574,7 +602,7 @@ void QMovie::setDevice(QIODevice *device)
 {
     Q_D(QMovie);
     d->reader->setDevice(device);
-    d->initialDevicePos = device->pos();
+    d->reset();
 }
 
 /*!
@@ -599,6 +627,7 @@ void QMovie::setFileName(const QString &fileName)
 {
     Q_D(QMovie);
     d->reader->setFileName(fileName);
+    d->reset();
 }
 
 /*!
@@ -856,14 +885,12 @@ void QMovie::setPaused(bool paused)
     if (paused) {
         if (d->movieState == NotRunning)
             return;
-        emit stateChanged(Paused);
-        d->movieState = Paused;
+        d->enterState(Paused);
         d->nextImageTimer.stop();
     } else {
         if (d->movieState == Running)
             return;
-        emit stateChanged(Running);
-        d->movieState = Running;
+        d->enterState(Running);
         d->nextImageTimer.start(nextFrameDelay());
     }
 }
@@ -897,17 +924,20 @@ int QMovie::speed() const
     Starts the movie. QMovie will enter \l Running state, and start emitting
     updated() and resized() as the movie progresses.
 
+    If QMovie is in the \l Paused state, this function is equivalent
+    to calling setPaused(false). If QMovie is already in the \l
+    Running state, this function does nothing.
+
     \sa stop(), setPaused()
 */
 void QMovie::start()
 {
     Q_D(QMovie);
-    if (d->movieState == Running) {
-        qWarning("QMovie::start() called when state is Running");
-        return;
+    if (d->movieState == NotRunning) {
+        d->loadNextFrame(true);
+    } else if (d->movieState == Paused) {
+        setPaused(false);
     }
-
-    d->loadNextFrame();
 }
 
 /*!
@@ -915,17 +945,17 @@ void QMovie::start()
     updated() and resized(). If start() is called again, the movie will
     restart from the beginning.
 
-    \sa start()
+    If QMovie is already in the \l NotRunning state, this function
+    does nothing.
+
+    \sa start(), setPaused()
 */
 void QMovie::stop()
 {
     Q_D(QMovie);
-    if (d->movieState == NotRunning) {
-        qWarning("QMovie::stop() called when state is NotRunning");
+    if (d->movieState == NotRunning)
         return;
-    }
-    emit stateChanged(NotRunning);
-    d->movieState = NotRunning;
+    d->enterState(NotRunning);
     d->nextImageTimer.stop();
     d->nextFrameNumber = 0;
 }

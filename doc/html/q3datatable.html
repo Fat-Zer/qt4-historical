@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/sql/q3datatable.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/sql/q3datatable.cpp -->
 <head>
     <title>Qt 4.1: Q3DataTable Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3datatable.html#autoEdit-prop">autoEdit</a></b> : bool</li>
 <li><div class="fn"/><b><a href="q3datatable.html#confirmCancels-prop">confirmCancels</a></b> : bool</li>
@@ -51,7 +51,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3datatable.html#trueText-prop">trueText</a></b> : QString</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>10 properties inherited from <a href="q3table.html#properties">Q3Table</a></li>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
@@ -116,7 +116,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -175,6 +175,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -205,12 +206,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Refresh-enum"></a>enum Q3DataTable::Refresh</h3>
 <p>This enum describes the refresh options.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3DataTable::RefreshData</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">refresh the data, i.e. read it from the database</td></tr>
 <tr><td valign="top"><tt>Q3DataTable::RefreshColumns</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">refresh the list of fields, e.g. the column headings</td></tr>
 <tr><td valign="top"><tt>Q3DataTable::RefreshAll</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">refresh both the data and the list of fields</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="autoEdit-prop"></a>autoEdit : bool</h3>
@@ -424,7 +425,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Refreshes the table. If there is no currently defined cursor (see <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>()), nothing happens. The <i>mode</i> parameter determines which type of refresh will take place.</p>
 <p>See also <a href="q3datatable.html#Refresh-enum">Refresh</a>, <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>(), and <a href="q3datatable.html#addColumn">addColumn</a>().</p>
 <h3 class="fn"><a name="refresh-2"></a>void Q3DataTable::refresh ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Refreshes the table. The cursor is refreshed using the current filter, the current sort, and the currently defined columns. Equivalent to calling refresh( <a href="q3datatable.html#Refresh-enum">Q3DataTable::RefreshData</a> ).</p>
 <h3 class="fn"><a name="removeColumn"></a>void Q3DataTable::removeColumn ( int <i>col</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Removes column <i>col</i> from the list of columns to be displayed. If <i>col</i> does not exist, nothing happens.</p>
@@ -474,8 +475,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the value in cell <i>row</i>, <i>col</i>, or an invalid value if the cell does not exist or has no value.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

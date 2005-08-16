@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1276,6 +1276,7 @@ void Q3ComboTableItem::paint(QPainter *p, const QColorGroup &cg,
     opt.rect = fakeCombo->rect();
     opt.palette = pal2;
     opt.state &= ~QStyle::State_HasFocus;
+    opt.state &= ~QStyle::State_MouseOver;
     opt.state |= flags;
     opt.subControls = QStyle::SC_All;
     opt.activeSubControls = QStyle::SC_None;
@@ -1541,6 +1542,7 @@ void Q3CheckTableItem::paint(QPainter *p, const QColorGroup &cg,
     opt.rect.setRect(0, (cr.height() - sz.height()) / 2, sz.width(), sz.height());
     opt.palette = pal2;
     opt.state &= ~QStyle::State_HasFocus;
+    opt.state &= ~QStyle::State_MouseOver;
     if(isEnabled())
         opt.state |= QStyle::State_Enabled;
     if (checked)
@@ -2044,7 +2046,8 @@ void Q3Table::init(int rows, int cols)
     enableClipper(qt_table_clipper_enabled);
 
     viewport()->setFocusProxy(this);
-    viewport()->setFocusPolicy(WheelFocus);
+    viewport()->setFocusPolicy(Qt::WheelFocus);
+    setFocusPolicy(Qt::WheelFocus);
 
     viewport()->setBackgroundMode(PaletteBase);
     setBackgroundMode(PaletteBackground, PaletteBase);

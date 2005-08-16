@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/deployment.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/deployment.qdoc -->
 <head>
     <title>Qt 4.1: Deploying an Application on Qt/X11</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -108,7 +108,7 @@ body { background: #ffffff; color: black; }</style>
 <p>When looking for plugins, the application searches in a plugins subdirectory inside the directory of the application executable. Either you have to manually copy the plugins into the <tt>plugins</tt> directory, or you can set the <tt>DESTDIR</tt> in the plugins' project files:</p>
 <pre>&nbsp;   DESTDIR = /path/to/Qt/plugandpaint/plugins</pre>
 <p>An archive distributing all the Qt libraries, and all the plugins, required to run the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> application, would have to include the following files:</p>
-<table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Component</th><th colspan="2" rowspan=" 1">File Name</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>The executable</td><td colspan="2" rowspan=" 1"><tt>plugandpaint</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>The script to run the executable</td><td colspan="2" rowspan=" 1"><tt>plugandpaint.sh</tt></td></tr>
@@ -116,7 +116,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>The ExtraFilters plugin</td><td colspan="2" rowspan=" 1"><tt>plugins\libpnp_extrafilters.so</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>The Qt Core module</td><td colspan="2" rowspan=" 1"><tt>libQtCore.so.4</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>The Qt GUI module</td><td colspan="2" rowspan=" 1"><tt>libQtGui.so.4</tt></td></tr>
-</table>
+</table></p>
 <p>On most systems, the extension for shared libraries is <tt>.so</tt>. A notable exception is HP-UX, which uses <tt>.sl</tt>.</p>
 <p>Remember that if your application depends on compiler specific libraries, these must still be redistributed along with your application. For more information, see the <a href="#application-dependencies">Application Dependencies</a> section.</p>
 <p>To verify that the application now can be successfully deployed, you can extract this archive on a machine without Qt and without any compiler installed, and try to run it, i.e. run the <tt>plugandpaint.sh</tt> script.</p>
@@ -147,8 +147,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qvarlengtharray.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qvarlengtharray.qdoc -->
 <head>
     <title>Qt 4.1: QVarLengthArray Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/><b><a href="qvarlengtharray.html#QVarLengthArray">QVarLengthArray</a></b> ( int <i>size</i> = 0 )</li>
-<li><div class="fn"/><b><a href="qvarlengtharray.html#QVarLengthArray-2">QVarLengthArray</a></b> ( const QVarLengthArray &amp; <i>other</i> )</li>
+<li><div class="fn"/><b><a href="qvarlengtharray.html#QVarLengthArray-2">QVarLengthArray</a></b> ( const QVarLengthArray&lt;T, Prealloc&gt; &amp; <i>other</i> )</li>
 <li><div class="fn"/><b><a href="qvarlengtharray.html#dtor.QVarLengthArray">~QVarLengthArray</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qvarlengtharray.html#append">append</a></b> ( const T &amp; <i>t</i> )</li>
 <li><div class="fn"/>void <b><a href="qvarlengtharray.html#append-2">append</a></b> ( const T * <i>buf</i>, int <i>size</i> )</li>
@@ -41,7 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qvarlengtharray.html#reserve">reserve</a></b> ( int <i>size</i> )</li>
 <li><div class="fn"/>void <b><a href="qvarlengtharray.html#resize">resize</a></b> ( int <i>size</i> )</li>
 <li><div class="fn"/>int <b><a href="qvarlengtharray.html#size">size</a></b> () const</li>
-<li><div class="fn"/>QVarLengthArray &amp; <b><a href="qvarlengtharray.html#operator-eq">operator=</a></b> ( const QVarLengthArray &amp; <i>other</i> )</li>
+<li><div class="fn"/>QVarLengthArray&lt;T, Prealloc&gt; &amp; <b><a href="qvarlengtharray.html#operator-eq">operator=</a></b> ( const QVarLengthArray&lt;T, Prealloc&gt; &amp; <i>other</i> )</li>
 <li><div class="fn"/>T &amp; <b><a href="qvarlengtharray.html#operator-5b-5d">operator[]</a></b> ( int <i>i</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qvarlengtharray.html#operator-5b-5d-2">operator[]</a></b> ( int <i>i</i> ) const</li>
 </ul>
@@ -89,14 +89,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QVarLengthArray"></a>QVarLengthArray::QVarLengthArray ( int <i>size</i> = 0 )</h3>
 <p>Constructs an array with an initial size of <i>size</i> elements.</p>
 <p>If the value type is a primitive type (e.g., char, int, float) or a pointer type (e.g., <a href="qwidget.html">QWidget</a> *), the elements are not initialized. For other types, the elements are initialized with a <a href="containers.html#default-constructed-values">default-constructed value</a>.</p>
-<h3 class="fn"><a name="QVarLengthArray-2"></a>QVarLengthArray::QVarLengthArray ( const QVarLengthArray &amp; <i>other</i> )</h3>
-<p>Constructs a copy of <i>other</i>.</p>
+<h3 class="fn"><a name="QVarLengthArray-2"></a>QVarLengthArray::QVarLengthArray ( const QVarLengthArray&lt;T, Prealloc&gt; &amp; <i>other</i> )</h3>
 <h3 class="fn"><a name="dtor.QVarLengthArray"></a>QVarLengthArray::~QVarLengthArray ()</h3>
 <p>Destroys the array.</p>
 <h3 class="fn"><a name="append"></a>void QVarLengthArray::append ( const T &amp; <i>t</i> )</h3>
 <p>Appends item <i>t</i> to the array, extending the array if necessary.</p>
 <h3 class="fn"><a name="append-2"></a>void QVarLengthArray::append ( const T * <i>buf</i>, int <i>size</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>size</i> amount of items referenced by <i>buf</i> to this array.</p>
 <h3 class="fn"><a name="capacity"></a>int QVarLengthArray::capacity () const</h3>
 <p>Returns the maximum number of elements that can be stored in the array without forcing a reallocation.</p>
@@ -123,7 +122,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is mostly useful to pass an array to a function that accepts a plain C++ array.</p>
 <p>See also <a href="qvarlengtharray.html#constData">constData</a>() and <a href="qvarlengtharray.html#operator-5b-5d">operator[]</a>().</p>
 <h3 class="fn"><a name="data-2"></a>const T * QVarLengthArray::data () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QVarLengthArray::isEmpty () const</h3>
 <p>Returns true if the array has size 0; otherwise returns false.</p>
 <p>See also <a href="qvarlengtharray.html#size">size</a>() and <a href="qvarlengtharray.html#resize">resize</a>().</p>
@@ -138,18 +137,17 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="size"></a>int QVarLengthArray::size () const</h3>
 <p>Returns the number of elements in the array.</p>
 <p>See also <a href="qvarlengtharray.html#isEmpty">isEmpty</a>() and <a href="qvarlengtharray.html#resize">resize</a>().</p>
-<h3 class="fn"><a name="operator-eq"></a>QVarLengthArray &amp; QVarLengthArray::operator= ( const QVarLengthArray &amp; <i>other</i> )</h3>
-<p>Assigns <i>other</i> to this array and returns a reference to this array.</p>
+<h3 class="fn"><a name="operator-eq"></a>QVarLengthArray&lt;T, Prealloc&gt; &amp; QVarLengthArray::operator= ( const QVarLengthArray&lt;T, Prealloc&gt; &amp; <i>other</i> )</h3>
 <h3 class="fn"><a name="operator-5b-5d"></a>T &amp; QVarLengthArray::operator[] ( int <i>i</i> )</h3>
 <p>Returns a reference to the item at index position <i>i</i>.</p>
 <p><i>i</i> must be a valid index position in the array (i.e., 0 &lt;= <i>i</i> &lt; <a href="qvarlengtharray.html#size">size</a>()).</p>
 <p>See also <a href="qvarlengtharray.html#data">data</a>().</p>
 <h3 class="fn"><a name="operator-5b-5d-2"></a>const T &amp; QVarLengthArray::operator[] ( int <i>i</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

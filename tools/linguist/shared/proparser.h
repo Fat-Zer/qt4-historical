@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
@@ -27,7 +27,7 @@
 #include <QMap>
 #include <QString>
 
-QMap<QString, QString> proFileTagMap( const QString& text );
+bool proFileTagMap( const QString& text, QMap<QString, QString> *ret );
 QStringList tokenizeFileNames(const QString &fileNames);
 
 #endif

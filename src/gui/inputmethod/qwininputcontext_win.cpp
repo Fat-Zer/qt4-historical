@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -35,7 +35,6 @@
 /* Active Input method support on Win95/98/NT */
 #include <objbase.h>
 #include <initguid.h>
-
 
 DEFINE_GUID(IID_IActiveIMMApp,
 0x08c0e040, 0x62d1, 0x11d1, 0x93, 0x26, 0x0, 0x60, 0xb0, 0x67, 0xb8, 0x6e);
@@ -151,6 +150,7 @@ static IActiveIMMMessagePumpOwner *aimmpump = 0;
 static QString *imeComposition = 0;
 static int        imePosition    = -1;
 bool qt_use_rtl_extensions = false;
+static bool haveCaret = false;
 
 #ifndef LGRPID_INSTALLED
 #define LGRPID_INSTALLED          0x00000001  // installed language group ids
@@ -177,6 +177,7 @@ bool qt_use_rtl_extensions = false;
 #define LGRPID_ARMENIAN              0x0011   // Armenian
 #endif
 
+static DWORD WM_MSIME_MOUSE = 0;
 
 QWinInputContext::QWinInputContext(QObject *parent)
     : QInputContext(parent)
@@ -217,6 +218,8 @@ QWinInputContext::QWinInputContext(QObject *parent)
 #else
     qt_use_rtl_extensions = false;
 #endif // Q_OS_TEMP
+
+    WM_MSIME_MOUSE = QT_WA_INLINE(RegisterWindowMessage(L"MSIMEMouseOperation"), RegisterWindowMessageA("MSIMEMouseOperation"));
 }
 
 QWinInputContext::~QWinInputContext()
@@ -232,6 +235,16 @@ QWinInputContext::~QWinInputContext()
     }
     delete imeComposition;
     imeComposition = 0;
+}
+
+static HWND getDefaultIMEWnd(HWND wnd)
+{
+    HWND ime_wnd;
+    if(aimm)
+        aimm->GetDefaultIMEWnd(wnd, &ime_wnd);
+    else
+        ime_wnd = ImmGetDefaultIMEWnd(wnd);
+    return ime_wnd;
 }
 
 static HIMC getContext(HWND wnd)
@@ -419,6 +432,8 @@ void QWinInputContext::update()
     candf.rcArea.right = r.x() + r.width();
     candf.rcArea.bottom = r.y() + r.height();
 
+    if(haveCaret) 
+        SetCaretPos(r.x(), r.y());
 
     if (aimm) {
         aimm->SetCompositionWindow(imc, &cf);
@@ -446,6 +461,10 @@ bool QWinInputContext::endComposition()
         HIMC imc = getContext(fw->winId());
         notifyIME(imc, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
         releaseContext(fw->winId(), imc);
+        if(haveCaret) {
+            DestroyCaret();
+            haveCaret = false;
+        }
     }
 
     if (!fw)
@@ -503,6 +522,9 @@ bool QWinInputContext::startComposition()
     QWidget *fw = focusWidget();
     if (fw) {
         imePosition = 0;
+        haveCaret = CreateCaret(fw->winId(), 0, 1, 1);
+        HideCaret(fw->winId());
+        update();
     }
     return fw != 0;
 }
@@ -552,12 +574,11 @@ bool QWinInputContext::composition(LPARAM lParam)
             e.setCommitString(*imeComposition);
             imeComposition->clear();
             result = qt_sendSpontaneousEvent(fw, &e);
-        }
-        else if (lParam & (GCS_COMPSTR | GCS_COMPATTR | GCS_CURSORPOS)) {
-            if (imePosition == -1) {
+        } else if (lParam & (GCS_COMPSTR | GCS_COMPATTR | GCS_CURSORPOS)) {
+            if (imePosition == -1)
                 // need to send a start event
                 startComposition();
-            }
+
             // some intermediate composition result
             int selStart, selLength;
             *imeComposition = getString(imc, GCS_COMPSTR, &selStart, &selLength);
@@ -567,23 +588,26 @@ bool QWinInputContext::composition(LPARAM lParam)
                 selStart = 0;
                 selLength = imeComposition->length();
             }
-
-           if (selLength != 0)
-                imePosition = selStart;
+    	    if(selLength == 0)
+                selStart = 0;
 
            QList<QInputMethodEvent::Attribute> attrs;
-           if (imePosition > 0)
-               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, imePosition,
+           if (selStart > 0)
+               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, selStart,
                                             standardFormat(PreeditFormat));
            if (selLength)
-               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, imePosition, selLength,
+               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, selStart, selLength,
                                             standardFormat(SelectionFormat));
-           if (imePosition + selLength < imeComposition->length())
-               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, imePosition + selLength,
-                                            imeComposition->length() - imePosition - selLength,
+           if (selStart + selLength < imeComposition->length())
+               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, selStart + selLength,
+                                            imeComposition->length() - selStart - selLength,
                                             standardFormat(PreeditFormat));
+           if(imePosition >= 0)
+               attrs << QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, imePosition, selLength ? 0 : 1, QVariant());
+
            QInputMethodEvent e(*imeComposition, attrs);
            result = qt_sendSpontaneousEvent(fw, &e);
+           update();
         }
         releaseContext(fw->winId(), imc);
     }
@@ -633,9 +657,23 @@ bool QWinInputContext::isComposing() const
     return imeComposition && !imeComposition->isEmpty();
 }
 
-void QWinInputContext::mouseHandler(int /*x*/, QMouseEvent * /*event*/)
+void QWinInputContext::mouseHandler(int pos, QMouseEvent *e)
 {
-    // #### implement me!
+    if(e->type() != QEvent::MouseButtonPress)
+        return;
+
+    if (pos < 0 || pos > imeComposition->length())
+        reset();
+
+    // Probably should pass the correct button, but it seems to work fine like this.
+    DWORD button = MK_LBUTTON;
+
+    QWidget *fw = focusWidget();
+    HIMC himc = getContext(fw->winId());
+    HWND ime_wnd = getDefaultIMEWnd(fw->winId());
+    SendMessage(ime_wnd, WM_MSIME_MOUSE, MAKELONG(MAKEWORD(button, pos == 0 ? 2 : 1), pos), (LPARAM)himc);
+    releaseContext(fw->winId(), himc);
+    //qDebug("mouseHandler: got value %d pos=%d", ret,pos);
 }
 
 QString QWinInputContext::language()

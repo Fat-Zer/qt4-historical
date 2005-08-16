@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -38,12 +38,14 @@ public:
     MainWindow(QWidget *parent = 0);
 
 public slots:
+    void about();
     void newFile();
     void openFile(const QString &path = QString());
 
 private:
     void setupEditor();
     void setupFileMenu();
+    void setupHelpMenu();
 
     QTextEdit *editor;
     Highlighter *highlighter;

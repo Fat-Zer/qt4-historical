@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/canvas/q3canvas.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/canvas/q3canvas.cpp -->
 <head>
     <title>Qt 4.1: Q3CanvasItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -94,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="RttiValues-enum"></a>enum Q3CanvasItem::RttiValues</h3>
 <p>This enum is used to name the different types of canvas item.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3CanvasItem::Rtti_Item</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Canvas item abstract base class</td></tr>
 <tr><td valign="top"><tt>Q3CanvasItem::Rtti_Ellipse</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">&nbsp;</td></tr>
@@ -105,7 +105,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3CanvasItem::Rtti_Spline</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Q3CanvasItem::Rtti_Sprite</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>Q3CanvasItem::Rtti_Text</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">&nbsp;</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3CanvasItem"></a>Q3CanvasItem::Q3CanvasItem ( <a href="q3canvas.html">Q3Canvas</a> * <i>canvas</i> )</h3>
@@ -161,7 +161,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="rtti"></a>int Q3CanvasItem::rtti () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns 0 (<a href="q3canvasitem.html#RttiValues-enum">Q3CanvasItem::Rtti_Item</a>).</p>
 <p>Make your derived classes return their own values for rtti(), so that you can distinguish between objects returned by Q3Canvas::at(). You should use values greater than 1000 to allow for extensions to this class.</p>
-<p>Overuse of this functionality can damage it's extensibility. For example, once you have identified a base class of a <a href="q3canvasitem.html">Q3CanvasItem</a> found by Q3Canvas::at(), cast it to that type and call meaningful methods rather than acting upon the object based on its rtti value.</p>
+<p>Overuse of this functionality can damage its extensibility. For example, once you have identified a base class of a <a href="q3canvasitem.html">Q3CanvasItem</a> found by Q3Canvas::at(), cast it to that type and call meaningful methods rather than acting upon the object based on its rtti value.</p>
 <p>For example:</p>
 <pre>&nbsp;   Q3CanvasItem* item;
     // Find an item, e.g. with Q3CanvasItem::collisions().
@@ -232,8 +232,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3canvasitem.html#setZ">setZ</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

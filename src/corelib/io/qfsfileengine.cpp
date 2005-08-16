@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -66,6 +66,10 @@ QFSFileEnginePrivate::QFSFileEnginePrivate() : QAbstractFileEnginePrivate()
 {
     sequential = 0;
     tried_stat = 0;
+#ifdef Q_OS_UNIX
+    need_lstat = 1;
+    is_link = 0;
+#endif
     fd = -1;
     fh = 0;
     lastIOCommand = IOFlushCommand;
@@ -305,11 +309,11 @@ bool QFSFileEngine::close()
     flush();
     d->tried_stat = 0;
     if (d->fh) {
-	if (d->closeFileHandle)
-	    fclose(d->fh);
-	d->fh = 0;
-	d->fd = -1;
-	return true;
+        if (d->closeFileHandle)
+            fclose(d->fh);
+        d->fh = 0;
+        d->fd = -1;
+        return true;
     }
 
     if (d->fd == -1)
@@ -318,7 +322,7 @@ bool QFSFileEngine::close()
     int ret = d->closeFileHandle ? QT_CLOSE(d->fd) : 0;
     d->fd = -1;
     if(ret == -1) {
-	setError(QFile::UnspecifiedError, qt_error_string(errno));
+        setError(QFile::UnspecifiedError, qt_error_string(errno));
         return false;
     }
     return true;

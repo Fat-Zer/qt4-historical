@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -128,6 +128,12 @@ UnixMakefileGenerator::init()
             project->variables()["QMAKE_LIBDIR_FLAGS"] += "-L" + (*it);
         }
     }
+    if(project->isActiveConfig("macx") && !project->isEmpty("QMAKE_FRAMEWORKDIR")) {
+        const QStringList &fwdirs = project->values("QMAKE_FRAMEWORKDIR");
+        for(QStringList::ConstIterator it = fwdirs.begin(); it != fwdirs.end(); ++it) {
+            project->variables()["QMAKE_FRAMEWORKDIR_FLAGS"] += "-F" + (*it);
+        }
+    }
     if(!project->isEmpty("QMAKE_RPATHDIR")) {
         const QStringList &rpathdirs = project->values("QMAKE_RPATHDIR");
         for(QStringList::ConstIterator it = rpathdirs.begin(); it != rpathdirs.end(); ++it) {
@@ -178,7 +184,8 @@ UnixMakefileGenerator::init()
        !project->isEmpty("TARGET") && !project->isActiveConfig("compile_libtool") &&
        ((project->first("TEMPLATE") == "app" && project->isActiveConfig("app_bundle")) ||
         (project->first("TEMPLATE") == "lib" && project->isActiveConfig("lib_bundle") &&
-         !project->isActiveConfig("staticlib") && !project->isActiveConfig("plugin")))) {
+         !project->isActiveConfig("staticlib") && !project->isActiveConfig("plugin"))) &&
+       (project->isActiveConfig("build_pass") || project->isEmpty("BUILDS"))) {
         if(project->first("TEMPLATE") == "app") {
             QString bundle = project->first("TARGET");
             if(!project->isEmpty("QMAKE_APPLICATION_BUNDLE_NAME"))
@@ -186,7 +193,7 @@ UnixMakefileGenerator::init()
             if(!bundle.endsWith(".app"))
                 bundle += ".app";
             project->variables()["QMAKE_BUNDLE_NAME"] = QStringList(bundle);
-            project->variables()["QMAKE_PKGINFO"].append(project->first("DESTDIR") + bundle + "/PkgInfo");
+            project->variables()["QMAKE_PKGINFO"].append(project->first("DESTDIR") + bundle + "/Contents/PkgInfo");
             project->variables()["ALL_DEPS"] += project->first("QMAKE_PKGINFO");
         } else if(project->first("TEMPLATE") == "lib") {
             QString bundle = project->first("TARGET");
@@ -205,7 +212,7 @@ UnixMakefileGenerator::init()
     project->variables()["DISTFILES"] += project->projectFile();
 
     init2();
-    project->variables()["QMAKE_INTERNAL_PRL_LIBS"] << "QMAKE_LIBDIR_FLAGS" << "QMAKE_LIBS";
+    project->variables()["QMAKE_INTERNAL_PRL_LIBS"] << "QMAKE_LIBDIR_FLAGS" << "QMAKE_FRAMEWORKDIR_FLAG" << "QMAKE_LIBS";
     if(!project->isEmpty("QMAKE_MAX_FILES_PER_AR")) {
         bool ok;
         int max_files = project->first("QMAKE_MAX_FILES_PER_AR").toInt(&ok);
@@ -321,7 +328,7 @@ UnixMakefileGenerator::findLibraries()
     QList<QMakeLocalFileName> libdirs, frameworkdirs;
     frameworkdirs.append(QMakeLocalFileName("/System/Library/Frameworks"));
     frameworkdirs.append(QMakeLocalFileName("/Library/Frameworks"));
-    const QString lflags[] = { "QMAKE_LIBDIR_FLAGS", "QMAKE_LFLAGS", "QMAKE_LIBS", QString() };
+    const QString lflags[] = { "QMAKE_LIBDIR_FLAGS", "QMAKE_FRAMEWORKDIR_FLAGS", "QMAKE_LFLAGS", "QMAKE_LIBS", QString() };
     for(int i = 0; !lflags[i].isNull(); i++) {
         QStringList &l = project->variables()[lflags[i]];
         for(QStringList::Iterator it = l.begin(); it != l.end(); ++it) {
@@ -421,7 +428,7 @@ UnixMakefileGenerator::processPrlFiles()
     QList<QMakeLocalFileName> libdirs, frameworkdirs;
     frameworkdirs.append(QMakeLocalFileName("/System/Library/Frameworks"));
     frameworkdirs.append(QMakeLocalFileName("/Library/Frameworks"));
-    const QString lflags[] = { "QMAKE_LIBDIR_FLAGS", "QMAKE_LFLAGS", "QMAKE_LIBS", QString() };
+    const QString lflags[] = { "QMAKE_LIBDIR_FLAGS", "QMAKE_FRAMEWORKDIR_FLAGS", "QMAKE_LFLAGS", "QMAKE_LIBS", QString() };
     for(int i = 0; !lflags[i].isNull(); i++) {
             QStringList &l = project->variables()[lflags[i]];
         for(int lit = 0; lit < l.size(); ++lit) {

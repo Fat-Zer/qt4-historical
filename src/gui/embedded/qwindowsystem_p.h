@@ -10,7 +10,7 @@
 ****************************************************************************/
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -47,7 +47,12 @@
 //
 
 #include "private/qobject_p.h"
+#include "private/qwidget_qws_p.h"
 #include "qwindowsystem_qws.h"
+#include "qbrush.h"
+#include "qwsproperty_qws.h"
+#include "qwscommand_qws_p.h"
+#include "qwsmemid_qws.h"
 
 class QWSServerPrivate : public QObjectPrivate {
     friend class QCopChannel;
@@ -98,7 +103,8 @@ private:
     void set_altitude(const QWSChangeAltitudeCommand *);
     void set_opacity(const QWSSetOpacityCommand *);
     void request_focus(const QWSRequestFocusCommand *);
-    void request_region(int winId, int shmid, int windowtype, QRegion, QWSWindow* =0);
+    void request_region(int winId, QWSMemId memId,
+                        int windowtype, QRegion, QWSWindow* = 0);
     void repaint_region(int winId, bool opaque, QRegion);
     void destroy_region(const QWSRegionDestroyCommand *);
     void name_region(const QWSRegionNameCommand *);

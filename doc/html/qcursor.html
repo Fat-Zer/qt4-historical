@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/kernel/qcursor.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/kernel/qcursor.cpp -->
 <head>
     <title>Qt 4.1: QCursor Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -56,7 +56,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-lt-lt-68">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-lt-lt-70">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-gt-gt-44">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QCursor &amp; <i>cursor</i> )</li>
 </ul>
 <a name="details"></a>
@@ -72,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <p align="center"><img src="images/cursors.png" alt="Cursor Shapes" /></p><a name="a-note-for-x11-users"></a>
 <h3>A Note for X11 Users</h3>
 <p>On X11, Qt supports the <a href="http://www.xfree86.org/4.3.0/Xcursor.3.html">Xcursor</a> library, which allows for full color icon themes. The table below shows the cursor name used for each <a href="qt.html#CursorShape-enum">Qt::CursorShape</a> value. If a cursor cannot be found using the name shown below, a standard X11 cursor will be used instead. Note: X11 does not provide appropriate cursors for all possible <a href="qt.html#CursorShape-enum">Qt::CursorShape</a> values. It is possible that some cursors will be taken from the Xcursor theme, while others will use an internal bitmap cursor.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qt.html#CursorShape-enum">Qt::CursorShape</a> Values</th><th>Cursor Names</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#CursorShape-enum">Qt::ArrowCursor</a></td><td><tt>left_ptr</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#CursorShape-enum">Qt::UpArrowCursor</a></td><td><tt>up_arrow</tt></td></tr>
@@ -90,7 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#CursorShape-enum">Qt::PointingHandCursor</a></td><td><tt>pointing_hand</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#CursorShape-enum">Qt::ForbiddenCursor</a></td><td><tt>forbidden</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#CursorShape-enum">Qt::WhatsThisCursor</a></td><td><tt>whats_this</tt></td></tr>
-</table>
+</table></p>
 <p>See also <a href="qwidget.html">QWidget</a> and <a href="guibooks.html#fowler">GUI Design Handbook: Cursors</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -140,9 +140,9 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> Using the value returned by this function is not portable.</p>
 <p>See also <a href="qt.html#HANDLE-typedef">Qt::HANDLE</a>.</p>
 <h3 class="fn"><a name="handle-2"></a><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QCursor::handle () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="handle-3"></a>int QCursor::handle () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="hotSpot"></a><a href="qpoint.html">QPoint</a> QCursor::hotSpot () const</h3>
 <p>Returns the cursor hot spot, or (0, 0) if it is one of the standard cursors.</p>
 <h3 class="fn"><a name="mask"></a>const <a href="qbitmap.html">QBitmap</a> * QCursor::mask () const</h3>
@@ -158,7 +158,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You can call <a href="qwidget.html#mapToGlobal">QWidget::mapToGlobal</a>() to translate widget coordinates to global screen coordinates.</p>
 <p>See also <a href="qcursor.html#pos">pos</a>(), <a href="qwidget.html#mapFromGlobal">QWidget::mapFromGlobal</a>(), and <a href="qwidget.html#mapToGlobal">QWidget::mapToGlobal</a>().</p>
 <h3 class="fn"><a name="setPos-2"></a>void QCursor::setPos ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Moves the cursor (hot spot) to the global screen position at point <i>p</i>.</p>
 <h3 class="fn"><a name="setShape"></a>void QCursor::setShape ( <a href="qt.html#CursorShape-enum">Qt::CursorShape</a> <i>shape</i> )</h3>
 <p>Sets the cursor to the shape identified by <i>shape</i>.</p>
@@ -173,18 +173,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Assigns <i>c</i> to this cursor and returns a reference to this cursor.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-68"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-70"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the <i>cursor</i> to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-44"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QCursor &amp; <i>cursor</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the <i>cursor</i> from the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

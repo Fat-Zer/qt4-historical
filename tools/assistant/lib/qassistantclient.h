@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -28,7 +28,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QProcess>
 
-#include <QtNetwork/QTcpSocket>
+class QTcpSocket;
 
 class QAssistantClient : public QObject
 {
@@ -58,7 +58,7 @@ private Q_SLOTS:
     void socketConnectionClosed();
     void readPort();
     void procError(QProcess::ProcessError err);
-    void socketError(QAbstractSocket::SocketError err);
+    void socketError();
     void readStdError();
 
 private:

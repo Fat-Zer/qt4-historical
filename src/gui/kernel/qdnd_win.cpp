@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -293,6 +293,10 @@ QOleDropSource::Release(void)
 STDMETHODIMP
 QOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
 {
+#ifdef QDND_DEBUG
+    qDebug("QOleDropSource::QueryContinueDrag(fEscapePressed %d, grfKeyState %d)", fEscapePressed, grfKeyState);
+#endif
+
     if (fEscapePressed) {
         return ResultFromScode(DRAGDROP_S_CANCEL);
     } else if (!(grfKeyState & (MK_LBUTTON|MK_MBUTTON|MK_RBUTTON))) {
@@ -615,13 +619,15 @@ STDMETHODIMP
 QOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)
 {
 #ifdef QDND_DEBUG
-    qDebug("QOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)");
+    qDebug("QOleDropTarget::DragOver(grfKeyState %d, pt (%d,%d), pdwEffect %d)", grfKeyState, pt.x, pt.y, pdwEffect);
 #endif
 
     if (!QApplicationPrivate::tryModalHelper(widget)) {
         *pdwEffect = DROPEFFECT_NONE;
         return NOERROR;
     }
+
+    
 
     QPoint tmpPoint = widget->mapFromGlobal(QPoint(pt.x,pt.y));
     // see if we should compress this event
@@ -669,8 +675,10 @@ QOleDropTarget::DragLeave()
 
     QDragManager *manager = QDragManager::self();
     
-    manager->dropData->currentDataObject->Release();
-    manager->dropData->currentDataObject = 0;
+    if (manager->dropData->currentDataObject) { // Sanity
+        manager->dropData->currentDataObject->Release();
+        manager->dropData->currentDataObject = 0;
+    }
 
     return NOERROR;
 }
@@ -681,7 +689,7 @@ STDMETHODIMP
 QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)
 {
 #ifdef QDND_DEBUG
-    qDebug("QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)");
+    qDebug("QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, grfKeyState %d, POINTL pt, LPDWORD pdwEffect)", grfKeyState);
 #endif
 
     if (!QApplicationPrivate::tryModalHelper(widget)) {

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qslider.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qslider.cpp -->
 <head>
     <title>Qt 4.1: QSlider Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -55,7 +55,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>22 public functions inherited from <a href="qabstractslider.html#public-functions">QAbstractSlider</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -70,6 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>3 protected functions inherited from <a href="qabstractslider.html#protected-functions">QAbstractSlider</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -79,13 +80,13 @@ body { background: #ffffff; color: black; }</style>
 <p>QSlider has very few of its own functions; most of the functionality is in <a href="qabstractslider.html">QAbstractSlider</a>. The most useful functions are <a href="qabstractslider.html#value-prop">setValue</a>() to set the slider directly to some value; <a href="qabstractslider.html#triggerAction">triggerAction</a>() to simulate the effects of clicking (useful for shortcut keys); <a href="qabstractslider.html#singleStep-prop">setSingleStep</a>(), <a href="qabstractslider.html#pageStep-prop">setPageStep</a>() to set the steps; and <a href="qabstractslider.html#minimum-prop">setMinimum</a>() and <a href="qabstractslider.html#maximum-prop">setMaximum</a>() to define the range of the scroll bar.</p>
 <p>QSlider provides methods for controlling tickmarks. You can use <a href="qslider.html#tickPosition-prop">setTickPosition</a>() to indicate where you want the tickmarks to be, <a href="qslider.html#tickInterval-prop">setTickInterval</a>() to indicate how many of them you want.</p>
 <p>QSlider inherits a comprehensive set of signals:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Signal</th><th>Emitted when</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractslider.html#valueChanged">valueChanged</a>()</td><td>the slider's value has changed. The tracking() determines whether this signal is emitted during user interaction.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractslider.html#sliderPressed">sliderPressed</a>()</td><td>the user starts to drag the slider.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractslider.html#sliderMoved">sliderMoved</a>()</td><td>the user drags the slider.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractslider.html#sliderReleased">sliderReleased</a>()</td><td>the user releases the slider.</td></tr>
-</table>
+</table></p>
 <p>QSlider only provides integer ranges. Note that although QSlider handles very large numbers, it becomes difficult for users to use a slider accurately for very large ranges.</p>
 <p>A slider accepts focus on Tab and provides both a mouse wheel and a keyboard interface. The keyboard interface is the following:</p>
 <ul>
@@ -101,7 +102,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="TickPosition-enum"></a>enum QSlider::TickPosition</h3>
 <p>This enum specifies where the tick marks are to be drawn relative to the slider's groove and the handle the user moves.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSlider::NoTicks</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">do not draw any tick marks.</td></tr>
 <tr><td valign="top"><tt>QSlider::TicksBothSides</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">draw tick marks on both sides of the groove.</td></tr>
@@ -109,7 +110,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QSlider::TicksBelow</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">draw tick marks below the (horizontal) slider</td></tr>
 <tr><td valign="top"><tt>QSlider::TicksLeft</tt></td><td align="center" valign="top"><tt>TicksAbove</tt></td><td valign="top">draw tick marks to the left of the (vertical) slider</td></tr>
 <tr><td valign="top"><tt>QSlider::TicksRight</tt></td><td align="center" valign="top"><tt>TicksBelow</tt></td><td valign="top">draw tick marks to the right of the (vertical) slider</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="tickInterval-prop"></a>tickInterval : int</h3>
@@ -143,8 +144,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Destructor.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

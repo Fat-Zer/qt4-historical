@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -484,15 +484,6 @@ QSize QFrame::sizeHint() const
 void QFrame::paintEvent(QPaintEvent *event)
 {
     Q_D(QFrame);
-    const QRect er = event->rect();
-    const QRect tr = this->rect();
-    const int fw = d->frameWidth;
-    if (er.left() >= tr.left() + fw
-        && er.top() >= tr.top() + fw
-        && er.right() <= tr.right() - fw
-        && er.bottom() <= tr.bottom() - fw)
-        return;
-
     QPainter paint(this);
     drawFrame(&paint);
 }

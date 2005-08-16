@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -41,7 +41,11 @@ public:
     QFontEngineWin(const QString &name, HFONT, bool, LOGFONT);
     ~QFontEngineWin();
 
-    FECaps capabilites() const;
+    virtual Properties properties() const;
+    virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
+    virtual FaceId faceId() const;
+    QByteArray getSfntTable(uint tag) const;
+    virtual int synthesized() const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
 

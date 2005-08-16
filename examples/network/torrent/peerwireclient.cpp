@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -508,7 +508,10 @@ void PeerWireClient::processIncomingData()
         case HavePacket: {
             // The peer has a new piece available.
             quint32 index = fromNetworkData(&packet.data()[1]);
-            peerPieces.setBit(int(index));
+            if (index < quint32(peerPieces.size())) {
+                // Only accept indexes within the valid range.
+                peerPieces.setBit(int(index));
+            }
             emit piecesAvailable(availablePieces());
             break;
         }
@@ -516,8 +519,16 @@ void PeerWireClient::processIncomingData()
             // The peer has the following pieces available.
             for (int i = 1; i < packet.size(); ++i) {
                 for (int bit = 0; bit < 8; ++bit) {
-                    if (packet.at(i) & (1 << (7 - bit)))
-                        peerPieces.setBit(int(((i - 1) * 8) + bit));
+                    if (packet.at(i) & (1 << (7 - bit))) {
+                        int bitIndex = int(((i - 1) * 8) + bit);
+                        if (bitIndex >= 0 && bitIndex < peerPieces.size()) {
+                            // Occasionally, broken clients claim to have
+                            // pieces whose index is outside the valid range.
+                            // The most common mistake is the index == size
+                            // case.
+                            peerPieces.setBit(bitIndex);
+                        }
+                    }
                 }
             }
             emit piecesAvailable(availablePieces());

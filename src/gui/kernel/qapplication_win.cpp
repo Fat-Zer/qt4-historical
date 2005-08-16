@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -186,7 +186,7 @@ Q_CORE_EXPORT bool winPostMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
 UINT WM_QT_REPAINT = 0;
 static UINT WM95_MOUSEWHEEL = 0;
 
-#if(_WIN32_WINNT < 0x0400)
+#if (_WIN32_WINNT < 0x0400)
 // This struct is defined in winuser.h if the _WIN32_WINNT >= 0x0400 -- in the
 // other cases we have to define it on our own.
 typedef struct tagTRACKMOUSEEVENT {
@@ -408,7 +408,8 @@ static void qt_set_windows_resources()
     QApplication::setFont(messageFont, "QMessageBox");
     QApplication::setFont(statusFont, "QTipLabel");
     QApplication::setFont(statusFont, "QStatusBar");
-    QApplication::setFont(titleFont, "QTitleBar");
+    QApplication::setFont(titleFont, "Q3TitleBar");
+    QApplication::setFont(titleFont, "QWorkspaceTitleBar");
     QApplication::setFont(smallTitleFont, "QDockWidgetTitle");
 #else
     LOGFONT lf;
@@ -545,6 +546,11 @@ void QApplicationPrivate::initializeWidgetPaletteHash()
                     menu.color(QPalette::Active, QPalette::Foreground));
     menu.setColor(QPalette::Inactive, QPalette::ButtonText,
                     menu.color(QPalette::Active, QPalette::ButtonText));
+    menu.setColor(QPalette::Inactive, QPalette::Highlight,
+                    menu.color(QPalette::Active, QPalette::Highlight));
+    menu.setColor(QPalette::Inactive, QPalette::HighlightedText,
+                    menu.color(QPalette::Active, QPalette::HighlightedText));
+
     if (QSysInfo::WindowsVersion != QSysInfo::WV_NT && QSysInfo::WindowsVersion != QSysInfo::WV_95)
         menu.setColor(QPalette::Inactive, QPalette::ButtonText,
                         pal.color(QPalette::Inactive, QPalette::Dark));
@@ -1305,18 +1311,14 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         if (qApp->type() == QApplication::Tty)
             break;
         if (qt_desktopWidget) {
-            int x = GetSystemMetrics(76);
-            int y = GetSystemMetrics(77);
-            QMoveEvent mv(QPoint(x, y), qt_desktopWidget->pos());
-            QApplication::sendEvent(qt_desktopWidget, &mv);
-            x = GetSystemMetrics(78);
-            y = GetSystemMetrics(79);
-            if (QSize(x, y) == qt_desktopWidget->size()) {
+            qt_desktopWidget->move(GetSystemMetrics(76), GetSystemMetrics(77));
+            QSize sz(GetSystemMetrics(78), GetSystemMetrics(79));
+            if (sz == qt_desktopWidget->size()) {
                  // a screen resized without changing size of the virtual desktop
-                QResizeEvent rs(QSize(x, y), qt_desktopWidget->size());
+                QResizeEvent rs(sz, qt_desktopWidget->size());
                 QApplication::sendEvent(qt_desktopWidget, &rs);
             } else {
-                qt_desktopWidget->resize(x, y);
+                qt_desktopWidget->resize(sz);
             }
         }
         break;
@@ -1649,6 +1651,8 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                 result = false;
                 break;
             case SC_MAXIMIZE:
+                if(widget->isWindow())
+                    widget->topData()->normalGeometry = widget->geometry();
             case SC_RESTORE:
                 window_state_change = true;
                 if (widget->isMinimized()) {
@@ -1727,6 +1731,18 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     popup->close();
             }
 
+            // If we are a tool with no child or us that accepts focus then reject
+            // the activation
+            if (LOWORD(wParam) == WA_ACTIVE && widget->windowType() == Qt::Tool) {
+                QWidget *fw = widget;
+                while ((fw = fw->nextInFocusChain()) != widget && fw->focusPolicy() == Qt::NoFocus)
+                    ;
+                if (fw == widget && widget->focusPolicy() == Qt::NoFocus) {
+                    result = true;
+                    break;
+                }
+            }
+
             // WM_ACTIVATEAPP handles the "true" false case, as this is only when the application
             // looses focus. Doing it here would result in the widget getting focus to not know
             // where it got it from; it would simply get a 0 value as the old focus widget.
@@ -1746,22 +1762,26 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 
 #ifndef Q_OS_TEMP
             case WM_MOUSEACTIVATE:
-                {
+                if (widget->windowType() == Qt::Tool) {
                     QWidget *w = widget;
                     if (!w->window()->focusWidget()) {
                         while (w && (w->focusPolicy() & Qt::ClickFocus) == 0) {
-                            if (w->isTopLevel()) {
+                            if (w->isWindow()) {
+                                QWidget *fw = w;
+                                while ((fw = fw->nextInFocusChain()) != w && fw->focusPolicy() == Qt::NoFocus)
+                                    ;
+                                if (fw != w)
+                                   break;
                                 QWidget *pw = w->parentWidget();
                                 while (pw) {
                                     pw = pw->window();
                                     if (pw && pw->isVisible() && pw->focusWidget()) {
                                         SetWindowPos(pw->winId(), HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-                                        RETURN(MA_NOACTIVATE);
+                                        break;
                                     }
                                     pw = pw->parentWidget();
                                 }
-                                
-                                break;
+                                RETURN(MA_NOACTIVATE);
                             }
                             w = w->parentWidget();
                         }
@@ -1929,7 +1949,8 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             }
             result = false;
             break;
-        case WM_GETTEXT: {
+        case WM_GETTEXT:
+            if (!widget->isWindow()) {
                 int ret = 0;
                 QAccessibleInterface *acc = QAccessible::queryAccessibleInterface(widget);
                 if (acc) {
@@ -1951,13 +1972,13 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                 }
                 RETURN(ret);
             }
+            result = false;
             break;
 #endif
         case WT_PACKET:
             if (ptrWTPacketsGet) {
                 if ((nPackets = ptrWTPacketsGet(qt_tablet_context, QT_TABLET_NPACKETQSIZE, &localPacketBuf))) {
-                    if (!qt_button_down) // flush the Queue but dont send the events if the mouse is down
-                        result = widget->translateTabletEvent(msg, localPacketBuf, nPackets);
+	            result = widget->translateTabletEvent(msg, localPacketBuf, nPackets);
                 }
             }
             break;
@@ -2147,9 +2168,7 @@ bool qt_try_modal(QWidget *widget, MSG *msg, int& ret)
 
     bool block_event = false;
 #ifndef Q_OS_TEMP
-    if (type == WM_NCHITTEST) {
-        block_event = true;
-    } else
+    if (type != WM_NCHITTEST)
 #endif
         if ((type >= WM_MOUSEFIRST && type <= WM_MOUSELAST) ||
              type == WM_MOUSEWHEEL || type == (int)WM95_MOUSEWHEEL ||
@@ -2158,24 +2177,24 @@ bool qt_try_modal(QWidget *widget, MSG *msg, int& ret)
 #ifndef Q_OS_TEMP
             || type == WM_NCMOUSEMOVE
 #endif
-               ) {
-      if (type == WM_MOUSEMOVE
+         ) {
+            if (type == WM_MOUSEMOVE
 #ifndef Q_OS_TEMP
-          || type == WM_NCMOUSEMOVE
+                 || type == WM_NCMOUSEMOVE
 #endif
-                       ) {
-        QCursor *c = qt_grab_cursor();
-        if (!c)
-            c = QApplication::overrideCursor();
-        if (c)                                // application cursor defined
-            SetCursor(c->handle());
-        else
-            SetCursor(QCursor(Qt::ArrowCursor).handle());
-      }
-      block_event = true;
-    } else if (type == WM_CLOSE) {
-        block_event = true;
-    }
+            ) {
+                QCursor *c = qt_grab_cursor();
+                if (!c)
+                    c = QApplication::overrideCursor();
+                if (c)                                // application cursor defined
+                    SetCursor(c->handle());
+                else
+                    SetCursor(QCursor(Qt::ArrowCursor).handle());
+            }
+            block_event = true;
+        } else if (type == WM_CLOSE) {
+            block_event = true;
+        }
 #ifndef Q_OS_TEMP
     else if (type == WM_MOUSEACTIVATE || type == WM_NCLBUTTONDOWN){
         if (!top->isActiveWindow()) {
@@ -2525,7 +2544,8 @@ bool QETWidget::translateMouseEvent(const MSG &msg)
         pos = mapFromGlobal(QPoint(gpos.x, gpos.y));
 
         if (type == QEvent::MouseButtonPress || type == QEvent::MouseButtonDblClick) {        // mouse button pressed
-            qt_button_down = childAt(pos);
+            QWidget *tlw = window();
+            qt_button_down = tlw->childAt(mapTo(tlw, pos));
             if (!qt_button_down)
                 qt_button_down = this;
         }
@@ -3284,6 +3304,9 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
 
         // make sure the tablet event get's sent to the proper widget...
         QWidget *w = QApplication::widgetAt(globalPos);
+	if (qt_button_down)
+	    w = qt_button_down; // Pass it to the thing that's grabbed it.
+
         if (!w)
             w = this;
         QPoint localPos = w->mapFromGlobal(globalPos);

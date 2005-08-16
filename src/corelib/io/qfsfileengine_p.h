@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -61,7 +61,8 @@ public:
     mutable uint could_stat : 1;
     mutable uint tried_stat : 1;
 #ifdef Q_OS_UNIX
-    mutable uint isSymLink : 1;
+    mutable uint need_lstat : 1;
+    mutable uint is_link : 1;
 #endif
 #ifdef Q_WS_WIN
     mutable DWORD fileAttrib;
@@ -69,6 +70,8 @@ public:
     mutable QT_STATBUF st;
 #endif
     bool doStat() const;
+    bool isSymlink() const;
+    
     int sysOpen(const QString &, int flags);
 
     FILE *fh;

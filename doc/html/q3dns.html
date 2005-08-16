@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/network/q3dns.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/network/q3dns.cpp -->
 <head>
     <title>Qt 4.1: Q3Dns Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -83,7 +83,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="RecordType-enum"></a>enum Q3Dns::RecordType</h3>
 <p>This enum type defines the record types <a href="q3dns.html">Q3Dns</a> can handle. The DNS provides many more; these are the ones we've judged to be in current use, useful for GUI programs and important enough to support right away:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Dns::None</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No information. This exists only so that <a href="q3dns.html">Q3Dns</a> can have a default.</td></tr>
 <tr><td valign="top"><tt>Q3Dns::A</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">IPv4 addresses. By far the most common type.</td></tr>
@@ -93,7 +93,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3Dns::Cname</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Canonical names. Maps from nicknames to the true name (the canonical name) for a host.</td></tr>
 <tr><td valign="top"><tt>Q3Dns::Ptr</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">name PoinTeRs. Maps from IPv4 or IPv6 addresses to hostnames.</td></tr>
 <tr><td valign="top"><tt>Q3Dns::Txt</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">arbitrary TeXT for domains.</td></tr>
-</table>
+</table></p>
 <p>We expect that some support for the <a href="http://www.rfc-editor.org/rfc/rfc2535.txt">RFC 2535</a> extensions will be added in future versions.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -186,7 +186,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The DNS lookup is started the next time the application enters the event loop. When the result is found the signal <a href="q3dns.html#resultsReady">resultsReady</a>() is emitted.</p>
 <p>See also <a href="q3dns.html#label">label</a>().</p>
 <h3 class="fn"><a name="setLabel-2"></a>void Q3Dns::setLabel ( const <a href="qhostaddress.html">QHostAddress</a> &amp; <i>address</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets this DNS query object to query for information about the host address <i>address</i>. The label is set to the IN-ADDR.ARPA domain name. This is useful in combination with the <tt>Ptr</tt> record type (e.g. if you want to look up a hostname for a given address).</p>
 <h3 class="fn"><a name="setRecordType"></a>void Q3Dns::setRecordType ( <a href="q3dns.html#RecordType-enum">RecordType</a> <i>rr</i> = A )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets this object to query for record type <i>rr</i> records.</p>
@@ -203,8 +203,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

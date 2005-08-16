@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -1411,16 +1411,20 @@ QVariant::QVariant(QDataStream &s)
 /*!
   \fn QVariant::QVariant(const char *val)
 
-    Constructs a new variant with a C-string value of \a val if \a val
-    is non-null. The variant creates a deep copy of \a val.
+    Constructs a new variant with a string value of \a val.
+    The variant creates a deep copy of \a val, using the encoding
+    set by QTextCodec::setCodecForCStrings().
 
-    If \a val is null, the resulting variant has type Invalid.
+    You can disable this operator by defining \c
+    QT_NO_CAST_FROM_ASCII when you compile your applications.
+
+    \sa QTextCodec::setCodecForCStrings()
 */
 
 
 QVariant::QVariant(const char *val)
 {
-    QString s = QString::fromLatin1(val);
+    QString s = QString::fromAscii(val);
     create(String, &s);
 }
 
@@ -2494,9 +2498,8 @@ bool QVariant::cmp(const QVariant &v) const
 {
     QVariant v2 = v;
     if (d.type != v2.d.type) {
-        if (!v2.canConvert(Type(d.type)))
+        if (!v2.canConvert(Type(d.type)) || !v2.convert(Type(d.type)))
             return false;
-        v2.convert(Type(d.type));
     }
     return handler->compare(&d, &v2.d);
 }

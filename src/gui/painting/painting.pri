@@ -130,6 +130,10 @@ mac {
     DEFINES += QT_HAVE_SSE
 
     SSE_SOURCES += painting/qdrawhelper_x86.cpp
+} else:iwmmxt {
+    SOURCES += painting/qdrawhelper_x86.cpp
+    DEFINES += QT_HAVE_IWMMXT
+    DEFINES += QT_HAVE_SSE
 } else:win32:!win32-msvc {
     SOURCES += painting/qdrawhelper_x86.cpp
     DEFINES += QT_HAVE_SSE
@@ -138,6 +142,6 @@ mac {
 CONFIG += pdf
 pdf {
     DEFINES += QT_PDF_SUPPORT
-    SOURCES += painting/qprintengine_pdf.cpp
-    HEADERS += painting/qprintengine_pdf_p.h
+    SOURCES += painting/qprintengine_pdf.cpp painting/qpdf.cpp
+    HEADERS += painting/qprintengine_pdf_p.h painting/qpdf_p.h
 }

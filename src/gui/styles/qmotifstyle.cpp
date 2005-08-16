@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -123,7 +123,8 @@ QMotifStyle::~QMotifStyle()
 }
 
 /*
-Animate indeterminate progressbars only when visible
+  \internal
+  Animate indeterminate progressbars only when visible
 */
 bool QMotifStyle::eventFilter(QObject *o, QEvent *e)
 {
@@ -914,6 +915,13 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                 p->setBrushOrigin(p->brushOrigin());
                 drawPrimitive(PE_PanelButtonCommand, &newOpt, p, widget);
             }
+            if (btn->features & QStyleOptionButton::HasMenu) {
+                int mbi = pixelMetric(PM_MenuButtonIndicator, btn, widget);
+                QRect ir = btn->rect;
+                QStyleOptionButton newBtn = *btn;
+                newBtn.rect = QRect(ir.right() - mbi - 3, ir.y() + 4,  mbi, ir.height() - 8);
+                drawPrimitive(PE_IndicatorArrowDown, &newBtn, p, widget);
+            }
             break;
         }
 
@@ -1035,7 +1043,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
             }
             const int unit_width = pixelMetric(PM_ProgressBarChunkWidth, opt, widget);
             int u = rect.width() / unit_width;
-            int p_v = pb->progress;
+            int p_v = pb->progress - pb->minimum;
             int t_s = qMax(0, pb->maximum - pb->minimum);
             if (u > 0 && pb->progress >= INT_MAX / u && t_s >= u) {
                 // scale down to something usable.
@@ -1249,14 +1257,23 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
         p->restore();
         break;
     case CE_RubberBand: {
-        p->save();
-        p->setClipping(false);
-        QPainterPath path;
-        path.addRect(opt->rect);
-        path.addRect(opt->rect.adjusted(4, 4, -4, -4));
+        QPixmap tiledPixmap(16, 16);
+        QPainter pixmapPainter(&tiledPixmap);
+        pixmapPainter.setPen(Qt::NoPen);
+        pixmapPainter.setBrush(Qt::Dense4Pattern);
+        pixmapPainter.setBackground(QBrush(opt->palette.base()));
+        pixmapPainter.setBackgroundMode(Qt::OpaqueMode);
+        pixmapPainter.drawRect(0, 0, tiledPixmap.width(), tiledPixmap.height());
+        pixmapPainter.end();
+        // ### workaround for borked XRENDER
+        tiledPixmap = QPixmap::fromImage(tiledPixmap.toImage());
 
-        p->fillPath(path, opt->palette.base());
-        p->fillPath(path, QBrush(opt->palette.foreground().color(), Qt::Dense4Pattern));
+        p->save();
+        QRect r = opt->rect;
+        QStyleHintReturnMask mask;
+        if (styleHint(QStyle::SH_RubberBand_Mask, opt, widget, &mask))
+            p->setClipRegion(mask.region);
+        p->drawTiledPixmap(r.x(), r.y(), r.width(), r.height(), tiledPixmap);
         p->restore();
         }
         break;
@@ -1797,6 +1814,12 @@ int QMotifStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt,
         ret = 2; // really ugly, but Motif
         break;
 
+    case PM_MenuButtonIndicator:
+        if (!opt)
+            ret = 12;
+        else
+            ret = qMax(12, (opt->rect.height() - 4) / 3);
+        break;
     default:
         ret =  QCommonStyle::pixelMetric(pm, opt, widget);
         break;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -197,7 +197,9 @@ public:
     RenderFlags flags;
     int num_chars;
     const QChar *chars;
+    const unsigned short *logClusters;
     const QFont *f;
+    QColor underlineColor;
 
     QGlyphLayout *glyphs;
     int num_glyphs;
@@ -473,7 +475,7 @@ public:
         return end - si->position;
     }
 
-    QFontEngine *fontEngine(const QScriptItem &si) const;
+    QFontEngine *fontEngine(const QScriptItem &si, QFixed *ascent = 0, QFixed *descent = 0) const;
     QFont font(const QScriptItem &si) const;
     inline QFont font() const { return fnt; }
 

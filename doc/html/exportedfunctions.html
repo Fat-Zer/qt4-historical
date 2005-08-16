@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/exportedfunctions.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/exportedfunctions.qdoc -->
 <head>
     <title>Qt 4.1: Special-Purpose Global Functions Exported by Qt</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -45,6 +45,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#void-qt-mac-set-menubar-icons-bool-enable">void qt_mac_set_menubar_icons(bool <i>enable</i>)</a></li>
 <li><a href="#void-qt-mac-set-menubar-merge-bool-enable">void qt_mac_set_menubar_merge(bool <i>enable</i>)</a></li>
 <li><a href="#void-qt-mac-set-native-menubar-bool-enable">void qt_mac_set_native_menubar(bool <i>enable</i>)</a></li>
+<li><a href="#void-qt-mac-set-dock-menu-qmenu-menu">void qt_mac_set_dock_menu(QMenu *<i>menu</i>)</a></li>
 <li><a href="#void-qt-mac-set-press-and-hold-context-bool-enable">void qt_mac_set_press_and_hold_context(bool <i>enable</i>)</a></li>
 </ul>
 <a name="void-qt-set-library-config-file-const-qstring-filename"></a>
@@ -71,13 +72,16 @@ body { background: #ffffff; color: black; }</style>
 <a name="void-qt-mac-set-native-menubar-bool-enable"></a>
 <h2>void qt_mac_set_native_menubar(bool <i>enable</i>)</h2>
 <p>Specifies whether the application should use the native menu bar on Mac OS X or be part of the main window. This feature is on by default.</p>
+<a name="void-qt-mac-set-dock-menu-qmenu-menu"></a>
+<h2>void qt_mac_set_dock_menu(QMenu *<i>menu</i>)</h2>
+<p>Sets this menu as the menu to be shown when a press and hold is attempted on your application's dock icon. The menu will be turned into a Mac menu which will be merged with Mac OS X builtin commands.</p>
 <a name="void-qt-mac-set-press-and-hold-context-bool-enable"></a>
 <h2>void qt_mac_set_press_and_hold_context(bool <i>enable</i>)</h2>
 <p>Turns emulation of the right mouse button by clicking and holding the left mouse button on or off. This feature is off by default.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

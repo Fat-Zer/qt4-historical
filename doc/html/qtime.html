@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/corelib/tools/qdatetime.cpp -->
 <head>
     <title>Qt 4.1: QTime Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -63,7 +63,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-lt-lt-34">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTime &amp; <i>time</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-lt-lt-35">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTime &amp; <i>time</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-gt-gt-21">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QTime &amp; <i>time</i> )</li>
 </ul>
 <a name="details"></a>
@@ -103,7 +103,7 @@ body { background: #ffffff; color: black; }</style>
     t = n.addSecs(-15 * 60 * 60);     // t == 23:00:00</pre>
 <p>See also <a href="qtime.html#addMSecs">addMSecs</a>(), <a href="qtime.html#secsTo">secsTo</a>(), and <a href="qdatetime.html#addSecs">QDateTime::addSecs</a>().</p>
 <h3 class="fn"><a name="currentTime-2"></a>QTime QTime::currentTime ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the current time as reported by the system clock.</p>
 <p>Note that the accuracy depends on the accuracy of the underlying operating system; not all systems provide 1-millisecond accuracy.</p>
 <h3 class="fn"><a name="elapsed"></a>int QTime::elapsed () const</h3>
@@ -116,10 +116,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the time represented in the <i>string</i> as a <a href="qtime.html">QTime</a> using the <i>format</i> given, or an invalid time if this is not possible.</p>
 <p><b>Warning:</b> Note that <a href="qt.html#DateFormat-enum">Qt::LocalDate</a> cannot be used here.</p>
 <h3 class="fn"><a name="fromString-2"></a>QTime QTime::fromString ( const <a href="qstring.html">QString</a> &amp; <i>string</i>, const <a href="qstring.html">QString</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the <a href="qtime.html">QTime</a> represented by the <i>string</i>, using the <i>format</i> given, or an invalid time if the string cannot be parsed.</p>
 <p>These expressions may be used for the format:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Expression</th><th>Output</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr>
@@ -131,7 +131,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>zzz</td><td>the milliseconds with leading zeroes (000 to 999)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>AP</td><td>interpret as an AM/PM time. <i>AP</i> must be either &quot;AM&quot; or &quot;PM&quot;.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>ap</td><td>Interpret as an AM/PM time. <i>ap</i> must be either &quot;am&quot; or &quot;pm&quot;.</td></tr>
-</table>
+</table></p>
 <p>All other input characters will be treated as text. Any sequence of characters that are enclosed in single quotes will also be treated as text and not be used as an expression.</p>
 <pre>&nbsp;   QTime time = QTime::fromString(&quot;1mm12car00&quot;, &quot;m'mm'hcarss&quot;);
     // time is 12:01.00</pre>
@@ -152,7 +152,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the time is valid; otherwise returns false. For example, the time 23:30:55.746 is valid, but 24:12:30 is invalid.</p>
 <p>See also <a href="qtime.html#isNull">isNull</a>().</p>
 <h3 class="fn"><a name="isValid-2"></a>bool QTime::isValid ( int <i>h</i>, int <i>m</i>, int <i>s</i>, int <i>ms</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the specified time is valid; otherwise returns false.</p>
 <p>The time is valid if <i>h</i> is in the range 0 to 23, <i>m</i> and <i>s</i> are in the range 0 to 59, and <i>ms</i> is in the range 0 to 999.</p>
 <p>Example:</p>
@@ -195,7 +195,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="toString"></a><a href="qstring.html">QString</a> QTime::toString ( const <a href="qstring.html">QString</a> &amp; <i>format</i> ) const</h3>
 <p>Returns the time as a string. The <i>format</i> parameter determines the format of the result string.</p>
 <p>These expressions may be used:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Expression</th><th>Output</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr>
@@ -209,19 +209,19 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>zzz</td><td>the milliseconds with leading zeroes (000 to 999)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>AP or A</td><td>use AM/PM display. <i>AP</i> will be replaced by either &quot;AM&quot; or &quot;PM&quot;.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>ap or a</td><td>use am/pm display. <i>ap</i> will be replaced by either &quot;am&quot; or &quot;pm&quot;.</td></tr>
-</table>
+</table></p>
 <p>All other input characters will be ignored. Any sequence of characters that are enclosed in singlequotes will be treated as text and not be used as an expression.</p>
 <p>Example format strings (assuming that the <a href="qtime.html">QTime</a> is 14:13:09.042)</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Result</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>hh:mm:ss.zzz</td><td>14:13:09.042</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>h:m:s ap</td><td>2:13:9 pm</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>H:m:s a</td><td>14:13:9 pm</td></tr>
-</table>
+</table></p>
 <p>If the datetime is invalid, an empty string will be returned.</p>
 <p>See also <a href="qdate.html#toString">QDate::toString</a>() and <a href="qdatetime.html#toString">QDateTime::toString</a>().</p>
 <h3 class="fn"><a name="toString-2"></a><a href="qstring.html">QString</a> QTime::toString ( <a href="qt.html#DateFormat-enum">Qt::DateFormat</a> <i>f</i> = Qt::TextDate ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the time as a string. Milliseconds are not included. The <i>f</i> parameter determines the format of the string.</p>
 <p>If <i>f</i> is <a href="qt.html#DateFormat-enum">Qt::TextDate</a>, the string format is HH:MM:SS; e.g. 1 second before midnight would be &quot;23:59:59&quot;.</p>
 <p>If <i>f</i> is <a href="qt.html#DateFormat-enum">Qt::ISODate</a>, the string format corresponds to the ISO 8601 extended specification for representations of dates, which is also HH:MM:SS.</p>
@@ -241,18 +241,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this time is later than or equal to <i>t</i>; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-34"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTime &amp; <i>time</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-35"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTime &amp; <i>time</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes <i>time</i> to stream <i>out</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-21"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QTime &amp; <i>time</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a time from stream <i>in</i> into the given <i>time</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

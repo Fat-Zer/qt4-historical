@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -33,6 +33,8 @@
 
 #include "qfile.h"
 
+extern Q_GUI_EXPORT qint64 qt_image_id(const QImage &image);
+extern Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap);
 Q_GLOBAL_STATIC(QGLFormat, qgl_default_format)
 
 class QGLDefaultOverlayFormat: public QGLFormat
@@ -940,8 +942,8 @@ static int nearest_gl_texture_size(int v)
 
 class QGLTexture {
 public:
-    QGLTexture(const QGLContext *ctx, GLuint tx_id, bool _clean = false)
-        : context(ctx), id(tx_id), clean(_clean) {}
+    QGLTexture(const QGLContext *ctx, GLuint tx_id, qint64 _qt_id, bool _clean = false)
+        : context(ctx), id(tx_id), qt_id(_qt_id), clean(_clean) {}
     ~QGLTexture() {
         if (!context->isSharing())
             glDeleteTextures(1, &id);
@@ -949,6 +951,7 @@ public:
 
     const QGLContext *context;
     GLuint id;
+    qint64 qt_id;
     bool clean;
 };
 
@@ -1208,7 +1211,7 @@ GLuint QGLContext::bindTexture(const QString &fileName)
     free(pixels);
 
     int cost = bufferSize/1024;
-    qt_tex_cache->insert(key, new QGLTexture(this, tx_id), cost);
+    qt_tex_cache->insert(key, new QGLTexture(this, tx_id, 0), cost);
     return tx_id;
 }
 
@@ -1271,7 +1274,7 @@ QImage QGLContextPrivate::convertToBGRA(const QImage &image)
 }
 
 GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint format,
-                                      const QString &key, bool clean)
+                                      const QString &key, qint64 qt_id, bool clean)
 {
     Q_Q(QGLContext);
 
@@ -1323,17 +1326,18 @@ GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint 
             ++i;
         }
     }
-    qt_tex_cache->insert(key, new QGLTexture(q, tx_id, clean), cost);
+    qt_tex_cache->insert(key, new QGLTexture(q, tx_id, qt_id, clean), cost);
     return tx_id;
 }
 
-bool QGLContextPrivate::textureCacheLookup(const QString &key, GLuint *id)
+bool QGLContextPrivate::textureCacheLookup(const QString &key, GLuint *id, qint64 *qt_id)
 {
     Q_Q(QGLContext);
     if (qt_tex_cache) {
         QGLTexture *texture = qt_tex_cache->object(key);
         if (texture && texture->context == q) {
             *id = texture->id;
+            *qt_id = texture->qt_id;
             return true;
         }
     }
@@ -1343,25 +1347,37 @@ bool QGLContextPrivate::textureCacheLookup(const QString &key, GLuint *id)
 /*! \internal */
 GLuint QGLContextPrivate::bindTexture(const QImage &image, GLenum target, GLint format, bool clean)
 {
+    Q_Q(QGLContext);
     const QString key = QString("%1_%2_%3").arg(QString().sprintf("i%08x",image.serialNumber())).arg(target).arg(format);
     GLuint id;
-    if (textureCacheLookup(key, &id)) {
-        glBindTexture(target, id);
-        return id;
+    qint64 qt_id;
+    if (textureCacheLookup(key, &id, &qt_id)) {
+        if (qt_image_id(image) == qt_id) {
+            glBindTexture(target, id);
+            return id;
+        } else {
+            q->deleteTexture(id);
+        }
     }
-    return bindTexture(image, target, format, key, clean);
+    return bindTexture(image, target, format, key, qt_image_id(image), clean);
 }
 
 /*! \internal */
 GLuint QGLContextPrivate::bindTexture(const QPixmap &pixmap, GLenum target, GLint format, bool clean)
 {
+    Q_Q(QGLContext);
     const QString key = QString("%1_%2_%3").arg(QString().sprintf("p%08x",pixmap.serialNumber())).arg(target).arg(format);
     GLuint id;
-    if (textureCacheLookup(key, &id)) {
-        glBindTexture(target, id);
-        return id;
+    qint64 qt_id;
+    if (textureCacheLookup(key, &id, &qt_id)) {
+        if (qt_pixmap_id(pixmap) == qt_id) {
+            glBindTexture(target, id);
+            return id;
+        } else {
+            q->deleteTexture(id);
+        }
     }
-    return bindTexture(pixmap.toImage(), target, format, key, clean);
+    return bindTexture(pixmap.toImage(), target, format, key, qt_pixmap_id(pixmap), clean);
 }
 
 /*!
@@ -1389,13 +1405,7 @@ GLuint QGLContextPrivate::bindTexture(const QPixmap &pixmap, GLenum target, GLin
 GLuint QGLContext::bindTexture(const QImage &image, GLenum target, GLint format)
 {
     Q_D(QGLContext);
-    const QString key = QString("%1_%2_%3").arg(QString().sprintf("i%08x",image.serialNumber())).arg(target).arg(format);
-    GLuint id;
-    if (d->textureCacheLookup(key, &id)) {
-        glBindTexture(target, id);
-        return id;
-    }
-    return d->bindTexture(image, target, format, key);
+    return d->bindTexture(image, target, format, false);
 }
 
 /*! \overload
@@ -1405,13 +1415,7 @@ GLuint QGLContext::bindTexture(const QImage &image, GLenum target, GLint format)
 GLuint QGLContext::bindTexture(const QPixmap &pixmap, GLenum target, GLint format)
 {
     Q_D(QGLContext);
-    const QString key = QString("%1_%2_%3").arg(QString().sprintf("p%08x",pixmap.serialNumber())).arg(target).arg(format);
-    GLuint id;
-    if (d->textureCacheLookup(key, &id)) {
-        glBindTexture(target, id);
-        return id;
-    }
-    return d->bindTexture(pixmap.toImage(), target, format, key);
+    return d->bindTexture(pixmap, target, format, false);
 }
 
 /*!
@@ -2458,6 +2462,8 @@ void QGLWidget::paintEvent(QPaintEvent *)
     If \a useContext is true, this method will try to be more
     efficient by using the existing GL context to render the pixmap.
     The default is false. Only use true if you understand the risks.
+    Note that under Windows a temporary context has to be created
+    and usage of the \e useContext parameter is not supported.
 
     Overlays are not rendered onto the pixmap.
 
@@ -2509,7 +2515,6 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
     fmt.setDoubleBuffer(false);                // We don't need dbl buf
 
     QGLContext* ocx = d->glcx;
-    bool wasCurrent = (QGLContext::currentContext() == ocx);
     ocx->doneCurrent();
     d->glcx = new QGLContext(fmt, &pm);
     d->glcx->create();
@@ -2519,16 +2524,10 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
     else
         success = false;
 
-#if defined(Q_WS_WIN)
-    glFlush();
-    pm = QPixmap::fromWinHBITMAP(d->glcx->d_func()->hbitmap);
-#endif
-
     delete d->glcx;
     d->glcx = ocx;
 
-    if (wasCurrent)
-        ocx->makeCurrent();
+    ocx->makeCurrent();
 
     if (success) {
 #if defined(Q_WS_X11)
@@ -2652,7 +2651,7 @@ void QGLWidget::glDraw()
 /*!
     Convenience function for specifying a drawing color to OpenGL.
     Calls glColor4 (in RGBA mode) or glIndex (in color-index mode)
-    with the color \a c. Applies to the current GL context.
+    with the color \a c. Applies to this widgets GL context.
 
     \sa qglClearColor(), QGLContext::currentContext(), QColor
 */
@@ -2660,9 +2659,8 @@ void QGLWidget::glDraw()
 void QGLWidget::qglColor(const QColor& c) const
 {
     Q_D(const QGLWidget);
-    const QGLContext* ctx = QGLContext::currentContext();
-    if (ctx) {
-        if (ctx->format().rgba())
+    if (d->glcx) {
+        if (d->glcx->format().rgba())
             glColor4ub(c.red(), c.green(), c.blue(), c.alpha());
         else if (!d->cmap.isEmpty()) { // QGLColormap in use?
             int i = d->cmap.find(c.rgb());
@@ -2670,14 +2668,14 @@ void QGLWidget::qglColor(const QColor& c) const
                 i = d->cmap.findNearest(c.rgb());
             glIndexi(i);
         } else
-            glIndexi(ctx->colorIndex(c));
+            glIndexi(d->glcx->colorIndex(c));
     }
 }
 
 /*!
     Convenience function for specifying the clearing color to OpenGL.
     Calls glClearColor (in RGBA mode) or glClearIndex (in color-index
-    mode) with the color \a c. Applies to the current GL context.
+    mode) with the color \a c. Applies to this widgets GL context.
 
     \sa qglColor(), QGLContext::currentContext(), QColor
 */
@@ -2685,9 +2683,8 @@ void QGLWidget::qglColor(const QColor& c) const
 void QGLWidget::qglClearColor(const QColor& c) const
 {
     Q_D(const QGLWidget);
-    const QGLContext* ctx = QGLContext::currentContext();
-    if (ctx) {
-        if (ctx->format().rgba())
+    if (d->glcx) {
+        if (d->glcx->format().rgba())
             glClearColor((GLfloat)c.red() / 255.0, (GLfloat)c.green() / 255.0,
                           (GLfloat)c.blue() / 255.0, (GLfloat) c.alpha() / 255.0);
         else if (!d->cmap.isEmpty()) { // QGLColormap in use?
@@ -2696,7 +2693,7 @@ void QGLWidget::qglClearColor(const QColor& c) const
                 i = d->cmap.findNearest(c.rgb());
             glClearIndex(i);
         } else
-            glClearIndex(ctx->colorIndex(c));
+            glClearIndex(d->glcx->colorIndex(c));
     }
 }
 
@@ -2863,10 +2860,35 @@ int QGLWidget::fontDisplayListBase(const QFont & fnt, int listBase)
    lists are deleted when the widget is destroyed.
 */
 
+static void qt_drawFontLining(double x, double y, const QString &str, const QFont &font)
+{
+    QFontMetrics fm(font);
+    int h = fm.lineWidth();
+    int w = fm.width(str);
+    if (font.underline()) {
+        int pos = fm.underlinePos();
+        glRectd(x, pos + y, x + w, pos + y + h);
+    }
+    if (font.strikeOut()) {
+        int pos = fm.strikeOutPos();
+        glRectd(x, y - pos, x + w, y - pos + h);
+    }
+    if (font.overline()) {
+        int pos = fm.overlinePos();
+        glRectd(x, y - pos, x + w, y - pos + h);
+    }
+}
+
 void QGLWidget::renderText(int x, int y, const QString & str, const QFont & fnt, int listBase)
 {
     makeCurrent();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+    glDisable(GL_TEXTURE_1D);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
@@ -2875,13 +2897,15 @@ void QGLWidget::renderText(int x, int y, const QString & str, const QFont & fnt,
     glPushMatrix();
     glLoadIdentity();
 
-    glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glRasterPos2i(0, 0);
     glBitmap(0, 0, 0, 0, x, -y, NULL);
     glListBase(fontDisplayListBase(fnt, listBase));
     glCallLists(str.length(), GL_UNSIGNED_BYTE, str.toLocal8Bit());
+
+    if (fnt.underline() || fnt.strikeOut() || fnt.overline())
+        qt_drawFontLining(x, y, str, fnt);
 
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -2897,15 +2921,47 @@ void QGLWidget::renderText(int x, int y, const QString & str, const QFont & fnt,
     have the labels move with the model as it is rotated etc.
 */
 void QGLWidget::renderText(double x, double y, double z, const QString & str, const QFont & fnt,
-                            int listBase)
+                           int listBase)
 {
     makeCurrent();
-    glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT | GL_COLOR_BUFFER_BIT);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+    glDisable(GL_TEXTURE_1D);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_RECTANGLE_NV);
+    glDisable(GL_CULL_FACE);
+
     glRasterPos3d(x, y, z);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glListBase(fontDisplayListBase(fnt, listBase));
     glCallLists(str.length(), GL_UNSIGNED_BYTE, str.toLocal8Bit());
+
+    if (fnt.underline() || fnt.strikeOut() || fnt.overline()) {
+        GLdouble model[4][4], proj[4][4];
+        GLint view[4];
+        glGetDoublev(GL_MODELVIEW_MATRIX, &model[0][0]);
+        glGetDoublev(GL_PROJECTION_MATRIX, &proj[0][0]);
+        glGetIntegerv(GL_VIEWPORT, &view[0]);
+
+        GLdouble win_x, win_y, win_z;
+        gluProject(x, y, z, &model[0][0], &proj[0][0], &view[0], &win_x, &win_y, &win_z);
+        win_y = height() - win_y; // y is inverted
+
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, width(), height(), 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        qt_drawFontLining(win_x, win_y, str, fnt);
+
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+    }
     glPopAttrib();
 }
 

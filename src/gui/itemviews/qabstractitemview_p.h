@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -57,7 +57,9 @@ public:
 
     void init();
 
+    void rowsRemoved(const QModelIndex &parent, int start, int end);
     void columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
+    void columnsRemoved(const QModelIndex &parent, int start, int end);
 
     void fetchMore();
     bool shouldEdit(QAbstractItemView::EditTrigger trigger, const QModelIndex &index);
@@ -114,15 +116,17 @@ public:
 #endif
 
     inline void releaseEditor(QWidget *editor) const {
-        QObject::disconnect(editor, SIGNAL(destroyed(QObject*)),
-                            q_func(), SLOT(editorDestroyed(QObject*)));
-        editor->removeEventFilter(delegate);
-        editor->hide(); // change the focus to the next widget
-        QTimer::singleShot(0, editor, SLOT(deleteLater())); // delete even later
+        if (editor) {
+            QObject::disconnect(editor, SIGNAL(destroyed(QObject*)),
+                                q_func(), SLOT(editorDestroyed(QObject*)));
+            editor->removeEventFilter(delegate);
+            editor->hide(); // change the focus to the next widget
+            QTimer::singleShot(0, editor, SLOT(deleteLater())); // delete even later
+        }
     }
 
     inline void executePostedLayout() const {
-        if (layoutPosted) {
+        if (layoutPosted && state != QAbstractItemView::CollapsingState) {
             layoutPosted = false;
             const_cast<QAbstractItemView*>(q_func())->doItemsLayout();
         }
@@ -158,6 +162,12 @@ public:
         return index.isValid();
     }
 
+    inline QPoint offset() const {
+        const Q_Q(QAbstractItemView);
+        return QPoint(q->isRightToLeft() ? -q->horizontalOffset()
+                      : q->horizontalOffset(), q->verticalOffset());
+    }
+
     QPointer<QAbstractItemModel> model;
     QPointer<QAbstractItemDelegate> delegate;
     QPointer<QItemSelectionModel> selectionModel;
@@ -165,7 +175,7 @@ public:
     QAbstractItemView::SelectionMode selectionMode;
     QAbstractItemView::SelectionBehavior selectionBehavior;
 
-    QMap<QPersistentModelIndex, QWidget*> editors;
+    QMap<QPersistentModelIndex, QPointer<QWidget> > editors;
     QList<QWidget*> persistent;
 
     QPersistentModelIndex enteredIndex;
@@ -174,7 +184,6 @@ public:
     QPoint pressedPosition;
 
     QAbstractItemView::State state;
-    QPoint cursorIndex;
     QAbstractItemView::EditTriggers editTriggers;
 
     QPersistentModelIndex root;

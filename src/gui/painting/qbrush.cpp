@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -99,37 +99,84 @@ struct QGradientBrushData : public QBrushData
 
 
 /*!
-    \class QBrush qbrush.h
-
-    \brief The QBrush class defines the fill pattern of shapes drawn by a QPainter.
-
+    \class QBrush
     \ingroup multimedia
     \ingroup shared
 
-    A brush has a style and a color. One of the brush styles is a
-    custom pattern, which is defined by a QPixmap.
+    \brief The QBrush class defines the fill pattern of shapes drawn
+    by QPainter.
 
-    The brush style defines the fill pattern. The default brush style
-    is Qt::NoBrush (depending on how you construct a brush). This style
-    tells the painter to not fill shapes. The standard style for
-    filling is Qt::SolidPattern.
 
-    The brush color defines the color of the fill pattern. The QColor
-    documentation lists the predefined colors.
+    A brush has a style, a color, a gradient and a texture.
 
-    Use the QPen class for specifying line/outline styles.
+    The brush style() defines the fill pattern using the
+    Qt::BrushStyle enum. The default brush style is Qt::NoBrush
+    (depending on how you construct a brush). This style tells the
+    painter to not fill shapes. The standard style for filling is
+    Qt::SolidPattern. The style can be set when the brush is created
+    using the appropiate constructor, and in addition the setStyle()
+    function provides means for altering the style once the brush is
+    constructed.
 
-    Example:
-    \quotefromfile snippets/brush/brush.cpp
-    \skipto BRUSH
-    \skipto QPainter
-    \printuntil end()
+    \image brush-styles.png Brush Styles
 
-    See the Qt::BrushStyle for a complete list of brush styles.
+    The brush color() defines the color of the fill pattern. The color
+    can either be one of Qt's predefined colors, Qt::GlobalColor, or
+    any other custom QColor. The currently set color can be retrieved
+    and altered using the color() and setColor() functions,
+    respectively.
 
-    \img brush-styles.png Brush Styles
+    The gradient() defines the gradient fill used when the current
+    style is either Qt::LinearGradientPattern,
+    Qt::RadialGradientPattern or Qt::ConicalGradient Pattern. The
+    gradient can only be set when constructing the brush, while the
+    texture() can be set using the appropiate constructor or by using
+    the setTexture() function. The texture() defines the pixmap used
+    when the current style is Qt::TexturePattern.
 
-    \sa QPainter, QPainter::setBrush(), QPainter::setBrushOrigin()
+    Note that applying setTexture() makes style() ==
+    Qt::TexturePattern, independently of previous style
+    settings. Also, calling setColor() will not make a difference if
+    the style is a gradient. The same is the case if the style is
+    Qt::TexturePattern style unless the current texture is a QBitmap.
+
+    The isOpaque() function returns true if the brush is fully opaque
+    otherwise false. A brush is considered opaque if:
+
+    \list
+    \o The alpha component of the color() is 255.
+    \o Its texture() does not an alpha channel and is not a QBitmap.
+    \o The colors in the gradient() all have an alpha component that is 255.
+    \endlist
+
+    \table 100%
+    \row
+    \o \inlineimage brush-outline.png Outlines
+    \o
+
+    To specify the style and color of lines and outlines, use the
+    QPainter's \l {QPen}{pen} combined with Qt::PenStyle and
+    Qt::GlobalColor:
+
+    \code
+        QPainter painter(this);
+
+        painter.setBrush(Qt::cyan);
+        painter.setPen(Qt::darkCyan);
+        painter.drawRect(0, 0, 100,100);
+
+        painter.setBrush(Qt::NoBrush);
+        painter.setPen(Qt::darkGreen);
+        painter.drawRect(40, 40, 100, 100);
+    \endcode
+
+    Note that, by default, QPainter renders the outline (using the
+    currently set pen) when drawing shapes. Use \l {Qt::NoPen}{\c
+    painter.setPen(Qt::NoPen)} to disable this behavior.
+
+    \endtable
+
+    \sa Qt::BrushStyle, QPainter, QColor
 */
 
 class QBrushStatic
@@ -194,8 +241,8 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
 }
 
 /*!
-    Constructs a default black brush with the style Qt::NoBrush (this brush will
-    not fill shapes).
+    Constructs a default black brush with the style Qt::NoBrush
+    (i.e. this brush will not fill shapes).
 */
 
 QBrush::QBrush()
@@ -206,7 +253,10 @@ QBrush::QBrush()
 }
 
 /*!
-    Constructs a brush with a black color and a pixmap set to \a pixmap.
+    Constructs a brush with a black color and a texture set to the
+    given \a pixmap. The style is set to Qt::TexturePattern.
+
+    \sa setTexture()
 */
 
 QBrush::QBrush(const QPixmap &pixmap)
@@ -218,7 +268,7 @@ QBrush::QBrush(const QPixmap &pixmap)
 }
 
 /*!
-    Constructs a black brush with the style \a style.
+    Constructs a black brush with the given \a style.
 
     \sa setStyle()
 */
@@ -229,7 +279,7 @@ QBrush::QBrush(Qt::BrushStyle style)
 }
 
 /*!
-    Constructs a brush with the color \a color and the style \a style.
+    Constructs a brush with the given \a color and \a style.
 
     \sa setColor(), setStyle()
 */
@@ -239,8 +289,10 @@ QBrush::QBrush(const QColor &color, Qt::BrushStyle style)
     init(color, style);
 }
 
-/*! \overload
-    Constructs a brush with the color \a color and the style \a style.
+/*!
+    \fn QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
+
+    Constructs a brush with the given \a color and \a style.
 
     \sa setColor(), setStyle()
 */
@@ -250,10 +302,11 @@ QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
 }
 
 /*!
-    Constructs a brush with the color \a color and a custom pattern
+    Constructs a brush with the given \a color and the custom pattern
     stored in \a pixmap.
 
-    The color will only have an effect for QBitmaps.
+    The style is set to Qt::TexturePattern. The color will only have
+    an effect for QBitmaps.
 
     \sa setColor(), setPixmap()
 */
@@ -264,11 +317,13 @@ QBrush::QBrush(const QColor &color, const QPixmap &pixmap)
     setTexture(pixmap);
 }
 
-/*! \overload
-    Constructs a brush with the color \a color and a custom pattern
+/*!
+
+    Constructs a brush with the given \a color and the custom pattern
     stored in \a pixmap.
 
-    The color will only have an effect for QBitmaps.
+    The style is set to Qt::TexturePattern. The color will only have
+    an effect for QBitmaps.
 
     \sa setColor(), setPixmap()
 */
@@ -290,6 +345,10 @@ QBrush::QBrush(const QBrush &other)
 
 /*!
     Constructs a brush based on the given \a gradient.
+
+    The brush style is set to the corresponding gradient style (either
+    Qt::LinearGradientPattern, Qt::RadialGradientPattern or
+    Qt::ConicalGradientPattern).
 */
 QBrush::QBrush(const QGradient &gradient)
 {
@@ -368,7 +427,10 @@ void QBrush::detach(Qt::BrushStyle newStyle)
 
 
 /*!
-    Assigns \a b to this brush and returns a reference to this brush.
+    \fn QBrush &QBrush::operator=(const QBrush &brush)
+
+    Assigns the given \a brush to \e this brush and returns a
+    reference to \e this brush.
 */
 
 QBrush &QBrush::operator=(const QBrush &b)
@@ -423,9 +485,15 @@ void QBrush::setStyle(Qt::BrushStyle style)
 */
 
 /*!
-    Sets the brush color to \a c.
+    \fn void QBrush::setColor(const QColor &color)
 
-    \sa color(), setStyle()
+    Sets the brush color to the given \a color.
+
+    Note that calling setColor() will not make a difference if the
+    style is a gradient. The same is the case if the style is
+    Qt::TexturePattern style unless the current texture is a QBitmap.
+
+    \sa color()
 */
 
 void QBrush::setColor(const QColor &c)
@@ -435,9 +503,10 @@ void QBrush::setColor(const QColor &c)
 }
 
 /*!
-    \fn void QBrush::setColor(Qt::GlobalColor c)
-
+    \fn void QBrush::setColor(Qt::GlobalColor color)
     \overload
+
+    Sets the brush color to the given \a color.
 */
 
 
@@ -448,18 +517,17 @@ void QBrush::setColor(const QColor &c)
 
     \compat
 
-    Sets a custom pattern for this brush. Use setTexture() instead.
+    Sets a custom pattern for this brush.
 
-    \sa setTexture()
+    Use setTexture() instead.
 */
 
 /*!
     \fn QPixmap *QBrush::pixmap() const
 
-    Returns a pointer to the custom brush pattern, or 0 if no custom
-    brush pattern has been set.
+    Returns a pointer to the custom brush pattern.
 
-    \sa setPixmap()
+    Use texture() instead.
 */
 QPixmap *QBrush::pixmap() const
 {
@@ -476,7 +544,7 @@ QPixmap *QBrush::pixmap() const
     Returns the custom brush pattern, or a null pixmap if no custom brush pattern
     has been set.
 
-    \sa setPixmap()
+    \sa setTexture()
 */
 QPixmap QBrush::texture() const
 {
@@ -489,9 +557,9 @@ QPixmap QBrush::texture() const
     Qt::TexturePattern.
 
     The current brush color will only have an effect for monochrome
-    pixmaps, i.e. for QPixmap::depth() == 1.
+    pixmaps, i.e. for QPixmap::depth() == 1 (\l {QBitmap}{QBitmaps}).
 
-    \sa pixmap(), color()
+    \sa texture()
 */
 
 void QBrush::setTexture(const QPixmap &pixmap)
@@ -556,10 +624,10 @@ bool QBrush::isOpaque() const
 
 
 /*!
-    \fn bool QBrush::operator!=(const QBrush &b) const
+    \fn bool QBrush::operator!=(const QBrush &brush) const
 
-    Returns true if the brush is different from \a b; otherwise
-    returns false.
+    Returns true if the brush is different from the given \a brush;
+    otherwise returns false.
 
     Two brushes are different if they have different styles, colors or
     pixmaps.
@@ -568,8 +636,10 @@ bool QBrush::isOpaque() const
 */
 
 /*!
-    Returns true if the brush is equal to \a b; otherwise returns
-    false.
+    \fn bool QBrush::operator==(const QBrush &brush) const
+
+    Returns true if the brush is equal to the given \a brush;
+    otherwise returns false.
 
     Two brushes are equal if they have equal styles, colors and
     pixmaps.
@@ -607,19 +677,14 @@ bool QBrush::operator==(const QBrush &b) const
     \fn QBrush::operator const QColor&() const
 
     Returns the brush's color.
-*/
 
-/*!
-    \fn inline double QPainter::translationX() const
-    \internal
-*/
-
-/*!
-    \fn inline double QPainter::translationY() const
-    \internal
+    Use color() instead.
 */
 
 #ifndef QT_NO_DEBUG_STREAM
+/*!
+  \internal
+*/
 QDebug operator<<(QDebug dbg, const QBrush &b)
 {
 #ifndef Q_BROKEN_DEBUG_STREAM
@@ -638,12 +703,13 @@ QDebug operator<<(QDebug dbg, const QBrush &b)
  *****************************************************************************/
 #ifndef QT_NO_DATASTREAM
 /*!
+    \fn QDataStream &operator<<(QDataStream &stream, const QBrush &brush)
     \relates QBrush
 
-    Writes the brush \a b to the stream \a s and returns a reference
-    to the stream.
+    Writes the given \a brush to the given \a stream and returns a
+    reference to the \a stream.
 
-    \sa \link datastreamformat.html Format of the QDataStream operators \endlink
+    \sa {Format of the QDataStream Operators}
 */
 
 QDataStream &operator<<(QDataStream &s, const QBrush &b)
@@ -674,12 +740,13 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
 }
 
 /*!
+    \fn QDataStream &operator>>(QDataStream &stream, QBrush &brush)
     \relates QBrush
 
-    Reads the brush \a b from the stream \a s and returns a reference
-    to the stream.
+    Reads the given \a brush from the given \a stream and returns a
+    reference to the \a stream.
 
-    \sa \link datastreamformat.html Format of the QDataStream operators \endlink
+    \sa {Format of the QDataStream Operators}
 */
 
 QDataStream &operator>>(QDataStream &s, QBrush &b)
@@ -744,20 +811,49 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
 
 
 /*!
-    \class QGradient qbrush.h
+    \class QGradient
+    \ingroup multimedia
 
     \brief The QGradient class is used in combination with QBrush to
     specify gradient fills.
 
-    Qt currently supports three types of gradient fills: linear,
-    radial and conical. Each of these is represented by a subclass of
-    QGradient: QLinearGradient, QRadialGradient and QConicalGradient.
+    Qt currently supports three types of gradient fills:
 
-    The colors in a gradient is defined using stop points, which is a
-    position and a color. The set of stop points describes how the
-    gradient area should be filled. A diagonal linear gradient from
-    black at (100, 100) to white at (200, 200) could be specified like
-    this:
+    \list
+    \o \e Linear gradients interpolate colors between start and end points.
+    \o \e Radial gradients interpolate colors between a focal point and end
+        points on a circle surrounding it.
+    \o \e Conical gradients interpolate colors around a center point.
+    \endlist
+
+    A gradient's type can be retrieved using the type() function.
+    Each of the types is represented by a subclass of QGradient:
+
+    \table
+    \row
+    \o \inlineimage qgradient-linear.png
+    \o \inlineimage qgradient-radial.png
+    \o \inlineimage qgradient-conical.png
+    \header
+    \o QLinearGradient
+    \o QRadialGradient
+    \o QConicalGradient
+    \endtable
+
+    The colors in a gradient is defined using stop points of the
+    QGradientStop type, i.e. a position and a color.  Use the
+    setColorAt() function to define a single stop
+    point. Alternatively, use the setStops() function to define
+    several stop points in one go. Note that the latter function \e
+    replaces the current set of stop points.
+
+    It is the gradient's complete set of stop points (accessible
+    through the stops() function) that describes how the gradient area
+    should be filled. If no stop points have been specified, a
+    gradient of black at 0 to white at 1 is used.
+
+    A diagonal linear gradient from black at (100, 100) to white at
+    (200, 200) could be specified like this:
 
     \quotefromfile snippets/brush/brush.cpp
     \skipto LINEAR
@@ -773,11 +869,33 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
     \skipto QRadialGradient
     \printuntil Qt::green
 
-    It is possible to repeat or reflect the gradient outside the area
-    by specifiying spread. The default is to pad the outside area with
-    the color at the closest stop point.
+    It is possible to repeat or reflect the gradient outside its area
+    by specifiying the \l {QGradient::Spread}{spread method} using the
+    setSpread() function. The default is to pad the outside area with
+    the color at the closest stop point. The currently set \l
+    {QGradient::Spread}{spread method} can be retrieved using the
+    spread() function. The QGradient::Spread enum defines three
+    different methods:
 
-    \sa QLinearGradient, QRadialGradient, QConicalGradient
+    \table
+    \row
+    \o \inlineimage qradialgradient-pad.png
+    \o \inlineimage qradialgradient-repeat.png
+    \o \inlineimage qradialgradient-reflect.png
+    \row
+    \o \l {QGradient::PadSpread}{PadSpread}
+    \o \l {QGradient::RepeatSpread}{RepeatSpread}
+    \o \l {QGradient::ReflectSpread}{ReflectSpread}
+    \endtable
+
+    Note that the setSpread() function only has effect for linear and
+    radial gradients. The reason is that the conical gradient is
+    closed by definition, i.e. the \e conical gradient fills the
+    entire circle from 0 - 360 degrees, while the boundary of a radial
+    or a linear gradient can be specified through its radius or final
+    stop points, respectively.
+
+    \sa {demos/gradients}{The Gradients Demo}, QBrush
 */
 
 /*!
@@ -793,33 +911,46 @@ QGradient::QGradient()
 
     Specifies the type of gradient.
 
-    \value LinearGradient The gradient is a linear gradient.
-    \value RadialGradient The gradient is a radial gradient.
-    \value ConicalGradient The gradient is a conical gradient.
+    \value LinearGradient  Interpolates colors between start and end points
+    (QLinearGradient).
+
+    \value RadialGradient Interpolate colors between a focal point and end
+    points on a circle surrounding it (QRadialGradient).
+
+    \value ConicalGradient Interpolate colors around a center point (QConicalGradient).
+    \value NoGradient No gradient is used.
+
+    \sa type()
 */
 
 /*!
     \enum QGradient::Spread
 
-    Specifies how the areas outside the gradient area should be
+    Specifies how the area outside the gradient area should be
     filled.
 
-    \value PadSpread The areas are filled with the closes stop
+    \value PadSpread The area is filled with the closest stop
     color. This is the default.
 
-    \value RepeatSpread The gradient repeats outside the gradient
+    \value RepeatSpread The gradient  is repeated outside the gradient
     area.
 
     \value ReflectSpread The gradient is reflected outside the
     gradient area.
+
+    \sa spread(), setSpread()
 */
 
 /*!
     \fn void QGradient::setSpread(Spread method)
 
     Specifies the spread \a method that should be used for this
-    gradient. This function only has effect for linear and
-    radial gradients.
+    gradient.
+
+    Note that this function only has effect for linear and radial
+    gradients.
+
+    \sa spread()
 */
 
 /*!
@@ -827,6 +958,8 @@ QGradient::QGradient()
 
     Returns the spread method use by this gradient. The default is
     PadSpread.
+
+    \sa setSpread()
 */
 
 /*!
@@ -836,8 +969,12 @@ QGradient::QGradient()
 */
 
 /*!
-    Sets another stop point at the relative position \a pos with
-    color \a color. The position \a pos must be in the range 0 to 1.
+    \fn void QGradient::setColorAt(qreal position, const QColor &color)
+
+    Creates a stop point at the given \a position with the given \a
+    color. The given \a position must be in the range 0 to 1.
+
+    \sa setStops(), stops()
 */
 
 void QGradient::setColorAt(qreal pos, const QColor &color)
@@ -853,9 +990,13 @@ void QGradient::setColorAt(qreal pos, const QColor &color)
 }
 
 /*!
-    Replaces the current set of stop points with \a stops. The
-    positions of the stop points must be in the range 0 to 1 and must be
-    sorted with the lowest point first.
+    \fn void QGradient::setStops(const QGradientStops &stopPoints)
+
+    Replaces the current set of stop points with the given \a
+    stopPoints. The positions of the points must be in the range 0 to
+    1, and must be sorted with the lowest point first.
+
+    \sa setColorAt(), stops()
 */
 void QGradient::setStops(const QGradientStops &stops)
 {
@@ -866,10 +1007,12 @@ void QGradient::setStops(const QGradientStops &stops)
 
 
 /*!
-    Returns the stops for this gradient.
+    Returns the stop points for this gradient.
 
-    If no stops have been specified a gradient of black at 0 to white
+    If no stop points have been specified, a gradient of black at 0 to white
     at 1 is used.
+
+    \sa setStops(), setColorAt()
 */
 QGradientStops QGradient::stops() const
 {
@@ -912,6 +1055,10 @@ bool QGradient::operator==(const QGradient &gradient) const
     return stops() == gradient.stops();
 }
 
+/*!
+    Returns true if the gradient is the same as the other \a gradient
+    specified; otherwise returns false.
+*/
 bool QGradient::operator==(const QGradient &gradient)
 {
     return const_cast<const QGradient *>(this)->operator==(gradient);
@@ -919,19 +1066,51 @@ bool QGradient::operator==(const QGradient &gradient)
 
 
 /*!
-    \class QLinearGradient qbrush.h
+    \class QLinearGradient
+    \ingroup multimedia
 
     \brief The QLinearGradient class is used in combination with QBrush to
     specify a linear gradient brush.
 
-    \sa QBrush
+    Linear gradients interpolate colors between start and end
+    points. Outside these points the gradient is either padded,
+    reflected or repeated depending on the currently set \l
+    {QGradient::Spread}{spread} method:
+
+    \table
+    \row
+    \o \inlineimage qlineargradient-pad.png
+    \o \inlineimage qlineargradient-reflect.png
+    \o \inlineimage qlineargradient-repeat.png
+    \row
+    \o \l {QGradient::PadSpread}{PadSpread} (default)
+    \o \l {QGradient::ReflectSpread}{ReflectSpread}
+    \o \l {QGradient::RepeatSpread}{RepeatSpread}
+    \endtable
+
+    The colors in a gradient is defined using stop points of the
+    QGradientStop type, i.e. a position and a color. Use the
+    QGradient::setColorAt() or the QGradient::setStops() function to
+    define the stop points. It is the gradient's complete set of stop
+    points that describes how the gradient area should be filled. If
+    no stop points have been specified, a gradient of black at 0 to
+    white at 1 is used.
+
+    In addition to the functions inherited from QGradient, the
+    QLinearGradient class provides the finalStop() function which
+    returns the final stop point of the gradient, and the start()
+    function returning the start point of the gradient.
+
+    \sa QRadialGradient, QConicalGradient, {demos/gradients}{The
+    Gradients Demo}
 */
 
 
 /*!
-    Constructs a linear gradient with interpolation area between \a
-    start and \a finalStop. The positions \a start and \a finalStop
-    are specified using logical coordinates.
+    Constructs a linear gradient with interpolation area between the
+    given \a start point and \a finalStop.
+
+    \sa QGradient::setColorAt(), QGradient::setStops()
 */
 QLinearGradient::QLinearGradient(const QPointF &start, const QPointF &finalStop)
 {
@@ -944,11 +1123,12 @@ QLinearGradient::QLinearGradient(const QPointF &start, const QPointF &finalStop)
 }
 
 /*!
-    \overload
+    \fn QLinearGradient::QLinearGradient(qreal x1, qreal y1, qreal x2, qreal y2)
 
-    Constructs a linear gradient with interpolation area between \a
-    xStart, \a yStart and \a xFinalStop, \a yFinalStop. The positions
-    are specified using logical coordinates.
+    Constructs a linear gradient with interpolation area between (\a
+    x1, \a y1) and (\a x2, \a y2).
+
+    \sa QGradient::setColorAt(), QGradient::setStops()
 */
 QLinearGradient::QLinearGradient(qreal xStart, qreal yStart, qreal xFinalStop, qreal yFinalStop)
 {
@@ -962,8 +1142,9 @@ QLinearGradient::QLinearGradient(qreal xStart, qreal yStart, qreal xFinalStop, q
 
 
 /*!
-    Returns the start point of this linear gradient in logical
-    coordinates.
+    Returns the start point of this linear gradient in logical coordinates.
+
+    \sa QGradient::stops()
 */
 
 QPointF QLinearGradient::start() const
@@ -974,8 +1155,9 @@ QPointF QLinearGradient::start() const
 
 
 /*!
-    Returns the final stop point of this linear gradient in logical
-    coordinates.
+    Returns the final stop point of this linear gradient in logical coordinates.
+
+    \sa QGradient::stops()
 */
 
 QPointF QLinearGradient::finalStop() const
@@ -987,10 +1169,42 @@ QPointF QLinearGradient::finalStop() const
 
 /*!
     \class QRadialGradient
+    \ingroup multimedia
+
     \brief The QRadialGradient class is used in combination with QBrush to
     specify a radial gradient brush.
 
-    \sa QBrush
+    Radial gradients interpolate colors between a focal point and end
+    points on a circle surrounding it. Outside the end points the
+    gradient is either padded, reflected or repeated depending on the
+    currently set \l {QGradient::Spread}{spread} method:
+
+    \table
+    \row
+    \o \inlineimage qradialgradient-pad.png
+    \o \inlineimage qradialgradient-reflect.png
+    \o \inlineimage qradialgradient-repeat.png
+    \row
+    \o \l {QGradient::PadSpread}{PadSpread} (default)
+    \o \l {QGradient::ReflectSpread}{ReflectSpread}
+    \o \l {QGradient::RepeatSpread}{RepeatSpread}
+    \endtable
+
+    The colors in a gradient is defined using stop points of the
+    QGradientStop type, i.e. a position and a color. Use the
+    QGradient::setColorAt() or the QGradient::setStops() function to
+    define the stop points. It is the gradient's complete set of stop
+    points that describes how the gradient area should be filled.  If
+    no stop points have been specified, a gradient of black at 0 to
+    white at 1 is used.
+
+    In addition to the functions inherited from QGradient, the
+    QRadialGradient class provides the center(), focalPoint() and
+    radius() functions returning the gradient's center, focal point
+    and radius respectively.
+
+    \sa QLinearGradient, QConicalGradient, {demos/gradients}{The
+    Gradients Demo}
 */
 
 static QPointF qt_radial_gradient_adapt_focal_point(const QPointF &center,
@@ -1007,11 +1221,14 @@ static QPointF qt_radial_gradient_adapt_focal_point(const QPointF &center,
 }
 
 /*!
-    Constructs a radial gradient centered at \a center with radius \a
-    radius.  The \a focalPoint can be used to define the focal point
-    of the gradient inside the circle.
+    Constructs a radial gradient with the given \a center, \a
+    radius and \a focalPoint.
 
-    The default focalPoint is the circle center.
+    The default focalPoint is the circle center. If the \a focalPoint
+    is outside the circle defined by the given \a center and \a
+    radius, it is clamped to the circle's boundary.
+
+    \sa QGradient::setColorAt(), QGradient::setStops()
 */
 
 QRadialGradient::QRadialGradient(const QPointF &center, qreal radius, const QPointF &focalPoint)
@@ -1030,11 +1247,14 @@ QRadialGradient::QRadialGradient(const QPointF &center, qreal radius, const QPoi
 
 
 /*!
-    Constructs a radial gradient centered at \a cx, \a cy with radius
-    \a radius.  The focal point \a fx, \a fy can be used to define the
-    focal point of the gradient inside the circle.
+    Constructs a radial gradient with the given center (\a cx, \a cy),
+    \a radius and focal point (\a fx, \a fy).
 
-    The default focalPoint is the circle center.
+    The default focal point is the circle center. If the focal point
+    is outside the circle defined by the given center and \a radius,
+    it is clamped to the circle's boundary.
+
+    \sa QGradient::setColorAt(), QGradient::setStops()
 */
 
 QRadialGradient::QRadialGradient(qreal cx, qreal cy, qreal radius, qreal fx, qreal fy)
@@ -1056,6 +1276,8 @@ QRadialGradient::QRadialGradient(qreal cx, qreal cy, qreal radius, qreal fx, qre
 
 /*!
     Returns the center of this radial gradient in logical coordinates.
+
+    \sa QGradient::stops()
 */
 
 QPointF QRadialGradient::center() const
@@ -1067,6 +1289,8 @@ QPointF QRadialGradient::center() const
 
 /*!
     Returns the radius of the radial gradient in logical coordinates.
+
+    \sa QGradient::stops()
 */
 
 qreal QRadialGradient::radius() const
@@ -1079,6 +1303,8 @@ qreal QRadialGradient::radius() const
 /*!
     Returns the focal point of this radial gradient in logical
     coordinates.
+
+    \sa QGradient::stops()
 */
 
 QPointF QRadialGradient::focalPoint() const
@@ -1089,18 +1315,47 @@ QPointF QRadialGradient::focalPoint() const
 
 
 /*!
-    \class QConicalGradient qbrush.h
+    \class QConicalGradient
+    \ingroup multimedia
 
     \brief The QConicalGradient class is used in combination with QBrush to
     specify a conical gradient brush.
 
-    \sa QBrush
+    Conical gradients interpolate interpolate colors counter-clockwise
+    around a center point.
+
+    \image qconicalgradient
+
+    The colors in a gradient is defined using stop points of the
+    QGradientStop type, i.e. a position and a color. Use the
+    QGradient::setColorAt() or the QGradient::setStops() function to
+    define the stop points. It is the gradient's complete set of stop
+    points that describes how the gradient area should be filled. If
+    no stop points have been specified, a gradient of black at 0 to
+    white at 1 is used.
+
+    In addition to the functions inherited from QGradient, the
+    QConicalGradient class provides the angle() and center() functions
+    returning the start angle and center of the gradient.
+
+    Note that the setSpread() function has no effect for conical
+    gradients. The reason is that the conical gradient is closed by
+    definition, i.e. the conical gradient fills the entire circle from
+    0 - 360 degrees, while the boundary of a radial or a linear
+    gradient can be specified through its radius or final stop points,
+    respectively.
+
+    \sa QLinearGradient, QRadialGradient, {demos/gradients}{The
+    Gradients Demo}
 */
 
 
 /*!
-    Constructs a conical centered at \a center and starting at
-    \a angle. The angle is specified in degrees between 0 and 360.
+    Constructs a conical with the given \a center, starting the
+    interpolation at the given \a angle. The \a angle must be specified in
+    degrees between 0 and 360.
+
+    \sa setColorAt(), setStops()
 */
 
 QConicalGradient::QConicalGradient(const QPointF &center, qreal angle)
@@ -1114,8 +1369,11 @@ QConicalGradient::QConicalGradient(const QPointF &center, qreal angle)
 
 
 /*!
-    Constructs a conical centered at \a cx, \a cy and starting at
-    \a angle. The angle is specified in degrees between 0 and 360.
+    Constructs a conical with the given center (\a cx, \a cy),
+    starting the interpolation at the given \a angle. The angle must
+    be specified in degrees between 0 and 360.
+
+    \sa setColorAt(), setStops()
 */
 
 QConicalGradient::QConicalGradient(qreal cx, qreal cy, qreal angle)
@@ -1130,6 +1388,8 @@ QConicalGradient::QConicalGradient(qreal cx, qreal cy, qreal angle)
 
 /*!
     Returns the center of the conical gradient in logical coordinates
+
+    \sa stops()
 */
 
 QPointF QConicalGradient::center() const
@@ -1141,6 +1401,8 @@ QPointF QConicalGradient::center() const
 
 /*!
     Returns the start angle of the conical gradient in logical coordinates
+
+    \sa stops()
 */
 
 qreal QConicalGradient::angle() const
@@ -1153,7 +1415,7 @@ qreal QConicalGradient::angle() const
     \typedef QGradientStop
     \relates QGradient
 
-    Typedef for QPair<qreal, QColor>.
+    Typedef for QPair<\l qreal, QColor>.
 */
 
 /*!

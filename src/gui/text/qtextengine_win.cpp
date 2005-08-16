@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -515,6 +515,11 @@ void QTextEngine::shapeText(int item) const
         return;
 
     int script = si.analysis.script;
+    if (hasUsp10) {
+        const SCRIPT_PROPERTIES *script_prop = script_properties[si.analysis.script];
+        script = scriptForWinLanguage(script_prop->langid);
+    }
+
     // Just to get the warning away
     int from = si.position;
     int len = length(item);
@@ -523,17 +528,7 @@ void QTextEngine::shapeText(int item) const
 
     si.glyph_data_offset = layoutData->used;
 
-    QFont fnt = font(si);
-    QFontPrivate *fp = fnt.d;
-
-    if (hasUsp10) {
-        const SCRIPT_PROPERTIES *script_prop = script_properties[si.analysis.script];
-        script = scriptForWinLanguage(script_prop->langid);
-    }
-
-    QFontEngine *fontEngine = fp->engineForScript(script);
-    if (fontEngine->type() == QFontEngine::Box)
-        fontEngine = fp->engineForScript(QUnicodeTables::Common);
+    QFontEngine *fontEngine = this->fontEngine(si, &si.ascent, &si.descent);
 
     if (hasUsp10 && fontEngine->ttf) {
         int l = len;
@@ -645,10 +640,6 @@ end:
     QGlyphLayout *end = g + si.num_glyphs;
     while (g < end)
         si.width += (g++)->advance.x;
-
-
-    si.ascent = fontEngine->ascent();
-    si.descent = fontEngine->descent();
 
     layoutData->used += si.num_glyphs;
 }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -29,9 +29,6 @@ MdiChild::MdiChild()
 {
     setAttribute(Qt::WA_DeleteOnClose);
     isUntitled = true;
-
-    connect(document(), SIGNAL(contentsChanged()),
-            this, SLOT(documentWasModified()));
 }
 
 void MdiChild::newFile()
@@ -41,6 +38,9 @@ void MdiChild::newFile()
     isUntitled = true;
     curFile = tr("document%1.txt").arg(sequenceNumber++);
     setWindowTitle(curFile + "[*]");
+
+    connect(document(), SIGNAL(contentsChanged()),
+            this, SLOT(documentWasModified()));
 }
 
 bool MdiChild::loadFile(const QString &fileName)
@@ -60,6 +60,10 @@ bool MdiChild::loadFile(const QString &fileName)
     QApplication::restoreOverrideCursor();
 
     setCurrentFile(fileName);
+
+    connect(document(), SIGNAL(contentsChanged()),
+            this, SLOT(documentWasModified()));
+
     return true;
 }
 

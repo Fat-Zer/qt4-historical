@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -612,6 +612,7 @@ bool QTextStreamPrivate::scan(const QChar **ptr, int *length, int maxlen, TokenD
     int startOffset = device ? readBufferOffset : stringOffset;
     QChar lastChar;
 
+    bool canStillReadFromDevice = true;
     do {
         int endOffset;
         const QChar *chPtr;
@@ -644,14 +645,14 @@ bool QTextStreamPrivate::scan(const QChar **ptr, int *length, int maxlen, TokenD
         }
     } while (!foundToken
              && (!maxlen || totalSize < maxlen)
-             && (device && fillReadBuffer()));
+             && (device && (canStillReadFromDevice = fillReadBuffer())));
 
     // if the token was not found, but we reached the end of input,
     // then we accept what we got. if we are not at the end of input,
     // we return false.
     if (!foundToken && (totalSize == 0
                         || (string && stringOffset + totalSize < string->size())
-                        || (device && !device->atEnd()))) {
+                        || (device && !device->atEnd() && canStillReadFromDevice))) {
 #if defined (QTEXTSTREAM_DEBUG)
         qDebug("QTextStreamPrivate::scan() did not find the token.");
 #endif
@@ -797,8 +798,11 @@ inline bool QTextStreamPrivate::putString(const QString &s)
     }
 
 #if defined (QTEXTSTREAM_DEBUG)
+    QByteArray a = s.toUtf8();
+    QByteArray b = tmp.toUtf8();
     qDebug("QTextStreamPrivate::putString(\"%s\") calls write(\"%s\")",
-           s.toLatin1().constData(), tmp.toLatin1().constData());
+           qt_prettyDebug(a.constData(), a.size(), qMax(16, a.size())).constData(),
+           qt_prettyDebug(b.constData(), b.size(), qMax(16, b.size())).constData());
 #endif
     return write(tmp);
 }
@@ -1019,6 +1023,12 @@ bool QTextStream::seek(qint64 pos)
         d->readBuffer.clear();
         d->readBufferOffset = 0;
         d->endOfBufferState.clear();
+
+#ifndef QT_NO_TEXTCODEC
+        // Reset the codec converter states.
+        ::resetCodecConverterState(&d->readConverterState);
+        ::resetCodecConverterState(&d->writeConverterState);
+#endif
         return true;
     }
 
@@ -1405,6 +1415,12 @@ QString QTextStream::readAll()
 
     The returned line has no trailing end-of-line characters, so
     calling QString::trimmed() is unnecessary.
+
+    If the stream has read to the end of the file, the returned string
+    will be a null string - see QString::isNull(). Empty lines are
+    represented by empty, but non-null strings - see QString::isEmpty().
+
+    You can also explicitly test for the end of the file using atEnd().
 
     \sa readAll()
 */
@@ -2558,6 +2574,9 @@ QTextStream &center(QTextStream &stream)
     \code
         stream << '\n' << flush;
     \endcode
+
+    Note: On Windows, all '\n' characters are written as '\r\n' if
+    QTextStream's device or string is opened using the QIODevice::Text flag.
 
     \sa flush(), reset(), {QTextStream manipulators}
 */

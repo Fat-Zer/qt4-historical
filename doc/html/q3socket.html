@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/network/q3socket.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/network/q3socket.cpp -->
 <head>
     <title>Qt 4.1: Q3Socket Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -118,22 +118,22 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Error-enum"></a>enum Q3Socket::Error</h3>
 <p>This enum specifies the possible errors:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Socket::ErrConnectionRefused</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">if the connection was refused</td></tr>
 <tr><td valign="top"><tt>Q3Socket::ErrHostNotFound</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">if the host was not found</td></tr>
 <tr><td valign="top"><tt>Q3Socket::ErrSocketRead</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">if a read from the socket failed</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="State-enum"></a>enum Q3Socket::State</h3>
 <p>This enum defines the connection states:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Socket::Idle</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">if there is no connection</td></tr>
 <tr><td valign="top"><tt>Q3Socket::HostLookup</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">during a DNS lookup</td></tr>
 <tr><td valign="top"><tt>Q3Socket::Connecting</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">during TCP connection establishment</td></tr>
 <tr><td valign="top"><tt>Q3Socket::Connected</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">when there is an operational connection</td></tr>
 <tr><td valign="top"><tt>Q3Socket::Closing</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">if the socket is closing down, but is not yet closed.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3Socket"></a>Q3Socket::Q3Socket ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0, const char * <i>name</i> = 0 )</h3>
@@ -147,7 +147,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="at"></a><a href="qiodevice-qt3.html#Offset-typedef">Offset</a> Q3Socket::at () const</h3>
 <p>Returns the current read index. Since <a href="q3socket.html">Q3Socket</a> is a sequential device, the current read index is always zero.</p>
 <h3 class="fn"><a name="at-2"></a>bool Q3Socket::at ( <a href="qiodevice-qt3.html#Offset-typedef">Offset</a> <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Moves the read index forward to <i>index</i> and returns true if the operation was successful; otherwise returns false. Moving the index forward means skipping incoming data.</p>
 <h3 class="fn"><a name="atEnd"></a>bool Q3Socket::atEnd () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if there is no more data to read; otherwise returns false.</p>
@@ -270,14 +270,14 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This is a blocking call and should be avoided in event driven applications.</p>
 <p>See also <a href="q3socket.html#bytesAvailable">bytesAvailable</a>().</p>
 <h3 class="fn"><a name="waitForMore-2"></a><a href="qtglobal-qt3.html#Q_ULONG-typedef">Q_ULONG</a> Q3Socket::waitForMore ( int <i>msecs</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="writeData"></a><a href="qtglobal.html#qint64-typedef">qint64</a> Q3Socket::writeData ( const char * <i>data</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>len</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Writes <i>len</i> bytes to the socket from <i>data</i> and returns the number of bytes written. Returns -1 if an error occurred.</p>
 <p>Reimplemented from <a href="qiodevice.html#writeData">QIODevice</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

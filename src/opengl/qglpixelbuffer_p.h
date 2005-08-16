@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -34,7 +34,7 @@
 //
 // We mean it.
 //
-#include "QtOpenGL/qglpbuffer.h"
+#include "QtOpenGL/qglpixelbuffer.h"
 #include <private/qgl_p.h>
 
 #ifdef Q_WS_X11

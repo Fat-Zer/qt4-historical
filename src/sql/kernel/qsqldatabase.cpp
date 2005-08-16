@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -73,7 +73,7 @@
 #ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
                           (QSqlDriverFactoryInterface_iid,
-                           QCoreApplication::libraryPaths(), 
+                           QCoreApplication::libraryPaths(),
                            QLatin1String("/sqldrivers")))
 #endif
 
@@ -534,7 +534,7 @@ QStringList QSqlDatabase::drivers()
         }
     }
 #endif
-    
+
     DriverDict dict = QSqlDatabasePrivate::driverDict();
     for (DriverDict::const_iterator i = dict.constBegin(); i != dict.constEnd(); ++i) {
         if (!list.contains(i.key()))
@@ -865,6 +865,11 @@ bool QSqlDatabase::transaction()
     Commits a transaction to the database if the driver supports
     transactions and a transaction() has been started. Returns true if
     the operation succeeded; otherwise returns false.
+
+    Note that on some databases, this function will not work if there
+    is an active QSqlQuery on the database. Use the lastError()
+    function to retrieve database-specific error data about the error
+    that occurred.
 
     \sa QSqlDriver::hasFeature() rollback()
 */

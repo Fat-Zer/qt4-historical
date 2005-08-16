@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -87,6 +87,10 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
     vbox->addWidget(input);
     vbox->addStretch(1);
 
+#ifndef QT_NO_SHORTCUT
+    label->setBuddy(input);
+#endif
+    
     QHBoxLayout *hbox = new QHBoxLayout;
     vbox->addLayout(hbox, Qt::AlignRight);
 
@@ -226,6 +230,7 @@ QString QInputDialog::getText(QWidget *parent, const QString &title, const QStri
     le->setText(text);
     le->setEchoMode(mode);
     le->setFocus();
+    le->selectAll();
 
     QString result;
     bool accepted = (dlg.exec() == QDialog::Accepted);

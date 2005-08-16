@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/text/qtextformat.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/text/qtextformat.cpp -->
 <head>
     <title>Qt 4.1: QTextCharFormat Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -78,19 +78,19 @@ body { background: #ffffff; color: black; }</style>
 <p>The QTextCharFormat class provides formatting information for characters in a <a href="qtextdocument.html">QTextDocument</a>.</p>
 <p>The character format of text in a document specifies the visual properties of the text, as well as information about its role in a hypertext document.</p>
 <p>The font used can be set by supplying a font to the <a href="qtextcharformat.html#setFont">setFont</a>() function, and each aspect of its appearance can be adjusted to give the desired effect. <a href="qtextcharformat.html#setFontFamily">setFontFamily</a>() and <a href="qtextcharformat.html#setFontPointSize">setFontPointSize</a>() define the font's family (e.g. Times) and printed size; <a href="qtextcharformat.html#setFontWeight">setFontWeight</a>() and <a href="qtextcharformat.html#setFontItalic">setFontItalic</a>() provide control over the style of the font. <a href="qtextcharformat.html#setFontUnderline">setFontUnderline</a>(), <a href="qtextcharformat.html#setFontOverline">setFontOverline</a>(), <a href="qtextcharformat.html#setFontStrikeOut">setFontStrikeOut</a>(), and <a href="qtextcharformat.html#setFontFixedPitch">setFontFixedPitch</a>() provide additional effects for text.</p>
-<p>The color is set with setTextColor(). If the text is intended to be used as an anchor (for hyperlinks), this can be enabled with <a href="qtextcharformat.html#setAnchor">setAnchor</a>(). The <a href="qtextcharformat.html#setAnchorHref">setAnchorHref</a>() and <a href="qtextcharformat.html#setAnchorName">setAnchorName</a>() functions are used to specify the information about the hyperlink's destination and the anchor's name.</p>
+<p>The color is set with <a href="qtextformat.html#setForeground">setForeground</a>(). If the text is intended to be used as an anchor (for hyperlinks), this can be enabled with <a href="qtextcharformat.html#setAnchor">setAnchor</a>(). The <a href="qtextcharformat.html#setAnchorHref">setAnchorHref</a>() and <a href="qtextcharformat.html#setAnchorName">setAnchorName</a>() functions are used to specify the information about the hyperlink's destination and the anchor's name.</p>
 <p>If the text is written within a table, it can be made to span a number of rows and columns with the <a href="qtextcharformat.html#setTableCellRowSpan">setTableCellRowSpan</a>() and <a href="qtextcharformat.html#setTableCellColumnSpan">setTableCellColumnSpan</a>() functions.</p>
 <p>See also <a href="qtextformat.html">QTextFormat</a>, <a href="qtextblockformat.html">QTextBlockFormat</a>, <a href="qtexttableformat.html">QTextTableFormat</a>, and <a href="qtextlistformat.html">QTextListFormat</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="VerticalAlignment-enum"></a>enum QTextCharFormat::VerticalAlignment</h3>
 <p>This enum describes the ways that adjacent characters can be vertically aligned.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextCharFormat::AlignNormal</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Adjacent characters are positioned in the standard way for text in the writing system in use.</td></tr>
 <tr><td valign="top"><tt>QTextCharFormat::AlignSuperScript</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Characters are placed above the baseline for normal text.</td></tr>
 <tr><td valign="top"><tt>QTextCharFormat::AlignSubScript</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Characters are placed below the baseline for normal text.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextCharFormat"></a>QTextCharFormat::QTextCharFormat ()</h3>
@@ -179,6 +179,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If this character format is applied to characters in a table cell, the cell will span <i>tableCellRowSpan</i> rows.</p>
 <p>See also <a href="qtextcharformat.html#tableCellRowSpan">tableCellRowSpan</a>().</p>
 <h3 class="fn"><a name="setTextOutline"></a>void QTextCharFormat::setTextOutline ( const <a href="qpen.html">QPen</a> &amp; <i>pen</i> )</h3>
+<p>Sets the pen used to draw the outlines of characters to the given <i>pen</i>.</p>
 <p>See also <a href="qtextcharformat.html#textOutline">textOutline</a>().</p>
 <h3 class="fn"><a name="setUnderlineColor"></a>void QTextCharFormat::setUnderlineColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
 <p>Sets the underline color used for the characters with this format to the <i>color</i> specified.</p>
@@ -193,6 +194,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If this character format is applied to characters in a table cell, this function returns the number of rows spanned by the text (this may be 1); otherwise it returns 1.</p>
 <p>See also <a href="qtextcharformat.html#setTableCellRowSpan">setTableCellRowSpan</a>().</p>
 <h3 class="fn"><a name="textOutline"></a><a href="qpen.html">QPen</a> QTextCharFormat::textOutline () const</h3>
+<p>Returns the pen used to draw the outlines of characters in this format.</p>
 <p>See also <a href="qtextcharformat.html#setTextOutline">setTextOutline</a>().</p>
 <h3 class="fn"><a name="underlineColor"></a><a href="qcolor.html">QColor</a> QTextCharFormat::underlineColor () const</h3>
 <p>Returns the color used to underline the characters with this format.</p>
@@ -202,8 +204,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextcharformat.html#setVerticalAlignment">setVerticalAlignment</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -113,7 +113,7 @@ static QStringList qt_win_make_filters_list(const QString &filter)
     QString f(filter);
 
     if (f.isEmpty())
-        f = QObject::tr("All Files (*.*)");
+        f = QFileDialog::tr("All Files (*.*)");
 
     return qt_make_filter_list(f);
 }
@@ -319,7 +319,7 @@ QString qt_win_get_open_file_name(const QFileDialogArgs &args,
 
     QString title = args.caption;
     if (title.isNull())
-        title = QObject::tr("Open");
+        title = QFileDialog::tr("Open");
 
     DWORD selFilIdx;
 
@@ -329,11 +329,10 @@ QString qt_win_get_open_file_name(const QFileDialogArgs &args,
         idx = filterLst.indexOf(*selectedFilter);
     }
 
-    if (args.parent) {
-        QEvent e(QEvent::WindowBlocked);
-        QApplication::sendEvent(args.parent, &e);
-        QApplicationPrivate::enterModal(args.parent);
-    }
+    QWidget modal_widget;
+    modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
+    modal_widget.setParent(args.parent, Qt::Window);
+    QApplicationPrivate::enterModal(&modal_widget);
     QT_WA({
         // Use Unicode strings and API
         OPENFILENAME* ofn = qt_win_make_OFN(args.parent, args.selection,
@@ -363,11 +362,7 @@ QString qt_win_get_open_file_name(const QFileDialogArgs &args,
         }
         qt_win_clean_up_OFNA(&ofn);
     });
-    if (args.parent) {
-        QApplicationPrivate::leaveModal(args.parent);
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(args.parent, &e);
-    }
+    QApplicationPrivate::leaveModal(&modal_widget);
 
     qt_win_eatMouseMove();
 
@@ -403,7 +398,7 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
 
     QString title = args.caption;
     if (title.isNull())
-        title = QObject::tr("Save As");
+        title = QFileDialog::tr("Save As");
 
     DWORD selFilIdx;
 
@@ -413,11 +408,10 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
         idx = filterLst.indexOf(*selectedFilter);
     }
 
-    if (args.parent) {
-        QEvent e(QEvent::WindowBlocked);
-        QApplication::sendEvent(args.parent, &e);
-        QApplicationPrivate::enterModal(args.parent);
-    }
+    QWidget modal_widget;
+    modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
+    modal_widget.setParent(args.parent, Qt::Window);
+    QApplicationPrivate::enterModal(&modal_widget);
     QT_WA({
         // Use Unicode strings and API
         OPENFILENAME *ofn = qt_win_make_OFN(args.parent, args.selection,
@@ -447,12 +441,8 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
         }
         qt_win_clean_up_OFNA(&ofn);
     });
-    if (args.parent) {
-        QApplicationPrivate::leaveModal(args.parent);
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(args.parent, &e);
-    }
-
+    QApplicationPrivate::leaveModal(&modal_widget);
+    
     qt_win_eatMouseMove();
 
     if (result.isEmpty())
@@ -488,7 +478,7 @@ QStringList qt_win_get_open_file_names(const QFileDialogArgs &args,
 
     QString title = args.caption;
     if (title.isNull())
-        title = QObject::tr("Open ");
+        title = QFileDialog::tr("Open ");
 
     DWORD selFilIdx;
 
@@ -498,11 +488,10 @@ QStringList qt_win_get_open_file_names(const QFileDialogArgs &args,
         idx = filterLst.indexOf(*selectedFilter);
     }
 
-    if (args.parent) {
-        QEvent e(QEvent::WindowBlocked);
-        QApplication::sendEvent(args.parent, &e);
-        QApplicationPrivate::enterModal(args.parent);
-    }
+    QWidget modal_widget;
+    modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
+    modal_widget.setParent(args.parent, Qt::Window);
+    QApplicationPrivate::enterModal(&modal_widget);
     QT_WA({
         OPENFILENAME* ofn = qt_win_make_OFN(args.parent, args.selection,
                                             args.directory, title,
@@ -570,12 +559,8 @@ QStringList qt_win_get_open_file_names(const QFileDialogArgs &args,
             qt_win_clean_up_OFNA(&ofn);
         }
     });
-    if (args.parent) {
-        QApplicationPrivate::leaveModal(args.parent);
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(args.parent, &e);
-    }
-
+    QApplicationPrivate::leaveModal(&modal_widget);
+    
     qt_win_eatMouseMove();
 
     if (!result.isEmpty()) {
@@ -647,13 +632,12 @@ QString qt_win_get_existing_directory(const QFileDialogArgs &args)
         parent = qApp->activeWindow();
     QString title = args.caption;
     if (title.isNull())
-        title = QObject::tr("Select a Directory");
+        title = QFileDialog::tr("Select a Directory");
 
-    if (parent) {
-        QEvent e(QEvent::WindowBlocked);
-        QApplication::sendEvent(parent, &e);
-        QApplicationPrivate::enterModal(parent);
-    }
+    QWidget modal_widget;
+    modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
+    modal_widget.setParent(parent, Qt::Window);
+    QApplicationPrivate::enterModal(&modal_widget);
     QT_WA({
         qt_win_resolve_libs();
         QString initDir = QDir::convertSeparators(args.directory);
@@ -713,11 +697,7 @@ QString qt_win_get_existing_directory(const QFileDialogArgs &args)
         } else
             result = QString();
     });
-    if (parent) {
-        QApplicationPrivate::leaveModal(parent);
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(parent, &e);
-    }
+    QApplicationPrivate::leaveModal(&modal_widget);
 
     qt_win_eatMouseMove();
 

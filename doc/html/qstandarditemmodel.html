@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/itemviews/qstandarditemmodel.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/itemviews/qstandarditemmodel.cpp -->
 <head>
     <title>Qt 4.1: QStandardItemModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -65,7 +65,13 @@ body { background: #ffffff; color: black; }</style>
 <p>QStandardItemModel provides a model that that can be used as a repository for standard Qt data types. Data is written to the model and read back using the standard <a href="qabstractitemmodel.html">QAbstractItemModel</a> interface. The way each item of information is referenced depends on how the data is inserted into the model.</p>
 <p>For performance and flexibility, you may want to subclass <a href="qabstractitemmodel.html">QAbstractItemModel</a> to provide support for different kinds of repositories. For example, the <a href="qdirmodel.html">QDirModel</a> provides a model interface to the underlying file system, and does not actually store file information internally.</p>
 <p>An example usage of QStandardItemModel to create a table:</p>
-<pre></pre>
+<pre>&nbsp;       QStandardItemModel model(4, 2);
+        for (int row = 0; row &lt; 4; ++row) {
+            for (int column = 0; column &lt; 2; ++column) {
+                QModelIndex index = model.index(row, column, QModelIndex());
+                model.setData(index, QVariant((row+1) * (column+1)));
+            }
+        }</pre>
 <p>An example usage of QStandardItemModel to create a tree:</p>
 <pre>&nbsp;   QStandardItemModel *model = new QStandardItemModel();
     QModelIndex parent;
@@ -76,7 +82,8 @@ body { background: #ffffff; color: black; }</style>
         QModelIndex index = model-&gt;index(0, 0, parent);
         model-&gt;setData(index, i);
     }</pre>
-<p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="itemviews-simpletreemodel.html">Simple Tree Model</a>, and <a href="q3ptrlist.html#example">example</a>.</p>
+<p>The current implementation of QStandardItemModel only supports adding children index's to the first column.</p>
+<p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, and <a href="itemviews-simpletreemodel.html">Simple Tree Model example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QStandardItemModel"></a>QStandardItemModel::QStandardItemModel ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -147,8 +154,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, <a href="qstandarditemmodel.html#data">data</a>(), <a href="qabstractitemmodel.html#itemData">itemData</a>(), and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

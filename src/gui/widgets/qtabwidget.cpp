@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -783,6 +783,16 @@ void QTabWidget::setTabShape(TabShape s)
 /*!
     \reimp
  */
+bool QTabWidget::event(QEvent *ev)
+{
+    if (ev->type() == QEvent::LayoutRequest)
+        setUpLayout();
+    return QWidget::event(ev);
+}
+
+/*!
+    \reimp
+ */
 void QTabWidget::changeEvent(QEvent *ev)
 {
     if(ev->type() == QEvent::StyleChange)
@@ -923,12 +933,6 @@ void QTabWidget::paintEvent(QPaintEvent *)
     opt = d->getStyleOption();
     opt.rect = d->panelRect;
     p.drawPrimitive(QStyle::PE_FrameTabWidget, opt);
-}
-
-/* \reimp */
-bool QTabWidget::event(QEvent *e)
-{
-    return QWidget::event(e);
 }
 
 /*!

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -38,8 +38,7 @@ int main(int argc, char *argv[])
 
     QTreeView view;
     view.setModel(&model);
-    view.setWindowTitle("Simple Tree Model");
-    view.setRootIsDecorated(false);
+    view.setWindowTitle(QObject::tr("Simple Tree Model"));
     view.show();
     return app.exec();
 }

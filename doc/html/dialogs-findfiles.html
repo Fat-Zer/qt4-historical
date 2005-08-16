@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/examples/findfiles.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/examples/findfiles.qdoc -->
 <head>
     <title>Qt 4.1: Find Files Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -144,16 +144,16 @@ body { background: #ffffff; color: black; }</style>
     {
         QProgressDialog progressDialog(this);
         progressDialog.setCancelButtonText(tr(&quot;&amp;Cancel&quot;));
-        progressDialog.setRange(0, files.count());
+        progressDialog.setRange(0, files.size());
         progressDialog.setWindowTitle(tr(&quot;Find Files&quot;));</pre>
 <p>In the private <tt>findFiles()</tt> function we search through a list of files, looking for the ones that contain a specified text. This can be a very slow operation depending on the number of files as well as their sizes. In case there are a large number of files, or there exists some large files on the list, we provide a <a href="qprogressdialog.html">QProgressDialog</a>.</p>
 <p>The <a href="qprogressdialog.html">QProgressDialog</a> class provides feedback on the progress of a slow operation. It is used to give the user an indication of how long an operation is going to take, and to demonstrate that the application has not frozen. It can also give the user an opportunity to abort the operation.</p>
 <pre>&nbsp;       QStringList foundFiles;
 
-        for (int i = 0; i &lt; files.count(); ++i) {
+        for (int i = 0; i &lt; files.size(); ++i) {
             progressDialog.setValue(i);
             progressDialog.setLabelText(tr(&quot;Searching file number %1 of %2...&quot;)
-                                  .arg(i).arg(files.count()));
+                                        .arg(i).arg(files.size()));
             qApp-&gt;processEvents();</pre>
 <p>We run through the files, one at a time, and for each file we update the <a href="qprogressdialog.html">QProgressDialog</a> value. This property holds the current amount of progress made. We also update the progress dialog's label.</p>
 <p>Then we call the <a href="qcoreapplication.html#processEvents">QCoreApplication::processEvents</a>() function using the <a href="qapplication.html">QApplication</a> object. In this way we interleave the display of the progress made with the process of searching through the files so the application doesn't appear to be frozen.</p>
@@ -182,15 +182,15 @@ body { background: #ffffff; color: black; }</style>
 <p>Finally, we return the list of the files found.</p>
 <pre>&nbsp;   void Window::showFiles(const QDir &amp;directory, const QStringList &amp;files)
     {
-        for (int i = 0; i &lt; files.count(); ++i) {
+        for (int i = 0; i &lt; files.size(); ++i) {
             QFile file(directory.absoluteFilePath(files[i]));
             qint64 size = QFileInfo(file).size();
 
             QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
             fileNameItem-&gt;setFlags(Qt::ItemIsEnabled);
-            QTableWidgetItem *sizeItem = new QTableWidgetItem(QString(&quot;%1 KB&quot;)
+            QTableWidgetItem *sizeItem = new QTableWidgetItem(tr(&quot;%1 KB&quot;)
                                                  .arg(int((size + 1023) / 1024)));
-            sizeItem-&gt;setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
+            sizeItem-&gt;setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
             sizeItem-&gt;setFlags(Qt::ItemIsEnabled);
 
             int row = filesTable-&gt;rowCount();
@@ -198,7 +198,7 @@ body { background: #ffffff; color: black; }</style>
             filesTable-&gt;setItem(row, 0, fileNameItem);
             filesTable-&gt;setItem(row, 1, sizeItem);
         }
-        filesFoundLabel-&gt;setText(tr(&quot;%1 file(s) found&quot;).arg(files.count()));
+        filesFoundLabel-&gt;setText(tr(&quot;%1 file(s) found&quot;).arg(files.size()));
     }</pre>
 <p>Both the <tt>findFiles()</tt> and <tt>showFiles()</tt> functions are called from the <tt>find()</tt> slot. In the <tt>showFiles()</tt> function we run through the provided list of file names, adding each file name to the first column in the table widget and retrieving the file's size using <a href="qfile.html">QFile</a> and <a href="qfileinfo.html">QFileInfo</a> for the second column.</p>
 <p>We also update the total number of files found.</p>
@@ -235,8 +235,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Finally, we hide the <a href="qtablewidget.html">QTableWidget</a>'s vertical headers using the <a href="qwidget.html#hide">QWidget::hide</a>() function, and remove the default grid drawn for the table using the <a href="qtableview.html#showGrid-prop">QTableView::setShowGrid</a>() function.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

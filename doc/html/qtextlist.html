@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/text/qtextlist.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/text/qtextlist.cpp -->
 <head>
     <title>Qt 4.1: QTextList Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -22,6 +22,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>#include &lt;QTextList&gt;</pre><p>Inherits <a href="qtextblockgroup.html">QTextBlockGroup</a>.</p>
 <ul>
 <li><a href="qtextlist-members.html">List of all members, including inherited members</a></li>
+<li><a href="qtextlist-obsolete.html">Obsolete members</a></li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -29,7 +30,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtextlist.html#add">add</a></b> ( const QTextBlock &amp; <i>block</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextlist.html#count">count</a></b> () const</li>
 <li><div class="fn"/>QTextListFormat <b><a href="qtextlist.html#format">format</a></b> () const</li>
-<li><div class="fn"/>bool <b><a href="qtextlist.html#isEmpty">isEmpty</a></b> () const</li>
 <li><div class="fn"/>QTextBlock <b><a href="qtextlist.html#item">item</a></b> ( int <i>i</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qtextlist.html#itemNumber">itemNumber</a></b> ( const QTextBlock &amp; <i>block</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qtextlist.html#itemText">itemText</a></b> ( const QTextBlock &amp; <i>block</i> ) const</li>
@@ -76,15 +76,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="add"></a>void QTextList::add ( const <a href="qtextblock.html">QTextBlock</a> &amp; <i>block</i> )</h3>
 <p>Makes the given <i>block</i> part of the list.</p>
+<p>See also <a href="qtextlist.html#remove">remove</a>() and <a href="qtextlist.html#removeItem">removeItem</a>().</p>
 <h3 class="fn"><a name="count"></a>int QTextList::count () const</h3>
 <p>Returns the number of items in the list.</p>
-<p>See also <a href="qtextlist.html#isEmpty">isEmpty</a>().</p>
+<p>See also <a href="qtextlist-obsolete.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="format"></a><a href="qtextlistformat.html">QTextListFormat</a> QTextList::format () const</h3>
 <p>Returns the list's format.</p>
 <p>See also <a href="qtextlist.html#setFormat">setFormat</a>().</p>
-<h3 class="fn"><a name="isEmpty"></a>bool QTextList::isEmpty () const</h3>
-<p>Returns true if the list has no items; otherwise returns false.</p>
-<p>See also <a href="qtextlist.html#count">count</a>().</p>
 <h3 class="fn"><a name="item"></a><a href="qtextblock.html">QTextBlock</a> QTextList::item ( int <i>i</i> ) const</h3>
 <p>Returns the <i>i</i>-th text block in the list.</p>
 <p>See also <a href="qtextlist.html#count">count</a>() and <a href="qtextlist.html#itemText">itemText</a>().</p>
@@ -94,15 +92,17 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the text of the list item that corresponds to the given <i>block</i>.</p>
 <h3 class="fn"><a name="remove"></a>void QTextList::remove ( const <a href="qtextblock.html">QTextBlock</a> &amp; <i>block</i> )</h3>
 <p>Removes the given <i>block</i> from the list.</p>
+<p>See also <a href="qtextlist.html#add">add</a>() and <a href="qtextlist.html#removeItem">removeItem</a>().</p>
 <h3 class="fn"><a name="removeItem"></a>void QTextList::removeItem ( int <i>i</i> )</h3>
-<p>Removes the item at item position <i>i</i> from the list.</p>
+<p>Removes the item at item position <i>i</i> from the list. When the last item in the list is removed, the list is automatically deleted by the <a href="qtextdocument.html">QTextDocument</a> that owns it.</p>
+<p>See also <a href="qtextlist.html#add">add</a>() and <a href="qtextlist.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="setFormat"></a>void QTextList::setFormat ( const <a href="qtextlistformat.html">QTextListFormat</a> &amp; <i>format</i> )</h3>
 <p>Sets the list's format to <i>format</i>.</p>
 <p>See also <a href="qtextlist.html#format">format</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

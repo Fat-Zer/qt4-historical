@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -65,8 +65,8 @@ public:
     inline ~QSharedDataPointer() { if (d && !d->ref.deref()) delete d; }
 
     explicit QSharedDataPointer(T *data);
-    inline QSharedDataPointer(const QSharedDataPointer &o) : d(o.d) { if (d) d->ref.ref(); }
-    inline QSharedDataPointer & operator=(const QSharedDataPointer &o) {
+    inline QSharedDataPointer(const QSharedDataPointer<T> &o) : d(o.d) { if (d) d->ref.ref(); }
+    inline QSharedDataPointer<T> & operator=(const QSharedDataPointer<T> &o) {
         if (o.d != d) {
             T *x = o.d;
             if (x) x->ref.ref();

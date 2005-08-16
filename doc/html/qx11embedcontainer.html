@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/kernel/qx11embed_x11.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/kernel/qx11embed_x11.cpp -->
 <head>
     <title>Qt 4.1: QX11EmbedContainer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -41,7 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="signals"></a>
 <h3>Signals</h3>
@@ -64,6 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -98,11 +99,11 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Error-enum"></a>enum QX11EmbedContainer::Error</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QX11EmbedContainer::Unknown</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">An unrecognized error occurred.</td></tr>
 <tr><td valign="top"><tt>QX11EmbedContainer::InvalidWindowID</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The X11 window ID of the container was invalid. This error is usually triggered by passing an invalid window ID to embed().</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QX11EmbedContainer"></a>QX11EmbedContainer::QX11EmbedContainer ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
@@ -123,13 +124,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="error"></a><a href="qx11embedcontainer.html#Error-enum">Error</a> QX11EmbedContainer::error () const</h3>
 <p>Returns the last error that occurred.</p>
 <h3 class="fn"><a name="error-2"></a>void QX11EmbedContainer::error ( <a href="qx11embedcontainer.html#Error-enum">QX11EmbedContainer::Error</a> <i>error</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted if an error occurred when embedding or communicating with a client. The specified <i>error</i> describes the problem that occurred.</p>
 <p>See also <a href="qx11embedcontainer.html#Error-enum">QX11EmbedContainer::Error</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

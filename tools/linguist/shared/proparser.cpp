@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
@@ -54,7 +54,7 @@ QString loadFile( const QString &fileName )
     return in.readAll();
 }
 
-QMap<QString, QString> proFileTagMap( const QString& text )
+bool proFileTagMap( const QString& text, QMap<QString, QString> *ret )
 {
     QString t = text;
 
@@ -166,8 +166,16 @@ QMap<QString, QString> proFileTagMap( const QString& text )
                         after = tagMap[invocation];
                     else if (invocation.toLower() == "pwd")
                         after = QDir::currentPath();
-                    else // Probably an environment variable
+                    else {// Probably an environment variable
                         after = qgetenv(invocation.toLocal8Bit().constData());
+                        if (after.isEmpty()) {
+                            fprintf( stderr, "error: lupdate encountered project file functionality that is currently not supported.\n"
+                                "You might want to consider using directories as input instead of a project file.\n"
+                                "Try the following syntax:\n"
+                                "   lupdate mypath -ts myproject.ts'\n");
+                            return false;
+                        }
+                    }
                     (*it).replace( i, len, after );
                     i += after.length();
                 }
@@ -223,7 +231,8 @@ QMap<QString, QString> proFileTagMap( const QString& text )
         }
         stillProcess = callToInclude.indexIn(t) != -1;
     }
-    return tagMap;
+    if (ret) *ret = tagMap;
+    return true;
 }
 
 /*

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -26,12 +26,14 @@
 #ifndef QT_NO_TOOLBAR
 
 #include <qapplication.h>
+#include <qcombobox.h>
 #include <qevent.h>
 #include <qlayout.h>
 #include <qmainwindow.h>
 #include <qmenu.h>
 #include <qpainter.h>
 #include <qrubberband.h>
+#include <qsignalmapper.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qtoolbutton.h>
@@ -311,8 +313,7 @@ int QToolBarPrivate::indexOf(QAction *action) const
     appropriate, a widget can be inserted instead using addWidget() or
     insertWidget(); examples of suitable widgets are QSpinBox,
     QDoubleSpinBox, and QComboBox. When a toolbar button is pressed it
-    emits the actionTriggered() signal. Toolbars may only be added to
-    QMainWindow and QMainWindow subclasses.
+    emits the actionTriggered() signal.
 
     A toolbar can be fixed in place in a particular area (e.g. at the
     top of the window), or it can be movable (isMovable()) between
@@ -784,6 +785,14 @@ void QToolBar::actionEvent(QActionEvent *event)
                        "QToolBar", "widgets cannot be inserted multiple times");
 
             QToolBarItem item = d->createItem(action);
+            bool visible = item.action->isVisible();
+            if (widgetAction && widgetAction->parentWidget() != this) {
+                // reparent the action and its widget to this toolbar
+                widgetAction->setParent(this);
+                widgetAction->widget()->setParent(this);
+            }
+            // make sure the layout doesn't show() the widget too soon
+            item.widget->hide();
             if (event->before()) {
                 int index = d->indexOf(event->before());
                 Q_ASSERT_X(index >= 0 && index < d->items.size(), "QToolBar::insertAction",
@@ -794,7 +803,7 @@ void QToolBar::actionEvent(QActionEvent *event)
                 d->items.append(item);
                 qobject_cast<QBoxLayout *>(layout())->insertWidget(d->items.size(), item.widget);
             }
-            item.widget->setVisible(item.action->isVisible());
+            item.widget->setVisible(visible);
             QApplication::postEvent(this, new QResizeEvent(size(), size()));
             break;
         }
@@ -990,9 +999,23 @@ void QToolBar::resizeEvent(QResizeEvent *event)
             if (!qobject_cast<QToolBarWidgetAction *>(item.action)) {
                 pop->addAction(item.action);
             } else {
-                // ### needs special handling of custom widgets and
-                // ### e.g. combo boxes - only actions are supported in
-                // ### the preview
+#if !defined(QT_NO_SIGNALMAPPER) && !defined(QT_NO_COMBOBOX)
+                if (QComboBox *cb = qobject_cast<QComboBox *>(item.widget)) {
+                    QMenu *cb_menu = new QMenu(cb->windowTitle(), pop);
+                    QSignalMapper *cb_mapper = new QSignalMapper(cb_menu);
+                    pop->addMenu(cb_menu);
+                    for (int i=0; i<cb->count(); ++i) {
+                        QAction *ac = cb_menu->addAction(cb->itemIcon(i), cb->itemText(i));
+                        connect(ac, SIGNAL(triggered(bool)), cb_mapper, SLOT(map()));
+                        cb_mapper->setMapping(ac, i);
+                    }
+                    connect(cb_mapper, SIGNAL(mapped(int)), cb, SIGNAL(activated(int)));
+                } else
+#endif // QT_NO_SIGNALMAPPER
+                    if (QToolButton *tb = qobject_cast<QToolButton *>(item.widget)) {
+                    QAction *ac = pop->addAction(tb->icon(), tb->text());
+                    connect(ac, SIGNAL(triggered()), tb, SIGNAL(clicked()));
+                }
             }
         }
         if (pop->actions().size() > 0) {

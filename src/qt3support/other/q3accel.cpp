@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -504,7 +504,7 @@ bool Q3AccelManager::dispatchAccelEvent(QWidget* w, QKeyEvent* e)
         mainStatusBar = (QStatusBar*) w->window()->child(0, "QStatusBar");
 #endif
 
-    QString message = Q3Accel::tr("Ambiguous \"%1\" not handled").arg((QString)tocheck);
+    QString message = Q3Accel::tr("Ambiguous %1 not handled").arg((QString)tocheck);
     if (clash >= 0 && n > clash) { // pick next  match
         intermediate = QKeySequence();
         currentState = QKeySequence::NoMatch; // Free sequence keylock

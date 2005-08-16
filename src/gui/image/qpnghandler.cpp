@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -269,7 +269,6 @@ public:
     enum State {
         Ready,
         ReadHeader,
-        Done,
         Error
     };
     
@@ -369,7 +368,7 @@ bool QPngHandlerPrivate::readPngHeader()
 */
 bool QPngHandlerPrivate::readPngImage(QImage *outImage)
 {
-    if (state == Error || state == Done)
+    if (state == Error)
         return false;
     
     if (state == Ready && !readPngHeader()) {
@@ -450,7 +449,7 @@ bool QPngHandlerPrivate::readPngImage(QImage *outImage)
     png_read_end(png_ptr, end_info);
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
     png_ptr = 0;
-    state = Done;
+    state = Ready;
 
     return true;
 }
@@ -767,7 +766,9 @@ QPngHandler::~QPngHandler()
 
 bool QPngHandler::canRead() const
 {
-    if (d->state == QPngHandlerPrivate::Ready && canRead(device())) {
+    if (d->state == QPngHandlerPrivate::Ready) {
+        if (!canRead(device()))
+            return false;
         setFormat("png");
         return true;
     }
@@ -800,7 +801,8 @@ bool QPngHandler::supportsOption(ImageOption option) const
 {
     return option == Gamma
         || option == Description
-        || option == Quality;
+        || option == Quality
+        || option == Size;
 }
 
 QVariant QPngHandler::option(ImageOption option) const
@@ -816,6 +818,8 @@ QVariant QPngHandler::option(ImageOption option) const
         return d->quality;
     else if (option == Description)
         return d->description;
+    else if (option == Size)
+        return QSize(d->info_ptr->width, d->info_ptr->height);
     return 0;
 }
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -609,7 +609,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     if (extra && !extra->mask.isEmpty()) {
         QRegion r = extra->mask;
         extra->mask = QRegion();
-        q->setMask(extra->mask);
+        q->setMask(r);
     }
     if (extra && extra->topextra && !extra->topextra->caption.isEmpty())
         setWindowTitle_helper(extra->topextra->caption);
@@ -1009,6 +1009,8 @@ void QWidgetPrivate::hide_sys()
     ShowWindow(q->winId(), SW_HIDE);
     if(!q->isWindow())
         invalidateBuffer(q->rect());
+    else if (!QWidgetBackingStore::paintOnScreen(q)) 
+        extra->topextra->backingStore->releaseBuffer(); // release backing store buffer on hide
 }
 
 
@@ -1035,7 +1037,7 @@ void QWidgetPrivate::show_sys()
         else if (q->isMaximized())
             sm = SW_SHOWMAXIMIZED;
     }
-    if ((q->windowType() == Qt::Tool) || (q->windowType() == Qt::Popup) || q->windowType() == Qt::ToolTip)
+    if ((q->windowType() == Qt::Popup) || q->windowType() == Qt::ToolTip)
         sm = SW_SHOWNOACTIVATE;
 
     ShowWindow(q->winId(), sm);
@@ -1271,47 +1273,52 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
         data.window_state &= ~Qt::WindowMaximized;
 
     if (data.window_state & Qt::WindowFullScreen) {
-        // We need to update these flags when we remove the full screen state
-        // or the frame will not be updated
-        UINT style = topData()->savedFlags;
-        if (q->isVisible())
-            style |= WS_VISIBLE;
-        SetWindowLongA(q->winId(), GWL_STYLE, style);
-
-        UINT swpf = SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOSIZE | SWP_NOMOVE;
-        if (data.window_state & Qt::WindowActive)
-            swpf |= SWP_NOACTIVATE;
-        SetWindowPos(q->winId(), 0, 0, 0, 0, 0, swpf);
-
-        // We also need to update the frame strut, but since updateFrameStrut
-        // just returns when the window is hidden we need to do this explicitly.
-        // More pasted code, ick.
-        RECT  fr, cr;
-        GetWindowRect(q->winId(), &fr);
-        GetClientRect(q->winId(), &cr);
-
-        POINT pt;
-        pt.x = 0;
-        pt.y = 0;
-
-        ClientToScreen(q->winId(), &pt);
-        q->data->crect = QRect(QPoint(pt.x, pt.y),
-                            QPoint(pt.x + cr.right, pt.y + cr.bottom));
-
         QTLWExtra *top = topData();
-        top->ftop = data.crect.top() - fr.top;
-        top->fleft = data.crect.left() - fr.left;
-        top->fbottom = fr.bottom - data.crect.bottom();
-        top->fright = fr.right - data.crect.right();
 
+        if (q->isWindow()) {
+            // We need to update these flags when we remove the full screen state
+            // or the frame will not be updated
+            UINT style = top->savedFlags;
+            if (q->isVisible())
+                style |= WS_VISIBLE;
+            SetWindowLongA(q->winId(), GWL_STYLE, style);
+
+            UINT swpf = SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOSIZE | SWP_NOMOVE;
+            if (data.window_state & Qt::WindowActive)
+                swpf |= SWP_NOACTIVATE;
+            SetWindowPos(q->winId(), 0, 0, 0, 0, 0, swpf);
+
+            // We also need to update the frame strut, but since updateFrameStrut
+            // just returns when the window is hidden we need to do this explicitly.
+            // More pasted code, ick.
+            RECT  fr, cr;
+            GetWindowRect(q->winId(), &fr);
+            GetClientRect(q->winId(), &cr);
+
+            POINT pt;
+            pt.x = 0;
+            pt.y = 0;
+
+            ClientToScreen(q->winId(), &pt);
+            q->data->crect = QRect(QPoint(pt.x, pt.y),
+                                   QPoint(pt.x + cr.right, pt.y + cr.bottom));
+
+            top->ftop = data.crect.top() - fr.top;
+            top->fleft = data.crect.left() - fr.left;
+            top->fbottom = fr.bottom - data.crect.bottom();
+            top->fright = fr.right - data.crect.right();
+        }
         data.window_state &= ~Qt::WindowFullScreen;
+        topData()->savedFlags = 0;
     }
 
     if (q->testAttribute(Qt::WA_WState_ConfigPending)) {        // processing config event
         qWinRequestConfig(q->winId(), isMove ? 2 : 1, x, y, w, h);
     } else {
         q->setAttribute(Qt::WA_WState_ConfigPending);
-        if (q->isWindow()) {
+        if (q->windowType() == Qt::Desktop) {
+            data.crect.setRect(x, y, w, h);
+        } else if (q->isWindow()) {
             QRect fr(q->frameGeometry());
             if (extra) {
                 fr.setLeft(fr.left() + x - data.crect.left());
@@ -1528,8 +1535,13 @@ void QWidget::setMask(const QRegion &region)
     d->createExtra();
     if (region == d->extra->mask)
         return;
-    if(QWExtra *extra = d->extraData())
-        extra->mask = region;
+#ifndef QT_NO_BACKINGSTORE
+    QRegion parentR;
+    if (!isWindow())
+        parentR = d->extra->mask.isEmpty() ? QRegion(rect()) : d->extra->mask ;
+#endif
+
+    d->extra->mask = region;
 
     // Since SetWindowRegion takes ownership, and we need to translate,
     // we take a copy.
@@ -1543,8 +1555,14 @@ void QWidget::setMask(const QRegion &region)
     }
     OffsetRgn(wr, fleft, ftop);
 #ifndef QT_NO_BACKINGSTORE
-    if (!testAttribute(Qt::WA_PaintOnScreen))
-        update();
+    if (isVisible()) {
+        if (!isWindow()) {
+            parentR += d->extra->mask;
+            parentWidget()->update(parentR.translated(geometry().topLeft()));
+        }
+        if (!testAttribute(Qt::WA_PaintOnScreen))
+            update();
+    }
 #endif
     SetWindowRgn(winId(), wr, true);
 }
@@ -1620,10 +1638,11 @@ void QWidget::setWindowOpacity(qreal level)
         SetWindowLongA(winId(), GWL_EXSTYLE, wl & ~Q_WS_EX_LAYERED);
     }
 
-    if (level != 1.0)
+    bool exposeTrick = (level != 1.0) && (d->topData()->opacity == 1.0) && isVisible();
+    if (exposeTrick)
         d->hide_sys(); // Work around Windows (non-)expose bug
     (*ptrSetLayeredWindowAttributes)(winId(), 0, (int)(level * 255), Q_LWA_ALPHA);
-    if (level != 1.0)
+    if (exposeTrick)
         d->show_sys(); // Work around Windows (non-)expose bug
     d->topData()->opacity = (uchar)(level * 255);
 }

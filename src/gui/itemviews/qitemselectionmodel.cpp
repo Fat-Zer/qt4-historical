@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -442,6 +442,9 @@ void QItemSelection::merge(const QItemSelection &other, QItemSelectionModel::Sel
 void QItemSelection::split(const QItemSelectionRange &range,
                            const QItemSelectionRange &other, QItemSelection *result)
 {
+    if (range.parent() != other.parent())
+        return;
+    
     QModelIndex parent = other.parent();
     int top = range.top();
     int left = range.left();
@@ -605,7 +608,7 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
    model item index is replaced by the \a current index as the selection's
    current item.
 
-   \sa currentIndex() setCurrentIndex()
+   \sa currentIndex() setCurrentIndex() selectionChanged()
 */
 
 /*!
@@ -633,7 +636,9 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
     selection is represented as an item selection of \a deselected items and
     an item selection of \a selected items.
 
-    \sa select()
+    Note the that the current index changes independently from the selection.
+
+    \sa select() currentChanged()
 */
 
 /*!
@@ -837,17 +842,15 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
                         return false;
     }
     // add ranges and currentSelection and check through them all
-    QModelIndex index;
     QList<QItemSelectionRange>::const_iterator it;
     QList<QItemSelectionRange> joined = d->ranges;
     if (d->currentSelection.count())
         joined += d->currentSelection;
     int colCount = model()->columnCount(parent);
-    for (int i = 0; i < colCount; ++i) {
-        index = model()->index(row, i, parent);
+    for (int column = 0; column < colCount; ++column) {
         for (it = joined.begin(); it != joined.end(); ++it)
-            if ((*it).contains(index)) {
-                i = (*it).right();
+            if ((*it).contains(model()->index(row, column, parent))) {
+                column = qMax(column, (*it).right()); 
                 break;
             }
         if (it == joined.end())
@@ -895,17 +898,15 @@ bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent
         }
     }
     // add ranges and currentSelection and check through them all
-    QModelIndex index;
     QList<QItemSelectionRange>::const_iterator it;
     QList<QItemSelectionRange> joined = d->ranges;
     if (d->currentSelection.count())
         joined += d->currentSelection;
     int rowCount = model()->rowCount(parent);
-    for (int i = 0; i < rowCount; ++i) {
-         index = model()->index(i, column, parent);
+    for (int row = 0; row < rowCount; ++row) {
          for (it = joined.begin(); it != joined.end(); ++it) {
-             if ((*it).contains(index)) {
-                 i = (*it).bottom();
+             if ((*it).contains(model()->index(row, column, parent))) {
+                 row = qMax(row, (*it).bottom());
                  break;
              }
          }

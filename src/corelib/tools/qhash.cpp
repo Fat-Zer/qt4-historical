@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -1496,86 +1496,100 @@ void QHashData::destroyAndFree()
 
 /*! \fn uint qHash(uchar key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(signed char key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(ushort key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(short key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(uint key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(int key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(ulong key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(long key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(quint64 key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(qint64 key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(QChar key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(const QByteArray &key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(const QString &key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn uint qHash(const T *key)
     \relates QHash
-
     \overload
+
+    Returns the hash value for \a key.
 */
 
 /*! \fn QDataStream &operator<<(QDataStream &out, const QHash<Key, T>& hash)

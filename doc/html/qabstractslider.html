@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qabstractslider.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qabstractslider.cpp -->
 <head>
     <title>Qt 4.1: QAbstractSlider Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qabstractslider.html#invertedAppearance-prop">invertedAppearance</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qabstractslider.html#invertedControls-prop">invertedControls</a></b> : bool</li>
@@ -48,7 +48,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qabstractslider.html#value-prop">value</a></b> : int</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -84,7 +84,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -125,6 +125,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -148,7 +149,7 @@ body { background: #ffffff; color: black; }</style>
 </ol>
 <p>Unity (1) may be viewed as a third step size. <a href="qabstractslider.html#value-prop">setValue</a>() lets you set the current value to any integer in the allowed range, not just <a href="qabstractslider.html#minimum-prop">minimum</a>() + <i>n</i> * <a href="qabstractslider.html#singleStep-prop">singleStep</a>() for integer values of <i>n</i>. Some widgets may allow the user to set any value at all; others may just provide multiples of <a href="qabstractslider.html#singleStep-prop">singleStep</a>() or <a href="qabstractslider.html#pageStep-prop">pageStep</a>().</p>
 <p>QAbstractSlider emits a comprehensive set of signals:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Signal</th><th>Emitted when</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractslider.html#valueChanged">valueChanged</a>()</td><td>the value has changed. The <a href="qabstractslider.html#tracking-prop">tracking</a> determines whether this signal is emitted during user interaction.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractslider.html#sliderPressed">sliderPressed</a>()</td><td>the user starts to drag the slider.</td></tr>
@@ -156,12 +157,12 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractslider.html#sliderReleased">sliderReleased</a>()</td><td>the user releases the slider.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractslider.html#actionTriggered">actionTriggered</a>()</td><td>a slider action was triggerd.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractslider.html#rangeChanged">rangeChanged</a>()</td><td>a the range has changed.</td></tr>
-</table>
+</table></p>
 <p>QAbstractSlider provides a virtual <a href="qabstractslider.html#sliderChange">sliderChange</a>() function that is well suited for updating the on-screen representation of sliders. By calling <a href="qabstractslider.html#triggerAction">triggerAction</a>(), subclasses trigger slider actions. Two helper functions <a href="qstyle.html#sliderPositionFromValue">QStyle::sliderPositionFromValue</a>() and <a href="qstyle.html#sliderValueFromPosition">QStyle::sliderValueFromPosition</a>() help subclasses and styles to map screen coordinates to logical range values.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="SliderAction-enum"></a>enum QAbstractSlider::SliderAction</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderNoAction</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderSingleStepAdd</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
@@ -171,15 +172,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAbstractSlider::SliderToMinimum</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderToMaximum</tt></td><td align="center" valign="top"><tt>6</tt></td></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderMove</tt></td><td align="center" valign="top"><tt>7</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="SliderChange-enum"></a>enum QAbstractSlider::SliderChange</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderRangeChange</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderOrientationChange</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderStepsChange</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
 <tr><td valign="top"><tt>QAbstractSlider::SliderValueChange</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="invertedAppearance-prop"></a>invertedAppearance : bool</h3>
@@ -319,8 +320,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the slider value has changed, with the new slider <i>value</i> as argument.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -162,8 +162,11 @@ QWidget *QFormBuilder::createWidget(const QString &widgetName, QWidget *parentWi
             || qobject_cast<QToolBox*>(parentWidget))
         parentWidget = 0;
 
-    if (widgetName == QLatin1String("Line"))
+    // ### special-casing for Line (QFrame) -- fix for 4.2
+    if (widgetName == QLatin1String("Line")) {
         w = new QFrame(parentWidget);
+        static_cast<QFrame*>(w)->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+    }
 
 #define DECLARE_LAYOUT(L, C)
 #define DECLARE_COMPAT_WIDGET(W, C) /*DECLARE_WIDGET(W, C)*/
@@ -263,6 +266,15 @@ QWidget *QFormBuilder::widgetByName(QWidget *topLevel, const QString &name)
     return qFindChild<QWidget*>(topLevel, name);
 }
 
+static QObject *objectByName(QWidget *topLevel, const QString &name)
+{
+    Q_ASSERT(topLevel);
+    if (topLevel->objectName() == name)
+        return topLevel;
+
+    return qFindChild<QObject*>(topLevel, name);
+}
+
 /*!
     \internal
 */
@@ -275,8 +287,8 @@ void QFormBuilder::createConnections(DomConnections *ui_connections, QWidget *wi
 
     QList<DomConnection*> connections = ui_connections->elementConnection();
     foreach (DomConnection *c, connections) {
-        QWidget *sender = widgetByName(widget, c->elementSender());
-        QWidget *receiver = widgetByName(widget, c->elementReceiver());
+        QObject *sender = objectByName(widget, c->elementSender());
+        QObject *receiver = objectByName(widget, c->elementReceiver());
         if (!sender || !receiver)
             continue;
 
@@ -455,6 +467,9 @@ void QFormBuilder::applyProperties(QObject *o, const QList<DomProperty*> &proper
         } else if (qobject_cast<QLabel*>(o) && p->attributeName() == QLatin1String("buddy")) {
             // save the buddy and continue
             extraInfo(this).addBuddy(qobject_cast<QLabel*>(o), v.toString());
+        } else if (!qstrcmp("QFrame", o->metaObject()->className ()) && p->attributeName() == QLatin1String("orientation")) {
+            // ### special-casing for Line (QFrame) -- fix for 4.2
+            o->setProperty("frameShape", v); // v is of QFrame::Shape enum
         } else {
             o->setProperty(p->attributeName().toUtf8(), v);
         }

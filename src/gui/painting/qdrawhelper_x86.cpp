@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -24,7 +24,7 @@
 #include <private/qdrawhelper_p.h>
 #include <private/qpaintengine_raster_p.h>
 
-#if defined(QT_HAVE_SSE) && (!defined(__APPLE__) || defined(__i386__))
+#if (defined(QT_HAVE_SSE) && (!defined(__APPLE__) || defined(__i386__))) || defined(QT_HAVE_IWMMXT)
 
 #ifdef Q_CC_GNU
 #  include <mmintrin.h>
@@ -33,7 +33,7 @@
 #  endif
 // It seems that gcc (3.1 <= x < 3.4) segfaults when casting the ULL immediate values to __m64.
 // A workaround was proposed here: http://gcc.gnu.org/ml/gcc-prs/2002-07/msg00329.html
-#  if __GNUC__ == 3 && __GNUC_MINOR__ >= 1 && __GNUC_MINOR__ < 4
+#  if !defined(Q_CC_INTEL) && __GNUC__ == 3 && __GNUC_MINOR__ >= 1 && __GNUC_MINOR__ < 4
 #    define C_FF volatile unsigned long long mmx_0x00ff_ull = 0x00ff00ff00ff00ffULL; \
 		 const m64 mmx_0x00ff = (__m64)mmx_0x00ff_ull
 #    define C_80 volatile unsigned long long mmx_0x0080_ull = 0x0080008000800080ULL; \

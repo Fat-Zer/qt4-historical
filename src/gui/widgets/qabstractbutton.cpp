@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -194,6 +194,11 @@ void QButtonGroup::setExclusive(bool exclusive)
     d->exclusive = exclusive;
 }
 
+/*!
+    Adds the given \a button to the end of the group's internal list of buttons.
+
+    \sa removeButton()
+*/
 void QButtonGroup::addButton(QAbstractButton *button)
 {
     addButton(button, -1);
@@ -315,7 +320,7 @@ void QAbstractButtonPrivate::notifyChecked()
         QAbstractButton *previous = group->d_func()->checkedButton;
         group->d_func()->checkedButton = q;
         if (group->d_func()->exclusive && previous && previous != q)
-            previous->setChecked(false);
+            previous->nextCheckState();
     } else
 #endif
     if (autoExclusive) {
@@ -608,6 +613,9 @@ By default, the button is not checkable.
 void QAbstractButton::setCheckable(bool checkable)
 {
     Q_D(QAbstractButton);
+    if (d->checkable == checkable)
+        return;
+    
     d->checkable = checkable;
     d->checked = false;
 }
@@ -1138,6 +1146,29 @@ unchecked.
 
 This may be the result of a user action, click() slot activation,
 or because setChecked() was called.
+
+The states of buttons in exclusive button groups are updated before this
+signal is emitted. This means that slots can act on either the "off"
+signal or the "on" signal emitted by the buttons in the group whose
+states have changed.
+
+For example, a slot that reacts to signals emitted by newly checked
+buttons but which ignores signals from buttons that have been unchecked
+can be implemented using the following pattern:
+
+\code
+void MyWidget::reactToToggle(bool checked)
+{
+   if (checked) {
+      // Examine the new button states.
+      ...
+   }
+}
+\endcode
+
+Button groups can be created using the QButtonGroup class, and
+updates to the button states monitored with the
+\l{QButtonGroup::buttonClicked()} signal.
 
 \sa checked, clicked()
 */

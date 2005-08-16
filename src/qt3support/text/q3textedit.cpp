@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -984,6 +984,7 @@ void Q3TextEdit::init()
 
     viewport()->setFocusProxy(this);
     viewport()->setFocusPolicy(Qt::WheelFocus);
+    setFocusPolicy(Qt::WheelFocus);
     setInputMethodEnabled(true);
     viewport()->installEventFilter(this);
     connect(this, SIGNAL(horizontalSliderReleased()), this, SLOT(sliderReleased()));
@@ -1842,6 +1843,7 @@ void Q3TextEdit::removeSelectedText(int selNum)
         viewport()->setCursor(isReadOnly() ? Qt::ArrowCursor : Qt::IBeamCursor);
 #endif
     } else {
+        lastFormatted = doc->firstParagraph();
         delete cursor;
         cursor = new Q3TextCursor(doc);
         drawCursor(true);
@@ -2067,7 +2069,7 @@ void Q3TextEdit::drawCursor(bool visible)
         r = QRect(r.x(), r.y() + cursor->y(), r.width(), h);
     }
     r.moveBy(-contentsX(), -contentsY());
-    viewport()->repaint(r);
+    viewport()->update(r);
 }
 
 enum {
@@ -3307,10 +3309,37 @@ bool Q3TextEdit::focusNextPrevChild(bool n)
         return false;
     bool b = doc->focusNextPrevChild(n);
     repaintChanged();
-    if (b)
-        //##### this does not work with tables. The focusIndicator
-        //should really be a Q3TextCursor. Fix 3.1
-        makeParagVisible(doc->focusIndicator.parag);
+    if (b) {
+        Q3TextParagraph *p = doc->focusIndicator.parag;
+        int start = doc->focusIndicator.start;
+        int len = doc->focusIndicator.len;
+
+        int y = p->rect().y();
+        while (p
+               && len == 0
+               && p->at(start)->isCustom()
+               && p->at(start)->customItem()->isNested()) {
+
+            Q3TextTable *t = (Q3TextTable*)p->at(start)->customItem();
+            QList<Q3TextTableCell *> cells = t->tableCells();
+            for (int idx = 0; idx < cells.count(); ++idx) {
+                Q3TextTableCell *c = cells.at(idx);
+                Q3TextDocument *cellDoc = c->richText();
+                if ( cellDoc->hasFocusParagraph() ) {
+                    y += c->geometry().y() + c->verticalAlignmentOffset();
+
+                    p = cellDoc->focusIndicator.parag;
+                    start = cellDoc->focusIndicator.start;
+                    len = cellDoc->focusIndicator.len;
+                    if ( p )
+                        y += p->rect().y();
+
+                    break;
+                }
+            }
+        }
+        setContentsPos( contentsX(), QMIN( y, contentsHeight() - visibleHeight() ) );
+    }
     return b;
 }
 
@@ -4553,9 +4582,17 @@ void Q3TextEdit::append(const QString &text)
     cursor->gotoEnd();
     if (cursor->index() > 0)
         cursor->splitAndInsertEmptyParagraph();
+    Q3TextCursor oldCursor2 = *cursor;
 
     if (f == Qt::PlainText) {
         cursor->insert(text, true);
+        if (doc->useFormatCollection() && !doc->preProcessor() &&
+            currentFormat != cursor->paragraph()->at( cursor->index() )->format()) {
+            doc->setSelectionStart( Q3TextDocument::Temp, oldCursor2 );
+            doc->setSelectionEnd( Q3TextDocument::Temp, *cursor );
+            doc->setFormat( Q3TextDocument::Temp, currentFormat, Q3TextFormat::Format );
+            doc->removeSelection( Q3TextDocument::Temp );
+        }
     } else {
         cursor->paragraph()->setListItem(false);
         cursor->paragraph()->setListDepth(0);

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/designer-manual.qdoc -->
 <head>
     <title>Qt 4.1: Creating Main Windows in Qt Designer</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -44,22 +44,22 @@ body { background: #ffffff; color: black; }</style>
 <p>Menus are added to the menu bar by modifying the <b>&lt;menu&gt;</b> placeholders. One of these is always present for editing purposes, and will not be displayed in the preview or in the finished window.</p>
 <p>Once created, the properties of a menu can be accessed using the <a href="designer-editing-mode.html#the-property-editor">Property Editor</a>, and each menu can be accessed for this purpose via the <a href="designer-editing-mode.html#the-object-inspector">The Object Inspector</a>.</p>
 <p>Existing menus can be removed by opening a context menu over the label in the menu bar, and selecting <b>Remove Menu</b>.</p>
-<a name="creatingamenu"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="creatingamenu"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-creating-menu1.png" /></td><td><img src="images/designer-creating-menu2.png" /></td><td><b>Creating a Menu</b><p>Double-click the placeholder item to start the editing process.</p>
 <p>The menu text is displayed using a line edit, and can be modified.</p>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images/designer-creating-menu3.png" /></td><td><img src="images/designer-creating-menu4.png" /></td><td>Insert the required text for the new menu. Inserting an ampersand character (&amp;) causes the letter following it to be used as a mnemonic for the menu.<p>Press <b>Return</b> or <b>Enter</b> to accept the new text, or press <b>Escape</b> to reject it. You can undo the editing operation later if required.</p>
 </td></tr>
-</table>
+</table></p>
 <p>Menus can also be rearranged in the menu bar with simple drag and drop operations. Simply click and drag the menu you want to move, and drop it in the required location. A vertical red line indicates the position where the menu will be inserted.</p>
 <p>Menus can contain any number of entries and separators, and can be nested to the required depth. Adding new entries to menus can be achieved by navigating the menu structure in the usual way.</p>
-<a name="creatingamenuentry"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="creatingamenuentry"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-creating-menu-entry1.png" /></td><td><img src="images/designer-creating-menu-entry2.png" /></td><td><b>Creating a Menu Entry</b><p>Double-click the <b>new action</b> placeholder to start the editing process, or double-click <b>new separator</b> to insert a new separator line after the last entry in the menu.</p>
 <p>The menu entry's text is displayed using a line edit, and can be modified.</p>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images/designer-creating-menu-entry3.png" /></td><td><img src="images/designer-creating-menu-entry4.png" /></td><td>Insert the required text for the new entry, optionally using the ampersand character (&amp;) to mark the letter to use as a mnemonic for the entry.<p>Press <b>Return</b> or <b>Enter</b> to accept the new text, or press <b>Escape</b> to reject it. The action created for this menu entry will be accessible via the <a href="#theactioneditor">Action Editor</a>, and any associated keyboard shortcut can be set there.</p>
 </td></tr>
-</table>
+</table></p>
 <p>Just as with menus, entries can be moved around using drag and drop operations. When an entry is dragged over a closed menu, the menu will open to allow it to be inserted there. Since menu entries are based on actions, they can also be dropped onto toolbars, where they will be displayed as toolbar buttons.</p>
 <a name="toolbars"></a>
 <h2>Toolbars</h2>
@@ -69,27 +69,27 @@ body { background: #ffffff; color: black; }</style>
 <a name="actions"></a>
 <h2>Actions</h2>
 <p>With the menu bar and the toolbars in place, it's time to populate them with actions: <i>Qt Designer</i> provides an action editor to simplify the creation and management of actions.</p>
-<a name="theactioneditor"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="theactioneditor"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-action-editor.png" /></td><td><b>The Action Editor</b><p>Enable the action editor by opening the <b>Tool</b> menu, and switching on the <b>Action Editor</b> option.</p>
 <p>The action editor allows the user to create <b>New</b> actions, as well as deleting (<b>Delete</b>) actions. It also provides a search facility (<b>Filter</b>) using the action's text.</p>
 </td></tr>
-</table>
+</table></p>
 <p>To create an action, use the action editor's <b>New</b> button which will pop up an input dialog. Provide the new action with a <b>Text</b>. This is the text that will appear in a menu entry and as the actions tooltip. The text is also automatically added to an &quot;action&quot; prefix creating the action's <b>Object Name</b>.</p>
 <p>In addition, the dialog provides the option of selecting an <b>Icon</b> for the action, as well as removing the current icon.</p>
 <p>Once the action is created, it can be used wherever actions are applicable.</p>
-<a name="addinganaction"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="addinganaction"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-adding-menu-action.png" /></td><td><img src="images/designer-adding-toolbar-action.png" /></td><td><b>Adding an Action</b><p>To add an action to a menu or a toolbar, simply press the left mouse button over the action in the action editor, and drag it to where it is required.</p>
 <p><i>Qt Designer</i> provides highlighted guide lines that tell you where the action will be added. Release the mouse button to add the action when you have found the right spot.</p>
 </td></tr>
-</table>
+</table></p>
 <a name="dock-widgets"></a>
 <h2>Dock Widgets</h2>
 <p>Since dock widgets are <a href="designer-using-containers.html">container widgets</a>, they can be added to a form in the usual way. When added to a form, dock widgets are not placed in any particular dock area by default; you need to set the <b>docked</b> property to true for each widget and choose an appropriate value for its <b>dockWidgetArea</b> property.</p>
-<a name="addingadockwidget"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="addingadockwidget"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-adding-dockwidget.png" /></td><td><b>Adding a Dock Widget</b><p>To add a dock widget, simply drag one from the <b>Containers</b> section of the widget box, and drop it onto the main form area. Just as with other widgets, its properties can be modified with the Property Editor.</p>
 <p>Since dock widgets can be optionally floated as independent tool windows, it is useful to give them window titles by setting their <b>windowTitle</b> properties. This also helps to identify them on the form.</p>
 </td></tr>
-</table>
+</table></p>
 <p>
 [Previous: <a href="designer-using-containers.html">Using Containers in Qt Designer</a>]
 [<a href="designer-manual.html">Contents</a>]
@@ -97,8 +97,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

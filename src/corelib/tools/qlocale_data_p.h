@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -2530,7 +2530,7 @@ static const unsigned char language_code_list[] =
 "za" // Zhuang
 "zu" // Zulu
 "nn" // Nynorsk
-"nn" // Bosnian
+"bs" // Bosnian
 "dv" // Divehi
 "gv" // Manx
 "kw" // Cornish

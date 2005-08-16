@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/itemviews/qabstractitemdelegate.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/itemviews/qabstractitemdelegate.cpp -->
 <head>
     <title>Qt 4.1: QAbstractItemDelegate Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -82,23 +82,23 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="EndEditHint-enum"></a>enum QAbstractItemDelegate::EndEditHint</h3>
 <p>This enum describes the different hints that the delegate can give to the model and view components to make editing data in a model a comfortable experience for the user.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractItemDelegate::NoHint</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is no recommended action to be performed.</td></tr>
-</table>
+</table></p>
 <p>These hints let the delegate influence the behavior of the view:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractItemDelegate::EditNextItem</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The view should use the delegate to open an editor on the next item in the view.</td></tr>
 <tr><td valign="top"><tt>QAbstractItemDelegate::EditPreviousItem</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The view should use the delegate to open an editor on the previous item in the view.</td></tr>
-</table>
+</table></p>
 <p>Note that custom views may interpret the concepts of next and previous differently.</p>
 <p>The following hints are most useful when models are used that cache data, such as those that manipulate date locally in order to increase performance or conserve network bandwidth.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractItemDelegate::SubmitModelCache</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">If the model caches data, it should write out cached data to the underlying data store.</td></tr>
 <tr><td valign="top"><tt>QAbstractItemDelegate::RevertModelCache</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">If the model caches data, it should discard cached data and replace it with data from the underlying data store.</td></tr>
-</table>
+</table></p>
 <p>Although models and views should respond to these hints in appropriate ways, custom components may ignore any or all of them if they are not relevant.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -142,8 +142,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The base implementation does nothing. If you want custom editing you must reimplement this function.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

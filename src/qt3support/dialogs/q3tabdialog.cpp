@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -128,8 +128,9 @@ using namespace Qt;
 class Q3TabDialogPrivate
 {
 public:
-    Q3TabDialogPrivate();
+    Q3TabDialogPrivate(Q3TabDialog *qq);
 
+    Q3TabDialog *q;
     QTabWidget* tw;
 
     QPushButton * ok;
@@ -139,10 +140,12 @@ public:
     QPushButton * ab;
 
     QBoxLayout * tll;
+
+    void emitSelected(int index);
 };
 
-Q3TabDialogPrivate::Q3TabDialogPrivate()
-	: tw(0),
+Q3TabDialogPrivate::Q3TabDialogPrivate(Q3TabDialog *qq)
+	: q(qq), tw(0),
 	  ok(0), cb(0), db(0), hb(0), ab(0),
 	  tll(0)
 { }
@@ -156,11 +159,11 @@ Q3TabDialogPrivate::Q3TabDialogPrivate()
 Q3TabDialog::Q3TabDialog(QWidget *parent, const char *name, bool modal, Qt::WFlags f)
     : QDialog(parent, name, modal, f)
 {
-    d = new Q3TabDialogPrivate;
+    d = new Q3TabDialogPrivate(this);
     Q_CHECK_PTR(d);
 
     d->tw = new QTabWidget(this, "tab widget");
-    connect (d->tw, SIGNAL (selected(const QString&)), this, SIGNAL(selected(const QString&)));
+    connect (d->tw, SIGNAL(currentChanged(int)), this, SLOT(emitSelected(int)));
     connect (d->tw, SIGNAL (currentChanged(QWidget*)), this, SIGNAL(currentChanged(QWidget*)));
 
     d->ok = new QPushButton(this, "ok");
@@ -758,6 +761,17 @@ void Q3TabDialog::setCancelButton()
 }
 
 
+/*!
+    \internal
+
+    Workaround to emit selected() since the qt3support signal is
+    missing from QTabWidget
+*/
+void Q3TabDialogPrivate::emitSelected(int index)
+{
+    emit q->selected(tw->tabText(index));
+}
+
 /*!  Sets up the layout manager for the tab dialog.
 
   \sa setSizes() setApplyButton() setCancelButton() setDefaultButton()
@@ -1045,3 +1059,5 @@ void Q3TabDialog::removePage(QWidget * w)
 {
     d->tw->removePage(w);
 }
+
+#include "moc_q3tabdialog.cpp"

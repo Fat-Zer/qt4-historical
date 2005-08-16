@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1976,7 +1976,7 @@ void Q3IconViewItem::paintItem(QPainter *p, const QColorGroup &cg)
             p2.fillRect(pix->rect(), Qt::white);
             p2.drawPixmap(0, 0, *pix);
             p2.end();
-            buffer->setMask(mask);
+
             p2.begin(buffer);
 #if defined(Q_WS_X11)
             p2.fillRect(pix->rect(), QBrush(cg.highlight(), Qt::Dense4Pattern));
@@ -1989,6 +1989,8 @@ void Q3IconViewItem::paintItem(QPainter *p, const QColorGroup &cg)
             }
 #endif
             p2.end();
+            buffer->setMask(mask);
+
             QRect cr = pix->rect();
             if (textOnBottom)
                 p->drawPixmap(x() + (width() - dim) / 2, y(), *buffer, 0, 0,
@@ -2757,6 +2759,7 @@ Q3IconView::Q3IconView(QWidget *parent, const char *name, Qt::WFlags f)
     viewport()->setBackgroundRole(QPalette::Base);
     viewport()->setFocusProxy(this);
     viewport()->setFocusPolicy(Qt::WheelFocus);
+    setFocusPolicy(Qt::WheelFocus);
 
 #if 0
     d->toolTip = new Q3IconViewToolTip(viewport(), this);
@@ -4599,6 +4602,7 @@ void Q3IconView::contentsDragEnterEvent(QDragEnterEvent *e)
     d->oldDragAcceptAction = false;
     drawDragShapes(e->pos());
     d->dropped = false;
+    e->accept();
 }
 
 /*!
@@ -5533,6 +5537,7 @@ bool Q3IconView::eventFilter(QObject * o, QEvent * e)
                         p.end();
                     }
                 } else {
+                    p.translate(-contentsX(), -contentsY());
                     drawRubber(&p);
                 }
             }

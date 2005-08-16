@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -242,7 +242,7 @@ QDialogButtons::createButton(Button b)
                         txt = tr("Cancel All");
                 }
             } else {
-                txt += tr(" to All"); //ick, I can't really do this!!
+                txt = tr("%1 to All").arg(txt); // ick, can't really do this
             }
             ret->setText(txt);
             break; }

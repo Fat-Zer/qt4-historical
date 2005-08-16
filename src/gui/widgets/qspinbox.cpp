@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1319,6 +1319,10 @@ QVariant QDoubleSpinBoxPrivate::validateAndInterpret(QString &input, int &pos,
     } else if (len > 1) {
         const int dec = copy.indexOf(delimiter);
         if (dec != -1) {
+            if (dec + 1 < copy.size() && copy.at(dec + 1) == delimiter && pos == dec + 1) {
+                copy.remove(dec + 1, 1); // typing a delimiter when you are on the delimiter
+            } // should be treated as typing right arrow
+
             if (copy.size() - dec > decimals + 1) {
                 QSBDEBUG() << __FILE__ << __LINE__<< "state is set to Invalid";
                 state = QValidator::Invalid;

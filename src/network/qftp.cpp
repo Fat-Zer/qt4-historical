@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -541,9 +541,9 @@ bool QFtpDTP::parseDir(const QString &buffer, const QString &userName, QUrlInfo 
     if (lst[7].contains(":")) {
         // if the year-field is missing, check the modification date/time of
         // the file and compare to "now". If the file was changed in the
-        // "future", also considering a possible 13 hour time zone gap, then
+        // "future", also considering a possible 24 hour time zone gap, then
         // we assume it was changed a year ago.
-        const int futureTolerance = 46800;
+        const int futureTolerance = 86400;
         if(info->lastModified().secsTo(QDateTime::currentDateTime()) < -futureTolerance) {
             QDateTime dt = info->lastModified();
             QDate d = dt.date();

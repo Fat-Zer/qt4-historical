@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -83,6 +83,9 @@ public:
     void insertInTopLevel(int row, QTreeWidgetItem *item);
 
     void insertListInTopLevel(int row, const QList<QTreeWidgetItem*> &items);
+
+    bool insertRows(int row, int count, const QModelIndex &);
+    bool insertColumns(int column, int count, const QModelIndex &);
 
     // dnd
     QStringList mimeTypes() const;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -50,7 +50,8 @@ public:
             : ref(1), fileEngine(0), cache_enabled(1)
         { clear(); }
         inline Data(const Data &copy)
-            : ref(1), fileEngine(0), fileName(copy.fileName)
+            : ref(1), fileEngine(QAbstractFileEngine::create(copy.fileName)),
+              fileName(copy.fileName), cache_enabled(copy.cache_enabled)
         { clear(); }
         inline ~Data() { delete fileEngine; }
         inline void clear() {
@@ -68,9 +69,11 @@ public:
         mutable qint64 fileSize;
         mutable QDateTime fileTimes[3];
         mutable uint fileFlags;
-        mutable uchar cachedFlags;
-        inline bool getCachedFlag(uchar c) const { return cache_enabled ? (cachedFlags&c) : 0; }
-        inline void setCachedFlag(uchar c) { if(cache_enabled) cachedFlags |= c; }
+        mutable uint cachedFlags;
+        inline bool getCachedFlag(uint c) const
+        { return cache_enabled ? (cachedFlags & c) : 0; }
+        inline void setCachedFlag(uint c)
+        { if (cache_enabled) cachedFlags |= c; }
     } *data;
     inline void reset() {
         detach();
@@ -125,22 +128,21 @@ QFileInfoPrivate::getFileName(QAbstractFileEngine::FileName name) const
 uint
 QFileInfoPrivate::getFileFlags(QAbstractFileEngine::FileFlags request) const
 {
-    QAbstractFileEngine::FileFlags flags = 0;
-    if((request & QAbstractFileEngine::TypesMask) && !data->getCachedFlag(CachedTypes)) {
-        data->setCachedFlag(CachedTypes);
-        flags |= QAbstractFileEngine::TypesMask;
+    QAbstractFileEngine::FileFlags flags = QAbstractFileEngine::FileInfoAll;
+    if (!data->getCachedFlag(request)) {
+        // Unless we need to know if it's a symlink or if the file exists, we
+        // fetch all info.
+        if ((request & QAbstractFileEngine::LinkType) == 0)
+            flags &= ~QAbstractFileEngine::LinkType;
+
+        flags = data->fileEngine->fileFlags(flags);
+        data->setCachedFlag(flags | request);
+        data->fileFlags |= uint(flags);
+    } else {
+        flags = QAbstractFileEngine::FileFlags(data->fileFlags & request);
     }
-    if((request & QAbstractFileEngine::PermsMask) && !data->getCachedFlag(CachedPerms)) {
-        data->setCachedFlag(CachedPerms);
-        flags |= QAbstractFileEngine::PermsMask;
-    }
-    if((request & QAbstractFileEngine::FlagsMask) && !data->getCachedFlag(CachedFlags)) {
-        data->setCachedFlag(CachedFlags);
-        flags |= QAbstractFileEngine::FlagsMask;
-    }
-    if(flags)
-        data->fileFlags |= (data->fileEngine->fileFlags(flags) & flags);
-    return data->fileFlags & request;
+
+    return flags & request;
 }
 
 QDateTime
@@ -303,6 +305,17 @@ QFileInfo::~QFileInfo()
 */
 
 /*!
+    \overload
+    \fn bool QFileInfo::operator!=(const QFileInfo &fileinfo) const
+
+    Returns true if the QFileInfo refers to a different file to the one
+    specified by \a fileinfo; otherwise returns false.
+
+    \sa operator==()
+*/
+
+/*!
+    \overload
     Returns true if the QFileInfo refers to a file in the same location as
     the other \a fileinfo; otherwise returns false.
 
@@ -338,6 +351,16 @@ QFileInfo::operator==(const QFileInfo &fileinfo) const
     }
     return false;
 }
+
+/*!
+    Returns true if the QFileInfo refers to a file in the same location as
+    the other \a fileinfo; otherwise returns false.
+
+    \warning This will not compare two different symbolic links
+    pointing to the same file.
+
+    \sa operator!=()
+*/
 bool QFileInfo::operator==(const QFileInfo &fileinfo)
 {
     return const_cast<const QFileInfo *>(this)->operator==(fileinfo);
@@ -684,7 +707,9 @@ QFileInfo::completeBaseName() const
     Q_D(const QFileInfo);
     if(!d->data->fileEngine)
         return QLatin1String("");
-    return d->getFileName(QAbstractFileEngine::BaseName).section(QLatin1Char('.'), 0, -2);
+    QString name = d->getFileName(QAbstractFileEngine::BaseName);
+    int index = name.lastIndexOf(QLatin1Char('.'));
+    return (index == -1) ? name : name.left(index);
 }
 
 /*!
@@ -904,8 +929,9 @@ QFileInfo::isRoot() const
 }
 
 /*!
-    Returns the name a symlink (or shortcut on Windows) points to, or
-    a an empty string if the object isn't a symbolic link.
+    Returns the absolute path to the file or directory a symlink (or shortcut
+    on Windows) points to, or a an empty string if the object isn't a symbolic
+    link.
 
     This name may not represent an existing file; it is only a string.
     QFileInfo::exists() returns true if the symlink points to an

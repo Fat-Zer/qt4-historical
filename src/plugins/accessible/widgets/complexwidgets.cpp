@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the plugins of the Qt Toolkit.
 **
@@ -35,6 +35,8 @@
 #include <qstyleoption.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qdebug.h>
+#include <private/qtabbar_p.h>
 
 #ifndef QT_NO_ACCESSIBILITY
 
@@ -56,7 +58,7 @@ QAccessibleHeader::QAccessibleHeader(QWidget *w)
 : QAccessibleWidget(w)
 {
     Q_ASSERT(header());
-    addControllingSignal("sectionClicked(int, Qt::ButtonState)");
+    addControllingSignal("sectionClicked(int)");
 }
 
 /*! Returns the QHeaderView. */
@@ -164,10 +166,11 @@ QAbstractButton *QAccessibleTabBar::button(int child) const
 {
     if (child <= tabBar()->count())
         return 0;
+    QTabBarPrivate * const tabBarPrivate = tabBar()->d_func();
     if (child - tabBar()->count() == 1)
-        return qFindChild<QAbstractButton*>(tabBar(), "qt_left_btn");
+        return tabBarPrivate->leftB;
     if (child - tabBar()->count() == 2)
-        return qFindChild<QAbstractButton*>(tabBar(), "qt_right_btn");
+        return tabBarPrivate->rightB;
     Q_ASSERT(false);
     return 0;
 }
@@ -245,8 +248,16 @@ QAccessible::State QAccessibleTabBar::state(int child) const
 
     if (child > tb->count()) {
         QWidget *bt = button(child);
-        if (bt && !bt->isEnabled())
+        if (!bt)
+            return st;
+        if (bt->isEnabled() == false)
             st |= Unavailable;
+        if (bt->isVisible() == false)
+            st |= Invisible;
+        if (bt->focusPolicy() != Qt::NoFocus && bt->isActiveWindow())
+            st |= Focusable;
+        if (bt->hasFocus())
+            st |= Focused;
         return st;
     }
 
@@ -262,11 +273,14 @@ QAccessible::State QAccessibleTabBar::state(int child) const
 }
 
 /*! \reimp */
-bool QAccessibleTabBar::doAction(int, int child, const QVariantList &)
+bool QAccessibleTabBar::doAction(int action, int child, const QVariantList &)
 {
     if (!child)
         return false;
 
+    if (action != QAccessible::DefaultAction && action != QAccessible::Press)
+        return false;
+    
     if (child > tabBar()->count()) {
         QAbstractButton *bt = button(child);
         if (!bt->isEnabled())

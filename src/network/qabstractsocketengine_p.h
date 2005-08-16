@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -41,7 +41,7 @@
 
 class QAbstractSocketEnginePrivate;
 
-class QAbstractSocketEngine : public QObject
+class Q_INTERNAL_EXPORT QAbstractSocketEngine : public QObject
 {
     Q_OBJECT
 public:
@@ -156,7 +156,7 @@ public:
 };
 
 
-class QSocketEngineHandler
+class Q_INTERNAL_EXPORT QSocketEngineHandler
 {
 protected:
     QSocketEngineHandler();

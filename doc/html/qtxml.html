@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qtxml.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qtxml.qdoc -->
 <head>
     <title>Qt 4.1: QtXml Module</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -112,7 +112,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Whilst this is a fast and simple approach to read XML documents, manipulation is difficult because data is not stored, simply handled and discarded serially. The <a href="#dom">DOM interface</a> reads in and stores the whole document in a tree structure; this takes more memory, but makes it easier to manipulate the document's structure..</p>
 <p>The Qt XML module provides an abstract class, <a href="qxmlreader.html">QXmlReader</a>, that defines the interface for potential SAX2 readers. Qt includes a reader implementation, <a href="qxmlsimplereader.html">QXmlSimpleReader</a>, that is easy to adapt through subclassing.</p>
 <p>The reader reports parsing events through special handler classes:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Handler class</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qxmlcontenthandler.html">QXmlContentHandler</a></td><td>Reports events related to the content of a document (e.g. the start tag or characters).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qxmldtdhandler.html">QXmlDTDHandler</a></td><td>Reports events related to the DTD (e.g. notation declarations).</td></tr>
@@ -120,16 +120,16 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qxmlentityresolver.html">QXmlEntityResolver</a></td><td>Reports external entities during parsing and allows users to resolve external entities themselves instead of leaving it to the reader.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qxmldeclhandler.html">QXmlDeclHandler</a></td><td>Reports further DTD related events (e.g. attribute declarations).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qxmllexicalhandler.html">QXmlLexicalHandler</a></td><td>Reports events related to the lexical structure of the document (the beginning of the DTD, comments etc.).</td></tr>
-</table>
+</table></p>
 <p>These classes are abstract classes describing the interface. The <a href="qxmldefaulthandler.html">QXmlDefaultHandler</a> class provides a &quot;do nothing&quot; default implementation for all of them. Therefore users only need to overload the <a href="qxmldefaulthandler.html">QXmlDefaultHandler</a> functions they are interested in.</p>
 <p>To read input XML data a special class <a href="qxmlinputsource.html">QXmlInputSource</a> is used.</p>
 <p>Apart from those already mentioned, the following SAX2 support classes provide additional useful functionality:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Class</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qxmlattributes.html">QXmlAttributes</a></td><td>Used to pass attributes in a start element event.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qxmllocator.html">QXmlLocator</a></td><td>Used to obtain the actual parsing position of an event.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qxmlnamespacesupport.html">QXmlNamespaceSupport</a></td><td>Used to implement namespace support for a reader. Note that namespaces do not change the parsing behavior. They are only reported through the handler.</td></tr>
-</table>
+</table></p>
 <a name="sax2-features"></a>
 <h4>SAX2 Features</h4>
 <p>The behavior of an XML reader depends on its support for certain optional features. For example, a reader may have the feature &quot;report attributes used for namespace declarations and prefixes along with the local name of a tag&quot;. Like every other feature this has a unique name represented by a URI: it is called <i>http://xml.org/sax/features/namespace-prefixes</i>.</p>
@@ -164,13 +164,13 @@ body { background: #ffffff; color: black; }</style>
 <a name="summary"></a>
 <h5>Summary</h5>
 <p><a href="qxmlsimplereader.html">QXmlSimpleReader</a> implements the following behavior:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>(namespaces, namespace-prefixes)</th><th>Namespace prefix and local part</th><th>Qualified names</th><th>Prefix mapping</th><th>xmlns attributes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>(true, false)</td><td>Yes</td><td>Yes*</td><td>Yes</td><td>No</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>(true, true)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>(false, true)</td><td>No*</td><td>Yes</td><td>No*</td><td>Yes</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>(false, false)</td><td colspan="4">Illegal</td></tr>
-</table>
+</table></p>
 <p>The behavior of the entries marked with an asterisk (*) is not specified by SAX.</p>
 <a name="properties"></a>
 <h4>Properties</h4>
@@ -314,8 +314,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

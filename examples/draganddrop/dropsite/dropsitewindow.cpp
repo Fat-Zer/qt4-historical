@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -86,7 +86,7 @@ void DropSiteWindow::updateSupportedFormats(const QMimeData *mimeData)
     {
         QTableWidgetItem *formatItem = new QTableWidgetItem(format);
         formatItem->setFlags(Qt::ItemIsEnabled);
-        formatItem->setTextAlignment(Qt::AlignTop);
+        formatItem->setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
 
         QByteArray data = mimeData->data(format);
         QTableWidgetItem *dataItem;
@@ -111,9 +111,6 @@ void DropSiteWindow::updateSupportedFormats(const QMimeData *mimeData)
         supportedFormats->insertRow(row);
         supportedFormats->setItem(row, 0, formatItem);
         supportedFormats->setItem(row, 1, dataItem);
-
-        QTableWidgetItem *index = new QTableWidgetItem(tr("%1").arg(row + 1));
-        supportedFormats->setVerticalHeaderItem(row, index);
     }
 
     supportedFormats->resizeColumnToContents(0);

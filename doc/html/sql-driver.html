@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/sql-driver.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/sql-driver.qdoc -->
 <head>
     <title>Qt 4.1: SQL Database Drivers</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -72,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="supported-databases"></a>
 <h2>Supported Databases</h2>
 <p>The table below lists the drivers included with Qt. Due to license incompatibilities with the GPL, not all of the plugins are provided with the Qt Open Source Edition.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Driver name</th><th>DBMS</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="#qdb2">QDB2</a></td><td>IBM DB2 (version 7.1 and higher)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="#qibase">QIBASE</a></td><td>Borland InterBase</td></tr>
@@ -83,7 +83,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="#qsqlite2">QSQLITE2</a></td><td><a href="3rdparty.html#sqlite">SQLite</a> version 2</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="#qsqlite">QSQLITE</a></td><td><a href="3rdparty.html#sqlite">SQLite</a> version 3</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="#qtds">QTDS</a></td><td>Sybase Adaptive Server</td></tr>
-</table>
+</table></p>
 <p><b>Note:</b> To build a driver plugin you need to have the appropriate client library for your Database Management System (DBMS). This provides access to the API exposed by the DBMS, and is typically shipped with it. Most installation programs also allow you to install &quot;development libraries&quot;, and these are what you need. These libraries are responsible for the low-level communication with the DBMS.</p>
 <a name="building"></a><a name="building-the-drivers-using-configure"></a>
 <h2>Building the Drivers Using Configure</h2>
@@ -337,7 +337,7 @@ body { background: #ffffff; color: black; }</style>
 <p><a href="qsqldriver.html">QSqlDriver</a> is an abstract base class which defines the functionality of a SQL database driver. This includes functions such as <a href="qsqldriver.html#open">QSqlDriver::open</a>() and <a href="qsqldriver.html#close">QSqlDriver::close</a>(). <a href="qsqldriver.html">QSqlDriver</a> is responsible for connecting to a database, establish the proper environment, etc. In addition, <a href="qsqldriver.html">QSqlDriver</a> can create <a href="qsqlquery.html">QSqlQuery</a> objects appropriate for the particular database API. <a href="qsqldatabase.html">QSqlDatabase</a> forwards many of its function calls directly to <a href="qsqldriver.html">QSqlDriver</a> which provides the concrete implementation.</p>
 <p><a href="qsqlresult.html">QSqlResult</a> is an abstract base class which defines the functionality of a SQL database query. This includes statements such as <tt>SELECT</tt>, <tt>UPDATE</tt>, and <tt>ALTER</tt> <tt>TABLE</tt>. <a href="qsqlresult.html">QSqlResult</a> contains functions such as QSqlResult::next() and QSqlResult::value(). <a href="qsqlresult.html">QSqlResult</a> is responsible for sending queries to the database, returning result data, etc. <a href="qsqlquery.html">QSqlQuery</a> forwards many of its function calls directly to <a href="qsqlresult.html">QSqlResult</a> which provides the concrete implementation.</p>
 <p><a href="qsqldriver.html">QSqlDriver</a> and <a href="qsqlresult.html">QSqlResult</a> are closely connected. When implementing a Qt SQL driver, both of these classes must to be subclassed and the abstract virtual methods in each class must be implemented.</p>
-<p>To implement a Qt SQL driver as a plugin (so that it is recognized and loaded by the Qt library at runtime), the driver must use the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro. Read <a href="plugins-howto.html">How to Create Qt Plugins</a> for more information on this. You can also check out how this is done in the SQL plugins that are provided with Qt in <tt>QTDIR/src/plugins/sqldrivers</tt> and <tt>QTDIR/src/sql/drivers</tt>.</p>
+<p>To implement a Qt SQL driver as a plugin (so that it is recognized and loaded by the Qt library at runtime), the driver must use the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro. Read <a href="plugins-howto.html">How to Create Qt Plugins</a> for more information on this. You can also check out how this is done in the SQL plugins that are provided with Qt in <tt>QTDIR/src/plugins/sqldrivers</tt> and <tt>QTDIR/src/sql/drivers</tt>.</p>
 <p>The following code can be used as a skeleton for a SQL driver:</p>
 <pre>&nbsp;   class XyzResult : public QSqlResult
     {
@@ -374,8 +374,8 @@ body { background: #ffffff; color: black; }</style>
     };</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

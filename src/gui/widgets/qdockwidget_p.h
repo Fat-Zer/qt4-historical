@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -75,7 +75,7 @@ class QDockWidgetPrivate : public QWidgetPrivate
 
 public:
     inline QDockWidgetPrivate()
-	: QWidgetPrivate(), state(0), item(0),
+	: QWidgetPrivate(), state(0), widget(0),
           features(QDockWidget::DockWidgetClosable
                    | QDockWidget::DockWidgetMovable
                    | QDockWidget::DockWidgetFloatable),
@@ -93,7 +93,7 @@ public:
     void relayout();
     DragState *state;
 
-    QDockWidgetItem *item;
+    QWidget *widget;
 
     QDockWidget::DockWidgetFeatures features;
     Qt::DockWidgetAreas allowedAreas;
@@ -118,7 +118,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *event);
 };
 
-//This class adds the margin space to dockwidgets when they are not floating. 
+//This class adds the margin space to dockwidgets when they are not floating.
 //We do this to ensure that the minimum sizeHint does not change when floating
 class QDockWidgetItem : public QWidgetItem
 {
@@ -126,8 +126,8 @@ public:
     inline QDockWidgetItem(QWidget *w)
         : QWidgetItem(w)
     { }
-    
-    QSize adjusted(QSize s) const 
+
+    QSize adjusted(QSize s) const
     {
         QDockWidgetItem *w = const_cast<QDockWidgetItem *>(this);
         QDockWidget * dockWidget = qobject_cast<QDockWidget *>(w->widget()->parentWidget());
@@ -140,12 +140,12 @@ public:
     }
 
     inline QSize sizeHint() const
-    { 
+    {
         return adjusted(QWidgetItem::sizeHint());
     }
-        
+
     inline QSize minimumSize() const
-    { 
+    {
         return adjusted(QWidgetItem::minimumSize());
     }
 };

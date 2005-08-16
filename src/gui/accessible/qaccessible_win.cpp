@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -55,7 +55,7 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
         return;
     }
 
-    QString soundName;
+    QByteArray soundName;
     switch (reason) {
     case PopupMenuStart:
         soundName = "MenuPopup";
@@ -94,13 +94,8 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
         break;
     }
 
-    if (soundName.size()) {
-        QT_WA({
-            PlaySoundW((TCHAR*)soundName.utf16(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT);
-        } , {
-            PlaySoundA(soundName.toLocal8Bit(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
-        });
-    }
+    if (soundName.size())
+        PlaySoundA(soundName.constData(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
 
     if (!isActive())
         return;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -369,7 +369,7 @@ static QString winIso639LangName()
     if (!lang_code.isEmpty()) {
         const char *endptr;
         bool ok;
-	QByteArray latin1_lang_code = lang_code.toLatin1();
+        QByteArray latin1_lang_code = lang_code.toLatin1();
         int i = qstrtoull(latin1_lang_code, &endptr, 16, &ok);
         if (ok && *endptr == '\0') {
             switch (i) {
@@ -1027,6 +1027,16 @@ static const QLocalePrivate *findLocale(QLocale::Language language,
 */
 
 /*!
+    \enum QLocale::FormatType
+
+    This enum describes the types of format that can be used when
+    converting QDate and QTime objects to strings.
+
+    \value LongFormat
+    \value ShortFormat
+*/
+
+/*!
     \fn bool QLocale::operator==(const QLocale &other) const
 
     Returns true if the QLocale object is the same as the \a other
@@ -1084,7 +1094,12 @@ QLocale::QLocale(const QString &name)
                 && uc[2] != QLatin1Char('@'))
             break;
 
-        lang = codeToLanguage(name.mid(0, 2));
+        QString lang_code = name.mid(0, 2);
+        // CLDR has changed the code for Bokmal from "no" to "nb". We want to support
+        // both, but we have no alias mechanism in the database.
+        if (lang_code == QLatin1String("nb"))
+            lang_code = QLatin1String("no");
+        lang = codeToLanguage(lang_code);
         if (lang == C)
             break;
 
@@ -1556,9 +1571,9 @@ static QString readEscapedFormatString(const QString &format, int *idx)
 }
 
 /*!
-    Returns a localized string representation of \a date. If \a format is specified,
-    the string is formatted according to it. If \a format is an empty strig (the
-    default value), something happens, but I'm not certain what it is.
+    Returns a localized string representation of the given \a date in the
+    specified \a format.
+    If \a format is an empty string, an empty string is returned.
 */
 
 QString QLocale::toString(const QDate &date, const QString &format) const
@@ -1651,6 +1666,10 @@ QString QLocale::toString(const QDate &date, const QString &format) const
     return result;
 }
 
+/*!
+    Returns a localized string representation of the given \a date according
+    to the specified \a format.
+*/
 QString QLocale::toString(const QDate &date, FormatType format) const
 {
     QString format_str = dateFormat(format);
@@ -1677,6 +1696,11 @@ static bool timeFormatContainsAP(const QString &format)
     return false;
 }
 
+/*!
+    Returns a localized string representation of the given \a time according
+    to the specified \a format.
+    If \a format is an empty string, an empty string is returned.
+*/
 QString QLocale::toString(const QTime &time, const QString &format) const
 {
     QString result;
@@ -1788,6 +1812,10 @@ QString QLocale::toString(const QTime &time, const QString &format) const
     return result;
 }
 
+/*!
+    Returns a localized string representation of the given \a time in the
+    specified \a format.
+*/
 QString QLocale::toString(const QTime &time, FormatType format) const
 {
     QString format_str = timeFormat(format);
@@ -2060,8 +2088,8 @@ QLocale QLocale::system()
 
 static QString qulltoa(qulonglong l, int base, const QLocalePrivate &locale)
 {
-    QChar buff[65]; // length of MAX_ULLONG in base 2
-    QChar *p = buff + 65;
+    ushort buff[65]; // length of MAX_ULLONG in base 2
+    ushort *p = buff + 65;
 
     if (base != 10 || locale.zero().unicode() == '0') {
         while (l != 0) {
@@ -2087,7 +2115,7 @@ static QString qulltoa(qulonglong l, int base, const QLocalePrivate &locale)
         }
     }
 
-    return QString(p, 65 - (p - buff));
+    return QString(reinterpret_cast<QChar *>(p), 65 - (p - buff));
 }
 
 static QString qlltoa(qlonglong l, int base, const QLocalePrivate &locale)
@@ -2824,12 +2852,14 @@ static qulonglong qstrtoull(const char *nptr, const char **endptr, register int 
             acc += c;
         }
     }
-    if (any < 0) {
+    if (any == 0) {
+        if (ok != 0)
+            *ok = false;
+    } else if (any < 0) {
         acc = ULLONG_MAX;
         if (ok != 0)
             *ok = false;
-    }
-    else if (neg)
+    }else if (neg)
         acc = (~acc) + 1;
     if (endptr != 0)
         *endptr = (any ? s - 1 : nptr);

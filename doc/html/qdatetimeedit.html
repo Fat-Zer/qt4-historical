@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qdatetimeedit.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qdatetimeedit.cpp -->
 <head>
     <title>Qt 4.1: QDateTimeEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qdatetimeedit.html#currentSection-prop">currentSection</a></b> : Section</li>
 <li><div class="fn"/><b><a href="qdatetimeedit.html#date-prop">date</a></b> : QDate</li>
@@ -47,7 +47,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qdatetimeedit.html#time-prop">time</a></b> : QTime</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>7 properties inherited from <a href="qabstractspinbox.html#properties">QAbstractSpinBox</a></li>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
@@ -88,7 +88,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>17 public functions inherited from <a href="qabstractspinbox.html#public-functions">QAbstractSpinBox</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -124,6 +124,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>3 protected functions inherited from <a href="qabstractspinbox.html#protected-functions">QAbstractSpinBox</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -144,7 +145,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="Section-enum"></a>enum QDateTimeEdit::Section<br />flags QDateTimeEdit::Sections</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QDateTimeEdit::NoSection</tt></td><td align="center" valign="top"><tt>0x0000</tt></td></tr>
 <tr><td valign="top"><tt>QDateTimeEdit::AmPmSection</tt></td><td align="center" valign="top"><tt>0x0001</tt></td></tr>
@@ -155,7 +156,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QDateTimeEdit::DaySection</tt></td><td align="center" valign="top"><tt>0x0100</tt></td></tr>
 <tr><td valign="top"><tt>QDateTimeEdit::MonthSection</tt></td><td align="center" valign="top"><tt>0x0200</tt></td></tr>
 <tr><td valign="top"><tt>QDateTimeEdit::YearSection</tt></td><td align="center" valign="top"><tt>0x0400</tt></td></tr>
-</table>
+</table></p>
 <p>The Sections type is a typedef for <a href="qflags.html">QFlags</a>&lt;Section&gt;. It stores an OR combination of Section values.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -186,12 +187,12 @@ body { background: #ffffff; color: black; }</style>
 <p>This property holds the format used to display the time/date of the date time edit.</p>
 <p>This format is the same as the one used described in <a href="qdatetime.html#toString">QDateTime::toString</a>() and <a href="qdatetime.html#fromString">QDateTime::fromString</a>()</p>
 <p>Example format strings(assuming that the date is 2nd of July 1969):</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Result</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>dd.MM.yyyy</td><td>02.07.1969</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>MMM d yy</td><td>Jul 2 69</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>MMMM d yy</td><td>July 2 69</td></tr>
-</table>
+</table></p>
 <p>If you specify an invalid format the format will not be set.</p>
 <p>Access functions:</p>
 <ul>
@@ -300,8 +301,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted whenever the time is changed. The new time is passed in <i>time</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -88,6 +88,7 @@ public:
 
     QString defaultDateFormat, defaultTimeFormat;
     Qt::LayoutDirection layoutDirection;
+    mutable QVariant conflictGuard;
 };
 
 // --- QDateTimeEdit ---
@@ -1273,10 +1274,12 @@ QVariant QDateTimeEditPrivate::validateAndInterpret(QString &input, int &/*posit
     input = tmp.input;
     state = *reinterpret_cast<QValidator::State *>(&tmp.state);
     if (state == QValidator::Acceptable) {
-        if (tmp.conflicts) {
+        if (tmp.conflicts && conflictGuard != tmp.value) {
+            conflictGuard = tmp.value;
             clearCache();
             input = textFromValue(tmp.value);
             updateCache(tmp.value, input);
+            conflictGuard.clear();
         } else {
             cachedText = input;
             cachedState = state;
@@ -1603,11 +1606,10 @@ QDateTimeEdit::Sections QDateTimeEditPrivate::convertSections(QDateTimeParser::S
 
 QString QDateTimeEditPrivate::getAmPmText(AmPm ap, Case cs) const
 {
-    Q_Q(const QDateTimeEdit);
     if (ap == AmText) {
-        return (cs == UpperCase ? q->tr("AM") : q->tr("am"));
+        return (cs == UpperCase ? QDateTimeEdit::tr("AM") : QDateTimeEdit::tr("am"));
     } else {
-        return (cs == UpperCase ? q->tr("PM") : q->tr("pm"));
+        return (cs == UpperCase ? QDateTimeEdit::tr("PM") : QDateTimeEdit::tr("pm"));
     }
 }
 

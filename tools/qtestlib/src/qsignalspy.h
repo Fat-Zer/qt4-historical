@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -33,7 +33,7 @@
 class QSignalSpy: public QObject, public QList<QList<QVariant> >
 {
 public:
-    QSignalSpy(QObject *obj, const char *signal)
+    QSignalSpy(QObject *obj, const char *aSignal)
     {
 #ifdef Q_CC_BOR
         const int memberOffset = QObject::staticMetaObject.methodCount();
@@ -41,14 +41,14 @@ public:
         static const int memberOffset = QObject::staticMetaObject.methodCount();
 #endif
         Q_ASSERT(obj);
-        Q_ASSERT(signal);
+        Q_ASSERT(aSignal);
 
-        if (signal[0] - '0' != QSIGNAL_CODE) {
+        if (aSignal[0] - '0' != QSIGNAL_CODE) {
             qWarning("QSignalSpy: Not a valid signal, use the SIGNAL macro");
             return;
         }
 
-        QByteArray ba = QMetaObject::normalizedSignature(signal + 1);
+        QByteArray ba = QMetaObject::normalizedSignature(aSignal + 1);
         const QMetaObject *mo = obj->metaObject();
         int sigIndex = mo->indexOfMethod(ba.constData());
         if (sigIndex < 0) {
@@ -108,7 +108,7 @@ private:
                 handled = true;
                 break;
             case QMetaType::VoidStar:
-                list << QVariant(QVariant::UserType, *(void **)a[i+1]);
+                list << QVariant(QVariant::UserType, *reinterpret_cast<void **>(a[i+1]));
                 handled = true;
                 break;
             case QMetaType::Int:

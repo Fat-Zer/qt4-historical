@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -212,7 +212,7 @@ class QDESIGNER_SHARED_EXPORT InsertWidgetCommand: public QDesignerFormWindowCom
 public:
     InsertWidgetCommand(QDesignerFormWindowInterface *formWindow);
 
-    void init(QWidget *widget);
+    void init(QWidget *widget, bool already_in_form = false);
 
     virtual void redo();
     virtual void undo();
@@ -221,6 +221,7 @@ private:
     QPointer<QWidget> m_widget;
     QDesignerLayoutDecorationExtension::InsertMode m_insertMode;
     QPair<int, int> m_cell;
+    bool m_widgetWasManaged;
 };
 
 class QDESIGNER_SHARED_EXPORT RaiseWidgetCommand: public QDesignerFormWindowCommand

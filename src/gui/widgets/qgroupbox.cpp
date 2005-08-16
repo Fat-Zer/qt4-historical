@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -575,7 +575,7 @@ void QGroupBox::mousePressEvent(QMouseEvent *event)
     QStyleOptionGroupBox box = d->getStyleOption();
     d->pressedControl = style()->hitTestComplexControl(QStyle::CC_GroupBox, &box,
                                                        event->pos(), this);
-    if (d->pressedControl == QStyle::SC_GroupBoxCheckBox)
+    if (d->pressedControl & (QStyle::SC_GroupBoxCheckBox | QStyle::SC_GroupBoxLabel))
         update(style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this));
 }
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qtestlib.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qtestlib.qdoc -->
 <head>
     <title>Qt 4.1: QTestLib Manual</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="qtestlib-features"></a>
 <h2>QTestLib Features</h2>
 <p><a href="#qtestlib">QTestLib</a> is designed to ease the writing of unit tests for Qt based applications and libraries:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Feature</th><th>Details</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>Lightweight</b></td><td><a href="#qtestlib">QTestLib</a> consists of about 6000 lines of code and 60 exported symbols.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>Self-contained</b></td><td><a href="#qtestlib">QTestLib</a> requires only a few symbols from the Qt Core library for non-gui testing.</td></tr>
@@ -43,7 +43,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>Thread-safety</b></td><td>The error reporting is thread safe and atomic.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>Type-safety</b></td><td>Extensive use of templates prevent errors introduced by implicit type casting.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>Easily extendable</b></td><td>Custom types can easily be added to the test data and test output.</td></tr>
-</table>
+</table></p>
 <p>Note: For higher-level GUI and application testing needs, please see the <a href="http://www.trolltech.com/products/3rdparty/tools.html">Qt testing products provided by Trolltech partners</a>.</p>
 <a name="qtestlib-api"></a>
 <h2>QTestLib API</h2>
@@ -85,7 +85,7 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>-functions</tt> <br /> outputs all test functions available in the test.</li>
 <li><tt>-o</tt> <i>filename</i> <br /> write output to the specified file, rather than to standard output</li>
 <li><tt>-v1</tt> <br /> verbose output; outputs information on entering and exiting test functions.</li>
-<li><tt>-v2</tt> <br /> extended verbose output; also outputs each <a href="qtest.html#QCOMPARE">QCOMPARE</a>() and <a href="qtest.html#QVERIFY">QVERIFY</a>()</li>
+<li><tt>-v2</tt> <br /> extended verbose output; also outputs each <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() and <a href="qtest.html#QVERIFY">QVERIFY</a>()</li>
 <li><tt>-vs</tt> <br /> outputs every signal that gets emitted</li>
 <li><tt>-xml</tt> <br /> outputs XML formatted results instead of plain text</li>
 <li><tt>-lightxml</tt> <br /> outputs results as a stream of XML tags</li>
@@ -97,8 +97,8 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

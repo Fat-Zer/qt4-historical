@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/painting/qprinter.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/painting/qprinter.cpp -->
 <head>
     <title>Qt 4.1: QPrinter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -93,12 +93,15 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qprinter.html#winPageSize">winPageSize</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
 <ul>
 <li><div class="fn"/>void <b><a href="qprinter.html#setEngines">setEngines</a></b> ( QPrintEngine * <i>printEngine</i>, QPaintEngine * <i>paintEngine</i> )</li>
+</ul>
+<ul>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -112,7 +115,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qprinter.html#setOrientation">setOrientation</a>() tells QPrinter which page orientation to use.</li>
 <li><a href="qprinter.html#setPageSize">setPageSize</a>() tells QPrinter what page size to expect from the printer.</li>
 <li><a href="qprinter.html#setResolution">setResolution</a>() tells QPrinter what resolution you wish the printer to provide (in dots per inch -- dpi).</li>
-<li><a href="qprinter.html#setFullPage">setFullPage</a>() tells QPrinter whether you want to deal with the full page or just with the part the printer can draw on. The default is false, so that by default you should be able to paint on (0,0). If true the origin of the coordinate system will be in the top left corner of the paper and most probably the printer will not be able to paint something there due to it's physical margins.</li>
+<li><a href="qprinter.html#setFullPage">setFullPage</a>() tells QPrinter whether you want to deal with the full page or just with the part the printer can draw on. The default is false, so that by default you should be able to paint on (0,0). If true the origin of the coordinate system will be in the top left corner of the paper and most probably the printer will not be able to paint something there due to its physical margins.</li>
 <li><a href="qprinter.html#setNumCopies">setNumCopies</a>() tells QPrinter how many copies of the document it should print.</li>
 </ul>
 <p>Many of the settable functions can only be called before the actual printing begins (i.e., before <a href="qpainter.html#begin">QPainter::begin</a>() is called). This usually makes sense (e.g., you can't change the number of copies when you are halfway through printing). There are also some settings that the user sets (through the printer dialog) and that applications are expected to obey. See <a href="qabstractprintdialog.html">QAbstractPrintDialog</a>'s documentation for more details.</p>
@@ -130,37 +133,37 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ColorMode-enum"></a>enum QPrinter::ColorMode</h3>
 <p>This enum type is used to indicate whether <a href="qprinter.html">QPrinter</a> should print in color or not.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::Color</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">print in color if available, otherwise in grayscale.</td></tr>
 <tr><td valign="top"><tt>QPrinter::GrayScale</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">print in grayscale, even on color printers.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Orientation-enum"></a>enum QPrinter::Orientation</h3>
 <p>This enum type (not to be confused with <tt>Orientation</tt>) is used to specify each page's orientation.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::Portrait</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">the page's height is greater than its width.</td></tr>
 <tr><td valign="top"><tt>QPrinter::Landscape</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the page's width is greater than its height.</td></tr>
-</table>
+</table></p>
 <p>This type interacts with <a href="qprinter.html#PageSize-enum">QPrinter::PageSize</a> and <a href="qprinter.html#setFullPage">QPrinter::setFullPage</a>() to determine the final size of the page available to the application.</p>
 <h3 class="fn"><a name="OutputFormat-enum"></a>enum QPrinter::OutputFormat</h3>
 <p>The OutputFormat enum is used to describe the format <a href="qprinter.html">QPrinter</a> should use for printing.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::NativeFormat</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top"><a href="qprinter.html">QPrinter</a> will print output in the method given by the platform it is running on, e.g. This is how printing was traditionally done in Qt. This mode is the default.</td></tr>
 <tr><td valign="top"><tt>QPrinter::PdfFormat</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qprinter.html">QPrinter</a> will generate its output as a PDF file. PDF files generated by Qt are not searchable.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="PageOrder-enum"></a>enum QPrinter::PageOrder</h3>
 <p>This enum type is used by <a href="qprinter.html">QPrinter</a> to tell the application program how to print.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::FirstPageFirst</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">the lowest-numbered page should be printed first.</td></tr>
 <tr><td valign="top"><tt>QPrinter::LastPageFirst</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the highest-numbered page should be printed first.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="PageSize-enum"></a>enum QPrinter::PageSize</h3>
 <p>This enum type specifies what paper size <a href="qprinter.html">QPrinter</a> should use. <a href="qprinter.html">QPrinter</a> does not check that the paper size is available; it just uses this information, together with <a href="qprinter.html#Orientation-enum">QPrinter::Orientation</a> and <a href="qprinter.html#setFullPage">QPrinter::setFullPage</a>(), to determine the printable area.</p>
 <p>The defined sizes (with setFullPage(true)) are:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::A0</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">841 x 1189 mm</td></tr>
 <tr><td valign="top"><tt>QPrinter::A1</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">594 x 841 mm</td></tr>
@@ -193,11 +196,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPrinter::Letter</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">8.5 x 11 inches, 216 x 279 mm</td></tr>
 <tr><td valign="top"><tt>QPrinter::Tabloid</tt></td><td align="center" valign="top"><tt>29</tt></td><td valign="top">279 x 432 mm</td></tr>
 <tr><td valign="top"><tt>QPrinter::Custom</tt></td><td align="center" valign="top"><tt>30</tt></td><td valign="top">With setFullPage(false) (the default), the metrics will be a bit smaller; how much depends on the printer in use.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="PaperSource-enum"></a>enum QPrinter::PaperSource</h3>
 <p>This enum type specifies what paper source <a href="qprinter.html">QPrinter</a> is to use. <a href="qprinter.html">QPrinter</a> does not check that the paper source is available; it just uses this information to try and set the paper source. Whether it will set the paper source depends on whether the printer has that particular source.</p>
 <p><b>Warning:</b> This is currently only implemented for Windows.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QPrinter::OnlyOne</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::Lower</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
@@ -212,32 +215,32 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPrinter::LargeCapacity</tt></td><td align="center" valign="top"><tt>10</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::Cassette</tt></td><td align="center" valign="top"><tt>11</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::FormSource</tt></td><td align="center" valign="top"><tt>12</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="PrintRange-enum"></a>enum QPrinter::PrintRange</h3>
 <p>Used to specify the print range selection option.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::AllPages</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">All pages should be printed.</td></tr>
 <tr><td valign="top"><tt>QPrinter::Selection</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Only the selection should be printed.</td></tr>
 <tr><td valign="top"><tt>QPrinter::PageRange</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The specified page range should be printed.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qabstractprintdialog.html#PrintRange-enum">QAbstractPrintDialog::PrintRange</a>.</p>
 <h3 class="fn"><a name="PrinterMode-enum"></a>enum QPrinter::PrinterMode</h3>
 <p>This enum describes the mode the printer should work in. It basically presets a certain resolution and working mode.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPrinter::ScreenResolution</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Sets the resolution of the print device to the screen resolution. This has the big advantage that the results obtained when painting on the printer will match more or less exactly the visible output on the screen. It is the easiest to use, as font metrics on the screen and on the printer are the same. This is the default value. ScreenResolution will produce a lower quality output than HighResolution and should only be used for drafts.</td></tr>
 <tr><td valign="top"><tt>QPrinter::PrinterResolution</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">This value is deprecated. Is is equivalent to ScreenResolution on Unix and HighResolution on Windows and Mac. Due do the difference between ScreenResolution and HighResolution, use of this value may lead to non-portable printer code.</td></tr>
 <tr><td valign="top"><tt>QPrinter::HighResolution</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Use printer resolution on Windows, and set the resolution of the Postscript driver to 600dpi.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="PrinterState-enum"></a>enum QPrinter::PrinterState</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QPrinter::Idle</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::Active</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::Aborted</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::Error</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPrinter"></a>QPrinter::QPrinter ( <a href="qprinter.html#PrinterMode-enum">PrinterMode</a> <i>mode</i> = ScreenResolution )</h3>
@@ -445,8 +448,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qprinter.html#setWinPageSize">setWinPageSize</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

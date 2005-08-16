@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -85,6 +85,7 @@ private:
     QString l;
 
     friend class Q3MainWindow;
+    friend class Q3DockAreaLayout;
 
 private:
     Q_DISABLE_COPY(Q3ToolBar)

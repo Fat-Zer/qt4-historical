@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -109,7 +109,8 @@ class QPainterPrivate
     Q_DECLARE_PUBLIC(QPainter)
 public:
     QPainterPrivate(QPainter *painter)
-        : q_ptr(painter), txinv(0), device(0), engine(0)
+        : q_ptr(painter), txinv(0), device(0)
+        , original_device(0), engine(0)
     {
         states.push_back(new QPainterState());
         state = states.back();
@@ -157,6 +158,7 @@ public:
     }
 
     QPaintDevice *device;
+    QPaintDevice *original_device;
     QPaintEngine *engine;
 };
 

@@ -1,6 +1,6 @@
 /****************************************************************************
  **
- ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+ ** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
  **
  ** This file is part of the QtGui module of the Qt Toolkit.
  **
@@ -49,6 +49,7 @@ struct QPixmapData { // internal pixmap data
     void ref() { ++count; }
     bool deref() { return !--count; }
     int count;
+    int detach_no;
     QImage image;
     QPixmap::Type type;
 
@@ -70,6 +71,7 @@ struct QPixmapData { // internal pixmap data
     short d;
     uint uninit:1;
     int ser_no;
+    int detach_no;
 #if !defined(Q_WS_X11) && !defined(Q_WS_MAC)
     QBitmap *mask;
 #endif

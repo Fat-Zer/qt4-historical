@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -52,7 +52,8 @@ public:
     \sa QAbstractEventDispatcher
 */
 
-/*! \enum QEventLoop::ProcessEventsFlag
+/*! 
+    \enum QEventLoop::ProcessEventsFlag
 
     This enum controls the types of events processed by the
     processEvents() functions.
@@ -71,6 +72,11 @@ public:
 
     \value WaitForMoreEvents Wait for events if no pending events are
     available.
+
+    \value DeferredDeletion Allow objects to be queued for deletion
+    at a later time.
+
+    \value X11ExcludeTimers
 
     \omitvalue ExcludeUserInput
     \omitvalue WaitForMore

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/xml/qxml.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/xml/qxml.cpp -->
 <head>
     <title>Qt 4.1: QXmlSimpleReader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -86,7 +86,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.QXmlSimpleReader"></a>QXmlSimpleReader::~QXmlSimpleReader ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the simple XML reader.</p>
 <h3 class="fn"><a name="parse-3"></a>bool QXmlSimpleReader::parse ( const <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>input</i>, bool <i>incremental</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an XML document from <i>input</i> and parses it. Returns true if the parsing is completed successfully; otherwise returns false, indicating that an error occurred.</p>
 <p>If <i>incremental</i> is false, this function will return false if the XML file is not read completely. The parsing cannot be continued in this case.</p>
 <p>If <i>incremental</i> is true, the parser does not return false if it reaches the end of the <i>input</i> before reaching the end of the XML file. Instead, it stores the state of the parser so that parsing can be continued later when more data is available. In such a case, you can use the function <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() to continue with parsing. This class stores a pointer to the input source <i>input</i> and the <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>() function tries to read from that input source. Therefore, you should not delete the input source <i>input</i> until you no longer need to call <a href="qxmlsimplereader.html#parseContinue">parseContinue</a>().</p>
@@ -101,19 +101,19 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setFeature"></a>void QXmlSimpleReader::setFeature ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Turns on the feature <i>name</i> if <i>enable</i> is true; otherwise turns it off.</p>
 <p>The <i>name</i> parameter must be one of the following strings:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Feature</th><th>Default</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><i>http://xml.org/sax/features/namespaces</i></td><td>true</td><td>If enabled, namespaces are reported to the content handler.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><i>http://xml.org/sax/features/namespace-prefixes</i></td><td>false</td><td>If enabled, the original prefixed names and attributes used for namespace declarations are reported.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><i>http://trolltech.com/xml/features/report-whitespace-only-CharData</i></td><td>true</td><td>If enabled, CharData that consist of only whitespace characters are reported using <a href="qxmlcontenthandler.html#characters">QXmlContentHandler::characters</a>().</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><i>http://trolltech.com/xml/features/report-start-end-entity</i></td><td>false</td><td>If enabled, the parser reports QXmlContentHandler::startEntity() and QXmlContentHandler::endEntity() events, so character data might be reported in chunks. If disabled, the parser does not report these events, but silently substitutes the entities, and reports the character data in one chunk.</td></tr>
-</table>
+</table></p>
 <p>Reimplemented from <a href="qxmlreader.html#setFeature">QXmlReader</a>.</p>
 <p>See also <a href="qxmlreader.html#feature">feature</a>(), <a href="qxmlreader.html#hasFeature">hasFeature</a>(), and <a href="qtxml.html#sax2-features">SAX2 Features</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

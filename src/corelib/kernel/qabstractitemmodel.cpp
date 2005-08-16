@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -145,6 +145,8 @@ QPersistentModelIndex::~QPersistentModelIndex()
 /*!
   Returns true if this persistent model index is equal to the \a other
   persistent model index, otherwist returns false.
+  Note that all values in the persistent model index are used when comparing
+  with another persistent model index.
 */
 
 bool QPersistentModelIndex::operator==(const QPersistentModelIndex &other) const
@@ -159,10 +161,14 @@ bool QPersistentModelIndex::operator==(const QPersistentModelIndex &other) const
 
     Returns true if this persistent model index is smaller than the \a other
     persistent model index; otherwise returns false.
+    Note that all values in the persistent model index are used when comparing
+    with another persistent model index.
 */
 
 bool QPersistentModelIndex::operator<(const QPersistentModelIndex &other) const
 {
+    if (d && other.d)
+        return d->index < other.d->index;
     return d < other.d;
 }
 
@@ -219,6 +225,8 @@ QPersistentModelIndex::operator const QModelIndex&() const
 
     Returns true if this persistent model index refers to the same location as
     the \a other model index; otherwise returns false.
+    Note that all values in the persistent model index are used when comparing
+    with another model index.
 */
 
 bool QPersistentModelIndex::operator==(const QModelIndex &other) const
@@ -400,16 +408,6 @@ QDebug operator<<(QDebug dbg, const QPersistentModelIndex &idx)
 }
 #endif
 
-QAbstractItemModelPrivate::~QAbstractItemModelPrivate()
-{
-    QList<QPersistentModelIndexData*>::iterator it = persistent.indexes.begin();
-    for (; it != persistent.indexes.end(); ++it) {
-        Q_ASSERT((*it));
-        (*it)->index = QModelIndex();
-        (*it)->model = 0;
-    }
-}
-
 void QAbstractItemModelPrivate::removePersistentIndexData(QPersistentModelIndexData *data)
 {
     int data_index = persistent.indexes.indexOf(data);
@@ -475,7 +473,6 @@ void QAbstractItemModelPrivate::rowsAboutToBeRemoved(const QModelIndex &parent,
 {
     QList<int> persistent_moved;
     QList<int> persistent_invalidated;
-
     // find the persistent indexes that are affected by the change, either by being in the removed subtree
     // or by being on the same level and below the removed rows
     for (int position = 0; position < persistent.indexes.count(); ++position) {
@@ -549,7 +546,6 @@ void QAbstractItemModelPrivate::columnsAboutToBeRemoved(const QModelIndex &paren
 {
     QList<int> persistent_moved;
     QList<int> persistent_invalidated;
-
     // find the persistent indexes that are affected by the change, either by being in the removed subtree
     // or by being on the same level and to the right of the removed columns
     for (int position = 0; position < persistent.indexes.count(); ++position) {
@@ -751,6 +747,8 @@ void QAbstractItemModelPrivate::reset()
 
     Returns true if this model index refers to the same location as
     the \a other model index; otherwise returns false.
+    Note that all values in the model index are used when comparing
+    with another model index.
 */
 
 
@@ -839,12 +837,16 @@ void QAbstractItemModelPrivate::reset()
     \section1 Subclassing
 
     When subclassing QAbstractItemModel, at the very least you must
-    implement index(), parent(), rowCount(), columnCount(), and data().
-    To enable editing in your model, you must also implement setData(),
-    and reimplement flags() to ensure that \c ItemIsEditable is returned.
+    implement index(), parent(), rowCount(), columnCount(), and
+    data(). To enable editing in your model, you must also implement
+    setData(), and reimplement flags() to ensure that \c
+    ItemIsEditable is returned.  You can also reimplement headerData()
+    and setHeaderData() to control the way the headers for your model
+    are presented.
 
-    You can also reimplement headerData() and setHeaderData() to control
-    the way the headers for your model are presented.
+    Note that the dataChanged() and headerDataChanged() signals must
+    be emitted explicitly when reimplementing the setData() and
+    setHeaderData() functions, respectively.
 
     Custom models need to create model indexes for other components to use.
     To do this, call createIndex() with suitable row and column numbers for
@@ -957,6 +959,9 @@ void QAbstractItemModelPrivate::reset()
     indicates whether the horizontal or vertical header has changed. The
     sections in the header from the \a first to the \a last need to be updated.
 
+    Note that this signal must be emitted explicitly when
+    reimplementing the setHeaderData() function.
+
     \sa headerData(), setHeaderData(), dataChanged()
 */
 
@@ -968,8 +973,8 @@ void QAbstractItemModelPrivate::reset()
     received by a view, it should update the layout of items to reflect this
     change.
 
-    When subclassing QAbstractItemModel or QProxyModel, ensure that you emit
-    this signal if you change the order of items or alter the structure of
+    When subclassing QAbstractItemModel or QAbstractProxyModel, ensure that you
+    emit this signal if you change the order of items or alter the structure of
     the data you expose to views.
 
     \sa dataChanged(), headerDataChanged(), reset()
@@ -996,15 +1001,20 @@ QAbstractItemModel::QAbstractItemModel(QAbstractItemModelPrivate &dd, QObject *p
 */
 QAbstractItemModel::~QAbstractItemModel()
 {
+    d_func()->invalidatePersistentIndexes();
 }
 
 /*!
     \fn QModelIndex QAbstractItemModel::sibling(int row, int column, const QModelIndex &index) const
 
-    Returns the sibling at \a row and \a column for the item at \a
-    index or an invalid QModelIndex if there is no sibling.
+    Returns the sibling at \a row and \a column for the item at \a index, or
+    an invalid QModelIndex if there is no sibling at that location.
 
-    \a row, \a column, and \a index.
+    sibling() is just a convenience function that finds the item's parent, and
+    uses it to retrieve the index of the child item in the specified \a row
+    and \a column.
+
+    \sa index(), QModelIndex::row(), QModelIndex::column()
 */
 
 
@@ -1025,7 +1035,10 @@ QAbstractItemModel::~QAbstractItemModel()
 
     This signal is emitted whenever the data in an existing item
     changes. The affected items are those between \a topLeft and \a
-    bottomRight inclusive.
+    bottomRight inclusive (of the same parent).
+
+    Note that this signal must be emitted explicitly when
+    reimplementing the setData() function.
 
     \sa headerDataChanged(), setData(), layoutChanged()
 */
@@ -1158,8 +1171,12 @@ QMap<int, QVariant> QAbstractItemModel::itemData(const QModelIndex &index) const
     Sets the \a role data for the item at \a index to \a value.
     Returns true if successful; otherwise returns false.
 
+    The dataChanged() signal should be emitted if the data was successfully set.
+
     The base class implementation returns false. This function and
-    data() must be reimplemented for editable models.
+    data() must be reimplemented for editable models. Note that the
+    dataChanged() signal must be emitted explicitly when
+    reimplementing this function.
 
     \sa Qt::ItemDataRole, data(), itemData()
 */
@@ -1231,8 +1248,12 @@ QMimeData *QAbstractItemModel::mimeData(const QModelIndexList &indexes) const
 
 /*!
     Handles the \a data supplied by a drag and drop operation that ended with
-    the given \a action over the row in the model specified by the \a row,
-    \a column, and the \a parent index.
+    the given \a action.
+    Note that the coordinates given by row, column and parent are the coordinates where
+    the data should be inserted, so it is the responsibility of the view to
+    transform the drop coordinates to the correct model coordinates.
+    (For instance, a drop action on an item in a QTreeView can result in one of these actions:
+    insert a child of the item or insert a sibling of the item)
 
     \sa supportedDropActions()
 */
@@ -1287,9 +1308,9 @@ Qt::DropActions QAbstractItemModel::supportedDropActions() const
 
   The base class implementation does nothing and returns false.
 
-  If you implement your own model, you can reimplement this function if you
-  want to support insertions. Alternatively, you can provide you own API for
-  altering the data.
+  If you implement your own model, you can reimplement this function
+  if you want to support insertions. Alternatively, you can provide
+  you own API for altering the data.
 */
 bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
 {
@@ -1311,9 +1332,9 @@ bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
 
   The base class implementation does nothing and returns false.
 
-  If you implement your own model, you can reimplement this function if you
-  want to support insertions. Alternatively, you can provide you own API for
-  altering the data.
+  If you implement your own model, you can reimplement this function
+  if you want to support insertions. Alternatively, you can provide
+  you own API for altering the data.
 */
 bool QAbstractItemModel::insertColumns(int, int, const QModelIndex &)
 {
@@ -1327,9 +1348,9 @@ bool QAbstractItemModel::insertColumns(int, int, const QModelIndex &)
 
     The base class implementation does nothing and returns false.
 
-    If you implement your own model, you can reimplement this function if you
-    want to support removing. Alternatively, you can provide you own API for
-    altering the data.
+    If you implement your own model, you can reimplement this function
+    if you want to support removing. Alternatively, you can provide
+    you own API for altering the data.
 
     \sa removeRow(), removeColumns(), insertColumns()
 */
@@ -1345,9 +1366,9 @@ bool QAbstractItemModel::removeRows(int, int, const QModelIndex &)
 
     The base class implementation does nothing and returns false.
 
-    If you implement your own model, you can reimplement this function if you
-    want to support removing. Alternatively, you can provide you own API for
-    altering the data.
+    If you implement your own model, you can reimplement this function
+    if you want to support removing. Alternatively, you can provide
+    you own API for altering the data.
 
     \sa removeColumn(), removeRows(), insertColumns()
 */
@@ -1509,7 +1530,9 @@ QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
 }
 
 /*!
-  Returns the row and column span of the item represented by \a index.
+    Returns the row and column span of the item represented by \a index.
+
+    Note: span is not used currently, but will be in the future.
 */
 
 QSize QAbstractItemModel::span(const QModelIndex &) const
@@ -1543,7 +1566,7 @@ void QAbstractItemModel::revert()
   Returns the data for the given \a role and \a section in the header
   with the specified \a orientation.
 
-  \sa Qt::ItemDataRole, setHeaderData()
+  \sa Qt::ItemDataRole, setHeaderData(), QHeaderView
 */
 
 QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -1559,6 +1582,9 @@ QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation
 /*!
   Sets the \a role for the header \a section to \a value.
   The \a orientation gives the orientation of the header.
+
+  Note that the headerDataChanged() signal must be emitted explicitly
+  when reimplementing this function.
 
   \sa headerData()
 */
@@ -1684,6 +1710,8 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
 */
 void QAbstractItemModel::beginInsertRows(const QModelIndex &parent, int first, int last)
 {
+    Q_ASSERT(first >= 0);
+    Q_ASSERT(last >= first);
     Q_D(QAbstractItemModel);
     d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit rowsAboutToBeInserted(parent, first, last);
@@ -1722,6 +1750,8 @@ void QAbstractItemModel::endInsertRows()
 */
 void QAbstractItemModel::beginRemoveRows(const QModelIndex &parent, int first, int last)
 {
+    Q_ASSERT(first >= 0);
+    Q_ASSERT(last >= first);
     Q_D(QAbstractItemModel);
     d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit rowsAboutToBeRemoved(parent, first, last);
@@ -1760,6 +1790,8 @@ void QAbstractItemModel::endRemoveRows()
 */
 void QAbstractItemModel::beginInsertColumns(const QModelIndex &parent, int first, int last)
 {
+    Q_ASSERT(first >= 0);
+    Q_ASSERT(last >= first);
     Q_D(QAbstractItemModel);
     d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit columnsAboutToBeInserted(parent, first, last);
@@ -1798,6 +1830,8 @@ void QAbstractItemModel::endInsertColumns()
 */
 void QAbstractItemModel::beginRemoveColumns(const QModelIndex &parent, int first, int last)
 {
+    Q_ASSERT(first >= 0);
+    Q_ASSERT(last >= first);
     Q_D(QAbstractItemModel);
     d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit columnsAboutToBeRemoved(parent, first, last);
@@ -1863,7 +1897,7 @@ void QAbstractItemModel::changePersistentIndex(const QModelIndex &from, const QM
 
 /*!
   \since 4.1
-      
+
   Changes the QPersistentModelIndexes that is equal to the indexes in the given \a from
   model index list to the given \a to model index list.
 
@@ -2004,7 +2038,9 @@ QModelIndex QAbstractTableModel::parent(const QModelIndex &) const
 
 bool QAbstractTableModel::hasChildren(const QModelIndex &parent) const
 {
-    return !parent.isValid();
+    if (parent.isValid())
+        return false;
+    return rowCount() > 0 && columnCount() > 0;
 }
 
 /*!
@@ -2133,14 +2169,14 @@ QModelIndex QAbstractListModel::parent(const QModelIndex &) const
     \sa rowCount()
 */
 
-int QAbstractListModel::columnCount(const QModelIndex &) const
+int QAbstractListModel::columnCount(const QModelIndex &parent) const
 {
-    return 1;
+    return parent.isValid() ? 0 : 1;
 }
 
 bool QAbstractListModel::hasChildren(const QModelIndex &parent) const
 {
-    return !parent.isValid();
+    return parent.isValid() ? false : (rowCount() > 0);
 }
 
 /*!

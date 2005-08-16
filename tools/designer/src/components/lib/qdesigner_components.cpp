@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -32,7 +32,7 @@
 #include <propertyeditor/propertyeditor.h>
 #include <objectinspector/objectinspector.h>
 #include <taskmenu/taskmenu_component.h>
-#include <resourceeditor.h>
+#include <resourceeditor_p.h>
 #include <signalsloteditor/signalsloteditorwindow.h>
 
 #include <buddyeditor/buddyeditor_plugin.h>

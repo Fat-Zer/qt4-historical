@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -310,7 +310,7 @@ QWidget *FormWindow::findTargetContainer(QWidget *widget) const
     return mainContainer();
 }
 
-bool FormWindow::handleMousePressEvent(QWidget */*widget*/, QWidget *managedWidget, QMouseEvent *e)
+bool FormWindow::handleMousePressEvent(QWidget * /*widget*/, QWidget *managedWidget, QMouseEvent *e)
 {
     startPos = QPoint();
     e->accept();
@@ -424,7 +424,10 @@ bool FormWindow::handleMouseMoveEvent(QWidget *, QWidget *, QMouseEvent *e)
             QDesignerContainerExtension *c = 0;
             c = qt_extension<QDesignerContainerExtension*>(core()->extensionManager(), current->parentWidget());
 
-            if (LayoutInfo::isWidgetLaidout(core(), current)) {
+            if (!isManaged(current)) {
+                current = current->parentWidget();
+                continue;
+            } else if (LayoutInfo::isWidgetLaidout(core(), current)) {
                 current = current->parentWidget();
                 continue;
             } else if (isPageOfContainerWidget(current)) {
@@ -793,11 +796,23 @@ bool FormWindow::unify(QObject *w, QString &s, bool changeIt)
     return !found;
 }
 
-void FormWindow::insertWidget(QWidget *w, const QRect &rect, QWidget *container)
+/* already_in_form is true when we are moving a widget from one parent to another inside the same
+   form. All this means is that InsertWidgetCommand::undo() must not unmanage it. */
+
+void FormWindow::insertWidget(QWidget *w, const QRect &rect, QWidget *container, bool already_in_form)
 {
     clearSelection(false);
 
     beginCommand(tr("Insert widget '%1").arg(QString::fromUtf8(w->metaObject()->className()))); // ### use the WidgetDatabaseItem
+
+    /* Reparenting into a QSplitter automatically adjusts child's geometry. We create the geometry
+       command before we push the reparent command, so that the geometry command has the original
+       geometry of the widget. */
+    QRect r = rect;
+    Q_ASSERT(r.isValid());
+    r.moveTopLeft(gridPoint(container->mapFromGlobal(r.topLeft())));
+    SetPropertyCommand *geom_cmd = new SetPropertyCommand(this);
+    geom_cmd->init(w, QLatin1String("geometry"), r); // ### use rc.size()
 
     if (w->parentWidget() != container) {
         ReparentWidgetCommand *cmd = new ReparentWidgetCommand(this);
@@ -805,26 +820,15 @@ void FormWindow::insertWidget(QWidget *w, const QRect &rect, QWidget *container)
         m_commandHistory->push(cmd);
     }
 
-    QRect r = rect;
-    Q_ASSERT(r.isValid());
-    r.moveTopLeft(gridPoint(container->mapFromGlobal(r.topLeft())));
-
-    SetPropertyCommand *geom_cmd = new SetPropertyCommand(this);
-    geom_cmd->init(w, QLatin1String("geometry"), r); // ### use rc.size()
     m_commandHistory->push(geom_cmd);
 
     InsertWidgetCommand *cmd = new InsertWidgetCommand(this);
-    cmd->init(w);
+    cmd->init(w, already_in_form);
     m_commandHistory->push(cmd);
 
     endCommand();
 
     w->show();
-
-    if (container && container->layout()) {
-        recursiveUpdate(container);
-        container->layout()->invalidate();
-    }
 }
 
 QWidget *FormWindow::createWidget(DomUI *ui, const QRect &rc, QWidget *target)
@@ -832,6 +836,13 @@ QWidget *FormWindow::createWidget(DomUI *ui, const QRect &rc, QWidget *target)
     QWidget *container = findContainer(target, false);
     if (!container)
         return 0;
+
+    if (isMainContainer(container)) {
+        if (QMainWindow *mw = qobject_cast<QMainWindow*>(container)) {
+            Q_ASSERT(mw->centralWidget() != 0);
+            container = mw->centralWidget();
+        }
+    }
 
     QDesignerResource resource(this);
     QList<QWidget*> widgets = resource.paste(ui, container);
@@ -1306,7 +1317,7 @@ void FormWindow::breakLayout(QWidget *w)
         if (!w || w == this)
             break;
 
-        if (LayoutInfo::layoutType(m_core, w) != LayoutInfo::NoLayout
+        if (LayoutInfo::layoutType(m_core, core()->widgetFactory()->containerOfWidget(w)) != LayoutInfo::NoLayout
                 && core()->widgetDataBase()->isContainer(w, false)) {
 
             if (BreakLayoutCommand *cmd = breakLayoutCommand(w)) {
@@ -1635,6 +1646,9 @@ QMenu *FormWindow::createPopupMenu(QWidget *w)
 
     QMenu *popup = new QMenu(this);
 
+    if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(w))
+        w = promoted->child();
+
     if (qobject_cast<QDesignerTabWidget*>(w)) {
         QDesignerTabWidget *tabWidget = static_cast<QDesignerTabWidget*>(w);
         if (tabWidget->count()) {
@@ -1895,8 +1909,9 @@ void FormWindow::highlightWidget(QWidget *widget, const QPoint &pos, HighlightMo
         }
     }
 
-    if (container == mainContainer())
-        return; // no highlight for the main container;
+    QMainWindow *mw = qobject_cast<QMainWindow*>(mainContainer());
+    if (container == mainContainer() || (mw && mw->centralWidget() && mw->centralWidget() == container))
+        return;
 
     if (mode == Restore) {
         QPair<QPalette, bool> paletteAndFill = palettesBeforeHighlight.take(container);
@@ -2100,6 +2115,8 @@ void FormWindow::dropWidgets(QList<QDesignerDnDItemInterface*> &item_list, QWidg
 
         if (item->type() == QDesignerDnDItemInterface::CopyDrop) {
             QWidget *widget = createWidget(dom_ui, geometry, parent);
+            if (!widget)
+                return;
             selectWidget(widget, true);
             widget->setFocus(Qt::MouseFocusReason); // ### workaround for QWorkSpace (?) bug
         } else {
@@ -2110,25 +2127,30 @@ void FormWindow::dropWidgets(QList<QDesignerDnDItemInterface*> &item_list, QWidg
             QWidget *container = findContainer(parent, false);
             QDesignerLayoutDecorationExtension *deco = qt_extension<QDesignerLayoutDecorationExtension*>(core()->extensionManager(), container);
 
-            if (dest == this && deco == 0) {
-                parent = container;
+            if (dest == this) {
+                if (deco == 0) {
+                    parent = container;
 
-                if (parent != widget->parent()) {
-                    ReparentWidgetCommand *cmd = new ReparentWidgetCommand(dest);
-                    cmd->init(widget, parent);
-                    commandHistory()->push(cmd);
+                    if (parent != widget->parent()) {
+                        ReparentWidgetCommand *cmd = new ReparentWidgetCommand(dest);
+                        cmd->init(widget, parent);
+                        commandHistory()->push(cmd);
+                    }
+
+                    geometry.moveTopLeft(parent->mapFromGlobal(geometry.topLeft()));
+                    resizeWidget(widget, geometry);
+                    selectWidget(widget, true);
+                    widget->show();
+                } else {
+                    insertWidget(widget, geometry, container, true);
                 }
-
-                geometry.moveTopLeft(parent->mapFromGlobal(geometry.topLeft()));
-                resizeWidget(widget, geometry);
-                selectWidget(widget, true);
-                widget->show();
             } else {
                 FormWindow *source = qobject_cast<FormWindow*>(item->source());
                 Q_ASSERT(source != 0);
 
                 source->deleteWidgets(QList<QWidget*>() << widget);
                 QWidget *new_widget = createWidget(dom_ui, geometry, parent);
+
                 selectWidget(new_widget, true);
             }
         }

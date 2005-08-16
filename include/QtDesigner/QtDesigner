@@ -20,7 +20,6 @@
 #include "membersheet.h"
 #include "propertysheet.h"
 #include "taskmenu.h"
-#include "resourceeditor.h"
 #include "abstractformbuilder.h"
 #include "container.h"
 #include "customwidget.h"

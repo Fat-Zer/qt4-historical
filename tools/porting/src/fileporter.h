@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
@@ -54,15 +54,17 @@ private:
     QSet<QByteArray> m_usedQtModules;
 };
 
-class IncludeDirectiveReplace : public Rpp::RppTreeWalker
+class PreprocessReplace : public Rpp::RppTreeWalker
 {
 public:
-    IncludeDirectiveReplace(const Rpp::Source *source, const QHash<QByteArray, QByteArray> &headerReplacements);
+    PreprocessReplace(const Rpp::Source *source, const QHash<QByteArray, QByteArray> &headerReplacements);
     TextReplacements getReplacements();
 private:
     void evaluateIncludeDirective(const Rpp::IncludeDirective *directive);
+    void evaluateText(const Rpp::Text *textLine);
     const QHash<QByteArray, QByteArray> headerReplacements;
     TextReplacements replacements;
+    
 };
 
 class IncludeDirectiveAnalyzer : public Rpp::RppTreeWalker

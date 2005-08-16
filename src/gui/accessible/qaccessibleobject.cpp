@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -355,7 +355,7 @@ QString QAccessibleApplication::actionText(int action, Text text, int child) con
     case Name:
         return QApplication::tr("Activate");
     case Description:
-        return QApplication::tr("Activates the application main widget");
+        return QApplication::tr("Activates the program's main window");
     default:
         break;
     }

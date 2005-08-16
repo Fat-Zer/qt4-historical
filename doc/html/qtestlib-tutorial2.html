@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/qtestlib.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/qtestlib.qdoc -->
 <head>
     <title>Qt 4.1: Chapter 2: Data Driven Testing</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -61,12 +61,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Then we add some data to the table using the <a href="qtest.html#newRow">QTest::newRow</a>() function. Each set of data will become a separate row in the test table.</p>
 <p><a href="qtest.html#newRow">QTest::newRow</a>() takes one argument: A name that will be associated with the data set. If the test fails, the name will be used in the test log, referencing the failed data. Then we stream the data set into the new table row: First an arbitrary string, and then the expected result of applying the <a href="qstring.html#toUpper">QString::toUpper</a>() function to that string.</p>
 <p>You can think of the test data as a two-dimensional table. In our case, it has two columns called <tt>string</tt> and <tt>result</tt> and three rows. In addition a name as well as an index is associated with each row:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>index</th><th>name</th><th>string</th><th>result</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>0</td><td>all lower</td><td>&quot;hello&quot;</td><td>HELLO</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>1</td><td>mixed</td><td>&quot;Hello&quot;</td><td>HELLO</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>2</td><td>all upper</td><td>&quot;HELLO&quot;</td><td>HELLO</td></tr>
-</table>
+</table></p>
 <a name="rewriting-the-test-function"></a>
 <h2>Rewriting the Test Function</h2>
 <p>Our test function can now be rewritten:</p>
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
         QCOMPARE(string.toUpper(), result);
     }</pre>
 <p>The TestQString::toUpper() function will be executed three times, once for each entry in the test table that we created in the associated TestQString::toUpper_data() function.</p>
-<p>First, we fetch the two elements of the data set using the <a href="qtest.html#QFETCH">QFETCH</a>() macro. <a href="qtest.html#QFETCH">QFETCH</a>() takes two arguments: The data type of the element and the element name. Then we perform the test using the <a href="qtest.html#QCOMPARE">QCOMPARE</a>() macro.</p>
+<p>First, we fetch the two elements of the data set using the <a href="qtest.html#QFETCH">QFETCH</a>() macro. <a href="qtest.html#QFETCH">QFETCH</a>() takes two arguments: The data type of the element and the element name. Then we perform the test using the <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() macro.</p>
 <p>This approach makes it very easy to add new data to the test without modifying the test itself.</p>
 <p>And again, to make our test case a stand-alone executable, the following two lines are needed:</p>
 <pre>&nbsp;   QTEST_MAIN(TestQString)
@@ -91,8 +91,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

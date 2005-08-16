@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -65,7 +65,6 @@ private:
     QAction *openAct;
     QAction *saveAct;
     QAction *saveAsAct;
-    QAction *closeAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *aboutQtAct;

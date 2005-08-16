@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -448,6 +448,9 @@ bool QTcpServer::hasPendingConnections() const
     it is automatically deleted when the QTcpServer object is
     destroyed. It is still a good idea to delete the object
     explicitly when you are done with it, to avoid wasting memory.
+
+    0 is returned if this function is called when there are no pending
+    connections.
 
     \sa hasPendingConnections()
 */

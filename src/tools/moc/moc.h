@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -36,10 +36,11 @@ struct Type
 {
     enum ReferenceType { NoReference, Reference, Pointer };
 
-    inline Type() : isVolatile(false), referenceType(NoReference) {}
+    inline Type() : isVolatile(false), isScoped(false), referenceType(NoReference) {}
     inline explicit Type(const QByteArray &_name) : name(_name), isVolatile(false), referenceType(NoReference) {}
     QByteArray name;
     bool isVolatile;
+    bool isScoped;
     ReferenceType referenceType;
 };
 
@@ -54,6 +55,7 @@ struct ArgumentDef
     ArgumentDef() : isDefault(false) {}
     Type type;
     QByteArray rightType, normalizedType, name;
+    QByteArray typeNameForCast; // type name to be used in cast from void * in metacall
     bool isDefault;
 };
 
@@ -200,7 +202,7 @@ public:
 
     bool parseEnum(EnumDef *def);
 
-    void parseFunction(FunctionDef *def, bool inMacro = false);
+    bool parseFunction(FunctionDef *def, bool inMacro = false);
     bool parseMaybeFunction(FunctionDef *def);
 
     void parseSlots(ClassDef *def, FunctionDef::Access access);
@@ -246,5 +248,12 @@ inline void Moc::next(Token token, const char *msg)
 }
 
 QByteArray normalizeType(const char *s, bool fixScope = false);
+
+inline QByteArray noRef(const QByteArray &type)
+{
+    if (type.endsWith('&'))
+        return type.left(type.length()-1);
+    return type;
+}
 
 #endif // MOC_H

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -56,7 +56,6 @@ Window::Window()
 
     QPainterPath piePath;
     piePath.moveTo(50.0, 50.0);
-    piePath.lineTo(65.0, 32.6795);
     piePath.arcTo(20.0, 30.0, 60.0, 40.0, 60.0, 240.0);
     piePath.closeSubpath();
 

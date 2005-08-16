@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/image/qimagewriter.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/image/qimagewriter.cpp -->
 <head>
     <title>Qt 4.1: QImageWriter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -70,12 +70,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ImageWriterError-enum"></a>enum QImageWriter::ImageWriterError</h3>
 <p>This enum describes errors that can occur when writing images with <a href="qimagewriter.html">QImageWriter</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QImageWriter::DeviceError</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qimagewriter.html">QImageWriter</a> encountered a device error when writing the image data. Consult your device for more details on what went wrong.</td></tr>
 <tr><td valign="top"><tt>QImageWriter::UnsupportedFormatError</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Qt does not support the requested image format.</td></tr>
 <tr><td valign="top"><tt>QImageWriter::UnknownError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">An unknown error occurred. If you get this value after calling <a href="qimagewriter.html#write">write</a>(), it is most likely caused by a bug in <a href="qimagewriter.html">QImageWriter</a>.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QImageWriter"></a>QImageWriter::QImageWriter ()</h3>
@@ -145,7 +145,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="supportedImageFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QImageWriter::supportedImageFormats ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of image formats supported by <a href="qimagewriter.html">QImageWriter</a>.</p>
 <p>By default, Qt can write the following formats:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>BMP</td><td>Windows Bitmap</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>JPG</td><td>Joint Photographic Experts Group</td></tr>
@@ -154,15 +154,15 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>PPM</td><td>Portable Pixmap</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>XBM</td><td>X11 Bitmap</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>XPM</td><td>X11 Pixmap</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qimagewriter.html#setFormat">setFormat</a>(), <a href="qimagereader.html#supportedImageFormats">QImageReader::supportedImageFormats</a>(), and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
 <h3 class="fn"><a name="write"></a>bool QImageWriter::write ( const <a href="qimage.html">QImage</a> &amp; <i>image</i> )</h3>
 <p>Writes the image <i>image</i> to the assigned device or file name. Returns true on success; otherwise returns false. If the operation fails, you can call <a href="qimagewriter.html#error">error</a>() to find the type of error that occurred, or <a href="qimagewriter.html#errorString">errorString</a>() to get a human readable description of the error.</p>
 <p>See also <a href="qimagewriter.html#canWrite">canWrite</a>(), <a href="qimagewriter.html#error">error</a>(), and <a href="qimagewriter.html#errorString">errorString</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

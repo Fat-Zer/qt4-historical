@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -300,7 +300,7 @@ QVariant QPSQLResult::data(int i)
         size_t len;
         unsigned char *data = PQunescapeBytea((unsigned char*)val, &len);
         QByteArray ba((const char*)data, len);
-        free(data);
+        PQfreemem(data);
         return QVariant(ba);
     }
     default:
@@ -865,11 +865,11 @@ QString QPSQLDriver::formatValue(const QSqlField &field,
         case QVariant::ByteArray: {
             QByteArray ba(field.value().toByteArray());
             size_t len;
-            unsigned char *data= PQescapeBytea((unsigned char*)ba.constData(), ba.size(), &len);
+            unsigned char *data = PQescapeBytea((unsigned char*)ba.constData(), ba.size(), &len);
             r += QLatin1Char('\'');
             r += QLatin1String((const char*)data);
             r += QLatin1Char('\'');
-            free(data);
+            PQfreemem(data);
             break;
         }
         default:

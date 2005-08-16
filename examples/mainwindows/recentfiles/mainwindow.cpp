@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -121,11 +121,6 @@ void MainWindow::createActions()
         connect(recentFileActs[i], SIGNAL(triggered()),
                 this, SLOT(openRecentFile()));
     }
-
-    exitAct = new QAction(tr("&Close"), this);
-    exitAct->setShortcut(tr("Ctrl+W"));
-    exitAct->setStatusTip(tr("Close this window"));
-    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));

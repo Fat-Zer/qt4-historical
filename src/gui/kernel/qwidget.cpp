@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -104,25 +104,6 @@ QWidgetPrivate::~QWidgetPrivate()
         deleteExtra();
 }
 
-/*!
-    \internal
-    This is an internal function, you should never call this.
-
-    This function is called to remove focus from associated input
-    context.
-
-    \sa QInputContext::unsetFocus()
- */
-void QWidgetPrivate::unfocusInputContext()
-{
-#ifndef QT_NO_IM
-    Q_Q(QWidget);
-    QInputContext *qic = q->inputContext();
-    if ( qic ) {
-	qic->setFocusWidget( 0 );
-    }
-#endif // QT_NO_IM
-}
 
 /*!
     \internal
@@ -216,17 +197,8 @@ void QWidget::setInputContext(QInputContext *context)
 
 
 /*!
-    This function is called when text widgets need to be neutral state to
-    execute text operations properly. See qlineedit.cpp and qtextedit.cpp as
-    example.
-
-    Ordinary reset that along with changing focus to another widget,
-    moving the cursor, etc, is implicitly handled via
-    unfocusInputContext() because whether reset or not when such
-    situation is a responsibility of input methods. So we delegate the
-    responsibility to the input context via unfocusInputContext(). See
-    'Preedit preservation' section of the class description of
-    QInputContext for further information.
+    This function can be called on the widget that currently has focus
+    to reset the input method operating on it.
 
     \sa QInputContext, QInputContext::reset()
 */
@@ -287,10 +259,12 @@ void QWidget::setEditFocus(bool on)
         QWidgetPrivate::editingWidget = 0;
         QEvent event(QEvent::LeaveEditFocus);
         QApplication::sendEvent(f, &event);
+        QApplication::sendEvent(f->style(), &event);
     } else if (on) {
         QWidgetPrivate::editingWidget = f;
         QEvent event(QEvent::EnterEditFocus);
         QApplication::sendEvent(f, &event);
+        QApplication::sendEvent(f->style(), &event);
     }
     update();
 }
@@ -324,13 +298,14 @@ void QWidget::setAutoFillBackground(bool enabled)
         d->createExtra();
     if (d->extra->autoFillBackground == enabled)
         return;
-    
+
     d->extra->autoFillBackground = enabled;
+    d->updateIsOpaque();
     update();
 }
 
 /*!
-    \class QWidget qwidget.h
+    \class QWidget
     \brief The QWidget class is the base class of all user interface objects.
 
     \ingroup abstractwidgets
@@ -672,9 +647,74 @@ void QWidget::setAutoFillBackground(bool enabled)
 
     \endlist
 
+    \section1 Transparency and Double Buffering
+
     From Qt 4.0, QWidget automatically double-buffers its painting, so
     there's no need to write double-buffering code in paintEvent() to
-    avoid flicker.
+    avoid flicker. Additionally, it became possible for widgets to
+    propagate their contents to children, in order to enable transparency
+    effects, by setting the Qt::WA_ContentsPropagated widget attribute -
+    this is now deprecated in Qt 4.1.
+
+    In Qt 4.1, the contents of parent widgets are propagated by default
+    to each of their children. Custom widgets can be written to take
+    advantage of this feature by only updating irregular regions (to
+    create non-rectangular child widgets), or by using painting with
+    colors that have less than the full alpha component. The following
+    diagram shows how attributes and properties of a custom widget can
+    be fine-tuned to achieve different effects.
+
+    \image propagation-custom.png
+
+    In the above diagram, a semi-transparent rectangular child widget with
+    an area removed is constructed and added to a parent widget (a QLabel
+    showing a pixmap) then different properties and widget attributes are
+    set to achieve different effects:
+
+    \list
+    \o The top-left widget has no additional properties or widget attributes
+       set. This default state suits most custom widgets that use transparency
+       or are irregularly-shaped, and that do not paint over their entire area
+       with an opaque brush.
+    \o The top-right widget has the \l autoFillBackground property set.
+       This property is used with custom widgets that rely on the widget
+       to supply a default background, and do not paint over their entire area
+       with an opaque brush.
+    \o The bottom-left widget has the Qt::WA_OpaquePaintEvent widget attribute
+       set. This indicates that the widget will paint over its entire area with
+       opaque colors. The widget's area will initially be \e{uninitialized}
+       (represented in the diagram by a red diagonal grid pattern that shines
+       through the overpainted area). This is useful for widgets that need to
+       paint their own specialized contents quickly and that do not need a
+       default filled background.
+    \endlist
+
+    For rapidly updating custom widgets with simple background colors, such
+    as real-time plotting or graphing widgets, it is better to define a
+    suitable background color (using setBackgroundRole() with the
+    QPalette::Window role), set the \l autoFillBackground property, and only
+    implement the necessary drawing functionality in the widget's paintEvent().
+
+    For rapidly updating custom widgets that constantly paint over their entire
+    areas with opaque content, such as video streaming widgets, it is
+    better to set the widget's Qt::WA_OpaquePaintEvent, avoiding any unnecessary
+    overhead associated with repainting the widget's background.
+
+    If a widget has both the Qt::WA_OpaquePaintEvent widget attribute \e{and}
+    the \l autoFillBackground property set, the Qt::WA_OpaquePaintEvent
+    attribute takes precedence. You should choose just one of these
+    depending on your requirements.
+
+    In Qt 4.1, the contents of parent widgets are also propagated to standard
+    Qt widgets. This can lead to some unexpected results if the parent widget
+    is decorated in a non-standard way, as shown in the diagram below.
+
+    \image propagation-standard.png
+
+    The scope for customizing the painting behavior of standard Qt widgets,
+    without resorting to subclassing, is slightly less than that possible for
+    custom widgets. Usually, the desired appearance of a standard widget can be
+    achieved by setting its \l autoFillBackground property.
 
     \sa QEvent, QPainter, QGridLayout, QBoxLayout
 */
@@ -1048,16 +1088,14 @@ int QWidgetPrivate::maxInstances = 0;     // Maximum number of widget instances
 void QWidgetPrivate::setWinId(WId id)                // set widget identifier
 {
     Q_Q(QWidget);
-    if (!mapper)                                // mapper destroyed
-        return;
-    if (data.winid)
+    if (mapper && data.winid)
         mapper->remove(data.winid);
 
     data.winid = id;
 #if defined(Q_WS_X11)
     hd = id; // X11: hd == ident
 #endif
-    if (id)
+    if (mapper && id)
         mapper->insert(data.winid, q);
 }
 
@@ -1237,7 +1275,7 @@ void QWidgetPrivate::setUpdatesEnabled_helper(bool enable)
     Qt::WidgetAttribute attribute = enable ? Qt::WA_ForceUpdatesDisabled : Qt::WA_UpdatesDisabled;
     for (int i = 0; i < children.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(children.at(i));
-        if (w && !w->testAttribute(attribute))
+        if (w && !w->isWindow() && !w->testAttribute(attribute))
             w->d_func()->setUpdatesEnabled_helper(enable);
     }
 }
@@ -1324,25 +1362,24 @@ QRegion QWidgetPrivate::clipRegion() const
     return r;
 }
 
-void QWidgetPrivate::subtractOpaqueChildren(QRegion &rgn, const QRect &clipRect, const QPoint &offset) const
+void QWidgetPrivate::subtractOpaqueChildren(QRegion &rgn, const QRegion &clipRgn, const QPoint &offset) const
 {
     for (int i=0; i < children.size(); ++i) {
-        if(QWidget *child = qobject_cast<QWidget *>(children.at(i))) {
-            if(child->isVisible() && !child->isWindow()) {
-                QRect childRect = child->geometry().translated(offset) & clipRect;
-
-                if (childRect.isEmpty())
-                    continue;
+        if (QWidget *child = qobject_cast<QWidget *>(children.at(i))) {
+            if (child->isVisible() && !child->isWindow()) {
+                QRegion childRgn = clipRgn & child->geometry().translated(offset);
                 QWidgetPrivate *cd = child->d_func();
-                bool hasMask = cd->extra && !cd->extra->mask.isEmpty();
+                if (cd->extra && !cd->extra->mask.isEmpty())
+                    childRgn &= cd->extra->mask.translated(offset + cd->data.crect.topLeft());
 
-                if (!hasMask && cd->isOpaque()) {
-                    rgn -= childRect;
-                } else {
-                    cd->subtractOpaqueChildren(rgn, childRect, offset + child->geometry().topLeft());
-                }
+                if (childRgn.isEmpty())
+                    continue;
+
+                if (cd->isOpaque())
+                    rgn -= childRgn;
+                else
+                    cd->subtractOpaqueChildren(rgn, childRgn, offset + child->geometry().topLeft());
             }
-
         }
     }
 }
@@ -1363,6 +1400,14 @@ bool QWidgetPrivate::hasBackground() const
                  || (QPalette::ColorRole(bg_role) != QPalette::NoRole || (pal.resolve() & (1<<bg)))));
     }
     return false;
+}
+void QWidgetPrivate::updateIsOpaque()
+{
+#ifdef Q_WS_MAC
+    Q_Q(QWidget);
+    extern void qt_mac_set_widget_is_opaque(QWidget*, bool); //qwidget_mac.cpp
+    qt_mac_set_widget_is_opaque(q, isOpaque());
+#endif
 }
 
 bool QWidgetPrivate::isOpaque() const
@@ -1385,15 +1430,14 @@ bool QWidgetPrivate::isOpaque() const
 /*!
     \fn void QPixmap::fill(const QWidget *widget, const QPoint &offset)
 
-    Fills the pixmap with the \a widget's background color or pixmap.
+    Fills the pixmap with the \a widget's background color or pixmap
+    according to the given offset.
 
-    The \a offset point is an offset in the widget.
-
-    The point \a offset is a point in the widget's coordinate
-    system. The pixmap's top-left pixel will be mapped to the point \a
-    offset in the widget. This is significant if the widget has a
-    background pixmap; otherwise the pixmap will simply be filled with
-    the background color of the widget.
+    The QPoint \a offset defines a point in widget coordinates to
+    which the pixmap's top-left pixel will be mapped to. This is only
+    significant if the widget has a background pixmap; otherwise the
+    pixmap will simply be filled with the background color of the
+    widget.
 */
 
 void QPixmap::fill( const QWidget *widget, const QPoint &off )
@@ -2342,7 +2386,7 @@ QRect QWidget::childrenRect() const
 
     Hidden children are excluded.
 
-    \sa childrenRect() geometry()
+    \sa childrenRect() geometry() mask()
 */
 
 QRegion QWidget::childrenRegion() const
@@ -2356,7 +2400,7 @@ QRegion QWidget::childrenRegion() const
             if (mask.isEmpty())
                 r |= w->geometry();
             else
-                r |= mask;
+                r |= mask.translated(w->pos());
         }
     }
     return r;
@@ -2388,6 +2432,9 @@ QSize QWidget::minimumSize() const
 
     The widget cannot be resized to a larger size than the maximum
     widget size.
+
+    The property is limited by the QWIDGETSIZE_MAX macro, i.e. the
+    largest allowed size is QSize(16777215, 16777215).
 
     \sa maximumWidth, maximumHeight, minimumSize, sizeIncrement
 */
@@ -2422,7 +2469,9 @@ QSize QWidget::maximumSize() const
     \property QWidget::maximumWidth
     \brief the widget's maximum width
 
-    This property corresponds to maximumSize().width().
+    This property corresponds to maximumSize().width(). It is limited
+    by the QWIDGETSIZE_MAX macro, i.e. the largest allowed width is
+    16777215.
 
     \sa maximumSize, maximumHeight
 */
@@ -2431,7 +2480,9 @@ QSize QWidget::maximumSize() const
     \property QWidget::maximumHeight
     \brief the widget's maximum height
 
-    This property corresponds to maximumSize().height().
+    This property corresponds to maximumSize().height(). It is limited
+    by the QWIDGETSIZE_MAX macro, i.e. the largest allowed height is
+    16777215.
 
     \sa maximumSize, maximumWidth
 */
@@ -2997,6 +3048,7 @@ void QWidget::setBackgroundRole(QPalette::ColorRole role)
     d->bg_role = role;
     d->updateSystemBackground();
     d->propagatePaletteChange();
+    d->updateIsOpaque();
 }
 
 /*!
@@ -3106,6 +3158,7 @@ void QWidgetPrivate::setPalette_helper(const QPalette &palette)
     data.pal = palette;
     updateSystemBackground();
     propagatePaletteChange();
+    updateIsOpaque();
     q->update();
 }
 
@@ -3600,27 +3653,7 @@ void QWidget::setFocus(Qt::FocusReason reason)
     }
 
     if (f->isActiveWindow()) {
-        QWidget *prev = QApplication::focusWidget();
-        if (prev) {
-	    // This part is never executed when Q_WS_X11? Preceding XFocusOut
-	    // had already reset focus_widget when received XFocusIn
-
-	    // Don't reset input context explicitly here. Whether reset or not
-	    // when focusing out is a responsibility of input methods. So we
-	    // delegate the responsibility to input context via
-	    // unfocusInputContext(). See 'Preedit preservation' section of
-	    // QInputContext.
-            if (prev != f) {
-#if !defined(Q_WS_MAC)
-		prev->d_func()->unfocusInputContext();
-#else
-		prev->resetInputContext();
-#endif
-	    }
-        }
-
         QApplicationPrivate::setFocusWidget(f, reason);
-        f->d_func()->focusInputContext();
 
 #if defined(Q_WS_MAC)
         extern WindowPtr qt_mac_window_for(const QWidget *w); //qwidget_mac.cpp
@@ -3672,10 +3705,6 @@ void QWidget::clearFocus()
         w = w->isWindow() ? 0 : w->parentWidget();
     }
     if (hasFocus()) {
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
-        Q_D(QWidget);
-	d->unfocusInputContext();
-#endif
         QApplicationPrivate::setFocusWidget(0, Qt::OtherFocusReason);
 #if defined(Q_WS_WIN)
         if (!(windowType() == Qt::Popup) && GetFocus() == winId())
@@ -3741,7 +3770,8 @@ void QWidget::clearFocus()
 bool QWidget::focusNextPrevChild(bool next)
 {
     QWidget* p = parentWidget();
-    if (!isWindow() && p)
+    bool isSubWindow = (windowType() == Qt::SubWindow);
+    if (!isWindow() && !isSubWindow && p)
         return p->focusNextPrevChild(next);
 
     extern bool qt_tab_all_widgets;
@@ -3756,7 +3786,8 @@ bool QWidget::focusNextPrevChild(bool next)
     while (test && test != f) {
         if ((test->focusPolicy() & focus_flag) == focus_flag
             && !(test->d_func()->extra && test->d_func()->extra->focus_proxy)
-            && test->isVisibleTo(this) && test->isEnabled()) {
+            && test->isVisibleTo(this) && test->isEnabled()
+            && (!isSubWindow || isAncestorOf(test))) {
             w = test;
             if (next)
                 break;
@@ -3844,7 +3875,7 @@ bool QWidget::isActiveWindow() const
 #if defined(Q_WS_WIN32)
     HWND active = GetActiveWindow();
     return active == tlw->winId() || ::IsChild(active, tlw->winId());
-#else 
+#else
     return false;
 #endif
 }
@@ -4128,16 +4159,22 @@ QRect QWidget::contentsRect() const
 }
 
 
+
 /*!
   \fn void QWidget::customContextMenuRequested(const QPoint &pos)
 
   This signal is emitted when the widget's \l contextMenuPolicy is
   Qt::CustomContextMenu, and the user has requested a context menu on
-  the widget. The position \a pos is the position of the request in
-  widget coordinates.
+  the widget. The position \a pos is the position of the context menu
+  event that the widget receives. Normally this is in widget
+  coordinates. The exception to this rule is QAbstractScrollArea and
+  its subclasses that map the context menu event to coordinates of the
+  \link QAbstractScrollArea::viewport() viewport() \endlink .
+
 
   \sa mapToGlobal() QMenu contextMenuPolicy
 */
+
 
 /*!
     \property QWidget::contextMenuPolicy
@@ -4273,7 +4310,7 @@ void QWidgetPrivate::show_helper()
         q->setAttribute(Qt::WA_PendingMoveEvent, false);
     }
     if (q->testAttribute(Qt::WA_PendingResizeEvent)) {
-        QResizeEvent e(data.crect.size(), data.crect.size());
+        QResizeEvent e(data.crect.size(), QSize());
         QApplication::sendEvent(q, &e);
         q->setAttribute(Qt::WA_PendingResizeEvent, false);
     }
@@ -4324,6 +4361,7 @@ void QWidgetPrivate::show_helper()
         // stacking might be wrong
         QApplicationPrivate::enterModal(q);
 
+
     show_sys();
 
 #if !defined(Q_WS_WIN)
@@ -4361,7 +4399,7 @@ void QWidgetPrivate::hide_helper()
         QApplicationPrivate::leaveModal(q);
 
 #if defined(Q_WS_WIN)
-    if (q->isWindow() && !(q->windowType() == Qt::Popup) && q->parentWidget() 
+    if (q->isWindow() && !(q->windowType() == Qt::Popup) && q->parentWidget()
         && !q->parentWidget()->isHidden() && q->isActiveWindow())
         q->parentWidget()->activateWindow();        // Activate parent
 #endif
@@ -4398,13 +4436,6 @@ void QWidgetPrivate::hide_helper()
     if (wasVisible)
         QAccessible::updateAccessibility(q, 0, QAccessible::ObjectHide);
 #endif
-    // invalidate layout similar to updateGeometry()
-    if (!q->isWindow() && q->parentWidget()) {
-        if (q->parentWidget()->d_func()->layout)
-            q->parentWidget()->d_func()->layout->update();
-        if (wasVisible)
-            QApplication::postEvent(q->parentWidget(), new QEvent(QEvent::LayoutRequest));
-    }
 }
 
 /*!
@@ -4462,11 +4493,19 @@ void QWidget::setVisible(bool visible)
 #ifdef QT3_SUPPORT
         QApplication::sendPostedEvents(this, QEvent::ChildInserted);
 #endif
-        if (!isWindow() && parentWidget()->d_func()->layout)
-            parentWidget()->d_func()->layout->activate();
         // activate our layout before we and our children become visible
         if (d->layout)
             d->layout->activate();
+
+        if (!isWindow()) {
+            QWidget *parent = parentWidget();
+            while (parent && parent->isVisible() && parent->d_func()->layout) {
+                parent->d_func()->layout->activate();
+                if (parent->isWindow())
+                    break;
+                parent = parent->parentWidget();
+            }
+        }
 
         // adjust size if necessary
         if (!wasResized
@@ -4498,6 +4537,16 @@ void QWidget::setVisible(bool visible)
             d->hide_helper();
         else
             setAttribute(Qt::WA_WState_ExplicitShowHide);
+
+        // invalidate layout similar to updateGeometry()
+        if (!isWindow() && parentWidget()) {
+            if (parentWidget()->d_func()->layout)
+                parentWidget()->d_func()->layout->update();
+            else if (parentWidget()->isVisible())
+                QApplication::postEvent(parentWidget(), new QEvent(QEvent::LayoutRequest));
+        }
+
+
         QEvent hideToParentEvent(QEvent::HideToParent);
         QApplication::sendEvent(this, &hideToParentEvent);
     }
@@ -4553,6 +4602,10 @@ void QWidgetPrivate::hideChildren(bool spontaneous)
             QApplication::sendSpontaneousEvent(widget, &e);
         else
             QApplication::sendEvent(widget, &e);
+#ifndef QT_NO_ACCESSIBILITY
+        if (!spontaneous)
+            QAccessible::updateAccessibility(widget, 0, QAccessible::ObjectHide);
+#endif
     }
 }
 
@@ -4880,7 +4933,7 @@ bool QWidget::isAncestorOf(const QWidget *child) const
  *****************************************************************************/
 
 /*!
-    This is the main event handler; it handles event \a e. You can
+    This is the main event handler; it handles event \a event. You can
     reimplement this function in a subclass, but we recommend using
     one of the specialized event handlers instead.
 
@@ -4907,13 +4960,13 @@ bool QWidget::isAncestorOf(const QWidget *child) const
     QObject::event(), QObject::timerEvent()
 */
 
-bool QWidget::event(QEvent *e)
+bool QWidget::event(QEvent *event)
 {
     Q_D(QWidget);
 
     // ignore mouse events when disabled
     if (!isEnabled()) {
-        switch(e->type()) {
+        switch(event->type()) {
         case QEvent::TabletPress:
         case QEvent::TabletRelease:
         case QEvent::TabletMove:
@@ -4930,9 +4983,9 @@ bool QWidget::event(QEvent *e)
             break;
         }
     }
-    switch (e->type()) {
+    switch (event->type()) {
     case QEvent::MouseMove:
-        mouseMoveEvent((QMouseEvent*)e);
+        mouseMoveEvent((QMouseEvent*)event);
         break;
 
     case QEvent::MouseButtonPress:
@@ -4943,33 +4996,33 @@ bool QWidget::event(QEvent *e)
 #if 0
         resetInputContext();
 #endif
-        mousePressEvent((QMouseEvent*)e);
+        mousePressEvent((QMouseEvent*)event);
         break;
 
     case QEvent::MouseButtonRelease:
-        mouseReleaseEvent((QMouseEvent*)e);
+        mouseReleaseEvent((QMouseEvent*)event);
         break;
 
     case QEvent::MouseButtonDblClick:
-        mouseDoubleClickEvent((QMouseEvent*)e);
+        mouseDoubleClickEvent((QMouseEvent*)event);
         break;
 #ifndef QT_NO_WHEELEVENT
     case QEvent::Wheel:
-        wheelEvent((QWheelEvent*)e);
+        wheelEvent((QWheelEvent*)event);
         break;
 #endif
     case QEvent::TabletMove:
     case QEvent::TabletPress:
     case QEvent::TabletRelease:
-        tabletEvent((QTabletEvent*)e);
+        tabletEvent((QTabletEvent*)event);
         break;
 #ifdef QT3_SUPPORT
     case QEvent::Accel:
-        e->ignore();
+        event->ignore();
         return false;
 #endif
     case QEvent::KeyPress: {
-        QKeyEvent *k = (QKeyEvent *)e;
+        QKeyEvent *k = (QKeyEvent *)event;
         bool res = false;
         if (!(k->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {
             if (k->key() == Qt::Key_Backtab
@@ -5006,13 +5059,13 @@ bool QWidget::event(QEvent *e)
         break;
 
     case QEvent::KeyRelease:
-        keyReleaseEvent((QKeyEvent*)e);
+        keyReleaseEvent((QKeyEvent*)event);
         // fall through
     case QEvent::ShortcutOverride:
         break;
 
     case QEvent::InputMethod:
-        inputMethodEvent((QInputMethodEvent *) e);
+        inputMethodEvent((QInputMethodEvent *) event);
         break;
 
     case QEvent::PolishRequest:
@@ -5039,11 +5092,11 @@ bool QWidget::event(QEvent *e)
         break;
 
     case QEvent::FocusIn:
-        focusInEvent((QFocusEvent*)e);
+        focusInEvent((QFocusEvent*)event);
         break;
 
     case QEvent::FocusOut:
-        focusOutEvent((QFocusEvent*)e);
+        focusOutEvent((QFocusEvent*)event);
         break;
 
     case QEvent::Enter:
@@ -5053,7 +5106,7 @@ bool QWidget::event(QEvent *e)
             QApplication::sendEvent(const_cast<QWidget *>(this), &tip);
         }
 #endif
-        enterEvent(e);
+        enterEvent(event);
         break;
 
     case QEvent::Leave:
@@ -5064,7 +5117,7 @@ bool QWidget::event(QEvent *e)
             QApplication::sendEvent(const_cast<QWidget *>(this), &tip);
         }
 #endif
-        leaveEvent(e);
+        leaveEvent(event);
         break;
 
     case QEvent::HoverEnter:
@@ -5076,67 +5129,67 @@ bool QWidget::event(QEvent *e)
         // At this point the event has to be delivered, regardless
         // whether the widget isVisible() or not because it
         // already went through the filters
-        paintEvent((QPaintEvent*)e);
+        paintEvent((QPaintEvent*)event);
         break;
 
     case QEvent::Move:
-        moveEvent((QMoveEvent*)e);
+        moveEvent((QMoveEvent*)event);
         break;
 
     case QEvent::Resize:
-        resizeEvent((QResizeEvent*)e);
+        resizeEvent((QResizeEvent*)event);
         break;
 
     case QEvent::Close:
-        closeEvent((QCloseEvent *)e);
+        closeEvent((QCloseEvent *)event);
         break;
 
     case QEvent::ContextMenu:
         switch (data->context_menu_policy) {
         case Qt::DefaultContextMenu:
-            contextMenuEvent(static_cast<QContextMenuEvent *>(e));
+            contextMenuEvent(static_cast<QContextMenuEvent *>(event));
             break;
         case Qt::CustomContextMenu:
-            emit customContextMenuRequested(static_cast<QContextMenuEvent *>(e)->pos());
+            emit customContextMenuRequested(static_cast<QContextMenuEvent *>(event)->pos());
             break;
 #ifndef QT_NO_MENU
         case Qt::ActionsContextMenu:
             if (d->actions.count()) {
-                QMenu::exec(d->actions, static_cast<QContextMenuEvent *>(e)->globalPos());
+                QMenu::exec(d->actions, static_cast<QContextMenuEvent *>(event)->globalPos());
                 break;
             }
             // fall through
 #endif
         default:
-            e->ignore();
+            event->ignore();
             break;
         }
         break;
 
 #ifndef QT_NO_DRAGANDDROP
     case QEvent::Drop:
-        dropEvent((QDropEvent*) e);
+        dropEvent((QDropEvent*) event);
         break;
 
     case QEvent::DragEnter:
-        dragEnterEvent((QDragEnterEvent*) e);
+        dragEnterEvent((QDragEnterEvent*) event);
         break;
 
     case QEvent::DragMove:
-        dragMoveEvent((QDragMoveEvent*) e);
+        dragMoveEvent((QDragMoveEvent*) event);
         break;
 
     case QEvent::DragLeave:
-        dragLeaveEvent((QDragLeaveEvent*) e);
+        dragLeaveEvent((QDragLeaveEvent*) event);
         break;
 #endif
 
     case QEvent::Show:
-        showEvent((QShowEvent*) e);
+        showEvent((QShowEvent*) event);
         break;
 
     case QEvent::Hide:
-        hideEvent((QHideEvent*) e);
+        hideEvent((QHideEvent*) event);
         break;
 
     case QEvent::ShowWindowRequest:
@@ -5163,13 +5216,13 @@ bool QWidget::event(QEvent *e)
     case QEvent::MouseTrackingChange:
     case QEvent::ParentChange:
     case QEvent::WindowStateChange:
-        changeEvent(e);
+        changeEvent(event);
         break;
 
     case QEvent::WindowActivate:
     case QEvent::WindowDeactivate: {
 #ifdef QT3_SUPPORT
-        windowActivationChange(e->type() != QEvent::WindowActivate);
+        windowActivationChange(event->type() != QEvent::WindowActivate);
 #endif
         if (isVisible() && !palette().isEqual(QPalette::Active, QPalette::Inactive))
             update();
@@ -5177,12 +5230,12 @@ bool QWidget::event(QEvent *e)
         for (int i = 0; i < childList.size(); ++i) {
             QWidget *w = qobject_cast<QWidget *>(childList.at(i));
             if (w && w->isVisible() && !w->isWindow())
-                QApplication::sendEvent(w, e);
+                QApplication::sendEvent(w, event);
         }
         break; }
 
     case QEvent::LanguageChange:
-        changeEvent(e);
+        changeEvent(event);
 #ifdef QT3_SUPPORT
         languageChange();
 #endif
@@ -5192,7 +5245,7 @@ bool QWidget::event(QEvent *e)
             QList<QObject*> childList = d->children;
             for (int i = 0; i < childList.size(); ++i) {
                 QObject *o = childList.at(i);
-                QApplication::sendEvent(o, e);
+                QApplication::sendEvent(o, event);
             }
         }
         update();
@@ -5216,7 +5269,7 @@ bool QWidget::event(QEvent *e)
 #endif
 
     case QEvent::UpdateLater:
-        update(static_cast<QUpdateLaterEvent*>(e)->region());
+        update(static_cast<QUpdateLaterEvent*>(event)->region());
         break;
 
     case QEvent::WindowBlocked:
@@ -5231,7 +5284,7 @@ bool QWidget::event(QEvent *e)
                         // QApplication does this for us
                         continue;
                     }
-                    QApplication::sendEvent(o, e);
+                    QApplication::sendEvent(o, event);
                 }
             }
         }
@@ -5239,27 +5292,27 @@ bool QWidget::event(QEvent *e)
 #ifndef QT_NO_TOOLTIP
     case QEvent::ToolTip:
         if (d->toolTip.size() && isActiveWindow())
-            QToolTip::showText(static_cast<QHelpEvent*>(e)->globalPos(), d->toolTip, this);
+            QToolTip::showText(static_cast<QHelpEvent*>(event)->globalPos(), d->toolTip, this);
         else
-            e->ignore();
+            event->ignore();
         break;
 #endif
 #ifndef QT_NO_WHATSTHIS
     case QEvent::WhatsThis:
         if (d->whatsThis.size())
-            QWhatsThis::showText(static_cast<QHelpEvent *>(e)->globalPos(), d->whatsThis, this);
+            QWhatsThis::showText(static_cast<QHelpEvent *>(event)->globalPos(), d->whatsThis, this);
         else
-            e->ignore();
+            event->ignore();
         break;
     case QEvent::QueryWhatsThis:
         if (d->whatsThis.isEmpty())
-            e->ignore();
+            event->ignore();
         break;
 #endif
 #ifndef QT_NO_ACCESSIBILITY
     case QEvent::AccessibilityDescription:
     case QEvent::AccessibilityHelp: {
-        QAccessibleEvent *ev = static_cast<QAccessibleEvent *>(e);
+        QAccessibleEvent *ev = static_cast<QAccessibleEvent *>(event);
         if (ev->child())
             return false;
         switch (ev->type()) {
@@ -5288,10 +5341,10 @@ bool QWidget::event(QEvent *e)
     case QEvent::ActionAdded:
     case QEvent::ActionRemoved:
     case QEvent::ActionChanged:
-        actionEvent((QActionEvent*)e);
+        actionEvent((QActionEvent*)event);
         break;
     default:
-        return QObject::event(e);
+        return QObject::event(event);
     }
     return true;
 }
@@ -5300,12 +5353,12 @@ bool QWidget::event(QEvent *e)
   This event handler can be reimplemented to handle state changes.
 
   The state being changed in this event can be retrieved through event \a
-  e.
+  event.
 
 */
-void QWidget::changeEvent(QEvent * e)
+void QWidget::changeEvent(QEvent * event)
 {
-    switch(e->type()) {
+    switch(event->type()) {
     case QEvent::EnabledChange:
         update();
 #ifndef QT_NO_ACCESSIBILITY
@@ -5329,7 +5382,7 @@ void QWidget::changeEvent(QEvent * e)
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive mouse move events for the widget.
 
     If mouse tracking is switched off, mouse move events only occur if
@@ -5347,13 +5400,13 @@ void QWidget::changeEvent(QEvent * e)
     mouseDoubleClickEvent(), event(), QMouseEvent
 */
 
-void QWidget::mouseMoveEvent(QMouseEvent * e)
+void QWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive mouse press events for the widget.
 
     If you create new widgets in the mousePressEvent() the
@@ -5369,38 +5422,38 @@ void QWidget::mouseMoveEvent(QMouseEvent * e)
     mouseMoveEvent(), event(), QMouseEvent
 */
 
-void QWidget::mousePressEvent(QMouseEvent *e)
+void QWidget::mousePressEvent(QMouseEvent *event)
 {
-    e->ignore();
+    event->ignore();
     if ((windowType() == Qt::Popup)) {
-        e->accept();
+        event->accept();
         QWidget* w;
         while ((w = qApp->activePopupWidget()) && w != this){
             w->close();
             if (qApp->activePopupWidget() == w) // widget does not want to dissappear
                 w->hide(); // hide at least
         }
-        if (!rect().contains(e->pos())){
+        if (!rect().contains(event->pos())){
             close();
         }
     }
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive mouse release events for the widget.
 
     \sa mousePressEvent(), mouseDoubleClickEvent(),
     mouseMoveEvent(), event(), QMouseEvent
 */
 
-void QWidget::mouseReleaseEvent(QMouseEvent * e)
+void QWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive mouse double click events for the widget.
 
     The default implementation generates a normal mouse press event.
@@ -5412,14 +5465,14 @@ void QWidget::mouseReleaseEvent(QMouseEvent * e)
     event(), QMouseEvent
 */
 
-void QWidget::mouseDoubleClickEvent(QMouseEvent *e)
+void QWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    mousePressEvent(e);                        // try mouse press event
+    mousePressEvent(event);                        // try mouse press event
 }
 
 #ifndef QT_NO_WHEELEVENT
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive wheel events for the widget.
 
     If you reimplement this handler, it is very important that you
@@ -5432,15 +5485,15 @@ void QWidget::mouseDoubleClickEvent(QMouseEvent *e)
     QWheelEvent
 */
 
-void QWidget::wheelEvent(QWheelEvent *e)
+void QWidget::wheelEvent(QWheelEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 #endif
 
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive tablet events for the widget.
 
     If you reimplement this handler, it is very important that you
@@ -5453,13 +5506,13 @@ void QWidget::wheelEvent(QWheelEvent *e)
     QTabletEvent
 */
 
-void QWidget::tabletEvent(QTabletEvent *e)
+void QWidget::tabletEvent(QTabletEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive key press events for the widget.
 
     A widget must call setFocusPolicy() to accept focus initially and
@@ -5476,18 +5529,18 @@ void QWidget::tabletEvent(QTabletEvent *e)
     focusInEvent(), focusOutEvent(), event(), QKeyEvent
 */
 
-void QWidget::keyPressEvent(QKeyEvent *e)
+void QWidget::keyPressEvent(QKeyEvent *event)
 {
-    if ((windowType() == Qt::Popup) && e->key() == Qt::Key_Escape) {
-        e->accept();
+    if ((windowType() == Qt::Popup) && event->key() == Qt::Key_Escape) {
+        event->accept();
         close();
     } else {
-        e->ignore();
+        event->ignore();
     }
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive key release events for the widget.
 
     A widget must \link setFocusPolicy() accept focus\endlink
@@ -5504,9 +5557,9 @@ void QWidget::keyPressEvent(QKeyEvent *e)
     focusInEvent(), focusOutEvent(), event(), QKeyEvent
 */
 
-void QWidget::keyReleaseEvent(QKeyEvent *e)
+void QWidget::keyReleaseEvent(QKeyEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 
 /*!
@@ -5698,53 +5751,52 @@ void QWidget::actionEvent(QActionEvent *)
 }
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive widget close events.
 
     \sa event(), hide(), close(), QCloseEvent
 */
 
-void QWidget::closeEvent(QCloseEvent *e)
+void QWidget::closeEvent(QCloseEvent *event)
 {
-    Q_UNUSED(e);
-    e->accept();
+    event->accept();
 }
 
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive widget context menu events.
 
     The handler is called when the widget's \l contextMenuPolicy is
     Qt::DefaultContextMenu.
 
-    The default implementation calls e->ignore(), which rejects the
+    The default implementation calls event->ignore(), which rejects the
     context event. See the \l QContextMenuEvent documentation for
     more details.
 
     \sa event(), QContextMenuEvent customContextMenuRequested()
 */
 
-void QWidget::contextMenuEvent(QContextMenuEvent *e)
+void QWidget::contextMenuEvent(QContextMenuEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 
 
 /*!
-    This event handler, for event \a e, can be reimplemented in a
+    This event handler, for event \a event, can be reimplemented in a
     subclass to receive Input Method composition events. This handler
     is called when the state of the input method changes.
 
-    The default implementation calls e->ignore(), which rejects the
+    The default implementation calls event->ignore(), which rejects the
     Input Method event. See the \l QInputMethodEvent documentation for more
     details.
 
     \sa event(), QInputMethodEvent
 */
-void QWidget::inputMethodEvent(QInputMethodEvent *e)
+void QWidget::inputMethodEvent(QInputMethodEvent *event)
 {
-    e->ignore();
+    event->ignore();
 }
 
 /*!
@@ -6106,7 +6158,7 @@ void QWidget::setLayout(QLayout *l)
     }
     if (layout()) {
         if (layout() != l)
-            qWarning("QWidget::setLayout() : QLayout \"%s\" added to %s \"%s\", which already has a"
+            qWarning("QWidget::setLayout() : Attempting to add QLayout \"%s\" to %s \"%s\", which already has a"
                      " layout", l->objectName().toLocal8Bit().data(), metaObject()->className(),
                      objectName().toLocal8Bit().data());
         return;
@@ -6220,12 +6272,13 @@ QWidget *QWidget::childAt(const QPoint &p) const
         if (w && !w->isWindow() && !w->isHidden() && w->geometry().contains(p)) {
             if (w->testAttribute(Qt::WA_TransparentForMouseEvents))
                 continue;
-            if (QWidget *t = w->childAt(p.x() - w->x(), p.y() - w->y()))
+            QPoint childPoint = w->mapFromParent(p);
+            if (QWidget *t = w->childAt(childPoint))
                 return t;
             // if WMouseNoMask is set the widget mask is ignored, if
             // the widget has no mask then the WMouseNoMask flag has no
             // effect
-            if (w->testAttribute(Qt::WA_MouseNoMask) || w->mask().contains(p)
+            if (w->testAttribute(Qt::WA_MouseNoMask) || w->mask().contains(childPoint)
                 || w->mask().isEmpty())
                 return w;
         }
@@ -6662,7 +6715,13 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
         QEvent e(QEvent::MouseTrackingChange);
         QApplication::sendEvent(this, &e);
         break; }
+    case Qt::WA_PaintOnScreen:
+    case Qt::WA_OpaquePaintEvent:
+        d->updateIsOpaque();
+        break;
     case Qt::WA_NoSystemBackground:
+        d->updateIsOpaque();
+        // fall through...
     case Qt::WA_UpdatesDisabled:
         d->updateSystemBackground();
         break;
@@ -7521,6 +7580,18 @@ void QWidget::languageChange() { }  // compat
     \compat
 
     Use the \l updatesEnabled property instead.
+*/
+
+/*!
+     \macro QWIDGETSIZE_MAX
+     \relates QWidget
+
+     Defines the maximum size for a QWidget object.
+
+     The largest allowed size for a widget is QSize(QWIDGETSIZE_MAX,
+     QWIDGETSIZE_MAX), i.e. QSize (16777215,16777215).
+
+     \sa QWidget::setMaximumSize()
 */
 
 #include "moc_qwidget.cpp"

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -301,10 +301,16 @@ static bool uncEntryList(const QString &server, const QStringList &filterNames, 
             *list += entries;
         } else if (list) {
 #ifndef QT_NO_REGEXP
+            // Prepare name filters
+            QList<QRegExp> regexps;
+            for (int it = 0; it < filterNames.size(); ++it) {
+                regexps << QRegExp(filterNames.at(it), Qt::CaseInsensitive,
+                                   QRegExp::Wildcard);
+            }
+
             for (int i = 0; i < entries.count(); ++i) {
-                for (QStringList::ConstIterator sit = filterNames.begin(); sit != filterNames.end(); ++sit) {
-                    QRegExp rx(*sit, Qt::CaseInsensitive, QRegExp::Wildcard);
-                    if (rx.exactMatch(entries.at(i))) {
+                for (int j = 0; j < regexps.size(); ++j) {
+                    if (regexps.at(j).exactMatch(entries.at(i))) {
                         list->append(entries.at(i));
                         break;
                     }
@@ -390,19 +396,6 @@ QString QFSFileEnginePrivate::longFileName(const QString &path)
     return prefix + absPath;
 }
 
-static bool isValidFile(const QString& fileName)
-{
-    // Only character : needs to be checked for, other invalid characters
-    // are currently checked by open()
-    int findColon = fileName.lastIndexOf(':');
-    if(findColon == -1)
-        return true;
-    else if(findColon != 1)
-        return false;
-    else
-        return fileName[0].isLetter();
-}
-
 void QFSFileEnginePrivate::init()
 {
     fileAttrib = INVALID_FILE_ATTRIBUTES;
@@ -416,7 +409,9 @@ int QFSFileEnginePrivate::sysOpen(const QString &fileName, int flags)
 #if defined(_MSC_VER) && _MSC_VER >= 1400
 	QT_WA({
 		int fd;
-		_wsopen_s(&fd, (TCHAR*)fileName.utf16(), flags, _SH_DENYNO, _S_IREAD | _S_IWRITE);
+        // Note that it is not documented that _wsopen_s will accept a path with the '\\?\' prefix,
+        // but _wsopen_s eventually calls CreateFile with the same fileName argument.
+		_wsopen_s(&fd, (TCHAR*)QFSFileEnginePrivate::longFileName(fileName).utf16(), flags, _SH_DENYNO, _S_IREAD | _S_IWRITE);
 		return fd;
 	} , {
 		int fd;
@@ -713,17 +708,38 @@ QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &f
 
         if (fname.endsWith(".lnk")) {
             isSymLink = true;
-            isDir = isDirPath(readLink(QFileInfo(d->file, fname).absoluteFilePath()), 0);
-            isFile = !isDir;
+            QFileInfo linkInfo(readLink(d->file + "\\" + fname));
+            if (!linkInfo.exists()) {
+                // Broken link, treat as system file
+                isSystem = true;
+                isDir = false;
+                isFile = true;
+            } else {
+                // Resolve the link
+                isDir = linkInfo.isDir();
+                isFile = !isDir;
+                isWritable = linkInfo.isWritable();
+                isReadable = linkInfo.isReadable();
+                isExecable = linkInfo.isExecutable();
+                isHidden = linkInfo.isHidden();
+            }
         }
 
 #ifndef QT_NO_REGEXP
         if(!(filters & QDir::AllDirs && isDir)) {
+            // Prepare name filters
+            QList<QRegExp> regexps;
+            for (int it = 0; it < filterNames.size(); ++it) {
+                regexps << QRegExp(filterNames.at(it), Qt::CaseInsensitive,
+                                   QRegExp::Wildcard);
+            }
+
             bool matched = false;
-            for(QStringList::ConstIterator sit = filterNames.begin(); sit != filterNames.end(); ++sit) {
-                QRegExp rx(*sit, Qt::CaseInsensitive, QRegExp::Wildcard);
-                if(rx.exactMatch(fname))
+            for (int i = 0; i < regexps.size(); ++i) {
+                if (regexps.at(i).exactMatch(fname)) {
                     matched = true;
+                    break;
+                }
             }
             if(!matched)
                 continue;
@@ -731,7 +747,7 @@ QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &f
 #else
         Q_UNUSED(filterNames);
 #endif
-        if  ((doDirs && isDir) || (doFiles && isFile)) {
+        if  ((doDirs && isDir) || (doFiles && isFile) || (doSystem && isSystem)) {
             QString name = QFSFileEnginePrivate::fixToQtSlashes(fname);
             if(doExecable) {
                 QString ext = name.right(4).toLower();
@@ -799,7 +815,12 @@ bool QFSFileEngine::setCurrentPath(const QString &path)
 }
 
 /*!
-    Returns the current path of the file engine.
+    Returns the canonicalized form of the current path used by the file
+    engine for the drive specified by \a fileName.
+
+    On Windows, each drive has its own current directory, so a different
+    path is returned for file names that include different drive names
+    (e.g. A: or C:).
 
     \sa setCurrentPath()
 */
@@ -957,6 +978,7 @@ bool QFSFileEnginePrivate::doStat() const
 
         if (file.isEmpty())
             return could_stat;
+        QString fname = file.endsWith(".lnk") ? readLink(file) : file;
 
         UINT oldmode = SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
@@ -971,18 +993,18 @@ bool QFSFileEnginePrivate::doStat() const
             }
         } else {
             QT_WA({
-                fileAttrib = GetFileAttributesW((TCHAR*)QFSFileEnginePrivate::longFileName(file).utf16());
+                fileAttrib = GetFileAttributesW((TCHAR*)QFSFileEnginePrivate::longFileName(fname).utf16());
             } , {
-                fileAttrib = GetFileAttributesA(QFSFileEnginePrivate::win95Name(QFileInfo(file).absoluteFilePath()));
+                fileAttrib = GetFileAttributesA(QFSFileEnginePrivate::win95Name(QFileInfo(fname).absoluteFilePath()));
             });
             could_stat = fileAttrib != INVALID_FILE_ATTRIBUTES;
             if (!could_stat) {
-                if (file.at(0).isLetter() && file.mid(1, file.length()) == ":/") {
+                if (fname.at(0).isLetter() && fname.mid(1, fname.length()) == ":/") {
                     // an empty drive ??
                     fileAttrib = FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN;
                     could_stat = true;
                 } else {
-                    QString path = QDir::convertSeparators(file);
+                    QString path = QDir::convertSeparators(fname);
                     bool is_dir = false;
                     if (path.startsWith("\\\\")) {
                         // UNC - stat doesn't work for all cases (Windows bug)
@@ -1212,7 +1234,9 @@ QAbstractFileEngine::FileFlags QFSFileEnginePrivate::getPermissions() const
         enum { ReadMask = 0x00000001, WriteMask = 0x00000002, ExecMask = 0x00000020 };
         resolveLibs();
         if(ptrGetNamedSecurityInfoW && ptrAllocateAndInitializeSid && ptrBuildTrusteeWithSidW && ptrGetEffectiveRightsFromAclW && ptrFreeSid) {
-            DWORD res = ptrGetNamedSecurityInfoW((wchar_t*)file.utf16(), SE_FILE_OBJECT,
+
+            QString fname = file.endsWith(".lnk") ? readLink(file) : file;
+            DWORD res = ptrGetNamedSecurityInfoW((wchar_t*)fname.utf16(), SE_FILE_OBJECT,
 						 OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION,
 						 &pOwner, &pGroup, &pDacl, 0, &pSD);
 
@@ -1307,7 +1331,9 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
     Q_D(const QFSFileEngine);
     QAbstractFileEngine::FileFlags ret = 0;
     // Force a stat, so that we're guaranteed to get up-to-date results
-    d->tried_stat = 0;
+    if (type & QAbstractFileEngine::FileFlag(0x1000000)) { // QDir::Refresh
+        d->tried_stat = 0;
+    }
     
     if (type & PermsMask) {
         ret |= d->getPermissions();
@@ -1319,17 +1345,17 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
             ret &= 0x2222;
     }
     if (type & TypesMask) {
-        if (d->doStat()) {
-            if(d->file.endsWith(".lnk")) {
-                ret |= LinkType;
-                QString l = readLink(d->file);
-                if (!l.isEmpty()) {
-                    if (isDirPath(l, 0))
-                        ret |= DirectoryType;
-                    else
-                        ret |= FileType;
-                }
-            } else if (d->fileAttrib & FILE_ATTRIBUTE_DIRECTORY) {
+        if (d->file.endsWith(".lnk")) {
+            ret |= LinkType;
+            QString l = readLink(d->file);
+            if (!l.isEmpty()) {
+                if (isDirPath(l, 0))
+                    ret |= DirectoryType;
+                else
+                    ret |= FileType;
+            }
+        } else if (d->doStat()) {
+            if (d->fileAttrib & FILE_ATTRIBUTE_DIRECTORY) {
                 ret |= DirectoryType;
             } else {
                 ret |= FileType;
@@ -1402,11 +1428,10 @@ QString QFSFileEngine::fileName(FileName file) const
 
         if (file == AbsolutePathName) {
             int slash = ret.lastIndexOf(QLatin1Char('/'));
-            Q_ASSERT(slash < 0 || slash >= 2);
             if (slash < 0)
                 return ret;
             else
-                return ret.left(slash);
+                return ret.left(slash > 0 ? slash : 1);
         }
         return ret;
     } else if(file == CanonicalName || file == CanonicalPathName) {
@@ -1581,9 +1606,11 @@ bool QFSFileEngine::setSize(qint64 size)
                         return false;
                 }
                 file1.close();
-                file2.close();
+                file1.remove();
                 if (file2.rename(file1.fileName()))
                     return true;
+                qWarning("QFSFileEngine::rename: Failed to rename %s: %s", 
+                    qPrintable(file2.fileName()), qPrintable(qt_error_string(errno)));
             }
         }
     }

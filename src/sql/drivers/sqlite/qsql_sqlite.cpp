@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -159,9 +159,6 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
     }
     skipRow = initialFetch;
 
-    if (!stmt)
-        return false;
-
     res = sqlite3_step(stmt);
 
     switch(res) {
@@ -264,6 +261,7 @@ bool QSQLiteResult::exec()
     d->skippedStatus = false;
     d->skipRow = false;
     clearValues();
+    setLastError(QSqlError());
 
     int res = sqlite3_reset(d->stmt);
     if (res != SQLITE_OK) {
@@ -319,6 +317,11 @@ bool QSQLiteResult::exec()
         }
     }
     d->skippedStatus = d->fetchNext(cache(), 0, true);
+    if (lastError().isValid()) {
+        setSelect(false);
+        setActive(false);
+        return false;
+    }
     setSelect(!d->rInf.isEmpty());
     setActive(true);
     return true;

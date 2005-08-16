@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/kernel/qapplication.cpp -->
 <head>
     <title>Qt 4.1: QSessionManager Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -72,13 +72,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="RestartHint-enum"></a>enum QSessionManager::RestartHint</h3>
 <p>This enum type defines the circumstances under which this application wants to be restarted by the session manager. The current values are</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSessionManager::RestartIfRunning</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">if the application is still running when the session is shut down, it wants to be restarted at the start of the next session.</td></tr>
 <tr><td valign="top"><tt>QSessionManager::RestartAnyway</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the application wants to be started at the start of the next session, no matter what. (This is useful for utilities that run just after startup and then quit.)</td></tr>
 <tr><td valign="top"><tt>QSessionManager::RestartImmediately</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">the application wants to be started immediately whenever it is not running.</td></tr>
 <tr><td valign="top"><tt>QSessionManager::RestartNever</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">the application does not want to be restarted automatically.</td></tr>
-</table>
+</table></p>
 <p>The default hint is <tt>RestartIfRunning</tt>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -166,7 +166,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Low-level write access to the application's identification and state record are kept in the session manager.</p>
 <p>The property called <i>name</i> has its value set to the string list <i>value</i>.</p>
 <h3 class="fn"><a name="setManagerProperty-2"></a>void QSessionManager::setManagerProperty ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qstring.html">QString</a> &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Low-level write access to the application's identification and state records are kept in the session manager.</p>
 <p>The property called <i>name</i> has its value set to the string <i>value</i>.</p>
 <h3 class="fn"><a name="setRestartCommand"></a>void QSessionManager::setRestartCommand ( const <a href="qstringlist.html">QStringList</a> &amp; <i>command</i> )</h3>
@@ -182,8 +182,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qsessionmanager.html#restartHint">restartHint</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

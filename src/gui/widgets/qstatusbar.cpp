@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -114,8 +114,7 @@ public:
     By default QStatusBar provides a QSizeGrip in the lower-right
     corner. You can disable it with setSizeGripEnabled(false);
 
-    \inlineimage qstatusbar-m.png Screenshot in Motif style
-    \inlineimage qstatusbar-w.png Screenshot in Windows style
+    \image plastique-statusbar.png A status bar shown in the Plastique widget style.
 
     \sa QToolBar, QMainWindow, QLabel, {fowler}{GUI Design Handbook: Status Bar}
 */
@@ -188,9 +187,9 @@ QStatusBar::~QStatusBar()
     Adds \a widget to this status bar. \a widget is reparented if it
     isn't already a child of the QStatusBar.
 
-    The widget is located just to the left of the first permanent
-    widget (see addPermanentWidget()) and may be obscured by
-    temporary messages.
+    The widget is located to the far left of the first permanent
+    widget (see addPermanentWidget()) and may be obscured by temporary
+    messages.
 
     \a stretch is used to compute a suitable size for \a widget as the
     status bar grows and shrinks. The default of 0 uses a minimum of

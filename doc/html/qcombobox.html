@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qcombobox.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qcombobox.cpp -->
 <head>
     <title>Qt 4.1: QComboBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qcombobox.html#autoCompletion-prop">autoCompletion</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qcombobox.html#autoCompletionCaseSensitivity-prop">autoCompletionCaseSensitivity</a></b> : Qt::CaseSensitivity</li>
@@ -52,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qcombobox.html#sizeAdjustPolicy-prop">sizeAdjustPolicy</a></b> : SizeAdjustPolicy</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -122,7 +122,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -157,6 +157,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -174,7 +175,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="InsertPolicy-enum"></a>enum QComboBox::InsertPolicy</h3>
 <p>This enum specifies what the <a href="qcombobox.html">QComboBox</a> should do when a new string is entered by the user.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QComboBox::NoInsert</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The string will not be inserted into the combobox.</td></tr>
 <tr><td valign="top"><tt>QComboBox::InsertAtTop</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The string will be inserted as the first item in the combobox.</td></tr>
@@ -182,15 +183,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QComboBox::InsertAtBottom</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The string will be inserted after the last item in the combobox.</td></tr>
 <tr><td valign="top"><tt>QComboBox::InsertAfterCurrent</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The string is inserted after the current item in the combobox.</td></tr>
 <tr><td valign="top"><tt>QComboBox::InsertBeforeCurrent</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The string is inserted before the current item in the combobox.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="SizeAdjustPolicy-enum"></a>enum QComboBox::SizeAdjustPolicy</h3>
 <p>This enum specifies how the size of the <a href="qcombobox.html">QComboBox</a> should adjust when new content is added or content changes.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QComboBox::AdjustToContents</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The combobox will always adjust to the contens</td></tr>
 <tr><td valign="top"><tt>QComboBox::AdjustToContentsOnFirstShow</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The combobox will adjust to its contents the first time it is show.</td></tr>
 <tr><td valign="top"><tt>QComboBox::AdjustToMinimumContentsLength</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The combobox only adjusts to the <a href="qcombobox.html#minimumContentsLength-prop">minimumContentsLength</a></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="autoCompletion-prop"></a>autoCompletion : bool</h3>
@@ -318,12 +319,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="activated"></a>void QComboBox::activated ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is sent when an item in the combobox is activated by the user. The item's <i>index</i> is given.</p>
 <h3 class="fn"><a name="activated-2"></a>void QComboBox::activated ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is sent when an item in the combobox is activated by the user. The item's <i>text</i> is given.</p>
 <h3 class="fn"><a name="addItem"></a>void QComboBox::addItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
 <p>Adds an item to the combobox with the given <i>text</i>, and containing the specified <i>userData</i>. The item is appended to the list of existing items.</p>
 <h3 class="fn"><a name="addItem-2"></a>void QComboBox::addItem ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Adds an item to the combobox with the given <i>icon</i> and <i>text</i>, and containing the specified <i>userData</i>. The item is appended to the list of existing items.</p>
 <h3 class="fn"><a name="addItems"></a>void QComboBox::addItems ( const <a href="qstringlist.html">QStringList</a> &amp; <i>texts</i> )</h3>
 <p>Adds each of the strings in the given <i>texts</i> to the combobox. Each item is appended to the list of existing items in turn.</p>
@@ -336,7 +337,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is sent whenever the <a href="qcombobox.html#currentIndex-prop">currentIndex</a> in the combobox changes either through user interaction or programmatically. The item's <i>index</i> is given or -1 if the combobox becomes empty or the <a href="qcombobox.html#currentIndex-prop">currentIndex</a> was reset.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="currentIndexChanged-2"></a>void QComboBox::currentIndexChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is sent whenever the <a href="qcombobox.html#currentIndex-prop">currentIndex</a> in the combobox changes either through user interaction or programmatically. The item's <i>text</i> is given.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="editTextChanged"></a>void QComboBox::editTextChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -352,12 +353,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="highlighted"></a>void QComboBox::highlighted ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is sent when an item in the combobox is highlighted by the user. The item's <i>index</i> is given.</p>
 <h3 class="fn"><a name="highlighted-2"></a>void QComboBox::highlighted ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is sent when an item in the combobox is highlighted by the user. The item's <i>text</i> is given.</p>
 <h3 class="fn"><a name="insertItem"></a>void QComboBox::insertItem ( int <i>index</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
 <p>Inserts the <i>text</i> and <i>userData</i> into the combobox at the given <i>index</i>.</p>
 <h3 class="fn"><a name="insertItem-2"></a>void QComboBox::insertItem ( int <i>index</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>userData</i> = QVariant() )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts the <i>icon</i>, <i>text</i> and <i>userData</i> into the combobox at the given <i>index</i>.</p>
 <h3 class="fn"><a name="insertItems"></a>void QComboBox::insertItems ( int <i>index</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>list</i> )</h3>
 <p>Inserts the strings from the <i>list</i> into the combobox as separate items, starting at the <i>index</i> specified.</p>
@@ -413,6 +414,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qcombobox.html#validator">validator</a>().</p>
 <h3 class="fn"><a name="setView"></a>void QComboBox::setView ( <a href="qabstractitemview.html">QAbstractItemView</a> * <i>itemView</i> )</h3>
 <p>Sets the view to be used in the combobox popup to the given <i>itemView</i>. The combobox takes ownership of the view.</p>
+<p>Note: If you want to use the convenience views (like <a href="qlistwidget.html">QListWidget</a>, <a href="qtablewidget.html">QTableWidget</a> or <a href="qtreewidget.html">QTreeWidget</a>), make sure to call <a href="qcombobox.html#setModel">setModel</a>() on the combobox with the convenience widgets model before calling this function.</p>
 <p>See also <a href="qcombobox.html#view">view</a>().</p>
 <h3 class="fn"><a name="showPopup"></a>void QComboBox::showPopup ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Displays the list of items in the combobox. If the list is empty then the no items will be shown.</p>
@@ -424,8 +426,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qcombobox.html#setView">setView</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/sql/kernel/qsqldriver.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/sql/kernel/qsqldriver.cpp -->
 <head>
     <title>Qt 4.1: QSqlDriver Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -85,7 +85,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="DriverFeature-enum"></a>enum QSqlDriver::DriverFeature</h3>
 <p>This enum contains a list of features a driver might support. Use <a href="qsqldriver.html#hasFeature">hasFeature</a>() to query whether a feature is supported or not.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSqlDriver::Transactions</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Whether the driver supports SQL transactions.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::QuerySize</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Whether the database is capable of reporting the size of a query. Note that some databases do not support returning the size (i.e. number of rows returned) of a query, in which case <a href="qsqlquery.html#size">QSqlQuery::size</a>() will return -1.</td></tr>
@@ -96,26 +96,26 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QSqlDriver::PositionalPlaceholders</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Whether the driver supports the use of positional placeholders.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::LastInsertId</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Whether the driver supports returning the Id of the last touched row.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::BatchOperations</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Whether the driver supports batched operations, see QSqlResult::execBatch()</td></tr>
-</table>
+</table></p>
 <p>More information about supported features can be found in the <a href="sql-driver.html">Qt SQL driver</a> documentation.</p>
 <p>See also <a href="qsqldriver.html#hasFeature">hasFeature</a>().</p>
 <h3 class="fn"><a name="IdentifierType-enum"></a>enum QSqlDriver::IdentifierType</h3>
 <p>This enum contains a list of SQL identifier types.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSqlDriver::FieldName</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A SQL field name</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::TableName</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A SQL table name</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="StatementType-enum"></a>enum QSqlDriver::StatementType</h3>
 <p>This enum contains a list of SQL statement (or clause) types the driver can create.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSqlDriver::WhereStatement</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">An SQL <tt>WHERE</tt> statement (e.g., <tt>WHERE f = 5</tt>).</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::SelectStatement</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">An SQL <tt>SELECT</tt> statement (e.g., <tt>SELECT f FROM t</tt>).</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::UpdateStatement</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">An SQL <tt>UPDATE</tt> statement (e.g., <tt>UPDATE TABLE t set f = 1</tt>).</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::InsertStatement</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">An SQL <tt>INSERT</tt> statement (e.g., <tt>INSERT INTO t (f) values (1)</tt>).</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::DeleteStatement</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">An SQL <tt>DELETE</tt> statement (e.g., <tt>DELETE FROM t</tt>).</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qsqldriver.html#sqlStatement">sqlStatement</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -138,7 +138,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the <i>identifier</i> escaped according to the database rules. <i>identifier</i> can either be a table name or field name, dependent on <i>type</i>.</p>
 <p>The default implementation does nothing.</p>
 <h3 class="fn"><a name="formatValue-2"></a><a href="qstring.html">QString</a> QSqlDriver::formatValue ( const <a href="qsqlfield.html">QSqlField</a> &amp; <i>field</i>, bool <i>trimStrings</i> = false ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string representation of the <i>field</i> value for the database. This is used, for example, when constructing INSERT and UPDATE statements.</p>
 <p>The default implementation returns the value formatted as a string according to the following rules:</p>
 <ul>
@@ -214,8 +214,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>tableType</i> argument describes what types of tables should be returned. Due to binary compatibility, the string contains the value of the enum QSql::TableTypes as text. An empty string should be treated as <a href="qsql.html#TableType-enum">QSql::Tables</a> for backward compatibility.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

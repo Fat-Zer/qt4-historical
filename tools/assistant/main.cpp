@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -317,9 +317,8 @@ int main( int argc, char ** argv )
     }
 
     if ( max )
-        mw->showMaximized();
-    else
-        mw->show();
+        mw->setWindowState(mw->windowState() | Qt::WindowMaximized);
+    mw->show();
 
     if ( !file.isEmpty() ) {
         mw->showLink( MainWindow::urlifyFileName(file) );

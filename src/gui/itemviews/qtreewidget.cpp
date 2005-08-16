@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -293,10 +293,69 @@ bool QTreeModel::setData(const QModelIndex &index, const QVariant &value, int ro
     QTreeWidgetItem *itm = item(index);
     if (itm) {
         itm->setData(index.column(), role, value);
-        emit dataChanged(index, index);
         return true;
     }
     return false;
+}
+
+/*!
+  \internal
+  \reimp
+*/
+bool QTreeModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (count < 1 || row < 0 || row > rowCount(parent) || parent.column() > 0)
+        return false;
+
+    beginInsertRows(parent, row, row + count - 1);
+    while (count > 0) {
+        QTreeWidgetItem *par = item(parent);
+        QTreeWidgetItem *item = new QTreeWidgetItem();
+        item->view = qobject_cast<QTreeWidget*>(QObject::parent());
+        item->model = this;
+        item->par = par;
+        if (par)
+            par->children.insert(row++, item);
+        else
+            tree.insert(row++, item);
+        --count;
+    }
+    endInsertRows();
+    return true;
+}
+
+/*!
+  \internal
+  \reimp
+*/
+bool QTreeModel::insertColumns(int column, int count, const QModelIndex &parent)
+{
+    if (count < 1 || column < 0 || column > columnCount(parent) || parent.column() > 0)
+        return false;
+
+    beginInsertColumns(parent, column, column + count - 1);
+
+    int oldCount = columnCount(parent);
+    column = qBound(0, column, oldCount);
+    header->values.resize(oldCount + count);
+    for (int i = oldCount; i < oldCount + count; ++i)
+        header->values[i].append(QWidgetItemData(Qt::DisplayRole, QString::number(i)));
+
+    QStack<QTreeWidgetItem*> itemstack;
+    itemstack.push(0);
+    while (!itemstack.isEmpty()) {
+        QTreeWidgetItem *par = itemstack.pop();
+        QList<QTreeWidgetItem*> children = par ? par->children : tree;
+        for (int row = 0; row < children.count(); ++row) {
+            QTreeWidgetItem *child = children.at(row);
+            if (child->children.count())
+                itemstack.push(child);
+            child->values.insert(column, count, QVector<QWidgetItemData>());
+        }
+    }
+
+    endInsertColumns();
+    return true;
 }
 
 /*!
@@ -507,6 +566,7 @@ void QTreeModel::beginInsertItems(QTreeWidgetItem *parent, int row, int count)
     beginInsertRows(index(parent, 0), row, row + count - 1);
 }
 
+//### walks in a depth-first order (children before siblings)
 QTreeWidgetItem* QTreeModel::walk(const QTreeWidgetItem *current)
 {
     Q_ASSERT(current);
@@ -744,7 +804,7 @@ void QTreeModel::sortItems(QList<QTreeWidgetItem*> *items, int /*column*/, Qt::S
 
     Returns the icon that is displayed in the specified \a column.
 
-    \sa setIcon()
+    \sa setIcon(), {QAbstractItemView::iconSize}{iconSize}
 */
 
 /*!
@@ -752,7 +812,7 @@ void QTreeModel::sortItems(QList<QTreeWidgetItem*> *items, int /*column*/, Qt::S
 
     Sets the icon to be displayed in the given \a column to \a icon.
 
-    \sa icon() setText()
+    \sa icon(), setText(), {QAbstractItemView::iconSize}{iconSize}
 */
 
 /*!
@@ -946,7 +1006,8 @@ QTreeWidgetItem::QTreeWidgetItem(int type)
       itemFlags(Qt::ItemIsSelectable
                 |Qt::ItemIsUserCheckable
                 |Qt::ItemIsEnabled
-                |Qt::ItemIsDragEnabled)
+                |Qt::ItemIsDragEnabled
+                |Qt::ItemIsDropEnabled)
 {
 }
 
@@ -964,7 +1025,8 @@ QTreeWidgetItem::QTreeWidgetItem(const QStringList &strings, int type)
       itemFlags(Qt::ItemIsSelectable
                 |Qt::ItemIsUserCheckable
                 |Qt::ItemIsEnabled
-                |Qt::ItemIsDragEnabled)
+                |Qt::ItemIsDragEnabled
+                |Qt::ItemIsDropEnabled)
 {
     for (int i = 0; i < strings.count(); ++i)
         setText(i, strings.at(i));
@@ -1118,8 +1180,7 @@ QTreeWidgetItem::~QTreeWidgetItem()
     } else if (model) {
         if (this == model->header) {
             model->header = 0;
-        }
-        else {
+        } else {
             int i = model->tree.indexOf(this);
             model->beginRemoveItems(0, i, 1);
             model->tree.takeAt(i);
@@ -1184,10 +1245,16 @@ QTreeWidgetItem *QTreeWidgetItem::clone() const
 void QTreeWidgetItem::setData(int column, int role, const QVariant &value)
 {
     // special case for check state in tristate
-    if (role == Qt::CheckStateRole
-        && (itemFlags & Qt::ItemIsTristate))
-        for (int i = 0; i < children.count(); ++i)
-            children.at(i)->setData(column, role, value);
+    if ((role == Qt::CheckStateRole) && (itemFlags & Qt::ItemIsTristate)) {
+        for (int i = 0; i < children.count(); ++i) {
+            QTreeWidgetItem *child = children.at(i);
+            if (child->data(column, role).isValid()) {// has a CheckState
+                child->par = 0; // a little hack to avoid multiple dataChanged signals
+                child->setData(column, role, value);
+                child->par = this;
+            }
+        }
+    }
     // set the item data
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     if (column >= values.count())
@@ -1203,8 +1270,11 @@ void QTreeWidgetItem::setData(int column, int role, const QVariant &value)
     }
     if (!found)
         values[column].append(QWidgetItemData(role, value));
-    if (model)
+    if (model) {
         model->emitDataChanged(this, column);
+        if (role == Qt::CheckStateRole && par && par->itemFlags & Qt::ItemIsTristate)
+            model->emitDataChanged(par, column);
+    }
 }
 
 /*!
@@ -1214,8 +1284,9 @@ QVariant QTreeWidgetItem::data(int column, int role) const
 {
     // special case for check state in tristate
     if (role == Qt::CheckStateRole
-        && (itemFlags & Qt::ItemIsTristate) && children.count())
+        && (itemFlags & Qt::ItemIsTristate) && children.count()) {
         return childrenCheckState(column);
+    }
     // return the item data
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     if (column >= 0 && column < values.size()) {
@@ -1310,6 +1381,8 @@ void QTreeWidgetItem::insertChild(int index, QTreeWidgetItem *child)
 {
     // FIXME: here we have a problem;
     // the user could build up a tree and then insert the root in the view
+    if (index < 0 || index > children.count() || child == 0)
+        return;
     Q_ASSERT(!child->view || !child->model || !child->par);
     if (model) model->beginInsertItems(this, index, 1);
     if (view && model) {
@@ -1447,14 +1520,24 @@ void QTreeWidgetItem::sortChildren(int column, Qt::SortOrder order, bool climb)
 QVariant QTreeWidgetItem::childrenCheckState(int column) const
 {
     int checkedChildrenCount = 0;
+    int uncheckedChildrenCount = 0;
+    int validChildrenCount = 0;
     for (int i = 0; i < children.count(); ++i) {
         QVariant value = children.at(i)->data(column, Qt::CheckStateRole);
-        if (static_cast<Qt::CheckState>(value.toInt()) != Qt::Unchecked)
-            ++checkedChildrenCount;
+        if (!value.isValid())
+            continue;
+        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
+        if (checkState == Qt::Unchecked)
+            ++uncheckedChildrenCount;
+        else
+            ++checkedChildrenCount; // includes partially checked items
+        ++validChildrenCount;
     }
-    if (checkedChildrenCount == children.count())
+    if (checkedChildrenCount + uncheckedChildrenCount == 0)
+        return QVariant(); // value was not defined
+    if (checkedChildrenCount == validChildrenCount)
         return Qt::Checked;
-    if (checkedChildrenCount == 0)
+    if (uncheckedChildrenCount == validChildrenCount)
         return Qt::Unchecked;
     return Qt::PartiallyChecked;
 }
@@ -1588,12 +1671,12 @@ void QTreeWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
 
   In its simplest form, a tree widget can be constructed in the following way:
 
-  \quotefile snippets/qtreewidget-using/mainwindow.h
-  \skipto QTreeWidget *
-  \printuntil QTreeWidget *
-  \quotefile snippets/qtreewidget-using/mainwindow.cpp
-  \skipto treeWidget = new
-  \printuntil treeWidget = new
+  \code
+    QTreeWidget *treeWidget = new QTreeWidget();
+    treeWidget->setColumnCount(1);
+    for (int i = 0; i < 10; ++i)
+        new QTreeWidgetItem(treeWidget, QStringList(QString("item: %1").arg(i)));
+  \endcode
 
   Before items can be added to the tree widget, the number of columns must
   be set with setColumnCount(). This allows each item to have one or more
@@ -1630,10 +1713,13 @@ void QTreeWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
     \fn void QTreeWidget::itemActivated(QTreeWidgetItem *item, int column)
 
     This signal is emitted when the user activates an item by single-
-    or double-clicking (depending on the platform) or pressing a
-    special key (e.g., \key Enter). The specified \a item is the item
-    that was clicked, or 0 if no item was clicked. The \a column is
-    the item's column that was clicked, or -1 if no item was clicked.
+    or double-clicking (depending on the platform, i.e. on the
+    QStyle::SH_ItemView_ActivateItemOnSingleClick style hint) or
+    pressing a special key (e.g., \key Enter).
+
+    The specified \a item is the item that was clicked, or 0 if no
+    item was clicked. The \a column is the item's column that was
+    clicked, or -1 if no item was clicked.
 */
 
 /*!
@@ -1712,7 +1798,7 @@ void QTreeWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
 QTreeWidget::QTreeWidget(QWidget *parent)
     : QTreeView(*new QTreeWidgetPrivate(), parent)
 {
-    setModel(new QTreeModel(0, this));
+    QTreeView::setModel(new QTreeModel(0, this));
     // view signals
     connect(this, SIGNAL(pressed(QModelIndex)), SLOT(emitItemPressed(QModelIndex)));
     connect(this, SIGNAL(clicked(QModelIndex)), SLOT(emitItemClicked(QModelIndex)));
@@ -1758,6 +1844,8 @@ int QTreeWidget::columnCount() const
 void QTreeWidget::setColumnCount(int columns)
 {
     Q_D(QTreeWidget);
+    if (columns < 0)
+        return;
     d->model()->setColumnCount(columns);
 }
 
@@ -1791,6 +1879,8 @@ int QTreeWidget::topLevelItemCount() const
 void QTreeWidget::insertTopLevelItem(int index, QTreeWidgetItem *item)
 {
     Q_D(QTreeWidget);
+    if (index < 0 || index > d->model()->tree.count() || item == 0)
+        return;
     Q_ASSERT(!item->view || !item->model || !item->par);
     QStack<QTreeWidgetItem*> stack;
     stack.push(item);
@@ -1960,6 +2050,8 @@ int QTreeWidget::currentColumn() const
 /*!
   Sets the current \a item in the tree widget.
 
+  Depending on the current selection mode, the item may also be selected.
+
   \sa currentItem()
 */
 void QTreeWidget::setCurrentItem(QTreeWidgetItem *item)
@@ -2100,8 +2192,6 @@ void QTreeWidget::closePersistentEditor(QTreeWidgetItem *item, int column)
   \since 4.1
 
   Returns the widget displayed in the cell specified by \a item and the given \a column.
-
-  \sa setItemWidget()
 */
 QWidget *QTreeWidget::itemWidget(QTreeWidgetItem *item, int column) const
 {
@@ -2116,7 +2206,11 @@ QWidget *QTreeWidget::itemWidget(QTreeWidgetItem *item, int column) const
 
   Sets the \a widget to be displayed in the cell specified by \a item and the given \a column.
 
-  \sa itemWidget()
+  This function should only be used to display static content in the place of a tree
+  widget item. If you want to display custom dynamic content or implement a custom
+  editor widget, use QTreeView and subclass QItemDelegate instead.
+
+  \sa {Delegate Classes}
 */
 void QTreeWidget::setItemWidget(QTreeWidgetItem *item, int column, QWidget *widget)
 {
@@ -2282,6 +2376,10 @@ void QTreeWidget::collapseItem(const QTreeWidgetItem *item)
 
 /*!
   Clears the tree widget by removing all of its items and selections.
+
+  \bold{Note:} Since each item is removed from the tree widget before being
+  deleted, the return value of QTreeWidgetItem::treeWidget() will be invalid
+  when called from an item's destructor.
 */
 
 void QTreeWidget::clear()
@@ -2379,9 +2477,9 @@ QTreeWidgetItem *QTreeWidget::itemFromIndex(const QModelIndex &index) const
   \reimp
 */
 
-void QTreeWidget::setModel(QAbstractItemModel *model)
+void QTreeWidget::setModel(QAbstractItemModel * /*model*/)
 {
-    QTreeView::setModel(model);
+    qFatal("QTreeWidget::setModel() - Changing the model of the QTreeWidget is not allowed.");
 }
 
 /* \reimp */

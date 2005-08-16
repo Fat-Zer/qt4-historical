@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -51,11 +51,9 @@
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 #endif
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
 #ifndef QT_NO_IM
 #include "qinputcontext.h"
 #include "qlist.h"
-#endif
 #endif
 
 #ifndef QT_NO_SHORTCUT
@@ -71,7 +69,8 @@ extern void qt_mac_secure_keyboard(bool); //qapplication_mac.cpp
 
 #include <limits.h>
 
-#define innerMargin 1
+#define verticalMargin 1
+#define horizontalMargin 2
 
 QStyleOptionFrame QLineEditPrivate::getStyleOption() const
 {
@@ -538,8 +537,8 @@ QSize QLineEdit::sizeHint() const
     Q_D(const QLineEdit);
     ensurePolished();
     QFontMetrics fm(font());
-    int h = qMax(fm.lineSpacing(), 14) + 2*innerMargin;
-    int w = fm.width('x') * 17; // "some"
+    int h = qMax(fm.lineSpacing(), 14) + 2*verticalMargin;
+    int w = fm.width('x') * 17 + 2*horizontalMargin; // "some"
     int m = d->frame ? style()->pixelMetric(QStyle::PM_DefaultFrameWidth) : 0;
     QStyleOptionFrame opt;
     opt.rect = rect();
@@ -561,7 +560,7 @@ QSize QLineEdit::minimumSizeHint() const
     Q_D(const QLineEdit);
     ensurePolished();
     QFontMetrics fm = fontMetrics();
-    int h = fm.height() + qMax(2*innerMargin, fm.leading());
+    int h = fm.height() + qMax(2*horizontalMargin, fm.leading());
     int w = fm.maxWidth();
     int m = d->frame ? style()->pixelMetric(QStyle::PM_DefaultFrameWidth) : 0;
     return QSize(w + (2 * m), h + (2 * m));
@@ -917,7 +916,7 @@ void QLineEdit::setEdited(bool on) { setModified(on); }
 int QLineEdit::characterAt(int xpos, QChar *chr) const
 {
     Q_D(const QLineEdit);
-    int pos = d->xToPos(xpos + contentsRect().x() - d->hscroll + innerMargin);
+    int pos = d->xToPos(xpos + contentsRect().x() - d->hscroll + horizontalMargin);
     if (chr && pos < (int) d->text.length())
         *chr = d->text.at(pos);
     return pos;
@@ -1558,7 +1557,9 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
         if (hasAcceptableInput()) {
             emit returnPressed();
+            d->emitingEditingFinished = true;
             emit editingFinished();
+            d->emitingEditingFinished = false;
         }
 #ifndef QT_NO_VALIDATOR
         else {
@@ -1572,7 +1573,9 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
                 if (v && (textCopy != d->text || cursorCopy != d->cursor))
                     d->setText(textCopy, cursorCopy);
                 emit returnPressed();
+                d->emitingEditingFinished = true;
                 emit editingFinished();
+                d->emitingEditingFinished = false;
             }
         }
 #endif
@@ -1833,8 +1836,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
 */
 bool QLineEditPrivate::sendMouseEventToInputContext( QMouseEvent *e )
 {
-    // ##### currently X11 only
-#if (defined(Q_WS_X11) || defined(Q_WS_QWS)) && !defined QT_NO_IM
+#if !defined QT_NO_IM
     Q_Q(QLineEdit);
     if ( composeMode() ) {
 	int tmp_cursor = xToPosInternal( e->pos().x(), QTextLine::CursorOnCharacter );
@@ -1891,18 +1893,23 @@ void QLineEdit::inputMethodEvent(QInputMethodEvent *e)
     d->cursor = c;
 
     d->textLayout.setPreeditArea(d->cursor, e->preeditString());
+    d->preeditCursor = e->preeditString().length();
+    d->hideCursor = false;
     QList<QTextLayout::FormatRange> formats;
     for (int i = 0; i < e->attributes().size(); ++i) {
         const QInputMethodEvent::Attribute &a = e->attributes().at(i);
-        if (a.type != QInputMethodEvent::TextFormat)
-            continue;
-        QTextCharFormat f = qvariant_cast<QTextFormat>(a.value).toCharFormat();
-        if (f.isValid()) {
-            QTextLayout::FormatRange o;
-            o.start = a.start + d->cursor;
-            o.length = a.length;
-            o.format = f;
-            formats.append(o);
+        if (a.type == QInputMethodEvent::Cursor) {
+            d->preeditCursor = a.start;
+            d->hideCursor = !a.length;
+        } else if (a.type == QInputMethodEvent::TextFormat) {
+            QTextCharFormat f = qvariant_cast<QTextFormat>(a.value).toCharFormat();
+            if (f.isValid()) {
+                QTextLayout::FormatRange o;
+                o.start = a.start + d->cursor;
+                o.length = a.length;
+                o.format = f;
+                formats.append(o);
+            }
         }
     }
     d->textLayout.setAdditionalFormats(formats);
@@ -1971,19 +1978,19 @@ void QLineEdit::focusInEvent(QFocusEvent *e)
 void QLineEdit::focusOutEvent(QFocusEvent *e)
 {
     Q_D(QLineEdit);
-    if (e->reason() != Qt::ActiveWindowFocusReason &&
-         e->reason() != Qt::PopupFocusReason
-         && !(e->reason() == Qt::MouseFocusReason
-            && QApplication::activePopupWidget()
-            && QApplication::activePopupWidget()->parentWidget() == this))
+    Qt::FocusReason reason = e->reason();
+    if (reason != Qt::ActiveWindowFocusReason &&
+        reason != Qt::PopupFocusReason)
         deselect();
+
     d->setCursorVisible(false);
     if (d->cursorTimer > 0)
         killTimer(d->cursorTimer);
     d->cursorTimer = 0;
-    if (e->reason() != Qt::PopupFocusReason
+    if (reason != Qt::PopupFocusReason
         && !(QApplication::activePopupWidget() && QApplication::activePopupWidget()->parentWidget() == this)) {
-        emit editingFinished();
+        if (!d->emitingEditingFinished)
+            emit editingFinished();
 #ifdef QT3_SUPPORT
         emit lostFocus();
 #endif
@@ -2016,14 +2023,17 @@ void QLineEdit::paintEvent(QPaintEvent *)
         r.adjust(frameWidth, frameWidth, -frameWidth, -frameWidth);
         p.setClipRect(r);
     }
-    
+
     QFontMetrics fm = fontMetrics();
-    QRect lineRect(r.x() + innerMargin, r.y() + (r.height() - fm.height() + 1) / 2,
-                    r.width() - 2*innerMargin, fm.height());
+    QRect lineRect(r.x() + horizontalMargin, r.y() + (r.height() - fm.height() + 1) / 2,
+                    r.width() - 2*horizontalMargin, fm.height());
     QTextLine line = d->textLayout.lineAt(0);
 
+    int cursor = d->cursor;
+    if (d->preeditCursor != -1)
+        cursor += d->preeditCursor;
     // locate cursor position
-    int cix = qRound(line.cursorToX(d->cursor));
+    int cix = qRound(line.cursorToX(cursor));
 
     // horizontal scrolling
     int minLB = qMax(0, -fm.minLeftBearing());
@@ -2059,7 +2069,6 @@ void QLineEdit::paintEvent(QPaintEvent *)
 
     // draw text, selections and cursors
     p.setPen(pal.text().color());
-    bool supressCursor = d->readOnly;
 
     QVector<QTextLayout::FormatRange> selections;
     if (d->selstart < d->selend || (d->cursorVisible && d->maskData)) {
@@ -2083,10 +2092,9 @@ void QLineEdit::paintEvent(QPaintEvent *)
     // Asian users see an IM selection text as cursor on candidate
     // selection phase of input method, so the ordinary cursor should be
     // invisible if we have a preedit string.
-    bool showCursor = (d->cursorVisible && !supressCursor && !d->textLayout.preeditAreaText().length());
     d->textLayout.draw(&p, topLeft, selections, r);
-    if (showCursor && d->textLayout.preeditAreaText().isEmpty())
-        d->textLayout.drawCursor(&p, topLeft, d->cursor);
+    if (d->cursorVisible && !d->readOnly && !d->hideCursor)
+        d->textLayout.drawCursor(&p, topLeft, cursor);
 
 }
 
@@ -2242,7 +2250,7 @@ QMenu *QLineEdit::createStandardContextMenu()
     popup->addAction(d->actions[QLineEditPrivate::ClearAct]);
     popup->addSeparator();
     popup->addAction(d->actions[QLineEditPrivate::SelectAllAct]);
-#if (defined(Q_WS_X11) || defined(Q_WS_QWS)) && !defined(QT_NO_IM)
+#if !defined(QT_NO_IM)
     QInputContext *qic = inputContext();
     if (qic) {
         QList<QAction *> imActions = qic->actions();
@@ -2309,21 +2317,21 @@ void QLineEditPrivate::init(const QString& txt)
     cursor = text.length();
 
 #ifndef QT_NO_MENU
-    actions[UndoAct] = new QAction(q->tr("&Undo") + ACCEL_KEY(Z), q);
+    actions[UndoAct] = new QAction(QLineEdit::tr("&Undo") + ACCEL_KEY(Z), q);
     QObject::connect(actions[UndoAct], SIGNAL(triggered()), q, SLOT(undo()));
-    actions[RedoAct] = new QAction(q->tr("&Redo") + ACCEL_KEY(Y), q);
+    actions[RedoAct] = new QAction(QLineEdit::tr("&Redo") + ACCEL_KEY(Y), q);
     QObject::connect(actions[RedoAct], SIGNAL(triggered()), q, SLOT(redo()));
     //popup->insertSeparator();
-    actions[CutAct] = new QAction(q->tr("Cu&t") + ACCEL_KEY(X), q);
+    actions[CutAct] = new QAction(QLineEdit::tr("Cu&t") + ACCEL_KEY(X), q);
     QObject::connect(actions[CutAct], SIGNAL(triggered()), q, SLOT(cut()));
-    actions[CopyAct] = new QAction(q->tr("&Copy") + ACCEL_KEY(C), q);
+    actions[CopyAct] = new QAction(QLineEdit::tr("&Copy") + ACCEL_KEY(C), q);
     QObject::connect(actions[CopyAct], SIGNAL(triggered()), q, SLOT(copy()));
-    actions[PasteAct] = new QAction(q->tr("&Paste") + ACCEL_KEY(V), q);
+    actions[PasteAct] = new QAction(QLineEdit::tr("&Paste") + ACCEL_KEY(V), q);
     QObject::connect(actions[PasteAct], SIGNAL(triggered()), q, SLOT(paste()));
-    actions[ClearAct] = new QAction(q->tr("Delete"), q);
+    actions[ClearAct] = new QAction(QLineEdit::tr("Delete"), q);
     QObject::connect(actions[ClearAct], SIGNAL(triggered()), q, SLOT(deleteSelected()));
     //popup->insertSeparator();
-    actions[SelectAllAct] = new QAction(q->tr("Select All")
+    actions[SelectAllAct] = new QAction(QLineEdit::tr("Select All")
 #ifndef Q_WS_X11
                                         + ACCEL_KEY(A)
 #endif
@@ -2360,7 +2368,7 @@ void QLineEditPrivate::updateTextLayout()
 int QLineEditPrivate::xToPosInternal(int x, QTextLine::CursorPosition betweenOrOn) const
 {
     Q_Q(const QLineEdit);
-    x-= q->contentsRect().x() - hscroll + innerMargin;
+    x-= q->contentsRect().x() - hscroll + horizontalMargin;
     QTextLine l = textLayout.lineAt(0);
     if (x >= 0 && x < l.naturalTextWidth())
         return l.xToCursor(x, betweenOrOn);
@@ -2380,9 +2388,12 @@ QRect QLineEditPrivate::cursorRect() const
     Q_Q(const QLineEdit);
     QRect cr = q->contentsRect();
     int frameWidth = q->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    int cix = cr.x() + frameWidth - hscroll + innerMargin;
+    int cix = cr.x() + frameWidth - hscroll + horizontalMargin;
     QTextLine l = textLayout.lineAt(0);
-    cix += qRound(l.cursorToX(cursor));
+    int c = cursor;
+    if (preeditCursor != -1)
+        c += preeditCursor;
+    cix += qRound(l.cursorToX(c));
     int ch = qMin(cr.height(), q->fontMetrics().height() + 1);
     return QRect(cix-5, cr.y() + (cr.height() -  ch) / 2, 10, ch);
 }

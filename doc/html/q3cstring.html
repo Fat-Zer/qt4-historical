@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/qt3support/tools/q3cstring.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/qt3support/tools/q3cstring.cpp -->
 <head>
     <title>Qt 4.1: Q3CString Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -81,7 +81,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>const Q3CString <b><a href="q3cstring.html#operator-2b-29">operator+</a></b> ( char <i>c</i>, const Q3CString &amp; <i>s</i> )</li>
 <li><div class="fn"/>bool <b><a href="q3cstring.html#operator-lt-8">operator&lt;</a></b> ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="q3cstring.html#operator-lt-13">operator&lt;</a></b> ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="q3cstring.html#operator-lt-lt-94">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const Q3CString &amp; <i>str</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="q3cstring.html#operator-lt-lt-98">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const Q3CString &amp; <i>str</i> )</li>
 <li><div class="fn"/>bool <b><a href="q3cstring.html#operator-lt-eq-8">operator&lt;=</a></b> ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="q3cstring.html#operator-lt-eq-13">operator&lt;=</a></b> ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</li>
 <li><div class="fn"/>bool <b><a href="q3cstring.html#operator-eq-eq-41">operator==</a></b> ( const Q3CString &amp; <i>s1</i>, const Q3CString &amp; <i>s2</i> )</li>
@@ -165,25 +165,25 @@ body { background: #ffffff; color: black; }</style>
 <p>The format of the string representation is specified by the format character <i>f</i>, and the precision (number of digits after the decimal point) is specified with <i>prec</i>.</p>
 <p>The valid formats for <i>f</i> are 'e', 'E', 'f', 'g' and 'G'. The formats are the same as for <a href="q3cstring.html#sprintf">sprintf</a>(); they are explained in <a href="qstring.html#arg">QString::arg</a>().</p>
 <h3 class="fn"><a name="setNum-2"></a>Q3CString &amp; Q3CString::setNum ( long <i>n</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-3"></a>Q3CString &amp; Q3CString::setNum ( <a href="qtglobal.html#ulong-typedef">ulong</a> <i>n</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-4"></a>Q3CString &amp; Q3CString::setNum ( int <i>n</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-5"></a>Q3CString &amp; Q3CString::setNum ( <a href="qtglobal.html#uint-typedef">uint</a> <i>n</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-6"></a>Q3CString &amp; Q3CString::setNum ( short <i>n</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-7"></a>Q3CString &amp; Q3CString::setNum ( <a href="qtglobal.html#ushort-typedef">ushort</a> <i>n</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the string to the string representation of the number <i>n</i> and returns a reference to the string.</p>
 <h3 class="fn"><a name="setNum-8"></a>Q3CString &amp; Q3CString::setNum ( float <i>n</i>, char <i>f</i> = 'g', int <i>prec</i> = 6 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="setStr"></a>Q3CString &amp; Q3CString::setStr ( const char * <i>str</i> )</h3>
 <p>Makes a deep copy of <i>str</i>. Returns a reference to the string.</p>
 <h3 class="fn"><a name="simplifyWhiteSpace"></a>Q3CString Q3CString::simplifyWhiteSpace () const</h3>
@@ -230,98 +230,98 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-eq"></a>Q3CString &amp; Q3CString::operator= ( const Q3CString &amp; <i>s</i> )</h3>
 <p>Assigns a shallow copy of <i>s</i> to this string and returns a reference to this string.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>Q3CString &amp; Q3CString::operator= ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>ba</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Assigns byte array <i>ba</i> to this <a href="q3cstring.html">Q3CString</a>.</p>
 <h3 class="fn"><a name="operator-eq-3"></a>Q3CString &amp; Q3CString::operator= ( const char * <i>str</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Assigns a deep copy of <i>str</i> to this string and returns a reference to this string.</p>
 <p>If <i>str</i> is 0 a null string is created.</p>
 <p>See also <a href="qbytearray.html#isNull">isNull</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="operator-not-eq-29"></a>bool operator!= ( const Q3CString &amp; <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are different; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) != 0.</p>
 <h3 class="fn"><a name="operator-not-eq-34"></a>bool operator!= ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are different; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) != 0.</p>
 <h3 class="fn"><a name="operator-not-eq-35"></a>bool operator!= ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are different; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) != 0.</p>
 <h3 class="fn"><a name="operator-2b-15"></a>const Q3CString operator+ ( const Q3CString &amp; <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which consists of the concatenation of <i>s1</i> and <i>s2</i>.</p>
 <h3 class="fn"><a name="operator-2b-26"></a>const Q3CString operator+ ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which consists of the concatenation of <i>s1</i> and <i>s2</i>.</p>
 <h3 class="fn"><a name="operator-2b-27"></a>const Q3CString operator+ ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which consists of the concatenation of <i>s1</i> and <i>s2</i>.</p>
 <h3 class="fn"><a name="operator-2b-28"></a>const Q3CString operator+ ( const Q3CString &amp; <i>s</i>, char <i>c</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which consists of the concatenation of <i>s</i> and <i>c</i>.</p>
 <h3 class="fn"><a name="operator-2b-29"></a>const Q3CString operator+ ( char <i>c</i>, const Q3CString &amp; <i>s</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a string which consists of the concatenation of <i>c</i> and <i>s</i>.</p>
 <h3 class="fn"><a name="operator-lt-8"></a>bool operator&lt; ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is less than <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &lt; 0.</p>
 <h3 class="fn"><a name="operator-lt-13"></a>bool operator&lt; ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is less than <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &lt; 0.</p>
-<h3 class="fn"><a name="operator-lt-lt-94"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const Q3CString &amp; <i>str</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-98"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const Q3CString &amp; <i>str</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes string <i>str</i> to the stream <i>s</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-lt-eq-8"></a>bool operator&lt;= ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is less than or equal to <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &lt;= 0.</p>
 <h3 class="fn"><a name="operator-lt-eq-13"></a>bool operator&lt;= ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is less than or equal to <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &lt;= 0.</p>
 <h3 class="fn"><a name="operator-eq-eq-41"></a>bool operator== ( const Q3CString &amp; <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are equal; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) == 0.</p>
 <h3 class="fn"><a name="operator-eq-eq-46"></a>bool operator== ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are equal; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) == 0.</p>
 <h3 class="fn"><a name="operator-eq-eq-47"></a>bool operator== ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> and <i>s2</i> are equal; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) == 0.</p>
 <h3 class="fn"><a name="operator-gt-8"></a>bool operator&gt; ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is greater than <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &gt; 0.</p>
 <h3 class="fn"><a name="operator-gt-13"></a>bool operator&gt; ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is greater than <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &gt; 0.</p>
 <h3 class="fn"><a name="operator-gt-eq-8"></a>bool operator&gt;= ( const Q3CString &amp; <i>s1</i>, const char * <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is greater than or equal to <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &gt;= 0.</p>
 <h3 class="fn"><a name="operator-gt-eq-13"></a>bool operator&gt;= ( const char * <i>s1</i>, const Q3CString &amp; <i>s2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>s1</i> is greater than or equal to <i>s2</i>; otherwise returns false.</p>
 <p>Equivalent to qstrcmp(<i>s1</i>, <i>s2</i>) &gt;= 0.</p>
 <h3 class="fn"><a name="operator-gt-gt-59"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, Q3CString &amp; <i>str</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a string into <i>str</i> from the stream <i>s</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtXML module of the Qt Toolkit.
 **
@@ -260,8 +260,16 @@ private:
     QMap<QString,QString> entities;
 
     // used for parsing of entity references
-    QStack<QString> xmlRef;
-    QStack<QString> xmlRefName;
+    struct XmlRef {
+        XmlRef(const QString &_name = QString(), const QString &_value = QString())
+            : name(_name), value(_value), index(0) {}
+        bool isEmpty() const { return index == value.length(); }
+        QChar next() { return value.at(index++); }
+        QString name;
+        QString value;
+        int index;
+    };
+    QStack<XmlRef> xmlRefStack;
 
     // used for standalone declaration
     enum Standalone { Yes, No, Unknown };
@@ -1264,6 +1272,11 @@ void QXmlInputSource::reset()
 */
 QString QXmlInputSource::data() const
 {
+    if (d->nextReturnedEndOfData) {
+        QXmlInputSource *that = const_cast<QXmlInputSource*>(this);
+        that->d->nextReturnedEndOfData = false;
+        that->fetchData();
+    }
     return d->str;
 }
 
@@ -4217,8 +4230,8 @@ bool QXmlSimpleReaderPrivate::parseContent()
 
 bool QXmlSimpleReaderPrivate::reportEndEntities()
 {
-    int count = (int)xmlRef.count();
-    while (count != 0 && xmlRef.top().isEmpty()) {
+    int count = (int)xmlRefStack.count();
+    while (count != 0 && xmlRefStack.top().isEmpty()) {
         if (contentHnd) {
             if (reportWhitespaceCharData || !string().simplified().isEmpty()) {
                 if (!contentHnd->characters(string())) {
@@ -4229,13 +4242,12 @@ bool QXmlSimpleReaderPrivate::reportEndEntities()
         }
         stringClear();
         if (lexicalHnd) {
-            if (!lexicalHnd->endEntity(xmlRefName.top())) {
+            if (!lexicalHnd->endEntity(xmlRefStack.top().name)) {
                 reportParseError(lexicalHnd->errorString());
                 return false;
             }
         }
-        xmlRef.pop_back();
-        xmlRefName.pop_back();
+        xmlRefStack.pop_back();
         count--;
     }
     return true;
@@ -7614,13 +7626,12 @@ bool QXmlSimpleReaderPrivate::insertXmlRef(const QString &data, const QString &n
 {
     if (inLiteral) {
         QString tmp = data;
-        xmlRef.push(tmp.replace("\"", "&quot;").replace("'", "&apos;"));
+        xmlRefStack.push(XmlRef(name, tmp.replace("\"", "&quot;").replace("'", "&apos;")));
     } else {
-        xmlRef.push(data);
+        xmlRefStack.push(XmlRef(name, data));
     }
-    xmlRefName.push(name);
     int n = qMax(parameterEntities.count(), entities.count());
-    if (xmlRefName.count() > n+1) {
+    if (xmlRefStack.count() > n+1) {
         // recursive entities
         reportParseError(XMLERR_RECURSIVEENTITIES);
         return false;
@@ -7639,15 +7650,13 @@ bool QXmlSimpleReaderPrivate::insertXmlRef(const QString &data, const QString &n
 */
 void QXmlSimpleReaderPrivate::next()
 {
-    int count = xmlRef.size();
+    int count = xmlRefStack.size();
     while (count != 0) {
-        if (xmlRef.top().isEmpty()) {
-            xmlRef.pop_back();
-            xmlRefName.pop_back();
+        if (xmlRefStack.top().isEmpty()) {
+            xmlRefStack.pop_back();
             count--;
         } else {
-            c = xmlRef.top().at(0);
-            xmlRef.top().remove(0, 1);
+            c = xmlRefStack.top().next();
             return;
         }
     }
@@ -7735,7 +7744,7 @@ void QXmlSimpleReaderPrivate::init(const QXmlInputSource *i)
 void QXmlSimpleReaderPrivate::initData()
 {
     c = QXmlInputSource::EndOfData;
-    xmlRef.clear();
+    xmlRefStack.clear();
     next();
 }
 

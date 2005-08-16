@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/src/gui/widgets/qframe.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/src/gui/widgets/qframe.cpp -->
 <head>
     <title>Qt 4.1: QFrame Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -33,7 +33,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qframe.html#frameRect-prop">frameRect</a></b> : QRect</li>
 <li><div class="fn"/><b><a href="qframe.html#frameShadow-prop">frameShadow</a></b> : Shadow</li>
@@ -44,7 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qframe.html#midLineWidth-prop">midLineWidth</a></b> : int</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -71,7 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -91,6 +91,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -118,17 +119,17 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Shadow-enum"></a>enum QFrame::Shadow</h3>
 <p>This enum type defines the types of shadow that are used to give a 3D effect to frames.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFrame::Plain</tt></td><td align="center" valign="top"><tt>0x0010</tt></td><td valign="top">the frame and contents appear level with the surroundings; draws using the palette foreground color (without any 3D effect)</td></tr>
 <tr><td valign="top"><tt>QFrame::Raised</tt></td><td align="center" valign="top"><tt>0x0020</tt></td><td valign="top">the frame and contents appear raised; draws a 3D raised line using the light and dark colors of the current color group</td></tr>
 <tr><td valign="top"><tt>QFrame::Sunken</tt></td><td align="center" valign="top"><tt>0x0030</tt></td><td valign="top">the frame and contents appear sunken; draws a 3D sunken line using the light and dark colors of the current color group</td></tr>
-</table>
+</table></p>
 <p>Shadow interacts with <a href="qframe.html#Shape-enum">QFrame::Shape</a>, the <a href="qframe.html#lineWidth-prop">lineWidth</a>() and the <a href="qframe.html#midLineWidth-prop">midLineWidth</a>(). See the picture of the frames in the main class documentation.</p>
 <p>See also <a href="qframe.html#Shape-enum">QFrame::Shape</a>, <a href="qframe.html#lineWidth-prop">lineWidth</a>(), and <a href="qframe.html#midLineWidth-prop">midLineWidth</a>().</p>
 <h3 class="fn"><a name="Shape-enum"></a>enum QFrame::Shape</h3>
 <p>This enum type defines the shapes of frame available.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFrame::NoFrame</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top"><a href="qframe.html">QFrame</a> draws nothing</td></tr>
 <tr><td valign="top"><tt>QFrame::Box</tt></td><td align="center" valign="top"><tt>0x0001</tt></td><td valign="top"><a href="qframe.html">QFrame</a> draws a box around its contents</td></tr>
@@ -137,7 +138,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFrame::HLine</tt></td><td align="center" valign="top"><tt>0x0004</tt></td><td valign="top"><a href="qframe.html">QFrame</a> draws a horizontal line that frames nothing (useful as separator)</td></tr>
 <tr><td valign="top"><tt>QFrame::VLine</tt></td><td align="center" valign="top"><tt>0x0005</tt></td><td valign="top"><a href="qframe.html">QFrame</a> draws a vertical line that frames nothing (useful as separator)</td></tr>
 <tr><td valign="top"><tt>QFrame::WinPanel</tt></td><td align="center" valign="top"><tt>0x0003</tt></td><td valign="top">draws a rectangular panel that can be raised or sunken like those in Windows 95. Specifying this shape sets the line width to 2 pixels. WinPanel is provided for compatibility. For GUI style independence we recommend using StyledPanel instead.</td></tr>
-</table>
+</table></p>
 <p>When it does not call <a href="qstyle.html">QStyle</a>, Shape interacts with <a href="qframe.html#Shadow-enum">QFrame::Shadow</a>, the <a href="qframe.html#lineWidth-prop">lineWidth</a>() and the <a href="qframe.html#midLineWidth-prop">midLineWidth</a>() to create the total result. See the picture of the frames in the main class documentation.</p>
 <p>See also <a href="qframe.html#Shadow-enum">QFrame::Shadow</a>, <a href="qwidget.html#style">QFrame::style</a>(), and <a href="qstyle.html#drawPrimitive">QStyle::drawPrimitive</a>().</p>
 <hr />
@@ -221,8 +222,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qframe.html#frameShape-prop">QFrame::frameShape</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

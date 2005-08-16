@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -23,6 +23,7 @@
 
 #include "qsqlquerymodel.h"
 
+#include <qdebug.h>
 #include <qsqldriver.h>
 #include <qsqlfield.h>
 
@@ -34,19 +35,18 @@ void QSqlQueryModelPrivate::prefetch(int limit)
 {
     Q_Q(QSqlQueryModel);
 
-    if (atEnd || limit <= bottom.row())
+    if (atEnd || limit <= bottom.row() || bottom.column() == -1)
         return;
 
-    int oldAt = query.at();
-    QModelIndex oldBottom = q->createIndex(bottom.row(), 0);
     QModelIndex newBottom;
+    const int oldBottomRow = qMax(bottom.row(), 0);
 
     // try to seek directly
     if (query.seek(limit)) {
         newBottom = q->createIndex(limit, bottom.column());
     } else {
         // have to seek back to our old position for MS Access
-        int i = oldBottom.row();
+        int i = oldBottomRow;
         if (query.seek(i)) {
             while (query.next())
                 ++i;
@@ -57,13 +57,8 @@ void QSqlQueryModelPrivate::prefetch(int limit)
         }
         atEnd = true; // this is the end.
     }
-    if (newBottom.row() >= 0
-        && (newBottom.row() > oldBottom.row()
-#ifdef QT3_SUPPORT
-            || oldAt == QSql::BeforeFirst
-#endif
-            )) {
-        q->beginInsertRows(QModelIndex(), oldBottom.row(), newBottom.row());
+    if (newBottom.row() >= 0 && newBottom.row() > bottom.row()) {
+        q->beginInsertRows(QModelIndex(), bottom.row() + 1, newBottom.row());
         bottom = newBottom;
         q->endInsertRows();
     } else {
@@ -175,7 +170,7 @@ void QSqlQueryModel::fetchMore(const QModelIndex &parent)
     Q_D(QSqlQueryModel);
     if (parent.isValid())
         return;
-    d->prefetch(d->bottom.row() + QSQL_PREFETCH);
+    d->prefetch(qMax(d->bottom.row(), 0) + QSQL_PREFETCH);
 }
 
 /*!
@@ -207,10 +202,10 @@ bool QSqlQueryModel::canFetchMore(const QModelIndex &parent) const
 
     \sa canFetchMore(), QSqlDriver::hasFeature()
  */
-int QSqlQueryModel::rowCount(const QModelIndex &) const
+int QSqlQueryModel::rowCount(const QModelIndex &index) const
 {
     Q_D(const QSqlQueryModel);
-    return d->bottom.row() + 1;
+    return index.isValid() ? 0 : d->bottom.row() + 1;
 }
 
 /*! \reimp
@@ -266,7 +261,7 @@ QVariant QSqlQueryModel::headerData(int section, Qt::Orientation orientation, in
             val = d->headers.value(section).value(Qt::EditRole);
         if (val.isValid())
             return val;
-        if (d->rec.count() > section)
+        if (role == Qt::DisplayRole && d->rec.count() > section)
             return d->rec.fieldName(section);
     }
     return QAbstractItemModel::headerData(section, orientation, role);
@@ -307,7 +302,7 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
         memset(d->colOffsets.data(), 0, d->colOffsets.size() * sizeof(int));
     }
 
-    beginRemoveRows(QModelIndex(), 0, d->bottom.row());
+    beginRemoveRows(QModelIndex(), 0, qMax(d->bottom.row(), 0));
 
     d->bottom = QModelIndex();
     d->error = QSqlError();
@@ -333,13 +328,13 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
     }
     QModelIndex newBottom;
     if (hasQuerySize) {
-        beginInsertRows(QModelIndex(), 0, newBottom.row());
+        beginInsertRows(QModelIndex(), 0, qMax(0, newBottom.row()));
         newBottom = createIndex(d->query.size() - 1, d->rec.count() - 1);
         d->bottom = createIndex(d->query.size() - 1, columnsChanged ? 0 : d->rec.count() - 1);
         d->atEnd = true;
         endInsertRows();
     } else {
-        newBottom = createIndex(0, d->rec.count() - 1);
+        newBottom = createIndex(-1, d->rec.count() - 1);
     }
     if (columnsChanged) {
         beginInsertColumns(QModelIndex(), 0, newBottom.column());

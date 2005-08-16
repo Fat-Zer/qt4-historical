@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -43,6 +43,9 @@
 #include "qdockwidget_p.h"
 #include "qdockwidgetlayout_p.h"
 #include "qmainwindowlayout_p.h"
+#ifdef Q_WS_MAC
+#include <qmacstyle_mac.h>
+#endif
 
 
 static inline bool hasFeature(QDockWidget *dockwidget, QDockWidget::DockWidgetFeature feature)
@@ -257,8 +260,8 @@ void QDockWidgetPrivate::updateButtons()
 void QDockWidgetPrivate::relayout()
 {
     Q_Q(QDockWidget);
-    int fw = q->isFloating() ? q->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth) : 0;
-    int mw = q->style()->pixelMetric(QStyle::PM_DockWidgetTitleMargin);
+    int fw = q->isFloating() ? q->style()->pixelMetric(QStyle::PM_DockWidgetFrameWidth, 0, q) : 0;
+    int mw = q->style()->pixelMetric(QStyle::PM_DockWidgetTitleMargin, 0, q);
     QSize closeSize = closeButton ? closeButton->sizeHint() : QSize(0,0);
     QSize floatSize = floatButton ? floatButton->sizeHint() : QSize(0,0);
 
@@ -266,17 +269,37 @@ void QDockWidgetPrivate::relayout()
     int minHeight = qMax(closeSize.width(), closeSize.height()) + 2 * mw;
     minHeight = qMax(minHeight, qMax(floatSize.width(), floatSize.height()));
     minHeight += 2; // Allow 1px frame around title area with buttons inside
-    minHeight = qMax(minHeight, q->fontMetrics().lineSpacing() + 2 + 2 * mw) - fw; //Ensure 2 px margin around font
+#ifdef Q_WS_MAC
+    if (qobject_cast<QMacStyle *>(q->style())) {
+        extern QHash<QByteArray, QFont> *qt_app_fonts_hash(); // qapplication.cpp
+        QFont font = qt_app_fonts_hash()->value("QToolButton", q->font());
+        QFontMetrics fm(font);
+        minHeight = qMax(minHeight, fm.lineSpacing() + 2 + 2 * mw) - fw; //Ensure 2 px margin around font
+    } else
+#endif
+    {
+        minHeight = qMax(minHeight, q->fontMetrics().lineSpacing() + 2 + 2 * mw) - fw; //Ensure 2 px margin around font
+    }
     titleArea = QRect(QPoint(fw, fw),
                       QSize(q->rect().width() - (fw * 2), minHeight));
     int posX = titleArea.right();
 
+    QPoint buttonOffset(0, 0);
+#ifdef Q_OS_WIN
+    //### Fix this properly in Qt 4.2
+    if (q->style()->inherits("QWindowsXPStyle")) {
+        if(q->isFloating())
+            buttonOffset = QPoint(2, -1);
+        else
+            buttonOffset = QPoint(0, 1);
+    }
+#endif
     if (closeButton) {
         //### Fix this properly in Qt 4.2
         closeButton->setGeometry(QStyle::visualRect(
 				    qApp->layoutDirection(),
-                                    titleArea, QRect(posX - closeSize.width() - mw,
-                                    titleArea.bottom() - closeSize.height() - mw,
+                                    titleArea, QRect(posX - closeSize.width() - mw + buttonOffset.x(),
+                                    titleArea.center().y() - closeSize.height() / 2 + + buttonOffset.y(),
                                     closeSize.width(), closeSize.height())));
         posX -= closeSize.width() + 1;
     }
@@ -285,12 +308,12 @@ void QDockWidgetPrivate::relayout()
         //### Fix this properly in Qt 4.2
         floatButton->setGeometry(QStyle::visualRect(
 				    qApp->layoutDirection(),
-                                    titleArea, QRect(posX - floatSize.width() - mw,
-                                    titleArea.bottom() - floatSize.height() - mw,
+                                    titleArea, QRect(posX - floatSize.width() - mw + buttonOffset.x(),
+                                    titleArea.center().y() - floatSize.height() / 2 + buttonOffset.y(),
                                     floatSize.width(), floatSize.height())));
         posX -= floatSize.width() + 1;
     }
- 
+
     topSpacer->changeSize(minWidth, 0 + titleArea.height(), QSizePolicy::Expanding, QSizePolicy::Fixed);
     top->setMargin(fw);
     top->invalidate();
@@ -342,6 +365,8 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
     if (!::hasFeature(q, QDockWidget::DockWidgetMovable))
         return;
 
+    if (!q->parentWidget())
+        return;
     QMainWindowLayout *layout = qobject_cast<QMainWindowLayout *>(q->parentWidget()->layout());
     if (!layout)
         return;
@@ -432,7 +457,7 @@ void QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)
             target.moveTopLeft(event->globalPos() - state->offset);
         } else {
             /*
-              cannot float the window, so put it back into it's
+              cannot float the window, so put it back into its
               original position
             */
             target = state->origin;
@@ -622,7 +647,7 @@ QDockWidget::~QDockWidget()
 QWidget *QDockWidget::widget() const
 {
     Q_D(const QDockWidget);
-    return d->item ? d->item->widget() : 0;
+    return d->widget;
 }
 
 /*!
@@ -633,15 +658,15 @@ QWidget *QDockWidget::widget() const
 void QDockWidget::setWidget(QWidget *widget)
 {
     Q_D(QDockWidget);
-    if (d->item) {
-        d->box->removeItem(d->item);
-        delete d->item;
-        d->item = 0;
-    }
-    if (widget) {
-        d->item = new QDockWidgetItem(widget);
+
+    if (d->widget)
+        d->box->removeWidget(d->widget);
+
+    d->widget = widget;
+
+    if (d->widget) {
         d->box->addChildWidget(widget);
-        d->box->insertItem(1, d->item);
+        d->box->insertItem(1, new QDockWidgetItem(d->widget));
     }
 }
 
@@ -791,10 +816,10 @@ bool QDockWidget::event(QEvent *event)
 #ifndef QT_NO_ACTION
     case QEvent::Hide:
         if (!isHidden())
-            d->toggleViewAction->setChecked(false);
-        break;
+            break;
+        // fallthrough intended
     case QEvent::Show:
-        d->toggleViewAction->setChecked(true);
+        d->toggleViewAction->setChecked(event->type() == QEvent::Show);
         break;
 #endif
     case QEvent::StyleChange:
@@ -823,6 +848,10 @@ bool QDockWidget::event(QEvent *event)
     case QEvent::MouseButtonRelease:
         d->mouseReleaseEvent(static_cast<QMouseEvent *>(event));
         return true;
+    case QEvent::ChildRemoved:
+        if (d->widget == static_cast<QChildEvent *>(event)->child())
+            d->widget = 0;
+        break;
     default:
         break;
     }

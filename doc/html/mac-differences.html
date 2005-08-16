@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-win-opensource-src-4.1.0/doc/src/mac-differences.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140095498358/qt-win-opensource-src-4.1.1/doc/src/mac-differences.qdoc -->
 <head>
     <title>Qt 4.1: Qt/Mac-Specific Issues</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <p>There are two flags that are helpful when wanting to define Mac OS X specific code:</p>
 <ul>
 <li><a href="qtglobal.html#Q_OS_DARWIN">Q_OS_DARWIN</a> is defined when Qt detects you are on a Darwin-based system (including the Open Source version)</li>
-<li>Q_WS_MAC is defined when we the Mac OS X GUI is present.</li>
+<li><a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a> is defined when we the Mac OS X GUI is present.</li>
 </ul>
 <p>Q_OS_MAC is defined as a convenience and is available whenever <a href="qtglobal.html#Q_OS_DARWIN">Q_OS_DARWIN</a> is defined.</p>
 <p>If you desire to define for specific versions of Mac OS X, use the availability macros defined in /usr/include/AvailabilityMacros.h.</p>
@@ -96,7 +96,7 @@ body { background: #ffffff; color: black; }</style>
     qDebug(&quot;Path = %s&quot;, pathPtr);
     CFRelease(pluginRef);
     CFRelease(macPath);</pre>
-<p>Do not forget to protect this code with an #if defined(Q_WS_MAC) macro if you are deploying on more than one platform.</p>
+<p>Do not forget to protect this code with an #if defined(<a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a>) macro if you are deploying on more than one platform.</p>
 <a name="translating-the-application-menu-and-native-dialogs"></a>
 <h3>Translating the Application Menu and Native Dialogs</h3>
 <p>The items in the Application Menu will be merged correctly for your localized application, but they will not show up translated until you add a localized resource folder inside the Bundle. See:</p>
@@ -148,8 +148,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Qt/Mac has support for sheets, drawers. Represented by <a href="qt.html#WindowType-enum">Qt::Sheet</a> and <a href="qt.html#WindowType-enum">Qt::Drawer</a> in the window flags respectiviely. Brushed metal windows are also possible using <a href="qt.html#WidgetAttribute-enum">Qt::WA_MacMetalStyle</a> window attribute.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

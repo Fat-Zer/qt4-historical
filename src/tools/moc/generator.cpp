@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -151,14 +151,6 @@ int qvariant_nameToType(const char* name)
 bool isVariantType(const char* type)
 {
     return qvariant_nameToType(type) != 0;
-}
-
-
-static inline QByteArray noRef(const QByteArray &type)
-{
-    if (type.endsWith('&'))
-        return type.left(type.length()-1);
-    return type;
 }
 
 Generator::Generator(FILE *outfile, ClassDef *classDef) :out(outfile), cdef(classDef)
@@ -627,7 +619,7 @@ void Generator::generateMetacall()
                 const ArgumentDef &a = f.arguments.at(j);
                 if (j)
                     fprintf(out, ",");
-                fprintf(out, "*reinterpret_cast< %s*>(_a[%d])",noRef(a.normalizedType).constData(), offset++);
+                fprintf(out, "*reinterpret_cast< %s>(_a[%d])",a.typeNameForCast.constData(), offset++);
             }
             fprintf(out, ");");
             if (f.normalizedType.size())

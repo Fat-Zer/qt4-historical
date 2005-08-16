@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -66,7 +66,21 @@ void QSyntaxHighlighterPrivate::reformatDocument()
 
 void QSyntaxHighlighterPrivate::applyFormatChanges()
 {
-    QList<QTextLayout::FormatRange> ranges;
+    QTextLayout *layout = currentBlock.layout();
+
+    QList<QTextLayout::FormatRange> ranges = layout->additionalFormats();    
+    
+    const int preeditAreaStart = layout->preeditAreaPosition();
+    const int preeditAreaLength = layout->preeditAreaText().length();
+
+    QList<QTextLayout::FormatRange>::Iterator it = ranges.begin();
+    while (it != ranges.constEnd()) {
+        if (it->start >= preeditAreaStart
+            && it->start + it->length <= preeditAreaStart + preeditAreaLength)
+            ++it;
+        else
+            it = ranges.erase(it);
+    }
 
     QTextCharFormat emptyFormat;
 
@@ -92,27 +106,43 @@ void QSyntaxHighlighterPrivate::applyFormatChanges()
             break;
 
         r.length = i - r.start;
+        
+        if (r.start >= preeditAreaStart) {
+            r.start += preeditAreaLength;
+        } else if (r.start + r.length >= preeditAreaStart) {
+            r.length += preeditAreaLength;
+        }
+        
         ranges << r;
         r.start = r.length = -1;
     }
 
     if (r.start != -1) {
         r.length = formatChanges.count() - r.start;
+
+        if (r.start >= preeditAreaStart) {
+            r.start += preeditAreaLength;
+        } else if (r.start + r.length >= preeditAreaStart) {
+            r.length += preeditAreaLength;
+        }
+
         ranges << r;
     }
 
-    currentBlock.layout()->setAdditionalFormats(ranges);
+    layout->setAdditionalFormats(ranges);
 }
 
 void QSyntaxHighlighterPrivate::reformatBlocks(int from, int charsRemoved, int charsAdded)
 {
+    Q_UNUSED(charsRemoved);
+
     QTextBlock block = doc->findBlock(from);
     if (!block.isValid())
         return;
 
     QTextBlock endBlock;
-    if (charsAdded > charsRemoved || charsAdded == charsRemoved)
-        endBlock = doc->findBlock(from + charsAdded);
+    if (charsAdded > 0)
+        endBlock = doc->findBlock(from + charsAdded - 1);
     else
         endBlock = block;
 

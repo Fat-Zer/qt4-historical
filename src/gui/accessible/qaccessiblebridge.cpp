@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -88,14 +88,14 @@
     Writing an accessibility bridge plugin is achieved by subclassing
     this base class, reimplementing the pure virtual functions keys()
     and create(), and exporting the class with the
-    Q_EXPORT_PLUGIN() macro.
+    Q_EXPORT_PLUGIN2() macro.
 
     \sa QAccessibleBridge, QAccessiblePlugin, {How to Create Qt Plugins}
 */
 
 /*!
     Constructs an accessibility bridge plugin with the given \a
-    parent. This is invoked automatically by the Q_EXPORT_PLUGIN()
+    parent. This is invoked automatically by the Q_EXPORT_PLUGIN2()
     macro.
 */
 QAccessibleBridgePlugin::QAccessibleBridgePlugin(QObject *parent)

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -120,7 +120,7 @@ void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
     m_formWindow = fw;
 
     if (fw && fw->cursor())
-        m_selected = fw->cursor()->selectedWidget(0);
+        m_selected = core()->propertyEditor()->object();
 
     int xoffset = m_treeWidget->horizontalScrollBar()->value();
     int yoffset = m_treeWidget->verticalScrollBar()->value();

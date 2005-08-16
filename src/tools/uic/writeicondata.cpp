@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -61,7 +61,7 @@ static QByteArray unzipXPM(QString data, ulong& length)
 #else
     Q_UNUSED(data);
     Q_UNUSED(length);
-    return QByteArray();    
+    return QByteArray();
 #endif
 }
 
@@ -96,7 +96,7 @@ void WriteIconData::acceptImage(DomImage *image)
         int a = 0;
         int column = 0;
         bool inQuote = false;
-        output << option.indent << "static const char* const " << img << "[] = { " << endl;
+        output << option.indent << "static const char* const " << img << "[] = { \n";
         while (baunzip[a] != '\"')
             a++;
         for (; a < (int) length; a++) {
@@ -112,7 +112,11 @@ void WriteIconData::acceptImage(DomImage *image)
                 column = 1;
             }
         }
-        output << endl;
+
+        if (! baunzip.trimmed ().endsWith ("};"))
+            output << "};";
+
+        output << "\n\n";
     } else {
         output << option.indent << "static const unsigned char " << img << "[] = { \n";
         output << option.indent;
