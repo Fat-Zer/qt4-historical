@@ -364,6 +364,12 @@ void QPainterPrivate::updateState(QPainterState *newState)
 
     } else if (newState->state() || engine->state!=newState) {
 
+        // ### we might have to call QPainter::begin() here...
+        if (!engine->state) {
+            engine->state = newState;
+            engine->setDirty(QPaintEngine::AllDirty);
+        }
+
         if (engine->state->painter() != newState->painter)
             // ### this could break with clip regions vs paths.
             engine->setDirty(QPaintEngine::AllDirty);
@@ -428,14 +434,14 @@ void QPainterPrivate::updateState(QPainterState *newState)
     destructor, deactivates it.
 
     Together with the QPaintDevice and QPaintEngine classes, QPainter
-    form the basis for Qt's paint system, Arthur. QPainter is the
-    class used to perform drawing operations. QPaintDevice represents
-    a device that can be painted on using a QPainter. QPaintEngine
-    provides the interface that the painter uses to draw onto
-    different types of devices. If the painter is active, device()
-    returns the paint device on which the painter paints, and
-    paintEngine() returns the paint engine that the painter is
-    currently operating on.
+    form the basis for Qt's paint system. QPainter is the class used
+    to perform drawing operations. QPaintDevice represents a device
+    that can be painted on using a QPainter. QPaintEngine provides the
+    interface that the painter uses to draw onto different types of
+    devices. If the painter is active, device() returns the paint
+    device on which the painter paints, and paintEngine() returns the
+    paint engine that the painter is currently operating on. For more
+    information, see \l {The Paint System} documentation.
 
     Sometimes it is desirable to make someone else paint on an unusual
     QPaintDevice. QPainter supports a static function to do this,
@@ -1188,7 +1194,12 @@ bool QPainter::end()
 
     bool ended = d->engine->end();
     d->updateState(0);
-    d->engine->setPaintDevice(0);
+
+    --d->device->painters;
+    if (d->device->painters == 0) {
+        d->engine->setPaintDevice(0);
+        d->engine->setActive(false);
+    }
 
     if (d->engine->autoDestruct()) {
         delete d->engine;
@@ -1196,7 +1207,6 @@ bool QPainter::end()
 
     d->engine = 0;
 
-    --d->device->painters;
     d->device = 0;
     return ended;
 }
@@ -1455,6 +1465,11 @@ void QPainter::setClipping(bool enable)
     }
 
     if (hasClipping() == enable)
+        return;
+
+    // we can't enable clipping if we don't have a clip
+    if (enable
+        && (d->state->clipInfo.isEmpty() || d->state->clipInfo.last().operation == Qt::NoClip))
         return;
 
     if (enable)
@@ -2905,7 +2920,7 @@ void QPainter::drawArc(const QRectF &r, int a, int alen)
     QRectF rect = r.normalized();
 
     QPointF startPoint;
-    qt_find_ellipse_coords(r, a/16.0, alen/16.0, &startPoint, 0);
+    qt_find_ellipse_coords(rect, a/16.0, alen/16.0, &startPoint, 0);
 
     QPainterPath path;
     path.moveTo(startPoint);
@@ -3165,7 +3180,9 @@ void QPainter::drawLines(const QLineF *lines, int lineCount)
         printf("QPainter::drawLines(), line count=%d\n", lineCount);
 #endif
 
-    if (!isActive())
+    Q_ASSERT_X(lines, "QPainter::drawLines", "lines array cannot be 0");
+
+    if (!isActive() || lineCount < 1)
         return;
 
     Q_D(QPainter);
@@ -3211,7 +3228,9 @@ void QPainter::drawLines(const QLine *lines, int lineCount)
         printf("QPainter::drawLine(), line count=%d\n", lineCount);
 #endif
 
-    if (!isActive())
+    Q_ASSERT_X(lines, "QPainter::drawLines", "lines array cannot be 0");
+
+    if (!isActive() || lineCount < 1)
         return;
 
     Q_D(QPainter);
@@ -4036,17 +4055,8 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
     Draws the given \a text with the currently defined text direction,
     beginning at the given \a position.
 
-    \table 100%
-    \row
-    \o \inlineimage qpainter-text.png
-    \o
-    \code
-        QPainter painter(this);
-        painter.drawText(rect, Qt::AlignCenter, tr("Qt by\nTrolltech"));
-    \endcode
-    \endtable
-
-    \sa boundingRect(), layoutDirection()
+    This function does not break text into multiple lines. Use the QPainter::drawText()
+    overload that takes a rectangle instead if you want line breaking.
 */
 
 void QPainter::drawText(const QPointF &p, const QString &str)
@@ -4099,6 +4109,8 @@ void QPainter::drawText(const QPointF &p, const QString &str)
         Q_ASSERT(gf.fontEngine);
         if (si.analysis.bidiLevel %2)
             gf.flags |= QTextItem::RightToLeft;
+        else
+            gf.flags &= ~QTextItem::RightToLeft;
         gf.ascent = si.ascent;
         gf.descent = si.descent;
         gf.num_glyphs = si.num_glyphs;
@@ -4149,6 +4161,16 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
 
     Draws the given \a text within the provided \a rectangle.
 
+    \table 100%
+    \row
+    \o \inlineimage qpainter-text.png
+    \o
+    \code
+        QPainter painter(this);
+        painter.drawText(rect, Qt::AlignCenter, tr("Qt by\nTrolltech"));
+    \endcode
+    \endtable
+
     The \a boundingRect (if not null) is set to the actual bounding
     rectangle of the output.  The \a flags argument is a bitwise OR of
     the following flags:
@@ -4167,7 +4189,7 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
     \o Qt::TextWordWrap
     \endlist
 
-    \sa Qt::AlignmentFlag, Qt::TextFlag
+    \sa Qt::AlignmentFlag, Qt::TextFlag, boundingRect(), layoutDirection()
 */
 void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *br)
 {
@@ -4321,12 +4343,25 @@ void QPainter::drawTextItem(const QPointF &p, const QTextItem &_ti)
     qt_painter_tread_test();
 #endif
 
-    if (!isActive() || pen().style() == Qt::NoPen)
+    if (!isActive())
         return;
+
     Q_D(QPainter);
-    d->updateState(d->state);
 
     const QTextItemInt &ti = static_cast<const QTextItemInt &>(_ti);
+
+    if (d->state->bgMode == Qt::OpaqueMode) {
+        QRectF rect(p.x(), p.y() - ti.ascent.toReal(),
+                    ti.width.toReal(),
+                    (ti.ascent + ti.descent + 1).toReal());
+        fillRect(rect, d->state->bgBrush);
+    }
+
+
+    if (pen().style() == Qt::NoPen)
+        return;
+
+    d->updateState(d->state);
 
     if (ti.fontEngine->type() != QFontEngine::Multi) {
         d->engine->drawTextItem(p, ti);

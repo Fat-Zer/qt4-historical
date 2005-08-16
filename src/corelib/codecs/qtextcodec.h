@@ -27,6 +27,8 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qlist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_TEXTCODEC
@@ -154,5 +156,7 @@ private:
 };
 
 #endif // QT_NO_TEXTCODEC
+
+QT_END_HEADER
 
 #endif // QTEXTCODEC_H

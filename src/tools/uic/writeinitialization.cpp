@@ -86,7 +86,7 @@ void WriteInitialization::acceptUI(DomUI *node)
             continue;
 
         QString varConn = connection + QLatin1String("Connection");
-        output << option.indent << varConn << " = QSqlDatabase::database(" << fixString(connection) << ");\n";
+        output << option.indent << varConn << " = QSqlDatabase::database(" << fixString(connection, option.indent) << ");\n";
     }
 
     acceptWidget(node->elementWidget());
@@ -178,9 +178,9 @@ void WriteInitialization::acceptWidget(DomWidget *node)
     } else if (uic->customWidgetsInfo()->extends(className, QLatin1String("Q3Table"))) {
         initializeQ3Table(node);
     } else if (uic->customWidgetsInfo()->extends(className, QLatin1String("Q3DataTable"))) {
-        initializeSqlDataTable(node);
+        initializeQ3SqlDataTable(node);
     } else if (uic->customWidgetsInfo()->extends(className, QLatin1String("Q3DataBrowser"))) {
-        initializeSqlDataBrowser(node);
+        initializeQ3SqlDataBrowser(node);
     }
 
     if (uic->isButton(className)) {
@@ -581,13 +581,13 @@ void WriteInitialization::writeProperties(const QString &varName,
         if (properties.contains(QLatin1String("control"))) {
             DomProperty *p = properties.value(QLatin1String("control"));
             output << option.indent << varName << "->setControl(QString::fromUtf8("
-                   << fixString(toString(p->elementString())) << "));\n";
+                   << fixString(toString(p->elementString()), option.indent) << "));\n";
         }
     }
 
     DomWidget *buttonGroupWidget = findWidget(QLatin1String("Q3ButtonGroup"));
 
-    output << option.indent << varName << "->setObjectName(QString::fromUtf8(" << fixString(varName) << "));\n";
+    output << option.indent << varName << "->setObjectName(QString::fromUtf8(" << fixString(varName, option.indent) << "));\n";
 
     for (int i=0; i<lst.size(); ++i) {
         DomProperty *p = lst.at(i);
@@ -676,9 +676,9 @@ void WriteInitialization::writeProperties(const QString &varName,
                 m_buddies.append(Buddy(varName, p->elementCstring()));
             } else {
                 if (stdset)
-                    propertyValue = fixString(p->elementCstring());
+                    propertyValue = fixString(p->elementCstring(), option.indent);
                 else
-                    propertyValue = QLatin1String("QByteArray(") + fixString(p->elementCstring()) + QLatin1String(")");
+                    propertyValue = QLatin1String("QByteArray(") + fixString(p->elementCstring(), option.indent) + QLatin1String(")");
             }
             break;
         case DomProperty::Cursor:
@@ -698,7 +698,7 @@ void WriteInitialization::writeProperties(const QString &varName,
             QString fontName = driver->unique(QLatin1String("font"));
             output << option.indent << "QFont " << fontName << ";\n";
             if (!f->elementFamily().isEmpty()) {
-                output << option.indent << fontName << ".setFamily(QString::fromUtf8(" << fixString(f->elementFamily())
+                output << option.indent << fontName << ".setFamily(QString::fromUtf8(" << fixString(f->elementFamily(), option.indent)
                     << "));\n";
             }
             if (f->elementPointSize() > 0) {
@@ -789,7 +789,7 @@ void WriteInitialization::writeProperties(const QString &varName,
             if (p->elementString()->hasAttributeNotr()
                     && toBool(p->elementString()->attributeNotr())) {
                 propertyValue = QLatin1String("QString::fromUtf8(")
-                        + fixString(p->elementString()->text())
+                        + fixString(p->elementString()->text(), option.indent)
                         + QLatin1String(")");
             } else {
                 propertyValue = trCall(p->elementString());
@@ -837,7 +837,7 @@ void WriteInitialization::writeProperties(const QString &varName,
             if (p->elementStringList()->elementString().size()) {
                 QStringList lst = p->elementStringList()->elementString();
                 for (int i=0; i<lst.size(); ++i) {
-                    propertyValue += QLatin1String(" << ") + fixString(lst.at(i));
+                    propertyValue += QLatin1String(" << ") + fixString(lst.at(i), option.indent);
                 }
             }
             break;
@@ -979,7 +979,9 @@ void WriteInitialization::initializeQ3ListBox(DomWidget *w)
             if (text)
                 refreshOut << ", ";
         }
-        refreshOut << trCall(text->elementString()) << ");\n";
+        if (text)
+            refreshOut << trCall(text->elementString());
+        refreshOut << ");\n";
     }
 }
 
@@ -1195,7 +1197,7 @@ QString WriteInitialization::pixCall(DomProperty *p) const
     if (pixFunc.isEmpty())
         pixFunc = QLatin1String("QString::fromUtf8");
 
-    return type + QLatin1String("(") + pixFunc + QLatin1String("(") + fixString(s) + QLatin1String(")") + QLatin1String(")");
+    return type + QLatin1String("(") + pixFunc + QLatin1String("(") + fixString(s, option.indent) + QLatin1String(")") + QLatin1String(")");
 }
 
 void WriteInitialization::initializeComboBox(DomWidget *w)
@@ -1390,7 +1392,7 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
 QString WriteInitialization::trCall(const QString &str, const QString &commentHint) const
 {
     QString result;
-    QString comment = commentHint.isEmpty() ? QString::fromUtf8("0") : fixString(commentHint);
+    QString comment = commentHint.isEmpty() ? QString::fromUtf8("0") : fixString(commentHint, option.indent);
 
     if (option.translateFunction.isEmpty()) {
         result = QLatin1String("QApplication::translate(\"");
@@ -1401,7 +1403,7 @@ QString WriteInitialization::trCall(const QString &str, const QString &commentHi
         result = option.translateFunction + QLatin1String("(");
     }
 
-    result += fixString(str);
+    result += fixString(str, option.indent);
     result += QLatin1String(", ");
     result += comment;
 
@@ -1414,7 +1416,7 @@ QString WriteInitialization::trCall(const QString &str, const QString &commentHi
     return result;
 }
 
-void WriteInitialization::initializeSqlDataTable(DomWidget *w)
+void WriteInitialization::initializeQ3SqlDataTable(DomWidget *w)
 {
     QHash<QString, DomProperty*> properties = propertyMap(w->elementProperty());
 
@@ -1446,15 +1448,15 @@ void WriteInitialization::initializeSqlDataTable(DomWidget *w)
     output << option.indent << option.indent << varName << "->setSqlCursor(";
 
     if (connection == QLatin1String("(default)")) {
-        output << "new QSqlCursor(" << fixString(table) << "), false, true);\n";
+        output << "new Q3SqlCursor(" << fixString(table, option.indent) << "), false, true);\n";
     } else {
-        output << "new QSqlCursor(" << fixString(table) << ", true, " << connection << "Connection" << "), false, true);\n";
+        output << "new Q3SqlCursor(" << fixString(table, option.indent) << ", true, " << connection << "Connection" << "), false, true);\n";
     }
-    output << option.indent << option.indent << varName << "->refresh(QDataTable::RefreshAll);\n";
+    output << option.indent << option.indent << varName << "->refresh(Q3DataTable::RefreshAll);\n";
     output << option.indent << "}\n";
 }
 
-void WriteInitialization::initializeSqlDataBrowser(DomWidget *w)
+void WriteInitialization::initializeQ3SqlDataBrowser(DomWidget *w)
 {
     QHash<QString, DomProperty*> properties = propertyMap(w->elementProperty());
 
@@ -1486,9 +1488,9 @@ void WriteInitialization::initializeSqlDataBrowser(DomWidget *w)
     output << option.indent << option.indent << varName << "->setSqlCursor(";
 
     if (connection == QLatin1String("(default)")) {
-        output << "new QSqlCursor(" << fixString(table) << "), true);\n";
+        output << "new Q3SqlCursor(" << fixString(table, option.indent) << "), true);\n";
     } else {
-        output << "new QSqlCursor(" << fixString(table) << ", true, " << connection << "Connection" << "), false, true);\n";
+        output << "new Q3SqlCursor(" << fixString(table, option.indent) << ", true, " << connection << "Connection" << "), false, true);\n";
     }
     output << option.indent << option.indent << varName << "->refresh();\n";
     output << option.indent << "}\n";
@@ -1516,19 +1518,35 @@ bool WriteInitialization::isValidObject(const QString &name) const
         || m_registeredActions.contains(name);
 }
 
+QString WriteInitialization::findDeclaration(const QString &name)
+{
+    QString normalized = Driver::normalizedName(name);
+
+    if (DomWidget *widget = driver->widgetByName(normalized))
+        return driver->findOrInsertWidget(widget);
+    else if (DomAction *action = driver->actionByName(normalized))
+        return driver->findOrInsertAction(action);
+
+    return QString();
+}
+
 void WriteInitialization::acceptConnection(DomConnection *connection)
 {
-    if (isValidObject(connection->elementSender()) && isValidObject(connection->elementReceiver())) {
-        output << option.indent << "QObject::connect("
-            << connection->elementSender()
-            << ", "
-            << "SIGNAL(" << connection->elementSignal() << ")"
-            << ", "
-            << connection->elementReceiver()
-            << ", "
-            << "SLOT(" << connection->elementSlot() << ")"
-            << ");\n";
-    }
+    QString sender = findDeclaration(connection->elementSender());
+    QString receiver = findDeclaration(connection->elementReceiver());
+
+    if (sender.isEmpty() || receiver.isEmpty())
+        return;
+
+    output << option.indent << "QObject::connect("
+        << sender
+        << ", "
+        << "SIGNAL(" << connection->elementSignal() << ")"
+        << ", "
+        << receiver
+        << ", "
+        << "SLOT(" << connection->elementSlot() << ")"
+        << ");\n";
 }
 
 DomImage *WriteInitialization::findImage(const QString &name) const

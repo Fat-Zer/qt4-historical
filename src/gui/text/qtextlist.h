@@ -27,6 +27,8 @@
 #include <QtGui/qtextobject.h>
 #include <QtCore/qobject.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QTextListPrivate;
@@ -64,5 +66,7 @@ private:
 
 inline void QTextList::setFormat(const QTextListFormat &aformat)
 { QTextObject::setFormat(aformat); }
+
+QT_END_HEADER
 
 #endif // QTEXTLIST_H

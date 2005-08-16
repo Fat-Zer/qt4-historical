@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/itemviews/qitemeditorfactory.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/itemviews/qitemeditorfactory.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/itemviews/qitemeditorfactory.cpp -->
 <head>
     <title>Qt 4.1: QItemEditorFactory Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -41,7 +42,23 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QItemEditorFactory class provides widgets for editing item data in views and delegates.</p>
-<p>When editing the data shown by an item delegate, the <a href="qitemdelegate.html">QItemDelegate</a> responsible requests an editor widget from its item editor factory. The default factory is provided by this class, but it is possible to implement subclasses that provide specialized editing behavior, such as row or column-specific editors, or editors for certain types of data.</p>
+<p>When editing the data shown by an item delegate, the <a href="qitemdelegate.html">QItemDelegate</a> responsible requests an editor widget from its item editor factory by calling the <a href="qitemeditorfactory.html#createEditor">createEditor</a>() function. The default factory is provided by this class, but it is possible to implement subclasses that provide specialized editing behavior, such as row or column-specific editors, or editors for certain types of data.</p>
+<a name="standard-editing-widgets"></a>
+<h3>Standard Editing Widgets</h3>
+<p>The standard factory implementation provides editors for a variety of data types. These are created whenever a delegate needs to provide an editor for data supplied by a model. The following table shows the relationship between types and the standard editors provided.</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Type</th><th>Editor Widget</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>bool</td><td><a href="qcombobox.html">QComboBox</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>double</td><td><a href="qdoublespinbox.html">QDoubleSpinBox</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>int</td><td rowspan="2"><a href="qspinbox.html">QSpinBox</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>unsigned int</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qdate.html">QDate</a></td><td><a href="qdateedit.html">QDateEdit</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qdatetime.html">QDateTime</a></td><td><a href="qdatetimeedit.html">QDateTimeEdit</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qpixmap.html">QPixmap</a></td><td><a href="qlabel.html">QLabel</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qstring.html">QString</a></td><td><a href="qlineedit.html">QLineEdit</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtime.html">QTime</a></td><td><a href="qtimeedit.html">QTimeEdit</a></td></tr>
+</table></p>
+<p>Additional editors can be registered for use with both standard and custom delegates with the <a href="qitemeditorfactory.html#registerEditor">registerEditor</a>() function.</p>
 <p>See also <a href="qitemdelegate.html">QItemDelegate</a> and <a href="model-view-programming.html">Model/View Programming</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -67,6 +84,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

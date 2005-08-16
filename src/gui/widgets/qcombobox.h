@@ -29,6 +29,8 @@
 #include <QtCore/qabstractitemmodel.h>
 #include <QtCore/qvariant.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_COMBOBOX
@@ -261,18 +263,19 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(QComboBox)
     Q_DISABLE_COPY(QComboBox)
-    Q_PRIVATE_SLOT(d_func(), void itemSelected(const QModelIndex &item))
-    Q_PRIVATE_SLOT(d_func(), void emitHighlighted(const QModelIndex &))
-    Q_PRIVATE_SLOT(d_func(), void emitCurrentIndexChanged(int index))
-    Q_PRIVATE_SLOT(d_func(), void returnPressed())
-    Q_PRIVATE_SLOT(d_func(), void complete())
-    Q_PRIVATE_SLOT(d_func(), void resetButton())
-    Q_PRIVATE_SLOT(d_func(), void dataChanged(const QModelIndex &, const QModelIndex &))
-    Q_PRIVATE_SLOT(d_func(), void rowsAboutToBeInserted(const QModelIndex & parent, int start, int end))
-    Q_PRIVATE_SLOT(d_func(), void rowsInserted(const QModelIndex & parent, int start, int end))
-    Q_PRIVATE_SLOT(d_func(), void rowsAboutToBeRemoved(const QModelIndex & parent, int start, int end))
-    Q_PRIVATE_SLOT(d_func(), void rowsRemoved(const QModelIndex & parent, int start, int end))
-    Q_PRIVATE_SLOT(d_func(), void modelDestroyed())
+    Q_PRIVATE_SLOT(d_func(), void _q_itemSelected(const QModelIndex &item))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitHighlighted(const QModelIndex &))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentIndexChanged(int index))
+    Q_PRIVATE_SLOT(d_func(), void _q_returnPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_complete())
+    Q_PRIVATE_SLOT(d_func(), void _q_resetButton())
+    Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &, const QModelIndex &))
+    Q_PRIVATE_SLOT(d_func(), void _q_rowsAboutToBeInserted(const QModelIndex & parent, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void _q_rowsInserted(const QModelIndex & parent, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void _q_rowsAboutToBeRemoved(const QModelIndex & parent, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void _q_rowsRemoved(const QModelIndex & parent, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void _q_modelDestroyed())
+    Q_PRIVATE_SLOT(d_func(), void _q_modelReset())
 };
 
 inline void QComboBox::addItem(const QString &atext, const QVariant &auserData)
@@ -286,5 +289,7 @@ inline void QComboBox::insertItem(int aindex, const QString &atext,
 { insertItem(aindex, QIcon(), atext, auserData); }
 
 #endif // QT_NO_COMBOBOX
+
+QT_END_HEADER
 
 #endif // QCOMBOBOX_H

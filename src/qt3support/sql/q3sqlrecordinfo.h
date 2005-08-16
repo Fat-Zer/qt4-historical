@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_SQL
@@ -90,5 +92,7 @@ inline QSqlRecord Q3SqlRecordInfo::toRecord() const
 }
 
 #endif // QT_NO_SQL
+
+QT_END_HEADER
 
 #endif // Q3SQLRECORDINFO_H

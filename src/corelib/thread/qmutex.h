@@ -27,6 +27,8 @@
 #include <QtCore/qglobal.h>
 #include <new>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_THREAD
@@ -124,5 +126,7 @@ private:
 };
 
 #endif // QT_NO_THREAD
+
+QT_END_HEADER
 
 #endif // QMUTEX_H

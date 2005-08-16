@@ -32,6 +32,8 @@
 #endif
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef Q_SPECIALIZED_QATOMIC
@@ -263,5 +265,7 @@ inline void qAtomicDetach(QBasicAtomicPointer<T> &d)
     if (!x->ref.deref())
         delete x;
 }
+
+QT_END_HEADER
 
 #endif // QATOMIC_H

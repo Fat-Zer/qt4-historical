@@ -152,6 +152,13 @@ static QList<qreal> parsePercentageList(QString::const_iterator &itr)
     return points;
 }
 
+inline static bool isUnreserved(const QChar &c, bool first_char = false)
+{
+    return (c.isLetterOrNumber() || c == QLatin1Char('_') || c == QLatin1Char(':')
+            || (!first_char && (c == QLatin1Char('.') || c == QLatin1Char('-'))));
+
+}
+
 static QString idFromUrl(const QString &url)
 {
     QString::const_iterator itr = url.constBegin();
@@ -164,10 +171,14 @@ static QString idFromUrl(const QString &url)
     if ((*itr) == '#')
         ++itr;
     QString id;
-    while ((*itr).isLetterOrNumber()) {
-        id += *itr;
-        ++itr;
+
+    if (isUnreserved(*itr, true)) {        
+        while (isUnreserved(*itr)) {
+            id += *itr;
+            ++itr;    
+        }
     }
+
     return id;
 }
 

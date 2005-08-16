@@ -26,6 +26,8 @@
 
 #include <QtGui/qpixmap.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class Q_GUI_EXPORT QPixmapCache
@@ -39,5 +41,7 @@ public:
     static void remove(const QString &key);
     static void clear();
 };
+
+QT_END_HEADER
 
 #endif // QPIXMAPCACHE_H

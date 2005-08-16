@@ -27,6 +27,8 @@
 #include <QtCore/qiodevice.h>
 #include <QtCore/qbytearray.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QObject;
@@ -73,10 +75,12 @@ private:
     Q_DECLARE_PRIVATE(QBuffer)
     Q_DISABLE_COPY(QBuffer)
 
-    Q_PRIVATE_SLOT(d_func(), void emitSignals())
+    Q_PRIVATE_SLOT(d_func(), void _q_emitSignals())
 };
 
 inline void QBuffer::setData(const char *adata, int alen)
 { setData(QByteArray(adata, alen)); }
+
+QT_END_HEADER
 
 #endif // QBUFFER_H

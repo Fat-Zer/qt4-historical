@@ -705,6 +705,7 @@ static void qt_plastique_draw_mdibutton(QPainter *painter, const QStyleOptionTit
     painter->drawPoint(tmp.right() - 1, tmp.bottom() - 1);
 }
 
+#ifndef QT_NO_DOCKWIDGET
 static QString elliditide(const QString &text, const QFontMetrics &fontMetrics, const QRect &rect, int *textWidth = 0)
 {
     // Chop and insert ellide into title if text is too wide
@@ -735,7 +736,9 @@ static QString elliditide(const QString &text, const QFontMetrics &fontMetrics, 
         *textWidth = width;
     return title;
 }
+#endif // QT_NO_DOCKWIDGET
 
+#if !defined(QT_NO_DOCKWIDGET) || !defined(QT_NO_SPLITTER)
 static void qt_plastique_draw_handle(QPainter *painter, const QStyleOption *option,
                                      const QRect &rect, Qt::Orientation orientation,
                                      const QWidget *widget)
@@ -766,6 +769,7 @@ static void qt_plastique_draw_handle(QPainter *painter, const QStyleOption *opti
             painter->drawImage(QPoint(rect.left(), rect.top() + i * (handle.height() + spacing)), handle);
     }
 }
+#endif
 
 class QPlastiqueStylePrivate
 {
@@ -1030,7 +1034,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
                 painter->drawLine(frameV2.rect.topLeft(), frameV2.rect.topRight());
                 painter->setPen(oldPen);
             } else {
-                frameV2.state &= ~State_Sunken;
+                frameV2.state &= ~(State_Sunken | State_HasFocus);
                 drawPrimitive(PE_Frame, &frameV2, painter, widget);
             }
         }
@@ -1198,7 +1202,8 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
         }
         break ;
     case PE_FrameDockWidget:
-    case PE_FrameMenu: {
+    case PE_FrameMenu:
+    case PE_FrameStatusBar: {
         // Draws the frame around a popup menu.
         QPen oldPen = painter->pen();
         painter->setPen(borderColor);
@@ -1782,38 +1787,59 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
     }
         break;
     case PE_IndicatorBranch:
-        if (option->state & State_Children) {
-            painter->save();
-            QPoint center = option->rect.center();
-            // border
-            QRect fullRect(center.x() - 4, center.y() - 4, 9, 9);
-            painter->setPen(borderColor);
-            painter->drawLine(fullRect.left() + 1, fullRect.top(),
-                              fullRect.right() - 1, fullRect.top());
-            painter->drawLine(fullRect.left() + 1, fullRect.bottom(),
-                              fullRect.right() - 1, fullRect.bottom());
-            painter->drawLine(fullRect.left(), fullRect.top() + 1,
-                              fullRect.left(), fullRect.bottom() - 1);
-            painter->drawLine(fullRect.right(), fullRect.top() + 1,
-                              fullRect.right(), fullRect.bottom() - 1);
-            // "antialiased" corners
-            painter->setPen(alphaCornerColor);
-            painter->drawPoint(fullRect.topLeft());
-            painter->drawPoint(fullRect.topRight());
-            painter->drawPoint(fullRect.bottomLeft());
-            painter->drawPoint(fullRect.bottomRight());
-            // fill
-            QRect adjustedRect = fullRect;
-            QRect gradientRect(adjustedRect.left() + 1, adjustedRect.top() + 1,
-                               adjustedRect.right() - adjustedRect.left() - 1,
-                               adjustedRect.bottom() - adjustedRect.top() - 1);
-            qt_plastique_draw_gradient(painter, gradientRect, baseGradientStartColor, baseGradientStopColor);
-            // draw "+" or "-"
-            painter->setPen(alphaTextColor);
-            painter->drawLine(center.x() - 2, center.y(), center.x() + 2, center.y());
-            if (!(option->state & State_Open))
-                painter->drawLine(center.x(), center.y() - 2, center.x(), center.y() + 2);
-            painter->restore();
+        {
+            int mid_h = option->rect.x() + option->rect.width() / 2;
+            int mid_v = option->rect.y() + option->rect.height() / 2;
+            int bef_h = mid_h;
+            int bef_v = mid_v;
+            int aft_h = mid_h;
+            int aft_v = mid_v;
+            QBrush brush(option->palette.dark().color(), Qt::Dense4Pattern);
+            if (option->state & State_Item) {
+                if (option->direction == Qt::RightToLeft)
+                    painter->fillRect(option->rect.left(), mid_v, bef_h - option->rect.left(), 1, brush);
+                else
+                    painter->fillRect(aft_h, mid_v, option->rect.right() - aft_h + 1, 1, brush);
+            }
+            if (option->state & State_Sibling)
+                painter->fillRect(mid_h, aft_v, 1, option->rect.bottom() - aft_v + 1, brush);
+            if (option->state & (State_Open | State_Children | State_Item | State_Sibling))
+                painter->fillRect(mid_h, option->rect.y(), 1, bef_v - option->rect.y(), brush);
+
+            if (option->state & State_Children) {
+                painter->save();
+                QPoint center = option->rect.center();
+                // border
+                QRect fullRect(center.x() - 4, center.y() - 4, 9, 9);
+                painter->setPen(borderColor);
+                painter->drawLine(fullRect.left() + 1, fullRect.top(),
+                                fullRect.right() - 1, fullRect.top());
+                painter->drawLine(fullRect.left() + 1, fullRect.bottom(),
+                                fullRect.right() - 1, fullRect.bottom());
+                painter->drawLine(fullRect.left(), fullRect.top() + 1,
+                                fullRect.left(), fullRect.bottom() - 1);
+                painter->drawLine(fullRect.right(), fullRect.top() + 1,
+                                fullRect.right(), fullRect.bottom() - 1);
+                // "antialiased" corners
+                painter->setPen(alphaCornerColor);
+                painter->drawPoint(fullRect.topLeft());
+                painter->drawPoint(fullRect.topRight());
+                painter->drawPoint(fullRect.bottomLeft());
+                painter->drawPoint(fullRect.bottomRight());
+                // fill
+                QRect adjustedRect = fullRect;
+                QRect gradientRect(adjustedRect.left() + 1, adjustedRect.top() + 1,
+                                adjustedRect.right() - adjustedRect.left() - 1,
+                                adjustedRect.bottom() - adjustedRect.top() - 1);
+                qt_plastique_draw_gradient(painter, gradientRect, baseGradientStartColor, baseGradientStopColor);
+                // draw "+" or "-"
+                painter->setPen(alphaTextColor);
+                painter->drawLine(center.x() - 2, center.y(), center.x() + 2, center.y());
+                if (!(option->state & State_Open))
+                    painter->drawLine(center.x(), center.y() - 2, center.x(), center.y() + 2);
+                painter->restore();
+
+            }
         }
         break;
     default:
@@ -2364,14 +2390,16 @@ void QPlastiqueStyle::drawControl(ControlElement element, const QStyleOption *op
         break;
     case CE_ProgressBarContents:
         if (const QStyleOptionProgressBar *bar = qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
-            if (bar->progress == -1)
-                break;
 
             painter->save();
             QRect rect = bar->rect;
             bool vertical = false;
             bool inverted = false;
             bool indeterminate = (bar->minimum == 0 && bar->maximum == 0);
+            if (!indeterminate && bar->progress == -1 ) {
+                painter->restore();
+                break;
+            }
 
             // Get extra style options if version 2
             if (const QStyleOptionProgressBarV2 *bar2 = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(option)) {
@@ -2811,7 +2839,7 @@ void QPlastiqueStyle::drawControl(ControlElement element, const QStyleOption *op
             if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {// draw sub menu arrow
                 int dim = (menuItem->rect.height() - 4) / 2;
                 PrimitiveElement arrow;
-                arrow = QApplication::isRightToLeft() ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
+                arrow = (opt->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
                 int xpos = menuItem->rect.left() + menuItem->rect.width() - 6 - 2 - dim;
                 QRect  vSubMenuRect = visualRect(option->direction, menuItem->rect,
                                                  QRect(xpos, menuItem->rect.top() + menuItem->rect.height() / 2 - dim / 2, dim, dim));
@@ -3146,6 +3174,302 @@ void QPlastiqueStyle::drawControl(ControlElement element, const QStyleOption *op
         }
         break;
 #endif // QT_NO_TOOLBAR
+#ifndef QT_NO_SCROLLBAR
+    case CE_ScrollBarAddLine:
+        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
+
+            bool horizontal = scrollBar->orientation == Qt::Horizontal;
+            bool reverse = scrollBar->direction == Qt::RightToLeft;
+            bool sunken = scrollBar->state & State_Sunken;
+
+            QString addLinePixmapName = uniqueName("scrollbar_addline", option, option->rect.size());
+            QPixmap cache;
+            if (!UsePixmapCache || !QPixmapCache::find(addLinePixmapName, cache)) {
+                cache = QPixmap(option->rect.size());
+                cache.fill(Qt::white);
+                QRect pixmapRect(0, 0, cache.width(), cache.height());
+                QPainter addLinePainter(&cache);
+                addLinePainter.fillRect(pixmapRect, option->palette.background());
+
+                if (option->state & State_Enabled) {
+                    // Gradient
+                    QLinearGradient gradient(pixmapRect.center().x(), pixmapRect.top() + 2,
+                                             pixmapRect.center().x(), pixmapRect.bottom() - 2);
+                    if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
+                        gradient.setColorAt(0, gradientStopColor);
+                        gradient.setColorAt(1, gradientStopColor);
+                    } else {
+                        gradient.setColorAt(0, gradientStartColor.light(105));
+                        gradient.setColorAt(1, gradientStopColor);
+                    }
+                    addLinePainter.fillRect(pixmapRect.left() + 2, pixmapRect.top() + 2,
+                                            pixmapRect.right() - 3, pixmapRect.bottom() - 3,
+                                            gradient);
+                }
+
+                // Details
+                QImage addButton;
+                if (horizontal) {
+                    addButton = QImage(reverse ? qt_scrollbar_button_left : qt_scrollbar_button_right);
+                } else {
+                    addButton = QImage(qt_scrollbar_button_down);
+                }
+                addButton.setColor(1, alphaCornerColor.rgba());
+                addButton.setColor(2, borderColor.rgba());
+                if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
+                    addButton.setColor(3, gradientStopColor.rgba());
+                    addButton.setColor(4, gradientStopColor.rgba());
+                } else {
+                    addButton.setColor(3, gradientStartColor.light(105).rgba());
+                    addButton.setColor(4, gradientStopColor.rgba());
+                }
+                addButton.setColor(5, scrollBar->palette.text().color().rgba());
+                addLinePainter.drawImage(pixmapRect, addButton);
+
+                // Arrow
+                if (horizontal) {
+                    QImage arrow(reverse ? qt_scrollbar_button_arrow_left : qt_scrollbar_button_arrow_right);
+                    arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
+
+                    if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
+                        addLinePainter.drawImage(QPoint(pixmapRect.left() + 7, pixmapRect.top() + 5), arrow);
+                    } else {
+                        addLinePainter.drawImage(QPoint(pixmapRect.left() + 6, pixmapRect.top() + 4), arrow);
+                    }
+                } else {
+                    QImage arrow(qt_scrollbar_button_arrow_down);
+                    arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
+
+                    if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
+                        addLinePainter.drawImage(QPoint(pixmapRect.left() + 5, pixmapRect.top() + 7), arrow);
+                    } else {
+                        addLinePainter.drawImage(QPoint(pixmapRect.left() + 4, pixmapRect.top() + 6), arrow);
+                    }
+                }
+                addLinePainter.end();
+                if (UsePixmapCache)
+                    QPixmapCache::insert(addLinePixmapName, cache);
+            }
+            painter->drawPixmap(option->rect.topLeft(), cache);
+        }
+        break;
+    case CE_ScrollBarSubPage:
+    case CE_ScrollBarAddPage:
+        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
+            bool sunken = scrollBar->state & State_Sunken;
+            bool horizontal = scrollBar->orientation == Qt::Horizontal;
+
+            QString groovePixmapName = uniqueName("scrollbar_groove", option, option->rect.size());
+            if (sunken)
+                groovePixmapName += "-sunken";
+
+            QPixmap cache;
+            if (!UsePixmapCache || !QPixmapCache::find(groovePixmapName, cache)) {
+                cache = QPixmap(option->rect.size());
+                cache.fill(option->palette.background().color());
+                QPainter groovePainter(&cache);
+                QRect pixmapRect = QRect(0, 0, option->rect.width(), option->rect.height());
+                QColor color = scrollBar->palette.base().color().dark(sunken ? 125 : 100);
+                groovePainter.fillRect(pixmapRect, QBrush(color, Qt::Dense4Pattern));
+
+                QColor edgeColor = scrollBar->palette.base().color().dark(125);
+                if (horizontal) {
+                    groovePainter.setBrushOrigin(1, 0);
+                    groovePainter.fillRect(QRect(pixmapRect.topLeft(), QSize(pixmapRect.width(), 1)),
+                                           QBrush(edgeColor, Qt::Dense4Pattern));
+                    groovePainter.fillRect(QRect(pixmapRect.bottomLeft(), QSize(pixmapRect.width(), 1)),
+                                           QBrush(edgeColor, Qt::Dense4Pattern));
+                } else {
+                    groovePainter.setBrushOrigin(0, 1);
+                    groovePainter.fillRect(QRect(pixmapRect.topLeft(), QSize(1, pixmapRect.height())),
+                                           QBrush(edgeColor, Qt::Dense4Pattern));
+                    groovePainter.fillRect(QRect(pixmapRect.topRight(), QSize(1, pixmapRect.height())),
+                                           QBrush(edgeColor, Qt::Dense4Pattern));
+                }
+
+                groovePainter.end();
+                if (UsePixmapCache)
+                    QPixmapCache::insert(groovePixmapName, cache);
+            }
+            painter->drawPixmap(option->rect.topLeft(), cache);
+        }
+        break;
+    case CE_ScrollBarSubLine:
+        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
+            QRect scrollBarSubLine = scrollBar->rect;
+
+            bool horizontal = scrollBar->orientation == Qt::Horizontal;
+            bool isEnabled = scrollBar->state & State_Enabled;
+            bool reverse = scrollBar->direction == Qt::RightToLeft;
+            bool sunken = scrollBar->state & State_Sunken;
+
+            // The SubLine (up/left) buttons
+            int scrollBarExtent = pixelMetric(PM_ScrollBarExtent, option, widget);
+            QRect button1;
+            QRect button2;
+            if (horizontal) {
+                button1.setRect(scrollBarSubLine.left(), scrollBarSubLine.top(), 16, scrollBarExtent);
+                button2.setRect(scrollBarSubLine.right() - 15, scrollBarSubLine.top(), 16, scrollBarExtent);
+            } else {
+                button1.setRect(scrollBarSubLine.left(), scrollBarSubLine.top(), scrollBarExtent, 16);
+                button2.setRect(scrollBarSubLine.left(), scrollBarSubLine.bottom() - 15, scrollBarExtent, 16);
+            }
+
+            QString subLinePixmapName = uniqueName("scrollbar_subline", option, button1.size());
+            QPixmap cache;
+            if (!UsePixmapCache || !QPixmapCache::find(subLinePixmapName, cache)) {
+                cache = QPixmap(button1.size());
+                cache.fill(Qt::white);
+                QRect pixmapRect(0, 0, cache.width(), cache.height());
+                QPainter subLinePainter(&cache);
+                subLinePainter.fillRect(pixmapRect, option->palette.background());
+
+                if (isEnabled) {
+                    // Gradients
+                    if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
+                        qt_plastique_draw_gradient(&subLinePainter,
+                                                   QRect(pixmapRect.left() + 2, pixmapRect.top() + 2,
+                                                         pixmapRect.right() - 3, pixmapRect.bottom() - 3),
+                                                   gradientStopColor,
+                                                   gradientStopColor);
+                    } else {
+                        qt_plastique_draw_gradient(&subLinePainter,
+                                                   QRect(pixmapRect.left() + 2, pixmapRect.top() + 2,
+                                                         pixmapRect.right() - 3, pixmapRect.bottom() - 3),
+                                                   gradientStartColor.light(105),
+                                                   gradientStopColor);
+                    }
+                }
+
+                // Details
+                QImage subButton;
+                if (horizontal) {
+                    subButton = QImage(reverse ? qt_scrollbar_button_right : qt_scrollbar_button_left);
+                } else {
+                    subButton = QImage(qt_scrollbar_button_up);
+                }
+                subButton.setColor(1, alphaCornerColor.rgba());
+                subButton.setColor(2, borderColor.rgba());
+                if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
+                    subButton.setColor(3, gradientStopColor.rgba());
+                    subButton.setColor(4, gradientStopColor.rgba());
+                } else {
+                    subButton.setColor(3, gradientStartColor.light(105).rgba());
+                    subButton.setColor(4, gradientStopColor.rgba());
+                }
+                subButton.setColor(5, scrollBar->palette.text().color().rgba());
+                subLinePainter.drawImage(pixmapRect, subButton);
+
+                // Arrows
+                if (horizontal) {
+                    QImage arrow(reverse ? qt_scrollbar_button_arrow_right : qt_scrollbar_button_arrow_left);
+                    arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
+
+                    if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
+                        subLinePainter.drawImage(QPoint(pixmapRect.left() + 6, pixmapRect.top() + 5), arrow);
+                    } else {
+                        subLinePainter.drawImage(QPoint(pixmapRect.left() + 5, pixmapRect.top() + 4), arrow);
+                    }
+                } else {
+                    QImage arrow(qt_scrollbar_button_arrow_up);
+                    arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
+
+                    if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
+                        subLinePainter.drawImage(QPoint(pixmapRect.left() + 5, pixmapRect.top() + 7), arrow);
+                    } else {
+                        subLinePainter.drawImage(QPoint(pixmapRect.left() + 4, pixmapRect.top() + 6), arrow);
+                    }
+                }
+                subLinePainter.end();
+                if (UsePixmapCache)
+                    QPixmapCache::insert(subLinePixmapName, cache);
+            }
+            painter->drawPixmap(button1.topLeft(), cache);
+            painter->drawPixmap(button2.topLeft(), cache);
+        }
+        break;
+    case CE_ScrollBarSlider:
+        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
+            bool horizontal = scrollBar->orientation == Qt::Horizontal;
+            bool isEnabled = scrollBar->state & State_Enabled;
+
+            // The slider
+            if (option->rect.isValid()) {
+                QString sliderPixmapName = uniqueName("scrollbar_slider", option, option->rect.size());
+                if (horizontal)
+                    sliderPixmapName += QLatin1String("-horizontal");
+
+                QPixmap cache;
+                if (!UsePixmapCache || !QPixmapCache::find(sliderPixmapName, cache)) {
+                    cache = QPixmap(option->rect.size());
+                    cache.fill(Qt::white);
+                    QRect pixmapRect(0, 0, cache.width(), cache.height());
+                    QPainter sliderPainter(&cache);
+                    bool sunken = (scrollBar->state & State_Sunken);
+
+                    if (isEnabled) {
+                        QLinearGradient gradient(pixmapRect.center().x(), pixmapRect.top(),
+                                                 pixmapRect.center().x(), pixmapRect.bottom());
+                        if (sunken) {
+                            gradient.setColorAt(0, gradientStartColor.light(110));
+                            gradient.setColorAt(1, gradientStopColor.light(105));
+                        } else {
+                            gradient.setColorAt(0, gradientStartColor.light(105));
+                            gradient.setColorAt(1, gradientStopColor);
+                        }
+                        sliderPainter.fillRect(pixmapRect.adjusted(2, 2, -2, -2), gradient);
+                    } else {
+                        sliderPainter.fillRect(pixmapRect.adjusted(2, 2, -2, -2), option->palette.background());
+                    }
+
+                    sliderPainter.setPen(borderColor);
+                    sliderPainter.drawRect(pixmapRect.adjusted(0, 0, -1, -1));
+                    sliderPainter.setPen(alphaCornerColor);
+                    sliderPainter.drawPoint(pixmapRect.left(), pixmapRect.top());
+                    sliderPainter.drawPoint(pixmapRect.left(), pixmapRect.bottom());
+                    sliderPainter.drawPoint(pixmapRect.right(), pixmapRect.top());
+                    sliderPainter.drawPoint(pixmapRect.right(), pixmapRect.bottom());
+
+                    sliderPainter.setPen(sunken ? gradientStartColor.light(110) : gradientStartColor.light(105));
+                    sliderPainter.drawLine(pixmapRect.left() + 1, pixmapRect.top() + 1,
+                                           pixmapRect.right() - 1, pixmapRect.top() + 1);
+                    sliderPainter.drawLine(pixmapRect.left() + 1, pixmapRect.top() + 2,
+                                           pixmapRect.left() + 1, pixmapRect.bottom() - 2);
+
+                    sliderPainter.setPen(sunken ? gradientStopColor.light(105) : gradientStopColor);
+                    sliderPainter.drawLine(pixmapRect.left() + 1, pixmapRect.bottom() - 1,
+                                           pixmapRect.right() - 1, pixmapRect.bottom() - 1);
+                    sliderPainter.drawLine(pixmapRect.right() - 1, pixmapRect.top() + 2,
+                                           pixmapRect.right() - 1, pixmapRect.bottom() - 1);
+
+                    int sliderMinLength = pixelMetric(PM_ScrollBarSliderMin, scrollBar, widget);
+                    if ((horizontal && scrollBar->rect.width() > sliderMinLength)
+                        || (!horizontal && scrollBar->rect.height() > sliderMinLength)) {
+                        QImage pattern(horizontal ? qt_scrollbar_slider_pattern_horizontal
+                                       : qt_scrollbar_slider_pattern_vertical);
+                        pattern.setColor(1, alphaCornerColor.rgba());
+                        pattern.setColor(2, (sunken ? gradientStartColor.light(110) : gradientStartColor.light(105)).rgba());
+
+                        if (horizontal) {
+                            sliderPainter.drawImage(pixmapRect.center().x() - pattern.width() / 2 + 1,
+                                                    pixmapRect.center().y() - 4,
+                                                    pattern);
+                        } else {
+                            sliderPainter.drawImage(pixmapRect.center().x() - 4,
+                                                    pixmapRect.center().y() - pattern.height() / 2 + 1,
+                                                    pattern);
+                        }
+                    }
+                    sliderPainter.end();
+                    // insert the slider into the cache
+                    if (UsePixmapCache)
+                        QPixmapCache::insert(sliderPixmapName, cache);
+                }
+                painter->drawPixmap(option->rect.topLeft(), cache);
+            }
+        }
+        break;
+#endif
     default:
         QWindowsStyle::drawControl(element, option, painter, widget);
         break;
@@ -3177,12 +3501,17 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
 #ifndef QT_NO_SLIDER
     case CC_Slider:
         if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
-            QRect groove = subControlRect(CC_Slider, option, SC_SliderGroove, widget);
             QRect handle = subControlRect(CC_Slider, option, SC_SliderHandle, widget);
             QRect ticks = subControlRect(CC_Slider, option, SC_SliderTickmarks, widget);
+            QRect grooveRegion = subControlRect(CC_Slider, option, SC_SliderGroove, widget);
             bool horizontal = slider->orientation == Qt::Horizontal;
             bool ticksAbove = slider->tickPosition & QSlider::TicksAbove;
             bool ticksBelow = slider->tickPosition & QSlider::TicksBelow;
+
+            QRect groove;
+            //The clickable region is 5 px wider than the visible groove for improved usability
+            if (grooveRegion.isValid())
+                groove = horizontal ? grooveRegion.adjusted(0, 5, 0, -5) : grooveRegion.adjusted(5, 0, -5, 0);
 
             QPixmap cache;
 
@@ -3325,6 +3654,13 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
                 }
 
                 painter->drawPixmap(handle.topLeft(), cache);
+
+                if (slider->state & State_HasFocus) {
+                    QStyleOptionFocusRect fropt;
+                    fropt.QStyleOption::operator=(*slider);
+                    fropt.rect = subElementRect(SE_SliderFocusRect, slider, widget);
+                    drawPrimitive(PE_FrameFocusRect, &fropt, painter, widget);
+                }
             }
 
             if (option->subControls & SC_SliderTickmarks) {
@@ -3387,311 +3723,6 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
         }
         break;
 #endif // QT_NO_SLIDER
-#ifndef QT_NO_SCROLLBAR
-    case CC_ScrollBar:
-        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
-            QRect rect = scrollBar->rect;
-            QRect scrollBarSubLine = subControlRect(control, scrollBar, SC_ScrollBarSubLine, widget);
-            QRect scrollBarAddLine = subControlRect(control, scrollBar, SC_ScrollBarAddLine, widget);
-            QRect scrollBarSlider = subControlRect(control, scrollBar, SC_ScrollBarSlider, widget);
-
-            bool isEnabled = scrollBar->state & State_Enabled;
-            bool reverse = scrollBar->direction == Qt::RightToLeft;
-            bool horizontal = scrollBar->orientation == Qt::Horizontal;
-            bool sunken = scrollBar->state & State_Sunken;
-
-            QPixmap cache;
-
-            // The groove
-            if (scrollBar->subControls & SC_ScrollBarGroove) {
-                QString groovePixmapName = uniqueName("scrollbar_groove", option, rect.size());
-                if (!UsePixmapCache || !QPixmapCache::find(groovePixmapName, cache)) {
-                    QRect grooveRect = rect;
-                    cache = QPixmap(grooveRect.size());
-                    cache.fill(Qt::white);
-                    QPainter groovePainter(&cache);
-
-                    QRect pixmapRect = QRect(0, 0, grooveRect.width(), grooveRect.height());
-                    groovePainter.fillRect(pixmapRect, option->palette.background());
-                    groovePainter.fillRect(pixmapRect, QBrush(option->palette.base().color(), Qt::Dense4Pattern));
-
-                    if (horizontal) {
-                        groovePainter.setBrushOrigin(QPoint(pixmapRect.left(), pixmapRect.top()));
-                        pixmapRect.setHeight(1);
-                        pixmapRect.moveTop(rect.top());
-                    } else {
-                        groovePainter.setBrushOrigin(QPoint(pixmapRect.left(), pixmapRect.top()));
-                        pixmapRect.setWidth(1);
-                        pixmapRect.moveLeft(rect.left());
-                    }
-                    groovePainter.fillRect(pixmapRect,
-                                           QBrush(scrollBar->palette.base().color().dark(115), Qt::Dense4Pattern));
-                    groovePainter.end();
-                    if (UsePixmapCache)
-                        QPixmapCache::insert(groovePixmapName, cache);
-                }
-                painter->drawPixmap(QPoint(rect.left(), rect.top()), cache);
-            }
-
-            // Draw a darkened sunken addpage/subpage
-            if (sunken && ((scrollBar->activeSubControls & SC_ScrollBarSubPage) || (scrollBar->activeSubControls & SC_ScrollBarAddPage))) {
-                // Draw a copy of the groove in a darker color
-                QString groovePixmapName = uniqueName("scrollbar_groove_dark", option, rect.size());
-                if (!UsePixmapCache || !QPixmapCache::find(groovePixmapName, cache)) {
-                    cache = QPixmap(rect.size());
-                    cache.fill(Qt::white);
-                    QPainter groovePainter(&cache);
-                    QRect pixmapRect = QRect(0, 0, rect.width(), rect.height());
-                    groovePainter.fillRect(pixmapRect, QBrush(scrollBar->palette.base().color().dark(125), Qt::Dense4Pattern));
-                    groovePainter.end();
-                    if (UsePixmapCache)
-                        QPixmapCache::insert(groovePixmapName, cache);
-                }
-
-                // Clip the addpage/subpage rect, and paint
-                QRect clipRect;
-                if (scrollBar->activeSubControls & SC_ScrollBarSubPage)
-                    clipRect = subControlRect(control, scrollBar, SC_ScrollBarSubPage, widget);
-                else
-                    clipRect = subControlRect(control, scrollBar, SC_ScrollBarAddPage, widget);
-                painter->save();
-                painter->setClipRect(clipRect);
-                painter->drawPixmap(QPoint(rect.left(), rect.top()), cache);
-                painter->restore();
-            }
-
-            // The SubLine (up/left) buttons
-            if (scrollBar->subControls & SC_ScrollBarSubLine) {
-                int scrollBarExtent = pixelMetric(PM_ScrollBarExtent, option, widget);
-                QRect button1;
-                QRect button2;
-                if (horizontal) {
-                    button1.setRect(scrollBarSubLine.left(), scrollBarSubLine.top(), 16, scrollBarExtent);
-                    button2.setRect(scrollBarSubLine.right() - 15, scrollBarSubLine.top(), 16, scrollBarExtent);
-                } else {
-                    button1.setRect(scrollBarSubLine.left(), scrollBarSubLine.top(), scrollBarExtent, 16);
-                    button2.setRect(scrollBarSubLine.left(), scrollBarSubLine.bottom() - 15, scrollBarExtent, 16);
-                }
-
-                QString subLinePixmapName = uniqueName("scrollbar_subline", option, button1.size());
-                if (!UsePixmapCache || !QPixmapCache::find(subLinePixmapName, cache)) {
-                    cache = QPixmap(button1.size());
-                    cache.fill(Qt::white);
-                    QRect pixmapRect(0, 0, cache.width(), cache.height());
-                    QPainter subLinePainter(&cache);
-                    subLinePainter.fillRect(pixmapRect, option->palette.background());
-
-                    if (isEnabled) {
-                        // Gradients
-                        if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
-                            qt_plastique_draw_gradient(&subLinePainter,
-                                                       QRect(pixmapRect.left() + 2, pixmapRect.top() + 2,
-                                                             pixmapRect.right() - 3, pixmapRect.bottom() - 3),
-                                                       gradientStopColor,
-                                                       gradientStopColor);
-                        } else {
-                            qt_plastique_draw_gradient(&subLinePainter,
-                                                       QRect(pixmapRect.left() + 2, pixmapRect.top() + 2,
-                                                             pixmapRect.right() - 3, pixmapRect.bottom() - 3),
-                                                       gradientStartColor.light(105),
-                                                       gradientStopColor);
-                        }
-                    }
-
-                    // Details
-                    QImage subButton;
-                    if (horizontal) {
-                        subButton = QImage(reverse ? qt_scrollbar_button_right : qt_scrollbar_button_left);
-                    } else {
-                        subButton = QImage(qt_scrollbar_button_up);
-                    }
-                    subButton.setColor(1, alphaCornerColor.rgba());
-                    subButton.setColor(2, borderColor.rgba());
-                    if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
-                        subButton.setColor(3, gradientStopColor.rgba());
-                        subButton.setColor(4, gradientStopColor.rgba());
-                    } else {
-                        subButton.setColor(3, gradientStartColor.light(105).rgba());
-                        subButton.setColor(4, gradientStopColor.rgba());
-                    }
-                    subButton.setColor(5, scrollBar->palette.text().color().rgba());
-                    subLinePainter.drawImage(pixmapRect, subButton);
-
-                    // Arrows
-                    if (horizontal) {
-                        QImage arrow(reverse ? qt_scrollbar_button_arrow_right : qt_scrollbar_button_arrow_left);
-                        arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
-
-                        if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
-                            subLinePainter.drawImage(QPoint(pixmapRect.left() + 6, pixmapRect.top() + 5), arrow);
-                        } else {
-                            subLinePainter.drawImage(QPoint(pixmapRect.left() + 5, pixmapRect.top() + 4), arrow);
-                        }
-                    } else {
-                        QImage arrow(qt_scrollbar_button_arrow_up);
-                        arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
-
-                        if ((scrollBar->activeSubControls & SC_ScrollBarSubLine) && sunken) {
-                            subLinePainter.drawImage(QPoint(pixmapRect.left() + 5, pixmapRect.top() + 7), arrow);
-                        } else {
-                            subLinePainter.drawImage(QPoint(pixmapRect.left() + 4, pixmapRect.top() + 6), arrow);
-                        }
-                    }
-                    subLinePainter.end();
-                    if (UsePixmapCache)
-                        QPixmapCache::insert(subLinePixmapName, cache);
-                }
-                painter->drawPixmap(button1.topLeft(), cache);
-                painter->drawPixmap(button2.topLeft(), cache);
-            }
-
-            // The AddLine (down/right) button
-            if (scrollBar->subControls & SC_ScrollBarAddLine) {
-                QString addLinePixmapName = uniqueName("scrollbar_addline", option, QSize(16, 16));
-
-                if (!UsePixmapCache || !QPixmapCache::find(addLinePixmapName, cache)) {
-                    cache = QPixmap(scrollBarAddLine.size());
-                    cache.fill(Qt::white);
-                    QRect pixmapRect(0, 0, cache.width(), cache.height());
-                    QPainter addLinePainter(&cache);
-                    addLinePainter.fillRect(pixmapRect, option->palette.background());
-
-                    if (isEnabled) {
-                        // Gradient
-                        QLinearGradient gradient(pixmapRect.center().x(), pixmapRect.top() + 2,
-                                                 pixmapRect.center().x(), pixmapRect.bottom() - 2);
-                        if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
-                            gradient.setColorAt(0, gradientStopColor);
-                            gradient.setColorAt(1, gradientStopColor);
-                        } else {
-                            gradient.setColorAt(0, gradientStartColor.light(105));
-                            gradient.setColorAt(1, gradientStopColor);
-                        }
-                        addLinePainter.fillRect(pixmapRect.left() + 2, pixmapRect.top() + 2,
-                                                pixmapRect.right() - 3, pixmapRect.bottom() - 3,
-                                                gradient);
-                    }
-
-                    // Details
-                    QImage addButton;
-                    if (horizontal) {
-                        addButton = QImage(reverse ? qt_scrollbar_button_left : qt_scrollbar_button_right);
-                    } else {
-                        addButton = QImage(qt_scrollbar_button_down);
-                    }
-                    addButton.setColor(1, alphaCornerColor.rgba());
-                    addButton.setColor(2, borderColor.rgba());
-                    if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
-                        addButton.setColor(3, gradientStopColor.rgba());
-                        addButton.setColor(4, gradientStopColor.rgba());
-                    } else {
-                        addButton.setColor(3, gradientStartColor.light(105).rgba());
-                        addButton.setColor(4, gradientStopColor.rgba());
-                    }
-                    addButton.setColor(5, scrollBar->palette.text().color().rgba());
-                    addLinePainter.drawImage(pixmapRect, addButton);
-
-                    // Arrow
-                    if (horizontal) {
-                        QImage arrow(reverse ? qt_scrollbar_button_arrow_left : qt_scrollbar_button_arrow_right);
-                        arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
-
-                        if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
-                            addLinePainter.drawImage(QPoint(pixmapRect.left() + 7, pixmapRect.top() + 5), arrow);
-                        } else {
-                            addLinePainter.drawImage(QPoint(pixmapRect.left() + 6, pixmapRect.top() + 4), arrow);
-                        }
-                    } else {
-                        QImage arrow(qt_scrollbar_button_arrow_down);
-                        arrow.setColor(1, scrollBar->palette.foreground().color().rgba());
-
-                        if ((scrollBar->activeSubControls & SC_ScrollBarAddLine) && sunken) {
-                            addLinePainter.drawImage(QPoint(pixmapRect.left() + 5, pixmapRect.top() + 7), arrow);
-                        } else {
-                            addLinePainter.drawImage(QPoint(pixmapRect.left() + 4, pixmapRect.top() + 6), arrow);
-                        }
-                    }
-                    addLinePainter.end();
-                    if (UsePixmapCache)
-                        QPixmapCache::insert(addLinePixmapName, cache);
-                }
-                painter->drawPixmap(scrollBarAddLine.topLeft(), cache);
-            }
-
-            // The slider
-            if ((scrollBar->subControls & SC_ScrollBarSlider) && scrollBarSlider.isValid()) {
-                QString sliderPixmapName = uniqueName("scrollbar_slider", option, scrollBarSlider.size());
-                if (horizontal)
-                    sliderPixmapName += QLatin1String("-horizontal");
-                if (!UsePixmapCache || !QPixmapCache::find(sliderPixmapName, cache)) {
-                    cache = QPixmap(scrollBarSlider.size());
-                    cache.fill(Qt::white);
-                    QRect pixmapRect(0, 0, cache.width(), cache.height());
-                    QPainter sliderPainter(&cache);
-                    bool sunken = (scrollBar->activeSubControls & SC_ScrollBarSlider) && (scrollBar->state & State_Sunken);
-
-                    if (isEnabled) {
-                        QLinearGradient gradient(pixmapRect.center().x(), pixmapRect.top(),
-                                                 pixmapRect.center().x(), pixmapRect.bottom());
-                        if (sunken) {
-                            gradient.setColorAt(0, gradientStartColor.light(110));
-                            gradient.setColorAt(1, gradientStopColor.light(105));
-                        } else {
-                            gradient.setColorAt(0, gradientStartColor.light(105));
-                            gradient.setColorAt(1, gradientStopColor);
-                        }
-                        sliderPainter.fillRect(pixmapRect.adjusted(2, 2, -2, -2), gradient);
-                    } else {
-                        sliderPainter.fillRect(pixmapRect.adjusted(2, 2, -2, -2), option->palette.background());
-                    }
-
-                    sliderPainter.setPen(borderColor);
-                    sliderPainter.drawRect(pixmapRect.adjusted(0, 0, -1, -1));
-                    sliderPainter.setPen(alphaCornerColor);
-                    sliderPainter.drawPoint(pixmapRect.left(), pixmapRect.top());
-                    sliderPainter.drawPoint(pixmapRect.left(), pixmapRect.bottom());
-                    sliderPainter.drawPoint(pixmapRect.right(), pixmapRect.top());
-                    sliderPainter.drawPoint(pixmapRect.right(), pixmapRect.bottom());
-
-                    sliderPainter.setPen(sunken ? gradientStartColor.light(110) : gradientStartColor.light(105));
-                    sliderPainter.drawLine(pixmapRect.left() + 1, pixmapRect.top() + 1,
-                                           pixmapRect.right() - 1, pixmapRect.top() + 1);
-                    sliderPainter.drawLine(pixmapRect.left() + 1, pixmapRect.top() + 2,
-                                           pixmapRect.left() + 1, pixmapRect.bottom() - 2);
-
-                    sliderPainter.setPen(sunken ? gradientStopColor.light(105) : gradientStopColor);
-                    sliderPainter.drawLine(pixmapRect.left() + 1, pixmapRect.bottom() - 1,
-                                           pixmapRect.right() - 1, pixmapRect.bottom() - 1);
-                    sliderPainter.drawLine(pixmapRect.right() - 1, pixmapRect.top() + 2,
-                                           pixmapRect.right() - 1, pixmapRect.bottom() - 1);
-
-                    int sliderMinLength = pixelMetric(PM_ScrollBarSliderMin, scrollBar, widget);
-                    if ((horizontal && scrollBar->rect.width() > (16 * 3 + sliderMinLength))
-                        || (!horizontal && scrollBar->rect.height() > (16 * 3 + sliderMinLength))) {
-                        QImage pattern(horizontal ? qt_scrollbar_slider_pattern_horizontal : qt_scrollbar_slider_pattern_vertical);
-                        pattern.setColor(1, alphaCornerColor.rgba());
-                        pattern.setColor(2, (sunken ? gradientStartColor.light(110) : gradientStartColor.light(105)).rgba());
-
-                        if (horizontal) {
-                            sliderPainter.drawImage(pixmapRect.center().x() - pattern.width() / 2 + 1,
-                                                    pixmapRect.center().y() - 4,
-                                                    pattern);
-                        } else {
-                            sliderPainter.drawImage(pixmapRect.center().x() - 4,
-                                                    pixmapRect.center().y() - pattern.height() / 2 + 1,
-                                                    pattern);
-                        }
-                    }
-                    sliderPainter.end();
-                    // insert the slider into the cache
-                    if (UsePixmapCache)
-                        QPixmapCache::insert(sliderPixmapName, cache);
-                }
-                painter->drawPixmap(scrollBarSlider.topLeft(), cache);
-            }
-        }
-        break;
-#endif // QT_NO_SCROLLBAR
 #ifndef QT_NO_SPINBOX
     case CC_SpinBox:
         if (const QStyleOptionSpinBox *spinBox = qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
@@ -4358,9 +4389,18 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
             font.setBold(true);
             painter->setFont(font);
             painter->setPen(titleBar->palette.text().color());
-            painter->drawText(textRect.adjusted(1, 1, 1, 1), titleBar->text, QTextOption(Qt::AlignHCenter | Qt::AlignVCenter));
+
+            // Attempt to align left if there is not enough room for the title
+            // text. Otherwise, align center. QWorkspace does elliding for us,
+            // and it doesn't know about the bold title, so we need to work
+            // around some of the width mismatches.
+            bool tooWide = (QFontMetrics(font).width(titleBar->text) > textRect.width());
+            QTextOption option((tooWide ? Qt::AlignLeft : Qt::AlignHCenter) | Qt::AlignVCenter);
+            option.setWrapMode(QTextOption::NoWrap);
+
+            painter->drawText(textRect.adjusted(1, 1, 1, 1), titleBar->text, option);
             painter->setPen(titleBar->palette.highlightedText().color());
-            painter->drawText(textRect, titleBar->text, QTextOption(Qt::AlignHCenter | Qt::AlignVCenter));
+            painter->drawText(textRect, titleBar->text, option);
 
             // min button
             if ((titleBar->subControls & SC_TitleBarMinButton) && (titleBar->titleBarFlags & Qt::WindowMinimizeButtonHint)) {
@@ -4733,14 +4773,14 @@ QRect QPlastiqueStyle::subControlRect(ComplexControl control, const QStyleOption
             case SC_SliderGroove: {
                 QPoint grooveCenter = slider->rect.center();
                 if (slider->orientation == Qt::Horizontal) {
-                    rect.setHeight(4);
+                    rect.setHeight(14);
                     --grooveCenter.ry();
                     if (slider->tickPosition & QSlider::TicksAbove)
                         grooveCenter.ry() += tickSize;
                     if (slider->tickPosition & QSlider::TicksBelow)
                         grooveCenter.ry() -= tickSize;
                 } else {
-                    rect.setWidth(4);
+                    rect.setWidth(14);
                     --grooveCenter.rx();
                     if (slider->tickPosition & QSlider::TicksAbove)
                         grooveCenter.rx() += tickSize;
@@ -4925,6 +4965,7 @@ QRect QPlastiqueStyle::subControlRect(ComplexControl control, const QStyleOption
                         ret.adjust(0, 0, -delta, 0);
                     if (tb->titleBarFlags & Qt::WindowContextHelpButtonHint)
                         ret.adjust(0, 0, -delta, 0);
+                    ret.adjust(indent, 0, -indent, 0);
                 }
                 break;
             case SC_TitleBarContextHelpButton:
@@ -5193,10 +5234,10 @@ int QPlastiqueStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
 #ifdef QT3_SUPPORT
         if (widget && widget->inherits("Q3DockWindowTitleBar")) {
             // Q3DockWindow has smaller titlebars than QDockWidget
-            ret = qMax(widget ? widget->fontMetrics().lineSpacing() : 0, 16);
+            ret = qMax(widget->fontMetrics().lineSpacing(), 16);
         } else
 #endif
-        ret = qMax(widget ? widget->fontMetrics().lineSpacing() : 0, 30);
+            ret = qMax(widget ? widget->fontMetrics().lineSpacing() : option->fontMetrics.lineSpacing(), 30);
         break;
     case PM_MaximumDragDistance:
         return -1;

@@ -448,10 +448,10 @@ bool QFSFileEngine::copy(const QString &copyName)
     Q_D(QFSFileEngine);
     QT_WA({
         return ::CopyFileW((TCHAR*)QFSFileEnginePrivate::longFileName(d->file).utf16(),
-                           (TCHAR*)QFSFileEnginePrivate::longFileName(copyName).utf16(), false) != 0;
+                           (TCHAR*)QFSFileEnginePrivate::longFileName(copyName).utf16(), true) != 0;
     } , {
         return ::CopyFileA(QFSFileEnginePrivate::win95Name(d->file),
-                           QFSFileEnginePrivate::win95Name(copyName), false) != 0;
+                           QFSFileEnginePrivate::win95Name(copyName), true) != 0;
     });
 }
 
@@ -999,7 +999,7 @@ bool QFSFileEnginePrivate::doStat() const
             });
             could_stat = fileAttrib != INVALID_FILE_ATTRIBUTES;
             if (!could_stat) {
-                if (fname.at(0).isLetter() && fname.mid(1, fname.length()) == ":/") {
+                if (!fname.isEmpty() && fname.at(0).isLetter() && fname.mid(1, fname.length()) == ":/") {
                     // an empty drive ??
                     fileAttrib = FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN;
                     could_stat = true;
@@ -1047,7 +1047,7 @@ static QString readLink(const QString &link)
 {
 #if !defined(QT_NO_LIBRARY)
     QString ret;
-    //QT_WA({
+    QT_WA({
         bool neededCoInit = false;
         IShellLink *psl;                            // pointer to IShellLink i/f
         HRESULT hres;
@@ -1083,7 +1083,7 @@ static QString readLink(const QString &link)
         }
         if(neededCoInit)
             CoUninitialize();
-   /* } , {
+    } , {
 	    bool neededCoInit = false;
         IShellLinkA *psl;                            // pointer to IShellLink i/f
         HRESULT hres;
@@ -1107,7 +1107,7 @@ static QString readLink(const QString &link)
                 hres = ppf->Load((LPOLESTR)QFileInfo(link).absoluteFilePath().utf16(), STGM_READ);
                 if(SUCCEEDED(hres)) {        // Resolve the link.
 
-                    hres = psl->Resolve(0, SLR_ANY_MATCH);
+                    hres = psl->Resolve(0, SLR_ANY_MATCH | SLR_NO_UI | SLR_UPDATE);
 
                     if(SUCCEEDED(hres)) {
                         if (psl->GetPath((char*)szGotPath, MAX_PATH, &wfd, SLGP_UNCPRIORITY) == NOERROR)
@@ -1120,7 +1120,7 @@ static QString readLink(const QString &link)
         }
         if(neededCoInit)
             CoUninitialize();
-    });*/
+    });
     return ret;
 #else
     return QString();
@@ -1430,6 +1430,8 @@ QString QFSFileEngine::fileName(FileName file) const
             int slash = ret.lastIndexOf(QLatin1Char('/'));
             if (slash < 0)
                 return ret;
+            else if (ret.at(0) != QLatin1Char('/') && slash == 2)
+                return ret.left(3);      // include the slash
             else
                 return ret.left(slash > 0 ? slash : 1);
         }
@@ -1465,8 +1467,11 @@ QString QFSFileEngine::fileName(FileName file) const
                 }
                 QT_CHDIR(cur);
             });
-            if (attach_basename)
-                ret += QLatin1Char('/') + fileName(BaseName);
+            if (attach_basename) {
+                if (!ret.endsWith(QLatin1Char('/')))
+                    ret += QLatin1Char('/');
+                ret += fileName(BaseName);
+            }
             ret[0] = ret.at(0).toUpper(); // Force uppercase drive letters.
             return QFSFileEnginePrivate::fixToQtSlashes(ret);
         }

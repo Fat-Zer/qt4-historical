@@ -36,10 +36,11 @@ class QCheckBoxPrivate : public QAbstractButtonPrivate
 {
     Q_DECLARE_PUBLIC(QCheckBox)
 public:
-    QCheckBoxPrivate():tristate(false), noChange(false), hovering(true){}
+    QCheckBoxPrivate():tristate(false), noChange(false), hovering(true), publishedState(Qt::Unchecked){}
     uint tristate : 1;
     uint noChange : 1;
     uint hovering : 1;
+    uint publishedState : 2;
     void init();
     QStyleOptionButton getStyleOption() const;
 };
@@ -82,8 +83,14 @@ public:
     pressed(), released(), clicked(), toggled(), checkState(), and
     stateChanged().
 
-    \inlineimage macintosh-checkbox.png Screenshot in Macintosh style
-    \inlineimage windows-checkbox.png Screenshot in Windows style
+    \table 100%
+    \row \o \inlineimage macintosh-checkbox.png Screenshot of a Macintosh style checkbox
+         \o A checkbox shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+    \row \o \inlineimage windows-checkbox.png Screenshot of a Windows XP style checkbox
+         \o A checkbox shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+    \row \o \inlineimage plastique-checkbox.png Screenshot of a Plastique style checkbox
+         \o A checkbox shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \endtable
 
     \sa QAbstractButton, QRadioButton, {fowler}{GUI Design Handbook: Check Box}
 */
@@ -134,7 +141,7 @@ QStyleOptionButton QCheckBoxPrivate::getStyleOption() const
     else
         opt.state |= checked ? QStyle::State_On : QStyle::State_Off;
     if (q->testAttribute(Qt::WA_Hover) &&  q->underMouse()) {
-        if (hovering) 
+        if (hovering)
             opt.state |= QStyle::State_MouseOver;
         else
             opt.state &= ~QStyle::State_MouseOver;
@@ -216,7 +223,10 @@ void QCheckBox::setCheckState(Qt::CheckState state)
     setChecked(state != Qt::Unchecked);
     d->blockRefresh = false;
     d->refresh();
-    emit stateChanged(state);
+    if ((uint)state != d->publishedState) {
+        d->publishedState = state;
+        emit stateChanged(state);
+    }
 }
 
 
@@ -280,7 +290,11 @@ void QCheckBox::checkStateSet()
 {
     Q_D(QCheckBox);
     d->noChange = false;
-    emit stateChanged(checkState());
+    Qt::CheckState state = checkState();
+    if ((uint)state != d->publishedState) {
+        d->publishedState = state;
+        emit stateChanged(state);
+    }
 }
 
 /*!\reimp*/

@@ -38,6 +38,8 @@
 //#define QT_PICTURE_DEBUG
 #include <qdebug.h>
 
+#include <math.h>
+
 class QPicturePaintEnginePrivate : public QPaintEnginePrivate
 {
     Q_DECLARE_PUBLIC(QPicturePaintEngine)
@@ -87,7 +89,7 @@ bool QPicturePaintEngine::begin(QPaintDevice *pd)
     d->s << (quint8) QPicturePrivate::PdcBegin << (quint8) sizeof(qint32);
     d->pic_d->brect = QRect();
     if (d->pic_d->formatMajor >= 4) {
-        QRect r = d->pic_d->brect;
+        QRect r = pic->boundingRect();
         d->s << (qint32) r.left() << (qint32) r.top() << (qint32) r.width()
              << (qint32) r.height();
     }
@@ -104,7 +106,6 @@ bool QPicturePaintEngine::end()
 #ifdef QT_PICTURE_DEBUG
     qDebug() << "QPicturePaintEngine::end()";
 #endif
-    d->pdev = 0;
     d->pic_d->trecs++;
     d->s << (quint8) QPicturePrivate::PdcEnd << (quint8) 0;
     int cs_start = sizeof(quint32);                // pos of checksum word
@@ -113,7 +114,7 @@ bool QPicturePaintEngine::end()
     int pos = d->pic_d->pictb.pos();
     d->pic_d->pictb.seek(brect_start);
     if (d->pic_d->formatMajor >= 4) { // bounding rectangle
-        QRect r = d->pic_d->brect;
+        QRect r = static_cast<QPicture *>(d->pdev)->boundingRect();
         d->s << (qint32) r.left() << (qint32) r.top() << (qint32) r.width()
              << (qint32) r.height();
     }
@@ -249,7 +250,7 @@ void QPicturePaintEngine::writeCmdLength(int pos, const QRectF &r, bool corr)
     Q_D(QPicturePaintEngine);
     int newpos = d->pic_d->pictb.pos();            // new position
     int length = newpos - pos;
-    QRect br = r.toRect();
+    QRectF br(r);
 
     if (length < 255) {                         // write 8-bit length
         d->pic_d->pictb.seek(pos - 1);             // position to right index
@@ -265,19 +266,34 @@ void QPicturePaintEngine::writeCmdLength(int pos, const QRectF &r, bool corr)
     }
     d->pic_d->pictb.seek(newpos);                  // set to new position
 
-    if (br.isValid()) {
+    if (br.width() > 0.0 || br.height() > 0.0) {
         if (corr) {                             // widen bounding rect
             int w2 = painter()->pen().width() / 2;
             br.setCoords(br.left() - w2, br.top() - w2,
-                          br.right() + w2, br.bottom() + w2);
+                        br.right() + w2, br.bottom() + w2);
         }
         br = painter()->matrix().mapRect(br);
         if (painter()->hasClipping()) {
             QRect cr = painter()->clipRegion().boundingRect();
             br &= cr;
         }
-        if (br.isValid())
-            d->pic_d->brect |= br;                 // merge with existing rect
+
+        if (br.width() > 0.0 || br.height() > 0.0) {
+            int minx = int(floor(br.left()));
+            int miny = int(floor(br.top()));
+            int maxx = int(ceil(br.right()));
+            int maxy = int(ceil(br.bottom()));
+
+            if (d->pic_d->brect.width() > 0 || d->pic_d->brect.height() > 0) {
+                minx = qMin(minx, d->pic_d->brect.left());
+                miny = qMin(miny, d->pic_d->brect.top());
+                maxx = qMax(maxx, d->pic_d->brect.x() + d->pic_d->brect.width());
+                maxy = qMax(maxy, d->pic_d->brect.y() + d->pic_d->brect.height());
+                d->pic_d->brect = QRect(minx, miny, maxx - minx, maxy - miny);
+            } else {
+                d->pic_d->brect = QRect(minx, miny, maxx - minx, maxy - miny);
+            }
+        }
     }
 }
 

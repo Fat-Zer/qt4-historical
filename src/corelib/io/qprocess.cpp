@@ -84,9 +84,20 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
     \reentrant
 
     To start a process, pass the name and command line arguments of
-    the program you want to run as arguments to start(). QProcess then
-    enters the \l Starting state, and when the program has started,
-    QProcess enters the \l Running state and emits started().
+    the program you want to run as arguments to start(). For example:
+
+    \quotefromfile snippets/qprocess/qprocess-simpleexecution.cpp
+    \skipto parent
+    \printline parent
+    \dots
+    \skipto program
+    \printline program
+    \skipto QStringList
+    \printuntil start
+
+    QProcess then enters the \l Starting state, and when the program
+    has started, QProcess enters the \l Running state and emits
+    started().
 
     QProcess allows you to treat a process as a sequential I/O
     device. You can write to and read from the process just as you
@@ -447,7 +458,7 @@ void QProcessPrivate::cleanup()
 
 /*! \internal
 */
-bool QProcessPrivate::canReadStandardOutput()
+bool QProcessPrivate::_q_canReadStandardOutput()
 {
     Q_Q(QProcess);
     qint64 available = bytesAvailableFromStdout();
@@ -491,7 +502,7 @@ bool QProcessPrivate::canReadStandardOutput()
 
 /*! \internal
 */
-bool QProcessPrivate::canReadStandardError()
+bool QProcessPrivate::_q_canReadStandardError()
 {
     Q_Q(QProcess);
     qint64 available = bytesAvailableFromStderr();
@@ -535,11 +546,11 @@ bool QProcessPrivate::canReadStandardError()
 
 /*! \internal
 */
-bool QProcessPrivate::canWrite()
+bool QProcessPrivate::_q_canWrite()
 {
     Q_Q(QProcess);
 #if defined QPROCESS_DEBUG
-    qDebug("QProcessPrivate::canWrite()");
+    qDebug("QProcessPrivate::_q_canWrite()");
 #endif
 
     if (writeSocketNotifier)
@@ -573,11 +584,11 @@ bool QProcessPrivate::canWrite()
 
 /*! \internal
 */
-bool QProcessPrivate::processDied()
+bool QProcessPrivate::_q_processDied()
 {
     Q_Q(QProcess);
 #if defined QPROCESS_DEBUG
-    qDebug("QProcessPrivate::processDied()");
+    qDebug("QProcessPrivate::_q_processDied()");
 #endif
 #ifdef Q_OS_UNIX
     if (!waitForDeadChild())
@@ -589,16 +600,18 @@ bool QProcessPrivate::processDied()
 #endif
 
     // the process may have died before it got a chance to report that it was
-    // either running or stopped, so we will call startupNotification() and
+    // either running or stopped, so we will call _q_startupNotification() and
     // give it a chance to emit started() or error(FailedToStart).
-    if (processState == QProcess::Starting)
-        startupNotification();
+    if (processState == QProcess::Starting) {
+        if (!_q_startupNotification())
+            return true;
+    }
 
     // in case there is data in the pipe line and this slot by chance
     // got called before the read notifications, call these two slots
     // so the data is made available before the process dies.
-    canReadStandardOutput();
-    canReadStandardError();
+    _q_canReadStandardOutput();
+    _q_canReadStandardError();
 
     findExitCode();
 
@@ -616,14 +629,14 @@ bool QProcessPrivate::processDied()
     emit q->finished(exitCode);
     emit q->finished(exitCode, exitStatus);
 #if defined QPROCESS_DEBUG
-    qDebug("QProcessPrivate::processDied() process is dead");
+    qDebug("QProcessPrivate::_q_processDied() process is dead");
 #endif
     return true;
 }
 
 /*! \internal
 */
-bool QProcessPrivate::startupNotification()
+bool QProcessPrivate::_q_startupNotification()
 {
     Q_Q(QProcess);
 #if defined QPROCESS_DEBUG
@@ -643,6 +656,7 @@ bool QProcessPrivate::startupNotification()
     emit q->error(processError);
 #ifdef Q_OS_UNIX
     // make sure the process manager removes this entry
+    waitForDeadChild();
     findExitCode();
 #endif
     cleanup();
@@ -1000,10 +1014,8 @@ bool QProcess::waitForStarted(int msecs)
 {
     Q_D(QProcess);
     if (d->processState == QProcess::Starting) {
-        if (!d->waitForStarted(msecs)) {
-            emit error(d->processError);
+        if (!d->waitForStarted(msecs))
             return false;
-        }
         d->processState = QProcess::Running;
         emit started();
     }
@@ -1016,16 +1028,13 @@ bool QProcess::waitForReadyRead(int msecs)
 {
     Q_D(QProcess);
 
+    if (d->processState == QProcess::NotRunning)
+        return false;
     if (d->processChannel == QProcess::StandardOutput && d->standardOutputClosed)
         return false;
     if (d->processChannel == QProcess::StandardError && d->standardErrorClosed)
         return false;
-
-    if (d->waitForReadyRead(msecs))
-        return true;
-
-    emit error(d->processError);
-    return false;
+    return d->waitForReadyRead(msecs);
 }
 
 /*! \reimp
@@ -1033,6 +1042,18 @@ bool QProcess::waitForReadyRead(int msecs)
 bool QProcess::waitForBytesWritten(int msecs)
 {
     Q_D(QProcess);
+    if (d->processState == QProcess::NotRunning)
+        return false;
+    if (d->processState == QProcess::Starting) {
+        QTime stopWatch;
+        stopWatch.start();
+        bool started = waitForStarted(msecs);
+        if (!started)
+            return false;
+        if (msecs != -1)
+            msecs -= stopWatch.elapsed();
+    }
+
     return d->waitForBytesWritten(msecs);
 }
 
@@ -1263,9 +1284,8 @@ void QProcess::start(const QString &program, const QStringList &arguments, OpenM
     d->program = program;
     d->arguments = arguments;
 
-    QCoreApplication::flush();
-
     d->exitCode = 0;
+    d->exitStatus = NormalExit;
     d->processError = QProcess::UnknownError;
     setErrorString(tr("Unknown error"));
     d->startProcess();

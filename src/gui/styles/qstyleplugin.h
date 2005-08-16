@@ -27,6 +27,8 @@
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QStyle;
@@ -50,5 +52,7 @@ public:
     virtual QStringList keys() const = 0;
     virtual QStyle *create(const QString &key) = 0;
 };
+
+QT_END_HEADER
 
 #endif // QSTYLEPLUGIN_H

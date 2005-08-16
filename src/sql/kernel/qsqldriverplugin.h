@@ -27,6 +27,8 @@
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Sql)
 
 class QSqlDriver;
@@ -51,5 +53,7 @@ public:
     virtual QSqlDriver *create(const QString &key) = 0;
 
 };
+
+QT_END_HEADER
 
 #endif // QSQLDRIVERPLUGIN_H

@@ -33,6 +33,8 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qvector.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #if !defined(QT_NO_DEBUG_STREAM)
@@ -178,5 +180,7 @@ inline QNoDebug operator<<(QNoDebug debug, const T &) { return debug; }
 #endif
 
 #endif
+
+QT_END_HEADER
 
 #endif // QDEBUG_H

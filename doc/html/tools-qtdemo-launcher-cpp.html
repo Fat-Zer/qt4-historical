@@ -558,7 +558,7 @@ body { background: #ffffff; color: black; }</style>
         display-&gt;appendShape(versionCaption);
 
         DisplayShape *copyrightCaption = new TitleShape(
-            QString(&quot;Copyright \xa9 2005 Trolltech&quot;), font(),
+            QString(&quot;Copyright \xa9 2005-2006 Trolltech AS&quot;), font(),
             QPen(QColor(0,0,0,0)),
             rect.topLeft(), QSizeF(0.5*rect.width(), rect.height()),
             Qt::AlignLeft | Qt::AlignVCenter);
@@ -1074,12 +1074,11 @@ body { background: #ffffff; color: black; }</style>
         documentFont.setPointSizeF(qMin(documentFont.pointSizeF()*width()/640.0,
                                         documentFont.pointSizeF()*height()/480.0));
 
-        if (inFullScreenResize) {
-            emit windowResized();
+        if (inFullScreenResize)
             inFullScreenResize = false;
-        } else if (currentCategory != &quot;[starting]&quot;) {
+
+        if (currentCategory != &quot;[starting]&quot;)
             resizeTimer-&gt;start(500);
-        }
     }
 
     void Launcher::redisplayWindow()
@@ -1095,6 +1094,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

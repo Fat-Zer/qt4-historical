@@ -220,6 +220,11 @@ void ProjectPorter::portProFile(QString fileName, QMap<QString, QString> tagMap)
     QFile proFile(fileName);
     if (!proFile.open(QIODevice::ReadOnly))
         return;
+
+    const QByteArray contents = proFile.readAll();
+    const QByteArray lineEnding = detectLineEndings(contents);
+    proFile.seek(0);
+
     QTextStream proTextStream(&proFile);
     QStringList lines;
     while (!proTextStream.atEnd())
@@ -282,7 +287,7 @@ void ProjectPorter::portProFile(QString fileName, QMap<QString, QString> tagMap)
     if (!tagMap["FORMS"].isEmpty() || !tagMap["INTERFACES"].isEmpty()) {
         changesMade = true;
         lines += QString("#The following line was inserted by qt3to4");
-        QString insertText = "CONFIG += uic3\n";
+        QString insertText = "CONFIG += uic3" + lineEnding;
         lines += insertText;
         QString logText = "In file "
                         + logger->globalState.value("currentFileName")
@@ -346,7 +351,7 @@ void ProjectPorter::portProFile(QString fileName, QMap<QString, QString> tagMap)
     QByteArray bob;
     QTextStream outProFileStream(&bob);
     foreach(QString line, lines)
-        outProFileStream << line << QLatin1Char('\n');
+        outProFileStream << line << lineEnding;
     outProFileStream.flush();
 
     // Write array to file, commit log if write was successful.

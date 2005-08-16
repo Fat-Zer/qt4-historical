@@ -76,7 +76,6 @@ public:
     Q3GroupBoxPrivate():
         vbox(0), grid(0), row(0), col(0), nRows(0), nCols(0), dir(Qt::Horizontal),
         spac(5), marg(11),
-        spacer(0),
         checkbox(0) {}
 
     QVBoxLayout *vbox;
@@ -87,7 +86,6 @@ public:
     Qt::Orientation dir;
     int spac, marg;
 
-    QSpacerItem *spacer;
     QCheckBox *checkbox;
 };
 
@@ -172,29 +170,13 @@ Q3GroupBox::~Q3GroupBox()
 void Q3GroupBox::init()
 {
     d = new Q3GroupBoxPrivate();
-    setAttribute(Qt::WA_LayoutOnEntireRect);
 }
-
-void Q3GroupBox::setTextSpacer()
-{
-    if (!d->spacer)
-        return;
-
-    if (d->spacer->sizeHint().height() != contentsRect().top()) {
-        d->spacer->changeSize(1, contentsRect().top(), QSizePolicy::Minimum, QSizePolicy::Fixed);
-        if (layout())
-            layout()->update();
-    }
-}
-
-
 
 
 /*! \reimp
 */
 void Q3GroupBox::resizeEvent(QResizeEvent *e)
 {
-    setTextSpacer();
     QGroupBox::resizeEvent(e);
 }
 
@@ -312,7 +294,7 @@ void Q3GroupBox::setInsideSpacing(int s)
     \property Q3GroupBox::orientation
     \brief the group box's orientation
 
-    A horizontal group box arranges it's children in columns, while a
+    A horizontal group box arranges its children in columns, while a
     vertical group box arranges them in rows.
 
     Usually it is not a good idea to set this property because it is
@@ -353,9 +335,6 @@ void Q3GroupBox::setColumnLayout(int strips, Qt::Orientation direction)
 
     d->vbox = new QVBoxLayout(this, d->marg, 0);
 
-    d->spacer = new QSpacerItem(1, contentsRect().top(), QSizePolicy::Minimum, QSizePolicy::Fixed);
-    d->vbox->addItem(d->spacer);
-
     d->nCols = 0;
     d->nRows = 0;
     d->dir = direction;
@@ -393,9 +372,6 @@ void Q3GroupBox::setColumnLayout(int strips, Qt::Orientation direction)
         }
     }
 }
-
-
-
 
 /*!\reimp */
 void Q3GroupBox::childEvent(QChildEvent *c)
@@ -441,8 +417,6 @@ void Q3GroupBox::skip()
 /*! \reimp */
 void Q3GroupBox::changeEvent(QEvent *ev)
 {
-    if(ev->type() == QEvent::FontChange || ev->type() == QEvent::StyleChange)
-        setTextSpacer();
     QGroupBox::changeEvent(ev);
 }
 

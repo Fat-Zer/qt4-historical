@@ -26,6 +26,8 @@
 
 #include <QtGui/qcommonstyle.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_STYLE_WINDOWS)
@@ -76,5 +78,7 @@ private:
 };
 
 #endif // QT_NO_STYLE_WINDOWS
+
+QT_END_HEADER
 
 #endif // QWINDOWSSTYLE_H

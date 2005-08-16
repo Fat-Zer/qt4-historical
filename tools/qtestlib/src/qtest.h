@@ -34,6 +34,8 @@
 #include <QtCore/qdatetime.h>
 #include <QtCore/qobject.h>
 
+QT_BEGIN_HEADER
+
 Q_DECLARE_METATYPE(QStringList)
 
 namespace QTest
@@ -171,5 +173,7 @@ int main(int argc, char *argv[]) \
 }
 
 #endif // QT_GUI_LIB
+
+QT_END_HEADER
 
 #endif

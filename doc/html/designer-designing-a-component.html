@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/designer-manual.qdoc -->
 <head>
     <title>Qt 4.1: Designing a Component with Qt Designer</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -39,7 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <li>Connecting widgets together using their signals and slots.</li>
 <li>Previewing the form.</li>
 </ul>
-<p>Users may find that they they prefer to perform these activities in a different order, and we expect that for complex widgets the design process may involve many iterations of these steps. However, we present each of the activities in the above order, and leave it up to the user to find the approach that suits them best.</p>
+<p>Users may find that they prefer to perform these activities in a different order, and we expect that for complex widgets the design process may involve many iterations of these steps. However, we present each of the activities in the above order, and leave it up to the user to find the approach that suits them best.</p>
 <p>To demonstrate the processes used to create a new component, we will take a look at the steps needed to create a simple dialog with <i>Qt Designer</i>. We use the dialog to illustrate certain features of the tool. General concepts are explained in the gray boxes in each section, and you can follow links from some of these to read more about the features being discussed.</p>
 <a name="creatingaform"></a><a name="creating-a-form"></a>
 <h2>Creating a Form</h2>
@@ -48,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-choosing-form.png" /></td><td><b>Choosing a Form</b><p><i>Qt Designer</i> provides a number of template forms that are suitable for different kinds of components. You can either choose one of these templates or open a form that was saved earlier.</p>
 </td></tr>
 </table></p>
-<p>If your requirements later change so that you need to supply a different type of component, you can easily reuse the contents of your existing form. For our example, we select the <b>Dialog</b> template, and an empty form is created ready for use.</p>
+<p>If your requirements later change so that you need to supply a different type of component, you can easily reuse the contents of your existing form. For our example, we select the <b>Dialog with Buttons Bottom</b> template, and a form with <b>Ok</b> and <b>Cancel</b> buttons in the right bottom corner is created ready for use.</p>
 <a name="composingadialog"></a><a name="composing-a-dialog"></a>
 <h2>Composing a Dialog</h2>
 <p>The empty form is displayed as an empty dialog with a grid pattern overlayed on the widget area in a style similar to many drawing packages. <i>Qt Designer</i> provides four different editing modes:</p>
@@ -59,7 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-buddy-tool.png" /></td><td>In <a href="designer-buddy-mode.html">Buddy Editing Mode</a>, buddy widgets can be assigned to label widgets to help them handle keyboard focus correctly.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images/designer-tab-order-tool.png" /></td><td>In <a href="designer-tab-order.html">Tab Order Editing Mode</a>, we can set the order in which widgets receive the keyboard focus.</td></tr>
 </table></p>
-<p>We ensure that <i>Qt Designer</i> is in widget editing mode by opening the <b>Form</b> menu and selecting <b>Edit Widgets</b>. This makes it possible for widgets to be dragged from the widget box onto the form.</p>
+<p>We ensure that <i>Qt Designer</i> is in widget editing mode by opening the <b>Edit</b> menu and selecting <b>Edit Widgets</b>. This makes it possible for widgets to be dragged from the widget box onto the form.</p>
 <p>For our example, we will develop a dialog that lets the user create an image with a given size and color depth - these properties can be represented by spinboxes and a combobox. We will also provide a line edit so that the user can specify a name for the image if they want.</p>
 <p>Before we begin adding widgets to the form, it is useful to resize it to give us the required amount of space to work with. We can make the form larger than necessary because it can be resized later.</p>
 <p>We start composing the dialog by placing some text labels onto the form. This is achieved by dragging each <b>Label</b> from the <b>Display Widgets</b> section of the widget box onto the form. We add some <b>Spin Box</b>es and a <b>Combo Box</b> from the <b>Input Widgets</b> section of the widget box, one <b>Vertical Spacer</b> and one <b>Horizontal Spacer</b> from the <b>Spacers</b> section (represented on the form as blue springs), and two <b>Push Button</b>s from the <b>Buttons</b> section.</p>
@@ -113,6 +114,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

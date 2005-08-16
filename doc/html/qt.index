@@ -1,5 +1,5 @@
 <!DOCTYPE QDOCINDEX>
-<INDEX url="http://doc.trolltech.com/4.0" title="Qt Reference Documentation">
+<INDEX url="http://doc.trolltech.com/4.1" title="Qt Reference Documentation">
 <namespace access="public" name="">
  <class access="public" name="QAxBase" bases="">
   <property access="public" name="control" />
@@ -1163,7 +1163,7 @@
    <parameter left="Filters" right="" name="filters" />
    <parameter left="SortFlags" right="" name="sort" />
   </function>
-  <function access="public" name="entryInfoList" virtual="non" meta="plain" const="true" static="false" overload="true">
+  <function access="public" name="entryInfoList" virtual="non" meta="plain" const="true" static="false" overload="false">
    <parameter left="const QStringList &amp;" right="" name="nameFilters" />
    <parameter left="Filters" right="" name="filters" />
    <parameter left="SortFlags" right="" name="sort" />
@@ -1248,7 +1248,7 @@
    <parameter left="Filters" right="" name="filters" />
    <parameter left="SortFlags" right="" name="sort" />
   </function>
-  <function access="public" name="entryInfoList" virtual="non" meta="plain" const="true" static="false" overload="false">
+  <function access="public" name="entryInfoList" virtual="non" meta="plain" const="true" static="false" overload="true">
    <parameter left="const QString &amp;" right="" name="nameFilter" />
    <parameter left="Filters" right="" name="filters" />
    <parameter left="SortFlags" right="" name="sort" />
@@ -1356,6 +1356,8 @@
    <parameter left="int" right="" name="fd" />
    <parameter left="OpenMode" right="" name="mode" />
   </function>
+  <function access="public" name="size" virtual="impure" meta="plain" const="true" static="false" overload="false" />
+  <function access="public" name="atEnd" virtual="impure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="flush" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="resize" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="qint64" right="" name="sz" />
@@ -4926,8 +4928,6 @@
   <function access="public" name="fromBase64" virtual="non" meta="plain" const="false" static="true" overload="false">
    <parameter left="const QByteArray &amp;" right="" name="base64" />
   </function>
-  <typedef access="public" name="const_reference" />
-  <typedef access="public" name="reference" />
   <function access="public" name="push_back" virtual="non" meta="plain" const="false" static="false" overload="true">
    <parameter left="char" right="" name="ch" />
   </function>
@@ -7743,10 +7743,10 @@
    <parameter left="T *" right="" name="sharedData" />
   </function>
   <function access="public" name="QSharedDataPointer" virtual="non" meta="constructor" const="false" static="false" overload="true">
-   <parameter left="const QSharedDataPointer&lt;T&gt; &amp;" right="" name="o" />
+   <parameter left="const QSharedDataPointer&lt;T&gt; &amp;" right="" name="other" />
   </function>
   <function access="public" name="operator=" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QSharedDataPointer&lt;T&gt; &amp;" right="" name="o" />
+   <parameter left="const QSharedDataPointer&lt;T&gt; &amp;" right="" name="other" />
   </function>
   <function access="public" name="operator=" virtual="non" meta="plain" const="false" static="false" overload="true">
    <parameter left="T *" right="" name="sharedData" />
@@ -10033,19 +10033,19 @@
   </function>
   <function access="public" name="send" virtual="non" meta="plain" const="false" static="true" overload="true">
    <parameter left="const QString &amp;" right="" name="channel" />
-   <parameter left="const QString &amp;" right="" name="msg" />
+   <parameter left="const QString &amp;" right="" name="message" />
   </function>
   <function access="public" name="send" virtual="non" meta="plain" const="false" static="true" overload="false">
    <parameter left="const QString &amp;" right="" name="channel" />
-   <parameter left="const QString &amp;" right="" name="msg" />
+   <parameter left="const QString &amp;" right="" name="message" />
    <parameter left="const QByteArray &amp;" right="" name="data" />
   </function>
   <function access="public" name="receive" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QString &amp;" right="" name="msg" />
+   <parameter left="const QString &amp;" right="" name="message" />
    <parameter left="const QByteArray &amp;" right="" name="data" />
   </function>
   <function access="public" name="received" virtual="non" meta="signal" const="false" static="false" overload="false">
-   <parameter left="const QString &amp;" right="" name="msg" />
+   <parameter left="const QString &amp;" right="" name="message" />
    <parameter left="const QByteArray &amp;" right="" name="data" />
   </function>
  </class>
@@ -10055,8 +10055,8 @@
   <enum access="public" name="DecorationRegion" />
   <enum access="public" name="DecorationState" />
   <function access="public" name="region" virtual="pure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QWidget *" right="" name="w" />
-   <parameter left="const QRect &amp;" right="" name="rect" />
+   <parameter left="const QWidget *" right="" name="widget" />
+   <parameter left="const QRect &amp;" right="" name="rectangle" />
    <parameter left="int" right="" name="decorationRegion" />
   </function>
   <function access="public" name="region" virtual="non" meta="plain" const="false" static="false" overload="true">
@@ -10069,11 +10069,11 @@
   </function>
   <function access="public" name="regionClicked" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="QWidget *" right="" name="widget" />
-   <parameter left="int" right="" name="reg" />
+   <parameter left="int" right="" name="region" />
   </function>
   <function access="public" name="regionDoubleClicked" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="QWidget *" right="" name="widget" />
-   <parameter left="int" right="" name="reg" />
+   <parameter left="int" right="" name="region" />
   </function>
   <function access="public" name="buildSysMenu" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="QWidget *" right="" name="widget" />
@@ -10114,7 +10114,7 @@
  </class>
  <class access="public" name="QDirectPainter" bases="QObject">
   <function access="public" name="reserveRegion" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="const QRegion &amp;" right="" name="reg" />
+   <parameter left="const QRegion &amp;" right="" name="region" />
   </function>
   <function access="public" name="region" virtual="non" meta="plain" const="false" static="true" overload="false" />
   <function access="public" name="frameBuffer" virtual="non" meta="plain" const="false" static="true" overload="false" />
@@ -10136,12 +10136,12 @@
    <parameter left="bool" right="" name="autoRepeat" />
   </function>
   <function access="protected" name="transformDirKey" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="key" />
+   <parameter left="int" right="" name="keycode" />
   </function>
   <function access="protected" name="beginAutoRepeat" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="uni" />
-   <parameter left="int" right="" name="code" />
-   <parameter left="Qt::KeyboardModifiers" right="" name="mod" />
+   <parameter left="int" right="" name="unicode" />
+   <parameter left="int" right="" name="keycode" />
+   <parameter left="Qt::KeyboardModifiers" right="" name="modifier" />
   </function>
   <function access="protected" name="endAutoRepeat" virtual="non" meta="plain" const="false" static="false" overload="false" />
  </class>
@@ -10159,7 +10159,7 @@
   <function access="public" name="~QKbdDriverPlugin" virtual="non" meta="destructor" const="false" static="false" overload="false" />
   <function access="public" name="keys" virtual="pure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="create" virtual="pure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QString &amp;" right="" name="driver" />
+   <parameter left="const QString &amp;" right="" name="key" />
    <parameter left="const QString &amp;" right="" name="device" />
   </function>
  </class>
@@ -10221,16 +10221,26 @@
   <function access="public" name="~QMouseDriverPlugin" virtual="non" meta="destructor" const="false" static="false" overload="false" />
   <function access="public" name="keys" virtual="pure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="create" virtual="pure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QString &amp;" right="" name="driver" />
+   <parameter left="const QString &amp;" right="" name="key" />
    <parameter left="const QString &amp;" right="" name="device" />
   </function>
  </class>
  <class access="public" name="QWSTslibMouseHandler" bases="QWSCalibratedMouseHandler">
   <variable access="protected" name="d" />
  </class>
+ <class access="public" name="QScreenCursor" bases="">
+  <variable access="protected" name="cursor" />
+  <variable access="protected" name="size" />
+  <variable access="protected" name="pos" />
+  <variable access="protected" name="hotspot" />
+ </class>
  <class access="public" name="QScreen" bases="">
+  <contents name="framebuffer-management" title="Framebuffer Management" />
+  <contents name="palette-management" title="Palette Management" />
+  <contents name="drawing-on-screen" title="Drawing on Screen" />
+  <contents name="screen-properties" title="Screen Properties" />
   <function access="public" name="QScreen" virtual="non" meta="constructor" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="display_id" />
+   <parameter left="int" right="" name="displayId" />
   </function>
   <function access="public" name="~QScreen" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
   <function access="public" name="initDevice" virtual="pure" meta="plain" const="false" static="false" overload="false" />
@@ -10245,7 +10255,7 @@
    <parameter left="int" right="" name="depth" />
   </function>
   <function access="public" name="supportsDepth" virtual="impure" meta="plain" const="true" static="false" overload="false">
-   <parameter left="int" right="" name="d" />
+   <parameter left="int" right="" name="depth" />
   </function>
   <function access="public" name="save" virtual="impure" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="restore" virtual="impure" meta="plain" const="false" static="false" overload="false" />
@@ -10255,17 +10265,17 @@
   <function access="public" name="pixmapOffsetAlignment" virtual="impure" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="pixmapLinestepAlignment" virtual="impure" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="onCard" virtual="impure" meta="plain" const="true" static="false" overload="false">
-   <parameter left="const unsigned char *" right="" name="p" />
+   <parameter left="const unsigned char *" right="" name="buffer" />
   </function>
   <function access="public" name="onCard" virtual="impure" meta="plain" const="true" static="false" overload="true">
-   <parameter left="const unsigned char *" right="" name="p" />
+   <parameter left="const unsigned char *" right="" name="buffer" />
    <parameter left="ulong &amp;" right="" name="offset" />
   </function>
   <enum access="public" name="PixelType" />
   <function access="public" name="alloc" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="unsigned int" right="" name="r" />
-   <parameter left="unsigned int" right="" name="g" />
-   <parameter left="unsigned int" right="" name="b" />
+   <parameter left="unsigned int" right="" name="red" />
+   <parameter left="unsigned int" right="" name="green" />
+   <parameter left="unsigned int" right="" name="blue" />
   </function>
   <function access="public" name="width" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="height" virtual="non" meta="plain" const="true" static="false" overload="false" />
@@ -10281,52 +10291,57 @@
   <function access="public" name="clut" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="numCols" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="mapToDevice" virtual="impure" meta="plain" const="true" static="false" overload="false">
-   <parameter left="const QSize &amp;" right="" name="s" />
+   <parameter left="const QSize &amp;" right="" name="size" />
   </function>
   <function access="public" name="mapFromDevice" virtual="impure" meta="plain" const="true" static="false" overload="false">
-   <parameter left="const QSize &amp;" right="" name="s" />
+   <parameter left="const QSize &amp;" right="" name="size" />
   </function>
   <function access="public" name="mapToDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
    <parameter left="const QPoint &amp;" right="" name="point" />
-   <parameter left="const QSize &amp;" right="" name="size" />
+   <parameter left="const QSize &amp;" right="" name="screenSize" />
   </function>
   <function access="public" name="mapFromDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
    <parameter left="const QPoint &amp;" right="" name="point" />
-   <parameter left="const QSize &amp;" right="" name="size" />
+   <parameter left="const QSize &amp;" right="" name="screenSize" />
   </function>
   <function access="public" name="mapToDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
-   <parameter left="const QRect &amp;" right="" name="rect" />
-   <parameter left="const QSize &amp;" right="" name="size" />
+   <parameter left="const QRect &amp;" right="" name="rectangle" />
+   <parameter left="const QSize &amp;" right="" name="screenSize" />
   </function>
   <function access="public" name="mapFromDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
-   <parameter left="const QRect &amp;" right="" name="rect" />
-   <parameter left="const QSize &amp;" right="" name="size" />
+   <parameter left="const QRect &amp;" right="" name="rectangle" />
+   <parameter left="const QSize &amp;" right="" name="screenSize" />
   </function>
   <function access="public" name="mapToDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
-   <parameter left="const QImage &amp;" right="" name="i" />
+   <parameter left="const QImage &amp;" right="" name="image" />
   </function>
   <function access="public" name="mapFromDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
-   <parameter left="const QImage &amp;" right="" name="i" />
+   <parameter left="const QImage &amp;" right="" name="image" />
   </function>
   <function access="public" name="mapToDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
    <parameter left="const QRegion &amp;" right="" name="region" />
-   <parameter left="const QSize &amp;" right="" name="size" />
+   <parameter left="const QSize &amp;" right="" name="screenSize" />
   </function>
   <function access="public" name="mapFromDevice" virtual="impure" meta="plain" const="true" static="false" overload="true">
    <parameter left="const QRegion &amp;" right="" name="region" />
-   <parameter left="const QSize &amp;" right="" name="size" />
+   <parameter left="const QSize &amp;" right="" name="screenSize" />
   </function>
   <function access="public" name="transformOrientation" virtual="impure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="isTransformed" virtual="impure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="isInterlaced" virtual="impure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="setDirty" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QRect &amp;" right="" name="rect" />
+   <parameter left="const QRect &amp;" right="" name="rectangle" />
   </function>
   <function access="public" name="opType" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="lastOp" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="exposeRegion" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="QRegion" right="" name="r" />
-   <parameter left="int" right="" name="changing" />
+   <parameter left="QRegion" right="" name="region" />
+   <parameter left="int" right="" name="windowIndex" />
+  </function>
+  <function access="public" name="blit" virtual="impure" meta="plain" const="false" static="false" overload="false">
+   <parameter left="const QImage &amp;" right="" name="image" />
+   <parameter left="const QPoint &amp;" right="" name="topLeft" />
+   <parameter left="const QRegion &amp;" right="" name="region" />
   </function>
   <function access="public" name="solidFill" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="const QColor &amp;" right="" name="color" />
@@ -10370,16 +10385,70 @@
   <function access="public" name="~QScreenDriverPlugin" virtual="non" meta="destructor" const="false" static="false" overload="false" />
   <function access="public" name="keys" virtual="pure" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="create" virtual="pure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QString &amp;" right="" name="driver" />
+   <parameter left="const QString &amp;" right="" name="key" />
    <parameter left="int" right="" name="displayId" />
   </function>
  </class>
- <class access="public" name="QWSWindow" bases="">
-  <function access="public" name="QWSWindow" virtual="non" meta="constructor" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="i" />
-   <parameter left="QWSClient *" right="" name="client" />
+ <class access="public" name="QLinuxFbScreen" bases="QScreen">
+  <function access="public" name="QLinuxFbScreen" virtual="non" meta="constructor" const="false" static="false" overload="false">
+   <parameter left="int" right="" name="displayId" />
   </function>
-  <function access="public" name="~QWSWindow" virtual="non" meta="destructor" const="false" static="false" overload="false" />
+  <function access="public" name="~QLinuxFbScreen" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
+  <function access="public" name="useOffscreen" virtual="impure" meta="plain" const="false" static="false" overload="false" />
+  <function access="public" name="set" virtual="impure" meta="plain" const="false" static="false" overload="false">
+   <parameter left="unsigned int" right="" name="index" />
+   <parameter left="unsigned int" right="" name="red" />
+   <parameter left="unsigned int" right="" name="green" />
+   <parameter left="unsigned int" right="" name="blue" />
+  </function>
+  <function access="public" name="cache" virtual="impure" meta="plain" const="false" static="false" overload="false">
+   <parameter left="int" right="" name="amount" />
+  </function>
+  <function access="public" name="uncache" virtual="impure" meta="plain" const="false" static="false" overload="false">
+   <parameter left="uchar *" right="" name="memoryBlock" />
+  </function>
+  <variable access="public" name="shared" />
+  <function access="protected" name="deleteEntry" virtual="non" meta="plain" const="false" static="false" overload="false">
+   <parameter left="uchar *" right="" name="memoryBlock" />
+  </function>
+  <variable access="protected" name="canaccel" />
+  <variable access="protected" name="dataoffset" />
+  <variable access="protected" name="cacheStart" />
+  <function access="protected" name="clearCache" virtual="non" meta="plain" const="false" static="true" overload="false">
+   <parameter left="QScreen *" right="" name="instance" />
+   <parameter left="int" right="" name="clientId" />
+  </function>
+ </class>
+ <class access="public" name="QTransformedScreen" bases="QScreen">
+  <function access="public" name="QTransformedScreen" virtual="non" meta="constructor" const="false" static="false" overload="false">
+   <parameter left="int" right="" name="displayId" />
+  </function>
+  <enum access="public" name="Transformation" />
+  <function access="public" name="setTransformation" virtual="non" meta="plain" const="false" static="false" overload="false">
+   <parameter left="Transformation" right="" name="transformation" />
+  </function>
+  <function access="public" name="transformation" virtual="non" meta="plain" const="true" static="false" overload="false" />
+ </class>
+ <class access="public" name="QVFbScreen" bases="QScreen">
+  <function access="public" name="QVFbScreen" virtual="non" meta="constructor" const="false" static="false" overload="false">
+   <parameter left="int" right="" name="displayId" />
+  </function>
+  <function access="public" name="~QVFbScreen" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
+ </class>
+ <class access="public" name="QVNCScreen" bases="QScreen">
+  <function access="public" name="QVNCScreen" virtual="non" meta="constructor" const="false" static="false" overload="false">
+   <parameter left="int" right="" name="displayId" />
+  </function>
+  <function access="public" name="~QVNCScreen" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
+ </class>
+ <class access="public" name="QWSScreenSaver" bases="">
+  <function access="public" name="~QWSScreenSaver" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
+  <function access="public" name="restore" virtual="pure" meta="plain" const="false" static="false" overload="false" />
+  <function access="public" name="save" virtual="pure" meta="plain" const="false" static="false" overload="false">
+   <parameter left="int" right="" name="level" />
+  </function>
+ </class>
+ <class access="public" name="QWSWindow" bases="">
   <function access="public" name="winId" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="name" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="caption" virtual="non" meta="plain" const="true" static="false" overload="false" />
@@ -10387,27 +10456,19 @@
   <function access="public" name="requestedRegion" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="isVisible" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="isFullyObscured" virtual="non" meta="plain" const="true" static="false" overload="false" />
-  <function access="public" name="raise" virtual="non" meta="plain" const="false" static="false" overload="false" />
-  <function access="public" name="lower" virtual="non" meta="plain" const="false" static="false" overload="false" />
-  <function access="public" name="show" virtual="non" meta="plain" const="false" static="false" overload="false" />
-  <function access="public" name="hide" virtual="non" meta="plain" const="false" static="false" overload="false" />
-  <function access="public" name="setActiveWindow" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="isOpaque" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="opacity" virtual="non" meta="plain" const="true" static="false" overload="false" />
-  <function access="public" name="backingStore" virtual="non" meta="plain" const="false" static="false" overload="false" />
  </class>
  <class access="public" name="QWSServer" bases="QObject">
-  <function access="public" name="QWSServer" virtual="non" meta="constructor" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="flags" />
-   <parameter left="QObject *" right="" name="parent" />
-  </function>
+  <contents name="client-administration" title="Client Administration" />
+  <contents name="mouse-and-keyboard-handling" title="Mouse and Keyboard Handling" />
+  <contents name="display-handling" title="Display Handling" />
+  <contents name="input-method-handling" title="Input Method Handling" />
   <function access="public" name="QWSServer" virtual="non" meta="constructor" const="false" static="false" overload="true">
    <parameter left="int" right="" name="flags" />
    <parameter left="QObject *" right="" name="parent" />
    <parameter left="const char *" right="" name="name" />
   </function>
-  <function access="public" name="~QWSServer" virtual="non" meta="destructor" const="false" static="false" overload="false" />
-  <enum access="public" name="ServerFlags" />
   <function access="public" name="sendKeyEvent" virtual="non" meta="plain" const="false" static="true" overload="false">
    <parameter left="int" right="" name="unicode" />
    <parameter left="int" right="" name="keycode" />
@@ -10415,8 +10476,17 @@
    <parameter left="bool" right="" name="isPress" />
    <parameter left="bool" right="" name="autoRepeat" />
   </function>
+  <function access="public" name="processKeyEvent" virtual="non" meta="plain" const="false" static="true" overload="false">
+   <parameter left="int" right="" name="unicode" />
+   <parameter left="int" right="" name="keycode" />
+   <parameter left="Qt::KeyboardModifiers" right="" name="modifiers" />
+   <parameter left="bool" right="" name="isPress" />
+   <parameter left="bool" right="" name="autoRepeat" />
+  </function>
+  <enum access="public" name="IMState" />
+  <enum access="public" name="IMMouse" />
   <function access="public" name="sendIMEvent" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QInputMethodEvent *" right="" name="ime" />
+   <parameter left="const QInputMethodEvent *" right="" name="event" />
   </function>
   <function access="public" name="sendIMQuery" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="int" right="" name="property" />
@@ -10426,10 +10496,6 @@
    <variable access="public" name="unicode" />
    <variable access="public" name="shift_unicode" />
    <variable access="public" name="ctrl_unicode" />
-  </class>
-  <class access="public" name="KeyOverride" bases="">
-   <variable access="public" name="scan_code" />
-   <variable access="public" name="map" />
   </class>
   <function access="public" name="keyMap" virtual="non" meta="plain" const="false" static="true" overload="false" />
   <class access="public" name="KeyboardFilter" bases="">
@@ -10443,17 +10509,20 @@
    </function>
   </class>
   <function access="public" name="addKeyboardFilter" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="KeyboardFilter *" right="" name="f" />
+   <parameter left="KeyboardFilter *" right="" name="filter" />
   </function>
   <function access="public" name="removeKeyboardFilter" virtual="non" meta="plain" const="false" static="true" overload="false" />
+  <function access="public" name="setCurrentInputMethod" virtual="non" meta="plain" const="false" static="true" overload="false">
+   <parameter left="QWSInputMethod *" right="" name="method" />
+  </function>
   <function access="public" name="setDefaultMouse" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="const char *" right="" name="m" />
+   <parameter left="const char *" right="" name="mouseDriver" />
   </function>
   <function access="public" name="setDefaultKeyboard" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="const char *" right="" name="k" />
+   <parameter left="const char *" right="" name="keyboardDriver" />
   </function>
   <function access="public" name="setMaxWindowRect" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="const QRect &amp;" right="" name="r" />
+   <parameter left="const QRect &amp;" right="" name="rectangle" />
   </function>
   <function access="public" name="setBackground" virtual="non" meta="plain" const="false" static="true" overload="false">
    <parameter left="const QBrush &amp;" right="" name="brush" />
@@ -10465,12 +10534,15 @@
    <parameter left="const QColor &amp;" right="" name="c" />
   </function>
   <function access="public" name="mouseHandler" virtual="non" meta="plain" const="false" static="true" overload="false" />
+  <function access="public" name="setMouseHandler" virtual="non" meta="plain" const="false" static="true" overload="false">
+   <parameter left="QWSMouseHandler *" right="" name="handler" />
+  </function>
   <function access="public" name="keyboardHandler" virtual="non" meta="plain" const="false" static="true" overload="false" />
   <function access="public" name="setKeyboardHandler" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="QWSKeyboardHandler *" right="" name="kh" />
+   <parameter left="QWSKeyboardHandler *" right="" name="handler" />
   </function>
   <function access="public" name="windowAt" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QPoint &amp;" right="" name="pos" />
+   <parameter left="const QPoint &amp;" right="" name="position" />
   </function>
   <function access="public" name="clientWindows" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="openMouse" virtual="non" meta="plain" const="false" static="false" overload="false" />
@@ -10479,11 +10551,14 @@
   <function access="public" name="resumeMouse" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="openKeyboard" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="closeKeyboard" virtual="non" meta="plain" const="false" static="false" overload="false" />
+  <function access="public" name="setScreenSaver" virtual="non" meta="plain" const="false" static="true" overload="false">
+   <parameter left="QWSScreenSaver *" right="" name="screenSaver" />
+  </function>
   <function access="public" name="setScreenSaverIntervals" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="int *" right="" name="ms" />
+   <parameter left="int *" right="" name="intervals" />
   </function>
   <function access="public" name="setScreenSaverInterval" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="int" right="" name="ms" />
+   <parameter left="int" right="" name="milliseconds" />
   </function>
   <function access="public" name="screenSaverActive" virtual="non" meta="plain" const="false" static="true" overload="false" />
   <function access="public" name="screenSaverActivate" virtual="non" meta="plain" const="false" static="true" overload="false">
@@ -10491,21 +10566,21 @@
   </function>
   <function access="public" name="refresh" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="refresh" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="QRegion &amp;" right="" name="r" />
+   <parameter left="QRegion &amp;" right="" name="region" />
   </function>
   <function access="public" name="enablePainting" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="bool" right="" name="e" />
+   <parameter left="bool" right="" name="enable" />
   </function>
   <variable access="public" name="mousePosition" />
   <function access="public" name="setCursorVisible" virtual="non" meta="plain" const="false" static="true" overload="false">
-   <parameter left="bool" right="" name="vis" />
+   <parameter left="bool" right="" name="visible" />
   </function>
   <function access="public" name="isCursorVisible" virtual="non" meta="plain" const="false" static="true" overload="false" />
   <function access="public" name="backgroundBrush" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <enum access="public" name="WindowEvent" />
   <function access="public" name="windowEvent" virtual="non" meta="signal" const="false" static="false" overload="false">
-   <parameter left="QWSWindow *" right="" name="w" />
-   <parameter left="QWSServer::WindowEvent" right="" name="e" />
+   <parameter left="QWSWindow *" right="" name="window" />
+   <parameter left="QWSServer::WindowEvent" right="" name="eventType" />
   </function>
   <function access="public" name="newChannel" virtual="non" meta="signal" const="false" static="false" overload="false">
    <parameter left="const QString &amp;" right="" name="channel" />
@@ -10514,31 +10589,45 @@
    <parameter left="const QString &amp;" right="" name="channel" />
   </function>
   <function access="public" name="markedText" virtual="non" meta="signal" const="false" static="false" overload="false">
-   <parameter left="const QString &amp;" right="" name="text" />
+   <parameter left="const QString &amp;" right="" name="selection" />
   </function>
  </class>
  <class access="public" name="QWSInputMethod" bases="QObject">
   <function access="public" name="QWSInputMethod" virtual="non" meta="constructor" const="false" static="false" overload="false" />
   <function access="public" name="~QWSInputMethod" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
   <enum access="public" name="UpdateType" />
-  <function access="public" name="filter" virtual="pure" meta="plain" const="false" static="false" overload="false">
+  <function access="public" name="filter" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="int" right="" name="unicode" />
    <parameter left="int" right="" name="keycode" />
    <parameter left="int" right="" name="modifiers" />
    <parameter left="bool" right="" name="isPress" />
    <parameter left="bool" right="" name="autoRepeat" />
   </function>
+  <function access="public" name="filter" virtual="impure" meta="plain" const="false" static="false" overload="true">
+   <parameter left="const QPoint &amp;" right="" name="position" />
+   <parameter left="int" right="" name="state" />
+   <parameter left="int" right="" name="wheel" />
+  </function>
   <function access="public" name="reset" virtual="impure" meta="plain" const="false" static="false" overload="false" />
   <function access="public" name="updateHandler" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="int" right="" name="type" />
   </function>
   <function access="public" name="mouseHandler" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="x" />
+   <parameter left="int" right="" name="offset" />
    <parameter left="int" right="" name="state" />
   </function>
   <function access="public" name="queryResponse" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="int" right="" name="property" />
    <parameter left="const QVariant &amp;" right="" name="result" />
+  </function>
+  <function access="protected" name="setInputResolution" virtual="non" meta="plain" const="false" static="false" overload="false">
+   <parameter left="bool" right="" name="isHigh" />
+  </function>
+  <function access="protected" name="inputResolutionShift" virtual="non" meta="plain" const="true" static="false" overload="false" />
+  <function access="protected" name="sendMouseEvent" virtual="non" meta="plain" const="false" static="false" overload="false">
+   <parameter left="const QPoint &amp;" right="" name="position" />
+   <parameter left="int" right="" name="state" />
+   <parameter left="int" right="" name="wheel" />
   </function>
   <function access="protected" name="sendEvent" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="const QInputMethodEvent *" right="" name="" />
@@ -10550,7 +10639,7 @@
   </function>
   <function access="protected" name="sendCommitString" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="const QString &amp;" right="" name="commitString" />
-   <parameter left="int" right="" name="replaceFrom" />
+   <parameter left="int" right="" name="replaceFromPosition" />
    <parameter left="int" right="" name="replaceLength" />
   </function>
   <function access="protected" name="sendQuery" virtual="non" meta="plain" const="false" static="false" overload="false">
@@ -10558,10 +10647,18 @@
   </function>
   <function access="protected" name="sendIMEvent" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="QWSServer::IMState" right="" name="state" />
-   <parameter left="const QString &amp;" right="" name="txt" />
-   <parameter left="int" right="" name="cpos" />
-   <parameter left="int" right="" name="selLen" />
+   <parameter left="const QString &amp;" right="" name="text" />
+   <parameter left="int" right="" name="cursorPosition" />
+   <parameter left="int" right="" name="selectionLength" />
   </function>
+ </class>
+ <class access="public" name="QWSClient" bases="QObject">
+  <function access="public" name="identity" virtual="non" meta="plain" const="true" static="false" overload="false" />
+  <function access="public" name="clientId" virtual="non" meta="plain" const="true" static="false" overload="false" />
+  <variable access="public" name="cursors" />
+ </class>
+ <class access="public" name="QWSEvent" bases="">
+  <enum access="public" name="Type" />
  </class>
  <class access="public" name="QBitmap" bases="QPixmap">
   <function access="public" name="QBitmap" virtual="non" meta="constructor" const="false" static="false" overload="false" />
@@ -10598,8 +10695,8 @@
    <parameter left="const QMatrix &amp;" right="" name="matrix" />
   </function>
   <function access="public" name="QBitmap" virtual="non" meta="constructor" const="false" static="false" overload="true">
-   <parameter left="int" right="" name="w" />
-   <parameter left="int" right="" name="h" />
+   <parameter left="int" right="" name="width" />
+   <parameter left="int" right="" name="height" />
    <parameter left="bool" right="" name="clear" />
   </function>
   <function access="public" name="QBitmap" virtual="non" meta="constructor" const="false" static="false" overload="true">
@@ -12537,6 +12634,7 @@
   <function access="protected" name="verticalOffset" virtual="impure" meta="plain" const="true" static="false" overload="false" />
  </class>
  <class access="public" name="QItemDelegate" bases="QAbstractItemDelegate">
+  <contents name="standard-roles-and-data-types" title="Standard Roles and Data Types" />
   <contents name="subclassing" title="Subclassing" />
   <function access="public" name="QItemDelegate" virtual="non" meta="constructor" const="false" static="false" overload="false">
    <parameter left="QObject *" right="" name="parent" />
@@ -12610,6 +12708,7 @@
   <function access="public" name="valuePropertyName" virtual="pure" meta="plain" const="true" static="false" overload="false" />
  </class>
  <class access="public" name="QItemEditorFactory" bases="">
+  <contents name="standard-editing-widgets" title="Standard Editing Widgets" />
   <function access="public" name="QItemEditorFactory" virtual="non" meta="constructor" const="false" static="false" overload="false" />
   <function access="public" name="~QItemEditorFactory" virtual="impure" meta="destructor" const="false" static="false" overload="false" />
   <function access="public" name="createEditor" virtual="impure" meta="plain" const="true" static="false" overload="false">
@@ -13185,6 +13284,8 @@
   <variable access="public" name="parent" />
  </class>
  <class access="public" name="QSortFilterProxyModel" bases="QAbstractProxyModel">
+  <contents name="sorting" title="Sorting" />
+  <contents name="filtering" title="Filtering" />
   <property access="public" name="filterRegExp" />
   <property access="public" name="filterKeyColumn" />
   <property access="public" name="filterCaseSensitivity" />
@@ -13715,7 +13816,7 @@
    <parameter left="int" right="" name="logicalColumn" />
   </function>
   <function access="public" name="itemAt" virtual="non" meta="plain" const="true" static="false" overload="false">
-   <parameter left="const QPoint &amp;" right="" name="p" />
+   <parameter left="const QPoint &amp;" right="" name="point" />
   </function>
   <function access="public" name="itemAt" virtual="non" meta="plain" const="true" static="false" overload="true">
    <parameter left="int" right="" name="ax" />
@@ -13823,6 +13924,7 @@
   </function>
  </class>
  <class access="public" name="QTreeView" bases="QAbstractItemView">
+  <contents name="key-bindings" title="Key Bindings" />
   <property access="public" name="indentation" />
   <property access="public" name="rootIsDecorated" />
   <property access="public" name="uniformRowHeights" />
@@ -14811,6 +14913,10 @@
    <parameter left="bool" right="" name="quit" />
   </function>
   <function access="public" name="quitOnLastWindowClosed" virtual="non" meta="plain" const="false" static="true" overload="false" />
+  <function access="public" name="setKeypadNavigationEnabled" virtual="non" meta="plain" const="false" static="true" overload="false">
+   <parameter left="bool" right="" name="enable" />
+  </function>
+  <function access="public" name="keypadNavigationEnabled" virtual="non" meta="plain" const="false" static="true" overload="false" />
   <function access="public" name="lastWindowClosed" virtual="non" meta="signal" const="false" static="false" overload="false" />
   <function access="public" name="focusChanged" virtual="non" meta="signal" const="false" static="false" overload="false">
    <parameter left="QWidget *" right="" name="old" />
@@ -16427,7 +16533,7 @@
   </function>
   <function access="public" name="expandingDirections" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="setHeightForWidth" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="bool" right="" name="hfw" />
+   <parameter left="bool" right="" name="dependent" />
   </function>
   <function access="public" name="hasHeightForWidth" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="operator==" virtual="non" meta="plain" const="true" static="false" overload="false">
@@ -16440,10 +16546,10 @@
   <function access="public" name="horizontalStretch" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="verticalStretch" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="setHorizontalStretch" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="uchar" right="" name="stretch" />
+   <parameter left="uchar" right="" name="stretchFactor" />
   </function>
   <function access="public" name="setVerticalStretch" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="uchar" right="" name="stretch" />
+   <parameter left="uchar" right="" name="stretchFactor" />
   </function>
   <function access="public" name="transpose" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <typedef access="public" name="SizeType" />
@@ -16456,14 +16562,14 @@
   <function access="public" name="QSizePolicy" virtual="non" meta="constructor" const="false" static="false" overload="true">
    <parameter left="Policy" right="" name="horizontal" />
    <parameter left="Policy" right="" name="vertical" />
-   <parameter left="bool" right="" name="hfw" />
+   <parameter left="bool" right="" name="dependent" />
   </function>
   <function access="public" name="QSizePolicy" virtual="non" meta="constructor" const="false" static="false" overload="true">
-   <parameter left="Policy" right="" name="hPolicy" />
-   <parameter left="Policy" right="" name="vPolicy" />
-   <parameter left="uchar" right="" name="hStretch" />
-   <parameter left="uchar" right="" name="vStretch" />
-   <parameter left="bool" right="" name="hfw" />
+   <parameter left="Policy" right="" name="horizontal" />
+   <parameter left="Policy" right="" name="vertical" />
+   <parameter left="uchar" right="" name="horizontalStretch" />
+   <parameter left="uchar" right="" name="verticalStretch" />
+   <parameter left="bool" right="" name="dependent" />
   </function>
   <function access="public" name="horData" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="verData" virtual="non" meta="plain" const="true" static="false" overload="false" />
@@ -16495,7 +16601,7 @@
   <function access="public" name="loops" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="loopsRemaining" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="setLoops" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="int" right="" name="n" />
+   <parameter left="int" right="" name="number" />
   </function>
   <function access="public" name="fileName" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="isFinished" virtual="non" meta="plain" const="true" static="false" overload="false" />
@@ -17105,6 +17211,10 @@
   </function>
   <function access="public" name="isAncestorOf" virtual="non" meta="plain" const="true" static="false" overload="false">
    <parameter left="const QWidget *" right="" name="child" />
+  </function>
+  <function access="public" name="hasEditFocus" virtual="non" meta="plain" const="true" static="false" overload="false" />
+  <function access="public" name="setEditFocus" virtual="non" meta="plain" const="false" static="false" overload="false">
+   <parameter left="bool" right="" name="on" />
   </function>
   <function access="public" name="autoFillBackground" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="setAutoFillBackground" virtual="non" meta="plain" const="false" static="false" overload="false">
@@ -19730,6 +19840,7 @@
   </function>
  </class>
  <class access="public" name="QRegion" bases="">
+  <contents name="additional-license-information" title="Additional License Information" />
   <enum access="public" name="RegionType" />
   <function access="public" name="QRegion" virtual="non" meta="constructor" const="false" static="false" overload="false" />
   <function access="public" name="QRegion" virtual="non" meta="constructor" const="false" static="false" overload="true">
@@ -19877,13 +19988,6 @@
  </function>
  <function access="public" name="qGray" virtual="non" meta="plain" const="false" static="false" overload="true" relates="QColor">
   <parameter left="QRgb" right="" name="rgb" />
- </function>
- <function access="public" name="qt_curves_for_arc" virtual="non" meta="plain" const="false" static="false" overload="false">
-  <parameter left="const QRectF &amp;" right="" name="rect" />
-  <parameter left="qreal" right="" name="startAngle" />
-  <parameter left="qreal" right="" name="sweepLength" />
-  <parameter left="QPointF *" right="" name="curves" />
-  <parameter left="int *" right="" name="point_count" />
  </function>
  <class access="public" name="QStylePainter" bases="QPainter">
   <function access="public" name="QStylePainter" virtual="non" meta="constructor" const="false" static="false" overload="false" />
@@ -20624,6 +20728,10 @@
   <function access="public" name="draw" virtual="pure" meta="plain" const="false" static="false" overload="false">
    <parameter left="QPainter *" right="" name="painter" />
    <parameter left="const PaintContext &amp;" right="" name="context" />
+  </function>
+  <function access="public" name="hitTest" virtual="pure" meta="plain" const="true" static="false" overload="false">
+   <parameter left="const QPointF &amp;" right="" name="point" />
+   <parameter left="Qt::HitTestAccuracy" right="" name="accuracy" />
   </function>
   <function access="public" name="anchorAt" virtual="non" meta="plain" const="true" static="false" overload="false">
    <parameter left="const QPointF &amp;" right="" name="position" />
@@ -23123,6 +23231,7 @@
   <property access="public" name="floating" />
   <property access="public" name="features" />
   <property access="public" name="allowedAreas" />
+  <property access="public" name="windowTitle" />
   <function access="public" name="QDockWidget" virtual="non" meta="constructor" const="false" static="false" overload="false">
    <parameter left="const QString &amp;" right="" name="title" />
    <parameter left="QWidget *" right="" name="parent" />
@@ -24452,7 +24561,6 @@
  </class>
  <class access="public" name="QScrollArea" bases="QAbstractScrollArea">
   <property access="public" name="widgetResizable" />
-  <property access="public" name="alignment" />
   <function access="public" name="QScrollArea" virtual="non" meta="constructor" const="false" static="false" overload="false">
    <parameter left="QWidget *" right="" name="parent" />
   </function>
@@ -24465,10 +24573,6 @@
   <function access="public" name="widgetResizable" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="setWidgetResizable" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="bool" right="" name="resizable" />
-  </function>
-  <function access="public" name="alignment" virtual="non" meta="plain" const="true" static="false" overload="false" />
-  <function access="public" name="setAlignment" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="Qt::Alignment" right="" name="" />
   </function>
   <function access="public" name="ensureVisible" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="int" right="" name="x" />
@@ -24512,15 +24616,14 @@
    <parameter left="QWidget *" right="" name="parent" />
   </function>
   <function access="public" name="~QSizeGrip" virtual="non" meta="destructor" const="false" static="false" overload="false" />
-  <function access="public" name="sizeHint" virtual="impure" meta="plain" const="true" static="false" overload="false" />
   <function access="protected" name="paintEvent" virtual="impure" meta="plain" const="false" static="false" overload="false">
    <parameter left="QPaintEvent *" right="" name="event" />
   </function>
   <function access="protected" name="mousePressEvent" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="QMouseEvent *" right="" name="e" />
+   <parameter left="QMouseEvent *" right="" name="event" />
   </function>
   <function access="protected" name="mouseMoveEvent" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="QMouseEvent *" right="" name="e" />
+   <parameter left="QMouseEvent *" right="" name="event" />
   </function>
   <function access="public" name="QSizeGrip" virtual="non" meta="constructor" const="false" static="false" overload="true">
    <parameter left="QWidget *" right="" name="parent" />
@@ -24912,7 +25015,7 @@
    <parameter left="int" right="" name="index" />
   </function>
   <function access="public" name="setCurrentWidget" virtual="non" meta="slot" const="false" static="false" overload="false">
-   <parameter left="QWidget *" right="" name="w" />
+   <parameter left="QWidget *" right="" name="widget" />
   </function>
   <function access="public" name="currentChanged" virtual="non" meta="signal" const="false" static="false" overload="false">
    <parameter left="int" right="" name="index" />
@@ -24964,9 +25067,6 @@
   <function access="public" name="clear" virtual="non" meta="slot" const="false" static="false" overload="false" />
   <function access="public" name="messageChanged" virtual="non" meta="signal" const="false" static="false" overload="false">
    <parameter left="const QString &amp;" right="" name="message" />
-  </function>
-  <function access="protected" name="paintEvent" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="QPaintEvent *" right="" name="event" />
   </function>
   <function access="protected" name="reformat" virtual="non" meta="plain" const="false" static="false" overload="false" />
   <function access="protected" name="hideOrShow" virtual="non" meta="plain" const="false" static="false" overload="false" />
@@ -25340,9 +25440,9 @@
  <class access="public" name="QTextEdit" bases="QAbstractScrollArea">
   <contents name="introduction-and-concepts" title="Introduction and Concepts" />
   <contents name="using-qtextedit-as-a-display-widget" title="Using QTextEdit as a Display Widget" />
-  <contents name="read-only-key-bindings" title="Read-only key bindings" />
+  <contents name="read-only-key-bindings" title="Read-only Key Bindings" />
   <contents name="using-qtextedit-as-an-editor" title="Using QTextEdit as an Editor" />
-  <contents name="editing-key-bindings" title="Editing key bindings" />
+  <contents name="editing-key-bindings" title="Editing Key Bindings" />
   <property access="public" name="autoFormatting" />
   <property access="public" name="tabChangesFocus" />
   <property access="public" name="documentTitle" />
@@ -27058,7 +27158,7 @@
   </function>
   <function access="protected" name="chooseVisual" virtual="impure" meta="plain" const="false" static="false" overload="false" />
   <function access="protected" name="chooseMacVisual" virtual="impure" meta="plain" const="false" static="false" overload="false">
-   <parameter left="GDHandle" right="" name="device" />
+   <parameter left="GDHandle" right="" name="" />
   </function>
   <function access="protected" name="deviceIsPixmap" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="protected" name="windowCreated" virtual="non" meta="plain" const="true" static="false" overload="false" />
@@ -27077,6 +27177,7 @@
  </class>
  <class access="public" name="QGLWidget" bases="QWidget">
   <contents name="overlays" title="Overlays" />
+  <contents name="painting-techniques" title="Painting Techniques" />
   <function access="public" name="QGLWidget" virtual="non" meta="constructor" const="false" static="false" overload="false">
    <parameter left="QWidget *" right="" name="parent" />
    <parameter left="const QGLWidget *" right="" name="shareWidget" />
@@ -37152,7 +37253,6 @@
  <class access="public" name="QSvgRenderer" bases="QObject">
   <property access="public" name="viewBox" />
   <property access="public" name="framesPerSecond" />
-  <property access="public" name="currentFrame" />
   <function access="public" name="QSvgRenderer" virtual="non" meta="constructor" const="false" static="false" overload="false">
    <parameter left="QObject *" right="" name="parent" />
   </function>
@@ -37180,7 +37280,6 @@
   <function access="public" name="setCurrentFrame" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="int" right="" name="" />
   </function>
-  <function access="public" name="animationDuration" virtual="non" meta="plain" const="true" static="false" overload="false" />
   <function access="public" name="load" virtual="non" meta="slot" const="false" static="false" overload="false">
    <parameter left="const QString &amp;" right="" name="filename" />
   </function>
@@ -38775,11 +38874,11 @@
   <function access="public" name="signal" virtual="non" meta="plain" const="true" static="false" overload="false" />
  </class>
  <namespace access="public" name="QTest">
-  <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="const QLatin1String &amp;" right="" name="str" />
+  <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="true">
+   <parameter left="const QLatin1String &amp;" right="" name="string" />
   </function>
   <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="const QString &amp;" right="" name="str" />
+   <parameter left="const QString &amp;" right="" name="string" />
   </function>
   <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="true">
    <parameter left="const QTime &amp;" right="" name="time" />
@@ -38791,57 +38890,11 @@
    <parameter left="const QDateTime &amp;" right="" name="dateTime" />
   </function>
   <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="const QChar &amp;" right="" name="c" />
-  </function>
-  <function access="public" name="qCompare" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="QString const &amp;" right="" name="t1" />
-   <parameter left="QLatin1String const &amp;" right="" name="t2" />
-   <parameter left="const char *" right="" name="actual" />
-   <parameter left="const char *" right="" name="expected" />
-   <parameter left="const char *" right="" name="file" />
-   <parameter left="int" right="" name="line" />
-  </function>
-  <function access="public" name="qCompare" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="QLatin1String const &amp;" right="" name="t1" />
-   <parameter left="QString const &amp;" right="" name="t2" />
-   <parameter left="const char *" right="" name="actual" />
-   <parameter left="const char *" right="" name="expected" />
-   <parameter left="const char *" right="" name="file" />
-   <parameter left="int" right="" name="line" />
-  </function>
-  <function access="public" name="qCompare" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="QStringList const &amp;" right="" name="t1" />
-   <parameter left="QStringList const &amp;" right="" name="t2" />
-   <parameter left="const char *" right="" name="actual" />
-   <parameter left="const char *" right="" name="expected" />
-   <parameter left="const char *" right="" name="file" />
-   <parameter left="int" right="" name="line" />
-  </function>
-  <function access="public" name="qCompare" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="QFlags&lt;T&gt; const &amp;" right="" name="t1" />
-   <parameter left="T const &amp;" right="" name="t2" />
-   <parameter left="const char *" right="" name="actual" />
-   <parameter left="const char *" right="" name="expected" />
-   <parameter left="const char *" right="" name="file" />
-   <parameter left="int" right="" name="line" />
-  </function>
-  <function access="public" name="qCompare" virtual="non" meta="plain" const="false" static="false" overload="true">
-   <parameter left="QFlags&lt;T&gt; const &amp;" right="" name="t1" />
-   <parameter left="int const &amp;" right="" name="t2" />
-   <parameter left="const char *" right="" name="actual" />
-   <parameter left="const char *" right="" name="expected" />
-   <parameter left="const char *" right="" name="file" />
-   <parameter left="int" right="" name="line" />
+   <parameter left="const QChar &amp;" right="" name="character" />
   </function>
   <enum access="public" name="SkipMode" />
   <enum access="public" name="TestFailMode" />
-  <function access="public" name="qt_snprintf" virtual="non" meta="plain" const="false" static="false" overload="false">
-   <parameter left="char *" right="" name="str" />
-   <parameter left="int" right="" name="size" />
-   <parameter left="const char *" right="" name="format" />
-   <parameter left="..." right="" name="" />
-  </function>
-  <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="true">
+  <function access="public" name="toString" virtual="non" meta="plain" const="false" static="false" overload="false">
    <parameter left="const T &amp;" right="" name="value" />
   </function>
   <function access="public" name="qExec" virtual="non" meta="plain" const="false" static="false" overload="false">
@@ -39437,6 +39490,8 @@
  <function access="public" name="Q_CHECK_PTR" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="&lt;QtGlobal&gt;">
   <parameter left="void *" right="" name="pointer" />
  </function>
+ <function access="public" name="forever" virtual="non" meta="macrowithoutparams" const="false" static="false" overload="false" relates="&lt;QtGlobal&gt;" />
+ <function access="public" name="Q_FOREVER" virtual="non" meta="macrowithoutparams" const="false" static="false" overload="false" relates="&lt;QtGlobal&gt;" />
  <function access="public" name="foreach" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="&lt;QtGlobal&gt;">
   <parameter left="" right="" name="variable" />
   <parameter left="" right="" name="container" />
@@ -39513,20 +39568,6 @@
   <parameter left="..." right="" name="" />
  </function>
  <function access="public" name="Q_OBJECT" virtual="non" meta="macrowithoutparams" const="false" static="false" overload="false" relates="QObject" />
- <function access="public" name="Q_DECLARE_INTERFACE" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="QPluginLoader">
-  <parameter left="" right="" name="ClassName" />
-  <parameter left="" right="" name="Identifier" />
- </function>
- <function access="public" name="Q_EXPORT_PLUGIN" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="QPluginLoader">
-  <parameter left="" right="" name="ClassName" />
- </function>
- <function access="public" name="Q_EXPORT_PLUGIN2" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="QPluginLoader">
-  <parameter left="" right="" name="PluginName" />
-  <parameter left="" right="" name="ClassName" />
- </function>
- <function access="public" name="Q_IMPORT_PLUGIN" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="QPluginLoader">
-  <parameter left="" right="" name="PluginName" />
- </function>
  <function access="public" name="QT_REQUIRE_VERSION" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="QMessageBox">
   <parameter left="int" right="" name="argc" />
   <parameter left="char **" right="" name="argv" />
@@ -39538,6 +39579,7 @@
   <contents name="dlopen-compatibility-library-for-darwin" title="dlopen() Compatibility Library for Darwin ()" />
   <contents name="freetype-2" title="FreeType 2 ()" />
   <contents name="the-independent-jpeg-group-s-jpeg-software" title="The Independent JPEG Group's JPEG Software ()" />
+  <contents name="mng-library" title="MNG Library ()" />
   <contents name="png-reference-library" title="PNG Reference Library ()" />
   <contents name="sqlite" title="SQLite ()" />
   <contents name="wintab-api" title="Wintab API ()" />
@@ -39678,6 +39720,7 @@
   <contents name="building-qt-as-a-shared-library" title="Building Qt as a Shared Library" />
   <contents name="linking-the-application-to-qt-as-a-shared-library" title="Linking the Application to Qt as a Shared Library" />
   <contents name="creating-the-application-package" title="Creating the Application Package" />
+  <contents name="visual-studio-2005" title="Visual Studio 2005" />
   <contents name="application-dependencies" title="Application Dependencies" />
   <contents name="additional-libraries" title="Additional Libraries" />
   <contents name="qt-plugins" title="Qt Plugins" />
@@ -39833,7 +39876,7 @@
   <contents name="building-and-installing-the-plugin" title="Building and Installing the Plugin" />
   <contents name="related-examples" title="Related Examples" />
  </page>
- <page access="public" name="creating-custom-widgets-extensions.html" subtype="page" title="Creating Custom Widget Extensions" fulltitle="Creating Custom Widget Extensions" subtitle="" location="designer-manual.qdoc">
+ <page access="public" name="designer-creating-custom-widgets-extensions.html" subtype="page" title="Creating Custom Widget Extensions" fulltitle="Creating Custom Widget Extensions" subtitle="" location="designer-manual.qdoc">
   <contents name="extension-types" title="Extension Types" />
   <contents name="creating-an-extension" title="Creating an Extension" />
   <contents name="exposing-an-extension-to-qt-designer" title="Exposing an Extension to Qt Designer" />
@@ -39841,6 +39884,7 @@
   <contents name="accessing-qt-designer-s-extension-manager" title="Accessing Qt Designer's Extension Manager" />
   <contents name="related-examples" title="Related Examples" />
  </page>
+ <page access="public" name="designer-ui-file-format.html" subtype="page" title="Qt Designer's UI File Format" fulltitle="Qt Designer's UI File Format" subtitle="" location="designer-manual.qdoc" />
  <page access="public" name="designer-recursive-shadow-casting.html" subtype="page" title="Implementation of the Recursive Shadow Casting Algorithm in Qt Designer" fulltitle="Implementation of the Recursive Shadow Casting Algorithm in Qt Designer" subtitle="" location="designer-manual.qdoc" />
  <page access="public" name="designer-treewalker.html" subtype="page" title="Contributions to the Following Qt Designer Files: treewalker.h, treedump.cpp, treedump.h, treewalker.cpp" fulltitle="Contributions to the Following Qt Designer Files: treewalker.h, treedump.cpp, treedump.h, treewalker.cpp" subtitle="" location="designer-manual.qdoc" />
  <page access="public" name="dnd.html" subtype="page" title="Drag and Drop" fulltitle="Drag and Drop" subtitle="" location="dnd.qdoc">
@@ -39855,47 +39899,68 @@
   <contents name="interoperating-with-other-applications" title="Interoperating with Other Applications" />
  </page>
  <page access="public" name="editions.html" subtype="page" title="Qt Editions" fulltitle="Qt Editions" subtitle="" location="editions.qdoc" />
- <page access="public" name="emb-accel.html" subtype="page" title="Adding an Accelerated Graphics Driver to Qtopia Core" fulltitle="Adding an Accelerated Graphics Driver to Qtopia Core" subtitle="" location="emb-accel.qdoc" />
- <page access="public" name="emb-charinput.html" subtype="page" title="Character Input in Qtopia Core" fulltitle="Character Input in Qtopia Core" subtitle="" location="emb-charinput.qdoc">
-  <contents name="keyboard-drivers" title="Keyboard Drivers" />
-  <contents name="pen-input" title="Pen Input" />
+ <page access="public" name="qtopiacore-accel.html" subtype="page" title="Adding an Accelerated Graphics Driver" fulltitle="Adding an Accelerated Graphics Driver" subtitle="" location="emb-accel.qdoc" />
+ <page access="public" name="qtopiacore-charinput.html" subtype="page" title="Character Input" fulltitle="Character Input" subtitle="" location="emb-charinput.qdoc">
+  <contents name="available-keyboard-drivers" title="Available Keyboard Drivers" />
+  <contents name="specifying-a-keyboard-driver" title="Specifying a Keyboard Driver" />
  </page>
- <page access="public" name="emb-classes.html" subtype="page" title="The Qtopia Core Specific Classes" fulltitle="The Qtopia Core Specific Classes" subtitle="" location="emb-classes.qdoc" />
- <page access="public" name="emb-differences.html" subtype="page" title="Porting Your Applications to Qtopia Core" fulltitle="Porting Your Applications to Qtopia Core" subtitle="" location="emb-differences.qdoc" />
- <page access="public" name="emb-envvars.html" subtype="page" title="Qtopia Core Environment Variables" fulltitle="Qtopia Core Environment Variables" subtitle="" location="emb-envvars.qdoc" />
- <page access="public" name="emb-features.html" subtype="page" title="The Feature Definition File" fulltitle="The Feature Definition File" subtitle="" location="emb-features.qdoc" />
- <page access="public" name="emb-fonts.html" subtype="page" title="Fonts in Qtopia Core" fulltitle="Fonts in Qtopia Core" subtitle="" location="emb-fonts.qdoc">
-  <contents name="supported-formats" title="Supported Formats" />
-  <contents name="memory-requirements" title="Memory Requirements" />
-  <contents name="smooth-fonts" title="Smooth Fonts" />
-  <contents name="unicode" title="Unicode" />
-  <contents name="font-definition-file" title="Font Definition File" />
-  <contents name="notes" title="Notes" />
+ <page access="public" name="qtopiacore-crosscompiling.html" subtype="page" title="Cross-Compiling Applications" fulltitle="Cross-Compiling Applications" subtitle="" location="emb-crosscompiling.qdoc">
+  <contents name="step-1-setting-the-cross-compiler-s-path" title="Step 1: Setting the Cross-Compiler's Path" />
+  <contents name="step-2-including-the-required-libraries" title="Step 2: Including the Required Libraries" />
+  <contents name="step-3-creating-a-target-specific-qmake-specification" title="Step 3: Creating a Target Specific qmake Specification" />
+  <contents name="step-4-providing-mouse-and-keyboard-drivers" title="Step 4: Providing Mouse and Keyboard Drivers" />
+  <contents name="step-5-building-the-target-specific-executable" title="Step 5: Building the Target Specific Executable" />
  </page>
- <page access="public" name="emb-framebuffer-howto.html" subtype="page" title="Enabling the Linux Framebuffer" fulltitle="Enabling the Linux Framebuffer" subtitle="" location="emb-framebuffer-howto.qdoc" />
- <page access="public" name="emb-install.html" subtype="page" title="Installing Qtopia Core" fulltitle="Installing Qtopia Core" subtitle="" location="emb-install.qdoc" />
- <page access="public" name="emb-makeqpf.html" subtype="page" title="makeqpf" fulltitle="makeqpf" subtitle="" location="emb-makeqpf.qdoc" />
- <page access="public" name="emb-performance.html" subtype="page" title="Qtopia Core Performance Tuning" fulltitle="Qtopia Core Performance Tuning" subtitle="" location="emb-performance.qdoc">
-  <target name="general" />
-  <target name="static" />
-  <target name="alloc" />
-  <contents name="general-programming-style" title="General Programming Style" />
+ <page access="public" name="qtopiacore-deployment.html" subtype="page" title="Deploying an Application on Qtopia Core" fulltitle="Deploying an Application on Qtopia Core" subtitle="" location="emb-deployment.qdoc">
+  <contents name="qtopia-core-specific-fonts" title="Qtopia Core Specific: Fonts" />
+  <contents name="qtopia-core-specific-environment-variables" title="Qtopia Core Specific: Environment Variables" />
+ </page>
+ <page access="public" name="qtopiacore-differences.html" subtype="page" title="Porting Applications to Qtopia Core" fulltitle="Porting Applications to Qtopia Core" subtitle="" location="emb-differences.qdoc" />
+ <page access="public" name="qtopiacore-envvars.html" subtype="page" title="Environment Variables" fulltitle="Environment Variables" subtitle="" location="emb-envvars.qdoc">
+  <target name="qws-sw-cursor" />
+  <target name="qws-display" />
+  <target name="qws-size" />
+  <target name="qws-mouse-proto" />
+  <target name="qws-keyboard" />
+ </page>
+ <page access="public" name="qtopiacore-features.html" subtype="page" title="Fine-Tuning Features" fulltitle="Fine-Tuning Features" subtitle="" location="emb-features.qdoc" />
+ <page access="public" name="qtopiacore-fonts.html" subtype="page" title="Fonts" fulltitle="Fonts" subtitle="" location="emb-fonts.qdoc">
+  <target name="qpf" />
+  <contents name="freetype" title="FreeType" />
+  <contents name="qt-prerendered-font" title="Qt Prerendered Font" />
+  <contents name="specifying-fonts" title="Specifying Fonts" />
+ </page>
+ <page access="public" name="qtopiacore- testingframebuffer.html" subtype="page" title="Testing the Linux Framebuffer" fulltitle="Testing the Linux Framebuffer" subtitle="" location="emb-framebuffer-howto.qdoc" />
+ <page access="public" name="qtopiacore-install.html" subtype="page" title="Installing Qtopia Core" fulltitle="Installing Qtopia Core" subtitle="" location="emb-install.qdoc">
+  <contents name="step-1-installing-the-license-file-commercial-editions-only" title="Step 1: Installing the License File (commercial editions only)" />
+  <contents name="step-2-unpacking-the-archive" title="Step 2: Unpacking the Archive" />
+  <contents name="step-3-building-the-library" title="Step 3: Building the Library" />
+  <contents name="step-4-adjusting-the-environment-variables" title="Step 4: Adjusting the Environment Variables" />
+  <contents name="step-5-enabling-framebuffer-support" title="Step 5: Enabling Framebuffer Support" />
+ </page>
+ <page access="public" name="qtopiacore-makeqpf.html" subtype="page" title="makeqpf" fulltitle="makeqpf" subtitle="" location="emb-makeqpf.qdoc" />
+ <page access="public" name="qtopiacore-performance.html" subtype="page" title="Performance Tuning" fulltitle="Performance Tuning" subtitle="" location="emb-performance.qdoc">
+  <contents name="programming-style" title="Programming Style" />
   <contents name="static-vs-dynamic-linking" title="Static vs. Dynamic Linking" />
   <contents name="alternative-memory-allocation" title="Alternative Memory Allocation" />
  </page>
- <page access="public" name="emb-pointer.html" subtype="page" title="Qtopia Core Pointer Handling" fulltitle="Qtopia Core Pointer Handling" subtitle="" location="emb-pointer.qdoc">
-  <contents name="mouse-protocols" title="Mouse Protocols" />
-  <contents name="touch-panels" title="Touch Panels" />
+ <page access="public" name="qtopiacore-pointer.html" subtype="page" title="Pointer Handling" fulltitle="Pointer Handling" subtitle="" location="emb-pointer.qdoc">
+  <contents name="available-drivers" title="Available Drivers" />
+  <contents name="specifying-a-driver" title="Specifying a Driver" />
  </page>
- <page access="public" name="emb-qvfb.html" subtype="page" title="Qtopia Core Virtual Framebuffer" fulltitle="Qtopia Core Virtual Framebuffer" subtitle="" location="emb-qvfb.qdoc">
-  <contents name="using-the-virtual-framebuffer" title="Using the Virtual Framebuffer" />
-  <contents name="virtual-framebuffer-design" title="Virtual Framebuffer Design" />
+ <page access="public" name="qtopiacore-porting.html" subtype="page" title="Issues to be Aware of When Porting Qtopia Core" fulltitle="Issues to be Aware of When Porting Qtopia Core" subtitle="" location="emb-porting.qdoc" />
+ <page access="public" name="qtopiacore-qvfb.html" subtype="page" title="The Virtual Framebuffer" fulltitle="The Virtual Framebuffer" subtitle="" location="emb-qvfb.qdoc">
+  <contents name="displaying-the-virtual-framebuffer" title="Displaying the Virtual Framebuffer" />
+  <contents name="running-applications-using-the-virtual-framebuffer" title="Running Applications Using the Virtual Framebuffer" />
+  <contents name="the-file-menu" title="The File Menu" />
+  <contents name="the-view-menu" title="The View Menu" />
  </page>
- <page access="public" name="emb-running.html" subtype="page" title="Running Qtopia Core Applications" fulltitle="Running Qtopia Core Applications" subtitle="" location="emb-running.qdoc">
-  <contents name="displays" title="Displays" />
-  <contents name="mouse-input" title="Mouse Input" />
+ <page access="public" name="qtopiacore-running.html" subtype="page" title="Running Applications" fulltitle="Running Applications" subtitle="" location="emb-running.qdoc">
+  <contents name="using-a-single-display" title="Using a Single Display" />
+  <contents name="using-multiple-displays" title="Using Multiple Displays" />
+  <contents name="command-line-options" title="Command Line Options" />
  </page>
- <page access="public" name="emb-vnc.html" subtype="page" title="Qtopia Core as a VNC Server" fulltitle="Qtopia Core as a VNC Server" subtitle="" location="emb-vnc.qdoc" />
+ <page access="public" name="qtopiacore-vnc.html" subtype="page" title="The VNC Protocol" fulltitle="The VNC Protocol" subtitle="" location="emb-vnc.qdoc" />
  <page access="public" name="eventsandfilters.html" subtype="page" title="Events and Event Filters" fulltitle="Events and Event Filters" subtitle="" location="eventsandfilters.qdoc" />
  <page access="public" name="examples.html" subtype="page" title="Qt Examples" fulltitle="Qt Examples" subtitle="" location="examples.qdoc">
   <contents name="qt-tutorial" title="Qt Tutorial" />
@@ -39916,6 +39981,7 @@
   <contents name="qt-designer-examples" title="Qt Designer Examples" />
   <contents name="qt-linguist-examples" title="Qt Linguist Examples" />
   <contents name="activeqt-examples" title="ActiveQt Examples" />
+  <contents name="qtopia-core-examples" title="Qtopia Core Examples" />
  </page>
  <page access="public" name="exportedfunctions.html" subtype="page" title="Special-Purpose Global Functions Exported by Qt" fulltitle="Special-Purpose Global Functions Exported by Qt" subtitle="" location="exportedfunctions.qdoc">
   <contents name="void-qt-set-library-config-file-const-qstring-filename" title="void qt_set_library_config_file(const QString &amp;fileName)" />
@@ -39944,10 +40010,13 @@
  <page access="public" name="http://www.w3.org/TR/SVG/types.html#ColorKeywords" subtype="externalpage" title="SVG color keyword names" fulltitle="SVG color keyword names" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="http://www.w3.org/Graphics/SVG/" subtype="externalpage" title="SVG Working Group" fulltitle="SVG Working Group" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="http://www.w3.org/TR/SVGMobile/" subtype="externalpage" title="Mobile SVG Profiles" fulltitle="Mobile SVG Profiles" subtitle="" location="external-resources.qdoc" />
+ <page access="public" name="http://www.w3.org/TR/SVGMobile12/" subtype="externalpage" title="SVG 1.2 Tiny" fulltitle="SVG 1.2 Tiny" subtitle="" location="external-resources.qdoc" />
+ <page access="public" name="http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static" subtype="externalpage" title="SVG 1.2 Tiny Static Features" fulltitle="SVG 1.2 Tiny Static Features" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="http://www.trolltech.com/products/qtopia/" subtype="externalpage" title="Qtopia" fulltitle="Qtopia" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="http://www.trolltech.com/products/solutions/" subtype="externalpage" title="Qt Solutions" fulltitle="Qt Solutions" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="http://www.rfc-editor.org/rfc/rfc1928.txt" subtype="externalpage" title="RFC 1928" fulltitle="RFC 1928" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="http://www.rfc-editor.org/rfc/rfc1929.txt" subtype="externalpage" title="RFC 1929" fulltitle="RFC 1929" subtitle="" location="external-resources.qdoc" />
+ <page access="public" name="http://www.rfc-editor.org/rfc/rfc3174.txt" subtype="externalpage" title="RFC 3174" fulltitle="RFC 3174" subtitle="" location="external-resources.qdoc" />
  <page access="public" name="focus.html" subtype="page" title="Keyboard Focus" fulltitle="Keyboard Focus" subtitle="" location="focus.qdoc">
   <keyword name="keyboard-focus" />
   <contents name="focus-motion" title="Focus Motion" />
@@ -40071,7 +40140,7 @@
  <page access="public" name="install-x11.html" subtype="page" title="Installing Qt/X11" fulltitle="Installing Qt/X11" subtitle="" location="installation.qdoc" />
  <page access="public" name="install-win.html" subtype="page" title="Installing Qt/Windows" fulltitle="Installing Qt/Windows" subtitle="" location="installation.qdoc" />
  <page access="public" name="install-mac.html" subtype="page" title="Installing Qt/Mac" fulltitle="Installing Qt/Mac" subtitle="" location="installation.qdoc" />
- <page access="public" name="known-issues.html" subtype="page" title="Known Issues in 4.1.2" fulltitle="Known Issues in 4.1.2" subtitle="" location="known-issues.qdoc" />
+ <page access="public" name="known-issues.html" subtype="page" title="Known Issues in 4.1.3" fulltitle="Known Issues in 4.1.3" subtitle="" location="known-issues.qdoc" />
  <page access="public" name="layout.html" subtype="page" title="Layout Classes" fulltitle="Layout Classes" subtitle="" location="layout.qdoc">
   <keyword name="stretch-factor" />
   <contents name="horizontal-vertical-and-grid-layouts" title="Horizontal, Vertical, and Grid Layouts" />
@@ -40086,6 +40155,20 @@
   <contents name="further-notes" title="Further Notes" />
  </page>
  <page access="public" name="licenses.html" subtype="page" title="Licenses for Code Used in Qt" fulltitle="Licenses for Code Used in Qt" subtitle="" location="licenses.qdoc" />
+ <page access="public" name="licenses-fonts.html" subtype="page" title="Licenses for Fonts Used in Qtopia Core" fulltitle="Licenses for Fonts Used in Qtopia Core" subtitle="" location="licenses.qdoc">
+  <contents name="adobe-helvetica" title="Adobe Helvetica" />
+  <contents name="adobe-utopia" title="Adobe Utopia" />
+  <contents name="babelfish" title="Babelfish" />
+  <contents name="bigelow-holmes-luxi" title="Bigelow &amp; Holmes Luxi" />
+  <contents name="bitstream-charter-and-courier" title="Bitstream Charter and Courier" />
+  <contents name="bitstream-vera" title="Bitstream Vera" />
+  <contents name="cursor" title="Cursor" />
+  <contents name="fixed-fonts" title="Fixed Fonts" />
+  <contents name="ibm-courier" title="IBM Courier" />
+  <contents name="micro" title="Micro" />
+  <contents name="unifont" title="Unifont" />
+  <contents name="wenquanyi" title="Wenquanyi" />
+ </page>
  <page access="public" name="linguist-manual.html" subtype="page" title="Qt Linguist Manual" fulltitle="Qt Linguist Manual" subtitle="" location="linguist-manual.qdoc">
   <keyword name="qt-linguist" />
   <contents name="overview-of-the-translation-process" title="Overview of the Translation Process" />
@@ -40276,11 +40359,26 @@
  <page access="public" name="objecttrees.html" subtype="page" title="Object Trees and Object Ownership" fulltitle="Object Trees and Object Ownership" subtitle="" location="objecttrees.qdoc" />
  <page access="public" name="opensourceedition.html" subtype="page" title="Qt Open Source Edition" fulltitle="Qt Open Source Edition" subtitle="" location="opensourceedition.qdoc" />
  <page access="public" name="overviews.html" subtype="page" title="All Overviews and HOWTOs" fulltitle="All Overviews and HOWTOs" subtitle="" location="overviews.qdoc" />
+ <page access="public" name="paintsystem.html" subtype="page" title="The Paint System" fulltitle="The Paint System" subtitle="" location="paintsystem.qdoc">
+  <contents name="drawing" title="Drawing" />
+  <contents name="filling" title="Filling" />
+  <contents name="creating-a-paint-device" title="Creating a Paint Device" />
+  <contents name="widget" title="Widget" />
+  <contents name="image" title="Image" />
+  <contents name="pixmap" title="Pixmap" />
+  <contents name="opengl-widget" title="OpenGL Widget" />
+  <contents name="pixel-buffer" title="Pixel Buffer" />
+  <contents name="picture" title="Picture" />
+  <contents name="printer" title="Printer" />
+  <contents name="reading-and-writing-image-files" title="Reading and Writing Image Files" />
+  <contents name="styling" title="Styling" />
+ </page>
  <page access="public" name="plugins-howto.html" subtype="page" title="How to Create Qt Plugins" fulltitle="How to Create Qt Plugins" subtitle="" location="plugins-howto.qdoc">
   <contents name="the-higher-level-api-writing-qt-extensions" title="The Higher-Level API: Writing Qt Extensions" />
   <contents name="the-lower-level-api-extending-qt-applications" title="The Lower-Level API: Extending Qt Applications" />
   <contents name="loading-and-verifying-plugins" title="Loading and Verifying Plugins" />
   <contents name="the-build-key" title="The Build Key" />
+  <contents name="static-plugins" title="Static Plugins" />
  </page>
  <page access="public" name="porting4-designer.html" subtype="page" title="Porting .ui Files to Qt 4" fulltitle="Porting .ui Files to Qt 4" subtitle="" location="porting4-designer.qdoc">
   <contents name="uic-output" title="uic Output" />
@@ -40355,6 +40453,7 @@
   <contents name="qeventloop" title="QEventLoop" />
   <contents name="qfiledialog" title="QFileDialog" />
   <contents name="qfocusdata" title="QFocusData" />
+  <contents name="qfont" title="QFont" />
   <contents name="qframe" title="QFrame" />
   <contents name="qftp" title="QFtp" />
   <contents name="qglayoutiterator" title="QGLayoutIterator" />
@@ -40393,6 +40492,7 @@
   <contents name="qpaintdevice" title="QPaintDevice" />
   <contents name="qpaintdevicemetrics" title="QPaintDeviceMetrics" />
   <contents name="qpainter" title="QPainter" />
+  <contents name="qpixmap" title="QPixmap" />
   <contents name="qpointarray" title="QPointArray" />
   <contents name="qpopupmenu" title="QPopupMenu" />
   <contents name="qprinter" title="QPrinter" />
@@ -40418,7 +40518,7 @@
   <contents name="qsimplerichtext" title="QSimpleRichText" />
   <contents name="qslider" title="QSlider" />
   <contents name="qsocket" title="QSocket" />
-  <contents name="qsocket" title="QSocket" />
+  <contents name="qsocketdevice" title="QSocketDevice" />
   <contents name="qsortedlist" title="QSortedList" />
   <contents name="qsplitter" title="QSplitter" />
   <contents name="qspinbox" title="QSpinBox" />
@@ -40453,6 +40553,7 @@
   <contents name="qtimeedit" title="QTimeEdit" />
   <contents name="qtoolbar" title="QToolBar" />
   <contents name="qtoolbutton" title="QToolButton" />
+  <contents name="qtooltip" title="QToolTip" />
   <contents name="quridrag" title="QUriDrag" />
   <contents name="qurl" title="QUrl" />
   <contents name="qurloperator" title="QUrlOperator" />
@@ -40541,6 +40642,9 @@
  </page>
  <page access="public" name="qmake-manual.html" subtype="page" title="qmake Manual" fulltitle="qmake Manual" subtitle="" location="qmake-manual.qdoc">
   <keyword name="qmake" />
+  <contents name="getting-started" title="Getting Started" />
+  <contents name="table-of-contents" title="Table of Contents" />
+  <contents name="additional-information" title="Additional Information" />
  </page>
  <page access="public" name="qmake-using.html" subtype="page" title="Using qmake" fulltitle="Using qmake" subtitle="" location="qmake-manual.qdoc">
   <contents name="describing-a-project" title="Describing a Project" />
@@ -40589,6 +40693,7 @@
   <target name="forms3" />
   <target name="headers" />
   <target name="includepath" />
+  <target name="installs" />
   <target name="leximpls" />
   <target name="lexobjects" />
   <target name="lexsources" />
@@ -40600,12 +40705,15 @@
   <target name="objects" />
   <target name="objects-dir" />
   <target name="objmoc" />
+  <target name="post-targetdeps" />
+  <target name="pre-targetdeps" />
   <target name="precompiled-header" />
   <target name="qmake-systemvariable" />
   <target name="qmakespec-systemvariable" />
   <target name="qmake-app-flag" />
   <target name="qmake-app-or-dll" />
   <target name="qmake-ar-cmd" />
+  <target name="qmake-bundle-data" />
   <target name="qmake-cflags-debug" />
   <target name="qmake-cflags-mt" />
   <target name="qmake-cflags-mt-dbg" />
@@ -40630,9 +40738,8 @@
   <target name="qmake-extension-shlib" />
   <target name="qmake-failed-requirements" />
   <target name="qmake-filetags" />
+  <target name="qmake-framework-version" />
   <target name="qmake-incdir" />
-  <target name="post-targetdeps" />
-  <target name="pre-targetdeps" />
   <target name="qmake-incdir-opengl" />
   <target name="qmake-incdir-qt" />
   <target name="qmake-incdir-thread" />
@@ -40662,6 +40769,7 @@
   <contents name="forms3" title="FORMS3" />
   <contents name="headers" title="HEADERS" />
   <contents name="includepath" title="INCLUDEPATH" />
+  <contents name="installs" title="INSTALLS" />
   <contents name="leximpls" title="LEXIMPLS" />
   <contents name="lexobjects" title="LEXOBJECTS" />
   <contents name="lexsources" title="LEXSOURCES" />
@@ -40673,12 +40781,15 @@
   <contents name="objects" title="OBJECTS" />
   <contents name="objects-dir" title="OBJECTS_DIR" />
   <contents name="objmoc" title="OBJMOC" />
+  <contents name="post-targetdeps" title="POST_TARGETDEPS" />
+  <contents name="pre-targetdeps" title="PRE_TARGETDEPS" />
   <contents name="precompiled-header" title="PRECOMPILED_HEADER" />
   <contents name="qmake" title="QMAKE" />
   <contents name="qmakespec" title="QMAKESPEC" />
   <contents name="qmake-app-flag" title="QMAKE_APP_FLAG" />
   <contents name="qmake-app-or-dll" title="QMAKE_APP_OR_DLL" />
   <contents name="qmake-ar-cmd" title="QMAKE_AR_CMD" />
+  <contents name="qmake-bundle-data" title="QMAKE_BUNDLE_DATA" />
   <contents name="qmake-cflags-debug" title="QMAKE_CFLAGS_DEBUG" />
   <contents name="qmake-cflags-mt" title="QMAKE_CFLAGS_MT" />
   <contents name="qmake-cflags-mt-dbg" title="QMAKE_CFLAGS_MT_DBG" />
@@ -40711,10 +40822,8 @@
   <contents name="qmake-ext-h" title="QMAKE_EXT_H" />
   <contents name="qmake-failed-requirements" title="QMAKE_FAILED_REQUIREMENTS" />
   <contents name="qmake-filetags" title="QMAKE_FILETAGS" />
+  <contents name="qmake-framework-version" title="QMAKE_FRAMEWORK_VERSION" />
   <contents name="qmake-incdir" title="QMAKE_INCDIR" />
-  <contents name="qtplugin" title="QTPLUGIN" />
-  <contents name="post-targetdeps" title="POST_TARGETDEPS" />
-  <contents name="pre-targetdeps" title="PRE_TARGETDEPS" />
   <contents name="qmake-incdir-opengl" title="QMAKE_INCDIR_OPENGL" />
   <contents name="qmake-incdir-qt" title="QMAKE_INCDIR_QT" />
   <contents name="qmake-incdir-thread" title="QMAKE_INCDIR_THREAD" />
@@ -40765,6 +40874,7 @@
   <contents name="qmake-run-cxx-imp" title="QMAKE_RUN_CXX_IMP" />
   <contents name="qmake-target" title="QMAKE_TARGET" />
   <contents name="qmake-uic" title="QMAKE_UIC" />
+  <contents name="qtplugin" title="QTPLUGIN" />
   <contents name="rc-file" title="RC_FILE" />
   <contents name="rcc-dir" title="RCC_DIR" />
   <contents name="requires" title="REQUIRES" />
@@ -40794,7 +40904,7 @@
  </page>
  <page access="public" name="qmake-function-reference.html" subtype="page" title="qmake Function Reference" fulltitle="qmake Function Reference" subtitle="" location="qmake-manual.qdoc">
   <target name="unique" />
-  <contents name="basename-file" title="basename(file)" />
+  <contents name="basename-variablename" title="basename(variablename)" />
   <contents name="config-config" title="CONFIG(config)" />
   <contents name="contains-variablename-value" title="contains(variablename, value)" />
   <contents name="count-variablename-number" title="count(variablename, number)" />
@@ -40848,7 +40958,7 @@
   <contents name="adding-new-configuration-features" title="Adding New Configuration Features" />
  </page>
  <page access="public" name="qmake-precompiledheaders.html" subtype="page" title="Using Precompiled Headers" fulltitle="Using Precompiled Headers" subtitle="" location="qmake-manual.qdoc">
-  <target name="about" />
+  <target name="introduction" />
   <target name="add-pch" />
   <target name="pch-contents" />
   <target name="project-options" />
@@ -40885,8 +40995,29 @@
   <contents name="building-a-plugin" title="Building a Plugin" />
   <contents name="the-template" title="The  Template" />
   <contents name="building-a-qt-designer-plugin" title="Building a Qt Designer Plugin" />
+  <contents name="building-and-installing-in-debug-and-release-modes" title="Building and Installing in Debug and Release Modes" />
+  <contents name="building-in-both-modes" title="Building in Both Modes" />
+  <contents name="installing-in-both-modes" title="Installing in Both Modes" />
+ </page>
+ <page access="public" name="qmake-environment-reference.html" subtype="page" title="Third-Party Code Used in qmake" fulltitle="Third-Party Code Used in qmake" subtitle="" location="qmake-manual.qdoc">
+  <contents name="rsa-data-security-inc-md5-message-digest-algorithm" title="RSA Data Security, Inc. MD5 Message-Digest Algorithm" />
  </page>
  <page access="public" name="qpl.html" subtype="page" title="Q Public License (QPL)" fulltitle="Q Public License (QPL)" subtitle="" location="qpl.qdoc" />
+ <page access="public" name="&lt;QtPlugin&gt;" subtype="header" title="Macros for Defining Plugins" fulltitle="&lt;QtPlugin&gt; - Macros for Defining Plugins" subtitle="" location="qplugin.qdoc" />
+ <function access="public" name="Q_DECLARE_INTERFACE" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="&lt;QtPlugin&gt;">
+  <parameter left="" right="" name="ClassName" />
+  <parameter left="" right="" name="Identifier" />
+ </function>
+ <function access="public" name="Q_EXPORT_PLUGIN" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="&lt;QtPlugin&gt;">
+  <parameter left="" right="" name="ClassName" />
+ </function>
+ <function access="public" name="Q_EXPORT_PLUGIN2" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="&lt;QtPlugin&gt;">
+  <parameter left="" right="" name="PluginName" />
+  <parameter left="" right="" name="ClassName" />
+ </function>
+ <function access="public" name="Q_IMPORT_PLUGIN" virtual="non" meta="macrowithparams" const="false" static="false" overload="false" relates="&lt;QtPlugin&gt;">
+  <parameter left="" right="" name="PluginName" />
+ </function>
  <page access="public" name="qt-conf.html" subtype="page" title="Using qt.conf" fulltitle="Using qt.conf" subtitle="" location="qt-conf.qdoc" />
  <page access="public" name="Qt3Support" subtype="module" title="Qt3Support Module" fulltitle="Qt3Support Module" subtitle="" location="qt3support.qdoc" />
  <page access="public" name="qt3to4.html" subtype="page" title="qt3to4 - The Qt 3 to 4 Porting Tool" fulltitle="qt3to4 - The Qt 3 to 4 Porting Tool" subtitle="" location="qt3to4.qdoc">
@@ -41007,7 +41138,8 @@
   <keyword name="qtestlib" />
   <contents name="qtestlib-features" title="QTestLib Features" />
   <contents name="qtestlib-api" title="QTestLib API" />
-  <contents name="qtestlib-tutorial" title="QTestLib Tutorial" />
+  <contents name="using-qtestlib" title="Using QTestLib" />
+  <contents name="creating-a-test" title="Creating a test" />
   <contents name="building-a-test" title="Building a Test" />
   <contents name="qtestlib-command-line-arguments" title="QTestLib Command Line Arguments" />
   <contents name="syntax" title="Syntax" />
@@ -41052,6 +41184,7 @@
   <contents name="installation" title="Installation" />
   <contents name="how-to-use-x11-overlays-with-qt" title="How to Use X11 Overlays with Qt" />
  </page>
+ <page access="public" name="qtopiacore.html" subtype="page" title="Qtopia Core" fulltitle="Qtopia Core" subtitle="" location="qtopiacore.qdoc" />
  <page access="public" name="QtSql" subtype="module" title="QtSql Module" fulltitle="QtSql Module" subtitle="" location="qtsql.qdoc">
   <contents name="connecting-to-databases" title="Connecting to Databases" />
   <contents name="executing-sql-statements" title="Executing SQL Statements" />
@@ -41069,6 +41202,7 @@
   <contents name="svg-support" title="SVG Support" />
   <contents name="configuring-the-build-process" title="Configuring the Build Process" />
   <contents name="rendering-svg-files" title="Rendering SVG files" />
+  <contents name="additional-information" title="Additional Information" />
  </page>
  <page access="public" name="QtTest" subtype="module" title="QtTest Module" fulltitle="QtTest Module" subtitle="" location="qttest.qdoc">
   <keyword name="qttest" />
@@ -41178,15 +41312,15 @@
   <contents name="supported-databases" title="Supported Databases" />
   <contents name="building-the-drivers-using-configure" title="Building the Drivers Using Configure" />
   <contents name="building-the-plugins-manually" title="Building the Plugins Manually" />
-  <contents name="qmysql-for-mysql-3-x-and-higher" title="QMYSQL for MySQL 3.x and higher" />
+  <contents name="qmysql-for-mysql-version-3-x-and-above" title="QMYSQL for MySQL (Version 3.x and Above)" />
   <contents name="general-information" title="General Information" />
-  <contents name="embedded-mysql-server" title="Embedded MySQL server" />
+  <contents name="stored-procedure-support" title="Stored Procedure Support" />
+  <contents name="embedded-mysql-server" title="Embedded MySQL Server" />
   <contents name="how-to-build-the-plugin-on-unix-and-mac-os-x" title="How to Build the Plugin on Unix and Mac OS X" />
   <contents name="how-to-build-the-plugin-on-windows" title="How to Build the Plugin on Windows" />
   <contents name="qoci-for-the-oracle-call-interface-oci" title="QOCI for the Oracle Call Interface (OCI)" />
   <contents name="general-information" title="General Information" />
-  <contents name="user-authentication" title="User authentication" />
-  <contents name="unicode-support" title="Unicode Support" />
+  <contents name="user-authentication" title="User Authentication" />
   <contents name="blob-lob-support" title="BLOB/LOB Support" />
   <contents name="how-to-build-the-plugin-on-unix-and-mac-os-x" title="How to Build the Plugin on Unix and Mac OS X" />
   <contents name="how-to-build-the-plugin-on-windows" title="How to Build the Plugin on Windows" />
@@ -41195,7 +41329,7 @@
   <contents name="unicode-support" title="Unicode Support" />
   <contents name="how-to-build-the-plugin-on-unix-and-mac-os-x" title="How to Build the Plugin on Unix and Mac OS X" />
   <contents name="how-to-build-the-plugin-on-windows" title="How to Build the Plugin on Windows" />
-  <contents name="qpsql-for-postgresql-version-7-3-and-higher" title="QPSQL for PostgreSQL Version 7.3 and higher" />
+  <contents name="qpsql-for-postgresql-version-7-3-and-above" title="QPSQL for PostgreSQL (Version 7.3 and Above)" />
   <contents name="general-information" title="General Information" />
   <contents name="unicode-support" title="Unicode Support" />
   <contents name="blob-support" title="BLOB Support" />
@@ -41204,12 +41338,15 @@
   <contents name="qtds-for-sybase-adaptive-server" title="QTDS for Sybase Adaptive Server" />
   <contents name="how-to-build-the-plugin-on-unix-and-mac-os-x" title="How to Build the Plugin on Unix and Mac OS X" />
   <contents name="how-to-build-the-plugin-on-windows" title="How to Build the Plugin on Windows" />
-  <contents name="qdb2-for-ibm-db2-v7-1-or-higher" title="QDB2 for IBM DB2 (v7.1 or Higher)" />
+  <contents name="qdb2-for-ibm-db2-version-7-1-and-above" title="QDB2 for IBM DB2 (Version 7.1 and Above)" />
   <contents name="general-information" title="General Information" />
   <contents name="how-to-build-the-plugin-on-unix-and-mac-os-x" title="How to Build the Plugin on Unix and Mac OS X" />
   <contents name="how-to-build-the-plugin-on-windows" title="How to Build the Plugin on Windows" />
   <contents name="qsqlite2-for-sqlite-version-2" title="QSQLITE2 for SQLite Version 2" />
-  <contents name="qsqlite-for-sqlite-version-3-and-above" title="QSQLITE for SQLite Version 3 and Above" />
+  <contents name="qsqlite-for-sqlite-version-3-and-above" title="QSQLITE for SQLite (Version 3 and Above)" />
+  <contents name="general-information" title="General Information" />
+  <contents name="how-to-build-the-plugin" title="How to Build the Plugin" />
+  <contents name="file-format-compatibility" title="File Format Compatibility" />
   <contents name="qibase-for-borland-interbase" title="QIBASE for Borland InterBase" />
   <contents name="general-information" title="General Information" />
   <contents name="how-to-build-the-plugin-on-unix-and-mac-os-x" title="How to Build the Plugin on Unix and Mac OS X" />
@@ -41257,14 +41394,13 @@
  <page access="public" name="http://www.trolltech.com/products/qt/qt4-platforms.html" subtype="externalpage" title="Qt 4 Platforms Overview" fulltitle="Qt 4 Platforms Overview" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://www.trolltech.com/developer/platforms/supported.html" subtype="externalpage" title="Qt 4 Supported Platforms" fulltitle="Qt 4 Supported Platforms" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://www.trolltech.com/products/qt/pricing.html" subtype="externalpage" title="Qt License Pricing" fulltitle="Qt License Pricing" subtitle="" location="trolltech-webpages.qdoc" />
- <page access="public" name="http://www.trolltech.com/products/qtopia/index.html" subtype="externalpage" title="Qtopia Overview" fulltitle="Qtopia Overview" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://www.trolltech.com/products/qtopia/" subtype="externalpage" title="Qtopia Overview" fulltitle="Qtopia Overview" subtitle="" location="trolltech-webpages.qdoc" />
- <page access="public" name="http://www.trolltech.com/products/qtopia/" subtype="externalpage" title="Qtopia Core" fulltitle="Qtopia Core" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://doc.trolltech.com/qq/" subtype="externalpage" title="Qt Quarterly" fulltitle="Qt Quarterly" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://www.trolltech.com/developer/tasktracker.html" subtype="externalpage" title="Task Tracker" fulltitle="Task Tracker" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://www.trolltech.com/products/embedded" subtype="externalpage" title="Trolltech Embedded Technology" fulltitle="Trolltech Embedded Technology" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://lists.trolltech.com" subtype="externalpage" title="Trolltech Mailing Lists" fulltitle="Trolltech Mailing Lists" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="http://www.trolltech.com/products/whitepapers.html" subtype="externalpage" title="Whitepapers" fulltitle="Whitepapers" subtitle="" location="trolltech-webpages.qdoc" />
+ <page access="public" name="http://doc.trolltech.com/qtcanvas" subtype="externalpage" title="QtCanvas" fulltitle="QtCanvas" subtitle="" location="trolltech-webpages.qdoc" />
  <page access="public" name="trolltech.html" subtype="page" title="About Trolltech" fulltitle="About Trolltech" subtitle="" location="trolltech.qdoc">
   <contents name="software-that-makes-sense" title="Software that Makes Sense" />
   <contents name="history" title="History" />
@@ -41368,6 +41504,27 @@
   <page access="public" name="demos/textedit/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="demos/textedit/main.cpp" location="" />
   <page access="public" name="demos/textedit/textedit.qrc" subtype="file" title="" fulltitle="textedit.qrc Example File" subtitle="demos/textedit/textedit.qrc" location="" />
  </page>
+ <page access="public" name="opengl/2dpainting" subtype="example" title="2D Painting Example" fulltitle="2D Painting Example" subtitle="" location="2dpainting.qdoc">
+  <contents name="overview" title="Overview" />
+  <contents name="helper-class-definition" title="Helper Class Definition" />
+  <contents name="helper-class-implementation" title="Helper Class Implementation" />
+  <contents name="widget-class-definition" title="Widget Class Definition" />
+  <contents name="widget-class-implementation" title="Widget Class Implementation" />
+  <contents name="glwidget-class-definition" title="GLWidget Class Definition" />
+  <contents name="glwidget-class-implementation" title="GLWidget Class Implementation" />
+  <contents name="window-class-definition" title="Window Class Definition" />
+  <contents name="window-class-implementation" title="Window Class Implementation" />
+  <contents name="running-the-example" title="Running the Example" />
+  <page access="public" name="opengl/2dpainting/glwidget.cpp" subtype="file" title="" fulltitle="glwidget.cpp Example File" subtitle="opengl/2dpainting/glwidget.cpp" location="" />
+  <page access="public" name="opengl/2dpainting/glwidget.h" subtype="file" title="" fulltitle="glwidget.h Example File" subtitle="opengl/2dpainting/glwidget.h" location="" />
+  <page access="public" name="opengl/2dpainting/helper.cpp" subtype="file" title="" fulltitle="helper.cpp Example File" subtitle="opengl/2dpainting/helper.cpp" location="" />
+  <page access="public" name="opengl/2dpainting/helper.h" subtype="file" title="" fulltitle="helper.h Example File" subtitle="opengl/2dpainting/helper.h" location="" />
+  <page access="public" name="opengl/2dpainting/widget.cpp" subtype="file" title="" fulltitle="widget.cpp Example File" subtitle="opengl/2dpainting/widget.cpp" location="" />
+  <page access="public" name="opengl/2dpainting/widget.h" subtype="file" title="" fulltitle="widget.h Example File" subtitle="opengl/2dpainting/widget.h" location="" />
+  <page access="public" name="opengl/2dpainting/window.cpp" subtype="file" title="" fulltitle="window.cpp Example File" subtitle="opengl/2dpainting/window.cpp" location="" />
+  <page access="public" name="opengl/2dpainting/window.h" subtype="file" title="" fulltitle="window.h Example File" subtitle="opengl/2dpainting/window.h" location="" />
+  <page access="public" name="opengl/2dpainting/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="opengl/2dpainting/main.cpp" location="" />
+ </page>
  <page access="public" name="widgets/analogclock" subtype="example" title="Analog Clock Example" fulltitle="Analog Clock Example" subtitle="" location="analogclock.qdoc">
   <contents name="analogclock-class-definition" title="AnalogClock Class Definition" />
   <contents name="analogclock-class-implementation" title="AnalogClock Class Implementation" />
@@ -41440,6 +41597,8 @@
   <page access="public" name="network/broadcastsender/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="network/broadcastsender/main.cpp" location="" />
  </page>
  <page access="public" name="sql/cachedtable" subtype="example" title="Cached Table Example" fulltitle="Cached Table Example" subtitle="" location="cachedtable.qdoc">
+  <contents name="tableeditor-class-definition" title="TableEditor Class Definition" />
+  <contents name="tableeditor-class-implementation" title="TableEditor Class Implementation" />
   <page access="public" name="sql/cachedtable/tableeditor.cpp" subtype="file" title="" fulltitle="tableeditor.cpp Example File" subtitle="sql/cachedtable/tableeditor.cpp" location="" />
   <page access="public" name="sql/cachedtable/tableeditor.h" subtype="file" title="" fulltitle="tableeditor.h Example File" subtitle="sql/cachedtable/tableeditor.h" location="" />
   <page access="public" name="sql/cachedtable/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="sql/cachedtable/main.cpp" location="" />
@@ -41683,6 +41842,17 @@
   <page access="public" name="widgets/groupbox/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="widgets/groupbox/main.cpp" location="" />
  </page>
  <page access="public" name="opengl/hellogl" subtype="example" title="Hello GL Example" fulltitle="Hello GL Example" subtitle="" location="hellogl.qdoc">
+  <contents name="glwidget-class-definition" title="GLWidget Class Definition" />
+  <contents name="glwidget-class-implementation" title="GLWidget Class Implementation" />
+  <contents name="widget-construction-and-sizing" title="Widget Construction and Sizing" />
+  <contents name="opengl-initialization" title="OpenGL Initialization" />
+  <contents name="resizing-the-viewport" title="Resizing the Viewport" />
+  <contents name="painting-the-scene" title="Painting the Scene" />
+  <contents name="mouse-handling" title="Mouse Handling" />
+  <contents name="utility-functions" title="Utility Functions" />
+  <contents name="window-class-definition" title="Window Class Definition" />
+  <contents name="window-class-implementation" title="Window Class Implementation" />
+  <contents name="summary" title="Summary" />
   <page access="public" name="opengl/hellogl/glwidget.cpp" subtype="file" title="" fulltitle="glwidget.cpp Example File" subtitle="opengl/hellogl/glwidget.cpp" location="" />
   <page access="public" name="opengl/hellogl/glwidget.h" subtype="file" title="" fulltitle="glwidget.h Example File" subtitle="opengl/hellogl/glwidget.h" location="" />
   <page access="public" name="opengl/hellogl/window.cpp" subtype="file" title="" fulltitle="window.cpp Example File" subtitle="opengl/hellogl/window.cpp" location="" />
@@ -41784,9 +41954,15 @@
   <page access="public" name="mainwindows/menus/mainwindow.h" subtype="file" title="" fulltitle="mainwindow.h Example File" subtitle="mainwindows/menus/mainwindow.h" location="" />
   <page access="public" name="mainwindows/menus/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="mainwindows/menus/main.cpp" location="" />
  </page>
- <page access="public" name="embedded/mousecalibration" subtype="example" title="Mouse Calibration Example" fulltitle="Mouse Calibration Example" subtitle="" location="mousecalibration.qdoc">
+ <page access="public" name="qtopiacore/mousecalibration" subtype="example" title="Mouse Calibration Example" fulltitle="Mouse Calibration Example" subtitle="" location="mousecalibration.qdoc">
   <contents name="the-main-program" title="The Main Program" />
+  <contents name="calibration-class-definition" title="Calibration Class Definition" />
   <contents name="calibration-class-implementation" title="Calibration Class Implementation" />
+  <page access="public" name="qtopiacore/mousecalibration/calibration.cpp" subtype="file" title="" fulltitle="calibration.cpp Example File" subtitle="qtopiacore/mousecalibration/calibration.cpp" location="" />
+  <page access="public" name="qtopiacore/mousecalibration/calibration.h" subtype="file" title="" fulltitle="calibration.h Example File" subtitle="qtopiacore/mousecalibration/calibration.h" location="" />
+  <page access="public" name="qtopiacore/mousecalibration/scribblewidget.cpp" subtype="file" title="" fulltitle="scribblewidget.cpp Example File" subtitle="qtopiacore/mousecalibration/scribblewidget.cpp" location="" />
+  <page access="public" name="qtopiacore/mousecalibration/scribblewidget.h" subtype="file" title="" fulltitle="scribblewidget.h Example File" subtitle="qtopiacore/mousecalibration/scribblewidget.h" location="" />
+  <page access="public" name="qtopiacore/mousecalibration/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="qtopiacore/mousecalibration/main.cpp" location="" />
  </page>
  <page access="public" name="widgets/movie" subtype="example" title="Movie Example" fulltitle="Movie Example" subtitle="" location="movie.qdoc">
   <page access="public" name="widgets/movie/movieplayer.cpp" subtype="file" title="" fulltitle="movieplayer.cpp Example File" subtitle="widgets/movie/movieplayer.cpp" location="" />
@@ -41800,6 +41976,16 @@
   <page access="public" name="richtext/orderform/mainwindow.cpp" subtype="file" title="" fulltitle="mainwindow.cpp Example File" subtitle="richtext/orderform/mainwindow.cpp" location="" />
   <page access="public" name="richtext/orderform/mainwindow.h" subtype="file" title="" fulltitle="mainwindow.h Example File" subtitle="richtext/orderform/mainwindow.h" location="" />
   <page access="public" name="richtext/orderform/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="richtext/orderform/main.cpp" location="" />
+ </page>
+ <page access="public" name="opengl/overpainting" subtype="example" title="Overpainting Example" fulltitle="Overpainting Example" subtitle="" location="overpainting.qdoc">
+  <contents name="glwidget-class-definition" title="GLWidget Class Definition" />
+  <contents name="glwidget-class-implementation" title="GLWidget Class Implementation" />
+  <contents name="summary" title="Summary" />
+  <page access="public" name="opengl/overpainting/bubble.cpp" subtype="file" title="" fulltitle="bubble.cpp Example File" subtitle="opengl/overpainting/bubble.cpp" location="" />
+  <page access="public" name="opengl/overpainting/bubble.h" subtype="file" title="" fulltitle="bubble.h Example File" subtitle="opengl/overpainting/bubble.h" location="" />
+  <page access="public" name="opengl/overpainting/glwidget.cpp" subtype="file" title="" fulltitle="glwidget.cpp Example File" subtitle="opengl/overpainting/glwidget.cpp" location="" />
+  <page access="public" name="opengl/overpainting/glwidget.h" subtype="file" title="" fulltitle="glwidget.h Example File" subtitle="opengl/overpainting/glwidget.h" location="" />
+  <page access="public" name="opengl/overpainting/main.cpp" subtype="file" title="" fulltitle="main.cpp Example File" subtitle="opengl/overpainting/main.cpp" location="" />
  </page>
  <page access="public" name="painting/painterpaths" subtype="example" title="Painter Paths Example" fulltitle="Painter Paths Example" subtitle="" location="painterpaths.qdoc">
   <contents name="window-class-definition" title="Window Class Definition" />
@@ -42143,6 +42329,7 @@
   <page access="public" name="widgets/tooltips/tooltips.qrc" subtype="file" title="" fulltitle="tooltips.qrc Example File" subtitle="widgets/tooltips/tooltips.qrc" location="" />
  </page>
  <page access="public" name="network/torrent" subtype="example" title="Torrent Example" fulltitle="Torrent Example" subtitle="" location="torrent.qdoc">
+  <contents name="license-information" title="License Information" />
   <page access="public" name="network/torrent/addtorrentdialog.cpp" subtype="file" title="" fulltitle="addtorrentdialog.cpp Example File" subtitle="network/torrent/addtorrentdialog.cpp" location="" />
   <page access="public" name="network/torrent/addtorrentdialog.h" subtype="file" title="" fulltitle="addtorrentdialog.h Example File" subtitle="network/torrent/addtorrentdialog.h" location="" />
   <page access="public" name="network/torrent/bencodeparser.cpp" subtype="file" title="" fulltitle="bencodeparser.cpp Example File" subtitle="network/torrent/bencodeparser.cpp" location="" />

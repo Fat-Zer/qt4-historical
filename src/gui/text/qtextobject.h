@@ -27,6 +27,8 @@
 #include <QtCore/qobject.h>
 #include <QtGui/qtextformat.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QTextObjectPrivate;
@@ -283,5 +285,7 @@ private:
 };
 
 Q_DECLARE_TYPEINFO(QTextFragment, Q_MOVABLE_TYPE);
+
+QT_END_HEADER
 
 #endif // QTEXTOBJECT_H

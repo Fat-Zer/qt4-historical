@@ -27,6 +27,8 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qkeysequence.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_SHORTCUT
@@ -73,5 +75,7 @@ protected:
 };
 
 #endif // QT_NO_SHORTCUT
+
+QT_END_HEADER
 
 #endif // QSHORTCUT_H

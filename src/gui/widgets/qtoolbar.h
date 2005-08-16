@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLBAR
@@ -132,9 +134,9 @@ public:
 private:
     Q_DECLARE_PRIVATE(QToolBar)
     Q_DISABLE_COPY(QToolBar)
-    Q_PRIVATE_SLOT(d_func(), void toggleView(bool))
-    Q_PRIVATE_SLOT(d_func(), void updateIconSize(const QSize &))
-    Q_PRIVATE_SLOT(d_func(), void updateToolButtonStyle(Qt::ToolButtonStyle))
+    Q_PRIVATE_SLOT(d_func(), void _q_toggleView(bool))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateIconSize(const QSize &))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateToolButtonStyle(Qt::ToolButtonStyle))
 
     friend class QMainWindow;
 };
@@ -143,5 +145,7 @@ inline QAction *QToolBar::actionAt(int ax, int ay) const
 { return actionAt(QPoint(ax, ay)); }
 
 #endif // QT_NO_TOOLBAR
+
+QT_END_HEADER
 
 #endif // QTOOLBAR_H

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/plugins-howto.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/plugins-howto.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/plugins-howto.qdoc -->
 <head>
     <title>Qt 4.1: How to Create Qt Plugins</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -30,7 +31,9 @@ body { background: #ffffff; color: black; }</style>
 <ul><li><a href="#the-higher-level-api-writing-qt-extensions">The Higher-Level API: Writing Qt Extensions</a></li>
 <li><a href="#the-lower-level-api-extending-qt-applications">The Lower-Level API: Extending Qt Applications</a></li>
 <li><a href="#loading-and-verifying-plugins">Loading and Verifying Plugins</a></li>
-<li><a href="#the-build-key">The Build Key</a></li>
+<ul><li><a href="#the-build-key">The Build Key</a></li>
+</ul>
+<li><a href="#static-plugins">Static Plugins</a></li>
 </ul>
 <a name="the-higher-level-api-writing-qt-extensions"></a>
 <h2>The Higher-Level API: Writing Qt Extensions</h2>
@@ -53,23 +56,30 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodecplugin.html">QTextCodecPlugin</a></td><td><tt>plugins/codecs</tt></td><td>Case Sensitive</td></tr>
 </table></p>
 <p>But where is the <tt>plugins</tt> directory? When the application is run, Qt will first treat the application's executable directory as the <tt>pluginsbase</tt>. For example if the application is in <tt>C:\Program Files\MyApp</tt> and has a style plugin, Qt will look in <tt>C:\Program Files\MyApp\styles</tt>. (See <a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>() for how to find out where the application's executable is.) Qt will also look in the directory specified by QLibraryInfo::location(<a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::PluginsPath</a>), which typically is located in <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed). If you want Qt to look in additional places you can add as many paths as you need with calls to <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>(). And if you want to set your own path or paths you can use <a href="qcoreapplication.html#setLibraryPaths">QCoreApplication::setLibraryPaths</a>(). You can also use a <tt>qt.conf</tt> file to override the hard-coded paths that are compiled into the Qt library. For more information, see the <a href="qt-conf.html">Using qt.conf</a> documentation.</p>
-<p>Suppose that you have a new style class called <tt>MyStyle</tt> that you want to make available as a plugin. The required code is straightforward:</p>
+<p>Suppose that you have a new style class called <tt>MyStyle</tt> that you want to make available as a plugin. The required code is straightforward, here is the class definition (<tt>mystyleplugin.h</tt>):</p>
 <pre>&nbsp;   class MyStylePlugin : public QStylePlugin
     {
     public:
-        QStringList keys() const {
-            return QStringList() &lt;&lt; &quot;mystyle&quot;;
-        }
+        QStringList keys() const;
+        QStyle *create(const QString &amp;key);
+    };</pre>
+<p>Ensure that the class implementation is located in a <tt>.cpp</tt> file (including the class definition):</p>
+<pre>&nbsp;   #include &quot;mystyleplugin.h&quot;
 
-        QStyle *create(const QString &amp;key) {
-            if (key == &quot;mystyle&quot;)
-                return new MyStyle;
-            return 0;
-        }
-    };
+    QStringList MyStylePlugin::keys() const
+    {
+        return QStringList() &lt;&lt; &quot;MyStyle&quot;;
+    }
+
+    QStyle *MyStylePlugin::create(const QString &amp;key)
+    {
+        if (key.toLower() == &quot;mystyle&quot;)
+            return new MyStyle;
+        return 0;
+    }
 
     Q_EXPORT_PLUGIN2(MyStylePlugin)</pre>
-<p>(Note that <a href="qstyleplugin.html">QStylePlugin</a> is case-insensitive, and the lower-case version of the key is used; most other plugins are case sensitive.)</p>
+<p>(Note that <a href="qstyleplugin.html">QStylePlugin</a> is case insensitive, and the lower-case version of the key is used in our <a href="qstyleplugin.html#create">create()</a> implementation; most other plugins are case sensitive.)</p>
 <p>For database drivers, image formats, text codecs, and most other plugin types, no explicit object creation is required. Qt will find and create them as required. Styles are an exception, since you might want to set a style explicitly in code. To apply a style, use code like this:</p>
 <pre>&nbsp;   QApplication::setStyle(QStyleFactory::create(&quot;MyStyle&quot;));</pre>
 <p>Some plugin classes require additional functions to be implemented. See the class documentation for details of the virtual functions that must be reimplemented for each type of plugin.</p>
@@ -82,7 +92,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Making an application extensible through plugins involves the following steps:</p>
 <ol type="1">
 <li>Define a set of interfaces (classes with only pure virtual functions) used to talk to the plugins.</li>
-<li>Use the <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interface.</li>
+<li>Use the <a href="qtplugin.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interface.</li>
 <li>Use <a href="qpluginloader.html">QPluginLoader</a> in the application to load the plugins.</li>
 <li>Use <a href="qobject.html#qobject_cast">qobject_cast</a>() to test whether a plugin implements a given interface.</li>
 </ol>
@@ -90,7 +100,7 @@ body { background: #ffffff; color: black; }</style>
 <ol type="1">
 <li>Declare a plugin class that inherits from <a href="qobject.html">QObject</a> and from the interfaces that the plugin wants to provide.</li>
 <li>Use the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interfaces.</li>
-<li>Export the plugin using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</li>
+<li>Export the plugin using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</li>
 <li>Build the plugin using an suitable <tt>.pro</tt> file.</li>
 </ol>
 <p>For example, here's the definition of an interface class:</p>
@@ -138,7 +148,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   CONFIG += release</pre>
 <p>This will ensure that the plugin is compatible with the version of the library used in the application.</p>
 <a name="the-build-key"></a>
-<h2>The Build Key</h2>
+<h3>The Build Key</h3>
 <p>When loading plugins, Qt checks the build key of each plugin against its own configuration to ensure that only compatible plugins are loaded; any plugins that are configured differently are not loaded.</p>
 <p>The build key contains the following information:</p>
 <ul>
@@ -150,11 +160,66 @@ body { background: #ffffff; color: black; }</style>
 <li>Optionally, an extra string may be specified on the configure script command line.<p><i>Rationale:</i> When distributing binaries of the Qt library with an application, this provides a way for developers to write plugins that can only be loaded by the library with which the plugins were linked.</p>
 </li>
 </ul>
+<a name="static-plugins"></a>
+<h2>Static Plugins</h2>
+<p>Plugins can be linked statically against your application. If you build the static version of Qt, this is the only option for including Qt's predefined plugins.</p>
+<p>When compiled as a static library, Qt provides the following static plugins:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Plugin name</th><th>Type</th><th>Description</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qtaccessiblecompatwidgets</tt></td><td>Accessibility</td><td>Accessibility for Qt 3 support widgets</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qtaccessiblewidgets</tt></td><td>Accessibility</td><td>Accessibility for Qt widgets</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qdecorationdefault</tt></td><td>Decorations (Qtopia)</td><td>Default style</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qdecorationwindows</tt></td><td>Decorations (Qtopia)</td><td>Windows style</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qgif</tt></td><td>Image formats</td><td>GIF</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qjpeg</tt></td><td>Image formats</td><td>JPEG</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qmng</tt></td><td>Image formats</td><td>MNG</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qimsw_multi</tt></td><td>Input methods (Qtopia)</td><td>Input Method Switcher</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qwstslibmousehandler</tt></td><td>Mouse drivers (Qtopia)</td><td><tt>tslib</tt> mouse</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qgfxtransformed</tt></td><td>Graphic drivers (Qtopia)</td><td>Transformed screen</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qgfxvnc</tt></td><td>Graphic drivers (Qtopia)</td><td>VNC</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qscreenvfb</tt></td><td>Graphic drivers (Qtopia)</td><td>Virtual frame buffer</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qsqldb2</tt></td><td>SQL driver</td><td>IBM DB2</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qsqlibase</tt></td><td>SQL driver</td><td>Borland InterBase</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qsqlite</tt></td><td>SQL driver</td><td><a href="3rdparty.html#sqlite">SQLite</a> version 3</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qsqlite2</tt></td><td>SQL driver</td><td><a href="3rdparty.html#sqlite">SQLite</a> version 2</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qsqlmysql</tt></td><td>SQL driver</td><td>MySQL</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qsqloci</tt></td><td>SQL driver</td><td>Oracle (OCI)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qsqlodbc</tt></td><td>SQL driver</td><td>Open Database Connectivity (ODBC)</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qsqlpsql</tt></td><td>SQL driver</td><td>PostgreSQL</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qsqltds</tt></td><td>SQL driver</td><td>Sybase Adaptive Server (TDS)</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qcncodecs</tt></td><td>Text codecs</td><td>Simplified Chinese (People's Republic of China)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qjpcodecs</tt></td><td>Text codecs</td><td>Japanese</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qkrcodecs</tt></td><td>Text codecs</td><td>Korean</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qtwcodecs</tt></td><td>Text codecs</td><td>Traditional Chinese (Taiwan)</td></tr>
+</table></p>
+<p>To link statically against those plugins, you need to use the <a href="qtplugin.html#Q_IMPORT_PLUGIN">Q_IMPORT_PLUGIN</a>() macro in your application and you need to add the required plugins to your build using <tt>QTPLUGIN</tt>. For example, in your <tt>main.cpp</tt>:</p>
+<pre>&nbsp;       #include &lt;QApplication&gt;
+        #include &lt;QtPlugin&gt;
+
+        Q_IMPORT_PLUGIN(qjpeg)
+        Q_IMPORT_PLUGIN(qgif)
+        Q_IMPORT_PLUGIN(qkrcodecs)
+
+        int main(int argc, char *argv[])
+        {
+            QApplication app(argc, argv);
+            ...
+            return app.exec();
+        }</pre>
+<pre>&nbsp;       TEMPLATE      = app
+        QTPLUGIN     += qjpeg qgif      # image formats
+        QTPLUGIN     += qkrcodecs       # text codecs</pre>
+<p>It is also possible to create your own static plugins, by following these steps:</p>
+<ol type="1">
+<li>Add <tt>CONFIG += static</tt> to your plugin's <tt>.pro</tt> file.</li>
+<li>Use the <a href="qtplugin.html#Q_IMPORT_PLUGIN">Q_IMPORT_PLUGIN</a>() macro in your application.</li>
+<li>Link your application with your plugin library using <tt>LIBS</tt> in the <tt>.pro</tt> file.</li>
+</ol>
 <p>See also <a href="qpluginloader.html">QPluginLoader</a> and <a href="qlibrary.html">QLibrary</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

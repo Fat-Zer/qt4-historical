@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/text/qtextobject.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/text/qtextobject.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/text/qtextobject.cpp -->
 <head>
     <title>Qt 4.1: QTextBlock Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -62,10 +63,10 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QTextBlock class provides a container for text fragments in a <a href="qtextdocument.html">QTextDocument</a>.</p>
 <p>A text block encapsulates a block or paragraph of text in a <a href="qtextdocument.html">QTextDocument</a>. QTextBlock provides read-only access to the block/paragraph structure of QTextDocuments. It is mainly of use if you want to implement your own layouts for the visual representation of a <a href="qtextdocument.html">QTextDocument</a>, or if you want to iterate over a document and write out the contents in your own custom format.</p>
-<p>Text blocks are created by their parent documents. If you need to create a new text block, use the cursor-based interface provided by <a href="qtextcursor.html">QTextCursor</a>.</p>
+<p>Text blocks are created by their parent documents. If you need to create a new text block, or modify the contents of a document while examining its contents, use the cursor-based interface provided by <a href="qtextcursor.html">QTextCursor</a> instead.</p>
 <p>Each text block is located at a specific <a href="qtextblock.html#position">position</a>() in a <a href="qtextblock.html#document">document</a>(). The contents of the block can be obtained by using the <a href="qtextblock.html#text">text</a>() function. The <a href="qtextblock.html#length">length</a>() function determines the block's size within the document (including formatting characters). The visual properties of the block are determined by its text <a href="qtextblock.html#layout">layout</a>(), its <a href="qtextblock.html#charFormat">charFormat</a>(), and its <a href="qtextblock.html#blockFormat">blockFormat</a>().</p>
-<p>The <a href="qtextblock.html#next">next</a>() and <a href="qtextblock.html#previous">previous</a>() functions allow navigation between blocks within the document. Note that blocks are returned in sequence, so adjacent blocks may come from different places in the document structure.</p>
-<p>QTextBlock provides comparison operators two make it easier to work with blocks: operator==() compares two block for equality, operator!=() compares two blocks for inequality, and operator&lt;() determines whether a block precedes another in the same document.</p>
+<p>The <a href="qtextblock.html#next">next</a>() and <a href="qtextblock.html#previous">previous</a>() functions enable iteration over consecutive valid blocks in a document under the condition that the document is not modified by other means during the iteration process. Note that, although blocks are returned in sequence, adjacent blocks may come from different places in the document structure. The validity of a block can be determined by calling <a href="qtextblock.html#isValid">isValid</a>().</p>
+<p>QTextBlock provides comparison operators to make it easier to work with blocks: operator==() compares two block for equality, operator!=() compares two blocks for inequality, and operator&lt;() determines whether a block precedes another in the same document.</p>
 <p align="center"><img src="images/qtextblock-sequence.png" /></p><p>See also <a href="qtextblockformat.html">QTextBlockFormat</a>, <a href="qtextcharformat.html">QTextCharFormat</a>, and <a href="qtextfragment.html">QTextFragment</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -149,6 +150,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

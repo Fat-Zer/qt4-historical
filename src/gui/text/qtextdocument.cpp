@@ -1131,8 +1131,15 @@ QVariant QTextDocument::loadResource(int type, const QUrl &name)
     else if (QTextEdit *edit = qobject_cast<QTextEdit *>(parent()))
         r = edit->loadResource(type, name);
 #endif
-    if (!r.isNull())
+    if (!r.isNull()) {
+        if (type == ImageResource && r.type() == QVariant::ByteArray) {
+            QPixmap pm;
+            pm.loadFromData(r.toByteArray());
+            if (!pm.isNull())
+                r = pm;
+        }
         d->cachedResources.insert(name, r);
+    }
     return r;
 }
 
@@ -1312,14 +1319,16 @@ bool QTextHtmlExporter::emitCharFormatStyle(const QTextCharFormat &format)
         html.chop(qstrlen(decorationTag.latin1()));
     }
 
-    if (format.foreground() != defaultCharFormat.foreground()) {
+    if (format.foreground() != defaultCharFormat.foreground()
+        && format.foreground().style() != Qt::NoBrush) {
         html += QLatin1String(" color:");
         html += format.foreground().color().name();
         html += QLatin1Char(';');
         attributesEmitted = true;
     }
 
-    if (format.background() != defaultCharFormat.background()) {
+    if (format.background() != defaultCharFormat.background()
+        && format.background().style() != Qt::NoBrush) {
         html += QLatin1String(" background-color:");
         html += format.background().color().name();
         html += QLatin1Char(';');

@@ -183,7 +183,7 @@ void QDockWidgetPrivate::init() {
     toggleViewAction = new QAction(q);
     toggleViewAction->setCheckable(true);
     toggleViewAction->setText(q->windowTitle());
-    QObject::connect(toggleViewAction, SIGNAL(triggered(bool)), q, SLOT(toggleView(bool)));
+    QObject::connect(toggleViewAction, SIGNAL(triggered(bool)), q, SLOT(_q_toggleView(bool)));
 #endif
 
     updateButtons();
@@ -202,7 +202,7 @@ QStyleOptionDockWidget QDockWidgetPrivate::getStyleOption()
     return opt;
 }
 
-void QDockWidgetPrivate::toggleView(bool b)
+void QDockWidgetPrivate::_q_toggleView(bool b)
 {
     Q_Q(QDockWidget);
     if (b == q->isHidden()) {
@@ -219,7 +219,7 @@ void QDockWidgetPrivate::updateButtons()
     if (hasFeature(q, QDockWidget::DockWidgetFloatable)) {
         if (!floatButton) {
             floatButton = new QDockWidgetTitleButton(q);
-            QObject::connect(floatButton, SIGNAL(clicked()), q, SLOT(toggleTopLevel()));
+            QObject::connect(floatButton, SIGNAL(clicked()), q, SLOT(_q_toggleTopLevel()));
 
             if (!q->isHidden())
                 floatButton->show();
@@ -319,7 +319,7 @@ void QDockWidgetPrivate::relayout()
     top->invalidate();
 }
 
-void QDockWidgetPrivate::toggleTopLevel()
+void QDockWidgetPrivate::_q_toggleTopLevel()
 {
     Q_Q(QDockWidget);
     QPoint p = q->mapToGlobal(QPoint(titleArea.height(), titleArea.height()));
@@ -415,7 +415,7 @@ void QDockWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     if (!::hasFeature(q, QDockWidget::DockWidgetFloatable))
         return;
-    toggleTopLevel();
+    _q_toggleTopLevel();
 }
 
 void QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)

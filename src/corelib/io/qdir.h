@@ -28,6 +28,8 @@
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qstringlist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QDirPrivate;
@@ -220,5 +222,7 @@ public:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::SortFlags)
+
+QT_END_HEADER
 
 #endif // QDIR_H

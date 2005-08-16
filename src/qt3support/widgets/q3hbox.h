@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3frame.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class QBoxLayout;
@@ -47,5 +49,7 @@ protected:
 private:
     Q_DISABLE_COPY(Q3HBox)
 };
+
+QT_END_HEADER
 
 #endif // Q3HBOX_H

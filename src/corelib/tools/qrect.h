@@ -31,6 +31,8 @@
 #error qrect.h must be included before any header file that defines topLeft
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QRect
@@ -791,5 +793,7 @@ inline QRect QRectF::toRect() const
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QRectF &);
 #endif
+
+QT_END_HEADER
 
 #endif // QRECT_H

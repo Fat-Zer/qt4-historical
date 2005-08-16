@@ -38,7 +38,7 @@
 
 #include "qeuckrcodec.h"
 
-#ifndef QT_NO_TEXTCODECPLUGIN
+#ifndef QT_NO_TEXTCODEC
 unsigned int qt_Ksc5601ToUnicode(unsigned int code);
 
 unsigned int qt_UnicodeToKsc5601(unsigned int unicode);
@@ -89,7 +89,7 @@ QByteArray QEucKrCodec::convertFromUnicode(const QChar *uc, int len, ConverterSt
 
 QString QEucKrCodec::convertToUnicode(const char* chars, int len, ConverterState *state) const
 {
-    uchar buf[2];
+    uchar buf[2] = {0, 0};
     int nbuf = 0;
     QChar replacement = QChar::ReplacementCharacter;
     if (state) {
@@ -3353,4 +3353,4 @@ static unsigned short unicode2ksc(unsigned short unicode)
     }
     return 0;
 }
-#endif // QT_NO_TEXTCODECPLUGIN
+#endif // QT_NO_TEXTCODEC

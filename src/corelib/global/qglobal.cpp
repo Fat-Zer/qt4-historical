@@ -70,8 +70,8 @@
     enum values.
 
     The traditional C++ approach for storing OR-combinations of enum
-    values is to use an \c int or \c uint variable. The inconvenient
-    with that approach is that there's no type checking at all; any
+    values is to use an \c int or \c uint variable. The inconvenience
+    with this approach is that there's no type checking at all; any
     enum value can be OR'd with any other enum value and passed on to
     a function that takes an \c int or \c uint.
 
@@ -272,7 +272,7 @@
     \fn QFlags QFlags::operator~() const
 
     Returns a QFlags object that contains the bitwise negation of
-    this objec;t.
+    this object.
 
     \sa operator&(), operator|(), operator^()
 */
@@ -340,7 +340,7 @@
     basic types, for example \l qint8 which is a signed char
     guaranteed to be 8-bit on all platforms supported by Qt. The
     header file also declares the \l qlonglong type definition for \c
-    {long long int } (\c unsigned __int64 on Windows).
+    {long long int } (\c __int64 on Windows).
 
     Several convenience type definitions are declared: \l qreal for \c
     double, \l uchar for \c unsigned char, \l uint for \c unsigned
@@ -414,11 +414,11 @@
     implement Qt's foreach loop.
 
     The Q_INT64_C() and Q_UINT64_C() macros wrap signed and unsigned
-    64-bit integers in a platform-independent way. The Q_CHECK_PTR()
-    macro prints a warning containing the source code's file name and
-    line number, saying that the program ran out of memory, if the
-    pointer is 0.  The qPrintable() macro represent an easy way of
-    printing text.
+    64-bit integer literals in a platform-independent way. The
+    Q_CHECK_PTR() macro prints a warning containing the source code's
+    file name and line number, saying that the program ran out of
+    memory, if the pointer is 0. The qPrintable() macro represent an
+    easy way of printing text.
 
     Finally, the QT_POINTER_SIZE macro expands to the size of a
     pointer in bytes, and the QT_VERSION and QT_VERSION_STR macros
@@ -1812,6 +1812,11 @@ QString qt_error_string(int errorCode)
             ret = QString::fromLocal8Bit(string);
             LocalFree((HLOCAL)string);
         });
+#elif !defined(Q_OS_MAC) && !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L
+        QByteArray buf;
+	buf.resize(1024);
+        strerror_r(errorCode, buf.data(), buf.size());
+        ret = QString::fromLocal8Bit(buf.constData());
 #else
         ret = QString::fromLocal8Bit(strerror(errorCode));
 #endif
@@ -2161,6 +2166,45 @@ QByteArray qgetenv(const char *varName)
 }
 
 /*!
+    \macro forever
+    \relates <QtGlobal>
+
+    This macro is provided for convenience for writing infinite
+    loops.
+
+    Example:
+
+    \code
+        forever {
+            ...
+        }
+    \endcode
+
+    It is equivalent to \c{for (;;)}.
+
+    If you're worried about namespace pollution, you can disable this
+    macro by adding the following line to your \c .pro file:
+
+    \code
+        CONFIG += no_keywords
+    \endcode
+
+    \sa Q_FOREVER
+*/
+
+/*!
+    \macro Q_FOREVER
+    \relates <QtGlobal>
+
+    Same as \l{forever}.
+    
+    This macro is available even when \c no_keywords is specified
+    using the \c .pro file's \c CONFIG variable.
+
+    \sa foreach()
+*/
+
+/*!
     \macro foreach(variable, container)
     \relates <QtGlobal>
 
@@ -2184,10 +2228,10 @@ QByteArray qgetenv(const char *varName)
     \macro Q_FOREACH(variable, container)
     \relates <QtGlobal>
 
-    Same as foreach() which is used to implement Qt's foreach
-    loop. The \a variable parameter is a variable name or variable
-    definition; the \a container parameter is a Qt container whose
-    value type corresponds to the type of the variable.
+    Same as foreach(\a variable, \a container).
+
+    This macro is available even when \c no_keywords is specified
+    using the \c .pro file's \c CONFIG variable.
 
     \sa foreach()
 */

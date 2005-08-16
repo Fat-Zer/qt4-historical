@@ -27,7 +27,7 @@
 #include <stdio.h>
 
 // if the flags change, you MUST to change it in qmetaobject.cpp too
-enum ProperyFlags  {
+enum PropertyFlags  {
     Invalid = 0x00000000,
     Readable = 0x00000001,
     Writable = 0x00000002,
@@ -59,7 +59,7 @@ enum MethodFlags {
 };
 
 /*
-  Attention!  This table is copied from qcorevariant.cpp. If you
+  Attention!  This table is copied from qvariant.cpp. If you
   change one, change both.
 */
 enum { CoreTypeCount = 28 };
@@ -169,6 +169,7 @@ int Generator::strreg(const char *s)
         if (str == s)
             return idx;
         idx += str.length() + 1;
+        idx -= str.count('\\');
     }
     strings.append(s);
     return idx;

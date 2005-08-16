@@ -27,6 +27,8 @@
 #include <QtCore/qmetaobject.h>
 #include <Qt3Support/q3asciidict.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 //
@@ -44,5 +46,7 @@ public:
     Q3ObjectDictionary &operator=(const Q3ObjectDictionary &dict)
 	{ return (Q3ObjectDictionary&)Q3AsciiDict<QMetaObject>::operator=(dict);}
 };
+
+QT_END_HEADER
 
 #endif // Q3OBJECTDICT_H

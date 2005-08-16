@@ -520,6 +520,7 @@ static void initializeDb()
         qDebug("    %s: %p", family->name.latin1(), family);
         populate_database(family->name);
 
+#if 0
         qDebug("        scripts supported:");
         for (int i = 0; i < QUnicodeTables::ScriptCount; i++)
             if(family->writingSystems[i] & QtFontFamily::Supported)
@@ -529,8 +530,8 @@ static void initializeDb()
             qDebug("        %s", foundry->name.latin1());
             for (int s = 0; s < foundry->count; s++) {
                 QtFontStyle *style = foundry->styles[s];
-		qDebug("            style: italic=%d oblique=%d weight=%d smooth=%d",  style->key.italic,
-		       style->key.oblique, style->key.weight, style->smoothScalable );
+		qDebug("            style: style=%d weight=%d smooth=%d",  style->key.style,
+		       style->key.weight, style->smoothScalable );
 		if(!style->smoothScalable) {
 		    for(int i = 0; i < style->count; ++i) {
 			qDebug("                %d", style->pixelSizes[i].pixelSize);
@@ -538,6 +539,7 @@ static void initializeDb()
 		}
 	    }
         }
+#endif            
     }
 #endif // QFONTDATABASE_DEBUG
 
@@ -558,43 +560,29 @@ static inline void load(const QString &family = QString(), int = -1)
 
 
 
-#if 0
-void QFontPrivate::initFontInfo()
+static void initFontInfo(QFontEngine *fe, const QFontDef &request, const QFontPrivate *fp)
 {
-    lineWidth = 1;
-    actual = request;                                // most settings are equal
+    fe->fontDef = request;                                // most settings are equal
+
+    HDC dc = shared_dc;
+    SelectObject(dc, fe->hfont);
     QT_WA({
         TCHAR n[64];
-        GetTextFaceW(fin->dc(), 64, n);
-        actual.family = QString::fromUtf16((ushort*)n);
-        actual.fixedPitch = !(fin->tm.w.tmPitchAndFamily & TMPF_FIXED_PITCH);
+        GetTextFaceW(dc, 64, n);
+        fe->fontDef.family = QString::fromUtf16((ushort*)n);
+        fe->fontDef.fixedPitch = !(fe->tm.w.tmPitchAndFamily & TMPF_FIXED_PITCH);
     } , {
         char an[64];
-        GetTextFaceA(fin->dc(), 64, an);
-        actual.family = QString::fromLocal8Bit(an);
-        actual.fixedPitch = !(fin->tm.a.tmPitchAndFamily & TMPF_FIXED_PITCH);
+        GetTextFaceA(dc, 64, an);
+        fe->fontDef.family = QString::fromLocal8Bit(an);
+        fe->fontDef.fixedPitch = !(fe->tm.a.tmPitchAndFamily & TMPF_FIXED_PITCH);
     });
-    if (actual.pointSize < 0) {
-        if (paintdevice)
-            actual.pointSize = actual.pixelSize * 72. / paintdevice->logicalDpiY();
-        else {
-            actual.pointSize = actual.pixelSize * 72. / GetDeviceCaps(fin->dc(), LOGPIXELSY);
-        }
-    } else if (actual.pixelSize == -1) {
-        if (paintdevice)
-            actual.pixelSize = actual.pointSize * paintdevice->logicalDpiY() / 72.;
-        else
-            actual.pixelSize = actual.pointSize * GetDeviceCaps(fin->dc(), LOGPIXELSY) / 72.;
-    }
-
-    actual.dirty = false;
-    exactMatch = (actual.family == request.family &&
-                   (request.pointSize < 0 || (actual.pointSize == request.pointSize)) &&
-                   (request.pixelSize == -1 || (actual.pixelSize == request.pixelSize)) &&
-                   actual.fixedPitch == request.fixedPitch);
+    if (fe->fontDef.pointSize < 0) {
+        fe->fontDef.pointSize = fe->fontDef.pixelSize * 72. / fp->dpi;
+    } else if (fe->fontDef.pixelSize == -1) {
+        fe->fontDef.pixelSize = qRound(fe->fontDef.pointSize * fp->dpi / 72.);
+    }    
 }
-
-#endif
 
 
 static const char *other_tryFonts[] = {
@@ -795,6 +783,9 @@ QFontEngine *loadEngine(int script, const QFontPrivate *fp, const QFontDef &requ
             && (request.style == QFont::StyleItalic || (-lf.lfHeight > 18 && -lf.lfHeight != 24))) {
             fam = "Arial"; // MS Sans Serif has bearing problems in italic, and does not scale
         }
+        if (fam == "Courier" && !(request.styleStrategy & QFont::PreferBitmap))
+            fam = "Courier New";
+        
         QT_WA({
             memcpy(lf.lfFaceName, fam.utf16(), sizeof(TCHAR)*qMin(fam.length()+1,32));  // 32 = Windows hard-coded
             hfont = CreateFontIndirect(&lf);
@@ -848,6 +839,7 @@ QFontEngine *loadEngine(int script, const QFontPrivate *fp, const QFontDef &requ
 
     }
     QFontEngine *fe = new QFontEngineWin(desc->family->name, hfont, stockFont, lf);
+    initFontInfo(fe, request, fp);
     if(script == QUnicodeTables::Common) {
         if(!tryFonts) {
 	    LANGID lid = GetUserDefaultLangID();
@@ -877,7 +869,9 @@ QFontEngine *loadEngine(int script, const QFontPrivate *fp, const QFontDef &requ
                 list << QLatin1String(*tf);
             ++tf;
         }
-        fe = new QFontEngineMultiWin(static_cast<QFontEngineWin *>(fe), list);
+        QFontEngine *mfe = new QFontEngineMultiWin(static_cast<QFontEngineWin *>(fe), list);
+        mfe->fontDef = fe->fontDef;
+        fe = mfe;
     }
     return fe;
 }

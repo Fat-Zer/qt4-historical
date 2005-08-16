@@ -27,6 +27,8 @@
 #include <QtGui/qframe.h>
 #include <QtGui/qicon.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLBOX
@@ -99,8 +101,8 @@ public:
 private:
     Q_DECLARE_PRIVATE(QToolBox)
     Q_DISABLE_COPY(QToolBox)
-    Q_PRIVATE_SLOT(d_func(), void buttonClicked())
-    Q_PRIVATE_SLOT(d_func(), void widgetDestroyed(QObject*))
+    Q_PRIVATE_SLOT(d_func(), void _q_buttonClicked())
+    Q_PRIVATE_SLOT(d_func(), void _q_widgetDestroyed(QObject*))
 };
 
 
@@ -113,5 +115,7 @@ inline int QToolBox::insertItem(int index, QWidget *item, const QString &text)
 { return insertItem(index, item, QIcon(), text); }
 
 #endif // QT_NO_TOOLBOX
+
+QT_END_HEADER
 
 #endif // QTOOLBOX_H

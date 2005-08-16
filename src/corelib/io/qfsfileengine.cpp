@@ -69,10 +69,12 @@ QFSFileEnginePrivate::QFSFileEnginePrivate() : QAbstractFileEnginePrivate()
 #ifdef Q_OS_UNIX
     need_lstat = 1;
     is_link = 0;
+    is_readonly = 0;
 #endif
     fd = -1;
     fh = 0;
     lastIOCommand = IOFlushCommand;
+    lastFlushFailed = false;
     closeFileHandle = false;
     init();
 }
@@ -156,6 +158,8 @@ static QByteArray openModeToFopenMode(QIODevice::OpenMode flags, const QString &
 bool QFSFileEngine::open(QIODevice::OpenMode flags)
 {
     Q_D(QFSFileEngine);
+    d->lastFlushFailed = false;
+
     if (d->file.isEmpty()) {
         qWarning("QFSFileEngine::open: No file name specified");
         setError(QFile::OpenError, QLatin1String("No file name specified"));
@@ -173,6 +177,9 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags)
                  qt_error_string(int(errno)));
         return false;
     }
+
+    if ((flags & QIODevice::WriteOnly) == 0)
+        d->is_readonly = 1;
 
     if (flags & QIODevice::Unbuffered)
         setvbuf(d->fh, 0, _IONBF, 0);
@@ -235,6 +242,8 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags)
 bool QFSFileEngine::open(QIODevice::OpenMode flags, int fd)
 {
     Q_D(QFSFileEngine);
+    d->lastFlushFailed = false;
+
     d->closeFileHandle = false;
 #ifdef Q_OS_UNIX
     d->fh = fdopen(fd, openModeToFopenMode(flags).constData());
@@ -244,6 +253,9 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags, int fd)
                  qt_error_string(int(errno)));
         return false;
     }
+
+    if ((flags & QIODevice::WriteOnly) == 0)
+        d->is_readonly = 1;
 
     if (flags & QIODevice::Unbuffered)
         setvbuf(d->fh, 0, _IONBF, 0);
@@ -265,7 +277,7 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags, int fd)
         d->sequential = 0;
         struct stat st;
         ::fstat(d->fd, &st);
-	if ((st.st_mode & QT_STAT_MASK) != QT_STAT_REG || !fd) //stdin is non seekable
+        if ((st.st_mode & QT_STAT_MASK) != QT_STAT_REG || !fd) //stdin is non seekable
             d->sequential = 1;
         return true;
     }
@@ -279,12 +291,14 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags, int fd)
 bool QFSFileEngine::open(QIODevice::OpenMode flags, FILE *fh)
 {
     Q_D(QFSFileEngine);
+    d->lastFlushFailed = false;
+
     Q_UNUSED(flags);
     d->fh = fh;
     d->fd = QT_FILENO(fh);
     QT_STATBUF st;
     if (QT_FSTAT(QT_FILENO(fh), &st) != 0)
-	return false;
+        return false;
 #ifdef Q_OS_WIN32
     HANDLE hnd = (HANDLE)_get_osfhandle(d->fd);
     if (hnd == INVALID_HANDLE_VALUE)
@@ -296,6 +310,10 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags, FILE *fh)
     d->sequential = S_ISCHR(st.st_mode) || S_ISFIFO(st.st_mode) || S_ISSOCK(st.st_mode);
 #endif
     d->closeFileHandle = false;
+#ifdef Q_OS_UNIX
+    if ((flags & QIODevice::WriteOnly) == 0)
+        d->is_readonly = 1;
+#endif
     return true;
 }
 
@@ -306,14 +324,16 @@ bool QFSFileEngine::close()
 {
     Q_D(QFSFileEngine);
 
-    flush();
+    bool flushed = !d->lastFlushFailed && flush();
+
     d->tried_stat = 0;
     if (d->fh) {
+        bool closed = true;
         if (d->closeFileHandle)
-            fclose(d->fh);
+            closed = fclose(d->fh) == 0;
         d->fh = 0;
         d->fd = -1;
-        return true;
+        return flushed && closed;
     }
 
     if (d->fd == -1)
@@ -334,20 +354,37 @@ bool QFSFileEngine::close()
 bool QFSFileEngine::flush()
 {
     Q_D(QFSFileEngine);
-    d->ungetchBuffer.clear();
+#ifdef Q_OS_UNIX
+    if (d->is_readonly)
+        return true;
+#endif
 
-    if (!d->fh)
+    d->ungetchBuffer.clear();
+    if (d->lastFlushFailed)
         return false;
+
+    if (!d->fh) {
+        // There's no write buffer when using an fd.
+        return d->fd != -1;
+    }
+
 #ifdef Q_OS_WIN
     QT_FPOS_T pos;
     int gotPos = QT_FGETPOS(d->fh, &pos);
 #endif
-    fflush(d->fh);
+    int ret = fflush(d->fh);
+    d->lastFlushFailed = (ret != 0);
+
 #ifdef Q_OS_WIN
     if (gotPos == 0)
         QT_FSETPOS(d->fh, &pos);
 #endif
     d->lastIOCommand = QFSFileEnginePrivate::IOFlushCommand;
+    if (ret != 0) {
+        setError(errno == ENOSPC ? QFile::ResourceError : QFile::WriteError,
+                 qt_error_string(errno));
+        return false;
+    }
     return true;
 }
 
@@ -410,9 +447,13 @@ qint64 QFSFileEngine::read(char *data, qint64 len)
         {
             readBytes = fread(data, 1, size_t(len), d->fh);
         }
-        if (readBytes == 0)
+        qint64 ret = qint64(readBytes);
+        if (ret == 0) {
             setError(QFile::ReadError, qt_error_string(int(errno)));
-        return readBytes;
+            if (!feof(d->fh))
+                ret = -1;
+        }
+        return ret;
     }
 
     qint64 ret = 0;
@@ -427,13 +468,27 @@ qint64 QFSFileEngine::read(char *data, qint64 len)
         len -= ret;
     }
     if(len && ret != len) {
-        int read = QT_READ(d->fd, data, len);
-        if(read <= 0) {
-            if(!ret)
+        int result;
+        qint64 read = 0;
+        do {
+            qint64 bytesToRead = len - read;
+#ifdef Q_OS_WIN
+            // Reading on Windows fails with ERROR_NO_SYSTEM_RESOURCES
+            // when the chunks are too large, so we limit the block
+            // size to 32MB.
+            const qint64 MaxBlockSize = 32 * 1024 * 1024;
+            bytesToRead = qMin(bytesToRead, MaxBlockSize);
+#endif
+            result = QT_READ(d->fd, data + read, int(bytesToRead));
+            if (result > 0)
+                read += result;
+        } while (result > 0 && read < len);
+        if (read > 0) {
+            ret += read;
+        } else {
+            if (!ret)
                 ret = -1;
             setError(QFile::ReadError, qt_error_string(errno));
-        } else {
-            ret += read;
         }
     }
     return ret;
@@ -461,7 +516,7 @@ qint64 QFSFileEngine::readLine(char *data, qint64 maxlen)
     // solves this.
     if (!fgets(data, int(maxlen + 1), d->fh)) {
         setError(QFile::ReadError, qt_error_string(int(errno)));
-	return 0;
+        return 0;
     }
     return qstrlen(data);
 }
@@ -478,23 +533,34 @@ qint64 QFSFileEngine::write(const char *data, qint64 len)
             flush();
             d->lastIOCommand = QFSFileEnginePrivate::IOWriteCommand;
         }
-        size_t result;
-        do {
-            result = fwrite(data, 1, size_t(len), d->fh);
-        } while (result == 0 && errno == EINTR);
-        if (result > 0)
-            return qint64(result);
-        setError(QFile::ReadError, qt_error_string(int(errno)));
-        return qint64(result);
     }
 
-    qint64 ret;
+    qint64 result;
+    qint64 written = 0;
     do {
-        ret = QT_WRITE(d->fd, data, len);
-    } while (ret == -1 && errno == EINTR);
-    if(ret != len)
-        setError(errno == ENOSPC ? QFile::ResourceError : QFile::WriteError, qt_error_string(errno));
-    return ret;
+        qint64 bytesToWrite = len - written;
+#ifdef Q_OS_WIN
+        // Writing on Windows fails with ERROR_NO_SYSTEM_RESOURCES
+        // when the chunks are too large, so we limit the block size
+        // to 32MB.
+        const qint64 MaxChunkSize = 32 * 1024 * 1024;
+        bytesToWrite = qMin<qint64>(bytesToWrite, MaxChunkSize);
+#endif
+        if (d->fh) {
+            result = qint64(fwrite(data + written, 1, size_t(bytesToWrite), d->fh));
+            if (bytesToWrite > 0 && result == 0)
+                result = -1;
+        } else {
+            result = QT_WRITE(d->fd, data + written, bytesToWrite);
+        }
+        if (result > 0)
+            written += qint64(result);
+    } while (written < len && ((result > 0 || (result == 0 && errno == EINTR))));
+
+    if (result > 0)
+        return written;
+    setError(errno == ENOSPC ? QFile::ResourceError : QFile::WriteError, qt_error_string(errno));
+    return qint64(result);
 }
 
 /*!

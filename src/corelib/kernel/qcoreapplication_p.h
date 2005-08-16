@@ -56,6 +56,9 @@ public:
     virtual void createEventDispatcher();
     static void moveToMainThread(QObject *o);
     static void removePostedEvent(QEvent *);
+#ifdef Q_OS_WIN
+    static void removePostedTimerEvent(QObject *object, int timerId);
+#endif
 
     static QThread *mainThread();
     static bool checkInstance(const char *method);
@@ -67,12 +70,10 @@ public:
 
     int &argc;
     char **argv;
-    QString orgName, orgDomain, application;
+    void appendApplicationPathToLibraryPaths(void);
+
 #ifndef QT_NO_TRANSLATION
     QTranslatorList translators;
-#endif
-#ifndef QT_NO_LIBRARY
-    QStringList *app_libpaths;
 #endif
     uint application_type;
 

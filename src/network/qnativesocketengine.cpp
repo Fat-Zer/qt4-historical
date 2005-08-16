@@ -182,7 +182,10 @@ void QNativeSocketEnginePrivate::setError(QAbstractSocket::SocketError error, Er
     case InvalidSocketErrorString:
         socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Invalid socket descriptor");
         break;
-    case UnreachableErrorString:
+    case HostUnreachableErrorString:
+        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Host unreachable");
+        break;
+    case NetworkUnreachableErrorString:
         socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network unreachable");
         break;
     case AccessErrorString:
@@ -880,7 +883,7 @@ void QNativeSocketEngine::setReadNotificationEnabled(bool enable)
                                               QSocketNotifier::Read, this);
 #ifdef Q_OS_WIN
         QObject::connect(d->readNotifier, SIGNAL(activated(int)),
-                         this, SLOT(systemReadNotification()));
+                         this, SLOT(_q_systemReadNotification()));
 #else
         QObject::connect(d->readNotifier, SIGNAL(activated(int)),
                          this, SIGNAL(readNotification()));

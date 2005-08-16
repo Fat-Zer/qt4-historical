@@ -42,7 +42,7 @@ public:
     QDateTime &getFileTime(QAbstractFileEngine::FileTime) const;
     QString getFileName(QAbstractFileEngine::FileName) const;
 
-    enum { CachedPerms=0x01, CachedTypes=0x02, CachedFlags=0x04,
+    enum { CachedFileFlags=0x01, CachedLinkTypeFlag=0x02,
            CachedMTime=0x10, CachedCTime=0x20, CachedATime=0x40,
            CachedSize =0x08 };
     struct Data {
@@ -65,11 +65,11 @@ public:
         mutable QString fileName;
         mutable QHash<int, QString> fileNames;
 
+        mutable uint cachedFlags : 31;
         mutable uint cache_enabled : 1;
+        mutable uint fileFlags;
         mutable qint64 fileSize;
         mutable QDateTime fileTimes[3];
-        mutable uint fileFlags;
-        mutable uint cachedFlags;
         inline bool getCachedFlag(uint c) const
         { return cache_enabled ? (cachedFlags & c) : 0; }
         inline void setCachedFlag(uint c)
@@ -128,19 +128,34 @@ QFileInfoPrivate::getFileName(QAbstractFileEngine::FileName name) const
 uint
 QFileInfoPrivate::getFileFlags(QAbstractFileEngine::FileFlags request) const
 {
-    QAbstractFileEngine::FileFlags flags = QAbstractFileEngine::FileInfoAll;
-    if (!data->getCachedFlag(request)) {
-        // Unless we need to know if it's a symlink or if the file exists, we
-        // fetch all info.
-        if ((request & QAbstractFileEngine::LinkType) == 0)
-            flags &= ~QAbstractFileEngine::LinkType;
+    // we split the testing for LinkType and the rest because, in order to
+    // determine if a file is a symlink or not, we have to lstat(). If we're not
+    // interested in that information, we might as well avoid one extra syscall.
 
-        flags = data->fileEngine->fileFlags(flags);
-        data->setCachedFlag(flags | request);
+    QAbstractFileEngine::FileFlags flags;
+    if (!data->getCachedFlag(CachedFileFlags)) {
+        QAbstractFileEngine::FileFlags req = QAbstractFileEngine::FileInfoAll;
+        req &= (~QAbstractFileEngine::LinkType);
+
+        flags = data->fileEngine->fileFlags(req);
+        data->setCachedFlag(CachedFileFlags);
         data->fileFlags |= uint(flags);
     } else {
         flags = QAbstractFileEngine::FileFlags(data->fileFlags & request);
     }
+
+    if (request & QAbstractFileEngine::LinkType) {
+        if (!data->getCachedFlag(CachedLinkTypeFlag)) {
+            QAbstractFileEngine::FileFlags linkflag;
+            linkflag = data->fileEngine->fileFlags(QAbstractFileEngine::LinkType);
+
+            data->setCachedFlag(CachedLinkTypeFlag);
+            data->fileFlags |= uint(linkflag);
+            flags |= linkflag;
+        }
+    }
+    // no else branch
+    // if we had it cached, it was caught in the previous else branch
 
     return flags & request;
 }
@@ -211,6 +226,50 @@ QDateTime
     isSymLink(). The readLink() function provides the name of the file
     the symlink points to.
 
+    On Unix (including Mac OS X), the symlink has the same size() has
+    the file it points to, because Unix handles symlinks
+    transparently; similarly, opening a symlink using QFile
+    effectively opens the link's target. For example:
+
+    \code
+        #ifdef Q_OS_UNIX
+
+        QFileInfo info1("/home/bob/bin/untabify");
+        info1.isSymLink();          // returns true
+        info1.absoluteFilePath();   // returns "/home/bob/bin/untabify"
+        info1.size();               // returns 56201
+        info1.readLink();           // returns "/opt/pretty++/bin/untabify"
+
+        QFileInfo info2(info1.readLink());
+        info1.isSymLink();          // returns false
+        info1.absoluteFilePath();   // returns "/opt/pretty++/bin/untabify"
+        info1.size();               // returns 56201
+
+        #endif
+    \endcode
+
+    On Windows, symlinks (shortcuts) are \c .lnk files. The reported
+    size() is that of the symlink (not the link's target), and
+    opening a symlink using QFile opens the \c .lnk file. For
+    example:
+
+    \code
+        #ifdef Q_OS_WIN
+
+        QFileInfo info1("C:\\Documents and Settings\\Bob\\untabify.lnk");
+        info1.isSymLink();          // returns true
+        info1.absoluteFilePath();   // returns "C:\\Documents and Settings\\Bob\\untabify.lnk"
+        info1.size();               // returns 743
+        info1.readLink();           // returns "C:\\Pretty++\\untabify"
+
+        QFileInfo info2(info1.readLink());
+        info1.isSymLink();          // returns false
+        info1.absoluteFilePath();   // returns "C:\\Pretty++\\untabify"
+        info1.size();               // returns 63942
+
+        #endif
+    \endcode
+
     Elements of the file's name can be extracted with path() and
     fileName(). The fileName()'s parts can be extracted with
     baseName() and extension().
@@ -226,7 +285,11 @@ QDateTime
 */
 
 /*!
-    Constructs a new empty QFileInfo.
+    Constructs an empty QFileInfo object.
+
+    Note that an empty QFileInfo object contain no file reference.
+
+    \sa setFile()
 */
 
 QFileInfo::QFileInfo() : d_ptr(new QFileInfoPrivate())
@@ -298,8 +361,8 @@ QFileInfo::~QFileInfo()
 /*!
     \fn bool QFileInfo::operator!=(const QFileInfo &fileinfo)
 
-    Returns true if the QFileInfo refers to a different file to the one
-    specified by \a fileinfo; otherwise returns false.
+    Returns true if this QFileInfo object refers to a different file
+    than the one specified by \a fileinfo; otherwise returns false.
 
     \sa operator==()
 */
@@ -307,22 +370,10 @@ QFileInfo::~QFileInfo()
 /*!
     \overload
     \fn bool QFileInfo::operator!=(const QFileInfo &fileinfo) const
-
-    Returns true if the QFileInfo refers to a different file to the one
-    specified by \a fileinfo; otherwise returns false.
-
-    \sa operator==()
 */
 
 /*!
     \overload
-    Returns true if the QFileInfo refers to a file in the same location as
-    the other \a fileinfo; otherwise returns false.
-
-    \warning This will not compare two different symbolic links
-    pointing to the same file.
-
-    \sa operator!=()
 */
 
 bool
@@ -353,8 +404,11 @@ QFileInfo::operator==(const QFileInfo &fileinfo) const
 }
 
 /*!
-    Returns true if the QFileInfo refers to a file in the same location as
-    the other \a fileinfo; otherwise returns false.
+    Returns true if this QFileInfo object refers to a file in the same
+    location as \a fileinfo; otherwise returns false.
+
+    Note that the result of comparing two empty QFileInfo objects,
+    containing no file references, is undefined.
 
     \warning This will not compare two different symbolic links
     pointing to the same file.
@@ -770,7 +824,10 @@ QFileInfo::suffix() const
 
 
 /*!
-    Returns the file's path as a QDir object.
+    Returns the path of the object's parent directory as a QDir object.
+
+    \bold{Note:} The QDir returned always corresponds to the object's parent
+    directory, even if the QFileInfo represents a directory.
 
     \sa dirPath(), filePath(), fileName(), isRelative(), absoluteDir()
 */
@@ -900,6 +957,18 @@ QFileInfo::isDir() const
 /*!
     Returns true if this object points to a symbolic link (or to a
     shortcut on Windows); otherwise returns false.
+
+    On Unix (including Mac OS X), opening a symlink effectively opens
+    the \l{readLink()}{link's target}. On Windows, it opens the \c
+    .lnk file itself.
+
+    Example:
+
+    \code
+        QFileInfo info(fileName);
+        if (info.isSymLink())
+            fileName = info.readLink();
+    \endcode
 
     \sa isFile(), isDir(), readLink()
 */

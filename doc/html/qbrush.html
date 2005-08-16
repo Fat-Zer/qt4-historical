@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/painting/qbrush.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/painting/qbrush.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/painting/qbrush.cpp -->
 <head>
     <title>Qt 4.1: QBrush Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -63,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <p>A brush has a style, a color, a gradient and a texture.</p>
 <p>The brush <a href="qbrush.html#style">style</a>() defines the fill pattern using the <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a> enum. The default brush style is <a href="qt.html#BrushStyle-enum">Qt::NoBrush</a> (depending on how you construct a brush). This style tells the painter to not fill shapes. The standard style for filling is <a href="qt.html#BrushStyle-enum">Qt::SolidPattern</a>. The style can be set when the brush is created using the appropiate constructor, and in addition the <a href="qbrush.html#setStyle">setStyle</a>() function provides means for altering the style once the brush is constructed.</p>
 <p align="center"><img src="images/brush-styles.png" alt="Brush Styles" /></p><p>The brush <a href="qbrush.html#color">color</a>() defines the color of the fill pattern. The color can either be one of Qt's predefined colors, <a href="qt.html#GlobalColor-enum">Qt::GlobalColor</a>, or any other custom <a href="qcolor.html">QColor</a>. The currently set color can be retrieved and altered using the <a href="qbrush.html#color">color</a>() and <a href="qbrush.html#setColor">setColor</a>() functions, respectively.</p>
-<p>The <a href="qbrush.html#gradient">gradient</a>() defines the gradient fill used when the current style is either <a href="qt.html#BrushStyle-enum">Qt::LinearGradientPattern</a>, <a href="qt.html#BrushStyle-enum">Qt::RadialGradientPattern</a> or Qt::ConicalGradient Pattern. The gradient can only be set when constructing the brush, while the <a href="qbrush.html#texture">texture</a>() can be set using the appropiate constructor or by using the <a href="qbrush.html#setTexture">setTexture</a>() function. The <a href="qbrush.html#texture">texture</a>() defines the pixmap used when the current style is <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a>.</p>
+<p>The <a href="qbrush.html#gradient">gradient</a>() defines the gradient fill used when the current style is either <a href="qt.html#BrushStyle-enum">Qt::LinearGradientPattern</a>, <a href="qt.html#BrushStyle-enum">Qt::RadialGradientPattern</a> or <a href="qt.html#BrushStyle-enum">Qt::ConicalGradientPattern</a>. The gradient can only be set when constructing the brush, while the <a href="qbrush.html#texture">texture</a>() can be set using the appropiate constructor or by using the <a href="qbrush.html#setTexture">setTexture</a>() function. The <a href="qbrush.html#texture">texture</a>() defines the pixmap used when the current style is <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a>.</p>
 <p>Note that applying <a href="qbrush.html#setTexture">setTexture</a>() makes <a href="qbrush.html#style">style</a>() == <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a>, independently of previous style settings. Also, calling <a href="qbrush.html#setColor">setColor</a>() will not make a difference if the style is a gradient. The same is the case if the style is <a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a> style unless the current texture is a <a href="qbitmap.html">QBitmap</a>.</p>
 <p>The <a href="qbrush.html#isOpaque">isOpaque</a>() function returns true if the brush is fully opaque otherwise false. A brush is considered opaque if:</p>
 <ul>
@@ -84,6 +85,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Note that, by default, <a href="qpainter.html">QPainter</a> renders the outline (using the currently set pen) when drawing shapes. Use <a href="qt.html#PenStyle-enum"><tt>painter.setPen(Qt::NoPen)</tt></a> to disable this behavior.</p>
 </td></tr>
 </table></p>
+<p>For more information about painting in general, see {The Paint System} documentation.</p>
 <p>See also <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a>, <a href="qpainter.html">QPainter</a>, and <a href="qcolor.html">QColor</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -174,6 +176,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

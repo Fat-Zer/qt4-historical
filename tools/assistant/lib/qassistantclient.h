@@ -28,6 +28,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QProcess>
 
+QT_BEGIN_HEADER
+
 class QTcpSocket;
 
 class QAssistantClient : public QObject
@@ -69,4 +71,5 @@ private:
     bool opened;
 };
 
+QT_END_HEADER
 #endif

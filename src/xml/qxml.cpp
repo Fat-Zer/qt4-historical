@@ -27,6 +27,7 @@
 #include "qregexp.h"
 #include "qmap.h"
 #include "qstack.h"
+#include <qdebug.h>
 
 
 #ifdef Q_CC_BOR // borland 6 finds bogus warnings when building this file in uic3
@@ -76,6 +77,9 @@ static const signed char cltEq      = 11; // =
 static const signed char cltDq      = 12; // "
 static const signed char cltSq      = 13; // '
 static const signed char cltUnknown = 14;
+
+// Hack for letting QDom know where the skipped entity occured
+bool qt_xml_skipped_entity_in_content;
 
 // character lookup table
 static const signed char charLookupTable[256]={
@@ -1359,6 +1363,7 @@ void QXmlInputSource::fetchData()
 QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
 {
 #ifdef QT_NO_TEXTCODEC
+    Q_UNUSED(beginning);
     return QString(data);
 #else
     if (data.size() == 0)
@@ -3202,6 +3207,7 @@ bool QXmlSimpleReader::parse(const QXmlInputSource *input, bool incremental)
             return false;
         }
     }
+    qt_xml_skipped_entity_in_content = false;
     return d->parseBeginOrContinue(0, incremental);
 }
 
@@ -7473,11 +7479,28 @@ bool QXmlSimpleReaderPrivate::processReference()
                     stringAddC(QLatin1Char(';'));
                     parseReference_charDataRead = true;
                 } else {
+                    // if we have some char data read, report it now
+                    if (parseReference_context == InContent) {
+                        if (contentCharDataRead) {
+                            if (reportWhitespaceCharData || !string().simplified().isEmpty()) {
+                                if (contentHnd != 0 && !contentHnd->characters(string())) {
+                                    reportParseError(contentHnd->errorString());
+                                    return false;
+                                }
+                            }
+                            stringClear();
+                            contentCharDataRead = false;
+                        }
+                    }
+
                     if (contentHnd) {
+                        qt_xml_skipped_entity_in_content = parseReference_context == InContent;
                         if (!contentHnd->skippedEntity(reference)) {
+                            qt_xml_skipped_entity_in_content = false;
                             reportParseError(contentHnd->errorString());
                             return false; // error
                         }
+                        qt_xml_skipped_entity_in_content = false;
                     }
                 }
             } else if ((*itExtern).notation.isNull()) {
@@ -7507,10 +7530,13 @@ bool QXmlSimpleReaderPrivate::processReference()
                                 }
                             }
                             if (skipIt && contentHnd) {
+                                qt_xml_skipped_entity_in_content = true;
                                 if (!contentHnd->skippedEntity(reference)) {
+                                    qt_xml_skipped_entity_in_content = false;
                                     reportParseError(contentHnd->errorString());
                                     return false; // error
                                 }
+                                qt_xml_skipped_entity_in_content = false;
                             }
                             parseReference_charDataRead = false;
                         } break;

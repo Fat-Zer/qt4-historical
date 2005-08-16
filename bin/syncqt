@@ -3,7 +3,7 @@
 #
 # Synchronizes Qt header files - internal Trolltech tool.
 #
-# Copyright (C) 1997-2006 by Trolltech AS.  All rights reserved.
+# Copyright (C) 1997-2006 Trolltech AS. All rights reserved.
 #
 ######################################################################
 
@@ -169,6 +169,7 @@ sub classNames {
 	    if($line) {
                 $line =~ s,//.*$,,; #remove c++ comments
 	        $line .= ";" if($line =~ m/^Q_[A-Z_]*\(.*\)[\r\n]*$/); #qt macro
+	        $line .= ";" if($line =~ m/^QT_(BEGIN|END)_HEADER[\r\n]*$/); #qt macro
 	        $line .= ";" if($line =~ m/^QT_MODULE\(.*\)[\r\n]*$/); # QT_MODULE macro
                 $parsable .= " " . $line;
 	    }
@@ -222,7 +223,7 @@ sub classNames {
 		push @symbols, $1;
             } elsif($definition =~ m/^ *typedef +(.*) +([^ ]*);$/) {
 		push @symbols, $2;
-            } elsif($definition =~ m/^ *(template *<.*> *)?(class|struct) +([^ ]* +)?([^<\s]+) ?(<[^>]*> ?)?\s*((,|:)\s*(public|private) *.*)? *\{\}$/) {
+            } elsif($definition =~ m/^ *(template *<.*> *)?(class|struct) +([^ ]* +)?([^<\s]+) ?(<[^>]*> ?)?\s*((,|:)\s*(public|protected|private) *.*)? *\{\}$/) {
 		push @symbols, $4;
             } elsif($definition =~ m/^ *Q_DECLARE_.*ITERATOR\((.*)\);$/) {
 		push @symbols, "Q" . $1 . "Iterator";
@@ -595,6 +596,7 @@ my @ignore_headers = ();
 my $class_lib_map_contents = "";
 my @ignore_for_master_contents = ( "qt.h", "qpaintdevicedefs.h" );
 my @ignore_for_include_check = ( "qatomic.h" );
+my @ignore_for_qt_begin_header_check = ( "qiconset.h", "qconfig.h", "qconfig-dist.h", "qconfig-large.h", "qconfig-medium.h", "qconfig-minimal.h", "qconfig-small.h", "qfeatures.h" );
 
 foreach (@modules_to_sync) {
     #iteration info
@@ -847,6 +849,7 @@ if($check_includes) {
 		my @headers = findFiles("$subdir", "^[-a-z0-9_]*\\.h\$" , 0);
 		foreach (@headers) {
 		    my $header = "$_";
+                    my $header_skip_qt_begin_test = 0;
 		    $header = 0 if("$header" =~ /^ui_.*.h/);
 		    foreach (@ignore_headers) {
 			$header = 0 if("$header" eq "$_");
@@ -863,12 +866,17 @@ if($check_includes) {
 				foreach (@ignore_for_include_check) {
 				    $public_header = 0 if("$header" eq "$_");
 				}
+                                foreach(@ignore_for_qt_begin_header_check) {
+                                    $header_skip_qt_begin_test = 1 if ("$header" eq "$_");
+                                }
 			    }
 			}
 
 			my $iheader = $subdir . "/" . $header;
 			if($public_header) {
 			    if(open(F, "<$iheader")) {
+				my $qt_begin_header_found = 0;
+				my $qt_end_header_found = 0;
 				my $line;
 				while($line = <F>) {
 				    chomp $line;
@@ -892,8 +900,21 @@ if($check_includes) {
 						}
 					    }
 					}
+				    } elsif ($header_skip_qt_begin_test == 0 and $line =~ /^QT_BEGIN_HEADER\s*$/) {
+					$qt_begin_header_found = 1;
+				    } elsif ($header_skip_qt_begin_test == 0 and $line =~ /^QT_END_HEADER\s*$/) {
+					$qt_end_header_found = 1;
 				    }
 				}
+                                if ($header_skip_qt_begin_test == 0) {
+                                    if ($qt_begin_header_found == 0) {
+                                        print "WARNING: $iheader does not include QT_BEGIN_HEADER\n";
+                                    }
+
+                                    if ($qt_begin_header_found && $qt_end_header_found == 0) {
+                                        print "WARNING: $iheader has QT_BEGIN_HEADER but no QT_END_HEADER\n";
+                                    }
+                                }
 				close(F);
 			    }
 			}

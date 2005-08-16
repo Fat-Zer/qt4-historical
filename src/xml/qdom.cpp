@@ -3033,7 +3033,7 @@ bool QDomNode::isComment() const
 
 /*!
     Returns the first child element with tag name \a tagName if tagName is non-empty;
-    otherwise returns the last child element.  Returns a null element if no
+    otherwise returns the first child element.  Returns a null element if no
     such child exists.
 
     \sa lastChildElement() previousSiblingElement() nextSiblingElement()
@@ -4410,7 +4410,7 @@ bool QDomAttr::specified() const
 */
 QDomElement QDomAttr::ownerElement() const
 {
-    if (!impl && !impl->parent()->isElement())
+    if (!impl || !impl->parent()->isElement())
         return QDomElement();
     return QDomElement((QDomElementPrivate*)(impl->parent()));
 }
@@ -4628,7 +4628,7 @@ void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
     QString nsDecl("");
     if (!namespaceURI.isNull()) {
         // ### optimize this, so that you only declare namespaces that are not
-        // yet declared -- we loose default namespace mappings, so maybe we
+        // yet declared -- we lose default namespace mappings, so maybe we
         // should rather store the information that we get from
         // startPrefixMapping()/endPrefixMapping() and use them (you have to
         // take care if the DOM tree is modified, though)
@@ -5753,10 +5753,14 @@ static QByteArray encodeEntity(const QByteArray& str)
 
 void QDomEntityPrivate::save(QTextStream& s, int, int) const
 {
+    QString _name = name;
+    if (_name.startsWith(QLatin1Char('%')))
+        _name = QLatin1String("% ") + _name.mid(1);
+
     if (m_sys.isNull() && m_pub.isNull()) {
-        s << "<!ENTITY " << name << " \"" << encodeEntity(value.toUtf8()) << "\">" << endl;
+        s << "<!ENTITY " << _name << " \"" << encodeEntity(value.toUtf8()) << "\">" << endl;
     } else {
-        s << "<!ENTITY " << name << " ";
+        s << "<!ENTITY " << _name << " ";
         if (m_pub.isNull()) {
             s << "SYSTEM " << quotedValue(m_sys);
         } else {
@@ -6710,6 +6714,21 @@ bool QDomDocument::setContent(const QString& text, bool namespaceProcessing, QSt
     QDomNode::prefix(), QDomNode::localName() and
     QDomNode::namespaceURI() return an empty string.
 
+    Entity references are handled as follows:
+    \list
+    \o References to internal general entities and character entities occuring in the
+        content are included. The result is a QDomText node with the references replaced
+        by their corresponding entity values.
+    \o References to parameter entities occuring in the internal subset are included.
+        The result is a QDomDocumentType node which contains entity and notation declarations
+        with the references replaced by their corresponding entity values.
+    \o Any general parsed entity reference which is not defined in the internal subset and
+        which occurs in the content is represented as a QDomEntityReference node.
+    \o Any parsed entity reference which is not defined in the internal subset and which
+        occurs outside of the content is replaced with an empty string.
+    \o Any unparsed entity reference is replaced with an empty string.
+    \endlist
+
     \sa QDomNode::namespaceURI() QDomNode::localName()
     QDomNode::prefix() QString::isNull() QString::isEmpty()
 */
@@ -6841,7 +6860,7 @@ QDomDocumentType QDomDocument::doctype() const
 QDomImplementation QDomDocument::implementation() const
 {
     if (!impl)
-        QDomImplementation();
+        return QDomImplementation();
     return QDomImplementation(IMPL->implementation());
 }
 
@@ -6858,6 +6877,9 @@ QDomElement QDomDocument::documentElement() const
 /*!
     Creates a new element called \a tagName that can be inserted into
     the DOM tree, e.g. using QDomNode::appendChild().
+
+    If \a tagName is not a valid XML name, the behavior of this function is governed
+    by QDomImplementation::InvalidDataPolicy.
 
     \sa createElementNS() QDomNode::appendChild() QDomNode::insertBefore()
     QDomNode::insertAfter()
@@ -6885,6 +6907,10 @@ QDomDocumentFragment QDomDocument::createDocumentFragment()
     Creates a text node for the string \a value that can be inserted
     into the document tree, e.g. using QDomNode::appendChild().
 
+    If \a value contains characters which cannot be stored as character
+    data of an XML document (even in the form of character references), the
+    behavior of this function is governed by QDomImplementation::InvalidDataPolicy.
+
     \sa QDomNode::appendChild() QDomNode::insertBefore() QDomNode::insertAfter()
 */
 QDomText QDomDocument::createTextNode(const QString& value)
@@ -6898,6 +6924,9 @@ QDomText QDomDocument::createTextNode(const QString& value)
     Creates a new comment for the string \a value that can be inserted
     into the document, e.g. using QDomNode::appendChild().
 
+    If \a value contains characters which cannot be stored in an XML comment,
+    the behavior of this function is governed by QDomImplementation::InvalidDataPolicy.
+
     \sa QDomNode::appendChild() QDomNode::insertBefore() QDomNode::insertAfter()
 */
 QDomComment QDomDocument::createComment(const QString& value)
@@ -6910,6 +6939,10 @@ QDomComment QDomDocument::createComment(const QString& value)
 /*!
     Creates a new CDATA section for the string \a value that can be
     inserted into the document, e.g. using QDomNode::appendChild().
+
+    If \a value contains characters which cannot be stored in a CDATA section,
+    the behavior of this function is governed by
+    QDomImplementation::InvalidDataPolicy.
 
     \sa QDomNode::appendChild() QDomNode::insertBefore() QDomNode::insertAfter()
 */
@@ -6926,6 +6959,10 @@ QDomCDATASection QDomDocument::createCDATASection(const QString& value)
     the target for the processing instruction to \a target and the
     data to \a data.
 
+    If \a target is not a valid XML name, or data if contains characters which cannot
+    appear in a processing instruction, the behavior of this function is governed by
+    QDomImplementation::InvalidDataPolicy.
+
     \sa QDomNode::appendChild() QDomNode::insertBefore() QDomNode::insertAfter()
 */
 QDomProcessingInstruction QDomDocument::createProcessingInstruction(const QString& target,
@@ -6941,6 +6978,9 @@ QDomProcessingInstruction QDomDocument::createProcessingInstruction(const QStrin
     Creates a new attribute called \a name that can be inserted into
     an element, e.g. using QDomElement::setAttributeNode().
 
+    If \a name is not a valid XML name, the behavior of this function is governed by
+    QDomImplementation::InvalidDataPolicy.
+
     \sa createAttributeNS()
 */
 QDomAttr QDomDocument::createAttribute(const QString& name)
@@ -6953,6 +6993,9 @@ QDomAttr QDomDocument::createAttribute(const QString& name)
 /*!
     Creates a new entity reference called \a name that can be inserted
     into the document, e.g. using QDomNode::appendChild().
+
+    If \a name is not a valid XML name, the behavior of this function is governed by
+    QDomImplementation::InvalidDataPolicy.
 
     \sa QDomNode::appendChild() QDomNode::insertBefore() QDomNode::insertAfter()
 */
@@ -7056,6 +7099,8 @@ QDomNode QDomDocument::importNode(const QDomNode& importedNode, bool deep)
     QDomNode::prefix() and QDomNode::localName() to appropriate values
     (depending on \a qName).
 
+    If \a qName is an empty string, returns a null element.
+
     \sa createElement()
 */
 QDomElement QDomDocument::createElementNS(const QString& nsURI, const QString& qName)
@@ -7071,6 +7116,9 @@ QDomElement QDomDocument::createElementNS(const QString& nsURI, const QString& q
     and the namespace URI is \a nsURI. This function also sets
     QDomNode::prefix() and QDomNode::localName() to appropriate values
     (depending on \a qName).
+
+    If \a qName is not a valid XML name, the behavior of this function is governed by
+    QDomImplementation::InvalidDataPolicy.
 
     \sa createAttribute()
 */
@@ -7406,8 +7454,13 @@ bool QDomHandler::processingInstruction(const QString& target, const QString& da
     return true;
 }
 
+extern bool qt_xml_skipped_entity_in_content;
 bool QDomHandler::skippedEntity(const QString& name)
 {
+    // we can only handle inserting entity references into content
+    if (!qt_xml_skipped_entity_in_content)
+        return true;
+
     QDomNodePrivate *n = doc->createEntityReference(name);
     n->setLocation(locator->lineNumber(), locator->columnNumber());
     node->appendChild(n);

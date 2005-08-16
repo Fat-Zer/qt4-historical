@@ -26,6 +26,8 @@
 
 #include <QtCore/qnamespace.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QString;
@@ -353,5 +355,7 @@ inline const QMetaObject *QMetaObject::superClass() const
 inline const char *QMetaObject::superClassName() const
 { return d.superdata ? d.superdata->className() : 0; }
 #endif
+
+QT_END_HEADER
 
 #endif // QOBJECTDEFS_H

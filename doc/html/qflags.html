@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/corelib/global/qglobal.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/global/qglobal.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/global/qglobal.cpp -->
 <head>
     <title>Qt 4.1: QFlags Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -63,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QFlags class provides a type-safe way of storing OR-combinations of enum values.</p>
 <p>The QFlags&lt;Enum&gt; class is a template class, where Enum is an enum type. QFlags is used throughout Qt for storing combinations of enum values.</p>
-<p>The traditional C++ approach for storing OR-combinations of enum values is to use an <tt>int</tt> or <tt>uint</tt> variable. The inconvenient with that approach is that there's no type checking at all; any enum value can be OR'd with any other enum value and passed on to a function that takes an <tt>int</tt> or <tt>uint</tt>.</p>
+<p>The traditional C++ approach for storing OR-combinations of enum values is to use an <tt>int</tt> or <tt>uint</tt> variable. The inconvenience with this approach is that there's no type checking at all; any enum value can be OR'd with any other enum value and passed on to a function that takes an <tt>int</tt> or <tt>uint</tt>.</p>
 <p>Qt uses QFlags to provide type safety. For example, the <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> type is simply a typedef for QFlags&lt;<a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a>&gt;. <a href="qlabel.html#alignment-prop">QLabel::setAlignment</a>() takes a <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> parameter, which means that any combination of <a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a> values is legal:</p>
 <pre>&nbsp;   label-&gt;setAlignment(Qt::AlignLeft | Qt::AlignTop);</pre>
 <p>If you try to pass a value from another enum, the compiler will report an error.</p>
@@ -139,7 +140,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-7c-eq-2"></a>QFlags &amp; QFlags::operator|= ( Enum <i>other</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="operator-7e"></a>QFlags QFlags::operator~ () const</h3>
-<p>Returns a <a href="qflags.html">QFlags</a> object that contains the bitwise negation of this objec;t.</p>
+<p>Returns a <a href="qflags.html">QFlags</a> object that contains the bitwise negation of this object.</p>
 <p>See also <a href="qflags.html#operator-and">operator&amp;</a>(), <a href="qflags.html#operator-7c">operator|</a>(), and <a href="qflags.html#operator-5e">operator^</a>().</p>
 <hr />
 <h2>Macro Documentation</h2>
@@ -157,6 +158,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

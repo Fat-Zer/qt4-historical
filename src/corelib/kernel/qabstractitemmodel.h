@@ -27,6 +27,8 @@
 #include <QtCore/qvariant.h>
 #include <QtCore/qobject.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QAbstractItemModel;
@@ -252,7 +254,14 @@ inline bool QAbstractItemModel::removeColumn(int acolumn, const QModelIndex &apa
 inline QModelIndex QAbstractItemModel::createIndex(int arow, int acolumn, void *adata) const
 { return QModelIndex(arow, acolumn, adata, this); }
 inline QModelIndex QAbstractItemModel::createIndex(int arow, int acolumn, int aid) const
+#if defined(Q_CC_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4312 ) // avoid conversion warning on 64-bit
+#endif
 { return QModelIndex(arow, acolumn, reinterpret_cast<void*>(aid), this); }
+#if defined(Q_CC_MSVC)
+#pragma warning( pop )
+#endif
 
 class Q_CORE_EXPORT QAbstractTableModel : public QAbstractItemModel
 {
@@ -315,5 +324,7 @@ inline QVariant QModelIndex::data(int arole) const
 
 inline uint qHash(const QModelIndex &index)
 { return uint((index.row() << 4) + index.column() + index.internalId()); }
+
+QT_END_HEADER
 
 #endif // QABSTRACTITEMMODEL_H

@@ -29,6 +29,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 
+QT_BEGIN_HEADER
+
 class QDesignerWidgetBoxInterface;
 class QDesignerPropertyEditorInterface;
 class QDesignerFormWindowManagerInterface;
@@ -99,5 +101,7 @@ private:
     QDesignerFormEditorInterface(const QDesignerFormEditorInterface &other);
     void operator = (const QDesignerFormEditorInterface &other);
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTFORMEDITOR_H

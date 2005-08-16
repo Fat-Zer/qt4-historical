@@ -96,7 +96,7 @@ static const int thresholdTime = 500; // ### make this a stylehint in 4.1
   \fn void QAbstractSpinBox::editingFinished()
 
   This signal is emitted editing is finished. This happens when the
-  spinbox looses focus and when enter is pressed.
+  spinbox loses focus and when enter is pressed.
 */
 
 /*!
@@ -541,9 +541,9 @@ void QAbstractSpinBox::setLineEdit(QLineEdit *lineEdit)
 
     if (d->type != QVariant::Invalid) {
         connect(d->edit, SIGNAL(textChanged(QString)),
-                this, SLOT(editorTextChanged(QString)));
+                this, SLOT(_q_editorTextChanged(QString)));
         connect(d->edit, SIGNAL(cursorPositionChanged(int,int)),
-                this, SLOT(editorCursorPositionChanged(int,int)));
+                this, SLOT(_q_editorCursorPositionChanged(int,int)));
     }
     QStyleOptionSpinBox opt = d->getStyleOption();
     opt.subControls = QStyle::SC_SpinBoxEditField;
@@ -1031,11 +1031,13 @@ void QAbstractSpinBox::timerEvent(QTimerEvent *e)
 
 void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *e)
 {
-#ifndef QT_NO_MENU
+#ifdef QT_NO_MENU
+    Q_UNUSED(e);
+#else
     Q_D(QAbstractSpinBox);
 
     d->reset();
-    QMenu *menu = d->edit->createStandardContextMenu();
+    QPointer<QMenu> menu = d->edit->createStandardContextMenu();
     menu->addSeparator();
     const uint se = stepEnabled();
     QAction *up = menu->addAction(tr("&Step up"));
@@ -1047,7 +1049,7 @@ void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *e)
     const QPoint pos = (e->reason() == QContextMenuEvent::Mouse)
         ? e->globalPos() : mapToGlobal(QPoint(e->pos().x(), 0)) + QPoint(width() / 2, height() / 2);
     const QAction *action = menu->exec(pos);
-    delete menu;
+    delete static_cast<QMenu *>(menu);
     if (that) {
         if (action == up) {
             stepBy(1);
@@ -1056,7 +1058,7 @@ void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *e)
         }
     }
     e->accept();
-#endif
+#endif // QT_NO_MENU
 }
 
 /*!
@@ -1237,7 +1239,7 @@ void QAbstractSpinBoxPrivate::emitSignals(EmitPolicy, const QVariant &)
     signal.
 */
 
-void QAbstractSpinBoxPrivate::editorTextChanged(const QString &t)
+void QAbstractSpinBoxPrivate::_q_editorTextChanged(const QString &t)
 {
     Q_Q(QAbstractSpinBox);
 
@@ -1263,7 +1265,7 @@ void QAbstractSpinBoxPrivate::editorTextChanged(const QString &t)
     the different sections etc.
 */
 
-void QAbstractSpinBoxPrivate::editorCursorPositionChanged(int oldpos, int newpos)
+void QAbstractSpinBoxPrivate::_q_editorCursorPositionChanged(int oldpos, int newpos)
 {
     if (!edit->hasSelectedText() && !ignoreCursorPositionChanged && !specialValue()) {
         ignoreCursorPositionChanged = true;
@@ -1471,9 +1473,8 @@ void QAbstractSpinBoxPrivate::setValue(const QVariant &val, EmitPolicy ep,
     pendingEmit = false;
     if (doUpdate) {
         updateEdit();
-    } else {
-        updateButtons();
     }
+    updateButtons();
 
     if (ep == AlwaysEmit || (ep == EmitIfChanged && old != value)) {
         emitSignals(ep, old);

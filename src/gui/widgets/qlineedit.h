@@ -27,6 +27,8 @@
 #include <QtGui/qframe.h>
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_LINEEDIT
@@ -77,7 +79,11 @@ public:
     void setFrame(bool);
     bool hasFrame() const;
 
-    enum EchoMode { Normal, NoEcho, Password };
+    enum EchoMode { Normal, NoEcho, Password 
+#ifdef Q_WS_QWS
+    ,PasswordEchoOnEdit
+#endif
+    };
     EchoMode echoMode() const;
     void setEchoMode(EchoMode);
 
@@ -206,10 +212,12 @@ Q_SIGNALS:
 private:
     Q_DISABLE_COPY(QLineEdit)
     Q_DECLARE_PRIVATE(QLineEdit)
-    Q_PRIVATE_SLOT(d_func(), void clipboardChanged())
-    Q_PRIVATE_SLOT(d_func(), void deleteSelected())
+    Q_PRIVATE_SLOT(d_func(), void _q_clipboardChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_deleteSelected())
 };
 
 #endif // QT_NO_LINEEDIT
+
+QT_END_HEADER
 
 #endif // QLINEEDIT_H

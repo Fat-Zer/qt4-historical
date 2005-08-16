@@ -37,6 +37,7 @@
 
 #include "private/qabstractitemview_p.h"
 #include "qrubberband.h"
+#include "qbitarray.h"
 #include "qbsptree_p.h"
 
 #ifndef QT_NO_LISTVIEW
@@ -183,6 +184,7 @@ public:
     // used when items are movable
     QBspTree tree;
     QVector<QListViewItem> items;
+    QBitArray moved;
 
     // used when items are static
     QVector<int> flowPositions;
@@ -190,7 +192,6 @@ public:
     QVector<int> segmentStartRows;
 
     // timers
-    QBasicTimer startLayoutTimer;
     QBasicTimer batchLayoutTimer;
 
     // used when dragging

@@ -32,6 +32,8 @@
 #include <Qt3Support/q3sqlcursor.h>
 #include <QtSql/qsqlerror.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_SQL_VIEW_WIDGETS
@@ -153,5 +155,7 @@ private:
 };
 
 #endif // QT_NO_SQL_VIEW_WIDGETS
+
+QT_END_HEADER
 
 #endif // Q3DATABROWSER_H

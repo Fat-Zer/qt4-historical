@@ -875,7 +875,7 @@ QTextEngine::~QTextEngine()
     delete specialData;
 }
 
-const QCharAttributes *QTextEngine::attributes()
+const QCharAttributes *QTextEngine::attributes() const
 {
     if (layoutData && layoutData->haveCharAttributes)
         return (QCharAttributes *) layoutData->memory;
@@ -997,6 +997,14 @@ QFixed QTextEngine::width(int from, int len) const
         if (pos + ilen > from) {
             if (!si->num_glyphs)
                 shape(i);
+            
+            if (si->isObject) {
+                w += si->width;
+                continue;
+            } else if (si->isTab) {
+                w = nextTab(si, w);
+                continue;
+            }
 
             QGlyphLayout *glyphs = this->glyphs(si);
             unsigned short *logClusters = this->logClusters(si);
@@ -1207,7 +1215,8 @@ void QTextEngine::justify(const QScriptLine &line)
 
     itemize();
 
-    if (line.from + (int)line.length == layoutData->string.length())
+    if (line.from + (int)line.length == layoutData->string.length()
+        || layoutData->string.at(line.from + line.length - 1) == QChar::LineSeparator)
         return;
 
     // justify line
@@ -1581,7 +1590,9 @@ bool QTextEngine::atWordSeparator(int position) const
         || c == '('
         || c == ')'
         || c == '{'
-        || c == '}';
+        || c == '}'
+        || c == QChar::Nbsp
+        ;
 }
 
 void QTextEngine::indexAdditionalFormats()
@@ -1647,7 +1658,7 @@ void QTextEngine::splitItem(int item, int pos) const
 //     qDebug("split at position %d itempos=%d", pos, item);
 }
 
-QFixed QTextEngine::nextTab(const QScriptItem *si, QFixed x)
+QFixed QTextEngine::nextTab(const QScriptItem *si, QFixed x) const
 {
     // #### should work for alignright and righttoleft
     if (!(option.alignment() & Qt::AlignLeft) ||

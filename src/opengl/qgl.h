@@ -28,6 +28,8 @@
 #include <QtOpenGL/qglcolormap.h>
 #include <QtCore/qmap.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(OpenGL)
 
 #ifdef QT3_SUPPORT
@@ -408,5 +410,7 @@ inline bool QGLFormat::sampleBuffers() const
 {
     return testOption(QGL::SampleBuffers);
 }
+
+QT_END_HEADER
 
 #endif // QGL_H

@@ -117,15 +117,16 @@ void Config::load()
     src = settings.value( profkey + QLatin1String("Source") ).toStringList();
     sideBar = settings.value( key + QLatin1String("SideBarPage") ).toInt();
     if (qApp->type() != QApplication::Tty) {
-        geom.setRect( settings.value( key + QLatin1String("GeometryX"), QApplication::desktop()->availableGeometry().x() ).toInt(),
-                      settings.value( key + QLatin1String("GeometryY"), QApplication::desktop()->availableGeometry().y() ).toInt(),
+        geom.setRect( settings.value( key + QLatin1String("GeometryX"), QApplication::desktop()->availableGeometry().x() + 10).toInt(),
+                      settings.value( key + QLatin1String("GeometryY"), QApplication::desktop()->availableGeometry().y() + 40).toInt(),
                       settings.value( key + QLatin1String("GeometryWidth"), 800 ).toInt(),
                       settings.value( key + QLatin1String("GeometryHeight"), 600 ).toInt() );
         if (!geom.intersects(QApplication::desktop()->geometry()))
-            geom.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft());
+            geom.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft() + QPoint(10,40));
         maximized = settings.value( key + QLatin1String("GeometryMaximized"), false ).toBool();
     }
     mainWinState = settings.value(key + QLatin1String("MainWindowState")).toByteArray();
+    pointFntSize = settings.value(key + QLatin1String("FontSize"), qApp->font().pointSizeF()).toDouble();
     rebuildDocs = settings.value( key + QLatin1String("RebuildDocDB"), true ).toBool();
 
     profileNames = settings.value( key + QLatin1String("Profile") ).toStringList();
@@ -162,6 +163,7 @@ void Config::saveSettings()
         settings.setValue( key + QLatin1String("GeometryMaximized"), maximized );
     }
     settings.setValue( key + QLatin1String("MainWindowState"), mainWinState );
+    settings.setValue( key + QLatin1String("FontSize"), pointFntSize);
     settings.setValue( key + QLatin1String("RebuildDocDB"), rebuildDocs );
 }
 

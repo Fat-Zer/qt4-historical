@@ -26,6 +26,8 @@
 
 #include <QtGui/qmenu.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3PopupMenu : public QMenu
@@ -39,6 +41,10 @@ public:
     inline int exec(const QPoint & pos, int indexAtPoint = 0) {
         return findIdForAction(QMenu::exec(pos, actions().value(indexAtPoint)));
     }
+private:
+    Q_DISABLE_COPY(Q3PopupMenu)
 };
+
+QT_END_HEADER
 
 #endif // QPOPUPMENU_H

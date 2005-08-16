@@ -27,6 +27,8 @@
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QImage;
@@ -118,5 +120,7 @@ public:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QImageIOPlugin::Capabilities)
+
+QT_END_HEADER
 
 #endif // QIMAGEIOHANDLER_H

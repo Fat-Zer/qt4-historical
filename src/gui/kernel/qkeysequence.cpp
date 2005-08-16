@@ -408,7 +408,7 @@ int QKeySequence::assign(const QString &ks)
     // Run through the whole string, but stop
     // if we have 4 keys before the end.
     while (keyseq.length() && n < 4) {
-        // We MUST use something to seperate each sequence, and space
+        // We MUST use something to separate each sequence, and space
         // does not cut it, since some of the key names have space
         // in them.. (Let's hope no one translate with a comma in it:)
         p = keyseq.indexOf(QLatin1Char(','));
@@ -517,7 +517,7 @@ int QKeySequencePrivate::decodeString(const QString &str, QKeySequence::Sequence
     int fnum = 0;
     if (accel.length() == 1) {
         ret |= accel[0].toUpper().unicode();
-    } else if (accel[0] == QLatin1Char('f') && (fnum = accel.mid(1).toInt())) {
+    } else if (accel[0] == QLatin1Char('f') && (fnum = accel.mid(1).toInt()) && (fnum >= 1) && (fnum <= 35)) {
         ret |= Qt::Key_F1 + fnum - 1;
     } else {
         // For NativeText, check the traslation table first,
@@ -605,8 +605,6 @@ QString QKeySequencePrivate::encodeString(int key, QKeySequence::SequenceFormat 
     } else if (key >= Qt::Key_F1 && key <= Qt::Key_F35) {
             p = nativeText ? QShortcut::tr("F%1").arg(key - Qt::Key_F1 + 1)
                            : QString(QLatin1String("F%1")).arg(key - Qt::Key_F1 + 1);
-    } else if (key > Qt::Key_Space && key <= Qt::Key_AsciiTilde) {
-        p.sprintf("%c", key);
     } else if (key) {
         int i=0;
         while (keyname[i].name) {

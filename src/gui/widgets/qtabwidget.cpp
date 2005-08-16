@@ -53,8 +53,7 @@
     different page by clicking on its tab or by pressing its
     Alt+\e{letter} shortcut if it has one.
 
-    The normal way to use QTabWidget is to do the following in the
-    constructor:
+    The normal way to use QTabWidget is to do the following:
     \list 1
     \i Create a QTabWidget.
     \i Create a QWidget for each of the pages in the tab dialog, but
@@ -97,8 +96,14 @@
     (at the top, providing the tabs) and a QStackedWidget (most of the
     area, organizing the individual pages).
 
-    \inlineimage windows-tabwidget.png Screenshot in Windows style
-    \inlineimage macintosh-tabwidget.png Screenshot in macintosh style
+    \table 100%
+    \row \o \inlineimage windowsxp-tabwidget.png Screenshot of a Windows XP style tab widget
+         \o \inlineimage macintosh-tabwidget.png Screenshot of a Macintosh style tab widget
+         \o \inlineimage plastique-tabwidget.png Screenshot of a Plastique style tab widget
+    \row \o A Windows XP style tab widget.
+         \o A Macintosh style tab widget.
+         \o A Plastique style tab widget.
+    \endtable
 
     \sa QTabBar QStackedWidget QToolBox
 */
@@ -153,8 +158,8 @@ public:
     QTabWidgetPrivate();
     ~QTabWidgetPrivate();
     void updateTabBarPosition();
-    void showTab(int);
-    void removeTab(int);
+    void _q_showTab(int);
+    void _q_removeTab(int);
     void init();
     QStyleOptionTabWidgetFrame getStyleOption() const;
 
@@ -183,7 +188,7 @@ void QTabWidgetPrivate::init()
     Q_Q(QTabWidget);
     stack = new QStackedWidget(q);
     stack->setLineWidth(0);
-    QObject::connect(stack, SIGNAL(widgetRemoved(int)), q, SLOT(removeTab(int)));
+    QObject::connect(stack, SIGNAL(widgetRemoved(int)), q, SLOT(_q_removeTab(int)));
     QTabBar *tabBar = new QTabBar(q);
     tabBar->setDrawBase(false);
     q->setTabBar(tabBar);
@@ -319,6 +324,12 @@ int QTabWidget::addTab(QWidget *child, const QIcon& icon, const QString &label)
 
     If \a index is out of range, the tab is simply appended.
     Otherwise it is inserted at the specified position.
+
+    If the QTabWidget was empty before this function is called,
+    \a w becomes the current page.
+
+    Inserting a new tab at an index less than or equal to the current index
+    will increment the current index, but keep the current page.
 
     If you call insertTab() after show(), the screen will flicker and
     the user may be confused.
@@ -555,7 +566,7 @@ void QTabWidget::setTabBar(QTabBar* tb)
     d->tabs = tb;
     setFocusProxy(d->tabs);
     connect(d->tabs, SIGNAL(currentChanged(int)),
-             this,    SLOT(showTab(int)));
+             this,    SLOT(_q_showTab(int)));
     setUpLayout();
 }
 
@@ -576,7 +587,7 @@ QTabBar* QTabWidget::tabBar() const
     sized.
 */
 
-void QTabWidgetPrivate::showTab(int index)
+void QTabWidgetPrivate::_q_showTab(int index)
 {
     Q_Q(QTabWidget);
     if (index < stack->count() && index >= 0) {
@@ -588,7 +599,7 @@ void QTabWidgetPrivate::showTab(int index)
     }
 }
 
-void QTabWidgetPrivate::removeTab(int index)
+void QTabWidgetPrivate::_q_removeTab(int index)
 {
     Q_Q(QTabWidget);
     tabs->removeTab(index);
@@ -735,8 +746,8 @@ void QTabWidgetPrivate::updateTabBarPosition()
     \property QTabWidget::tabPosition
     \brief the position of the tabs in this tab widget
 
-    Possible values for this property are QTabWidget::North and
-    QTabWidget::South.
+    Possible values for this property are described by the TabPosition
+    enum.
 
     \sa TabPosition
 */

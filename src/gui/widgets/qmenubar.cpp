@@ -284,13 +284,20 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
         q->update(actionRect(currentAction));
 
     popupState = popup;
+    QAction *previousAction = currentAction;
     currentAction = action;
     if(action) {
         activateAction(action, QAction::Hover);
         if(popup)
             popupAction(action, activateFirst);
         q->update(actionRect(action));
+    }  else if (previousAction) {
+        QString empty;
+        QStatusTipEvent tip(empty);
+        QApplication::sendEvent(q, &tip);
     }
+
+
     if (fw)
         fw->setFocus(Qt::NoFocusReason);
 }
@@ -396,9 +403,13 @@ void QMenuBarPrivate::calcActionRects(int max_width, int start, QMap<QAction*, Q
 
 void QMenuBarPrivate::activateAction(QAction *action, QAction::ActionEvent action_e)
 {
+    Q_Q(QMenuBar);
     if (!action || !action->isEnabled())
         return;
     action->activate(action_e);
+    if (action_e == QAction::Hover)
+        action->showStatusText(q);
+
 //     if(action_e == QAction::Trigger)
 //         emit q->activated(action);
 //     else if(action_e == QAction::Hover)
@@ -406,7 +417,7 @@ void QMenuBarPrivate::activateAction(QAction *action, QAction::ActionEvent actio
 }
 
 
-void QMenuBarPrivate::actionTriggered()
+void QMenuBarPrivate::_q_actionTriggered()
 {
     Q_Q(QMenuBar);
     if (QAction *action = qobject_cast<QAction *>(q->sender())) {
@@ -417,7 +428,7 @@ void QMenuBarPrivate::actionTriggered()
     }
 }
 
-void QMenuBarPrivate::actionHovered()
+void QMenuBarPrivate::_q_actionHovered()
 {
     Q_Q(QMenuBar);
     if (QAction *action = qobject_cast<QAction *>(q->sender())) {
@@ -1028,8 +1039,8 @@ void QMenuBar::actionEvent(QActionEvent *e)
     }
 #endif
     if(e->type() == QEvent::ActionAdded) {
-        connect(e->action(), SIGNAL(triggered()), this, SLOT(actionTriggered()));
-        connect(e->action(), SIGNAL(hovered()), this, SLOT(actionHovered()));
+        connect(e->action(), SIGNAL(triggered()), this, SLOT(_q_actionTriggered()));
+        connect(e->action(), SIGNAL(hovered()), this, SLOT(_q_actionHovered()));
     } else if(e->type() == QEvent::ActionRemoved) {
         e->action()->disconnect(this);
     }
@@ -1168,7 +1179,7 @@ bool QMenuBar::event(QEvent *e)
         int shortcutId = se->shortcutId();
         for(int j = 0; j < d->shortcutIndexMap.size(); ++j) {
             if (shortcutId == d->shortcutIndexMap.value(j))
-                d->internalShortcutActivated(j);
+                d->_q_internalShortcutActivated(j);
         }
     } break;
 #endif
@@ -1227,7 +1238,7 @@ bool QMenuBar::eventFilter(QObject *object, QEvent *event)
         switch (event->type()) {
         case QEvent::ShowToParent:
         case QEvent::HideToParent:
-            d->updateLayout();
+            d->_q_updateLayout();
             break;
         default:
             break;
@@ -1317,7 +1328,7 @@ QSize QMenuBar::minimumSizeHint() const
     if(as_gui_menubar) {
         QMap<QAction*, QRect> actionRects;
         QList<QAction*> actionList;
-        int w = QApplication::desktop()->width();
+        int w = parentWidget() ? parentWidget()->width() : QApplication::desktop()->width();
         d->calcActionRects(w - (2 * fw), 0, actionRects, actionList);
         if (d->actionList.count() > 0) {
             ret = d->actionRect(d->actionList.at(0)).size();
@@ -1375,15 +1386,15 @@ QSize QMenuBar::sizeHint() const
     if(as_gui_menubar) {
         QMap<QAction*, QRect> actionRects;
         QList<QAction*> actionList;
-        const int w = QApplication::desktop()->width();
+        const int w = parentWidget() ? parentWidget()->width() : QApplication::desktop()->width();
         d->calcActionRects(w - (2 * fw), 0, actionRects, actionList);
         for (QMap<QAction*, QRect>::const_iterator i = actionRects.begin();
              i != actionRects.constEnd(); ++i) {
             QRect actionRect(i.value());
-            if(actionRect.right() > ret.width())
-                ret.setWidth(actionRect.right());
-            if(actionRect.bottom() > ret.height())
-                ret.setHeight(actionRect.bottom());
+            if(actionRect.x() + actionRect.width() > ret.width())
+                ret.setWidth(actionRect.x() + actionRect.width());
+            if(actionRect.y() + actionRect.height() > ret.height())
+                ret.setHeight(actionRect.y() + actionRect.height());
         }
         ret += QSize(2*fw + 2*hmargin, 2*fw + 2*vmargin);
     }
@@ -1459,13 +1470,13 @@ int QMenuBar::heightForWidth(int) const
 /*!
   \internal
 */
-void QMenuBarPrivate::internalShortcutActivated(int id)
+void QMenuBarPrivate::_q_internalShortcutActivated(int id)
 {
     QAction *act = actionList.at(id);
     setCurrentAction(act, true, true);
 }
 
-void QMenuBarPrivate::updateLayout()
+void QMenuBarPrivate::_q_updateLayout()
 {
     Q_Q(QMenuBar);
     itemsDirty = true;
@@ -1503,7 +1514,7 @@ void QMenuBar::setCornerWidget(QWidget *w, Qt::Corner corner)
         w->installEventFilter(this);
     }
 
-    d->updateLayout();
+    d->_q_updateLayout();
 }
 
 /*!

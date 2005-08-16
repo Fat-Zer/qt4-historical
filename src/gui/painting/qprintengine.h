@@ -27,6 +27,8 @@
 #include <QtCore/qvariant.h>
 #include <QtGui/qprinter.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTER
@@ -82,5 +84,7 @@ public:
 };
 
 #endif // QT_NO_PRINTER
+
+QT_END_HEADER
 
 #endif // QPRINTENGINE_H

@@ -129,12 +129,24 @@ static QStyleOptionHeader getStyleOption(const Q3Header *header, int section)
     QStyleOptionHeader opt;
     opt.init(header);
     opt.section = section;
+    opt.textAlignment = Qt::AlignVCenter;
+    opt.iconAlignment = Qt::AlignVCenter;
     if (header->iconSet(section))
         opt.icon = *header->iconSet(section);
     opt.text = header->label(section);
     if (header->orientation() == Qt::Horizontal)
         opt.state = QStyle::State_Horizontal;
     return opt;
+}
+
+bool qt_get_null_label_bit(Q3HeaderData *data, int section)
+{
+    return data->nullStringLabels.testBit(section);
+}
+
+void qt_set_null_label_bit(Q3HeaderData *data, int section, bool b)
+{
+    data->nullStringLabels.setBit(section, b);
 }
 
 /*!

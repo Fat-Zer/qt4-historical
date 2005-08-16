@@ -51,8 +51,8 @@ public:
     int shortcutId;
 #endif
 
-    void fixFocus();
-    void setChildrenEnabled(bool b);
+    void _q_fixFocus();
+    void _q_setChildrenEnabled(bool b);
     bool flat;
     bool checkable;
     bool checked;
@@ -275,7 +275,12 @@ bool QGroupBox::event(QEvent *e)
     if (e->type() == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         if (se->shortcutId() == d->shortcutId) {
-            d->fixFocus();
+            if (!isCheckable()) {
+                d->_q_fixFocus();
+            } else {
+                setChecked(!d->checked);
+                setFocus(Qt::ShortcutFocusReason);
+            }
             return true;
         }
     }
@@ -304,6 +309,27 @@ bool QGroupBox::event(QEvent *e)
             update(rect);
         }
         return true;
+    case QEvent::KeyPress: {
+        QKeyEvent *k = static_cast<QKeyEvent*>(e);
+        if (!k->isAutoRepeat() && (k->key() == Qt::Key_Select || k->key() == Qt::Key_Space)) {
+            d->pressedControl = QStyle::SC_GroupBoxCheckBox;
+            update(style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this));
+            return true;
+        }
+        break;
+    }
+    case QEvent::KeyRelease: {
+        QKeyEvent *k = static_cast<QKeyEvent*>(e);
+        if (!k->isAutoRepeat() && (k->key() == Qt::Key_Select || k->key() == Qt::Key_Space)) {
+            bool toggle = (d->pressedControl == QStyle::SC_GroupBoxLabel
+                           || d->pressedControl == QStyle::SC_GroupBoxCheckBox);
+            d->pressedControl = QStyle::SC_None;
+            if (toggle)
+                setChecked(!d->checked);
+            return true;
+        }
+        break;
+    }
     default:
         break;
     }
@@ -338,7 +364,7 @@ void QGroupBox::childEvent(QChildEvent *c)
     focus, and gives the focus to that widget.
 */
 
-void QGroupBoxPrivate::fixFocus()
+void QGroupBoxPrivate::_q_fixFocus()
 {
     Q_Q(QGroupBox);
     QWidget *fw = q->focusWidget();
@@ -389,7 +415,14 @@ void QGroupBoxPrivate::calculateFrame()
 void QGroupBox::focusInEvent(QFocusEvent *)
 { // note no call to super
     Q_D(QGroupBox);
-    d->fixFocus();
+    if (focusPolicy() == Qt::NoFocus) {
+        d->_q_fixFocus();
+    } else {
+        QStyleOptionGroupBox box = d->getStyleOption();
+        QRect rect = style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this)
+            | style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxLabel, this);
+        update(rect);
+    }
 }
 
 
@@ -463,15 +496,17 @@ void QGroupBox::setCheckable(bool checkable)
     if (checkable) {
         setChecked(true);
         if (!wasCheckable) {
-            d->setChildrenEnabled(true);
+            setFocusPolicy(Qt::StrongFocus);
+            d->_q_setChildrenEnabled(true);
             updateGeometry();
         }
     } else {
         if (wasCheckable) {
-            d->setChildrenEnabled(true);
+            setFocusPolicy(Qt::NoFocus);
+            d->_q_setChildrenEnabled(true);
             updateGeometry();
         }
-        d->setChildrenEnabled(true);
+        d->_q_setChildrenEnabled(true);
     }
 
     if (wasCheckable != checkable)
@@ -518,7 +553,7 @@ void QGroupBox::setChecked(bool b)
         bool wasToggled = (b != d->checked);
         d->checked = b;
         if (wasToggled) {
-            d->setChildrenEnabled(b);
+            d->_q_setChildrenEnabled(b);
             emit toggled(b);
         }
     }
@@ -528,7 +563,7 @@ void QGroupBox::setChecked(bool b)
   sets all children of the group box except the qt_groupbox_checkbox
   to either disabled/enabled
 */
-void QGroupBoxPrivate::setChildrenEnabled(bool b)
+void QGroupBoxPrivate::_q_setChildrenEnabled(bool b)
 {
     Q_Q(QGroupBox);
     QObjectList childs = q->children();
@@ -559,7 +594,7 @@ void QGroupBox::changeEvent(QEvent *ev)
         if (d->checkable && isEnabled()) {
             // we are being enabled - disable children
             if (!d->checked)
-                d->setChildrenEnabled(false);
+                d->_q_setChildrenEnabled(false);
         }
     } else if(ev->type() == QEvent::FontChange || ev->type() == QEvent::StyleChange) {
         updateGeometry();

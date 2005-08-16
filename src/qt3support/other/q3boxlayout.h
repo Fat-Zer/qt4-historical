@@ -26,6 +26,8 @@
 
 #include <QtGui/qboxlayout.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3BoxLayout : public QBoxLayout
@@ -92,5 +94,7 @@ public:
 private:
     Q_DISABLE_COPY(Q3VBoxLayout)
 };
+
+QT_END_HEADER
 
 #endif // Q3BOXLAYOUT_H

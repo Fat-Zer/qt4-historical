@@ -171,8 +171,14 @@ QStyleOptionFrame QLineEditPrivate::getStyleOption() const
     Any other key sequence that represents a valid character, will
     cause the character to be inserted into the line edit.
 
-    \inlineimage macintosh-lineedit.png Screenshot in Macintosh style
-    \inlineimage windows-lineedit.png Screenshot in Windows style
+    \table 100%
+    \row \o \inlineimage macintosh-lineedit.png Screenshot of a Macintosh style line edit
+         \o A line edit shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+    \row \o \inlineimage windows-lineedit.png Screenshot of a Windows XP style line edit
+         \o A line edit shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+    \row \o \inlineimage plastique-lineedit.png Screenshot of a Plastique style line edit
+         \o A line edit shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \endtable
 
     \sa QTextEdit, QLabel, QComboBox, {fowler}{GUI Design Handbook: Field, Entry}
 */
@@ -376,7 +382,11 @@ QString QLineEdit::displayText() const
     if (d->echoMode == NoEcho)
         return QString::fromLatin1("");
     QString res = d->text;
+#ifdef Q_WS_QWS
+    if (d->echoMode == Password || d->echoMode == PasswordEchoOnEdit) {
+#else
     if (d->echoMode == Password) {
+#endif
         QStyleOptionFrame opt = d->getStyleOption();
         res.fill(style()->styleHint(QStyle::SH_LineEdit_PasswordCharacter, &opt, this));
     }
@@ -1273,7 +1283,7 @@ void QLineEditPrivate::copy(bool clipboard) const
         q->disconnect(QApplication::clipboard(), SIGNAL(selectionChanged()), q, 0);
         QApplication::clipboard()->setText(t, clipboard ? QClipboard::Clipboard : QClipboard::Selection);
         q->connect(QApplication::clipboard(), SIGNAL(selectionChanged()),
-                   q, SLOT(clipboardChanged()));
+                   q, SLOT(_q_clipboardChanged()));
     }
 }
 
@@ -1367,6 +1377,8 @@ bool QLineEdit::event(QEvent * e)
                     && d->deleteAllTimer.isActive()) {
                 d->deleteAllTimer.stop();
                 backspace();
+                ke->accept();
+                return true;
             }
         }
     }
@@ -1494,7 +1506,7 @@ void QLineEdit::mouseDoubleClickEvent(QMouseEvent* e)
     \fn void  QLineEdit::editingFinished()
 
     This signal is emitted when the Return or Enter key is pressed or
-    the line edit looses focus. Note that if there is a validator() or
+    the line edit loses focus. Note that if there is a validator() or
     inputMask() set on the line edit and enter/return is pressed, the
     editingFinished() signal will only be emitted if the input follows
     the inputMask() and the validator() returns QValidator::Acceptable.
@@ -1535,7 +1547,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
         default:
             if (QApplication::keypadNavigationEnabled()) {
                 if (!hasEditFocus() && !(event->modifiers() & Qt::ControlModifier)) {
-                    if (event->text()[0].isPrint()) {
+                    if (!event->text().isEmpty() && event->text().at(0).isPrint()) {
                         setEditFocus(true);
                         clear();
                     } else {
@@ -1545,6 +1557,20 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
                 }
             }
     }
+
+#if defined(Q_WS_QWS)
+    if(event->key() != Qt::Key_Select &&
+       event->key() != Qt::Key_Up &&
+       event->key() != Qt::Key_Down &&
+       event->key() != Qt::Key_Back &&
+       echoMode() == PasswordEchoOnEdit &&
+       !isReadOnly())
+{
+    setEchoMode(Normal);
+    clear();
+    d->resumePassword = true;
+}
+#endif
 
     if (QApplication::keypadNavigationEnabled() && !select && !hasEditFocus()) {
         setEditFocus(true);
@@ -1794,6 +1820,13 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
                 && !isReadOnly()) {
                 if (text().length() == 0) {
                     setText(d->origText);
+#if defined Q_WS_QWS
+                if(d->resumePassword)
+                {
+                    setEchoMode(PasswordEchoOnEdit);
+                    d->resumePassword = false;
+                }
+#endif
                     setEditFocus(false);
                 } else if (!d->deleteAllTimer.isActive()) {
                     d->deleteAllTimer.start(750, this);
@@ -1871,6 +1904,20 @@ void QLineEdit::inputMethodEvent(QInputMethodEvent *e)
         e->ignore();
         return;
     }
+
+#ifdef Q_WS_QWS
+    if(echoMode() == PasswordEchoOnEdit)
+    {
+        setEchoMode(Normal);
+        clear();
+        d->resumePassword = true;
+    }
+#endif
+
+#ifdef QT_KEYPAD_NAVIGATION
+    if (QApplication::keypadNavigationEnabled() && !hasEditFocus())
+        setEditFocus(true);
+#endif
 
     int priorState = d->undoState;
     d->removeSelectedText();
@@ -1978,6 +2025,14 @@ void QLineEdit::focusInEvent(QFocusEvent *e)
 void QLineEdit::focusOutEvent(QFocusEvent *e)
 {
     Q_D(QLineEdit);
+
+#ifdef Q_WS_QWS
+    if(d->resumePassword){
+        setEchoMode(PasswordEchoOnEdit);
+        d->resumePassword = false;
+    }
+#endif
+
     Qt::FocusReason reason = e->reason();
     if (reason != Qt::ActiveWindowFocusReason &&
         reason != Qt::PopupFocusReason)
@@ -2274,17 +2329,17 @@ void QLineEdit::changeEvent(QEvent *ev)
     if(ev->type() == QEvent::ActivationChange) {
         if (!palette().isEqual(QPalette::Active, QPalette::Inactive))
             update();
-    } else if (ev->type() == QEvent::FontChange) {
+    } else if (ev->type() == QEvent::FontChange || ev->type() == QEvent::StyleChange) {
         d->updateTextLayout();
     }
     QWidget::changeEvent(ev);
 }
 
-void QLineEditPrivate::clipboardChanged()
+void QLineEditPrivate::_q_clipboardChanged()
 {
 }
 
-void QLineEditPrivate::deleteSelected()
+void QLineEditPrivate::_q_deleteSelected()
 {
     Q_Q(QLineEdit);
     if (!hasSelectedText())
@@ -2322,14 +2377,16 @@ void QLineEditPrivate::init(const QString& txt)
     actions[RedoAct] = new QAction(QLineEdit::tr("&Redo") + ACCEL_KEY(Y), q);
     QObject::connect(actions[RedoAct], SIGNAL(triggered()), q, SLOT(redo()));
     //popup->insertSeparator();
+#ifndef QT_NO_CLIPBOARD
     actions[CutAct] = new QAction(QLineEdit::tr("Cu&t") + ACCEL_KEY(X), q);
     QObject::connect(actions[CutAct], SIGNAL(triggered()), q, SLOT(cut()));
     actions[CopyAct] = new QAction(QLineEdit::tr("&Copy") + ACCEL_KEY(C), q);
     QObject::connect(actions[CopyAct], SIGNAL(triggered()), q, SLOT(copy()));
     actions[PasteAct] = new QAction(QLineEdit::tr("&Paste") + ACCEL_KEY(V), q);
     QObject::connect(actions[PasteAct], SIGNAL(triggered()), q, SLOT(paste()));
+#endif
     actions[ClearAct] = new QAction(QLineEdit::tr("Delete"), q);
-    QObject::connect(actions[ClearAct], SIGNAL(triggered()), q, SLOT(deleteSelected()));
+    QObject::connect(actions[ClearAct], SIGNAL(triggered()), q, SLOT(_q_deleteSelected()));
     //popup->insertSeparator();
     actions[SelectAllAct] = new QAction(QLineEdit::tr("Select All")
 #ifndef Q_WS_X11

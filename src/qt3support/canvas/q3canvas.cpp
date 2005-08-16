@@ -54,7 +54,7 @@ public:
     QMatrix xform;
     QMatrix ixform;
 #endif
-    QRegion eraseRegion;    
+    QRegion eraseRegion;
 };
 
 // clusterizer
@@ -323,6 +323,8 @@ private:
     a list of canvas items.
 
     The \l Q3ValueList documentation describes how to use this list.
+
+    \sa QtCanvas
 */
 
 /*!
@@ -581,7 +583,7 @@ static int scm(int a, int b)
     The examples/canvas application and the 2D graphics page of the
     examples/demo application demonstrate many of Q3Canvas's facilities.
 
-    \sa Q3CanvasView Q3CanvasItem
+    \sa Q3CanvasView Q3CanvasItem, QtCanvas
 */
 void Q3Canvas::init(int w, int h, int chunksze, int mxclusters)
 {
@@ -1761,6 +1763,7 @@ class Q3CanvasItemExtra {
     motion. The subclasses provided in Qt do not change these defaults
     except where noted.
 
+    \sa QtCanvas
 */
 
 /*!
@@ -2372,6 +2375,7 @@ static bool collision_double_dispatch(const Q3CanvasSprite* s1,
     setting coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY()
     and Q3CanvasItem::setZ().
 
+    \sa QtCanvas
 */
 
 
@@ -2672,7 +2676,7 @@ QRect Q3CanvasItem::boundingRectAdvanced() const
     position of each Q3CanvasPixmap object is set so that the hotspot
     stays in the same position.
 
-    \sa Q3CanvasPixmapArray Q3CanvasItem Q3CanvasSprite
+    \sa Q3CanvasPixmapArray Q3CanvasItem Q3CanvasSprite, QtCanvas
 */
 
 #ifndef QT_NO_IMAGEIO
@@ -2786,6 +2790,7 @@ Q3CanvasPixmap::~Q3CanvasPixmap()
     can change this by reading in a separate set of image masks using
     readCollisionMasks().
 
+    \sa QtCanvas
 */
 
 /*!
@@ -3340,8 +3345,7 @@ void Q3CanvasSprite::draw(QPainter& painter)
     QRect canvasRect = myCanvasView->inverseWorldMatrix().mapRect(rc);
     \endcode
 
-    \sa QMatrix QPainter::setWorldMatrix()
-
+    \sa QMatrix QPainter::setWorldMatrix(), QtCanvas
 */
 
 /*!
@@ -3504,7 +3508,7 @@ void Q3CanvasView::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
 
         d->eraseRegion = QRegion();
     }
-    
+
     if (viewing) {
         viewing->drawViewArea(this,p,r,false);
     } else {
@@ -3585,6 +3589,7 @@ QSize Q3CanvasView::sizeHint() const
     Q3CanvasItem::move() and Q3CanvasItem::moveBy(), or by setting coordinates
     with Q3CanvasItem::setX(), Q3CanvasItem::setY() and Q3CanvasItem::setZ().
 
+    \sa QtCanvas
 */
 
 
@@ -3948,6 +3953,8 @@ void Q3CanvasPolygonalItem::setBrush(QBrush b)
     Q3CanvasItem::setZ().
 
     Note: Q3CanvasPolygon does not use the pen.
+
+    \sa QtCanvas
 */
 
 /*!
@@ -4041,6 +4048,7 @@ void Q3CanvasPolygon::moveBy(double dx, double dy)
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
 
+    \sa QtCanvas
 */
 
 /*!
@@ -4181,6 +4189,8 @@ Q3PointArray Q3CanvasPolygon::areaPoints() const
     Q3CanvasItem::move() and Q3CanvasItem::moveBy(), or by setting
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
+
+    \sa QtCanvas
 */
 
 /*!
@@ -4326,6 +4336,7 @@ void Q3CanvasLine::moveBy(double dx, double dy)
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
 
+    \sa QtCanvas
 */
 
 /*!
@@ -4469,6 +4480,8 @@ void Q3CanvasRectangle::drawShape(QPainter & p)
     moveBy(), or by setting coordinates with setX(), setY() and setZ().
 
     Note: Q3CanvasEllipse does not use the pen.
+
+    \sa QtCanvas
 */
 
 /*!
@@ -4635,6 +4648,8 @@ void Q3CanvasEllipse::drawShape(QPainter & p)
     Q3CanvasItem::move() and Q3CanvasItem::moveBy(), or by setting
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
+
+    \sa QtCanvas
 */
 
 /*!

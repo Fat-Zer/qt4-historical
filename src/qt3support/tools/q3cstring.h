@@ -26,6 +26,8 @@
 
 #include <QtCore/qbytearray.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 /*****************************************************************************
@@ -247,5 +249,7 @@ Q_COMPAT_EXPORT inline const Q3CString operator+(char c1, const Q3CString &s2)
     tmp += s2;
     return tmp;
 }
+
+QT_END_HEADER
 
 #endif // Q3CSTRING_H

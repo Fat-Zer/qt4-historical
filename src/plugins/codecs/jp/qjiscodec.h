@@ -57,7 +57,7 @@
 #include <QtCore/qtextcodec.h>
 #include <QtCore/qlist.h>
 
-#ifndef QT_NO_TEXTCODECPLUGIN
+#ifndef QT_NO_TEXTCODEC
 
 class QJisCodec : public QTextCodec {
 public:
@@ -79,6 +79,6 @@ protected:
     const QJpUnicodeConv *conv;
 };
 
-#endif // QT_NO_TEXTCODECPLUGIN
+#endif // QT_NO_TEXTCODEC
 
 #endif // QJISCODEC_H

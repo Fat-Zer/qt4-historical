@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/tools/qhash.cpp -->
 <head>
     <title>Qt 4.1: QMultiHash Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -61,11 +62,7 @@ body { background: #ffffff; color: black; }</style>
     for (int i = 0; i &lt; values.size(); ++i)
         cout &lt;&lt; values.at(i) &lt;&lt; endl;</pre>
 <p>The items that share the same key are available from most recently to least recently inserted.</p>
-<p>A more efficient approach is to use QHashIterator::findNextKey() or QMutableHashIterator::findNextKey():</p>
-<pre>&nbsp;   QHashIterator&lt;QString, int&gt; i(hash);
-    while (i.findNextKey(&quot;plenty&quot;))
-        cout &lt;&lt; i.value() &lt;&lt; endl;</pre>
-<p>If you prefer the STL-style iterators, you can call <a href="qhash.html#find">find</a>() to get the iterator for the first item with a key and iterate from there:</p>
+<p>A more efficient approach is to call <a href="qhash.html#find">find</a>() to get the STL-style iterator for the first item with a key and iterate from there:</p>
 <pre>&nbsp;   QMultiHash&lt;QString, int&gt;::iterator i = hash.find(&quot;plenty&quot;);
     while (i != hash.end() &amp;&amp; i.key() == &quot;plenty&quot;) {
         cout &lt;&lt; i.value() &lt;&lt; endl;
@@ -99,6 +96,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

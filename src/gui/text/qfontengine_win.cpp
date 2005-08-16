@@ -113,7 +113,7 @@ QFontEngine::~QFontEngine()
 
 QFixed QFontEngine::lineThickness() const
 {
-    if(lineWidth > 0) 
+    if(lineWidth > 0)
         return lineWidth;
 
     // ad hoc algorithm
@@ -410,7 +410,7 @@ glyph_metrics_t QFontEngineWin::boundingBox(const QGlyphLayout *glyphs, int numG
     QFixed w = 0;
     const QGlyphLayout *end = glyphs + numGlyphs;
     while(end > glyphs)
-        w += (--end)->advance.x;
+        w += ((--end)->advance.x + end->space_18d6) * !end->attributes.dontPrint;
 
     return glyph_metrics_t(0, -tm.w.tmAscent, w, tm.w.tmHeight, w, 0);
 }
@@ -681,7 +681,7 @@ static inline QPointF qt_to_qpointf(const POINTFX &pt) {
 #define GGO_UNHINTED 0x0100
 #endif
 
-static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc, 
+static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
                            QPainterPath *path, bool ttf, glyph_metrics_t *metric = 0)
 {
     MAT2 mat;
@@ -691,7 +691,7 @@ static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
     mat.eM21.fract = mat.eM12.fract = 0;
     uint glyphFormat = GGO_NATIVE | GGO_UNHINTED;
     if (ttf)
-        glyphFormat |= GGO_GLYPH_INDEX; 
+        glyphFormat |= GGO_GLYPH_INDEX;
 
     GLYPHMETRICS gMetric;
     memset(&gMetric, 0, sizeof(GLYPHMETRICS));
@@ -717,12 +717,13 @@ static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
     } );
     if (ret == GDI_ERROR) {
         qErrnoWarning("QFontEngineWin::addOutlineToPath: GetGlyphOutline(2) failed");
+        delete dataBuffer;
         return;
     }
 
     if(metric) {
         *metric = glyph_metrics_t(gMetric.gmptGlyphOrigin.x, -gMetric.gmptGlyphOrigin.y,
-                                  (int)gMetric.gmBlackBoxX, (int)gMetric.gmBlackBoxY, 
+                                  (int)gMetric.gmBlackBoxX, (int)gMetric.gmBlackBoxY,
                                   gMetric.gmCellIncX, gMetric.gmCellIncY);
     }
 
@@ -794,16 +795,16 @@ void QFontEngineWin::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, in
     SelectObject(hdc, hfont);
     Q_ASSERT(hdc);
 
-    for(int i = 0; i < nglyphs; ++i) 
+    for(int i = 0; i < nglyphs; ++i)
         addGlyphToPath(glyphs[i], positions[i], hdc, path, ttf);
 }
 
 void QFontEngineWin::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs,
                                       QPainterPath *path, QTextItem::RenderFlags flags)
 {
-    if(tm.w.tmPitchAndFamily & (TMPF_TRUETYPE|TMPF_VECTOR)) {
+    if(tm.w.tmPitchAndFamily & (TMPF_TRUETYPE)) {
 	QFontEngine::addOutlineToPath(x, y, glyphs, numGlyphs, path, flags);
-	return;
+        return;
     }
     QFontEngine::addBitmapFontToPath(x, y, glyphs, numGlyphs, path, flags);
 }
@@ -830,7 +831,7 @@ int QFontEngineWin::synthesized() const
                 synthesized_flags |= SynthesizedStretch;
             if (tm.w.tmWeight >= 500 && !(macStyle & 1))
                 synthesized_flags |= SynthesizedBold;
-            //qDebug() << "font is" << _name << 
+            //qDebug() << "font is" << _name <<
             //    "it=" << (macStyle & 2) << fontDef.style << "flags=" << synthesized_flags;
         }
     }
@@ -886,7 +887,7 @@ QByteArray QFontEngineWin::getSfntTable(uint tag) const
         return QByteArray();
     SelectObject(shared_dc, hfont);
     DWORD t = qbswap(tag);
-    int length = GetFontData(shared_dc, t, 0, NULL, 0); 
+    int length = GetFontData(shared_dc, t, 0, NULL, 0);
     QByteArray table;
     if(length > 0) {
         table.resize(length);
@@ -962,7 +963,12 @@ static quint32 getGlyphIndex(unsigned char *table, unsigned int unicode)
         if (unicode < 256)
             return (int) *(table+6+unicode);
     } else if (format == 4) {
-        if(unicode > 0xffff)
+        /* some fonts come with invalid cmap tables, where the last segment
+           specified end = start = rangeoffset = 0xffff, delta = 0x0001
+           Since 0xffff is never a valid Unicode char anyway, we just get rid of the issue
+           by returning 0 for 0xffff
+        */
+        if(unicode >= 0xffff)
             return 0;
         quint16 segCountX2 = getUShort(table + 6);
         unsigned char *ends = table + 14;

@@ -91,7 +91,7 @@ public:
     void setCursorPosition(const QPoint &pos);
     void setCursorPosition(int pos, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
 
-    void repaintContents(const QRectF &contentsRect);
+    void _q_repaintContents(const QRectF &contentsRect);
     void repaintCursor();
     inline void repaintSelection()
     { viewport->update(selectionRect()); }
@@ -104,9 +104,9 @@ public:
     void pageUp(QTextCursor::MoveMode moveMode);
     void pageDown(QTextCursor::MoveMode moveMode);
 
-    void updateCurrentCharFormatAndSelection();
+    void _q_updateCurrentCharFormatAndSelection();
 
-    void adjustScrollbars();
+    void _q_adjustScrollbars();
 #ifndef QT_NO_CLIPBOARD
     void setClipboardSelection();
 #endif
@@ -115,7 +115,7 @@ public:
 
     void ensureViewportLayouted();
 
-    void emitCursorPosChanged(const QTextCursor &someCursor);
+    void _q_emitCursorPosChanged(const QTextCursor &someCursor);
 
     void setBlinkingCursorEnabled(bool enable);
 
@@ -124,11 +124,11 @@ public:
 
     void relayoutDocument();
 
-    void deleteSelected();
+    void _q_deleteSelected();
 
     void undo();
     void redo();
-    void setCursorAfterUndoRedo(int undoPosition, int charsAdded, int charsRemoved);
+    void _q_setCursorAfterUndoRedo(int undoPosition, int charsAdded, int charsRemoved);
     
     inline int horizontalOffset() const
     { return q_func()->isRightToLeft() ? (hbar->maximum() - hbar->value()) : hbar->value(); }

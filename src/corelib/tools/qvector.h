@@ -36,6 +36,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 struct Q_CORE_EXPORT QVectorData
@@ -620,5 +622,7 @@ QList<T> QList<T>::fromVector(const QVector<T> &vector)
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(Vector)
 Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(Vector)
+
+QT_END_HEADER
 
 #endif // QVECTOR_H

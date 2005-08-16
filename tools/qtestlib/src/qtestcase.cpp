@@ -37,7 +37,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
 #endif
 #ifdef Q_OS_UNIX
@@ -406,14 +406,14 @@
 
 /*! \fn void QTest::keyEvent(KeyAction action, QWidget *widget, Qt::Key key, Qt::KeyboardModifiers modifier = Qt::NoModifier, int delay=-1)
 
-    Sends a Qt key event to \a widget with the given \a key and an associated \a action. Optionally, a keyboard \a modifier can be specified, as well as a \a delay (in milliseconds) of the test after sending the event.
+    Sends a Qt key event to \a widget with the given \a key and an associated \a action. Optionally, a keyboard \a modifier can be specified, as well as a \a delay (in milliseconds) of the test before sending the event.
 */
 
 /*! \fn void QTest::keyEvent(KeyAction action, QWidget *widget, char ascii, Qt::KeyboardModifiers modifier = Qt::NoModifier, int delay=-1)
 
     \overload
 
-    Sends a Qt key event to \a widget with the given key \a ascii and an associated \a action. Optionally, a keyboard \a modifier can be specified, as well as a \a delay (in milliseconds) of the test after sending the event.
+    Sends a Qt key event to \a widget with the given key \a ascii and an associated \a action. Optionally, a keyboard \a modifier can be specified, as well as a \a delay (in milliseconds) of the test before sending the event.
 
 */
 
@@ -458,7 +458,7 @@
 
     Simulates clicking a \a sequence of keys on a \a
     widget. Optionally, a keyboard \a modifier can be specified as
-    well as a \a delay (in milliseconds) of the test after each key
+    well as a \a delay (in milliseconds) of the test before each key
     click.
 
     Example:
@@ -478,7 +478,7 @@
     Simulates pressing a mouse \a button with an optional \a modifier
     on a \a widget.  The position is defined by \a pos; the default
     position is the center of the widget. If \a delay is specified,
-    the test will wait for the specified amount of milliseconds after
+    the test will wait for the specified amount of milliseconds before
     the press.
 
     \sa QTest::mouseRelease(), QTest::mouseClick()
@@ -490,7 +490,7 @@
     on a \a widget.  The position of the release is defined by \a pos;
     the default position is the center of the widget. If \a delay is
     specified, the test will wait for the specified amount of
-    milliseconds after releasing the button.
+    milliseconds before releasing the button.
 
     \sa QTest::mousePress(), QTest::mouseClick()
 */
@@ -501,7 +501,7 @@
     on a \a widget.  The position of the click is defined by \a pos;
     the default position is the center of the widget. If \a delay is
     specified, the test will wait for the specified amount of
-    milliseconds after pressing and after releasing the button.
+    milliseconds before pressing and before releasing the button.
 
     \sa QTest::mousePress(), QTest::mouseRelease()
 */
@@ -512,7 +512,7 @@
     modifier on a \a widget.  The position of the click is defined by
     \a pos; the default position is the center of the widget. If \a
     delay is specified, the test will wait for the specified amount of
-    milliseconds after each press and release.
+    milliseconds before each press and release.
 
     \sa QTest::mouseClick()
 */
@@ -521,7 +521,7 @@
 
     Moves the mouse pointer to a \a widget. If \a pos is not
     specified, the mouse pointer moves to the center of the widget. If
-    a \a delay (in milliseconds) is given, the test will wait after
+    a \a delay (in milliseconds) is given, the test will wait before
     moving the mouse pointer.
 */
 
@@ -559,6 +559,60 @@
     contents of \c MyPoint to the test log.
 
     \sa QCOMPARE()
+*/
+
+/*!
+    \fn char *QTest::toString(const QLatin1String &string)
+    \overload
+
+    Returns a textual representation of the given \a string. This function is
+    used by \l QCOMPARE() to output verbose information in case of a test
+    failure.
+*/
+
+/*!
+    \fn char *QTest::toString(const QString &string)
+    \overload
+
+    Returns a textual representation of the given \a string. This function is
+    used by \l QCOMPARE() to output verbose information in case of a test
+    failure.
+*/
+
+/*!
+    \fn char *QTest::toString(const QTime &time)
+    \overload
+
+    Returns a textual representation of the given \a time. This function is
+    used by \l QCOMPARE() to output verbose information in case of a test
+    failure.
+*/
+
+/*!
+    \fn char *QTest::toString(const QDate &date)
+    \overload
+
+    Returns a textual representation of the given \a date. This function is
+    used by \l QCOMPARE() to output verbose information in case of a test
+    failure.
+*/
+
+/*!
+    \fn char *QTest::toString(const QDateTime &dateTime)
+    \overload
+
+    Returns a textual representation of the date and time specified by
+    \a dateTime. This function is used by \l QCOMPARE() to output verbose
+    information in case of a test failure.
+*/
+
+/*!
+    \fn char *QTest::toString(const QChar &character)
+    \overload
+
+    Returns a textual representation of the given \a character. This function
+    is used by \l QCOMPARE() to output verbose information in case of a test
+    failure.
 */
 
 /*! \fn void QTest::qWait(int ms)
@@ -893,6 +947,7 @@ static bool qInvokeTestMethod(const char *slotName, const char *data=0)
 
     QTest::skipCurrentTest = false;
     QTestResult::finishedCurrentTestFunction();
+    QTestResult::setCurrentTestData(0);
     delete[] slot;
 
     return true;
@@ -923,13 +978,31 @@ void *fetchData(QTestData *data, const char *tagName, int typeId)
 } // namespace
 
 /*!
-    Executes tests declared in \a testObject. Optionally, the command line arguments
-    \a argc and \a argv can be provided. For a list of recognized arguments, read
-    \l {QTestLib Command Line Arguments}.
+    Executes tests declared in \a testObject. In addition, the private slots
+    \c{initTestCase()}, \c{cleanupTestCase()}, \c{init()} and \c{cleanup()}
+    are executed if they exist. See \l{Creating a test} for more details.
+
+    Optionally, the command line arguments \a argc and \a argv can be provided.
+    For a list of recognized arguments, read \l {QTestLib Command Line Arguments}.
 
     For stand-alone tests, the convenience macro \l QTEST_MAIN() can
     be used to declare a main method that parses the command line arguments
     and executes the tests.
+
+    The following example will run all tests in \c MyFirstTestObject and
+    \c{MySecondTestObject}:
+
+    \code
+    MyFirstTestObject test1;
+    QTest::qExec(&test1);
+
+    MySecondTestObject test2;
+    QTest::qExec(&test2);
+    \endcode
+
+    Note: This function is not reentrant, only one test can run at a time. A
+    test that was executed with qExec() can't run another test via qExec() and
+    threads are not allowed to call qExec() simultaneously.
 
     \sa QTEST_MAIN()
 */
@@ -939,7 +1012,7 @@ int QTest::qExec(QObject *testObject, int argc, char **argv)
     try {
 #endif
 
-#if defined(Q_CC_MSVC)
+#if defined(Q_OS_WIN)
     SetErrorMode(SetErrorMode(0) | SEM_NOGPFAULTERRORBOX);
 #endif
 
@@ -1246,7 +1319,7 @@ void QTest::qSleep(int ms)
 {
     QTEST_ASSERT(ms > 0);
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
     Sleep(uint(ms));
 #else
     struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
@@ -1410,6 +1483,26 @@ bool QTest::compare_string_helper(const char *t1, const char *t2, const char *ac
     \internal
 */
 
+/*! \fn bool QTest::qCompare(QString const &t1, QLatin1String const &t2, const char *actual, const char *expected, const char *file, int line)
+    \internal
+*/
+
+/*! \fn bool QTest::qCompare(QLatin1String const &t1, QString const &t2, const char *actual, const char *expected, const char *file, int line)
+    \internal
+*/
+
+/*! \fn bool QTest::qCompare(QStringList const &t1, QStringList const &t2, const char *actual, const char *expected, const char *file, int line)
+    \internal
+*/
+
+/*! \fn bool QTest::qCompare(QFlags<T> const &t1, T const &t2, const char *actual, const char *expected, const char *file, int line)
+    \internal
+*/
+
+/*! \fn bool QTest::qCompare(QFlags<T> const &t1, int const &t2, const char *actual, const char *expected, const char *file, int line)
+    \internal
+*/
+
 /*! \fn bool QTest::qTest(const T& actual, const char *elementName, const char *actualStr, const char *expected, const char *file, int line)
     \internal
 */
@@ -1426,5 +1519,6 @@ bool QTest::compare_string_helper(const char *t1, const char *t2, const char *ac
     \internal
 */
 
-
-
+/*! \fn int QTest::qt_snprintf(char *str, int size, const char *format, ...)
+    \internal
+*/

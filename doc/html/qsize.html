@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/corelib/tools/qsize.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/tools/qsize.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/tools/qsize.cpp -->
 <head>
     <title>Qt 4.1: QSize Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -63,10 +64,9 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QSize class defines the size of a two-dimensional object using integer point precision.</p>
-<p>A size is specified by a <a href="qsize.html#width">width</a>() and a <a href="qsize.html#height">height</a>().</p>
-<p>The size can be set in the constructor and changed with the <a href="qsize.html#setWidth">setWidth</a>(), <a href="qsize.html#setHeight">setHeight</a>(), or <a href="qsize.html#scale">scale</a>() functions, or using arithmetic operators. The size can also be manipulated directly by retrieving references to the width and height using the <a href="qsize.html#rwidth">rwidth</a>() and <a href="qsize.html#rheight">rheight</a>() functions. Finally, the width and height can be swapped using the <a href="qsize.html#transpose">transpose</a>() function.</p>
-<p>The <a href="qsize.html#isValid">isValid</a>() function determines if a size is valid. A valid size has both width and height greater than zero. The <a href="qsize.html#isEmpty">isEmpty</a>() function returns true if either of the width and height is less than, or equal to, zero; if both the width and the height is zero, the <a href="qsize.html#isNull">isNull</a>() function returns true.</p>
-<p>Use the <a href="qsize.html#expandedTo">expandedTo</a>() function to retrieve a size which holds the maximum height and width of <i>this</i> size and a given size. On the other hand, the <a href="qsize.html#boundedTo">boundedTo</a>() function returns a size which holds the minimum height and width of <i>this</i> size and a given size.</p>
+<p>A size is specified by a <a href="qsize.html#width">width</a>() and a <a href="qsize.html#height">height</a>(). It can be set in the constructor and changed using the <a href="qsize.html#setWidth">setWidth</a>(), <a href="qsize.html#setHeight">setHeight</a>(), or <a href="qsize.html#scale">scale</a>() functions, or using arithmetic operators. A size can also be manipulated directly by retrieving references to the width and height using the <a href="qsize.html#rwidth">rwidth</a>() and <a href="qsize.html#rheight">rheight</a>() functions. Finally, the width and height can be swapped using the <a href="qsize.html#transpose">transpose</a>() function.</p>
+<p>The <a href="qsize.html#isValid">isValid</a>() function determines if a size is valid (a valid size has both width and height greater than zero). The <a href="qsize.html#isEmpty">isEmpty</a>() function returns true if either of the width and height is less than, or equal to, zero, while the <a href="qsize.html#isNull">isNull</a>() function returns true only if both the width and the height is zero.</p>
+<p>Use the <a href="qsize.html#expandedTo">expandedTo</a>() function to retrieve a size which holds the maximum height and width of <i>this</i> size and a given size. Similarily, the <a href="qsize.html#boundedTo">boundedTo</a>() function returns a size which holds the minimum height and width of <i>this</i> size and a given size.</p>
 <p>QSize objects can be streamed as well as compared.</p>
 <p>See also <a href="qsizef.html">QSizeF</a>, <a href="qpoint.html">QPoint</a>, and <a href="qrect.html">QRect</a>.</p>
 <hr />
@@ -78,16 +78,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a size with the given <i>width</i> and <i>height</i>.</p>
 <p>See also <a href="qsize.html#setWidth">setWidth</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
 <h3 class="fn"><a name="boundedTo"></a>QSize QSize::boundedTo ( const QSize &amp; <i>otherSize</i> ) const</h3>
-<p>Returns a size holding the minimum width and height of this size and <i>otherSize</i>.</p>
+<p>Returns a size holding the minimum width and height of this size and the given <i>otherSize</i>.</p>
 <p>See also <a href="qsize.html#expandedTo">expandedTo</a>() and <a href="qsize.html#scale">scale</a>().</p>
 <h3 class="fn"><a name="expandedTo"></a>QSize QSize::expandedTo ( const QSize &amp; <i>otherSize</i> ) const</h3>
-<p>Returns a size holding the maximum width and height of this size and <i>otherSize</i>.</p>
+<p>Returns a size holding the maximum width and height of this size and the given <i>otherSize</i>.</p>
 <p>See also <a href="qsize.html#boundedTo">boundedTo</a>() and <a href="qsize.html#scale">scale</a>().</p>
 <h3 class="fn"><a name="height"></a>int QSize::height () const</h3>
 <p>Returns the height.</p>
 <p>See also <a href="qsize.html#width">width</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QSize::isEmpty () const</h3>
-<p>Returns true if either of the width and height is less than, or equal to, 0; otherwise returns false.</p>
+<p>Returns true if either of the width and height is less than or equal to 0; otherwise returns false.</p>
 <p>See also <a href="qsize.html#isNull">isNull</a>() and <a href="qsize.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="isNull"></a>bool QSize::isNull () const</h3>
 <p>Returns true if both the width and height is 0; otherwise returns false.</p>
@@ -205,6 +205,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

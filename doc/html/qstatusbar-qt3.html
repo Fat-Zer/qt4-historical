@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/widgets/qstatusbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/widgets/qstatusbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/widgets/qstatusbar.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QStatusBar</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -41,19 +42,30 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QStatusBar-2"></a>QStatusBar::QStatusBar ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Constructs a status bar called <i>name</i> with parent <i>parent</i> and with a size grip.</p>
-<p>See also <a href="qstatusbar.html#sizeGripEnabled-prop">setSizeGripEnabled</a>().</p>
+<p>Constructs a status bar with a size grip and the given <i>parent</i> and object <i>name</i>.</p>
+<p>Use the <a href="qstatusbar.html#QStatusBar">QStatusBar</a>() constructor and the <a href="qobject.html#objectName-prop">QObject::setObjectName</a>() function instead.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">    QStatusBar *myStatusBar = new QStatusBar(parent, name);</font></pre>
+<p>you can rewrite it as</p>
+<pre>    QStatusBar *myStatusBar = new QStatusBar(parent);
+    myStatusBar-&gt;setObjectName(name);</pre>
 <h3 class="fn"><a name="addWidget-2"></a>void QStatusBar::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>stretch</i>, bool <i>permanent</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use addWidget(<i>widget</i>, <i>stretch</i>) or addPermanentWidget(<i>widget</i>, <i>stretch</i>) instead, depending on <i>permanent</i>.</p>
+<p>Use <a href="qstatusbar.html#addWidget">addWidget</a>() or <a href="qstatusbar.html#addPermanentWidget">addPermanentWidget</a>() instead, depending on the value of the <i>permanent</i> parameter.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">    QStatusBar *myStatusBar;
+    myStatusBar-&gt;addWidget(widget, stretch, permanent);  // permanent == true</font></pre>
+<p>you can rewrite it as</p>
+<pre>    QStatusBar *myStatusBar;
+    myStatusBar-&gt;addPermanentWidget(widget, stretch);</pre>
 <h3 class="fn"><a name="clear"></a>void QStatusBar::clear ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Removes any temporary message being shown.</p>
+<p>Use the <a href="qstatusbar.html#clearMessage">clearMessage</a>() function instead.</p>
 <h3 class="fn"><a name="message"></a>void QStatusBar::message ( const <a href="qstring.html">QString</a> &amp; <i>message</i>, int <i>timeout</i> = 0 )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Hides the normal status indications and displays <i>message</i> for <i>timeout</i> milli-seconds or until <a href="qstatusbar.html#clearMessage">clearMessage</a>() or another <a href="qstatusbar.html#showMessage">showMessage</a>() is called, whichever occurs first.</p>
+<p>Use the <a href="qstatusbar.html#showMessage">showMessage</a>() function instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

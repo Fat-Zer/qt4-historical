@@ -39,12 +39,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef Q_WS_WIN
-#define INDEX_CHECK( text ) if( i+1 >= argc ) { QMessageBox::information( 0, "Qt Assistant", text ); return 1; }
-#else
-#define INDEX_CHECK( text ) if( i+1 >= argc ) { fprintf( stderr, text "\n" ); return 1; }
-#endif
-
+#define INDEX_CHECK( text ) if( i+1 >= argc ) { fprintf(stderr, "%s\n", text); return 1; }
 
 class AssistantSocket : public QTcpSocket
 {
@@ -138,17 +133,18 @@ int main( int argc, char ** argv )
     Q_INIT_RESOURCE(assistant);
 
     bool withGUI = true;
+#ifndef Q_WS_WIN
     if ( argc > 1 ) {
-        QString arg = QString::fromAscii(argv[1]);
+        QString arg = QString::fromLocal8Bit(argv[1]);
         arg = arg.toLower();
         if ( arg == QLatin1String("-addcontentfile")
             || arg == QLatin1String("-removecontentfile")
-#ifndef Q_WS_WIN
             || arg == QLatin1String("-help")
-#endif
+            || arg == QLatin1String("/?")
             )
             withGUI = false;
     }
+#endif
     QApplication a(argc, argv, withGUI);
     a.setOrganizationName("Trolltech");
     a.setApplicationName("Assistant");
@@ -160,8 +156,10 @@ int main( int argc, char ** argv )
     bool server = false;
     bool hideSidebar = false;
     if ( argc == 2 ) {
-        if ( (argv[1])[0] != '-' ) {
-            file = QString::fromUtf8(argv[1]);
+        file = QString::fromLocal8Bit(argv[1]);
+        if (file.startsWith(QLatin1String("-")) || file == QLatin1String("/?")) {
+            file.clear();
+        } else {
             QFileInfo fi(file);
             file = fi.absoluteFilePath();
             file = MainWindow::urlifyFileName(file);
@@ -169,7 +167,7 @@ int main( int argc, char ** argv )
     }
     if ( file.isEmpty() ) {
         for ( int i = 1; i < argc; i++ ) {
-            QString opt = QString::fromAscii(argv[i]).toLower();
+            QString opt = QString::fromLocal8Bit(argv[i]).toLower();
             if ( opt == QLatin1String("-file") ) {
                 INDEX_CHECK( "Missing file argument!" );
                 i++;
@@ -184,18 +182,14 @@ int main( int argc, char ** argv )
                 Config *c = Config::loadConfig( QString() );
                 QFileInfo file( QFile::decodeName(argv[i+1]) );
                 if( !file.exists() ) {
-                    fprintf( stderr, "Could not locate content file: '%s'\n",
-                             file.absoluteFilePath().toLatin1().constData() );
-                    fflush( stderr );
+                    fprintf(stderr, "Could not locate content file: %s\n", qPrintable(file.absoluteFilePath()));
                     return 1;
                 }
                 DocuParser *parser = DocuParser::createParser( file.absoluteFilePath() );
                 if( parser ) {
                     QFile f( QFile::decodeName(argv[i+1]) );
                     if( !parser->parse( &f ) ) {
-                        fprintf( stderr, "Failed to parse file: '%s'\n, ",
-                                 file.absoluteFilePath().toLatin1().constData() );
-                        fflush( stderr );
+                        fprintf(stderr, "Failed to parse file: %s\n", qPrintable(file.absoluteFilePath()));
                         return 1;
                     }
                     parser->addTo( c->profile() );
@@ -207,23 +201,25 @@ int main( int argc, char ** argv )
                 INDEX_CHECK( "Missing content file!" );
                 Config *c = Config::loadConfig( QString() );
                 Profile *profile = c->profile();
-                QStringList entries = profile->docs.filter(QString::fromAscii(argv[i+1]));
+                QString contentFile = QString::fromLocal8Bit(argv[i+i]);
+                QStringList entries;
+#ifdef Q_WS_WIN
+                contentFile.replace('\\', '/');
+                entries = profile->docs.filter(contentFile, Qt::CaseInsensitive);
+#else
+                entries = profile->docs.filter(contentFile);
+#endif
                 if (entries.count() == 0) {
-                    fprintf(stderr, "Could not locate content file: '%s'\n",
-                            argv[i+1]);
-                    fflush(stderr);
+                    fprintf(stderr, "Could not locate content file: %s\n", qPrintable(contentFile));
                     return 1;
                 } else if (entries.count() > 1) {
                     fprintf(stderr, "More than one entry matching file name found, "
                         "please specify full path to file");
-                    fflush(stderr);
                     return 1;
                 } else {
                     QFileInfo file(entries[0]);
                     if( !file.exists() ) {
-                        fprintf( stderr, "Could not locate content file: '%s'\n",
-                            file.absoluteFilePath().toLatin1().constData() );
-                        fflush( stderr );
+                        fprintf(stderr, "Could not locate content file: %s\n", qPrintable(file.absoluteFilePath()));
                         return 1;
                     }
                     profile->removeDocFileEntry( file.absoluteFilePath() );
@@ -233,7 +229,7 @@ int main( int argc, char ** argv )
                 return 0;
             } else if ( QString( argv[i] ).toLower() == "-docpath" ) {
                 INDEX_CHECK( "Missing path!" );
-                QDir dir( argv[i+1] );
+                QDir dir(QString::fromLocal8Bit(argv[i+1]));
                 if ( dir.exists() ) {
                     Config *c = Config::loadConfig(QString());
                     c->saveProfile(Profile::createDefaultProfile(dir.absolutePath()));
@@ -241,13 +237,12 @@ int main( int argc, char ** argv )
                     c->setDocRebuild(true);
                     c->save();
                 } else {
-                    fprintf( stderr, "The specified path does not exist!\n");
-                    fflush( stderr );
+                    fprintf(stderr, "The specified path does not exist!\n");
                     return 1;
                 }
             } else if ( opt == QLatin1String("-hidesidebar") ) {
                 hideSidebar = true;
-            } else if ( opt == QLatin1String("-help") ) {
+            } else if ( opt == QLatin1String("-help") || opt == QLatin1String("/?") ) {
                 QString helpText = QLatin1String( "Usage: assistant [option]\n"
                                   "Options:\n"
                                   " -file Filename             assistant opens the specified file\n"
@@ -269,16 +264,14 @@ int main( int argc, char ** argv )
                 QMessageBox::information( 0, QLatin1String("Qt Assistant"),
                     QLatin1String("<pre>") + helpText + QLatin1String("</pre>") );
 #else
-                printf( "%s\n", helpText.toLatin1().constData() );
+                fprintf(stdout, "%s\n", qPrintable(helpText));
 #endif
                 exit( 0 );
             } else if ( opt == QLatin1String("-resourcedir") ) {
                 INDEX_CHECK( "Missing resource directory argument!" );
                 resourceDir = QFile::decodeName( argv[++i] );
             } else {
-                fprintf( stderr, "Unrecognized option '%s'. Try -help to get help.\n",
-                         argv[i] );
-                fflush( stderr );
+                fprintf(stderr, "Unrecognized option %s. Try -help to get help.\n", qPrintable(opt));
             }
         }
     }

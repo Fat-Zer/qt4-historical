@@ -50,6 +50,7 @@ public:
     inline QPointF normalVector(qreal t) const;
 
     QPolygonF toPolygon() const;
+    void addToPolygon(QPolygonF *p) const;
     QRectF bounds() const;
 
     QPointF pt1() const { return QPointF(x1, y1); }

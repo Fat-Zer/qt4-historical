@@ -26,13 +26,15 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 extern Q_CORE_EXPORT char q_atomic_lock;
 
 inline char q_atomic_swp(volatile char *ptr, char newval)
 {
     register int ret;
     asm volatile("swpb %0,%1,[%2]"
-                 : "=r"(ret)
+                 : "=&r"(ret)
                  : "r"(newval), "r"(ptr)
                  : "cc", "memory");
     return ret;
@@ -47,7 +49,7 @@ inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval
 	ret = 1;
     }
     q_atomic_swp(&q_atomic_lock, 0);
-    return ret;    
+    return ret;
 }
 
 inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
@@ -62,14 +64,14 @@ inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, in
 
 inline int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval)
 {
-    int ret = 0;    
+    int ret = 0;
     while (q_atomic_swp(&q_atomic_lock, ~0) != 0) ;
     if (*reinterpret_cast<void * volatile *>(ptr) == expected) {
 	*reinterpret_cast<void * volatile *>(ptr) = newval;
 	ret = 1;
     }
     q_atomic_swp(&q_atomic_lock, 0);
-    return ret;    
+    return ret;
 }
 
 inline int q_atomic_increment(volatile int *ptr)
@@ -78,7 +80,7 @@ inline int q_atomic_increment(volatile int *ptr)
     int originalValue = *ptr;
     *ptr = originalValue + 1;
     q_atomic_swp(&q_atomic_lock, 0);
-    return originalValue != -1;    
+    return originalValue != -1;
 }
 
 inline int q_atomic_decrement(volatile int *ptr)
@@ -87,7 +89,7 @@ inline int q_atomic_decrement(volatile int *ptr)
     int originalValue = *ptr;
     *ptr = originalValue - 1;
     q_atomic_swp(&q_atomic_lock, 0);
-    return originalValue != 1;    
+    return originalValue != 1;
 }
 
 inline int q_atomic_set_int(volatile int *ptr, int newval)
@@ -96,7 +98,7 @@ inline int q_atomic_set_int(volatile int *ptr, int newval)
     int originalValue = *ptr;
     *ptr = newval;
     q_atomic_swp(&q_atomic_lock, 0);
-    return originalValue;    
+    return originalValue;
 }
 
 inline void *q_atomic_set_ptr(volatile void *ptr, void *newval)
@@ -105,7 +107,9 @@ inline void *q_atomic_set_ptr(volatile void *ptr, void *newval)
     void *originalValue = *reinterpret_cast<void * volatile *>(ptr);
     *reinterpret_cast<void * volatile *>(ptr) = newval;
     q_atomic_swp(&q_atomic_lock, 0);
-    return originalValue;    
+    return originalValue;
 }
+
+QT_END_HEADER
 
 #endif // ARM_QATOMIC_H

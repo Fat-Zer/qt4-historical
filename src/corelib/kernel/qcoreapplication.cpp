@@ -42,6 +42,7 @@
 #include <qlibraryinfo.h>
 
 #ifdef Q_OS_UNIX
+
 #  include "qeventdispatcher_unix_p.h"
 #endif
 #ifdef Q_OS_WIN
@@ -139,35 +140,36 @@ Qt::HANDLE qt_application_thread_id = 0;
 #endif
 
 #ifndef QT_NO_THREAD
-// thread wrapper for the main() thread
-class QCoreApplicationThread : public QThread
-{
-    Q_DECLARE_PRIVATE(QThread)
-public:
-    inline QCoreApplicationThread()
-    {
-        // thread should be running and not finished for the lifetime
-        // of the application (even if QCoreApplication goes away)
-        d_func()->running = true;
-        d_func()->finished = false;
-    }
-    inline ~QCoreApplicationThread()
-    {
-        // avoid warning from QThread
-        d_func()->running = false;
-    }
-private:
-    inline void run()
-    {
-        // this function should never be called, it is implemented
-        // only so that we can instantiate the object
-        qFatal("QCoreApplicationThread: internal error");
-    }
-};
-Q_GLOBAL_STATIC(QCoreApplicationThread, mainThread)
+Q_GLOBAL_STATIC(QAdoptedThread, actual_mainThread);
+static QThread *the_mainThread = 0;
+static QThread *mainThread() {
+    return the_mainThread ? the_mainThread : actual_mainThread();
+}
+
 #else
 static QThread* mainThread() { return QThread::currentThread(); }
 #endif
+
+struct QCoreApplicationData {
+    QCoreApplicationData() {
+#ifndef QT_NO_LIBRARY
+        app_libpaths = 0;
+#endif
+    }
+    ~QCoreApplicationData() {
+#ifndef QT_NO_LIBRARY
+        delete app_libpaths;
+#endif
+    }
+    QString orgName, orgDomain, application;
+
+#ifndef QT_NO_LIBRARY
+    QStringList *app_libpaths;
+#endif
+
+};
+
+Q_GLOBAL_STATIC(QCoreApplicationData, coreappdata)
 
 QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
     : QObjectPrivate(), argc(aargc), argv(aargv), application_type(0), eventFilter(0),
@@ -293,6 +295,19 @@ void QCoreApplicationPrivate::checkReceiverThread(QObject *receiver)
     Q_UNUSED(thr);
 }
 
+void QCoreApplicationPrivate::appendApplicationPathToLibraryPaths()
+{
+#ifndef QT_NO_LIBRARY
+    QStringList *app_libpaths = coreappdata()->app_libpaths;
+    Q_ASSERT(app_libpaths);
+    QString app_location( QCoreApplication::applicationFilePath() );
+    app_location.truncate(app_location.lastIndexOf(QLatin1Char('/')));
+    app_location = QDir(app_location).canonicalPath();
+    if (app_location !=  QLibraryInfo::location(QLibraryInfo::PluginsPath) && QFile::exists(app_location))
+        app_libpaths->append(app_location);
+#endif
+}
+
 QString qAppName()
 {
     if (!QCoreApplicationPrivate::checkInstance("qAppName"))
@@ -411,12 +426,18 @@ void QCoreApplication::init()
     set_winapp_name();
 #endif
 
-#ifndef QT_NO_LIBRARY
-    d->app_libpaths = 0;
-#endif
-
     Q_ASSERT_X(!self, "QCoreApplication", "there should be only one application object");
     QCoreApplication::self = this;
+
+#ifndef QT_NO_LIBRARY
+    if (!coreappdata()->app_libpaths) {
+        // make sure that library paths is initialized
+        libraryPaths();
+    } else {
+        d->appendApplicationPathToLibraryPaths();
+    }
+#endif
+
 
 #ifndef QT_NO_THREAD
     QThread::initialize();
@@ -452,12 +473,8 @@ QCoreApplication::~QCoreApplication()
     Q_D(QCoreApplication);
     qt_call_post_routines();
 
-#ifndef QT_NO_LIBRARY
-    delete d->app_libpaths;
-    d->app_libpaths = 0;
-#endif
-
     self = 0;
+    QCoreApplicationPrivate::is_app_closing = true;
     QCoreApplicationPrivate::is_app_running = false;
 
 #ifndef QT_NO_THREAD
@@ -635,8 +652,8 @@ void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags, int m
     main event loop receives events from the window system and
     dispatches these to the application widgets.
 
-    To make your application perform idle processing, i.e. executing a
-    special function whenever there are no pending events, use a
+    To make your application perform idle processing (i.e. executing a
+    special function whenever there are no pending events), use a
     QTimer with 0 timeout. More advanced idle processing schemes can
     be achieved using processEvents().
 
@@ -742,6 +759,16 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
         delete event;
         return;
     }
+
+#ifndef QT_NO_THREAD
+    // uberhack for enabling some threading features for (mumble)
+    if (receiver == (QObject *) 0xfeedface && event == (QEvent *) 0xc0ffee) {
+        QThreadPrivate::adoptCurrentThreadEnabled = true;
+        if (!the_mainThread)
+            the_mainThread = new QAdoptedThread();
+        return;
+    }
+#endif
 
     /*
       avoid a deadlock when trying to create the mainThread() when
@@ -1092,8 +1119,8 @@ void QCoreApplicationPrivate::removePostedEvent(QEvent * event)
 #ifndef QT_NO_DEBUG
             qWarning("QEvent: Warning: event of type %d deleted while posted to %s %s",
                      event->type(),
-                     pe.receiver ? pe.receiver->metaObject()->className() : "null",
-                     pe.receiver ? pe.receiver->objectName().toLocal8Bit().data() : "object");
+                     pe.receiver->metaObject()->className(),
+                     pe.receiver->objectName().toLocal8Bit().data());
 #endif
             --pe.receiver->d_func()->postedEvents;
 #ifdef QT3_SUPPORT
@@ -1279,7 +1306,9 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
                 return result;
         }
     }
-#ifndef QT_NO_TEXTCODEC
+#ifdef QT_NO_TEXTCODEC
+    Q_UNUSED(encoding)
+#else
     if (encoding == UnicodeUTF8)
         return QString::fromUtf8(sourceText);
     else if (QTextCodec::codecForTr() != 0)
@@ -1512,12 +1541,12 @@ QStringList QCoreApplication::arguments()
 
 void QCoreApplication::setOrganizationName(const QString &orgName)
 {
-    self->d_func()->orgName = orgName;
+    coreappdata()->orgName = orgName;
 }
 
 QString QCoreApplication::organizationName()
 {
-    return self ? self->d_func()->orgName : QString();
+    return coreappdata()->orgName;
 }
 
 /*!
@@ -1537,12 +1566,12 @@ QString QCoreApplication::organizationName()
 */
 void QCoreApplication::setOrganizationDomain(const QString &orgDomain)
 {
-    self->d_func()->orgDomain = orgDomain;
+    coreappdata()->orgDomain = orgDomain;
 }
 
 QString QCoreApplication::organizationDomain()
 {
-    return self ? self->d_func()->orgDomain : QString();
+    return coreappdata()->orgDomain;
 }
 
 /*!
@@ -1557,13 +1586,12 @@ QString QCoreApplication::organizationDomain()
 */
 void QCoreApplication::setApplicationName(const QString &application)
 {
-    self->d_func()->application = application;
+    coreappdata()->application = application;
 }
-
 
 QString QCoreApplication::applicationName()
 {
-    return self ? self->d_func()->application : QString();
+    return coreappdata()->application;
 }
 
 
@@ -1575,13 +1603,13 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutex, libraryPathMutex, (QMutex::Recursive))
 /*!
     Returns a list of paths that the application will search when
     dynamically loading libraries.
-    The installation directory for plugins is the only entry if no
-    paths have been set.  The default installation directory for plugins
-    is \c INSTALL/plugins, where \c INSTALL is the directory where Qt was
-    installed. The directory of the application executable (NOT the
-    working directory) is also added to the plugin paths, as well as
-    the colon separated entries of the QT_PLUGIN_PATH environment
-    variable.
+
+    This list will include the installation directory for plugins if
+    it exists (the default installation directory for plugins is \c
+    INSTALL/plugins, where \c INSTALL is the directory where Qt was
+    installed).  The directory of the application executable (NOT the
+    working directory) is always added, as well as the colon separated
+    entries of the QT_PLUGIN_PATH environment variable.
 
     If you want to iterate over the list, you can use the \l foreach
     pseudo-keyword:
@@ -1596,12 +1624,11 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutex, libraryPathMutex, (QMutex::Recursive))
 */
 QStringList QCoreApplication::libraryPaths()
 {
+    QMutexLocker locker(libraryPathMutex());
     if (!self)
         return QStringList();
-
-    QMutexLocker locker(libraryPathMutex());
-    if (!self->d_func()->app_libpaths) {
-        QStringList *app_libpaths = self->d_func()->app_libpaths = new QStringList;
+    if (!coreappdata()->app_libpaths) {
+        QStringList *app_libpaths = coreappdata()->app_libpaths = new QStringList;
         QString installPathPlugins =  QLibraryInfo::location(QLibraryInfo::PluginsPath);
         if (QFile::exists(installPathPlugins)) {
             // Make sure we convert from backslashes to slashes.
@@ -1609,11 +1636,9 @@ QStringList QCoreApplication::libraryPaths()
             app_libpaths->append(installPathPlugins);
         }
 
-        QString app_location(self->applicationFilePath());
-        app_location.truncate(app_location.lastIndexOf(QLatin1Char('/')));
-        app_location = QDir(app_location).canonicalPath();
-        if (app_location !=  QLibraryInfo::location(QLibraryInfo::PluginsPath) && QFile::exists(app_location))
-            app_libpaths->append(app_location);
+        // If QCoreApplication is not yet instantiated,
+        // make sure we add the application path when we construct the QCoreApplication
+        if (self) self->d_func()->appendApplicationPathToLibraryPaths();
 
         const QByteArray libPathEnv = qgetenv("QT_PLUGIN_PATH");
         if (!libPathEnv.isEmpty()) {
@@ -1628,7 +1653,7 @@ QStringList QCoreApplication::libraryPaths()
             }
         }
     }
-    return *self->d_func()->app_libpaths;
+    return *(coreappdata()->app_libpaths);
 }
 
 
@@ -1642,10 +1667,8 @@ QStringList QCoreApplication::libraryPaths()
  */
 void QCoreApplication::setLibraryPaths(const QStringList &paths)
 {
-    delete self->d_func()->app_libpaths;
-    self->d_func()->app_libpaths = new QStringList(paths);
+    *(coreappdata()->app_libpaths) = paths;
 }
-
 /*!
   Appends \a path to the end of the library path list. If \a path is
   empty or already in the path list, the path list is not changed.
@@ -1666,8 +1689,8 @@ void QCoreApplication::addLibraryPath(const QString &path)
     libraryPaths();
 
     QString canonicalPath = QDir(path).canonicalPath();
-    if (!self->d_func()->app_libpaths->contains(canonicalPath))
-        self->d_func()->app_libpaths->prepend(canonicalPath);
+    if (!coreappdata()->app_libpaths->contains(canonicalPath))
+        coreappdata()->app_libpaths->prepend(canonicalPath);
 }
 
 /*!
@@ -1684,7 +1707,7 @@ void QCoreApplication::removeLibraryPath(const QString &path)
     // make sure that library paths is initialized
     libraryPaths();
 
-    self->d_func()->app_libpaths->removeAll(path);
+    coreappdata()->app_libpaths->removeAll(path);
 }
 
 #endif //QT_NO_LIBRARY

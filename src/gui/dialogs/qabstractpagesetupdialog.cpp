@@ -26,6 +26,8 @@
 
 #ifndef QT_NO_PRINTDIALOG
 
+#include <QtGui/qprinter.h>
+
 /*!
     \internal
     \class QAbstractPageSetupDialog
@@ -43,6 +45,11 @@ QAbstractPageSetupDialog::QAbstractPageSetupDialog(QPrinter *printer, QWidget *p
 {
     Q_D(QAbstractPageSetupDialog);
     d->printer = printer;
+
+    if (printer->outputFormat() != QPrinter::NativeFormat) {
+        qWarning("QAbstractPageSetupDialog::QAbstractPageSetupDialog: Page setup dialog cannot be"
+                 "used on non-native printers");    
+    }
 }
 
 /*!
@@ -54,6 +61,11 @@ QAbstractPageSetupDialog::QAbstractPageSetupDialog(QAbstractPageSetupDialogPriva
 {
     Q_D(QAbstractPageSetupDialog);
     d->printer = printer;
+
+    if (printer->outputFormat() != QPrinter::NativeFormat) {
+        qWarning("QAbstractPageSetupDialog::QAbstractPageSetupDialog: Page setup dialog cannot be"
+                 "used on non-native printers");    
+    }
 }
 
 /*!

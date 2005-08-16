@@ -69,9 +69,13 @@ public:
 
     bool forceLoadOnSourceChange;
 
+#ifndef QT_NO_CURSOR
+    QCursor oldCursor;
+#endif
+
     QString findFile(const QUrl &name) const;
 
-    inline void documentModified()
+    inline void _q_documentModified()
     {
         textOrSourceChanged = true;
         forceLoadOnSourceChange = true;
@@ -139,7 +143,8 @@ void QTextBrowserPrivate::activateAnchor(const QString &href)
 
     textOrSourceChanged = false;
 
-    const QUrl url = currentURL.resolved(href);
+    const QUrl url = isAbsoluteFileName(currentURL.toLocalFile())
+                     ? currentURL.resolved(href) : QUrl(href);
     emit q->anchorClicked(url);
 
     if (!textOrSourceChanged)
@@ -161,11 +166,11 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
 
     QUrl currentUrlWithoutFragment = currentURL;
     currentUrlWithoutFragment.setFragment(QString());
-    QUrl urlWithoutFragment = url;
-    urlWithoutFragment.setFragment(QString());
+    QUrl newUrlWithoutFragment = currentURL.resolved(url);
+    newUrlWithoutFragment.setFragment(QString());
 
     if (url.isValid()
-        && (urlWithoutFragment != currentUrlWithoutFragment || forceLoadOnSourceChange)) {
+        && (newUrlWithoutFragment != currentUrlWithoutFragment || forceLoadOnSourceChange)) {
         QVariant data = q->loadResource(QTextDocument::HtmlResource, url);
         if (data.type() == QVariant::String) {
             txt = data.toString();
@@ -194,7 +199,7 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
             }
         }
 
-        currentURL = url;
+        currentURL = currentURL.resolved(url);
         doSetText = true;
     }
 
@@ -519,9 +524,12 @@ void QTextBrowserPrivate::init()
 {
     Q_Q(QTextBrowser);
     q->setReadOnly(true);
+#ifndef QT_NO_CURSOR
+    viewport->setCursor(oldCursor);
+#endif
     q->setUndoRedoEnabled(false);
     viewport->setMouseTracking(true);
-    QObject::connect(q->document(), SIGNAL(contentsChanged()), q, SLOT(documentModified()));
+    QObject::connect(q->document(), SIGNAL(contentsChanged()), q, SLOT(_q_documentModified()));
 }
 
 /*!
@@ -623,35 +631,30 @@ void QTextBrowser::setSource(const QUrl &url)
 
     d->setSource(url);
 
-    QUrl currentUrlWithoutFragment = d->currentURL;
-    currentUrlWithoutFragment.setFragment(QString());
-    QUrl urlWithoutFragment = url;
-    urlWithoutFragment.setFragment(QString());
+    if (!url.isValid())
+        return;
 
-    if (url.isValid()
-        && (urlWithoutFragment == currentUrlWithoutFragment)) {
-        if (!d->stack.isEmpty() && d->stack.top().url == url) {
-            // the same url you are already watching
+    if (!d->stack.isEmpty() && d->stack.top().url == url) {
+        // the same url you are already watching
+    } else {
+        if (!d->stack.isEmpty()) {
+            d->stack.top().hpos = hpos;
+            d->stack.top().vpos = vpos;
+        }
+        QTextBrowserPrivate::HistoryEntry entry;
+        entry.url = url;
+        entry.hpos = 0;
+        entry.vpos = 0;
+        d->stack.push(entry);
+        
+        emit backwardAvailable(d->stack.count() > 1);
+        
+        if (!d->forwardStack.isEmpty() && d->forwardStack.top().url == url) {
+            d->forwardStack.pop();
+            emit forwardAvailable(d->forwardStack.count() > 0);
         } else {
-            if (!d->stack.isEmpty()) {
-                d->stack.top().hpos = hpos;
-                d->stack.top().vpos = vpos;
-            }
-            QTextBrowserPrivate::HistoryEntry entry;
-            entry.url = url;
-            entry.hpos = 0;
-            entry.vpos = 0;
-            d->stack.push(entry);
-
-            emit backwardAvailable(d->stack.count() > 1);
-
-            if (!d->forwardStack.isEmpty() && d->forwardStack.top().url == url) {
-                d->forwardStack.pop();
-                emit forwardAvailable(d->forwardStack.count() > 0);
-            } else {
-                d->forwardStack.clear();
-                emit forwardAvailable(false);
-            }
+            d->forwardStack.clear();
+            emit forwardAvailable(false);
         }
     }
 }
@@ -791,11 +794,13 @@ void QTextBrowser::keyPressEvent(QKeyEvent *ev)
         break;
     case Qt::Key_Back:
         if (QApplication::keypadNavigationEnabled()) {
-            if (hasEditFocus())
+            if (hasEditFocus()) {
                 setEditFocus(false);
-            else
-                ev->ignore();
+                ev->accept();
+                return;
+            }
         }
+        QTextEdit::keyPressEvent(ev);
         return;
     default:
         if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
@@ -863,16 +868,19 @@ void QTextBrowser::mouseMoveEvent(QMouseEvent *e)
     QString anchor = anchorAt(e->pos());
     if (anchor.isEmpty()) {
 #ifndef QT_NO_CURSOR
-        d->viewport->setCursor(Qt::ArrowCursor);
+        if (d->viewport->cursor().shape() != Qt::PointingHandCursor)
+            d->oldCursor = d->viewport->cursor();
+        d->viewport->setCursor(d->oldCursor);
 #endif
         emit highlighted(QUrl());
         emit highlighted(QString());
     } else {
-#ifndef QT_NO_CURSOR
+#ifndef QT_NO_CURSOR        
         d->viewport->setCursor(Qt::PointingHandCursor);
 #endif
 
-        QUrl url = QUrl(d->currentURL).resolved(anchor);
+        const QUrl url = isAbsoluteFileName(d->currentURL.toLocalFile())
+                         ? d->currentURL.resolved(anchor) : QUrl(anchor);
         emit highlighted(url);
         // convenience to ease connecting to QStatusBar::showMessage(const QString &)
         emit highlighted(url.toString());
@@ -927,6 +935,9 @@ void QTextBrowser::focusOutEvent(QFocusEvent *ev)
         d->focusIndicator.clearSelection();
         d->viewport->update();
     }
+#ifndef QT_NO_CURSOR
+    d->viewport->setCursor(d->readOnly ? d->oldCursor : Qt::IBeamCursor);
+#endif
     QTextEdit::focusOutEvent(ev);
 }
 
@@ -998,7 +1009,7 @@ QVariant QTextBrowser::loadResource(int /*type*/, const QUrl &name)
 
     QByteArray data;
     QUrl resolved = name;
-    if (!isAbsoluteFileName(name.toLocalFile()))
+    if (!isAbsoluteFileName(name.toLocalFile()) && isAbsoluteFileName(source().toLocalFile()))
         resolved = source().resolved(name);
     QString fileName = d->findFile(resolved);
     QFile f(fileName);

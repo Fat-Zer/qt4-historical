@@ -91,6 +91,7 @@ private:
     int lzwsize;
     bool lcmap;
     int swidth, sheight;
+    int width, height;
     int left, top, right, bottom;
     enum Disposal { NoDisposal, DoNotChange, RestoreBackground, RestoreImage };
     Disposal disposal;
@@ -296,20 +297,20 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
             if (count==10) {
                 int newleft=LM(hold[1], hold[2]);
                 int newtop=LM(hold[3], hold[4]);
-                int width=LM(hold[5], hold[6]);
-                int height=LM(hold[7], hold[8]);
+                int newwidth=LM(hold[5], hold[6]);
+                int newheight=LM(hold[7], hold[8]);
 
                 // disbelieve ridiculous logical screen sizes,
                 // unless the image frames are also large.
-                if (swidth/10 > qMax(width,200))
+                if (swidth/10 > qMax(newwidth,200))
                     swidth = -1;
-                if (sheight/10 > qMax(height,200))
+                if (sheight/10 > qMax(newheight,200))
                     sheight = -1;
 
                 if (swidth <= 0)
-                    swidth = newleft + width;
+                    swidth = newleft + newwidth;
                 if (sheight <= 0)
-                    sheight = newtop + height;
+                    sheight = newtop + newheight;
 
                 if (image->isNull()) {
                     (*image) = QImage(swidth, sheight,
@@ -326,25 +327,11 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
 
                 left = newleft;
                 top = newtop;
+                width = newwidth;
+                height = newheight;
 
-                // Sanity check frame size - must fit on "screen".
-                if (left >= swidth) left=qMax(0, swidth-1);
-                if (top >= sheight) top=qMax(0, sheight-1);
-                if (left+width >= swidth) {
-                    if (width <= swidth)
-                        left=swidth-width;
-                    else
-                        width=swidth-left;
-                }
-                if (top+height >= sheight) {
-                    if (height <= sheight)
-                        top=sheight-height;
-                    else
-                        height=sheight-top;
-                }
-
-                right=qMax(0, left+width-1);
-                bottom=qMax(0, top+height-1);
+                right=qMax(0, qMin(left+width, swidth)-1);
+                bottom=qMax(0, qMin(top+height, sheight)-1);
                 lcmap=!!(hold[9]&0x80);
                 interlace=!!(hold[9]&0x40);
                 //bool lcmsortflag=!!(hold[9]&0x20);
@@ -360,7 +347,7 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                 }
                 frame++;
                 if (frame == 0) {
-                    if (left || top || width!=swidth || height!=sheight) {
+                    if (left || top || width<swidth || height<sheight) {
                         // Not full-size image - erase with bg or transparent
                         if (trans_index >= 0) {
                             fillRect(image, 0, 0, swidth, sheight, color(trans_index));
@@ -408,7 +395,7 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                 sp = stack;
                 firstcode = oldcode = 0;
                 needfirst = false;
-                out_of_bounds = false;
+                out_of_bounds = left>=swidth || y>=sheight;
             }
             break;
           case TableImageLZWSize: {
@@ -467,10 +454,9 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                         x++;
                         if (x>=swidth) out_of_bounds = true;
                         needfirst=false;
-                        if (x>right) {
+                        if (x>=left+width) {
                             x=left;
-                            if (out_of_bounds)
-                                out_of_bounds = left>=swidth || y>=sheight;
+                            out_of_bounds = left>=swidth || y>=sheight;
                             nextY(image);
                         }
                     } else {
@@ -511,10 +497,9 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                                 ((QRgb*)image->scanLine(y))[x] = color(*sp);
                             x++;
                             if (x>=swidth) out_of_bounds = true;
-                            if (x>right) {
+                            if (x>=left+width) {
                                 x=left;
-                                if (out_of_bounds)
-                                    out_of_bounds = left>=swidth || y>=sheight;
+                                out_of_bounds = left>=swidth || y>=sheight;
                                 nextY(image);
                             }
                         }
@@ -584,7 +569,7 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                 int delay=count>3 ? LM(hold[2], hold[3]) : 1;
                 // IE and mozilla use a minimum delay of 10. With the minumum delay of 10
                 // we are compatible to them and avoid huge loads on the app and xserver.
-                *nextFrameDelay = (delay < 10 ? 10 : delay) * 10;
+                *nextFrameDelay = (delay < 2 ? 10 : delay) * 10;
 
                 bool havetrans=hold[1]&0x1;
                 trans_index = havetrans ? hold[4] : -1;

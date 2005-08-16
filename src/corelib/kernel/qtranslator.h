@@ -27,6 +27,8 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qbytearray.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_TRANSLATION
@@ -63,5 +65,7 @@ private:
 };
 
 #endif // QT_NO_TRANSLATION
+
+QT_END_HEADER
 
 #endif // QTRANSLATOR_H

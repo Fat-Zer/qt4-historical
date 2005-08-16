@@ -177,9 +177,9 @@ QListWidgetItem *QListModel::take(int row)
     return item;
 }
 
-int QListModel::rowCount(const QModelIndex &) const
+int QListModel::rowCount(const QModelIndex &parent) const
 {
-    return lst.count();
+    return parent.isValid() ? 0 : lst.count();
 }
 
 QModelIndex QListModel::index(QListWidgetItem *item) const
@@ -359,9 +359,9 @@ Qt::DropActions QListModel::supportedDropActions() const
 
     \ingroup model-view
 
-    The QListWidgetItem class provides a list item for use with the QListWidget
-    class. List items provide label information that is displayed in list
-    widgets.
+    QListWidgetItem is used to represent items in a list provided by the
+    QListWidget class. Each item can hold several pieces of information,
+    and will display these appropriately.
 
     The item view convenience classes use a classic item-based interface
     rather than a pure model/view approach. For a more flexible list view
@@ -520,6 +520,8 @@ QListWidgetItem *QListWidgetItem::clone() const
   This function sets the data for a given \a role to the given \a value (see
   \l{Qt::ItemDataRole}). Reimplement this function if you need
   extra roles or special behavior for certain roles.
+
+  \sa Qt::ItemDataRole, data(), itemData()
 */
 void QListWidgetItem::setData(int role, const QVariant &value)
 {
@@ -839,13 +841,13 @@ public:
     QListWidgetPrivate() : QListViewPrivate() {}
     inline QListModel *model() const { return ::qobject_cast<QListModel*>(q_func()->model()); }
     void setup();
-    void emitItemPressed(const QModelIndex &index);
-    void emitItemClicked(const QModelIndex &index);
-    void emitItemDoubleClicked(const QModelIndex &index);
-    void emitItemActivated(const QModelIndex &index);
-    void emitItemEntered(const QModelIndex &index);
-    void emitItemChanged(const QModelIndex &index);
-    void emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current);
+    void _q_emitItemPressed(const QModelIndex &index);
+    void _q_emitItemClicked(const QModelIndex &index);
+    void _q_emitItemDoubleClicked(const QModelIndex &index);
+    void _q_emitItemActivated(const QModelIndex &index);
+    void _q_emitItemEntered(const QModelIndex &index);
+    void _q_emitItemChanged(const QModelIndex &index);
+    void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current);
 };
 
 void QListWidgetPrivate::setup()
@@ -853,59 +855,59 @@ void QListWidgetPrivate::setup()
     Q_Q(QListWidget);
     q->QListView::setModel(new QListModel(q));
     // view signals
-    QObject::connect(q, SIGNAL(pressed(QModelIndex)), q, SLOT(emitItemPressed(QModelIndex)));
-    QObject::connect(q, SIGNAL(clicked(QModelIndex)), q, SLOT(emitItemClicked(QModelIndex)));
+    QObject::connect(q, SIGNAL(pressed(QModelIndex)), q, SLOT(_q_emitItemPressed(QModelIndex)));
+    QObject::connect(q, SIGNAL(clicked(QModelIndex)), q, SLOT(_q_emitItemClicked(QModelIndex)));
     QObject::connect(q, SIGNAL(doubleClicked(QModelIndex)),
-                     q, SLOT(emitItemDoubleClicked(QModelIndex)));
-    QObject::connect(q, SIGNAL(activated(QModelIndex)), q, SLOT(emitItemActivated(QModelIndex)));
-    QObject::connect(q, SIGNAL(entered(QModelIndex)), q, SLOT(emitItemEntered(QModelIndex)));
+                     q, SLOT(_q_emitItemDoubleClicked(QModelIndex)));
+    QObject::connect(q, SIGNAL(activated(QModelIndex)), q, SLOT(_q_emitItemActivated(QModelIndex)));
+    QObject::connect(q, SIGNAL(entered(QModelIndex)), q, SLOT(_q_emitItemEntered(QModelIndex)));
     // model signals
     QObject::connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                     q, SLOT(emitItemChanged(QModelIndex)));
+                     q, SLOT(_q_emitItemChanged(QModelIndex)));
     // selection signals
     QObject::connect(q->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                     q, SLOT(emitCurrentItemChanged(QModelIndex,QModelIndex)));
+                     q, SLOT(_q_emitCurrentItemChanged(QModelIndex,QModelIndex)));
     QObject::connect(q->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
                      q, SIGNAL(itemSelectionChanged()));
 }
 
-void QListWidgetPrivate::emitItemPressed(const QModelIndex &index)
+void QListWidgetPrivate::_q_emitItemPressed(const QModelIndex &index)
 {
     Q_Q(QListWidget);
     emit q->itemPressed(model()->at(index.row()));
 }
 
-void QListWidgetPrivate::emitItemClicked(const QModelIndex &index)
+void QListWidgetPrivate::_q_emitItemClicked(const QModelIndex &index)
 {
     Q_Q(QListWidget);
     emit q->itemClicked(model()->at(index.row()));
 }
 
-void QListWidgetPrivate::emitItemDoubleClicked(const QModelIndex &index)
+void QListWidgetPrivate::_q_emitItemDoubleClicked(const QModelIndex &index)
 {
     Q_Q(QListWidget);
     emit q->itemDoubleClicked(model()->at(index.row()));
 }
 
-void QListWidgetPrivate::emitItemActivated(const QModelIndex &index)
+void QListWidgetPrivate::_q_emitItemActivated(const QModelIndex &index)
 {
     Q_Q(QListWidget);
     emit q->itemActivated(model()->at(index.row()));
 }
 
-void QListWidgetPrivate::emitItemEntered(const QModelIndex &index)
+void QListWidgetPrivate::_q_emitItemEntered(const QModelIndex &index)
 {
     Q_Q(QListWidget);
     emit q->itemEntered(model()->at(index.row()));
 }
 
-void QListWidgetPrivate::emitItemChanged(const QModelIndex &index)
+void QListWidgetPrivate::_q_emitItemChanged(const QModelIndex &index)
 {
     Q_Q(QListWidget);
     emit q->itemChanged(model()->at(index.row()));
 }
 
-void QListWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
+void QListWidgetPrivate::_q_emitCurrentItemChanged(const QModelIndex &current,
                                                 const QModelIndex &previous)
 {
     Q_Q(QListWidget);
@@ -967,6 +969,15 @@ void QListWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
     navigating with the keyboard or clicking on a different item. When the
     current item changes, the currentItemChanged() signal is emitted with the
     new current item and the item that was previously current.
+
+    \table 100%
+    \row \o \inlineimage windowsxp-listview.png Screenshot of a Windows XP style list widget
+         \o \inlineimage macintosh-listview.png Screenshot of a Macintosh style table widget
+         \o \inlineimage plastique-listview.png Screenshot of a Plastique style table widget
+    \row \o A \l{Windows XP Style Widget Gallery}{Windows XP style} list widget.
+         \o A \l{Macintosh Style Widget Gallery}{Macintosh style} list widget.
+         \o A \l{Plastique Style Widget Gallery}{Plastique style} list widget.
+    \endtable
 
     \sa QListWidgetItem, QListView, QTreeView, {Model/View Programming}
 */
@@ -1089,7 +1100,8 @@ QListWidget::~QListWidget()
 }
 
 /*!
-    Returns the item that occupies the given \a row in the list.
+    Returns the item that occupies the given \a row in the list if one has been
+    set; otherwise returns 0.
 
     \sa row()
 */
@@ -1097,6 +1109,8 @@ QListWidget::~QListWidget()
 QListWidgetItem *QListWidget::item(int row) const
 {
     Q_D(const QListWidget);
+    if (row < 0 || row >= d->model()->rowCount())
+        return 0;
     return d->model()->at(row);
 }
 
@@ -1108,8 +1122,9 @@ QListWidgetItem *QListWidget::item(int row) const
 
 int QListWidget::row(const QListWidgetItem *item) const
 {
-    Q_ASSERT(item);
     Q_D(const QListWidget);
+    if (!item)
+        return -1;
     return d->model()->index(const_cast<QListWidgetItem*>(item)).row();
 }
 

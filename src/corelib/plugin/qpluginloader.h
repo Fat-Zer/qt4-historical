@@ -28,6 +28,8 @@
 
 #ifndef QT_NO_LIBRARY
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QLibraryPrivate;
@@ -55,6 +57,9 @@ private:
     QLibraryPrivate *d;
     bool did_load;
 };
+
+
+QT_END_HEADER
 
 #endif // QT_NO_LIBRARY
 

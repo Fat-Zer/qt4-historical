@@ -129,7 +129,7 @@ public:
         int blockFormat;
         quint32 length;
         QAbstractUndoItem *custom;
-        QTextObject *object;
+        int objectIndex;
     };
 
     bool tryMerge(const QTextUndoCommand &other);

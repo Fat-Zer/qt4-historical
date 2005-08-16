@@ -24,10 +24,16 @@
 <section ref="qmake-advanced-usage.html" title="qmake Advanced Usage">
     <keyword ref="qmake-advanced-usage.html">qmake Advanced Usage</keyword>
 </section>
+<section ref="qmake-precompiledheaders.html" title="Using Precompiled Headers">
+    <keyword ref="qmake-precompiledheaders.html">Using Precompiled Headers</keyword>
+</section>
 <section ref="qmake-tutorial.html" title="qmake Tutorial">
     <keyword ref="qmake-tutorial.html">qmake Tutorial</keyword>
 </section>
 <section ref="qmake-common-projects.html" title="qmake Common Projects">
     <keyword ref="qmake-common-projects.html">qmake Common Projects</keyword>
+</section>
+<section ref="qmake-environment-reference.html" title="Third-Party Code Used in qmake">
+    <keyword ref="qmake-environment-reference.html">Third-Party Code Used in qmake</keyword>
 </section>
 </DCF>

@@ -49,6 +49,7 @@
 #endif
 #if defined(Q_WS_QWS)
 #include "qwsmanager_qws.h"
+#include "qpaintengine.h" // for PorterDuff
 #endif
 #include "qpainter.h"
 #include "qtooltip.h"
@@ -137,9 +138,8 @@ void QWidgetPrivate::scrollChildren(int dx, int dy)
         QPoint pd(dx, dy);
         QObjectList childObjects = q->children();
         for (int i = 0; i < childObjects.size(); ++i) { // move all children
-            QObject *object = childObjects.at(i);
-            if (object->isWidgetType()) {
-                QWidget *w = static_cast<QWidget *>(object);
+            QWidget *w = qobject_cast<QWidget*>(childObjects.at(i));
+            if (w && !w->isWindow()) {
                 QPoint oldp = w->pos();
                 QRect  r(w->pos() + pd, w->size());
                 w->data->crect = r;
@@ -214,7 +214,7 @@ void QWidget::resetInputContext()
 }
 
 #ifdef QT_KEYPAD_NAVIGATION
-QWidget *QWidgetPrivate::editingWidget = 0;
+QPointer<QWidget> QWidgetPrivate::editingWidget;
 
 /*!
     Returns true if this widget currently has edit focus; otherwise false.
@@ -249,6 +249,9 @@ void QWidget::setEditFocus(bool on)
     if (QWidgetPrivate::editingWidget && QWidgetPrivate::editingWidget != f)
         QWidgetPrivate::editingWidget->setEditFocus(false);
 
+    if (on && !f->hasFocus())
+        f->setFocus();
+
     if ((!on && !QWidgetPrivate::editingWidget)
         || (on && QWidgetPrivate::editingWidget == f)) {
         update();
@@ -277,7 +280,8 @@ void QWidget::setEditFocus(bool on)
 
     If enabled, this will cause Qt to fill the background
     using the widget's background role before invoking
-    the paint event.
+    the paint event. The background role is defined by the widget's
+    \l{palette}.
 
     In addition, Windows are always filled with QPalette::Window,
     unless the WA_OpaquePaintEvent or WA_NoSystemBackground
@@ -611,7 +615,8 @@ void QWidget::setAutoFillBackground(bool enabled)
     widget.)
 
     \i leaveEvent() - called when the mouse leaves the widget's screen
-    space.
+    space. Note that if the mouse enters a child widget it will not
+    cause a leaveEvent.
 
     \i moveEvent() - called when the widget has been moved relative to its
     parent.
@@ -1413,6 +1418,10 @@ void QWidgetPrivate::updateIsOpaque()
 bool QWidgetPrivate::isOpaque() const
 {
     Q_Q(const QWidget);
+#ifdef Q_WS_X11
+    if (q->testAttribute(Qt::WA_X11OpenGLOverlay))
+	return false;
+#endif
     if (q->testAttribute(Qt::WA_OpaquePaintEvent)
         || q->testAttribute(Qt::WA_PaintOnScreen)
         || q->testAttribute(Qt::WA_NoSystemBackground))
@@ -1464,7 +1473,8 @@ void QWidgetPrivate::paintBackground(QPainter *painter, const QRect &rect, bool 
     if (asRoot && !(q->autoFillBackground() && autoFillBrush.isOpaque())) {
         const QBrush bg = q->palette().brush(QPalette::Window);
 #ifdef Q_WS_QWS
-        painter->setCompositionMode(QPainter::CompositionMode_Source); //copy alpha straight in
+        if (painter->paintEngine()->hasFeature(QPaintEngine::PorterDuff))
+            painter->setCompositionMode(QPainter::CompositionMode_Source); //copy alpha straight in
 #endif
 
         FILL_RECT_WORKAROUND(painter, rect, bg);
@@ -1734,7 +1744,7 @@ Qt::WindowStates QWidget::windowState() const
 /*!\internal
 
    The function sets the window state on child widgets similar to
-   setWindowState(). The difference is that the WindowStateChanged
+   setWindowState(). The difference is that the window state changed
    event has the isOverride() flag set. It exists mainly to keep
    Q3Workspace working.
  */
@@ -1770,6 +1780,9 @@ void QWidget::overrideWindowState(Qt::WindowStates newstate)
 
   Note: On some window systems Qt::WindowActive is not immediate, and may be
   ignored in certain cases.
+
+  When the window state changes, the widget receives a changeEvent()
+  of type QEvent::WindowStateChange.
 
   \sa Qt::WindowState windowState()
 */
@@ -2286,7 +2299,9 @@ QPoint QWidget::pos() const
 
 /*!
     \property QWidget::normalGeometry
-    \brief the geometry a toplevel widget has when it is not maximized or fullscreen
+
+    \brief the geometry of the widget as it will appear when shown as
+    a normal (not maximized or fullscreen) toplevel widget
 
     For child widgets this property always holds an empty rect.
 
@@ -3117,6 +3132,10 @@ void QWidget::setForegroundRole(QPalette::ColorRole role)
     this widget is a top level widget), the default application
     palette.
 
+    \bold{Note:} The palette's background color will only have an effect on
+    the appearance of the widget if the \l autoFillBackground property is
+    set.
+
     \sa QApplication::palette()
 */
 const QPalette &QWidget::palette() const
@@ -3774,34 +3793,9 @@ bool QWidget::focusNextPrevChild(bool next)
     if (!isWindow() && !isSubWindow && p)
         return p->focusNextPrevChild(next);
 
-    extern bool qt_tab_all_widgets;
-    uint focus_flag = qt_tab_all_widgets ? Qt::TabFocus : Qt::StrongFocus;
+    QWidget *w = QApplicationPrivate::focusNextPrevChild_helper(this, next);
+    if (!w) return false;
 
-    QWidget *f = focusWidget();
-    if (!f)
-        f = this;
-
-    QWidget *w = f;
-    QWidget *test = f->d_func()->focus_next;
-    while (test && test != f) {
-        if ((test->focusPolicy() & focus_flag) == focus_flag
-            && !(test->d_func()->extra && test->d_func()->extra->focus_proxy)
-            && test->isVisibleTo(this) && test->isEnabled()
-            && (!isSubWindow || isAncestorOf(test))) {
-            w = test;
-            if (next)
-                break;
-        }
-        test = test->d_func()->focus_next;
-    }
-    if (w == f) {
-        extern bool qt_in_tab_key_event; // defined in qapplication.cpp
-        if (qt_in_tab_key_event) {
-            w->window()->setAttribute(Qt::WA_KeyboardFocusChange);
-            w->update();
-        }
-        return false;
-    }
     w->setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
     return true;
 }
@@ -3964,7 +3958,7 @@ void QWidgetPrivate::reparentFocusWidgets(QWidget * oldtlw)
     if(focus_child)
         focus_child->clearFocus();
 
-    // seperate the focus chain
+    // separate the focus chain
     QWidget *topLevel = q->window();
     QWidget *w = q;
     QWidget *firstOld = 0;
@@ -4465,9 +4459,12 @@ void QWidget::setVisible(bool visible)
         if (testAttribute(Qt::WA_WState_ExplicitShowHide) && !testAttribute(Qt::WA_WState_Hidden))
             return;
 
-#ifdef Q_WS_X11
+#if defined(Q_WS_X11)
         if (windowType() == Qt::Window)
             QApplicationPrivate::applyX11SpecificCommandLineArguments(this);
+#elif defined(Q_WS_QWS)
+        if (windowType() == Qt::Window)
+            QApplicationPrivate::applyQWSSpecificCommandLineArguments(this);
 #endif
 
         bool wasResized = testAttribute(Qt::WA_Resized);
@@ -4622,8 +4619,6 @@ bool QWidgetPrivate::close_helper(CloseMode mode)
 #ifdef QT3_SUPPORT
     bool isMain = (QApplicationPrivate::main_widget == q);
 #endif
-    bool quitOnClose = q->testAttribute(Qt::WA_QuitOnClose);
-
     if (mode != CloseNoEvent) {
         QCloseEvent e;
         if (mode == CloseWithSpontaneousEvent)
@@ -4643,21 +4638,16 @@ bool QWidgetPrivate::close_helper(CloseMode mode)
     if (isMain)
         qApp->quit();
 #endif
-    if (quitOnClose) {
-        /* if there is no non-withdrawn primary window left (except
-           the ones without QuitOnClose), we emit the lastWindowClosed
-           signal */
-        QWidgetList list = QApplication::topLevelWidgets();
-        bool lastWindowClosed = true;
-        for (int i = 0; i < list.size(); ++i) {
-            QWidget *w = list.at(i);
-            if (!w->isVisible() || w->parentWidget() || !w->testAttribute(Qt::WA_QuitOnClose))
-                continue;
-            lastWindowClosed = false;
-            break;
-        }
-        if (lastWindowClosed)
-            QApplicationPrivate::emitLastWindowClosed();
+    // Attempt to close the application only if this has WA_QuitOnClose set and a non-visible parent
+    bool quitOnClose = q->testAttribute(Qt::WA_QuitOnClose)
+                    && (!(q->parentWidget() && q->parentWidget()->isVisible()));
+
+    if (quitOnClose && QApplication::instance()->d_func()->in_exec) {
+        // QApplicationPrivate::_q_tryEmitLastWindowClosed will check if all windows have been closed,
+        // emitting QApplication::lastWindowClosed() if necessary
+        QMetaObject::invokeMethod(QApplication::instance(),
+                                  "_q_tryEmitLastWindowClosed",
+                                  Qt::QueuedConnection);
     }
 
     if (!that.isNull()) {
@@ -5354,6 +5344,13 @@ bool QWidget::event(QEvent *event)
 
   The state being changed in this event can be retrieved through event \a
   event.
+
+  Change events include: QEvent::ToolBarChange,
+  QEvent::ActivationChange, QEvent::EnabledChange, QEvent::FontChange,
+  QEvent::StyleChange, QEvent::PaletteChange,
+  QEvent::WindowTitleChange, QEvent::IconTextChange,
+  QEcvent::ModifiedChange, QEvent::MouseTrackingChange,
+  QEvent::ParentChange, QEvent::WindowStateChange.
 
 */
 void QWidget::changeEvent(QEvent * event)
@@ -6364,8 +6361,8 @@ void QWidget::overrideWindowFlags(Qt::WindowFlags flags)
 */
 
 /*!
-    Sets the parent of the widget to \a parent. The widget is moved
-    to position (0, 0) in its new parent.
+    Sets the parent of the widget to \a parent, and resets the window
+    flags. The widget is moved to position (0, 0) in its new parent.
 
     If the new parent widget is in a different window, the
     reparented widget and its children are appended to the end of the
@@ -6633,6 +6630,9 @@ const QPixmap *QWidget::icon() const
 */
 void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
 {
+    if (testAttribute(attribute) == on)
+        return;
+
     Q_D(QWidget);
     Q_ASSERT_X(sizeof(d->high_attributes)*8 >= (Qt::WA_AttributeCount - sizeof(uint)*8),
                "QWidget::setAttribute(WidgetAttribute, bool)",
@@ -6654,23 +6654,23 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
 
 #ifndef QT_NO_DRAGANDDROP
     case Qt::WA_AcceptDrops:  {
-            if (on && !testAttribute(Qt::WA_DropSiteRegistered))
-                setAttribute(Qt::WA_DropSiteRegistered, true);
-            else if (!on && (isWindow() || !parentWidget() || !parentWidget()->testAttribute(Qt::WA_DropSiteRegistered)))
-                setAttribute(Qt::WA_DropSiteRegistered, false);
-            QEvent e(QEvent::AcceptDropsChange);
-            QApplication::sendEvent(this, &e);
-            break;
-        }
+        if (on && !testAttribute(Qt::WA_DropSiteRegistered))
+            setAttribute(Qt::WA_DropSiteRegistered, true);
+        else if (!on && (isWindow() || !parentWidget() || !parentWidget()->testAttribute(Qt::WA_DropSiteRegistered)))
+            setAttribute(Qt::WA_DropSiteRegistered, false);
+        QEvent e(QEvent::AcceptDropsChange);
+        QApplication::sendEvent(this, &e);
+        break;
+    }
     case Qt::WA_DropSiteRegistered:  {
-            d->registerDropSite(on);
-            for (int i = 0; i < d->children.size(); ++i) {
-                QWidget *w = qobject_cast<QWidget *>(d->children.at(i));
-                if (w && !w->isWindow() && !w->testAttribute(Qt::WA_AcceptDrops) && w->testAttribute(Qt::WA_DropSiteRegistered) != on)
-                    w->setAttribute(Qt::WA_DropSiteRegistered, on);
-            }
-            break;
+        d->registerDropSite(on);
+        for (int i = 0; i < d->children.size(); ++i) {
+            QWidget *w = qobject_cast<QWidget *>(d->children.at(i));
+            if (w && !w->isWindow() && !w->testAttribute(Qt::WA_AcceptDrops) && w->testAttribute(Qt::WA_DropSiteRegistered) != on)
+                w->setAttribute(Qt::WA_DropSiteRegistered, on);
         }
+        break;
+    }
 #endif
 
     case Qt::WA_NoChildEventsForParent:
@@ -6687,6 +6687,8 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
         break;
     case Qt::WA_ShowModal:
         if (!on) {
+            if (isVisible() && isModal())
+                QApplicationPrivate::leaveModal(this);
             // reset modality type to Modeless when clearing WA_ShowModal
             data->window_modality = Qt::NonModal;
         } else if (data->window_modality == Qt::NonModal) {

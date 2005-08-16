@@ -320,7 +320,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
         if (topLevel) {
             if ((type == Qt::Window || dialog || tool)) {
                 if (!(flags & Qt::FramelessWindowHint)) {
-                    if ((type == Qt::Window || dialog) && !(flags & Qt::MSWindowsFixedSizeDialogHint)) {
+                    if (!(flags & Qt::MSWindowsFixedSizeDialogHint)) {
                         style |= WS_THICKFRAME;
                         if(!(flags &
                             ( Qt::WindowSystemMenuHint
@@ -511,8 +511,8 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
 void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
 {
     Q_D(QWidget);
-    if (QWidget *p = parentWidget())
-        p->d_func()->invalidateBuffer(geometry());
+    if (!isWindow() && parentWidget())
+        parentWidget()->d_func()->invalidateBuffer(geometry());
     d->deactivateWidgetCleanup();
     if (testAttribute(Qt::WA_WState_Created)) {
         setAttribute(Qt::WA_WState_Created, false);
@@ -1009,7 +1009,7 @@ void QWidgetPrivate::hide_sys()
     ShowWindow(q->winId(), SW_HIDE);
     if(!q->isWindow())
         invalidateBuffer(q->rect());
-    else if (!QWidgetBackingStore::paintOnScreen(q)) 
+    else if (!QWidgetBackingStore::paintOnScreen(q))
         extra->topextra->backingStore->releaseBuffer(); // release backing store buffer on hide
 }
 
@@ -1031,16 +1031,39 @@ void QWidgetPrivate::show_sys()
     q->setAttribute(Qt::WA_Mapped);
 
     int sm = SW_SHOWNORMAL;
+    bool fakedMaximize = false;
     if (q->isWindow()) {
         if (q->isMinimized())
             sm = SW_SHOWMINIMIZED;
-        else if (q->isMaximized())
+        else if (q->isMaximized()) {
             sm = SW_SHOWMAXIMIZED;
+            // Windows will not behave correctly when we try to maximize a window which does not
+            // have minimize nor maximize buttons in the window frame. Windows would then ignore
+            // non-available geometry, and rather maximize the widget to the full screen, minus the
+            // window frame (caption). So, we do a trick here, by adding a maximize button before
+            // maximizing the widget, and then remove the maximize button afterwards.
+            Qt::WindowFlags &flags = data.window_flags;
+            if (flags & Qt::WindowTitleHint &&
+                !(flags & (Qt::WindowMinMaxButtonsHint | Qt::FramelessWindowHint))) {
+                fakedMaximize = TRUE;
+                int style = GetWindowLong(q->winId(), GWL_STYLE);
+                SetWindowLong(q->winId(), GWL_STYLE, style | WS_MAXIMIZEBOX);
+            }
+        }
     }
     if ((q->windowType() == Qt::Popup) || q->windowType() == Qt::ToolTip)
         sm = SW_SHOWNOACTIVATE;
 
     ShowWindow(q->winId(), sm);
+
+    if (fakedMaximize) {
+        int style = GetWindowLong(q->winId(), GWL_STYLE);
+        SetWindowLong(q->winId(), GWL_STYLE, style & ~WS_MAXIMIZEBOX);
+        SetWindowPos(q->winId(), 0, 0, 0, 0, 0,
+                     SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER
+                     | SWP_FRAMECHANGED);
+    }
+
     if (IsIconic(q->winId()))
         data.window_state |= Qt::WindowMinimized;
     if (IsZoomed(q->winId()))
@@ -1163,7 +1186,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
     } else {
         // parent is not clipped, we may or may not have to clip
 
-        if (data.wrect.isValid()) {
+        if (data.wrect.isValid() && QRect(QPoint(),data.crect.size()).contains(data.wrect)) {
             // This is where the main optimization is: we are already
             // clipped, and if our clip is still valid, we can just
             // move our window, and do not need to move or clip
@@ -1223,7 +1246,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
     // move ourselves to the new position and map (if necessary) after
     // the movement. Rationale: moving unmapped windows is much faster
     // than moving mapped windows
-    MoveWindow(q->winId(), xrect.x(), xrect.y(), xrect.width(), xrect.height(), true);
+    MoveWindow(q->winId(), xrect.x(), xrect.y(), xrect.width(), xrect.height(), !jump);
     if (mapWindow && !dontShow) {
         q->setAttribute(Qt::WA_Mapped);
         ShowWindow(q->winId(), SW_SHOWNOACTIVATE);

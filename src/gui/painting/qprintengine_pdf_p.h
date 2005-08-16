@@ -66,7 +66,7 @@ class QPdfEngine : public QPdfBaseEngine
 {
     Q_DECLARE_PRIVATE(QPdfEngine)
 public:
-    QPdfEngine();
+    QPdfEngine(QPrinter::PrinterMode m);
     virtual ~QPdfEngine();
 
     // reimplementations QPaintEngine
@@ -86,7 +86,7 @@ public:
     int metric(QPaintDevice::PaintDeviceMetric) const;
     bool abort() {return false;}
     bool newPage();
-    QPrinter::PrinterState printerState() const {return QPrinter::Idle;}
+    QPrinter::PrinterState printerState() const {return state;}
     // end reimplementations QPrintEngine
 
     void setBrush();
@@ -107,6 +107,7 @@ private:
 
     QIODevice* device_;
     QFile* outFile_;
+    QPrinter::PrinterState state;
 };
 
 class QPdfEnginePrivate : public QPdfBaseEnginePrivate
@@ -133,9 +134,11 @@ public:
     QPrinter::Orientation orientation;
     bool fullPage;
 
-    int addImage(const QImage &image, bool *bitmap);
+    int addImage(const QImage &image, bool *bitmap, qint64 serial_no);
     int addBrushPattern(const QMatrix &matrix, bool *specifyColor, int *gStateObject);
 
+    QMatrix pageMatrix() const;
+    
 private:
     Q_DISABLE_COPY(QPdfEnginePrivate)
 
@@ -170,6 +173,8 @@ private:
     // various PDF objects
     int pageRoot, catalog, info, graphicsState, patternColorSpace;
     QVector<uint> pages;
+    QHash<qint64, uint> imageCache;
+    int resolution;
 };
 
 

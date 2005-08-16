@@ -199,9 +199,12 @@ private slots:
     void handleTranslationChanges();
     void handleSourceChanges();
     void handleCommentChanges();
+    void sourceSelectionChanged();
+    void translationSelectionChanged();
 
 signals:
     void pageHeightUpdated(int height);
+    void selectionChanged();
 };
 
 class MessageEditor : public QScrollArea
@@ -257,6 +260,7 @@ private slots:
     void updateCanPaste();
 
     void updatePageHeight(int height);
+    void updateCutAndCopy();
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -283,6 +287,10 @@ private:
 
     MetaTranslator *tor;
     QString sourceText;
+
+    bool cutAvail;
+    bool copyAvail;
+
     bool mayOverwriteTranslation;
     bool canPaste;
     bool doGuesses;

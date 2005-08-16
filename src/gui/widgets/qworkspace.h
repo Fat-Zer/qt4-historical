@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_WORKSPACE
@@ -95,17 +97,19 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QWorkspace)
     Q_DISABLE_COPY(QWorkspace)
-    Q_PRIVATE_SLOT(d_func(), void normalizeActiveWindow())
-    Q_PRIVATE_SLOT(d_func(), void minimizeActiveWindow())
-    Q_PRIVATE_SLOT(d_func(), void showOperationMenu())
-    Q_PRIVATE_SLOT(d_func(), void popupOperationMenu(const QPoint&))
-    Q_PRIVATE_SLOT(d_func(), void operationMenuActivated(QAction *))
-    Q_PRIVATE_SLOT(d_func(), void updateActions())
-    Q_PRIVATE_SLOT(d_func(), void scrollBarChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_normalizeActiveWindow())
+    Q_PRIVATE_SLOT(d_func(), void _q_minimizeActiveWindow())
+    Q_PRIVATE_SLOT(d_func(), void _q_showOperationMenu())
+    Q_PRIVATE_SLOT(d_func(), void _q_popupOperationMenu(const QPoint&))
+    Q_PRIVATE_SLOT(d_func(), void _q_operationMenuActivated(QAction *))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateActions())
+    Q_PRIVATE_SLOT(d_func(), void _q_scrollBarChanged())
 
     friend class QWorkspaceChild;
 };
 
 #endif // QT_NO_WORKSPACE
+
+QT_END_HEADER
 
 #endif // QWORKSPACE_H

@@ -23,6 +23,7 @@
 
 #include "layout_p.h"
 #include "qdesigner_widget_p.h"
+#include "qdesigner_utils_p.h"
 #include "qlayout_widget_p.h"
 #include "spacer_widget_p.h"
 #include "layoutdecoration.h"
@@ -38,6 +39,8 @@
 #include <QtGui/QBitmap>
 #include <QtGui/QSplitter>
 #include <QtGui/QMainWindow>
+#include <QtGui/QApplication>
+#include <QtGui/QScrollArea>
 
 namespace qdesigner_internal {
 
@@ -252,10 +255,64 @@ bool Layout::prepareLayout(bool &needMove, bool &needReparent)
     return true;
 }
 
+static bool isMainContainer(QDesignerFormWindowInterface *fw, const QWidget *w)
+{
+    return w && (w == fw || w == fw->mainContainer());
+}
+
+static bool isPageOfContainerWidget(QDesignerFormWindowInterface *fw, QWidget *widget)
+{
+    QDesignerContainerExtension *c = qt_extension<QDesignerContainerExtension*>(
+            fw->core()->extensionManager(), widget->parentWidget());
+
+    if (c != 0) {
+        for (int i = 0; i<c->count(); ++i) {
+            if (widget == c->widget(i))
+                return true;
+        }
+    }
+
+    return false;
+}
 void Layout::finishLayout(bool needMove, QLayout *layout)
 {
-    if (m_parentWidget == layoutBase)
+    if (m_parentWidget == layoutBase) {
+        QWidget *widget = layoutBase;
+        oldGeometry = widget->geometry();
+
+        bool done = false;
+        while (!isMainContainer(formWindow, widget) && !done) {
+            QDesignerContainerExtension *c = 0;
+            c = qt_extension<QDesignerContainerExtension*>(formWindow->core()->extensionManager(),
+                        widget->parentWidget());
+
+            if (!formWindow->isManaged(widget)) {
+                widget = widget->parentWidget();
+                continue;
+            } else if (LayoutInfo::isWidgetLaidout(formWindow->core(), widget)) {
+                widget = widget->parentWidget();
+                continue;
+            } else if (isPageOfContainerWidget(formWindow, widget)) {
+                widget = widget->parentWidget();
+                continue;
+            } else if (widget->parentWidget()) {
+                QScrollArea *area = qobject_cast<QScrollArea*>(widget->parentWidget()->parentWidget());
+                if (area && area->widget() == widget) {
+                    widget = area;
+                    continue;
+                }
+            }
+
+            done = true;
+        }
+
+        QApplication::processEvents();
+        // We don't want to resize the form window
+        if (!Utils::isCentralWidget(formWindow, widget))
+            widget->adjustSize();
+
         return;
+    }
 
     if (needMove)
         layoutBase->move(startPoint);
@@ -319,7 +376,10 @@ void Layout::undoLayout()
         formWindow->unmanageWidget(layoutBase);
         layoutBase->hide();
     } else {
-        layoutBase->setGeometry(oldGeometry);
+        QMainWindow *mw = qobject_cast<QMainWindow*>(formWindow->mainContainer());
+        if (layoutBase != formWindow->mainContainer() &&
+                    (!mw || mw->centralWidget() != layoutBase))
+            layoutBase->setGeometry(oldGeometry);
     }
 
     QWidget *ww = m_widgets.size() ? m_widgets.front() : formWindow;

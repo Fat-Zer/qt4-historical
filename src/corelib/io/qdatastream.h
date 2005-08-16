@@ -31,6 +31,8 @@
 #error qdatastream.h must be included before any header file that defines Status
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QByteArray;
@@ -397,5 +399,7 @@ Q_OUTOFLINE_TEMPLATE QDataStream &operator<<(QDataStream &out, const QMap<Key, T
 }
 
 #endif // QT_NO_DATASTREAM
+
+QT_END_HEADER
 
 #endif // QDATASTREAM_H

@@ -629,6 +629,8 @@ void QTextHtmlImporter::import()
                     cursor.setBlockFormat(block);
                     cursor.setBlockCharFormat(charFmt);
                 } else {
+                    block.clearProperty(QTextFormat::ObjectIndex);
+                    charFmt.clearProperty(QTextFormat::ObjectIndex);
                     appendBlock(block, charFmt);
                 }
             }
@@ -681,18 +683,14 @@ void QTextHtmlImporter::import()
             cursor.insertText(text, format);
     }
 
-    if (lists.size() || tables.size())
-        closeTag(count() - 1);
-
     cursor.endEditBlock();
 }
 
 // returns true if a block tag was closed
 bool QTextHtmlImporter::closeTag(int i)
 {
-    const bool atLastNode = (i == count() - 1);
     const QTextHtmlParserNode *closedNode = &at(i - 1);
-    const int endDepth = atLastNode ? - 1 : depth(i) - 1;
+    const int endDepth = depth(i) - 1;
     int depth = this->depth(i - 1);
     bool blockTagClosed = false;
 
@@ -795,6 +793,7 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
             if (at(cell).isTableCell) {
 
                 const QTextHtmlParserNode &c = at(cell);
+                const int currentColumn = colsInRow;
                 colsInRow += c.tableCellColSpan;
 
                 if (c.tableCellRowSpan > 1) {
@@ -804,8 +803,10 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
                         rowSpanCellsPerRow[r]++;
                 }
 
-                while (columnWidths.count() < colsInRow)
-                    columnWidths << c.width;
+                columnWidths.resize(qMax(columnWidths.count(), colsInRow));
+                for (int i = currentColumn; i < currentColumn + c.tableCellColSpan; ++i)
+                    if (columnWidths.at(i).type() == QTextLength::VariableLength)
+                        columnWidths[i] = c.width;
             }
 
         table.columns = qMax(table.columns, colsInRow + rowSpanCellsPerRow.value(effectiveRow, 0));

@@ -100,7 +100,6 @@ static mng_bool myclosestream(mng_handle hMNG)
 {
     QMngHandlerPrivate *pMydata = reinterpret_cast<QMngHandlerPrivate *>(mng_get_userdata(hMNG));
     pMydata->haveReadAll = true;
-    pMydata->frameCount = pMydata->frameIndex+1;
     return MNG_TRUE;
 }
 
@@ -173,13 +172,22 @@ static mng_bool myprocessterm(mng_handle hMNG,
     return MNG_TRUE;
 }
 
+static mng_bool mytrace(mng_handle,
+                        mng_int32   iFuncnr,
+                        mng_int32   iFuncseq,
+                        mng_pchar   zFuncname)
+{
+    qDebug("mng trace: iFuncnr: %d iFuncseq: %d zFuncname: %s", iFuncnr, iFuncseq, zFuncname);
+    return MNG_TRUE;
+}
+
 QMngHandlerPrivate::QMngHandlerPrivate(QMngHandler *q_ptr)
     : haveReadNone(true), haveReadAll(false), elapsed(0), nextDelay(0), iterCount(1),
       frameIndex(-1), nextIndex(0), frameCount(0), q_ptr(q_ptr)
 {
     iStyle = (QSysInfo::ByteOrder == QSysInfo::LittleEndian) ? MNG_CANVAS_BGRA8 : MNG_CANVAS_ARGB8;
     // Initialize libmng
-    hMNG = mng_initialize((mng_ptr)this, myalloc, myfree, MNG_NULL);
+    hMNG = mng_initialize((mng_ptr)this, myalloc, myfree, mytrace);
     if (hMNG) {
 	// Set callback functions
         mng_setcb_errorproc(hMNG, myerror);
@@ -237,6 +245,8 @@ bool QMngHandlerPrivate::getNextImage(QImage *result)
     if ((MNG_NOERROR == ret) || (MNG_NEEDTIMERWAIT == ret)) {
         *result = image;
         frameIndex = nextIndex++;
+        if (haveReadAll && (frameCount == 0))
+            frameCount = nextIndex;
         return true;
     }
     return false;

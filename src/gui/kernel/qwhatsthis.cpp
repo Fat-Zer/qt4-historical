@@ -258,7 +258,9 @@ void QWhatsThat::mouseReleaseEvent(QMouseEvent* e)
 
 void QWhatsThat::mouseMoveEvent(QMouseEvent* e)
 {
-#ifndef QT_NO_CURSOR
+#ifdef QT_NO_CURSOR
+    Q_UNUSED(e);
+#else
     if (!doc)
         return;
     QString a = doc->documentLayout()->anchorAt(e->pos() -  QPoint(hMargin, vMargin));
@@ -386,7 +388,9 @@ QWhatsThisPrivate::QWhatsThisPrivate()
     if (QWidget *w = QApplication::widgetAt(pos)) {
         QHelpEvent e(QEvent::QueryWhatsThis, w->mapFromGlobal(pos), pos);
         bool sentEvent = QApplication::sendEvent(w, &e);
-#ifndef QT_NO_CURSOR
+#ifdef QT_NO_CURSOR
+        Q_UNUSED(sentEvent);
+#else
         QApplication::setOverrideCursor((!sentEvent || !e.isAccepted())?
                                         Qt::ForbiddenCursor:Qt::WhatsThisCursor);
     } else {
@@ -438,7 +442,9 @@ bool QWhatsThisPrivate::eventFilter(QObject *o, QEvent *e)
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
         QHelpEvent e(QEvent::QueryWhatsThis, me->pos(), me->globalPos());
         bool sentEvent = QApplication::sendEvent(w, &e);
-#ifndef QT_NO_CURSOR
+#ifdef QT_NO_CURSOR
+        Q_UNUSED(sentEvent);
+#else
         QApplication::changeOverrideCursor((!sentEvent || !e.isAccepted())?
                                            Qt::ForbiddenCursor:Qt::WhatsThisCursor);
 #endif

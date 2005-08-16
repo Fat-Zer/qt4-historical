@@ -57,7 +57,7 @@
 
 #include "qeucjpcodec.h"
 
-#ifndef QT_NO_TEXTCODECPLUGIN
+#ifndef QT_NO_TEXTCODEC
 
 static const uchar Esc = 0x1b;
 static const uchar Ss2 = 0x8e;        // Single Shift 2
@@ -138,7 +138,7 @@ QByteArray QEucJpCodec::convertFromUnicode(const QChar *uc, int len, ConverterSt
 
 QString QEucJpCodec::convertToUnicode(const char* chars, int len, ConverterState *state) const
 {
-    uchar buf[2];
+    uchar buf[2] = {0, 0};
     int nbuf = 0;
     QChar replacement = QChar::ReplacementCharacter;
     if (state) {
@@ -237,4 +237,4 @@ QByteArray QEucJpCodec::_name()
 {
     return "EUC-JP";
 }
-#endif // QT_NO_TEXTCODECPLUGIN
+#endif // QT_NO_TEXTCODEC

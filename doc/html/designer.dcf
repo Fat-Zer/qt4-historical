@@ -39,8 +39,11 @@
 <section ref="designer-creating-custom-widgets.html" title="Creating Custom Widgets for Qt Designer">
     <keyword ref="designer-creating-custom-widgets.html">Creating Custom Widgets for Qt Designer</keyword>
 </section>
-<section ref="creating-custom-widgets-extensions.html" title="Creating Custom Widget Extensions">
-    <keyword ref="creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</keyword>
+<section ref="designer-creating-custom-widgets-extensions.html" title="Creating Custom Widget Extensions">
+    <keyword ref="designer-creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</keyword>
+</section>
+<section ref="designer-ui-file-format.html" title="Qt Designer's UI File Format">
+    <keyword ref="designer-ui-file-format.html">Qt Designer's UI File Format</keyword>
 </section>
 <section ref="designer-recursive-shadow-casting.html" title="Implementation of the Recursive Shadow Casting Algorithm in Qt Designer">
     <keyword ref="designer-recursive-shadow-casting.html">Implementation of the Recursive Shadow Casting Algorithm in Qt Designer</keyword>

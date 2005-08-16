@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/embedded/qscreenlinuxfb_qws.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/embedded/qscreenlinuxfb_qws.cpp -->
+<head>
+    <title>Qt 4.1: QLinuxFbScreen Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QLinuxFbScreen Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<p>The QLinuxFbScreen class implements a screen driver for the Linux framebuffer. <a href="#details">More...</a></p>
+<pre>#include &lt;QLinuxFbScreen&gt;</pre><p>Inherits <a href="qscreen.html">QScreen</a>.</p>
+<ul>
+<li><a href="qlinuxfbscreen-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qlinuxfbscreen.html#QLinuxFbScreen">QLinuxFbScreen</a></b> ( int <i>displayId</i> )</li>
+<li><div class="fn"/>virtual <b><a href="qlinuxfbscreen.html#dtor.QLinuxFbScreen">~QLinuxFbScreen</a></b> ()</li>
+<li><div class="fn"/>virtual uchar * <b><a href="qlinuxfbscreen.html#cache">cache</a></b> ( int <i>amount</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="qlinuxfbscreen.html#set">set</a></b> ( unsigned int <i>index</i>, unsigned int <i>red</i>, unsigned int <i>green</i>, unsigned int <i>blue</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="qlinuxfbscreen.html#uncache">uncache</a></b> ( uchar * <i>memoryBlock</i> )</li>
+<li><div class="fn"/>virtual bool <b><a href="qlinuxfbscreen.html#useOffscreen">useOffscreen</a></b> ()</li>
+</ul>
+<ul>
+<li><div class="fn"/>46 public functions inherited from <a href="qscreen.html#public-functions">QScreen</a></li>
+</ul>
+<a name="protected-functions"></a>
+<h3>Protected Functions</h3>
+<ul>
+<li><div class="fn"/>void <b><a href="qlinuxfbscreen.html#deleteEntry">deleteEntry</a></b> ( uchar * <i>memoryBlock</i> )</li>
+</ul>
+<a name="static-protected-members"></a>
+<h3>Static Protected Members</h3>
+<ul>
+<li><div class="fn"/>void <b><a href="qlinuxfbscreen.html#clearCache">clearCache</a></b> ( QScreen * <i>instance</i>, int <i>clientId</i> )</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QLinuxFbScreen class implements a screen driver for the Linux framebuffer.</p>
+<p>Note that this class is only available in <a href="qtopiacore.html">Qtopia Core</a>. Custom screen drivers can be added by subclassing the <a href="qscreendriverplugin.html">QScreenDriverPlugin</a> class, using the <a href="qscreendriverfactory.html">QScreenDriverFactory</a> class to dynamically load the driver into the application, but there should only be one screen object per application.</p>
+<p>The QLinuxFbScreen class provides the <a href="qlinuxfbscreen.html#cache">cache</a>() function allocating off-screen graphics memory, and the complementary <a href="qlinuxfbscreen.html#uncache">uncache</a>() function releasing the allocated memory. The latter function will first sync the graphics card to ensure the memory isn't still being used by a command in the graphics card FIFO queue. The <a href="qlinuxfbscreen.html#deleteEntry">deleteEntry</a>() function deletes the given memory block without such synchronization. Given the screen instance and client id, the memory can also be released using the <a href="qlinuxfbscreen.html#clearCache">clearCache</a>() function, but this should only be necessary if a client exits abnormally.</p>
+<p>In addition, when in paletted graphics modes, the <a href="qlinuxfbscreen.html#set">set</a>() function provides the possibility of setting a specified color index to a given RGB value.</p>
+<p>The QLinuxFbScreen class also acts as a factory for the unaccelerated screen cursor and the unaccelerated raster-based implementation of <a href="qpaintengine.html">QPaintEngine</a> (<tt>QRasterPaintEngine</tt>); accelerated drivers for Linux should derive from this class.</p>
+<p>See also <a href="qscreen.html">QScreen</a>, <a href="qscreendriverplugin.html">QScreenDriverPlugin</a>, and <a href="qtopiacore-running.html">Running Applications</a>.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QLinuxFbScreen"></a>QLinuxFbScreen::QLinuxFbScreen ( int <i>displayId</i> )</h3>
+<p>Constructs a <a href="qlinuxfbscreen.html">QLinuxFbScreen</a> object. The <i>displayId</i> argument identifies the Qtopia Core server to connect to.</p>
+<h3 class="fn"><a name="dtor.QLinuxFbScreen"></a>QLinuxFbScreen::~QLinuxFbScreen ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Destroys this <a href="qlinuxfbscreen.html">QLinuxFbScreen</a> object.</p>
+<h3 class="fn"><a name="cache"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QLinuxFbScreen::cache ( int <i>amount</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Requests the specified <i>amount</i> of offscreen graphics card memory from the memory manager, and returns a pointer to the data within the framebuffer (or 0 if there is no free memory).</p>
+<p>Note that the display is locked while memory is allocated in order to preserve the memory pool's integrity.</p>
+<p>Use the <a href="qscreen.html#onCard">QScreen::onCard</a>() function to retrieve an offset (in bytes) from the start of graphics card memory for the returned pointer.</p>
+<p>See also <a href="qlinuxfbscreen.html#uncache">uncache</a>(), <a href="qlinuxfbscreen.html#clearCache">clearCache</a>(), and <a href="qlinuxfbscreen.html#deleteEntry">deleteEntry</a>().</p>
+<h3 class="fn"><a name="clearCache"></a>void QLinuxFbScreen::clearCache ( <a href="qscreen.html">QScreen</a> * <i>instance</i>, int <i>clientId</i> )&nbsp;&nbsp;<tt> [static protected]</tt></h3>
+<p>Removes all entries from the cache for the specified screen <i>instance</i> and client identified by the given <i>clientId</i>.</p>
+<p>Calling this function should only be necessary if a client exits abnormally.</p>
+<p>See also <a href="qlinuxfbscreen.html#cache">cache</a>(), <a href="qlinuxfbscreen.html#uncache">uncache</a>(), and <a href="qlinuxfbscreen.html#deleteEntry">deleteEntry</a>().</p>
+<h3 class="fn"><a name="deleteEntry"></a>void QLinuxFbScreen::deleteEntry ( <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>memoryBlock</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>Deletes the specified <i>memoryBlock</i> allocated from the graphics card memory.</p>
+<p>See also <a href="qlinuxfbscreen.html#uncache">uncache</a>(), <a href="qlinuxfbscreen.html#cache">cache</a>(), and <a href="qlinuxfbscreen.html#clearCache">clearCache</a>().</p>
+<h3 class="fn"><a name="set"></a>void QLinuxFbScreen::set ( unsigned int <i>index</i>, unsigned int <i>red</i>, unsigned int <i>green</i>, unsigned int <i>blue</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Sets the specified color <i>index</i> to the specified RGB value, (<i>red</i>, <i>green</i>, <i>blue</i>), when in paletted graphics modes.</p>
+<h3 class="fn"><a name="uncache"></a>void QLinuxFbScreen::uncache ( <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>memoryBlock</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Deletes the specified <i>memoryBlock</i> allocated from the graphics card memory.</p>
+<p>Note that the display is locked while memory is unallocated in order to preserve the memory pool's integrity.</p>
+<p>This function will first sync the graphics card to ensure the memory isn't still being used by a command in the graphics card FIFO queue. It is possible to speed up a driver by overriding this function to avoid syncing. For example, the driver might delay deleting the memory until it detects that all commands dealing with the memory are no longer in the queue. Note that it will then be up to the driver to ensure that the specified <i>memoryBlock</i> no longer is being used.</p>
+<p>See also <a href="qlinuxfbscreen.html#cache">cache</a>(), <a href="qlinuxfbscreen.html#deleteEntry">deleteEntry</a>(), and <a href="qlinuxfbscreen.html#clearCache">clearCache</a>().</p>
+<h3 class="fn"><a name="useOffscreen"></a>bool QLinuxFbScreen::useOffscreen ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+</tr></table></div></address></body>
+</html>

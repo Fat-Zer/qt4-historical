@@ -26,10 +26,12 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 #ifdef QTEST_EMBED
 # define Q_TESTLIB_EXPORT
 #elif !defined(QT_SHARED)
-# define Q_TESTLIB_EXPORT 
+# define Q_TESTLIB_EXPORT
 #else
 # ifdef QTESTLIB_MAKEDLL
 #  define Q_TESTLIB_EXPORT Q_DECL_EXPORT
@@ -42,8 +44,8 @@
 # define QTEST_NO_SPECIALIZATIONS
 #endif
 
-#define QTEST_VERSION     0x040101
-#define QTEST_VERSION_STR "4.1.1"
+#define QTEST_VERSION     0x040103
+#define QTEST_VERSION_STR "4.1.3"
 
 namespace QTest
 {
@@ -52,5 +54,7 @@ namespace QTest
 
     int Q_TESTLIB_EXPORT qt_snprintf(char *str, int size, const char *format, ...);
 }
+
+QT_END_HEADER
 
 #endif

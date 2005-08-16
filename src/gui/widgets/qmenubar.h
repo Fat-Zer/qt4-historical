@@ -26,6 +26,8 @@
 
 #include <QtGui/qmenu.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_MENUBAR
@@ -220,7 +222,7 @@ public:
     }
     inline QT3_SUPPORT void activateItemAt(int index) {
         if(QAction *ret = actions().value(index))
-            ret->activate(QAction::Trigger);
+            setActiveAction(ret);
     }
     inline QT3_SUPPORT bool connectItem(int id, const QObject *receiver, const char* member) {
         if(QAction *act = findActionForId(id)) {
@@ -277,10 +279,10 @@ private:
 private:
     Q_DECLARE_PRIVATE(QMenuBar)
     Q_DISABLE_COPY(QMenuBar)
-    Q_PRIVATE_SLOT(d_func(), void actionTriggered())
-    Q_PRIVATE_SLOT(d_func(), void actionHovered())
-    Q_PRIVATE_SLOT(d_func(), void internalShortcutActivated(int))
-    Q_PRIVATE_SLOT(d_func(), void updateLayout())
+    Q_PRIVATE_SLOT(d_func(), void _q_actionTriggered())
+    Q_PRIVATE_SLOT(d_func(), void _q_actionHovered())
+    Q_PRIVATE_SLOT(d_func(), void _q_internalShortcutActivated(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateLayout())
 
     friend class QMenu;
     friend class QMenuPrivate;
@@ -293,5 +295,7 @@ private:
 };
 
 #endif // QT_NO_MENUBAR
+
+QT_END_HEADER
 
 #endif // QMENUBAR_H

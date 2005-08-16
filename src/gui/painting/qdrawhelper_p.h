@@ -38,6 +38,7 @@
 #include "QtCore/qglobal.h"
 #include "QtGui/qcolor.h"
 #include "QtGui/qpainter.h"
+#include "QtGui/qimage.h"
 #ifndef QT_FT_BEGIN_HEADER
 #define QT_FT_BEGIN_HEADER
 #define QT_FT_END_HEADER
@@ -63,33 +64,12 @@ class QGradient;
 typedef QT_FT_SpanFunc ProcessSpans;
 
 struct DrawHelper {
-    enum Layout {
-        Layout_ARGB,
-        Layout_RGB32,
-        Layout_Mono,
-        Layout_MonoLSB,
-#ifdef Q_WS_QWS
-        Layout_RGB16,
-        //Layout_Gray4,
-        Layout_Gray4LSB,
-        //Layout_Gray2,
-        //Layout_Gray2LSB,
-#endif
-        Layout_Count
-    };
     ProcessSpans blendColor;
-    ProcessSpans blend;
-    ProcessSpans blendTiled;
-    ProcessSpans blendTransformed;
-    ProcessSpans blendTransformedTiled;
-    ProcessSpans blendTransformedBilinear;
-    ProcessSpans blendTransformedBilinearTiled;
-    ProcessSpans blendLinearGradient;
-    ProcessSpans blendRadialGradient;
-    ProcessSpans blendConicalGradient;
+    ProcessSpans blendGradient;
 };
 
-extern DrawHelper qDrawHelper[DrawHelper::Layout_Count];
+extern DrawHelper qDrawHelper[QImage::NImageFormats];
+void qBlendTexture(int count, const QSpan *spans, void *userData);
 
 typedef void QT_FASTCALL (*CompositionFunction)(uint *dest, const uint *src, int length, uint const_alpha);
 typedef void QT_FASTCALL (*CompositionFunctionSolid)(uint *dest, int length, uint color, uint const_alpha);
@@ -108,15 +88,6 @@ struct SolidData
 {
     uint color;
 };
-
-struct TextureData
-{
-    const void *imageData;
-    int width;
-    int height;
-    bool hasAlpha;
-};
-
 
 struct LinearGradientData
 {
@@ -168,6 +139,23 @@ struct GradientData
     uint alphaColor : 1;
 };
 
+struct TextureData
+{
+    const uchar *imageData;
+    const uchar *scanLine(int y) const { return imageData + y*bytesPerLine; }
+    int width;
+    int height;
+    int bytesPerLine;
+    QImage::Format format;
+    const QVector<QRgb> *colorTable;
+    bool hasAlpha;
+    enum Type {
+        Plain,
+        Tiled
+    };
+    Type type;
+};
+
 struct QSpanData
 {
     QRasterBuffer *rasterBuffer;
@@ -177,23 +165,22 @@ struct QSpanData
     enum Type {
         None,
         Solid,
-        Texture,
-        TiledTexture,
         LinearGradient,
         RadialGradient,
-        ConicalGradient
+        ConicalGradient,
+        Texture
     } type : 8;
     int txop : 8;
     bool bilinear;
     union {
         SolidData solid;
-        TextureData texture;
         GradientData gradient;
+        TextureData texture;
     };
     void init(QRasterBuffer *rb);
     void setup(const QBrush &brush);
     void setupMatrix(const QMatrix &matrix, int txop, int bilinear);
-    void initTexture(const QImage *image);
+    void initTexture(const QImage *image, TextureData::Type = TextureData::Plain);
     void initGradient(const QGradient *g);
     void adjustSpanMethods();
 };
@@ -201,19 +188,19 @@ struct QSpanData
 #define QT_MEMFILL_UINT(dest, length, color)\
 do {                                        \
     /* Duff's device */                     \
-    uint *d = (dest);                       \
-    uint c = (color);                       \
+    uint *_d = (dest);                       \
+    uint _c = (color);                       \
     register int n = ((length) + 7) / 8;    \
     switch ((length) & 0x07)                \
     {                                       \
-    case 0: do { *d++ = c;                  \
-    case 7:      *d++ = c;                  \
-    case 6:      *d++ = c;                  \
-    case 5:      *d++ = c;                  \
-    case 4:      *d++ = c;                  \
-    case 3:      *d++ = c;                  \
-    case 2:      *d++ = c;                  \
-    case 1:      *d++ = c;                  \
+    case 0: do { *_d++ = _c;                  \
+    case 7:      *_d++ = _c;                  \
+    case 6:      *_d++ = _c;                  \
+    case 5:      *_d++ = _c;                  \
+    case 4:      *_d++ = _c;                  \
+    case 3:      *_d++ = _c;                  \
+    case 2:      *_d++ = _c;                  \
+    case 1:      *_d++ = _c;                  \
     } while (--n > 0);                      \
     }                                       \
 } while (0)
@@ -221,19 +208,19 @@ do {                                        \
 #define QT_MEMFILL_USHORT(dest, length, color) \
 do {                                           \
     /* Duff's device */                        \
-    ushort *d = (dest);                        \
-    ushort c = (color);                        \
+    ushort *_d = (dest);                        \
+    ushort _c = (color);                        \
     register int n = ((length) + 7) / 8;       \
     switch ((length) & 0x07)                   \
     {                                          \
-    case 0: do { *d++ = c;                     \
-    case 7:      *d++ = c;                     \
-    case 6:      *d++ = c;                     \
-    case 5:      *d++ = c;                     \
-    case 4:      *d++ = c;                     \
-    case 3:      *d++ = c;                     \
-    case 2:      *d++ = c;                     \
-    case 1:      *d++ = c;                     \
+    case 0: do { *_d++ = _c;                     \
+    case 7:      *_d++ = _c;                     \
+    case 6:      *_d++ = _c;                     \
+    case 5:      *_d++ = _c;                     \
+    case 4:      *_d++ = _c;                     \
+    case 3:      *_d++ = _c;                     \
+    case 2:      *_d++ = _c;                     \
+    case 1:      *_d++ = _c;                     \
     } while (--n > 0);                         \
     }                                          \
 } while (0)
@@ -241,24 +228,61 @@ do {                                           \
 #define QT_MEMCPY_REV_UINT(dest, src, length) \
 do {                                          \
     /* Duff's device */                       \
-    uint *d = (uint*)(dest) + length;         \
-    const uint *s = (uint*)(src) + length;    \
+    uint *_d = (uint*)(dest) + length;         \
+    const uint *_s = (uint*)(src) + length;    \
     register int n = ((length) + 7) / 8;      \
     switch ((length) & 0x07)                  \
     {                                         \
-    case 0: do { *--d = *--s;                 \
-    case 7:      *--d = *--s;                 \
-    case 6:      *--d = *--s;                 \
-    case 5:      *--d = *--s;                 \
-    case 4:      *--d = *--s;                 \
-    case 3:      *--d = *--s;                 \
-    case 2:      *--d = *--s;                 \
-    case 1:      *--d = *--s;                 \
+    case 0: do { *--_d = *--_s;                 \
+    case 7:      *--_d = *--_s;                 \
+    case 6:      *--_d = *--_s;                 \
+    case 5:      *--_d = *--_s;                 \
+    case 4:      *--_d = *--_s;                 \
+    case 3:      *--_d = *--_s;                 \
+    case 2:      *--_d = *--_s;                 \
+    case 1:      *--_d = *--_s;                 \
     } while (--n > 0);                        \
     }                                         \
 } while (0)
 
+#define QT_MEMCPY_USHORT(dest, src, length) \
+do {                                          \
+    /* Duff's device */                       \
+    ushort *_d = (ushort*)(dest);         \
+    const ushort *_s = (ushort*)(src);    \
+    register int n = ((length) + 7) / 8;      \
+    switch ((length) & 0x07)                  \
+    {                                         \
+    case 0: do { *_d++ = *_s++;                 \
+    case 7:      *_d++ = *_s++;                 \
+    case 6:      *_d++ = *_s++;                 \
+    case 5:      *_d++ = *_s++;                 \
+    case 4:      *_d++ = *_s++;                 \
+    case 3:      *_d++ = *_s++;                 \
+    case 2:      *_d++ = *_s++;                 \
+    case 1:      *_d++ = *_s++;                 \
+    } while (--n > 0);                        \
+    }                                         \
+} while (0)
+
+
+
 static inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
+
+inline ushort qConvertRgb32To16(uint c)
+{
+   return (((c) >> 3) & 0x001f)
+       | (((c) >> 5) & 0x07e0)
+       | (((c) >> 8) & 0xf800);
+}
+
+inline QRgb qConvertRgb16To32(uint c)
+{
+    return 0xff000000
+        | ((((c) << 3) & 0xf8) | (((c) >> 2) & 0x7))
+        | ((((c) << 5) & 0xfc00) | (((c) >> 1) & 0x300))
+        | ((((c) << 8) & 0xf80000) | (((c) << 3) & 0x70000));
+}
 
 #if 1
 static inline uint INTERPOLATE_PIXEL_256(uint x, uint a, uint y, uint b) {
@@ -340,7 +364,6 @@ static inline uint PREMUL(uint x) {
     t &= 0x00ff00ff00ff00ff;
     return (uint(t)) | (uint(t >> 24)) | 0xff000000;
 }
-
 #endif
 
 #define INV_PREMUL(p)                                   \

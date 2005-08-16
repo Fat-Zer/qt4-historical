@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 #if defined(Q_CC_GNU)
 #ifdef __64BIT__
 #  define LPARX "ldarx"
@@ -181,5 +183,7 @@ extern "C" {
 } // extern "C"
 
 #endif
+
+QT_END_HEADER
 
 #endif // POWERPC_QATOMIC_H

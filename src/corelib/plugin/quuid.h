@@ -26,6 +26,7 @@
 
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
 QT_MODULE(Core)
 
 #if defined(Q_OS_WIN32)
@@ -160,4 +161,5 @@ Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QUuid &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QUuid &);
 #endif
 
+QT_END_HEADER
 #endif // QUUID_H

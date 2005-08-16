@@ -49,6 +49,30 @@
         } \
     } while (0)
 
+static QString classNameForObjectName(const QDomElement &widget, const QString &objectName)
+{
+    QList<QDomElement> widgetStack;
+    widgetStack.append(widget);
+    while (!widgetStack.isEmpty()) {
+        QDomElement w = widgetStack.takeFirst();
+        QDomElement child = w.firstChild().toElement();
+        while (!child.isNull()) {
+            if (child.tagName() == QLatin1String("property")
+                && child.attribute(QLatin1String("name")) == QLatin1String("name")) {
+                QDomElement name = child.firstChild().toElement();
+                DomString str;
+                str.read(name);
+                if (str.text() == objectName)
+                    return w.attribute(QLatin1String("class"));
+            } else if (child.tagName() == QLatin1String("widget")) {
+                widgetStack.prepend(child);
+            }
+            child = child.nextSibling().toElement();
+        }
+    }
+    return QString();
+}
+
 DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
 {
     QDomNodeList nl;
@@ -69,6 +93,7 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
     QList<DomAction*> ui_action_list;
     QList<DomActionGroup*> ui_action_group_list;
     QList<DomCustomWidget*> ui_customwidget_list;
+    QList<DomConnection*> ui_connection_list;
     QString author, comment, exportMacro;
     QString klass;
 
@@ -257,6 +282,37 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
                 }
                 n2 = n2.nextSibling().toElement();
             }
+        } else if (tagName == QLatin1String("connections")) {
+            QDomElement n2 = n.firstChild().toElement();
+            while (!n2.isNull()) {
+                if (n2.tagName().toLower() == QLatin1String("connection")) {
+
+                    DomConnection *connection = new DomConnection;
+                    connection->read(n2);
+
+                    QString sender = connection->elementSender();
+                    QString senderClass = fixClassName(classNameForObjectName(widget, sender));
+                    QString signal = fixMethod(connection->elementSignal());
+                    QString receiver = connection->elementReceiver();
+                    QString receiverClass = fixClassName(classNameForObjectName(widget, receiver));
+                    QString slot = fixMethod(connection->elementSlot());
+
+                    // make sure that the signal and slot are present in Qt4
+                    if (!WidgetInfo::isValidSignal(senderClass, signal)) {
+                        errorInvalidSignal(signal, sender, senderClass);
+                        delete connection;
+                    }
+                    else if (!WidgetInfo::isValidSlot(receiverClass, slot)) {
+                        errorInvalidSlot(slot, receiver, receiverClass);
+                        delete connection;
+                    } else {
+                        connection->setElementSignal(signal);
+                        connection->setElementSlot(slot);
+                        ui_connection_list.append(connection);
+                    }
+                }
+                n2 = n2.nextSibling().toElement();
+            }
         }
     }
 
@@ -339,6 +395,12 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
         DomIncludes *includes = new DomIncludes();
         includes->setElementInclude(ui_includes);
         ui->setElementIncludes(includes);
+    }
+
+    if (ui_connection_list.size()) {
+        DomConnections *connections = new DomConnections();
+        connections->setElementConnection(ui_connection_list);
+        ui->setElementConnections(connections);
     }
 
     ui->setAttributeStdSetDef(stdsetdef);
@@ -748,6 +810,52 @@ void Ui3Reader::fixLayoutMargin(DomLayout *ui_layout)
     }
 }
 
+void Ui3Reader::findDerivedFontProperties(const QDomElement &n, DomFont &result) const
+{
+    bool italic = false;
+    bool bold = false;
+    bool underline = false;
+    bool strikeout = false;
+
+    QDomNode pn = n.parentNode();
+    while(!pn.isNull()) {
+        for (QDomElement e=pn.firstChild().toElement(); !e.isNull(); e = e.nextSibling().toElement()) {
+            if (e.tagName().toLower() == QLatin1String("property") &&
+                e.attribute(QLatin1String("name")) == QLatin1String("font")) {
+                QDomElement f = e.firstChild().toElement();
+                for (QDomElement fp = f.firstChild().toElement(); !fp.isNull(); fp = fp.nextSibling().toElement()) {
+                    QString name = fp.tagName().toLower();
+                    QString text = fp.text();
+                    if (!italic && name == QLatin1String("italic")) {
+                        italic = true;
+                        if (text == QLatin1String("true") || text == QLatin1String("1"))
+                            result.setElementItalic(true);
+                    } else if (!bold && name == QLatin1String("bold")) {
+                        bold = true;
+                        if (text == QLatin1String("true") || text == QLatin1String("1"))
+                            result.setElementBold(true);
+                    } else if (!underline && name == QLatin1String("underline")) {
+                        underline = true;
+                        if (text == QLatin1String("true") || text == QLatin1String("1"))
+                            result.setElementUnderline(true);
+                    } else if (!strikeout && name == QLatin1String("strikeout")) {
+                        strikeout = true;
+                        if (text == QLatin1String("true") || text == QLatin1String("1"))
+                            result.setElementStrikeOut(true);
+                    } else if (name == QLatin1String("family")) {
+                        if (result.elementFamily().isEmpty())
+                            result.setElementFamily(text.toAscii());
+                    } else if (name == QLatin1String("pointsize")) {
+                        if (!result.elementPointSize())
+                            result.setElementPointSize(text.toInt());
+                    }
+                }
+            }
+        }
+        pn = pn.parentNode();
+    }
+}
+
 void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *properties,
                                  const QString &className)
 {
@@ -783,25 +891,13 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
             }
 
             if (name == QLatin1String("font")) {
-                // For the boolean properties (italic, bold, underline, strikeout),
-                // Ui 3 files store true as "1", but DomFont::read() expects "true",
-                // so we have to convert them
                 QDomElement f = e.firstChild().toElement();
-                for (QDomElement fp = f.firstChild().toElement(); !fp.isNull(); fp = fp.nextSibling().toElement()) {
-                    QString fpTag = fp.tagName().toLower();
-                    if (fpTag == QLatin1String("italic") ||
-                        fpTag == QLatin1String("bold") ||
-                        fpTag == QLatin1String("underline") ||
-                        fpTag == QLatin1String("strikeout")) {
-                        QDomText text = fp.firstChild().toText();
-                        if (!text.isNull()) {
-                            if (text.data() == QLatin1String("1"))
-                                text.setData(QLatin1String("true"));
-                            else if (text.data() == QLatin1String("0"))
-                                text.setData(QLatin1String("false"));
-                        }
-                    }
-                }
+                DomFont font;
+                findDerivedFontProperties(f, font);
+                e.removeChild(f);
+                QDomDocument doc = e.ownerDocument();
+                f = font.write(doc);
+                e.appendChild(f);
             }
 
             DomProperty *prop = readProperty(e);
@@ -1002,4 +1098,25 @@ QString Ui3Reader::fixType(const QString &t) const
         }
     }
     return newText;
+}
+
+QString Ui3Reader::fixMethod(const QString &method) const
+{
+    const QByteArray normalized = QMetaObject::normalizedSignature(method.toLatin1());
+    QByteArray result;
+    int index = normalized.indexOf('(');
+    if (index == -1)
+        return QLatin1String(normalized);
+    result.append(normalized.left(++index));
+    int limit = normalized.length()-1;
+    while (index < limit) {
+        QByteArray type;
+        while ((index < limit) && (normalized.at(index) != ','))
+            type.append(normalized.at(index++));
+        result.append(fixType(QLatin1String(type)).toLatin1());
+        if ((index < limit) && (normalized.at(index) == ','))
+            result.append(normalized.at(index++));
+    }
+    result.append(normalized.mid(index));
+    return QLatin1String(result);
 }

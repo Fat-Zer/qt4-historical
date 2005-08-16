@@ -27,6 +27,8 @@
 #include <QtCore/qnamespace.h>
 #include <QtCore/qstring.h> // char*->QString conversion
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QPainter;
@@ -110,5 +112,7 @@ Q_GUI_EXPORT QT3_SUPPORT void qDrawArrow(QPainter *p, Qt::ArrowType type, Qt::GU
                           int x, int y, int w, int h,
                           const QPalette &pal, bool enabled);
 #endif
+
+QT_END_HEADER
 
 #endif // QDRAWUTIL_H

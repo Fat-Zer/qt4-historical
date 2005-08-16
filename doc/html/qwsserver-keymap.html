@@ -2,6 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
     <title>Qt 4.1: QWSServer::KeyMap Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -17,14 +19,39 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSServer::KeyMap Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
-<ul>
+<p>The KeyMap class is used for mapping scancodes. <a href="#details">More...</a></p>
+<pre>#include &lt;QWSServer&gt;</pre><ul>
 <li><a href="qwsserver-keymap-members.html">List of all members, including inherited members</a></li>
 </ul>
+<a name="public-variables"></a>
+<h3>Public Variables</h3>
+<ul>
+<li><div class="fn"/>ushort <b><a href="qwsserver-keymap.html#ctrl_unicode-var">ctrl_unicode</a></b></li>
+<li><div class="fn"/>int <b><a href="qwsserver-keymap.html#key_code-var">key_code</a></b></li>
+<li><div class="fn"/>ushort <b><a href="qwsserver-keymap.html#shift_unicode-var">shift_unicode</a></b></li>
+<li><div class="fn"/>ushort <b><a href="qwsserver-keymap.html#unicode-var">unicode</a></b></li>
+</ul>
 <a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The KeyMap class is used for mapping scancodes.</p>
+<p>The data from a keyboard comes mainly in the form of scancodes, produced by key presses or used in the protocol with the computer. Qtopia Core maintains a keyboard mapping table which it uses to convert the scancode data to <a href="qt.html#Key-enum">Qt::Key</a> and Unicode values.</p>
+<p>The mapping table is a collection of KeyMap objects, each object records the mapping between a single keyboard scancode and its <a href="qt.html#Key-enum">Qt::Key</a> and Unicode values.</p>
+<p>See also <a href="qwsserver.html#keyMap">QWSServer::keyMap</a>().</p>
+<hr />
+<h2>Member Variable Documentation</h2>
+<h3 class="fn"><a name="ctrl_unicode-var"></a><a href="qtglobal.html#ushort-typedef">ushort</a> KeyMap::ctrl_unicode</h3>
+<p>This variable holds the unicode value identifying the combination of the Ctrl key and the keyboard scancode associated with this KeyMap object.</p>
+<h3 class="fn"><a name="key_code-var"></a>int KeyMap::key_code</h3>
+<p>This variable holds the Qt::Key value identfying the keyboard scancode associated with this KeyMap object.</p>
+<h3 class="fn"><a name="shift_unicode-var"></a><a href="qtglobal.html#ushort-typedef">ushort</a> KeyMap::shift_unicode</h3>
+<p>This variable holds the unicode value identifying the combination of the Shift key and the keyboard scancode associated with this KeyMap object.</p>
+<h3 class="fn"><a name="unicode-var"></a><a href="qtglobal.html#ushort-typedef">ushort</a> KeyMap::unicode</h3>
+<p>This variable holds the unicode value identfying the keyborad scancode associated with this KeyMap object.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

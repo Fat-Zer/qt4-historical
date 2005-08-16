@@ -289,6 +289,8 @@ EditorPage::EditorPage(MessageEditor *parent, const char *name)
     srcText->setPalette( p );
 	srcText->setReadOnly(true);
     connect(srcText->document(), SIGNAL(contentsChanged()), SLOT(handleSourceChanges()));
+    connect(srcText, SIGNAL(selectionChanged()),
+             SLOT(sourceSelectionChanged()));
 
     cmtText = new QTextEdit(this);
     cmtText->setObjectName("comment/context view");
@@ -319,6 +321,8 @@ EditorPage::EditorPage(MessageEditor *parent, const char *name)
     transText->setPalette(p);
     connect(transText->document(), SIGNAL(contentsChanged()),
              SLOT(handleTranslationChanges()));
+    connect(transText, SIGNAL(selectionChanged()),
+             SLOT(translationSelectionChanged()));
 
     pageCurl = new PageCurl(this);
 
@@ -403,6 +407,8 @@ void EditorPage::resizeEvent(QResizeEvent *)
 void EditorPage::handleTranslationChanges()
 {
     calculateFieldHeight(transText);
+    if (srcText->textCursor().hasSelection())
+        translationSelectionChanged();
 }
 
 void EditorPage::handleSourceChanges()
@@ -413,6 +419,27 @@ void EditorPage::handleSourceChanges()
 void EditorPage::handleCommentChanges()
 {
     calculateFieldHeight(cmtText);
+}
+
+// makes sure only one of the textedits has a selection
+void EditorPage::sourceSelectionChanged()
+{
+    bool oldBlockState = transText->blockSignals(true);
+    QTextCursor c = transText->textCursor();
+    c.clearSelection();
+    transText->setTextCursor(c);
+    transText->blockSignals(oldBlockState);
+    emit selectionChanged();
+}
+
+void EditorPage::translationSelectionChanged()
+{
+    bool oldBlockState = srcText->blockSignals(true);
+    QTextCursor c = srcText->textCursor();
+    c.clearSelection();
+    srcText->setTextCursor(c);
+    srcText->blockSignals(oldBlockState);
+    emit selectionChanged();
 }
 
 /*
@@ -454,6 +481,8 @@ void EditorPage::fontChange(const QFont &)
 MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
     : QScrollArea(parent), tor(t)
 {
+    cutAvail = true;
+    copyAvail = true;
     doGuesses = true;
     canPaste = false;
     topDockWnd = new QDockWidget(parent);
@@ -549,10 +578,8 @@ MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
         this, SIGNAL(undoAvailable(bool)));
     connect(editorPage->transText->document(), SIGNAL(redoAvailable(bool)),
         this, SIGNAL(redoAvailable(bool)));
-    connect(editorPage->transText, SIGNAL(copyAvailable(bool)),
-        this, SIGNAL(cutAvailable(bool)));
-    connect(editorPage->transText, SIGNAL(copyAvailable(bool)),
-        this, SIGNAL(copyAvailable(bool)));
+    connect(editorPage, SIGNAL(selectionChanged()),
+        this, SLOT(updateCutAndCopy()));
     connect(qApp->clipboard(), SIGNAL(dataChanged()),
         this, SLOT(updateCanPaste()));
     connect(phraseTv, SIGNAL(doubleClicked(QModelIndex)),
@@ -595,7 +622,8 @@ bool MessageEditor::eventFilter(QObject *o, QEvent *e)
             return false;
         }
 
-        if (ke->modifiers() & Qt::ControlModifier)
+        if (o == editorPage->transText 
+            && ke->modifiers() & Qt::ControlModifier)
         {
             if ((ke->key() == Qt::Key_A) &&
                 editorPage->srcText->underMouse())
@@ -604,8 +632,7 @@ bool MessageEditor::eventFilter(QObject *o, QEvent *e)
                 return true;
             }
             if ((ke->key() == Qt::Key_C) &&
-                editorPage->srcText->textCursor().hasSelection() &&
-                editorPage->srcText->underMouse())
+                editorPage->srcText->textCursor().hasSelection())
             {
                 editorPage->srcText->copySelection();
                 return true;
@@ -754,12 +781,17 @@ void MessageEditor::redo()
 
 void MessageEditor::cut()
 {
-    editorPage->transText->cut();
+    if (editorPage->transText->textCursor().hasSelection())
+        editorPage->transText->cut();
 }
 
 void MessageEditor::copy()
 {
-    editorPage->transText->copy();
+    if (editorPage->srcText->textCursor().hasSelection()) {
+        editorPage->srcText->copySelection();        
+    } else if (editorPage->transText->textCursor().hasSelection()) {
+        editorPage->transText->copy();
+    }
 }
 
 void MessageEditor::paste()
@@ -831,6 +863,28 @@ void MessageEditor::setEditorFocus()
 {
     if (!editorPage->hasFocus())
         editorPage->setFocus();
+}
+
+void MessageEditor::updateCutAndCopy()
+{
+    bool newCopyState = false;
+    bool newCutState = false;
+    if (editorPage->srcText->textCursor().hasSelection()) {
+        newCopyState = true;
+    } else if (editorPage->transText->textCursor().hasSelection()) {
+        newCopyState = true;
+        newCutState = true;
+    }
+
+    if (newCopyState != copyAvail) {
+        copyAvail = newCopyState;
+        emit copyAvailable(copyAvail);
+    }
+
+    if (newCutState != cutAvail) {
+        cutAvail = newCutState;
+        emit cutAvailable(cutAvail);
+    }
 }
 
 void MessageEditor::updateCanPaste()

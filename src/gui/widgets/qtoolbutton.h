@@ -26,6 +26,8 @@
 
 #include <QtGui/qabstractbutton.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLBUTTON
@@ -103,9 +105,9 @@ private:
     Q_DISABLE_COPY(QToolButton)
     Q_DECLARE_PRIVATE(QToolButton)
 #ifndef QT_NO_MENU
-    Q_PRIVATE_SLOT(d_func(), void buttonPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_buttonPressed())
 #endif
-    Q_PRIVATE_SLOT(d_func(), void actionTriggered())
+    Q_PRIVATE_SLOT(d_func(), void _q_actionTriggered())
 
 #ifdef QT3_SUPPORT
 public:
@@ -155,5 +157,7 @@ public Q_SLOTS:
 };
 
 #endif // QT_NO_TOOLBUTTON
+
+QT_END_HEADER
 
 #endif // QTOOLBUTTON_H

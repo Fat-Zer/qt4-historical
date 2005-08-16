@@ -28,6 +28,8 @@
 #include <QtCore/qvariant.h>
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_SETTINGS
@@ -273,5 +275,7 @@ private:
 };
 
 #endif // QT_NO_SETTINGS
+
+QT_END_HEADER
 
 #endif // QSETTINGS_H

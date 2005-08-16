@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/examples/scribble.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/examples/scribble.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/examples/scribble.qdoc -->
 <head>
     <title>Qt 4.1: Scribble Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -56,6 +57,7 @@ body { background: #ffffff; color: black; }</style>
 
     public slots:
         void clearImage();
+        void printPdf();
 
     protected:
         void mousePressEvent(QMouseEvent *event);
@@ -76,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
         QPoint lastPoint;
     };</pre>
 <p>The <tt>ScribbleArea</tt> class inherits from <a href="qwidget.html">QWidget</a>. We reimplement the <tt>mousePressEvent()</tt>, <tt>mouseMoveEvent()</tt> and <tt>mouseReleaseEvent()</tt> functions to implement the drawing. We reimplement the <tt>paintEvent()</tt> function to update the scribble area, and the <tt>resizeEvent()</tt> function to ensure that the <a href="qimage.html">QImage</a> on which we draw is at least as large as the widget at any time.</p>
-<p>We need several public functions: <tt>openImage()</tt> loads an image from a file into the scribble area, allowing the user to edit the image; <tt>save()</tt> writes the currently displayed image to file; <tt>clearImage()</tt> slot clears the image displayed in the scribble area. We need the private <tt>drawLineTo()</tt> function to actually do the drawing, and <tt>resizeImage()</tt> to change the size of a <a href="qimage.html">QImage</a>.</p>
+<p>We need several public functions: <tt>openImage()</tt> loads an image from a file into the scribble area, allowing the user to edit the image; <tt>save()</tt> writes the currently displayed image to file; <tt>clearImage()</tt> slot clears the image displayed in the scribble area. We need the private <tt>drawLineTo()</tt> function to actually do the drawing, and <tt>resizeImage()</tt> to change the size of a <a href="qimage.html">QImage</a>. The <tt>printPdf()</tt> slot handles conversion and export of images to PDF files.</p>
 <p>We also need the following private variables:</p>
 <ul>
 <li><tt>modified</tt> is <tt>true</tt> if there are unsaved changes to the image displayed in the scribble area.</li>
@@ -216,6 +218,26 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p><a href="qimage.html">QImage</a> has no nice API for resizing an image. There's a <a href="qimage.html#copy">QImage::copy</a>() function that could do the trick, but when used to expand an image, it fills the new areas with black, whereas we want white.</p>
 <p>So the trick is to create a brand new <a href="qimage.html">QImage</a> with the right size, to fill it with white, and to draw the old image onto it using <a href="qpainter.html">QPainter</a>. The new image is given the <a href="qimage.html#Format-enum">QImage::Format_RGB32</a> format, which means that each pixel is stored as 0xffRRGGBB (where RR, GG, and BB are the red, green and blue color channels, ff is the hexadecimal value 255).</p>
+<p>Export to a PDF file is handled by the <tt>printPdf()</tt> slot:</p>
+<pre>&nbsp;   void ScribbleArea::printPdf()
+    {
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+
+        QPrintDialog *printDialog = new QPrintDialog(&amp;printer, this);</pre>
+<p>We construct a high resolution <a href="qprinter.html">QPrinter</a> object for the required output format, using a <a href="qprintdialog.html">QPrintDialog</a> to ask the user to specify a page size and indicate how the output should be formatted on the page.</p>
+<p>If the dialog is accepted, we perform the task of printing to the paint device:</p>
+<pre>&nbsp;       if (printDialog-&gt;exec() == QDialog::Accepted) {
+            QPainter painter(&amp;printer);
+            QRect rect = painter.viewport();
+            QSize size = image.size();
+            size.scale(rect.size(), Qt::KeepAspectRatio);
+            painter.setViewport(rect.x(), rect.y(), size.width(), size.height());
+            painter.setWindow(image.rect());
+            painter.drawImage(0, 0, image);
+        }
+    }</pre>
+<p>Printing an image to a file in this way is simply a matter of painting onto the <a href="qprinter.html">QPrinter</a>. We scale the image to fit within the available space on the page before painting it onto the paint device.</p>
 <a name="mainwindow-class-definition"></a>
 <h2>MainWindow Class Definition</h2>
 <pre>&nbsp;   class MainWindow : public QMainWindow
@@ -253,11 +275,12 @@ body { background: #ffffff; color: black; }</style>
         QAction *exitAct;
         QAction *penColorAct;
         QAction *penWidthAct;
+        QAction *printPdfAct;
         QAction *clearScreenAct;
         QAction *aboutAct;
         QAction *aboutQtAct;
     };</pre>
-<p>The <tt>MainWindow</tt> class inherits from <a href="qmainwindow.html">QMainWindow</a>. We reimplement the <a href="qwidget.html#closeEvent">closeEvent()</a> handler from <a href="qwidget.html">QWidget</a>. The <b>open()</b>, <b>save()</b>, <b>penColor()</b> and <b>penWidth()</b> slots correspond to menu entries. In addition we create four private functions.</p>
+<p>The <tt>MainWindow</tt> class inherits from <a href="qmainwindow.html">QMainWindow</a>. We reimplement the <a href="qwidget.html#closeEvent">closeEvent()</a> handler from <a href="qwidget.html">QWidget</a>. The <tt>open()</tt>, <tt>save()</tt>, <tt>penColor()</tt> and <tt>penWidth()</tt> slots correspond to menu entries. In addition we create four private functions.</p>
 <p>We use the boolean <tt>maybeSave()</tt> function to check if there are any unsaved changes. If there are unsaved changes, we give the user the opportunity to save these changes. The function returns <tt>false</tt> if the user clicks <b>Cancel</b>. We use the <tt>saveFile()</tt> function to let the user save the image currently displayed in the scribble area.</p>
 <a name="mainwindow-class-implementation"></a>
 <h2>MainWindow Class Implementation</h2>
@@ -352,6 +375,9 @@ body { background: #ffffff; color: black; }</style>
             saveAsActs.append(action);
         }
 
+        printPdfAct = new QAction(tr(&quot;&amp;Print as PDF&quot;), this);
+        connect(printPdfAct, SIGNAL(triggered()), scribbleArea, SLOT(printPdf()));
+
         exitAct = new QAction(tr(&quot;E&amp;xit&quot;), this);
         exitAct-&gt;setShortcut(tr(&quot;Ctrl+Q&quot;));
         connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
@@ -384,6 +410,7 @@ body { background: #ffffff; color: black; }</style>
         fileMenu = new QMenu(tr(&quot;&amp;File&quot;), this);
         fileMenu-&gt;addAction(openAct);
         fileMenu-&gt;addMenu(saveAsMenu);
+        fileMenu-&gt;addAction(printPdfAct);
         fileMenu-&gt;addSeparator();
         fileMenu-&gt;addAction(exitAct);
 
@@ -444,6 +471,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -27,6 +27,8 @@
 #include <QtCore/qglobal.h>
 #include <new>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 template<class T, int Prealloc = 256>
@@ -183,5 +185,7 @@ Q_OUTOFLINE_TEMPLATE void QVarLengthArray<T, Prealloc>::realloc(int asize, int a
     if (oldPtr != reinterpret_cast<T *>(array) && oldPtr != ptr)
         qFree(oldPtr);
 }
+
+QT_END_HEADER
 
 #endif // QVARLENGTHARRAY_H

@@ -31,7 +31,7 @@
 #include <QtCore/qtextcodec.h>
 #include <QtCore/qlist.h>
 
-#ifndef QT_NO_TEXTCODECPLUGIN
+#ifndef QT_NO_TEXTCODEC
 
 class QBig5Codec : public QTextCodec {
 public:
@@ -97,6 +97,6 @@ public:
 };
 #endif // Q_WS_X11
 
-#endif // QT_NO_TEXTCODECPLUGIN
+#endif // QT_NO_TEXTCODEC
 
 #endif // QBIG5CODEC_H

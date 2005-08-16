@@ -27,6 +27,8 @@
 #include <QtDesigner/sdk_global.h>
 #include <QtCore/QObject>
 
+QT_BEGIN_HEADER
+
 class QDesignerFormEditorInterface;
 class QWidget;
 class QLayout;
@@ -49,5 +51,7 @@ public:
     virtual bool isPassiveInteractor(QWidget *widget) = 0;
     virtual void initialize(QObject *object) const = 0;
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTWIDGETFACTORY_H

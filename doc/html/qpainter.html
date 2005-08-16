@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/painting/qpainter.cpp -->
 <head>
     <title>Qt 4.1: QPainter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -232,7 +233,7 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p>The core functionality of QPainter is drawing, but the class also provide several functions that allows you to customize QPainter's settings and its rendering quality, and others that enable clipping. In addition you can control how different shapes are merged together by specifying the painter's composition mode.</p>
 <p>The <a href="qpainter.html#isActive">isActive</a>() function indicates whether the painter is active. A painter is activated by the <a href="qpainter.html#begin">begin</a>() function and the constructor that takes a <a href="qpaintdevice.html">QPaintDevice</a> argument. The <a href="qpainter.html#end">end</a>() function, and the destructor, deactivates it.</p>
-<p>Together with the <a href="qpaintdevice.html">QPaintDevice</a> and <a href="qpaintengine.html">QPaintEngine</a> classes, QPainter form the basis for Qt's paint system, Arthur. QPainter is the class used to perform drawing operations. <a href="qpaintdevice.html">QPaintDevice</a> represents a device that can be painted on using a QPainter. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. If the painter is active, <a href="qpainter.html#device">device</a>() returns the paint device on which the painter paints, and <a href="qpainter.html#paintEngine">paintEngine</a>() returns the paint engine that the painter is currently operating on.</p>
+<p>Together with the <a href="qpaintdevice.html">QPaintDevice</a> and <a href="qpaintengine.html">QPaintEngine</a> classes, QPainter form the basis for Qt's paint system. QPainter is the class used to perform drawing operations. <a href="qpaintdevice.html">QPaintDevice</a> represents a device that can be painted on using a QPainter. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. If the painter is active, <a href="qpainter.html#device">device</a>() returns the paint device on which the painter paints, and <a href="qpainter.html#paintEngine">paintEngine</a>() returns the paint engine that the painter is currently operating on. For more information, see <a href="paintsystem.html">The Paint System</a> documentation.</p>
 <p>Sometimes it is desirable to make someone else paint on an unusual <a href="qpaintdevice.html">QPaintDevice</a>. QPainter supports a static function to do this, <a href="qpainter.html#setRedirected">setRedirected</a>().</p>
 <p><b>Warning:</b> Unless a widget has the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOutsidePaintEvent</a> attribute set. A QPainter can only be used on a widget inside a paintEvent() or a function called by a paintEvent(). On Mac OS X, you can only paint on a widget in a paintEvent() regardless of this attribute's setting.</p>
 <ul><li><a href="#settings">Settings</a></li>
@@ -840,18 +841,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Draws the rectangle <i>x</i>, <i>y</i>, <i>w</i>, <i>h</i> with rounded corners.</p>
 <h3 class="fn"><a name="drawText"></a>void QPainter::drawText ( const <a href="qpointf.html">QPointF</a> &amp; <i>position</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Draws the given <i>text</i> with the currently defined text direction, beginning at the given <i>position</i>.</p>
-<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qpainter-text.png" /></td><td><pre>&nbsp;   QPainter painter(this);
-    painter.drawText(rect, Qt::AlignCenter, tr(&quot;Qt by\nTrolltech&quot;));</pre>
-</td></tr>
-</table></p>
-<p>See also <a href="qpainter.html#boundingRect">boundingRect</a>() and <a href="qpainter.html#layoutDirection">layoutDirection</a>().</p>
+<p>This function does not break text into multiple lines. Use the QPainter::drawText() overload that takes a rectangle instead if you want line breaking.</p>
 <h3 class="fn"><a name="drawText-8"></a>void QPainter::drawText ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the given <i>text</i> with the currently defined text direction, beginning at the given <i>position</i>.</p>
 <h3 class="fn"><a name="drawText-9"></a>void QPainter::drawText ( const <a href="qrectf.html">QRectF</a> &amp; <i>rectangle</i>, int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qrectf.html">QRectF</a> * <i>boundingRect</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the given <i>text</i> within the provided <i>rectangle</i>.</p>
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qpainter-text.png" /></td><td><pre>&nbsp;   QPainter painter(this);
+    painter.drawText(rect, Qt::AlignCenter, tr(&quot;Qt by\nTrolltech&quot;));</pre>
+</td></tr>
+</table></p>
 <p>The <i>boundingRect</i> (if not null) is set to the actual bounding rectangle of the output. The <i>flags</i> argument is a bitwise OR of the following flags:</p>
 <ul>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a></li>
@@ -866,7 +867,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qt.html#TextFlag-enum">Qt::TextShowMnemonic</a></li>
 <li><a href="qt.html#TextFlag-enum">Qt::TextWordWrap</a></li>
 </ul>
-<p>See also <a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a> and <a href="qt.html#TextFlag-enum">Qt::TextFlag</a>.</p>
+<p>See also <a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a>, <a href="qt.html#TextFlag-enum">Qt::TextFlag</a>, <a href="qpainter.html#boundingRect">boundingRect</a>(), and <a href="qpainter.html#layoutDirection">layoutDirection</a>().</p>
 <h3 class="fn"><a name="drawText-10"></a>void QPainter::drawText ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i>, int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qrect.html">QRect</a> * <i>boundingRect</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the given <i>text</i> within the provided <i>rectangle</i> according to the specified <i>flags</i>. The <i>boundingRect</i> (if not null) is set to the actual bounding rectangle of the output.</p>
@@ -1188,6 +1189,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -82,14 +82,15 @@ public:
         : explicitIconSize(false), explicitToolButtonStyle(false), movable(false),
           allowedAreas(Qt::AllToolBarAreas), orientation(Qt::Horizontal),
           toolButtonStyle(Qt::ToolButtonIconOnly),
-          handle(0), extension(0), ignoreActionAddedEvent(false)
+          handle(0), extension(0),
+          inResizeEvent(false)
     { }
 
     void init();
     void actionTriggered();
-    void toggleView(bool b);
-    void updateIconSize(const QSize &sz);
-    void updateToolButtonStyle(Qt::ToolButtonStyle style);
+    void _q_toggleView(bool b);
+    void _q_updateIconSize(const QSize &sz);
+    void _q_updateToolButtonStyle(Qt::ToolButtonStyle style);
     QToolBarItem createItem(QAction *action);
     int indexOf(QAction *action) const;
 
@@ -105,9 +106,10 @@ public:
     QToolBarExtension *extension;
 
     QList<QToolBarItem> items;
-    bool ignoreActionAddedEvent;
 
     QAction *toggleViewAction;
+
+    bool inResizeEvent;
 };
 
 static inline int pick(Qt::Orientation o, const QPoint &p)

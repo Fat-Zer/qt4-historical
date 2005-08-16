@@ -26,6 +26,8 @@
 
 #include <QtGui/qframe.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3Frame : public QFrame
@@ -60,5 +62,7 @@ private:
 
     int marg;
 };
+
+QT_END_HEADER
 
 #endif // Q3FRAME_H

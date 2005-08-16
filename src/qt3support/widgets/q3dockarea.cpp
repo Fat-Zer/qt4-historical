@@ -151,6 +151,8 @@ void Q3DockAreaLayout::init()
 
 void Q3DockAreaLayout::invalidate()
 {
+    if (!dirty)
+        QApplication::postEvent(parent(), new QEvent(QEvent::LayoutHint));
     dirty = true;
     cached_width = 0;
     cached_height = 0;

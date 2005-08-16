@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3ptrlist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 template<class type>
@@ -41,5 +43,7 @@ public:
     virtual int compareItems( Q3PtrCollection::Item s1, Q3PtrCollection::Item s2 )
       { if ( *((type*)s1) == *((type*)s2) ) return 0; return ( *((type*)s1) < *((type*)s2) ? -1 : 1 ); }
 };
+
+QT_END_HEADER
 
 #endif // Q3SORTEDLIST_H

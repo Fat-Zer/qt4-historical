@@ -26,6 +26,8 @@
 
 #include <QtDesigner/qdesigner_components_global.h>
 
+QT_BEGIN_HEADER
+
 class QObject;
 class QWidget;
 
@@ -51,5 +53,7 @@ public:
     static QWidget *createResourceEditor(QDesignerFormEditorInterface *core, QWidget *parent);
     static QWidget *createSignalSlotEditor(QDesignerFormEditorInterface *core, QWidget *parent);
 };
+
+QT_END_HEADER
 
 #endif // QDESIGNER_COMPONENTS_H

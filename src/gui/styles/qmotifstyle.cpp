@@ -429,6 +429,14 @@ void QMotifStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QP
         break; }
 
     case PE_PanelButtonCommand:
+        if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(opt)) {
+            if ((btn->features & QStyleOptionButton::Flat)
+                && !(opt->state & (State_Sunken | State_On))) {
+                p->fillRect(opt->rect, opt->palette.brush(QPalette::Button));
+                break;
+            }
+        }
+        // Fall-through
     case PE_PanelButtonBevel:
     case PE_PanelButtonTool: {
         QBrush fill;
@@ -908,13 +916,11 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                     qDrawShadePanel(p, opt->rect.adjusted(1, 1, -1, -1), opt->palette, true);
                 }
             }
-            if (!(btn->features & QStyleOptionButton::Flat) ||
-                (btn->state & (State_Sunken | State_On))) {
-                QStyleOptionButton newOpt = *btn;
-                newOpt.rect = QRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-                p->setBrushOrigin(p->brushOrigin());
-                drawPrimitive(PE_PanelButtonCommand, &newOpt, p, widget);
-            }
+            QStyleOptionButton newOpt = *btn;
+            newOpt.rect = QRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+            p->setBrushOrigin(p->brushOrigin());
+            drawPrimitive(PE_PanelButtonCommand, &newOpt, p, widget);
+
             if (btn->features & QStyleOptionButton::HasMenu) {
                 int mbi = pixelMetric(PM_MenuButtonIndicator, btn, widget);
                 QRect ir = btn->rect;
@@ -1226,7 +1232,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
             }
             if (menuitem->menuItemType == QStyleOptionMenuItem::SubMenu) {           // draw sub menu arrow
                 int dim = (h-2*motifItemFrame) / 2;
-                QStyle::PrimitiveElement arrow = (QApplication::isRightToLeft() ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight);
+                QStyle::PrimitiveElement arrow = (opt->direction == Qt::RightToLeft ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight);
                 QStyleOption arrowOpt = *opt;
                 arrowOpt.rect = visualRect(opt->direction, opt->rect,
                                            QRect(x+w - motifArrowHMargin - motifItemFrame - dim,
@@ -1544,10 +1550,10 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
                     p->fillRect(handle, QBrush(p->background().color(), Qt::Dense5Pattern));
             }
 
-            if (opt->subControls & SC_SliderTickmarks) {
-                QStyleOptionComplex tickOpt = *opt;
-                tickOpt.subControls = SC_SliderTickmarks;
-                QCommonStyle::drawComplexControl(cc, &tickOpt, p, widget);
+            if (slider->subControls & SC_SliderTickmarks) {
+                QStyleOptionSlider tmpSlider = *slider;
+                tmpSlider.subControls = SC_SliderTickmarks;
+                QCommonStyle::drawComplexControl(cc, &tmpSlider, p, widget);
             }
         }
         break;
@@ -1787,9 +1793,9 @@ int QMotifStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt,
     case PM_SliderSpaceAvailable:
         if (const QStyleOptionSlider *sl = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
             if (sl->orientation == Qt::Horizontal)
-                ret = sl->rect.width() - pixelMetric(PM_SliderLength, opt, widget) - 6;
+                ret = sl->rect.width() - pixelMetric(PM_SliderLength, opt, widget) - 2 * pixelMetric(PM_DefaultFrameWidth, opt, widget);
             else
-                ret = sl->rect.height() - pixelMetric(PM_SliderLength, opt, widget) - 6;
+                ret = sl->rect.height() - pixelMetric(PM_SliderLength, opt, widget) - 2 * pixelMetric(PM_DefaultFrameWidth, opt, widget);
         }
         break;
 #endif // QT_NO_SLIDER

@@ -51,6 +51,9 @@ body { background: #ffffff; color: black; }</style>
     {
         setupUi(this);
 
+        table-&gt;addAction(insertRowAction);
+        table-&gt;addAction(deleteRowAction);
+
         if (QSqlDatabase::drivers().isEmpty())
             QMessageBox::information(this, tr(&quot;No database drivers found&quot;),
                                      tr(&quot;This demo requires at least one Qt database driver. &quot;
@@ -76,7 +79,9 @@ body { background: #ffffff; color: black; }</style>
             emit statusMessage(tr(&quot;Query OK.&quot;));
         else
             emit statusMessage(tr(&quot;Query OK, number of affected rows: %1&quot;).arg(
-                        model-&gt;query().numRowsAffected()));
+                               model-&gt;query().numRowsAffected()));
+
+        updateActions();
     }
 
     QSqlError Browser::addConnection(const QString &amp;driver, const QString &amp;dbName, const QString &amp;host,
@@ -141,12 +146,17 @@ body { background: #ffffff; color: black; }</style>
     void Browser::showTable(const QString &amp;t)
     {
         QSqlTableModel *model = new QSqlTableModel(table, connectionWidget-&gt;currentDatabase());
+        model-&gt;setEditStrategy(QSqlTableModel::OnRowChange);
         model-&gt;setTable(t);
         model-&gt;select();
         if (model-&gt;lastError().type() != QSqlError::NoError)
             emit statusMessage(model-&gt;lastError().text());
         table-&gt;setModel(model);
         table-&gt;setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+
+        connect(table-&gt;selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+                this, SLOT(currentChanged()));
+        updateActions();
     }
 
     void Browser::showMetaData(const QString &amp;t)
@@ -181,11 +191,57 @@ body { background: #ffffff; color: black; }</style>
 
         table-&gt;setModel(model);
         table-&gt;setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+        updateActions();
+    }
+
+    void Browser::insertRow()
+    {
+        QSqlTableModel *model = qobject_cast&lt;QSqlTableModel *&gt;(table-&gt;model());
+        if (!model)
+            return;
+
+        QModelIndex insertIndex = table-&gt;currentIndex();
+        int row = insertIndex.row() == -1 ? 0 : insertIndex.row();
+        model-&gt;insertRow(row);
+        insertIndex = model-&gt;index(row, 0);
+        table-&gt;setCurrentIndex(insertIndex);
+        table-&gt;edit(insertIndex);
+    }
+
+    void Browser::deleteRow()
+    {
+        QSqlTableModel *model = qobject_cast&lt;QSqlTableModel *&gt;(table-&gt;model());
+        if (!model)
+            return;
+
+        model-&gt;setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+        QModelIndexList currentSelection = table-&gt;selectionModel()-&gt;selectedIndexes();
+        for (int i = 0; i &lt; currentSelection.count(); ++i) {
+            if (currentSelection.at(i).column() != 0)
+                continue;
+            model-&gt;removeRow(currentSelection.at(i).row());
+        }
+
+        model-&gt;submitAll();
+        model-&gt;setEditStrategy(QSqlTableModel::OnRowChange);
+
+        updateActions();
+    }
+
+    void Browser::updateActions()
+    {
+        bool enableIns = qobject_cast&lt;QSqlTableModel *&gt;(table-&gt;model());
+        bool enableDel = enableIns &amp;&amp; table-&gt;currentIndex().isValid();
+
+        insertRowAction-&gt;setEnabled(enableIns);
+        deleteRowAction-&gt;setEnabled(enableDel);
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

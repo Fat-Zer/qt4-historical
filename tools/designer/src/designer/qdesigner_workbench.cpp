@@ -52,6 +52,7 @@
 #include <QtGui/QHeaderView>
 
 #include <QtCore/QVariant>
+#include <QtCore/QUrl>
 #include <QtCore/QPluginLoader>
 #include <QtCore/qdebug.h>
 
@@ -321,10 +322,13 @@ void QDesignerWorkbench::switchToNeutralMode()
         if (tw->isVisible()) {
             // use the actual geometry
             QPoint pos = tw->window()->pos();
-            if (!tw->isWindow())
-                if (QWidget *p = tw->parentWidget())
-                    pos = p->pos(); // in workspace
+            if (!tw->isWindow()) {
+                if (const QWidget *pw = tw->parentWidget()) {
+                    pos = pw->mapTo(tw->window(), QPoint(0, 0));
+                    pos += tw->window()->pos();
+                }
 
+            }
             m_geometries.insert(tw, QRect(pos - desktopOffset, tw->size()));
         }
         tw->setSaveSettingsOnClose(false);
@@ -364,6 +368,7 @@ void QDesignerWorkbench::switchToNeutralMode()
 
 void QDesignerWorkbench::switchToDockedMode()
 {
+    bool wasTopLevel = (m_mode == TopLevelMode);
     if (m_mode == DockedMode)
         return;
 
@@ -384,14 +389,21 @@ void QDesignerWorkbench::switchToDockedMode()
     mw->setObjectName(QLatin1String("MDIWindow"));
     mw->setWindowTitle(tr("Qt Designer"));
     m_workspace = new QWorkspace(mw);
+    m_workspace->setAcceptDrops(true);
+    m_workspace->installEventFilter(this);
     m_workspace->setScrollBarsEnabled(true);
     connect(m_workspace, SIGNAL(windowActivated(QWidget*)),
             this, SLOT(activateWorkspaceChildWindow(QWidget*)));
     mw->setCentralWidget(m_workspace);
     m_core->setTopLevel(mw);
+    (void) mw->statusBar();
     if (m_geometries.isEmpty()) {
         settings.setGeometryFor(mw, qApp->desktop()->availableGeometry(0));
     } else {
+        if (QDesignerToolWindow *widgetBox = findToolWindow(core()->widgetBox())) {
+            QRect r = m_geometries.value(widgetBox, QRect(0, 0, 200, 200));
+            mw->move(r.topLeft());
+        }
         mw->setWindowState(mw->windowState() | Qt::WindowMaximized);
     }
 
@@ -407,9 +419,10 @@ void QDesignerWorkbench::switchToDockedMode()
     m_formToolBar->show();
 
     qDesigner->setMainWindow(mw);
-    (void) mw->statusBar();
 
     foreach (QDesignerToolWindow *tw, m_toolWindows) {
+        if (wasTopLevel)
+            settings.saveGeometryFor(tw);
         QDockWidget *dockWidget = magicalDockWidget(tw);
         if (dockWidget == 0) {
             dockWidget = new QDockWidget(mw);
@@ -439,6 +452,34 @@ void QDesignerWorkbench::switchToDockedMode()
 
     if (!m_initializing)
         QMetaObject::invokeMethod(this, "adjustFormPositions", Qt::QueuedConnection);
+}
+
+bool QDesignerWorkbench::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == m_workspace) {
+        if (event->type() == QEvent::DragEnter) {
+            QDragEnterEvent *e = static_cast<QDragEnterEvent*>(event);
+            if (e->mimeData()->hasFormat("text/uri-list")) {
+                e->acceptProposedAction();
+                return true;
+            }
+        } else if (event->type() == QEvent::Drop) {
+            QDropEvent *e = static_cast<QDropEvent*>(event);
+            if (!e->mimeData()->hasFormat("text/uri-list"))
+                return false;
+            foreach (QUrl url, e->mimeData()->urls()) {
+                QString fileName = url.toLocalFile();
+                if (fileName.endsWith(".ui"))
+                    readInForm(url.toLocalFile());
+                else
+                    QMessageBox::critical(m_workspace, tr("Opening Form"),
+                        tr("Cannot open file %1!").arg(fileName));
+            }
+            e->acceptProposedAction();
+            return true;
+        }
+    }
+    return false;
 }
 
 void QDesignerWorkbench::adjustFormPositions()
@@ -506,17 +547,17 @@ void QDesignerWorkbench::switchToTopLevelMode()
     }
 
     QDesignerSettings settings;
+    bool found_visible_window = false;
     foreach (QDesignerToolWindow *tw, m_toolWindows) {
         tw->setParent(magicalParent(), magicalWindowFlags(tw));
-        if (m_geometries.isEmpty()) {
-            settings.setGeometryFor(tw, tw->geometryHint());
-        } else {
-            QRect g = m_geometries.value(tw, tw->geometryHint());
-            tw->resize(g.size());
-            tw->move(g.topLeft() + desktopOffset);
-            tw->setVisible(m_visibilities.value(tw, true));
-        }
+        settings.setGeometryFor(tw, tw->geometryHint());
+        tw->action()->setChecked(tw->isVisible());
+        found_visible_window |= tw->isVisible();
     }
+
+    if (!m_toolWindows.isEmpty() && !found_visible_window)
+        m_toolWindows.first()->show();
+
     changeBringToFrontVisiblity(true);
 
     foreach (QDesignerFormWindow *fw, m_formWindows) {
@@ -665,13 +706,14 @@ void QDesignerWorkbench::initializeCorePlugins()
 void QDesignerWorkbench::saveSettings() const
 {
     QDesignerSettings settings;
-    foreach (QDesignerToolWindow *tw, m_toolWindows) {
-        settings.saveGeometryFor(tw);
-    }
     if (m_mode == DockedMode) {
         if (qFindChild<QWorkspace *>(qDesigner->mainWindow())) {
             settings.saveGeometryFor(qDesigner->mainWindow());
             settings.setValue(qDesigner->mainWindow()->objectName() + QLatin1String("/visible"), false);
+        }
+    } else {
+        foreach (QDesignerToolWindow *tw, m_toolWindows) {
+            settings.saveGeometryFor(tw);
         }
     }
 }

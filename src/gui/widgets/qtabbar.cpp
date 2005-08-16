@@ -168,8 +168,14 @@ QStyleOptionTabV2 QTabBarPrivate::getStyleOption(int tab) const
     For subclasses, you might also need the tabRect() functions which
     returns the visual geometry of a single tab.
 
-    \image plastique-tabbar.png A tab bar shown in the Plastique widget style.
-    \image plastique-tabbar.png A truncated tab bar shown in the Plastique widget style.
+    \table 100%
+    \row \o \inlineimage plastique-tabbar.png Screenshot of a Plastique style tab bar
+         \o A tab bar shown in the Plastique widget style.
+    \row \o \inlineimage plastique-tabbar-truncated.png Screenshot of a truncated Plastique tab bar
+         \o A truncated tab bar shown in the Plastique widget style.
+    \endtable
+
+    \sa QTabWidget
 */
 
 /*!
@@ -219,10 +225,10 @@ void QTabBarPrivate::init()
 {
     Q_Q(QTabBar);
     leftB = new QToolButton(q);
-    QObject::connect(leftB, SIGNAL(clicked()), q, SLOT(scrollTabs()));
+    QObject::connect(leftB, SIGNAL(clicked()), q, SLOT(_q_scrollTabs()));
     leftB->hide();
     rightB = new QToolButton(q);
-    QObject::connect(rightB, SIGNAL(clicked()), q, SLOT(scrollTabs()));
+    QObject::connect(rightB, SIGNAL(clicked()), q, SLOT(_q_scrollTabs()));
     rightB->hide();
 #ifdef QT_KEYPAD_NAVIGATION
     if (QApplication::keypadNavigationEnabled()) {
@@ -375,7 +381,7 @@ void QTabBarPrivate::makeVisible(int index)
 
 }
 
-void QTabBarPrivate::scrollTabs()
+void QTabBarPrivate::_q_scrollTabs()
 {
     Q_Q(QTabBar);
     const QObject *sender = q->sender();
@@ -452,11 +458,7 @@ QTabBar::~QTabBar()
     \property QTabBar::shape
     \brief the shape of the tabs in the tab bar
 
-    The value of this property is one of the following: \l
-    RoundedNorth (default), \l RoundedSouth, \l TriangularNorth or \l
-    TriangularBelow.
-
-    \sa Shape
+    Possible values for this property are described by the Shape enum.
 */
 
 
@@ -534,6 +536,12 @@ int QTabBar::insertTab(int index, const QString &text)
     Inserts a new tab with icon \a icon and text \a text at position
     \a index. If \a index is out of range, the new tab is
     appended. Returns the new tab's index.
+
+    If the QTabBar was empty before this function is called, the inserted tab
+    becomes the current tab.
+
+    Inserting a new tab at an index less than or equal to the current index
+    will increment the current index, but keep the current tab.
 */
 int QTabBar::insertTab(int index, const QIcon& icon, const QString &text)
 {
@@ -548,8 +556,11 @@ int QTabBar::insertTab(int index, const QIcon& icon, const QString &text)
     d->tabList[index].shortcutId = grabShortcut(QKeySequence::mnemonic(text));
 #endif
     d->refresh();
-    if(d->tabList.count() == 1)
+    if (d->tabList.count() == 1)
         setCurrentIndex(index);
+    else if (index <= d->currentIndex)
+        ++d->currentIndex;
+
     tabInserted(index);
     return index;
 }
@@ -814,7 +825,7 @@ int QTabBar::currentIndex() const
 void QTabBar::setCurrentIndex(int index)
 {
     Q_D(QTabBar);
-    if (d->validIndex(index)) {
+    if (d->validIndex(index) && d->currentIndex != index) {
         d->currentIndex = index;
         update();
         d->makeVisible(index);

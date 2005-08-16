@@ -51,6 +51,7 @@ struct QShaperItem {
     int num_glyphs; // in: available glyphs out: glyphs used/needed
     unsigned short *log_clusters;
     int flags;
+    const QCharAttributes *charAttributes;
 };
 
 // return true if ok.
@@ -63,5 +64,22 @@ struct q_scriptEngine {
 };
 
 extern const q_scriptEngine qt_scriptEngines[];
+
+struct QArabicProperties {
+    unsigned char shape;
+    unsigned char justification;
+};
+Q_DECLARE_TYPEINFO(QArabicProperties, Q_PRIMITIVE_TYPE);
+
+enum QArabicShape {
+    XIsolated,
+    XFinal,
+    XInitial,
+    XMedial,
+    // intermediate state
+    XCausing
+};
+
+void qt_getArabicProperties(const unsigned short *chars, int len, QArabicProperties *properties);
 
 #endif // QSCRIPTENGINE_P_H

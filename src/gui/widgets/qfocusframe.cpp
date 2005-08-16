@@ -120,7 +120,6 @@ QFocusFrame::QFocusFrame(QWidget *parent)
 {
     setAttribute(Qt::WA_TransparentForMouseEvents);
     setFocusPolicy(Qt::NoFocus);
-    setAttribute(Qt::WA_NoSystemBackground, true);
     setAttribute(Qt::WA_NoChildEventsForParent, true);
 }
 

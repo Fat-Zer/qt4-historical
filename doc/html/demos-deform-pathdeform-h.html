@@ -71,9 +71,9 @@ body { background: #ffffff; color: black; }</style>
         QSize sizeHint() const { return QSize(600, 500); }
 
         bool animated() const { return m_animated; }
-        int radius() const { return m_radius; }
+        int radius() const { return int(m_radius); }
         int fontSize() const { return m_fontSize; }
-        int intensity() const { return m_intensity; }
+        int intensity() const { return int(m_intensity); }
         QString text() const { return m_text; }
 
     public slots:
@@ -128,6 +128,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

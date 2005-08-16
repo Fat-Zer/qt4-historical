@@ -27,6 +27,8 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qmap.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_SQL_FORM
@@ -79,5 +81,7 @@ private:
 };
 
 #endif // QT_NO_SQL_FORM
+
+QT_END_HEADER
 
 #endif // Q3SQLFORM_H

@@ -40,9 +40,16 @@
 #ifndef QT_NO_CODECS
 #include "qtsciicodec_p.h"
 #include "qisciicodec_p.h"
+#include "../../plugins/codecs/cn/qgb18030codec.h"
+#include "../../plugins/codecs/jp/qeucjpcodec.h"
+#include "../../plugins/codecs/jp/qjiscodec.h"
+#include "../../plugins/codecs/jp/qsjiscodec.h"
+#include "../../plugins/codecs/kr/qeuckrcodec.h"
+#include "../../plugins/codecs/tw/qbig5codec.h"
 #endif // QT_NO_CODECS
 #ifdef Q_WS_X11
 #include "qfontlaocodec_p.h"
+#include "../../plugins/codecs/jp/qfontjpcodec.h"
 #endif
 #include "private/qlocale_p.h"
 #include "private/qmutexpool_p.h"
@@ -312,6 +319,17 @@ static QTextCodec * ru_RU_hack(const char * i) {
 
 #endif
 
+static QTextCodec *checkForCodec(const char *name) {
+    QTextCodec *c = QTextCodec::codecForName(name);
+    if (!c) {
+        const char *at = strchr(name, '@');
+        if (at) {
+            QByteArray n(name, at - name);
+            c = QTextCodec::codecForName(n.data());
+        }
+    }
+    return c;
+}
 
 /* the next two functions are implicitely thread safe,
    as they are only called by setup() which uses a mutex.
@@ -364,24 +382,24 @@ static void setupLocaleMapper()
         // 1. CODESET from ctype if it contains a .CODESET part (e.g. en_US.ISO8859-15)
         char * codeset = ctype ? strchr(ctype, '.') : 0;
         if (codeset && *codeset == '.')
-            localeMapper = QTextCodec::codecForName(codeset + 1);
+            localeMapper = checkForCodec(codeset + 1);
 
         // 2. CODESET from lang if it contains a .CODESET part
         codeset = lang ? strchr(lang, '.') : 0;
         if (!localeMapper && codeset && *codeset == '.')
-            localeMapper = QTextCodec::codecForName(codeset + 1);
+            localeMapper = checkForCodec(codeset + 1);
 
         // 3. ctype (maybe the locale is named "ISO-8859-1" or something)
         if (!localeMapper && ctype && *ctype != 0 && strcmp (ctype, "C") != 0)
-            localeMapper = QTextCodec::codecForName(ctype);
+            localeMapper = checkForCodec(ctype);
 
         // 4. locale (ditto)
         if (!localeMapper && lang && *lang != 0)
-            localeMapper = QTextCodec::codecForName(lang);
+            localeMapper = checkForCodec(lang);
 
         // 5. "@euro"
-        if (ctype && strstr(ctype, "@euro") || lang && strstr(lang, "@euro"))
-            localeMapper = QTextCodec::codecForName("ISO 8859-15");
+        if (!localeMapper && ctype && strstr(ctype, "@euro") || lang && strstr(lang, "@euro"))
+            localeMapper = checkForCodec("ISO 8859-15");
 
         // 6. guess locale from ctype unless ctype is "C"
         // 7. guess locale from lang
@@ -453,6 +471,16 @@ static void setup()
 
 #ifdef Q_WS_X11
     (void)new QFontLaoCodec;
+#ifndef QT_BOOTSTRAPPED
+    (void)new QFontGb2312Codec;
+    (void)new QFontGbkCodec;
+    (void)new QFontGb18030_0Codec;
+    (void)new QFontJis0208Codec;
+    (void)new QFontJis0201Codec;
+    (void)new QFontKsc5601Codec;
+    (void)new QFontBig5hkscsCodec;
+    (void)new QFontBig5Codec;
+#endif
 #endif
 #ifndef QT_NO_CODECS
     (void)new QTsciiCodec;
@@ -462,6 +490,18 @@ static void setup()
 
     for (int i = 0; i < QSimpleTextCodec::numSimpleCodecs; ++i)
         (void)new QSimpleTextCodec(i);
+
+#ifndef QT_BOOTSTRAPPED
+    (void)new QGb18030Codec;
+    (void)new QGbkCodec;
+    (void)new QGb2312Codec;
+    (void)new QEucJpCodec;
+    (void)new QJisCodec;
+    (void)new QSjisCodec;
+    (void)new QEucKrCodec;
+    (void)new QBig5Codec;
+    (void)new QBig5hkscsCodec;
+#endif
 #endif // QT_NO_CODECS
 
 #ifdef Q_OS_WIN32
@@ -720,6 +760,11 @@ QTextCodec *QTextCodec::codecForName(const QByteArray &name)
 QTextCodec* QTextCodec::codecForMib(int mib)
 {
     setup();
+
+    // Qt 3 used 1000 (mib for UCS2) as it's identifier for the utf16 codec. Map
+    // this correctly for compatibility.
+    if (mib == 1000)
+        mib = 1015;
 
     QList<QTextCodec*>::ConstIterator i;
     for (int i = 0; i < all->size(); ++i) {
@@ -1264,7 +1309,7 @@ QTextCodec *QTextCodec::codecForHtml(const QByteArray &ba)
 
 /*!
     \fn QTextCodec *QTextCodec::codecForName(const char *hint, int accuracy)
-    
+
     Use the codecForName(const QByteArray &) overload instead.
 */
 

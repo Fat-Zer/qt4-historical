@@ -27,6 +27,8 @@
 #include <QtCore/qglobal.h>
 #include <QtCore/qatomic.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 template <class T> class QSharedDataPointer;
@@ -108,5 +110,7 @@ Q_OUTOFLINE_TEMPLATE void QSharedDataPointer<T>::detach_helper()
     if (!x->ref.deref())
         delete x;
 }
+
+QT_END_HEADER
 
 #endif // QSHAREDDATA_H

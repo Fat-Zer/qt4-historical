@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/kernel/qapplication.cpp -->
 <head>
     <title>Qt 4.1: QSessionManager Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -65,7 +66,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The QSessionManager class provides access to the session manager.</p>
 <p>The session manager is responsible for session management, most importantly for interruption and resumption. A &quot;session&quot; is a kind of record of the state of the system, e.g. which applications were run at start up and which applications are currently running. The session manager is used to save the session, e.g. when the machine is shut down; and to restore a session, e.g. when the machine is started up. Use <a href="qsettings.html">QSettings</a> to save and restore an individual application's settings, e.g. window positions, recently used files, etc.</p>
 <p>QSessionManager provides an interface between the application and the session manager so that the program can work well with the session manager. In Qt, session management requests for action are handled by the two virtual functions <a href="qapplication.html#commitData">QApplication::commitData</a>() and <a href="qapplication.html#saveState">QApplication::saveState</a>(). Both provide a reference to a session manager object as argument, to allow the application to communicate with the session manager.</p>
-<p>During a session management action (i.e. within commitData() and saveState()), no user interaction is possible <i>unless</i> the application got explicit permission from the session manager. You ask for permission by calling <a href="qsessionmanager.html#allowsInteraction">allowsInteraction</a>() or, if it's really urgent, <a href="qsessionmanager.html#allowsErrorInteraction">allowsErrorInteraction</a>(). Qt does not enforce this, but the session manager may.</p>
+<p>During a session management action (i.e. within <a href="qapplication.html#commitData">commitData()</a> and <a href="qapplication.html#saveState">saveState()</a>), no user interaction is possible <i>unless</i> the application got explicit permission from the session manager. You ask for permission by calling <a href="qsessionmanager.html#allowsInteraction">allowsInteraction</a>() or, if it's really urgent, <a href="qsessionmanager.html#allowsErrorInteraction">allowsErrorInteraction</a>(). Qt does not enforce this, but the session manager may.</p>
 <p>You can try to abort the shutdown process by calling <a href="qsessionmanager.html#cancel">cancel</a>(). The default commitData() function does this if some top-level window rejected its closeEvent().</p>
 <p>For sophisticated session managers provided on Unix/X11, QSessionManager offers further possibilites to fine-tune an application's session management behavior: <a href="qsessionmanager.html#setRestartCommand">setRestartCommand</a>(), <a href="qsessionmanager.html#setDiscardCommand">setDiscardCommand</a>(), <a href="qsessionmanager.html#setRestartHint">setRestartHint</a>(), <a href="qobject.html#setProperty">setProperty</a>(), <a href="qsessionmanager.html#requestPhase2">requestPhase2</a>(). See the respective function descriptions for further details.</p>
 <hr />
@@ -184,6 +185,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

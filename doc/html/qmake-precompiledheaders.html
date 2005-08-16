@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: Using Precompiled Headers</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -11,14 +12,22 @@ a:visited { color: #672967; text-decoration: none }
 td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
 body { background: #ffffff; color: black; }</style>
+    <link rel="prev" href="qmake-advanced-usage.html" />
+    <link rel="contents" href="qmake-manual.html" />
+    <link rel="next" href="qmake-reference.html" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Using Precompiled Headers<br /><small></small></h1>
-<a name="about"></a><p>Precompiled headers are a performance feature supported by some compilers to compile a stable body of code, and store the compiled state of the code in a binary file. During subsequent compilations, the compiler will load the stored state, and continue compiling the specified file. Each subsequent compilation is faster because the stable code does not need to be recompiled.</p>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+[Previous: <a href="qmake-advanced-usage.html">qmake Advanced Usage</a>]
+[<a href="qmake-manual.html">Contents</a>]
+[Next: <a href="qmake-reference.html">qmake Reference</a>]
+</p>
+<h1 align="center">Using Precompiled Headers<br /><small></small></h1>
+<a name="introduction"></a><p>Precompiled headers are a performance feature supported by some compilers to compile a stable body of code, and store the compiled state of the code in a binary file. During subsequent compilations, the compiler will load the stored state, and continue compiling the specified file. Each subsequent compilation is faster because the stable code does not need to be recompiled.</p>
 <p><tt>qmake</tt> supports the use of precompiled headers (PCH) on some platforms and build environments, including:</p>
 <ul>
 <li>Windows<ul>
@@ -33,7 +42,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 </li>
 <li>Unix<ul>
-<li>GCC 3.3 and above</li>
+<li>GCC 3.4 and above</li>
 </ul>
 </li>
 </ul>
@@ -41,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Adding Precompiled Headers to Your Project</h2>
 <a name="pch-contents"></a><a name="contents-of-the-precompiled-header-file"></a>
 <h3>Contents of the Precompiled Header File</h3>
-<p>The precompiled header must contain code which is <tt>stable</tt> and <tt>static</tt> throughout your project. A typical PCH might look like this:</p>
+<p>The precompiled header must contain code which is <i>stable</i> and <i>static</i> throughout your project. A typical PCH might look like this:</p>
 <a name="example"></a>
 <h4>Example: <tt>stable.h</tt></h4>
 <pre>&nbsp;   // Add C includes here
@@ -51,9 +60,9 @@ body { background: #ffffff; color: black; }</style>
     #include &lt;stdlib&gt;
     #include &lt;iostream&gt;
     #include &lt;vector&gt;
-    #include &lt;qapplication.h&gt; // Qt includes
-    #include &lt;qpushbutton.h&gt;
-    #include &lt;qlabel.h&gt;
+    #include &lt;QApplication&gt; // Qt includes
+    #include &lt;QPushButton&gt;
+    #include &lt;QLabel&gt;
     #include &quot;thirdparty/include/libmain.h&quot;
     #include &quot;my_stable_class.h&quot;
     ...
@@ -63,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Project Options</h3>
 <p>To make your project use PCH, you only need to define the <tt>PRECOMPILED_HEADER</tt> variable in your project file:</p>
 <pre>&nbsp;       PRECOMPILED_HEADER = stable.h</pre>
-<p><tt>qmake</tt> will handle the rest, to ensure the creation and use of the precompiled header file. You do not need to include the precompiled header file in <tt>HEADERS</tt>, as qmake will do this if the configuration supports PCH.</p>
+<p><tt>qmake</tt> will handle the rest, to ensure the creation and use of the precompiled header file. You do not need to include the precompiled header file in <tt>HEADERS</tt>, as <tt>qmake</tt> will do this if the configuration supports PCH.</p>
 <p>All platforms that support precompiled headers have the configuration option <tt>precompile_header</tt> set. Using this option, you may trigger conditional blocks in your project file to add settings when using PCH. For example:</p>
 <pre>&nbsp;       precompile_header:!isEmpty(PRECOMPILED_HEADER) {
         DEFINES += USING_PCH
@@ -76,41 +85,56 @@ body { background: #ffffff; color: black; }</style>
 <p>To avoid potential conflicts like these, it is good practice to ensure that header files that will be precompiled are given distinctive names.</p>
 <a name="example-project"></a><a name="example-project"></a>
 <h2>Example Project</h2>
-<p>You can find the following source code in the <tt>qt/qmake/examples/precompile</tt> directory:</p>
+<p>You can find the following source code in the <tt>examples/qmake/precompile</tt> directory in the Qt distribution:</p>
 <a name=""></a>
 <h3><tt>mydialog.ui</tt></h3>
-<pre>&nbsp;   &lt;!DOCTYPE UI&gt;&lt;UI version=&quot;3.3&quot; stdsetdef=&quot;1&quot;&gt;
-    &lt;class&gt;MyDialog&lt;/class&gt;
-    &lt;widget class=&quot;QDialog&quot;&gt;
-        &lt;property name=&quot;name&quot;&gt;
-            &lt;cstring&gt;MyDialog&lt;/cstring&gt;
-        &lt;/property&gt;
-        &lt;property name=&quot;caption&quot;&gt;
-            &lt;string&gt;Mach 2!&lt;/string&gt;
-        &lt;/property&gt;
-        &lt;vbox&gt;
-            &lt;widget class=&quot;QLabel&quot;&gt;
-                &lt;property name=&quot;name&quot;&gt;
-                    &lt;cstring&gt;aLabel&lt;/cstring&gt;
-                &lt;/property&gt;
-                &lt;property name=&quot;text&quot;&gt;
-                    &lt;string&gt;Join the life in the fastlane; - PCH enable your project today! -&lt;/string&gt;
-                &lt;/property&gt;
-            &lt;/widget&gt;
-            &lt;widget class=&quot;QPushButton&quot;&gt;
-                &lt;property name=&quot;name&quot;&gt;
-                    &lt;cstring&gt;aButton&lt;/cstring&gt;
-                &lt;/property&gt;
-                &lt;property name=&quot;text&quot;&gt;
-                    &lt;string&gt;&amp;amp;Quit&lt;/string&gt;
-                &lt;/property&gt;
-                &lt;property name=&quot;accel&quot;&gt;
-                    &lt;string&gt;Alt+Q&lt;/string&gt;
-                &lt;/property&gt;
-            &lt;/widget&gt;
-        &lt;/vbox&gt;
-    &lt;/widget&gt;
-    &lt;/UI&gt;</pre>
+<pre>&nbsp;   &lt;ui version=&quot;4.0&quot; &gt;
+     &lt;author&gt;&lt;/author&gt;
+     &lt;comment&gt;&lt;/comment&gt;
+     &lt;exportmacro&gt;&lt;/exportmacro&gt;
+     &lt;class&gt;MyDialog&lt;/class&gt;
+     &lt;widget class=&quot;QDialog&quot; name=&quot;MyDialog&quot; &gt;
+      &lt;property name=&quot;geometry&quot; &gt;
+       &lt;rect&gt;
+        &lt;x&gt;0&lt;/x&gt;
+        &lt;y&gt;0&lt;/y&gt;
+        &lt;width&gt;401&lt;/width&gt;
+        &lt;height&gt;70&lt;/height&gt;
+       &lt;/rect&gt;
+      &lt;/property&gt;
+      &lt;property name=&quot;windowTitle&quot; &gt;
+       &lt;string&gt;Mach 2!&lt;/string&gt;
+      &lt;/property&gt;
+      &lt;layout class=&quot;QVBoxLayout&quot; &gt;
+       &lt;property name=&quot;margin&quot; &gt;
+        &lt;number&gt;9&lt;/number&gt;
+       &lt;/property&gt;
+       &lt;property name=&quot;spacing&quot; &gt;
+        &lt;number&gt;6&lt;/number&gt;
+       &lt;/property&gt;
+       &lt;item&gt;
+        &lt;widget class=&quot;QLabel&quot; name=&quot;aLabel&quot; &gt;
+         &lt;property name=&quot;text&quot; &gt;
+          &lt;string&gt;Join the life in the fastlane; - PCH enable your project today! -&lt;/string&gt;
+         &lt;/property&gt;
+        &lt;/widget&gt;
+       &lt;/item&gt;
+       &lt;item&gt;
+        &lt;widget class=&quot;QPushButton&quot; name=&quot;aButton&quot; &gt;
+         &lt;property name=&quot;text&quot; &gt;
+          &lt;string&gt;&amp;amp;Quit&lt;/string&gt;
+         &lt;/property&gt;
+         &lt;property name=&quot;shortcut&quot; &gt;
+          &lt;string&gt;Alt+Q&lt;/string&gt;
+         &lt;/property&gt;
+        &lt;/widget&gt;
+       &lt;/item&gt;
+      &lt;/layout&gt;
+     &lt;/widget&gt;
+     &lt;pixmapfunction&gt;qPixmapFromMimeSource&lt;/pixmapfunction&gt;
+     &lt;resources/&gt;
+     &lt;connections/&gt;
+    &lt;/ui&gt;</pre>
 <a name=""></a>
 <h3><tt>stable.h</tt></h3>
 <pre>&nbsp;   /* Add C includes here */
@@ -119,13 +143,13 @@ body { background: #ffffff; color: black; }</style>
     /* Add C++ includes here */
 
     # include &lt;iostream&gt;
-    # include &lt;qapplication.h&gt;
-    # include &lt;qpushbutton.h&gt;
-    # include &lt;qlabel.h&gt;
+    # include &lt;QApplication&gt;
+    # include &lt;QPushButton&gt;
+    # include &lt;QLabel&gt;
     #endif</pre>
 <a name=""></a>
 <h3><tt>myobject.h</tt></h3>
-<pre>&nbsp;   #include &lt;qobject.h&gt;
+<pre>&nbsp;   #include &lt;QObject&gt;
 
     class MyObject : public QObject
     {
@@ -136,7 +160,8 @@ body { background: #ffffff; color: black; }</style>
 <a name=""></a>
 <h3><tt>myobject.cpp</tt></h3>
 <pre>&nbsp;   #include &lt;iostream&gt;
-    #include &lt;qobject.h&gt;
+    #include &lt;QDebug&gt;
+    #include &lt;QObject&gt;
     #include &quot;myobject.h&quot;
 
     MyObject::MyObject()
@@ -154,9 +179,9 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <a name=""></a>
 <h3><tt>main.cpp</tt></h3>
-<pre>&nbsp;   #include &lt;qapplication.h&gt;
-    #include &lt;qpushbutton.h&gt;
-    #include &lt;qlabel.h&gt;
+<pre>&nbsp;   #include &lt;QApplication&gt;
+    #include &lt;QPushButton&gt;
+    #include &lt;QLabel&gt;
     #include &quot;myobject.h&quot;
     #include &quot;mydialog.h&quot;
 
@@ -165,10 +190,10 @@ body { background: #ffffff; color: black; }</style>
         QApplication app(argc, argv);
 
         MyObject obj;
-        MyDialog dia;
-        app.setMainWidget(&amp;dia);
-        dia.connect(dia.aButton, SIGNAL(clicked()), SLOT(close()));
-        dia.show();
+        MyDialog dialog;
+
+        dialog.connect(dialog.aButton, SIGNAL(clicked()), SLOT(close()));
+        dialog.show();
 
         return app.exec();
     }</pre>
@@ -186,16 +211,23 @@ body { background: #ffffff; color: black; }</style>
     # Use Precompiled headers (PCH)
     PRECOMPILED_HEADER  = stable.h
 
-    HEADERS  += stable.h \
+    HEADERS   = stable.h \
+                mydialog.h \
                 myobject.h
-    SOURCES  += main.cpp \
+    SOURCES   = main.cpp \
+                mydialog.cpp \
                 myobject.cpp \
                 util.cpp
     FORMS     = mydialog.ui</pre>
+<p>
+[Previous: <a href="qmake-advanced-usage.html">qmake Advanced Usage</a>]
+[<a href="qmake-manual.html">Contents</a>]
+[Next: <a href="qmake-reference.html">qmake Reference</a>]
+</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

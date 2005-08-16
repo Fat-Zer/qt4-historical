@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: qmake Common Projects</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -13,6 +14,7 @@ tr.address { font-family: sans-serif }
 body { background: #ffffff; color: black; }</style>
     <link rel="prev" href="qmake-tutorial.html" />
     <link rel="contents" href="qmake-manual.html" />
+    <link rel="next" href="qmake-using.html" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -22,6 +24,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qmake-tutorial.html">qmake Tutorial</a>]
 [<a href="qmake-manual.html">Contents</a>]
+[Next: <a href="qmake-using.html">Using qmake</a>]
 </p>
 <h1 align="center">qmake Common Projects<br /><small></small></h1>
 <p>This chapter describes how to set up <tt>qmake</tt> project files for three common types of project that are based on Qt. Although all kinds of project use many of the same variables, each of them use special variables to define</p>
@@ -34,6 +37,10 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#building-a-plugin">Building a Plugin</a></li>
 <ul><li><a href="#the-template">The <tt>plugin</tt> Template</a></li>
 <li><a href="#building-a-qt-designer-plugin">Building a Qt Designer Plugin</a></li>
+</ul>
+<li><a href="#building-and-installing-in-debug-and-release-modes">Building and Installing in Debug and Release Modes</a></li>
+<ul><li><a href="#building-in-both-modes">Building in Both Modes</a></li>
+<li><a href="#installing-in-both-modes">Installing in Both Modes</a></li>
 </ul>
 </ul>
 <a name="application"></a><a name="building-an-application"></a>
@@ -65,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>You only need to use the system variables that you have values for, for instance, if you don't have any extra INCLUDEPATHs then you don't need to specify any, <tt>qmake</tt> will add in the default ones needed. For instance, an example project file might look like this:</p>
 <pre>&nbsp;   TEMPLATE = app
-    DESTDIR  = c:\helloapp
+    DESTDIR  = c:/helloapp
     HEADERS += hello.h
     SOURCES += hello.cpp
     SOURCES += main.cpp
@@ -100,14 +107,45 @@ body { background: #ffffff; color: black; }</style>
 <p><i>Qt Designer</i> plugins are built using a specific set of configuration settings that depend on the way Qt was configured for your system. For convenience, these settings can be enabled by adding <tt>designer</tt> to the project's <tt>CONFIG</tt> variable. For example:</p>
 <pre>&nbsp;   CONFIG      += designer plugin debug_and_release</pre>
 <p>See the <a href="examples.html#qt-designer-examples">Qt Designer examples</a> for more examples of plugin-based projects.</p>
+<a name="building-and-installing-in-debug-and-release-modes"></a>
+<h2>Building and Installing in Debug and Release Modes</h2>
+<p>Sometimes, it is necessary to build a project in both debug and release modes. Although the <tt>CONFIG</tt> variable can hold both <tt>debug</tt> and <tt>release</tt> options, the <tt>debug</tt> option overrides the <tt>release</tt> option.</p>
+<a name="building-in-both-modes"></a>
+<h3>Building in Both Modes</h3>
+<p>To enable a project to be built in both modes, you must add the <tt>debug_and_release</tt> option to your project's <tt>CONFIG</tt> definition:</p>
+<pre>&nbsp;   CONFIG += debug_and_release
+
+    CONFIG(debug, debug|release) {
+        TARGET = debug_binary
+    } else {
+        TARGET = release_binary
+    }</pre>
+<p>The scope in the above snippet modifies the build target in each mode to ensure that the resulting targets have different names. Providing different names for targets ensures that one will not overwrite the other.</p>
+<p>When <tt>qmake</tt> processes the project file, it will generate a Makefile rule to allow the project to be built in both modes. This can be invoked in the following way:</p>
+<pre>&nbsp;   make all</pre>
+<p>The <tt>build_all</tt> option can be added to the <tt>CONFIG</tt> variable in the project file to ensure that the project is built in both modes by default:</p>
+<pre>&nbsp;   CONFIG += build_all</pre>
+<p>This allows the Makefile to be processed using the default rule:</p>
+<pre>&nbsp;   make</pre>
+<a name="installing-in-both-modes"></a>
+<h3>Installing in Both Modes</h3>
+<p>The <tt>build_all</tt> option also ensures that both versions of the target will be installed when the installation rule is invoked:</p>
+<pre>&nbsp;   make install</pre>
+<p>It is possible to customize the names of the build targets depending on the target platform. For example, a library or plugin may be named using a different convention on Windows to the one used on Unix platforms:</p>
+<pre>&nbsp;   CONFIG(debug, debug|release) {
+        unix: TARGET = $$join(TARGET,,,_debug)
+        else: TARGET = $$join(TARGET,,d)
+    }</pre>
+<p>The default behavior in the above snippet is to modify the name used for the build target when building in debug mode. An <tt>else</tt> clause could be added to the scope to do the same for release mode; left as it is, the target name remains unmodified.</p>
 <p>
 [Previous: <a href="qmake-tutorial.html">qmake Tutorial</a>]
 [<a href="qmake-manual.html">Contents</a>]
+[Next: <a href="qmake-using.html">Using qmake</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

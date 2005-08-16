@@ -107,7 +107,7 @@
 // Multi-process architecture
 //#define QT_NO_QWS_MULTIPROCESS
 
-// Qt/Embedded window system properties.
+// Qtopia Core window system properties.
 //#define QT_NO_QWS_PROPERTIES
 
 // Pre-rendered fonts
@@ -296,9 +296,9 @@
 #define QT_NO_STYLE_WINDOWSXP
 #endif
 
-// Secure Execution Environment (experimental)
-#if !defined(QT_NO_SXV) && (defined(QT_NO_QWS_MULTIPROCESS))
-#define QT_NO_SXV
+// Safe Execution Environment (experimental)
+#if !defined(QT_NO_SXE) && (defined(QT_NO_QWS_MULTIPROCESS))
+#define QT_NO_SXE
 #endif
 
 // FTP file access

@@ -522,7 +522,7 @@ void QTextEngine::shapeText(int item) const
 
     // Just to get the warning away
     int from = si.position;
-    int len = length(item);
+    const int len = length(item);
     Q_ASSERT(len > 0);
     Q_UNUSED(len); // --release warning
 
@@ -539,7 +539,6 @@ void QTextEngine::shapeText(int item) const
         QVarLengthArray<WORD> glyphs(l);
         QVarLengthArray<WORD> logClusters(l);
         QVarLengthArray<SCRIPT_VISATTR> glyphAttributes(l);
-
 
         do {
             res = ScriptShape(hdc, &fontEngine->script_cache, (WCHAR *)layoutData->string.unicode() + from, len,
@@ -600,8 +599,23 @@ void QTextEngine::shapeText(int item) const
 fail:
         if (hdc)
             ReleaseDC(0, hdc);
-        if(res == S_OK)
+        if(res == S_OK) {
+            QGlyphLayout *g = this->glyphs(&si);
+            unsigned short *lc = this->logClusters(&si);
+            int pos = 0;
+            while (pos < len) {
+                const ushort uc = layoutData->string.at(si.position + pos).unicode();
+                const bool dontPrint = (uc == 0x00ad || qIsControlChar(uc));
+                const int gp = lc[pos];
+                g[gp].attributes.dontPrint = dontPrint;
+                ++pos;
+                while (pos < len && gp == lc[pos]) {
+                    g[gp].attributes.dontPrint = dontPrint;
+                    ++pos;
+                }
+            }
             goto end;
+        }
     }
 
     {
@@ -640,6 +654,7 @@ end:
     QGlyphLayout *end = g + si.num_glyphs;
     while (g < end)
         si.width += (g++)->advance.x;
+
 
     layoutData->used += si.num_glyphs;
 }

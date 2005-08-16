@@ -79,6 +79,8 @@ public:
     inline int height(int item) const {
         if (uniformRowHeights)
             return itemHeight;
+        if (viewItems.isEmpty())
+            return 0;
         const QModelIndex index = viewItems.at(item).index;
         int height = viewItems.at(item).height;
         if (height <= 0 && index.isValid()) {
@@ -108,8 +110,7 @@ public:
     void relayout(const QModelIndex &parent);
     void reexpandChildren(const QModelIndex &parent);
 
-    void updateVerticalScrollbar();
-    void updateHorizontalScrollbar();
+    void updateScrollbars();
 
     int itemDecorationAt(const QPoint &pos) const;
 

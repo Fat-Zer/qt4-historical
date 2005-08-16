@@ -29,6 +29,8 @@
 #include <QtCore/qglobal.h>
 #include <QtSql/qsqlfield.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 /* Q3SqlFieldInfo Class
@@ -135,6 +137,8 @@ public:
     { calc = calculated; }
 
 };
+
+QT_END_HEADER
 
 #endif // QT_NO_SQL
 

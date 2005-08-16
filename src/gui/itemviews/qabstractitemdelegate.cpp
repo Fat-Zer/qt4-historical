@@ -272,7 +272,7 @@ QString QAbstractItemDelegate::elidedText(const QFontMetrics &fontMetrics, int w
     int length = text.length();
     int i = 0;
 
-    if (fontMetrics.width(text) < width)
+    if (fontMetrics.width(text) <= width)
         return text;
 
     if (mode == Qt::ElideMiddle) {
@@ -289,7 +289,7 @@ QString QAbstractItemDelegate::elidedText(const QFontMetrics &fontMetrics, int w
     int offset = (mode ==  Qt::ElideLeft) ? length - 1 : 0;
     QString elided;
         
-    while (i < length && fontMetrics.width(elided + text.at(offset)) + ellipsisWidth < width) {
+    while (i < length && fontMetrics.width(elided + text.at(offset)) + ellipsisWidth <= width) {
         if (mode == Qt::ElideLeft) {
             elided.prepend(text.at(offset));
             offset = (length - 1) - ++i;

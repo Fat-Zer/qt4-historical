@@ -83,13 +83,13 @@ public:
     }
 
     // private slots
-    void startNextRequest();
-    void slotReadyRead();
-    void slotConnected();
-    void slotError(QAbstractSocket::SocketError);
-    void slotClosed();
-    void slotBytesWritten(qint64 numBytes);
-    void slotDoFinished();
+    void _q_startNextRequest();
+    void _q_slotReadyRead();
+    void _q_slotConnected();
+    void _q_slotError(QAbstractSocket::SocketError);
+    void _q_slotClosed();
+    void _q_slotBytesWritten(qint64 numBytes);
+    void _q_slotDoFinished();
 
     int addRequest(QHttpRequest *);
     void sendRequest();
@@ -1534,7 +1534,7 @@ void QHttpPrivate::init()
 {
     Q_Q(QHttp);
     errorString = QT_TRANSLATE_NOOP("QHttp", "Unknown error");
-    QMetaObject::invokeMethod(q, "slotDoFinished", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
 }
 
 /*!
@@ -1968,9 +1968,33 @@ int QHttp::setUser(const QString &userName, const QString &password)
 }
 
 /*!
-    Enables proxy support, using the proxy server \a host on port \a
-    port. \a username and \a password can be provided if the proxy
-    server requires authentication.
+    Enables HTTP proxy support, using the proxy server \a host on port \a
+    port. \a username and \a password can be provided if the proxy server
+    requires authentication.
+
+    Example:
+
+    \code
+      void Ticker::getTicks()
+      {
+        http = new QHttp(this);
+        connect(http, SIGNAL(done(bool)), this, SLOT(showPage()));
+        http->setProxy("proxy.example.com", 3128);
+        http->setHost("ticker.example.com");
+        http->get("/ticks.asp");
+      }
+
+      void Ticker::showPage()
+      {
+        display(http->readAll());
+      }
+    \endcode
+
+    QHttp supports non-transparent web proxy servers only, such as the Squid
+    Web proxy cache server (from \l http://www.squid.org/). For transparent
+    proxying, such as SOCKS5, use QNetworkProxy instead.
+
+    \sa QFtp::setProxy()
 */
 int QHttp::setProxy(const QString &host, int port,
                     const QString &username, const QString &password)
@@ -2180,12 +2204,12 @@ int QHttpPrivate::addRequest(QHttpRequest *req)
 
     if (pending.count() == 1) {
         // don't emit the requestStarted() signal before the id is returned
-        QMetaObject::invokeMethod(q, "startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_startNextRequest", Qt::QueuedConnection);
     }
     return req->id;
 }
 
-void QHttpPrivate::startNextRequest()
+void QHttpPrivate::_q_startNextRequest()
 {
     Q_Q(QHttp);
     if (pending.isEmpty())
@@ -2222,8 +2246,6 @@ void QHttpPrivate::sendRequest()
             }
             header.setValue("Proxy-Authorization", "Basic " + pass.toBase64());
         }
-
-        hostName = proxyHost;
     }
 
     // Username support. Insert the user and password into the query
@@ -2257,7 +2279,7 @@ void QHttpPrivate::sendRequest()
         else
             socket->connectToHost(proxyHost, proxyPort);
     } else {
-        slotConnected();
+        _q_slotConnected();
     }
 
 }
@@ -2276,7 +2298,7 @@ void QHttpPrivate::finishedWithSuccess()
     if (pending.isEmpty()) {
         emit q->done(false);
     } else {
-        startNextRequest();
+        _q_startNextRequest();
     }
 }
 
@@ -2296,7 +2318,7 @@ void QHttpPrivate::finishedWithError(const QString &detail, int errorCode)
     emit q->done(true);
 }
 
-void QHttpPrivate::slotClosed()
+void QHttpPrivate::_q_slotClosed()
 {
     Q_Q(QHttp);
     if (state == QHttp::Closing)
@@ -2315,10 +2337,10 @@ void QHttpPrivate::slotClosed()
 
     postDevice = 0;
     setState(QHttp::Closing);
-    QMetaObject::invokeMethod(q, "slotDoFinished", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
 }
 
-void QHttpPrivate::slotConnected()
+void QHttpPrivate::_q_slotConnected()
 {
     if (state != QHttp::Sending) {
         bytesDone = 0;
@@ -2341,7 +2363,7 @@ void QHttpPrivate::slotConnected()
     }
 }
 
-void QHttpPrivate::slotError(QAbstractSocket::SocketError err)
+void QHttpPrivate::_q_slotError(QAbstractSocket::SocketError err)
 {
     postDevice = 0;
 
@@ -2365,7 +2387,7 @@ void QHttpPrivate::slotError(QAbstractSocket::SocketError err)
     closeConn();
 }
 
-void QHttpPrivate::slotBytesWritten(qint64 written)
+void QHttpPrivate::_q_slotBytesWritten(qint64 written)
 {
     Q_Q(QHttp);
     bytesDone += written;
@@ -2393,7 +2415,7 @@ void QHttpPrivate::slotBytesWritten(qint64 written)
     }
 }
 
-void QHttpPrivate::slotReadyRead()
+void QHttpPrivate::_q_slotReadyRead()
 {
     Q_Q(QHttp);
     if (state != QHttp::Reading) {
@@ -2502,7 +2524,7 @@ void QHttpPrivate::slotReadyRead()
                     }
 
                     // read data
-                    qint64 toRead = qMin(n, chunkedSize);
+                    qint64 toRead = chunkedSize < 0 ? n : qMin(n, chunkedSize);
                     if (!arr)
                         arr = new QByteArray;
                     uint oldArrSize = arr->size();
@@ -2548,7 +2570,7 @@ void QHttpPrivate::slotReadyRead()
                     arr = 0;
                     bytesDone += n;
 #if defined(QHTTP_DEBUG)
-                    qDebug("QHttp::slotReadyRead(): read %lld bytes (%lld bytes done)", n, bytesDone);
+                    qDebug("QHttp::_q_slotReadyRead(): read %lld bytes (%lld bytes done)", n, bytesDone);
 #endif
                     if (response.hasContentLength())
                         emit q->dataReadProgress(bytesDone, response.contentLength());
@@ -2560,7 +2582,7 @@ void QHttpPrivate::slotReadyRead()
                     delete arr;
                     arr = 0;
 #if defined(QHTTP_DEBUG)
-                    qDebug("QHttp::slotReadyRead(): read %lld bytes (%lld bytes done)", n, bytesDone + q->bytesAvailable());
+                    qDebug("QHttp::_q_slotReadyRead(): read %lld bytes (%lld bytes done)", n, bytesDone + q->bytesAvailable());
 #endif
                     if (response.hasContentLength())
                         emit q->dataReadProgress(bytesDone + q->bytesAvailable(), response.contentLength());
@@ -2579,13 +2601,13 @@ void QHttpPrivate::slotReadyRead()
                 setState(QHttp::Connected);
                 // Start a timer, so that we emit the keep alive signal
                 // "after" this method returned.
-                QMetaObject::invokeMethod(q, "slotDoFinished", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
             }
         }
     }
 }
 
-void QHttpPrivate::slotDoFinished()
+void QHttpPrivate::_q_slotDoFinished()
 {
     if (state == QHttp::Connected) {
         finishedWithSuccess();
@@ -2655,7 +2677,7 @@ void QHttpPrivate::closeConn()
 
     // Already closed ?
     if (!socket || !socket->isOpen()) {
-        QMetaObject::invokeMethod(q, "slotDoFinished", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
     } else {
         // Close now.
         socket->close();
@@ -2663,7 +2685,7 @@ void QHttpPrivate::closeConn()
         // Did close succeed immediately ?
         if (socket->state() == QTcpSocket::UnconnectedState) {
             // Prepare to emit the requestFinished() signal.
-            QMetaObject::invokeMethod(q, "slotDoFinished", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
         }
     }
 }
@@ -2680,12 +2702,12 @@ void QHttpPrivate::setSock(QTcpSocket *sock)
     socket = sock ? sock : new QTcpSocket();
 
     // connect all signals
-    QObject::connect(socket, SIGNAL(connected()), q, SLOT(slotConnected()));
-    QObject::connect(socket, SIGNAL(disconnected()), q, SLOT(slotClosed()));
-    QObject::connect(socket, SIGNAL(readyRead()), q, SLOT(slotReadyRead()));
-    QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), q, SLOT(slotError(QAbstractSocket::SocketError)));
+    QObject::connect(socket, SIGNAL(connected()), q, SLOT(_q_slotConnected()));
+    QObject::connect(socket, SIGNAL(disconnected()), q, SLOT(_q_slotClosed()));
+    QObject::connect(socket, SIGNAL(readyRead()), q, SLOT(_q_slotReadyRead()));
+    QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), q, SLOT(_q_slotError(QAbstractSocket::SocketError)));
     QObject::connect(socket, SIGNAL(bytesWritten(qint64)),
-                     q, SLOT(slotBytesWritten(qint64)));
+                     q, SLOT(_q_slotBytesWritten(qint64)));
 }
 
 

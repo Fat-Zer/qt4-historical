@@ -26,6 +26,8 @@
 
 #include <QtSql/qsqltablemodel.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Sql)
 
 class Q_SQL_EXPORT QSqlRelation
@@ -80,5 +82,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QSqlRelationalTableModel)
 };
+
+QT_END_HEADER
 
 #endif // QSQLRELATIONALTABLEMODEL_H

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/corelib/io/qiodevice.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/io/qiodevice.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/io/qiodevice.cpp -->
 <head>
     <title>Qt 4.1: QIODevice Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -164,6 +165,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the device is about to close. Connect this signal if you have operations that need to be performed before the device closes (e.g., if you have data in a separate buffer that needs to be written to the device).</p>
 <h3 class="fn"><a name="atEnd"></a>bool QIODevice::atEnd () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if the current read and write position is at the end of the device (i.e. there is no more data available for reading on the device); otherwise returns false.</p>
+<p>For some devices, atEnd() can return true even though there is more data to read. This special case only applies to devices that generate data in direct response to you calling <a href="qiodevice.html#read">read</a>() (e.g., <tt>/dev</tt> or <tt>/proc</tt> files on Unix and Mac OS X, or console input / <tt>stdin</tt> on all platforms).</p>
+<p>See also <a href="qiodevice.html#bytesAvailable">bytesAvailable</a>(), <a href="qiodevice.html#read">read</a>(), and <a href="qiodevice.html#isSequential">isSequential</a>().</p>
 <h3 class="fn"><a name="bytesAvailable"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::bytesAvailable () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the number of bytes that are available for reading. This function is commonly used with sequential devices to determine the number of bytes to allocate in a buffer before reading.</p>
 <p>Subclasses that reimplement this function call the base implementation in order to include the size of the unget buffer.</p>
@@ -287,7 +290,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is called by <a href="qiodevice.html#readLine">readLine</a>(), and provides its base implementation, using <a href="qiodevice.html#getChar">getChar</a>(). Buffered devices can improve the performance of <a href="qiodevice.html#readLine">readLine</a>() by reimplementing this function.</p>
 <p><a href="qiodevice.html#readLine">readLine</a>() appends a '\0' byte to <i>data</i>; readLineData() does not need to do this.</p>
 <h3 class="fn"><a name="readyRead"></a>void QIODevice::readyRead ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted once every time new data is available for reading from the device. It will only be emitted again once new data is available, such as when a new payload of network data has arrived on your network socket, or when a new block of data has been appended to your file.</p>
+<p>This signal is emitted once every time new data is available for reading from the device. It will only be emitted again once new data is available, such as when a new payload of network data has arrived on your network socket, or when a new block of data has been appended to your device.</p>
 <p>readyRead() is not emitted recursively; if you reenter the event loop or call <a href="qiodevice.html#waitForReadyRead">waitForReadyRead</a>() inside a slot connected to the readyRead() signal, the signal will not be reemitted (although <a href="qiodevice.html#waitForReadyRead">waitForReadyRead</a>() may still return true).</p>
 <p>See also <a href="qiodevice.html#bytesWritten">bytesWritten</a>().</p>
 <h3 class="fn"><a name="reset"></a>bool QIODevice::reset ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -341,6 +344,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

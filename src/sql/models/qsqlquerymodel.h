@@ -27,6 +27,8 @@
 #include <QtCore/qabstractitemmodel.h>
 #include <QtSql/qsqldatabase.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Sql)
 
 class QSqlQueryModelPrivate;
@@ -75,5 +77,7 @@ protected:
     void setLastError(const QSqlError &error);
     QSqlQueryModel(QSqlQueryModelPrivate &dd, QObject *parent = 0);
 };
+
+QT_END_HEADER
 
 #endif // QSQLQUERYMODEL_H

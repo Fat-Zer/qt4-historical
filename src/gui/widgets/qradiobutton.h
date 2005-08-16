@@ -26,6 +26,8 @@
 
 #include <QtGui/qabstractbutton.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QRadioButtonPrivate;
@@ -56,5 +58,7 @@ private:
     Q_DECLARE_PRIVATE(QRadioButton)
     Q_DISABLE_COPY(QRadioButton)
 };
+
+QT_END_HEADER
 
 #endif // QRADIOBUTTON_H

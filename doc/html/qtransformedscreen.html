@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/embedded/qscreentransformed_qws.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/embedded/qscreentransformed_qws.cpp -->
+<head>
+    <title>Qt 4.1: QTransformedScreen Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTransformedScreen Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<p>The QTransformedScreen class implements a screen driver for a transformed screen. <a href="#details">More...</a></p>
+<pre>#include &lt;QTransformedScreen&gt;</pre><p>Inherits <a href="qscreen.html">QScreen</a>.</p>
+<ul>
+<li><a href="qtransformedscreen-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h3>Public Types</h3>
+<ul>
+<li><div class="fn"/>enum <b><a href="qtransformedscreen.html#Transformation-enum">Transformation</a></b> { None, Rot90, Rot180, Rot270 }</li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qtransformedscreen.html#QTransformedScreen">QTransformedScreen</a></b> ( int <i>displayId</i> )</li>
+<li><div class="fn"/>void <b><a href="qtransformedscreen.html#setTransformation">setTransformation</a></b> ( Transformation <i>transformation</i> )</li>
+<li><div class="fn"/>Transformation <b><a href="qtransformedscreen.html#transformation">transformation</a></b> () const</li>
+</ul>
+<ul>
+<li><div class="fn"/>46 public functions inherited from <a href="qscreen.html#public-functions">QScreen</a></li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QTransformedScreen class implements a screen driver for a transformed screen.</p>
+<p>Note that this class is only available in <a href="qtopiacore.html">Qtopia Core</a>. Custom screen drivers can be added by subclassing the <a href="qscreendriverplugin.html">QScreenDriverPlugin</a> class, using the <a href="qscreendriverfactory.html">QScreenDriverFactory</a> class to dynamically load the driver into the application, but there should only be one screen object per application.</p>
+<p>The default implementation of QTransformedScreen inherits the <a href="qvfbscreen.html">QVFbScreen</a> class if the virtual framebuffer is enabled, or <a href="qlinuxfbscreen.html">QLinuxFbScreen</a> if it is not. But note that any <a href="qscreen.html">QScreen</a> subclass, or <a href="qscreen.html">QScreen</a> itself, can serve as its base class. This is easily achieved by manipulating the <tt>QT_TRANS_SCREEN_BASE</tt> definition in the header file.</p>
+<p>Use the <a href="qscreen.html#isTransformed">QScreen::isTransformed</a>() function to determine if a screen is transformed. The QTransformedScreen class itself provides means of rotating the screen with its <a href="qtransformedscreen.html#setTransformation">setTransformation</a>() function; the <a href="qtransformedscreen.html#transformation">transformation</a>() function returns the currently set rotation in terms of the <a href="qtransformedscreen.html#Transformation-enum">Transformation</a> enum (which describes the various available rotation settings). Alternatively, QTransformedScreen provides an implementation of the <a href="qscreen.html#transformOrientation">QScreen::transformOrientation</a>() function, returning the current rotation as an integer value.</p>
+<p>See also <a href="qscreen.html">QScreen</a>, <a href="qscreendriverplugin.html">QScreenDriverPlugin</a>, and <a href="qtopiacore-running.html">Running Applications</a>.</p>
+<hr />
+<h2>Member Type Documentation</h2>
+<h3 class="fn"><a name="Transformation-enum"></a>enum QTransformedScreen::Transformation</h3>
+<p>This enum describes the various rotations a transformed screen can have.</p>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QTransformedScreen::None</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No rotation</td></tr>
+<tr><td valign="top"><tt>QTransformedScreen::Rot90</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">90 degrees rotation</td></tr>
+<tr><td valign="top"><tt>QTransformedScreen::Rot180</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">180 degrees rotation</td></tr>
+<tr><td valign="top"><tt>QTransformedScreen::Rot270</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">270 degrees rotation</td></tr>
+</table></p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QTransformedScreen"></a>QTransformedScreen::QTransformedScreen ( int <i>displayId</i> )</h3>
+<p>Constructs a <a href="qtransformedscreen.html">QTransformedScreen</a> object. The <i>displayId</i> argument identifies the Qtopia Core server to connect to.</p>
+<h3 class="fn"><a name="setTransformation"></a>void QTransformedScreen::setTransformation ( <a href="qtransformedscreen.html#Transformation-enum">Transformation</a> <i>transformation</i> )</h3>
+<p>Rotates this screen object according to the specified <i>transformation</i>.</p>
+<p>See also <a href="qtransformedscreen.html#transformation">transformation</a>().</p>
+<h3 class="fn"><a name="transformation"></a><a href="qtransformedscreen.html#Transformation-enum">Transformation</a> QTransformedScreen::transformation () const</h3>
+<p>Returns the currently set rotation.</p>
+<p>See also <a href="qtransformedscreen.html#setTransformation">setTransformation</a>() and <a href="qscreen.html#transformOrientation">QScreen::transformOrientation</a>().</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+</tr></table></div></address></body>
+</html>

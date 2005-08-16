@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/qtdesigner.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/qtdesigner.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/qtdesigner.qdoc -->
 <head>
     <title>Qt 4.1: QDesignerCustomWidgetInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -56,7 +57,6 @@ body { background: #ffffff; color: black; }</style>
         bool isContainer() const;
         bool isInitialized() const;
         QIcon icon() const;
-        QString codeTemplate() const;
         QString domXml() const;
         QString group() const;
         QString includeFile() const;
@@ -70,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
         bool initialized;
     };</pre>
 <p>Note that the only part of the class definition that is specific to this particular custom widget is the class name. In addition, since we are implementing an interface, we must ensure that it's made known to the meta object system using the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use the <a href="qobject.html#qobject_cast">qobject_cast</a>() function to query for supported interfaces using nothing but a <a href="qobject.html">QObject</a> pointer.</p>
-<p>In the implementation of the class you must remember to export your custom widget plugin to <i>Qt Designer</i> using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro:</p>
+<p>In the implementation of the class you must remember to export your custom widget plugin to <i>Qt Designer</i> using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro:</p>
 <pre>&nbsp;       Q_EXPORT_PLUGIN2(MyCustomWidget)</pre>
 <p>This macro ensures that <i>Qt Designer</i> can access and construct the custom widget. Without this macro, there is no way for Qt Designer to use it.</p>
 <p>When implementing a custom widget plugin, you build it as a separate library. If you want to include several custom widget plugins in the same library, you must in addition subclass <a href="qdesignercustomwidgetcollectioninterface.html">QDesignerCustomWidgetCollectionInterface</a>.</p>
@@ -99,8 +99,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.QDesignerCustomWidgetInterface"></a>QDesignerCustomWidgetInterface::~QDesignerCustomWidgetInterface ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the custom widget interface.</p>
 <h3 class="fn"><a name="codeTemplate"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::codeTemplate () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Returns the code template that <i>Qt Designer</i> includes in forms that contain the custom widget when they are saved.</p>
-<p><a href="uic.html#uic">uic</a> uses the code template to provide code for constructing the custom widget.</p>
+<p>This function is reserved for future use by <i>Qt Designer</i>.</p>
 <h3 class="fn"><a name="createWidget"></a><a href="qwidget.html">QWidget</a> * QDesignerCustomWidgetInterface::createWidget ( <a href="qwidget.html">QWidget</a> * <i>parent</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns a new instance of the custom widget, with the given <i>parent</i>.</p>
 <h3 class="fn"><a name="domXml"></a><a href="qstring.html">QString</a> QDesignerCustomWidgetInterface::domXml () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -130,6 +129,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/styles/qstylefactory.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/styles/qstylefactory.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/styles/qstylefactory.cpp -->
 <head>
     <title>Qt 4.1: QStyleFactory Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,14 +33,14 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QStyleFactory class creates <a href="qstyle.html">QStyle</a> objects.</p>
-<p>The style factory creates a <a href="qstyle.html">QStyle</a> object for a given key with <a href="qstylefactory.html#create">QStyleFactory::create</a>().</p>
+<p>The style factory creates a <a href="qstyle.html">QStyle</a> object for a given key with <a href="qstylefactory.html#create">create</a>().</p>
 <p>The styles are either built-in or dynamically loaded from a style plugin (see <a href="qstyleplugin.html">QStylePlugin</a>).</p>
-<p><a href="qstylefactory.html#keys">QStyleFactory::keys</a>() returns a list of valid keys, typically including &quot;windows&quot;, &quot;motif&quot;, &quot;cde&quot;, and &quot;plastique&quot;. Depending on the platform, &quot;windowsxp&quot; and &quot;macintosh&quot; may be available.</p>
+<p><a href="qstylefactory.html#keys">keys</a>() returns a list of valid keys, typically including &quot;windows&quot;, &quot;motif&quot;, &quot;cde&quot;, and &quot;plastique&quot;. Depending on the platform, &quot;windowsxp&quot; and &quot;macintosh&quot; may be available. Keys are case insensitive.</p>
 <p>See also <a href="qstyle.html">QStyle</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="create"></a><a href="qstyle.html">QStyle</a> * QStyleFactory::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Creates a <a href="qstyle.html">QStyle</a> object that matches <i>key</i>. This is either a built-in style, or a style from a style plugin.</p>
+<p>Creates a <a href="qstyle.html">QStyle</a> object that matches <i>key</i>. This is either a built-in style, or a style from a style plugin. Keys are case insensitive.</p>
 <p>See also <a href="qstylefactory.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QStyleFactory::keys ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of keys this factory can create styles for.</p>
@@ -48,6 +49,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

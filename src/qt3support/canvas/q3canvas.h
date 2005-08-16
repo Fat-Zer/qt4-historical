@@ -32,6 +32,8 @@
 #include <Qt3Support/q3valuelist.h>
 #include <Qt3Support/q3pointarray.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 class Q3CanvasSprite;
@@ -757,5 +759,7 @@ private:
                       const Q3CanvasEllipse*,
                       const Q3CanvasText*) const;
 };
+
+QT_END_HEADER
 
 #endif // Q3CANVAS_H

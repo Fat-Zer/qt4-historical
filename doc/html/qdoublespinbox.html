@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/widgets/qspinbox.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/widgets/qspinbox.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/widgets/qspinbox.cpp -->
 <head>
     <title>Qt 4.1: QDoubleSpinBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -68,7 +69,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>17 public functions inherited from <a href="qabstractspinbox.html#public-functions">QAbstractSpinBox</a></li>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -199,7 +200,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QDoubleSpinBox"></a>QDoubleSpinBox::QDoubleSpinBox ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs a spin box with no minimum and maximum values, a step value of 1.0 and a precision of 2 decimal places. The value is initially set to 0.00. The spin box has the given <i>parent</i>.</p>
+<p>Constructs a spin box with 0.0 as minimum value and 99.99 as maximum value, a step value of 1.0 and a precision of 2 decimal places. The value is initially set to 0.00. The spin box has the given <i>parent</i>.</p>
 <p>See also <a href="qdoublespinbox.html#minimum-prop">setMinimum</a>(), <a href="qdoublespinbox.html#maximum-prop">setMaximum</a>(), and <a href="qdoublespinbox.html#singleStep-prop">setSingleStep</a>().</p>
 <h3 class="fn"><a name="setRange"></a>void QDoubleSpinBox::setRange ( double <i>min</i>, double <i>max</i> )</h3>
 <p>Convenience function to set the minimum, <i>min</i>, and maximum, <i>max</i>, values with a single function call.</p>
@@ -221,7 +222,6 @@ body { background: #ffffff; color: black; }</style>
 <p>The new value is passed literally in <i>text</i> with no <a href="qdoublespinbox.html#prefix-prop">prefix</a>() or <a href="qdoublespinbox.html#suffix-prop">suffix</a>().</p>
 <h3 class="fn"><a name="valueFromText"></a>double QDoubleSpinBox::valueFromText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function is used by the spin box whenever it needs to interpret <i>text</i> entered by the user as a value.</p>
-<p>Note: Neither <a href="qdoublespinbox.html#prefix-prop">prefix</a>() nor <a href="qdoublespinbox.html#suffix-prop">suffix</a>() are included when this function is called by <a href="qdoublespinbox.html">QDoubleSpinBox</a>.</p>
 <p>Subclasses that need to display spin box values in a non-numeric way need to reimplement this function.</p>
 <p>Note: <a href="qdoublespinbox.html">QDoubleSpinBox</a> handles <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() separately; this function is only concerned with the other values.</p>
 <p>See also <a href="qdoublespinbox.html#textFromValue">textFromValue</a>() and <a href="qabstractspinbox.html#validate">validate</a>().</p>
@@ -229,6 +229,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -92,7 +92,7 @@ public:
     the value currently displayed. The user can also type the value in
     manually. If the value is entered directly into the spin box, the
     value will be changed and valueChanged() will be emitted with the
-    new value when Enter/Return is pressed, when the spin box looses
+    new value when Enter/Return is pressed, when the spin box loses
     focus or when the spin box is deactivated (see
     QWidget::windowActivationChanged()). The spin box supports integer
     values but can be extended to use different strings with
@@ -126,8 +126,14 @@ public:
     choice in addition to the range of numeric values. See
     setSpecialValueText() for how to do this with QSpinBox.
 
-    \inlineimage macintosh-spinbox.png Screenshot in Macintosh style
-    \inlineimage windows-spinbox.png Screenshot in Windows style
+    \table 100%
+    \row \o \inlineimage windowsxp-spinbox.png Screenshot of a Windows XP spin box
+         \o A spin box shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+    \row \o \inlineimage plastique-spinbox.png Screenshot of a Plastique spin box
+         \o A spin box shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \row \o \inlineimage macintosh-spinbox.png Screenshot of a Macintosh spin box
+         \o A spin box shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+    \endtable
 
     \section1 Subclassing QSpinBox
 
@@ -166,8 +172,8 @@ public:
 */
 
 /*!
-    Constructs a spin box with no minimum and maximum values, a step
-    value of 1. The value is initially set to 0. It is parented to \a
+    Constructs a spin box with 0 as minimum value and 99 as maximum value, a
+    step value of 1. The value is initially set to 0. It is parented to \a
     parent.
 
     \sa setMinimum(), setMaximum(), setSingleStep()
@@ -458,9 +464,6 @@ QString QSpinBox::textFromValue(int v) const
     Note: QSpinBox handles specialValueText() separately; this
     function is only concerned with the other values.
 
-    Note: Neither prefix() nor suffix() are included when this
-    function is called by QSpinBox.
-
     \sa textFromValue(), validate()
 */
 
@@ -573,8 +576,8 @@ void QSpinBox::fixup(QString &input) const
 */
 
 /*!
-    Constructs a spin box with no minimum and maximum values, a step
-    value of 1.0 and a precision of 2 decimal places. The value is
+    Constructs a spin box with 0.0 as minimum value and 99.99 as maximum value,
+    a step value of 1.0 and a precision of 2 decimal places. The value is
     initially set to 0.00. The spin box has the given \a parent.
 
     \sa setMinimum(), setMaximum(), setSingleStep()
@@ -871,9 +874,6 @@ QString QDoubleSpinBox::textFromValue(double v) const
 /*!
     This virtual function is used by the spin box whenever it needs to
     interpret \a text entered by the user as a value.
-
-    Note: Neither prefix() nor suffix() are included when this
-    function is called by QDoubleSpinBox.
 
     Subclasses that need to display spin box values in a non-numeric
     way need to reimplement this function.

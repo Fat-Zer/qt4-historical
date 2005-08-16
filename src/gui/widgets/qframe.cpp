@@ -481,9 +481,8 @@ QSize QFrame::sizeHint() const
 /*!\reimp
 */
 
-void QFrame::paintEvent(QPaintEvent *event)
+void QFrame::paintEvent(QPaintEvent *)
 {
-    Q_D(QFrame);
     QPainter paint(this);
     drawFrame(&paint);
 }

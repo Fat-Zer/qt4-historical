@@ -26,6 +26,8 @@
 
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Xml)
 
 #ifndef QT_NO_DOM
@@ -643,5 +645,7 @@ private:
 Q_XML_EXPORT QTextStream& operator<<(QTextStream&, const QDomNode&);
 
 #endif // QT_NO_DOM
+
+QT_END_HEADER
 
 #endif // QDOM_H

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/itemviews/qtreeview.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/itemviews/qtreeview.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/itemviews/qtreeview.cpp -->
 <head>
     <title>Qt 4.1: QTreeView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -73,7 +74,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>39 public functions inherited from <a href="qabstractitemview.html#public-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -158,7 +159,26 @@ body { background: #ffffff; color: black; }</style>
 <p>The model/view architecture ensures that the contents of the tree view are updated as the model changes.</p>
 <p>Items that have children can be in an expanded (children are visible) or collapsed (children are hidden) state. When this state changes a <a href="qtreeview.html#collapsed">collapsed</a>() or <a href="qtreeview.html#expanded">expanded</a>() signal is emitted with the model index of the relevant item.</p>
 <p>The amount of indentation used to indicate levels of hierarchy is controlled by the <a href="qtreeview.html#indentation-prop">indentation</a> property.</p>
-<p>Headers in a tree view are constructed using the <a href="qheaderview.html">QHeaderView</a> class and can be hidden using <a href="qtreeview.html#header">header</a>()-&gt;<a href="qwidget.html#hide">hide</a>();</p>
+<p>Headers in a tree view are constructed using the <a href="qheaderview.html">QHeaderView</a> class and can be hidden using <a href="qtreeview.html#header">header</a>()-&gt;<a href="qwidget.html#hide">hide</a>().</p>
+<a name="key-bindings"></a>
+<h3>Key Bindings</h3>
+<p>QTreeView supports a set of key bindings that enable the user to navigate in the view and interact with the contents of items:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Key</th><th>Action</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>UpArrow</td><td>Moves the cursor to the item in the same column on the previous row. If the parent of the current item has no more rows to navigate to, the cursor moves to the relevant item in the last row of the sibling that precedes the parent.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>DownArrow</td><td>Moves the cursor to the item in the same column on the next row. If the parent of the current item has no more rows to navigate to, the cursor moves to the relevant item in the first row of the sibling that follows the parent.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>LeftArrow</td><td>Hides the children of the current item (if present) by collapsing a branch.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>RightArrow</td><td>Reveals the children of the current item (if present) by expanding a branch.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>PageUp</td><td>Moves the cursor up one page.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>PageDown</td><td>Moves the cursor down one page.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Home</td><td>Moves the cursor to an item in the same column of the first row of the first top-level item in the model.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>End</td><td>Moves the cursor to an item in the same column of the last row of the last top-level item in the model.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>F2</td><td>In editable models, this opens the current item for editing. The Escape key can be used to cancel the editing process and revert any changes to the data displayed.</td></tr>
+</table></p>
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/windowsxp-treeview.png" alt="Screenshot of a Windows XP style tree view" /></td><td><img src="images/macintosh-treeview.png" alt="Screenshot of a Macintosh style tree view" /></td><td><img src="images/plastique-treeview.png" alt="Screenshot of a Plastique style tree view" /></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>A <a href="gallery-windowsxp.html">Windows XP style</a> tree view.</td><td>A <a href="gallery-macintosh.html">Macintosh style</a> tree view.</td><td>A <a href="gallery-plastique.html">Plastique style</a> tree view.</td></tr>
+</table></p>
 <p>See also <a href="qlistview.html">QListView</a>, <a href="qtreewidget.html">QTreeWidget</a>, <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, and <a href="qabstractitemview.html">QAbstractItemView</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -188,7 +208,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="uniformRowHeights-prop"></a>uniformRowHeights : bool</h3>
 <p>This property holds whether all items in the treeview have the same height.</p>
-<p>This property should only be set to true if it is guarantied that all items in the view has the same height. This enables the view to do some optimizations.</p>
+<p>This property should only be set to true if it is guaranteed that all items in the view has the same height. This enables the view to do some optimizations.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool uniformRowHeights () const</b></li>
@@ -203,6 +223,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the tree view.</p>
 <h3 class="fn"><a name="collapse"></a>void QTreeView::collapse ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Collapses the model item specified by the <i>index</i>.</p>
+<p>See also <a href="qtreeview.html#collapsed">collapsed</a>().</p>
 <h3 class="fn"><a name="collapsed"></a>void QTreeView::collapsed ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the item specified by <i>index</i> is collapsed.</p>
 <h3 class="fn"><a name="columnAt"></a>int QTreeView::columnAt ( int <i>x</i> ) const</h3>
@@ -224,21 +245,22 @@ body { background: #ffffff; color: black; }</style>
 <p>Draws the branches in the tree view on the same row as the model item <i>index</i>, using the <i>painter</i> given. The branches are drawn in the rectangle specified by <i>rect</i>.</p>
 <h3 class="fn"><a name="drawRow"></a>void QTreeView::drawRow ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a> &amp; <i>option</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Draws the row in the tree view that contains the model item <i>index</i>, using the <i>painter</i> given. The <i>option</i> control how the item is displayed.</p>
-<p>See also <a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a>.</p>
+<p>See also QStyleOptionViewItem() and <a href="qabstractitemview.html#alternatingRowColors-prop">setAlternatingRowColors</a>().</p>
 <h3 class="fn"><a name="expand"></a>void QTreeView::expand ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Expands the model item specified by the <i>index</i>.</p>
+<p>See also <a href="qtreeview.html#expanded">expanded</a>().</p>
 <h3 class="fn"><a name="expanded"></a>void QTreeView::expanded ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the item specified by <i>index</i> is expanded.</p>
 <p>See also <a href="qtreeview.html#setExpanded">setExpanded</a>().</p>
 <h3 class="fn"><a name="header"></a><a href="qheaderview.html">QHeaderView</a> * QTreeView::header () const</h3>
 <p>Returns the header for the tree view.</p>
-<p>See also <a href="qtreeview.html#setHeader">setHeader</a>().</p>
+<p>See also <a href="qtreeview.html#setHeader">setHeader</a>() and <a href="qabstractitemmodel.html#headerData">QAbstractItemModel::headerData</a>().</p>
 <h3 class="fn"><a name="hideColumn"></a>void QTreeView::hideColumn ( int <i>column</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Hides the <i>column</i> given.</p>
-<p>See also <a href="qtreeview.html#showColumn">showColumn</a>().</p>
+<p>See also <a href="qtreeview.html#showColumn">showColumn</a>() and <a href="qtreeview.html#setColumnHidden">setColumnHidden</a>().</p>
 <h3 class="fn"><a name="horizontalOffset"></a>int QTreeView::horizontalOffset () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the horizontal offset of the items in the treeview.</p>
-<p>Note that the ttree view uses the horizontal header section positions to determine the positions of columns in the view.</p>
+<p>Note that the tree view uses the horizontal header section positions to determine the positions of columns in the view.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#horizontalOffset">QAbstractItemView</a>.</p>
 <p>See also <a href="qtreeview.html#verticalOffset">verticalOffset</a>().</p>
 <h3 class="fn"><a name="indexAbove"></a><a href="qmodelindex.html">QModelIndex</a> QTreeView::indexAbove ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
@@ -247,15 +269,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the model index of the item below <i>index</i>.</p>
 <h3 class="fn"><a name="indexRowSizeHint"></a>int QTreeView::indexRowSizeHint ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the size hint for the row indicated by <i>index</i>.</p>
-<p>See also <a href="qtreeview.html#sizeHintForColumn">sizeHintForColumn</a>().</p>
+<p>See also <a href="qtreeview.html#sizeHintForColumn">sizeHintForColumn</a>() and <a href="qtreeview.html#uniformRowHeights-prop">uniformRowHeights</a>().</p>
 <h3 class="fn"><a name="isColumnHidden"></a>bool QTreeView::isColumnHidden ( int <i>column</i> ) const</h3>
 <p>Returns true if the <i>column</i> is hidden; otherwise returns false.</p>
-<p>See also <a href="qtreeview.html#hideColumn">hideColumn</a>().</p>
+<p>See also <a href="qtreeview.html#hideColumn">hideColumn</a>() and <a href="qtreeview.html#isRowHidden">isRowHidden</a>().</p>
 <h3 class="fn"><a name="isExpanded"></a>bool QTreeView::isExpanded ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
 <p>Returns true if the model item <i>index</i> is expanded; otherwise returns false.</p>
+<p><font color="red"><b><code>\da</code></b></font><a href="qtreeview.html#expand">expand</a>(), <a href="qtreeview.html#expanded">expanded</a>()</p>
 <h3 class="fn"><a name="isRowHidden"></a>bool QTreeView::isRowHidden ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> ) const</h3>
 <p>Returns true if the item in the given <i>row</i> of the <i>parent</i> is hidden; otherwise returns false.</p>
-<p>See also <a href="qtreeview.html#setRowHidden">setRowHidden</a>().</p>
+<p>See also <a href="qtreeview.html#setRowHidden">setRowHidden</a>() and <a href="qtreeview.html#isColumnHidden">isColumnHidden</a>().</p>
 <h3 class="fn"><a name="moveCursor"></a><a href="qmodelindex.html">QModelIndex</a> QTreeView::moveCursor ( <a href="qabstractitemview.html#CursorAction-enum">CursorAction</a> <i>cursorAction</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifiers</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Move the cursor in the way described by <i>cursorAction</i>, using the information provided by the button <i>modifiers</i>.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#moveCursor">QAbstractItemView</a>.</p>
@@ -281,24 +304,24 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qabstractitemview.html#selectAll">QAbstractItemView</a>.</p>
 <h3 class="fn"><a name="setColumnHidden"></a>void QTreeView::setColumnHidden ( int <i>column</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>column</i> is hidden, otherwise the <i>column</i> is shown.</p>
-<p>See also <a href="qtreeview.html#isColumnHidden">isColumnHidden</a>().</p>
+<p>See also <a href="qtreeview.html#isColumnHidden">isColumnHidden</a>(), <a href="qtreeview.html#hideColumn">hideColumn</a>(), and <a href="qtreeview.html#setRowHidden">setRowHidden</a>().</p>
 <h3 class="fn"><a name="setExpanded"></a>void QTreeView::setExpanded ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, bool <i>expanded</i> )</h3>
 <p>Sets the item referred to by <i>index</i> to either collapse or expanded, depending on the value of <i>expanded</i>.</p>
-<p>See also <a href="qtreeview.html#expanded">expanded</a>().</p>
+<p>See also <a href="qtreeview.html#expanded">expanded</a>() and <a href="qtreeview.html#expand">expand</a>().</p>
 <h3 class="fn"><a name="setHeader"></a>void QTreeView::setHeader ( <a href="qheaderview.html">QHeaderView</a> * <i>header</i> )</h3>
 <p>Sets the header for the tree view, to the given <i>header</i>.</p>
 <p>The view takes ownership over the given <i>header</i> and deletes it when a new header is set.</p>
-<p>See also <a href="qtreeview.html#header">header</a>().</p>
+<p>See also <a href="qabstractitemmodel.html#headerData">QAbstractItemModel::headerData</a>().</p>
 <h3 class="fn"><a name="setRowHidden"></a>void QTreeView::setRowHidden ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>row</i> with the given <i>parent</i> is hidden, otherwise the <i>row</i> is shown.</p>
-<p>See also <a href="qtreeview.html#isRowHidden">isRowHidden</a>().</p>
+<p>See also <a href="qtreeview.html#isRowHidden">isRowHidden</a>() and <a href="qtreeview.html#setColumnHidden">setColumnHidden</a>().</p>
 <h3 class="fn"><a name="setSelection"></a>void QTreeView::setSelection ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, <a href="qitemselectionmodel.html#SelectionFlag-enum">QItemSelectionModel::SelectionFlags</a> <i>command</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Applies the selection <i>command</i> to the items in or touched by the rectangle, <i>rect</i>.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#setSelection">QAbstractItemView</a>.</p>
 <p>See also <a href="qabstractitemview.html#selectionCommand">selectionCommand</a>().</p>
 <h3 class="fn"><a name="showColumn"></a>void QTreeView::showColumn ( int <i>column</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Shows the given <i>column</i> in the tree view.</p>
-<p>See also <a href="qtreeview.html#hideColumn">hideColumn</a>().</p>
+<p>See also <a href="qtreeview.html#hideColumn">hideColumn</a>() and <a href="qtreeview.html#setColumnHidden">setColumnHidden</a>().</p>
 <h3 class="fn"><a name="sizeHintForColumn"></a>int QTreeView::sizeHintForColumn ( int <i>column</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the size hint for the <i>column</i>'s width or -1 if there is no model.</p>
 <p>If you need to set the width of a given column to a fixed value, call <a href="qheaderview.html#resizeSection">QHeaderView::resizeSection</a>() on the view's header.</p>
@@ -321,6 +344,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

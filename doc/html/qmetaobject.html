@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/corelib/kernel/qmetaobject.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/kernel/qmetaobject.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/kernel/qmetaobject.cpp -->
 <head>
     <title>Qt 4.1: QMetaObject Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -160,6 +161,9 @@ body { background: #ffffff; color: black; }</style>
 <p>To asynchronously invoke the <a href="qabstractbutton.html#animateClick">animateClick()</a> slot on a <a href="qpushbutton.html">QPushButton</a>:</p>
 <pre>&nbsp;   QMetaObject::invokeMethod(pushButton, &quot;animateClick&quot;,
                               Qt::QueuedConnection);</pre>
+<p>With asynchronous method invocations, the parameters must be of types that are known to Qt's meta-object system, because Qt needs to copy the arguments to store them in an event behind the scenes. If you try to use a queued connection and get the error message</p>
+<pre>&nbsp;   QMetaObject::invokeMethod: Unable to handle unregistered datatype 'MyType'</pre>
+<p>call <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() to register the data type before you call invokeMethod().</p>
 <p>To synchronously invoke the <tt>compute(QString, int, double)</tt> slot on some arbitrary object <tt>obj</tt> retrieve its return value:</p>
 <pre>&nbsp;   QString retVal;
     QMetaObject::invokeMethod(obj, &quot;compute&quot;, Qt::DirectConnection,
@@ -168,7 +172,7 @@ body { background: #ffffff; color: black; }</style>
                               Q_ARG(int, 42),
                               Q_ARG(double, 9.7));</pre>
 <p>If the &quot;compute&quot; slot does not take exactly one <a href="qstring.html">QString</a>, one int and one double in the specified order, the call will fail.</p>
-<p>See also <a href="qmetaobject.html#Q_ARG">Q_ARG</a>() and <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>().</p>
+<p>See also <a href="qmetaobject.html#Q_ARG">Q_ARG</a>(), <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>(), and <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>().</p>
 <h3 class="fn"><a name="invokeMethod-2"></a>bool QMetaObject::invokeMethod ( <a href="qobject.html">QObject</a> * <i>obj</i>, const char * <i>member</i>, <a href="qgenericreturnargument.html">QGenericReturnArgument</a> <i>ret</i>, <a href="qgenericargument.html">QGenericArgument</a> <i>val0</i> = QGenericArgument( 0 ), <a href="qgenericargument.html">QGenericArgument</a> <i>val1</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val2</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val3</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val4</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val5</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val6</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val7</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val8</i> = QGenericArgument(), <a href="qgenericargument.html">QGenericArgument</a> <i>val9</i> = QGenericArgument() )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This overload always invokes the member using the connection type <a href="qt.html#ConnectionType-enum">Qt::AutoConnection</a>.</p>
@@ -217,6 +221,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

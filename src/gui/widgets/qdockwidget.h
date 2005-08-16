@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_DOCKWIDGET
@@ -43,6 +45,7 @@ class Q_GUI_EXPORT QDockWidget : public QWidget
     Q_PROPERTY(DockWidgetFeatures features READ features WRITE setFeatures NOTIFY featuresChanged)
     Q_PROPERTY(Qt::DockWidgetAreas allowedAreas READ allowedAreas
                WRITE setAllowedAreas NOTIFY allowedAreasChanged)
+    Q_PROPERTY(QString windowTitle READ windowTitle WRITE setWindowTitle DESIGNABLE true)
 
 public:
     explicit QDockWidget(const QString &title, QWidget *parent = 0, Qt::WFlags flags = 0);
@@ -95,8 +98,8 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QDockWidget)
     Q_DISABLE_COPY(QDockWidget)
-    Q_PRIVATE_SLOT(d_func(), void toggleView(bool))
-    Q_PRIVATE_SLOT(d_func(), void toggleTopLevel())
+    Q_PRIVATE_SLOT(d_func(), void _q_toggleView(bool))
+    Q_PRIVATE_SLOT(d_func(), void _q_toggleTopLevel())
     friend class QDockWidgetLayout;
     friend class QDockWidgetItem;
 };
@@ -104,5 +107,7 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDockWidget::DockWidgetFeatures)
 
 #endif // QT_NO_DOCKWIDGET
+
+QT_END_HEADER
 
 #endif // QDOCKWIDGET_H

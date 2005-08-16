@@ -84,8 +84,8 @@ public:
     { }
 
     void init();
-    void toggleView(bool); // private slot
-    void toggleTopLevel(); // private slot
+    void _q_toggleView(bool); // private slot
+    void _q_toggleTopLevel(); // private slot
 
     QStyleOptionDockWidget getStyleOption();
 

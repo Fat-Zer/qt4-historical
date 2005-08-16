@@ -35,6 +35,8 @@
 #error qiodevice.h must be included before any header file that defines open
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QByteArray;
@@ -171,9 +173,9 @@ public:
     inline QT3_SUPPORT qint64 writeBlock(const char *data, quint64 len) { return write(data, len); }
     inline QT3_SUPPORT qint64 writeBlock(const QByteArray &data) { return write(data); }
 
-    inline QT3_SUPPORT int getch() { char c; return getChar(&c) ? int(c) : -1; }
-    inline QT3_SUPPORT int putch(int c) { return putChar(c) ? int(c) : -1; }
-    inline QT3_SUPPORT int ungetch(int c) { ungetChar(c); return c; }
+    inline QT3_SUPPORT int getch() { char c; return getChar(&c) ? int(uchar(c)) : -1; }
+    inline QT3_SUPPORT int putch(int c) { return putChar(c) ? int(uchar(c)) : -1; }
+    inline QT3_SUPPORT int ungetch(int c) { ungetChar(uchar(c)); return c; }
 #endif
 };
 
@@ -220,5 +222,7 @@ inline QT3_SUPPORT int QIODevice::state() const
 class QDebug;
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, QIODevice::OpenMode modes);
 #endif
+
+QT_END_HEADER
 
 #endif // QIODEVICE_H

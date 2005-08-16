@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 #if defined(_ARCH_PPC) || defined(Q_CC_XLC)
 
 #if defined(Q_CC_GNU)
@@ -273,5 +275,7 @@ extern "C" {
 #endif
 
 #endif //__i386__
+
+QT_END_HEADER
 
 #endif // MACOSX_QATOMIC_H

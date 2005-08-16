@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
     <title>Qt 4.1: QAbstractItemModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -148,7 +149,7 @@ body { background: #ffffff; color: black; }</style>
 <li>A <a href="qabstractitemmodel.html#removeRows">removeRows</a>() implementation must call <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows</a>() <i>before</i> the rows are removed from the data structure, and it must call <a href="qabstractitemmodel.html#endRemoveRows">endRemoveRows</a>() <i>immediately afterwards</i>.</li>
 <li>A <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>() implementation must call <a href="qabstractitemmodel.html#beginRemoveColumns">beginRemoveColumns</a>() <i>before</i> the columns are removed from the data structure, and it must call <a href="qabstractitemmodel.html#endRemoveColumns">endRemoveColumns</a>() <i>immediately afterwards</i>.</li>
 </ul>
-<p>The signals that these functions emit give attached components the chance to take action before any data becomes unavailable. The encapsulation of the insert and remove operations with these begin and end functions also enable the model to manage <a href="qpersistentmodelindex.html">persistent model indexes</a> correctly. <b>If you want selections to be handled properly, you must ensure that you call these functions.</b></p>
+<p>The <i>private</i> signals that these functions emit give attached components the chance to take action before any data becomes unavailable. The encapsulation of the insert and remove operations with these begin and end functions also enables the model to manage <a href="qpersistentmodelindex.html">persistent model indexes</a> correctly. <b>If you want selections to be handled properly, you must ensure that you call these functions.</b></p>
 <p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qmodelindex.html">QModelIndex</a>, <a href="qabstractitemview.html">QAbstractItemView</a>, and <a href="model-view-dnd.html">Using Drag and Drop with Item Views</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -194,16 +195,20 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the number of columns for the given <i>parent</i>.</p>
 <h3 class="fn"><a name="columnsAboutToBeInserted"></a>void QAbstractItemModel::columnsAboutToBeInserted ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before columns are inserted into the model. The new items will be positioned between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>() and <a href="qabstractitemmodel.html#beginInsertColumns">beginInsertColumns</a>().</p>
 <h3 class="fn"><a name="columnsAboutToBeRemoved"></a>void QAbstractItemModel::columnsAboutToBeRemoved ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before columns are removed from the model. The items to be removed are those between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>() and <a href="qabstractitemmodel.html#beginRemoveColumns">beginRemoveColumns</a>().</p>
 <h3 class="fn"><a name="columnsInserted"></a>void QAbstractItemModel::columnsInserted ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted after columns have been inserted into the model. The new items are those between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>() and <a href="qabstractitemmodel.html#beginInsertColumns">beginInsertColumns</a>().</p>
 <h3 class="fn"><a name="columnsRemoved"></a>void QAbstractItemModel::columnsRemoved ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted after columns have been removed from the model. The removed items are those between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>() and <a href="qabstractitemmodel.html#beginRemoveColumns">beginRemoveColumns</a>().</p>
 <h3 class="fn"><a name="createIndex"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::createIndex ( int <i>row</i>, int <i>column</i>, void * <i>ptr</i> = 0 ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Creates a model index for the given <i>row</i> and <i>column</i> with the internal pointer <i>ptr</i>.</p>
 <p>This function provides a consistent interface that model subclasses must use to create model indexes.</p>
@@ -219,7 +224,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Note that this signal must be emitted explicitly when reimplementing the <a href="qabstractitemmodel.html#setData">setData</a>() function.</p>
 <p>See also <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>(), <a href="qabstractitemmodel.html#setData">setData</a>(), and <a href="qabstractitemmodel.html#layoutChanged">layoutChanged</a>().</p>
 <h3 class="fn"><a name="dropMimeData"></a>bool QAbstractItemModel::dropMimeData ( const <a href="qmimedata.html">QMimeData</a> * <i>data</i>, <a href="qt.html#DropAction-enum">Qt::DropAction</a> <i>action</i>, int <i>row</i>, int <i>column</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i>. Note that the coordinates given by row, column and parent are the coordinates where the data should be inserted, so it is the responsibility of the view to transform the drop coordinates to the correct model coordinates. (For instance, a drop action on an item in a <a href="qtreeview.html">QTreeView</a> can result in one of these actions: insert a child of the item or insert a sibling of the item)</p>
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i>. Although the specified <i>row</i>, <i>column</i> and <i>parent</i> indicate the location of an item in the model where the operation ended, it is the responsibility of the view to provide a suitable location for where the data should be inserted.</p>
+<p>For instance, a drop action on an item in a <a href="qtreeview.html">QTreeView</a> can result in new items either being inserted as children of the item specified by <i>row</i>, <i>column</i>, and <i>parent</i>, or as siblings of the item.</p>
 <p>See also <a href="qabstractitemmodel.html#supportedDropActions">supportedDropActions</a>().</p>
 <h3 class="fn"><a name="endInsertColumns"></a>void QAbstractItemModel::endInsertColumns ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Ends a column insertion operation.</p>
@@ -257,6 +263,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="headerDataChanged"></a>void QAbstractItemModel::headerDataChanged ( <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, int <i>first</i>, int <i>last</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever a header is changed. The <i>orientation</i> indicates whether the horizontal or vertical header has changed. The sections in the header from the <i>first</i> to the <i>last</i> need to be updated.</p>
 <p>Note that this signal must be emitted explicitly when reimplementing the <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() function.</p>
+<p>If you are changing the number of columns or rows you don't need to emit this signal, but use the begin/end functions.</p>
 <p>See also <a href="qabstractitemmodel.html#headerData">headerData</a>(), <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>(), and <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>().</p>
 <h3 class="fn"><a name="index"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::index ( int <i>row</i>, int <i>column</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the index of the item in the model specified by the given <i>row</i>, <i>column</i> and <i>parent</i> index.</p>
@@ -269,6 +276,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the columns were successfully inserted; otherwise returns false.</p>
 <p>The base class implementation does nothing and returns false.</p>
 <p>If you implement your own model, you can reimplement this function if you want to support insertions. Alternatively, you can provide you own API for altering the data.</p>
+<p>See also <a href="qabstractitemmodel.html#insertRows">insertRows</a>(), <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>(), <a href="qabstractitemmodel.html#beginInsertColumns">beginInsertColumns</a>(), and <a href="qabstractitemmodel.html#endInsertColumns">endInsertColumns</a>().</p>
 <h3 class="fn"><a name="insertRow"></a>bool QAbstractItemModel::insertRow ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() )</h3>
 <p>Inserts a single row before the given <i>row</i> in the child items of the <i>parent</i> specified. Returns true if the row is inserted; otherwise returns false.</p>
 <p>See also <a href="qabstractitemmodel.html#insertRows">insertRows</a>(), <a href="qabstractitemmodel.html#insertColumn">insertColumn</a>(), and <a href="qabstractitemmodel.html#removeRow">removeRow</a>().</p>
@@ -278,9 +286,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the rows were successfully inserted; otherwise returns false.</p>
 <p>The base class implementation does nothing and returns false.</p>
 <p>If you implement your own model, you can reimplement this function if you want to support insertions. Alternatively, you can provide you own API for altering the data.</p>
+<p>See also <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>(), <a href="qabstractitemmodel.html#removeRows">removeRows</a>(), <a href="qabstractitemmodel.html#beginInsertRows">beginInsertRows</a>(), and <a href="qabstractitemmodel.html#endInsertRows">endInsertRows</a>().</p>
 <h3 class="fn"><a name="itemData"></a><a href="qmap.html">QMap</a>&lt;int, <a href="qvariant.html">QVariant</a>&gt; QAbstractItemModel::itemData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a map with values for all predefined roles in the model for the item at the given <i>index</i>.</p>
-<p>This must be reimplemented if you want to extend the model with custom roles.</p>
+<p>Reimplemented this function if you want to extend the default behavior of this function to include custom roles in the map.</p>
 <p>See also <a href="qabstractitemmodel.html#setItemData">setItemData</a>(), <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, and <a href="qabstractitemmodel.html#data">data</a>().</p>
 <h3 class="fn"><a name="layoutChanged"></a>void QAbstractItemModel::layoutChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the layout of items exposed by the model changes; for example, when the model is sorted. When this signal is received by a view, it should update the layout of items to reflect this change.</p>
@@ -308,7 +317,7 @@ body { background: #ffffff; color: black; }</style>
 <p>On models that support this, removes <i>count</i> columns starting with the given <i>column</i> under parent <i>parent</i> from the model. Returns true if the columns were successfully removed; otherwise returns false.</p>
 <p>The base class implementation does nothing and returns false.</p>
 <p>If you implement your own model, you can reimplement this function if you want to support removing. Alternatively, you can provide you own API for altering the data.</p>
-<p>See also <a href="qabstractitemmodel.html#removeColumn">removeColumn</a>(), <a href="qabstractitemmodel.html#removeRows">removeRows</a>(), and <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>().</p>
+<p>See also <a href="qabstractitemmodel.html#removeColumn">removeColumn</a>(), <a href="qabstractitemmodel.html#removeRows">removeRows</a>(), <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>(), <a href="qabstractitemmodel.html#beginRemoveColumns">beginRemoveColumns</a>(), and <a href="qabstractitemmodel.html#endRemoveColumns">endRemoveColumns</a>().</p>
 <h3 class="fn"><a name="removeRow"></a>bool QAbstractItemModel::removeRow ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() )</h3>
 <p>Removes the given <i>row</i> from the child items of the <i>parent</i> specified. Returns true if the row is removed; otherwise returns false.</p>
 <p>See also <a href="qabstractitemmodel.html#removeRows">removeRows</a>(), <a href="qabstractitemmodel.html#removeColumn">removeColumn</a>(), and <a href="qabstractitemmodel.html#insertRow">insertRow</a>().</p>
@@ -316,7 +325,7 @@ body { background: #ffffff; color: black; }</style>
 <p>On models that support this, removes <i>count</i> rows starting with the given <i>row</i> under parent <i>parent</i> from the model. Returns true if the rows were successfully removed; otherwise returns false.</p>
 <p>The base class implementation does nothing and returns false.</p>
 <p>If you implement your own model, you can reimplement this function if you want to support removing. Alternatively, you can provide you own API for altering the data.</p>
-<p>See also <a href="qabstractitemmodel.html#removeRow">removeRow</a>(), <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>(), and <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>().</p>
+<p>See also <a href="qabstractitemmodel.html#removeRow">removeRow</a>(), <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>(), <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>(), <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows</a>(), and <a href="qabstractitemmodel.html#endRemoveRows">endRemoveRows</a>().</p>
 <h3 class="fn"><a name="reset"></a>void QAbstractItemModel::reset ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Resets the model to its original state in any attached views.</p>
 <p>When a model is reset it means that any previous data reported from the model is now invalid and has to be queried for again.</p>
@@ -328,16 +337,20 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the number of rows under the given <i>parent</i>.</p>
 <h3 class="fn"><a name="rowsAboutToBeInserted"></a>void QAbstractItemModel::rowsAboutToBeInserted ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before rows are inserted into the model. The new items will be positioned between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#insertRows">insertRows</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#insertRows">insertRows</a>() and <a href="qabstractitemmodel.html#beginInsertRows">beginInsertRows</a>().</p>
 <h3 class="fn"><a name="rowsAboutToBeRemoved"></a>void QAbstractItemModel::rowsAboutToBeRemoved ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before rows are removed from the model. The items that will be removed are those between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#removeRows">removeRows</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#removeRows">removeRows</a>() and <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows</a>().</p>
 <h3 class="fn"><a name="rowsInserted"></a>void QAbstractItemModel::rowsInserted ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted after rows have been inserted into the model. The new items are those between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#insertRows">insertRows</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#insertRows">insertRows</a>() and <a href="qabstractitemmodel.html#beginInsertRows">beginInsertRows</a>().</p>
 <h3 class="fn"><a name="rowsRemoved"></a>void QAbstractItemModel::rowsRemoved ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted after rows have been removed from the model. The removed items are those between <i>start</i> and <i>end</i> inclusive, under the given <i>parent</i> item.</p>
-<p>See also <a href="qabstractitemmodel.html#removeRows">removeRows</a>().</p>
+<p><b>Note:</b> Components connected to this signal use it to adapt to changes in the model's dimensions. It can only be emitted by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> implementation, and cannot be explicitly emitted in subclass code.</p>
+<p>See also <a href="qabstractitemmodel.html#removeRows">removeRows</a>() and <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows</a>().</p>
 <h3 class="fn"><a name="setData"></a>bool QAbstractItemModel::setData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <i>role</i> data for the item at <i>index</i> to <i>value</i>. Returns true if successful; otherwise returns false.</p>
 <p>The <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>() signal should be emitted if the data was successfully set.</p>
@@ -346,7 +359,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setHeaderData"></a>bool QAbstractItemModel::setHeaderData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <i>role</i> for the header <i>section</i> to <i>value</i>. The <i>orientation</i> gives the orientation of the header.</p>
 <p>Note that the <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>() signal must be emitted explicitly when reimplementing this function.</p>
-<p>See also <a href="qabstractitemmodel.html#headerData">headerData</a>().</p>
+<p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a> and <a href="qabstractitemmodel.html#headerData">headerData</a>().</p>
 <h3 class="fn"><a name="setItemData"></a>bool QAbstractItemModel::setItemData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, const <a href="qmap.html">QMap</a>&lt;int, <a href="qvariant.html">QVariant</a>&gt; &amp; <i>roles</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>For every <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a> in <i>roles</i>, sets the role data for the item at <i>index</i> to the associated value in <i>roles</i>. Returns true if successful; otherwise returns false.</p>
 <p>See also <a href="qabstractitemmodel.html#setData">setData</a>(), <a href="qabstractitemmodel.html#data">data</a>(), and <a href="qabstractitemmodel.html#itemData">itemData</a>().</p>
@@ -371,6 +384,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

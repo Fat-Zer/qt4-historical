@@ -26,6 +26,8 @@
 
 #include <QtCore/qbytearray.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QColor;
@@ -102,5 +104,7 @@ private:
     Q_DISABLE_COPY(QImageReader)
     QImageReaderPrivate *d;
 };
+
+QT_END_HEADER
 
 #endif // QIMAGEREADER_H

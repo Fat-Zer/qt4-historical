@@ -35,10 +35,10 @@
 // We mean it.
 //
 
-#if !defined (QT_QWS_NO_SHM)
-
 #include "qplatformdefs.h"
 #include "QtCore/qstring.h"
+
+#if !defined(QT_NO_QWS_MULTIPROCESS)
 
 class Q_CORE_EXPORT QSharedMemory {
 public:
@@ -78,6 +78,6 @@ private:
     key_t key;
 };
 
-#endif
+#endif // QT_NO_QWS_MULTIPROCESS
 
 #endif // QSHAREDMEMORY_P_H

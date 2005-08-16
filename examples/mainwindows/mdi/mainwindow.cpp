@@ -297,6 +297,7 @@ void MainWindow::createMenus()
     editMenu->addAction(pasteAct);
 
     windowMenu = menuBar()->addMenu(tr("&Window"));
+    updateWindowMenu();
     connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
 
     menuBar()->addSeparator();

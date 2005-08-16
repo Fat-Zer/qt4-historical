@@ -32,6 +32,8 @@
 #include <QtGui/qevent.h>
 #include <QtGui/qtextformat.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QTextEngine;
@@ -206,5 +208,7 @@ private:
     int i;
     QTextEngine *eng;
 };
+
+QT_END_HEADER
 
 #endif // QTEXTLAYOUT_H

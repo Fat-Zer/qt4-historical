@@ -28,6 +28,8 @@
 #include <Qt3Support/q3glist.h>
 #include <Qt3Support/q3gdict.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3CList;					// internal classes
@@ -107,5 +109,7 @@ protected:
 protected:
     Q3CListIt *it;				// iterator on cache list
 };
+
+QT_END_HEADER
 
 #endif // Q3GCACHE_H

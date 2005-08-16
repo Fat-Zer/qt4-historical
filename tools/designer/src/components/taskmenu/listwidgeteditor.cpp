@@ -183,9 +183,7 @@ void ListWidgetEditor::on_previewPixmapItemButton_clicked()
     QString qrc_path;
 
     QIcon icon = item->icon();
-    if (icon.isNull()) {
-        file_path = m_form->absoluteDir().absolutePath();
-    } else {
+    if (!icon.isNull()) {
         file_path = m_form->core()->iconCache()->iconToFilePath(icon);
         qrc_path = m_form->core()->iconCache()->iconToQrcPath(icon);
     }
@@ -251,7 +249,9 @@ void ListWidgetEditor::updateEditor()
         itemText = item->text();
         itemIcon = item->icon();
     }
+    int cursorPos = ui.itemTextLineEdit->cursorPosition();
     ui.itemTextLineEdit->setText(itemText);
+    ui.itemTextLineEdit->setCursorPosition(cursorPos);
     ui.previewPixmapItemButton->setIcon(itemIcon);
     ui.deletePixmapItemButton->setEnabled(!itemIcon.isNull());
 }

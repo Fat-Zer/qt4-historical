@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.1: Delegate Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -38,7 +39,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="concepts"></a>
 <h2>Concepts</h2>
 <p>Unlike the Model-View-Controller pattern, the model/view design does not include a completely separate component for managing interaction with the user. Generally, the view is responsible for the presentation of model data to the user, and for processing user input. To allow some flexibility in the way this input is obtained, the interaction is performed by delegates. These components provide input capabilities and are also responsible for rendering individual items in some views. The standard interface for controlling delegates is defined in the <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> class.</p>
-<p>Delegates are expected to be able to render their contents themselves by implementing the <a href="qabstractitemdelegate.html#paint">paint()</a> and <a href="qabstractitemdelegate.html#sizeHint">sizeHint()</a> functions. However, simple widget-based delegates can subclass <a href="qitemdelegate.html">QItemDelegate</a> instead of <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, and take advantage of the default implementations of those functions. Editors for delegates can be implemented in two ways, either by using widgets to manage the editing process, or by handling events directly. The first approach is covered later in this section.</p>
+<p>Delegates are expected to be able to render their contents themselves by implementing the <a href="qitemdelegate.html#paint">paint()</a> and <a href="qitemdelegate.html#sizeHint">sizeHint()</a> functions. However, simple widget-based delegates can subclass <a href="qitemdelegate.html">QItemDelegate</a> instead of <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, and take advantage of the default implementations of these functions.</p>
+<p>Editors for delegates can be implemented either by using widgets to manage the editing process or by handling events directly. The first approach is covered later in this chapter, and it is also shown in the <a href="itemviews-spinboxdelegate.html">Spin Box Delegate</a> example.</p>
+<p>The <a href="itemviews-pixelator.html">Pixelator</a> example shows how to create a custom delegate that performs specialized rendering for a table view.</p>
 <a name="using-an-existing-delegate"></a>
 <h2>Using an Existing Delegate</h2>
 <p>The standard views provided with Qt use instances of <a href="qitemdelegate.html">QItemDelegate</a> to provide editing facilities. This default implementation of the delegate interface renders items in the usual style for each of the standard views: <a href="qlistview.html">QListView</a>, <a href="qtableview.html">QTableView</a>, and <a href="qtreeview.html">QTreeView</a>. The delegate being used for a view is returned by the <a href="qabstractitemview.html#itemDelegate">itemDelegate()</a> function. The <a href="qabstractitemview.html#setItemDelegate">setItemDelegate()</a> function allows you to install a custom delegate for a standard view, and it is necessary to use this function when setting the delegate for a custom view.</p>
@@ -130,6 +133,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

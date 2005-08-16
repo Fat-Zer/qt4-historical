@@ -29,6 +29,8 @@
 #include <QtCore/qiterator.h>
 #include <QtCore/qlist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QByteArray;
@@ -63,6 +65,10 @@ inline uint qHash(QChar key) { return qHash(key.unicode()); }
 Q_CORE_EXPORT uint qHash(const QByteArray &key);
 Q_CORE_EXPORT uint qHash(const QString &key);
 
+#if defined(Q_CC_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4311 ) // disable pointer truncation warning
+#endif
 template <class T> inline uint qHash(const T *key)
 {
     if (sizeof(const T *) > sizeof(uint))
@@ -70,6 +76,9 @@ template <class T> inline uint qHash(const T *key)
     else
         return uint(reinterpret_cast<ulong>(key));
 }
+#if defined(Q_CC_MSVC)
+#pragma warning( pop )
+#endif
 
 struct Q_CORE_EXPORT QHashData
 {
@@ -804,5 +813,7 @@ Q_INLINE_TEMPLATE Q_TYPENAME QHash<Key, T>::iterator QMultiHash<Key, T>::insert(
 
 Q_DECLARE_ASSOCIATIVE_ITERATOR(Hash)
 Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR(Hash)
+
+QT_END_HEADER
 
 #endif // QHASH_H

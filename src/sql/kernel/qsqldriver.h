@@ -31,6 +31,8 @@
 #include <QtSql/qsqlquery.h>
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Sql)
 
 class QStringList;
@@ -108,5 +110,7 @@ protected:
 private:
     Q_DISABLE_COPY(QSqlDriver)
 };
+
+QT_END_HEADER
 
 #endif // QSQLDRIVER_H

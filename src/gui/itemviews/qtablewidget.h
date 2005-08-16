@@ -28,6 +28,8 @@
 #include <QtCore/qvariant.h>
 #include <QtCore/qvector.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TABLEWIDGET
@@ -297,18 +299,20 @@ private:
     Q_DECLARE_PRIVATE(QTableWidget)
     Q_DISABLE_COPY(QTableWidget)
 
-    Q_PRIVATE_SLOT(d_func(), void emitItemPressed(const QModelIndex &index))
-    Q_PRIVATE_SLOT(d_func(), void emitItemClicked(const QModelIndex &index))
-    Q_PRIVATE_SLOT(d_func(), void emitItemDoubleClicked(const QModelIndex &index))
-    Q_PRIVATE_SLOT(d_func(), void emitItemActivated(const QModelIndex &index))
-    Q_PRIVATE_SLOT(d_func(), void emitItemEntered(const QModelIndex &index))
-    Q_PRIVATE_SLOT(d_func(), void emitItemChanged(const QModelIndex &index))
-    Q_PRIVATE_SLOT(d_func(), void emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitItemPressed(const QModelIndex &index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitItemClicked(const QModelIndex &index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitItemDoubleClicked(const QModelIndex &index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitItemActivated(const QModelIndex &index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitItemEntered(const QModelIndex &index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitItemChanged(const QModelIndex &index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current))
 };
 
 inline QTableWidgetItem *QTableWidget::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
 
 #endif // QT_NO_TABLEWIDGET
+
+QT_END_HEADER
 
 #endif // QTABLEWIDGET_H

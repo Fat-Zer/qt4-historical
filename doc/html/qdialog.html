@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/dialogs/qdialog.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/dialogs/qdialog.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/dialogs/qdialog.cpp -->
 <head>
     <title>Qt 4.1: QDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -56,7 +57,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qdialog.html#sizeGripEnabled-prop">setSizeGripEnabled</a></b> ( bool )</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -98,6 +99,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The QDialog class is the base class of dialog windows.</p>
 <p>A dialog window is a top-level window mostly used for short-term tasks and brief communications with the user. QDialogs may be modal or modeless. QDialogs support <a href="#extensibility">extensibility</a> and can provide a <a href="#return">return value</a>. They can have <a href="#default">default buttons</a>. QDialogs can also have a <a href="qsizegrip.html">QSizeGrip</a> in their lower-right corner, using <a href="qdialog.html#sizeGripEnabled-prop">setSizeGripEnabled</a>().</p>
 <p>Note that QDialog uses the parent widget slightly differently from other classes in Qt. A dialog is always a top-level widget, but if it has a parent, its default location is centered on top of the parent's top-level widget (if it is not top-level itself). It will also share the parent's taskbar entry.</p>
+<p>Use the overload of the <a href="qwidget.html#setParent">QWidget::setParent</a>() function to change the ownership of a QDialog widget. This function allows you to explicitly set the window flags of the reparented widget; using the overloaded function will clear the window flags specifying the window-system properties for the widget (in particular it will reset the <a href="qt.html#WindowType-enum">Qt::Dialog</a> flag).</p>
 <a name="modal-dialogs"></a>
 <h3>Modal Dialogs</h3>
 <p>A <b>modal</b> dialog is a dialog that blocks input to other visible windows in the same application. Users must finish interacting with the dialog and close it before they can access any other window in the application. Dialogs that are used to request a file name from the user or that are used to set application preferences are usually modal.</p>
@@ -237,6 +239,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

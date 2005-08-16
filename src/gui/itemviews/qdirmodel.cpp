@@ -248,7 +248,7 @@ public:
     QDirNode *node(int row, QDirNode *parent) const;
     QVector<QDirNode> children(QDirNode *parent, bool stat) const;
 
-    void refresh();
+    void _q_refresh();
 
     void savePersistentIndexes();
     void restorePersistentIndexes();
@@ -269,7 +269,7 @@ public:
     inline void clear(QDirNode *parent) const;
 
     void invalidate();
-    
+
     mutable QDirNode root;
     bool resolveSymlinks;
     bool readOnly;
@@ -449,7 +449,7 @@ QModelIndex QDirModel::index(int row, int column, const QModelIndex &parent) con
     if (!p->populated)
         d->populate(p); // populate without stat'ing
     if (row >= p->children.count())
-        return QModelIndex();    
+        return QModelIndex();
     // now get the internal pointer for the index
     QDirModelPrivate::QDirNode *n = d->node(row, parent.isValid() ? p : 0);
     Q_ASSERT(n);
@@ -518,9 +518,7 @@ int QDirModel::columnCount(const QModelIndex &parent) const
 
 /*!
   Returns the data for the model item \a index with the given \a role.
-
 */
-
 QVariant QDirModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QDirModel);
@@ -555,6 +553,7 @@ QVariant QDirModel::data(const QModelIndex &index, int role) const
   the data referenced by the \a value. Returns true if successful;
   otherwise returns false.
 
+  \sa Qt::ItemDataRole
 */
 
 bool QDirModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -571,9 +570,9 @@ bool QDirModel::setData(const QModelIndex &index, const QVariant &value, int rol
         node->info = QFileInfo(dir, name);
         QModelIndex sibling = index.sibling(index.row(), 3);
         emit dataChanged(index, sibling);
-        
+
         d->toBeRefreshed = index.parent();
-        int slot = metaObject()->indexOfSlot("refresh()");
+        int slot = metaObject()->indexOfSlot("_q_refresh()");
         QApplication::postEvent(this, new QMetaCallEvent(slot));
 
         return true;
@@ -806,7 +805,7 @@ void QDirModel::setNameFilters(const QStringList &filters)
     Q_D(QDirModel);
     d->nameFilters = filters;
     if (d->shouldStat)
-        refresh(QModelIndex());
+       refresh(QModelIndex());
     else
         d->invalidate();
     emit layoutChanged();
@@ -961,9 +960,11 @@ void QDirModel::refresh(const QModelIndex &parent)
     int rows = n->children.count();
     if (rows == 0) {
         n->stat = true; // make sure that next time we read all the info
+        n->populated = false;
+        emit layoutChanged();
         return;
     }
-        
+
     d->savePersistentIndexes();
     beginRemoveRows(parent, 0, rows - 1);
     n->stat = true; // make sure that next time we read all the info
@@ -1074,7 +1075,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
         idx = createIndex(row, 0, static_cast<void*>(&parent->children[row]));
         Q_ASSERT(idx.isValid());
     }
-        
+
     if (column != 0)
         return idx.sibling(idx.row(), column);
     return idx;
@@ -1290,7 +1291,7 @@ QVector<QDirModelPrivate::QDirNode> QDirModelPrivate::children(QDirNode *parent,
     } else if (parent->info.isDir()) {
         if (parent->info.isSymLink()) {
             QString link = parent->info.readLink();
-            if (link.at(link.size() - 1) == QDir::separator())
+            if (link.size() > 1 && link.at(link.size() - 1) == QDir::separator())
                 link.chop(1);
             if (stat)
                 infoList = entryInfoList(link);
@@ -1316,7 +1317,7 @@ QVector<QDirModelPrivate::QDirNode> QDirModelPrivate::children(QDirNode *parent,
     return nodes;
 }
 
-void QDirModelPrivate::refresh()
+void QDirModelPrivate::_q_refresh()
 {
     Q_Q(QDirModel);
     q->refresh(toBeRefreshed);
@@ -1403,6 +1404,7 @@ QString QDirModelPrivate::time(const QModelIndex &index) const
 #ifndef QT_NO_DATESTRING
     return node(index)->info.lastModified().toString("yyyy-MM-dd hh:mm:ss");
 #else
+    Q_UNUSED(index);
     return QString();
 #endif
 }

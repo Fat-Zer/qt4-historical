@@ -942,7 +942,7 @@ bool QObject::event(QEvent *e)
             QList<QPair<int, int> > timers = eventDispatcher->registeredTimers(this);
             if (!timers.isEmpty()) {
                 eventDispatcher->unregisterTimers(this);
-                QMetaObject::invokeMethod(this, "reregisterTimers", Qt::QueuedConnection,
+                QMetaObject::invokeMethod(this, "_q_reregisterTimers", Qt::QueuedConnection,
                                           Q_ARG(void*, (new QList<QPair<int, int> >(timers))));
             }
         }
@@ -1124,6 +1124,10 @@ bool QObject::blockSignals(bool block)
 /*!
     Returns the thread in which the object lives.
 
+    \warning This function returns 0 if the QObject was created
+    before QApplication or QCoreApplication was constructed. This
+    behavior might change in future versions of Qt.
+
     \sa moveToThread()
 */
 QThread *QObject::thread() const
@@ -1237,7 +1241,7 @@ void QObjectPrivate::setThreadId_helper(QThreadData *currentData, QThreadData *t
     }
 }
 
-void QObjectPrivate::reregisterTimers(void *pointer)
+void QObjectPrivate::_q_reregisterTimers(void *pointer)
 {
     Q_Q(QObject);
     QThread *objectThread = q->thread();
@@ -1875,8 +1879,6 @@ void QObject::deleteLater()
   Signals and slots
  *****************************************************************************/
 
-#ifndef QT_NO_DEBUG
-
 static bool check_signal_macro(const QObject *sender, const char *signal,
                                 const char *func, const char *op)
 {
@@ -1932,8 +1934,6 @@ static void err_info_about_objects(const char * func,
     if (!b.isEmpty())
         qWarning("Object::%s:  (receiver name: '%s')", func, b.toLocal8Bit().data());
 }
-
-#endif // !QT_NO_DEBUG
 
 /*!
     Returns a pointer to the object that sent the signal, if called in
@@ -2045,7 +2045,7 @@ int QObject::receivers(const char *signal) const
     \code
         QLabel *label = new QLabel;
         QScrollBar *scrollBar = new QScrollBar;
-        QObject::connect(scroll, SIGNAL(valueChanged(int)),
+        QObject::connect(scrollBar, SIGNAL(valueChanged(int)),
                          label,  SLOT(setNum(int)));
     \endcode
 
@@ -2056,7 +2056,7 @@ int QObject::receivers(const char *signal) const
 
     \code
         // WRONG
-        QObject::connect(scroll, SIGNAL(valueChanged(int value)),
+        QObject::connect(scrollBar, SIGNAL(valueChanged(int value)),
                          label, SLOT(setNum(int value)));
     \endcode
 
@@ -2105,7 +2105,23 @@ int QObject::receivers(const char *signal) const
     duplicate a connection, two signals will be emitted. You can
     always break a connection using disconnect().
 
-    \sa disconnect(), sender()
+    The optional \a type parameter describes the type of connection
+    to establish. In particular, it determines whether a particular
+    signal is delivered to a slot immediately or queued for delivery
+    at a later time. If the signal is queued, the parameters must be
+    of types that are known to Qt's meta-object system, because Qt
+    needs to copy the arguments to store them in an event behind the
+    scenes. If you try to use a queued connection and get the error
+    message
+
+    \code
+        QObject::connect: Cannot queue arguments of type 'MyType'
+    \endcode
+
+    call qRegisterMetaType() to register the data type before you
+    establish the connection.
+
+    \sa disconnect(), sender(), qRegisterMetaType()
 */
 
 bool QObject::connect(const QObject *sender, const char *signal,
@@ -2123,21 +2139,17 @@ bool QObject::connect(const QObject *sender, const char *signal,
     }
 
     if (sender == 0 || receiver == 0 || signal == 0 || method == 0) {
-#ifndef QT_NO_DEBUG
         qWarning("Object::connect: Cannot connect %s::%s to %s::%s",
                  sender ? sender->metaObject()->className() : "(null)",
                  signal ? signal+1 : "(null)",
                  receiver ? receiver->metaObject()->className() : "(null)",
                  method ? method+1 : "(null)");
-#endif
         return false;
     }
     QByteArray tmp_signal_name;
 
-#ifndef QT_NO_DEBUG
     if (!check_signal_macro(sender, signal, "connect", "bind"))
         return false;
-#endif
     const QMetaObject *smeta = sender->metaObject();
     ++signal; //skip code
     int signal_index = smeta->indexOfSignal(signal);
@@ -2147,10 +2159,8 @@ bool QObject::connect(const QObject *sender, const char *signal,
         signal = tmp_signal_name.constData() + 1;
         signal_index = smeta->indexOfSignal(signal);
         if (signal_index < 0) {
-#ifndef QT_NO_DEBUG
             err_method_notfound(QSIGNAL_CODE, sender, signal, "connect");
             err_info_about_objects("connect", sender, receiver);
-#endif
             return false;
         }
     }
@@ -2158,10 +2168,8 @@ bool QObject::connect(const QObject *sender, const char *signal,
     QByteArray tmp_method_name;
     int membcode = method[0] - '0';
 
-#ifndef QT_NO_DEBUG
     if (!check_method_code(membcode, receiver, method, "connect"))
         return false;
-#endif
     ++method; // skip code
 
     const QMetaObject *rmeta = receiver->metaObject();
@@ -2189,13 +2197,10 @@ bool QObject::connect(const QObject *sender, const char *signal,
     }
 
     if (method_index < 0) {
-#ifndef QT_NO_DEBUG
         err_method_notfound(membcode, receiver, method, "connect");
         err_info_about_objects("connect", sender, receiver);
-#endif
         return false;
     }
-#ifndef QT_NO_DEBUG
     if (!QMetaObject::checkConnectArgs(signal, method)) {
         qWarning("Object::connect: Incompatible sender/receiver arguments"
                  "\n\t%s::%s --> %s::%s",
@@ -2203,7 +2208,6 @@ bool QObject::connect(const QObject *sender, const char *signal,
                  receiver->metaObject()->className(), method);
         return false;
     }
-#endif
 
     int *types = 0;
     if (type == Qt::QueuedConnection
@@ -2324,32 +2328,24 @@ bool QObject::disconnect(const QObject *sender, const char *signal,
     }
 
     QByteArray signal_name;
-#ifndef QT_NO_DEBUG
     bool signal_found = false;
-#endif
     if (signal) {
         signal_name = QMetaObject::normalizedSignature(signal);
         signal = signal_name;
-#ifndef QT_NO_DEBUG
         if (!check_signal_macro(sender, signal, "disconnect", "unbind"))
             return false;
-#endif
         signal++; // skip code
     }
 
     QByteArray method_name;
-#ifndef QT_NO_DEBUG
     int membcode = -1;
-#endif
     bool method_found = false;
     if (method) {
         method_name = QMetaObject::normalizedSignature(method);
         method = method_name;
-#ifndef QT_NO_DEBUG
         membcode = method[0] - '0';
         if (!check_method_code(membcode, receiver, method, "disconnect"))
             return false;
-#endif
         method++; // skip code
     }
 
@@ -2365,9 +2361,7 @@ bool QObject::disconnect(const QObject *sender, const char *signal,
             signal_index = smeta->indexOfSignal(signal);
             if (signal_index < smeta->methodOffset())
                 continue;
-#ifndef QT_NO_DEBUG
             signal_found = true;
-#endif
         }
 
         if (!method) {
@@ -2387,7 +2381,6 @@ bool QObject::disconnect(const QObject *sender, const char *signal,
         }
     } while (signal && (smeta = smeta->superClass()));
 
-#ifndef QT_NO_DEBUG
     if (signal && !signal_found) {
         err_method_notfound(QSIGNAL_CODE, sender, signal, "disconnect");
         err_info_about_objects("disconnect", sender, receiver);
@@ -2395,9 +2388,8 @@ bool QObject::disconnect(const QObject *sender, const char *signal,
         err_method_notfound(membcode, receiver, method, "disconnect");
         err_info_about_objects("disconnect", sender, receiver);
     }
-#endif
     if (res)
-        const_cast<QObject*>(sender)->disconnectNotify(signal - 1);
+        const_cast<QObject*>(sender)->disconnectNotify(signal ? (signal - 1) : 0);
     return res;
 }
 
@@ -2583,9 +2575,13 @@ static void queued_activate(QObject *sender, const QConnection &c, void **argv)
     if (!c.types && c.types != &DIRECT_CONNECTION_ONLY) {
         QMetaMethod m = sender->metaObject()->method(c.signal);
         QConnection &x = const_cast<QConnection &>(c);
-        x.types = ::queuedConnectionTypes(m.parameterTypes());
-        if (!x.types) // cannot queue arguments
-            x.types = &DIRECT_CONNECTION_ONLY;
+        int *tmp = ::queuedConnectionTypes(m.parameterTypes());
+        if (!tmp) // cannot queue arguments
+            tmp = &DIRECT_CONNECTION_ONLY;
+        if (!q_atomic_test_and_set_ptr(&x.types, 0, tmp)) {
+            if (tmp != &DIRECT_CONNECTION_ONLY)
+                qFree(tmp);
+        }
     }
     if (c.types == &DIRECT_CONNECTION_ONLY) // cannot activate
         return;
@@ -3114,7 +3110,7 @@ QDebug operator<<(QDebug dbg, const QObject *o) {
     \typedef QObjectList
     \relates QObject
 
-    Synonym for QList<QObject>.
+    Synonym for QList<QObject*>.
 */
 
 #include "moc_qobject.cpp"

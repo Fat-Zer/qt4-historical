@@ -183,6 +183,8 @@ public:
     unsigned long rasterPoolSize;
     unsigned char *rasterPoolBase;
 
+    qreal inverseScale;
+    QDataBuffer<QLineF> cachedLines;
 
     int deviceDepth;
 
@@ -311,6 +313,7 @@ public:
     bool opaqueBackground;
 
     QPainter::CompositionMode compositionMode;
+    QImage::Format format;
     DrawHelper *drawHelper;
     QImage tempImage;
     QBrush bgBrush;

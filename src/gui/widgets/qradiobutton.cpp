@@ -62,8 +62,8 @@ public:
 
     Whenever a button is switched on or off it emits the toggled() signal.
     Connect to this signal if you want to trigger an action each time the
-    button changes state. Otherwise, use isChecked() to see if a particular
-    button is selected.
+    button changes state. Use isChecked() to see if a particular button is
+    selected.
 
     Just like QPushButton, a radio button displays text, and
     optionally a small icon. The text can be set in the constructor or
@@ -73,8 +73,14 @@ public:
     setDown(), isDown(), autoRepeat(), group(), setAutoRepeat(),
     toggle(), pressed(), released(), clicked(), and toggled().
 
-    \inlineimage macintosh-radiobutton.png Screenshot in Macintosh style
-    \inlineimage windows-radiobutton.png Screenshot in Windows style
+    \table 100%
+    \row \o \inlineimage plastique-radiobutton.png Screenshot of a Plastique radio button
+         \o A radio button shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \row \o \inlineimage windows-radiobutton.png Screenshot of a Windows XP radio button
+         \o A radio button shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+    \row \o \inlineimage macintosh-radiobutton.png Screenshot of a Macintosh radio button
+         \o A radio button shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+    \endtable
 
     \sa QPushButton, QToolButton, QCheckBox, {fowler}{GUI Design Handbook: Radio Button}
 */

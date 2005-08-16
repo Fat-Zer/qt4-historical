@@ -31,6 +31,8 @@
 
 #include <limits.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QLayout;
@@ -207,5 +209,7 @@ inline void QLayoutIterator::deleteCurrent() { delete  layout->takeAt(index); }
 #include <QtGui/qboxlayout.h>
 #include <QtGui/qgridlayout.h>
 #endif
+
+QT_END_HEADER
 
 #endif // QLAYOUT_H

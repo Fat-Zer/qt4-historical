@@ -184,24 +184,25 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
     setSingleStep(), setPageStep() to set the steps; and setMinimum()
     and setMaximum() to define the range of the scroll bar.
 
-    QSlider provides methods for controlling tickmarks.
-    You can use setTickPosition() to indicate where
-    you want the tickmarks to be, setTickInterval() to indicate how
-    many of them you want.
+    QSlider provides methods for controlling tickmarks.  You can use
+    setTickPosition() to indicate where you want the tickmarks to be,
+    setTickInterval() to indicate how many of them you want. the
+    currently set tick position and interval can be queried using the
+    tickPosition() and tickInterval() functions, respectively.
 
     QSlider inherits a comprehensive set of signals:
     \table
-    \header \i Signal \i Emitted when
-    \row \i \l valueChanged()
-    \i the slider's value has changed. The tracking()
+    \header \o Signal \o Description
+    \row \o \l valueChanged()
+    \o Emitted when the slider's value has changed. The tracking()
        determines whether this signal is emitted during user
        interaction.
-    \row \i \l sliderPressed()
-    \i the user starts to drag the slider.
-    \row \i \l sliderMoved()
-    \i the user drags the slider.
-    \row \i \l sliderReleased()
-    \i the user releases the slider.
+    \row \o \l sliderPressed()
+    \o Emitted when the user starts to drag the slider.
+    \row \o \l sliderMoved()
+    \o Emitted when the user drags the slider.
+    \row \o \l sliderReleased()
+    \o Emitted when the user releases the slider.
     \endtable
 
     QSlider only provides integer ranges. Note that although
@@ -212,15 +213,22 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
     keyboard interface. The keyboard interface is the following:
 
     \list
-        \i Left/Right move a horizontal slider by one single step.
-        \i Up/Down move a vertical slider by one single step.
-        \i PageUp moves up one page.
-        \i PageDown moves down one page.
-        \i Home moves to the start (mininum).
-        \i End moves to the end (maximum).
+        \o Left/Right move a horizontal slider by one single step.
+        \o Up/Down move a vertical slider by one single step.
+        \o PageUp moves up one page.
+        \o PageDown moves down one page.
+        \o Home moves to the start (mininum).
+        \o End moves to the end (maximum).
     \endlist
 
-    \image macintosh-slider.png Screenshot in Macintosh style
+    \table 100%
+    \row \o \inlineimage macintosh-slider.png Screenshot of a Macintosh slider
+         \o A slider shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+    \row \o \inlineimage windows-slider.png Screenshot of a Windows XP slider
+         \o A slider shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+    \row \o \inlineimage plastique-slider.png Screenshot of a Plastique slider
+         \o A slider shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \endtable
 
     \sa QScrollBar, QSpinBox, {fowler}{GUI Design Handbook: Slider}
 */
@@ -232,12 +240,12 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
     This enum specifies where the tick marks are to be drawn relative
     to the slider's groove and the handle the user moves.
 
-    \value NoTicks do not draw any tick marks.
-    \value TicksBothSides draw tick marks on both sides of the groove.
-    \value TicksAbove draw tick marks above the (horizontal) slider
-    \value TicksBelow draw tick marks below the (horizontal) slider
-    \value TicksLeft draw tick marks to the left of the (vertical) slider
-    \value TicksRight draw tick marks to the right of the (vertical) slider
+    \value NoTicks Do not draw any tick marks.
+    \value TicksBothSides Draw tick marks on both sides of the groove.
+    \value TicksAbove Draw tick marks above the (horizontal) slider
+    \value TicksBelow Draw tick marks below the (horizontal) slider
+    \value TicksLeft Draw tick marks to the left of the (vertical) slider
+    \value TicksRight Draw tick marks to the right of the (vertical) slider
 
     \omitvalue NoMarks
     \omitvalue Above
@@ -249,10 +257,7 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
 
 
 /*!
-    Constructs a vertical slider.
-
-    The \a parent argument is sent to the QAbstractSlider
-    constructor.
+    Constructs a vertical slider with the given \a parent.
 */
 QSlider::QSlider(QWidget *parent)
     : QAbstractSlider(*new QSliderPrivate, parent)
@@ -262,12 +267,9 @@ QSlider::QSlider(QWidget *parent)
 }
 
 /*!
-    Constructs a slider.
-
-    The \a orientation must be \l Qt::Vertical or \l Qt::Horizontal.
-
-    The \a parent argument is sent on to the QAbstractSlider
-    constructor.
+    Constructs a slider with the given \a parent. The \a orientation
+    parameter determines whether the slider is horizontal or vertical;
+    the valid values are Qt::Vertical and Qt::Horizontal.
 */
 
 QSlider::QSlider(Qt::Orientation orientation, QWidget *parent)
@@ -279,8 +281,14 @@ QSlider::QSlider(Qt::Orientation orientation, QWidget *parent)
 
 #ifdef QT3_SUPPORT
 /*!
-    Use one of the constructors that doesn't take the \a name
-    argument and then use setObjectName() instead.
+    Use QSlider() and QObject::setObjectName() instead.
+
+    \oldcode
+        QSlider *mySlider = new QSlider(parent, name);
+    \newcode
+        QSlider *mySlider = new QSlider(parent);
+        mySlider->setObjectName(name);
+    \endcode
 */
 QSlider::QSlider(QWidget *parent, const char *name)
     : QAbstractSlider(*new QSliderPrivate, parent)
@@ -291,8 +299,14 @@ QSlider::QSlider(QWidget *parent, const char *name)
 }
 
 /*!
-    Use one of the constructors that doesn't take the \a name
-    argument and then use setObjectName() instead.
+    Use QSlider() and QObject::setObjectName() instead.
+
+    \oldcode
+        QSlider *mySlider = new QSlider(orientation, parent, name);
+    \newcode
+        QSlider *mySlider = new QSlider(orientation, parent);
+        mySlider->setObjectName(name);
+    \endcode
 */
 QSlider::QSlider(Qt::Orientation orientation, QWidget *parent, const char *name)
     : QAbstractSlider(*new QSliderPrivate, parent)
@@ -303,8 +317,20 @@ QSlider::QSlider(Qt::Orientation orientation, QWidget *parent, const char *name)
 }
 
 /*!
-    Use one of the constructors that doesn't take the \a name
-    argument and then use setObjectName() instead.
+    Use QSlider(), QObject::setObjectName() and the functionality
+    inherited from QAbstractSlider instead.
+
+    \oldcode
+        QSlider *mySlider = new QSlider(minValue, maxValue, pageStep,
+                                        value, orientation, parent, name);
+    \newcode
+        QSlider *mySlider = new QSlider(orientation, parent);
+        mySlider->setObjectName(name);
+        mySlider->setMinimum(minValue);
+        mySlider->setMaximum(maxValue);
+        mySlider->setPageStep(pageStep);
+        mySlider->setValue(value);
+    \endcode
 */
 QSlider::QSlider(int minValue, int maxValue, int pageStep, int value, Qt::Orientation orientation,
                  QWidget *parent, const char *name)
@@ -322,7 +348,7 @@ QSlider::QSlider(int minValue, int maxValue, int pageStep, int value, Qt::Orient
 #endif
 
 /*!
-    Destructor.
+    Destroys this slider.
 */
 QSlider::~QSlider()
 {
@@ -502,8 +528,9 @@ QSize QSlider::minimumSizeHint() const
     \property QSlider::tickPosition
     \brief the tickmark position for this slider
 
-    The valid values are in \l{QSlider::TickPosition}. The default is
-    \c NoTicks.
+    The valid values are described by the QSlider::TickPosition enum.
+
+    The default value is \l QSlider::NoTicks.
 
     \sa tickInterval
 */
@@ -538,8 +565,9 @@ QSlider::TickPosition QSlider::tickPosition() const
     \brief the interval between tickmarks
 
     This is a value interval, not a pixel interval. If it is 0, the
-    slider will choose between lineStep() and pageStep(). The initial
-    value of tickInterval is 0.
+    slider will choose between lineStep() and pageStep().
+
+    The default value is 0.
 
     \sa tickPosition, lineStep(), pageStep()
 */

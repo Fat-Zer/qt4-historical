@@ -28,6 +28,7 @@
 #include <QtSql/qsqlresult.h>
 #include <QtSql/private/qsqlcachedresult_p.h>
 
+QT_BEGIN_HEADER
 class QSQLiteDriverPrivate;
 class QSQLiteResultPrivate;
 class QSQLiteDriver;
@@ -84,5 +85,7 @@ public:
 private:
     QSQLiteDriverPrivate* d;
 };
+
+QT_END_HEADER
 
 #endif // QSQL_SQLITE_H

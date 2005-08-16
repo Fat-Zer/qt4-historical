@@ -26,6 +26,8 @@
 
 #include <QtGui/qabstractbutton.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3Button : public QAbstractButton
@@ -41,5 +43,7 @@ protected:
     void	paintEvent( QPaintEvent * );
 
 };
+
+QT_END_HEADER
 
 #endif // Q3BUTTON_H

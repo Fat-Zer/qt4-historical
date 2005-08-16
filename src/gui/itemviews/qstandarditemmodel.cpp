@@ -37,47 +37,52 @@
     \brief The QStandardItemModel class provides a generic model for storing custom data.
     \ingroup model-view
 
-    QStandardItemModel provides a model that that can be used as a repository
-    for standard Qt data types. Data is written to the model and read back using
-    the standard QAbstractItemModel interface. The way each item of information
-    is referenced depends on how the data is inserted into the model.
+    QStandardItemModel can be used as a repository for standard Qt
+    data types. It is one of the \l {Model/View Classes} and is part
+    of Qt's \l {Model/View Programming}{model/view} framework.
 
-    For performance and flexibility, you may want to subclass QAbstractItemModel
-    to provide support for different kinds of repositories. For example, the
-    QDirModel provides a model interface to the underlying file system, and does
-    not actually store file information internally.
+    Data is written to the model, and read back, using the standard
+    QAbstractItemModel interface. The way each item of information is
+    referenced depends on how the data is inserted into the model. The
+    QStandardItemModel class reimplements several of the
+    QAbstractItemModel class's functions, and implements in addition a
+    clear() function which removes all items from the model and resets
+    both the horizontal and vertical headers.
+
+    For performance and flexibility, you may want to subclass
+    QAbstractItemModel to provide support for different kinds of
+    repositories. For example, the QDirModel provides a model
+    interface to the underlying file system, and does not actually
+    store file information internally.
 
     An example usage of QStandardItemModel to create a table:
+
     \quotefromfile itemviews/spinboxdelegate/main.cpp
     \skipto QStandardItemModel model
     \printline model
+
     \skipto for (int row
     \printuntil }
     \printline }
 
     An example usage of QStandardItemModel to create a tree:
-    \code
-            QStandardItemModel *model = new QStandardItemModel();
-            QModelIndex parent;
-            for (int i = 0; i < 4; ++i) {
-                parent = model->index(0, 0, parent);
-                model->insertRows(0, 1, parent);
-                model->insertColumns(0, 1, parent);
-                QModelIndex index = model->index(0, 0, parent);
-                model->setData(index, i);
-            }
-    \endcode
+
+    \quotefromfile snippets/qstandarditemmodel/main.cpp
+    \skipto QStandardItemModel
+    \printuntil }
 
     The current implementation of QStandardItemModel only supports adding
-    children index's to the first column.
+    children to the first column.
 
     \sa {Model/View Programming}, QAbstractItemModel,
-        {itemviews/simpletreemodel}{Simple Tree Model example}
+    {itemviews/simpletreemodel}{Simple Tree Model example}
 */
 
 /*!
-    Creates an empty model that contains no rows or columns with the given
-    \a parent.
+    Creates an empty model with the given \a parent, containing no
+    rows or columns.
+
+    \sa insertColumns(), insertRows()
 */
 QStandardItemModel::QStandardItemModel(QObject *parent)
     : QAbstractItemModel(*new QStandardItemModelPrivate(0, 0), parent)
@@ -86,7 +91,10 @@ QStandardItemModel::QStandardItemModel(QObject *parent)
 }
 
 /*!
-    Creates a model with \a rows number of rows and \a columns number of columns.
+    Creates a model with the given \a parent, containing the given
+    number of \a rows and \a columns.
+
+    \sa columnCount(), rowCount()
 */
 QStandardItemModel::QStandardItemModel(int rows, int columns, QObject *parent)
     : QAbstractItemModel(*new QStandardItemModelPrivate(rows, columns), parent)
@@ -96,14 +104,15 @@ QStandardItemModel::QStandardItemModel(int rows, int columns, QObject *parent)
 
 
 /*!
-    Destroys the model.
+    Destroys this model.
 */
 QStandardItemModel::~QStandardItemModel()
 {
 }
 
 /*!
-    Returns a model index for the given \a row, \a column, and \a parent.
+    Returns the index of the item in the model specified by the given
+    \a row, \a column, and \a parent index.
 
     \sa data()
 */
@@ -122,7 +131,7 @@ QModelIndex QStandardItemModel::index(int row, int column, const QModelIndex &pa
 }
 
 /*!
-    Returns a model index for the parent of the \a child item.
+    Returns the model index for the parent of the given \a child item.
 
     \sa hasChildren()
 */
@@ -146,14 +155,14 @@ QModelIndex QStandardItemModel::parent(const QModelIndex &child) const
     Returns the number of rows in the model that contain items with the given
     \a parent.
 
-    \sa columnCount() insertRows()
+    \sa columnCount(), insertRows()
 */
 int QStandardItemModel::rowCount(const QModelIndex &parent) const
 {
     Q_D(const QStandardItemModel);
     if (parent.column() > 0)
         return 0;
-    
+
     QStdModelRow *modelRow = d->containedRow(parent, true);
     if (modelRow)
         return modelRow->childrenRows.count();
@@ -165,7 +174,7 @@ int QStandardItemModel::rowCount(const QModelIndex &parent) const
     Returns the number of columns in the model that contain items with the given
     \a parent.
 
-    \sa rowCount() insertColumns()
+    \sa rowCount(), insertColumns()
 */
 int QStandardItemModel::columnCount(const QModelIndex &parent) const
 {
@@ -181,10 +190,11 @@ int QStandardItemModel::columnCount(const QModelIndex &parent) const
 }
 
 /*!
-    Returns true if the \a parent model index has child items; otherwise returns
-    false.
+    Returns true if the given \a parent model index has child items;
+    otherwise returns false.
 
-    To add children use insertColumns() and insertRows().
+    Use the insertColumns() and insertRows() functions to add
+    children.
 
     \sa rowCount(), columnCount(), parent()
 */
@@ -193,7 +203,7 @@ bool QStandardItemModel::hasChildren(const QModelIndex &parent) const
     Q_D(const QStandardItemModel);
     if (parent.column() > 0)
         return false;
-        
+
     if (parent.isValid()) {
         QStdModelRow *modelRow = d->containedRow(parent, true);
         if (modelRow)
@@ -205,7 +215,7 @@ bool QStandardItemModel::hasChildren(const QModelIndex &parent) const
 }
 
 /*!
-    Returns the data for the given \a index and \a role.
+    Returns the data for the given \a index and display \a role.
 
     \sa setData(), setHeaderData(), index()
 */
@@ -213,7 +223,7 @@ QVariant QStandardItemModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QStandardItemModel);
     // Don't need to check if index is valid because modelRow will
-    
+
     QStdModelRow *modelRow = d->containedRow(index, false);
     if (modelRow && modelRow->items.count() > index.column()) {
         QStdModelItem *item = modelRow->items.at(index.column());
@@ -226,18 +236,19 @@ QVariant QStandardItemModel::data(const QModelIndex &index, int role) const
 }
 
 /*!
-    Sets the data for the given \a index and \a role to the \a value specified.
+    Sets the data for the given \a index and \a role to the \a value
+    specified. The role is described by the Qt::ItemDataRole enum.
+    Returns false if the given \a index is not valid; otherwise
+    returns true.
 
-    Returns false if index isn't valid.
-
-    \sa Qt::ItemDataRole, data(), itemData(), setHeaderData()
+    \sa data(), itemData(), setHeaderData()
 */
 bool QStandardItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     Q_D(const QStandardItemModel);
     if (!index.isValid())
         return false;
-    
+
     QStdModelRow *modelRow = d->containedRow(index, true);
     int count = modelRow->items.count();
     // make room for enough items
@@ -308,19 +319,18 @@ bool QStandardItemModel::setHeaderData(int section, Qt::Orientation orientation,
 
 
 /*!
-    Inserts \a count rows into the model, creating new items as children of
-    the given \a parent. The new rows are inserted before the \a row specified.
+    Inserts \a count rows into the model, creating new items as
+    children of the given \a parent. The new rows are inserted before
+    the \a row specified.  Returns true if the rows were successfully
+    inserted; otherwise returns false.
 
-    If \a row is 0, the rows are prepended to any existing rows in the parent.
-    If \a row is rowCount(), the rows are appended to any existing rows in
-    the parent.
-    If \a parent has no children, a single column with \a count rows is inserted.
+    If \a row is 0, the rows are prepended to any existing rows in the
+    parent.  If \a row is rowCount(), the rows are appended to any
+    existing rows in the parent.  If the given \a parent has no
+    children, a single column with \a count rows is inserted. Note
+    that a row with no columns will not show up in the treeview.
 
-    Note that a row with no columns will not show up in the treeview.
-
-    Returns true if the rows were successfully inserted; otherwise returns false.
-
-    \sa insertRow() insertColumns() removeRows() rowCount()
+    \sa insertRow(), insertColumns(), removeRows(), rowCount()
 */
 bool QStandardItemModel::insertRows(int row, int count, const QModelIndex &parent)
 {
@@ -330,11 +340,6 @@ bool QStandardItemModel::insertRows(int row, int count, const QModelIndex &paren
 
     QVector<QStdModelRow*> &rows = (parent.isValid()) ? d->containedRow(parent, true)->childrenRows
                                : d->topLevelRows;
-
-    if (row < 0)
-        row = 0;
-    else if (row > rows.count())
-        row = rows.count();
 
     if (!parent.isValid() && d->verticalHeader.size() > row)
         d->verticalHeader.insert(row, count, 0);
@@ -349,18 +354,16 @@ bool QStandardItemModel::insertRows(int row, int count, const QModelIndex &paren
 }
 
 /*!
-    Inserts \a count columns into the model, creating new items as children of
-    the given \a parent. The new columns are inserted before the \a column
-    specified.
+    Inserts \a count columns into the model, creating new items as
+    children of the given \a parent. The new columns are inserted
+    before the \a column specified.  Returns true if the columns were
+    successfully inserted; otherwise returns false.
 
-    If \a column is 0, the columns are prepended to any existing columns in the
-    parent.
-    If \a column is columnCount(), the columns are appended to any existing
-    columns in the parent.
-    If \a parent has no children, a single row with \a count columns is inserted.
-
-    Returns true if the columns were successfully inserted; otherwise returns
-    false.
+    If \a column is 0, the columns are prepended to any existing
+    columns in the parent.  If \a column is columnCount(), the columns
+    are appended to any existing columns in the parent.  If the given
+    \a parent has no children, a single row with \a count columns is
+    inserted.
 
     \sa insertColumn(), insertRows(), removeColumns(), columnCount()
 */
@@ -369,11 +372,6 @@ bool QStandardItemModel::insertColumns(int column, int count, const QModelIndex 
     Q_D(QStandardItemModel);
     if (count < 1 || column < 0 || column > columnCount(parent) || parent.column() > 0)
         return false;
-
-    if (column < 0)
-        column = 0;
-    else if (column > columnCount(parent))
-        column = columnCount(parent);
 
     beginInsertColumns(parent, column, column + count - 1);
 
@@ -404,15 +402,12 @@ bool QStandardItemModel::insertColumns(int column, int count, const QModelIndex 
 }
 
 /*!
-    Removes \a count rows from the model, starting with the given
-    \a row.
-    The items removed are children of the item represented by the \a parent
-    model index.
+    Removes \a count rows from the model, starting with the specified
+    \a row.  The items removed are children of the item represented by
+    the given \a parent model index. Returns true if the rows were
+    successfully removed; otherwise returns false.
 
-    Returns true if the rows were successfully removed; otherwise returns
-    false.
-
-    \sa insertRows(), removeColumns(), rowCount()
+    \sa clear(), insertRows(), rowCount()
 */
 bool QStandardItemModel::removeRows(int row, int count, const QModelIndex &parent)
 {
@@ -444,15 +439,12 @@ bool QStandardItemModel::removeRows(int row, int count, const QModelIndex &paren
 }
 
 /*!
-    Removes \a count columns from the model, starting with the given
-    \a column.
-    The items removed are children of the item represented by the \a parent
-    model index.
+    Removes \a count columns from the model, starting with the
+    specified \a column.  The items removed are children of the item
+    represented by the given \a parent model index. Returns true if
+    the columns were successfully removed; otherwise returns false.
 
-    Returns true if the columns were successfully removed; otherwise returns
-    false.
-
-    \sa insertColumns(), columnCount()
+    \sa clear(), insertColumns(), columnCount()
 */
 bool QStandardItemModel::removeColumns(int column, int count, const QModelIndex &parent)
 {
@@ -514,7 +506,10 @@ Qt::ItemFlags QStandardItemModel::flags(const QModelIndex &index) const
 }
 
 /*!
-    Clears the model, removing all items.
+    Removes all items from the model and resets both the horizontal
+    and vertical headers.
+
+    \sa removeColumns(), removeRows()
 */
 void QStandardItemModel::clear()
 {
@@ -554,6 +549,7 @@ QStdModelRow *QStandardItemModelPrivate::containedRow(const QModelIndex &index,
 */
 void QStandardItemModelPrivate::clear()
 {
+    topLevelColumns = 0;
     qDeleteAll(topLevelRows);
     topLevelRows.clear();
     qDeleteAll(horizontalHeader);

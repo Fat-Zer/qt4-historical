@@ -27,6 +27,8 @@
 #include <QtGui/qcommonstyle.h>
 #include <QtCore/qpointer.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_STYLE_MOTIF)
@@ -94,5 +96,7 @@ private:
 };
 
 #endif // QT_NO_STYLE_MOTIF
+
+QT_END_HEADER
 
 #endif // QMOTIFSTYLE_H

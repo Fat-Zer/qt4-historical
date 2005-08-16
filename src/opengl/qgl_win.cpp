@@ -543,6 +543,7 @@ QGLFormat pfiToQGLFormat(HDC hdc, int pfi)
     iAttributes[i++] = WGL_ACCELERATION_ARB; // 7
     iAttributes[i++] = WGL_SAMPLE_BUFFERS_ARB; // 8
     iAttributes[i++] = WGL_SAMPLES_ARB; // 9
+    iAttributes[i++] = WGL_NUMBER_OVERLAYS_ARB; // 10
 
     if (wglGetPixelFormatAttribivARB(hdc, pfi, 0, i,
                                      iAttributes.constData(),
@@ -567,6 +568,7 @@ QGLFormat pfiToQGLFormat(HDC hdc, int pfi)
         fmt.setSampleBuffers(iValues[8]);
         if (fmt.sampleBuffers())
             fmt.setSamples(iValues[9]);
+        fmt.setOverlay(iValues[10]);
     }
 #if 0
     qDebug() << "values for pfi:" << pfi;
@@ -580,6 +582,7 @@ QGLFormat pfiToQGLFormat(HDC hdc, int pfi)
     qDebug() << "direct        7:" << fmt.directRendering();
     qDebug() << "sample buffer 8:" << fmt.sampleBuffers();
     qDebug() << "num samples   9:" << fmt.samples();
+    qDebug() << "has overlays 10:" << fmt.hasOverlay();
 #endif
     return fmt;
 }
@@ -604,7 +607,16 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         d->win = 0;
         myDc = d->hbitmap_hdc = CreateCompatibleDC(qt_win_display_dc());
         QPixmap *px = static_cast<QPixmap *>(d->paintDevice);
-        d->hbitmap = CreateCompatibleBitmap(qt_win_display_dc(), px->width(), px->height());
+	
+        BITMAPINFO bmi;
+        memset(&bmi, 0, sizeof(bmi));
+        bmi.bmiHeader.biSize        = sizeof(BITMAPINFOHEADER);
+        bmi.bmiHeader.biWidth       = px->width();
+        bmi.bmiHeader.biHeight      = px->height();
+        bmi.bmiHeader.biPlanes      = 1;
+        bmi.bmiHeader.biBitCount    = 32;
+        bmi.bmiHeader.biCompression = BI_RGB;
+        d->hbitmap = CreateDIBSection(qt_win_display_dc(), &bmi, DIB_RGB_COLORS, 0, 0, 0);
         SelectObject(myDc, d->hbitmap);
     } else {
         d->win = ((QWidget*)d->paintDevice)->winId();
@@ -815,6 +827,10 @@ int QGLContext::choosePixelFormat(void* dummyPfd, HDC pdc)
             iAttributes[i++] = WGL_STENCIL_BITS_ARB;
             iAttributes[i++] = d->glFormat.stencilBufferSize() == -1 ? 8 : d->glFormat.stencilBufferSize();
         }
+        if (d->glFormat.hasOverlay()) {
+            iAttributes[i++] = WGL_NUMBER_OVERLAYS_ARB;
+            iAttributes[i++] = 1;
+        }
         int si = 0;
         bool trySampleBuffers = QGLExtensions::glExtensions & QGLExtensions::SampleBuffers;
         if (trySampleBuffers && d->glFormat.sampleBuffers()) {
@@ -1021,9 +1037,14 @@ void QGLContext::makeCurrent()
         wglRealizeLayerPalette(d->dc, d->glFormat.plane(), TRUE);
     }
 
-    if (!wglMakeCurrent(d->dc, d->rc))
+    if (wglMakeCurrent(d->dc, d->rc)) {
+        if (!qgl_context_storage.hasLocalData())
+            qgl_context_storage.setLocalData(new QGLThreadContext);
+        qgl_context_storage.localData()->context = this;
+        currentCtx = this;
+    } else {
         qwglError("QGLContext::makeCurrent()", "wglMakeCurrent");
-    currentCtx = this;
+    }
 }
 
 
@@ -1032,6 +1053,8 @@ void QGLContext::doneCurrent()
     Q_D(QGLContext);
     currentCtx = 0;
     wglMakeCurrent(0, 0);
+    if (qgl_context_storage.hasLocalData())
+        qgl_context_storage.localData()->context = 0;
     if (deviceIsPixmap() && d->hbitmap) {
         QPixmap *pm = static_cast<QPixmap *>(d->paintDevice);
         *pm = QPixmap::fromWinHBITMAP(d->hbitmap);

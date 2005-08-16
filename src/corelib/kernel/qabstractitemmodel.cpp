@@ -349,7 +349,7 @@ QModelIndex QPersistentModelIndex::child(int row, int column) const
     return QModelIndex();
 }
 
-/*
+/*!
   Returns the data for the given \a role for the item referred to by the index.
 */
 QVariant QPersistentModelIndex::data(int role) const
@@ -889,10 +889,10 @@ void QAbstractItemModelPrivate::reset()
        call endRemoveColumns() \e{immediately afterwards}.
     \endlist
 
-    The signals that these functions emit give attached components the chance
-    to take action before any data becomes unavailable. The encapsulation of
-    the insert and remove operations with these begin and end functions also
-    enable the model to manage
+    The \e private signals that these functions emit give attached components
+    the chance to take action before any data becomes unavailable. The
+    encapsulation of the insert and remove operations with these begin and end
+    functions also enables the model to manage
     \l{QPersistentModelIndex}{persistent model indexes} correctly.
     \bold{If you want selections to be handled properly, you must ensure that
     you call these functions.}
@@ -961,6 +961,9 @@ void QAbstractItemModelPrivate::reset()
 
     Note that this signal must be emitted explicitly when
     reimplementing the setHeaderData() function.
+
+    If you are changing the number of columns or rows you don't need to emit this signal,
+    but use the begin/end functions.
 
     \sa headerData(), setHeaderData(), dataChanged()
 */
@@ -1050,7 +1053,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The new items are those between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa insertRows()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa insertRows(), beginInsertRows()
 */
 
 /*!
@@ -1060,7 +1067,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The new items will be positioned between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa insertRows()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa insertRows(), beginInsertRows()
 */
 
 /*!
@@ -1070,7 +1081,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The removed items are those between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa removeRows()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa removeRows(), beginRemoveRows()
 */
 
 /*!
@@ -1080,7 +1095,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The items that will be removed are those between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa removeRows()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa removeRows(), beginRemoveRows()
 */
 
 /*!
@@ -1090,7 +1109,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The new items are those between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa insertColumns()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa insertColumns(), beginInsertColumns()
 */
 
 /*!
@@ -1100,7 +1123,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The new items will be positioned between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa insertColumns()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa insertColumns(), beginInsertColumns()
 */
 
 /*!
@@ -1110,7 +1137,11 @@ QAbstractItemModel::~QAbstractItemModel()
     model. The removed items are those between \a start and \a end
     inclusive, under the given \a parent item.
 
-    \sa removeColumns()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa removeColumns(), beginRemoveColumns()
 */
 
 /*!
@@ -1120,7 +1151,11 @@ QAbstractItemModel::~QAbstractItemModel()
     from the model. The items to be removed are those between \a start and
     \a end inclusive, under the given \a parent item.
 
-    \sa removeColumns()
+    \bold{Note:} Components connected to this signal use it to adapt to changes
+    in the model's dimensions. It can only be emitted by the QAbstractItemModel
+    implementation, and cannot be explicitly emitted in subclass code.
+
+    \sa removeColumns(), beginRemoveColumns()
 */
 
 /*!
@@ -1151,10 +1186,10 @@ bool QAbstractItemModel::hasChildren(const QModelIndex &parent) const
     Returns a map with values for all predefined roles in the model
     for the item at the given \a index.
 
-    This must be reimplemented if you want to extend the model with
-    custom roles.
+    Reimplemented this function if you want to extend the default behavior
+    of this function to include custom roles in the map.
 
-    \sa Qt::ItemDataRole data()
+    \sa Qt::ItemDataRole, data()
 */
 QMap<int, QVariant> QAbstractItemModel::itemData(const QModelIndex &index) const
 {
@@ -1249,11 +1284,13 @@ QMimeData *QAbstractItemModel::mimeData(const QModelIndexList &indexes) const
 /*!
     Handles the \a data supplied by a drag and drop operation that ended with
     the given \a action.
-    Note that the coordinates given by row, column and parent are the coordinates where
-    the data should be inserted, so it is the responsibility of the view to
-    transform the drop coordinates to the correct model coordinates.
-    (For instance, a drop action on an item in a QTreeView can result in one of these actions:
-    insert a child of the item or insert a sibling of the item)
+    Although the specified \a row, \a column and \a parent indicate the location of
+    an item in the model where the operation ended, it is the responsibility of the
+    view to provide a suitable location for where the data should be inserted.
+
+    For instance, a drop action on an item in a QTreeView can result in new items
+    either being inserted as children of the item specified by \a row, \a column,
+    and \a parent, or as siblings of the item.
 
     \sa supportedDropActions()
 */
@@ -1311,6 +1348,8 @@ Qt::DropActions QAbstractItemModel::supportedDropActions() const
   If you implement your own model, you can reimplement this function
   if you want to support insertions. Alternatively, you can provide
   you own API for altering the data.
+
+  \sa insertColumns(), removeRows(), beginInsertRows(), endInsertRows()
 */
 bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
 {
@@ -1335,6 +1374,8 @@ bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
   If you implement your own model, you can reimplement this function
   if you want to support insertions. Alternatively, you can provide
   you own API for altering the data.
+
+  \sa insertRows(), removeColumns(), beginInsertColumns(), endInsertColumns()
 */
 bool QAbstractItemModel::insertColumns(int, int, const QModelIndex &)
 {
@@ -1352,7 +1393,7 @@ bool QAbstractItemModel::insertColumns(int, int, const QModelIndex &)
     if you want to support removing. Alternatively, you can provide
     you own API for altering the data.
 
-    \sa removeRow(), removeColumns(), insertColumns()
+    \sa removeRow(), removeColumns(), insertColumns(), beginRemoveRows(), endRemoveRows()
 */
 bool QAbstractItemModel::removeRows(int, int, const QModelIndex &)
 {
@@ -1370,7 +1411,7 @@ bool QAbstractItemModel::removeRows(int, int, const QModelIndex &)
     if you want to support removing. Alternatively, you can provide
     you own API for altering the data.
 
-    \sa removeColumn(), removeRows(), insertColumns()
+    \sa removeColumn(), removeRows(), insertColumns(), beginRemoveColumns(), endRemoveColumns()
 */
 bool QAbstractItemModel::removeColumns(int, int, const QModelIndex &)
 {
@@ -1586,7 +1627,7 @@ QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation
   Note that the headerDataChanged() signal must be emitted explicitly
   when reimplementing this function.
 
-  \sa headerData()
+  \sa Qt::ItemDataRole, headerData()
 */
 
 bool QAbstractItemModel::setHeaderData(int section, Qt::Orientation orientation,

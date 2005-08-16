@@ -485,6 +485,8 @@ QSize QDockWidgetLayout::minimumSize() const
 
         for (int it = 0; it < layout_info.count(); ++it) {
             const QDockWidgetLayoutInfo &info = layout_info.at(it);
+            if (info.item->isEmpty())
+                continue;
             int s, p;
             if (info.is_sep) {
                 s = p = (info.item->widget()->isHidden()) ? 0 : sep_extent;
@@ -507,6 +509,53 @@ QSize QDockWidgetLayout::minimumSize() const
 }
 
 /*! \reimp */
+QSize QDockWidgetLayout::maximumSize() const
+{
+    if (!maxSize.isValid()) {
+        VDEBUG("QDockWidget::maximumSize");
+
+        int size = 0, perp = QLAYOUTSIZE_MAX;
+        const int sep_extent =
+            parentWidget()->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
+
+        for (int it = 0; it < layout_info.count(); ++it) {
+            const QDockWidgetLayoutInfo &info = layout_info.at(it);
+            if (info.item->isEmpty())
+                continue;
+            int s, p;
+            if (info.is_sep) {
+                p = QLAYOUTSIZE_MAX;
+                s = (info.item->widget()->isHidden()) ? 0 : sep_extent;
+            } else {
+                QSize sz = info.item->maximumSize();
+                s = pick(orientation, sz);
+                p = pick_perp(orientation, sz);
+            }
+
+            VDEBUG("  size %d perp %d", s, p);
+            if (s >= QLAYOUTSIZE_MAX) {
+                size = QLAYOUTSIZE_MAX;
+            } else if ((size + s) < QLAYOUTSIZE_MAX) {
+                size += s;
+            } else {
+                size = QLAYOUTSIZE_MAX;
+            }
+            perp = qMin(perp, p);
+        }
+
+        if (size == 0) {
+            // no visible items, use QLAYOUTSIZE_MAX instead of zero
+            size = QLAYOUTSIZE_MAX;
+        }
+
+        VDEBUG("END: size %4d perp %4d", size, perp);
+
+        maxSize = (orientation == Qt::Horizontal) ? QSize(size, perp) : QSize(perp, size);
+    }
+    return maxSize;
+}
+
+/*! \reimp */
 QSize QDockWidgetLayout::sizeHint() const
 {
     if (!szHint.isValid()) {
@@ -518,6 +567,8 @@ QSize QDockWidgetLayout::sizeHint() const
 
         for (int it = 0; it < layout_info.count(); ++it) {
             const QDockWidgetLayoutInfo &info = layout_info.at(it);
+            if (info.item->isEmpty())
+                continue;
             int s, p;
             if (info.is_sep) {
                 s = p = (info.item->widget()->isHidden()) ? 0 : sep_extent;
@@ -543,7 +594,7 @@ void QDockWidgetLayout::invalidate()
 {
     if (relayout_type != QInternal::RelayoutDragging) {
         QLayout::invalidate();
-        minSize = szHint = QSize();
+        minSize = maxSize = szHint = QSize();
     }
 }
 
@@ -1318,7 +1369,7 @@ void QDockWidgetLayout::drop(QDockWidget *dockwidget, const QRect &_r, const QPo
 
         if (nested) {
             DEBUG() << "    splitting";
-            split(qobject_cast<QDockWidget *>(info.item->widget()), dockwidget, location.area);
+            split(this, qobject_cast<QDockWidget *>(info.item->widget()), dockwidget, location.area);
         } else {
             DEBUG() << "    extending";
             int at = location.index / 2;
@@ -1397,40 +1448,45 @@ static void locateDockWidget(QDockWidget *w, QDockWidgetLayout **layout, int *wh
     }
 }
 
-void QDockWidgetLayout::split(QDockWidget *existing, QDockWidget *with, Qt::DockWidgetArea area)
+void QDockWidgetLayout::split(QDockWidgetLayout *layout,
+                              QDockWidget *existing,
+                              QDockWidget *with,
+                              Qt::DockWidgetArea area)
 {
-    QDockWidgetLayout *layout = this;
     int which = -1;
     locateDockWidget(existing, &layout, &which);
     Q_ASSERT(which != -1);
     const QDockWidgetLayoutInfo &info = layout->layout_info.at(which);
 
-    Q_ASSERT(relayout_type == QInternal::RelayoutNormal);
-    relayout_type = QInternal::RelayoutDropped;
+    Q_ASSERT(layout->relayout_type == QInternal::RelayoutNormal);
+    layout->relayout_type = QInternal::RelayoutDropped;
 
     const Qt::Orientation howToSplit = ((area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
                                         ? Qt::Horizontal
                                         : Qt::Vertical);
-    if (orientation == howToSplit) {
+    if (layout->orientation == howToSplit) {
         // don't nest, just split save_size between the 2 dock widgets
         const int separator_extent =
-            parentWidget()->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
+            layout->parentWidget()->style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
         int each_size = qMax(info.cur_size - separator_extent, 0) / 2;
 
         int at = which;
         if (area == Qt::RightDockWidgetArea || area == Qt::BottomDockWidgetArea)
             at += 2;
 
-        addChildWidget(with);
-        insert(at, new QWidgetItem(with)).cur_size
+        layout->addChildWidget(with);
+        layout->insert(at, new QWidgetItem(with)).cur_size
             = const_cast<QDockWidgetLayoutInfo &>(info).cur_size
             = each_size;
     } else {
         // create a nested window dock in place of the current widget
         QDockWidgetLayout *nestedLayout =
-            new QDockWidgetLayout(area, orientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal);
+            new QDockWidgetLayout(area,
+                                  (layout->orientation == Qt::Horizontal
+                                   ? Qt::Vertical
+                                   : Qt::Horizontal));
         nestedLayout->setParent(layout);
-        nestedLayout->setObjectName(objectName() + "_nestedLayout");
+        nestedLayout->setObjectName(layout->objectName() + "_nestedLayout");
 
         int save_size = info.cur_size;
         layout->removeWidget(existing);

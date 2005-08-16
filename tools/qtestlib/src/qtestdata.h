@@ -29,6 +29,8 @@
 #include <QtCore/qmetatype.h>
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 class QTestTable;
 class QTestDataPrivate;
 
@@ -64,5 +66,7 @@ inline QTestData &operator<<(QTestData &data, const char * value)
     data.append(QMetaType::QString, &str);
     return data;
 }
+
+QT_END_HEADER
 
 #endif

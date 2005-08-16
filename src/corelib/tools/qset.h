@@ -26,6 +26,8 @@
 
 #include <QtCore/qhash.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 template <class T>
@@ -218,5 +220,7 @@ QList<T> QList<T>::fromSet(const QSet<T> &set)
 }
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(Set)
+
+QT_END_HEADER
 
 #endif // QSET_H

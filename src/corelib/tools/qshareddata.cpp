@@ -232,7 +232,7 @@
     count.
 */
 
-/*! \fn QSharedDataPointer::QSharedDataPointer(const QSharedDataPointer &other)
+/*! \fn QSharedDataPointer::QSharedDataPointer(const QSharedDataPointer<T> &other)
 
     Constructs a copy of \a other.
 
@@ -240,7 +240,7 @@
     shared data object pointed to by \a{other}.
 */
 
-/*! \fn QSharedDataPointer &QSharedDataPointer::operator=(const QSharedDataPointer &other)
+/*! \fn QSharedDataPointer<T> &QSharedDataPointer::operator=(const QSharedDataPointer<T> &other)
 
     Assigns \a other to this pointer.
 

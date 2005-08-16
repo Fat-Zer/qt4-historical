@@ -125,6 +125,7 @@ public:
     }
     inline QFixed operator/(int d) const { QFixed f; f.val = val/d; return f; }
     inline QFixed operator/(QFixed b) const { QFixed f = *this; return (f /= b); }
+    inline QFixed operator>>(int d) const { QFixed f = *this; f.val >>= d; return f; }
     inline QFixed &operator*=(int i) { val *= i; return *this; }
     inline QFixed &operator*=(uint i) { val *= i; return *this; }
     inline QFixed &operator*=(const QFixed &o) {
@@ -161,10 +162,10 @@ inline int qRound(const QFixed &f) { return f.toInt(); }
 
 inline QFixed operator*(int i, const QFixed &d) { return d*i; }
 inline QFixed operator+(int i, const QFixed &d) { return d+i; }
-inline QFixed operator-(int i, const QFixed &d) { return d-i; }
+inline QFixed operator-(int i, const QFixed &d) { return -(d-i); } 
 inline QFixed operator*(uint i, const QFixed &d) { return d*i; }
 inline QFixed operator+(uint i, const QFixed &d) { return d+i; }
-inline QFixed operator-(uint i, const QFixed &d) { return d-i; }
+inline QFixed operator-(uint i, const QFixed &d) { return -(d-i); }
 // inline QFixed operator*(qreal d, const QFixed &d2) { return d2*d; }
 
 inline bool operator==(const QFixed &f, int i) { return f.value() == (i<<6); }
@@ -190,6 +191,7 @@ struct QFixedPoint {
 class QTextItemInt : public QTextItem
 {
 public:
+    inline QTextItemInt() : flags(0) {}
     QFixed descent;
     QFixed ascent;
     QFixed width;
@@ -295,7 +297,7 @@ struct QGlyphLayout
     inline QGlyphLayout()
         : glyph(0), justificationType(0), nKashidas(0), space_18d6(0)
         {}
-    
+
     // highest value means highest priority for justification. Justification is done by first inserting kashidas
     // starting with the highest priority positions, then stretching spaces, afterwards extending inter char
     // spacing, and last spacing between arabic words.
@@ -337,6 +339,14 @@ struct QGlyphLayout
     uint space_18d6 : 24;
 };
 Q_DECLARE_TYPEINFO(QGlyphLayout, Q_PRIMITIVE_TYPE);
+
+inline bool qIsControlChar(ushort uc)
+{
+    return (uc >= 0x200b && uc <= 0x200f /* ZW Space, ZWNJ, ZWJ, LRM and RLM */)
+            || (uc >= 0x2028 && uc <= 0x202f /* LS, PS, LRE, RLE, PDF, LRO, RLO, NNBSP */)
+            || (uc >= 0x206a && uc <= 0x206f /* ISS, ASS, IAFS, AFS, NADS, NODS */);
+}
+
 
 struct QCharAttributes {
     uchar softBreak      :1;     // Potential linebreak point _before_ this character
@@ -440,7 +450,8 @@ public:
     enum ShaperFlag {
         RightToLeft = 0x0001,
         Mirrored = 0x0001,
-        DesignMetrics = 0x0002
+        DesignMetrics = 0x0002,
+        GlyphIndicesOnly = 0x0004
     };
     Q_DECLARE_FLAGS(ShaperFlags, ShaperFlag)
 
@@ -451,7 +462,7 @@ public:
 
     static void bidiReorder(int numRuns, const quint8 *levels, int *visualOrder);
 
-    const QCharAttributes *attributes();
+    const QCharAttributes *attributes() const;
 
     void shape(int item) const;
 
@@ -501,7 +512,7 @@ public:
     }
     int formatIndex(const QScriptItem *si) const;
 
-    QFixed nextTab(const QScriptItem *si, QFixed x);
+    QFixed nextTab(const QScriptItem *si, QFixed x) const;
 
     mutable QScriptLineArray lines;
 
@@ -557,5 +568,5 @@ public:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QTextEngine::ShaperFlags)
 
 
-    
+
 #endif // QTEXTENGINE_P_H

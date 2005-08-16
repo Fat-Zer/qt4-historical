@@ -297,23 +297,14 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
             widget->setGeometry(geom);
     }
 
-#if defined(Q_WS_WIN)
-    MSG msg;
-    QT_WA({
-        while(PeekMessageW(&msg, widget->winId(), WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE))
-            ;
-    } , {
-        while(PeekMessageA(&msg, widget->winId(), WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE))
-            ;
-    });
-#endif
-
     QApplication::syncX();
 }
 
 void QWidgetResizeHandler::setMouseCursor(MousePosition m)
 {
-#ifndef QT_NO_CURSOR
+#ifdef QT_NO_CURSOR
+    Q_UNUSED(m);
+#else
     QObjectList children = widget->children();
     for (int i = 0; i < children.size(); ++i) {
         if (QWidget *w = qobject_cast<QWidget*>(children.at(i))) {
@@ -344,7 +335,7 @@ void QWidgetResizeHandler::setMouseCursor(MousePosition m)
         widget->setCursor(Qt::ArrowCursor);
         break;
     }
-#endif
+#endif // QT_NO_CURSOR
 }
 
 void QWidgetResizeHandler::keyPressEvent(QKeyEvent * e)

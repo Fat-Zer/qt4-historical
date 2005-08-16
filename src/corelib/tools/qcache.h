@@ -26,6 +26,8 @@
 
 #include <QtCore/qhash.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 template <class Key, class T>
@@ -164,5 +166,7 @@ void QCache<Key,T>::trim(int m)
             unlink(*u);
     }
 }
+
+QT_END_HEADER
 
 #endif // QCACHE_H

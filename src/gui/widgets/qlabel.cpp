@@ -64,8 +64,8 @@ public:
 #endif
 #ifndef QT_NO_MOVIE
     QMovie *lmovie;
-    void movieUpdated(const QRect&);
-    void movieResized(const QSize&);
+    void _q_movieUpdated(const QRect&);
+    void _q_movieResized(const QSize&);
 #endif
     QPointer<QWidget> lbuddy;
     int shortcutId;
@@ -143,16 +143,16 @@ public:
     was a button (inheriting from QAbstractButton), triggering the
     mnemonic would emulate a button click.
 
-    \table
+    \table 100%
     \row
-    \i \inlineimage macintosh-label.png Screenshot of a Macintosh style label
-    \i A Macintosh style label
+    \o \inlineimage macintosh-label.png Screenshot of a Macintosh style label
+    \o A label shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
     \row
-    \i \inlineimage plastique-label.png Screenshot of a Plastique style label
-    \i A Plastique style label
+    \o \inlineimage plastique-label.png Screenshot of a Plastique style label
+    \o A label shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
     \row
-    \i \inlineimage windowsxp-label.png Screenshot of a Windows XP style label
-    \i A Windows XP style label
+    \o \inlineimage windowsxp-label.png Screenshot of a Windows XP style label
+    \o A label shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
     \endtable
 
     \sa QLineEdit, QTextEdit, QPixmap, QMovie,
@@ -994,7 +994,7 @@ QWidget * QLabel::buddy() const
 
 
 #ifndef QT_NO_MOVIE
-void QLabelPrivate::movieUpdated(const QRect& rect)
+void QLabelPrivate::_q_movieUpdated(const QRect& rect)
 {
     Q_Q(QLabel);
     if (lmovie && lmovie->isValid()) {
@@ -1017,11 +1017,11 @@ void QLabelPrivate::movieUpdated(const QRect& rect)
     }
 }
 
-void QLabelPrivate::movieResized(const QSize& size)
+void QLabelPrivate::_q_movieResized(const QSize& size)
 {
     Q_Q(QLabel);
     valid_hints = false;
-    movieUpdated(QRect(QPoint(0,0), size));
+    _q_movieUpdated(QRect(QPoint(0,0), size));
     q->updateGeometry();
 }
 
@@ -1042,8 +1042,8 @@ void QLabel::setMovie(QMovie *movie)
     d->clearContents();
 
     d->lmovie = movie;
-    connect(movie, SIGNAL(resized(QSize)), this, SLOT(movieResized(QSize)));
-    connect(movie, SIGNAL(updated(QRect)), this, SLOT(movieUpdated(QRect)));
+    connect(movie, SIGNAL(resized(QSize)), this, SLOT(_q_movieResized(QSize)));
+    connect(movie, SIGNAL(updated(QRect)), this, SLOT(_q_movieUpdated(QRect)));
 
     // Assume that if the movie is running,
     // resize/update signals will come soon enough
@@ -1061,7 +1061,6 @@ void QLabel::setMovie(QMovie *movie)
 
 void QLabelPrivate::clearContents()
 {
-    Q_Q(QLabel);
     delete doc;
     doc = 0;
 
@@ -1078,6 +1077,7 @@ void QLabelPrivate::clearContents()
 
     ltext.clear();
 #ifndef QT_NO_SHORTCUT
+    Q_Q(QLabel);
     q->releaseShortcut(shortcutId);
     shortcutId = 0;
 #endif

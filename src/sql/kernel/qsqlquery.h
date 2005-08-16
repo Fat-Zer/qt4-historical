@@ -28,6 +28,8 @@
 #include <QtSql/qsqldatabase.h>
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Sql)
 
 class QVariant;
@@ -93,5 +95,7 @@ public:
 private:
     QSqlQueryPrivate* d;
 };
+
+QT_END_HEADER
 
 #endif // QSQLQUERY_H

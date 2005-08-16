@@ -43,19 +43,19 @@ public:
     {
     }
 
-    inline void browseClicked() {}
-    inline void okClicked() {}
-    inline void printerOrFileSelected(QAbstractButton *) {}
-    inline void landscapeSelected(int) {}
-    inline void paperSizeSelected(int) {}
-    inline void orientSelected(int) {}
-    inline void pageOrderSelected(QAbstractButton *) {}
-    inline void colorModeSelected(QAbstractButton *) {}
-    inline void setNumCopies(int) {}
-    inline void printRangeSelected(QAbstractButton *) {}
-    inline void setFirstPage(int) {}
-    inline void setLastPage(int) {}
-    inline void fileNameEditChanged(const QString &) {}
+    inline void _q_browseClicked() {}
+    inline void _q_okClicked() {}
+    inline void _q_printerOrFileSelected(QAbstractButton *) {}
+    inline void _q_landscapeSelected(int) {}
+    inline void _q_paperSizeSelected(int) {}
+    inline void _q_orientSelected(int) {}
+    inline void _q_pageOrderSelected(QAbstractButton *) {}
+    inline void _q_colorModeSelected(QAbstractButton *) {}
+    inline void _q_setNumCopies(int) {}
+    inline void _q_printRangeSelected(QAbstractButton *) {}
+    inline void _q_setFirstPage(int) {}
+    inline void _q_setLastPage(int) {}
+    inline void _q_fileNameEditChanged(const QString &) {}
 
     QWin32PrintEnginePrivate *ep;
 };
@@ -132,8 +132,8 @@ static void qt_win_read_back_PRINTDLGA(PRINTDLGA *pd, QPrintDialogPrivate *d)
         d->toPage = pd->nToPage;
     } else {
         d->printRange = QPrintDialog::AllPages;
-        d->fromPage = d->minPage;
-        d->toPage = d->maxPage;
+        d->fromPage = 0;
+        d->toPage = 0;
     }
 
     d->ep->printToFile = (pd->Flags & PD_PRINTTOFILE) != 0;
@@ -215,8 +215,8 @@ static void qt_win_read_back_PRINTDLGW(PRINTDLGW *pd, QPrintDialogPrivate *d)
         d->toPage = pd->nToPage;
     } else {
         d->printRange = QPrintDialog::AllPages;
-        d->fromPage = d->minPage;
-        d->toPage = d->maxPage;
+        d->fromPage = 0;
+        d->toPage = 0;
     }
 
     d->ep->printToFile = (pd->Flags & PD_PRINTTOFILE) != 0;

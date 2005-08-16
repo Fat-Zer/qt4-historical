@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3glist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 template<class type>
@@ -69,5 +71,7 @@ template<class type> inline void Q3PtrQueue<type>::deleteItem( Q3PtrCollection::
 {
     if ( del_item ) delete (type *)d;
 }
+
+QT_END_HEADER
 
 #endif // Q3PTRQUEUE_H

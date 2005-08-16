@@ -52,7 +52,7 @@ class QMessageBoxPrivate : public QDialogPrivate
     Q_DECLARE_PUBLIC(QMessageBox)
 public:
     QMessageBoxPrivate() {}
-    void buttonClicked();
+    void _q_buttonClicked();
     void init(int, int, int);
     int indexOf(int) const;
     QLabel *label;
@@ -480,7 +480,14 @@ QMessageBox::QMessageBox(const QString& caption,
     Q_D(QMessageBox);
     d->init(button0, button1, button2);
 #ifdef Q_WS_MAC
-    setText("<p><b>" + caption + "</b></p><p>" + text + "</p>");
+    // Make our message box look a little more mac like.
+    QString finalText = QLatin1String("<p><b>") + caption + QLatin1String("</b></p>");
+    if (Qt::mightBeRichText(text))
+        finalText += QLatin1String("<br><br>") + text;
+    else
+        finalText += Qt::convertFromPlainText(text);
+
+    setText(finalText);
 #else
     setWindowTitle(caption);
     setText(text);
@@ -602,7 +609,7 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
             }
             pb[i]->setAutoDefault(true);
             pb[i]->setFocusPolicy(Qt::StrongFocus);
-            q->connect(pb[i], SIGNAL(clicked()), SLOT(buttonClicked()));
+            q->connect(pb[i], SIGNAL(clicked()), SLOT(_q_buttonClicked()));
         }
     }
 }
@@ -847,7 +854,7 @@ void QMessageBox::setButtonText(int button, const QString &text)
     Internal slot to handle button clicks.
 */
 
-void QMessageBoxPrivate::buttonClicked()
+void QMessageBoxPrivate::_q_buttonClicked()
 {
     Q_Q(QMessageBox);
 

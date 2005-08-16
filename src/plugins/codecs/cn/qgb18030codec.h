@@ -29,7 +29,7 @@
 #include <QtCore/qtextcodec.h>
 #include <QtCore/qlist.h>
 
-#ifndef QT_NO_TEXTCODECPLUGIN
+#ifndef QT_NO_TEXTCODEC
 
 class QGb18030Codec : public QTextCodec {
 public:
@@ -132,6 +132,6 @@ public:
 };
 #endif // Q_WS_X11
 
-#endif // QT_NO_TEXTCODECPLUGIN
+#endif // QT_NO_TEXTCODEC
 
 #endif // QGB18030CODEC_H

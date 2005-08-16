@@ -27,6 +27,8 @@
 #include <QtDesigner/sdk_global.h>
 #include <QtDesigner/extension.h>
 
+QT_BEGIN_HEADER
+
 class DomWidget;
 class DomUi;
 class QWidget;
@@ -55,5 +57,7 @@ private:
 };
 Q_DECLARE_EXTENSION_INTERFACE(QDesignerExtraInfoExtension, "com.trolltech.Qt.Designer.ExtraInfo")
 
+
+QT_END_HEADER
 
 #endif // EXTRAINFO_H

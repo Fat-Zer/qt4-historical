@@ -26,6 +26,8 @@
 
 #include <QtGui/qpicture.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3Picture : public QPicture
@@ -38,5 +40,7 @@ public:
     bool save(QIODevice *dev, const char *format = 0);
     bool save(const QString &fileName, const char *format = 0);
 };
+
+QT_END_HEADER
 
 #endif // Q3PICTURE_H

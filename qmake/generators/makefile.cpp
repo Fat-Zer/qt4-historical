@@ -608,17 +608,21 @@ MakefileGenerator::init()
                 if(!verifyExtraCompiler((*it), QString())) //verify
                     continue;
                 QString out = fileFixify(tmp_out, Option::output_dir, Option::output_dir);
+                bool pre_dep = (project->variables()[(*it) + ".CONFIG"].indexOf("target_predeps") != -1);
                 if(project->variables().contains((*it) + ".variable_out")) {
                     const QStringList &var_out = project->variables().value((*it) + ".variable_out");
                     for(int i = 0; i < var_out.size(); ++i) {
                         QString v = var_out.at(i);
                         if(v == QLatin1String("SOURCES"))
                             v = "GENERATED_SOURCES";
+                        else if(v == QLatin1String("OBJECTS"))
+                            pre_dep = false;
                         QStringList &list = project->variables()[v];
                         if(!list.contains(out))
                             list.append(out);
                     }
                 } else if(project->variables()[(*it) + ".CONFIG"].indexOf("no_link") == -1) {
+                    pre_dep = false;
                     QStringList &list = project->variables()["OBJECTS"];
                     if(!list.contains(out))
                         list.append(out);
@@ -626,6 +630,11 @@ MakefileGenerator::init()
                         QStringList &list = project->variables()["UNUSED_SOURCES"];
                         if(!list.contains(out))
                             list.append(out);
+                }
+                if(pre_dep) {
+                    QStringList &list = project->variables()["PRE_TARGETDEPS"];
+                    if(!list.contains(out))
+                        list.append(out);
                 }
             }
         } else {
@@ -640,22 +649,31 @@ MakefileGenerator::init()
                         continue;
                     QString out = replaceExtraCompilerVariables(tmp_out, (*input), QString());
                     out = fileFixify(out, Option::output_dir, Option::output_dir);
+                    bool pre_dep = (project->variables()[(*it) + ".CONFIG"].indexOf("target_predeps") != -1);
                     if(project->variables().contains((*it) + ".variable_out")) {
                         const QStringList &var_out = project->variables().value((*it) + ".variable_out");
                         for(int i = 0; i < var_out.size(); ++i) {
                             QString v = var_out.at(i);
                             if(v == QLatin1String("SOURCES"))
                                 v = "GENERATED_SOURCES";
+                            else if(v == QLatin1String("OBJECTS"))
+                                pre_dep = false;
                             QStringList &list = project->variables()[v];
                             if(!list.contains(out))
                                 list.append(out);
                         }
                     } else if(project->variables()[(*it) + ".CONFIG"].indexOf("no_link") == -1) {
+                        pre_dep = false;
                         QStringList &list = project->variables()["OBJECTS"];
                         if(!list.contains(out))
                             list.append(out);
                     } else {
                         QStringList &list = project->variables()["UNUSED_SOURCES"];
+                        if(!list.contains(out))
+                            list.append(out);
+                    }
+                    if(pre_dep) {
+                        QStringList &list = project->variables()["PRE_TARGETDEPS"];
                         if(!list.contains(out))
                             list.append(out);
                     }
@@ -2030,7 +2048,9 @@ MakefileGenerator::writeExtraCompilerTargets(QTextStream &t)
                 deps += inc_deps;
             }
             for(int i = 0; i < deps.size(); ) {
-                if(out == deps.at(i))
+                QString &dep = deps[i];
+                dep = Option::fixPathToTargetOS(dep, false);
+                if(out == dep)
                     deps.removeAt(i);
                 else
                     ++i;
@@ -2966,8 +2986,16 @@ QStringList
 &MakefileGenerator::findDependencies(const QString &file)
 {
     QString fixedFile = fileFixify(file);
-    if(!dependsCache.contains(fixedFile))
-        dependsCache.insert(fixedFile, QMakeSourceFileInfo::dependencies(fixedFile));
+    if(!dependsCache.contains(fixedFile)) {
+#if 1
+        QStringList deps = QMakeSourceFileInfo::dependencies(file);
+        if(file != fixedFile)
+            deps += QMakeSourceFileInfo::dependencies(fixedFile);
+#else
+        QStringList deps = QMakeSourceFileInfo::dependencies(fixedFile);
+#endif
+        dependsCache.insert(fixedFile, deps);
+    }
     return dependsCache[fixedFile];
 }
 

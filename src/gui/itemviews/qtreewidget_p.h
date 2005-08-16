@@ -48,6 +48,7 @@ class QTreeModel : public QAbstractItemModel
     friend class QTreeWidget;
     friend class QTreeWidgetItem;
     friend class QTreeWidgetItemIterator;
+    friend class QTreeWidgetItemIteratorPrivate;
 
 public:
     QTreeModel(int columns = 0, QObject *parent = 0);
@@ -95,12 +96,6 @@ public:
     Qt::DropActions supportedDropActions() const;
 
     QMimeData *internalMimeData()  const;
-
-    // used by the iterator
-    static QTreeWidgetItem* nextSibling(const QTreeWidgetItem* item);
-    static QTreeWidgetItem* previousSibling(const QTreeWidgetItem* item);
-    static void ensureValidIterator(QTreeWidgetItemIterator *iterator, const QTreeWidgetItem *itemToBeRemoved);
-    static QTreeWidgetItem* walk(const QTreeWidgetItem *current);
 
 protected:
     void emitDataChanged(QTreeWidgetItem *item, int column);

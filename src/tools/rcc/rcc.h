@@ -54,7 +54,7 @@ public:
 
     bool output(FILE *out);
 
-    bool readFiles();
+    bool readFiles(bool ignoreErrors=false);
 
     enum Format { Binary, C_Code };
     inline void setFormat(Format f) { mFormat = f; }
@@ -83,7 +83,7 @@ public:
 private:
     RCCFileInfo *root;
     bool addFile(const QString &alias, const RCCFileInfo &file);
-    bool interpretResourceFile(QIODevice *inputDevice, QString file, QString currentPath = QString());
+    bool interpretResourceFile(QIODevice *inputDevice, QString file, QString currentPath = QString(), bool ignoreErrors = false);
 
     bool writeHeader(FILE *out);
     bool writeDataBlobs(FILE *out);

@@ -33,7 +33,7 @@
 #include "qsjiscodec.h"
 #include "qlist.h"
 
-#ifndef QT_NO_TEXTCODECPLUGIN
+#ifndef QT_NO_TEXTCODEC
 enum {
     Esc = 0x1b
 };
@@ -111,7 +111,7 @@ QByteArray QSjisCodec::convertFromUnicode(const QChar *uc, int len, ConverterSta
 
 QString QSjisCodec::convertToUnicode(const char* chars, int len, ConverterState *state) const
 {
-    uchar buf[1];
+    uchar buf[1] = {0};
     int nbuf = 0;
     QChar replacement = QChar::ReplacementCharacter;
     if (state) {
@@ -189,4 +189,4 @@ QList<QByteArray> QSjisCodec::_aliases()
          << "MS_Kanji";
     return list;
 }
-#endif // QT_NO_TEXTCODECPLUGIN
+#endif // QT_NO_TEXTCODEC

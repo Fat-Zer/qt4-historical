@@ -47,6 +47,8 @@
 
 #ifndef QT_NO_IM
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QWidget;
@@ -102,6 +104,8 @@ private:   // Disabled copy constructor and operator=
     QInputContext &operator=( const QInputContext & );
 
 };
+
+QT_END_HEADER
 
 #endif //Q_NO_IM
 

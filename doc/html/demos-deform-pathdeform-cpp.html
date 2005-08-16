@@ -172,7 +172,7 @@ body { background: #ffffff; color: black; }</style>
         m_animated = true;
         m_repaintTimer.start(25, this);
         m_repaintTracker.start();
-        m_intensity = 1;
+        m_intensity = 100;
 
     //     m_fpsTimer.start(1000, this);
     //     m_fpsCounter = 0;
@@ -357,7 +357,7 @@ body { background: #ffffff; color: black; }</style>
         QPainterPath path;
         path.addPath(source);
 
-        double flip = m_intensity;
+        double flip = m_intensity / 100.0;
 
         for (int i=0; i&lt;path.elementCount(); ++i) {
             QPainterPath::Element &amp;e = const_cast&lt;QPainterPath::Element &amp;&gt;(path.elementAt(i));
@@ -438,7 +438,7 @@ body { background: #ffffff; color: black; }</style>
 
     void PathDeformRenderer::setIntensity(int intensity)
     {
-        m_intensity = intensity / 100.0;
+        m_intensity = intensity;
         if (!m_animated)
             update(circle_bounds(m_pos, m_radius, m_fontSize));
     }</pre>
@@ -446,6 +446,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

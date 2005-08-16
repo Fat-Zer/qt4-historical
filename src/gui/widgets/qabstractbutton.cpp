@@ -76,13 +76,12 @@ function. This is useful mostly for buttons that do not have any
 text, because they have no automatic shortcut.
 
 \code
-      button->setPixmap(QPixmap(":/images/print.png"));
-      button->setShortcut(tr("Alt+F7"));
+    button->setIcon(QIcon(":/images/print.png"));
+    button->setShortcut(tr("Alt+F7"));
 \endcode
 
 All of the buttons provided by Qt (QPushButton, QToolButton,
-QCheckBox, and QRadioButton) can display both text and
-pixmaps.
+QCheckBox, and QRadioButton) can display both \l text and \l{icon}{icons}.
 
 A button can be made the default button in a dialog are provided by
 QPushButton::setDefault() and QPushButton::setAutoDefault().
@@ -451,7 +450,7 @@ void QAbstractButtonPrivate::refresh()
 
     if (blockRefresh)
         return;
-    q->repaint();
+    q->update();
 #ifndef QT_NO_ACCESSIBILITY
     QAccessible::updateAccessibility(q, 0, QAccessible::StateChanged);
 #endif
@@ -463,15 +462,14 @@ void QAbstractButtonPrivate::click()
 
     down = false;
     blockRefresh = true;
-    QObject *guard = q;
-    QMetaObject::addGuard(&guard);
+    QPointer<QAbstractButton> guard(q);
     q->nextCheckState();
-    if (!guard) {
-        QMetaObject::removeGuard(&guard);
+    if (!guard)
         return;
-    }
     blockRefresh = false;
     refresh();
+    q->repaint(); //flush paint event before invoking potentially expensive operation
+    QApplication::flush();
     emit q->released();
     if (guard)
         emit q->clicked(checked);
@@ -481,7 +479,6 @@ void QAbstractButtonPrivate::click()
         emit group->buttonClicked(q);
     }
 #endif
-    QMetaObject::removeGuard(&guard);
 }
 
 
@@ -615,7 +612,7 @@ void QAbstractButton::setCheckable(bool checkable)
     Q_D(QAbstractButton);
     if (d->checkable == checkable)
         return;
-    
+
     d->checkable = checkable;
     d->checked = false;
 }
@@ -653,8 +650,7 @@ void QAbstractButton::setChecked(bool checked)
             return;
     }
 
-    QObject *guard = this;
-    QMetaObject::addGuard(&guard);
+    QPointer<QAbstractButton> guard(this);
 
     d->checked = checked;
     if (!d->blockRefresh)
@@ -665,7 +661,6 @@ void QAbstractButton::setChecked(bool checked)
         d->notifyChecked();
     if (guard)
         emit toggled(checked);
-    QMetaObject::removeGuard(&guard);
 }
 
 bool QAbstractButton::isChecked() const
@@ -793,6 +788,8 @@ void QAbstractButton::animateClick(int msec)
     if (d->checkable && focusPolicy() != Qt::NoFocus)
         setFocus();
     setDown(true);
+    repaint(); //flush paint event before invoking potentially expensive operation
+    QApplication::flush();
     emit pressed();
     d->animateTimer.start(msec, this);
 }
@@ -814,8 +811,7 @@ void QAbstractButton::click()
     if (!isEnabled())
         return;
     Q_D(QAbstractButton);
-    QObject *guard = this;
-    QMetaObject::addGuard(&guard);
+    QPointer<QAbstractButton> guard(this);
     d->down = true;
     emit pressed();
     if (guard) {
@@ -830,7 +826,6 @@ void QAbstractButton::click()
             emit d->group->buttonClicked(this);
 #endif
     }
-    QMetaObject::removeGuard(&guard);
 }
 
 /*! \fn void QAbstractButton::toggle()
@@ -885,8 +880,6 @@ bool QAbstractButton::hitButton(const QPoint &pos) const
 /*! \reimp */
 bool QAbstractButton::event(QEvent *e)
 {
-    Q_D(QAbstractButton);
-
     // as opposed to other widgets, disabled buttons accept mouse
     // events. This avoids surprising click-through scenarios
     if (!isEnabled()) {
@@ -910,6 +903,7 @@ bool QAbstractButton::event(QEvent *e)
 
 #ifndef QT_NO_SHORTCUT
     if (e->type() == QEvent::Shortcut) {
+        Q_D(QAbstractButton);
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         if (d->shortcutId != se->shortcutId())
             return false;
@@ -934,7 +928,12 @@ void QAbstractButton::mousePressEvent(QMouseEvent *e)
     }
     if (hitButton(e->pos())) {
         setDown(true);
+        repaint(); //flush paint event before invoking potentially expensive operation
+        QApplication::flush();
         emit pressed();
+        e->accept();
+    } else {
+        e->ignore();
     }
 }
 
@@ -953,10 +952,13 @@ void QAbstractButton::mouseReleaseEvent(QMouseEvent *e)
     if (!d->down)
         return;
 
-    if (hitButton(e->pos()))
+    if (hitButton(e->pos())) {
         d->click();
-    else
+        e->accept();
+    } else {
         setDown(false);
+        e->ignore();
+    }
 }
 
 /*! \reimp */
@@ -970,10 +972,15 @@ void QAbstractButton::mouseMoveEvent(QMouseEvent *e)
 
     if (hitButton(e->pos()) != d->down) {
         setDown(!d->down);
+        repaint(); //flush paint event before invoking potentially expensive operation
+        QApplication::flush();
         if (d->down)
             emit pressed();
         else
             emit released();
+        e->accept();
+    } else if (!hitButton(e->pos())) {
+        e->ignore();
     }
 }
 
@@ -991,6 +998,8 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Space:
         if (!e->isAutoRepeat()) {
             setDown(true);
+            repaint(); //flush paint event before invoking potentially expensive operation
+            QApplication::flush();
             emit pressed();
         }
         break;
@@ -1015,6 +1024,8 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Escape:
         if (d->down) {
             setDown(false);
+            repaint(); //flush paint event before invoking potentially expensive operation
+            QApplication::flush();
             emit released();
             break;
         }
@@ -1047,8 +1058,7 @@ void QAbstractButton::timerEvent(QTimerEvent *e)
     if (e->timerId() == d->repeatTimer.timerId()) {
         d->repeatTimer.start(AUTO_REPEAT_PERIOD, this);
         if (d->down) {
-            QObject *guard = this;
-            QMetaObject::addGuard(&guard);
+            QPointer<QAbstractButton> guard(this);
             emit released();
             if (guard)
                 emit clicked(d->checked);
@@ -1058,7 +1068,6 @@ void QAbstractButton::timerEvent(QTimerEvent *e)
 #endif
             if (guard)
                 emit pressed();
-            QMetaObject::removeGuard(&guard);
         }
     } else if (e->timerId() == d->animateTimer.timerId()) {
         d->animateTimer.stop();

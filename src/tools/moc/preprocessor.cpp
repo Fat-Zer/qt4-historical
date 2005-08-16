@@ -759,7 +759,7 @@ static void preprocess(const QByteArray &filename, const Symbols &symbols, Macro
             }
             // evaluateCondition already does the job of skipping
             // over the newline, so don't do it twice and accidentially
-            // loose tokens by that
+            // lose tokens by that
             skipUntilNewLine = false;
             continue;
         case PP_ELIF:

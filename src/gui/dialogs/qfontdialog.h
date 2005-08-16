@@ -26,6 +26,8 @@
 
 #include <QtGui/qwindowdefs.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_FONTDIALOG
@@ -67,16 +69,18 @@ private:
     void updateSizes();
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void sizeChanged(const QString &))
-    Q_PRIVATE_SLOT(d_func(), void familyHighlighted(int))
-    Q_PRIVATE_SLOT(d_func(), void writingSystemHighlighted(int))
-    Q_PRIVATE_SLOT(d_func(), void styleHighlighted(int))
-    Q_PRIVATE_SLOT(d_func(), void sizeHighlighted(int))
-    Q_PRIVATE_SLOT(d_func(), void updateSample())
+    Q_PRIVATE_SLOT(d_func(), void _q_sizeChanged(const QString &))
+    Q_PRIVATE_SLOT(d_func(), void _q_familyHighlighted(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_writingSystemHighlighted(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_styleHighlighted(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_sizeHighlighted(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSample())
 
     Q_DISABLE_COPY(QFontDialog)
 };
 
 #endif // QT_NO_FONTDIALOG
+
+QT_END_HEADER
 
 #endif // QFONTDIALOG_H

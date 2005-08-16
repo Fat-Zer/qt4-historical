@@ -111,6 +111,41 @@ public:
     updated data to the model; releaseEditor() indicates that the user has
     completed editing the data, and that the editor widget can be destroyed.
 
+    \section1 Standard Roles and Data Types
+
+    The default delegate used by the standard views supplied with Qt
+    associates each standard role (defined by Qt::ItemDataRole) with certain
+    data types. Models that return data in these types can influence the
+    appearance of the delegate as described in the following table.
+
+    \table
+    \header \o Role \o Accepted Types
+    \omit
+    \row    \o \l Qt::AccessibleDescriptionRole \o QString
+    \row    \o \l Qt::AccessibleTextRole \o QString
+    \endomit
+    \row    \o \l Qt::BackgroundColorRole \o QColor
+    \row    \o \l Qt::CheckStateRole \o Qt::CheckState
+    \row    \o \l Qt::DecorationRole \o QIcon and QColor
+    \row    \o \l Qt::DisplayRole \o QString and types with a string representation
+    \row    \o \l Qt::EditRole \o See QItemEditorFactory for details
+    \row    \o \l Qt::FontRole \o QFont
+    \row    \o \l Qt::SizeHintRole \o QSize
+    \omit
+    \row    \o \l Qt::StatusTipRole \o 
+    \endomit
+    \row    \o \l Qt::TextAlignmentRole \o Qt::Alignment
+    \row    \o \l Qt::TextColorRole \o QColor
+    \omit
+    \row    \o \l Qt::ToolTipRole
+    \row    \o \l Qt::WhatsThisRole
+    \endomit
+    \endtable
+
+    If the default delegate does not allow the level of customization that
+    you need, it is possible to subclass QItemDelegate to implement the
+    desired behavior.
+
     \section1 Subclassing
 
     When subclassing QItemDelegate to create a delegate that displays items
@@ -144,9 +179,10 @@ QItemDelegate::~QItemDelegate()
     Renders the delegate using the given \a painter and style \a option for
     the item specified by \a index.
 
-    When reimplementing this function in a subclass, you should use the
-    \a option to determine the state of the item to be displated and adjust
-    the way it is painted accordingly.
+    When reimplementing this function in a subclass, you should update the area
+    held by the option's \l{QStyleOption::rect}{rect} variable, using the
+    option's \l{QStyleOption::state}{state} variable to determine the state of
+    the item to be displayed, and adjust the way it is painted accordingly.
 
     For example, a selected item may need to be displayed differently to
     unselected items, as shown in the following code:
@@ -155,6 +191,11 @@ QItemDelegate::~QItemDelegate()
     \skipto QStyle::State_Selected
     \printuntil else
     \dots
+
+    After painting, you should ensure that the painter is returned to its
+    the state it was supplied in when this function was called. For example,
+    it may be useful to call QPainter::save() before painting and
+    QPainter::restore() afterwards.
 
     \sa QStyle::State
 */
@@ -166,10 +207,6 @@ void QItemDelegate::paint(QPainter *painter,
     Q_ASSERT(index.isValid());
 
     QStyleOptionViewItem opt = option;
-
-    // Set color group
-    opt.palette.setCurrentColorGroup(option.state & QStyle::State_Enabled
-                                     ? QPalette::Active : QPalette::Disabled);
 
     // set font
     QVariant value = index.data(Qt::FontRole);
@@ -229,6 +266,8 @@ void QItemDelegate::paint(QPainter *painter,
     if (option.showDecorationSelected && (option.state & QStyle::State_Selected)) {
         QPalette::ColorGroup cg = option.state & QStyle::State_Enabled
                                   ? QPalette::Normal : QPalette::Disabled;
+        if (cg == QPalette::Normal && !(option.state & QStyle::State_Active))
+            cg = QPalette::Inactive;
         painter->fillRect(option.rect, option.palette.brush(cg, QPalette::Highlight));
     } else {
         value = index.data(Qt::BackgroundColorRole);
@@ -334,7 +373,10 @@ QWidget *QItemDelegate::createEditor(QWidget *parent,
 
 void QItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-#ifndef QT_NO_PROPERTIES
+#ifdef QT_NO_PROPERTIES
+    Q_UNUSED(editor);
+    Q_UNUSED(index);
+#else
     Q_D(const QItemDelegate);
     QVariant v = index.data(Qt::EditRole);
     QByteArray n = d->editorFactory()->valuePropertyName(v.type());
@@ -352,7 +394,11 @@ void QItemDelegate::setModelData(QWidget *editor,
                                  QAbstractItemModel *model,
                                  const QModelIndex &index) const
 {
-#ifndef QT_NO_PROPERTIES
+#ifdef QT_NO_PROPERTIES
+    Q_UNUSED(editor);
+    Q_UNUSED(model);
+    Q_UNUSED(index);
+#else
     Q_D(const QItemDelegate);
     Q_ASSERT(model);
     Q_ASSERT(editor);
@@ -422,6 +468,8 @@ void QItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &o
     QPen pen = painter->pen();
     QPalette::ColorGroup cg = option.state & QStyle::State_Enabled
                               ? QPalette::Normal : QPalette::Disabled;
+    if (cg == QPalette::Normal && !(option.state & QStyle::State_Active))
+        cg = QPalette::Inactive;
     if (option.state & QStyle::State_Selected) {
         painter->fillRect(rect, option.palette.brush(cg, QPalette::Highlight));
         painter->setPen(option.palette.color(cg, QPalette::HighlightedText));
@@ -543,7 +591,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
         pm.rwidth() += 2 * textMargin;
     }
     if (hint) {
-        h = qMax(textRect->height(), pm.height());
+        h = qMax(checkRect->height(), qMax(textRect->height(), pm.height()));
         if (option.decorationPosition == QStyleOptionViewItem::Left
             || option.decorationPosition == QStyleOptionViewItem::Right) {
             w = textRect->width() + pm.width();
@@ -777,7 +825,7 @@ bool QItemDelegate::eventFilter(QObject *object, QEvent *event)
                 w = w->parentWidget();
             }
 #ifndef QT_NO_DRAGANDDROP
-            // The window may loose focus during an drag operation.
+            // The window may lose focus during an drag operation.
             // i.e when dragging involves the task bar on Windows.
             if (QDragManager::self() && QDragManager::self()->object != 0)
                 return false;
@@ -810,7 +858,7 @@ bool QItemDelegate::editorEvent(QEvent *event,
     QVariant value = index.data(Qt::CheckStateRole);
     QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignLeft | Qt::AlignVCenter,
                                           check(option, option.rect, value).size(),
-                                          QRect(option.rect.x(), option.rect.y(),
+                                          QRect(option.rect.x() + textMargin, option.rect.y(),
                                                 option.rect.width(), option.rect.height()));
     if (checkRect.contains(static_cast<QMouseEvent*>(event)->pos())) {
         Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());

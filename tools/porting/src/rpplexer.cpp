@@ -308,7 +308,7 @@ void RppLexer::scanOperator(int *kind)
     *kind = m_buffer[m_ptr++];
 }
 
-bool RppLexer::match(char *buf, int len)
+bool RppLexer::match(const char *buf, int len)
 {
     if (m_len != len)
         return false;

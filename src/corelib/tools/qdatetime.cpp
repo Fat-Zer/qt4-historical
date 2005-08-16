@@ -70,7 +70,8 @@ static const short monthDays[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30
 static const char * const qt_shortMonthNames[] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-
+#endif
+#ifndef QT_NO_DATESTRING
 static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* dd = 0);
 #endif
 
@@ -121,8 +122,8 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
     dates prior to the introduction of the Gregorian calendar. This
     calendar was adopted by England from the 14 September 1752 (hence
     this is the earliest valid QDate), and subsequently by most other
-    Western countries, by 1923. The latest valid year within this
-    scheme is the year 8000.
+    Western countries, by 1923. The latest valid date within this
+    scheme is 31 December 7999.
 
     \sa QTime QDateTime QDateEdit QDateTimeEdit
 */
@@ -233,7 +234,7 @@ int QDate::day() const
 }
 
 /*!
-    Returns the weekday for this date.
+    Returns the weekday (1 to 7) for this date.
 
     \sa day(), dayOfYear(), Qt::DayOfWeek
 */
@@ -413,8 +414,8 @@ QString QDate::shortMonthName(int month)
     st.wYear = 2000;
     st.wMonth = month;
     st.wDay = 1;
-    const wchar_t mmm_t[] = L"MMM"; // workaround for Borland
     QT_WA({
+        const wchar_t mmm_t[] = L"MMM"; // workaround for Borland
         TCHAR buf[255];
         if (GetDateFormat(GetThreadLocale(), 0, &st, mmm_t, buf, 255))
             return QString::fromUtf16((ushort*)buf);
@@ -475,8 +476,8 @@ QString QDate::longMonthName(int month)
     st.wYear = 2000;
     st.wMonth = month;
     st.wDay = 1;
-    const wchar_t mmmm_t[] = L"MMMM"; // workaround for Borland
     QT_WA({
+        const wchar_t mmmm_t[] = L"MMMM"; // workaround for Borland
         TCHAR buf[255];
         if (GetDateFormat(GetThreadLocale(), 0, &st, mmmm_t, buf, 255))
             return QString::fromUtf16((ushort*)buf);
@@ -534,8 +535,8 @@ QString QDate::shortDayName(int weekday)
     st.wMonth = 10;
     st.wDayOfWeek = (weekday == 7) ? 0 : weekday;
     st.wDay = 21 + st.wDayOfWeek;
-    const wchar_t ddd_t[] = L"ddd"; // workaround for Borland
     QT_WA({
+        const wchar_t ddd_t[] = L"ddd"; // workaround for Borland
         TCHAR buf[255];
         if (GetDateFormat(GetThreadLocale(), 0, &st, ddd_t, buf, 255))
             return QString::fromUtf16((ushort*)buf);
@@ -592,8 +593,8 @@ QString QDate::longDayName(int weekday)
     st.wMonth = 10;
     st.wDayOfWeek = (weekday == 7) ? 0 : weekday;
     st.wDay = 21 + st.wDayOfWeek;
-    const wchar_t dddd_t[] = L"dddd"; // workaround for Borland
     QT_WA({
+        const wchar_t dddd_t[] = L"dddd"; // workaround for Borland
         TCHAR buf[255];
         if (GetDateFormat(GetThreadLocale(), 0, &st, dddd_t, buf, 255))
             return QString::fromUtf16((ushort*)buf);
@@ -629,8 +630,9 @@ QString QDate::longDayName(int weekday)
     year, MM is the month of the year (between 01 and 12), and DD is
     the day of the month between 01 and 31.
 
-    If the \a format is Qt::LocalDate, the string format depends
-    on the locale settings of the system.
+    If the \a format is Qt::LocalDate, the string format depends on the locale
+    settings of the system. On Mac OS X, an assumption is made that the
+    date is in the local time zone.
 
     If the datetime is invalid, an empty string will be returned.
 
@@ -668,7 +670,10 @@ QString QDate::toString(Qt::DateFormat f) const
             macGDate.hour = 0;
             macGDate.minute = 0;
             macGDate.second = 0.0;
-            QCFType<CFDateRef> myDate = CFDateCreate(0, CFGregorianDateGetAbsoluteTime(macGDate, 0));
+            QCFType<CFTimeZoneRef> myTZ = CFTimeZoneCopyDefault();
+
+            QCFType<CFDateRef> myDate = CFDateCreate(0,
+                                            CFGregorianDateGetAbsoluteTime(macGDate, myTZ));
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
             if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
                 QCFType<CFLocaleRef> mylocale = CFLocaleCopyCurrent();
@@ -1311,8 +1316,7 @@ void QDate::julianToGregorian(uint jd, int &y, int &m, int &d)
 /*!
     \fn QTime::QTime()
 
-    Constructs the time 0 hours, minutes, seconds and milliseconds,
-    i.e. 00:00:00.000 (midnight). This is a valid time.
+    Constructs a null time object.
 
     \sa isValid()
 */
@@ -1336,8 +1340,8 @@ QTime::QTime(int h, int m, int s, int ms)
 /*!
     \fn bool QTime::isNull() const
 
-    Returns true if the time is equal to 00:00:00.000; otherwise
-    returns false. A null time is valid.
+    Returns true if the time is null; otherwise returns false. A null time
+    is also an invalid time.
 
     \sa isValid()
 */

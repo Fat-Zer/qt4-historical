@@ -223,6 +223,9 @@ struct QtFontStyle
     const char *weightName;
     const char *setwidthName;
 #endif // Q_WS_X11
+#ifdef Q_WS_QWS
+    bool antialiased;
+#endif
 
     QtFontSize *pixelSize(unsigned short size, bool = false);
 };
@@ -570,7 +573,7 @@ struct QtFontDesc
 };
 
 static void match(int script, const QFontDef &request,
-                  const QString &family_name, const QString &foundry_name, int force_encoding_id, 
+                  const QString &family_name, const QString &foundry_name, int force_encoding_id,
                   QtFontDesc *desc);
 
 static void initFontDef(const QtFontDesc &desc, const QFontDef &request, QFontDef *fontDef)
@@ -599,6 +602,7 @@ static void initFontDef(const QtFontDesc &desc, const QFontDef &request, QFontDe
     fontDef->ignorePitch   = false;
 }
 
+#if defined(Q_WS_X11) || defined(Q_WS_WIN)
 static void getEngineData(const QFontPrivate *d, const QFontCache::Key &key)
 {
     // look for the requested font in the engine data cache
@@ -618,7 +622,7 @@ static QStringList familyList(const QFontDef &req)
     QStringList family_list;
     if (req.family.isEmpty())
         return family_list;
-    
+
     QStringList list = req.family.split(',');
     for (int i = 0; i < list.size(); ++i) {
         QString str = list.at(i).trimmed();
@@ -627,7 +631,7 @@ static QStringList familyList(const QFontDef &req)
             str = str.mid(1, str.length() - 2);
         family_list << str;
     }
-    
+
     // append the substitute list for each family in family_list
     QStringList subs_list;
     QStringList::ConstIterator it = family_list.constBegin(), end = family_list.constEnd();
@@ -639,6 +643,7 @@ static QStringList familyList(const QFontDef &req)
 
     return family_list;
 }
+#endif
 
 Q_GLOBAL_STATIC(QFontDatabasePrivate, privateDb);
 
@@ -921,7 +926,7 @@ unsigned int bestFoundry(int script, unsigned int score, int styleStrategy,
     Tries to find the best match for a given request and family/foundry
 */
 static void match(int script, const QFontDef &request,
-                  const QString &family_name, const QString &foundry_name, int force_encoding_id, 
+                  const QString &family_name, const QString &foundry_name, int force_encoding_id,
                   QtFontDesc *desc)
 {
     Q_UNUSED(force_encoding_id);
@@ -1129,7 +1134,7 @@ QFontDatabase::findFont(int script, const QFontPrivate *fp,
         } else {
             FM_DEBUG("  NO MATCH FOUND\n");
         }
-        if (fe) 
+        if (fe)
             initFontDef(desc, request, &fe->fontDef);
     }
 

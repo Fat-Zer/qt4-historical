@@ -125,14 +125,14 @@ public:
         return q_func()->createIndex(row, column, const_cast<void *>(p));
     }
 
-    void sourceDataChanged(const QModelIndex &source_top_left,
+    void _q_sourceDataChanged(const QModelIndex &source_top_left,
                            const QModelIndex &source_bottom_right);
-    void sourceHeaderDataChanged(Qt::Orientation orientation, int start, int end);
+    void _q_sourceHeaderDataChanged(Qt::Orientation orientation, int start, int end);
 
-    void sourceLayoutAboutToBeChanged(const QModelIndex &source_parent);
-    void sourceLayoutChanged();
-    
-    void sourceReset();
+    void _q_sourceLayoutAboutToBeChanged(const QModelIndex &source_parent);
+    void _q_sourceLayoutChanged();
+
+    void _q_sourceReset();
 
     void clear_mapping();
 };
@@ -187,7 +187,7 @@ IndexMap::const_iterator QSortFilterProxyModelPrivate::create_mapping(
         if (q->filterAcceptsRow(i, source_parent))
             m->source_rows.append(i);
     }
-    int source_cols = model->columnCount(source_parent);    
+    int source_cols = model->columnCount(source_parent);
     for (int i = 0; i < source_cols; ++i) {
         if (q->filterAcceptsColumn(i, source_parent))
             m->source_columns.append(i);
@@ -232,7 +232,7 @@ QModelIndex QSortFilterProxyModelPrivate::proxy_to_source(const QModelIndex &pro
         return QModelIndex(); // for now; we may want to be able to set a root index later
     IndexMap::const_iterator it = index_to_iterator(proxy_index);
     Mapping *m = it.value();
-    if (m->source_rows.isEmpty() || m->source_columns.isEmpty())
+    if ((proxy_index.row() >= m->source_rows.size()) || (proxy_index.column() >= m->source_columns.size()))
         return QModelIndex();
     int source_row = m->source_rows.at(proxy_index.row());
     int source_col = m->source_columns.at(proxy_index.column());
@@ -246,14 +246,14 @@ QModelIndex QSortFilterProxyModelPrivate::source_to_proxy(const QModelIndex &sou
     QModelIndex source_parent = source_index.parent();
     IndexMap::const_iterator it = create_mapping(source_parent);
     Mapping *m = it.value();
-    if (m->proxy_rows.isEmpty() || m->proxy_columns.isEmpty())
+    if ((source_index.row() >= m->proxy_rows.size()) || (source_index.column() >= m->proxy_columns.size()))
         return QModelIndex();
     int proxy_row = m->proxy_rows.at(source_index.row());
     int proxy_column = m->proxy_columns.at(source_index.column());
     return create_index(proxy_row, proxy_column, it);
 }
 
-void QSortFilterProxyModelPrivate::sourceDataChanged(const QModelIndex &source_top_left,
+void QSortFilterProxyModelPrivate::_q_sourceDataChanged(const QModelIndex &source_top_left,
                                                      const QModelIndex &source_bottom_right)
 {
     Q_Q(QSortFilterProxyModel);
@@ -262,7 +262,7 @@ void QSortFilterProxyModelPrivate::sourceDataChanged(const QModelIndex &source_t
     emit q->dataChanged(proxy_top_left, proxy_bottom_right);
 }
 
-void QSortFilterProxyModelPrivate::sourceHeaderDataChanged(Qt::Orientation orientation,
+void QSortFilterProxyModelPrivate::_q_sourceHeaderDataChanged(Qt::Orientation orientation,
                                                            int start, int end)
 {
     Q_Q(QSortFilterProxyModel);
@@ -276,7 +276,7 @@ void QSortFilterProxyModelPrivate::sourceHeaderDataChanged(Qt::Orientation orien
     emit q->headerDataChanged(orientation, proxy_start, proxy_end);
 }
 
-void QSortFilterProxyModelPrivate::sourceLayoutAboutToBeChanged(const QModelIndex &source_parent)
+void QSortFilterProxyModelPrivate::_q_sourceLayoutAboutToBeChanged(const QModelIndex &source_parent)
 {
     Q_Q(QSortFilterProxyModel);
     const QModelIndex proxy_parent = source_to_proxy(source_parent);;
@@ -288,7 +288,7 @@ void QSortFilterProxyModelPrivate::sourceLayoutAboutToBeChanged(const QModelInde
     remove_from_mapping(source_parent);
 }
 
-void QSortFilterProxyModelPrivate::sourceLayoutChanged()
+void QSortFilterProxyModelPrivate::_q_sourceLayoutChanged()
 {
     Q_Q(QSortFilterProxyModel);
     QAbstractItemModelPrivate::Change change = changes.pop();
@@ -297,7 +297,7 @@ void QSortFilterProxyModelPrivate::sourceLayoutChanged()
     emit q->layoutChanged();
 }
 
-void QSortFilterProxyModelPrivate::sourceReset()
+void QSortFilterProxyModelPrivate::_q_sourceReset()
 {
     Q_Q(QSortFilterProxyModel);
     // All internal structures are deleted in clear()
@@ -305,36 +305,166 @@ void QSortFilterProxyModelPrivate::sourceReset()
 }
 
 /*!
-  \since 4.1
-  \class QSortFilterProxyModel
-  \brief The QSortFilterProxyModel class provides support for sorting and filtering data passed
-  between another model and a view.
-  \ingroup model-view
+    \since 4.1
+    \class QSortFilterProxyModel
+    \brief The QSortFilterProxyModel class provides support for sorting and filtering data passed
+    between another model and a view.
 
-  The sorting filter model transform the structure of a source model by mapping the model indexes
-  it supplies to new indexes, corresponding to different locations, for views to use.
-  This approach allows a given source model to be restructured as far as views are concerned
-  without requiring any transformations on the underlying data.
+    \ingroup model-view
 
-  The default implementation of the filter and sorting functions use the data for the items
-  Qt::DisplayRole compare or accept items.
+    QSortFilterProxyModel can be used for sorting items, filtering
+    out items, or both. The model transforms the structure of a
+    source model by mapping the model indexes it supplies to new
+    indexes, corresponding to different locations, for views to use.
+    This approach allows a given source model to be restructured as
+    far as views are concerned without requiring any transformations
+    on the underlying data, and without duplicating the data in
+    memory.
 
-  The default implementation of the lessThan() function used when sorting, can handle the
-  following data types:
-  \list
-  \o QVariant::Int
-  \o QVariant::UInt
-  \o QVariant::LongLong
-  \o QVariant::ULongLong
-  \o QVariant::Double
-  \o QVariant::Char
-  \o QVariant::Date
-  \o QVariant::Time
-  \o QVariant::DateTime
-  \o QVariant::String
-  \endlist
+    Let's assume that we want to sort and filter the items provided
+    by a custom model. The code to set up the model and the view, \e
+    without sorting and filtering, would look like this:
 
-  \sa QAbstractProxyModel, QAbstractItemModel, {Model/View Programming}
+    \code
+        QTreeView *treeView = new QTreeView;
+        MyItemModel *model = new MyItemModel(this);
+
+        treeView->setModel(model);
+    \endcode
+
+    To add sorting and filtering support to \c MyItemModel, we need
+    to create a QSortFilterProxyModel, call setSourceModel() with the
+    \c MyItemModel as argument, and install the QSortFilterProxyModel
+    on the view:
+
+    \code
+        QTreeView *treeView = new QTreeView;
+        MyItemModel *sourceModel = new MyItemModel(this);
+        QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+
+        proxyModel->setSourceModel(sourceModel);
+        treeView->setModel(proxyModel);
+    \endcode
+
+    At this point, neither sorting nor filtering is enabled; the
+    original data is displayed in the view. Any changes made through
+    the QSortFilterProxyModel are applied to the original model.
+
+    The QSortFilterProxyModel acts as a wrapper for the original
+    model. If you need to convert source \l{QModelIndex}es to
+    sorted/filtered model indexes or vice versa, use mapToSource(),
+    mapFromSource(), mapSelectionToSource(), and
+    mapSelectionFromSource().
+
+    By default, sorting and filtering isn't dynamically reapplied
+    whenever the data of the original model changes, as an
+    optimization. To enable dynamic sorting and filtering, call
+    setDynamicSortFilter(true). At any time, you can call clear() to
+    resort/refilter the data.
+
+    \section1 Sorting
+
+    QHeaderView has a \l
+    {QHeaderVIew::showSortIndicator()}{showSortIndicator()} property
+    and a \l {QHeaderView::setClickable()}{setClickable()} function
+    that together control whether the user can sort the view by
+    clicking the view's horizontal header. For example:
+
+    \code
+        treeView->header()->setClickable(true);
+        treeView->header()->setSortIndicatorShown(true);
+    \endcode
+
+    When this feature is on, clicking on a header section sorts the
+    items according to that column. By clicking repeatedly, the user
+    can alternate between ascending and descending order.
+
+    \image qsortfilterproxymodel-sorting.png A sorted QTreeView
+
+    Behind the scene, the view calls the sort() virtual function on
+    the model to reorder the data in the model. To make your data
+    sortable, you can either implement sort() in your model, or you
+    use a QSortFilterProxyModel to wrap your model --
+    QSortFilterProxyModel provides a generic sort() reimplementation
+    that operates on the Qt::DisplayRole of the items and that
+    understands several data types, including \c int, QString, and
+    QDateTime. For hierarchical models, sorting is applied
+    recursively to all child items. String comparisons are case
+    sensitive.
+
+    Custom sorting behavior is achieved by subclassing
+    QSortFilterProxyModel and reimplementing lessThan(), which is
+    used to compare items. For example:
+
+    \code
+        bool MySortFilterProxyModel::lessThan(const QModelIndex &left,
+                                              const QModelIndex &right) const
+        {
+            QVariant leftData = sourceModel()->data(left);
+            QVariant rightData = sourceModel()->data(right);
+
+            if (leftData.type() == QVariant::DateTime) {
+                return leftData.toDateTime() < rightData.toDateTime();
+            } else {
+                return QString::localeAwareCompare(leftData.toString(),
+                                                   rightData.toString()) < 0;
+            }
+        }
+    \endcode
+
+    An alternative approach to sorting is to disable sorting on the
+    view and to impose a certain order to the user. This is done by
+    explicitly calling sort() with the desired column and order as
+    arguments on the QSortFilterProxyModel (or on the original model
+    if it implements sort()). For example:
+
+    \code
+        proxyModel->sort(2, Qt::AscendingOrder);
+    \endcode
+
+    The \l{itemviews/sortingmodel}{Sorting Model} example illustrates
+    how to use QSortFilterProxyModel to perform basic sorting.
+
+    \section1 Filtering
+
+    In addition to sorting, QSortFilterProxyModel can be used to hide
+    items that don't match a certain filter. The filter is specified
+    using a QRegExp object and is applied to the  Qt::DisplayRole of
+    each item, for a given column. The QRegExp object can be used to
+    match a regular expression, a wildcard pattern, or a fixed
+    string. For example:
+
+    \code
+        proxyModel->setFilterRegExp(QRegExp(".png", Qt::CaseInsensitive,
+                                            QRegExp::FixedString));
+        proxyModel->setFilterKeyColumn(1);
+    \endcode
+
+    For hierarchical models, the filter is applied recursively to all
+    children. If a parent item doesn't match the filter, none of its
+    children will be shown.
+
+    Custom filtering behavior can be achieved by reimplementing the
+    filterAcceptsRow() and filterAcceptsColumn() functions. For
+    example, the following implementation ignores the \l
+    filterKeyColumn property and performs filtering on columns 0, 1,
+    and 2:
+
+    \code
+        bool MySortFilterProxyModel::filterAcceptsRow(int sourceRow,
+                const QModelIndex &sourceParent) const
+        {
+            QModelIndex index0 = sourceModel()->index(sourceRow, 0, sourceParent);
+            QModelIndex index1 = sourceModel()->index(sourceRow, 1, sourceParent);
+            QModelIndex index2 = sourceModel()->index(sourceRow, 2, sourceParent);
+
+            return (sourceModel()->data(index0).toString().contains(filterRegExp())
+                    || sourceModel()->data(index1).toString().contains(filterRegExp()))
+                   && dateInRange(sourceModel()->data(index2).toDate());
+        }
+    \endcode
+
+    \sa QAbstractProxyModel, QAbstractItemModel, {Model/View Programming}
 */
 
 /*!
@@ -352,7 +482,7 @@ QSortFilterProxyModel::QSortFilterProxyModel(QObject *parent)
 }
 
 /*!
-    Destroys the sorting filter model.
+    Destroys this sorting filter model.
 */
 QSortFilterProxyModel::~QSortFilterProxyModel()
 {
@@ -370,36 +500,36 @@ void QSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 
     if (d->model && d->model != &d->empty) {
         disconnect(d->model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                   this, SLOT(sourceDataChanged(QModelIndex,QModelIndex)));
+                   this, SLOT(_q_sourceDataChanged(QModelIndex,QModelIndex)));
 
         disconnect(d->model, SIGNAL(headerDataChanged(Qt::Orientation,int,int)),
-                   this, SLOT(sourceHeaderDataChanged(Qt::Orientation,int,int)));
+                   this, SLOT(_q_sourceHeaderDataChanged(Qt::Orientation,int,int)));
 
         disconnect(d->model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
+                   this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
 
         disconnect(d->model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutChanged()));
+                   this, SLOT(_q_sourceLayoutChanged()));
 
         disconnect(d->model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
+                   this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
 
         disconnect(d->model, SIGNAL(columnsInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutChanged()));
+                   this, SLOT(_q_sourceLayoutChanged()));
 
         disconnect(d->model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
-                
+                   this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
+
         disconnect(d->model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutChanged()));
+                   this, SLOT(_q_sourceLayoutChanged()));
 
         disconnect(d->model, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
-                
-        disconnect(d->model, SIGNAL(columnsRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceLayoutChanged()));
+                   this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
 
-        disconnect(d->model, SIGNAL(modelReset()), this, SLOT(sourceReset()));
+        disconnect(d->model, SIGNAL(columnsRemoved(QModelIndex,int,int)),
+                   this, SLOT(_q_sourceLayoutChanged()));
+
+        disconnect(d->model, SIGNAL(modelReset()), this, SLOT(_q_sourceReset()));
         disconnect(d->model, SIGNAL(layoutChanged()), this, SLOT(clear()));
     }
 
@@ -407,39 +537,39 @@ void QSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 
     if (sourceModel) {
         connect(d->model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                this, SLOT(sourceDataChanged(QModelIndex,QModelIndex)));
+                this, SLOT(_q_sourceDataChanged(QModelIndex,QModelIndex)));
 
         connect(d->model, SIGNAL(headerDataChanged(Qt::Orientation,int,int)),
-                this, SLOT(sourceHeaderDataChanged(Qt::Orientation,int,int)));
+                this, SLOT(_q_sourceHeaderDataChanged(Qt::Orientation,int,int)));
 
         connect(d->model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
-        
+                this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
+
         connect(d->model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutChanged()));
+                this, SLOT(_q_sourceLayoutChanged()));
 
         connect(d->model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
+                this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
 
         connect(d->model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
-                
+                this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
+
         connect(d->model, SIGNAL(columnsInserted(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutChanged()));
+                this, SLOT(_q_sourceLayoutChanged()));
 
         connect(d->model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
-                
+                this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
+
         connect(d->model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutChanged()));
+                this, SLOT(_q_sourceLayoutChanged()));
 
         connect(d->model, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutAboutToBeChanged(QModelIndex)));
-                
-        connect(d->model, SIGNAL(columnsRemoved(QModelIndex,int,int)),
-                this, SLOT(sourceLayoutChanged()));
+                this, SLOT(_q_sourceLayoutAboutToBeChanged(QModelIndex)));
 
-        connect(d->model, SIGNAL(modelReset()), this, SLOT(sourceReset()));
+        connect(d->model, SIGNAL(columnsRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_sourceLayoutChanged()));
+
+        connect(d->model, SIGNAL(modelReset()), this, SLOT(_q_sourceReset()));
         connect(d->model, SIGNAL(layoutChanged()), this, SLOT(clear()));
     }
 
@@ -768,7 +898,7 @@ void QSortFilterProxyModel::sort(int column, Qt::SortOrder order)
     \property QSortFilterProxyModel::filterRegExp
     \brief the QRegExp used to filter the contents of the source model
 
-    Setting this property overwrites the current \l caseSensitivity.
+    Setting this property overwrites the current \l filterCaseSensitivity.
 
     \sa setCaseSensitivity(), setFilterWildcard(), setFilterFixedString()
 */
@@ -786,9 +916,11 @@ void QSortFilterProxyModel::setFilterRegExp(const QRegExp &regExp)
 }
 
 /*!
-  \property QSortFilterProxyModel::filterKeyColumn
-  \brief the column where the key used to filter the contents
-  of the source model is read from.
+    \property QSortFilterProxyModel::filterKeyColumn
+    \brief the column where the key used to filter the contents of the
+    source model is read from.
+
+    The default value is 0.
 */
 int QSortFilterProxyModel::filterKeyColumn() const
 {
@@ -805,8 +937,13 @@ void QSortFilterProxyModel::setFilterKeyColumn(int column)
 }
 
 /*!
-    Returns the case sensitivity of the QRegExp pattern used to filter the
-    contents of the source model. By default, the filter is case sensistive.
+    \property QSortFilterProxyModel::filterCaseSensitivity
+    \brief the case sensitivity of the QRegExp pattern used to filter the
+    contents of the source model.
+
+    By default, the filter is case sensistive.
+
+    \sa setFilterRegExp(), setFilterWildcard(), setFilterFixedString()
 */
 Qt::CaseSensitivity QSortFilterProxyModel::filterCaseSensitivity() const
 {
@@ -814,12 +951,6 @@ Qt::CaseSensitivity QSortFilterProxyModel::filterCaseSensitivity() const
     return d->filter_regexp.caseSensitivity();
 }
 
-/*!
-    Sets the case sensitivity of the QRegExp pattern used to filter the contents
-    of the source model to \a cs. By default, the filter is case sensitive.
-
-    \sa setFilterRegExp(), setFilterWildcard(), setFilterFixedString()
-*/
 void QSortFilterProxyModel::setFilterCaseSensitivity(Qt::CaseSensitivity cs)
 {
     Q_D(QSortFilterProxyModel);
@@ -847,7 +978,7 @@ void QSortFilterProxyModel::setFilterRegExp(const QString &pattern)
 
 /*!
     Sets the wildcard expression used to filter the contents
-    of the source model to \a pattern.
+    of the source model to the given \a pattern.
 
     \sa setFilterCaseSensitivity(), setFilterRegExp(), setFilterFixedString()
 */
@@ -861,7 +992,7 @@ void QSortFilterProxyModel::setFilterWildcard(const QString &pattern)
 
 /*!
     Sets the fixed string used to filter the contents
-    of the source model to \a pattern.
+    of the source model to the given \a pattern.
 
     \sa setFilterCaseSensitivity(), setFilterRegExp(), setFilterWildcard()
 */
@@ -874,7 +1005,7 @@ void QSortFilterProxyModel::setFilterFixedString(const QString &pattern)
 }
 
 /*!
-  Clears the sorting filter model, removing all mapping.
+    Clears this sorting filter model, removing all mapping.
 */
 void QSortFilterProxyModel::clear()
 {
@@ -884,24 +1015,26 @@ void QSortFilterProxyModel::clear()
 }
 
 /*!
-  Returns true if the value of the item referred to by the given index \a left
-  is less than the value of the item referred to by the given index \a right,
-  otherwise returns false.
-  This function is used as the < operator when sorting, and handles several
-  QVariant types:
+    Returns true if the value of the item referred to by the given
+    index \a left is less than the value of the item referred to by
+    the given index \a right, otherwise returns false.  This function
+    is used as the < operator when sorting, and handles several
+    QVariant types:
 
-  \list
-  \o QVariant::Int
-  \o QVariant::UInt
-  \o QVariant::LongLong
-  \o QVariant::ULongLong
-  \o QVariant::Double
-  \o QVariant::Char
-  \o QVariant::Date
-  \o QVariant::Time
-  \o QVariant::DateTime
-  \o QVariant::String
-  \endlist
+    \list
+        \o QVariant::Int
+        \o QVariant::UInt
+        \o QVariant::LongLong
+        \o QVariant::ULongLong
+        \o QVariant::Double
+        \o QVariant::Char
+        \o QVariant::Date
+        \o QVariant::Time
+        \o QVariant::DateTime
+        \o QVariant::String
+    \endlist
+
+    \sa sort()
 */
 bool QSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
@@ -934,10 +1067,15 @@ bool QSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
 }
 
 /*!
-  Returns true if the value in the item in the row indicated by
-  the given \a source_row and \a source_parent should be included in the model.
-  The default implementation uses filterRegExp with the data returned for the Qt::DisplayRole
-  to determine if the row should be accepted or not.
+    Returns true if the value in the item in the row indicated by the
+    given \a source_row and \a source_parent should be included in the
+    model.
+
+    The default implementation uses filterRegExp with the data
+    returned for the Qt::DisplayRole to determine if the row should be
+    accepted or not.
+
+    \sa filterAcceptsColumn()
 */
 bool QSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
@@ -952,9 +1090,13 @@ bool QSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
 }
 
 /*!
-  Returns true if the value in the item in the column indicated by
-  the given \a source_column and \a source_parent should be included in the model.
-  The default implementation returns true.
+    Returns true if the value in the item in the column indicated by
+    the given \a source_column and \a source_parent should be included
+    in the model.
+
+    The default implementation returns true.
+
+    \sa filterAcceptsRow()
 */
 bool QSortFilterProxyModel::filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const
 {
@@ -964,8 +1106,10 @@ bool QSortFilterProxyModel::filterAcceptsColumn(int source_column, const QModelI
 }
 
 /*!
-  Returns the source model index  corresponding to the
-  given \a proxyIndex from the sorting filter  model.
+   Returns the source model index corresponding to the given \a
+   proxyIndex from the sorting filter model.
+
+   \sa mapFromSource()
 */
 QModelIndex QSortFilterProxyModel::mapToSource(const QModelIndex &proxyIndex) const
 {
@@ -974,8 +1118,10 @@ QModelIndex QSortFilterProxyModel::mapToSource(const QModelIndex &proxyIndex) co
 }
 
 /*!
-  Returns the model index in the QSortFilterProxyModel given
-  the \a sourceIndex from the source model.
+    Returns the model index in the QSortFilterProxyModel given the \a
+    sourceIndex from the source model.
+
+    \sa mapToSource()
 */
 QModelIndex QSortFilterProxyModel::mapFromSource(const QModelIndex &sourceIndex) const
 {

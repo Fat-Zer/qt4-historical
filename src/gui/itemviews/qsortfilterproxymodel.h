@@ -30,6 +30,8 @@
 
 #include <QtCore/qregexp.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QSortFilterProxyModelPrivate;
@@ -122,12 +124,15 @@ private:
     Q_DECLARE_PRIVATE(QSortFilterProxyModel)
     Q_DISABLE_COPY(QSortFilterProxyModel)
 
-    Q_PRIVATE_SLOT(d_func(), void sourceDataChanged(const QModelIndex &source_top_left, const QModelIndex &source_bottom_right))
-    Q_PRIVATE_SLOT(d_func(), void sourceHeaderDataChanged(Qt::Orientation orientation, int start, int end))
-    Q_PRIVATE_SLOT(d_func(), void sourceLayoutAboutToBeChanged(const QModelIndex &source_parent))
-    Q_PRIVATE_SLOT(d_func(), void sourceLayoutChanged())
-    Q_PRIVATE_SLOT(d_func(), void sourceReset())
+    Q_PRIVATE_SLOT(d_func(), void _q_sourceDataChanged(const QModelIndex &source_top_left, const QModelIndex &source_bottom_right))
+    Q_PRIVATE_SLOT(d_func(), void _q_sourceHeaderDataChanged(Qt::Orientation orientation, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void _q_sourceLayoutAboutToBeChanged(const QModelIndex &source_parent))
+    Q_PRIVATE_SLOT(d_func(), void _q_sourceLayoutChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_sourceReset())
 };
 
+QT_END_HEADER
+
 #endif // QT_NO_SORTFILTERPROXYMODEL
+
 #endif // QSORTFILTERPROXYMODEL_H

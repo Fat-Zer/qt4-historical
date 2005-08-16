@@ -155,7 +155,7 @@ Q3ButtonGroup::Q3ButtonGroup(int strips, Qt::Orientation orientation,
 
 void Q3ButtonGroup::init()
 {
-    excl_grp = false;
+    group.setExclusive(false);
     radio_excl = true;
 }
 
@@ -167,12 +167,12 @@ Q3ButtonGroup::~Q3ButtonGroup()
 
 bool Q3ButtonGroup::isExclusive() const
 {
-    return excl_grp;
+    return group.exclusive();
 }
 
 void Q3ButtonGroup::setExclusive(bool enable)
 {
-    excl_grp = enable;
+    group.setExclusive(enable);
 }
 
 
@@ -411,8 +411,15 @@ bool Q3ButtonGroup::event(QEvent * e)
         QChildEvent * ce = (QChildEvent *) e;
         if (QAbstractButton *button = qobject_cast<QAbstractButton*>(ce->child())) {
             button->setAutoExclusive(false);
-            if (excl_grp || (radio_excl && qobject_cast<QRadioButton*>(button)))
+            if (group.exclusive() || (radio_excl && qobject_cast<QRadioButton*>(button))) {
+                QMap<int, QAbstractButton*>::ConstIterator it = buttonIds.constBegin();
+                while (it != buttonIds.constEnd()) {
+                    if (it.value() == button)
+                        return Q3GroupBox::event(e);
+                    ++it;
+                }
                 insert(button);
+            }
         }
     }
     return Q3GroupBox::event(e);

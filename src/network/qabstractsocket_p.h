@@ -54,12 +54,12 @@ public:
     virtual ~QAbstractSocketPrivate();
 
     // slots
-    void connectToNextAddress();
-    void startConnecting(const QHostInfo &hostInfo);
-    void testConnection();
-    bool canReadNotification();
-    bool canWriteNotification();
-    void abortConnectionAttempt();
+    void _q_connectToNextAddress();
+    void _q_startConnecting(const QHostInfo &hostInfo);
+    void _q_testConnection();
+    bool _q_canReadNotification();
+    bool _q_canWriteNotification();
+    void _q_abortConnectionAttempt();
 
     bool readSocketNotifierCalled;
     bool readSocketNotifierState;
@@ -87,6 +87,7 @@ public:
     bool flush();
 
     bool initSocketLayer(const QHostAddress &host, QAbstractSocket::SocketType socketType);
+    void fetchConnectionParameters();
     void setupSocketNotifiers();
     bool readFromSocket();
 

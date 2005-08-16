@@ -155,7 +155,7 @@ PathDeformRenderer::PathDeformRenderer(QWidget *widget)
     m_animated = true;
     m_repaintTimer.start(25, this);
     m_repaintTracker.start();
-    m_intensity = 1;
+    m_intensity = 100;
 
 //     m_fpsTimer.start(1000, this);
 //     m_fpsCounter = 0;
@@ -344,7 +344,7 @@ QPainterPath PathDeformRenderer::lensDeform(const QPainterPath &source, const QP
     QPainterPath path;
     path.addPath(source);
 
-    double flip = m_intensity;
+    double flip = m_intensity / 100.0;
 
     for (int i=0; i<path.elementCount(); ++i) {
         QPainterPath::Element &e = const_cast<QPainterPath::Element &>(path.elementAt(i));
@@ -428,7 +428,7 @@ void PathDeformRenderer::setRadius(int radius)
 
 void PathDeformRenderer::setIntensity(int intensity)
 {
-    m_intensity = intensity / 100.0;
+    m_intensity = intensity;
     if (!m_animated)
         update(circle_bounds(m_pos, m_radius, m_fontSize));
 }

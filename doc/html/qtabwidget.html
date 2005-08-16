@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-win-opensource-src-4.1.2/src/gui/widgets/qtabwidget.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/widgets/qtabwidget.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-win-opensource-src-4.1.3/src/gui/widgets/qtabwidget.cpp -->
 <head>
     <title>Qt 4.1: QTabWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -75,7 +76,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QWidget * <b><a href="qtabwidget.html#widget">widget</a></b> ( int <i>index</i> ) const</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -122,7 +123,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QTabWidget class provides a stack of tabbed widgets.</p>
 <p>A tab widget provides a tab bar (see <a href="qtabbar.html">QTabBar</a>) and a &quot;page area&quot; that is used to display pages related to each tab. By default, the tab bar is shown above the page area, but different configurations are available (see <a href="qtabwidget.html#TabPosition-enum">TabPosition</a>). Each tab is associated with a different widget (called a page). Only the current page is shown in the page area; all the other pages are hidden. The user can show a different page by clicking on its tab or by pressing its Alt+<i>letter</i> shortcut if it has one.</p>
-<p>The normal way to use QTabWidget is to do the following in the constructor:</p>
+<p>The normal way to use QTabWidget is to do the following:</p>
 <ol type="1">
 <li>Create a QTabWidget.</li>
 <li>Create a <a href="qwidget.html">QWidget</a> for each of the pages in the tab dialog, but do not specify a parent widget - the tab widget will reparent the page widget later.</li>
@@ -136,7 +137,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Each tab is either enabled or disabled at any given time (see <a href="qtabwidget.html#setTabEnabled">setTabEnabled</a>()). If a tab is enabled, the tab text is drawn normally and the user can select that tab. If it is disabled, the tab is drawn in a different way and the user cannot select that tab. Note that even if a tab is disabled, the page can still be visible, for example if all of the tabs happen to be disabled.</p>
 <p>Tab widgets can be a very good way to split up a complex dialog. An alternative is to use a <a href="qstackedwidget.html">QStackedWidget</a> for which you provide some means of navigating between pages, for example, a <a href="qtoolbar.html">QToolBar</a> or a <a href="qlistwidget.html">QListWidget</a>.</p>
 <p>Most of the functionality in QTabWidget is provided by a <a href="qtabbar.html">QTabBar</a> (at the top, providing the tabs) and a <a href="qstackedwidget.html">QStackedWidget</a> (most of the area, organizing the individual pages).</p>
-<p><img src="images/windows-tabwidget.png" alt="Screenshot in Windows style" /> <img src="images/macintosh-tabwidget.png" alt="Screenshot in macintosh style" /></p>
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/windowsxp-tabwidget.png" alt="Screenshot of a Windows XP style tab widget" /></td><td><img src="images/macintosh-tabwidget.png" alt="Screenshot of a Macintosh style tab widget" /></td><td><img src="images/plastique-tabwidget.png" alt="Screenshot of a Plastique style tab widget" /></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>A Windows XP style tab widget.</td><td>A Macintosh style tab widget.</td><td>A Plastique style tab widget.</td></tr>
+</table></p>
 <p>See also <a href="qtabbar.html">QTabBar</a>, <a href="qstackedwidget.html">QStackedWidget</a>, and <a href="qtoolbox.html">QToolBox</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -173,7 +177,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="tabPosition-prop"></a>tabPosition : <a href="qtabwidget.html#TabPosition-enum">TabPosition</a></h3>
 <p>This property holds the position of the tabs in this tab widget.</p>
-<p>Possible values for this property are <a href="qtabwidget.html#TabPosition-enum">QTabWidget::North</a> and <a href="qtabwidget.html#TabPosition-enum">QTabWidget::South</a>.</p>
+<p>Possible values for this property are described by the <a href="qtabwidget.html#TabPosition-enum">TabPosition</a> enum.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>TabPosition tabPosition () const</b></li>
@@ -220,6 +224,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The new page is <i>w</i>; the tab's label is <i>label</i>. Note the difference between the widget name (which you supply to widget constructors and to <a href="qtabwidget.html#setTabEnabled">setTabEnabled</a>(), for example) and the tab label. The name is internal to the program and invariant, whereas the label is shown on-screen and may vary according to language and other factors.</p>
 <p>If the tab's <i>label</i> contains an ampersand, the letter following the ampersand is used as a shortcut for the tab, e.g. if the label is &quot;Bro&amp;wse&quot; then Alt+W becomes a shortcut which will move the focus to this tab.</p>
 <p>If <i>index</i> is out of range, the tab is simply appended. Otherwise it is inserted at the specified position.</p>
+<p>If the <a href="qtabwidget.html">QTabWidget</a> was empty before this function is called, <i>w</i> becomes the current page.</p>
+<p>Inserting a new tab at an index less than or equal to the current index will increment the current index, but keep the current page.</p>
 <p>If you call insertTab() after <a href="qwidget.html#show">show</a>(), the screen will flicker and the user may be confused.</p>
 <p>See also <a href="qtabwidget.html#addTab">addTab</a>().</p>
 <h3 class="fn"><a name="insertTab-4"></a>int QTabWidget::insertTab ( int <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>w</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
@@ -290,6 +296,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

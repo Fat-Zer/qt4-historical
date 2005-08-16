@@ -638,15 +638,21 @@ void qt_init(QApplicationPrivate *priv, int)
     if (!qt_app_has_font) {
         HFONT hfont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
         QFont f("MS Sans Serif",8);
+        int result = 0;
         QT_WA({
             LOGFONT lf;
-            if (GetObject(hfont, sizeof(lf), &lf))
+            if (result = GetObject(hfont, sizeof(lf), &lf))
                 f = qt_LOGFONTtoQFont((LOGFONT&)lf,true);
         } , {
             LOGFONTA lf;
-            if (GetObjectA(hfont, sizeof(lf), &lf))
+            if (result = GetObjectA(hfont, sizeof(lf), &lf))
                 f = qt_LOGFONTtoQFont((LOGFONT&)lf,true);
         });
+        if (result
+            && QSysInfo::WindowsVersion >= QSysInfo::WV_2000
+            && QSysInfo::WindowsVersion <= QSysInfo::WV_NT_based
+            && f.family() == QLatin1String("MS Shell Dlg"))
+            f.setFamily("MS Shell Dlg 2");
         QApplication::setFont(f);
     }
 
@@ -1029,7 +1035,7 @@ void qt_win_set_cursor(QWidget *w, const QCursor& /* c */)
         return;
     QWidget* cW = QWidget::find(curWin);
     if (!cW || cW->window() != w->window() ||
-         !cW->isVisible() || !cW->underMouse())
+         !cW->isVisible() || !cW->underMouse() || QApplication::overrideCursor())
         return;
 
     SetCursor(cW->cursor().handle());
@@ -1591,10 +1597,12 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                 int fleft = widget->topData()->fleft;
                 int ftop = widget->topData()->ftop;
 
-                if (widget->minimumWidth() == widget->maximumWidth() && (pos.x() < 0 || pos.x() >= widget->width()))
-                    break;
-                if (widget->minimumHeight() == widget->maximumHeight() && (pos.y() < -(ftop - fleft) || pos.y() >= widget->height()))
-                    break;
+                if (!widget->isMinimized()) {
+                    if (widget->minimumWidth() == widget->maximumWidth() && (pos.x() < 0 || pos.x() >= widget->width()))
+                        break;
+                    if (widget->minimumHeight() == widget->maximumHeight() && (pos.y() < -(ftop - fleft) || pos.y() >= widget->height()))
+                        break;
+                }
             }
 
             result = false;
@@ -1655,16 +1663,17 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     widget->topData()->normalGeometry = widget->geometry();
             case SC_RESTORE:
                 window_state_change = true;
+                if ((0xfff0 & wParam) == SC_MAXIMIZE)
+                    widget->dataPtr()->window_state |= Qt::WindowMaximized;
+                else if (!widget->isMinimized())
+                    widget->dataPtr()->window_state &= ~Qt::WindowMaximized;
+                
                 if (widget->isMinimized()) {
                     widget->dataPtr()->window_state &= ~Qt::WindowMinimized;
                     widget->showChildren(true);
                     QShowEvent e;
                     qt_sendSpontaneousEvent(widget, &e);
                 }
-                if ((0xfff0 & wParam) == SC_MAXIMIZE)
-                    widget->dataPtr()->window_state |= Qt::WindowMaximized;
-                else
-                    widget->dataPtr()->window_state &= ~Qt::WindowMaximized;
                 result = false;
                 break;
             default:
@@ -1744,7 +1753,7 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             }
 
             // WM_ACTIVATEAPP handles the "true" false case, as this is only when the application
-            // looses focus. Doing it here would result in the widget getting focus to not know
+            // loses focus. Doing it here would result in the widget getting focus to not know
             // where it got it from; it would simply get a 0 value as the old focus widget.
             if (LOWORD(wParam) != WA_INACTIVE)
                 qApp->winFocus(widget, true);
@@ -1874,8 +1883,19 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     result = false;
                     break;
                 }
-                QWidget *fw = qApp->focusWidget();
-                if (fw) {
+            
+                QWidget *fw = QWidget::keyboardGrabber();
+                if (!fw) {
+                    if (qApp->activePopupWidget())
+                        fw = (qApp->activePopupWidget()->focusWidget()
+                                                  ? qApp->activePopupWidget()->focusWidget()
+                                                  : qApp->activePopupWidget());
+                    else if (qApp->focusWidget())
+                        fw = qApp->focusWidget();
+                    else if (widget) 
+                        fw = widget->window();
+                }
+                if (fw && fw->isEnabled()) {
                     QPoint pos = fw->inputMethodQuery(Qt::ImMicroFocus).toRect().center();
                     QContextMenuEvent e(QContextMenuEvent::Keyboard, pos, fw->mapToGlobal(pos));
                     result = qt_sendSpontaneousEvent(fw, &e);
@@ -3299,8 +3319,7 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
             t = QEvent::TabletRelease;
             button_pressed = false;
         }
-        // Truncate the stuff here as that what wintab does.
-        QPoint globalPos(hiResGlobal.x(), hiResGlobal.y());
+        QPoint globalPos(qRound(hiResGlobal.x()), qRound(hiResGlobal.y()));
 
         // make sure the tablet event get's sent to the proper widget...
         QWidget *w = QApplication::widgetAt(globalPos);

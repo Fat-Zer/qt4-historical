@@ -29,6 +29,8 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qbytearray.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_TEXTCODECPLUGIN
@@ -65,5 +67,7 @@ private:
 };
 
 #endif // QT_NO_TEXTCODECPLUGIN
+
+QT_END_HEADER
 
 #endif // QTEXTCODECPLUGIN_H

@@ -86,21 +86,21 @@
     Indexing:
     \code
         for (int i = 0; i < fonts.size(); ++i)
-            cout << fonts.at(i).ascii() << endl;
+            cout << fonts.at(i).toLocal8Bit().constData() << endl;
     \endcode
 
     Java-style iterator:
     \code
         QStringListIterator i(fonts);
         while (i.hasNext())
-            cout << i.next().ascii() << endl;
+            cout << i.next().toLocal8Bit().constData() << endl;
     \endcode
 
     STL-style iterator:
     \code
         QStringList::const_iterator i;
         for (i = fonts.constBegin(); i != fonts.constEnd(); ++i)
-            cout << (*i).ascii() << endl;
+            cout << (*i).toLocal8Bit().constData() << endl;
     \endcode
 
     QStringListIterator and QMutableStringListIterator are simply
@@ -286,8 +286,20 @@ void QtPrivate::QStringList_sort(QStringList *that)
     \code
         QStringList list;
         list << "Bill Murray" << "John Doe" << "Bill Clinton";
-        list = list.filter("Bill");
-        // list: ["Bill Murray", "Bill Clinton"]
+
+        QStringList result = list.filter("Bill");
+        // result: ["Bill Murray", "Bill Clinton"]
+    \endcode
+
+    This is equivalent to
+
+    \code
+        QStringList result;
+
+        foreach (QString str, list) {
+            if (str.contains("Bill"))
+                result += str;
+        }
     \endcode
 
     \sa QString::contains()
@@ -307,9 +319,9 @@ QStringList QtPrivate::QStringList_filter(const QStringList *that, const QString
 /*!
     \fn QBool QStringList::contains(const QString &str, Qt::CaseSensitivity cs) const
 
-    Returns true if the list contains the string \a str.
-    Does a case insensitive search if \a cs is Qt::CaseSensitive,
-    otherwise the search will be case insensitive.
+    Returns true if the list contains the string \a str; otherwise returns false.
+    Does a case insensitive search if \a cs is Qt::CaseInsensitive; by default,
+    the search is case sensitive.
  */
 QBool QtPrivate::QStringList_contains(const QStringList *that, const QString &str,
                                       Qt::CaseSensitivity cs)

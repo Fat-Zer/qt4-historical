@@ -26,6 +26,8 @@
 
 #include <QtGui/qframe.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QLabelPrivate;
@@ -116,11 +118,13 @@ private:
     Q_DISABLE_COPY(QLabel)
     Q_DECLARE_PRIVATE(QLabel)
 #ifndef QT_NO_MOVIE
-    Q_PRIVATE_SLOT(d_func(), void movieUpdated(const QRect&))
-    Q_PRIVATE_SLOT(d_func(), void movieResized(const QSize&))
+    Q_PRIVATE_SLOT(d_func(), void _q_movieUpdated(const QRect&))
+    Q_PRIVATE_SLOT(d_func(), void _q_movieResized(const QSize&))
 #endif
 
     friend class QTipLabel;
 };
+
+QT_END_HEADER
 
 #endif // QLABEL_H

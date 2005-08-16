@@ -620,13 +620,22 @@ QApplication::QApplication(int &argc, char **argv, Type type)
 /*!
     \internal
 */
-void QApplicationPrivate::construct()
+void QApplicationPrivate::construct(
+#ifdef Q_WS_X11
+                                    Display *dpy, Qt::HANDLE visual, Qt::HANDLE cmap
+#endif
+                                    )
 {
     Q_INIT_RESOURCE(qstyle);
 
     qt_is_gui_used = (qt_appType != QApplication::Tty);
     process_cmdline();
-    qt_init(this, qt_appType);   // Must be called before initialize()
+    // Must be called before initialize()
+    qt_init(this, qt_appType
+#ifdef Q_WS_X11
+            , dpy, visual, cmap
+#endif
+            );
     initialize();
     if (qt_is_gui_used)
         qt_maxWindowRect = QApplication::desktop()->rect();
@@ -661,20 +670,10 @@ static char *aargv[] = { (char*)"unknown", 0 };
 QApplication::QApplication(Display* dpy, Qt::HANDLE visual, Qt::HANDLE colormap)
     : QCoreApplication(*new QApplicationPrivate(aargc, aargv, GuiClient))
 {
-    Q_D(QApplication);
-    qt_is_gui_used = true;
-    // ... no command line.
-
     if (! dpy)
         qWarning("QApplication: invalid Display* argument.");
-
-    qt_init(d, GuiClient, dpy, visual, colormap);
-
-    d->initialize();
-
-    if (qt_is_gui_used)
-        qt_maxWindowRect = desktop()->rect();
-    d->eventDispatcher->startingUp();
+    Q_D(QApplication);
+    d->construct(dpy, visual, colormap);
 }
 
 /*!
@@ -696,19 +695,10 @@ QApplication::QApplication(Display *dpy, int &argc, char **argv,
                            Qt::HANDLE visual, Qt::HANDLE colormap)
     : QCoreApplication(*new QApplicationPrivate(argc, argv, GuiClient))
 {
-    Q_D(QApplication);
-    qt_is_gui_used = true;
-
     if (! dpy)
         qWarning("QApplication: invalid Display* argument.");
-    qt_init(d, GuiClient, dpy, visual, colormap);
-
-    d->process_cmdline();
-    d->initialize();
-
-    if (qt_is_gui_used)
-        qt_maxWindowRect = desktop()->rect();
-    d->eventDispatcher->startingUp();
+    Q_D(QApplication);
+    d->construct(dpy, visual, colormap);
 }
 
 
@@ -721,7 +711,6 @@ QApplication::QApplication(Display *dpy, int &argc, char **argv,
 
 void QApplicationPrivate::initialize()
 {
-    Q_Q(QApplication);
     QWidgetPrivate::mapper = new QWidgetMapper;
     if (qt_appType != QApplication::Tty)
         (void) QApplication::style();  // trigger creation of application style
@@ -733,6 +722,7 @@ void QApplicationPrivate::initialize()
 
 #ifndef QT_NO_SESSIONMANAGER
     // connect to the session manager
+    Q_Q(QApplication);
     session_manager = new QSessionManager(q, session_id, session_key);
 #endif
 
@@ -823,6 +813,7 @@ QApplication::~QApplication()
     delete qt_desktopWidget;
     qt_desktopWidget = 0;
     QApplicationPrivate::is_app_closing = true;
+    QApplicationPrivate::is_app_running = false;
 
 #ifndef QT_NO_CLIPBOARD
     delete qt_clipboard;
@@ -1166,7 +1157,7 @@ void QApplication::setStyle(QStyle *style)
 
   The string must be one of the QStyleFactory::keys(), typically one
   of "windows", "motif", "cde", "plastique", "windowsxp", or
-  "macintosh".
+  "macintosh". Style names are case insensitive.
 
   Returns 0 if an unknown \a style is passed, otherwise the QStyle object
   returned is set as the application's GUI style.
@@ -1660,7 +1651,7 @@ void QApplicationPrivate::setFocusWidget(QWidget *focus, Qt::FocusReason reason)
             }
             if(focus && QApplicationPrivate::focus_widget == focus) {
                 QInputContext *qic = focus->inputContext();
-                if ( qic ) 
+                if ( qic )
 	            qic->setFocusWidget( focus_widget );
                 QFocusEvent in(QEvent::FocusIn, reason);
                 QApplication::sendEvent(focus, &in);
@@ -1711,7 +1702,7 @@ QFontMetrics QApplication::fontMetrics()
 
     The windows are closed in random order, until one window does not
     accept the close event. The application quits when the last window
-    was successfully closed; this can be turned of by setting \l
+    was successfully closed; this can be turned off by setting \l
     quitOnLastWindowClosed to false.
 
     \sa quitOnLastWindowClosed, lastWindowClosed()  QWidget::close(), QWidget::closeEvent(), lastWindowClosed(),
@@ -1783,7 +1774,7 @@ void QApplication::aboutQt()
     \fn void QApplication::focusChanged(QWidget *old, QWidget *now)
 
     This signal is emitted when the widget that has keyboard focus
-    changed from \a old to \a now, i.e. because the user presse the
+    changed from \a old to \a now, i.e. because the user pressed the
     tab-key, clicked into a widget or changed the active window. Note
     that both \a old and \a now can be the null-pointer.
 
@@ -1940,18 +1931,57 @@ void QApplication::setActiveWindow(QWidget* act)
         sendSpontaneousEvent(w, &activationChange);
     }
 
-    // then focus events
-    if (!QApplicationPrivate::active_window && QApplicationPrivate::focus_widget) {
-        QApplicationPrivate::setFocusWidget(0, Qt::ActiveWindowFocusReason);
-    } else if (QApplicationPrivate::active_window) {
-        QWidget *w = QApplicationPrivate::active_window->focusWidget();
-        if (w /*&& w->focusPolicy() != QWidget::NoFocus*/)
-            w->setFocus(Qt::ActiveWindowFocusReason);
-        else
-            QApplicationPrivate::active_window->focusNextPrevChild(true);
+    if (QApplicationPrivate::popupWidgets == 0) { // !inPopupMode()
+        // then focus events
+        if (!QApplicationPrivate::active_window && QApplicationPrivate::focus_widget) {
+            QApplicationPrivate::setFocusWidget(0, Qt::ActiveWindowFocusReason);
+        } else if (QApplicationPrivate::active_window) {
+            QWidget *w = QApplicationPrivate::active_window->focusWidget();
+            if (w /*&& w->focusPolicy() != QWidget::NoFocus*/)
+                w->setFocus(Qt::ActiveWindowFocusReason);
+            else {
+                QWidget *w = QApplicationPrivate::focusNextPrevChild_helper(QApplicationPrivate::active_window, true);
+                if (w) 
+                    w->setFocus(Qt::ActiveWindowFocusReason);
+            }
+        }
     }
 }
 
+/*!internal
+ * Helper function that returns the new focus widget, but does not set the focus reason.
+ * Returns 0 if a new focus widget could not be found.
+*/
+QWidget *QApplicationPrivate::focusNextPrevChild_helper(QWidget *toplevel, bool next)
+{
+    uint focus_flag = qt_tab_all_widgets ? Qt::TabFocus : Qt::StrongFocus;
+
+    QWidget *f = toplevel->focusWidget();
+    if (!f)
+        f = toplevel;
+
+    QWidget *w = f;
+    QWidget *test = f->d_func()->focus_next;
+    while (test && test != f) {
+        if ((test->focusPolicy() & focus_flag) == focus_flag
+            && !(test->d_func()->extra && test->d_func()->extra->focus_proxy)
+            && test->isVisibleTo(toplevel) && test->isEnabled()
+            && (toplevel->windowType() != Qt::SubWindow || toplevel->isAncestorOf(test))) {
+            w = test;
+            if (next)
+                break;
+        }
+        test = test->d_func()->focus_next;
+    }
+    if (w == f) {
+        if (qt_in_tab_key_event) {
+            w->window()->setAttribute(Qt::WA_KeyboardFocusChange);
+            w->update();
+        }
+        return 0;
+    }
+    return w;
+}
 
 /*!\internal
 
@@ -2068,10 +2098,10 @@ bool QApplicationPrivate::isBlockedByModal(QWidget *widget)
         return false;
     if (qApp->activePopupWidget() == widget)
         return false;
-    if ((widget->windowType() == Qt::Tool)) {
-        // allow tool windows
-        return false;
-    }
+
+    QWidget *groupLeaderForWidget = widget;
+    while (groupLeaderForWidget && !groupLeaderForWidget->testAttribute(Qt::WA_GroupLeader))
+        groupLeaderForWidget = groupLeaderForWidget->parentWidget();
 
     bool blocked = false;
     for (int i = 0; !blocked && i < qt_modal_stack->size(); ++i) {
@@ -2108,10 +2138,18 @@ bool QApplicationPrivate::isBlockedByModal(QWidget *widget)
 
         switch (windowModality) {
         case Qt::ApplicationModal:
-            if (modalWidget == widget)
+            if (modalWidget == widget) {
                 return false;
-            if (modalWidget != widget)
+            } else if (groupLeaderForWidget) {
+                // if \a widget has WA_GroupLeader, it can only be blocked by children with ApplicationModal
+                QWidget *p = modalWidget;
+                while (p && p != groupLeaderForWidget && !p->testAttribute(Qt::WA_GroupLeader))
+                    p = p->parentWidget();
+                if (p == groupLeaderForWidget)
+                    blocked = true;
+            } else if (modalWidget != widget) {
                 blocked = true;
+            }
             break;
         case Qt::WindowModal:
             w = widget;
@@ -2147,7 +2185,7 @@ void QApplicationPrivate::enterModal(QWidget *widget)
     QList<QWidget*> windows = qApp->topLevelWidgets();
     for (int i = 0; i < windows.count(); ++i) {
         QWidget *window = windows.at(i);
-        if (isBlockedByModal(window))
+        if (window->windowType() != Qt::Tool && isBlockedByModal(window))
             blocked.insert(window);
     }
 
@@ -2157,7 +2195,7 @@ void QApplicationPrivate::enterModal(QWidget *widget)
     QEvent e(QEvent::WindowBlocked);
     for (int i = 0; i < windows.count(); ++i) {
         QWidget *window = windows.at(i);
-        if (!blocked.contains(window) && isBlockedByModal(window))
+        if (!blocked.contains(window) && window->windowType() != Qt::Tool && isBlockedByModal(window))
             QApplication::sendEvent(window, &e);
     }
 }
@@ -2170,7 +2208,7 @@ void QApplicationPrivate::leaveModal(QWidget *widget)
     QList<QWidget*> windows = qApp->topLevelWidgets();
     for (int i = 0; i < windows.count(); ++i) {
         QWidget *window = windows.at(i);
-        if (isBlockedByModal(window))
+        if (window->windowType() != Qt::Tool && isBlockedByModal(window))
             blocked.insert(window);
     }
 
@@ -2180,7 +2218,7 @@ void QApplicationPrivate::leaveModal(QWidget *widget)
     QEvent e(QEvent::WindowUnblocked);
     for (int i = 0; i < windows.count(); ++i) {
         QWidget *window = windows.at(i);
-        if(blocked.contains(window) && !isBlockedByModal(window))
+        if(blocked.contains(window) && window->windowType() != Qt::Tool && !isBlockedByModal(window))
             QApplication::sendEvent(window, &e);
     }
 }
@@ -3165,12 +3203,13 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
   a session manager object as argument, to allow the application
   to communicate with the session manager.
 
-  During a session management action (i.e. within commitData() and
-  saveState()), no user interaction is possible \e unless the
-  application got explicit permission from the session manager. You
-  ask for permission by calling allowsInteraction() or, if it's really
-  urgent, allowsErrorInteraction(). Qt does not enforce this, but the
-  session manager may.
+  During a session management action (i.e. within
+  \l{QApplication::commitData()}{commitData()} and
+  \l{QApplication::saveState()}{saveState()}), no user interaction is
+  possible \e unless the application got explicit permission from the
+  session manager. You ask for permission by calling allowsInteraction()
+  or, if it's really urgent, allowsErrorInteraction(). Qt does not
+  enforce this, but the session manager may.
 
   You can try to abort the shutdown process by calling cancel(). The
   default commitData() function does this if some top-level window
@@ -3763,6 +3802,27 @@ void QApplicationPrivate::emitLastWindowClosed()
             qApp->quit();
         emit qApp->lastWindowClosed();
     }
+}
+
+void QApplicationPrivate::_q_tryEmitLastWindowClosed()
+{
+    /* if there is no non-withdrawn primary window left (except
+       the ones without QuitOnClose), we emit the lastWindowClosed
+       signal */
+    QWidgetList list = QApplication::topLevelWidgets();
+    bool lastWindowClosed = true;
+    for (int i = 0; i < list.size(); ++i) {
+        QWidget *w = list.at(i);
+        if (!w->isVisible()
+            || (w->parentWidget() && w->parentWidget()->isVisible())
+            || !w->testAttribute(Qt::WA_QuitOnClose)) {
+            continue;
+        }
+        lastWindowClosed = false;
+        break;
+    }
+    if (lastWindowClosed)
+        emitLastWindowClosed();
 }
 
 /*! \variable QApplication::NormalColors
