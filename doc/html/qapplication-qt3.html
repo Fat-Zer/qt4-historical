@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-win-opensource-src-4.4.1/src/gui/kernel/qapplication.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QApplication</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -48,47 +48,36 @@
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QApplication/ColorMode" />
 <h3 class="fn"><a name="ColorMode-typedef"></a>typedef QApplication::ColorMode</h3>
 <p>Use <a href="qapplication.html#ColorSpec-enum">ColorSpec</a> instead.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/clm/QApplication/colorMode" />
 <h3 class="fn"><a name="colorMode"></a><a href="qapplication-qt3.html#ColorMode-typedef">ColorMode</a> QApplication::colorMode ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#colorSpec">colorSpec</a>() instead, and use <a href="qapplication.html#ColorSpec-enum">ColorSpec</a> as the enum type.</p>
 <p>See also <a href="qapplication-qt3.html#setColorMode">setColorMode</a>().</p>
-<a name="//apple_ref/cpp/clm/QApplication/flushX" />
 <h3 class="fn"><a name="flushX"></a>void QApplication::flushX ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qcoreapplication.html#flush">flush</a>() instead.</p>
-<a name="//apple_ref/cpp/clm/QApplication/hasGlobalMouseTracking" />
 <h3 class="fn"><a name="hasGlobalMouseTracking"></a>bool QApplication::hasGlobalMouseTracking ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This feature does not exist anymore. This function always returns true in Qt 4.</p>
-<a name="//apple_ref/cpp/clm/QApplication/horizontalAlignment" />
 <h3 class="fn"><a name="horizontalAlignment"></a><a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> QApplication::horizontalAlignment ( <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>align</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Strips out vertical alignment flags and transforms an alignment <i>align</i> of <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> into <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a> according to the language used.</p>
-<a name="//apple_ref/cpp/clm/QApplication/macVersion" />
 <h3 class="fn"><a name="macVersion"></a><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MacintoshVersion</a> QApplication::macVersion ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qsysinfo.html#MacintoshVersion-var">QSysInfo::MacintoshVersion</a> instead.</p>
-<a name="//apple_ref/cpp/clm/QApplication/mainWidget" />
 <h3 class="fn"><a name="mainWidget"></a><a href="qwidget.html">QWidget</a> * QApplication::mainWidget ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the main application widget, or 0 if there is no main widget.</p>
 <p>See also <a href="qapplication-qt3.html#setMainWidget">setMainWidget</a>().</p>
-<a name="//apple_ref/cpp/clm/QApplication/reverseLayout" />
 <h3 class="fn"><a name="reverseLayout"></a>bool QApplication::reverseLayout ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#layoutDirection-prop">layoutDirection</a>() instead.</p>
 <p>See also <a href="qapplication-qt3.html#setReverseLayout">setReverseLayout</a>().</p>
-<a name="//apple_ref/cpp/clm/QApplication/setColorMode" />
 <h3 class="fn"><a name="setColorMode"></a>void QApplication::setColorMode ( <a href="qapplication-qt3.html#ColorMode-typedef">ColorMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#setColorSpec">setColorSpec</a>() instead, and pass a <a href="qapplication.html#ColorSpec-enum">ColorSpec</a> value instead.</p>
 <p>See also <a href="qapplication-qt3.html#colorMode">colorMode</a>().</p>
 <h3 class="fn"><a name="setFont-2"></a>void QApplication::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>font</i>, bool <i>b</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the two-argument overload instead.</p>
-<a name="//apple_ref/cpp/clm/QApplication/setGlobalMouseTracking" />
 <h3 class="fn"><a name="setGlobalMouseTracking"></a>void QApplication::setGlobalMouseTracking ( bool <i>dummy</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This function does nothing in Qt 4. The <i>dummy</i> parameter is ignored.</p>
 <p>See also <a href="qapplication-qt3.html#hasGlobalMouseTracking">hasGlobalMouseTracking</a>().</p>
-<a name="//apple_ref/cpp/clm/QApplication/setMainWidget" />
 <h3 class="fn"><a name="setMainWidget"></a>void QApplication::setMainWidget ( <a href="qwidget.html">QWidget</a> * <i>mainWidget</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the application's main widget to <i>mainWidget</i>.</p>
 <p>In most respects the main widget is like any other widget, except that if it is closed, the application exits. Note that <a href="qapplication.html">QApplication</a> does <i>not</i> take ownership of the <i>mainWidget</i>, so if you create your main widget on the heap you must delete it yourself.</p>
@@ -101,11 +90,9 @@
 <h3 class="fn"><a name="setPalette-2"></a>void QApplication::setPalette ( const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>b</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the two-argument overload instead.</p>
-<a name="//apple_ref/cpp/clm/QApplication/setReverseLayout" />
 <h3 class="fn"><a name="setReverseLayout"></a>void QApplication::setReverseLayout ( bool <i>reverse</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#layoutDirection-prop">setLayoutDirection</a>() instead.</p>
 <p>See also <a href="qapplication-qt3.html#reverseLayout">reverseLayout</a>().</p>
-<a name="//apple_ref/cpp/clm/QApplication/setWinStyleHighlightColor" />
 <h3 class="fn"><a name="setWinStyleHighlightColor"></a>void QApplication::setWinStyleHighlightColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use the palette instead.</p>
 <p>For example, if you have code like</p>
@@ -127,19 +114,15 @@
 <pre>         QWidget *widget = qApp-&gt;widgetAt(point);
          if (widget)
              widget = widget-&gt;window();</pre>
-<a name="//apple_ref/cpp/clm/QApplication/winStyleHighlightColor" />
 <h3 class="fn"><a name="winStyleHighlightColor"></a>const <a href="qcolor.html">QColor</a> &amp; QApplication::winStyleHighlightColor ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#qApp">qApp</a>-&gt;<a href="qapplication.html#palette">palette</a>().color(<a href="qpalette.html#ColorGroup-enum">QPalette::Active</a>, <a href="qpalette.html#ColorRole-enum">QPalette::Highlight</a>) instead.</p>
 <p>See also <a href="qapplication-qt3.html#setWinStyleHighlightColor">setWinStyleHighlightColor</a>().</p>
-<a name="//apple_ref/cpp/clm/QApplication/winVersion" />
 <h3 class="fn"><a name="winVersion"></a><a href="qt-qt3.html#WindowsVersion-enum">Qt::WindowsVersion</a> QApplication::winVersion ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qsysinfo.html#WindowsVersion-var">QSysInfo::WindowsVersion</a> instead.</p>
 <hr />
 <h2>Member Variable Documentation</h2>
-<a name="//apple_ref/cpp/data/QApplication/CustomColors" />
 <h3 class="fn"><a name="CustomColors-var"></a>const int QApplication::CustomColors</h3>
 <p>Use <a href="qapplication.html#ColorSpec-enum">CustomColor</a> instead.</p>
-<a name="//apple_ref/cpp/data/QApplication/NormalColors" />
 <h3 class="fn"><a name="NormalColors-var"></a>const int QApplication::NormalColors</h3>
 <p>Use <a href="qapplication.html#ColorSpec-enum">NormalColor</a> instead.</p>
 <p /><address><hr /><div align="center">
