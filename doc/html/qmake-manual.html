@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/qmake-manual.qdoc -->
+<head>
+    <title>Qt 4.0: qmake Manual</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+    <link rel="next" href="qmake-using.html" />
+    <link rel="start" href="index.html" />
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+[Next: <a href="qmake-using.html">Using qmake</a>]
+</p>
+<h1 align="center">qmake Manual</h1>
+<a name="qmake"></a><p><tt>qmake</tt> is an tool from Trolltech that helps simplify the build process for development project across different platforms. <tt>qmake</tt> automates the generation of Makefiles so that only a few lines of information are needed to create each Makefile. <tt>qmake</tt> can be used for any software project, whether it is written in Qt or not.</p>
+<p><tt>qmake</tt> generates a Makefile based on the information in a project file. Project files are created by the developer, and are usually simple, but more sophisticated project files can be created for complex projects. <tt>qmake</tt> contains additional features to support development with Qt, automatically including build rules for <a href="moc.html">moc</a> and <a href="uic.html">uic</a>. <tt>qmake</tt> can also generate projects for Microsoft Visual studio without requiring the developer to change the project file.</p>
+<p>Table of contents:</p>
+<ul>
+<li><a href="qmake-using.html">Using qmake</a> <ul><li><a href="qmake-using.html#describing-a-project">Describing a Project</a></li>
+<li><a href="qmake-using.html#building-a-project">Building a Project</a></li>
+</ul>
+</li>
+<li><a href="qmake-project-files.html">qmake Project Files</a> <ul><li><a href="qmake-project-files.html#project-file-elements">Project File Elements</a></li>
+<ul><li><a href="qmake-project-files.html#variables">Variables</a></li>
+<li><a href="qmake-project-files.html#comments">Comments</a></li>
+<li><a href="qmake-project-files.html#built-in-functions-and-control-flow">Built-in Functions and Control Flow</a></li>
+</ul>
+<li><a href="qmake-project-files.html#project-templates">Project Templates</a></li>
+<li><a href="qmake-project-files.html#general-configuration">General Configuration</a></li>
+<li><a href="qmake-project-files.html#declaring-qt-libraries">Declaring Qt Libraries</a></li>
+<li><a href="qmake-project-files.html#configuration-features">Configuration Features</a></li>
+</ul>
+</li>
+<li><a href="qmake-running.html">Running qmake</a> <ul><li><a href="qmake-running.html#command-line-options">Command-Line Options</a></li>
+<ul><li><a href="qmake-running.html#syntax">Syntax</a></li>
+<li><a href="qmake-running.html#options">Options</a></li>
+<li><a href="qmake-running.html#makefile-mode-options">Makefile Mode Options</a></li>
+<li><a href="qmake-running.html#project-mode-options">Project Mode Options</a></li>
+</ul>
+</ul>
+</li>
+<li><a href="qmake-advanced-usage.html">qmake Advanced Usage</a> <ul><li><a href="qmake-advanced-usage.html#operators">Operators</a></li>
+<li><a href="qmake-advanced-usage.html#scopes">Scopes</a></li>
+<ul><li><a href="qmake-advanced-usage.html#scopes-and-conditions">Scopes and Conditions</a></li>
+<li><a href="qmake-advanced-usage.html#configuration-and-scopes">Configuration and Scopes</a></li>
+<li><a href="qmake-advanced-usage.html#platform-scope-values">Platform Scope Values</a></li>
+</ul>
+<li><a href="qmake-advanced-usage.html#variables">Variables</a></li>
+<li><a href="qmake-advanced-usage.html#variable-processing-functions">Variable Processing Functions</a></li>
+<li><a href="qmake-advanced-usage.html#conditional-functions">Conditional Functions</a></li>
+<li><a href="qmake-advanced-usage.html#adding-new-configuration-features">Adding New Configuration Features</a></li>
+</ul>
+</li>
+<li><a href="qmake-reference.html">qmake Reference</a> <ul><li><a href="qmake-reference.html#variable-reference">Variable Reference</a></li>
+<li><a href="qmake-reference.html#function-reference">Function Reference</a></li>
+<li><a href="qmake-reference.html#frequently-used-variables">Frequently Used Variables</a></li>
+<li><a href="qmake-reference.html#environment-variables-and-configuration">Environment Variables and Configuration</a></li>
+</ul>
+</li>
+</ul>
+<p>Getting Started:</p>
+<ul>
+<li><a href="qmake-tutorial.html">qmake Tutorial</a> <ul><li><a href="qmake-tutorial.html#starting-off-simple">Starting off Simple</a></li>
+<li><a href="qmake-tutorial.html#making-an-application-debuggable">Making an Application Debuggable</a></li>
+<li><a href="qmake-tutorial.html#adding-platform-specific-source-files">Adding Platform-Specific Source Files</a></li>
+<li><a href="qmake-tutorial.html#stopping-qmake-if-a-file-doesn-t-exist">Stopping qmake If a File Doesn't Exist</a></li>
+<li><a href="qmake-tutorial.html#checking-for-more-than-one-condition">Checking for More than One Condition</a></li>
+</ul>
+</li>
+<li><a href="qmake-common-projects.html">qmake Common Projects</a> <ul><li><a href="qmake-common-projects.html#building-an-application">Building an Application</a></li>
+<ul><li><a href="qmake-common-projects.html#the-template">The <tt>app</tt> Template</a></li>
+</ul>
+<li><a href="qmake-common-projects.html#building-a-library">Building a Library</a></li>
+<ul><li><a href="qmake-common-projects.html#the-template">The <tt>lib</tt> Template</a></li>
+</ul>
+</ul>
+</li>
+</ul>
+<p>
+[Next: <a href="qmake-using.html">Using qmake</a>]
+</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.0: browser.cpp Example File (demos/sqlbrowser/browser.cpp)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">browser.cpp Example File<br /><small><small>demos/sqlbrowser/browser.cpp</small></small></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #include &quot;browser.h&quot;
+    #include &quot;qsqlconnectiondialog.h&quot;
+
+    #include &lt;QtGui&gt;
+    #include &lt;QtSql&gt;
+
+    Browser::Browser(QWidget *parent)
+        : QWidget(parent)
+    {
+        setupUi(this);
+
+        if (QSqlDatabase::drivers().isEmpty())
+            QMessageBox::information(this, tr(&quot;No database drivers found&quot;),
+                                     tr(&quot;This demo requires at least one Qt database driver. &quot;
+                                        &quot;Please check the documentation how to build the &quot;
+                                        &quot;Qt SQL plugins.&quot;));
+        else {
+            QMetaObject::invokeMethod(this, &quot;addConnection&quot;, Qt::QueuedConnection);
+        }
+
+        emit statusMessage(tr(&quot;Ready.&quot;));
+    }
+
+    Browser::~Browser()
+    {
+    }
+
+    void Browser::exec()
+    {
+        QSqlQueryModel *model = new QSqlQueryModel(table);
+        model-&gt;setQuery(QSqlQuery(sqlEdit-&gt;toPlainText(), connectionWidget-&gt;currentDatabase()));
+        table-&gt;setModel(model);
+
+        if (model-&gt;lastError().type() != QSqlError::NoError)
+            emit statusMessage(model-&gt;lastError().text());
+        else if (model-&gt;query().isSelect())
+            emit statusMessage(tr(&quot;Query OK.&quot;));
+        else
+            emit statusMessage(tr(&quot;Query OK, number of affected rows: %1&quot;).arg(
+                        model-&gt;query().numRowsAffected()));
+    }
+
+    void Browser::addConnection()
+    {
+        QSqlConnectionDialog dialog(this);
+        if (dialog.exec() != QDialog::Accepted)
+            return;
+
+        if (dialog.useInMemoryDatabase()) {
+            QSqlDatabase::database(&quot;in_mem_db&quot;, false).close();
+            QSqlDatabase::removeDatabase(&quot;in_mem_db&quot;);
+            QSqlDatabase db = QSqlDatabase::addDatabase(&quot;QSQLITE&quot;, &quot;in_mem_db&quot;);
+            db.setDatabaseName(&quot;:memory:&quot;);
+            if (!db.open())
+                QMessageBox::warning(this, tr(&quot;Unable to open database&quot;), tr(&quot;An error occured while &quot;
+                                                                             &quot;opening the connection: &quot;) + db.lastError().text());
+            QSqlQuery q(&quot;&quot;, db);
+            q.exec(&quot;drop table Movies&quot;);
+            q.exec(&quot;drop table Names&quot;);
+            q.exec(&quot;create table Movies (id int primary key, Title varchar(50), Director varchar(20), Rating number(2,2))&quot;);
+            q.exec(&quot;insert into Movies values (0, 'Metropolis', 'Fritz Lang', '8.4')&quot;);
+            q.exec(&quot;insert into Movies values (1, 'Nosferatu, eine Symphonie des Grauens', 'F.W. Murnau', '8.1')&quot;);
+            q.exec(&quot;insert into Movies values (2, 'Bis ans Ende der Welt', 'Wim Wenders', '6.5')&quot;);
+            q.exec(&quot;insert into Movies values (3, 'Hardware', 'Richard Stanley', '5.2')&quot;);
+            q.exec(&quot;insert into Movies values (4, 'Mitchell', 'Andrew V. McLaglen', '2.1')&quot;);
+            q.exec(&quot;create table Names (id int primary key, Firstname varchar(20), Lastname varchar(20), City varchar(20))&quot;);
+            q.exec(&quot;insert into Names values (0, 'Sala', 'Palmer', 'Morristown')&quot;);
+            q.exec(&quot;insert into Names values (1, 'Christopher', 'Walker', 'Morristown')&quot;);
+            q.exec(&quot;insert into Names values (2, 'Donald', 'Duck', 'Andeby')&quot;);
+            q.exec(&quot;insert into Names values (3, 'Buck', 'Rogers', 'Paris')&quot;);
+            q.exec(&quot;insert into Names values (4, 'Sherlock', 'Holmes', 'London')&quot;);
+        } else {
+            static int cCount = 0;
+            QSqlDatabase db = QSqlDatabase::addDatabase(dialog.driverName(),
+                                                        QString(&quot;Browser%1&quot;).arg(++cCount));
+            db.setDatabaseName(dialog.databaseName());
+            db.setHostName(dialog.hostName());
+            db.setUserName(dialog.userName());
+            db.setPassword(dialog.password());
+            db.setPort(dialog.port());
+            if (!db.open())
+                QMessageBox::warning(this, tr(&quot;Unable to open database&quot;), tr(&quot;An error occured while &quot;
+                                                                             &quot;opening the connection: &quot;) + db.lastError().text());
+        }
+        connectionWidget-&gt;refresh();
+    }
+
+    void Browser::showTable(const QString &amp;t)
+    {
+        QSqlTableModel *model = new QSqlTableModel(table, connectionWidget-&gt;currentDatabase());
+        model-&gt;setTable(t);
+        model-&gt;select();
+        if (model-&gt;lastError().type() != QSqlError::NoError)
+            emit statusMessage(model-&gt;lastError().text());
+        table-&gt;setModel(model);
+    }</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

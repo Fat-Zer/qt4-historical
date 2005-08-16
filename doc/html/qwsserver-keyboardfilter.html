@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/embedded/qwindowsystem_qws.cpp -->
+<head>
+    <title>Qt 4.0: QWSServer::KeyboardFilter Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSServer::KeyboardFilter Class Reference</h1>
+<p>The KeyboardFilter class provides a global keyboard event filter. <a href="#details">More...</a></p>
+<pre>#include &lt;QWSServer&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
+<ul>
+<li><a href="qwsserver-keyboardfilter-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/>virtual <b><a href="qwsserver-keyboardfilter.html#dtor.KeyboardFilter">~KeyboardFilter</a></b> ()</li>
+<li><div class="fn"/>virtual bool <b><a href="qwsserver-keyboardfilter.html#filter">filter</a></b> ( int <i>unicode</i>, int <i>keycode</i>, int <i>modifiers</i>, bool <i>isPress</i>, bool <i>autoRepeat</i> ) = 0</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The KeyboardFilter class provides a global keyboard event filter.</p>
+<p>The KeyboardFilter class is used to implement a global, low-level filter on key events in the Qt/Embedded server application; this can be used to implement things like APM (advanced power management) suspend from a button without having to filter for it in all applications.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="dtor.KeyboardFilter"></a>KeyboardFilter::~KeyboardFilter ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Destroys the keyboard filter.</p>
+<h3 class="fn"><a name="filter"></a>bool KeyboardFilter::filter ( int <i>unicode</i>, int <i>keycode</i>, int <i>modifiers</i>, bool <i>isPress</i>, bool <i>autoRepeat</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Returns true if the specified key should be filtered; otherwise returns false. A true return value stops the key from being processed any further.</p>
+<p>The Unicode value is given in <i>unicode</i> and the key code in <i>keycode</i>. Keyboard modifiers are OR-ed together in <i>modifiers</i>. If <i>isPress</i> is true this is a key press; otherwise it is a key release. If <i>autoRepeat</i> is true this is an auto-repeated key press.</p>
+<p>All normal key events should be blocked while in compose mode.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

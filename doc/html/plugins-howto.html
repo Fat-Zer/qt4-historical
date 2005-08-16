@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/plugins-howto.qdoc -->
+<head>
+    <title>Qt 4.0: How to Create Qt Plugins</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">How to Create Qt Plugins</h1>
+<p>Qt provides two APIs for creating plugins:</p>
+<ul>
+<li>A higher-level API for writing extensions to Qt itself: custom database drivers, image formats, text codecs, custom styles, etc.</li>
+<li>A lower-lever API for extending Qt applications.</li>
+</ul>
+<p>For example, if you want to write a custom <a href="qstyle.html">QStyle</a> subclass and have Qt applications load it dynamically, you would then use the higher-level API; whereas if you want to extend <i>Qt Designer</i>, you would use the lower-level API.</p>
+<p>Since the higher-level API is built on top of the lower-level API, some issues are common to both.</p>
+<p>Topics:</p>
+<ul><li><a href="#the-higher-level-api-writing-qt-extensions">The Higher-Level API: Writing Qt Extensions</a></li>
+<li><a href="#the-lower-level-api-extending-qt-applications">The Lower-Level API: Extending Qt Applications</a></li>
+<li><a href="#loading-and-verifying-plugins">Loading and Verifying Plugins</a></li>
+<li><a href="#the-build-key">The Build Key</a></li>
+</ul>
+<a name="the-higher-level-api-writing-qt-extensions"></a>
+<h2>The Higher-Level API: Writing Qt Extensions</h2>
+<p>Writing a plugin that extends Qt itself is achieved by subclassing the appropriate plugin base clase, implementing a few functions, and adding a macro.</p>
+<p>There are several plugin base classes. Derived plugins are stored by default in the standard plugin directory.</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Base Class</th><th>Default Path</th><th>Key Case Sensitivity</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a></td><td><tt>plugins/accessiblebridge</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qaccessibleplugin.html">QAccessiblePlugin</a></td><td><tt>plugins/accessible</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qdecorationplugin.html">QDecorationPlugin</a></td><td><tt>plugins/decorations</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qgfxdriverplugin.html">QGfxDriverPlugin</a></td><td><tt>plugins/gfxdrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qiconengineplugin.html">QIconEnginePlugin</a></td><td><tt>plugins/iconengines</tt></td><td>Case Insensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qimageioplugin.html">QImageIOPlugin</a></td><td><tt>plugins/imageformats</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qinputcontextplugin.html">QInputContextPlugin</a></td><td><tt>plugins/inputmethods</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qkbddriverplugin.html">QKbdDriverPlugin</a></td><td><tt>plugins/kbddrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qmousedriverplugin.html">QMouseDriverPlugin</a></td><td><tt>plugins/mousedrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qpictureformatplugin.html">QPictureFormatPlugin</a></td><td><tt>plugins/pictureformats</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqldriverplugin.html">QSqlDriverPlugin</a></td><td><tt>plugins/sqldrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyleplugin.html">QStylePlugin</a></td><td><tt>plugins/styles</tt></td><td>Case Insensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodecplugin.html">QTextCodecPlugin</a></td><td><tt>plugins/codecs</tt></td><td>Case Sensitive</td></tr>
+</table>
+<p>But where is the <tt>plugins</tt> directory? When the application is run, Qt will first treat the application's executable directory as the <tt>pluginsbase</tt>. For example if the application is in <tt>C:\Program Files\MyApp</tt> and has a style plugin, Qt will look in <tt>C:\Program Files\MyApp\styles</tt>. (See <a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>() for how to find out where the application's executable is.) Qt will also look in the directory specified by QLibraryInfo::location(<a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::PluginsPath</a>), which typically is located in <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed). If you want Qt to look in additional places you can add as many paths as you need with calls to <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>(). And if you want to set your own path or paths you can use <a href="qcoreapplication.html#setLibraryPaths">QCoreApplication::setLibraryPaths</a>().</p>
+<p>Suppose that you have a new style class called <tt>MyStyle</tt> that you want to make available as a plugin. The required code is straightforward:</p>
+<pre>&nbsp;   class MyStylePlugin : public QStylePlugin
+    {
+    public:
+        QStringList keys() const {
+            return QStringList() &lt;&lt; &quot;mystyle&quot;;
+        }
+
+        QStyle *create(const QString &amp;key) {
+            if (key == &quot;mystyle&quot;)
+                return new MyStyle;
+            return 0;
+        }
+    };
+
+    Q_EXPORT_PLUGIN(MyStylePlugin)</pre>
+<p>(Note that <a href="qstyleplugin.html">QStylePlugin</a> is case-insensitive, and the lower-case version of the key is used; most other plugins are case sensitive.)</p>
+<p>For database drivers, image formats, text codecs, and most other plugin types, no explicit object creation is required. Qt will find and create them as required. Styles are an exception, since you might want to set a style explicitly in code. To apply a style, use code like this:</p>
+<pre>&nbsp;   QApplication::setStyle(QStyleFactory::create(&quot;MyStyle&quot;));</pre>
+<p>Some plugin classes require additional functions to be implemented. See the class documentation for details of the virtual functions that must be reimplemented for each type of plugin.</p>
+<p>Qt applications automatically know which plugins are available, because plugins are stored in the standard plugin subdirectories. Because of this applications don't require any code to find and load plugins, since Qt handles them automatically.</p>
+<p>The default directory for plugins is <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed), with each type of plugin in a subdirectory for that type, e.g. <tt>styles</tt>. If you want your applications to use plugins and you don't want to use the standard plugins path, have your installation process determine the path you want to use for the plugins, and save the path, e.g. using <a href="qsettings.html">QSettings</a>, for the application to read when it runs. The application can then call <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>() with this path and your plugins will be available to the application. Note that the final part of the path (e.g., <tt>styles</tt>) cannot be changed.</p>
+<p>The normal way to include a plugin with an application is either to compile it in with the application or to compile it into a dynamic library and use it like any other library. If you want the plugin to be loadable then one approach is to create a subdirectory under the application and place the plugin in that directory.</p>
+<a name="the-lower-level-api-extending-qt-applications"></a>
+<h2>The Lower-Level API: Extending Qt Applications</h2>
+<p>Not only Qt itself but also Qt application can be extended through plugins. This requires the application to detect and load plugins using <a href="qpluginloader.html">QPluginLoader</a>. In that context, plugins may provide arbitrary functionality and are not limited to database drivers, image formats, text codecs, styles, and the other types of plugin that extend Qt's functionality.</p>
+<p>Making an application extensible through plugins involves the following steps:</p>
+<ol type="1">
+<li>Define a set of interfaces (classes with only pure virtual functions) used to talk to the plugins.</li>
+<li>Use the <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interface.</li>
+<li>Use <a href="qpluginloader.html">QPluginLoader</a> in the application to load the plugins.</li>
+<li>Use <a href="qobject.html#qobject_cast">qobject_cast</a>() to test whether a plugin implements a given interface.</li>
+</ol>
+<p>Writing a plugin involves these steps:</p>
+<ol type="1">
+<li>Declare a plugin class that inherits from <a href="qobject.html">QObject</a> and from the interfaces that the plugin wants to provide.</li>
+<li>Use the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interfaces.</li>
+<li>Export the plugin using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</li>
+<li>Build the plugin using an adequate <tt>.pro</tt> file.</li>
+</ol>
+<p>For example, here's the definition of an interface class:</p>
+<pre>&nbsp;   class FilterInterface
+    {
+    public:
+        virtual ~FilterInterface() {}
+
+        virtual QStringList filters() const = 0;
+        virtual QImage filterImage(const QString &amp;filter, const QImage &amp;image,
+                                   QWidget *parent) = 0;
+    };
+
+    Q_DECLARE_INTERFACE(FilterInterface,
+                        &quot;com.trolltech.PlugAndPaint.FilterInterface/1.0&quot;)</pre>
+<p>Here's the definition of a plugin class that implements that interface:</p>
+<pre>&nbsp;   #include &lt;QObject&gt;
+    #include &lt;QStringList&gt;
+    #include &lt;QImage&gt;
+
+    #include &lt;plugandpaint/interfaces.h&gt;
+
+    class ExtraFiltersPlugin : public QObject, public FilterInterface
+    {
+        Q_OBJECT
+        Q_INTERFACES(FilterInterface)
+
+    public:
+        QStringList filters() const;
+        QImage filterImage(const QString &amp;filter, const QImage &amp;image,
+                           QWidget *parent);
+    };</pre>
+<p>The <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example documentation explains this process in detail. See also <a href="designer-creating-custom-widgets.html">Creating Custom Widgets for Qt Designer</a> for information about issues that are specific to <i>Qt Designer</i>.</p>
+<a name="loading-and-verifying-plugins"></a>
+<h2>Loading and Verifying Plugins</h2>
+<p>When loading plugins, the Qt library does some sanity checking to determine whether or not the plugin can be loaded and used. This provides the ability to have multiple versions and configurations of the Qt library installed side by side.</p>
+<ul>
+<li>Plugins linked with a Qt library that has a higher major and/or minor version number will not be loaded by a library with a lower major and/or minor version number.<p><i>Rationale:</i> A plugin linked against a newer Qt library may use new features that are not available in older versions. Trolltech has a policy of adding new features and APIs only between minor releases, which is why this test only looks at the major and minor version numbers, and not at the bug-fix version number.</p>
+</li>
+<li>The Qt library and all plugins are built using a <i>build key</i>. The build key in the Qt library is examined against the build key in the plugin, and if they match, the plugin is loaded. If the build keys do not match, then the Qt library refuses to load the plugin.<p><i>Rationale:</i> See the Rationale for the build key below.</p>
+</li>
+</ul>
+<p>When building plugins to extend an application, it is important to ensure that the plugin is configured in the same way as the application. This means that if the application was built in release mode, plugins should be built in release mode, too.</p>
+<p>If you configure Qt to be built in both debug and release modes, but only build applications in release mode, you need to ensure that your plugins are also built in release mode. By default, if a debug build of Qt is available, plugins will <i>only</i> be built in debug mode. To force the plugins to be built in release mode, add the following line to the plugin's project file:</p>
+<pre>&nbsp;   CONFIG += release</pre>
+<p>This will ensure that the plugin is compatible with the version of the library used in the application.</p>
+<a name="the-build-key"></a>
+<h2>The Build Key</h2>
+<p>When loading plugins, Qt checks the build key of each plugin against its own configuration to ensure that only compatible plugins are loaded; any plugins that are configured differently are not loaded.</p>
+<p>The build key contains the following information:</p>
+<ul>
+<li>Architecture, operating system and compiler.<p><i>Rationale:</i> In cases where different versions of the same compiler do not produce binary compatible code, the version of the compiler is also present in the build key.</p>
+</li>
+<li>Configuration of the Qt library. The configuration is a list of the missing features that affect the available API in the library.<p><i>Rationale:</i> Two different configurations of the same version of the Qt library are not binary compatible. The Qt library that loads the plugin uses the list of (missing) features to determine if the plugin is binary compatible.</p>
+<p><i>Note:</i> There are cases where a plugin can use features that are available in two different configurations. However, the developer writing plugins would need to know which features are in use, both in their plugin and internally by the utility classes in Qt. The Qt library would require complex feature and dependency queries and verification when loading plugins. Requiring this would place an unnecessary burden on the developer, and increase the overhead of loading a plugin. To reduce both development time and application runtime costs, a simple string comparision of the build keys is used.</p>
+</li>
+<li>Optionally, an extra string may be specified on the configure script command line.<p><i>Rationale:</i> When distributing binaries of the Qt library with an application, this provides a way for developers to write plugins that can only be loaded by the library with which the plugins were linked.</p>
+</li>
+</ul>
+<p>See also <a href="qpluginloader.html">QPluginLoader</a> and <a href="qlibrary.html">QLibrary</a>.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

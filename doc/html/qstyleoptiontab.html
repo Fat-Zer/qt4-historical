@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/src/gui/styles/qstyleoption.cpp -->
+<head>
+    <title>Qt 4.0: QStyleOptionTab Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyleOptionTab Class Reference</h1>
+<p>The QStyleOptionTab class is used to describe the parameters for drawing a tab bar. <a href="#details">More...</a></p>
+<pre>#include &lt;QStyleOptionTab&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
+<p>Inherits <a href="qstyleoption.html">QStyleOption</a>.</p>
+<ul>
+<li><a href="qstyleoptiontab-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-types"></a>
+<h3>Public Types</h3>
+<ul>
+<li><div class="fn"/>enum <b><a href="qstyleoptiontab.html#CornerWidget-enum">CornerWidget</a></b> { NoCornerWidgets, LeftCornerWidget, RightCornerWidget }</li>
+<li><div class="fn"/>flags <b><a href="qstyleoptiontab.html#CornerWidget-enum">CornerWidgets</a></b></li>
+<li><div class="fn"/>enum <b><a href="qstyleoptiontab.html#SelectedPosition-enum">SelectedPosition</a></b> { NotAdjacent, NextIsSelected, PreviousIsSelected }</li>
+<li><div class="fn"/>enum <b><a href="qstyleoptiontab.html#TabPosition-enum">TabPosition</a></b> { Beginning, Middle, End, OnlyOneTab }</li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qstyleoptiontab.html#QStyleOptionTab">QStyleOptionTab</a></b> ()</li>
+<li><div class="fn"/><b><a href="qstyleoptiontab.html#QStyleOptionTab-2">QStyleOptionTab</a></b> ( const QStyleOptionTab &amp; <i>other</i> )</li>
+</ul>
+<ul>
+<li><div class="fn"/>2 public functions inherited from <a href="qstyleoption.html#public-functions">QStyleOption</a></li>
+</ul>
+<a name="public-variables"></a>
+<h3>Public Variables</h3>
+<ul>
+<li><div class="fn"/>CornerWidgets <b><a href="qstyleoptiontab.html#cornerWidgets-var">cornerWidgets</a></b></li>
+<li><div class="fn"/>QIcon <b><a href="qstyleoptiontab.html#icon-var">icon</a></b></li>
+<li><div class="fn"/>TabPosition <b><a href="qstyleoptiontab.html#position-var">position</a></b></li>
+<li><div class="fn"/>int <b><a href="qstyleoptiontab.html#row-var">row</a></b></li>
+<li><div class="fn"/>SelectedPosition <b><a href="qstyleoptiontab.html#selectedPosition-var">selectedPosition</a></b></li>
+<li><div class="fn"/>QTabBar::Shape <b><a href="qstyleoptiontab.html#shape-var">shape</a></b></li>
+<li><div class="fn"/>QString <b><a href="qstyleoptiontab.html#text-var">text</a></b></li>
+</ul>
+<ul>
+<li><div class="fn"/>7 public variables inherited from <a href="qstyleoption.html#public-variables">QStyleOption</a></li>
+</ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>const int <b><a href="qstyleoptiontab.html#Type-var">Type</a></b></li>
+<li><div class="fn"/>const int <b><a href="qstyleoptiontab.html#Version-var">Version</a></b></li>
+</ul>
+<ul>
+<li><div class="fn"/>2 static public members inherited from <a href="qstyleoption.html#static-public-members">QStyleOption</a></li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QStyleOptionTab class is used to describe the parameters for drawing a tab bar.</p>
+<p>The QStyleOptionTab class is used for drawing <a href="qtabbar.html">QTabBar</a> and the pane for <a href="qtabwidget.html">QTabWidget</a>.</p>
+<hr />
+<h2>Member Type Documentation</h2>
+<h3 class="flags"><a name="CornerWidget-enum"></a>enum QStyleOptionTab::CornerWidget<br />flags QStyleOptionTab::CornerWidgets</h3>
+<p>These flags indicate the corner widgets in a tab.</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::NoCornerWidgets</tt></td><td align="center" valign="top"><tt>0x00</tt></td><td valign="top">There are no corner widgets</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::LeftCornerWidget</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Left corner widget</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::RightCornerWidget</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Right corner widget</td></tr>
+</table>
+<p>The CornerWidgets type is a typedef for <a href="qflags.html">QFlags</a>&lt;CornerWidget&gt;. It stores an OR combination of CornerWidget values.</p>
+<p>See also <a href="qstyleoptiontab.html#cornerWidgets-var">cornerWidgets</a>.</p>
+<h3 class="fn"><a name="SelectedPosition-enum"></a>enum QStyleOptionTab::SelectedPosition</h3>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::NotAdjacent</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The tab is not adjacent to a selected tab (or is the selected tab).</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::NextIsSelected</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The next tab (typically the tab on the right) is selected.</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::PreviousIsSelected</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The previous tab (typically the tab on the left) is selected.</td></tr>
+</table>
+<p>See also <a href="qstyleoptiontab.html#selectedPosition-var">selectedPosition</a>.</p>
+<h3 class="fn"><a name="TabPosition-enum"></a>enum QStyleOptionTab::TabPosition</h3>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::Beginning</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The tab is the first tab in the tab bar.</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::Middle</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The tab is neither the first nor the last tab in the tab bar.</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::End</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The tab is the last tab in the tab bar.</td></tr>
+<tr><td valign="top"><tt>QStyleOptionTab::OnlyOneTab</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The tab is both the first and the last tab in the tab bar.</td></tr>
+</table>
+<p>See also <a href="qstyleoptiontab.html#position-var">position</a>.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QStyleOptionTab"></a>QStyleOptionTab::QStyleOptionTab ()</h3>
+<p>Constructs a <a href="qstyleoptiontab.html">QStyleOptionTab</a> object. The members variables are initialized to default values.</p>
+<h3 class="fn"><a name="QStyleOptionTab-2"></a>QStyleOptionTab::QStyleOptionTab ( const QStyleOptionTab &amp; <i>other</i> )</h3>
+<p>Constructs a copy of the <i>other</i> style option.</p>
+<hr />
+<h2>Member Variable Documentation</h2>
+<h3 class="fn"><a name="Type-var"></a>const int QStyleOptionTab::Type</h3>
+<p>Equals <a href="qstyleoption.html#OptionType-enum">SO_Tab</a>.</p>
+<h3 class="fn"><a name="Version-var"></a>const int QStyleOptionTab::Version</h3>
+<p>Equals 1.</p>
+<h3 class="fn"><a name="cornerWidgets-var"></a><a href="qstyleoptiontab.html#CornerWidget-enum">CornerWidgets</a> QStyleOptionTab::cornerWidgets</h3>
+<p>This variable holds information on the cornerwidgets of the tab bar.</p>
+<p>See also <a href="qstyleoptiontab.html#CornerWidget-enum">CornerWidget</a>.</p>
+<h3 class="fn"><a name="icon-var"></a><a href="qicon.html">QIcon</a> QStyleOptionTab::icon</h3>
+<p>This variable holds the icon for the tab.</p>
+<h3 class="fn"><a name="position-var"></a><a href="qstyleoptiontab.html#TabPosition-enum">TabPosition</a> QStyleOptionTab::position</h3>
+<p>This variable holds the position of the tab in the tab bar.</p>
+<h3 class="fn"><a name="row-var"></a>int QStyleOptionTab::row</h3>
+<p>This variable holds which row the tab is currently in.</p>
+<p>0 indicates the front row.</p>
+<p>Currently this property can only be 0.</p>
+<h3 class="fn"><a name="selectedPosition-var"></a><a href="qstyleoptiontab.html#SelectedPosition-enum">SelectedPosition</a> QStyleOptionTab::selectedPosition</h3>
+<p>This variable holds the position of the selected tab in relation to this tab. Some styles need to draw a tab differently depending on whether or not it is adjacent to the selected tab.</p>
+<h3 class="fn"><a name="shape-var"></a><a href="qtabbar.html#Shape-enum">QTabBar::Shape</a> QStyleOptionTab::shape</h3>
+<p>This variable holds the tab shape used to draw the tab.</p>
+<p>See also <a href="qtabbar.html#Shape-enum">QTabBar::Shape</a>.</p>
+<h3 class="fn"><a name="text-var"></a><a href="qstring.html">QString</a> QStyleOptionTab::text</h3>
+<p>This variable holds the text of the tab.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

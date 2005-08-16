@@ -1,0 +1,49 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef Q3EDITORFACTORY_H
+#define Q3EDITORFACTORY_H
+
+#include "QtCore/qobject.h"
+#include "QtCore/qvariant.h"
+
+#ifndef QT_NO_SQL_EDIT_WIDGETS
+
+class Q_COMPAT_EXPORT Q3EditorFactory : public QObject
+{
+public:
+    Q3EditorFactory (QObject * parent = 0);
+    ~Q3EditorFactory();
+
+    virtual QWidget * createEditor(QWidget * parent, const QVariant & v);
+
+    static Q3EditorFactory * defaultFactory();
+    static void installDefaultFactory(Q3EditorFactory * factory);
+
+private:
+    Q_DISABLE_COPY(Q3EditorFactory)
+};
+
+#endif // QT_NO_SQL
+
+#endif // Q3EDITORFACTORY_H

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/distributingqt.qdoc -->
+<head>
+    <title>Qt 4.0: Deploying Qt Applications</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Deploying Qt Applications</h1>
+<p>This document lists the platform-specific files needed to distribute Qt applications. We do not include any compiler-specific files that may also be required. (See also, <a href="winsystem.html">Window System-specific Notes</a>.)</p>
+<ul><li><a href="#static-qt-applications">Static Qt Applications</a></li>
+<li><a href="#dynamic-qt-applications">Dynamic Qt Applications</a></li>
+<ul><li><a href="#distributing-plugins">Distributing Plugins</a></li>
+</ul>
+<li><a href="#dynamic-dialogs">Dynamic Dialogs</a></li>
+</ul>
+<p>Also see the &quot;deployment&quot; articles in <i><a href="http://doc.trolltech.com/qq/">Qt Quarterly</a></i>:</p>
+<ul>
+<li><a href="http://doc.trolltech.com/qq/qq09-mac-deployment.html">Deploying Applications on Mac OS X</a></li>
+<li><a href="http://doc.trolltech.com/qq/qq10-windows-deployment.html">Deploying Applications on Windows</a></li>
+<li><a href="http://doc.trolltech.com/qq/qq11-unix-deployment.html">Deploying Applications on X11</a></li>
+</ul>
+<a name="static-qt-applications"></a>
+<h2>Static Qt Applications</h2>
+<p>To distribute static Qt applications, you need the following file for all platforms:</p>
+<ul>
+<li>your application's executable</li>
+</ul>
+<a name="dynamic-qt-applications"></a>
+<h2>Dynamic Qt Applications</h2>
+<p>To distribute dynamic Qt applications, you will need the following files for all platforms:</p>
+<ul>
+<li>application executable</li>
+<li>the Qt library</li>
+</ul>
+<p>The Qt library must either be in the same directory as the application executable or in a directory which is included in the system library path.</p>
+<p>The library is provided by the following platform specific files:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Platform</th><th>File</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Windows</td><td><tt>qt[version].dll</tt></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>Unix/Linux</td><td><tt>libqt[version].so</tt></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Mac</td><td><tt>libqt[version].dylib</tt></td></tr>
+</table>
+<p><i>version</i> includes the three version numbers.</p>
+<a name="distributing-plugins"></a>
+<h3>Distributing Plugins</h3>
+<p>You must include any plugin files required by the application.</p>
+<p>Plugins must be put into a subdirectory under a directory known to Qt as a plugin directory. The subdirectory must have the name of the plugin category (e.g. <tt>styles</tt>, <tt>sqldrivers</tt>, <tt>designer</tt>, etc.).</p>
+<p>Qt searches in the following directories for plugin categories:</p>
+<ul>
+<li>Application specific plugin paths</li>
+<li>Build-directory of Qt</li>
+<li>The application directory</li>
+</ul>
+<p>Application specific plugin paths can be added using <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>(). The build-directory of Qt is hardcoded in the Qt library and can be changed as a part of the installation process.</p>
+<a name="dynamic-dialogs"></a>
+<h2>Dynamic Dialogs</h2>
+<p>For dynamic dialogs if you use QWidgetFactory, you need the following files for all platforms:</p>
+<ul>
+<li>The same files as used for dynamic Qt applications</li>
+<li>The QUI Library</li>
+</ul>
+<p>The QUI library is provided by the following platform specific files:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Platform</th><th>File</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Windows</td><td><tt>qui.lib</tt></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>Unix/Linux</td><td><tt>libqui.so</tt></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Mac</td><td><tt>libqui.dylib</tt></td></tr>
+</table>
+<p>The QUI library must either be in the same directory as the application executable or in a directory which is included in the system library path.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

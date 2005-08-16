@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/examples/activeqt/hierarchy.qdoc -->
+<head>
+    <title>Qt 4.0: Hierarchy Example (ActiveQt)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Hierarchy Example (ActiveQt)</h1>
+<p>Files:</p>
+<ul>
+<li><a href="activeqt-hierarchy-objects-cpp.html">activeqt/hierarchy/objects.cpp</a></li>
+<li><a href="activeqt-hierarchy-objects-h.html">activeqt/hierarchy/objects.h</a></li>
+<li><a href="activeqt-hierarchy-main-cpp.html">activeqt/hierarchy/main.cpp</a></li>
+</ul>
+<p>The Hierarchy example is shows how to write an in-process ActiveX control. The control is a <a href="qwidget.html">QWidget</a> subclass with child widgets that are accessible as sub-types.</p>
+<pre>&nbsp;   class QParentWidget : public QWidget
+    {
+        Q_OBJECT
+        Q_CLASSINFO(&quot;ClassID&quot;, &quot;{d574a747-8016-46db-a07c-b2b4854ee75c}&quot;);
+        Q_CLASSINFO(&quot;InterfaceID&quot;, &quot;{4a30719d-d9c2-4659-9d16-67378209f822}&quot;);
+    public:
+        QParentWidget(QWidget *parent = 0);
+
+        QSize sizeHint() const;
+
+    public slots:
+        void createSubWidget( const QString &amp;name );
+
+        QSubWidget *subWidget( const QString &amp;name );
+
+    private:
+        QVBoxLayout *vbox;
+    };</pre>
+<p>The <tt>QParentWidget</tt> class provides slots to create a widget with a name, and to return a pointer to a named widget. The class declaration uses <tt>Q_CLASSINFO()</tt> to provide the COM identifiers for this class.</p>
+<pre>&nbsp;   QParentWidget::QParentWidget(QWidget *parent)
+    : QWidget(parent)
+    {
+        vbox = new QVBoxLayout(this);
+    }</pre>
+<p>The constructor of QParentWidget creates a vertical box layout. New child widgets are automatically added to the layout.</p>
+<pre>&nbsp;   void QParentWidget::createSubWidget(const QString &amp;name)
+    {
+        QSubWidget *sw = new QSubWidget(this, name);
+        vbox-&gt;addWidget(sw);
+        sw-&gt;setLabel(name);
+        sw-&gt;show();
+    }</pre>
+<p>The <tt>createSubWidget</tt> slot creates a new <tt>QSubWidget</tt> with the name provided in the parameter, and sets the label to that name. The widget is also shown explicitly.</p>
+<pre>&nbsp;   QSubWidget *QParentWidget::subWidget(const QString &amp;name)
+    {
+        return qFindChild&lt;QSubWidget*&gt;(this, name);
+    }</pre>
+<p>The <tt>subWidget</tt> slot uses the <tt>QObject::child()</tt> function and returns the first child of type <tt>QSubWidget</tt> that has the requested name.</p>
+<pre>&nbsp;   class QSubWidget : public QWidget
+    {
+        Q_OBJECT
+        Q_PROPERTY( QString label READ label WRITE setLabel )
+
+        Q_CLASSINFO(&quot;ClassID&quot;, &quot;{850652f4-8f71-4f69-b745-bce241ccdc30}&quot;);
+        Q_CLASSINFO(&quot;InterfaceID&quot;, &quot;{2d76cc2f-3488-417a-83d6-debff88b3c3f}&quot;);
+        Q_CLASSINFO(&quot;ToSuperClass&quot;, &quot;QSubWidget&quot;);
+
+    public:
+        QSubWidget(QWidget *parent = 0, const QString &amp;name = QString());
+
+        void setLabel( const QString &amp;text );
+        QString label() const;
+
+        QSize sizeHint() const;
+
+    protected:
+        void paintEvent( QPaintEvent *e );
+
+    private:
+        QString lbl;
+    };</pre>
+<p>The <tt>QSubWidget</tt> class has a single string-property <tt>label</tt>, and implements the paintEvent to draw the label. The class uses again <tt>Q_CLASSINFO</tt> to provide the COM identifiers, and also sets the <i>ToSuperClass</i> attribute to <i>QSubWidget</i>, to ensure that only no slots of any superclasses (i.e. <a href="qwidget.html">QWidget</a>) are exposed.</p>
+<pre>&nbsp;   QSubWidget::QSubWidget(QWidget *parent, const QString &amp;name)
+    : QWidget(parent)
+    {
+        setObjectName(name);
+    }
+
+    void QSubWidget::setLabel(const QString &amp;text)
+    {
+        lbl = text;
+        setObjectName(text);
+        update();
+    }
+
+    QString QSubWidget::label() const
+    {
+        return lbl;
+    }
+
+    QSize QSubWidget::sizeHint() const
+    {
+        QFontMetrics fm(font());
+        return QSize(fm.width(lbl), fm.height());
+    }
+
+    void QSubWidget::paintEvent(QPaintEvent *)
+    {
+        QPainter painter(this);
+        painter.setPen(palette().text().color());
+        painter.drawText(rect(), Qt::AlignCenter, lbl);
+    }</pre>
+<p>The implementation of the QSubWidget class is self-explanatory.</p>
+<pre>&nbsp;   #include &quot;objects.h&quot;
+    #include &lt;qaxfactory.h&gt;
+
+    QAXFACTORY_BEGIN(&quot;{9e626211-be62-4d18-9483-9419358fbb03}&quot;, &quot;{75c276de-1df5-451f-a004-e4fa1a587df1}&quot;)
+        QAXCLASS(QParentWidget)
+        QAXTYPE(QSubWidget)
+    QAXFACTORY_END()</pre>
+<p>The classes are then exported using a <a href="qaxfactory.html">QAxFactory</a>. <tt>QParentWidget</tt> is exported as a full class (which can be created ), while <tt>QSubWidget</tt> is only exported as a type, which can only be created indirectly through APIs of <tt>QParentWidget</tt>.</p>
+<p>To build the example you must first build the <a href="qaxserver.html#qaxserver">QAxServer</a> library. Then run qmake and your make tool in <tt>examples/activeqt/multiple</tt>.</p>
+<p>The <a href="qaxserver-demo-hierarchy.html">demonstration</a> requires your WebBrowser to support ActiveX controls, and scripting to be enabled.</p>
+<pre>&nbsp;   &lt;script language=&quot;javascript&quot;&gt;
+    function setColor( form )
+    {
+        Ax1.fillColor = form.colorEdit.value;
+    }
+
+    function setWidth( form )
+    {
+        Ax2.lineWidth = form.widthEdit.value;
+    }
+    &lt;/script&gt;
+
+    &lt;p /&gt;
+    This is one QWidget subclass:&lt;br /&gt;
+    &lt;object ID=&quot;Ax1&quot; CLASSID=&quot;CLSID:1D9928BD-4453-4bdd-903D-E525ED17FDE5&quot;
+    CODEBASE=&quot;http://www.trolltech.com/demos/multipleax.cab&quot;&gt;
+    [Object not available! Did you forget to build and register the server?]
+    &lt;/object&gt;&lt;br /&gt;
+    &lt;form&gt;
+    Fill Color: &lt;input type=&quot;edit&quot; ID=&quot;colorEdit&quot; value = &quot;red&quot; /&gt;
+    &lt;input type=&quot;button&quot; value = &quot;Set&quot; onClick=&quot;setColor(this.form)&quot; /&gt;
+    &lt;input type=&quot;button&quot; value = &quot;Hide&quot; onClick=&quot;Ax1.hide()&quot; /&gt;
+    &lt;input type=&quot;button&quot; value = &quot;Show&quot; onClick=&quot;Ax1.show()&quot; /&gt;
+    &lt;/form&gt;
+
+    &lt;p /&gt;
+    This is another QWidget subclass:&lt;br /&gt;
+    &lt;object ID=&quot;Ax2&quot; CLASSID=&quot;CLSID:58139D56-6BE9-4b17-937D-1B1EDEDD5B71&quot;
+    CODEBASE=&quot;http://www.trolltech.com/demos/multipleax.cab&quot;&gt;
+    [Object not available! Did you forget to build and register the server?]
+    &lt;/object&gt;&lt;br /&gt;
+    &lt;form&gt;
+    Line width: &lt;input type=&quot;edit&quot; ID=&quot;widthEdit&quot; value = &quot;1&quot; /&gt;
+    &lt;input type=&quot;button&quot; value = &quot;Set&quot; onClick=&quot;setWidth(this.form)&quot; /&gt;
+    &lt;/form&gt;</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

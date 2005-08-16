@@ -1,0 +1,75 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the sql module of the Qt Toolkit.
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU General Public License version 2 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.
+**
+** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
+** information about Qt Commercial License Agreements.
+** See http://www.trolltech.com/gpl/ for GPL licensing information.
+**
+** Contact info@trolltech.com if any conditions of this licensing are
+** not clear to you.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QSQLERROR_H
+#define QSQLERROR_H
+
+#include "QtCore/qstring.h"
+
+class Q_SQL_EXPORT QSqlError
+{
+public:
+    enum ErrorType {
+        NoError,
+        ConnectionError,
+        StatementError,
+        TransactionError,
+        UnknownError
+#ifdef QT3_SUPPORT
+        , None = NoError,
+        Connection = ConnectionError,
+        Statement = StatementError,
+        Transaction = TransactionError,
+        Unknown = UnknownError
+#endif
+    };
+    QSqlError( const QString& driverText = QString(),
+                const QString& databaseText = QString(),
+                ErrorType type = NoError,
+                int number = -1);
+    QSqlError(const QSqlError& other);
+    QSqlError& operator=(const QSqlError& other);
+    ~QSqlError();
+
+    QString driverText() const;
+    void setDriverText(const QString& driverText);
+    QString databaseText() const;
+    void setDatabaseText(const QString& databaseText);
+    ErrorType type() const;
+    void setType(ErrorType type);
+    int number() const;
+    void setNumber(int number);
+    QString text() const;
+
+private:
+    QString driverError;
+    QString databaseError;
+    ErrorType errorType;
+    int errorNumber;
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+Q_SQL_EXPORT QDebug operator<<(QDebug, const QSqlError &);
+#endif
+
+#endif // QSQLERROR_H

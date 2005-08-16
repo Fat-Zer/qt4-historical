@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/qtdesigner.qdoc -->
+<head>
+    <title>Qt 4.0: QDesignerMemberSheetExtension Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerMemberSheetExtension Class Reference</h1>
+<p>The QDesignerMemberSheetExtension class provides extensions to objects member sheets in <i>Qt Designer</i>. <a href="#details">More...</a></p>
+<pre>#include &lt;QDesignerMemberSheetExtension&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
+<ul>
+<li><a href="qdesignermembersheetextension-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/>virtual <b><a href="qdesignermembersheetextension.html#dtor.QDesignerMemberSheetExtension">~QDesignerMemberSheetExtension</a></b> ()</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignermembersheetextension.html#count">count</a></b> () const = 0</li>
+<li><div class="fn"/>virtual QString <b><a href="qdesignermembersheetextension.html#declaredInClass">declaredInClass</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual int <b><a href="qdesignermembersheetextension.html#indexOf">indexOf</a></b> ( const QString &amp; <i>name</i> ) const = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignermembersheetextension.html#inheritedFromWidget">inheritedFromWidget</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignermembersheetextension.html#isSignal">isSignal</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignermembersheetextension.html#isSlot">isSlot</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual bool <b><a href="qdesignermembersheetextension.html#isVisible">isVisible</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual QString <b><a href="qdesignermembersheetextension.html#memberGroup">memberGroup</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual QString <b><a href="qdesignermembersheetextension.html#memberName">memberName</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual QList&lt;QByteArray&gt; <b><a href="qdesignermembersheetextension.html#parameterNames">parameterNames</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual QList&lt;QByteArray&gt; <b><a href="qdesignermembersheetextension.html#parameterTypes">parameterTypes</a></b> ( int <i>index</i> ) const = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignermembersheetextension.html#setMemberGroup">setMemberGroup</a></b> ( int <i>index</i>, const QString &amp; <i>group</i> ) = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qdesignermembersheetextension.html#setVisible">setVisible</a></b> ( int <i>index</i>, bool <i>b</i> ) = 0</li>
+<li><div class="fn"/>virtual QString <b><a href="qdesignermembersheetextension.html#signature">signature</a></b> ( int <i>index</i> ) const = 0</li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QDesignerMemberSheetExtension class provides extensions to objects member sheets in <i>Qt Designer</i>.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="dtor.QDesignerMemberSheetExtension"></a>QDesignerMemberSheetExtension::~QDesignerMemberSheetExtension ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="count"></a>int QDesignerMemberSheetExtension::count () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="declaredInClass"></a><a href="qstring.html">QString</a> QDesignerMemberSheetExtension::declaredInClass ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="indexOf"></a>int QDesignerMemberSheetExtension::indexOf ( const <a href="qstring.html">QString</a> &amp; <i>name</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="inheritedFromWidget"></a>bool QDesignerMemberSheetExtension::inheritedFromWidget ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="isSignal"></a>bool QDesignerMemberSheetExtension::isSignal ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="isSlot"></a>bool QDesignerMemberSheetExtension::isSlot ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="isVisible"></a>bool QDesignerMemberSheetExtension::isVisible ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="memberGroup"></a><a href="qstring.html">QString</a> QDesignerMemberSheetExtension::memberGroup ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="memberName"></a><a href="qstring.html">QString</a> QDesignerMemberSheetExtension::memberName ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="parameterNames"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QDesignerMemberSheetExtension::parameterNames ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="parameterTypes"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QDesignerMemberSheetExtension::parameterTypes ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="setMemberGroup"></a>void QDesignerMemberSheetExtension::setMemberGroup ( int <i>index</i>, const <a href="qstring.html">QString</a> &amp; <i>group</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="setVisible"></a>void QDesignerMemberSheetExtension::setVisible ( int <i>index</i>, bool <i>b</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<h3 class="fn"><a name="signature"></a><a href="qstring.html">QString</a> QDesignerMemberSheetExtension::signature ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>

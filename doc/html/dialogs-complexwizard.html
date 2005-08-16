@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.0.0-espenr-1119623335202/qt-win-opensource-desktop-4.0.0/doc/src/examples/complexwizard.qdoc -->
+<head>
+    <title>Qt 4.0: Complex Wizard Example</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Complex Wizard Example</h1>
+<p>Files:</p>
+<ul>
+<li><a href="dialogs-complexwizard-complexwizard-cpp.html">dialogs/complexwizard/complexwizard.cpp</a></li>
+<li><a href="dialogs-complexwizard-complexwizard-h.html">dialogs/complexwizard/complexwizard.h</a></li>
+<li><a href="dialogs-complexwizard-licensewizard-cpp.html">dialogs/complexwizard/licensewizard.cpp</a></li>
+<li><a href="dialogs-complexwizard-licensewizard-h.html">dialogs/complexwizard/licensewizard.h</a></li>
+<li><a href="dialogs-complexwizard-main-cpp.html">dialogs/complexwizard/main.cpp</a></li>
+</ul>
+<p>The Complex Wizard example shows how to implement complex wizards in Qt.</p>
+<p>A wizard is a special type of input dialog that consists of a sequence of dialog pages. A wizard's purpose is to walk the user through a process step by step. Wizards are useful for complex or infrequently occurring tasks that users may find difficult to learn or do.</p>
+<center><img src="images/complexwizard.png" alt="Screenshot of the Complex Wizard example" /></center><p>Most wizards have a linear structure, with step 1 followed by step 2 and so on until the last step. The <a href="dialogs-simplewizard.html">Simple Wizard</a> example shows how to create such wizards.</p>
+<p>Some wizards are more complex in that they allow different traversal paths based on the information provided by the user. The Complex Wizard example illustrates this. It provides five wizard pages; depending on which options are selected, the user can reach different pages.</p>
+<center><img src="images/complexwizard-flow.png" alt="The Complex Wizard Pages" /></center><p>The example consists of the following classes:</p>
+<ul>
+<li><tt>ComplexWizard</tt> is a base class that provides the basic framework for complex wizards. You can use it in your own projects for implementing custom wizards.</li>
+<li><tt>WizardPage</tt> is the base class for each wizard page. Like <tt>ComplexWizard</tt>, you can use it in your own projects.</li>
+<li><tt>LicenseWizard</tt> inherits <tt>ComplexWizard</tt> and provides a five-page wizard that leads the user through the process of choosing a license agreement.</li>
+<li><tt>LicenseWizardPage</tt> is a <tt>WizardPage</tt> subclass and is the base class for each of the license wizard pages.</li>
+<li><tt>TitlePage</tt>, <tt>EvaluatePage</tt>, <tt>RegisterPage</tt>, <tt>DetailsPage</tt>, and <tt>FinishPage</tt> are <tt>LicenseWizardPage</tt> subclasses that implement the wizard pages.</li>
+</ul>
+<a name="wizardpage-class"></a>
+<h2>WizardPage Class</h2>
+<p>The <tt>WizardPage</tt> class is the base class for the wizard pages. It inherits from <a href="qwidget.html">QWidget</a> and provides a few functions that are called by <tt>ComplexWizard</tt>. Here's the class definition:</p>
+<pre>&nbsp;   class WizardPage : public QWidget
+    {
+        Q_OBJECT
+
+    public:
+        WizardPage(QWidget *parent = 0);
+
+        virtual void resetPage();
+        virtual WizardPage *nextPage();
+        virtual bool isLastPage();
+        virtual bool isComplete();
+
+    signals:
+        void completeStateChanged();
+    };</pre>
+<p>Subclasses can reimplement the virtual functions to refine the behavior of the class:</p>
+<ul>
+<li><tt>resetPage()</tt> resets all the page's fields to their default values.</li>
+<li><tt>nextPage()</tt> returns a pointer to the next wizard page.</li>
+<li><tt>isLastPage()</tt> returns <tt>true</tt> if this page is the last page; otherwise it returns <tt>false</tt>.</li>
+<li><tt>isComplete()</tt> returns <tt>true</tt> if the user has filled the page with enough information and is allowed to go to the next page (or to click <b>Finish</b> if this is the last page); otherwise it returns <tt>false</tt>.</li>
+</ul>
+<p>Subclasses are also expected to emit the <tt>completeStateChanged()</tt> signal whenever the <tt>isComplete()</tt> state changes.</p>
+<p><tt>WizardPage</tt> provides default implementations of the virtual functions:</p>
+<pre>&nbsp;   WizardPage::WizardPage(QWidget *parent)
+        : QWidget(parent)
+    {
+        hide();
+    }
+
+    void WizardPage::resetPage()
+    {
+    }
+
+    WizardPage *WizardPage::nextPage()
+    {
+        return 0;
+    }
+
+    bool WizardPage::isLastPage()
+    {
+        return false;
+    }
+
+    bool WizardPage::isComplete()
+    {
+        return true;
+    }</pre>
+<a name="complexwizard-class-definition"></a>
+<h2>ComplexWizard Class Definition</h2>
+<p><tt>ComplexWizard</tt> offers a <b>Cancel</b>, a <b>Back</b>, a <b>Next</b>, and a <b>Finish</b> button. It takes care of enabling and disabling the buttons as the user advances through the pages. For example, if the user is viewing the first page, <b>Back</b> and <b>Finish</b> are disabled. It communicates with the pages through the four virtual functions declared in <tt>WizardPage</tt>.</p>
+<p>Here's the class definition:</p>
+<pre>&nbsp;   class ComplexWizard : public QDialog
+    {
+        Q_OBJECT
+
+    public:
+        ComplexWizard(QWidget *parent = 0);
+
+        QList&lt;WizardPage *&gt; historyPages() const { return history; }
+
+    protected:
+        void setFirstPage(WizardPage *page);
+
+    private slots:
+        void backButtonClicked();
+        void nextButtonClicked();
+        void completeStateChanged();
+
+    private:
+        void switchPage(WizardPage *oldPage);
+
+        QList&lt;WizardPage *&gt; history;
+        QPushButton *cancelButton;
+        QPushButton *backButton;
+        QPushButton *nextButton;
+        QPushButton *finishButton;
+        QHBoxLayout *buttonLayout;
+        QVBoxLayout *mainLayout;
+    };</pre>
+<p>The <tt>ComplexWizard</tt> class inherits <a href="qdialog.html">QDialog</a>. Subclasses must call <tt>setFirstPage()</tt> in their constructor to get things started.</p>
+<p>The <tt>historyPages()</tt> function returns the traversal path taken so far by the user. This may be used by subclasses to find out which pages have been visited and which pages have been skipped. The current page is always last in the history. When the user presses <b>Back</b>, the previous page in the history list is retrieved so that the user can adjust their input when required.</p>
+<a name="complexwizard-class-implementation"></a>
+<h2>ComplexWizard Class Implementation</h2>
+<p>First the constructor:</p>
+<pre>&nbsp;   ComplexWizard::ComplexWizard(QWidget *parent)
+        : QDialog(parent)
+    {
+        cancelButton = new QPushButton(tr(&quot;Cancel&quot;));
+        backButton = new QPushButton(tr(&quot;&lt; &amp;Back&quot;));
+        nextButton = new QPushButton(tr(&quot;Next &gt;&quot;));
+        finishButton = new QPushButton(tr(&quot;&amp;Finish&quot;));
+
+        connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(backButton, SIGNAL(clicked()), this, SLOT(backButtonClicked()));
+        connect(nextButton, SIGNAL(clicked()), this, SLOT(nextButtonClicked()));
+        connect(finishButton, SIGNAL(clicked()), this, SLOT(accept()));
+
+        buttonLayout = new QHBoxLayout;
+        buttonLayout-&gt;addStretch(1);
+        buttonLayout-&gt;addWidget(cancelButton);
+        buttonLayout-&gt;addWidget(backButton);
+        buttonLayout-&gt;addWidget(nextButton);
+        buttonLayout-&gt;addWidget(finishButton);
+
+        mainLayout = new QVBoxLayout;
+        mainLayout-&gt;addLayout(buttonLayout);
+        setLayout(mainLayout);
+    }</pre>
+<p>We start by creating the <b>Cancel</b>, <b>Back</b>, <b>Next</b>, and <b>Finish</b> buttons and connecting their <a href="qabstractbutton.html#clicked">clicked()</a> signals to <tt>SimpleWizard</tt> slots. The <a href="qdialog.html#accept">accept()</a> and <a href="qdialog.html#reject">reject()</a> slots are inherited from <a href="qdialog.html">QDialog</a>; they close the dialog and set the dialog's <a href="qdialog.html#result">return code</a> to <a href="qdialog.html#DialogCode-enum">QDialog::Accepted</a> or <a href="qdialog.html#DialogCode-enum">QDialog::Rejected</a>. The <tt>backButtonClicked()</tt> and <tt>nextButtonClicked()</tt> are defined in <tt>ComplexWizard</tt>.</p>
+<pre>&nbsp;   void ComplexWizard::setFirstPage(WizardPage *page)
+    {
+        page-&gt;resetPage();
+        history.append(page);
+        switchPage(0);
+    }</pre>
+<p>The <tt>setFirstPage()</tt> function is called by subclasses with the page that should be shown first. We call <tt>resetPage()</tt> to make sure that its fields are correctly initialized, we append it to the history, and we call <tt>switchPage()</tt> to make the current page visible (the last page in the history). The <tt>switchPage()</tt> function takes a pointer to the previously current page as argument; here, we pass a null pointer.</p>
+<pre>&nbsp;   void ComplexWizard::backButtonClicked()
+    {
+        WizardPage *oldPage = history.takeLast();
+        oldPage-&gt;resetPage();
+        switchPage(oldPage);
+    }</pre>
+<p>When the user clicks <b>Back</b>, we remove the current page from the history and clear all its fields. We call <tt>switchPage()</tt> to make the last page in the history visible. The argument to <tt>switchPage()</tt> is a pointer to the previously current page, not the new current page.</p>
+<pre>&nbsp;   void ComplexWizard::nextButtonClicked()
+    {
+        WizardPage *oldPage = history.last();
+        WizardPage *newPage = oldPage-&gt;nextPage();
+        newPage-&gt;resetPage();
+        history.append(newPage);
+        switchPage(oldPage);
+    }</pre>
+<p>When the user clicks <b>Next</b>, we call <tt>nextPage()</tt> on the current page to obtain the next page. We initialize the next page's fields, we append it to the history, and we call <tt>switchPage()</tt> to make it visible.</p>
+<pre>&nbsp;   void ComplexWizard::completeStateChanged()
+    {
+        WizardPage *currentPage = history.last();
+        if (currentPage-&gt;isLastPage())
+            finishButton-&gt;setEnabled(currentPage-&gt;isComplete());
+        else
+            nextButton-&gt;setEnabled(currentPage-&gt;isComplete());
+    }</pre>
+<p>The <tt>completeStateChanged()</tt> slot is called whenever the current page emits the <tt>completeStateChanged()</tt> signal. Depending on the value of <tt>isComplete()</tt> and <tt>isFinalPage()</tt>, we enable or disable the <b>Next</b> or the <b>Finish</b> button.</p>
+<pre>&nbsp;   void ComplexWizard::switchPage(WizardPage *oldPage)
+    {
+        if (oldPage) {
+            oldPage-&gt;hide();
+            mainLayout-&gt;removeWidget(oldPage);
+            disconnect(oldPage, SIGNAL(completeStateChanged()),
+                       this, SLOT(completeStateChanged()));
+        }</pre>
+<p>The <tt>switchPage()</tt> function contains all the ugly logic for making a page the current page. We start by hiding the previously current page, remove it from the layout, and disconnect its <tt>completeStateChanged()</tt> signal.</p>
+<p>Next, we add the new current page (the last page in the history) to the layout and we connect its <tt>completeStateChanged()</tt> to <tt>ComplexWizard</tt>'s slot of the same name.</p>
+<p>Then we must update the enabled state of the <b>Back</b>, <b>Next</b>, and <b>Finish</b> buttons. At the end, we call <tt>completeStateChanged()</tt> to reuse the logic we wrote earlier to enable or disable the <b>Next</b> or <b>Finish</b> buttons according to whether the current page is complete.</p>
+<p>This completes the <tt>ComplexWizard</tt> class. The good news is that we can now use it to write any number of wizards, without having to worry about updating the state of the wizard buttons. The rest of the code implements a license wizard using <tt>ComplexWizard</tt> and <tt>WizardPage</tt>.</p>
+<a name="licensewizardpage-class"></a>
+<h2>LicenseWizardPage Class</h2>
+<p>The <tt>LicenseWizardPage</tt> is a thin wrapper for <tt>WizardPage</tt> that provides a back pointer to the <tt>LicenseWizard</tt>:</p>
+<pre>&nbsp;   class LicenseWizardPage : public WizardPage
+    {
+    public:
+        LicenseWizardPage(LicenseWizard *wizard)
+            : WizardPage(wizard), wizard(wizard) {}
+
+    protected:
+        LicenseWizard *wizard;
+    };</pre>
+<a name="licensewizard-class"></a>
+<h2>LicenseWizard Class</h2>
+<p>The <tt>LicenseWizard</tt> class derives from <tt>ComplexWizard</tt> and provides a five-page wizard that guides the user through the process of registering their copy of a fictitious software product. Here's the class definition:</p>
+<pre>&nbsp;   class LicenseWizard : public ComplexWizard
+    {
+    public:
+        LicenseWizard(QWidget *parent = 0);
+
+    private:
+        TitlePage *titlePage;
+        EvaluatePage *evaluatePage;
+        RegisterPage *registerPage;
+        DetailsPage *detailsPage;
+        FinishPage *finishPage;
+
+        friend class DetailsPage;
+        friend class EvaluatePage;
+        friend class FinishPage;
+        friend class RegisterPage;
+        friend class TitlePage;
+    };</pre>
+<p>The class's public API is limited to a constructor. More interesting is the private API: It consists of a pointer to each page, and makes each page a friend of the class. This will make it possible for pages to refer to each other, as we will see shortly.</p>
+<pre>&nbsp;   LicenseWizard::LicenseWizard(QWidget *parent)
+        : ComplexWizard(parent)
+    {
+        titlePage = new TitlePage(this);
+        evaluatePage = new EvaluatePage(this);
+        registerPage = new RegisterPage(this);
+        detailsPage = new DetailsPage(this);
+        finishPage = new FinishPage(this);
+
+        setFirstPage(titlePage);
+
+        setWindowTitle(tr(&quot;Complex Wizard&quot;));
+        resize(480, 200);
+    }</pre>
+<p>In the constructor, we create the five pages and set <tt>titlePage</tt> to be the first page.</p>
+<a name="the-title-evaluate-register-details-and-finishpage-classes"></a>
+<h2>The Title-, Evaluate-, Register-, Details-, and FinishPage Classes</h2>
+<p>The pages are defined in <tt>licensewizard.h</tt> and implemented in <tt>licensewizard.cpp</tt>, together with <tt>LicenseWizard</tt>.</p>
+<p>Here's the definition and implementation of <tt>TitlePage</tt>:</p>
+<pre>&nbsp;   class TitlePage : public LicenseWizardPage
+    {
+    public:
+        TitlePage(LicenseWizard *wizard);
+
+        void resetPage();
+        WizardPage *nextPage();
+
+    private:
+        QLabel *topLabel;
+        QRadioButton *registerRadioButton;
+        QRadioButton *evaluateRadioButton;
+    };</pre>
+<p>We reimplement the <tt>resetPage()</tt> and <tt>nextPage()</tt> functions from <tt>WizardPage</tt>. For the other two virtual functions (<tt>isLastPage()</tt> and <tt>isComplete()</tt>), the default implementations suffice (&quot;not the last page, always complete&quot;).</p>
+<pre>&nbsp;   TitlePage::TitlePage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;font color=\&quot;blue\&quot; size=\&quot;5\&quot;&gt;&lt;b&gt;&lt;i&gt;&quot;
+                                 &quot;Super Product One&lt;/i&gt;&lt;/b&gt;&lt;/font&gt;&lt;/center&gt;&quot;));
+
+        registerRadioButton = new QRadioButton(tr(&quot;&amp;Register your copy&quot;));
+        evaluateRadioButton = new QRadioButton(tr(&quot;&amp;Evaluate our product&quot;));
+        setFocusProxy(registerRadioButton);
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout-&gt;addWidget(topLabel);
+        layout-&gt;addSpacing(10);
+        layout-&gt;addWidget(registerRadioButton);
+        layout-&gt;addWidget(evaluateRadioButton);
+        layout-&gt;addStretch(1);
+        setLayout(layout);
+    }</pre>
+<p>The <tt>TitlePage</tt> constructor takes a <tt>LicenseWizard</tt> and passes it on to <tt>LicenseWizardPage</tt>, which stores it in its <tt>wizard</tt> member.</p>
+<p>The constructor sets up the page. The <a href="qwidget.html#setFocusProxy">QWidget::setFocusProxy</a>() call ensures that whenever <tt>ComplexWizard</tt> calls <tt>setFocus()</tt> on the page, the <b>Register your copy</b> button gets the focus.</p>
+<pre>&nbsp;   void TitlePage::resetPage()</pre>
+<p>Resetting the <tt>TitlePage</tt> consists in checking the <b>Evaluate our product</b> option.</p>
+<pre>&nbsp;   {
+        registerRadioButton-&gt;setChecked(true);
+    }
+
+    WizardPage *TitlePage::nextPage()
+    {
+        if (evaluateRadioButton-&gt;isChecked())
+            return wizard-&gt;evaluatePage;
+        else
+            return wizard-&gt;registerPage;
+    }</pre>
+<p>The <tt>nextPage()</tt> function returns the <tt>EvaluatePage</tt> if the <b>Evaluate our product</b> option is checked; otherwise it returns the <tt>RegisterPage</tt>. We can access the wizard's pointers because we made all the wizard pages friends of the <tt>LicenseWizard</tt> class.</p>
+<p>The <tt>EvaluatePage</tt> is slightly more involved:</p>
+<pre>&nbsp;   class EvaluatePage : public LicenseWizardPage
+    {
+    public:
+        EvaluatePage(LicenseWizard *wizard);
+
+        void resetPage();
+        WizardPage *nextPage();
+        bool isComplete();
+
+    private:
+        QLabel *topLabel;
+        QLabel *nameLabel;
+        QLabel *emailLabel;
+        QLabel *bottomLabel;
+        QLineEdit *nameLineEdit;
+        QLineEdit *emailLineEdit;
+    };</pre>
+<p>This time, we reimplement <tt>isComplete()</tt> in addition to <tt>resetPage()</tt> and <tt>nextPage()</tt>. Here's the constructor:</p>
+<pre>&nbsp;   EvaluatePage::EvaluatePage(LicenseWizard *wizard)
+        : LicenseWizardPage(wizard)
+    {
+        topLabel = new QLabel(tr(&quot;&lt;center&gt;&lt;b&gt;Evaluate Super Product One&quot;
+                                 &quot;&lt;/b&gt;&lt;/center&gt;&quot;));
+
+        nameLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
+        nameLineEdit = new QLineEdit;
+        nameLabel-&gt;setBuddy(nameLineEdit);
+        setFocusProxy(nameLineEdit);
+
+        emailLabel = new QLabel(tr(&quot;&amp;Email address:&quot;));
+        emailLineEdit = new QLineEdit;
+        emailLabel-&gt;setBuddy(emailLineEdit);
+
+        bottomLabel = new QLabel(tr(&quot;Please fill in both fields.\nThis will &quot;
+                                    &quot;entitle you to a 30-day evaluation.&quot;));
+
+        connect(nameLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+        connect(emailLineEdit, SIGNAL(textChanged(QString)),
+                this, SIGNAL(completeStateChanged()));
+
+        QGridLayout *layout = new QGridLayout;
+        layout-&gt;addWidget(topLabel, 0, 0, 1, 2);
+        layout-&gt;setRowMinimumHeight(1, 10);
+        layout-&gt;addWidget(nameLabel, 2, 0);
+        layout-&gt;addWidget(nameLineEdit, 2, 1);
+        layout-&gt;addWidget(emailLabel, 3, 0);
+        layout-&gt;addWidget(emailLineEdit, 3, 1);
+        layout-&gt;setRowMinimumHeight(4, 10);
+        layout-&gt;addWidget(bottomLabel, 5, 0, 1, 2);
+        layout-&gt;setRowStretch(6, 1);
+        setLayout(layout);
+    }</pre>
+<p>The interesting part is the two <a href="qobject.html#connect">QObject::connect</a>() calls near the middle. Whenever the user types in some text in the <b>Name</b> or <b>Email address</b> fields, we emit the <tt>completeStateChanged()</tt> signal, even though the complete state might not actually have changed. It doesn't hurt anyway.</p>
+<pre>&nbsp;   void EvaluatePage::resetPage()
+    {
+        nameLineEdit-&gt;clear();
+        emailLineEdit-&gt;clear();
+    }</pre>
+<p>Resetting the page amounts to clearing the two text fields.</p>
+<pre>&nbsp;   WizardPage *EvaluatePage::nextPage()
+    {
+        return wizard-&gt;finishPage;
+    }</pre>
+<p>The next page is always the <tt>FinishPage</tt>.</p>
+<pre>&nbsp;   bool EvaluatePage::isComplete()
+    {
+        return !nameLineEdit-&gt;text().isEmpty() &amp;&amp; !emailLineEdit-&gt;text().isEmpty();
+    }</pre>
+<p>The page is considered complete when both the <b>Name</b> and the <b>Email address</b> fields contain some text.</p>
+<p>The <tt>RegisterPage</tt> and <tt>DetailsPage</tt> are very similar. Let's go directly to the <tt>FinishPage</tt>:</p>
+<pre>&nbsp;   class FinishPage : public LicenseWizardPage
+    {
+    public:
+        FinishPage(LicenseWizard *wizard);
+
+        void resetPage();
+        bool isLastPage() { return true; }
+        bool isComplete();
+
+    private:
+        QLabel *topLabel;
+        QLabel *bottomLabel;
+        QCheckBox *agreeCheckBox;
+    };</pre>
+<p>This time, we reimplement <tt>isLastPage()</tt> to return <tt>true</tt>.</p>
+<p>The <tt>resetPage()</tt> implementation is also interesting:</p>
+<pre>&nbsp;   void FinishPage::resetPage()
+    {
+        QString licenseText;
+
+        if (wizard-&gt;historyPages().contains(wizard-&gt;evaluatePage)) {
+            licenseText = tr(&quot;Evaluation License Agreement: &quot;
+                             &quot;You can use this software for 30 days and make one &quot;
+                             &quot;back up, but you are not allowed to distribute it.&quot;);
+        } else if (wizard-&gt;historyPages().contains(wizard-&gt;detailsPage)) {
+            licenseText = tr(&quot;First-Time License Agreement: &quot;
+                             &quot;You can use this software subject to the license &quot;
+                             &quot;you will receive by email.&quot;);
+        } else {
+            licenseText = tr(&quot;Upgrade License Agreement: &quot;
+                             &quot;This software is licensed under the terms of your &quot;
+                             &quot;current license.&quot;);
+        }
+        bottomLabel-&gt;setText(licenseText);
+        agreeCheckBox-&gt;setChecked(false);
+    }</pre>
+<p>We use <tt>historyPages()</tt> to determine the type of license agreement the user has chosen. If the user filled the <tt>EvaluatePage</tt>, the license text refers to an Evaluation License Agreement. If the user filled the <tt>DetailsPage</tt>, the license text is a First-Time License Agreement. If the user provided an upgrade key and skipped the <tt>DetailsPage</tt>, the license text is an Update License Agreement.</p>
+<pre>&nbsp;   bool FinishPage::isComplete()
+    {
+        return agreeCheckBox-&gt;isChecked();
+    }</pre>
+<p>The <tt>FinishPage</tt> is complete when the user checks the <b>I agree to the terms and conditions of the license</b> option.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+</tr></table></div></address></body>
+</html>
