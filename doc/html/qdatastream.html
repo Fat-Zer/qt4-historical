@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/corelib/io/qdatastream.cpp -->
+<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-win-opensource-src-4.3.3/src/corelib/io/qdatastream.cpp -->
 <head>
   <title>Qt 4.3: QDataStream Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QDataStream" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -155,9 +154,6 @@
 <p>See also <a href="qtextstream.html">QTextStream</a> and <a href="qvariant.html">QVariant</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QDataStream/ByteOrder" />
-<a name="//apple_ref/cpp/econst/QDataStream/BigEndian" />
-<a name="//apple_ref/cpp/econst/QDataStream/LittleEndian" />
 <h3 class="fn"><a name="ByteOrder-enum"></a>enum QDataStream::ByteOrder</h3>
 <p>The byte order used for reading/writing the data.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -165,10 +161,6 @@
 <tr><td valign="top"><tt>QDataStream::BigEndian</tt></td><td align="center" valign="top"><tt>QSysInfo::BigEndian</tt></td><td valign="top">Most significant byte first (the default)</td></tr>
 <tr><td valign="top"><tt>QDataStream::LittleEndian</tt></td><td align="center" valign="top"><tt>QSysInfo::LittleEndian</tt></td><td valign="top">Less significant byte first</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/QDataStream/Status" />
-<a name="//apple_ref/cpp/econst/QDataStream/Ok" />
-<a name="//apple_ref/cpp/econst/QDataStream/ReadPastEnd" />
-<a name="//apple_ref/cpp/econst/QDataStream/ReadCorruptData" />
 <h3 class="fn"><a name="Status-enum"></a>enum QDataStream::Status</h3>
 <p>This enum describes the current status of the data stream.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -177,17 +169,6 @@
 <tr><td valign="top"><tt>QDataStream::ReadPastEnd</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The data stream has read past the end of the data in the underlying device.</td></tr>
 <tr><td valign="top"><tt>QDataStream::ReadCorruptData</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The data stream has read corrupt data.</td></tr>
 </table></p>
-<a name="//apple_ref/cpp/tag/QDataStream/Version" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_1_0" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_2_0" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_2_1" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_3_0" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_3_1" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_3_3" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_4_0" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_4_1" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_4_2" />
-<a name="//apple_ref/cpp/econst/QDataStream/Qt_4_3" />
 <h3 class="fn"><a name="Version-enum"></a>enum QDataStream::Version</h3>
 <p>This enum provides symbolic synonyms for the data serialization format version numbers.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -206,7 +187,6 @@
 <p>See also <a href="qdatastream.html#setVersion">setVersion</a>() and <a href="qdatastream.html#version">version</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QDataStream/QDataStream" />
 <h3 class="fn"><a name="QDataStream"></a>QDataStream::QDataStream ()</h3>
 <p>Constructs a data stream that has no I/O device.</p>
 <p>See also <a href="qdatastream.html#setDevice">setDevice</a>().</p>
@@ -221,54 +201,43 @@
 <h3 class="fn"><a name="QDataStream-5"></a>QDataStream::QDataStream ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>a</i> )</h3>
 <p>Constructs a read-only data stream that operates on byte array <i>a</i>. Use <a href="qdatastream.html">QDataStream</a>(<a href="qbytearray.html">QByteArray</a>*, int) if you want to write to a byte array.</p>
 <p>Since <a href="qbytearray.html">QByteArray</a> is not a <a href="qiodevice.html">QIODevice</a> subclass, internally a <a href="qbuffer.html">QBuffer</a> is created to wrap the byte array.</p>
-<a name="//apple_ref/cpp/instm/QDataStream/~QDataStream" />
 <h3 class="fn"><a name="dtor.QDataStream"></a>QDataStream::~QDataStream ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the data stream.</p>
 <p>The destructor will not affect the current I/O device, unless it is an internal I/O device (e.g&#x2e; a <a href="qbuffer.html">QBuffer</a>) processing a <a href="qbytearray.html">QByteArray</a> passed in the <i>constructor</i>, in which case the internal I/O device is destroyed.</p>
-<a name="//apple_ref/cpp/instm/QDataStream/atEnd" />
 <h3 class="fn"><a name="atEnd"></a>bool QDataStream::atEnd () const</h3>
 <p>Returns true if the I/O device has reached the end position (end of the stream or file) or if there is no I/O device set; otherwise returns false.</p>
 <p>See also <a href="qiodevice.html#atEnd">QIODevice::atEnd</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/byteOrder" />
 <h3 class="fn"><a name="byteOrder"></a><a href="qdatastream.html#ByteOrder-enum">ByteOrder</a> QDataStream::byteOrder () const</h3>
 <p>Returns the current byte order setting -- either <a href="qdatastream.html#ByteOrder-enum">BigEndian</a> or <a href="qdatastream.html#ByteOrder-enum">LittleEndian</a>.</p>
 <p>See also <a href="qdatastream.html#setByteOrder">setByteOrder</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/device" />
 <h3 class="fn"><a name="device"></a><a href="qiodevice.html">QIODevice</a> * QDataStream::device () const</h3>
 <p>Returns the I/O device currently set.</p>
 <p>See also <a href="qdatastream.html#setDevice">setDevice</a>() and <a href="qdatastream.html#unsetDevice">unsetDevice</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/readBytes" />
 <h3 class="fn"><a name="readBytes"></a>QDataStream &amp; QDataStream::readBytes ( char *&amp; <i>s</i>, <a href="qtglobal.html#uint-typedef">uint</a> &amp; <i>l</i> )</h3>
 <p>Reads the buffer <i>s</i> from the stream and returns a reference to the stream.</p>
 <p>The buffer <i>s</i> is allocated using <tt>new</tt>. Destroy it with the <tt>delete[]</tt> operator.</p>
 <p>The <i>l</i> parameter is set to the length of the buffer. If the string read is empty, <i>l</i> is set to 0 and <i>s</i> is set to a null pointer.</p>
 <p>The serialization format is a quint32 length specifier first, then <i>l</i> bytes of data.</p>
 <p>See also <a href="qdatastream.html#readRawData">readRawData</a>() and <a href="qdatastream.html#writeBytes">writeBytes</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/readRawData" />
 <h3 class="fn"><a name="readRawData"></a>int QDataStream::readRawData ( char * <i>s</i>, int <i>len</i> )</h3>
 <p>Reads at most <i>len</i> bytes from the stream into <i>s</i> and returns the number of bytes read. If an error occurs, this function returns -1.</p>
 <p>The buffer <i>s</i> must be preallocated. The data is <i>not</i> encoded.</p>
 <p>See also <a href="qdatastream.html#readBytes">readBytes</a>(), <a href="qiodevice.html#read">QIODevice::read</a>(), and <a href="qdatastream.html#writeRawData">writeRawData</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/resetStatus" />
 <h3 class="fn"><a name="resetStatus"></a>void QDataStream::resetStatus ()</h3>
 <p>Resets the status of the data stream.</p>
 <p>See also <a href="qdatastream.html#Status-enum">Status</a>, <a href="qdatastream.html#status">status</a>(), and <a href="qdatastream.html#setStatus">setStatus</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/setByteOrder" />
 <h3 class="fn"><a name="setByteOrder"></a>void QDataStream::setByteOrder ( <a href="qdatastream.html#ByteOrder-enum">ByteOrder</a> <i>bo</i> )</h3>
 <p>Sets the serialization byte order to <i>bo</i>.</p>
 <p>The <i>bo</i> parameter can be <a href="qdatastream.html#ByteOrder-enum">QDataStream::BigEndian</a> or <a href="qdatastream.html#ByteOrder-enum">QDataStream::LittleEndian</a>.</p>
 <p>The default setting is big endian. We recommend leaving this setting unless you have special requirements.</p>
 <p>See also <a href="qdatastream.html#byteOrder">byteOrder</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/setDevice" />
 <h3 class="fn"><a name="setDevice"></a>void QDataStream::setDevice ( <a href="qiodevice.html">QIODevice</a> * <i>d</i> )</h3>
 <p>void QDataStream::setDevice(<a href="qiodevice.html">QIODevice</a> *d)</p>
 <p>Sets the I/O device to <i>d</i>.</p>
 <p>See also <a href="qdatastream.html#device">device</a>() and <a href="qdatastream.html#unsetDevice">unsetDevice</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/setStatus" />
 <h3 class="fn"><a name="setStatus"></a>void QDataStream::setStatus ( <a href="qdatastream.html#Status-enum">Status</a> <i>status</i> )</h3>
 <p>Sets the status of the data stream to the <i>status</i> given.</p>
 <p>See also <a href="qdatastream.html#Status-enum">Status</a>, <a href="qdatastream.html#status">status</a>(), and <a href="qdatastream.html#resetStatus">resetStatus</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/setVersion" />
 <h3 class="fn"><a name="setVersion"></a>void QDataStream::setVersion ( int <i>v</i> )</h3>
 <p>Sets the version number of the data serialization format to <i>v</i>.</p>
 <p>You don't <i>have</i> to set a version if you are using the current version of Qt, but for your own custom binary formats we recommend that you do; see <a href="qdatastream.html#versioning">Versioning</a> in the Detailed Description.</p>
@@ -288,34 +257,27 @@
 <pre> QDataStream out(file);
  out.setVersion(QDataStream::Qt_4_0);</pre>
 <p>See also <a href="qdatastream.html#version">version</a>() and <a href="qdatastream.html#Version-enum">Version</a>.</p>
-<a name="//apple_ref/cpp/instm/QDataStream/skipRawData" />
 <h3 class="fn"><a name="skipRawData"></a>int QDataStream::skipRawData ( int <i>len</i> )</h3>
 <p>Skips <i>len</i> bytes from the device. Returns the number of bytes actually skipped, or -1 on error.</p>
 <p>This is equivalent to calling <a href="qdatastream.html#readRawData">readRawData</a>() on a buffer of length <i>len</i> and ignoring the buffer.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qiodevice.html#seek">QIODevice::seek</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/status" />
 <h3 class="fn"><a name="status"></a><a href="qdatastream.html#Status-enum">Status</a> QDataStream::status () const</h3>
 <p>Returns the status of the data stream.</p>
 <p>See also <a href="qdatastream.html#Status-enum">Status</a>, <a href="qdatastream.html#setStatus">setStatus</a>(), and <a href="qdatastream.html#resetStatus">resetStatus</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/unsetDevice" />
 <h3 class="fn"><a name="unsetDevice"></a>void QDataStream::unsetDevice ()</h3>
 <p>Unsets the I/O device. This is the same as calling setDevice(0).</p>
 <p>See also <a href="qdatastream.html#device">device</a>() and <a href="qdatastream.html#setDevice">setDevice</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/version" />
 <h3 class="fn"><a name="version"></a>int QDataStream::version () const</h3>
 <p>Returns the version number of the data serialization format.</p>
 <p>See also <a href="qdatastream.html#setVersion">setVersion</a>() and <a href="qdatastream.html#Version-enum">Version</a>.</p>
-<a name="//apple_ref/cpp/instm/QDataStream/writeBytes" />
 <h3 class="fn"><a name="writeBytes"></a>QDataStream &amp; QDataStream::writeBytes ( const char * <i>s</i>, <a href="qtglobal.html#uint-typedef">uint</a> <i>len</i> )</h3>
 <p>Writes the length specifier <i>len</i> and the buffer <i>s</i> to the stream and returns a reference to the stream.</p>
 <p>The <i>len</i> is serialized as a quint32, followed by <i>len</i> bytes from <i>s</i>. Note that the data is <i>not</i> encoded.</p>
 <p>See also <a href="qdatastream.html#writeRawData">writeRawData</a>() and <a href="qdatastream.html#readBytes">readBytes</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/writeRawData" />
 <h3 class="fn"><a name="writeRawData"></a>int QDataStream::writeRawData ( const char * <i>s</i>, int <i>len</i> )</h3>
 <p>Writes <i>len</i> bytes from <i>s</i> to the stream. Returns the number of bytes actually written, or -1 on error. The data is <i>not</i> encoded.</p>
 <p>See also <a href="qdatastream.html#writeBytes">writeBytes</a>(), <a href="qiodevice.html#write">QIODevice::write</a>(), and <a href="qdatastream.html#readRawData">readRawData</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/operator<<" />
 <h3 class="fn"><a name="operator-lt-lt"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( <a href="qtglobal.html#qint8-typedef">qint8</a> <i>i</i> )</h3>
 <p>Writes a signed byte, <i>i</i>, to the stream and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-lt-lt-2"></a>QDataStream &amp; QDataStream::operator&lt;&lt; ( bool <i>i</i> )</h3>
@@ -352,7 +314,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the '\0'-terminated string <i>s</i> to the stream and returns a reference to the stream.</p>
 <p>The string is serialized using <a href="qdatastream.html#writeBytes">writeBytes</a>().</p>
-<a name="//apple_ref/cpp/instm/QDataStream/operator>>" />
 <h3 class="fn"><a name="operator-gt-gt"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( <a href="qtglobal.html#qint8-typedef">qint8</a> &amp; <i>i</i> )</h3>
 <p>Reads a signed byte from the stream into <i>i</i>, and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-2"></a>QDataStream &amp; QDataStream::operator&gt;&gt; ( bool &amp; <i>i</i> )</h3>
