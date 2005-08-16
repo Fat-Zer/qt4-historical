@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -240,7 +235,7 @@ const QString::Null QString::null = QString::Null();
     \code
         for (int i = 0; i < str.size(); ++i) {
             if (str.at(i) >= QChar('a') && str.at(i) <= QChar('f'))
-                cout << "Found character in range [a-f]" << endl;
+                qDebug() << "Found character in range [a-f]";
         }
     \endcode
 
@@ -308,7 +303,7 @@ const QString::Null QString::null = QString::Null();
         QString str = "We must be <b>bold</b>, very <b>bold</b>";
         int j = 0;
         while ((j = str.indexOf("<b>", j)) != -1) {
-            cout << "Found <b> tag at index position " << j << endl;
+            qDebug() << "Found <b> tag at index position" << j;
             ++j;
         }
     \endcode
@@ -470,8 +465,12 @@ const QString::Null QString::null = QString::Null();
 /*!
     \enum QString::SplitBehavior
 
-    \value KeepEmptyParts
-    \value SkipEmptyParts
+    This enum specifies how split() should behave with respect to empty strings.
+
+    \value KeepEmptyParts  If a field is empty, keep it in the result.
+    \value SkipEmptyParts  If a field is empty, don't include it in the result.
+
+    \sa split()
 */
 
 QString::Data QString::shared_null = { Q_ATOMIC_INIT(1), 0, 0, shared_null.array, 0, 0, 0, 0, 0, {0} };
@@ -2121,7 +2120,7 @@ int QString::lastIndexOf(QChar ch, int from, Qt::CaseSensitivity cs) const
     return -1;
 }
 
-#ifndef QT_NO_REGEXP_CAPTURE
+#ifndef QT_NO_REGEXP
 /*! \overload
 
     Replaces every occurrence of the regular expression \a rx in the
@@ -2788,7 +2787,10 @@ bool QString::startsWith(const QLatin1String& s, Qt::CaseSensitivity cs) const
 
 /*!
   \overload
- */
+
+  Returns true if the string starts with \a c; otherwise returns
+  false.
+*/
 bool QString::startsWith(const QChar &c, Qt::CaseSensitivity cs) const
 {
     return d->size
@@ -2858,6 +2860,9 @@ bool QString::endsWith(const QLatin1String& s, Qt::CaseSensitivity cs) const
 }
 
 /*!
+  Returns true if the string ends with \a c; otherwise returns
+  false.
+
   \overload
  */
 bool QString::endsWith(const QChar &c, Qt::CaseSensitivity cs) const
@@ -3386,7 +3391,7 @@ QString& QString::setUnicode(const QChar *unicode, int size)
     Example:
     \code
         QString str = "  lots\t of\nwhitespace\r\n ";
-        str = str.trimmed();
+        str = str.simplified();
         // str == "lots of whitespace";
     \endcode
 
@@ -4160,7 +4165,6 @@ QString QString::toUpper() const
 }
 
 
-#ifndef QT_NO_SPRINTF
 /*!
     Safely builds a formatted string from the format string \a cformat
     and an arbitrary list of arguments.
@@ -4545,7 +4549,6 @@ QString &QString::vsprintf(const char* cformat, va_list ap)
 
     return *this;
 }
-#endif
 
 /*!
     Returns the string converted to a \c{long long} using base \a
@@ -5758,7 +5761,7 @@ QString QString::arg(QChar a, int fieldWidth, const QChar &fillChar) const
 /*!
     \overload
 
-    \a a is interpreded as a Latin-1 character.
+    \a a is interpreted as a Latin-1 character.
 */
 QString QString::arg(char a, int fieldWidth, const QChar &fillChar) const
 {
@@ -5966,9 +5969,9 @@ void QString::updateProperties() const
     Example:
     \code
         QString str = "Hello world";
-        QChar *data = ba.data();
+        QChar *data = str.data();
         while (*data) {
-            cout << "[" + data->unicode() + "]" << endl;
+            qDebug() << data->unicode();
             ++data;
         }
     \endcode

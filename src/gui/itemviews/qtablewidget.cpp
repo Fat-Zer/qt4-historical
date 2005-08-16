@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "qtablewidget.h"
+
+#ifndef QT_NO_TABLEWIDGET
 #include <qheaderview.h>
 #include <qitemdelegate.h>
 #include <qpainter.h>
@@ -36,7 +33,7 @@
 #include <private/qwidgetitemdata_p.h>
 
 // workaround for VC++ 6.0 linker bug (?)
-typedef bool(*LessThan)(const QTableWidgetItem *left, const QTableWidgetItem *right);
+typedef bool(*LessThan)(const QPair<QTableWidgetItem*,int>&,const QPair<QTableWidgetItem*,int>&);
 
 class QTableWidgetMimeData : public QMimeData
 {
@@ -87,8 +84,10 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     void sort(int column, Qt::SortOrder order);
-    static bool itemLessThan(const QTableWidgetItem *left, const QTableWidgetItem *right);
-    static bool itemGreaterThan(const QTableWidgetItem *left, const QTableWidgetItem *right);
+    static bool itemLessThan(const QPair<QTableWidgetItem*,int> &left,
+                             const QPair<QTableWidgetItem*,int> &right);
+    static bool itemGreaterThan(const QPair<QTableWidgetItem*,int> &left,
+                                const QPair<QTableWidgetItem*,int> &right);
 
     bool isValid(const QModelIndex &index) const;
     inline long tableIndex(int row, int column) const
@@ -112,16 +111,15 @@ public:
     Qt::DropActions supportedDropActions() const;
 
     QMimeData *internalMimeData()  const;
+
 private:
     const QTableWidgetItem *prototype;
     QVector<QTableWidgetItem*> table;
     QVector<QTableWidgetItem*> vertical;
     QVector<QTableWidgetItem*> horizontal;
-    mutable QChar strbuf[65];
 
     // A cache must be mutable if get-functions should have const modifiers
     mutable QModelIndexList cachedIndexes;
-
 };
 
 #include "qtablewidget.moc"
@@ -434,23 +432,41 @@ Qt::ItemFlags QTableModel::flags(const QModelIndex &index) const
 
 void QTableModel::sort(int column, Qt::SortOrder order)
 {
-    QVector<QTableWidgetItem*> sorting(rowCount());
-    for (int i = 0; i < sorting.count(); ++i)
-        sorting[i] = item(i, column);
-    LessThan compare = order == Qt::AscendingOrder ? &itemLessThan : &itemGreaterThan;
+    QVector< QPair<QTableWidgetItem*,int> > sorting(rowCount());
+    for (int i = 0; i < sorting.count(); ++i) {
+        sorting[i].first = item(i, column);
+        sorting[i].second = i;
+    }
+
+    LessThan compare = (order == Qt::AscendingOrder ? &itemLessThan : &itemGreaterThan);
     qSort(sorting.begin(), sorting.end(), compare);
-    for (int j = 0; j < sorting.count(); ++j)
-        table[tableIndex(j, column)] = sorting.at(j);
+
+    QVector<QTableWidgetItem*> sorted_table(table.count());
+    for (int j = 0; j < rowCount(); ++j) {
+        int r = sorting.at(j).second;
+        for (int c = 0; c < columnCount(); ++c) {
+            QTableWidgetItem *itm = item(r, c);
+            sorted_table[tableIndex(j, c)] = itm;
+            QModelIndex from = createIndex(r, c, itm);
+            QModelIndex to = createIndex(j, c, itm);
+            changePersistentIndex(from, to);
+        }
+    }
+    table = sorted_table;
+
+    emit layoutChanged();
 }
 
-bool QTableModel::itemLessThan(const QTableWidgetItem *left, const QTableWidgetItem *right)
+bool QTableModel::itemLessThan(const QPair<QTableWidgetItem*,int> &left,
+                               const QPair<QTableWidgetItem*,int> &right)
 {
-    return *left < *right;
+    return *(left.first) < *(right.first);
 }
 
-bool QTableModel::itemGreaterThan(const QTableWidgetItem *left, const QTableWidgetItem *right)
+bool QTableModel::itemGreaterThan(const QPair<QTableWidgetItem*,int> &left,
+                                  const QPair<QTableWidgetItem*,int> &right)
 {
-    return !(*left < *right);
+    return !(*(left .first) < *(right.first));
 }
 
 QVariant QTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -904,14 +920,17 @@ QTableWidgetItem *QTableWidgetItem::clone() const
 */
 void QTableWidgetItem::setData(int role, const QVariant &value)
 {
+    bool found = false;
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     for (int i = 0; i < values.count(); ++i) {
         if (values.at(i).role == role) {
             values[i].value = value;
+            found = true;
             break;
         }
     }
-    values.append(QWidgetItemData(role, value));
+    if (!found)
+        values.append(QWidgetItemData(role, value));
     if (model)
         model->itemChanged(this);
 }
@@ -992,13 +1011,16 @@ QDataStream &operator<<(QDataStream &out, const QTableWidgetItem &item)
 #endif // QT_NO_DATASTREAM
 
 /*!
-    Assigns \a other to this object.
+    Assigns \a other's data and flags to this item. Note that type()
+    and tableWidget() are not copied.
+
+    This function is useful when reimplementing clone().
+
+    \sa data(), flags()
 */
 QTableWidgetItem &QTableWidgetItem::operator=(const QTableWidgetItem &other)
 {
     values = other.values;
-    view = other.view;
-    model = other.model;
     itemFlags = other.itemFlags;
     return *this;
 }
@@ -1864,3 +1886,4 @@ void QTableWidget::setModel(QAbstractItemModel *model)
 }
 
 #include "moc_qtablewidget.cpp"
+#endif // QT_NO_TABLEWIDGET

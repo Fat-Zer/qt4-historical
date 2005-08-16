@@ -4,22 +4,17 @@
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -35,7 +30,7 @@
 #include <stdlib.h>
 
 // WARNING: a copy of this function is in qmetaobject.cpp
-static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = true, bool adjustConst = true)
+static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = false, bool adjustConst = true)
 {
     int len = e - t;
     if (strncmp("void", t, len) == 0)
@@ -292,19 +287,38 @@ bool Moc::parseClassHead(ClassDef *def)
     def->end = index ;
     index = def->begin + 1;
     return true;
-};
+}
 
 QByteArray Moc::parseType()
 {
     QByteArray s;
-    while (test(CONST) || test(VOLATILE) || test(SIGNED) || test(UNSIGNED)) {
-        s += lexem();
-        s += ' ';
+    bool hasSignedOrUnsigned = false;
+    for (;;) {
+        switch (next()) {
+            case SIGNED:
+            case UNSIGNED:
+                hasSignedOrUnsigned = true;
+                // fall through
+            case CONST:
+            case VOLATILE:
+                s += lexem();
+                s += ' ';
+                continue;
+            default:
+                prev();
+                break;
+        }
+        break;
     }
     test(ENUM) || test(CLASS) || test(STRUCT);
     for(;;) {
         switch (next()) {
         case IDENTIFIER:
+            // void mySlot(unsigned myArg)
+            if (hasSignedOrUnsigned) {
+                prev();
+                break;
+            }
         case CHAR:
         case SHORT:
         case INT:
@@ -432,7 +446,7 @@ void Moc::parseFunction(FunctionDef *def, bool inMacro)
             ;
         else if ((def->inlineCode = test(LBRACE)))
             until(RBRACE);
-        else if (test(EQ))
+        else if (test(EQ) || test(THROW))
             until(SEMIC);
         else
             error();
@@ -491,17 +505,22 @@ void Moc::parse()
         Token t = next();
         if (t == NAMESPACE) {
             int rewind = index;
-            if (test(IDENTIFIER) && !test(SEMIC)) {
-                NamespaceDef def;
-                def.name = lexem();
-                next(LBRACE);
-                def.begin = index - 1;
-                until(RBRACE);
-                def.end = index;
-                index = def.begin + 1;
-                namespaceList += def;
+            if (test(IDENTIFIER)) {
+                if (test(EQ)) {
+                    // namespace Foo = Bar::Baz;
+                    until(SEMIC);
+                } else if (!test(SEMIC)) {
+                    NamespaceDef def;
+                    def.name = lexem();
+                    next(LBRACE);
+                    def.begin = index - 1;
+                    until(RBRACE);
+                    def.end = index;
+                    index = def.begin + 1;
+                    namespaceList += def;
+                    index = rewind;
+                }
             }
-            index = rewind;
         } else if (t == SEMIC || t == RBRACE) {
             templateClass = false;
         } else if (t == TEMPLATE) {

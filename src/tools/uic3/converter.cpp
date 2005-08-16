@@ -4,22 +4,17 @@
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -143,7 +138,6 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
         } else if (tagName == QLatin1String("layoutfunctions")) {
             QString margin = n.attribute(QLatin1String("margin"));
             QString spacing = n.attribute(QLatin1String("spacing"));
-
 
             DomLayoutFunction *layoutDefault = new DomLayoutFunction();
 
@@ -498,22 +492,8 @@ DomWidget *Ui3Reader::createWidget(const QDomElement &w, const QString &widgetCl
             if (isLayoutWidget)
                 ui_child->setAttributeClass(QLatin1String("QWidget"));
 
-            QList<DomLayout*> layouts = ui_child->elementLayout();
-            for (int i=0; i<layouts.size(); ++i) {
-                DomLayout *l = layouts.at(i);
-
-                QList<DomProperty*> properties = l->elementProperty();
-                QHash<QString, DomProperty*> m = propertyMap(properties);
-                if (m.contains("margin"))
-                    continue;
-
-                if (isLayoutWidget) {
-                    DomProperty *margin = new DomProperty();
-                    margin->setAttributeName("margin");
-                    margin->setElementNumber(0);
-                    properties.append(margin);
-                    l->setElementProperty(properties);
-                }
+            foreach (DomLayout *layout, ui_child->elementLayout()) {
+                fixLayoutMargin(layout);
             }
 
             QString widgetClass = ui_child->attributeClass();
@@ -679,7 +659,10 @@ DomLayoutItem *Ui3Reader::createLayoutItem(const QDomElement &e)
 
             ui_widget->setElementLayout(QList<DomLayout*>());
             delete ui_widget;
-            lay_item->setElementLayout(layouts.at(0));
+
+            DomLayout *layout = layouts.first();
+            fixLayoutMargin(layout);
+            lay_item->setElementLayout(layout);
         } else {
             if (ui_widget->attributeClass() == QLatin1String("QLayoutWidget"))
                 ui_widget->setAttributeClass(QLatin1String("QWidget"));
@@ -689,7 +672,6 @@ DomLayoutItem *Ui3Reader::createLayoutItem(const QDomElement &e)
     } else if (tagName == QLatin1String("spacer")) {
         DomSpacer *ui_spacer = new DomSpacer();
         QList<DomProperty*> properties;
-
 
         QByteArray name = DomTool::readProperty(e, QLatin1String("name"), "spacer").toByteArray();
 
@@ -731,6 +713,8 @@ DomLayoutItem *Ui3Reader::createLayoutItem(const QDomElement &e)
     } else {
         DomLayout *ui_layout = createLayout(e);
         Q_ASSERT(ui_layout != 0);
+
+        fixLayoutMargin(ui_layout);
         lay_item->setElementLayout(ui_layout);
     }
 
@@ -744,6 +728,24 @@ DomLayoutItem *Ui3Reader::createLayoutItem(const QDomElement &e)
         lay_item->setAttributeColSpan(e.attribute(QLatin1String("colspan")).toInt());
 
     return lay_item;
+}
+
+void Ui3Reader::fixLayoutMargin(DomLayout *ui_layout)
+{
+    bool hasMargin = false;
+    QList<DomProperty*> properties = ui_layout->elementProperty();
+    foreach (DomProperty *p, properties) {
+        if (p->attributeName() == QLatin1String("margin"))
+            hasMargin = true;
+    }
+
+    if (!hasMargin) {
+        DomProperty *margin = new DomProperty();
+        margin->setAttributeName(QLatin1String("margin"));
+        margin->setElementNumber(0);
+        properties.append(margin);
+        ui_layout->setElementProperty(properties);
+    }
 }
 
 void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *properties,

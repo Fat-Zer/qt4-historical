@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,7 +22,6 @@
 ****************************************************************************/
 
 #include "qstyle.h"
-#ifndef QT_NO_STYLE
 #include "qapplication.h"
 #include "qpainter.h"
 #include "qwidget.h"
@@ -356,7 +350,7 @@ void QStyle::polish(QPalette & /* pal */)
     If \a rect is larger than the area needed to render the \a text
     the rectangle that is returned will be offset within \a rect in
     accordance with the alignment \a alignment. For example, if \a
-    alignment is \c Qt::AlignCenter, the returned rectangle will be
+    alignment is Qt::AlignCenter, the returned rectangle will be
     centered within \a rect. If \a rect is smaller than the area
     needed, the rectangle that is returned will be \e larger than \a
     rect (the smallest rectangle large enough to render the \a text).
@@ -536,10 +530,14 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \sa drawPrimitive()
 */
-/*! \enum QStyle::SFlags
+
+/*!
+    \typedef QStyle::SFlags
     \internal
 */
-/*! \enum QStyle::SCFlags
+
+/*!
+    \typedef QStyle::SCFlags
     \internal
 */
 
@@ -925,7 +923,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SC_SpinBoxEditField  Spinwidget edit field
 
     \value SC_ComboBoxEditField  Combobox edit field; see also QComboBox
-    \value SC_ComboBoxArrow  Combobox arrow
+    \value SC_ComboBoxArrow  Combobox arrow button
     \value SC_ComboBoxFrame  Combobox frame
     \value SC_ComboBoxListBoxPopup  Combobox list box
 
@@ -1317,12 +1315,12 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         SubControl.
 
     \value SH_TabBar_Alignment  The alignment for tabs in a
-        QTabWidget. Possible values are \c Qt::AlignLeft, \c
-        Qt::AlignCenter and \c Qt::AlignRight.
+        QTabWidget. Possible values are Qt::AlignLeft,
+        Qt::AlignCenter and Qt::AlignRight.
 
     \value SH_Header_ArrowAlignment The placement of the sorting
         indicator may appear in list or table headers. Possible values
-        are \c Qt::Left or \c Qt::Right.
+        are Qt::Left or Qt::Right.
 
     \value SH_Slider_SnapToValue  Sliders snap to values while moving,
         as they do on Windows.
@@ -1817,9 +1815,8 @@ QPalette QStyle::standardPalette() const
     return palette;
 }
 
-#endif // QT_NO_STYLE
 
-#ifndef QT_NO_DEBUG
+#if !defined(QT_NO_DEBUG) && !defined(QT_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug debug, QStyle::State state)
 {
     debug << "QStyle::State(";

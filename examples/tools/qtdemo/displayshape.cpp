@@ -4,22 +4,17 @@
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -139,24 +134,29 @@ bool PanelShape::animate()
             QColor brushColor = brush.color();
             int penAlpha = penColor.alpha();
             int brushAlpha = brushColor.alpha();
+            int fadeMinimum = meta.value("fade minimum").toInt();
 
-            penAlpha = qBound(meta.value("fade minimum").toInt(),
-                              penAlpha + meta.value("fade").toInt(), 255);
-            brushAlpha = qBound(meta.value("fade minimum").toInt(),
-                              brushAlpha + meta.value("fade").toInt(), 255);
+            if (penAlpha != fadeMinimum || brushAlpha != fadeMinimum
+                || meta.value("fade").toInt() > 0) {
 
-            penColor.setAlpha(qBound(0, penAlpha, 255));
-            brushColor.setAlpha(qBound(0, brushAlpha, 255));
-            pen.setColor(penColor);
-            brush.setColor(brushColor);
+                penAlpha = qBound(fadeMinimum,
+                                  penAlpha + meta.value("fade").toInt(), 255);
+                brushAlpha = qBound(fadeMinimum,
+                                  brushAlpha + meta.value("fade").toInt(), 255);
 
-            if (penAlpha == 0 && brushAlpha == 0) {
-                meta["destroy"] = true;
-                meta.remove("fade");
-            } else if (penAlpha == 255 && brushAlpha == 255)
-                meta.remove("fade");
+                penColor.setAlpha(penAlpha);
+                brushColor.setAlpha(brushAlpha);
+                pen.setColor(penColor);
+                brush.setColor(brushColor);
 
-            updated = true;
+                if (penAlpha == 0 && brushAlpha == 0) {
+                    meta["destroy"] = true;
+                    meta.remove("fade");
+                } else if (penAlpha == 255 && brushAlpha == 255)
+                    meta.remove("fade");
+
+                updated = true;
+            }
         } else if (meta.contains("highlight")) {
             qreal scale = meta.value("highlight scale").toDouble();
             QColor color = brush.color();
@@ -170,7 +170,8 @@ bool PanelShape::animate()
                 brush = normalBrush;
                 meta.remove("highlight");
                 meta.remove("highlight scale");
-            } else {
+                updated = true;
+            } else if (scale != meta["highlight scale"]) {
                 meta["highlight scale"] = scale;
 
                 if (scale == 1.0)
@@ -187,8 +188,8 @@ bool PanelShape::animate()
                                    + scale*highlighted.blueF());
                     brush.setColor(color);
                 }
+                updated = true;
             }
-            updated = true;
         }
     }
 
@@ -218,9 +219,8 @@ TitleShape::TitleShape(const QString &text, const QFont &f,
     : DisplayShape(position, maxSize), font(f), text(text), pen(pen),
       alignment(alignment)
 {
-    QFontMetrics fm(font);
-    textRect = fm.boundingRect(QRect(QPoint(0, 0), maxSize.toSize()),
-        alignment, text);
+    QFontMetricsF fm(font);
+    textRect = fm.boundingRect(QRectF(QPointF(0, 0), maxSize), alignment, text);
 
     qreal textWidth = qMax(fm.width(text), textRect.width());
     qreal textHeight = qMax(fm.height(), textRect.height());
@@ -229,9 +229,8 @@ TitleShape::TitleShape(const QString &text, const QFont &f,
                        maxSize.height()/textHeight);
 
     font.setPointSizeF(font.pointSizeF() * scale);
-    fm = QFontMetrics(font);
-    textRect = fm.boundingRect(QRect(QPoint(0, 0), maxSize.toSize()),
-        alignment, text);
+    fm = QFontMetricsF(font);
+    textRect = fm.boundingRect(QRectF(QPointF(0, 0), maxSize), alignment, text);
 }
 
 bool TitleShape::animate()
@@ -264,14 +263,13 @@ bool TitleShape::animate()
 
 void TitleShape::paint(QPainter *painter) const
 {
-    QRectF rect(textRect); // 2
-    rect.translate(pos); // 2
+    QRectF rect(textRect);
+    rect.translate(pos);
     painter->save();
     painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setPen(pen);
     painter->setFont(font);
-    //painter->drawText(QRectF(pos, maxSize), alignment, text); // 1
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignTop, text); // 2
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignTop, text);
     painter->restore();
 }
 
@@ -361,7 +359,7 @@ DocumentShape::DocumentShape(const QString &text, const QFont &f,
 {
     paragraphs = text.split("\n", QString::SkipEmptyParts);
 
-    QFontMetrics fm(font);
+    QFontMetricsF fm(font);
     qreal scale = qMax(maxSize.height()/(fm.lineSpacing()*20), 1.0);
     font.setPointSizeF(font.pointSizeF() * scale);
 
@@ -412,7 +410,7 @@ qreal DocumentShape::formatText()
     qDeleteAll(layouts);
     layouts.clear();
 
-    QFontMetrics fm(font);
+    QFontMetricsF fm(font);
     qreal lineHeight = fm.height();
     qreal y = 0.0;
     qreal leftMargin = 0.0;

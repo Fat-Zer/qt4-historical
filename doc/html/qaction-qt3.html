@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/kernel/qaction.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/kernel/qaction.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QAction</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QAction</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qaction.html">QAction class reference</a></li></ul></p>
@@ -58,6 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use one of the <a href="qaction.html">QAction</a> constructors that doesn't take a <i>name</i> argument and call <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
 <h3 class="fn"><a name="accel"></a><a href="qkeysequence.html">QKeySequence</a> QAction::accel () const</h3>
 <p>Use <a href="qaction.html#shortcut-prop">shortcut</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#setAccel">setAccel</a>().</p>
 <h3 class="fn"><a name="activated"></a>void QAction::activated ( int <i>i</i> = 0 )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>Use <a href="qaction.html#triggered">triggered</a>() instead.</p>
 <h3 class="fn"><a name="addTo"></a>bool QAction::addTo ( <a href="qwidget.html">QWidget</a> * <i>w</i> )</h3>
@@ -68,12 +69,14 @@ body { background: #ffffff; color: black; }</style>
 <pre>    widget-&gt;addAction(action);</pre>
 <h3 class="fn"><a name="iconSet"></a><a href="qicon.html">QIcon</a> QAction::iconSet () const</h3>
 <p>Use <a href="qaction.html#icon-prop">icon</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#setIconSet">setIconSet</a>().</p>
 <h3 class="fn"><a name="isOn"></a>bool QAction::isOn () const</h3>
 <p>Use <a href="qaction.html#checked-prop">isChecked</a>() instead.</p>
 <h3 class="fn"><a name="isToggleAction"></a>bool QAction::isToggleAction () const</h3>
 <p>Use <a href="qaction.html#checkable-prop">isCheckable</a>() instead.</p>
 <h3 class="fn"><a name="menuText"></a><a href="qstring.html">QString</a> QAction::menuText () const</h3>
 <p>Use <a href="qaction.html#text-prop">text</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#setMenuText">setMenuText</a>().</p>
 <h3 class="fn"><a name="removeFrom"></a>bool QAction::removeFrom ( <a href="qwidget.html">QWidget</a> * <i>w</i> )</h3>
 <p>Use <a href="qwidget.html#removeAction">QWidget::removeAction</a>() instead.</p>
 <p>For example, if you have code like</p>
@@ -82,18 +85,23 @@ body { background: #ffffff; color: black; }</style>
 <pre>    widget-&gt;removeAction(action);</pre>
 <h3 class="fn"><a name="setAccel"></a>void QAction::setAccel ( const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>shortcut</i> )</h3>
 <p>Use <a href="qaction.html#shortcut-prop">setShortcut</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#accel">accel</a>().</p>
 <h3 class="fn"><a name="setIconSet"></a>void QAction::setIconSet ( const <a href="qicon.html">QIcon</a> &amp; <i>i</i> )</h3>
 <p>Use <a href="qaction.html#icon-prop">setIcon</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#iconSet">iconSet</a>().</p>
 <h3 class="fn"><a name="setMenuText"></a>void QAction::setMenuText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Use <a href="qaction.html#text-prop">setText</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#menuText">menuText</a>().</p>
 <h3 class="fn"><a name="setOn"></a>void QAction::setOn ( bool <i>b</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Use <a href="qaction.html#checked-prop">setChecked</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#isOn">isOn</a>().</p>
 <h3 class="fn"><a name="setToggleAction"></a>void QAction::setToggleAction ( bool <i>b</i> )</h3>
 <p>Use <a href="qaction.html#checkable-prop">setCheckable</a>() instead.</p>
+<p>See also <a href="qaction-qt3.html#isToggleAction">isToggleAction</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/qt3support/itemviews/q3iconview.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/qt3support/itemviews/q3iconview.cpp -->
 <head>
     <title>Qt 4.0: Q3IconDrag Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3IconDrag Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3IconDrag Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3IconDrag class supports drag and drop operations within a <a href="q3iconview.html">Q3IconView</a>. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3IconDrag&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3IconDrag&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
+<p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
 <p>Inherits <a href="q3dragobject.html">Q3DragObject</a>.</p>
 <ul>
 <li><a href="q3icondrag-members.html">List of all members, including inherited members</a></li>
@@ -36,6 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>9 public functions inherited from <a href="q3dragobject.html#public-functions">Q3DragObject</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>3 public functions inherited from <a href="qmimesource.html#public-functions">QMimeSource</a></li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -60,8 +61,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The Q3IconDrag class supports drag and drop operations within a <a href="q3iconview.html">Q3IconView</a>.</p>
 <p>A Q3IconDrag object is used to maintain information about the positions of dragged items and the data associated with them. Q3IconViews are able to use this information to paint the dragged items in the correct positions. Internally, Q3IconDrag stores the data associated with drag items in <a href="q3icondragitem.html">Q3IconDragItem</a> objects.</p>
 <p>If you want to use the extended drag and drop functionality of <a href="q3iconview.html">Q3IconView</a>, create a Q3IconDrag object in a reimplementation of <a href="q3iconview.html#dragObject">Q3IconView::dragObject</a>(). Then create a <a href="q3icondragitem.html">Q3IconDragItem</a> for each item which should be dragged, set the data it represents with <a href="q3icondragitem.html#setData">Q3IconDragItem::setData</a>(), and add each <a href="q3icondragitem.html">Q3IconDragItem</a> to the drag object using <a href="q3icondrag.html#append">append</a>().</p>
-<p>The data in Q3IconDragItems is stored in a <a href="qbytearray.html">QByteArray</a> and is mime-typed (see <a href="qmimesource.html">QMimeSource</a> and the <a href="http://doc.trolltech.com/dnd.html">Drag and Drop</a> overview). If you want to use your own mime-types derive a class from Q3IconDrag and reimplement <a href="q3icondrag.html#format">format</a>(), <a href="q3icondrag.html#encodedData">encodedData</a>() and <a href="q3icondrag.html#canDecode">canDecode</a>().</p>
-<p>The fileiconview example program demonstrates the use of the Q3IconDrag class including subclassing and reimplementing dragObject(), <a href="q3icondrag.html#format">format</a>(), <a href="q3icondrag.html#encodedData">encodedData</a>() and <a href="q3icondrag.html#canDecode">canDecode</a>(). See the files <tt>qt/examples/fileiconview/qfileiconview.h</tt> and <tt>qt/examples/fileiconview/qfileiconview.cpp</tt>.</p>
+<p>The data in Q3IconDragItems is stored in a <a href="qbytearray.html">QByteArray</a> and is mime-typed (see <a href="qmimesource.html">QMimeSource</a> and the <a href="http://doc.trolltech.com/dnd.html">Drag and Drop</a> overview). If you want to use your own mime-types derive a class from Q3IconDrag and reimplement <a href="qmimesource.html#format">format</a>(), <a href="q3icondrag.html#encodedData">encodedData</a>() and <a href="q3icondrag.html#canDecode">canDecode</a>().</p>
+<p>The fileiconview example program demonstrates the use of the Q3IconDrag class including subclassing and reimplementing dragObject(), <a href="qmimesource.html#format">format</a>(), <a href="q3icondrag.html#encodedData">encodedData</a>() and <a href="q3icondrag.html#canDecode">canDecode</a>().</p>
 <p>See also <a href="qmimesource.html#format">QMimeSource::format</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -82,6 +83,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

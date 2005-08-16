@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/containers.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/containers.qdoc -->
 <head>
     <title>Qt 4.0: Generic Containers</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Generic Containers</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Generic Containers<br /><small></small></h1>
 <a name="container-class"></a><a name="container-classes"></a><ul><li><a href="#introduction">Introduction</a></li>
 <li><a href="#the-container-classes">The Container Classes</a></li>
 <li><a href="#the-iterator-classes">The Iterator Classes</a></li>
@@ -85,13 +85,14 @@ body { background: #ffffff; color: black; }</style>
 
     inline QDataStream &amp;operator&gt;&gt;(QDataStream &amp;in, Movie &amp;movie)
     {
-        quint32 id, year;
+        quint32 id;
+        quint32 year;
         in &gt;&gt; id &gt;&gt; movie.title &gt;&gt; year;
         movie.id = (int)id;
         movie.year = (int)year;
         return in;
     }</pre>
-<a name="default-constructed-values"></a><p>The documentation of certain container class functions refer to <i>default-constructed values</i>; for example, <a href="qvector.html">QVector</a> automatically initializes its items with default-constructed values, and <a href="qmap.html#value">QMap::value</a>() returns a default-constructed value if the specified key isn't in the map. For most value types, this simply means that a value is created using the default constructor (e.g. an empty string for <a href="qstring.html">QString</a>). But for built-in types like <tt>int</tt> and <tt>double</tt>, as well as for pointer types, the C++ language doesn't specify any initialization; in those cases, Qt's containers automatically initialize the value to 0.</p>
+<a name="default-constructed-values"></a><p>The documentation of certain container class functions refer to <i>default-constructed values</i>; for example, <a href="qvector.html">QVector</a> automatically initializes its items with default-constructed values, and <a href="qmap.html#value">QMap::value</a>() returns a default-constructed value if the specified key isn't in the map. For most value types, this simply means that a value is created using the default constructor (e.g. an empty string for <a href="qstring.html">QString</a>). But for primitive types like <tt>int</tt> and <tt>double</tt>, as well as for pointer types, the C++ language doesn't specify any initialization; in those cases, Qt's containers automatically initialize the value to 0.</p>
 <a name="the-iterator-classes"></a>
 <h2>The Iterator Classes</h2>
 <p>Iterators provide a uniform means to access items in a container. Qt's container classes provide two types of iterators: Java-style iterators and STL-style iterators.</p>
@@ -110,7 +111,7 @@ body { background: #ffffff; color: black; }</style>
 </table>
 <p>In this discussion, we will concentrate on <a href="qlist.html">QList</a> and <a href="qmap.html">QMap</a>. The iterator types for <a href="qlinkedlist.html">QLinkedList</a>, <a href="qvector.html">QVector</a>, and <a href="qset.html">QSet</a> have exactly the same interface as <a href="qlist.html">QList</a>'s iterators; similarly, the iterator types for <a href="qhash.html">QHash</a> have the same interface as <a href="qmap.html">QMap</a>'s iterators.</p>
 <p>Unlike STL-style iterators (covered <a href="#stl-style-iterators">below</a>), Java-style iterators point <i>between</i> items rather than directly <i>at</i> items. For this reason, they are either pointing to the very beginning of the container (before the first item), at the very end of the container (after the last item), or between two items. The diagram below shows the valid iterator positions as red arrows for a list containing four items:</p>
-<center><img src="images/javaiterators1.png" /></center><p>Here's a typical loop for iterating through all the elements of a <a href="qlist.html">QList</a>&lt;<a href="qstring.html">QString</a>&gt; in order and printing them to the console:</p>
+<p align="center"><img src="images/javaiterators1.png" /></p><p>Here's a typical loop for iterating through all the elements of a <a href="qlist.html">QList</a>&lt;<a href="qstring.html">QString</a>&gt; in order and printing them to the console:</p>
 <pre>&nbsp;   QList&lt;QString&gt; list;
     list &lt;&lt; &quot;A&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;C&quot; &lt;&lt; &quot;D&quot;;
 
@@ -125,7 +126,7 @@ body { background: #ffffff; color: black; }</style>
         qDebug() &lt;&lt; i.previous();</pre>
 <p>The code is symmetric with iterating forward, except that we start by calling <a href="qlistiterator.html#toBack">toBack()</a> to move the iterator after the last item in the list.</p>
 <p>The diagram below illustrates the effect of calling <a href="qlistiterator.html#next">next()</a> and <a href="qlistiterator.html#previous">previous()</a> on an iterator:</p>
-<center><img src="images/javaiterators2.png" /></center><p>The following table summarizes the <a href="qlistiterator.html">QListIterator</a> API:</p>
+<p align="center"><img src="images/javaiterators2.png" /></p><p>The following table summarizes the <a href="qlistiterator.html">QListIterator</a> API:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Function</th><th>Behavior</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qlistiterator.html#toFront">toFront()</a></td><td>Moves the iterator to the front of the list (before the first item)</td></tr>
@@ -213,7 +214,7 @@ body { background: #ffffff; color: black; }</style>
         *i = (*i).toLower();</pre>
 <p>Unlike <a href="#java-style-iterators">Java-style iterators</a>, STL-style iterators point directly at items. The begin() function of a container returns an iterator that points to the first item in the container. The end() function of a container returns an iterator to the imaginary item one position past the last item in the container. end() marks an invalid position; it must never be dereferenced. It is typically used in a loop's break condition. If the list is empty, begin() equals end(), so we never execute the loop.</p>
 <p>The diagram below shows the valid iterator positions as red arrows for a vector containing four items:</p>
-<center><img src="images/stliterators1.png" /></center><p>Iterating backward with an STL-style iterator requires us to decrement the iterator <i>before</i> we access the item. This requires a <tt>while</tt> loop:</p>
+<p align="center"><img src="images/stliterators1.png" /></p><p>Iterating backward with an STL-style iterator requires us to decrement the iterator <i>before</i> we access the item. This requires a <tt>while</tt> loop:</p>
 <pre>&nbsp;   QList&lt;QString&gt; list;
     list &lt;&lt; &quot;A&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;C&quot; &lt;&lt; &quot;D&quot;;
 
@@ -245,17 +246,17 @@ body { background: #ffffff; color: black; }</style>
     QMap&lt;int, int&gt;::const_iterator i;
     for (i = map.constBegin(); i != map.constEnd(); ++i)
         qDebug() &lt;&lt; i.key() &lt;&lt; &quot;:&quot; &lt;&lt; i.value();</pre>
-<p>Thanks to <a href="shclass.html#implicit-sharing">implicit sharing</a>, it is very inexpensive for a function to return a container per value. The Qt API contains dozens of functions that return a <a href="qlist.html">QList</a> or <a href="qstringlist.html">QStringList</a> per value (e.g. <a href="qsplitter.html#sizes">QSplitter::sizes</a>() and QTranslator::messages()). If you want to iterate over these using an STL iterator, you should always take a copy of the container and iterate over the copy. For example:</p>
+<p>Thanks to <a href="shclass.html#implicit-sharing">implicit sharing</a>, it is very inexpensive for a function to return a container per value. The Qt API contains dozens of functions that return a <a href="qlist.html">QList</a> or <a href="qstringlist.html">QStringList</a> per value (e.g., <a href="qsplitter.html#sizes">QSplitter::sizes</a>()). If you want to iterate over these using an STL iterator, you should always take a copy of the container and iterate over the copy. For example:</p>
 <pre>&nbsp;   // RIGHT
-    QList&lt;QTranslatorMessage&gt; messages = translator-&gt;messages();
-    QList&lt;QTranlatorMessage&gt;::const_iterator i;
-    for (i = messages.begin(); i != messages.end(); ++i)
+    const QList&lt;int&gt; sizes = splitter-&gt;sizes();
+    QList&lt;int&gt;::const_iterator i;
+    for (i = sizes.begin(); i != sizes.end(); ++i)
         ...
 
     // WRONG
-    QList&lt;QTranlatorMessage&gt;::const_iterator i;
-    for (i = translator-&gt;messages().begin();
-         i != translator-&gt;messages().end(); ++i)
+    QList&lt;int&gt;::const_iterator i;
+    for (i = splitter-&gt;sizes().begin();
+            i != splitter-&gt;sizes().end(); ++i)
         ...</pre>
 <p>This problem doesn't occur with functions that return a const or non-const reference to a container.</p>
 <p><a href="shclass.html#implicit-sharing">Implicit sharing</a> has another consequence on STL-style iterators: You must not take a copy of a container while non-const iterators are active on that container. Java-style iterators don't suffer from that limitation.</p>
@@ -329,17 +330,17 @@ body { background: #ffffff; color: black; }</style>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th></th><th>Index lookup</th><th>Insertion</th><th>Prepending</th><th>Appending</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;</td><td>O(<i>n</i>)</td><td>O(1)</td><td>O(1)</td><td>O(1)</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlist.html">QList</a>&lt;T&gt;</td><td>O(1)</td><td>O(n)</td><td>Amort. O(log <i>n</i>)</td><td>Amort. O(log <i>n</i>)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qvector.html">QVector</a>&lt;T&gt;</td><td>O(1)</td><td>O(n)</td><td>O(n)</td><td>Amort. O(log <i>n</i>)</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlist.html">QList</a>&lt;T&gt;</td><td>O(1)</td><td>O(n)</td><td>Amort. O(1)</td><td>Amort. O(1)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qvector.html">QVector</a>&lt;T&gt;</td><td>O(1)</td><td>O(n)</td><td>O(n)</td><td>Amort. O(1)</td></tr>
 </table>
-<p>In the table, &quot;Amort.&quot; stands for &quot;amortized behavior&quot;. For example, &quot;Amort. O(log <i>n</i>)&quot; means that if you call the function only once, you might get O(<i>n</i>) behavior, but if you call it multiple times (e.g., <i>n</i> times), the average behavior will be O(log <i>n</i>).</p>
+<p>In the table, &quot;Amort.&quot; stands for &quot;amortized behavior&quot;. For example, &quot;Amort. O(1)&quot; means that if you call the function only once, you might get O(<i>n</i>) behavior, but if you call it multiple times (e.g., <i>n</i> times), the average behavior will be O(1).</p>
 <p>The following table summarizes the algorithmic complexity of Qt's associative containers and sets:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th rowspan="2"></th><th colspan="2">Key lookup</th><th colspan="2">Insertion</th></tr>
 <tr valign="top" bgcolor="#a2c511"><th>Average</th><th>Worst case</th><th>Average</th><th>Worst case</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qmap.html">QMap</a>&lt;Key, T&gt;</td><td>O(log <i>n</i>)</td><td>O(log <i>n</i>)</td><td>O(log <i>n</i>)</td><td>O(log <i>n</i>)</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qhash.html">QHash</a>&lt;Key, T&gt;</td><td>Amort. O(1)</td><td>O(<i>n</i>)</td><td>Amort. O(log <i>n</i>)</td><td>O(<i>n</i>)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qset.html">QSet</a>&lt;Key&gt;</td><td>Amort. O(1)</td><td>O(<i>n</i>)</td><td>Amort. O(log <i>n</i>)</td><td>O(<i>n</i>)</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qhash.html">QHash</a>&lt;Key, T&gt;</td><td>Amort. O(1)</td><td>O(<i>n</i>)</td><td>Amort. O(1)</td><td>O(<i>n</i>)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qset.html">QSet</a>&lt;Key&gt;</td><td>Amort. O(1)</td><td>O(<i>n</i>)</td><td>Amort. O(1)</td><td>O(<i>n</i>)</td></tr>
 </table>
 <p>With <a href="qvector.html">QVector</a>, <a href="qhash.html">QHash</a>, and <a href="qset.html">QSet</a>, the performance of appending items is amortized O(log <i>n</i>). It can be brought down to O(1) by calling <a href="qvector.html#reserve">QVector::reserve</a>(), <a href="qhash.html#reserve">QHash::reserve</a>(), or <a href="qset.html#reserve">QSet::reserve</a>() with the expected number of items before you insert the items. The next section discusses this topic in more depth.</p>
 <a name="growth-strategies"></a>
@@ -376,6 +377,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

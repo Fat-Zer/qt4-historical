@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -32,6 +27,7 @@
 #include "qpixmapcache.h"
 #include "qdatastream.h"
 #include "qvariant.h"
+#include "qline.h"
 #include "qdebug.h"
 
 const uchar *qt_patternForBrush(int brushStyle, bool invert)
@@ -114,9 +110,9 @@ struct QGradientBrushData : public QBrushData
     custom pattern, which is defined by a QPixmap.
 
     The brush style defines the fill pattern. The default brush style
-    is \c Qt::NoBrush (depending on how you construct a brush). This style
+    is Qt::NoBrush (depending on how you construct a brush). This style
     tells the painter to not fill shapes. The standard style for
-    filling is \c Qt::SolidPattern.
+    filling is Qt::SolidPattern.
 
     The brush color defines the color of the fill pattern. The QColor
     documentation lists the predefined colors.
@@ -170,7 +166,7 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
 }
 
 /*!
-    Constructs a default black brush with the style \c Qt::NoBrush (this brush will
+    Constructs a default black brush with the style Qt::NoBrush (this brush will
     not fill shapes).
 */
 
@@ -457,7 +453,7 @@ QPixmap QBrush::texture() const
 }
 
 /*!
-    Sets the brush pixmap to \a pixmap. The style is set to \c
+    Sets the brush pixmap to \a pixmap. The style is set to
     Qt::TexturePattern.
 
     The current brush color will only have an effect for monochrome
@@ -622,11 +618,7 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
 {
     s << (quint8)b.style() << b.color();
     if (b.style() == Qt::TexturePattern) {
-#ifndef QT_NO_IMAGEIO
         s << b.texture();
-#else
-        qWarning("No Image Brush I/O");
-#endif
     } else if (b.style() == Qt::LinearGradientPattern
                || b.style() == Qt::RadialGradientPattern
                || b.style() == Qt::ConicalGradientPattern) {
@@ -665,13 +657,9 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
     s >> style;
     s >> color;
     if (style == Qt::TexturePattern) {
-#ifndef QT_NO_IMAGEIO
         QPixmap pm;
         s >> pm;
         b = QBrush(color, pm);
-#else
-        qWarning("No Image Brush I/O");
-#endif
     } else if (style == Qt::LinearGradientPattern
                || style == Qt::RadialGradientPattern
                || style == Qt::ConicalGradientPattern) {
@@ -968,6 +956,19 @@ QPointF QLinearGradient::finalStop() const
     \sa QBrush
 */
 
+static QPointF qt_radial_gradient_adapt_focal_point(const QPointF &center,
+                                                    qreal radius,
+                                                    const QPointF &focalPoint)
+{
+    // We have a one pixel buffer zone to avoid numerical instability on the
+    // circle border
+    const qreal compensated_radius = radius - 1;
+    QLineF line(center, focalPoint);
+    if (line.length() >= (compensated_radius))
+        line.setLength(compensated_radius);
+    return line.p2();
+}
+
 /*!
     Constructs a radial gradient centered at \a center with radius \a
     radius.  The \a focalPoint can be used to define the focal point
@@ -982,9 +983,11 @@ QRadialGradient::QRadialGradient(const QPointF &center, qreal radius, const QPoi
     m_spread = PadSpread;
     m_data.radial.cx = center.x();
     m_data.radial.cy = center.y();
-    m_data.radial.fx = focalPoint.x();
-    m_data.radial.fy = focalPoint.y();
     m_data.radial.radius = radius;
+
+    QPointF adapted_focal = qt_radial_gradient_adapt_focal_point(center, radius, focalPoint);
+    m_data.radial.fx = adapted_focal.x();
+    m_data.radial.fy = adapted_focal.y();
 }
 
 
@@ -1003,9 +1006,14 @@ QRadialGradient::QRadialGradient(qreal cx, qreal cy, qreal radius, qreal fx, qre
     m_spread = PadSpread;
     m_data.radial.cx = cx;
     m_data.radial.cy = cy;
-    m_data.radial.fx = fx;
-    m_data.radial.fy = fy;
     m_data.radial.radius = radius;
+
+    QPointF adapted_focal = qt_radial_gradient_adapt_focal_point(QPointF(cx, cy),
+                                                                 radius,
+                                                                 QPointF(fx, fy));
+
+    m_data.radial.fx = adapted_focal.x();
+    m_data.radial.fy = adapted_focal.y();
 }
 
 

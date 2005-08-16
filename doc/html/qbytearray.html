@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/corelib/tools/qbytearray.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/tools/qbytearray.cpp -->
 <head>
     <title>Qt 4.0: QByteArray Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QByteArray Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QByteArray Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QByteArray class provides an array of bytes. <a href="#details">More...</a></p>
-<pre>#include &lt;QByteArray&gt;</pre><p>Part of the <a href="qtcore.html">QtCore</a> module.</p>
-<p>Inherited by <a href="q3cstring.html">Q3CString</a>.</p>
+<pre>#include &lt;QByteArray&gt;</pre><p>Inherited by <a href="q3cstring.html">Q3CString</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qbytearray-members.html">List of all members, including inherited members</a></li>
@@ -714,7 +713,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Whitespace means any character for which the standard C++ isspace() function returns true. This includes the ASCII characters '\t', '\n', '\v', '\f', '\r', and ' '.</p>
 <p>Example:</p>
 <pre>&nbsp;   QByteArray ba(&quot;  lots\t of\nwhitespace\r\n &quot;);
-    ba = ba.trimmed();
+    ba = ba.simplified();
     // ba == &quot;lots of whitespace&quot;;</pre>
 <p>See also <a href="qbytearray.html#trimmed">trimmed</a>().</p>
 <h3 class="fn"><a name="size"></a>int QByteArray::size () const</h3>
@@ -896,7 +895,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The Unicode data is converted into 8-bit characters using <a href="qstring.html#toAscii">QString::toAscii</a>().</p>
 <p>The comparison is case sensitive.</p>
 <p>You can disable this operator by defining <tt>QT_NO_CAST_FROM_ASCII</tt> when you compile your applications. You then need to call <a href="qstring.html#fromAscii">QString::fromAscii</a>(), <a href="qstring.html#fromLatin1">QString::fromLatin1</a>(), <a href="qstring.html#fromUtf8">QString::fromUtf8</a>(), or <a href="qstring.html#fromLocal8Bit">QString::fromLocal8Bit</a>() explicitly if you want to convert the byte array to a <a href="qstring.html">QString</a> before doing the comparison.</p>
-<h3 class="fn"><a name="operator-5b-5d"></a><a href="qbyteref.html">QByteRef</a> QByteArray::operator[] ( int <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-5b-5d"></a>QByteRef QByteArray::operator[] ( int <i>i</i> )</h3>
 <p>Returns the byte at index position <i>i</i> as a modifiable reference.</p>
 <p>If an assignment is made beyond the end of the byte array, the array is extended with <a href="qbytearray.html#resize">resize</a>() before the assignment takes place.</p>
 <p>Example:</p>
@@ -904,12 +903,12 @@ body { background: #ffffff; color: black; }</style>
     for (int i = 0; i &lt; 10; ++i)
         ba[i] = 'A' + i;
     // ba == &quot;ABCDEFGHIJ&quot;</pre>
-<p>The return value is of type <a href="qbyteref.html">QByteRef</a>, a helper class for <a href="qbytearray.html">QByteArray</a>. When you get an object of type <a href="qbyteref.html">QByteRef</a>, you can use it as if it were a char &amp;. If you assign to it, the assignment will apply to the character in the <a href="qbytearray.html">QByteArray</a> from which you got the reference.</p>
+<p>The return value is of type QByteRef, a helper class for <a href="qbytearray.html">QByteArray</a>. When you get an object of type QByteRef, you can use it as if it were a char &amp;. If you assign to it, the assignment will apply to the character in the <a href="qbytearray.html">QByteArray</a> from which you got the reference.</p>
 <p>See also <a href="qbytearray.html#at">at</a>().</p>
 <h3 class="fn"><a name="operator-5b-5d-2"></a>const char QByteArray::operator[] ( int <i>i</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Same as at(<i>i</i>).</p>
-<h3 class="fn"><a name="operator-5b-5d-3"></a><a href="qbyteref.html">QByteRef</a> QByteArray::operator[] ( <a href="qtglobal.html#uint-typedef">uint</a> <i>i</i> )</h3>
+<h3 class="fn"><a name="operator-5b-5d-3"></a>QByteRef QByteArray::operator[] ( <a href="qtglobal.html#uint-typedef">uint</a> <i>i</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <h3 class="fn"><a name="operator-5b-5d-4"></a>const char QByteArray::operator[] ( <a href="qtglobal.html#uint-typedef">uint</a> <i>i</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -1069,6 +1068,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

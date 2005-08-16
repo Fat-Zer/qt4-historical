@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -607,7 +602,7 @@ int Q3ListBoxPixmap::rtti() const
     Q3ListView and Q3Table for possible alternatives.)
 
     There are a variety of selection modes described in the
-    Q3ListBox::SelectionMode documentation. The default is \c Single
+    Q3ListBox::SelectionMode documentation. The default is \l Single
     selection mode, but you can change it using setSelectionMode().
     (setMultiSelection() is still provided for compatibility with Qt
     1.x. We recommend using setSelectionMode() in all code.)
@@ -670,7 +665,7 @@ int Q3ListBoxPixmap::rtti() const
     If the user does not select anything, no signals are emitted and
     currentItem() returns -1.
 
-    A list box has \c Qt::WheelFocus as a default focusPolicy(), i.e. it
+    A list box has Qt::WheelFocus as a default focusPolicy(), i.e. it
     can get keyboard focus by tabbing, clicking and through the use of
     the mouse wheel.
 
@@ -720,10 +715,10 @@ int Q3ListBoxPixmap::rtti() const
 
     \value NoSelection  Items cannot be selected.
 
-    In other words, \c Single is a real single-selection list box, \c
-    Multi is a real multi-selection list box, \c Extended is a list
+    In other words, \l Single is a real single-selection list box, \l
+    Multi is a real multi-selection list box, \l Extended is a list
     box in which users can select multiple items but usually want to
-    select either just one or a range of contiguous items, and \c
+    select either just one or a range of contiguous items, and \l
     NoSelection is for a list box where the user can look but not
     touch.
 */
@@ -746,7 +741,7 @@ int Q3ListBoxPixmap::rtti() const
     column mode. (Or as many columns as required by the row mode.)
 
     Example: When you call setRowMode(FitToHeight), columnMode()
-    automatically becomes \c Variable to accommodate the row mode
+    automatically becomes \l Variable to accommodate the row mode
     you've set.
 */
 
@@ -774,10 +769,10 @@ int Q3ListBoxPixmap::rtti() const
     Constructs a new empty list box called \a name and with parent \a
     parent and widget attributes \a f.
 
-    This constructor sets the \c WA_StaticContent and the \c
+    This constructor sets the Qt::WA_StaticContent and the
     Qt::WA_NoBackground attributes to boost performance when drawing
     Q3ListBoxItems. This may be unsuitable for custom Q3ListBoxItem
-    classes, in which case \c Qt::WA_StaticContents and \c Qt::WA_NoBackground
+    classes, in which case Qt::WA_StaticContents and Qt::WA_NoBackground
     should be cleared on the viewport() after construction.
 */
 
@@ -975,7 +970,7 @@ Q3ListBox::~Q3ListBox()
     \fn void Q3ListBox::selectionChanged(Q3ListBoxItem *item)
     \overload
 
-    This signal is emitted when the selection in a \c Single selection
+    This signal is emitted when the selection in a \l Single selection
     list box changes. \a item is the newly selected list box item.
 
     \sa selected() currentItem()
@@ -1119,7 +1114,7 @@ void Q3ListBox::insertStringList(const QStringList & list, int index)
 }
 
 
-// ### fix before Qt 4.0
+// ### fix me
 #if 0
 /*!
     \overload

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/qt4-sql.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qt4-sql.qdoc -->
 <head>
     <title>Qt 4.0: The Qt 4 Database GUI Layer</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qt4-accessibility.html">Cross-Platform Accessibility Support in Qt 4</a>]
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-network.html">The Network Module in Qt 4</a>]
 </p>
-<h1 align="center">The Qt 4 Database GUI Layer</h1>
+<h1 align="center">The Qt 4 Database GUI Layer<br /><small></small></h1>
 <p>The GUI layer of the SQL module in Qt 4 has been entirely redesigned to work with <a href="qt4-interview.html">Interview</a> (Qt's new model/view classes). It consists of three model classes (<a href="qsqlquerymodel.html">QSqlQueryModel</a>, <a href="qsqltablemodel.html">QSqlTableModel</a>, and <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>) that can be used with Qt's view classes, notably <a href="qtableview.html">QTableView</a>.</p>
 <a name="general-overview"></a>
 <h2>General Overview</h2>
@@ -47,7 +47,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You can also perform some customizations without subclassing. For example, you can sort a table using <a href="qsqltablemodel.html#sort">QSqlTableModel::sort</a>(), and you can initialize new rows by connecting to the <a href="qsqltablemodel.html#primeInsert">QSqlTableModel::primeInsert</a>() signal.</p>
 <p>One nice feature supported by the read-write models is the possibility to perform changes to the item model without affecting the database until <a href="qsqltablemodel.html#submitAll">QSqlTableModel::submitAll</a>() is called. Changes can be dropped using <a href="qsqltablemodel.html#revertAll">QSqlTableModel::revertAll</a>().</p>
 <p>The new classes perform advantageously compared to the SQL module's GUI layer in Qt 3. Speed and memory improvements in the tool classes (especially <a href="qvariant.html">QVariant</a>, <a href="qstring.html">QString</a>, and <a href="qmap.html">QMap</a>) and in the SQL drivers contribute to making Qt 4 database applications more snappy.</p>
-<p>See the <a href="sql.html">SQL Model</a> for a more complete introduction to Qt's SQL classes.</p>
+<p>See the <a href="qtsql.html">QtSql</a> module overview for a more complete introduction to Qt's SQL classes.</p>
 <a name="example-code"></a>
 <h2>Example Code</h2>
 <p>The simplest way to present data from a database is to simply combine a <a href="qsqlquerymodel.html">QSqlQueryModel</a> with a <a href="qtableview.html">QTableView</a>:</p>
@@ -127,7 +127,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="porting4.html#qsqlfieldinfo">QSqlFieldInfo</a> and <a href="porting4.html#qsqlrecordinfo">QSqlRecordInfo</a> has been merged into <a href="qsqlfield.html">QSqlField</a> and <a href="qsqlrecord.html">QSqlRecord</a>.</li>
 <li>The SQL query generation has been moved into the drivers. This makes it possible to use non-standard SQL extensions. It also opens the door to non-SQL databases.</li>
 </ul>
-<p>The GUI-related database classes have been entirely redesigned. The <a href="porting4.html#qsqlcursor">QSqlCursor</a> abstraction has been replaced with <a href="qsqlquerymodel.html">QSqlQueryModel</a> and <a href="qsqltablemodel.html">QSqlTableModel</a>; <a href="porting4.html#qsqleditorfactory">QSqlEditorFactory</a> is replaced by <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>; <a href="porting4.html#qdatatable">QDataTable</a> is replaced by <a href="qtableview.html">QTableView</a>. The old classes are part of the <a href="qt3support.html#qt3support">Qt3Support</a> library to aid porting to Qt 4.</p>
+<p>The GUI-related database classes have been entirely redesigned. The <a href="porting4.html#qsqlcursor">QSqlCursor</a> abstraction has been replaced with <a href="qsqlquerymodel.html">QSqlQueryModel</a> and <a href="qsqltablemodel.html">QSqlTableModel</a>; <a href="porting4.html#qsqleditorfactory">QSqlEditorFactory</a> is replaced by <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>; <a href="porting4.html#qdatatable">QDataTable</a> is replaced by <a href="qtableview.html">QTableView</a>. The old classes are part of the <a href="qt3support.html">Qt3Support</a> library to aid porting to Qt 4.</p>
 <p>
 [Previous: <a href="qt4-accessibility.html">Cross-Platform Accessibility Support in Qt 4</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -137,6 +137,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

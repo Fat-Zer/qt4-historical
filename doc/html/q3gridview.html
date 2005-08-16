@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/qt3support/widgets/q3gridview.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/qt3support/widgets/q3gridview.cpp -->
 <head>
     <title>Qt 4.0: Q3GridView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3GridView Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3GridView Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3GridView class provides an abstract base for fixed-size grids. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3GridView&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3GridView&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qgridview">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="q3scrollview.html">Q3ScrollView</a>.</p>
 <ul>
 <li><a href="q3gridview-members.html">List of all members, including inherited members</a></li>
@@ -66,7 +65,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -172,7 +171,7 @@ body { background: #ffffff; color: black; }</style>
     p-&gt;setClipping(false);</pre>
 <h3 class="fn"><a name="paintEmptyArea"></a>void Q3GridView::paintEmptyArea ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>cx</i>, int <i>cy</i>, int <i>cw</i>, int <i>ch</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function fills the <i>cw</i> pixels wide and <i>ch</i> pixels high rectangle starting at position (<i>cx</i>, <i>cy</i>) with the background color using the painter <i>p</i>.</p>
-<p>paintEmptyArea() is invoked by <a href="q3gridview.html#drawContents">drawContents</a>() to erase or fill unused areas.</p>
+<p>paintEmptyArea() is invoked by <a href="q3scrollview.html#drawContents">drawContents</a>() to erase or fill unused areas.</p>
 <h3 class="fn"><a name="repaintCell"></a>void Q3GridView::repaintCell ( int <i>row</i>, int <i>column</i>, bool <i>erase</i> = true )</h3>
 <p>Repaints cell (<i>row</i>, <i>column</i>).</p>
 <p>If <i>erase</i> is true, Qt erases the area of the cell before the <a href="q3gridview.html#paintCell">paintCell</a>() call; otherwise no erasing takes place.</p>
@@ -187,6 +186,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

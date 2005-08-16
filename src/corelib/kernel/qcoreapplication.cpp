@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -130,6 +125,7 @@ QAbstractEventDispatcher *QCoreApplicationPrivate::eventDispatcher = 0;
 Qt::HANDLE qt_application_thread_id = 0;
 #endif
 
+#ifndef QT_NO_THREAD
 // thread wrapper for the main() thread
 class QCoreApplicationThread : public QThread
 {
@@ -156,6 +152,9 @@ private:
     }
 };
 Q_GLOBAL_STATIC(QCoreApplicationThread, mainThread)
+#else
+static QThread* mainThread() { return QThread::currentThread(); }
+#endif
 
 QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
     : QObjectPrivate(), argc(aargc), argv(aargv), application_type(0), eventFilter(0)
@@ -179,7 +178,9 @@ QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
 QCoreApplicationPrivate::~QCoreApplicationPrivate()
 {
     QThreadData *data = QThreadData::get(mainThread());
+#ifndef QT_NO_THREAD
     QThreadStorageData::finish(data->tls);
+#endif
     QThreadPrivate::setCurrentThread(0);
 
     // need to clear the state of the mainData, just in case a new QCoreApplication comes along.
@@ -197,7 +198,7 @@ QCoreApplicationPrivate::~QCoreApplicationPrivate()
         }
     }
     data->postEventList.clear();
-    data->postEventList.offset = 0;
+    data->postEventList.recursion = 0;
     data->quitNow = false;
 }
 
@@ -388,14 +389,16 @@ void QCoreApplication::init()
     set_winapp_name();
 #endif
 
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     d->app_libpaths = 0;
 #endif
 
     Q_ASSERT_X(!self, "QCoreApplication", "there should be only one application object");
     QCoreApplication::self = this;
 
+#ifndef QT_NO_THREAD
     QThread::initialize();
+#endif
 
     if (!QCoreApplicationPrivate::eventDispatcher)
         d->createEventDispatcher();
@@ -405,7 +408,7 @@ void QCoreApplication::init()
     QThreadData *data = QThreadData::get(mainThread());
     data->eventDispatcher = QCoreApplicationPrivate::eventDispatcher;
 
-#ifdef Q_OS_UNIX
+#if defined(Q_OS_UNIX) && !(defined(QT_NO_PROCESS))
     // Make sure the process manager thread object is created in the main
     // thread.
     QProcessPrivate::initializeProcessManager();
@@ -427,7 +430,7 @@ QCoreApplication::~QCoreApplication()
     Q_D(QCoreApplication);
     qt_call_post_routines();
 
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     delete d->app_libpaths;
     d->app_libpaths = 0;
 #endif
@@ -435,7 +438,9 @@ QCoreApplication::~QCoreApplication()
     self = 0;
     QCoreApplicationPrivate::is_app_running = false;
 
+#ifndef QT_NO_THREAD
     QThread::cleanup();
+#endif
 
     QThreadData::get(mainThread())->eventDispatcher = 0;
     if (d->eventDispatcher)
@@ -765,6 +770,7 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
             }
         }
         data->postEventList.append(QPostEvent(receiver, event));
+        data->canWait = false;
     }
 
     if (data->eventDispatcher)
@@ -822,6 +828,15 @@ bool QCoreApplication::compressEvent(QEvent *event, QObject *receiver, QPostEven
 
 void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 {
+
+    bool doDeferredDeletion = (event_type == QEvent::DeferredDelete);
+    if (event_type == -1) {
+        // uglehack - this is to detect that we were called by the event
+        // dispatcher. if possible it should be fixed for 4.1.
+        doDeferredDeletion = true;
+        event_type = 0;
+    }
+    
     QThread *currentThread = QThread::currentThread();
     if (self) {
         // allow sendPostedEvents() to be called when QCoreApplication
@@ -842,17 +857,13 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 
     QThreadData *data = QThreadData::get(currentThread);
 
-    // the allowDeferredDelete flag is set to true in
-    // QEventLoop::exec(), just before each call to processEvents()
-    //
-    // Note: we leave it set to false when returning
-    bool allowDeferredDelete = data->allowDeferredDelete || event_type == QEvent::DeferredDelete;
-    data->allowDeferredDelete = false;
+    ++data->postEventList.recursion;
 
 #ifdef QT3_SUPPORT
     // optimize sendPostedEvents(w, QEvent::ChildInserted) calls away
     if (receiver && event_type == QEvent::ChildInserted
         && !receiver->d_func()->postedChildInsertedEvents) {
+        --data->postEventList.recursion;
         return;
     }
     // Make sure the object hierarchy is stable before processing events
@@ -863,12 +874,19 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 
     QMutexLocker locker(&data->postEventList.mutex);
 
-    if (data->postEventList.size() == 0 || (receiver && !receiver->d_func()->postedEvents))
+    if (data->postEventList.size() == 0 || (receiver && !receiver->d_func()->postedEvents)) {
+        --data->postEventList.recursion;
         return;
+    }
+
+    // by default, we assume that the event dispatcher can go to sleep after
+    // processing all events. if any new events are posted while we send
+    // events, canWait will be set to false.
+    data->canWait = true;
 
     // okay. here is the tricky loop. be careful about optimizing
     // this, it looks the way it does for good reasons.
-    int i = data->postEventList.offset;
+    int i = 0;
     const int s = data->postEventList.size();
     while (i < data->postEventList.size()) {
         // avoid live-lock
@@ -877,11 +895,6 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 
         const QPostEvent &pe = data->postEventList.at(i);
         ++i;
-
-        // optimize for recursive calls. In the no-receiver
-        // no-event-type case we know that we process all events.
-        if (!receiver && !event_type)
-            data->postEventList.offset = i;
 
         if (!pe.event)
             continue;
@@ -894,8 +907,12 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
             const QEventLoop *const savedEventLoop = reinterpret_cast<QEventLoop *>(pe.event->d);
             const QEventLoop *const currentEventLoop =
                 data->eventLoops.isEmpty() ? 0 : data->eventLoops.top();
-            if (!allowDeferredDelete
-                || (savedEventLoop != 0 && currentEventLoop != 0 &&  savedEventLoop != currentEventLoop)) {
+
+            // DeferredDelete events are only sent when we are explicitly
+            // asked to (s.a. QEventLoop::DeferredDeletion), and then only if
+            // there is no current event loop, or if the current event loop is
+            // equal to the loop in which deleteLater() was called.
+            if (!doDeferredDeletion || (currentEventLoop && savedEventLoop && savedEventLoop != currentEventLoop)) {
                 // cannot send deferred delete
                 if (!event_type && !receiver) {
                     // don't lose the event
@@ -929,24 +946,18 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
         QCoreApplication::sendEvent(r, e);
         locker.relock();
 
-        // update the offset, in case events have been added ore
-        // removed
-        i = data->postEventList.offset;
-
         delete e;
         // careful when adding anything below this point - the
         // sendEvent() call might invalidate any invariants this
         // function depends on.
     }
 
+    --data->postEventList.recursion;
     // clear the global list, i.e. remove everything that was
     // delivered.
-    if (!event_type) {
-        if (!receiver) {
-            const QPostEventList::iterator it = data->postEventList.begin();
-            data->postEventList.erase(it, it + i);
-            data->postEventList.offset = 0;
-        }
+    if (!data->postEventList.recursion && !event_type && !receiver) {
+        const QPostEventList::iterator it = data->postEventList.begin();
+        data->postEventList.erase(it, it + i);
     }
 }
 
@@ -980,17 +991,10 @@ void QCoreApplication::removePostedEvents(QObject *receiver)
     // for this object.
     if (!receiver->d_func()->postedEvents) return;
 
-    // iterate over the posted event list and delete the events.
-    // leave the QPostEvent objects; they'll be deleted by
-    // sendPostedEvents().
-
     int n = data->postEventList.size();
     int j = 0;
 
     for (int i = 0; i < n; ++i) {
-        if (data->postEventList.offset == i)
-            data->postEventList.offset = j;
-
         const QPostEvent &pe = data->postEventList.at(i);
         if (pe.receiver == receiver) {
             if (pe.event) {
@@ -1001,8 +1005,9 @@ void QCoreApplication::removePostedEvents(QObject *receiver)
 #endif
                 pe.event->posted = false;
                 delete pe.event;
+                const_cast<QPostEvent &>(pe).event = 0;
             }
-        } else {
+        } else if (!data->postEventList.recursion) {
             if (i != j)
                 data->postEventList.swap(i, j);
             ++j;
@@ -1013,12 +1018,10 @@ void QCoreApplication::removePostedEvents(QObject *receiver)
 #ifdef QT3_SUPPORT
     Q_ASSERT(!receiver->d_func()->postedChildInsertedEvents);
 #endif
-
-    if (data->postEventList.offset == n)
-        data->postEventList.offset = j;
-
-    while (j++ < n)
-        data->postEventList.removeLast();
+    if (!data->postEventList.recursion) {
+        while (j++ < n)
+            data->postEventList.removeLast();
+    }
 }
 
 
@@ -1282,7 +1285,6 @@ QString QCoreApplication::applicationDirPath()
     return QFileInfo(applicationFilePath()).path();
 }
 
-#ifndef QT_NO_DIR
 /*!
     Returns the file path of the application executable.
 
@@ -1359,7 +1361,6 @@ QString QCoreApplication::applicationFilePath()
     return fi.exists() ? fi.canonicalFilePath() : QString();
 #endif
 }
-#endif // QT_NO_DIR
 
 /*!
     Returns the number of command line arguments.
@@ -1480,7 +1481,7 @@ QString QCoreApplication::applicationName()
 
 
 
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
 
 /*!
     Returns a list of paths that the application will search when
@@ -1586,7 +1587,7 @@ void QCoreApplication::removeLibraryPath(const QString &path)
     self->d_func()->app_libpaths->removeAll(path);
 }
 
-#endif //QT_NO_COMPONENT
+#endif //QT_NO_LIBRARY
 
 /*!
     \typedef QCoreApplication::EventFilter

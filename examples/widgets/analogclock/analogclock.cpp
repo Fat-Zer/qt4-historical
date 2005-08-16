@@ -4,22 +4,17 @@
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -43,8 +38,17 @@ AnalogClock::AnalogClock(QWidget *parent)
 
 void AnalogClock::paintEvent(QPaintEvent *)
 {
-    static const int hourHand[6] = { 7, 8, -7, 8, 0, -40 };
-    static const int minuteHand[6] = { 7, 8, -7, 8, 0, -70 };
+    static const QPoint hourHand[3] = {
+        QPoint(7, 8),
+        QPoint(-7, 8),
+        QPoint(0, -40)
+    };
+    static const QPoint minuteHand[3] = {
+        QPoint(7, 8),
+        QPoint(-7, 8),
+        QPoint(0, -70)
+    };
+
     QColor hourColor(127, 0, 127);
     QColor minuteColor(0, 127, 127, 191);
 
@@ -61,7 +65,7 @@ void AnalogClock::paintEvent(QPaintEvent *)
 
     painter.save();
     painter.rotate(30.0 * ((time.hour() + time.minute() / 60.0)));
-    painter.drawConvexPolygon(QPolygon(3, hourHand));
+    painter.drawConvexPolygon(hourHand, 3);
     painter.restore();
 
     painter.setPen(hourColor);
@@ -76,7 +80,7 @@ void AnalogClock::paintEvent(QPaintEvent *)
 
     painter.save();
     painter.rotate(6.0 * (time.minute() + time.second() / 60.0));
-    painter.drawConvexPolygon(QPolygon(3, minuteHand));
+    painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 
     painter.setPen(minuteColor);

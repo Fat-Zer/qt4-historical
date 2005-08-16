@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -71,7 +66,7 @@ public:
         // MS Windows types
         Win,
 
-        // Apple MacOS types
+        // Apple Mac OS types
         Mac,
 
         // Trolltech QWS types
@@ -171,16 +166,18 @@ public:
     QVector<KernPair> kerning_pairs;
     float designToDevice;
     int unitsPerEm;
+#elif defined(Q_WS_MAC)
+    uint kerning : 1;
 #endif // Q_WS_WIN
 };
 
+class QGlyph;
 
 #if defined(Q_WS_QWS)
 
+#ifndef QT_NO_FREETYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
-class QGlyph;
 
 class QFontEngineFT : public QFontEngine
 {
@@ -226,6 +223,9 @@ public:
     friend class QFontDatabase;
     static FT_Library ft_library;
 };
+#endif // QT_NO_FREETYPE
+
+#ifndef QT_NO_QWS_QPF
 
 class QFontEngineQPFData;
 
@@ -260,6 +260,7 @@ public:
 
     QFontEngineQPFData *d;
 };
+#endif // QT_NO_QWS_QPF
 
 #endif // QWS
 
@@ -323,6 +324,9 @@ public:
     ~QFontEngineMac();
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
+    void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
+
 
     void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
     void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
@@ -345,9 +349,9 @@ public:
 
     FECaps capabilites() const { return FullTransformations; }
 
-    enum { WIDTH=0x01, DRAW=0x02, EXISTS=0x04 };
+    enum { WIDTH=0x01, DRAW=0x02, EXISTS=0x04, ADVANCES=0x08 };
     int doTextTask(const QChar *s, int pos, int use_len, int len, uchar task, qreal =-1, qreal y=-1,
-                   QPaintEngine *p=NULL) const;
+                   QPaintEngine *p=0, void **data=0) const;
 };
 
 #endif
@@ -388,6 +392,8 @@ public:
     QFontEngine *engine(int at) const;
 
 protected:
+    friend class QPSPrintEnginePrivate;
+    friend class QPSPrintEngineFontMulti;
     virtual void loadEngine(int at) = 0;
     QVector<QFontEngine *> engines;
 };

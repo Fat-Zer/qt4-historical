@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -42,6 +37,8 @@
 
 #include "qmainwindow.h"
 
+#ifndef QT_NO_MAINWINDOW
+
 #include <qlayout.h>
 #include <qvector.h>
 
@@ -58,25 +55,30 @@ public:
     ~QMainWindowLayout();
 
     QLayoutItem *statusbar;
+#ifndef QT_NO_STATUSBAR
     QStatusBar *statusBar() const;
     void setStatusBar(QStatusBar *sb);
-
+#endif
+    
     QWidget *centralWidget() const;
     void setCentralWidget(QWidget *cw);
 
+#ifndef QT_NO_TOOLBAR
     void addToolBarBreak(Qt::ToolBarArea area);
     void insertToolBarBreak(QToolBar *before);
     void addToolBar(Qt::ToolBarArea area, QToolBar *toolbar, bool needAddChildWidget = true);
     void insertToolBar(QToolBar *before, QToolBar *toolbar);
     Qt::ToolBarArea toolBarArea(QToolBar *toolbar) const;
-
+#endif
+    
+#ifndef QT_NO_DOCKWIDGET    
     QDockWidgetLayout *layoutForArea(Qt::DockWidgetArea area);
     void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget,
                        Qt::Orientation orientation);
     void splitDockWidget(QDockWidget *after, QDockWidget *dockwidget,
                          Qt::Orientation orientation);
     Qt::DockWidgetArea dockWidgetArea(QDockWidget *dockwidget) const;
-
+#endif
     enum { // sentinel values used to validate state data
         VersionMarker = 0xff,
         ToolBarStateMarker = 0xfe,
@@ -113,17 +115,21 @@ public:
 
     void beginConstrain();
     void endConstrain();
+#ifndef QT_NO_DOCKWIDGET
     int constrain(QDockWidgetLayout *dock, int delta);
-
+    
     Qt::DockWidgetArea locateDockWidget(QDockWidget *dockwidget, const QPoint &mouse) const;
     QRect placeDockWidget(QDockWidget *dockwidget, const QRect &r, const QPoint &mouse);
     void dropDockWidget(QDockWidget *dockwidget, const QRect &r, const QPoint &mouse);
-
+#endif
+    
+#ifndef QT_NO_TOOLBAR
     int locateToolBar(QToolBar *toolbar, const QPoint &mouse) const;
     void dropToolBar(QToolBar *toolbar, const QPoint &mouse, const QPoint &offset);
 
     void removeToolBarInfo(QToolBar *toolbar);
-
+#endif
+    
     // dock/center-widget layout data
     Qt::DockWidgetArea corners[4];
     struct QMainWindowLayoutInfo
@@ -135,6 +141,7 @@ public:
     };
     QVector<QMainWindowLayoutInfo> layout_info, *save_layout_info;
 
+#ifndef QT_NO_TOOLBAR
     // toolbar layout data
     struct ToolBarLayoutInfo
     {
@@ -158,6 +165,8 @@ public:
     static int prevVisible(int index, const ToolBarLineInfo &lineInfo);
 
     QList<ToolBarLineInfo> tb_layout_info, *save_tb_layout_info;
+#endif
 };
 
+#endif // QT_NO_MAINWINDOW
 #endif // QMAINWINDOWLAYOUT_P_H

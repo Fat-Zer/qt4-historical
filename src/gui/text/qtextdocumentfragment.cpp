@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -474,7 +469,7 @@ QTextDocumentFragment QTextDocumentFragment::fromPlainText(const QString &plainT
             const int textEnd = (seenCRLF ? i - 1 : i);
 
             if (textEnd > textStart)
-                res.d->appendText(QString::fromRawData(plainText.unicode() + textStart, textEnd - textStart), -1);
+                res.d->appendText(QString(plainText.unicode() + textStart, textEnd - textStart), -1);
 
             textStart = i + 1;
             res.d->appendText(QString(QChar::ParagraphSeparator), -1, -1);
@@ -487,7 +482,7 @@ QTextDocumentFragment QTextDocumentFragment::fromPlainText(const QString &plainT
         }
     }
     if (textStart < plainText.length())
-        res.d->appendText(QString::fromRawData(plainText.unicode() + textStart, plainText.length() - textStart), -1);
+        res.d->appendText(QString(plainText.unicode() + textStart, plainText.length() - textStart), -1);
 
     return res;
 }
@@ -599,11 +594,9 @@ void QTextHTMLImporter::import()
             if (node->text.isEmpty())
                 continue;
         } else if (node->id == Html_table) {
-            Table t;
-            if (scanTable(i, &t)) {
-                tables.append(t);
-                hasBlock = false;
-            }
+            Table t = scanTable(i);
+            tables.append(t);
+            hasBlock = false;
             continue;
         } else if (node->id == Html_tr && !tables.isEmpty()) {
             tables[tables.size() - 1].currentRow++;
@@ -611,6 +604,14 @@ void QTextHTMLImporter::import()
         } else if (node->id == Html_img) {
             QTextImageFormat fmt;
             fmt.setName(node->imageName);
+
+            QTextCharFormat nodeFmt = node->charFormat();
+            if (nodeFmt.hasProperty(QTextFormat::IsAnchor))
+                fmt.setAnchor(nodeFmt.isAnchor());
+            if (nodeFmt.hasProperty(QTextFormat::AnchorHref))
+                fmt.setAnchorHref(nodeFmt.anchorHref());
+            if (nodeFmt.hasProperty(QTextFormat::AnchorName))
+                fmt.setAnchorName(nodeFmt.anchorName());
 
             if (node->imageWidth >= 0)
                 fmt.setWidth(node->imageWidth);
@@ -623,6 +624,12 @@ void QTextHTMLImporter::import()
             fmt.setObjectIndex(objIndex);
 
             appendImage(fmt);
+            hasBlock = false;
+            continue;
+        } else if (node->id == Html_hr) {
+            QTextBlockFormat blockFormat;
+            blockFormat.setProperty(QTextFormat::BlockTrailingHorizontalRulerWidth, node->width);
+            appendBlock(blockFormat);
             hasBlock = false;
             continue;
         }
@@ -714,7 +721,7 @@ void QTextHTMLImporter::import()
                 continue;
 
             hasBlock = true;
-        } 
+        }
 
         if (node->isAnchor && !node->anchorName.isEmpty()) {
             setNamedAnchorInNextOutput = true;
@@ -758,10 +765,15 @@ bool QTextHTMLImporter::closeTag(int i)
             t.currentColumnCount = 0;
             blockTagClosed = true;
         } else if (closedNode->id == Html_table && !tables.isEmpty()) {
-            QTextCharFormat charFmt;
-            charFmt.setObjectIndex(tables[tables.size() - 1].tableIndex);
-            QTextBlockFormat fmt;
-            appendBlock(fmt, charFmt, QTextEndOfFrame);
+            Table &t = tables[tables.size() -1];
+
+            if (t.columns > 0) {
+                QTextCharFormat charFmt;
+                charFmt.setObjectIndex(t.tableIndex);
+                QTextBlockFormat fmt;
+                appendBlock(fmt, charFmt, QTextEndOfFrame);
+            }
+
             tables.resize(tables.size() - 1);
             // we don't need an extra block after tables, so we don't
             // claim to have closed one for the creation of a new one
@@ -774,6 +786,8 @@ bool QTextHTMLImporter::closeTag(int i)
             listReferences.resize(listReferences.size() - 1);
             --indent;
             blockTagClosed = true;
+        } else if (closedNode->id == Html_hr || closedNode->id == Html_center) {
+            blockTagClosed = true;
         }
 
         closedNode = &at(closedNode->parent);
@@ -783,9 +797,10 @@ bool QTextHTMLImporter::closeTag(int i)
     return blockTagClosed;
 }
 
-bool QTextHTMLImporter::scanTable(int tableNodeIdx, Table *table)
+QTextHTMLImporter::Table QTextHTMLImporter::scanTable(int tableNodeIdx) const
 {
-    table->columns = 0;
+    Table table;
+    table.columns = 0;
 
     QVector<QTextLength> columnWidths;
 
@@ -804,10 +819,10 @@ bool QTextHTMLImporter::scanTable(int tableNodeIdx, Table *table)
                     colsInRow += c.tableCellColSpan;
 
                     if (c.tableCellRowSpan > 1) {
-                        table->rowSpanCellsPerRow.resize(effectiveRow + c.tableCellRowSpan + 1);
+                        table.rowSpanCellsPerRow.resize(effectiveRow + c.tableCellRowSpan + 1);
 
                         for (int r = effectiveRow + 1; r < effectiveRow + c.tableCellRowSpan; ++r)
-                            table->rowSpanCellsPerRow[r]++;
+                            table.rowSpanCellsPerRow[r]++;
                     }
 
                     if (inFirstRow || colsInRow > columnWidths.count()) {
@@ -816,7 +831,7 @@ bool QTextHTMLImporter::scanTable(int tableNodeIdx, Table *table)
                     }
                 }
 
-            table->columns = qMax(table->columns, colsInRow);
+            table.columns = qMax(table.columns, colsInRow);
             inFirstRow = false;
 
             ++effectiveRow;
@@ -824,16 +839,30 @@ bool QTextHTMLImporter::scanTable(int tableNodeIdx, Table *table)
     }
 
     if (cellCount == 0)
-        return false;
+        return table;
 
+    QTextFrameFormat fmt;
     const QTextHtmlParserNode &node = at(tableNodeIdx);
-    QTextTableFormat fmt;
+    if (node.isTableFrame) {
+        // for plain text frames we set the frame margin
+        // for all of top/bottom/left/right, so in the import 
+        // here it doesn't matter which one we pick
+        fmt.setMargin(node.uncollapsedMargin(QTextHtmlParser::MarginTop));
+    } else {
+        QTextTableFormat tableFmt;
+        tableFmt.setCellSpacing(node.tableCellSpacing);
+        tableFmt.setCellPadding(node.tableCellPadding);
+        if (node.alignment)
+            tableFmt.setAlignment(node.alignment);
+        tableFmt.setColumns(table.columns);
+        tableFmt.setColumnWidthConstraints(columnWidths);
+        fmt = tableFmt;
+    }
+
     fmt.setBorder(node.tableBorder);
     fmt.setWidth(node.width);
-    fmt.setCellSpacing(node.tableCellSpacing);
-    fmt.setCellPadding(node.tableCellPadding);
-    if (node.alignment)
-        fmt.setAlignment(node.alignment);
+    fmt.setHeight(node.height);
+
     if (node.direction < 2)
         fmt.setLayoutDirection(Qt::LayoutDirection(node.direction));
     if (node.bgColor.isValid())
@@ -842,10 +871,8 @@ bool QTextHTMLImporter::scanTable(int tableNodeIdx, Table *table)
         fmt.clearBackground();
     fmt.setPosition(QTextFrameFormat::Position(node.cssFloat));
 
-    fmt.setColumns(table->columns);
-    fmt.setColumnWidthConstraints(columnWidths);
-    table->tableIndex = d->formatCollection.createObjectIndex(fmt);
-    return true;
+    table.tableIndex = d->formatCollection.createObjectIndex(fmt);
+    return table;
 }
 
 void QTextHTMLImporter::appendBlock(const QTextBlockFormat &format, QTextCharFormat charFmt, const QChar &separator)

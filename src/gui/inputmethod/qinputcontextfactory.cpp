@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the input methods of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -62,16 +57,44 @@
 #include "private/qfactoryloader_p.h"
 #include "qmutex.h"
 
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
     (QInputContextFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/inputmethods")))
 #endif
 
+/*!
+    \class QInputContextFactory
+    \brief The QInputContextFactory class creates QInputContext objects.
+
+    \ingroup appearance
+
+    The input context factory creates a QInputContext object for a
+    given key with QInputContextFactory::create().
+
+    The input contexts are either built-in or dynamically loaded from
+    an input context plugin (see QInputContextPlugin).
+
+    QInputContextFactory::keys() returns a list of valid keys. The
+    keys are the names used, for example, to identify and specify
+    input methods for the input method switching mechanism. The names
+    have to be consistent with QInputContext::identifierName(), and
+    may only contain ASCII characters.
+
+    A key can be used to retrieve the associated input context's
+    supported languages using QInputContextFactory::languages(). You
+    can retrieve the input context's description using
+    QInputContextFactory::description() and finally you can get a user
+    friendly internationalized name of the QInputContext object
+    specified by the key using QInputContextFactory::displayName().
+
+    \sa QInputContext, QInputContextPlugin
+*/
 
 /*!
-    This function generates the input context that has the identifier
-    name which is in agreement with \a key. \a widget is the client
-    widget of QInputContext. \a widget may be null.
+    Creates and returns a QInputContext object for the input context
+    specified by \a key with the given \a parent.
+
+    \sa keys()
 */
 QInputContext *QInputContextFactory::create( const QString& key, QObject *parent )
 {
@@ -91,7 +114,7 @@ QInputContext *QInputContextFactory::create( const QString& key, QObject *parent
         result = new QMacInputContext;
     }
 #endif
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     if (QInputContextFactoryInterface *factory =
         qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key))) {
         result = factory->create(key);
@@ -104,9 +127,15 @@ QInputContext *QInputContextFactory::create( const QString& key, QObject *parent
 
 
 /*!
-    This function returns the list of the names input methods.
-    Only input methods included in default and placed under
-    $QTDIR/plugins/inputmethods are listed.
+    Returns the list of keys this factory can create input contexts
+    for.
+
+    The keys are the names used, for example, to identify and specify
+    input methods for the input method switching mechanism.  The names
+    have to be consistent with QInputContext::identifierName(), and
+    may only contain ASCII characters.
+
+    \sa create(), displayName(), QInputContext::identifierName()
 */
 QStringList QInputContextFactory::keys()
 {
@@ -120,13 +149,26 @@ QStringList QInputContextFactory::keys()
 #if defined(Q_WS_MAC)
     result << QLatin1String("mac");
 #endif
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     result += loader()->keys();
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
     return result;
 }
 
+/*!
+    Returns the languages supported by the QInputContext object
+    specified by \a key.
 
+    The languages are expressed as language code (e.g. "zh_CN",
+    "zh_TW", "zh_HK", "ja", "ko", ...). An input context that supports
+    multiple languages can return all supported languages as a
+    QStringList. The name has to be consistent with
+    QInputContext::language().
+
+    This information may be used to optimize a user interface.
+
+    \sa keys(), QInputContext::language(), QLocale
+*/
 QStringList QInputContextFactory::languages( const QString &key )
 {
     QStringList result;
@@ -142,15 +184,21 @@ QStringList QInputContextFactory::languages( const QString &key )
     if (key == QLatin1String("mac"))
         return QStringList(QString());
 #endif
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     if (QInputContextFactoryInterface *factory =
         qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key)))
         result = factory->languages(key);
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
     return result;
 }
 
+/*!
+    Returns a user friendly internationalized name of the
+    QInputContext object specified by \a key. You can, for example,
+    use this name in a menu.
 
+    \sa keys(), QInputContext::identifierName()
+*/
 QString QInputContextFactory::displayName( const QString &key )
 {
     QString result;
@@ -158,15 +206,21 @@ QString QInputContextFactory::displayName( const QString &key )
     if (key == QLatin1String("xim"))
         return QInputContext::tr( "XIM" );
 #endif
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     if (QInputContextFactoryInterface *factory =
         qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key)))
         return factory->displayName(key);
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
     return QString();
 }
 
+/*!
+    Returns an internationalized brief description of the QInputContext
+    object specified by \a key. You can, for example, use this
+    description in a user interface.
 
+    \sa keys(), displayName()
+*/
 QString QInputContextFactory::description( const QString &key )
 {
 #if defined(Q_WS_X11) && !defined(QT_NO_XIM)
@@ -181,11 +235,11 @@ QString QInputContextFactory::description( const QString &key )
     if (key == QLatin1String("mac"))
         return QInputContext::tr( "Mac OS X input method" );
 #endif
-#ifndef QT_NO_COMPONENT
+#ifndef QT_NO_LIBRARY
     if (QInputContextFactoryInterface *factory =
         qobject_cast<QInputContextFactoryInterface*>(loader()->instance(key)))
         return factory->description(key);
-#endif // QT_NO_COMPONENT
+#endif // QT_NO_LIBRARY
     return QString();
 }
 

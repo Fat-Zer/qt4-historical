@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/q3ptrvector.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/q3ptrvector.qdoc -->
 <head>
     <title>Qt 4.0: Q3PtrVector Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3PtrVector Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3PtrVector Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3PtrVector class is a template collection class that provides a vector (array). <a href="#details">More...</a></p>
-<pre>#include &lt;Q3PtrVector&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3PtrVector&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="q3ptrcollection.html">Q3PtrCollection</a>.</p>
 <ul>
 <li><a href="q3ptrvector-members.html">List of all members, including inherited members</a></li>
@@ -75,7 +74,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Q3PtrVector is implemented as a template class. Defines a template instance Q3PtrVector&lt;X&gt; to create a vector that contains pointers to X (X*).</p>
 <p>A vector is the same as an array. The main difference between Q3PtrVector and <a href="q3memarray.html">Q3MemArray</a> is that Q3PtrVector stores pointers to the elements, whereas <a href="q3memarray.html">Q3MemArray</a> stores the elements themselves (i.e. <a href="q3memarray.html">Q3MemArray</a> is value-based and Q3PtrVector is pointer-based).</p>
 <p>Items are added to the vector using <a href="q3ptrvector.html#insert">insert</a>() or <a href="q3ptrvector.html#fill">fill</a>(). Items are removed with <a href="q3ptrvector.html#remove">remove</a>(). You can get a pointer to an item at a particular index position using <a href="q3ptrvector.html#at">at</a>().</p>
-<p>Unless otherwise stated, all functions that remove items from the vector will also delete the element pointed to if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled. By default, auto-deletion is disabled; see <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(). This behaviour can be changed in a subclass by reimplementing the virtual function <a href="q3ptrvector.html#deleteItem">deleteItem</a>().</p>
+<p>Unless otherwise stated, all functions that remove items from the vector will also delete the element pointed to if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled. By default, auto-deletion is disabled; see <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(). This behaviour can be changed in a subclass by reimplementing the virtual function <a href="q3ptrcollection.html#deleteItem">deleteItem</a>().</p>
 <p>Functions that compare items (<a href="q3ptrvector.html#find">find</a>() and <a href="q3ptrvector.html#sort">sort</a>() for example) will do so using the virtual function <a href="q3ptrvector.html#compareItems">compareItems</a>(). The default implementation of this function only compares the pointer values. Reimplement <a href="q3ptrvector.html#compareItems">compareItems</a>() in a subclass to get searching and sorting based on the item contents. You can perform a linear search for a pointer in the vector using <a href="q3ptrvector.html#findRef">findRef</a>(), or a binary search (of a sorted vector) using <a href="q3ptrvector.html#bsearch">bsearch</a>(). You can count the number of times an item appears in the vector with <a href="q3ptrvector.html#contains">contains</a>() or <a href="q3ptrvector.html#containsRef">containsRef</a>().</p>
 <p>See also <a href="q3memarray.html">Q3MemArray</a>.</p>
 <hr />
@@ -185,7 +184,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3ptrvector.html#bsearch">bsearch</a>().</p>
 <h3 class="fn"><a name="take"></a>type * Q3PtrVector::take ( <a href="qtglobal.html#uint-typedef">uint</a> <i>i</i> )</h3>
 <p>Returns the item at position <i>i</i> in the vector, and removes that item from the vector. <i>i</i> must be less than <a href="q3ptrvector.html#size">size</a>(). If there is no item at position <i>i</i>, 0 is returned.</p>
-<p>Unlike <a href="q3ptrvector.html#remove">remove</a>(), this function does <i>not</i> call <a href="q3ptrvector.html#deleteItem">deleteItem</a>() for the removed item.</p>
+<p>Unlike <a href="q3ptrvector.html#remove">remove</a>(), this function does <i>not</i> call <a href="q3ptrcollection.html#deleteItem">deleteItem</a>() for the removed item.</p>
 <p>See also <a href="q3ptrvector.html#remove">remove</a>() and <a href="q3ptrvector.html#at">at</a>().</p>
 <h3 class="fn"><a name="write"></a><a href="qdatastream.html">QDataStream</a> &amp; Q3PtrVector::write ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, <a href="q3ptrcollection.html#Item-typedef">Q3PtrCollection::Item</a> <i>item</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Writes a vector item, <i>item</i>, to the stream <i>s</i> and returns a reference to the stream.</p>
@@ -205,6 +204,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

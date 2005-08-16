@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -86,13 +81,13 @@ void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
   application, and later used to access information in a model.
   Unlike the QModelIndex class, it is safe to store a
   QPersistentModelIndex since the model will ensure that references
-  to data will continue to be valid as long as that data exists within
-  the model.
+  to items will continue to be valid as long as they can be accessed
+  by the model.
 
   It is good practice to check that persistent model indexes are valid
   before using them.
 
-  \sa \link model-view-programming.html Model/View Programming\endlink QModelIndex QAbstractItemModel
+  \sa {Model/View Programming}, QModelIndex, QAbstractItemModel
 */
 
 
@@ -442,17 +437,20 @@ void QAbstractItemModelPrivate::rowsInserted(const QModelIndex &parent,
 }
 
 void QAbstractItemModelPrivate::rowsAboutToBeRemoved(const QModelIndex &parent,
-                                                        int first, int last)
+                                                     int first, int last)
 {
     persistent.changed.clear();
     persistent.invalidated.clear();
     for (int position = 0; position < persistent.indexes.count(); ++position) {
         QModelIndex index = persistent.indexes.at(position)->index;
         if (index.isValid() && index.parent() == parent) {
-            if (index.row() > last) // below the removed rows
+            if (index.row() > last) { // below the removed rows
                 persistent.changed.append(position);
-            else if (index.row() >= first) // about to be removed
+            } else if (index.row() >= first) { // about to be removed
+                if (q_func()->hasChildren(index)) // the children are invalidated too                    
+                    rowsAboutToBeRemoved(index, 0, q_func()->rowCount(index) - 1);
                 persistent.invalidated.append(position);
+            }
         }
     }
 }
@@ -546,18 +544,20 @@ void QAbstractItemModelPrivate::reset()
 
     This class is used as an index into item models derived from
     QAbstractItemModel. The index is used by item views, delegates, and
-    selection models to locate an item in the model. QModelIndex objects are
-    created by the model.
+    selection models to locate an item in the model.
 
-    Model indexes contain all the information required to specify the items
-    they refer to in a model. Indexes are located in a row and a column, and
-    they may have a parent index; use row(), column(), and parent() to obtain
-    this information. Top-level items in a model are represented by model
-    indexes that do not have a parent index - in this case, parent() will
-    return an invalid model index that is equivalent to an index constructed
-    with the zero argument form of the QModelIndex() constructor.
+    New QModelIndex objects are created by the model using the
+    QAbstractItemModel::createIndex() function.
 
-    To obtain a model index that refers to an item in a model, call
+    Model indexes refer to items in models, and contain all the information
+    required to specify their locations in those models. Each index is located
+    in a given row and column, and may have a parent index; use row(), column(),
+    and parent() to obtain this information. Each top-level item in a model is
+    represented by a model index that does not have a parent index - in this
+    case, parent() will return an invalid model index, equivalent to an index
+    constructed with the zero argument form of the QModelIndex() constructor.
+
+    To obtain a model index that refers to an existing item in a model, call
     QAbstractItemModel::index() with the required row and column
     values, and the model index of the parent. When referring to
     top-level items in a model, supply QModelIndex() as the parent index.
@@ -769,6 +769,15 @@ void QAbstractItemModelPrivate::reset()
     You can also reimplement headerData() and setHeaderData() to control
     the way the headers for your model are presented.
 
+    Custom models need to create model indexes for other components to use.
+    To do this, call createIndex() with suitable row and column numbers for
+    the item, and supply a unique identifier for the item, either as a
+    pointer or as an integer value. Custom models typically use these
+    unique identifiers in other reimplemented functions to retrieve item
+    data and access information about the item's parents and children.
+    See the \l{Simple Tree Model} example for more information about unique
+    identifiers.
+
     Models that provide interfaces to resizable data structures can
     provide implementations of insertRows(), removeRows(), insertColumns(),
     and removeColumns(). When implementing these functions, it is
@@ -861,6 +870,21 @@ void QAbstractItemModelPrivate::reset()
     sections in the header from the \a first to the \a last need to be updated.
 
     \sa headerData(), setHeaderData(), dataChanged()
+*/
+
+/*!
+    \fn void QAbstractItemModel::layoutChanged()
+
+    This signal is emitted whenever the layout of items exposed by the model
+    changes; for example, when the model is sorted. When this signal is
+    received by a view, it should update the layout of items to reflect this
+    change.
+
+    When subclassing QAbstractItemModel or QProxyModel, ensure that you emit
+    this signal if you change the order of items or alter the structure of
+    the data you expose to views.
+
+    \sa dataChanged(), headerDataChanged(), reset()
 */
 
 /*!
@@ -1056,7 +1080,7 @@ QMap<int, QVariant> QAbstractItemModel::itemData(const QModelIndex &index) const
     The base class implementation returns false. This function and
     data() must be reimplemented for editable models.
 
-    \sa data() itemData()
+    \sa Qt::ItemDataRole, data(), itemData()
 */
 bool QAbstractItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -1072,11 +1096,11 @@ bool QAbstractItemModel::setData(const QModelIndex &index, const QVariant &value
     Returns the data stored under the given \a role for the item referred to
     by the \a index.
 
-    \sa Qt::ItemDataRole
+    \sa Qt::ItemDataRole, setData(), headerData()
 */
 
 /*!
-    For every \c Qt::ItemDataRole in \a roles, sets the role data for the item at
+    For every Qt::ItemDataRole in \a roles, sets the role data for the item at
     \a index to the associated value in \a roles. Returns true if
     successful; otherwise returns false.
 
@@ -1155,6 +1179,10 @@ bool QAbstractItemModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
 /*!
   Returns the drop actions supported by this model.
+
+  The default implementation returns Qt::CopyAction. It is only necessary to reimplement
+  this function in subclasses if you wish to support more types of drag and drop
+  operation.
 
   \sa Qt::DropActions
 */
@@ -1437,7 +1465,7 @@ void QAbstractItemModel::revert()
   Returns the data for the given \a role and \a section in the header
   with the specified \a orientation.
 
-  \sa Qt::ItemDataRole
+  \sa Qt::ItemDataRole, setHeaderData()
 */
 
 QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -2017,3 +2045,10 @@ bool QAbstractListModel::hasChildren(const QModelIndex &parent) const
 {
     return !parent.isValid();
 }
+
+/*!
+    \typedef QModelIndexList
+    \relates QModelIndex
+
+    Synonym for QList<QModelIndex>.
+*/

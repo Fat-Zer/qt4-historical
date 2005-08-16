@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,6 +23,8 @@
 
 #include "qtextbrowser.h"
 #include "qtextedit_p.h"
+
+#ifndef QT_NO_TEXTBROWSER
 
 #include <qstack.h>
 #include <qapplication.h>
@@ -146,9 +143,10 @@ void QTextBrowserPrivate::activateAnchor(const QString &href)
 void QTextBrowserPrivate::setSource(const QUrl &url)
 {
     Q_Q(QTextBrowser);
+#ifndef QT_NO_CURSOR
     if (q->isVisible())
         qApp->setOverrideCursor(Qt::WaitCursor);
-
+#endif
     textOrSourceChanged = true;
 
     QString txt;
@@ -166,9 +164,13 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         if (data.type() == QVariant::String) {
             txt = data.toString();
         } else if (data.type() == QVariant::ByteArray) {
+#ifndef QT_NO_TEXTCODEC
             QByteArray ba = data.toByteArray();
             QTextCodec *codec = Qt::codecForHtml(ba);
             txt = codec->toUnicode(ba);
+#else
+	    txt = data.toString();
+#endif
         }
         if (txt.isEmpty())
             qWarning("QTextBrowser: no document for %s", url.toString().toLatin1().constData());
@@ -176,8 +178,12 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         if (q->isVisible()) {
             QString firstTag = txt.left(txt.indexOf('>') + 1);
             if (firstTag.left(3) == "<qt" && firstTag.contains("type") && firstTag.contains("detail")) {
+#ifndef QT_NO_CURSOR
                 qApp->restoreOverrideCursor();
+#endif
+#ifndef QT_NO_WHATSTHIS
                 QWhatsThis::showText(QCursor::pos(), txt, q);
+#endif
                 return;
             }
         }
@@ -201,9 +207,10 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         vbar->setValue(0);
     }
 
+#ifndef QT_NO_CURSOR
     if (q->isVisible())
         qApp->restoreOverrideCursor();
-
+#endif
     emit q->sourceChanged(url);
 }
 
@@ -236,6 +243,11 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
     use QTextEdit, and use QTextEdit::setReadOnly() to disable
     editing. If you just need to display a small piece of rich text
     use QLabel.
+
+    If you want to load documents stored in the Qt resource system use
+    qrc as the scheme in the URL to load. For example, for the document
+    resource path \c{:/docs/index.html} use \c{qrc:/docs/index.html} as
+    the URL with setSource().
 */
 
 /*!
@@ -557,11 +569,15 @@ void QTextBrowser::mouseMoveEvent(QMouseEvent *e)
 
     QString anchor = anchorAt(e->pos());
     if (anchor.isEmpty()) {
+#ifndef QT_NO_CURSOR
         d->viewport->setCursor(Qt::ArrowCursor);
+#endif
         emit highlighted(QUrl());
         emit highlighted(QString());
     } else {
+#ifndef QT_NO_CURSOR
         d->viewport->setCursor(Qt::PointingHandCursor);
+#endif
 
         QUrl url = QUrl(d->currentURL).resolved(anchor);
         emit highlighted(url);
@@ -576,10 +592,13 @@ void QTextBrowser::mouseMoveEvent(QMouseEvent *e)
 */
 void QTextBrowser::mousePressEvent(QMouseEvent *e)
 {
-    QTextEdit::mousePressEvent(e);
-
     Q_D(QTextBrowser);
     d->anchorOnMousePress = anchorAt(e->pos());
+    if (!d->cursor.hasSelection() && !d->anchorOnMousePress.isEmpty())
+        d->setCursorPosition(e->pos());
+
+    QTextEdit::mousePressEvent(e);
+
     d->hadSelectionOnMousePress = d->cursor.hasSelection();
 }
 
@@ -835,3 +854,4 @@ QVariant QTextBrowser::loadResource(int /*type*/, const QUrl &name)
 }
 
 #include "moc_qtextbrowser.cpp"
+#endif // QT_NO_TEXTBROWSER

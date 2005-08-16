@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/examples/calculator.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/calculator.qdoc -->
 <head>
     <title>Qt 4.0: Calculator Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Calculator Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Calculator Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="widgets-calculator-button-cpp.html">widgets/calculator/button.cpp</a></li>
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="widgets-calculator-main-cpp.html">widgets/calculator/main.cpp</a></li>
 </ul>
 <p>The example shows how to use signals and slots to implement the functionality of a calculator widget, and how to use <a href="qgridlayout.html">QGridLayout</a> to place child widgets in a grid. This example also demonstrates how to use <a href="qobject.html#installEventFilter">event filters</a> to customize a widget's behavior.</p>
-<center><img src="images/calculator-example.png" alt="Screenshot of the Calculator example" /></center><p>The example consists of two classes:</p>
+<p align="center"><img src="images/calculator-example.png" alt="Screenshot of the Calculator example" /></p><p>The example consists of two classes:</p>
 <ul>
 <li><tt>Calculator</tt> is the calculator widget, with all the calculator functionality.</li>
 <li><tt>Button</tt> is the widget used for each of the calculator button. It derives from <a href="qtoolbutton.html">QToolButton</a>.</li>
@@ -155,7 +155,7 @@ body { background: #ffffff; color: black; }</style>
         }
 
         pointButton = createButton(tr(&quot;.&quot;), digitColor, SLOT(pointClicked()));
-        changeSignButton = createButton(tr(&quot;±&quot;), digitColor, SLOT(changeSignClicked()));
+        changeSignButton = createButton(tr(&quot;\261&quot;), digitColor, SLOT(changeSignClicked()));
 
         backspaceButton = createButton(tr(&quot;Backspace&quot;), backspaceColor,
                                        SLOT(backspaceClicked()));
@@ -170,9 +170,9 @@ body { background: #ffffff; color: black; }</style>
         addToMemoryButton = createButton(tr(&quot;M+&quot;), memoryColor,
                                          SLOT(addToMemory()));
 
-        divisionButton = createButton(tr(&quot;÷&quot;), operatorColor,
+        divisionButton = createButton(tr(&quot;\367&quot;), operatorColor,
                                       SLOT(multiplicativeOperatorClicked()));
-        timesButton = createButton(tr(&quot;×&quot;), operatorColor,
+        timesButton = createButton(tr(&quot;\327&quot;), operatorColor,
                                    SLOT(multiplicativeOperatorClicked()));
         minusButton = createButton(tr(&quot;-&quot;), operatorColor,
                                    SLOT(additiveOperatorClicked()));
@@ -181,7 +181,7 @@ body { background: #ffffff; color: black; }</style>
 
         squareRootButton = createButton(tr(&quot;Sqrt&quot;), operatorColor,
                                         SLOT(unaryOperatorClicked()));
-        powerButton = createButton(tr(&quot;x²&quot;), operatorColor,
+        powerButton = createButton(tr(&quot;x\262&quot;), operatorColor,
                                    SLOT(unaryOperatorClicked()));
         reciprocalButton = createButton(tr(&quot;1/x&quot;), operatorColor,
                                         SLOT(unaryOperatorClicked()));
@@ -257,7 +257,7 @@ body { background: #ffffff; color: black; }</style>
                 return;
             }
             result = sqrt(operand);
-        } else if (clickedOperator == tr(&quot;x²&quot;)) {
+        } else if (clickedOperator == tr(&quot;x\262&quot;)) {
             result = pow(operand, 2.0);
         } else if (clickedOperator == tr(&quot;1/x&quot;)) {
             if (operand == 0.0) {
@@ -449,9 +449,9 @@ body { background: #ffffff; color: black; }</style>
             sumSoFar += rightOperand;
         } else if (pendingOperator == tr(&quot;-&quot;)) {
             sumSoFar -= rightOperand;
-        } else if (pendingOperator == tr(&quot;×&quot;)) {
+        } else if (pendingOperator == tr(&quot;\327&quot;)) {
             factorSoFar *= rightOperand;
-        } else if (pendingOperator == tr(&quot;÷&quot;)) {
+        } else if (pendingOperator == tr(&quot;\367&quot;)) {
             if (rightOperand == 0.0)
                 return false;
             factorSoFar /= rightOperand;
@@ -523,11 +523,11 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>This ensures that with most fonts, the digit and operator buttons will be square, without truncating the text on the <b>Backspace</b>, <b>Clear</b>, and <b>Clear All</b> buttons.</p>
 <p>The screenshot below shows how the <tt>Calculator</tt> widget would would like if we <i>didn't</i> set the horizontal size policy to <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Expanding</a> in the constructor and if we didn't reimplement <a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>().</p>
-<center><img src="images/calculator-ugly.png" alt="The Calculator example with default size policies and size hints" /></center><p>This completes the Calculator example. Trolltech will send a T-shirt to the first finder of a bug in the example.</p>
+<p align="center"><img src="images/calculator-ugly.png" alt="The Calculator example with default size policies and size hints" /></p><p>This completes the Calculator example. Trolltech will send a T-shirt to the first finder of a bug in the example.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

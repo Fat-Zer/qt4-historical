@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/qt3support/itemviews/q3listview.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/qt3support/itemviews/q3listview.cpp -->
 <head>
     <title>Qt 4.0: Q3ListView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3ListView Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3ListView Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3ListView class implements a list/tree view. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3ListView&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3ListView&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qlistview">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="q3scrollview.html">Q3ScrollView</a>.</p>
 <ul>
 <li><a href="q3listview-members.html">List of all members, including inherited members</a></li>
@@ -136,7 +135,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -256,7 +255,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>Right Arrow</td><td>If the current item is closed (<b>+</b> icon) and has children, the item is opened. If the current item is opened (<b>-</b> icon) and has children the item's first child is made current and visible. If the current item has no children the list view is scrolled right.</td></tr>
 </table>
 <p>If the user starts typing letters with the focus in the list view an incremental search will occur. For example if the user types 'd' the current item will change to the first item that begins with the letter 'd'; if they then type 'a', the current item will change to the first item that begins with 'da', and so on. If no item begins with the letters they type the current item doesn't change.</p>
-<p>Note that the list view's size hint is calculated taking into account the height <i>and</i> width to produce a nice aspect ratio. This may mean that you need to reimplement <a href="q3listview.html#sizeHint">sizeHint</a>() in some cases.</p>
+<p>Note that the list view's size hint is calculated taking into account the height <i>and</i> width to produce a nice aspect ratio. This may mean that you need to reimplement <a href="qwidget.html#sizeHint-prop">sizeHint</a>() in some cases.</p>
 <p><b>Warning:</b> The list view assumes ownership of all list view items and will delete them when it does not need them any more.</p>
 <p>See also <a href="q3listviewitem.html">Q3ListViewItem</a> and <a href="q3checklistitem.html">Q3CheckListItem</a>.</p>
 <hr />
@@ -353,7 +352,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>int itemMargin () const</b></li>
 <li><div class="fn"/><b>virtual void setItemMargin ( int )</b></li>
 </ul>
-<p>See also <a href="q3listviewitem.html#paintCell">Q3ListViewItem::paintCell</a>().</p>
+<p>See also Q3ListViewItem::paintCell().</p>
 <h3 class="fn"><a name="multiSelection-prop"></a>multiSelection : bool</h3>
 <p>This property holds whether the list view is in multi-selection or extended-selection mode.</p>
 <p>If you enable multi-selection, <tt>Multi</tt>, mode, it is possible to specify whether or not this mode should be extended. <tt>Extended</tt> means that the user can select multiple items only when pressing the Shift or Ctrl key at the same time.</p>
@@ -421,7 +420,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3ListView"></a>Q3ListView::Q3ListView ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, const char * <i>name</i> = 0, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>f</i> = 0 )</h3>
 <p>Constructs a new empty list view called <i>name</i> with parent <i>parent</i> and widget attributes <i>f</i>.</p>
-<p>This constructor sets the <tt>WA_StaticContent</tt> and the <tt>Qt::WA_NoBackground</tt> attributes to boost performance when drawing Q3ListViewItems. This may be unsuitable for custom <a href="q3listviewitem.html">Q3ListViewItem</a> classes, in which case <tt>Qt::WA_StaticContents</tt> and <tt>Qt::WA_NoBackground</tt> should be cleared on the <a href="q3scrollview.html#viewport">viewport</a>() after construction.</p>
+<p>This constructor sets the <tt>WA_StaticContent</tt> and the <tt>Qt::WA_NoBackground</tt> attributes to boost performance when drawing Q3ListViewItems. This may be unsuitable for custom <a href="q3listviewitem.html">Q3ListViewItem</a> classes, in which case <a href="qt.html#WidgetAttribute-enum">Qt::WA_StaticContents</a> and <a href="qt.html#WidgetAttribute-enum">Qt::WA_NoBackground</a> should be cleared on the <a href="q3scrollview.html#viewport">viewport</a>() after construction.</p>
 <p>See also <a href="qwidget.html#setAttribute">QWidget::setAttribute</a>().</p>
 <h3 class="fn"><a name="dtor.Q3ListView"></a>Q3ListView::~Q3ListView ()</h3>
 <p>Destroys the list view, deleting all its items, and frees up all allocated resources.</p>
@@ -455,7 +454,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3listview.html#setOpen">setOpen</a>() and <a href="q3listview.html#expanded">expanded</a>().</p>
 <h3 class="fn"><a name="columnAlignment"></a>int Q3ListView::columnAlignment ( int <i>column</i> ) const</h3>
 <p>Returns the alignment of column <i>column</i>. The default is <tt>Qt::AlignAuto</tt>.</p>
-<p>See also <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
+<p>See also <a href="q3listview.html#setColumnAlignment">setColumnAlignment</a>() and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="columnText"></a><a href="qstring.html">QString</a> Q3ListView::columnText ( int <i>c</i> ) const</h3>
 <p>Returns the text of column <i>c</i>.</p>
 <p>See also <a href="q3listview.html#setColumnText">setColumnText</a>().</p>
@@ -501,7 +500,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the user presses the mouse on an item and starts moving the mouse, and the item allow dragging (see <a href="q3listviewitem.html#setDragEnabled">Q3ListViewItem::setDragEnabled</a>()), this function is called to get a drag object and a drag is started unless dragObject() returns 0.</p>
 <p>By default this function returns 0. You should reimplement it and create a <a href="q3dragobject.html">Q3DragObject</a> depending on the selected items.</p>
 <h3 class="fn"><a name="drawContentsOffset"></a>void Q3ListView::drawContentsOffset ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>ox</i>, int <i>oy</i>, int <i>cx</i>, int <i>cy</i>, int <i>cw</i>, int <i>ch</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Calls <a href="q3listviewitem.html#paintCell">Q3ListViewItem::paintCell</a>() and <a href="q3listviewitem.html#paintBranches">Q3ListViewItem::paintBranches</a>() as necessary for all list view items that require repainting in the <i>cw</i> pixels wide and <i>ch</i> pixels high bounding rectangle starting at position <i>cx</i>, <i>cy</i> with offset <i>ox</i>, <i>oy</i>. Uses the painter <i>p</i>.</p>
+<p>Calls Q3ListViewItem::paintCell() and <a href="q3listviewitem.html#paintBranches">Q3ListViewItem::paintBranches</a>() as necessary for all list view items that require repainting in the <i>cw</i> pixels wide and <i>ch</i> pixels high bounding rectangle starting at position <i>cx</i>, <i>cy</i> with offset <i>ox</i>, <i>oy</i>. Uses the painter <i>p</i>.</p>
 <p>Reimplemented from <a href="q3scrollview.html#drawContentsOffset">Q3ScrollView</a>.</p>
 <h3 class="fn"><a name="dropped"></a>void Q3ListView::dropped ( <a href="qdropevent.html">QDropEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted, when a drop event occurred on the viewport (not onto an item).</p>
@@ -510,7 +509,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Ensures that item <i>i</i> is visible, scrolling the list view vertically if necessary and opening (expanding) any parent items if this is required to show the item.</p>
 <p>See also <a href="q3listview.html#itemRect">itemRect</a>() and <a href="q3scrollview.html#ensureVisible">Q3ScrollView::ensureVisible</a>().</p>
 <h3 class="fn"><a name="eventFilter"></a>bool Q3ListView::eventFilter ( <a href="qobject.html">QObject</a> * <i>o</i>, <a href="qevent.html">QEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Redirects the event <i>e</i> relating to object <i>o</i>, for the viewport to <a href="q3scrollview.html#mousePressEvent">mousePressEvent</a>(), <a href="q3listview.html#keyPressEvent">keyPressEvent</a>() and friends.</p>
+<p>Redirects the event <i>e</i> relating to object <i>o</i>, for the viewport to <a href="qwidget.html#mousePressEvent">mousePressEvent</a>(), <a href="qwidget.html#keyPressEvent">keyPressEvent</a>() and friends.</p>
 <p>Reimplemented from <a href="qobject.html#eventFilter">QObject</a>.</p>
 <h3 class="fn"><a name="expanded"></a>void Q3ListView::expanded ( <a href="q3listviewitem.html">Q3ListViewItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when <i>item</i> has been expanded, i.e. when the children of <i>item</i> are shown.</p>
@@ -629,8 +628,8 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> Do not delete any <a href="q3listviewitem.html">Q3ListViewItem</a> objects in slots connected to this signal.</p>
 <p>See also <a href="q3listview.html#setSelected">setSelected</a>(), <a href="q3listviewitem.html#setSelected">Q3ListViewItem::setSelected</a>(), and <a href="q3listview.html#currentChanged">currentChanged</a>().</p>
 <h3 class="fn"><a name="setColumnAlignment"></a>void Q3ListView::setColumnAlignment ( int <i>column</i>, int <i>align</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Sets column <i>column</i>'s alignment to <i>align</i>. The alignment is ultimately passed to <a href="q3listviewitem.html#paintCell">Q3ListViewItem::paintCell</a>() for each item in the list view. For horizontally aligned text with <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> the ellipsis (...) will be to the right, for <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a> the ellipsis will be to the left.</p>
-<p>See also <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
+<p>Sets column <i>column</i>'s alignment to <i>align</i>. The alignment is ultimately passed to Q3ListViewItem::paintCell() for each item in the list view. For horizontally aligned text with <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> the ellipsis (...) will be to the right, for <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a> the ellipsis will be to the left.</p>
+<p>See also <a href="q3listview.html#columnAlignment">columnAlignment</a>() and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="setColumnText"></a>void Q3ListView::setColumnText ( int <i>column</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the heading of column <i>column</i> to <i>label</i>.</p>
 <p>See also <a href="q3listview.html#columnText">columnText</a>().</p>
@@ -643,13 +642,13 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3listview.html#columnWidth">columnWidth</a>().</p>
 <h3 class="fn"><a name="setColumnWidthMode"></a>void Q3ListView::setColumnWidthMode ( int <i>c</i>, <a href="q3listview.html#WidthMode-enum">WidthMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets column <i>c</i>'s width mode to <i>mode</i>. The default depends on the original width argument to <a href="q3listview.html#addColumn">addColumn</a>().</p>
-<p>See also <a href="q3listviewitem.html#width">Q3ListViewItem::width</a>().</p>
+<p>See also <a href="q3listview.html#columnWidthMode">columnWidthMode</a>() and <a href="q3listviewitem.html#width">Q3ListViewItem::width</a>().</p>
 <h3 class="fn"><a name="setCurrentItem"></a>void Q3ListView::setCurrentItem ( <a href="q3listviewitem.html">Q3ListViewItem</a> * <i>i</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets item <i>i</i> to be the current item and repaints appropriately (i.e. highlights the item). The current item is used for keyboard navigation and focus indication; it is independent of any selected items, although a selected item can also be the current item.</p>
 <p>See also <a href="q3listview.html#currentItem">currentItem</a>() and <a href="q3listview.html#setSelected">setSelected</a>().</p>
 <h3 class="fn"><a name="setOpen"></a>void Q3ListView::setOpen ( <a href="q3listviewitem.html">Q3ListViewItem</a> * <i>item</i>, bool <i>open</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets <i>item</i> to be open if <i>open</i> is true and <i>item</i> is expandable, and to be closed if <i>open</i> is false. Repaints accordingly.</p>
-<p>See also <a href="q3listviewitem.html#setOpen">Q3ListViewItem::setOpen</a>() and <a href="q3listviewitem.html#setExpandable">Q3ListViewItem::setExpandable</a>().</p>
+<p>See also <a href="q3listview.html#isOpen">isOpen</a>(), <a href="q3listviewitem.html#setOpen">Q3ListViewItem::setOpen</a>(), and <a href="q3listviewitem.html#setExpandable">Q3ListViewItem::setExpandable</a>().</p>
 <h3 class="fn"><a name="setSelected"></a>void Q3ListView::setSelected ( <a href="q3listviewitem.html">Q3ListViewItem</a> * <i>item</i>, bool <i>selected</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>selected</i> is true the <i>item</i> is selected; otherwise it is unselected.</p>
 <p>If the list view is in <tt>Single</tt> selection mode and <i>selected</i> is true, the currently selected item is unselected and <i>item</i> is made current. Unlike <a href="q3listviewitem.html#setSelected">Q3ListViewItem::setSelected</a>(), this function updates the list view as necessary and emits the <a href="q3listview.html#selectionChanged">selectionChanged</a>() signals.</p>
@@ -662,10 +661,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setSortColumn"></a>void Q3ListView::setSortColumn ( int <i>column</i> )</h3>
 <p>Sets the sorting column for the list view.</p>
 <p>If <i>column</i> is -1, sorting is disabled and the user cannot sort columns by clicking on the column headers. If <i>column</i> is larger than the number of columns the user must click on a column header to sort the list view.</p>
-<p>See also <a href="q3listview.html#setSorting">setSorting</a>().</p>
+<p>See also <a href="q3listview.html#sortColumn">sortColumn</a>() and <a href="q3listview.html#setSorting">setSorting</a>().</p>
 <h3 class="fn"><a name="setSortOrder"></a>void Q3ListView::setSortOrder ( <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> )</h3>
 <p>Sets the sort order for the items in the list view to <i>order</i>.</p>
-<p>See also <a href="q3listview.html#setSorting">setSorting</a>().</p>
+<p>See also <a href="q3listview.html#sortOrder">sortOrder</a>() and <a href="q3listview.html#setSorting">setSorting</a>().</p>
 <h3 class="fn"><a name="setSorting"></a>void Q3ListView::setSorting ( int <i>column</i>, bool <i>ascending</i> = true )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the list view to be sorted by column <i>column</i> in ascending order if <i>ascending</i> is true or descending order if it is false.</p>
 <p>If <i>column</i> is -1, sorting is disabled and the user cannot sort columns by clicking on the column headers. If <i>column</i> is larger than the number of columns the user must click on a column header to sort the list view.</p>
@@ -673,10 +672,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Sorts the list view using the last sorting configuration (sort column and ascending/descending).</p>
 <h3 class="fn"><a name="sortColumn"></a>int Q3ListView::sortColumn () const</h3>
 <p>Returns the column by which the list view is sorted, or -1 if sorting is disabled.</p>
-<p>See also <a href="q3listview.html#sortOrder">sortOrder</a>().</p>
+<p>See also <a href="q3listview.html#setSortColumn">setSortColumn</a>() and <a href="q3listview.html#sortOrder">sortOrder</a>().</p>
 <h3 class="fn"><a name="sortOrder"></a><a href="qt.html#SortOrder-enum">Qt::SortOrder</a> Q3ListView::sortOrder () const</h3>
 <p>Returns the sorting order of the list view items.</p>
-<p>See also <a href="q3listview.html#sortColumn">sortColumn</a>().</p>
+<p>See also <a href="q3listview.html#setSortOrder">setSortOrder</a>() and <a href="q3listview.html#sortColumn">sortColumn</a>().</p>
 <h3 class="fn"><a name="spacePressed"></a>void Q3ListView::spacePressed ( <a href="q3listviewitem.html">Q3ListViewItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when Space is pressed. The <i>item</i> parameter is the <a href="q3listview.html#currentItem">currentItem</a>().</p>
 <h3 class="fn"><a name="startDrag"></a>void Q3ListView::startDrag ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -693,6 +692,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

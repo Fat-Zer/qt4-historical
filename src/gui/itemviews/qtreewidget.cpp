@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "qtreewidget.h"
+
+#ifndef QT_NO_TREEWIDGET
 #include <qapplication.h>
 #include <qheaderview.h>
 #include <qpainter.h>
@@ -37,7 +34,7 @@
 #include <private/qwidgetitemdata_p.h>
 
 // workaround for VC++ 6.0 linker bug (?)
-typedef bool(*LessThan)(const QTreeWidgetItem *left, const QTreeWidgetItem *right);
+typedef bool(*LessThan)(const QPair<QTreeWidgetItem*,int>&,const QPair<QTreeWidgetItem*,int>&);
 
 class QTreeWidgetMimeData : public QMimeData
 {
@@ -75,18 +72,15 @@ public:
     bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
                        int role);
 
-    bool insertRows(int row, int count, const QModelIndex &parent);
-    bool removeRows(int row, int count, const QModelIndex &parent);
-
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     void sort(int column, Qt::SortOrder order);
-    static bool itemLessThan(const QTreeWidgetItem *left, const QTreeWidgetItem *right);
-    static bool itemGreaterThan(const QTreeWidgetItem *left, const QTreeWidgetItem *right);
+    static bool itemLessThan(const QPair<QTreeWidgetItem*,int> &left,
+                             const QPair<QTreeWidgetItem*,int> &right);
+    static bool itemGreaterThan(const QPair<QTreeWidgetItem*,int> &left,
+                                const QPair<QTreeWidgetItem*,int> &right);
 
     void insertInTopLevel(int row, QTreeWidgetItem *item);
-    void removeFromTopLevel(QTreeWidgetItem *item);
-    QTreeWidgetItem *takeFromTopLevel(int row);
 
     // dnd
     QStringList mimeTypes() const;
@@ -101,6 +95,8 @@ protected:
     void emitDataChanged(QTreeWidgetItem *item, int column);
     void beginInsertItem(QTreeWidgetItem *parent, int row);
     void beginRemoveItem(QTreeWidgetItem *parent, int row);
+    void beginRemoveItems(QTreeWidgetItem *parent, int firstRow, int lastRow);
+    void sortItems(QList<QTreeWidgetItem*> *items, int column, Qt::SortOrder order);
 
 private:
     QList<QTreeWidgetItem*> tree;
@@ -225,8 +221,9 @@ QModelIndex QTreeModel::index(QTreeWidgetItem *item, int column) const
     if (!item)
         return QModelIndex();
     const QTreeWidgetItem *par = item->parent();
-    int row = par ? par->children.indexOf(item) : tree.indexOf(item);
-    return createIndex(row, column, item);
+    if (par)
+        return createIndex(par->children.lastIndexOf(item), column, item);
+    return createIndex(tree.lastIndexOf(item), column, item);
 }
 
 /*!
@@ -409,84 +406,6 @@ bool QTreeModel::setHeaderData(int section, Qt::Orientation orientation,
 
 /*!
   \internal
-
-  Inserts a tree view item into the \a parent item at the given
-  \a row. Returns true if successful; otherwise returns false.
-
-  An empty item will be created by this function.
-*/
-
-bool QTreeModel::insertRows(int row, int count, const QModelIndex &parent)
-{
-    beginInsertRows(parent, row, row + count - 1);
-
-    QTreeWidgetItem *c = 0;
-    if (parent.isValid()) {
-        // add items
-        QTreeWidgetItem *p = item(parent);
-        Q_ASSERT(p);
-        for (int r = row; r < row + count; ++r) {
-            c = new QTreeWidgetItem();
-            c->view = p->view;
-            c->model = p->model;
-            c->par = p;
-            p->children.insert(r, c);
-        }
-    } else {
-        // add items
-        QTreeWidget *view = ::qobject_cast<QTreeWidget*>(QObject::parent());
-        for (int r = row; r < row + count; ++r) {
-            c = new QTreeWidgetItem();
-            c->view = view;
-            c->model = this;
-            c->par = 0;
-            tree.insert(r, c);
-        }
-    }
-
-    endInsertRows();
-    return true;
-}
-
-/*!
-  \internal
-
-  Removes the given \a row from the \a parent item, and returns true
-  if successful; otherwise false is returned.
-*/
-
-bool QTreeModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-    beginRemoveRows(parent, row, row + count - 1);
-
-    QTreeWidgetItem *c = 0;
-    if (parent.isValid()) {
-        // remove items
-        QTreeWidgetItem *p = item(parent);
-        Q_ASSERT(p);
-        for (int r = row; r < row + count; ++r) {
-             c = p->children.takeAt(r);
-             c->par = 0;
-             c->view = 0;
-             c->model = 0;
-             delete c;
-        }
-    } else {
-        // remove items
-        for (int r = row; r < row + count; ++r) {
-            c = tree.takeAt(r);
-            c->view = 0;
-            c->model = 0;
-            delete c;
-        }
-    }
-
-    endRemoveRows();
-    return true;
-}
-
-/*!
-  \internal
   \reimp
 
   Returns the flags for the item refered to the given \a index.
@@ -510,17 +429,18 @@ Qt::ItemFlags QTreeModel::flags(const QModelIndex &index) const
 
 void QTreeModel::sort(int column, Qt::SortOrder order)
 {
+    if (column < 0 || column >= header->columnCount())
+        return;
+
     // sort top level
-    LessThan compare = order == Qt::AscendingOrder ? &itemLessThan : &itemGreaterThan;
-    qSort(tree.begin(), tree.end(), compare);
+    sortItems(&tree, column, order);
 
     // sort the children
     QList<QTreeWidgetItem*>::iterator it = tree.begin();
     for (; it != tree.end(); ++it)
         (*it)->sortChildren(column, order, true);
 
-    // everything has changed
-    reset();
+    emit layoutChanged();
 }
 
 /*!
@@ -532,9 +452,10 @@ void QTreeModel::sort(int column, Qt::SortOrder order)
   Used by the sorting functions.
 */
 
-bool QTreeModel::itemLessThan(const QTreeWidgetItem *left, const QTreeWidgetItem *right)
+bool QTreeModel::itemLessThan(const QPair<QTreeWidgetItem*,int> &left,
+                              const QPair<QTreeWidgetItem*,int> &right)
 {
-    return *left < *right;
+    return *(left.first) < *(right.first);
 }
 
 /*!
@@ -546,9 +467,10 @@ bool QTreeModel::itemLessThan(const QTreeWidgetItem *left, const QTreeWidgetItem
   Used by the sorting functions.
 */
 
-bool QTreeModel::itemGreaterThan(const QTreeWidgetItem *left, const QTreeWidgetItem *right)
+bool QTreeModel::itemGreaterThan(const QPair<QTreeWidgetItem*,int> &left,
+                                 const QPair<QTreeWidgetItem*,int> &right)
 {
-    return !(*left < *right);
+    return !(*(left .first) < *(right.first));
 }
 
 /*!
@@ -562,39 +484,6 @@ void QTreeModel::insertInTopLevel(int row, QTreeWidgetItem *item)
     beginInsertRows(QModelIndex(), row, row);
     tree.insert(row, item);
     endInsertRows();
-}
-
-/*!
-  \internal
-
-  Remove the treeview toplevel \a item from the tree model.
-*/
-
-void QTreeModel::removeFromTopLevel(QTreeWidgetItem *item)
-{
-    int row = tree.indexOf(item);
-    Q_ASSERT(row != -1);
-    beginRemoveRows(QModelIndex(), row, row);
-    tree.removeAt(row);
-    endRemoveRows();
-}
-
-/*!
-  \internal
-
-  Takes the treeview toplevel item in \a row from the tree model.
-*/
-
-QTreeWidgetItem *QTreeModel::takeFromTopLevel(int row)
-{
-    Q_ASSERT(row != -1);
-    beginRemoveRows(QModelIndex(), row, row);
-    QTreeWidgetItem *item = tree.takeAt(row);
-    item->model = 0;
-    item->view = 0;
-    item->par = 0;
-    endRemoveRows();
-    return item;
 }
 
 QStringList QTreeModel::mimeTypes() const
@@ -646,8 +535,14 @@ Qt::DropActions QTreeModel::supportedDropActions() const
 
 void QTreeModel::emitDataChanged(QTreeWidgetItem *item, int column)
 {
-    QModelIndex tl = index(item, (column != -1 ? column : 0));
-    QModelIndex br = (column != -1 ? tl : index(item, columnCount() - 1));
+    QModelIndex br, tl;
+    if (column == -1) { // the whole row
+        tl = index(item, 0);
+        br = createIndex(tl.row(), columnCount() - 1, item);
+    } else { // single cell
+        tl = index(item, column);
+        br = tl;
+    }
     emit dataChanged(tl, br);
 }
 
@@ -659,6 +554,36 @@ void QTreeModel::beginInsertItem(QTreeWidgetItem *parent, int row)
 void QTreeModel::beginRemoveItem(QTreeWidgetItem *parent, int row)
 {
     beginRemoveRows(index(parent, 0), row, row);
+}
+
+void QTreeModel::beginRemoveItems(QTreeWidgetItem *parent, int firstRow, int lastRow)
+{
+    beginRemoveRows(index(parent, 0), firstRow, lastRow);
+}
+
+void QTreeModel::sortItems(QList<QTreeWidgetItem*> *items, int /*column*/, Qt::SortOrder order)
+{
+    // store the original order of indexes
+    QVector< QPair<QTreeWidgetItem*,int> > sorting(items->count());
+    for (int i = 0; i < sorting.count(); ++i) {
+        sorting[i].first = items->at(i);
+        sorting[i].second = i;
+    }
+
+    // do the sorting
+    LessThan compare = (order == Qt::AscendingOrder ? &itemLessThan : &itemGreaterThan);
+    qSort(sorting.begin(), sorting.end(), compare);
+
+    // update the persistent indexes for the top level
+    for (int r = 0; r < sorting.count(); ++r) {
+        for (int c = 0; c < sorting.at(r).first->columnCount(); ++c) {
+            QTreeWidgetItem *item = sorting.at(r).first;
+            items->replace(r, item);
+            QModelIndex from = createIndex(sorting.at(r).second, c, item);
+            QModelIndex to = createIndex(r, c, item);
+            changePersistentIndex(from, to);
+        }
+    }
 }
 
 /*!
@@ -674,7 +599,7 @@ void QTreeModel::beginRemoveItem(QTreeWidgetItem *parent, int row)
   a text label and an icon.
 
   The QTreeWidgetItem class is a convenience class that replaces the
-  \c QListViewItem class in Qt 3. It provides an item for use with
+  QListViewItem class in Qt 3. It provides an item for use with
   the QTreeWidget class.
 
   Items are usually constructed with a parent that is either a QTreeWidget
@@ -983,8 +908,11 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidget *view, int type)
                 |Qt::ItemIsDragEnabled
                 |Qt::ItemIsDropEnabled)
 {
-    if (view)
-        view->addTopLevelItem(this);
+    if (view) {
+        model = ::qobject_cast<QTreeModel*>(view->model());
+        if (model)
+            model->insertInTopLevel(model->tree.count(), this);
+    }
 }
 
 /*!
@@ -1057,34 +985,68 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidgetItem *parent, QTreeWidgetItem *after
 
 QTreeWidgetItem::~QTreeWidgetItem()
 {
+    if (par) {
+        int i = par->children.indexOf(this);
+        if (model) model->beginRemoveItem(par, i);
+        par->children.takeAt(i);
+        if (model) model->endRemoveRows();
+    } else if (model) {
+        int i = model->tree.indexOf(this);
+        model->beginRemoveRows(QModelIndex(), i, i);
+        model->tree.takeAt(i);
+        model->endRemoveRows();
+    }
+    // at this point the persistent indexes for the children should also be invalidated since we invalidated the parent
     for (int i = 0; i < children.count(); ++i) {
         QTreeWidgetItem *child = children.at(i);
         child->par = 0; // make sure the child doesn't try to remove itself from children list
         child->view = 0; // make sure the child doesn't try to remove itself from the top level list
+        child->model = 0; // make sure the child doesn't try to invalidate its index in the model
         delete child;
     }
     children.clear();
-
-    if (par) {
-        int i = par->indexOfChild(this);
-        par->takeChild(i);
-    } else if (view) {
-        int i = view->indexOfTopLevelItem(this);
-        view->takeTopLevelItem(i);
-    }
 }
 
 /*!
-  Creates an exact copy of the item and it's children.
+  Creates a deep copy of the item and it's children.
 */
 
 QTreeWidgetItem *QTreeWidgetItem::clone() const
 {
-    QTreeWidgetItem *item = new QTreeWidgetItem();
-    *item = *this; // copy the data
-    for (int i = 0; i < children.count(); ++i) // recursivly clone children
-        item->children.append(children.at(i)->clone());
-    return item;
+    QTreeWidgetItem *copy = new QTreeWidgetItem();
+    *copy = *this;
+
+    QStack<const QTreeWidgetItem*> stack;
+    QStack<QTreeWidgetItem*> parentStack;
+    stack.push(this);
+    parentStack.push(0);
+
+    QTreeWidgetItem *root = 0;
+    const QTreeWidgetItem *item = 0;
+    QTreeWidgetItem *parent = 0;
+    while (!stack.isEmpty()) {
+        // get current item, and copied parent
+        item = stack.pop();
+        parent = parentStack.pop();
+
+        // copy item
+        copy = new QTreeWidgetItem();
+        *copy = *item;
+        if (!root)
+            root = copy;
+
+        // set parent and add to parents children list
+        if (parent) {
+            copy->par = parent;
+            parent->children.append(copy);
+        }
+
+        for (int i=0; i<item->childCount(); ++i) {
+            stack.push(item->child(i));
+            parentStack.push(copy);
+        }
+    }
+    return root;
 }
 
 /*!
@@ -1102,14 +1064,17 @@ void QTreeWidgetItem::setData(int column, int role, const QVariant &value)
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     if (column >= values.count())
         values.resize(column + 1);
+    bool found = false;
     QVector<QWidgetItemData> column_values = values.at(column);
     for (int i = 0; i < column_values.count(); ++i) {
         if (column_values.at(i).role == role) {
             values[column][i].value = value;
+            found = true;
             break;
         }
     }
-    values[column].append(QWidgetItemData(role, value));
+    if (!found)
+        values[column].append(QWidgetItemData(role, value));
     if (model)
         model->emitDataChanged(this, column);
 }
@@ -1125,7 +1090,7 @@ QVariant QTreeWidgetItem::data(int column, int role) const
         return childrenCheckState(column);
     // return the item data
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
-    if (column < values.size()) {
+    if (column >= 0 && column < values.size()) {
         const QVector<QWidgetItemData> &column_values = values.at(column);
         for (int i = 0; i < column_values.count(); ++i)
             if (column_values.at(i).role == role)
@@ -1168,15 +1133,16 @@ void QTreeWidgetItem::write(QDataStream &out) const
 }
 
 /*!
-    Assigns the \a other item to this item.
+    Assigns \a other's data and flags to this item. Note that type()
+    and treeWidget() are not copied.
+
+    This function is useful when reimplementing clone().
+
+    \sa data(), flags()
 */
 QTreeWidgetItem &QTreeWidgetItem::operator=(const QTreeWidgetItem &other)
 {
     values = other.values;
-    view = other.view;
-    model = other.model;
-    par = other.par;
-    //children = other.children; // ### don't copy the children
     itemFlags = other.itemFlags;
     return *this;
 }
@@ -1249,14 +1215,14 @@ QTreeWidgetItem *QTreeWidgetItem::takeChild(int index)
 */
 void QTreeWidgetItem::sortChildren(int column, Qt::SortOrder order, bool climb)
 {
-    LessThan compare = (order == Qt::AscendingOrder
-                        ? &QTreeModel::itemLessThan : &QTreeModel::itemGreaterThan);
-    qSort(children.begin(), children.end(), compare);
-    if (!climb)
+    if (!model)
         return;
-    QList<QTreeWidgetItem*>::iterator it = children.begin();
-    for (; it != children.end(); ++it)
-        (*it)->sortChildren(column, order, climb);
+    model->sortItems(&children, column, order);
+    if (climb) {
+        QList<QTreeWidgetItem*>::iterator it = children.begin();
+        for (; it != children.end(); ++it)
+            (*it)->sortChildren(column, order, climb);
+    }
 }
 
 /*!
@@ -1392,7 +1358,7 @@ void QTreeWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
 
   The QTreeWidget class is a convenience class that provides a standard
   tree widget with a classic item-based interface similar to that used by
-  the \c QListView class in Qt 3.
+  the QListView class in Qt 3.
   This class is based on Qt's Model/View architecture and uses a default
   model to hold items, each of which is a QTreeWidgetItem.
 
@@ -1647,7 +1613,8 @@ QTreeWidgetItem *QTreeWidget::takeTopLevelItem(int index)
 {
     Q_D(QTreeWidget);
     if (index >= 0 && index < d->model()->tree.count()) {
-        QTreeWidgetItem *item = d->model()->takeFromTopLevel(index);
+        d->model()->beginRemoveRows(QModelIndex(), index, index);
+        QTreeWidgetItem *item = d->model()->tree.takeAt(index);
         QStack<QTreeWidgetItem*> stack;
         stack.push(item);
         while (!stack.isEmpty()) {
@@ -1657,6 +1624,7 @@ QTreeWidgetItem *QTreeWidget::takeTopLevelItem(int index)
             for (int c = 0; c < i->children.count(); ++c)
                 stack.push(i->children.at(c));
         }
+        d->model()->endRemoveRows();
         return item;
     }
     return 0;
@@ -1792,7 +1760,7 @@ void QTreeWidget::setSortingEnabled(bool enable)
         header()->setSortIndicatorShown(false);
         header()->setClickable(false);
     } else {
-        // don't set the sorting indicator until the data has actually been sorted
+        header()->setSortIndicatorShown(true);
         header()->setClickable(true);
     }
 }
@@ -2110,3 +2078,4 @@ void QTreeWidget::setModel(QAbstractItemModel *model)
 }
 
 #include "moc_qtreewidget.cpp"
+#endif // QT_NO_TREEWIDGET

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.0: qmake Project Files</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qmake-using.html">Using qmake</a>]
 [<a href="qmake-manual.html">Contents</a>]
 [Next: <a href="qmake-running.html">Running qmake</a>]
 </p>
-<h1 align="center">qmake Project Files</h1>
+<h1 align="center">qmake Project Files<br /><small></small></h1>
 <p>Project files contain all the information required by <tt>qmake</tt> to build your application, library, or plugin. The resources used by your project are generally specified using a series of declarations, but support for simple programming constructs allow you to describe different build processes for different platforms and environments.</p>
 <ul><li><a href="#project-file-elements">Project File Elements</a></li>
 <ul><li><a href="#variables">Variables</a></li>
@@ -69,6 +69,9 @@ body { background: #ffffff; color: black; }</style>
 <p>The contents of a variable can be read by prepending the variable name with <tt>$$</tt>. This can be used to assign the contents of one variable to another:</p>
 <pre>&nbsp;   TEMP_SOURCES = $$SOURCES</pre>
 <p>The <tt>$$</tt> operator is used extensively with built-in functions that operate on strings and lists of values. These are described in the chapter on <a href="qmake-advanced-usage.html">qmake Advanced Usage</a>.</p>
+<p>Normally, variables are used to contain whitespace-separated lists of values. However, it is sometimes necessary to specify values containing spaces. These must be quoted in the following way:</p>
+<pre>&nbsp;   DEST = &quot;Program Files&quot;</pre>
+<p>The quoted text is treated as a single item in the list of values held by the variable.</p>
 <a name="comments"></a>
 <h3>Comments</h3>
 <p>You can add comments to project files. Comments begin with the <tt>#</tt> symbol and continue to the end of the same line. For example:</p>
@@ -123,7 +126,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>qt</td><td>The project is a Qt application and should link against the Qt library. You can use the <tt>QT</tt> variable to control any additional Qt modules that are required by your application.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>thread</td><td>The project is a multi-threaded application.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="winsystem.html#x11">x11</a></td><td>The project is an <a href="winsystem.html#x11">X11</a> application or library.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>x11</td><td>The project is an X11 application or library.</td></tr>
 </table>
 <p>When using the <tt>app</tt> or <tt>lib</tt> templates, more specialized configuration options can be used to fine tune the build process. These are explained in details in the <a href="qmake-common-projects.html">Common Projects</a> chapter of this manual.</p>
 <p>For example, if your application uses the Qt library and you want to build it as a multi-threaded application in <tt>debug</tt> mode, your project file will contain the following line:</p>
@@ -141,13 +144,13 @@ body { background: #ffffff; color: black; }</style>
 <p>The table below shows the options that can be used with the <tt>QT</tt> variable and the features that are associated with each of them:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Features</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>core (included by default)</td><td>Classes that provide fundamental Qt features</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>gui (included by default)</td><td>Widgets and other GUI classes</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>network</td><td><a href="networking.html">Network Module</a> classes</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>opengl</td><td><a href="opengl.html">OpenGL Module</a> classes</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>sql</td><td><a href="sql.html">SQL Module</a> classes</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>xml</td><td><a href="xml.html">XML Module</a> classes</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt3support.html#qt3support">qt3support</a></td><td>Enables the use of Qt 3 support classes (see the <a href="porting4.html">Porting to Qt 4</a> guide)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>core (included by default)</td><td><a href="qtcore.html">QtCore</a> module</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>gui (included by default)</td><td><a href="qtgui.html">QtGui</a> module</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>network</td><td><a href="qtnetwork.html">QtNetwork</a> module</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>opengl</td><td><a href="qtopengl.html">QtOpenGL</a> module</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>sql</td><td><a href="qtsql.html">QtSql</a> module</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>xml</td><td><a href="qtxml.html">QtXml</a> module</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>qt3support</td><td><a href="qt3support.html">Qt3Support</a> module</td></tr>
 </table>
 <a name="configuration-features"></a>
 <h2>Configuration Features</h2>
@@ -165,6 +168,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2115,7 +2110,7 @@ static QStringList makeFiltersList(const QString &filter)
   is set to \e this and it is given the identification name - "open file
   dialog". The caption at the top of file dialog is set to "Choose a
   file". If you want to use multiple filters, separate each one with
-  \e two semi-colons, e.g.
+  \e two semicolons, e.g.
   \code
   "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
   \endcode
@@ -2129,11 +2124,11 @@ static QStringList makeFiltersList(const QString &filter)
     fd->setMode(Q3FileDialog::AnyFile);
   \endcode
 
-  In the above example, the mode of the file dialog is set to \c
+  In the above example, the mode of the file dialog is set to \l
   AnyFile, meaning that the user can select any file, or even specify a
   file that doesn't exist. This mode is useful for creating a "File Save
-  As" file dialog. Use \c ExistingFile if the user must select an
-  existing file or \c Directory if only a directory may be selected.
+  As" file dialog. Use \l ExistingFile if the user must select an
+  existing file or \l Directory if only a directory may be selected.
   (See the \l Q3FileDialog::Mode enum for the complete list of modes.)
 
   You can retrieve the dialog's mode with mode(). Use setFilter() to set
@@ -2173,7 +2168,7 @@ static QStringList makeFiltersList(const QString &filter)
   the user clicked OK, then the file they selected is put in \c
   fileName.
 
-  If you are using the \c ExistingFiles mode then you will need to use
+  If you are using the \l ExistingFiles mode then you will need to use
   selectedFiles() which will return the selected files in a QStringList.
 
   The dialog's working directory can be set with setDir(). The display
@@ -2929,7 +2924,7 @@ void Q3FileDialog::setSelectedFilter(const QString& mask)
   the mode isn't ExistingFiles selectedFiles is an empty list.
 
   It is more convenient to use selectedFile() if the mode is
-  \c ExistingFile, \c Directory or \c DirectoryOnly.
+  \l ExistingFile, \c Directory or \c DirectoryOnly.
 
   Note that if you want to iterate over the list, you should
   iterate over a copy, e.g.
@@ -2952,8 +2947,14 @@ QStringList Q3FileDialog::selectedFiles() const
     if (mode() == ExistingFiles) {
         QStringList selectedLst;
         QString selectedFiles = nameEdit->text();
-        selectedFiles.truncate(selectedFiles.lastIndexOf('\"'));
-        selectedLst = selectedLst.split(QString("\" "), selectedFiles);
+        if (selectedFiles.lastIndexOf('\"') == -1) {
+            //probably because Enter was pressed on the nameEdit, so we have one file
+            //not in "" but raw
+            selectedLst.append(selectedFiles);
+        } else {
+            selectedFiles.truncate(selectedFiles.lastIndexOf('\"'));
+            selectedLst = selectedLst.split(QString("\" "), selectedFiles);
+        }
         for (QStringList::Iterator it = selectedLst.begin(); it != selectedLst.end(); ++it) {
             Q3Url u;
             if ((*it)[0] == '\"') {
@@ -3042,7 +3043,7 @@ QString Q3FileDialog::dirPath() const
 
   If \a newFilter contains a pair of parentheses containing one or more
   of "anything*something" separated by spaces or by
-  semi-colons then only the text contained in the parentheses is used as
+  semicolons then only the text contained in the parentheses is used as
   the filter. This means that these calls are all equivalent:
 
   \code
@@ -4480,7 +4481,7 @@ QString Q3FileDialog::getExistingDirectory(const QString & dir,
   \property Q3FileDialog::mode
   \brief the file dialog's mode
 
-  The default mode is \c ExistingFile.
+  The default mode is \l ExistingFile.
 */
 
 void Q3FileDialog::setMode(Mode newMode)
@@ -5342,7 +5343,7 @@ bool Q3FileDialog::eventFilter(QObject * o, QEvent * e)
 
 /*!
   Sets the filters used in the file dialog to \a filters. Each group
-  of filters must be separated by \c{;;} (\e two semi-colons).
+  of filters must be separated by \c{;;} (\e two semicolons).
 
   \code
     QString types("Image files (*.png *.xpm *.jpg);;"

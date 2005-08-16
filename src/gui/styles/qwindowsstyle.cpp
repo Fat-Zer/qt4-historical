@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -131,9 +126,11 @@ bool QWindowsStyle::Private::eventFilter(QObject *o, QEvent *e)
 
 	    // Update state and repaint the menubars.
 	    alt_down = false;
+#ifndef QT_NO_MENUBAR
             QList<QMenuBar *> l = qFindChildren<QMenuBar *>(widget);
             for (int i = 0; i < l.size(); ++i)
                 l.at(i)->repaint();
+#endif
 	}
 	break;
     case QEvent::Close:
@@ -180,7 +177,7 @@ QWindowsStyle::~QWindowsStyle()
 void QWindowsStyle::polish(QApplication *app)
 {
     // We only need the overhead when shortcuts are sometimes hidden
-    if (!styleHint(SH_UnderlineShortcut, 0)) {
+    if (!styleHint(SH_UnderlineShortcut, 0) && app) {
         d = new Private(this);
         app->installEventFilter(d);
     }
@@ -197,20 +194,24 @@ void QWindowsStyle::unpolish(QApplication *)
 void QWindowsStyle::polish(QWidget *widget)
 {
     QCommonStyle::polish(widget);
+#ifndef QT_NO_RUBBERBAND
     if (qobject_cast<QRubberBand*>(widget)) {
         widget->setWindowOpacity(0.7f);
         widget->setAttribute(Qt::WA_PaintOnScreen);
     }
+#endif
 }
 
 /*! \reimp */
 void QWindowsStyle::unpolish(QWidget *widget)
 {
     QCommonStyle::polish(widget);
+#ifndef QT_NO_RUBBERBAND
     if (qobject_cast<QRubberBand*>(widget)) {
         widget->setWindowOpacity(1.0);
         widget->setAttribute(Qt::WA_PaintOnScreen, false);
     }
+#endif
 }
 
 /*! \reimp */
@@ -335,7 +336,7 @@ int QWindowsStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt, const QW
     return ret;
 }
 
-#ifndef QT_NO_IMAGEIO_XPM
+#ifndef QT_NO_IMAGEFORMAT_XPM
 
 static const char * const qt_menu_xpm[] = {
 "16 16 11 1",
@@ -780,7 +781,7 @@ static const char * const file_link_xpm[]={
 
 
 
-#endif //QT_NO_IMAGEIO_XPM
+#endif //QT_NO_IMAGEFORMAT_XPM
 
 /*!
  \reimp
@@ -788,7 +789,7 @@ static const char * const file_link_xpm[]={
 QPixmap QWindowsStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt,
                                       const QWidget *widget) const
 {
-#ifndef QT_NO_IMAGEIO_XPM
+#ifndef QT_NO_IMAGEFORMAT_XPM
     switch (standardPixmap) {
     case SP_TitleBarMenuButton:
         return QPixmap((const char **)qt_menu_xpm);
@@ -819,7 +820,7 @@ QPixmap QWindowsStyle::standardPixmap(StandardPixmap standardPixmap, const QStyl
     default:
         break;
     }
-#endif //QT_NO_IMAGEIO_XPM
+#endif //QT_NO_IMAGEFORMAT_XPM
     return QCommonStyle::standardPixmap(standardPixmap, opt, widget);
 }
 
@@ -866,6 +867,7 @@ int QWindowsStyle::styleHint(StyleHint hint, const QStyleOption *opt, const QWid
             ret = int(cues);
             // Do nothing if we always paint underlines
             if (!ret && widget && d) {
+#ifndef QT_NO_MENUBAR                
                 const QMenuBar *menuBar = ::qobject_cast<const QMenuBar*>(widget);
                 if (!menuBar && ::qobject_cast<const QMenu *>(widget)) {
                     QWidget *w = QApplication::activeWindow();
@@ -878,7 +880,9 @@ int QWindowsStyle::styleHint(StyleHint hint, const QStyleOption *opt, const QWid
                     if (menuBar->hasFocus() || d->altDown())
                         ret = 1;
                     // Otherwise draw underlines if the toplevel widget has seen an alt-press
-                } else if (d->hasSeenAlt(widget)) {
+                } else
+#endif // QT_NO_MENUBAR
+                if (d->hasSeenAlt(widget)) {
                     ret = 1;
                 }
             }
@@ -948,7 +952,7 @@ void QWindowsStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
             if (btn->features & QStyleOptionButton::DefaultButton && flags & State_Sunken) {
                 p->setPen(pal.dark().color());
                 p->setBrush(fill);
-                p->drawRect(r);
+                p->drawRect(r.adjusted(0, 0, -1, -1));
             } else if (flags & (State_Raised | State_Sunken | State_On | State_Sunken)) {
                 qDrawWinButton(p, r, pal, flags & (State_Sunken | State_On),
                                &fill);
@@ -1451,6 +1455,7 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
             QCommonStyle::drawControl(ce, &newMbi, p, widget);
         }
         break;
+#ifndef QT_NO_TABBAR
     case CE_TabBarTabShape:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt)) {
             bool rtlHorTabs = (tab->direction == Qt::RightToLeft
@@ -1660,6 +1665,7 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
             }
         }
         break;
+#endif // QT_NO_TABBAR
     case CE_ToolBoxTab:
         qDrawShadePanel(p, opt->rect, opt->palette,
                         opt->state & (State_Sunken | State_On), 1,
@@ -1741,8 +1747,8 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
             p->setPen(Qt::NoPen);
             p->setBrush(br);
             p->setBackgroundMode(Qt::OpaqueMode);
-            p->drawRect(opt->rect);
-        } else {
+            p->drawRect(opt->rect);            
+        } else {            
             QStyleOptionButton buttonOpt;
             buttonOpt.QStyleOption::operator=(*opt);
             buttonOpt.state = State_Enabled | State_Raised;
@@ -1790,6 +1796,7 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                                        QPainter *p, const QWidget *widget) const
 {
     switch (cc) {
+#ifndef QT_NO_SLIDER
     case CC_Slider:
         if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
             int thickness  = pixelMetric(PM_SliderControlThickness, slider, widget);
@@ -1828,7 +1835,7 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                 QCommonStyle::drawComplexControl(cc, &tmpSlider, p, widget);
             }
 
-            if (slider->subControls & SC_SliderHandle) {
+            if (slider->subControls & SC_SliderHandle) {                
                 // 4444440
                 // 4333310
                 // 4322210
@@ -1843,6 +1850,15 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                 // const QColor c2 = g.button();
                 const QColor c3 = slider->palette.midlight().color();
                 const QColor c4 = slider->palette.light().color();
+                QBrush handleBrush;
+                
+                if (slider->state & State_Enabled) {
+                    handleBrush = slider->palette.color(QPalette::Button);
+                } else {
+                    handleBrush = QBrush(slider->palette.color(QPalette::Button), 
+                                         Qt::Dense4Pattern);                    
+                }
+
 
                 int x = handle.x(), y = handle.y(),
                    wi = handle.width(), he = handle.height();
@@ -1864,8 +1880,11 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                 }
 
                 if ((tickAbove && tickBelow) || (!tickAbove && !tickBelow)) {
+                    Qt::BGMode oldMode = p->backgroundMode();
+                    p->setBackgroundMode(Qt::OpaqueMode);
                     qDrawWinButton(p, QRect(x, y, wi, he), slider->palette, false,
-                                   &slider->palette.brush(QPalette::Button));
+                                   &handleBrush);
+                    p->setBackgroundMode(oldMode);
                     return;
                 }
 
@@ -1909,11 +1928,14 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                 }
 
                 QBrush oldBrush = p->brush();
-                p->setBrush(slider->palette.brush(QPalette::Button));
                 p->setPen(Qt::NoPen);
+                p->setBrush(handleBrush);
+                Qt::BGMode oldMode = p->backgroundMode();
+                p->setBackgroundMode(Qt::OpaqueMode);
                 p->drawRect(x1, y1, x2-x1+1, y2-y1+1);
-                p->drawPolygon(a);
+                p->drawPolygon(a);                
                 p->setBrush(oldBrush);
+                p->setBackgroundMode(oldMode);
 
                 if (dir != SlUp) {
                     p->setPen(c4);
@@ -1993,6 +2015,7 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
             }
         }
         break;
+#endif // QT_NO_SLIDER
     case CC_Q3ListView:
         if (const QStyleOptionQ3ListView *lv = qstyleoption_cast<const QStyleOptionQ3ListView *>(opt)) {
             int i;
@@ -2236,6 +2259,12 @@ QSize QWindowsStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
         if (const QStyleOptionMenuItem *mi = qstyleoption_cast<const QStyleOptionMenuItem *>(opt)) {
             int w = sz.width();
             sz = QCommonStyle::sizeFromContents(ct, opt, csz, widget);
+            
+            if (mi->menuItemType != QStyleOptionMenuItem::Separator && mi->icon.isNull()) {
+                sz.setHeight(sz.height() - 2);
+                w -= 6;
+            } 
+
             if (mi->menuItemType != QStyleOptionMenuItem::Separator && !mi->icon.isNull())
                  sz.setHeight(qMax(sz.height(),
                               mi->icon.pixmap(pixelMetric(PM_SmallIconSize), QIcon::Normal).height()
@@ -2259,7 +2288,7 @@ QSize QWindowsStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
             int checkcol = qMax(maxpmw, use2000style ? 20 : windowsCheckMarkWidth); // Windows always shows a check column
             w += checkcol;
             w += windowsRightBorder + 10;
-            sz.setWidth(w);
+            sz.setWidth(w);            
         }
         break;
     case CT_MenuBarItem:

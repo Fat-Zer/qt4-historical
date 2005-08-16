@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the accessibility module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -58,17 +53,21 @@ static QString buddyString(const QWidget *widget)
     QWidget *parent = widget->parentWidget();
     if (!parent)
         return QString();
+#ifndef QT_NO_SHORTCUT
     QObjectList ol = parent->children();
     for (int i = 0; i < ol.size(); ++i) {
         QLabel *label = qobject_cast<QLabel*>(ol.at(i));
         if (label && label->buddy() == widget)
             return label->text();
     }
+#endif
 
+#ifndef QT_NO_GROUPBOX
     QGroupBox *groupbox = qobject_cast<QGroupBox*>(parent);
     if (groupbox)
         return groupbox->title();
-
+#endif
+    
     return QString();
 }
 
@@ -96,6 +95,7 @@ QString Q_GUI_EXPORT qt_accStripAmp(const QString &text)
 
 QString Q_GUI_EXPORT qt_accHotKey(const QString &text)
 {
+#ifndef QT_NO_SHORTCUT
     if (text.isEmpty())
         return text;
 
@@ -110,6 +110,9 @@ QString Q_GUI_EXPORT qt_accHotKey(const QString &text)
     if (ac.isNull())
         return QString();
     return (QString)QKeySequence(Qt::ALT) + ac.toUpper();
+#else
+    return QString();
+#endif
 }
 
 class QAccessibleWidgetPrivate : public QAccessible
@@ -774,8 +777,10 @@ QString QAccessibleWidget::text(Text t, int child) const
             str = d->description;
         else if (!widget()->accessibleDescription().isEmpty())
             str = widget()->accessibleDescription();
+#ifndef QT_NO_TOOLTIP
         else
             str = widget()->toolTip();
+#endif
         break;
     case Help:
         if (!d->help.isEmpty())

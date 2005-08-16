@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/corelib/kernel/qmetaobject.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/kernel/qmetaobject.cpp -->
 <head>
     <title>Qt 4.0: QMetaObject Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QMetaObject Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QMetaObject Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QMetaObject class contains meta-information about Qt objects. <a href="#details">More...</a></p>
-<pre>#include &lt;QMetaObject&gt;</pre><p>Part of the <a href="qtcore.html">QtCore</a> module.</p>
-<ul>
+<pre>#include &lt;QMetaObject&gt;</pre><ul>
 <li><a href="qmetaobject-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -51,6 +50,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Static Public Members</h3>
 <ul>
 <li><div class="fn"/>bool <b><a href="qmetaobject.html#checkConnectArgs">checkConnectArgs</a></b> ( const char * <i>signal</i>, const char * <i>method</i> )</li>
+<li><div class="fn"/>void <b><a href="qmetaobject.html#connectSlotsByName">connectSlotsByName</a></b> ( QObject * <i>o</i> )</li>
 <li><div class="fn"/>bool <b><a href="qmetaobject.html#invokeMethod">invokeMethod</a></b> ( QObject * <i>obj</i>, const char * <i>member</i>, Qt::ConnectionType <i>type</i>, QGenericReturnArgument <i>ret</i>, QGenericArgument <i>val0</i> = QGenericArgument( 0 ), QGenericArgument <i>val1</i> = QGenericArgument(), QGenericArgument <i>val2</i> = QGenericArgument(), QGenericArgument <i>val3</i> = QGenericArgument(), QGenericArgument <i>val4</i> = QGenericArgument(), QGenericArgument <i>val5</i> = QGenericArgument(), QGenericArgument <i>val6</i> = QGenericArgument(), QGenericArgument <i>val7</i> = QGenericArgument(), QGenericArgument <i>val8</i> = QGenericArgument(), QGenericArgument <i>val9</i> = QGenericArgument() )</li>
 <li><div class="fn"/>bool <b><a href="qmetaobject.html#invokeMethod-2">invokeMethod</a></b> ( QObject * <i>obj</i>, const char * <i>member</i>, QGenericReturnArgument <i>ret</i>, QGenericArgument <i>val0</i> = QGenericArgument( 0 ), QGenericArgument <i>val1</i> = QGenericArgument(), QGenericArgument <i>val2</i> = QGenericArgument(), QGenericArgument <i>val3</i> = QGenericArgument(), QGenericArgument <i>val4</i> = QGenericArgument(), QGenericArgument <i>val5</i> = QGenericArgument(), QGenericArgument <i>val6</i> = QGenericArgument(), QGenericArgument <i>val7</i> = QGenericArgument(), QGenericArgument <i>val8</i> = QGenericArgument(), QGenericArgument <i>val9</i> = QGenericArgument() )</li>
 <li><div class="fn"/>bool <b><a href="qmetaobject.html#invokeMethod-3">invokeMethod</a></b> ( QObject * <i>obj</i>, const char * <i>member</i>, Qt::ConnectionType <i>type</i>, QGenericArgument <i>val0</i> = QGenericArgument( 0 ), QGenericArgument <i>val1</i> = QGenericArgument(), QGenericArgument <i>val2</i> = QGenericArgument(), QGenericArgument <i>val3</i> = QGenericArgument(), QGenericArgument <i>val4</i> = QGenericArgument(), QGenericArgument <i>val5</i> = QGenericArgument(), QGenericArgument <i>val6</i> = QGenericArgument(), QGenericArgument <i>val7</i> = QGenericArgument(), QGenericArgument <i>val8</i> = QGenericArgument(), QGenericArgument <i>val9</i> = QGenericArgument() )</li>
@@ -92,8 +92,8 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   class MyClass
     {
         Q_OBJECT
-        Q_CLASSINFO(&quot;author&quot;, &quot;Sabrina Schweinsteiger&quot;);
-        Q_CLASSINFO(&quot;url&quot;, &quot;http://doc.moosesoft.co.uk/1.0/&quot;);
+        Q_CLASSINFO(&quot;author&quot;, &quot;Sabrina Schweinsteiger&quot;)
+        Q_CLASSINFO(&quot;url&quot;, &quot;http://doc.moosesoft.co.uk/1.0/&quot;)
 
     public:
         ...
@@ -109,6 +109,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="className"></a>const char * QMetaObject::className () const</h3>
 <p>Returns the class name.</p>
 <p>See also <a href="qmetaobject.html#superClass">superClass</a>().</p>
+<h3 class="fn"><a name="connectSlotsByName"></a>void QMetaObject::connectSlotsByName ( <a href="qobject.html">QObject</a> * <i>o</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Searches recursively for all child objects of <i>o</i> and connects matching signals to slots of <i>o</i> that follow the following form:</p>
+<pre>&nbsp;   void on_&lt;widget name&gt;_&lt;signal name&gt;(&lt;signal parameters&gt;);</pre>
+<p>Let's assume our object has a child object of type <a href="qpushbutton.html">QPushButton</a> with the object name <tt>button1</tt>. The slot to catch the button's <tt>clicked()</tt> signal would be:</p>
+<pre>&nbsp;   void on_button1_clicked();</pre>
+<p>See also <a href="qobject.html#objectName-prop">QObject::setObjectName</a>().</p>
 <h3 class="fn"><a name="enumerator"></a><a href="qmetaenum.html">QMetaEnum</a> QMetaObject::enumerator ( int <i>index</i> ) const</h3>
 <p>Returns the meta-data for the enumerator with the given <i>index</i>.</p>
 <p>See also <a href="qmetaobject.html#enumeratorCount">enumeratorCount</a>(), <a href="qmetaobject.html#enumeratorOffset">enumeratorOffset</a>(), and <a href="qmetaobject.html#indexOfEnumerator">indexOfEnumerator</a>().</p>
@@ -127,14 +133,16 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmetaobject.html#enumerator">enumerator</a>(), <a href="qmetaobject.html#enumeratorCount">enumeratorCount</a>(), and <a href="qmetaobject.html#enumeratorOffset">enumeratorOffset</a>().</p>
 <h3 class="fn"><a name="indexOfMethod"></a>int QMetaObject::indexOfMethod ( const char * <i>method</i> ) const</h3>
 <p>Finds <i>method</i> and returns its index; otherwise returns -1.</p>
-<p>See also <a href="qmetaobject.html#method">method</a>(), <a href="qmetaobject.html#methodCount">methodCount</a>(), and <a href="qmetaobject.html#methodOffset">methodOffset</a>().</p>
+<p>Note that the <i>method</i> has to be in normalized form, as returned by <a href="qmetaobject.html#normalizedSignature">normalizedSignature</a>().</p>
+<p>See also <a href="qmetaobject.html#method">method</a>(), <a href="qmetaobject.html#methodCount">methodCount</a>(), <a href="qmetaobject.html#methodOffset">methodOffset</a>(), and <a href="qmetaobject.html#normalizedSignature">normalizedSignature</a>().</p>
 <h3 class="fn"><a name="indexOfProperty"></a>int QMetaObject::indexOfProperty ( const char * <i>name</i> ) const</h3>
 <p>Finds property <i>name</i> and returns its index; otherwise returns -1.</p>
 <p>See also <a href="qmetaobject.html#property">property</a>(), <a href="qmetaobject.html#propertyCount">propertyCount</a>(), and <a href="qmetaobject.html#propertyOffset">propertyOffset</a>().</p>
 <h3 class="fn"><a name="indexOfSignal"></a>int QMetaObject::indexOfSignal ( const char * <i>signal</i> ) const</h3>
 <p>Finds <i>signal</i> and returns its index; otherwise returns -1.</p>
 <p>This is the same as <a href="qmetaobject.html#indexOfMethod">indexOfMethod</a>(), except that it will return -1 if the method exists but isn't a signal.</p>
-<p>See also <a href="qmetaobject.html#indexOfMethod">indexOfMethod</a>(), <a href="qmetaobject.html#method">method</a>(), <a href="qmetaobject.html#methodCount">methodCount</a>(), and <a href="qmetaobject.html#methodOffset">methodOffset</a>().</p>
+<p>Note that the <i>signal</i> has to be in normalized form, as returned by <a href="qmetaobject.html#normalizedSignature">normalizedSignature</a>().</p>
+<p>See also <a href="qmetaobject.html#indexOfMethod">indexOfMethod</a>(), <a href="qmetaobject.html#normalizedSignature">normalizedSignature</a>(), <a href="qmetaobject.html#method">method</a>(), <a href="qmetaobject.html#methodCount">methodCount</a>(), and <a href="qmetaobject.html#methodOffset">methodOffset</a>().</p>
 <h3 class="fn"><a name="indexOfSlot"></a>int QMetaObject::indexOfSlot ( const char * <i>slot</i> ) const</h3>
 <p>Finds <i>slot</i> and returns its index; otherwise returns -1.</p>
 <p>This is the same as <a href="qmetaobject.html#indexOfMethod">indexOfMethod</a>(), except that it will return -1 if the method exists but isn't a slot.</p>
@@ -148,7 +156,7 @@ body { background: #ffffff; color: black; }</style>
 <li>If <i>type</i> is <a href="qt.html#ConnectionType-enum">Qt::AutoConnection</a>, the member is invoked synchronously if <i>obj</i> lives in the same thread as the caller; otherwise it will invoke the member asynchronously.</li>
 </ul>
 <p>The return value of the <i>member</i> function call is placed in <i>ret</i>. If the invocation is asynchronous, the return value cannot be evaluated. You can pass up to ten arguments (<i>val0</i>, <i>val1</i>, <i>val2</i>, <i>val3</i>, <i>val4</i>, <i>val5</i>, <i>val6</i>, <i>val7</i>, <i>val8</i>, and <i>val9</i>) to the <i>member</i> function.</p>
-<p><tt>QGenericArgument</tt> and <tt>QGenericReturnArgument</tt> are internal helper classes. Because signals and slots can be dynamically invoked, you must enclose the arguments using the <a href="qmetaobject.html#Q_ARG">Q_ARG</a>() and <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>() macros. <a href="qmetaobject.html#Q_ARG">Q_ARG</a>() takes a type name and a const reference of that type; <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>() takes a type name and a non-const reference.</p>
+<p><a href="qgenericargument.html">QGenericArgument</a> and <a href="qgenericreturnargument.html">QGenericReturnArgument</a> are internal helper classes. Because signals and slots can be dynamically invoked, you must enclose the arguments using the <a href="qmetaobject.html#Q_ARG">Q_ARG</a>() and <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>() macros. <a href="qmetaobject.html#Q_ARG">Q_ARG</a>() takes a type name and a const reference of that type; <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>() takes a type name and a non-const reference.</p>
 <p>To asynchronously invoke the <a href="qabstractbutton.html#animateClick">animateClick()</a> slot on a <a href="qpushbutton.html">QPushButton</a>:</p>
 <pre>&nbsp;   QMetaObject::invokeMethod(pushButton, &quot;animateClick&quot;,
                               Qt::QueuedConnection);</pre>
@@ -200,15 +208,15 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Macro Documentation</h2>
 <h3 class="fn"><a name="Q_ARG"></a><a href="qgenericargument.html">QGenericArgument</a> Q_ARG (  <i>Type</i>, const Type &amp; <i>value</i> )</h3>
-<p>This macro takes a <i>Type</i> and a <i>value</i> of that type and returns a <tt>QGenericArgument</tt> object that can be passed to <a href="qmetaobject.html#invokeMethod">QMetaObject::invokeMethod</a>().</p>
+<p>This macro takes a <i>Type</i> and a <i>value</i> of that type and returns a <a href="qgenericargument.html">QGenericArgument</a> object that can be passed to <a href="qmetaobject.html#invokeMethod">QMetaObject::invokeMethod</a>().</p>
 <p>See also <a href="qmetaobject.html#Q_RETURN_ARG">Q_RETURN_ARG</a>().</p>
 <h3 class="fn"><a name="Q_RETURN_ARG"></a><a href="qgenericreturnargument.html">QGenericReturnArgument</a> Q_RETURN_ARG (  <i>Type</i>, Type &amp; <i>value</i> )</h3>
-<p>This macro takes a <i>Type</i> and a non-const reference to a <i>value</i> of that type and returns a <tt>QGenericReturnArgument</tt> object that can be passed to <a href="qmetaobject.html#invokeMethod">QMetaObject::invokeMethod</a>().</p>
+<p>This macro takes a <i>Type</i> and a non-const reference to a <i>value</i> of that type and returns a <a href="qgenericreturnargument.html">QGenericReturnArgument</a> object that can be passed to <a href="qmetaobject.html#invokeMethod">QMetaObject::invokeMethod</a>().</p>
 <p>See also <a href="qmetaobject.html#Q_ARG">Q_ARG</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

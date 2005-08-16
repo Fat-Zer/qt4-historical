@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the accessibility module of the Qt Toolkit.
+** This file is part of the plugins of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,6 +34,8 @@
 #include <qvariant.h>
 #include <qaccessible.h>
 
+#ifndef QT_NO_ACCESSIBILITY
+
 class AccessibleFactory : public QAccessiblePlugin
 {
 public:
@@ -55,12 +52,24 @@ AccessibleFactory::AccessibleFactory()
 QStringList AccessibleFactory::keys() const
 {
     QStringList list;
+#ifndef QT_NO_LINEEDIT
     list << "QLineEdit";
+#endif
+#ifndef QT_NO_COMBOBOX
     list << "QComboBox";
+#endif
+#ifndef QT_NO_SPINBOX
     list << "QSpinBox";
+#endif
+#ifndef QT_NO_SCROLLBAR
     list << "QScrollBar";
+#endif
+#ifndef QT_NO_SLIDER
     list << "QSlider";
+#endif
+#ifndef QT_NO_TOOLBUTTON
     list << "QToolButton";
+#endif
     list << "QCheckBox";
     list << "QRadioButton";
     list << "QPushButton";
@@ -83,7 +92,9 @@ QStringList AccessibleFactory::keys() const
     list << "QToolBar";
     list << "QWorkspaceChild";
     list << "QSizeGrip";
+#ifndef QT_NO_SPLITTER
     list << "QSplitter";
+#endif
     list << "QSplitterHandle";
     list << "QTipLabel";
     list << "QFrame";
@@ -99,26 +110,41 @@ QAccessibleInterface *AccessibleFactory::create(const QString &classname, QObjec
         return iface;
     QWidget *widget = static_cast<QWidget*>(object);
 
-    if (classname == "QLineEdit") {
+    if (false) {
+#ifndef QT_NO_LINEEDIT
+    } else if (classname == "QLineEdit") {
         iface = new QAccessibleLineEdit(widget);
+#endif
+#ifndef QT_NO_COMBOBOX
     } else if (classname == "QComboBox") {
         iface = new QAccessibleComboBox(widget);
+#endif
+#ifndef QT_NO_SPINBOX
     } else if (classname == "QSpinBox") {
         iface = new QAccessibleSpinBox(widget);
+#endif
+#ifndef QT_NO_SCROLLBAR
     } else if (classname == "QScrollBar") {
         iface = new QAccessibleScrollBar(widget);
+#endif
+#ifndef QT_NO_SLIDER
     } else if (classname == "QSlider") {
         iface = new QAccessibleSlider(widget);
+#endif
+#ifndef QT_NO_TOOLBUTTON
     } else if (classname == "QToolButton") {
         Role role = NoRole;
         QToolButton *tb = qobject_cast<QToolButton*>(widget);
+#ifndef QT_NO_MENU
         if (!tb->menu())
             role = tb->isCheckable() ? CheckBox : PushButton;
         else if (!tb->popupMode() != QToolButton::DelayedPopup)
             role = ButtonDropDown;
         else
+#endif
             role = ButtonMenu;
         iface = new QAccessibleToolButton(widget, role);
+#endif // QT_NO_TOOLBUTTON
     } else if (classname == "QCheckBox") {
         iface = new QAccessibleButton(widget, CheckBox);
     } else if (classname == "QRadioButton") {
@@ -126,9 +152,12 @@ QAccessibleInterface *AccessibleFactory::create(const QString &classname, QObjec
     } else if (classname == "QPushButton") {
         Role role = NoRole;
         QPushButton *pb = qobject_cast<QPushButton*>(widget);
+#ifndef QT_NO_MENU
         if (pb->menu())
             role = ButtonMenu;
-        else if (pb->isCheckable())
+        else
+#endif
+        if (pb->isCheckable())
             role = CheckBox;
         else
             role = PushButton;
@@ -155,16 +184,24 @@ QAccessibleInterface *AccessibleFactory::create(const QString &classname, QObjec
         iface = new QAccessibleDisplay(widget);
     } else if (classname == "QToolBar") {
         iface = new QAccessibleWidget(widget, ToolBar, widget->windowTitle());
+#ifndef QT_NO_MENUBAR
     } else if (classname == "QMenuBar") {
         iface = new QAccessibleMenuBar(widget);
+#endif
+#ifndef QT_NO_MENU
     } else if (classname == "QMenu") {
         iface = new QAccessibleMenu(widget);
     } else if (classname == "Q3PopupMenu") {
         iface = new QAccessibleMenu(widget);
+#endif
+#ifndef QT_NO_ITEMVIEWS
     } else if (classname == "QHeaderView") {
         iface = new QAccessibleHeader(widget);
+#endif
+#ifndef QT_NO_TABBAR
     } else if (classname == "QTabBar") {
         iface = new QAccessibleTabBar(widget);
+#endif
     } else if (classname == "QWorkspaceChild") {
         iface = new QAccessibleWidget(widget, Window);
     } else if (classname == "QSizeGrip") {
@@ -183,3 +220,4 @@ QAccessibleInterface *AccessibleFactory::create(const QString &classname, QObjec
 }
 
 Q_EXPORT_PLUGIN(AccessibleFactory)
+#endif // QT_NO_ACCESSIBILITY

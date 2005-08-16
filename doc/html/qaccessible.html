@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/accessible/qaccessible.cpp -->
 <head>
     <title>Qt 4.0: QAccessible Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAccessible Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAccessible Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QAccessible class provides enums and static functions relating to accessibility. <a href="#details">More...</a></p>
-<pre>#include &lt;QAccessible&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherited by <a href="qaccessibleinterface.html">QAccessibleInterface</a> and <a href="qaccessibleplugin.html">QAccessiblePlugin</a>.</p>
+<pre>#include &lt;QAccessible&gt;</pre><p>Inherited by <a href="qaccessibleinterface.html">QAccessibleInterface</a> and <a href="qaccessibleplugin.html">QAccessiblePlugin</a>.</p>
 <ul>
 <li><a href="qaccessible-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -62,7 +61,7 @@ body { background: #ffffff; color: black; }</style>
 <li><i>AT Clients</i> request information about the objects in the server. The <a href="qaccessibleinterface.html">QAccessibleInterface</a> class is the core interface, and encapsulates this information in a pure virtual API. Implementations of the interface are provided by Qt through the <a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface</a>() API.</li>
 </ul>
 <p>The communication between servers and clients is initialized by the <a href="qaccessible.html#setRootObject">setRootObject</a>() function. Function pointers can be installed to replace or extend the default behavior of the static functions in QAccessible.</p>
-<p>Qt supports Microsoft Active Accessibility (MSAA), Mac OS X Accessibility, and the Unix/<a href="winsystem.html#x11">X11</a> AT-SPI standard. Other backends can be supported using QAccessibilityBridge.</p>
+<p>Qt supports Microsoft Active Accessibility (MSAA), Mac OS X Accessibility, and the Unix/X11 AT-SPI standard. Other backends can be supported using QAccessibilityBridge.</p>
 <p>In addition to QAccessible's static functions, Qt offers one generic interface, <a href="qaccessibleinterface.html">QAccessibleInterface</a>, that can be used to wrap all widgets and objects (e.g., <a href="qpushbutton.html">QPushButton</a>). This single interface provides all the metadata necessary for the assistive technologies. Qt provides implementations of this interface for its built-in widgets as plugins.</p>
 <p>When you develop custom widgets, you can create custom subclasses of <a href="qaccessibleinterface.html">QAccessibleInterface</a> and distribute them as plugins (using <a href="qaccessibleplugin.html">QAccessiblePlugin</a>) or compile them into the application. Likewise, Qt's predefined accessibility support can be built as plugin (the default) or directly into the Qt library. The main advantage of using plugins is that the accessibility classes are only loaded into memory if they are actually used; they don't slow down the common case where no assistive technology is being used.</p>
 <p>Qt also includes two convenience classes, <a href="qaccessibleobject.html">QAccessibleObject</a> and <a href="qaccessiblewidget.html">QAccessibleWidget</a>, that inherit from <a href="qaccessibleinterface.html">QAccessibleInterface</a> and provide the lowest common denominator of metadata (e.g., widget geometry, window title, basic help text). You can use them as base classes when wrapping your custom <a href="qobject.html">QObject</a> or <a href="qwidget.html">QWidget</a> subclasses.</p>
@@ -193,7 +192,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::Indicator</tt></td><td align="center" valign="top"><tt>0x00000027</tt></td><td valign="top">An indicator that represents a current value or item.</td></tr>
 <tr><td valign="top"><tt>QAccessible::LayeredPane</tt></td><td align="center" valign="top"><tt>0x0000003F</tt></td><td valign="top">An object that can contain layered children, e.g. in a stack.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Link</tt></td><td align="center" valign="top"><tt>0x0000001E</tt></td><td valign="top">A link to something else.</td></tr>
-<tr><td valign="top"><tt>QAccessible::List</tt></td><td align="center" valign="top"><tt>0x00000021</tt></td><td valign="top">A list of items, from which the user to select one or more items.</td></tr>
+<tr><td valign="top"><tt>QAccessible::List</tt></td><td align="center" valign="top"><tt>0x00000021</tt></td><td valign="top">A list of items, from which the user can select one or more items.</td></tr>
 <tr><td valign="top"><tt>QAccessible::ListItem</tt></td><td align="center" valign="top"><tt>0x00000022</tt></td><td valign="top">An item in a list of items.</td></tr>
 <tr><td valign="top"><tt>QAccessible::MenuBar</tt></td><td align="center" valign="top"><tt>0x00000002</tt></td><td valign="top">A menu bar from which menus are opened by the user.</td></tr>
 <tr><td valign="top"><tt>QAccessible::MenuItem</tt></td><td align="center" valign="top"><tt>0x0000000C</tt></td><td valign="top">An item in a menu or menu bar.</td></tr>
@@ -311,6 +310,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

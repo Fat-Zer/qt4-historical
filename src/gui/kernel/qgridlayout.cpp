@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,7 +23,6 @@
 
 #include "qgridlayout.h"
 
-#ifndef QT_NO_LAYOUT
 
 #include "qapplication.h"
 #include "qwidget.h"
@@ -285,7 +279,6 @@ int QGridLayoutPrivate::minimumHeightForWidth(int w, int margin, int spacing)
     return has_hfw ? (hfw_minheight + 2*margin) : -1;
 }
 
-
 QSize QGridLayoutPrivate::findSize(int QLayoutStruct::*size, int spacer) const
 {
     QGridLayoutPrivate *that = const_cast<QGridLayoutPrivate*>(this);
@@ -301,6 +294,7 @@ QSize QGridLayoutPrivate::findSize(int QLayoutStruct::*size, int spacer) const
     }
     if (n)
         h += (n - 1) * spacer;
+
     n = 0;
     for (int c = 0; c < cc; c++) {
         w = w + colData[c].*size;
@@ -501,10 +495,8 @@ void QGridLayoutPrivate::addData(QGridBox *box, bool r, bool c)
     }
 }
 
-static void distributeMultiBox(QVector<QLayoutStruct> &chain, int spacing,
-                                int start, int end,
-                                int minSize, int sizeHint,
-                                QVector<int> &stretchArray, int stretch)
+static void distributeMultiBox(QVector<QLayoutStruct> &chain, int spacing, int start, int end,
+                               int minSize, int sizeHint, QVector<int> &stretchArray, int stretch)
 {
     int i;
     int w = 0;
@@ -576,37 +568,42 @@ void QGridLayoutPrivate::setupLayoutData(int spacing)
     for (i = 0; i < cc; i++)
         colData[i].init(cStretch[i], cSpacing[i]);
 
-    for (i = 0; i < things.size(); ++i) {
-        QGridBox *box = things.at(i);
-        int r1 = box->row;
-        int c1 = box->col;
-        int r2 = box->torow;
-        int c2 = box->tocol;
-        if (r2 < 0)
-            r2 = rr - 1;
-        if (c2 < 0)
-            c2 = cc - 1;
+    for (int pass = 0; pass < 2; ++pass) {
+        for (i = 0; i < things.size(); ++i) {
+            QGridBox *box = things.at(i);
+            int r1 = box->row;
+            int c1 = box->col;
+            int r2 = box->torow;
+            int c2 = box->tocol;
+            if (r2 < 0)
+                r2 = rr - 1;
+            if (c2 < 0)
+                c2 = cc - 1;
 
-        QSize hint = box->sizeHint();
-        QSize min = box->minimumSize();
-        if (box->hasHeightForWidth())
-            has_hfw = true;
+            QSize hint = box->sizeHint();
+            QSize min = box->minimumSize();
+            if (box->hasHeightForWidth())
+                has_hfw = true;
 
-        if (r1 == r2) {
-            addData(box, true, false);
-        } else {
-            distributeMultiBox(rowData, spacing, r1, r2,
-                                min.height(), hint.height(),
-                                rStretch, box->vStretch());
-        }
-        if (c1 == c2) {
-            addData(box, false, true);
-        } else {
-            distributeMultiBox(colData, spacing, c1, c2,
-                                min.width(), hint.width(),
-                                cStretch, box->hStretch());
+            if (r1 == r2) {
+                if (pass == 0)
+                    addData(box, true, false);
+            } else {
+                if (pass == 1)
+                    distributeMultiBox(rowData, spacing, r1, r2, min.height(), hint.height(),
+                                       rStretch, box->vStretch());
+            }
+            if (c1 == c2) {
+                if (pass == 0)
+                    addData(box, false, true);
+            } else {
+                if (pass == 1)
+                    distributeMultiBox(colData, spacing, c1, c2, min.width(), hint.width(),
+                                       cStretch, box->hStretch());
+            }
         }
     }
+
     for (i = 0; i < rr; i++)
         rowData[i].expansive = rowData[i].expansive || rowData[i].stretch > 0;
     for (i = 0; i < cc; i++)
@@ -958,7 +955,7 @@ int QGridLayout::columnCount() const
 }
 
 /*!
-    Returns the preferred size of this grid.
+    \reimp
 */
 QSize QGridLayout::sizeHint() const
 {
@@ -968,7 +965,7 @@ QSize QGridLayout::sizeHint() const
 }
 
 /*!
-    Returns the minimum size needed by this grid.
+    \reimp
 */
 QSize QGridLayout::minimumSize() const
 {
@@ -978,7 +975,7 @@ QSize QGridLayout::minimumSize() const
 }
 
 /*!
-    Returns the maximum size needed by this grid.
+    \reimp
 */
 QSize QGridLayout::maximumSize() const
 {
@@ -995,8 +992,7 @@ QSize QGridLayout::maximumSize() const
 }
 
 /*!
-    Returns true if this layout's preferred height depends on its
-    width; otherwise returns false.
+    \reimp
 */
 bool QGridLayout::hasHeightForWidth() const
 {
@@ -1004,7 +1000,7 @@ bool QGridLayout::hasHeightForWidth() const
 }
 
 /*!
-    Returns the layout's preferred height when it is \a w pixels wide.
+    \reimp
 */
 int QGridLayout::heightForWidth(int w) const
 {
@@ -1012,7 +1008,9 @@ int QGridLayout::heightForWidth(int w) const
     return that->d_func()->heightForWidth(w, margin(), spacing());
 }
 
-/*! \internal */
+/*!
+    \reimp
+*/
 int QGridLayout::minimumHeightForWidth(int w) const
 {
     QGridLayout *that = (QGridLayout*)this;
@@ -1074,23 +1072,21 @@ QLayoutItem *QGridLayout::takeAt(int index)
 }
 
 /*!
-  \fn void QGridLayout::getItemPosition(int index, int *row, int *column, int *rowSpan, int *columnSpan)
-
   Returns the position information of the item with the given \a index.
 
   The variables passed as \a row and \a column are updated with the position of the
   item in the layout, and the \a rowSpan and \a columnSpan variables are updated
   with the vertical and horizontal spans of the item.
 */
-void QGridLayout::getItemPosition(int idx, int *row, int *column, int *rowSpan, int *columnSpan)
+void QGridLayout::getItemPosition(int index, int *row, int *column, int *rowSpan, int *columnSpan)
 {
     Q_D(QGridLayout);
-    d->getItemPosition(idx, row, column, rowSpan, columnSpan);
+    d->getItemPosition(index, row, column, rowSpan, columnSpan);
 }
 
 
 /*!
-    Resizes managed widgets within the rectangle \a rect.
+    \reimp
 */
 void QGridLayout::setGeometry(const QRect &rect)
 {
@@ -1135,9 +1131,7 @@ void QGridLayout::expand(int nRows, int nCols)
 #endif
 
 /*!
-    \overload
-
-    Adds \a item to the next free position of this layout.
+    \reimp
 */
 void QGridLayout::addItem(QLayoutItem *item)
 {
@@ -1233,6 +1227,7 @@ void QGridLayout::addWidget(QWidget *widget, int fromRow, int fromColumn,
 /*!
     \fn void QGridLayout::addWidget(QWidget *widget)
 
+    \overload
     \internal
 */
 
@@ -1389,10 +1384,7 @@ int QGridLayout::columnMinimumWidth(int column) const
 }
 
 /*!
-    Returns whether this layout can make use of more space than
-    sizeHint(). A value of \c Qt::Vertical or \c Qt::Horizontal means that it wants
-    to grow in only one dimension, whereas \c BothDirections means that
-    it wants to grow in both dimensions.
+    \reimp
 */
 Qt::Orientations QGridLayout::expandingDirections() const
 {
@@ -1425,7 +1417,7 @@ Qt::Corner QGridLayout::originCorner() const
 }
 
 /*!
-    Resets cached information.
+    \reimp
 */
 void QGridLayout::invalidate()
 {
@@ -1533,4 +1525,3 @@ void QGridLayout::invalidate()
     Use originCorner() instead.
 */
 
-#endif // QT_NO_LAYOUT

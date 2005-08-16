@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -114,14 +109,20 @@ class QWorkspaceTitleBarPrivate : public QWidgetPrivate
     Q_DECLARE_PUBLIC(QWorkspaceTitleBar)
 public:
     QWorkspaceTitleBarPrivate()
-        : toolTip(0), act(0), window(0), movable(1), pressed(0), autoraise(0), inevent(0)
+        :
+#ifndef QT_NO_TOOLTIP
+        toolTip(0),
+#endif
+        act(0), window(0), movable(1), pressed(0), autoraise(0), inevent(0)
     {
     }
 
     Qt::WFlags flags;
     QStyle::SubControl buttonDown;
     QPoint moveOffset;
+#ifndef QT_NO_TOOLTIP
     QToolTip *toolTip;
+#endif
     bool act                    :1;
     QWidget* window;
     bool movable            :1;
@@ -919,7 +920,9 @@ QWorkspacePrivate::init()
                                                           q->tr("Ma&ximize"), q);
     actions[QWorkspacePrivate::CloseAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarCloseButton)),
                                                           q->tr("&Close")
+#ifndef QT_NO_SHORTCUT
                                                           +"\t"+(QString)QKeySequence(Qt::CTRL+Qt::Key_F4)
+#endif
                                                           ,q);
     QObject::connect(actions[QWorkspacePrivate::CloseAct], SIGNAL(triggered()), q, SLOT(closeActiveWindow()));
     actions[QWorkspacePrivate::StaysOnTopAct] = new QAction(q->tr("Stay on &Top"), q);
@@ -946,6 +949,7 @@ QWorkspacePrivate::init()
     toolPopup->addAction(actions[QWorkspacePrivate::ShadeAct]);
     toolPopup->addAction(actions[QWorkspacePrivate::CloseAct]);
 
+#ifndef QT_NO_SHORTCUT    
     // Set up shortcut bindings (id -> slot), most used first
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::Key_Tab), "activateNextWindow");
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), "activatePreviousWindow");
@@ -955,7 +959,8 @@ QWorkspacePrivate::init()
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_F6), "activatePreviousWindow");
     shortcutMap.insert(q->grabShortcut(Qt::Key_Forward), "activateNextWindow");
     shortcutMap.insert(q->grabShortcut(Qt::Key_Back), "activatePreviousWindow");
-
+#endif // QT_NO_SHORTCUT
+    
     q->setAttribute(Qt::WA_NoBackground, true);
     q->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
@@ -1028,7 +1033,7 @@ void QWorkspace::setBackground(const QBrush &background)
   Adds widget \a w as new sub window to the workspace.  If \a flags
   are non-zero, they will override the flags set on the widget.
 
-  Returns the window frame.
+  Returns the widget used for the window frame.
 
 */
 QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
@@ -1778,7 +1783,9 @@ void QWorkspacePrivate::showMaximizeControls()
                 (maxWindow->windowWidget()->windowFlags() & Qt::WindowMinimizeButtonHint)) {
                 QToolButton* iconB = new QToolButton(maxcontrols);
                 iconB->setObjectName("iconify");
+#ifndef QT_NO_TOOLTIP
                 iconB->setToolTip(q->tr("Minimize"));
+#endif
                 l->addWidget(iconB);
                 iconB->setFocusPolicy(Qt::NoFocus);
                 QPixmap pm = q->style()->standardPixmap(QStyle::SP_TitleBarMinButton);
@@ -1790,7 +1797,9 @@ void QWorkspacePrivate::showMaximizeControls()
 
             QToolButton* restoreB = new QToolButton(maxcontrols);
             restoreB->setObjectName("restore");
+#ifndef QT_NO_TOOLTIP
             restoreB->setToolTip(q->tr("Restore Down"));
+#endif
             l->addWidget(restoreB);
             restoreB->setFocusPolicy(Qt::NoFocus);
             QPixmap pm = q->style()->standardPixmap(QStyle::SP_TitleBarNormalButton);
@@ -1802,7 +1811,9 @@ void QWorkspacePrivate::showMaximizeControls()
             l->addSpacing(2);
             QToolButton* closeB = new QToolButton(maxcontrols);
             closeB->setObjectName("close");
+#ifndef QT_NO_TOOLTIP
             closeB->setToolTip(q->tr("Close"));
+#endif
             l->addWidget(closeB);
             closeB->setFocusPolicy(Qt::NoFocus);
             pm = q->style()->standardPixmap(QStyle::SP_TitleBarCloseButton);

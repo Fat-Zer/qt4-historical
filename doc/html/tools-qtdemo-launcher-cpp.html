@@ -15,30 +15,25 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">launcher.cpp Example File<br /><small><small>tools/qtdemo/launcher.cpp</small></small></h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">launcher.cpp Example File<br /><sup><sup>tools/qtdemo/launcher.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
     ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
-    ** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+    ** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
     **
     ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
     ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -118,6 +113,7 @@ body { background: #ffffff; color: black; }</style>
         setCentralWidget(display);
         setMaximumSize(QApplication::desktop()-&gt;screenGeometry().size());
         setWindowTitle(tr(&quot;Qt Examples and Demos&quot;));
+        setWindowIcon(QPixmap(&quot;:/images/qt4-logo.png&quot;));
     }
 
     bool Launcher::setup()
@@ -227,7 +223,7 @@ body { background: #ffffff; color: black; }</style>
         QDomNodeList categoryNodes = documentElement.elementsByTagName(&quot;category&quot;);
 
         readCategoryDescription(dir, &quot;[main]&quot;);
-        qtLogo.load(imagesDir.absoluteFilePath(&quot;:/images/qt-logo.png&quot;));
+        qtLogo.load(imagesDir.absoluteFilePath(&quot;:/images/qt4-logo.png&quot;));
         trolltechLogo.load(imagesDir.absoluteFilePath(&quot;:/images/trolltech-logo.png&quot;));
 
         for (int i = 0; i &lt; int(categoryNodes.length()); ++i) {
@@ -396,6 +392,9 @@ body { background: #ffffff; color: black; }</style>
         runningProcesses[process] = example;
         process-&gt;setWorkingDirectory(examplePaths[example].first);
         process-&gt;start(examplePaths[example].second);
+
+        if (process-&gt;state() == QProcess::Starting)
+            slideshowTimer-&gt;stop();
     }
 
     void Launcher::enableLaunching()
@@ -413,6 +412,7 @@ body { background: #ffffff; color: black; }</style>
                     display-&gt;enableUpdates();
                 }
             }
+            slideshowTimer-&gt;start();
         }
     }
 
@@ -446,9 +446,7 @@ body { background: #ffffff; color: black; }</style>
 
         qDeleteAll(runningProcesses.keys());
         resizeTimer-&gt;stop();
-        resizeTimer-&gt;deleteLater();
         slideshowTimer-&gt;stop();
-        slideshowTimer-&gt;deleteLater();
     }
 
     void Launcher::showParentPage()
@@ -498,7 +496,6 @@ body { background: #ffffff; color: black; }</style>
 
         display-&gt;appendShape(title);
 
-        QFontMetrics buttonMetrics(buttonFont);
         qreal topMargin = 6*verticalMargin;
         qreal bottomMargin = height() - 3.2*verticalMargin;
         qreal space = bottomMargin - topMargin;
@@ -940,10 +937,6 @@ body { background: #ffffff; color: black; }</style>
 
             QColor backgroundColor = QColor(&quot;#a63e39&quot;);
             QColor highlightedColor = QColor(&quot;#f95e56&quot;);
-            if (runningExamples.contains(example)) {
-                backgroundColor.setAlpha(15);
-                highlightedColor.setAlpha(15);
-            }
 
             DisplayShape *background = new PanelShape(path,
                 QBrush(backgroundColor), QBrush(highlightedColor), Qt::NoPen,
@@ -954,6 +947,14 @@ body { background: #ffffff; color: black; }</style>
             background-&gt;setMetaData(&quot;launch&quot;, example);
             background-&gt;setInteractive(true);
             background-&gt;setTarget(launchCaption-&gt;target());
+
+            if (runningExamples.contains(example)) {
+                background-&gt;setMetaData(&quot;highlight&quot;, true);
+                background-&gt;setMetaData(&quot;highlight scale&quot;, 0.99);
+                background-&gt;animate();
+                background-&gt;setMetaData(&quot;fade&quot;, -135);
+                slideshowTimer-&gt;stop();
+            }
 
             display-&gt;insertShape(0, background);
 
@@ -1090,6 +1091,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

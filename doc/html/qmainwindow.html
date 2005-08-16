@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/widgets/qmainwindow.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qmainwindow.cpp -->
 <head>
     <title>Qt 4.0: QMainWindow Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QMainWindow Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QMainWindow Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QMainWindow class provides a main application window. <a href="#details">More...</a></p>
-<pre>#include &lt;QMainWindow&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre>#include &lt;QMainWindow&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qmainwindow-members.html">List of all members, including inherited members</a></li>
 <li><a href="qmainwindow-qt3.html">Qt 3 support members</a></li>
@@ -70,7 +69,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Qt::ToolButtonStyle <b><a href="qmainwindow.html#toolButtonStyle-prop">toolButtonStyle</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -97,7 +96,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QMainWindow class provides a main application window.</p>
-<p>QMainWindow provides a main application window, with a menu bar, tool bars, dock widgets and a status bar around a large central widget, such as a text edit, drawing canvas or Q3Workspace (for MDI applications).</p>
+<p>QMainWindow provides a main application window, with a menu bar, tool bars, dock widgets and a status bar around a large central widget, such as a text edit, drawing canvas or <a href="qworkspace.html">QWorkspace</a> (for MDI applications).</p>
 <p>Topics:</p>
 <ul><li><a href="#saving-and-restoring-state">Saving and restoring state</a></li>
 <li><a href="#behavior-of-dock-widgets">Behavior of Dock Widgets</a></li>
@@ -129,11 +128,11 @@ body { background: #ffffff; color: black; }</style>
 <li>QMainWindow will swap the position of the <a href="qdockwidget.html">QDockWidget</a> being dragged and its neighbor once the user has dragged the mouse past the center point of the neighboring <a href="qdockwidget.html">QDockWidget</a>.</li>
 </ul>
 <p>The following diagram depicts this behavior:</p>
-<center><img src="images/dockwidget-neighbors.png" alt="Diagram" /></center><a name="dragging-over-other-qdockwidgets"></a>
+<p align="center"><img src="images/dockwidget-neighbors.png" alt="Diagram" /></p><a name="dragging-over-other-qdockwidgets"></a>
 <h4>Dragging over other QDockWidgets</h4>
 <p>When dragging nested QDockWidgets, or when dragging to a different dock area, QMainWindow will split the <a href="porting4.html#qdockwindow">QDockWindow</a> under the mouse. Be aware that the <a href="qdockwidget.html">QDockWidget</a> under the mouse will only be split by the <a href="qdockwidget.html">QDockWidget</a> being dragged if both can fit in the space currently occupied by the <a href="qdockwidget.html">QDockWidget</a> under the mouse.</p>
 <p>A <a href="qdockwidget.html">QDockWidget</a> can be split horizontally or vertically, with the <a href="qdockwidget.html">QDockWidget</a> being dragged being placed in one of four possible locations, as shown in the diagram below:</p>
-<center><img src="images/dockwidget-cross.png" alt="Diagram" /></center><a name="dragging-to-a-different-qt-dockwidgetarea"></a>
+<p align="center"><img src="images/dockwidget-cross.png" alt="Diagram" /></p><a name="dragging-to-a-different-qt-dockwidgetarea"></a>
 <h4>Dragging to a Different Qt::DockWidgetArea</h4>
 <p>The QDockWidget::floatable property influences feedback when the user drags a <a href="qdockwidget.html">QDockWidget</a> over the central widget:</p>
 <ul>
@@ -173,7 +172,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds <i>dockwidget</i> into the given <i>area</i> in the direction specified by the <i>orientation</i>.</p>
 <h3 class="fn"><a name="addToolBar"></a>void QMainWindow::addToolBar ( <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a> <i>area</i>, <a href="qtoolbar.html">QToolBar</a> * <i>toolbar</i> )</h3>
-<p>Adds the <i>toolbar</i> into the specified <i>area</i> in this main window. The <i>toolbar</i> is placed at the end of the current tool bar block (i.e. line).</p>
+<p>Adds the <i>toolbar</i> into the specified <i>area</i> in this main window. The <i>toolbar</i> is placed at the end of the current tool bar block (i.e. line). If the main window already manages <i>toolbar</i> then it will only move the toolbar to <i>area</i>.</p>
 <p>See also <a href="qmainwindow.html#insertToolBar">insertToolBar</a>(), <a href="qmainwindow.html#addToolBarBreak">addToolBarBreak</a>(), and <a href="qmainwindow.html#insertToolBarBreak">insertToolBarBreak</a>().</p>
 <h3 class="fn"><a name="addToolBar-2"></a>void QMainWindow::addToolBar ( <a href="qtoolbar.html">QToolBar</a> * <i>toolbar</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -193,7 +192,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="createPopupMenu"></a><a href="qmenu.html">QMenu</a> * QMainWindow::createPopupMenu ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This function is called to create a popup menu when the user right-clicks on the menu bar, a toolbar or a dock widget. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
 <h3 class="fn"><a name="dockWidgetArea"></a><a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> QMainWindow::dockWidgetArea ( <a href="qdockwidget.html">QDockWidget</a> * <i>dockwidget</i> ) const</h3>
-<p>Returns the <tt>Qt::DockWidgetArea</tt> for <i>dockwidget</i>.</p>
+<p>Returns the <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> for <i>dockwidget</i>.</p>
 <p>See also <a href="qmainwindow.html#addDockWidget">addDockWidget</a>(), <a href="qmainwindow.html#splitDockWidget">splitDockWidget</a>(), and <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a>.</p>
 <h3 class="fn"><a name="iconSizeChanged"></a>void QMainWindow::iconSizeChanged ( const <a href="qsize.html">QSize</a> &amp; <i>iconSize</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the size of the icons used in the window is changed. The new icon size is passed in <i>iconSize</i>.</p>
@@ -253,6 +252,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

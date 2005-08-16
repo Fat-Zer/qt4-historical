@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,23 +26,51 @@
 
 /*!
     \class QFormBuilder
+    \brief The QFormBuilder class is used to dynamically construct user interfaces from .ui files at run-time.
     \inmodule QtDesigner
+
+    The QFormBuilder class provides a mechanism for dynamically creating user interfaces
+    at run-time, based on \c{.ui} files created with \QD.
+
+    This class extends the QAbstractFormBuilder base class with a number of functions that
+    are used to support custom widget plugins:
+
+    \list
+    \o pluginPaths() returns the list of paths that the form builder searches when loading
+       custom widget plugins.
+    \o addPluginPath() allows additional paths to be registered with the form builder.
+    \o setPluginPath() is used to replace the existing list of paths with a list obtained
+       from some other source.
+    \o clearPluginPaths() removes all paths registered with the form builder.
+    \o customWidgets() returns a list of interfaces to plugins that can be used to create
+       new instances of registered custom widgets.
+    \endlist
+
+    \sa QAbstractFormBuilder
 */
 
 /*!
     \fn QFormBuilder::QFormBuilder()
+
+    Constructs a new form builder.
 */
 
 QFormBuilder::QFormBuilder()
 {
 }
 
+/*!
+    \internal
+*/
 QWidget *QFormBuilder::create(DomWidget *ui_widget, QWidget *parentWidget)
 {
     return QAbstractFormBuilder::create(ui_widget, parentWidget);
 }
 
 
+/*!
+    \internal
+*/
 QWidget *QFormBuilder::createWidget(const QString &widgetName, QWidget *parentWidget, const QString &name)
 {
     QWidget *w = 0;
@@ -77,6 +100,7 @@ QWidget *QFormBuilder::createWidget(const QString &widgetName, QWidget *parentWi
     }
 
     if (w == 0) { // nothing to do
+        qWarning("QFormBuilder: Cannot create widget of class %s.", widgetName.toLatin1().constData());
         return 0;
     }
 
@@ -88,6 +112,9 @@ QWidget *QFormBuilder::createWidget(const QString &widgetName, QWidget *parentWi
     return w;
 }
 
+/*!
+    \internal
+*/
 QLayout *QFormBuilder::createLayout(const QString &layoutName, QObject *parent, const QString &name)
 {
     QLayout *l = 0;
@@ -123,16 +150,25 @@ QLayout *QFormBuilder::createLayout(const QString &layoutName, QObject *parent, 
     return l;
 }
 
+/*!
+    \internal
+*/
 bool QFormBuilder::addItem(DomLayoutItem *ui_item, QLayoutItem *item, QLayout *layout)
 {
     return QAbstractFormBuilder::addItem(ui_item, item, layout);
 }
 
+/*!
+    \internal
+*/
 bool QFormBuilder::addItem(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget)
 {
     return QAbstractFormBuilder::addItem(ui_widget, widget, parentWidget);
 }
 
+/*!
+    \internal
+*/
 QWidget *QFormBuilder::widgetByName(QWidget *topLevel, const QString &name)
 {
     Q_ASSERT(topLevel);
@@ -142,6 +178,9 @@ QWidget *QFormBuilder::widgetByName(QWidget *topLevel, const QString &name)
     return qFindChild<QWidget*>(topLevel, name);
 }
 
+/*!
+    \internal
+*/
 void QFormBuilder::createConnections(DomConnections *ui_connections, QWidget *widget)
 {
     Q_ASSERT(widget != 0);
@@ -165,40 +204,59 @@ void QFormBuilder::createConnections(DomConnections *ui_connections, QWidget *wi
     }
 }
 
+/*!
+    \internal
+*/
 QWidget *QFormBuilder::create(DomUI *ui, QWidget *parentWidget)
 {
     return QAbstractFormBuilder::create(ui, parentWidget);
 }
 
+/*!
+    \internal
+*/
 QLayout *QFormBuilder::create(DomLayout *ui_layout, QLayout *layout, QWidget *parentWidget)
 {
     return QAbstractFormBuilder::create(ui_layout, layout, parentWidget);
 }
 
+/*!
+    \internal
+*/
 QLayoutItem *QFormBuilder::create(DomLayoutItem *ui_layoutItem, QLayout *layout, QWidget *parentWidget)
 {
     return QAbstractFormBuilder::create(ui_layoutItem, layout, parentWidget);
 }
 
+/*!
+    \internal
+*/
 QAction *QFormBuilder::create(DomAction *ui_action, QObject *parent)
 {
     return QAbstractFormBuilder::create(ui_action, parent);
 }
 
+/*!
+    \internal
+*/
 QActionGroup *QFormBuilder::create(DomActionGroup *ui_action_group, QObject *parent)
 {
     return QAbstractFormBuilder::create(ui_action_group, parent);
 }
 
 /*!
-*/
+    Returns the list of paths the form builder searches for plugins.
+
+    \sa addPluginPath(), clearPluginPaths(), setPluginPath()*/
 QStringList QFormBuilder::pluginPaths() const
 {
     return m_pluginPaths;
 }
 
 /*!
-*/
+    Clears the list of paths that the form builder uses to search for custom widget plugins.
+
+    \sa pluginPaths(), addPluginPath(), setPluginPath()*/
 void QFormBuilder::clearPluginPaths()
 {
     m_pluginPaths.clear();
@@ -206,7 +264,10 @@ void QFormBuilder::clearPluginPaths()
 }
 
 /*!
-*/
+    Adds a new plugin path specified by \a pluginPath to the list of paths that will be
+    searched by the form builder when loading a custom widget plugin.
+
+    \sa setPluginPath(), clearPluginPaths()*/
 void QFormBuilder::addPluginPath(const QString &pluginPath)
 {
     m_pluginPaths.append(pluginPath);
@@ -214,13 +275,18 @@ void QFormBuilder::addPluginPath(const QString &pluginPath)
 }
 
 /*!
-*/
+    Sets the list of plugin paths to the list specified by \a pluginPaths.
+
+    \sa addPluginPath(), clearPluginPaths(), pluginPaths()*/
 void QFormBuilder::setPluginPath(const QStringList &pluginPaths)
 {
     m_pluginPaths = pluginPaths;
     updateCustomWidgets();
 }
 
+/*!
+    \internal
+*/
 void QFormBuilder::updateCustomWidgets()
 {
     m_customWidgets.clear();
@@ -258,6 +324,8 @@ void QFormBuilder::updateCustomWidgets()
 
 /*!
     \fn QList<QDesignerCustomWidgetInterface*> QFormBuilder::customWidgets() const
+
+    Returns the list of interfaces to the custom widgets registered with the form builder.
 */
 QList<QDesignerCustomWidgetInterface*> QFormBuilder::customWidgets() const
 {

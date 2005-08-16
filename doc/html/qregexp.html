@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/corelib/tools/qregexp.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/tools/qregexp.cpp -->
 <head>
     <title>Qt 4.0: QRegExp Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QRegExp Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QRegExp Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QRegExp class provides pattern matching using regular expressions. <a href="#details">More...</a></p>
-<pre>#include &lt;QRegExp&gt;</pre><p>Part of the <a href="qtcore.html">QtCore</a> module.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre>#include &lt;QRegExp&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qregexp-members.html">List of all members, including inherited members</a></li>
 <li><a href="qregexp-qt3.html">Qt 3 support members</a></li>
@@ -244,8 +243,8 @@ body { background: #ffffff; color: black; }</style>
     while (pos &gt;= 0) {
         pos = rx.indexIn(str, pos);
         if (pos &gt;= 0) {
-            pos++;      // move along in str
-            count++;    // count our Eric or Eirik
+            ++pos;      // move along in str
+            ++count;    // count our Eric or Eirik
         }
     }</pre>
 <p>We've used the <a href="qregexp.html#indexIn">indexIn</a>() function to repeatedly match the regexp in the string. Note that instead of moving forward by one character at a time <tt>pos++</tt> we could have written <tt>pos += rx.matchedLength()</tt> to skip over the already matched string. The count will equal 3, matching 'One <u>Eric</u> another <u>Eirik</u>, and an Ericsson. How many Eiriks, <u>Eric</u>?'; it doesn't match 'Ericsson' or 'Eiriks' because they are not bounded by non-word boundaries.</p>
@@ -335,7 +334,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The order of elements in the string list is as follows. The first element is the entire matching string. Each subsequent element corresponds to the next capturing open left parentheses. Thus capturedTexts()[1] is the text of the first capturing parentheses, capturedTexts()[2] is the text of the second and so on (corresponding to $1, $2, etc., in some other regexp languages).</p>
 <p>See also <a href="qregexp.html#cap">cap</a>(), <a href="qregexp.html#pos">pos</a>(), <a href="qregexp.html#exactMatch">exactMatch</a>(), <a href="qregexp.html#indexIn">indexIn</a>(), and <a href="qregexp.html#lastIndexIn">lastIndexIn</a>().</p>
 <h3 class="fn"><a name="caseSensitivity"></a><a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a> QRegExp::caseSensitivity () const</h3>
-<p>Returns <tt>Qt::CaseSensitive</tt> if the regexp is matched case sensitively; otherwise returns <tt>Qt::CaseInsensitive</tt>.</p>
+<p>Returns <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitive</a> if the regexp is matched case sensitively; otherwise returns <a href="qt.html#CaseSensitivity-enum">Qt::CaseInsensitive</a>.</p>
 <p>See also <a href="qregexp.html#setCaseSensitivity">setCaseSensitivity</a>().</p>
 <h3 class="fn"><a name="errorString"></a><a href="qstring.html">QString</a> QRegExp::errorString ()</h3>
 <p>Returns a text string that explains why a regexp pattern is invalid the case being; otherwise returns &quot;no error occurred&quot;.</p>
@@ -365,7 +364,7 @@ body { background: #ffffff; color: black; }</style>
     int count = 0;
     int pos = 0;
     while ((pos = rx.indexIn(str, pos)) != -1) {
-        count++;
+        ++count;
         pos += rx.matchedLength();
     }
     // pos will be 9, 14, 18 and finally 24; count will end up as 4</pre>
@@ -414,12 +413,12 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qregexp.html#capturedTexts">capturedTexts</a>(), <a href="qregexp.html#exactMatch">exactMatch</a>(), <a href="qregexp.html#indexIn">indexIn</a>(), and <a href="qregexp.html#lastIndexIn">lastIndexIn</a>().</p>
 <h3 class="fn"><a name="setCaseSensitivity"></a>void QRegExp::setCaseSensitivity ( <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a> <i>cs</i> )</h3>
 <p>Sets case sensitive matching to <i>cs</i>.</p>
-<p>If <i>cs</i> is <tt>Qt::CaseSensitive</tt>, <b>\.txt$</b> matches <tt>readme.txt</tt> but not <tt>README.TXT</tt>.</p>
+<p>If <i>cs</i> is <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitive</a>, <b>\.txt$</b> matches <tt>readme.txt</tt> but not <tt>README.TXT</tt>.</p>
 <p>See also <a href="qregexp.html#caseSensitivity">caseSensitivity</a>().</p>
 <h3 class="fn"><a name="setMinimal"></a>void QRegExp::setMinimal ( bool <i>minimal</i> )</h3>
 <p>Enables or disables minimal matching. If <i>minimal</i> is false, matching is greedy (maximal) which is the default.</p>
 <p>For example, suppose we have the input string &quot;We must be &lt;b&gt;bold&lt;/b&gt;, very &lt;b&gt;bold&lt;/b&gt;!&quot; and the pattern <b>&lt;b&gt;.*&lt;/b&gt;</b>. With the default greedy (maximal) matching, the match is &quot;We must be <u>&lt;b&gt;bold&lt;/b&gt;, very &lt;b&gt;bold&lt;/b&gt;</u>!&quot;. But with minimal (non-greedy) matching, the first match is: &quot;We must be <u>&lt;b&gt;bold&lt;/b&gt;</u>, very &lt;b&gt;bold&lt;/b&gt;!&quot; and the second match is &quot;We must be &lt;b&gt;bold&lt;/b&gt;, very <u>&lt;b&gt;bold&lt;/b&gt;</u>!&quot;. In practice we might use the pattern <b>&lt;b&gt;[^&lt;]*&lt;/b&gt;</b> instead, although this will still fail for nested tags.</p>
-<p>See also <a href="qregexp.html#isMinimal">isMinimal</a>().</p>
+<p>See also <a href="qregexp-qt3.html#minimal">minimal</a>() and <a href="qregexp.html#isMinimal">isMinimal</a>().</p>
 <h3 class="fn"><a name="setPattern"></a>void QRegExp::setPattern ( const <a href="qstring.html">QString</a> &amp; <i>pattern</i> )</h3>
 <p>Sets the pattern string to <i>pattern</i>. The case sensitivity, wildcard and minimal matching options are not changed.</p>
 <p>See also <a href="qregexp.html#pattern">pattern</a>().</p>
@@ -440,6 +439,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

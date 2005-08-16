@@ -4,22 +4,17 @@
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,7 +32,7 @@ Window::Window(QWidget *parent)
     findButton = createButton(tr("&Find"), SLOT(find()));
     quitButton = createButton(tr("&Quit"), SLOT(close()));
 
-    fileComboBox = createComboBox(tr("*.txt"));
+    fileComboBox = createComboBox(tr("*"));
     textComboBox = createComboBox();
     directoryComboBox = createComboBox(QDir::currentPath());
 
@@ -90,7 +85,8 @@ void Window::find()
     QStringList files;
     if (fileName.isEmpty())
         fileName = "*";
-    files = directory.entryList(QStringList(fileName), QDir::Files);
+    files = directory.entryList(QStringList(fileName),
+                                QDir::Files | QDir::NoSymLinks);
 
     if (!text.isEmpty())
         files = findFiles(directory, files, text);
@@ -103,6 +99,7 @@ QStringList Window::findFiles(const QDir &directory, const QStringList &files,
     QProgressDialog progressDialog(this);
     progressDialog.setCancelButtonText(tr("&Cancel"));
     progressDialog.setRange(0, files.count());
+    progressDialog.setWindowTitle(tr("Find Files"));
 
     QStringList foundFiles;
 
@@ -111,6 +108,7 @@ QStringList Window::findFiles(const QDir &directory, const QStringList &files,
         progressDialog.setLabelText(tr("Searching file number %1 of %2...")
                               .arg(i).arg(files.count()));
         qApp->processEvents();
+
         if (progressDialog.wasCanceled())
             break;
 
@@ -120,6 +118,8 @@ QStringList Window::findFiles(const QDir &directory, const QStringList &files,
             QString line;
             QTextStream in(&file);
             while (!in.atEnd()) {
+                if (progressDialog.wasCanceled())
+                    break;
                 line = in.readLine();
                 if (line.contains(text)) {
                     foundFiles << files[i];
@@ -138,9 +138,11 @@ void Window::showFiles(const QDir &directory, const QStringList &files)
         qint64 size = QFileInfo(file).size();
 
         QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
+        fileNameItem->setFlags(Qt::ItemIsEnabled);
         QTableWidgetItem *sizeItem = new QTableWidgetItem(QString("%1 KB")
                                              .arg(int((size + 1023) / 1024)));
-        sizeItem->setTextAlignment(Qt::AlignRight);
+        sizeItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
+        sizeItem->setFlags(Qt::ItemIsEnabled);
 
         int row = filesTable->rowCount();
         filesTable->insertRow(row);

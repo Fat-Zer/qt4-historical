@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS = \
-    widgets
+REQUIRES = !CONFIG(static,shared|static)
+contains(QT_CONFIG, qt3support): SUBDIRS += widgets

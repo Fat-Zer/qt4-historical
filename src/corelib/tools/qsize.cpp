@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -146,25 +141,25 @@ void QSize::transpose()
     to the Qt::AspectRatioMode \a mode.
 
     \list
-    \i If \a mode is \c Qt::IgnoreAspectRatio, the size is set to (\a w, \a h).
-    \i If \a mode is \c Qt::KeepAspectRatio, the current size is scaled to a rectangle
+    \i If \a mode is Qt::IgnoreAspectRatio, the size is set to (\a w, \a h).
+    \i If \a mode is Qt::KeepAspectRatio, the current size is scaled to a rectangle
        as large as possible inside (\a w, \a h), preserving the aspect ratio.
-    \i If \a mode is \c Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
+    \i If \a mode is Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
        as small as possible outside (\a w, \a h), preserving the aspect ratio.
     \endlist
 
     Example:
     \code
         QSize t1(10, 12);
-        t1.scale(60, 60, QSize::IgnoreAspectRatio);
+        t1.scale(60, 60, Qt::IgnoreAspectRatio);
         // t1 is (60, 60)
 
         QSize t2(10, 12);
-        t2.scale(60, 60, QSize::KeepAspectRatio);
+        t2.scale(60, 60, Qt::KeepAspectRatio);
         // t2 is (50, 60)
 
         QSize t3(10, 12);
-        t3.scale(60, 60, QSize::KeepAspectRatioByExpanding);
+        t3.scale(60, 60, Qt::KeepAspectRatioByExpanding);
         // t3 is (60, 72)
     \endcode
 
@@ -559,25 +554,25 @@ void QSizeF::transpose()
     to the Qt::AspectRatioMode \a mode.
 
     \list
-    \i If \a mode is \c Qt::IgnoreAspectRatio, the size is set to (\a w, \a h).
-    \i If \a mode is \c Qt::KeepAspectRatio, the current size is scaled to a rectangle
+    \i If \a mode is Qt::IgnoreAspectRatio, the size is set to (\a w, \a h).
+    \i If \a mode is Qt::KeepAspectRatio, the current size is scaled to a rectangle
        as large as possible inside (\a w, \a h), preserving the aspect ratio.
-    \i If \a mode is \c Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
+    \i If \a mode is Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
        as small as possible outside (\a w, \a h), preserving the aspect ratio.
     \endlist
 
     Example:
     \code
         QSizeF t1(10, 12);
-        t1.scale(60, 60, QSizeF::IgnoreAspectRatio);
+        t1.scale(60, 60, Qt::IgnoreAspectRatio);
         // t1 is (60, 60)
 
         QSizeF t2(10, 12);
-        t2.scale(60, 60, QSizeF::KeepAspectRatio);
+        t2.scale(60, 60, Qt::KeepAspectRatio);
         // t2 is (50, 60)
 
         QSizeF t3(10, 12);
-        t3.scale(60, 60, QSizeF::KeepAspectRatioByExpanding);
+        t3.scale(60, 60, Qt::KeepAspectRatioByExpanding);
         // t3 is (60, 72)
     \endcode
 
@@ -608,8 +603,8 @@ void QSizeF::scale(const QSizeF &s, Qt::AspectRatioMode mode)
             wd = rw;
             ht = s.ht;
         } else {
-            wd = s.wd;
             ht = s.wd * ht / wd;
+            wd = s.wd;
         }
     }
 }

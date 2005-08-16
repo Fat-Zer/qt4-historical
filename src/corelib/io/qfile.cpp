@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -352,7 +347,7 @@ QFile::fileName() const
 
 /*!
     Sets the \a name of the file. The name can have no path, a
-    relative path, or an absolute absolute path.
+    relative path, or an absolute path.
 
     Do not call this function if the file has already been opened.
 
@@ -518,7 +513,7 @@ QFile::exists(const QString &fileName)
     a an empty string if the object isn't a symbolic link.
 
     This name may not represent an existing file; it is only a string.
-    QFie::exists() returns true if the symlink points to an
+    QFile::exists() returns true if the symlink points to an
     existing file.
 
     \sa fileName() setFileName()
@@ -808,6 +803,8 @@ bool QFile::open(OpenMode mode)
     }
     if (mode & Append)
         mode |= WriteOnly;
+    mode |= Unbuffered;
+
     unsetError();
     if ((mode & (ReadOnly | WriteOnly)) == 0) {
         qWarning("QIODevice::open: File access not specified");
@@ -947,7 +944,7 @@ QFile::handle() const
     if (!isOpen())
         return -1;
     QFileEngine *engine = fileEngine();
-    if(engine->type() == QFileEngine::File)
+    if(engine->type() == QFileEngine::File || engine->type() == QFileEngine::BufferedFile)
         return static_cast<QFSFileEngine*>(engine)->handle();
     return -1;
 }
@@ -977,6 +974,8 @@ bool
 QFile::resize(qint64 sz)
 {
     Q_D(QFile);
+    if (fileEngine()->at() > sz)
+        fileEngine()->seek(sz);
     if(fileEngine()->setSize(sz)) {
         unsetError();
         return true;
@@ -1164,6 +1163,9 @@ qint64 QFile::readLineData(char *data, qint64 maxlen)
     Q_D(QFile);
 #ifndef QT_NO_FILE_BUFFER
     if (openMode() & Unbuffered)
+        if (fileEngine()->type() == QFileEngine::BufferedFile) {
+            return static_cast<QBufferedFSFileEngine *>(fileEngine())->readLine(data, maxlen);
+        } else
 #endif
         return QIODevice::readLineData(data, maxlen);
 
@@ -1184,24 +1186,6 @@ qint64 QFile::readLineData(char *data, qint64 maxlen)
                 if (ptr[i - 1] == '\n') {
                     foundEndOfLine = true;
                     break;
-                }
-            }
-
-            // strip '\r' if in Text mode
-            if (openMode() & Text) {
-                char *readPtr = ptr;
-                char *endPtr = ptr + i;
-
-                while (*readPtr != '\r' && readPtr != endPtr)
-                    ++readPtr;
-                char *writePtr = readPtr;
-
-                while (readPtr != endPtr && i > 0) {
-                    char ch = *readPtr;
-                    if (ch != '\r')
-                        *writePtr++ = ch;
-                    else
-                        --i;
                 }
             }
 

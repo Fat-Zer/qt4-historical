@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,7 +35,7 @@
 /*!
     \class QDesignerFormWindowInterface
     \brief The QDesignerFormWindowInterface class provides an interface that is used to control
-    form windows provided by \QD's form editing component.
+    form windows provided by Qt Designer's form editing component.
     \inmodule QtDesigner
 
     \sa QDesignerFormEditorInterface
@@ -195,7 +190,7 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
 /*!
     \fn virtual void QDesignerFormWindowInterface::setLayoutFunction(const QString &margin, const QString &spacing) = 0
 
-    Sets the \a margin and \a layout for the form's layout.
+    Sets the \a margin and \a spacing for the form's layout.
 
     \sa layoutFunction()
 */
@@ -227,7 +222,7 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     Returns the export macro associated with the form currently being displayed in the window.
     The export macro is used when the form is compiled to create a widget plugin.
 
-    \sa \link Creating Custom Widgets for Qt Designer \endlink
+    \sa {Creating Custom Widgets for Qt Designer}
 */
 
 /*!
@@ -271,6 +266,8 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     \fn virtual int QDesignerFormWindowInterface::toolCount() const = 0
 
     Returns the number of tools available.
+
+    \internal
 */
 
 /*!
@@ -279,6 +276,8 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     Returns the index of the current tool in use.
 
     \sa setCurrentTool()
+
+    \internal
 */
 
 /*!
@@ -287,18 +286,22 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     Sets the current tool to be the one with the given \a index.
 
     \sa currentTool()
+
+    \internal
 */
 
 /*!
     \fn virtual QDesignerFormWindowToolInterface *QDesignerFormWindowInterface::tool(int index) const = 0
 
-    Returns the tool interface used by the form window.
+    Returns an interface to the tool with the given \a index.
 */
 
 /*!
     \fn virtual void QDesignerFormWindowInterface::registerTool(QDesignerFormWindowToolInterface *tool) = 0
 
     Registers the given \a tool with the form window.
+
+    \internal
 */
 
 /*!
@@ -330,8 +333,6 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
 
     Returns true if the specified \a widget is managed by the form window; otherwise returns
     false.
-
-    \sa setManaged()
 */
 
 /*!
@@ -348,15 +349,20 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
 
     Returns an object that can be used to obtain the commands used so far in the construction
     of the form.
+
+    \internal
 */
 
 /*!
     \fn virtual void QDesignerFormWindowInterface::beginCommand(const QString &description) = 0
 
-    Begins execution of a command. Commands are executed between beginCommand() and endCommand()
-    function calls to ensure that the undo stack records them.
+    Begins execution of a command with the given \a description. Commands are
+    executed between beginCommand() and endCommand() function calls to ensure
+    that they are recorded on the undo stack.
 
     \sa endCommand()
+
+    \internal
 */
 
 /*!
@@ -365,6 +371,8 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     Ends execution of the current command.
 
     \sa beginCommand()
+
+    \internal
 */
 
 /*!
@@ -373,11 +381,11 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     Simplifies the selection of widgets specified by \a widgets.
 
     \sa selectionChanged()
+    \internal
 */
 
 /*!
     \fn virtual void QDesignerFormWindowInterface::emitSelectionChanged() = 0
-    \internal
 
     Emits the selectionChanged() signal.
 */
@@ -404,6 +412,8 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     \fn virtual void QDesignerFormWindowInterface::ensureUniqueObjectName(QObject *object) = 0
 
     Ensures that the specified \a object has a unique name amongst the other objects on the form.
+
+    \internal
 */
 
 // Slots
@@ -448,7 +458,7 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
 
     \omit
      If \a changePropertyDisplay is true, the
-    property editor will be updated to indicate that 
+    property editor will be updated to indicate that
     \endomit
 */
 
@@ -486,7 +496,9 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
 
     Switches the form window into editing mode.
 
-    \sa \link Qt Designer's Form Editing Mode \endlink
+    \sa \l {Qt Designer's Form Editing Mode}
+
+    \internal
 */
 
 // Signals
@@ -504,6 +516,8 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     This signal is emitted whenever the current tool changes.
     The specified \a toolIndex is the index of the new tool in the list of
     tools in the widget box.
+
+    \internal
 */
 
 /*!

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the assistant application of the Qt Toolkit.
+** This file is part of the Qt Assistant of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -51,7 +46,7 @@ inline QString getVersionString()
 }
 
 Config::Config()
-    : profil( 0 ), fontSiz(-1), maximized(false), hideSidebar( false ), rebuildDocs(true)
+    : profil( 0 ), maximized(false), hideSidebar( false ), rebuildDocs(true)
 {
     if( !static_configuration ) {
         static_configuration = this;
@@ -107,26 +102,21 @@ Config *Config::configuration()
 void Config::load()
 {
     const QString key = getVersionString() + QLatin1String("/");
-    const QString profkey = key + QLatin1String("Profile/") + profil->props[QLatin1String("name")] + QLatin1String("/");
+
+    const QString pKey = (profil->props[QLatin1String("name")] == QLatin1String("default"))
+        ? QString::fromLatin1(QT_VERSION_STR)
+        : getVersionString();
+
+    const QString profkey = pKey + QLatin1String("/Profile/") + profil->props[QLatin1String("name")] + QLatin1String("/");
 
     QSettings settings;
 
     webBrows = settings.value( key + QLatin1String("Webbrowser") ).toString();
     home = settings.value( profkey + QLatin1String("Homepage") ).toString();
     pdfApp = settings.value( key + QLatin1String("PDFApplication") ).toString();
-    linkUnder = settings.value( key + QLatin1String("LinkUnderline"), true ).toBool();
-    linkCol = settings.value( key + QLatin1String("LinkColor"), "#0000FF" ).toString();
     src = settings.value( profkey + QLatin1String("Source") ).toStringList();
     sideBar = settings.value( key + QLatin1String("SideBarPage") ).toInt();
     if (qApp->type() != QApplication::Tty) {
-        fontFam = settings.value( key + QLatin1String("Family"), qApp->font().family() ).toString();
-
-        fontFix = settings.value( key + QLatin1String("FixedFamily"), "courier" ).toString();
-        fontSiz = settings.value( key + QLatin1String("Size"), -1 ).toInt();
-        if ( fontSiz < 6 ) {
-            QFontInfo fi( qApp->font() );
-            fontSiz = fi.pointSize();
-        }
         geom.setRect( settings.value( key + QLatin1String("GeometryX"), QApplication::desktop()->availableGeometry().x() ).toInt(),
                       settings.value( key + QLatin1String("GeometryY"), QApplication::desktop()->availableGeometry().y() ).toInt(),
                       settings.value( key + QLatin1String("GeometryWidth"), 800 ).toInt(),
@@ -148,15 +138,18 @@ void Config::save()
 void Config::saveSettings()
 {
     const QString key = getVersionString() + QLatin1String("/");
-    const QString profkey = key + QLatin1String("Profile/") + profil->props[QLatin1String("name")] + QLatin1String("/");
+
+    const QString pKey = (profil->props[QLatin1String("name")] == QLatin1String("default"))
+        ? QString::fromLatin1(QT_VERSION_STR)
+        : getVersionString();
+
+    const QString profkey = pKey + QLatin1String("/Profile/") + profil->props[QLatin1String("name")] + QLatin1String("/");
 
     QSettings settings;
 
     settings.setValue( key + QLatin1String("Webbrowser"), webBrows );
     settings.setValue( profkey + QLatin1String("Homepage"), home );
     settings.setValue( key + QLatin1String("PDFApplication"), pdfApp );
-    settings.setValue( key + QLatin1String("LinkUnderline"), linkUnder );
-    settings.setValue( key + QLatin1String("LinkColor"), linkCol );
     settings.setValue( profkey + QLatin1String("Source"), src );
     settings.setValue( key + QLatin1String("SideBarPage"), sideBarPage() );
     if (qApp->type() != QApplication::Tty) {
@@ -165,9 +158,6 @@ void Config::saveSettings()
         settings.setValue( key + QLatin1String("GeometryWidth"), geom.width() );
         settings.setValue( key + QLatin1String("GeometryHeight"), geom.height() );
         settings.setValue( key + QLatin1String("GeometryMaximized"), maximized );
-        settings.setValue( key + QLatin1String("Family"),  fontFam );
-        settings.setValue( key + QLatin1String("Size"),  fontSiz );
-        settings.setValue( key + QLatin1String("FixedFamily"), fontFix );
     }
     settings.setValue( key + QLatin1String("MainWindowState"), mainWinState );
     settings.setValue( key + QLatin1String("RebuildDocDB"), rebuildDocs );
@@ -188,12 +178,10 @@ static void dumpmap( const QMap<QString,QString> &m, const QString &header )
 void Config::loadDefaultProfile()
 {
     QSettings settings;
-    const QString key = QLatin1String(QT_VERSION_STR) + QLatin1String("/Profile");
-    const QString profKey = key + QLatin1String("/default/");
+    const QString profKey = QLatin1String(QT_VERSION_STR) + QLatin1String("/Profile/default/");
 
-    if( settings.value( key + QLatin1String("/default")).toStringList().count() == 0 ) {
+    if (!settings.contains(profKey + QLatin1String("DocFiles")))
         return;
-    }
 
     // Override the defaults with settings in registry.
     profil->icons.clear();
@@ -235,11 +223,12 @@ void Config::saveProfile( Profile *profile )
     if (profil->profileType() == Profile::UserProfile)
         return;
     QSettings settings;
-    QString versionString = (profile->props[QLatin1String("name")] == QLatin1String("default"))
+
+    const QString key = (profile->props[QLatin1String("name")] == QLatin1String("default"))
         ? QString::fromLatin1(QT_VERSION_STR)
         : getVersionString();
-    const QString key = versionString + QLatin1String("/");
-    const QString profKey = key + QLatin1String("Profile/") + profile->props[QLatin1String("name")] + QLatin1String("/");
+
+    const QString profKey = key + QLatin1String("/Profile/") + profile->props[QLatin1String("name")] + QLatin1String("/");
 
     QStringList indexes, icons, imgDirs, dcfs;
     QStringList titles = profile->dcfTitles.keys();

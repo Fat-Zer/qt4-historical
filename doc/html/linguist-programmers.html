@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/linguist-manual.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/linguist-manual.qdoc -->
 <head>
     <title>Qt 4.0: Qt Linguist Manual: Programmers</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -18,12 +18,12 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="linguist-translators.html">Qt Linguist Manual: Translators</a>]
 [<a href="linguist-manual.html">Contents</a>]
 </p>
-<h1 align="center">Qt Linguist Manual: Programmers</h1>
+<h1 align="center">Qt Linguist Manual: Programmers<br /><small></small></h1>
 <p>Support for multiple languages is extremely simple in Qt applications, and adds little overhead to the programmer's workload.</p>
 <p>Qt minimizes the performance cost of using translations by translating the phrases for each window as they are created. In most applications the main window is created just once. Dialogs are often created once and then shown and hidden as required. Once the initial translation has taken place there is no further runtime overhead for the translated windows. Only those windows that are created, destroyed and subsequently created will have a translation performance cost.</p>
 <p>Creating applications that can switch language at runtime is possible with Qt, but requires a certain amount of programmer intervention and will of course incur some runtime performance cost.</p>
@@ -75,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   button = new QPushButton(&quot;&amp;Quit&quot;, this);</pre>
 <p>would become</p>
 <pre>&nbsp;   button = new QPushButton(tr(&quot;&amp;Quit&quot;), this);</pre>
-<p>All <a href="qobject.html">QObject</a> subclasses that use the <tt>Q_OBJECT</tt> macro implement the <tt>tr()</tt> function.</p>
+<p>All <a href="qobject.html">QObject</a> subclasses that use the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro implement the <tt>tr()</tt> function.</p>
 <p>Although the <tt>tr()</tt> call is normally made directly since it is usually called as a member function of a <a href="qobject.html">QObject</a> subclass, in other cases an explicit class name can be supplied, for example:</p>
 <pre>&nbsp;       QPushButton::tr(&quot;&amp;Quit&quot;)</pre>
 <p>or</p>
@@ -176,6 +176,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

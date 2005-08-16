@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "private/qxbmhandler_p.h"
+
+#ifndef QT_NO_IMAGEFORMAT_XBM
 
 #include <qimage.h>
 #include <qiodevice.h>
@@ -146,11 +143,19 @@ static bool write_xbm_image(const QImage &sourceImage, QIODevice *device, const 
     QString    s = fileName; // get file base name
     char *buf = new char[s.length() + 100];
 
-    sprintf(buf, "#define %s_width %d\n", s.toAscii().data(), w);
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+	sprintf_s(buf, s.length() + 100, "#define %s_width %d\n", s.toAscii().data(), w);
+    device->write(buf, qstrlen(buf));
+    sprintf_s(buf, s.length() + 100, "#define %s_height %d\n", s.toAscii().data(), h);
+    device->write(buf, qstrlen(buf));
+    sprintf_s(buf, s.length() + 100, "static char %s_bits[] = {\n ", s.toAscii().data());
+#else
+	sprintf(buf, "#define %s_width %d\n", s.toAscii().data(), w);
     device->write(buf, qstrlen(buf));
     sprintf(buf, "#define %s_height %d\n", s.toAscii().data(), h);
     device->write(buf, qstrlen(buf));
     sprintf(buf, "static char %s_bits[] = {\n ", s.toAscii().data());
+#endif
     device->write(buf, qstrlen(buf));
 
     if (image.format() != QImage::Format_MonoLSB)
@@ -196,7 +201,11 @@ static bool write_xbm_image(const QImage &sourceImage, QIODevice *device, const 
             }
         }
     }
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+	strcpy_s(p, sizeof(" };\n"), " };\n");
+#else
     strcpy(p, " };\n");
+#endif
     if ((int)qstrlen(buf) != device->write(buf, qstrlen(buf))) {
         delete [] buf;
         return false;
@@ -258,3 +267,5 @@ QByteArray QXbmHandler::name() const
 {
     return "xbm";
 }
+
+#endif // QT_NO_IMAGEFORMAT_XBM

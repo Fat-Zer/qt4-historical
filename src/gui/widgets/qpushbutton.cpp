@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -265,9 +260,7 @@ QPushButton::~QPushButton()
 void QPushButtonPrivate::init()
 {
     Q_Q(QPushButton);
-#ifndef QT_NO_DIALOG
     autoDefault = (qobject_cast<QDialog*>(q->window()) != 0);
-#endif
     q->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 }
 
@@ -279,8 +272,10 @@ QStyleOptionButton QPushButtonPrivate::getStyleOption() const
     opt.features = QStyleOptionButton::None;
     if (flat)
         opt.features |= QStyleOptionButton::Flat;
+#ifndef QT_NO_MENU
     if (menu)
         opt.features |= QStyleOptionButton::HasMenu;
+#endif
     if (autoDefault || defaultButton)
         opt.features |= QStyleOptionButton::AutoDefaultButton;
     if (defaultButton)
@@ -319,13 +314,11 @@ void QPushButton::setDefault(bool enable)
     if (d->defaultButton == enable)
         return;
     d->defaultButton = enable;
-#ifndef QT_NO_DIALOG
     if (d->defaultButton) {
         QDialog *dlg = qobject_cast<QDialog*>(window());
         if (dlg)
             dlg->d_func()->setMainDefault(this);
     }
-#endif
     update();
 #ifndef QT_NO_ACCESSIBILITY
     QAccessible::updateAccessibility(this, 0, QAccessible::StateChanged);
@@ -359,8 +352,10 @@ QSize QPushButton::sizeHint() const
         h = qMax(h, ih);
     }
 #endif
+#ifndef QT_NO_MENU
     if (menu())
         w += style()->pixelMetric(QStyle::PM_MenuButtonIndicator, &opt, this);
+#endif
     QString s(text());
     bool empty = s.isEmpty();
     if (empty)
@@ -412,11 +407,9 @@ void QPushButton::focusInEvent(QFocusEvent *e)
     Q_D(QPushButton);
     if (e->reason() != Qt::PopupFocusReason && d->autoDefault && !d->defaultButton) {
         d->defaultButton = true;
-#ifndef QT_NO_DIALOG
         QDialog *dlg = qobject_cast<QDialog*>(window());
         if (dlg)
             dlg->d_func()->setDefault(this);
-#endif
     }
     QAbstractButton::focusInEvent(e);
 }
@@ -428,21 +421,21 @@ void QPushButton::focusOutEvent(QFocusEvent *e)
 {
     Q_D(QPushButton);
     if (e->reason() != Qt::PopupFocusReason && d->autoDefault && d->defaultButton) {
-#ifndef QT_NO_DIALOG
         QDialog *dlg = qobject_cast<QDialog*>(window());
         if (dlg)
             dlg->d_func()->setDefault(0);
         else
-#endif
             d->defaultButton = false;
     }
 
     QAbstractButton::focusOutEvent(e);
+#ifndef QT_NO_MENU
     if (d->menu && d->menu->isVisible())        // restore pressed status
         setDown(true);
+#endif
 }
 
-
+#ifndef QT_NO_MENU
 /*!
     Associates the popup menu \a menu with this push button. This
     turns the button into a menu button, which in some styles will
@@ -530,6 +523,7 @@ void QPushButtonPrivate::popupPressed()
     QMetaObject::removeGuard(&guard);
 
 }
+#endif // QT_NO_MENU
 
 void QPushButton::setFlat(bool flat)
 {

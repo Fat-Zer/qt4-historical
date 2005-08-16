@@ -2,24 +2,19 @@
  **
  ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
  **
- ** This file is part of the painting module of the Qt Toolkit.
+ ** This file is part of the QtGui module of the Qt Toolkit.
  **
- ** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+ ** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -82,16 +77,20 @@ struct QPixmapData { // internal pixmap data
     QX11Info xinfo;
     Qt::HANDLE x11_mask;
     Qt::HANDLE picture;
+    Qt::HANDLE mask_picture;
     Qt::HANDLE hd2; // sorted in the default display depth
     Qt::HANDLE x11ConvertToDefaultDepth();
+#ifndef QT_NO_XRENDER
+    void convertToARGB32();
+#endif
 #elif defined(Q_WS_MAC)
     uint has_alpha : 1, has_mask : 1;
     void macSetHasAlpha(bool b);
-    void macGetAlphaChannel(QPixmap *) const;
-    void macSetAlphaChannel(const QPixmap *);
+    void macGetAlphaChannel(QPixmap *, bool asMask) const;
+    void macSetAlphaChannel(const QPixmap *, bool asMask);
     void macQDDisposeAlpha();
     void macQDUpdateAlpha();
-    uint *pixels;
+    quint32 *pixels;
     uint nbytes;
     CGImageRef cg_data;
     GWorldPtr qd_data, qd_alpha;
@@ -110,13 +109,11 @@ struct QPixmapData { // internal pixmap data
 
 #endif // Q_WS_WIN
 
-#ifndef QT_NO_PIXMAP_TRANSFORMATION
 #  define QT_XFORM_TYPE_MSBFIRST 0
 #  define QT_XFORM_TYPE_LSBFIRST 1
 #  if defined(Q_WS_WIN)
 #    define QT_XFORM_TYPE_WINDOWSPIXMAP 2
 #  endif
 extern bool qt_xForm_helper(const QMatrix&, int, int, int, uchar*, int, int, int, const uchar*, int, int, int);
-#endif
 
 #endif // QPIXMAP_P_H

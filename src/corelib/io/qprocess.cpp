@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -74,6 +69,8 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 #ifdef Q_WS_WIN
 #include <private/qwineventnotifier_p.h>
 #endif
+
+#ifndef QT_NO_PROCESS
 
 /*!
     \class QProcess
@@ -552,12 +549,26 @@ bool QProcessPrivate::canWrite()
 
 /*! \internal
 */
-void QProcessPrivate::processDied()
+bool QProcessPrivate::processDied()
 {
     Q_Q(QProcess);
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::processDied()");
 #endif
+#ifdef Q_OS_UNIX
+    if (!waitForDeadChild())
+        return false;
+#endif
+#ifdef Q_OS_WIN
+    if (processFinishedNotifier)
+        processFinishedNotifier->setEnabled(false);
+#endif
+
+    // the process may have died before it got a chance to report that it was
+    // either running or stopped, so we will call startupNotification() and
+    // give it a chance to emit started() or error(FailedToStart).
+    if (processState == QProcess::Starting)
+        startupNotification();
 
     // in case there is data in the pipe line and this slot by chance
     // got called before the read notifications, call these two slots
@@ -566,7 +577,7 @@ void QProcessPrivate::processDied()
     canReadStandardError();
 
     findExitCode();
- 
+
     if (crashed) {
         processError = QProcess::Crashed;
         q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Process crashed")));
@@ -581,6 +592,7 @@ void QProcessPrivate::processDied()
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::processDied() process is dead");
 #endif
+    return true;
 }
 
 /*! \internal
@@ -646,7 +658,8 @@ QProcess::~QProcess()
     Q_D(QProcess);
     if (d->processState != NotRunning) {
         qWarning("QProcess object destroyed while process is still running.");
-        terminate();
+        kill();
+        waitForFinished();
     }
 #ifdef Q_OS_UNIX
     // make sure the process manager removes this entry
@@ -706,11 +719,15 @@ QProcess::ProcessChannel QProcess::readChannel() const
     read(), readAll(), readLine(), and getChar(). It also determines
     which channel triggers QProcess to emit readyRead().
 
+    Changing the read channel will clear the unget buffer.
+
     \sa readChannel()
 */
 void QProcess::setReadChannel(ProcessChannel channel)
 {
     Q_D(QProcess);
+    if (d->processChannel != channel)
+        d->ungetBuffer.clear();
     d->processChannel = channel;
 }
 
@@ -865,7 +882,7 @@ qint64 QProcess::bytesAvailable() const
     qDebug("QProcess::bytesAvailable() == %i (%s)", readBuffer->size(),
            (d->processChannel == QProcess::StandardError) ? "stderr" : "stdout");
 #endif
-    return readBuffer->size();
+    return readBuffer->size() + QIODevice::bytesAvailable();
 }
 
 /*! \reimp
@@ -1031,9 +1048,35 @@ void QProcess::setProcessState(ProcessState state)
 }
 
 /*!
-    This function is called in the child process context just before
-    the program is executed on Unix or Mac OS X. Reimplement this
-    function to do last minute initialization of the child process.
+  This function is called in the child process context just before the
+    program is executed on Unix or Mac OS X (i.e., after \e fork(), but before
+    \e execve()). Reimplement this function to do last minute initialization
+    of the child process. Example:
+
+    \code
+        class SandboxProcess : public QProcess
+        {
+            ...
+         protected:
+             void setupChildProcess();
+            ...
+        };
+
+        void SandboxProcess::setupChildProcess()
+        {
+            // Drop all privileges in the child process, and enter
+            // a chroot jail.
+        #if defined Q_OS_UNIX
+            ::setgroups(0, 0);
+            ::chroot("/etc/safe");
+            ::chdir("/");
+            ::setgid(safeGid);
+            ::setuid(safeUid);
+            ::umask(0);
+        #endif
+        }
+
+    \endcode
 
     \warning This function is called by QProcess on Unix and Mac OS X
     only. On Windows, it is not called.
@@ -1161,6 +1204,8 @@ QByteArray QProcess::readAllStandardError()
     process starts successfully, QProcess will emit started();
     otherwise, error() will be emitted.
 
+    On Windows, arguments that contain spaces are wrapped in quotes.
+
     \sa pid(), started()
 */
 void QProcess::start(const QString &program, const QStringList &arguments, OpenMode mode)
@@ -1197,7 +1242,7 @@ static QStringList parseCombinedArgString(const QString &program)
     QString tmp;
     int quoteCount = 0;
     bool inQuote = false;
- 
+
     // handle quoting. tokens can be surrounded by double quotes
     // "hello world". three consecutive double quotes represent
     // the quote character itself.
@@ -1227,7 +1272,7 @@ static QStringList parseCombinedArgString(const QString &program)
     }
     if (!tmp.isEmpty())
         args += tmp;
-    
+
     return args;
 }
 
@@ -1259,10 +1304,10 @@ static QStringList parseCombinedArgString(const QString &program)
 void QProcess::start(const QString &program, OpenMode mode)
 {
     QStringList args = parseCombinedArgString(program);
-        
+
     QString prog = args.first();
     args.removeFirst();
-    
+
     start(prog, args, mode);
 }
 
@@ -1314,6 +1359,8 @@ int QProcess::exitCode() const
 
     The environment and working directory are inherited by the calling
     process.
+
+    On Windows, arguments that contain spaces are wrapped in quotes.
 */
 int QProcess::execute(const QString &program, const QStringList &arguments)
 {
@@ -1349,6 +1396,8 @@ int QProcess::execute(const QString &program)
     On Unix, the started process will run in its own session and act
     like a daemon. On Windows, it will run as a regular standalone
     process.
+
+    On Windows, arguments that contain spaces are wrapped in quotes.
 */
 bool QProcess::startDetached(const QString &program, const QStringList &arguments)
 {
@@ -1368,7 +1417,7 @@ bool QProcess::startDetached(const QString &program, const QStringList &argument
 bool QProcess::startDetached(const QString &program)
 {
     QStringList args = parseCombinedArgString(program);
-        
+
     QString prog = args.first();
     args.removeFirst();
 
@@ -1376,3 +1425,5 @@ bool QProcess::startDetached(const QString &program)
 }
 
 #include "moc_qprocess.cpp"
+
+#endif // QT_NO_PROCESS

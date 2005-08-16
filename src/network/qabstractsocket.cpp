@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the network module of the Qt Toolkit.
+** This file is part of the QtNetwork module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -163,7 +158,7 @@
 */
 
 /*!
-    \fn void QAbstractSocket::error(SocketError socketError)
+    \fn void QAbstractSocket::error(QAbstractSocket::SocketError socketError)
 
     This signal is emitted after an error occurred. The \a socketError
     parameter describes the type of error that occurred.
@@ -172,7 +167,7 @@
 */
 
 /*!
-    \fn void QAbstractSocket::stateChanged(SocketState socketState)
+    \fn void QAbstractSocket::stateChanged(QAbstractSocket::SocketState socketState)
 
     This signal is emitted whenever QAbstractSocket's state changes.
     The \a socketState parameter is the new state.
@@ -180,7 +175,7 @@
     \sa state()
 */
 
-/*! \internal
+/*! 
     \enum QAbstractSocket::NetworkLayerProtocol
 
     This enum describes the network layer protocol values used in Qt.
@@ -845,7 +840,8 @@ void QAbstractSocketPrivate::abortConnectionAttempt()
     if (writeSocketNotifier)
         writeSocketNotifier->setEnabled(false);
 
-    testConnection();
+    if (socketLayer.isValid())
+        testConnection();
 }
 
 /*! \internal
@@ -1048,11 +1044,11 @@ qint64 QAbstractSocket::bytesToWrite() const
 qint64 QAbstractSocket::bytesAvailable() const
 {
     Q_D(const QAbstractSocket);
-    qint64 available = 0;
+    qint64 available = QIODevice::bytesAvailable();
     if (d->isBuffered)
-        available = (qint64) d->readBuffer.size();
+        available += (qint64) d->readBuffer.size();
     else if (d->socketLayer.isValid())
-        available = d->socketLayer.bytesAvailable();
+        available += d->socketLayer.bytesAvailable();
 #if defined(QABSTRACTSOCKET_DEBUG)
     qDebug("QAbstractSocket::bytesAvailable() == %llu", available);
 #endif
@@ -1490,6 +1486,11 @@ void QAbstractSocket::abort()
 #endif
     if (d->state == UnconnectedState)
         return;
+    if (d->connectTimer) {
+        d->connectTimer->stop();
+        d->connectTimer->deleteLater();
+        d->connectTimer = 0;
+    }
 
     d->writeBuffer.clear();
     close();
@@ -1842,17 +1843,20 @@ void QAbstractSocket::setSocketError(SocketError socketError)
     \value ErrSocketRead Use QAbstractSocket::UnknownSocketError instead.
 */
 
-/*! \enum QAbstractSocket::State
+/*! \typedef QAbstractSocket::State
     \compat
 
     Use QAbstractSocket::SocketState instead.
 
-    \value Idle Use QAbstractSocket::UnconnectedState instead.
-    \value HostLookup Use QAbstractSocket::HostLookupState instead.
-    \value Connecting Use QAbstractSocket::ConnectingState instead.
-    \value Connected Use QAbstractSocket::ConnectedState instead.
-    \value Closing Use QAbstractSocket::ClosingState instead.
-    \value Connection Use QAbstractSocket::ConnectedState instead.
+    \table
+    \header \o Qt 3 enum value \o Qt 4 enum value
+    \row \o \c Idle            \o \l UnconnectedState
+    \row \o \c HostLookup      \o \l HostLookupState
+    \row \o \c Connecting      \o \l ConnectingState
+    \row \o \c Connected       \o \l ConnectedState
+    \row \o \c Closing         \o \l ClosingState
+    \row \o \c Connection      \o \l ConnectedState
+    \endtable
 */
 
 /*!

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -77,46 +72,49 @@ typedef QCache<QString, QConfFile> ConfFileCache;
 
 Q_GLOBAL_STATIC(ConfFileHash, usedHashFunc)
 Q_GLOBAL_STATIC(ConfFileCache, unusedCacheFunc)
-Q_GLOBAL_STATIC(QMutex, mutex)
+Q_GLOBAL_STATIC(QMutex, globalMutex)
 Q_GLOBAL_STATIC(QString, defaultSystemIniPath)
 Q_GLOBAL_STATIC(QString, defaultUserIniPath)
+
+#ifndef Q_OS_WIN
+static bool unixLock(int handle, int lockType)
+{
+    struct flock fl;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = 0;
+    fl.l_len = 0;
+    fl.l_type = lockType;
+    return !fcntl(handle, F_SETLKW, &fl);
+}
+#endif
 
 QConfFile::QConfFile(const QString &fileName)
     : name(fileName), size(0), ref(1)
 {
     usedHashFunc()->insert(name, this);
-#ifdef Q_OS_WIN
-    semHandle = 0;
-#endif
 }
 
-bool QConfFile::mergeKeyMaps()
+SettingsKeyMap QConfFile::mergedKeyMap() const
 {
-    if (addedKeys.isEmpty() && removedKeys.isEmpty())
-        return false;
-
+    SettingsKeyMap result = originalKeys;
     SettingsKeyMap::const_iterator i;
 
     for (i = removedKeys.begin(); i != removedKeys.end(); ++i)
-        originalKeys.remove(i.key());
-    removedKeys.clear();
-
+        result.remove(i.key());
     for (i = addedKeys.begin(); i != addedKeys.end(); ++i)
-        originalKeys.insert(i.key(), i.value());
-    addedKeys.clear();
-
-    return true;
+        result.insert(i.key(), i.value());
+    return result;
 }
 
 QConfFile *QConfFile::fromName(const QString &fileName)
 {
-    QConfFile *confFile;
     QString absPath = QFileInfo(fileName).absoluteFilePath();
 
     ConfFileHash *usedHash = usedHashFunc();
     ConfFileCache *unusedCache = unusedCacheFunc();
 
-    QMutexLocker locker(mutex());
+    QConfFile *confFile;
+    QMutexLocker locker(globalMutex());
 
     if (!(confFile = usedHash->value(absPath))) {
         if ((confFile = unusedCache->take(absPath)))
@@ -131,7 +129,7 @@ QConfFile *QConfFile::fromName(const QString &fileName)
 
 void QConfFile::clearCache()
 {
-    QMutexLocker locker(mutex());
+    QMutexLocker locker(globalMutex());
     unusedCacheFunc()->clear();
 }
 
@@ -473,7 +471,7 @@ void QSettingsPrivate::iniEscapedKey(const QString &key, QByteArray &result)
 
 bool QSettingsPrivate::iniUnescapedKey(const QByteArray &key, int from, int to, QString &result)
 {
-    bool lowerCaseOnly = true;
+    bool lowercaseOnly = true;
     int i = from;
     while (i < to) {
         int ch = (uchar)key.at(i);
@@ -486,7 +484,7 @@ bool QSettingsPrivate::iniUnescapedKey(const QByteArray &key, int from, int to, 
 
         if (ch != '%' || i == to - 1) {
             if (isupper((uchar)ch))
-                lowerCaseOnly = false;
+                lowercaseOnly = false;
             result += QLatin1Char(ch);
             ++i;
             continue;
@@ -517,11 +515,11 @@ bool QSettingsPrivate::iniUnescapedKey(const QByteArray &key, int from, int to, 
 
         QChar qch(ch);
         if (qch.toLower() != qch)
-            lowerCaseOnly = false;
+            lowercaseOnly = false;
         result += qch;
         i = firstDigitPos + numDigits;
     }
-    return lowerCaseOnly;
+    return lowercaseOnly;
 }
 
 void QSettingsPrivate::iniEscapedString(const QString &str, QByteArray &result)
@@ -670,7 +668,7 @@ QStringList *QSettingsPrivate::iniUnescapedStringList(const QByteArray &str, int
                     state = StSkipSpaces;
                     break;
                 }
-                /* fallthrough */
+                // fallthrough
             default:
                 result += QLatin1Char(ch);
             }
@@ -774,24 +772,19 @@ QStringList QSettingsPrivate::splitArgs(const QString &s, int idx)
 // ************************************************************************
 // QConfFileSettingsPrivate
 
-static void checkAccess(const QString &name, bool *read, bool *write)
+/*
+    If we don't have the permission to read the file, returns false.
+    If the file doesn't exist, returns true.
+*/
+static bool checkAccess(const QString &name)
 {
     QFileInfo fileInfo(name);
 
     if (fileInfo.exists()) {
-        /*
-            The best way to check that an existing file is
-            writable is to open it for writing.
-        */
         QFile file(name);
-        *read = file.open(QIODevice::ReadOnly);
-        file.close();
-
-        *write = file.open(QIODevice::Append);
+        // if the file exists but we can't open it, report an error
+        return file.open(QFile::ReadOnly);
     } else {
-        // files that don't exist are considered readable
-        *read = true;
-
         QDir dir;
         if (QDir::isRelativePath(name))
             dir = QDir::current();
@@ -803,31 +796,30 @@ static void checkAccess(const QString &name, bool *read, bool *write)
         */
         QStringList pathElements = name.split(QLatin1Char('/'), QString::SkipEmptyParts);
         for (int i = 0; i < pathElements.size() - 1; ++i) {
-            QString elt = pathElements[i];
+            const QString &elt = pathElements.at(i);
             if (dir.cd(elt))
                 continue;
 
-            if (!dir.mkdir(elt) || !dir.cd(elt))
-                break;
-        }
+            if (dir.mkdir(elt) && dir.cd(elt))
+                continue;
 
-        /*
-            The best way to check if we can create the file is to
-            try to create a temporary file.
-        */
-        QTemporaryFile file(name + QLatin1String(".XXXXXX"));
-        *write = file.open();
+            if (dir.cd(elt))
+                continue;
+
+            // if the path can't be created/reached, report an error
+            return false;
+        }
+        // we treat non-existent files as if they existed but were empty
+        return true;
     }
 }
 
 void QConfFileSettingsPrivate::init()
 {
-    if (confFiles[spec] == 0) {
-        readAccess = false;
-        writeAccess = false;
-    } else {
-        checkAccess(confFiles[spec]->name, &readAccess, &writeAccess);
-    }
+    bool readAccess = false;
+    if (confFiles[spec])
+        readAccess = checkAccess(confFiles[spec]->name);
+
     if (!readAccess)
         setStatus(QSettings::AccessError);
 
@@ -869,14 +861,14 @@ static QString windowsConfigPath(int type)
 
     if (result.isEmpty()) {
         switch (type) {
-            case CSIDL_COMMON_APPDATA:
-                result = QLatin1String("C:\\temp\\qt-common");
-                break;
-            case CSIDL_APPDATA:
-                result = QLatin1String("C:\\temp\\qt-user");
-                break;
-            default:
-                break;
+        case CSIDL_COMMON_APPDATA:
+            result = QLatin1String("C:\\temp\\qt-common");
+            break;
+        case CSIDL_APPDATA:
+            result = QLatin1String("C:\\temp\\qt-user");
+            break;
+        default:
+            ;
         }
     }
 
@@ -971,7 +963,7 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(const QString &fileName,
 
 QConfFileSettingsPrivate::~QConfFileSettingsPrivate()
 {
-    QMutexLocker locker(mutex());
+    QMutexLocker locker(globalMutex());
     ConfFileHash *usedHash = usedHashFunc();
     ConfFileCache *unusedCache = unusedCacheFunc();
 
@@ -984,7 +976,7 @@ QConfFileSettingsPrivate::~QConfFileSettingsPrivate()
                 delete confFiles[i];
             } else if (unusedCache) {
                 unusedCache->insert(confFiles[i]->name, confFiles[i],
-                                      10 + (confFiles[i]->originalKeys.size() / 4));
+                                    10 + (confFiles[i]->originalKeys.size() / 4));
             }
         }
     }
@@ -992,16 +984,13 @@ QConfFileSettingsPrivate::~QConfFileSettingsPrivate()
 
 void QConfFileSettingsPrivate::remove(const QString &key)
 {
-    if (!writeAccess) {
-        setStatus(QSettings::AccessError);
+    QConfFile *confFile = confFiles[spec];
+    if (!confFile)
         return;
-    }
 
     QSettingsKey theKey(key, cs);
     QSettingsKey prefix(key + QLatin1Char('/'), cs);
-
-    QConfFile *confFile = confFiles[spec];
-    QMutexLocker locker(mutex());
+    QMutexLocker locker(&confFile->mutex);
 
     SettingsKeyMap::iterator i = confFile->addedKeys.lowerBound(prefix);
     while (i != confFile->addedKeys.end() && i.key().startsWith(prefix))
@@ -1019,15 +1008,12 @@ void QConfFileSettingsPrivate::remove(const QString &key)
 
 void QConfFileSettingsPrivate::set(const QString &key, const QVariant &value)
 {
-    if (!writeAccess) {
-        setStatus(QSettings::AccessError);
+    QConfFile *confFile = confFiles[spec];
+    if (!confFile)
         return;
-    }
 
     QSettingsKey theKey(key, cs);
-
-    QConfFile *confFile = confFiles[spec];
-    QMutexLocker locker(mutex());
+    QMutexLocker locker(&confFile->mutex);
     confFile->removedKeys.remove(theKey);
     confFile->addedKeys.insert(theKey, value);
 }
@@ -1038,10 +1024,10 @@ bool QConfFileSettingsPrivate::get(const QString &key, QVariant *value) const
     SettingsKeyMap::const_iterator j;
     bool found = false;
 
-    QMutexLocker locker(mutex());
-
     for (int i = 0; i < NumConfFiles; ++i) {
         if (QConfFile *confFile = confFiles[i]) {
+            QMutexLocker locker(&confFile->mutex);
+
             if (!confFile->addedKeys.isEmpty()) {
                 j = confFile->addedKeys.find(theKey);
                 found = (j != confFile->addedKeys.constEnd());
@@ -1072,10 +1058,10 @@ QStringList QConfFileSettingsPrivate::children(const QString &prefix, ChildSpec 
     QSettingsKey thePrefix(prefix, cs);
     int startPos = prefix.size();
 
-    QMutexLocker locker(mutex());
-
     for (int i = 0; i < NumConfFiles; ++i) {
         if (QConfFile *confFile = confFiles[i]) {
+            QMutexLocker locker(&confFile->mutex);
+
             j = confFile->originalKeys.lowerBound(thePrefix);
             while (j != confFile->originalKeys.constEnd() && j.key().startsWith(thePrefix)) {
                 if (!confFile->removedKeys.contains(j.key()))
@@ -1098,37 +1084,25 @@ QStringList QConfFileSettingsPrivate::children(const QString &prefix, ChildSpec 
 
 void QConfFileSettingsPrivate::clear()
 {
-    if (!writeAccess) {
-        setStatus(QSettings::AccessError);
-        return;
-    }
-
     QConfFile *confFile = confFiles[spec];
-    QMutexLocker locker(mutex());
+    if (!confFile)
+        return;
+
+    QMutexLocker locker(&confFile->mutex);
     confFile->addedKeys.clear();
-    confFile->removedKeys = confFiles[spec]->originalKeys;
+    confFile->removedKeys = confFile->originalKeys;
 }
 
 void QConfFileSettingsPrivate::sync()
 {
-    QMutexLocker locker(mutex());
-
     // people probably won't be checking the status a whole lot, so in case of
     // error we just try to go on and make the best of it
 
     for (int i = 0; i < NumConfFiles; ++i) {
         QConfFile *confFile = confFiles[i];
         if (confFile) {
-            if (!readFile(confFile)) {
-                // Only problems with the file we actually write to change the status. The
-                // other files are just optional fallbacks.
-                if (i == spec)
-                    setStatus(QSettings::FormatError);
-            }
-            if (i == spec && confFile->mergeKeyMaps()) {
-                if (!writeFile(confFile))
-                    setStatus(QSettings::AccessError);
-            }
+            QMutexLocker locker(&confFile->mutex);
+            syncConfFile(i);
         }
     }
 }
@@ -1141,169 +1115,170 @@ void QConfFileSettingsPrivate::flush()
 QString QConfFileSettingsPrivate::fileName() const
 {
     QConfFile *confFile = confFiles[spec];
-    if (confFile == 0)
+    if (!confFile)
         return QString();
     return confFile->name;
 }
 
 bool QConfFileSettingsPrivate::isWritable() const
 {
-    return writeAccess;
-}
-
-/*
-    The following openFile() and closeFile() functions lock the file
-    (using fcntl() on Unix and a global mutex on Windows), ensuring
-    that if two instances of the same applications access the file at
-    the same time, the file isn't corrupted.
-*/
-
-#ifdef Q_OS_UNIX
-const int ReadFlags = O_RDONLY | O_CREAT;
-const int WriteFlags = O_WRONLY | O_CREAT | O_APPEND;
-#else
-static const int FileLockSemMax = 50;
-static const int ReadFlags = 1;
-static const int WriteFlags = 2;
-const char SemNamePrefix[] = "QSettings semaphore ";
-#endif
-
-static bool openFile(QFile &file, QConfFile &confFile, int flags)
-{
-#ifdef Q_OS_UNIX
-    Q_UNUSED(confFile);
-    int fd = QT_OPEN(QFile::encodeName(file.fileName()), flags, S_IRUSR | S_IWUSR);
-    if (fd < 0)
+    QConfFile *confFile = confFiles[spec];
+    if (!confFile)
         return false;
 
-    struct flock fl;
-    fl.l_whence = SEEK_SET;
-    fl.l_start = 0;
-    fl.l_len = 0;
-    fl.l_type = (flags == WriteFlags) ? F_WRLCK : F_RDLCK;
-    fcntl(fd, F_SETLKW, &fl);
+    if (QFile::exists(confFile->name)) {
+        QFile file(confFile->name);;
+        return file.open(QFile::ReadWrite);
+    } else {
+        // we use a temporary file to avoid race conditions
+        QTemporaryFile file(confFile->name);
+        return file.open();
+    }
+}
 
-    if (flags == WriteFlags)
-        QT_FTRUNCATE(fd, 0);
+void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
+{
+    QConfFile *confFile = confFiles[confFileNo];
+    bool readOnly = confFile->addedKeys.isEmpty() && confFile->removedKeys.isEmpty();
+    bool ok;
 
-    return file.open(fd, flags == WriteFlags ? QIODevice::WriteOnly | QIODevice::Text
-                     : QIODevice::OpenMode(QIODevice::ReadOnly));
-#else
-    // on Windows we use a named semaphore
-    if (confFile.semHandle == 0) {
-        QString semName = QString::fromAscii(SemNamePrefix);
+    /*
+        We can often optimize the read-only case, if the file on disk
+        hasn't changed.
+    */
+    if (readOnly) {
+        QFileInfo fileInfo(confFile->name);
+        if (confFile->size == fileInfo.size() && confFile->timeStamp == fileInfo.lastModified())
+            return;
+    }
+
+    /*
+        Open the configuration file and try to use it using a named
+        semaphore on Windows and an advisory lock on Unix-based
+        systems. This protect us against other QSettings instances
+        trying to access the same file from other threads or
+        processes.
+
+        As it stands now, the locking mechanism doesn't work for
+        .plist files.
+    */
+    QFile file(confFile->name);
+
+    if (!readOnly)
+        file.open(QFile::ReadWrite);
+    if (!file.isOpen())
+        file.open(QFile::ReadOnly);
+
+#ifdef Q_OS_WIN
+    HANDLE semaphore = 0;
+    static const int FileLockSemMax = 50;
+    int numLocks = readOnly ? 1 : FileLockSemMax;
+
+    if (file.isOpen()) {
+        QString semName = QLatin1String("QSettings semaphore ");
         semName.append(file.fileName());
+
         QT_WA( {
-            confFile.semHandle = CreateSemaphoreW(0, FileLockSemMax, FileLockSemMax, reinterpret_cast<const wchar_t *>(semName.utf16()));
+            semaphore = CreateSemaphoreW(0, FileLockSemMax, FileLockSemMax, reinterpret_cast<const wchar_t *>(semName.utf16()));
         } , {
-            confFile.semHandle = CreateSemaphoreA(0, FileLockSemMax, FileLockSemMax, semName.toLocal8Bit());
+            semaphore = CreateSemaphoreA(0, FileLockSemMax, FileLockSemMax, semName.toLocal8Bit());
         } );
-    }
 
-    if (confFile.semHandle != 0) {
-        int decrement;
-        if (flags == ReadFlags)
-            decrement = 1;
-        else
-            decrement = FileLockSemMax;
-
-        for (int i = 0; i < decrement; ++i)
-            WaitForSingleObject(confFile.semHandle, INFINITE);
-    }
-
-    return file.open(flags == WriteFlags ? QIODevice::WriteOnly | QIODevice::Text
-                                         : QIODevice::OpenMode(QIODevice::ReadOnly));
-#endif
-}
-
-static void closeFile(QFile &file, QConfFile &confFile)
-{
-#ifdef Q_OS_UNIX
-    Q_UNUSED(confFile);
-    int fd = file.handle();
-    file.close();
-    QT_CLOSE(fd);
-#else
-    int increment;
-    if (file.openMode() & QIODevice::ReadOnly)
-        increment = 1;
-    else
-        increment = FileLockSemMax;
-
-    ReleaseSemaphore(confFile.semHandle, increment, 0);
-    CloseHandle(confFile.semHandle);
-    confFile.semHandle = 0;
-
-    file.close();
-#endif
-}
-
-/*
-    This only returns false on format errors. Files which don't exist, or which
-    we don't have read permission for, are treated as empty sets of keys.
-*/
-bool QConfFileSettingsPrivate::readFile(QConfFile *confFile)
-{
-    QFileInfo fileInfo(confFile->name);
-    int actualSize = fileInfo.size();
-    QDateTime actualTimeStamp = fileInfo.lastModified();
-
-    if (confFile->size == actualSize) {
-        // no need to reload the file if the timestamps and file sizes match
-        if (confFile->timeStamp == actualTimeStamp)
-            return true;
-    }
-
-    SettingsKeyMap newKeys;
-
-    bool ok = true; // we treat unexisting/unreadable files the same as empty files
-
-    if (actualSize != 0) {
-#ifdef Q_OS_MAC
-        if (format == QSettings::NativeFormat) {
-            ok = readPlistFile(confFile->name, &newKeys);
-        } else
-#endif
-        {
-            QFile file(confFile->name);
-            if (openFile(file, *confFile, ReadFlags)) {
-                ok = readIniFile(file, &newKeys);
-                closeFile(file, *confFile);
-            }
-        }
-    }
-
-    confFile->originalKeys = newKeys;
-    confFile->size = actualSize;
-    confFile->timeStamp = actualTimeStamp;
-
-    return ok;
-}
-
-bool QConfFileSettingsPrivate::writeFile(QConfFile *confFile)
-{
-    bool ok = false;
-
-#ifdef Q_OS_MAC
-    if (format == QSettings::NativeFormat) {
-        ok = writePlistFile(confFile->name, confFile->originalKeys);
-    } else
-#endif
-    {
-        QFile file(confFile->name);
-        if (openFile(file, *confFile, WriteFlags)) {
-            ok = writeIniFile(file, confFile->originalKeys);
-            closeFile(file, *confFile);
+        if (semaphore) {
+            for (int i = 0; i < numLocks; ++i)
+                WaitForSingleObject(semaphore, INFINITE);
         } else {
-            return false;
+            setStatus(QSettings::AccessError);
+            return;
+        }
+    }
+#else
+    if (file.isOpen())
+        unixLock(file.handle(), readOnly ? F_RDLCK : F_WRLCK);
+#endif
+
+    /*
+        We hold the lock. Let's reread the file if it has changed
+        since last time we read it.
+    */
+    QFileInfo fileInfo(confFile->name);
+    bool mustReadFile = true;
+
+    if (!readOnly) {
+        mustReadFile = (confFile->size != fileInfo.size()
+                        || (confFile->size != 0 && confFile->timeStamp != fileInfo.lastModified()));
+    }
+
+    if (mustReadFile) {
+        SettingsKeyMap newKeys;
+
+        /*
+            Files that we can't read (because of permissions or
+            because they don't exist) are treated as empty files.
+        */
+        if (file.isReadable() && fileInfo.size() != 0) {
+#ifdef Q_OS_MAC
+            if (format == QSettings::NativeFormat) {
+                ok = readPlistFile(confFile->name, &newKeys);
+            } else
+#endif
+            {
+                ok = readIniFile(file, &newKeys);
+            }
+
+            if (!ok)
+                setStatus(QSettings::FormatError);
+        }
+
+        confFile->originalKeys = newKeys;
+        confFile->size = fileInfo.size();
+        confFile->timeStamp = fileInfo.lastModified();
+    }
+
+    /*
+        We also need to save the file. We still hold the file lock,
+        so everything is under control.
+    */
+    if (!readOnly) {
+        SettingsKeyMap mergedKeys = confFile->mergedKeyMap();
+
+        if (file.isWritable()) {
+#ifdef Q_OS_MAC
+            if (format == QSettings::NativeFormat) {
+                ok = writePlistFile(confFile->name, mergedKeys);
+            } else
+#endif
+            {
+                file.seek(0); // shouldn't be necessary
+                file.resize(0);
+                ok = writeIniFile(file, mergedKeys);
+            }
+        } else {
+            ok = false;
+        }
+
+        if (ok) {
+            confFile->originalKeys = mergedKeys;
+            confFile->addedKeys.clear();
+            confFile->removedKeys.clear();
+
+            QFileInfo fileInfo(confFile->name);
+            confFile->size = fileInfo.size();
+            confFile->timeStamp = fileInfo.lastModified();
+        } else {
+            setStatus(QSettings::AccessError);
         }
     }
 
-    QFileInfo fileInfo(confFile->name);
-    confFile->size = fileInfo.size();
-    confFile->timeStamp = fileInfo.lastModified();
-
-    return ok;
+    /*
+        Release the file lock.
+    */
+#ifdef Q_OS_WIN
+    if (semaphore != 0) {
+        ReleaseSemaphore(semaphore, numLocks, 0);
+        CloseHandle(semaphore);
+    }
+#endif
 }
 
 bool QConfFileSettingsPrivate::readIniLine(QIODevice &device, QByteArray &line, int &len,
@@ -1328,7 +1303,7 @@ bool QConfFileSettingsPrivate::readIniLine(QIODevice &device, QByteArray &line, 
         switch (ch) {
         case '"':
             data[pos++] = '"';
-            while (!device.getChar(&ch) || ch != '"') {
+            while (device.getChar(&ch) && ch != '"') {
                 MAYBE_GROW();
 
                 if (static_cast<signed char>(ch) == -1)
@@ -1414,7 +1389,7 @@ end:
 bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, SettingsKeyMap *map)
 {
     QString currentSection;
-    bool currentSectionIsLowerCase = true;
+    bool currentSectionIsLowercase = true;
     QByteArray line;
     line.resize(512);
     int equalsCharPos;
@@ -1443,7 +1418,7 @@ bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, SettingsKeyMap *ma
                 currentSection += QLatin1Char('/');
             } else {
                 currentSection.clear();
-                currentSectionIsLowerCase = iniUnescapedKey(iniSection, 0, iniSection.size(),
+                currentSectionIsLowercase = iniUnescapedKey(iniSection, 0, iniSection.size(),
                                                             currentSection);
                 currentSection += QLatin1Char('/');
             }
@@ -1454,8 +1429,8 @@ bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, SettingsKeyMap *ma
             }
 
             QString key = currentSection;
-            bool keyIsLowerCase = (iniUnescapedKey(line, 0, equalsCharPos, key)
-                                   && currentSectionIsLowerCase);
+            bool keyIsLowercase = (iniUnescapedKey(line, 0, equalsCharPos, key)
+                                   && currentSectionIsLowercase);
 
             QString strValue;
             strValue.reserve(len - equalsCharPos);
@@ -1472,9 +1447,9 @@ bool QConfFileSettingsPrivate::readIniFile(QIODevice &device, SettingsKeyMap *ma
             /*
                 We try to avoid the expensive toLower() call in
                 QSettingsKey by passing Qt::CaseSensitive when the
-                key is already in lower-case.
+                key is already in lowercase.
             */
-            map->insert(QSettingsKey(key, keyIsLowerCase ? Qt::CaseSensitive : Qt::CaseInsensitive),
+            map->insert(QSettingsKey(key, keyIsLowercase ? Qt::CaseSensitive : Qt::CaseInsensitive),
                         variant);
         }
     }
@@ -1487,6 +1462,12 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     typedef QMap<QString, QVariantMap> IniMap;
     IniMap iniMap;
     IniMap::const_iterator i;
+
+#ifdef Q_OS_WIN
+    const char * const eol = "\r\n";
+#else
+    const char eol = '\n';
+#endif
 
     for (SettingsKeyMap::const_iterator j = map.constBegin(); j != map.constEnd(); ++j) {
         QString section;
@@ -1516,8 +1497,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
         }
 
         if (i != iniMap.constBegin())
-            realSection.prepend('\n');
-        realSection += '\n';
+            realSection.prepend(eol);
+        realSection += eol;
 
         device.write(realSection);
 
@@ -1533,7 +1514,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
             } else {
                 iniEscapedString(variantToString(value), block);
             }
-            block += '\n';
+            block += eol;
             if (device.write(block) == -1) {
                 writeError = true;
                 break;
@@ -1555,8 +1536,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     Users normally expect an application to remember its settings
     (window sizes and positions, options, etc.) across sessions. This
     information is often stored in the system registry on Windows,
-    and in XML preferences files on Mac OS X. On X11 and embedded Linux,
-    in the absense of a standard, many applications (including the KDE
+    and in XML preferences files on Mac OS X. On Unix systems, in the
+    absence of a standard, many applications (including the KDE
     applications) use INI text files.
 
     QSettings is an abstraction around these technologies,
@@ -1716,34 +1697,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     \o a system-wide location for all applications by MySoft
     \endlist
 
-    On Unix with X11 and on embedded Linux, these locations are the
-    following files:
-
-    \list 1
-    \o \c{$HOME/.config/MySoft/Star Runner.conf}
-    \o \c{$HOME/.config/MySoft.conf}
-    \o \c{/etc/xdg/MySoft/Star Runner.conf}
-    \o \c{/etc/xdg/MySoft.conf}
-    \endlist
-
-    On Mac OS X versions 10.2 and 10.3, these files are used:
-
-    \list 1
-    \o \c{$HOME/Library/Preferences/com.MySoft.Star Runner.plist}
-    \o \c{$HOME/Library/Preferences/com.MySoft.plist}
-    \o \c{/Library/Preferences/com.MySoft.Star Runner.plist}
-    \o \c{/Library/Preferences/com.MySoft.plist}
-    \endlist
-
-    On Windows, the settings are stored in the following registry
-    paths:
-
-    \list 1
-    \o \c{HKEY_CURRENT_USER\Software\MySoft\Star Runner}
-    \o \c{HKEY_CURRENT_USER\Software\MySoft}
-    \o \c{HKEY_LOCAL_MACHINE\Software\MySoft\Star Runner}
-    \o \c{HKEY_LOCAL_MACHINE\Software\MySoft}
-    \endlist
+    (See \l{Platform-Specific Notes} below for information on what
+    these locations are on the different platforms supported by Qt.)
 
     If a key cannot be found in the first location, the search goes
     on in the second location, and so on. This enables you to store
@@ -1789,6 +1744,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     argument to the QSettings constructor, followed by the scope, the
     organization name, and the application name:
 
+    \skipline {
     \printline /settings\(.*,$/
     \printline );
 
@@ -1797,6 +1753,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     that takes a file name (or registry path) and a file format. For
     example:
 
+    \skipline }
+    \skipline {
     \printline /QSettings settings.*Ini/
 
     The file format can either be QSettings::IniFormat or QSettings::NativeFormat.
@@ -1805,11 +1763,13 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     the first argument is a path in the registry rather than a file
     name, for example:
 
+    \skipline }
+    \skipline {
     \printline HKEY
     \printline Native
 
-    On X11 and embedded Linux, QSettings::IniFormat and QSettings::NativeFormat have
-    the same meaning.
+    On Unix systems, QSettings::IniFormat and QSettings::NativeFormat
+    have the same meaning.
 
     The \l{tools/settingseditor}{Settings Editor} example lets you
     experiment with different settings location and with fallbacks
@@ -1818,7 +1778,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     \section1 Restoring the State of a GUI Application
 
     QSettings is often used to store the state of a GUI
-    application. The following example will illustrate how to use we
+    application. The following example illustrates how to use we
     will use QSettings to save and restore the geometry of an
     application's main window.
 
@@ -1858,17 +1818,92 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
     any other QSettings objects that operate on the same location
     and that live in the same process.
 
-    QSettings can safely be used from different processes (which
-    can be different instances of your application running at the
-    same time or different applications altogether) to read and write
-    to the same system locations. It uses a smart merging algorithm
-    to ensure data integrity. Changes performed by another process
-    aren't visible in the current process until sync() is called.
+    QSettings can safely be used from different processes (which can
+    be different instances of your application running at the same
+    time or different applications altogether) to read and write to
+    the same system locations. It uses advisory file locking and a
+    smart merging algorithm to ensure data integrity. Changes
+    performed by another process aren't visible in the current
+    process until sync() is called.
 
     \section1 Platform-Specific Notes
 
-    While QSettings attempts to smooth over the differences
-    between the different supported platforms, there are still a few
+    As mentioned in the \l{Fallback Mechanism} section, QSettings
+    stores settings for an application in up to four locations,
+    depending on whether the settings are user-specific or
+    system-wide and whether the the settings are application-specific
+    or organization-wide. For simplicity, we're assuming the
+    organization is called MySoft and the application is called Star
+    Runner.
+
+    If the file format is NativeFormat, the following files are used
+    on Unix systems:
+
+    \list 1
+    \o \c{$HOME/.config/MySoft/Star Runner.conf}
+    \o \c{$HOME/.config/MySoft.conf}
+    \o \c{/etc/xdg/MySoft/Star Runner.conf}
+    \o \c{/etc/xdg/MySoft.conf}
+    \endlist
+
+    The \c $HOME/.config portion of the first two paths can be
+    overridden by the user by setting the \c XDG_CONFIG_HOME
+    environment variable; the \c /etc/xdg portion of the last two
+    paths can be overridden when building the Qt library (see
+    QLibraryInfo for details). Both can be overridden using
+    setUserIniPath() and setSystemIniPath().
+
+    On Mac OS X versions 10.2 and 10.3, these files are used:
+
+    \list 1
+    \o \c{$HOME/Library/Preferences/com.MySoft.Star Runner.plist}
+    \o \c{$HOME/Library/Preferences/com.MySoft.plist}
+    \o \c{/Library/Preferences/com.MySoft.Star Runner.plist}
+    \o \c{/Library/Preferences/com.MySoft.plist}
+    \endlist
+
+    On Windows, the settings are stored in the following registry
+    paths:
+
+    \list 1
+    \o \c{HKEY_CURRENT_USER\Software\MySoft\Star Runner}
+    \o \c{HKEY_CURRENT_USER\Software\MySoft}
+    \o \c{HKEY_LOCAL_MACHINE\Software\MySoft\Star Runner}
+    \o \c{HKEY_LOCAL_MACHINE\Software\MySoft}
+    \endlist
+
+    If the file format is IniFormat, the following files are
+    used on Unix and Mac OS X:
+
+    \list 1
+    \o \c{$HOME/.config/MySoft/Star Runner.ini}
+    \o \c{$HOME/.config/MySoft.ini}
+    \o \c{/etc/xdg/MySoft/Star Runner.ini}
+    \o \c{/etc/xdg/MySoft.ini}
+    \endlist
+
+    Again, the \c $HOME/.config portion of the first two paths can be
+    overridden by the user by setting the \c XDG_CONFIG_HOME
+    environment variable; the \c /etc/xdg portion of the last two
+    paths can be overridden when building the Qt library (see
+    QLibraryInfo for details). Both can be overridden using
+    setUserIniPath() and setSystemIniPath().
+
+    On Windows, the following files are used:
+
+    \list 1
+    \o \c{%APPDATA%\MySoft\Star Runner.ini}
+    \o \c{%APPDATA%\MySoft.ini}
+    \o \c{%COMMON_APPDATA%\MySoft\Star Runner.ini}
+    \o \c{%COMMON_APPDATA%\MySoft.ini}
+    \endlist
+
+    The \c %APPDATA% path is usually \tt{C:\\Documents and
+    Settings\\\e{User Name}\\Application Data}; the \c
+    %COMMON_APPDATA% path is usually \c{C:\Windows\Application Data}.
+
+    While QSettings attempts to smooth over the differences between
+    the different supported platforms, there are still a few
     differences that you should be aware of when porting your
     application:
 
@@ -1886,14 +1921,14 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
         Calling setFallbacksEnabled(false) will hide these global
         settings.
 
-    \o  On Mac OS X, the APIs used by QSettings expect an Internet
-        domain name rather than an organization name. To provide a
-        uniform API, QSettings derives a fake domain name from the
-        organization name (unless the organization name already is a
-        domain name, e.g. OpenOffice.org). The algorithm appends
-        ".com" to the company name and replaces spaces and other
-        illegal characters with hyphens. If you want to specify a
-        different domain name, call
+    \o  On Mac OS X, the CFPreferences API used by QSettings expects
+        Internet domain names rather than organization names. To
+        provide a uniform API, QSettings derives a fake domain name
+        from the organization name (unless the organization name
+        already is a domain name, e.g. OpenOffice.org). The algorithm
+        appends ".com" to the company name and replaces spaces and
+        other illegal characters with hyphens. If you want to specify
+        a different domain name, call
         QCoreApplication::setOrganizationDomain(),
         QCoreApplication::setOrganizationName(), and
         QCoreApplication::setApplicationName() in your \c main()
@@ -1910,8 +1945,8 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
         \endcode
     \endlist
 
-    \sa {tools/settingseditor}{Settings Editor Example},
-        QVariant, QSessionManager
+    \sa QVariant, QSessionManager,
+        {tools/settingseditor}{Settings Editor Example}
 */
 
 /*! \enum QSettings::Status
@@ -1933,16 +1968,44 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const SettingsKey
                          appropriate storage format for the platform.
                          On Windows, this means the system registry;
                          on Mac OS X, this means the CFPreferences
-                         API; on Unix/X11, this means textual
+                         API; on Unix, this means textual
                          configuration files in INI format.
     \value IniFormat  Store the settings in INI files.
 
-    On Unix/X11, NativeFormat and IniFormat mean the same
-    thing, except that the file extension is different (\c .conf for
-    NativeFormat, \c .ini for IniFormat).
+    On Unix, NativeFormat and IniFormat mean the same thing, except
+    that the file extension is different (\c .conf for NativeFormat,
+    \c .ini for IniFormat).
 
     The INI file format is a Windows file format that Qt supports on
-    all platforms.
+    all platforms. In the absence of an INI standard, we try to
+    follow what Microsoft does, with the following two exceptions:
+
+    \list
+    \o  If you store types that QVariant can't convert to QString
+        (e.g., QPoint, QRect, and QSize), Qt uses an \c{@}-based
+        syntax to encode the type. For example:
+
+        \code
+        pos = @Point(100 100)
+        \endcode
+
+        To minimize compatibility issues, any \c @ that doesn't
+        appear at the first position in the value or that isn't
+        followed by a Qt type (\c Point, \c Rect, \c Size, etc.) is
+        treated as a normal character.
+
+    \o  Although backslash is a special character in INI files, most
+        Windows applications don't escape backslashes (\c{\}) in file
+        paths:
+
+        \code
+        windir = C:\Windows
+        \endcode
+
+        QSettings always treats backslash as a special character and
+        provides no API for reading or writing such entries.
+    \endlist
+
 */
 
 /*! \enum QSettings::Scope
@@ -2034,10 +2097,11 @@ QSettings::QSettings(Format format, Scope scope, const QString &organization,
     stored in the file called \a fileName, with parent \a parent. If
     the file doesn't already exist, it is created.
 
-    If \a format is QSettings::NativeFormat, the meaning of \a fileName
-    depends on the platform. On Unix/X11, \a fileName is the name of
-    an INI file. On Mac OS X, \a fileName is the name of a .plist
-    file. On Windows, \a fileName is a path in the system registry.
+    If \a format is QSettings::NativeFormat, the meaning of \a
+    fileName depends on the platform. On Unix, \a fileName is the
+    name of an INI file. On Mac OS X, \a fileName is the name of a
+    .plist file. On Windows, \a fileName is a path in the system
+    registry.
 
     If \a format is QSettings::IniFormat, \a fileName is the name of an INI
     file.
@@ -2931,7 +2995,7 @@ void QSettings::setUserIniPath(const QString &dir)
 /*! \enum QSettings::System
     \compat
 
-    \value Unix Unix/X11 systems
+    \value Unix Unix systems (X11 and Qt/Embedded)
     \value Windows Microsoft Windows systems
     \value Mac Mac OS X systems
 

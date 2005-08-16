@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -64,12 +59,13 @@ bool QTemporaryFileEngine::open(int)
     if(!qfilename.endsWith(QLatin1String("XXXXXX")))
         qfilename += QLatin1String(".XXXXXX");
     d->external_file = 0;
-    char *filename = strdup(qfilename.toLocal8Bit());
+    char *filename = qstrdup(qfilename.toLocal8Bit());
+    
 #ifdef HAS_MKSTEMP
     d->fd = mkstemp(filename);
 #else
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-    int len = strnlen(filename, _MAX_FNAME) + 1;
+    int len = int(strlen(filename)) + 1;
     if(_mktemp_s(filename, len) == 0) {
 #else
     if(mktemp(filename)) {
@@ -249,6 +245,8 @@ QTemporaryFile::~QTemporaryFile()
    it, and finally on function return it will automatically clean up
    after itself.
 
+   Auto-remove is on by default.
+
    \sa setAutoRemove(), remove()
 */
 bool QTemporaryFile::autoRemove() const
@@ -259,6 +257,8 @@ bool QTemporaryFile::autoRemove() const
 
 /*!
     Sets the QTemporaryFile into auto-remove mode if \a b is true.
+
+    Auto-remove is on by default.
 
     \sa autoRemove(), remove()
 */
@@ -314,6 +314,7 @@ void QTemporaryFile::setFileTemplate(const QString &name)
 
 /*!
     \fn QTemporaryFile *QTemporaryFile::createLocalFile(const QString &fileName)
+    \overload
 
     Works on the given \a fileName rather than an existing QFile
     object.
@@ -322,7 +323,7 @@ void QTemporaryFile::setFileTemplate(const QString &name)
 
 /*!
     Creates and returns a local temporary file whose contents are a
-    copy of the contens of the given \a file.
+    copy of the contents of the given \a file.
 */
 QTemporaryFile *QTemporaryFile::createLocalFile(QFile &file)
 {

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -278,12 +273,7 @@ QTabWidget::~QTabWidget()
 /*!
     Adds another tab and page to the tab view.
 
-    The new page is \a child; the tab's label is \a label. Note the
-    difference between the widget name (which you supply to widget
-    constructors and to setTabEnabled(), for example) and the tab
-    label. The name is internal to the program and invariant, whereas
-    the label is shown on-screen and may vary according to language
-    and other factors.
+    The new page is \a child; the tab's label is \a label.
 
     If the tab's \a label contains an ampersand, the letter following
     the ampersand is used as a shortcut for the tab, e.g. if the
@@ -352,6 +342,8 @@ int QTabWidget::insertTab(int index, QWidget *w, const QString &label)
 int QTabWidget::insertTab(int index, QWidget *w, const QIcon& icon, const QString &label)
 {
     Q_D(QTabWidget);
+    if(!w)
+        return -1;
     index = d->tabs->insertTab(index, icon, label);
     d->stack->insertWidget(index, w);
     setUpLayout();
@@ -498,7 +490,7 @@ QWidget * QTabWidget::currentWidget() const
 void QTabWidget::setCurrentWidget(QWidget *widget)
 {
     Q_D(const QTabWidget);
-    d->stack->setCurrentWidget(widget);
+    d->tabs->setCurrentIndex(indexOf(widget));
 }
 
 
@@ -551,6 +543,9 @@ void QTabWidget::resizeEvent(QResizeEvent *e)
 void QTabWidget::setTabBar(QTabBar* tb)
 {
     Q_D(QTabWidget);
+    if (!tb)
+        return;
+
     if (tb->parentWidget() != this) {
         tb->setParent(this);
         tb->show();
@@ -739,7 +734,7 @@ void QTabWidgetPrivate::updateTabBarPosition()
     \property QTabWidget::tabPosition
     \brief the position of the tabs in this tab widget
 
-    Possible values for this property are \c QTabWidget::North and \c
+    Possible values for this property are QTabWidget::North and
     QTabWidget::South.
 
     \sa TabPosition
@@ -763,8 +758,8 @@ void QTabWidget::setTabPosition(TabPosition pos)
     \property QTabWidget::tabShape
     \brief the shape of the tabs in this tab widget
 
-    Possible values for this property are \c QTabWidget::Rounded
-    (default) or \c QTabWidget::Triangular.
+    Possible values for this property are QTabWidget::Rounded
+    (default) or QTabWidget::Triangular.
 
     \sa TabShape
 */

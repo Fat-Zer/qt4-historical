@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/text/qfontmetrics.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/text/qfontmetrics.cpp -->
 <head>
     <title>Qt 4.0: QFontMetrics Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QFontMetrics Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QFontMetrics Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QFontMetrics class provides font metrics information. <a href="#details">More...</a></p>
-<pre>#include &lt;QFontMetrics&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QFontMetrics&gt;</pre><ul>
 <li><a href="qfontmetrics-members.html">List of all members, including inherited members</a></li>
 <li><a href="qfontmetrics-qt3.html">Qt 3 support members</a></li>
 </ul>
@@ -114,29 +113,29 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="boundingRect-5"></a><a href="qrect.html">QRect</a> QFontMetrics::boundingRect ( int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>tabstops</i> = 0, int * <i>tabarray</i> = 0 ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the bounding rectangle for the given <i>text</i> within the rectangle specified by the <i>x</i> and <i>y</i> coordinates, <i>width</i>, and <i>height</i>.</p>
-<p>If <tt>Qt::TextExpandTabs</tt> is set in <i>flags</i> and <i>tabarray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs; otherwise, if <i>tabstops</i> is non-zero, it is used as the tab spacing (in pixels).</p>
+<p>If <a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a> is set in <i>flags</i> and <i>tabarray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs; otherwise, if <i>tabstops</i> is non-zero, it is used as the tab spacing (in pixels).</p>
 <h3 class="fn"><a name="boundingRect-6"></a><a href="qrect.html">QRect</a> QFontMetrics::boundingRect ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, int <i>flgs</i>, const <a href="qstring.html">QString</a> &amp; <i>str</i>, int <i>tabstops</i> = 0, int * <i>tabarray</i> = 0 ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the bounding rectangle of the characters in the string specified by <i>str</i>, which is the set of pixels the text would cover if drawn at (0, 0). The drawing, and hence the bounding rectangle, is constrained to the rectangle <i>r</i>.</p>
 <p>The <i>flgs</i> argument is the bitwise OR of the following flags:</p>
 <ul>
-<li><tt>Qt::AlignLeft</tt> aligns to the left border, except for Arabic and Hebrew where it aligns to the right.</li>
-<li><tt>Qt::AlignRight</tt> aligns to the right border, except for Arabic and Hebrew where it aligns to the left.</li>
-<li><tt>Qt::AlignJustify</tt> produces justified text.</li>
-<li><tt>Qt::AlignHCenter</tt> aligns horizontally centered.</li>
-<li><tt>Qt::AlignTop</tt> aligns to the top border.</li>
-<li><tt>Qt::AlignBottom</tt> aligns to the bottom border.</li>
-<li><tt>Qt::AlignVCenter</tt> aligns vertically centered</li>
-<li><tt>Qt::AlignCenter</tt> (== <tt>Qt::AlignHCenter | Qt::AlignVCenter</tt>)</li>
-<li><tt>Qt::TextSingleLine</tt> ignores newline characters in the text.</li>
-<li><tt>Qt::TextExpandTabs</tt> expands tabs (see below)</li>
-<li><tt>Qt::TextShowMnemonic</tt> interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e. underlined.</li>
-<li><tt>Qt::TextWordBreak</tt> breaks the text to fit the rectangle.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> aligns to the left border, except for Arabic and Hebrew where it aligns to the right.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a> aligns to the right border, except for Arabic and Hebrew where it aligns to the left.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a> produces justified text.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> aligns horizontally centered.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a> aligns to the top border.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignBottom</a> aligns to the bottom border.</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignVCenter</a> aligns vertically centered</li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> (== <tt>Qt::AlignHCenter | Qt::AlignVCenter</tt>)</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextSingleLine</a> ignores newline characters in the text.</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a> expands tabs (see below)</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextShowMnemonic</a> interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e. underlined.</li>
+<li>Qt::TextWordBreak breaks the text to fit the rectangle.</li>
 </ul>
-<p><a href="qt.html#Orientation-enum">Qt::Horizontal</a> alignment defaults to <tt>Qt::AlignLeft</tt> and vertical alignment defaults to <tt>Qt::AlignTop</tt>.</p>
+<p><a href="qt.html#Orientation-enum">Qt::Horizontal</a> alignment defaults to <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> and vertical alignment defaults to <a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a>.</p>
 <p>If several of the horizontal or several of the vertical alignment flags are set, the resulting alignment is undefined.</p>
 <p>These flags are defined in <tt>qnamespace.h</tt>.</p>
-<p>If <tt>Qt::TextExpandTabs</tt> is set in <i>flgs</i>, then: if <i>tabarray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs; otherwise if <i>tabstops</i> is non-zero, it is used as the tab spacing (in pixels).</p>
+<p>If <a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a> is set in <i>flgs</i>, then: if <i>tabarray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs; otherwise if <i>tabstops</i> is non-zero, it is used as the tab spacing (in pixels).</p>
 <p>Note that the bounding rectangle may extend to the left of (0, 0), e.g. for italicized fonts, and that the text output may cover <i>all</i> pixels in the bounding rectangle.</p>
 <p>Newline characters are processed as linebreaks.</p>
 <p>Despite the different actual character heights, the heights of the bounding rectangles of &quot;Yes&quot; and &quot;yes&quot; are the same.</p>
@@ -196,13 +195,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the size in pixels of <i>text</i>.</p>
 <p>The <i>flgs</i> argument is the bitwise OR of the following flags:</p>
 <ul>
-<li><tt>Qt::TextSingleLine</tt> ignores newline characters.</li>
-<li><tt>Qt::TextExpandTabs</tt> expands tabs (see below)</li>
-<li><tt>Qt::TextShowMnemonic</tt> interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e. underlined.</li>
-<li><tt>Qt::TextWordBreak</tt> breaks the text to fit the rectangle.</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextSingleLine</a> ignores newline characters.</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a> expands tabs (see below)</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextShowMnemonic</a> interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e. underlined.</li>
+<li>Qt::TextWordBreak breaks the text to fit the rectangle.</li>
 </ul>
 <p>These flags are defined in <tt>qnamespace.h</tt>.</p>
-<p>If <tt>Qt::TextExpandTabs</tt> is set in <i>flgs</i>, then: if <i>tabarray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs; otherwise if <i>tabstops</i> is non-zero, it is used as the tab spacing (in pixels).</p>
+<p>If <a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a> is set in <i>flgs</i>, then: if <i>tabarray</i> is non-null, it specifies a 0-terminated sequence of pixel-positions for tabs; otherwise if <i>tabstops</i> is non-zero, it is used as the tab spacing (in pixels).</p>
 <p>Newline characters are processed as linebreaks.</p>
 <p>Despite the different actual character heights, the heights of the bounding rectangles of &quot;Yes&quot; and &quot;yes&quot; are the same.</p>
 <p>See also <a href="qfontmetrics.html#boundingRect">boundingRect</a>().</p>
@@ -218,7 +217,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qfontmetrics.html#boundingRect">boundingRect</a>().</p>
 <h3 class="fn"><a name="width-2"></a>int QFontMetrics::width ( <a href="qchar.html">QChar</a> <i>ch</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<center><img src="images/bearings.png" alt="Bearings" /></center><p>Returns the logical width of character <i>ch</i> in pixels. This is a distance appropriate for drawing a subsequent character after <i>ch</i>.</p>
+<p align="center"><img src="images/bearings.png" alt="Bearings" /></p><p>Returns the logical width of character <i>ch</i> in pixels. This is a distance appropriate for drawing a subsequent character after <i>ch</i>.</p>
 <p>Some of the metrics are described in the image to the right. The central dark rectangles cover the logical <a href="qfontmetrics.html#width">width</a>() of each character. The outer pale rectangles cover the <a href="qfontmetrics.html#leftBearing">leftBearing</a>() and <a href="qfontmetrics.html#rightBearing">rightBearing</a>() of each character. Notice that the bearings of &quot;f&quot; in this particular font are both negative, while the bearings of &quot;o&quot; are both positive.</p>
 <p><b>Warning:</b> This function will produce incorrect results for Arabic characters or non-spacing marks in the middle of a string, as the glyph shaping and positioning of marks that happens when processing strings cannot be taken into account. Use <a href="qfontmetrics.html#charWidth">charWidth</a>() instead if you aren't looking for the width of isolated characters.</p>
 <p>See also <a href="qfontmetrics.html#boundingRect">boundingRect</a>() and <a href="qfontmetrics.html#charWidth">charWidth</a>().</p>
@@ -236,6 +235,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

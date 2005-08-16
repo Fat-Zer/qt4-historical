@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.0: Model Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="model-view-using.html">Using Models and Views</a>]
 [<a href="model-view-programming.html">Contents</a>]
 [Next: <a href="model-view-creating-models.html">Creating New Models</a>]
 </p>
-<h1 align="center">Model Classes</h1>
+<h1 align="center">Model Classes<br /><small></small></h1>
 <ul><li><a href="#basic-concepts">Basic Concepts</a></li>
 <ul><li><a href="#model-indexes">Model Indexes</a></li>
 <li><a href="#rows-and-columns">Rows and Columns</a></li>
@@ -39,7 +39,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="basic-concepts"></a>
 <h2>Basic Concepts</h2>
 <p>In the model/view architecture, the model provides a standard interface that views and delegates use to access data. In Qt, the standard interface is defined by the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class. No matter how the items of data are stored in any underlying data structure, all subclasses of <a href="qabstractitemmodel.html">QAbstractItemModel</a> represent the data as a hierarchical structure containing tables of items. Views use this <i>convention</i> to access items of data in the model, but they are not restricted in the way that they present this information to the user.</p>
-<center><img src="images/modelview-models.png" /></center><p>Models also notify any attached views about changes to data through the signals and slots mechanism.</p>
+<p align="center"><img src="images/modelview-models.png" /></p><p>Models also notify any attached views about changes to data through the signals and slots mechanism.</p>
 <p>This chapter describes some basic concepts that are central to the way item of data are accessed by other components via a model class. More advanced concepts are discussed in later chapters.</p>
 <a name="model-indexes"></a>
 <h3>Model Indexes</h3>
@@ -92,8 +92,8 @@ body { background: #ffffff; color: black; }</style>
 <li>Model indexes give views and delegates information about the location of items provided by models in a way that is independent of any underlying data structures.</li>
 <li>Items are referred to by their row and column numbers, and by the model index of their parent items.</li>
 <li>Model indexes are constructed by models at the request of other components, such as views and delegates.</li>
-<li>If a valid model index is specified when an index is requested (using <a href="qabstractitemmodel.html#index">index()</a>, the model understands that it refers to a parent item, and that it must return an index that refers to a child of that item.</li>
-<li>If an invalid model index is specified when an index is requested (using <a href="qabstractitemmodel.html#index">index()</a>, the model understands that it must return a model index that refers to a top-level item in the model.</li>
+<li>If a valid model index is specified for the parent item when an index is requested using <a href="qabstractitemmodel.html#index">index()</a>, the index returned will refer to an item beneath that parent item in the model. The index obtained refers to a child of that item.</li>
+<li>If an invalid model index is specified for the parent item when an index is requested using <a href="qabstractitemmodel.html#index">index()</a>, the index returned will refer to a top-level item in the model.</li>
 <li>The <a href="qt.html#ItemDataRole-enum">role</a> distinguishes between the different kinds of data associated with an item.</li>
 </ul>
 <a name="using-model-indexes"></a>
@@ -131,6 +131,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

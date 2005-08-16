@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the network module of the Qt Toolkit.
+** This file is part of the QtNetwork module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,7 +26,7 @@
 #include <qplatformdefs.h>
 #include "qhttp.h"
 
-#ifndef QT_NO_NETWORKPROTOCOL_HTTP
+#ifndef QT_NO_HTTP
 
 #include "private/qobject_p.h"
 #include "qtcpsocket.h"
@@ -72,7 +67,7 @@ class QHttpPrivate : public QObjectPrivate
 public:
     Q_DECLARE_PUBLIC(QHttp)
 
-    inline QHttpPrivate() : socket(0), state(QHttp::Unconnected),
+    inline QHttpPrivate() : socket(0), deleteSocket(0), state(QHttp::Unconnected),
           error(QHttp::NoError), port(0), toDevice(0),
           postDevice(0), bytesDone(0), chunkedSize(-1)
     {
@@ -83,14 +78,15 @@ public:
         while (!pending.isEmpty())
             delete pending.takeFirst();
 
-        delete socket;
+        if (deleteSocket)
+            delete socket;
     }
 
     // private slots
     void startNextRequest();
     void slotReadyRead();
     void slotConnected();
-    void slotError(QTcpSocket::SocketError);
+    void slotError(QAbstractSocket::SocketError);
     void slotClosed();
     void slotBytesWritten(qint64 numBytes);
     void slotDoFinished();
@@ -106,6 +102,7 @@ public:
     void setSock(QTcpSocket *sock);
 
     QTcpSocket *socket;
+    bool deleteSocket;
     QList<QHttpRequest *> pending;
 
     QHttp::State state;
@@ -1393,7 +1390,7 @@ QString QHttpRequestHeader::toString() const
     The \l{network/http}{HTTP} example illustrates how to write HTTP
     clients using QHttp.
 
-    \sa {Network Module}, QFtp
+    \sa QFtp
 */
 
 /*!
@@ -1823,9 +1820,11 @@ int QHttp::setHost(const QString &hostName, quint16 port)
 }
 
 /*!
-    Replaces the internal QSocket that QHttp uses with the given \a
-    socket. This is useful if you want to use your own custom QSocket
-    subclass instead of the plain QSocket that QHttp uses by default.
+    Replaces the internal QTcpSocket that QHttp uses with \a
+    socket. This is useful if you want to use your own custom QTcpSocket
+    subclass instead of the plain QTcpSocket that QHttp uses by default.
+    QHttp does not take ownership of the socket, and will not delete \a
+    socket when destroyed.
 
     The function does not block and returns immediately. The request
     is scheduled, and its execution is performed asynchronously. The
@@ -1835,6 +1834,11 @@ int QHttp::setHost(const QString &hostName, quint16 port)
     When the request is started the requestStarted() signal is
     emitted. When it is finished the requestFinished() signal is
     emitted.
+
+    Note: If QHttp is used in a non-GUI thread that runs its own event
+    loop, you must move \a socket to that thread before calling setSocket().
+
+    \sa QObject::moveToThread(), {Thread Support in Qt}
 */
 int QHttp::setSocket(QTcpSocket *socket)
 {
@@ -2114,7 +2118,7 @@ void QHttpPrivate::sendRequest()
                 pass += ":";
                 pass += proxyPassword.toAscii();
             }
-            header.setValue("Proxy-Authorization", pass.toBase64());
+            header.setValue("Proxy-Authorization", "Basic " + pass.toBase64());
         }
 
         hostName = proxyHost;
@@ -2141,7 +2145,9 @@ void QHttpPrivate::sendRequest()
     // existing one?
     if (socket->peerName() != hostName || socket->peerPort() != port
         || socket->state() != QTcpSocket::ConnectedState) {
+        socket->blockSignals(true);
         socket->abort();
+        socket->blockSignals(false);
 
         setState(QHttp::Connecting);
         if (proxyHost.isEmpty())
@@ -2233,7 +2239,7 @@ void QHttpPrivate::slotConnected()
     }
 }
 
-void QHttpPrivate::slotError(QTcpSocket::SocketError err)
+void QHttpPrivate::slotError(QAbstractSocket::SocketError err)
 {
     postDevice = 0;
 
@@ -2567,14 +2573,15 @@ void QHttpPrivate::setSock(QTcpSocket *sock)
     // disconnect all existing signals
     if (socket) socket->disconnect();
 
-    // use the new QSocket socket, or create one if socket is 0.
+    // use the new QTcpSocket socket, or create one if socket is 0.
+    deleteSocket = (sock == 0);
     socket = sock ? sock : new QTcpSocket();
 
     // connect all signals
     QObject::connect(socket, SIGNAL(connected()), q, SLOT(slotConnected()));
     QObject::connect(socket, SIGNAL(disconnected()), q, SLOT(slotClosed()));
     QObject::connect(socket, SIGNAL(readyRead()), q, SLOT(slotReadyRead()));
-    QObject::connect(socket, SIGNAL(error(SocketError)), q, SLOT(slotError(SocketError)));
+    QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), q, SLOT(slotError(QAbstractSocket::SocketError)));
     QObject::connect(socket, SIGNAL(bytesWritten(qint64)),
                      q, SLOT(slotBytesWritten(qint64)));
 }

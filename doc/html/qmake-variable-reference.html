@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.0: qmake Variable Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qmake-reference.html">qmake Reference</a>]
 [<a href="qmake-manual.html">Contents</a>]
 [Next: <a href="qmake-function-reference.html">qmake Function Reference</a>]
 </p>
-<h1 align="center">qmake Variable Reference</h1>
+<h1 align="center">qmake Variable Reference<br /><small></small></h1>
 <table width="100%">
 <tr valign="top"><td width="34%">
 <ul><li><a href="#config">CONFIG</a></li>
@@ -166,6 +166,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qmake-ext-obj">QMAKE_EXT_OBJ</a></li>
 <li><a href="#qmake-ext-cpp">QMAKE_EXT_CPP</a></li>
 <li><a href="#qmake-ext-h">QMAKE_EXT_H</a></li>
+<li><a href="#translations">TRANSLATIONS</a></li>
 <li><a href="#yaccimpls">YACCIMPLS</a></li>
 <li><a href="#yaccobjects">YACCOBJECTS</a></li>
 </ul>
@@ -185,7 +186,7 @@ body { background: #ffffff; color: black; }</style>
 <li>qt - The target is a Qt application/library and requires the Qt header files/library. The proper include and library paths for the Qt library will automatically be added to the project.</li>
 <li>opengl - The target requires the OpenGL (or Mesa) headers/libraries. The proper include and library paths for these libraries will automatically be added to the project.</li>
 <li>thread - The target is a multi-threaded application or library. The proper defines and compiler flags will automatically be added to the project.</li>
-<li><a href="winsystem.html#x11">x11</a> - The target is a <a href="winsystem.html#x11">X11</a> application or library. The proper include paths and libraries will automatically be added to the project.</li>
+<li>x11 - The target is a X11 application or library. The proper include paths and libraries will automatically be added to the project.</li>
 <li>windows - The target is a Win32 window application (app only). The proper include paths,compiler flags and libraries will automatically be added to the project.</li>
 <li>console - The target is a Win32 console application (app only). The proper include paths, compiler flags and libraries will automatically be added to the project.</li>
 <li>dll - The target is a shared object/DLL.The proper include paths, compiler flags and libraries will automatically be added to the project.</li>
@@ -374,7 +375,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This variable is generated from the <a href="#sources">SOURCES</a> variable. The extension of each source file will have been replaced by .o (Unix) or .obj (Win32). The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="objmoc"></a><a name="objmoc"></a>
 <h2>OBJMOC</h2>
-<p>This variable is set by <tt>qmake</tt> if files can be found that contain the <a href="metaobjects.html#q-object">Q_OBJECT</a> macro. <tt>OBJMOC</tt> contains the name of all intermediate moc object files. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
+<p>This variable is set by <tt>qmake</tt> if files can be found that contain the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro. <tt>OBJMOC</tt> contains the name of all intermediate moc object files. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="precompiled-header"></a><a name="precompiled-header"></a>
 <h2>PRECOMPILED_HEADER</h2>
 <p>This variable indicates the header file for creating a precompiled header file, to increase the compilation speed of a project. Precompiled headers are currently only supported on some platforms (Windows - all MSVC project types, Mac OS X - Xcode, Makefile, Unix - gcc 3.3 and up).</p>
@@ -499,7 +500,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="qmake-incdir-x11"></a><a name="qmake-incdir-x11"></a>
 <h2>QMAKE_INCDIR_X11</h2>
 <p><i>This is used on Unix platforms only</i></p>
-<p>This variable contains the location of <a href="winsystem.html#x11">X11</a> header file paths to be added to INCLUDEPATH when building a <a href="winsystem.html#x11">X11</a> application. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
+<p>This variable contains the location of X11 header file paths to be added to INCLUDEPATH when building a X11 application. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="qmake-lflags-console"></a><a name="qmake-lflags-console"></a>
 <h2>QMAKE_LFLAGS_CONSOLE</h2>
 <p><i>This is used on Windows only</i></p>
@@ -563,7 +564,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="qmake-libdir-x11"></a>
 <h2>QMAKE_LIBDIR_X11</h2>
 <p><i>This is used on Unix platforms only</i></p>
-<p>This variable contains the location of the <a href="winsystem.html#x11">X11</a> library directory.The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
+<p>This variable contains the location of the X11 library directory.The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="qmake-libs"></a>
 <h2>QMAKE_LIBS</h2>
 <p>This variable contains all project libraries. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
@@ -609,11 +610,11 @@ body { background: #ffffff; color: black; }</style>
 <a name="qmake-libs-x11"></a>
 <h2>QMAKE_LIBS_X11</h2>
 <p><i>This is used on Unix platforms only</i></p>
-<p>This variable contains all <a href="winsystem.html#x11">X11</a> libraries.The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
+<p>This variable contains all X11 libraries.The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="qmake-libs-x11sm"></a>
 <h2>QMAKE_LIBS_X11SM</h2>
 <p><i>This is used on Unix platforms only</i></p>
-<p>This variable contains all <a href="winsystem.html#x11">X11</a> session management libraries. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
+<p>This variable contains all X11 session management libraries. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="qmake-lib-flag"></a>
 <h2>QMAKE_LIB_FLAG</h2>
 <p>This variable is not empty if the <tt>lib</tt> template is specified. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
@@ -669,7 +670,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This variable contains the name of the resource file for the application. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="srcmoc"></a>
 <h2>SRCMOC</h2>
-<p>This variable is set by <tt>qmake</tt> if files can be found that contain the <a href="metaobjects.html#q-object">Q_OBJECT</a> macro. <tt>SRCMOC</tt> contains the name of all the generated moc files. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
+<p>This variable is set by <tt>qmake</tt> if files can be found that contain the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro. <tt>SRCMOC</tt> contains the name of all the generated moc files. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
 <a name="target-ext"></a>
 <h2>TARGET_EXT</h2>
 <p>This variable specifies the target's extension. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
@@ -726,6 +727,10 @@ body { background: #ffffff; color: black; }</style>
 <h2>QMAKE_EXT_H</h2>
 <p>This variable changes the interpretation of all suffixes in this list of values as files of type C header files.</p>
 <p>See also <a href="qmake-environment-reference.html#extensions">File Extensions</a>.</p>
+<a name="translations"></a>
+<h2>TRANSLATIONS</h2>
+<p>This variable contains a list of translation (.ts) files that contain translations of the user interface text into non-native languages.</p>
+<p>See the <a href="linguist-manual.html">Qt Linguist Manual</a> for more information about internationalization (i18n) and localization (l10n) with Qt.</p>
 <a name="yaccimpls"></a>
 <h2>YACCIMPLS</h2>
 <p>This variable contains a list of yacc source files. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
@@ -741,6 +746,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

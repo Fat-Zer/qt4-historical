@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -52,7 +47,6 @@ class QX11PaintEnginePrivate;
 class QFontEngineFT;
 
 typedef unsigned long Picture;
-#include "qx11info_x11.h"
 
 struct qt_float_point
 {
@@ -151,18 +145,24 @@ public:
     };
 
     void init();
-    void fillPolygon(const QPointF *points, int pointCount, GCMode gcMode,
-                     QPaintEngine::PolygonDrawMode mode);
+    void fillPolygon_translated(const QPointF *points, int pointCount, GCMode gcMode,
+                                QPaintEngine::PolygonDrawMode mode);
+    void fillPolygon_dev(const QPointF *points, int pointCount, GCMode gcMode,
+                         QPaintEngine::PolygonDrawMode mode);
     void fillPath(const QPainterPath &path, GCMode gcmode, bool transform);
-    void strokePolygon(const QPointF *points, int pointCount, bool close);
+    void strokePolygon_dev(const QPointF *points, int pointCount, bool close);
+    void strokePolygon_translated(const QPointF *points, int pointCount, bool close);
     void setupAdaptedOrigin(const QPoint &p);
     void resetAdaptedOrigin();
 
     Display *dpy;
     int scrn;
+    int pdev_depth;
     Qt::HANDLE hd;
 #if !defined (QT_NO_XRENDER)
     Qt::HANDLE picture;
+    Qt::HANDLE current_brush;
+    QPixmap bitmap_texture;
 #else
     Qt::HANDLE picture;
 #endif
@@ -181,12 +181,20 @@ public:
     uint has_clipping : 1;
     uint adapted_brush_origin : 1;
     uint adapted_pen_origin : 1;
+    uint has_pen : 1;
+    uint has_brush : 1;
+    uint has_texture : 1;
+    uint has_pattern : 1;
+    uint alpha_pen : 1;
+    uint alpha_brush : 1;
     uint render_hints;
 
     const QX11Info *xinfo;
     QPointF bg_origin;
     QPainterPrivate::TransformationCodes txop;
     QPolygonClipper<qt_float_point, qt_float_point, float> polygonClipper;
+
+    int xlibMaxLinePoints;
 };
 
 #endif // QPAINTENGINE_X11_P_H

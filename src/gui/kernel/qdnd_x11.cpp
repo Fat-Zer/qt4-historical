@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -282,9 +277,9 @@ QByteArray QX11Data::xdndAtomToString(Atom a)
 {
     if (!a) return 0;
 
-    if (a == XA_STRING)
+    if (a == XA_STRING || a == ATOM(UTF8_STRING)) {
         return "text/plain"; // some Xdnd clients are dumb
-
+    }
     char *atom = XGetAtomName(display, a);
     QByteArray result = atom;
     XFree(atom);
@@ -585,6 +580,9 @@ void QX11Data::xdndHandlePosition(QWidget * w, const XEvent * xe, bool passive)
 static void handle_xdnd_status(QWidget *, const XEvent * xe, bool)
 {
     const unsigned long *l = (const unsigned long *)xe->xclient.data.l;
+    // ignore late status messages
+    if (l[0] && l[0] != qt_xdnd_current_proxy_target)
+        return;
     Qt::DropAction newAction = (l[1] & 0x1) ? xdndaction_to_qtaction(l[4]) : Qt::IgnoreAction;
 
     if ((int)(l[1] & 2) == 0) {
@@ -683,6 +681,13 @@ void qt_xdnd_send_leave()
     else
         XSendEvent(X11->display, qt_xdnd_current_proxy_target, False,
                     NoEventMask, (XEvent*)&leave);
+    // reset the drag manager state
+    QDragManager *manager = QDragManager::self();
+    manager->willDrop = false;
+    if (global_accepted_action != Qt::IgnoreAction)
+        manager->emitActionChanged(Qt::IgnoreAction);
+    global_accepted_action = Qt::IgnoreAction;
+    manager->updateCursor();
     qt_xdnd_current_target = 0;
     qt_xdnd_current_proxy_target = 0;
     waiting_for_status = false;
@@ -923,14 +928,16 @@ Window findRealWindow(const QPoint & pos, Window w, int md)
         XWindowAttributes attr;
         XGetWindowAttributes(X11->display, w, &attr);
 
-        if (attr.map_state != IsUnmapped && QRect(attr.x,attr.y,attr.width,attr.height).contains(pos)) {
+        if (attr.map_state == IsViewable
+            && QRect(attr.x,attr.y,attr.width,attr.height).contains(pos)) {
             {
                 Atom   type = XNone;
                 int f;
                 unsigned long n, a;
                 unsigned char *data;
 
-                XGetWindowProperty(X11->display, w, ATOM(WM_STATE), 0, 0, False, AnyPropertyType, &type, &f,&n,&a,&data);
+                XGetWindowProperty(X11->display, w, ATOM(XdndAware), 0, 0, False,
+                                   AnyPropertyType, &type, &f,&n,&a,&data);
                 if (data) XFree(data);
                 if (type)
                     return w;
@@ -991,9 +998,37 @@ void QDragManager::move(const QPoint & globalPos)
         // Ok.
     } else if (target) {
         //me
-        Window targetW = X11->findClientWindow(target, ATOM(WM_STATE), true);
-        if (targetW)
-            target = targetW;
+        Window src = rootwin;
+        while (target != 0) {
+            int lx2, ly2;
+            Window t;
+            // translate coordinates
+            if (!XTranslateCoordinates(X11->display, src, target, lx, ly, &lx2, &ly2, &t)) {
+                target = 0;
+                break;
+            }
+            lx = lx2;
+            ly = ly2;
+            src = target;
+
+	    // check if it has XdndAware
+	    Atom type = 0;
+	    int f;
+	    unsigned long n, a;
+	    unsigned char *data = 0;
+	    XGetWindowProperty(X11->display, target, ATOM(XdndAware), 0, 0, False,
+                               AnyPropertyType, &type, &f,&n,&a,&data);
+	    if (data)
+                XFree(data);
+	    if (type)
+                break;
+
+            // find child at the coordinates
+            if (!XTranslateCoordinates(X11->display, src, src, lx, ly, &lx2, &ly2, &target)) {
+                target = 0;
+                break;
+            }
+        }
         if (xdnd_data.deco && (!target || target == xdnd_data.deco->winId())) {
             target = findRealWindow(globalPos, rootwin, 6);
         }
@@ -1043,8 +1078,13 @@ void QDragManager::move(const QPoint & globalPos)
             QVector<Atom> type;
             int flags = target_version << 24;
             QStringList fmts = QInternalMimeData::formatsHelper(dragPrivate()->data);
-            for (int i = 0; i < fmts.size(); ++i)
+            for (int i = 0; i < fmts.size(); ++i) {
                 type.append(X11->xdndStringToAtom(fmts.at(i).toLatin1().data()));
+                if (fmts.at(i) == QLatin1String("text/plain")){
+                    type.append(ATOM(UTF8_STRING));
+                    type.append(XA_STRING);
+                }
+            }
             if (type.size() > 3) {
                 XChangeProperty(X11->display,
                                 dragPrivate()->source->winId(), ATOM(XdndTypelist),
@@ -1189,7 +1229,11 @@ void QX11Data::xdndHandleSelectionRequest(const XSelectionRequestEvent * req)
     evt.xselection.target = req->target;
     evt.xselection.property = XNone;
     evt.xselection.time = req->time;
-    QByteArray format = X11->xdndAtomToString(req->target);
+    QByteArray format;
+    if (req->target == XA_STRING || req->target == ATOM(UTF8_STRING))
+        format = "text/plain";
+    else
+        format = X11->xdndAtomToString(req->target);
     QDragPrivate* dp = QDragManager::self()->dragPrivate();
     if (!format.isEmpty() && QInternalMimeData::hasFormatHelper(QLatin1String(format), dp->data)) {
         QByteArray a = QInternalMimeData::renderDataHelper(QLatin1String(format), dp->data);
@@ -1225,10 +1269,34 @@ static QByteArray xdndObtainData(const char *format)
         return result;
     }
 
+
     Atom a = X11->xdndStringToAtom(format);
     if (!a)
         return result;
 
+    // if a is not provided then find best match
+    int i = 0;
+    bool found = false;
+    while ((qt_xdnd_types[i])) {
+        if (qt_xdnd_types[i] == a) {
+            found = true;
+            break;
+        }
+        ++i;
+    }
+    if (!found && strcmp(format, "text/plain") == 0) {
+        int i = 0;
+        while ((qt_xdnd_types[i])) {
+            if (qt_xdnd_types[i] == ATOM(UTF8_STRING)) {
+                a = ATOM(UTF8_STRING);
+                break;
+            } else if (qt_xdnd_types[i] == XA_STRING) {
+                a = XA_STRING;
+                break;
+            }
+            ++i;
+        }
+    }
     if (XGetSelectionOwner(X11->display, ATOM(XdndSelection)) == XNone)
         return result; // should never happen?
 
@@ -1425,7 +1493,9 @@ QStringList QDropData::formats_sys() const
     } else {
         int i = 0;
         while ((qt_xdnd_types[i])) {
-            formats.append(QLatin1String(X11->xdndAtomToString(qt_xdnd_types[i]).data()));
+	   QString f = QLatin1String(X11->xdndAtomToString(qt_xdnd_types[i]));
+	   if (!formats.contains(f))
+	       formats.append(f);
             ++i;
         }
     }

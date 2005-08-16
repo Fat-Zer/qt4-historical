@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the sql module of the Qt Toolkit.
+** This file is part of the QtSql module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -75,9 +70,12 @@
 #include "qhash.h"
 #include <stdlib.h>
 
+#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QSqlDriverFactoryInterface_iid, QCoreApplication::libraryPaths(),
-     QLatin1String("/sqldrivers")))
+                          (QSqlDriverFactoryInterface_iid,
+                           QCoreApplication::libraryPaths(), 
+                           QLatin1String("/sqldrivers")))
+#endif
 
 QT_STATIC_CONST_IMPL char *QSqlDatabase::defaultConnection = "qt_sql_default_connection";
 
@@ -390,7 +388,9 @@ void QSqlDatabasePrivate::disable()
     \threadsafe
 
     Adds a database to the list of database connections using the
-    driver \a type and the connection name \a connectionName.
+    driver \a type and the connection name \a connectionName. If
+    there already exists a database connection called \a
+    connectionName, that connection is removed.
 
     The database connection is referred to by \a connectionName. The
     newly added database connection is returned.
@@ -401,6 +401,9 @@ void QSqlDatabasePrivate::disable()
     database name parameter will return a reference to it. If \a
     connectionName is given, use database(\a connectionName) to
     retrieve a pointer to the database connection.
+
+    \warning If you add a database with the same name as an
+    existing database, the new database will replace the old one.
 
     To make use of the connection, you will need to set it up, for
     example by calling some or all of setDatabaseName(),
@@ -520,6 +523,7 @@ QStringList QSqlDatabase::drivers()
     list << QLatin1String("QIBASE");
 #endif
 
+#ifndef QT_NO_LIBRARY
     if (QFactoryLoader *fl = loader()) {
         QStringList keys = fl->keys();
         for (QStringList::const_iterator i = keys.constBegin(); i != keys.constEnd(); ++i) {
@@ -527,7 +531,8 @@ QStringList QSqlDatabase::drivers()
                 list << *i;
         }
     }
-
+#endif
+    
     DriverDict dict = QSqlDatabasePrivate::driverDict();
     for (DriverDict::const_iterator i = dict.constBegin(); i != dict.constEnd(); ++i) {
         if (!list.contains(i.key()))
@@ -599,7 +604,7 @@ QStringList QSqlDatabase::connectionNames()
     \table
     \header \i Driver Type \i Description
     \row \i QDB2     \i IBM DB2, v7.1 and higher
-    \row \i QIBASE   \i Borland Interbase Driver
+    \row \i QIBASE   \i Borland InterBase Driver
     \row \i QMYSQL   \i MySQL Driver
     \row \i QOCI     \i Oracle Call Interface Driver
     \row \i QODBC    \i ODBC Driver (includes Microsoft SQL Server)
@@ -720,10 +725,12 @@ void QSqlDatabasePrivate::init(const QString &type)
         }
     }
 
+#ifndef QT_NO_LIBRARY
     if (!driver && loader()) {
         if (QSqlDriverFactoryInterface *factory = qobject_cast<QSqlDriverFactoryInterface*>(loader()->instance(type)))
             driver = factory->create(type);
     }
+#endif // QT_NO_LIBRARY
 
     if (!driver) {
         qWarning("QSqlDatabase: %s driver not loaded", type.toLatin1().data());
@@ -1349,6 +1356,9 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     the QTDSDriver for creating new connections for internal
     queries. This is to prevent the simultaneous usage of several
     QSqlQuery/\l{QSqlCursor} objects from blocking each other.
+
+    \warning If you add a database with the same name as an
+    existing database, the new database will replace the old one.
 
     \warning The SQL framework takes ownership of the \a driver pointer,
     and it should not be deleted. If you want to

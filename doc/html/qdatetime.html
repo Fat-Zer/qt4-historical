@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/tools/qdatetime.cpp -->
 <head>
     <title>Qt 4.0: QDateTime Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDateTime Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDateTime Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QDateTime class provides date and time functions. <a href="#details">More...</a></p>
-<pre>#include &lt;QDateTime&gt;</pre><p>Part of the <a href="qtcore.html">QtCore</a> module.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre>#include &lt;QDateTime&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qdatetime-members.html">List of all members, including inherited members</a></li>
 <li><a href="qdatetime-qt3.html">Qt 3 support members</a></li>
@@ -122,8 +121,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdatetime.html#addDays">addDays</a>() and <a href="qdatetime.html#secsTo">secsTo</a>().</p>
 <h3 class="fn"><a name="fromString"></a>QDateTime QDateTime::fromString ( const <a href="qstring.html">QString</a> &amp; <i>string</i>, <a href="qt.html#DateFormat-enum">Qt::DateFormat</a> <i>format</i> = Qt::TextDate )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the <a href="qdatetime.html">QDateTime</a> represented by the <i>string</i>, using the <i>format</i> given, or an invalid datetime if this is not possible.</p>
-<p>Note for <tt>Qt::TextDate</tt>: It is recommended that you use the English short month names (e.g. &quot;Jan&quot;). Although localized month names can also be used, they depend on the user's locale settings.</p>
-<p><b>Warning:</b> Note that <tt>Qt::LocalDate</tt> cannot be used here.</p>
+<p>Note for <a href="qt.html#DateFormat-enum">Qt::TextDate</a>: It is recommended that you use the English short month names (e.g. &quot;Jan&quot;). Although localized month names can also be used, they depend on the user's locale settings.</p>
+<p><b>Warning:</b> Note that <a href="qt.html#DateFormat-enum">Qt::LocalDate</a> cannot be used here.</p>
 <h3 class="fn"><a name="fromString-2"></a>QDateTime QDateTime::fromString ( const <a href="qstring.html">QString</a> &amp; <i>string</i>, const <a href="qstring.html">QString</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the <a href="qdatetime.html">QDateTime</a> represented by the <i>string</i>, using the <i>format</i> given, or an invalid datetime if the string cannot be parsed.</p>
@@ -188,7 +187,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Before performing the comparison, the two datetimes are converted to <a href="qt.html#TimeSpec-enum">Qt::UTC</a> to ensure that the result is correct if one of the two datetimes has daylight saving time (DST) and the other doesn't.</p>
 <p>Example:</p>
 <pre>&nbsp;   QDateTime now = QDateTime::currentDateTime();
-    QDateTime xmas(QDate(dt.date().year(), 12, 25), QTime(0, 0));
+    QDateTime xmas(QDate(now.date().year(), 12, 25), QTime(0, 0));
     qDebug(&quot;There are %d seconds to Christmas&quot;, dt.secsTo(xmas));</pre>
 <p>See also <a href="qdatetime.html#addSecs">addSecs</a>(), <a href="qdatetime.html#daysTo">daysTo</a>(), and <a href="qtime.html#secsTo">QTime::secsTo</a>().</p>
 <h3 class="fn"><a name="setDate"></a>void QDateTime::setDate ( const <a href="qdate.html">QDate</a> &amp; <i>date</i> )</h3>
@@ -256,9 +255,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="toString-2"></a><a href="qstring.html">QString</a> QDateTime::toString ( <a href="qt.html#DateFormat-enum">Qt::DateFormat</a> <i>format</i> = Qt::TextDate ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the datetime as a string in the <i>format</i> given.</p>
-<p>If the <i>format</i> is <tt>Qt::TextDate</tt>, the string is formatted in the default way. <a href="qdate.html#shortDayName">QDate::shortDayName</a>(), <a href="qdate.html#shortMonthName">QDate::shortMonthName</a>(), and <a href="qtime.html#toString">QTime::toString</a>() are used to generate the string, so the day and month names will be localized names. An example of this formatting is &quot;Wed May 20 03:40:13 1998&quot;.</p>
-<p>If the <i>format</i> is <tt>Qt::ISODate</tt>, the string format corresponds to the ISO 8601 extended specification for representations of dates and times, taking the form YYYY-MM-DDTHH:MM:SS.</p>
-<p>If the <i>format</i> is <tt>Qt::LocalDate</tt>, the string format depends on the locale settings of the system.</p>
+<p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::TextDate</a>, the string is formatted in the default way. <a href="qdate.html#shortDayName">QDate::shortDayName</a>(), <a href="qdate.html#shortMonthName">QDate::shortMonthName</a>(), and <a href="qtime.html#toString">QTime::toString</a>() are used to generate the string, so the day and month names will be localized names. An example of this formatting is &quot;Wed May 20 03:40:13 1998&quot;.</p>
+<p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::ISODate</a>, the string format corresponds to the ISO 8601 extended specification for representations of dates and times, taking the form YYYY-MM-DDTHH:MM:SS.</p>
+<p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::LocalDate</a>, the string format depends on the locale settings of the system.</p>
 <p>If the datetime is invalid, an empty string will be returned.</p>
 <p>See also <a href="qdate.html#toString">QDate::toString</a>(), <a href="qtime.html#toString">QTime::toString</a>(), and <a href="qt.html#DateFormat-enum">Qt::DateFormat</a>.</p>
 <h3 class="fn"><a name="toTimeSpec"></a>QDateTime QDateTime::toTimeSpec ( <a href="qt.html#TimeSpec-enum">Qt::TimeSpec</a> <i>specification</i> ) const</h3>
@@ -266,7 +265,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdatetime.html#timeSpec">timeSpec</a>(), <a href="qdatetime.html#toUTC">toUTC</a>(), and <a href="qdatetime.html#toLocalTime">toLocalTime</a>().</p>
 <h3 class="fn"><a name="toTime_t"></a><a href="qtglobal.html#uint-typedef">uint</a> QDateTime::toTime_t () const</h3>
 <p>Returns the datetime as the number of seconds that have passed since 1970-01-01T00:00:00, Coordinated Universal Time (<a href="qt.html#TimeSpec-enum">Qt::UTC</a>).</p>
-<p>On systems that do not support timezones, this function will behave as if local time were <tt>Qt::UTC</tt>.</p>
+<p>On systems that do not support timezones, this function will behave as if local time were <a href="qt.html#TimeSpec-enum">Qt::UTC</a>.</p>
 <p>See also <a href="qdatetime.html#setTime_t">setTime_t</a>().</p>
 <h3 class="fn"><a name="toUTC"></a>QDateTime QDateTime::toUTC () const</h3>
 <p>Returns a datetime containing the date and time information in this datetime, but specified using the <a href="qt.html#TimeSpec-enum">Qt::UTC</a> definition.</p>
@@ -302,6 +301,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

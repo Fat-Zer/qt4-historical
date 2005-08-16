@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,12 +31,46 @@
 #include <resourceeditor/resourceeditor.h>
 #include <signalsloteditor/signalsloteditorwindow.h>
 
+#include <buddyeditor/buddyeditor_plugin.h>
+#include <signalsloteditor/signalsloteditor_plugin.h>
+#include <tabordereditor/tabordereditor_plugin.h>
+
+#include <QtCore/qplugin.h>
+
+// ### keep it in sync with Q_IMPORT_PLUGIN in qplugin.h
+#define DECLARE_PLUGIN_INSTANCE(PLUGIN) \
+        class Static##PLUGIN##PluginInstance{ \
+        public: \
+                Static##PLUGIN##PluginInstance() {                      \
+                extern void qRegisterStaticPluginInstanceFunction(QtPluginInstanceFunction); \
+                extern QObject *qt_plugin_instance_##PLUGIN(); \
+                qRegisterStaticPluginInstanceFunction(qt_plugin_instance_##PLUGIN); \
+                } \
+        };
+
+#define INIT_PLUGIN_INSTANCE(PLUGIN) \
+        do { \
+            Static##PLUGIN##PluginInstance instance; Q_UNUSED(instance); \
+        } while (0)
+
+DECLARE_PLUGIN_INSTANCE(SignalSlotEditorPlugin)
+DECLARE_PLUGIN_INSTANCE(BuddyEditorPlugin)
+DECLARE_PLUGIN_INSTANCE(TabOrderEditorPlugin)
+
 /*!
     \class QDesignerComponents
     \brief The QDesignerComponents class provides a central resource for the various components
     used in the \QD user interface.
     \inmodule QtDesigner
     \internal
+
+    The QDesignerComponents class is a factory for each of the standard components present
+    in the \QD user interface. It is mostly useful for developers who want to implement
+    a standalone form editing environment using \QD's components, or who need to integrate
+    \QD's components into an existing integrated development environment (IDE).
+
+    \sa QDesignerFormEditorInterface, QDesignerObjectInspectorInterface,
+        QDesignerPropertyEditorInterface, QDesignerWidgetBoxInterface
 */
 
 /*!
@@ -56,6 +85,16 @@ void QDesignerComponents::initializeResources()
     Constructs a form editor interface with the given \a parent.*/
 QDesignerFormEditorInterface *QDesignerComponents::createFormEditor(QObject *parent)
 {
+    static bool plugins_initialized = false;
+
+    if (!plugins_initialized) {
+        INIT_PLUGIN_INSTANCE(SignalSlotEditorPlugin);
+        INIT_PLUGIN_INSTANCE(BuddyEditorPlugin);
+        INIT_PLUGIN_INSTANCE(TabOrderEditorPlugin);
+
+        plugins_initialized = true;
+    }
+
     return new qdesigner_internal::FormEditor(parent);
 }
 

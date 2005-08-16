@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "qkeysequence.h"
+
+#ifndef QT_NO_SHORTCUT
 
 #include "qshortcut.h"
 #include "qdebug.h"
@@ -62,23 +59,18 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
     \mainclass
 
     A key sequence consists of up to four keyboard codes, each
-    optionally combined with modifiers, such as \c Qt::SHIFT, \c Qt::CTRL, \c
-    Qt::ALT or \c Qt::META. For example, \c{Qt::CTRL + Qt::Key_P}
-    might be a sequence used as a shortcut for printing a document.
-    Valid codes for keys and modifiers are listed in Qt::Key and
-    Qt::Modifier. As an alternative, use the unicode code point of the
-    character; for example, \c{'A'} gives the same key sequence
-    as \c Qt::Key_A.
+    optionally combined with modifiers, such as Qt::SHIFT, Qt::CTRL,
+    Qt::ALT or Qt::META. For example, Qt::CTRL + Qt::Key_P might be a
+    sequence used as a shortcut for printing a document. Valid codes
+    for keys and modifiers are listed in Qt::Key and Qt::Modifier. As
+    an alternative, use the unicode code point of the character; for
+    example, 'A' gives the same key sequence as Qt::Key_A.
 
     Key sequences can be constructed either from an integer key code,
     or from a human readable translatable string such as
     "Ctrl+X,Alt+Space". A key sequence can be cast to a QString to
     obtain a human readable translated version of the sequence.
     Translations are done in the "QShortcut" context.
-
-    In code that does not inherit the Qt namespace class, you must
-    include the namespace when writing keycodes; for example,
-    instead of Qt::ALT+Qt::Key_Q you would write Qt::ALT+Qt::Key_Q.
 
     \sa QShortcut
 */
@@ -233,7 +225,7 @@ QKeySequence::QKeySequence()
                           QKeySequence(tr("Ctrl+O", "File|Open")));
     \endcode
 
-    Note the \c "File|Open" translator comment. It is by no means
+    Note the "File|Open" translator comment. It is by no means
     necessary, but it provides some context for the human translator.
 */
 QKeySequence::QKeySequence(const QString &key)
@@ -247,8 +239,8 @@ QKeySequence::QKeySequence(const QString &key)
     \a k3 and \a k4.
 
     The key codes are listed in Qt::Key and can be combined with
-    modifiers (see Qt::Modifier) such as \c Qt::SHIFT, \c Qt::CTRL, \c Qt::ALT
-    or \c Qt::META.
+    modifiers (see Qt::Modifier) such as Qt::SHIFT, Qt::CTRL,
+    Qt::ALT, or Qt::META.
 */
 QKeySequence::QKeySequence(int k1, int k2, int k3, int k4)
 {
@@ -324,14 +316,14 @@ bool QKeySequence::isEmpty() const
     Returns the shortcut key sequence for the mnemonic in \a text,
     or an empty key sequence if no mnemonics are found.
 
-    For example, mnemonic("E&amp;xit") returns Qt::ALT+Qt::Key_X,
-    mnemonic("&amp;Quit") returns ALT+Key_Q, and mnemonic("Quit")
+    For example, mnemonic("E&xit") returns \c{Qt::ALT+Qt::Key_X},
+    mnemonic("&Quit") returns \c{ALT+Key_Q}, and mnemonic("Quit")
     returns an empty QKeySequence.
 
-    We provide a \link accelerators.html list of common mnemonics
-    \endlink in English. At the time of writing, Microsoft and Open
-    Group do not appear to have issued equivalent recommendations for
-    other languages.
+    We provide a \l{accelerators.html}{list of common mnemonics}
+    in English. At the time of writing, Microsoft and Open Group do
+    not appear to have issued equivalent recommendations for other
+    languages.
 */
 QKeySequence QKeySequence::mnemonic(const QString &text)
 {
@@ -572,10 +564,10 @@ QString QKeySequence::encodeString(int key)
 }
 
 /*!
-    Matches the sequence with \a seq. Returns \c ExactMatch if
-    successful, \c PartialMatch if \a seq matches incompletely,
-    and \c NoMatch if the sequences have nothing in common.
-    Returns \c NoMatch if \a seq is shorter.
+    Matches the sequence with \a seq. Returns ExactMatch if
+    successful, PartialMatch if \a seq matches incompletely,
+    and NoMatch if the sequences have nothing in common.
+    Returns NoMatch if \a seq is shorter.
 */
 QKeySequence::SequenceMatch QKeySequence::matches(const QKeySequence &seq) const
 {
@@ -748,7 +740,7 @@ bool QKeySequence::isDetached() const
 /*****************************************************************************
   QKeySequence stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM) && !defined(QT_NO_IMAGEIO)
+#if !defined(QT_NO_DATASTREAM)
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QKeySequence &sequence)
     \relates QKeySequence
@@ -804,3 +796,5 @@ QDebug operator<<(QDebug dbg, const QKeySequence &p)
 #endif
 }
 #endif
+
+#endif // QT_NO_SHORTCUT

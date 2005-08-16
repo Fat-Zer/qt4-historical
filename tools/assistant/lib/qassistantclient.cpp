@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the assistant application of the Qt Toolkit.
+** This file is part of the Qt Assistant of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -59,6 +54,7 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     \brief The QAssistantClient class provides a means of using Qt
     Assistant as an application's help tool.
 
+    \inmodule QtAssistant
     \ingroup helpsystem
 
     Using Qt Assistant is simple: create a QAssistantClient instance,
@@ -91,8 +87,10 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
         LIBS += -lqassistantclient
     \endcode
 
-    See also "Adding Documentation to Qt Assistant" in the \link
-    assistant.book Qt Assistant manual\endlink.
+    See also \l{Qt Assistant Manual#Modifying The Default Documentation Set}{Modifying The Default Documentation Set}.
+    \omit
+    \sa \link assistant-manual.html#modifying-the-default-documentation-set \endlink
+    \endomit
 */
 
 /*!
@@ -121,12 +119,10 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
 */
 
 /*!
-    Constructs an assistant client object. The \a path specifies the
-    path to the Qt Assistant executable. If \a path is an empty
-    string the system path (\c{%PATH%} or \c $PATH) is used.
-
-    The assistant client object is a child of \a parent and is called
-    \a name.
+    Constructs an assistant client with the given \a parent.
+    The \a path specifies the path to the Qt Assistant executable.
+    If \a path is an empty string the system path (\c{%PATH%} or \c $PATH)
+    is used.
 */
 QAssistantClient::QAssistantClient( const QString &path, QObject *parent )
     : QObject( parent ), host ( "localhost" )
@@ -150,14 +146,16 @@ QAssistantClient::QAssistantClient( const QString &path, QObject *parent )
             SLOT(socketConnected()) );
     connect( socket, SIGNAL(disconnected()),
             SLOT(socketConnectionClosed()) );
-    connect( socket, SIGNAL(error(SocketError)),
-             SLOT(socketError(SocketError)) );
+    connect( socket, SIGNAL(error(QAbstractSocket::SocketError)),
+             SLOT(socketError(QAbstractSocket::SocketError)) );
     opened = false;
     proc = new QProcess( this );
     port = 0;
     pageBuffer = "";
     connect( proc, SIGNAL(readyReadStandardError()),
              this, SLOT(readStdError()) );
+    connect( proc, SIGNAL(error(QProcess::ProcessError)),
+        this, SLOT(procError(QProcess::ProcessError)) );    
 }
 
 /*!
@@ -212,9 +210,7 @@ void QAssistantClient::openAssistant()
 
     connect( proc, SIGNAL(readyReadStandardOutput()),
         this, SLOT(readPort()) );
-    connect( proc, SIGNAL(error(ProcessError)),
-        this, SLOT(procError(ProcessError)) );
-
+    
     proc->start(assistantCommand, args);
 }
 
@@ -260,9 +256,9 @@ void QAssistantClient::closeAssistant()
 
 /*!
     Call this function to make Qt Assistant show a particular \a page.
-    The \a page is a filename (e.g. \c myhelpfile.html). See "Adding
-    Documentation to Qt Assistant" in the \link assistant.book Qt
-    Assistant manual\endlink for further information.
+    The \a page is a filename (e.g. \c myhelpfile.html).
+    See \l{Qt Assistant Manual#Modifying the Default Documentation Set}
+    for further information.
 
     If Qt Assistant hasn't been \link openAssistant() opened\endlink
     yet, this function will do nothing. You can use isOpen() to
@@ -307,13 +303,13 @@ void QAssistantClient::socketConnectionClosed()
     emit assistantClosed();
 }
 
-void QAssistantClient::socketError(QTcpSocket::SocketError err)
+void QAssistantClient::socketError(QAbstractSocket::SocketError err)
 {
     if (err == QTcpSocket::ConnectionRefusedError)
         emit error( tr( "Could not connect to Assistant: Connection refused" ) );
     else if (err == QTcpSocket::HostNotFoundError)
         emit error( tr( "Could not connect to Assistant: Host not found" ) );
-    else
+    else if (err != QTcpSocket::RemoteHostClosedError)
         emit error( tr( "Communication error" ) );
 }
 

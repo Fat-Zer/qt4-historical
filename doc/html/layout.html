@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/layout.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/layout.qdoc -->
 <head>
     <title>Qt 4.0: Layout Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Layout Classes</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Layout Classes<br /><small></small></h1>
 <p>The Qt layout system provides a simple and powerful way of specifying the layout of child widgets.</p>
 <p>By specifying the logical layout once, you get the following benefits:</p>
 <ul>
@@ -52,9 +52,9 @@ body { background: #ffffff; color: black; }</style>
 <h2>Horizontal, Vertical, and Grid Layouts</h2>
 <p>The easiest way to give you widgets a good layout is to use the built-in layout managers: <a href="qhboxlayout.html">QHBoxLayout</a>, <a href="qvboxlayout.html">QVBoxLayout</a>, and <a href="qgridlayout.html">QGridLayout</a>. These classes inherit from <a href="qlayout.html">QLayout</a>, which in turn derives from <a href="qobject.html">QObject</a> (not <a href="qwidget.html">QWidget</a>). They take care of geometry management for a set of widgets. To create more complex layouts, you can nest layout managers inside each other.</p>
 <ul>
-<li>A <a href="qhboxlayout.html">QHBoxLayout</a> lays out widgets in a horizontal row, from left to right (or right to left for right-to-left languages).<center><img src="images/qhboxlayout-with-5-children.png" alt="A QHBoxLayout with five child widgets" /></center></li>
-<li>A <a href="qvboxlayout.html">QVBoxLayout</a> lays out widgets in a vertical column, from top to bottom.<center><img src="images/qvboxlayout-with-5-children.png" alt="A QVBoxLayout with five child widgets" /></center></li>
-<li>A <a href="qgridlayout.html">QGridLayout</a> lays out widgets in a two-dimensional grid. Widgets can occupy multiple cells.<center><img src="images/qgridlayout-with-5-children.png" alt="A QGridLayout with five child widgets" /></center></li>
+<li>A <a href="qhboxlayout.html">QHBoxLayout</a> lays out widgets in a horizontal row, from left to right (or right to left for right-to-left languages).<p align="center"><img src="images/qhboxlayout-with-5-children.png" alt="A QHBoxLayout with five child widgets" /></p></li>
+<li>A <a href="qvboxlayout.html">QVBoxLayout</a> lays out widgets in a vertical column, from top to bottom.<p align="center"><img src="images/qvboxlayout-with-5-children.png" alt="A QVBoxLayout with five child widgets" /></p></li>
+<li>A <a href="qgridlayout.html">QGridLayout</a> lays out widgets in a two-dimensional grid. Widgets can occupy multiple cells.<p align="center"><img src="images/qgridlayout-with-5-children.png" alt="A QGridLayout with five child widgets" /></p></li>
 </ul>
 <p>The following code creates a <a href="qhboxlayout.html">QHBoxLayout</a> that manages the geometry of five <a href="qpushbutton.html">QPushButton</a>s, as shown on the first screenshot above:</p>
 <pre>&nbsp;       QWidget *window = new QWidget;
@@ -108,8 +108,8 @@ body { background: #ffffff; color: black; }</style>
 <h3>Stretch Factors</h3>
 <a name="stretch-factor"></a><p>Widgets are normally created without any stretch factor set. When they are laid out in a layout the widgets are given a share of space in accordance with their <a href="qwidget.html#sizePolicy-prop">QWidget::sizePolicy</a>() or their minimum size hint whichever is the greater. Stretch factors are used to change how much space widgets are given in proportion to one another.</p>
 <p>If we have three widgets laid out using a <a href="qhboxlayout.html">QHBoxLayout</a> with no stretch factors set we will get a layout like this:</p>
-<center><img src="images/layout1.png" alt="Three widgets in a row" /></center><p>If we apply stretch factors to each widget, they will be laid out in proportion (but never less than their minimum size hint), e.g.</p>
-<center><img src="images/layout2.png" alt="Three widgets with different stretch factors in a row" /></center><a name="custom-widgets-in-layouts"></a>
+<p align="center"><img src="images/layout1.png" alt="Three widgets in a row" /></p><p>If we apply stretch factors to each widget, they will be laid out in proportion (but never less than their minimum size hint), e.g.</p>
+<p align="center"><img src="images/layout2.png" alt="Three widgets with different stretch factors in a row" /></p><a name="custom-widgets-in-layouts"></a>
 <h2>Custom Widgets in Layouts</h2>
 <p>When you make your own widget class, you should also communicate its layout properties. If the widget has a <a href="qlayout.html">QLayout</a>, this is already taken care of. If the widget does not have any child widgets, or uses manual layout, you should reimplement the following <a href="qwidget.html">QWidget</a> member functions:</p>
 <ul>
@@ -120,7 +120,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Call <a href="qwidget.html#updateGeometry">QWidget::updateGeometry</a>() whenever the size hint, minimum size hint or size policy changes. This will cause a layout recalculation. Multiple consecutive calls to <a href="qwidget.html#updateGeometry">QWidget::updateGeometry</a>() will only cause one recalculation.</p>
 <p>If the preferred height of your widget depends on its actual width (e.g., a label with automatic word-breaking), set the <a href="qsizepolicy.html#hasHeightForWidth">height-for-width</a> flag in the widget's <a href="qwidget.html#sizePolicy-prop">size policy</a> and reimplement <a href="qwidget.html#heightForWidth">QWidget::heightForWidth</a>().</p>
 <p>Even if you implement <a href="qwidget.html#heightForWidth">QWidget::heightForWidth</a>(), it is still a good idea to provide a reasonable sizeHint().</p>
-<p>For further guidance when implementing these functions, see the <a href="http://doc.trolltech.com/qq/qq04-height-for-width.html">Traiding Height for Width</a> article in <i>Qt Quarterly</i>.</p>
+<p>For further guidance when implementing these functions, see the <a href="http://doc.trolltech.com/qq/qq04-height-for-width.html">Trading Height for Width</a> article in <i>Qt Quarterly</i>.</p>
 <a name="layout-issues"></a>
 <h2>Layout Issues</h2>
 <p>The use of rich text in a label widget can introduce some problems to the layout of its parent widget. Problems occur due to the way rich text is handled by Qt's layout managers when the label is word wrapped.</p>
@@ -137,7 +137,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li>A data structure to store the items handled by the layout. Each item is a <a href="qlayoutitem.html">QLayoutItem</a>. We will use a <a href="qlist.html">QList</a> in this example.</li>
 <li><a href="qlayout.html#addItem">addItem()</a>, how to add items to the layout.</li>
-<li><a href="qlayout.html#setGeometry">setGeometry()</a>, how to perform the layout.</li>
+<li><a href="qlayoutitem.html#setGeometry">setGeometry()</a>, how to perform the layout.</li>
 <li><a href="qlayoutitem.html#sizeHint">sizeHint()</a>, the preferred size of the layout.</li>
 <li><a href="qlayout.html#itemAt">itemAt()</a>, how to iterate over the layout.</li>
 <li><a href="qlayout.html#takeAt">takeAt()</a>, how to remove items from the layout.</li>
@@ -252,11 +252,11 @@ body { background: #ffffff; color: black; }</style>
 <p>We ignore <a href="qlayoutitem.html#isEmpty">QLayoutItem::isEmpty</a>(), this means that the layout will treat hidden widgets as visible.</p>
 <p>For complex layouts, speed can be greatly increased by caching calculated values. In that case, implement <a href="qlayoutitem.html#invalidate">QLayoutItem::invalidate</a>() to mark the cached data as dirty.</p>
 <p>Calling <a href="qlayoutitem.html#sizeHint">QLayoutItem::sizeHint</a>(), etc. may be expensive, so you should store the value in a local variable if you need it again later in the same function.</p>
-<p>You should not call <a href="qlayoutitem.html#setGeometry">QLayoutItem::setGeometry</a>() twice on the same item in the same function. That can be very expensive if the item has several child widgets, because it will have to do a complete layout every time. Instead, calculate the geometry and then set it. (This doesn't only apply to layouts, you should do the same if you implement your own resizeEvent().)</p>
+<p>You should not call <a href="qlayoutitem.html#setGeometry">QLayoutItem::setGeometry</a>() twice on the same item in the same function. That can be very expensive if the item has several child widgets, because it must do a complete layout every time. Instead, calculate the geometry and then set it. (This doesn't only apply to layouts, you should do the same if you implement your own resizeEvent().)</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

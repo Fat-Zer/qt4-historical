@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,9 @@
 ****************************************************************************/
 
 #include "qstandarditemmodel.h"
+
+#ifndef QT_NO_STANDARDITEMMODEL
+
 #include <qpair.h>
 #include <qvariant.h>
 #include <qvector.h>
@@ -48,8 +46,29 @@
     QDirModel provides a model interface to the underlying file system, and does
     not actually store file information internally.
 
-    \sa \link model-view-programming.html Model/View Programming\endlink QAbstractItemModel
+    An example usage of QStandardItemModel to create a table:
+    \quotefromfile itemviews/spinboxdelegate/main.cpp
+    \skipto  model = new QStandardItemModel
+    \printline model
+    \skipto for (int row
+    \printuntil }
+    \printline }
 
+    An example usage of QStandardItemModel to create a tree:
+    \code
+        QStandardItemModel *model = new QStandardItemModel();
+        QModelIndex parent;
+        for (int i = 0; i < 4; ++i) {
+            parent = model->index(0, 0, parent);
+            model->insertRows(0, 1, parent);
+            model->insertColumns(0, 1, parent);
+            QModelIndex index = model->index(0, 0, parent);
+            model->setData(index, i);
+        }
+    \endcode
+
+    \sa {Model/View Programming}, QAbstractItemModel,
+        {itemviews/simpletreemodel}{Simple Tree Model} example
 */
 
 /*!
@@ -81,6 +100,8 @@ QStandardItemModel::~QStandardItemModel()
 
 /*!
     Returns a model index for the given \a row, \a column, and \a parent.
+
+    \sa data()
 */
 QModelIndex QStandardItemModel::index(int row, int column, const QModelIndex &parent) const
 {
@@ -98,6 +119,8 @@ QModelIndex QStandardItemModel::index(int row, int column, const QModelIndex &pa
 
 /*!
     Returns a model index for the parent of the \a child item.
+
+    \sa hasChildren()
 */
 QModelIndex QStandardItemModel::parent(const QModelIndex &child) const
 {
@@ -119,6 +142,7 @@ QModelIndex QStandardItemModel::parent(const QModelIndex &child) const
     Returns the number of rows in the model that contain items with the given
     \a parent.
 
+    \sa columnCount() insertRows()
 */
 int QStandardItemModel::rowCount(const QModelIndex &parent) const
 {
@@ -133,6 +157,8 @@ int QStandardItemModel::rowCount(const QModelIndex &parent) const
 /*!
     Returns the number of columns in the model that contain items with the given
     \a parent.
+
+    \sa rowCount() insertColumns()
 */
 int QStandardItemModel::columnCount(const QModelIndex &parent) const
 {
@@ -147,6 +173,10 @@ int QStandardItemModel::columnCount(const QModelIndex &parent) const
 /*!
     Returns true if the \a parent model index has child items; otherwise returns
     false.
+
+    To add children use insertColumns() and insertRows().
+
+    \sa rowCount(), columnCount(), parent()
 */
 bool QStandardItemModel::hasChildren(const QModelIndex &parent) const
 {
@@ -163,6 +193,8 @@ bool QStandardItemModel::hasChildren(const QModelIndex &parent) const
 
 /*!
     Returns the data for the given \a index and \a role.
+
+    \sa setData(), setHeaderData(), index()
 */
 QVariant QStandardItemModel::data(const QModelIndex &index, int role) const
 {
@@ -181,6 +213,10 @@ QVariant QStandardItemModel::data(const QModelIndex &index, int role) const
 
 /*!
     Sets the data for the given \a index and \a role to the \a value specified.
+
+    Returns false if index isn't valid.
+
+    \sa Qt::ItemDataRole, data(), itemData(), setHeaderData()
 */
 bool QStandardItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -258,15 +294,19 @@ bool QStandardItemModel::setHeaderData(int section, Qt::Orientation orientation,
 
 
 /*!
-Inserts \a count rows into the model, creating new items as children of
-the given \a parent. The new rows are inserted before the \a row specified.
+    Inserts \a count rows into the model, creating new items as children of
+    the given \a parent. The new rows are inserted before the \a row specified.
 
-If \a row is 0, the rows are prepended to any existing rows in the parent.
-If \a row is rowCount(), the rows are appended to any existing rows in
-the parent.
-If \a parent has no children, a single column with \a count rows is inserted.
+    If \a row is 0, the rows are prepended to any existing rows in the parent.
+    If \a row is rowCount(), the rows are appended to any existing rows in
+    the parent.
+    If \a parent has no children, a single column with \a count rows is inserted.
 
-Returns true if the rows were successfully inserted; otherwise returns false.
+    Note that a row with no columns will not show up in the treeview.
+
+    Returns true if the rows were successfully inserted; otherwise returns false.
+
+    \sa insertRow() insertColumns() removeRows() rowCount()
 */
 bool QStandardItemModel::insertRows(int row, int count, const QModelIndex &parent)
 {
@@ -307,6 +347,8 @@ bool QStandardItemModel::insertRows(int row, int count, const QModelIndex &paren
 
     Returns true if the columns were successfully inserted; otherwise returns
     false.
+
+    \sa insertColumn(), insertRows(), removeColumns(), columnCount()
 */
 bool QStandardItemModel::insertColumns(int column, int count, const QModelIndex &parent)
 {
@@ -355,6 +397,8 @@ bool QStandardItemModel::insertColumns(int column, int count, const QModelIndex 
 
     Returns true if the rows were successfully removed; otherwise returns
     false.
+
+    \sa insertRows(), removeColumns(), rowCount()
 */
 bool QStandardItemModel::removeRows(int row, int count, const QModelIndex &parent)
 {
@@ -393,6 +437,8 @@ bool QStandardItemModel::removeRows(int row, int count, const QModelIndex &paren
 
     Returns true if the columns were successfully removed; otherwise returns
     false.
+
+    \sa insertColumns(), columnCount()
 */
 bool QStandardItemModel::removeColumns(int column, int count, const QModelIndex &parent)
 {
@@ -441,6 +487,8 @@ bool QStandardItemModel::removeColumns(int column, int count, const QModelIndex 
     This model returns returns a combination of flags that
     enables the item (Qt::ItemIsEnabled), allows it to be
     selected (Qt::ItemIsSelectable) and edited (Qt::ItemIsEditable).
+
+    \sa Qt::ItemFlags
 */
 Qt::ItemFlags QStandardItemModel::flags(const QModelIndex &index) const
 {
@@ -499,3 +547,4 @@ void QStandardItemModelPrivate::clear()
     verticalHeader.clear();
 }
 
+#endif // QT_NO_STANDARDITEMMODEL

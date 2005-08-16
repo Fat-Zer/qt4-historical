@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/text/qtextcursor.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/text/qtextcursor.cpp -->
 <head>
     <title>Qt 4.0: QTextCursor Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextCursor Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextCursor Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTextCursor class offers an API to access and modify QTextDocuments. <a href="#details">More...</a></p>
-<pre>#include &lt;QTextCursor&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QTextCursor&gt;</pre><ul>
 <li><a href="qtextcursor-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-types"></a>
@@ -216,7 +215,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextcursor.html#setBlockFormat">setBlockFormat</a>() and <a href="qtextcursor.html#charFormat">charFormat</a>().</p>
 <h3 class="fn"><a name="charFormat"></a><a href="qtextcharformat.html">QTextCharFormat</a> QTextCursor::charFormat () const</h3>
 <p>Returns the format of the character immediately before the cursor <a href="qtextcursor.html#position">position</a>().</p>
-<p>See also <a href="qtextcursor.html#insertText">insertText</a>() and <a href="qtextcursor.html#blockFormat">blockFormat</a>().</p>
+<p>See also <a href="qtextcursor.html#setCharFormat">setCharFormat</a>(), <a href="qtextcursor.html#insertText">insertText</a>(), and <a href="qtextcursor.html#blockFormat">blockFormat</a>().</p>
 <h3 class="fn"><a name="clearSelection"></a>void QTextCursor::clearSelection ()</h3>
 <p>Clears the current selection.</p>
 <p>Note that it does <b>not</b> delete the text of the selection.</p>
@@ -227,7 +226,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="createList-2"></a><a href="qtextlist.html">QTextList</a> * QTextCursor::createList ( <a href="qtextlistformat.html#Style-enum">QTextListFormat::Style</a> <i>style</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Creates and returns a new list with the given <i>style</i>, making the cursor's current paragraph the first list item.</p>
-<p>The style to be used is defined by the <tt>QTextListFormat::Style</tt> enum.</p>
+<p>The style to be used is defined by the <a href="qtextlistformat.html#Style-enum">QTextListFormat::Style</a> enum.</p>
 <p>See also <a href="qtextcursor.html#insertList">insertList</a>() and <a href="qtextcursor.html#currentList">currentList</a>().</p>
 <h3 class="fn"><a name="currentFrame"></a><a href="qtextframe.html">QTextFrame</a> * QTextCursor::currentFrame () const</h3>
 <p>Returns a pointer to the current frame. Returns 0 if the cursor is invalid.</p>
@@ -297,6 +296,7 @@ body { background: #ffffff; color: black; }</style>
     cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
     cursor.insertText(&quot;Hello World&quot;);</pre>
 <p>This clears any existing selection, selects the word at the cursor (i.e. from <a href="qtextcursor.html#position">position</a>() forward), and replaces the selection with the phrase &quot;Hello World&quot;.</p>
+<p>Any ASCII linefeed characters (\n) in the inserted text are transformed into unicode block separators, corresponding to <a href="qtextcursor.html#insertBlock">insertBlock</a>() calls.</p>
 <p>See also <a href="qtextcursor.html#charFormat">charFormat</a>() and <a href="qtextcursor.html#hasSelection">hasSelection</a>().</p>
 <h3 class="fn"><a name="insertText-2"></a>void QTextCursor::insertText ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>format</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -364,7 +364,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextcursor.html#blockFormat">blockFormat</a>().</p>
 <h3 class="fn"><a name="setCharFormat"></a>void QTextCursor::setCharFormat ( const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>format</i> )</h3>
 <p>Set the character format to the given <i>format</i> for the current selection. Does nothing if the cursor does not have a selection.</p>
-<p>See also <a href="qtextcursor.html#hasSelection">hasSelection</a>().</p>
+<p>See also <a href="qtextcursor.html#charFormat">charFormat</a>() and <a href="qtextcursor.html#hasSelection">hasSelection</a>().</p>
 <h3 class="fn"><a name="setPosition"></a>void QTextCursor::setPosition ( int <i>pos</i>, <a href="qtextcursor.html#MoveMode-enum">MoveMode</a> <i>m</i> = MoveAnchor )</h3>
 <p>Moves the cursor to the absolute position in the document specified by <i>pos</i> using a <tt>MoveMode</tt> specified by <i>m</i>. The cursor is positioned between characters.</p>
 <p>See also <a href="qtextcursor.html#position">position</a>(), <a href="qtextcursor.html#movePosition">movePosition</a>(), and <a href="qtextcursor.html#anchor">anchor</a>().</p>
@@ -386,6 +386,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -25,16 +25,17 @@
 
 #include <qglobal.h>
 
-typedef long QT_FT_F26Dot6;
 typedef int QT_FT_Error;
 typedef int QT_FT_Int;
 typedef unsigned int QT_FT_UInt;
 
 #if defined(Q_WS_WIN64)
-typedef __int64          QT_FT_Long;
+typedef signed __int64	 QT_FT_F26Dot6;
+typedef signed __int64   QT_FT_Long;
 typedef unsigned __int64 QT_FT_ULong;
 #else
-typedef long             QT_FT_Long;
+typedef signed long		 QT_FT_F26Dot6;
+typedef signed long      QT_FT_Long;
 typedef unsigned long    QT_FT_ULong;
 #endif
 
@@ -633,7 +634,7 @@ End_Profile( RAS_ARG )
 {
     Long      h;
     PProfile  oldProfile;
-    
+
     h = (Long)( ras.top - ras.cProfile->offset );
 
     if ( h < 0 )
@@ -649,7 +650,7 @@ End_Profile( RAS_ARG )
                    (long)ras.cProfile, ras.cProfile->start, h,ras.top );
 
         oldProfile           = ras.cProfile;
-        ras.cProfile->height = h;
+        ras.cProfile->height = (long)h;
         ras.cProfile         = (PProfile)ras.top;
 
         ras.top             += AlignProfileSize;
@@ -800,7 +801,7 @@ Finalize_Profile_Table( RAS_ARG )
 /*                                                                       */
 /* <Note>                                                                */
 /*    This routine is the `beef' of this component.  It is  _the_ inner  */
-/*    loop that should be optimized to hell to get the best performance. */
+/*    loop that should be optimized to get the best performance.         */
 /*                                                                       */
 static void
 Split_Conic( TPoint*  base )
@@ -836,8 +837,7 @@ Split_Conic( TPoint*  base )
 /*                                                                       */
 /* <Note>                                                                */
 /*    This routine is the `beef' of the component.  It is one of _the_   */
-/*    inner loops that should be optimized like hell to get the best     */
-/*    performance.                                                       */
+/*    inner loops that should be optimized to get the best performance.  */
 /*                                                                       */
 static void
 Split_Cubic( TPoint*  base )
@@ -1099,17 +1099,18 @@ Bezier_Up( RAS_ARGS Int        degree,
     if ( y2 < miny || y1 > maxy )
         goto Fin;
 
-    e2 = FLOOR( y2 );
-    if ( e2 > maxy )
+    if ( y2 > maxy ) {
         e2 = FLOOR(maxy);
-    if (FRAC(y2) == 0 && ras.cProfile->flow == Flow_Up)
-        e2 -= ras.precision;
+    } else {
+        e2 = FLOOR( y2 );
+        if (FRAC(y2) == 0  && ras.cProfile->flow == Flow_Up)
+            e2 -= ras.precision;
+    }
 
-    if ( y1 < miny )
+    if ( y1 < miny ) {
         e = CEILING(miny);
-    else
-    {
-        e  = CEILING( y1 );
+    } else {
+        e  = CEILING(y1);
         if (FRAC(y1) == 0 && ras.cProfile->flow == Flow_Down)
             e += ras.precision;
     }

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the linguist application of the Qt Toolkit.
+** This file is part of the Qt Linguist of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -41,7 +36,7 @@
 
 // defined in fetchtr.cpp
 extern void fetchtr_cpp( const char *fileName, MetaTranslator *tor,
-                         const char *defaultContext, bool mustExist );
+                         const char *defaultContext, bool mustExist, const QByteArray &codecForSource );
 extern void fetchtr_ui( const char *fileName, MetaTranslator *tor,
                         const char *defaultContext, bool mustExist );
 
@@ -67,24 +62,32 @@ static void printUsage()
 }
 
 static void updateTsFiles( const MetaTranslator& fetchedTor,
-                           const QStringList& tsFileNames, const QString& codec,
-                           bool noObsolete, bool verbose )
+                           const QStringList& tsFileNames, const QString& codecForTr,
+						   bool noObsolete, bool verbose )
 {
     QStringList::ConstIterator t = tsFileNames.begin();
     while ( t != tsFileNames.end() ) {
         MetaTranslator tor;
         tor.load( *t );
-        if ( !codec.isEmpty() )
-            tor.setCodec( codec.toLatin1() );
+        if ( !codecForTr.isEmpty() )
+            tor.setCodec( codecForTr.toLatin1() );
         if ( verbose )
             fprintf( stderr, "Updating '%s'...\n", (*t).toLatin1().data() );
         merge( &tor, &fetchedTor, verbose );
         if ( noObsolete )
             tor.stripObsoleteMessages();
         tor.stripEmptyContexts();
-        if ( !tor.save(*t) )
+		if ( !tor.save(*t) ) {
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+			char buf[100];
+			strerror_s(buf, sizeof(buf), errno);
+			fprintf( stderr, "lupdate error: Cannot save '%s': %s\n",
+                     (*t).toLatin1().constData(), buf );
+#else
             fprintf( stderr, "lupdate error: Cannot save '%s': %s\n",
                      (*t).toLatin1().constData(), strerror(errno) );
+#endif
+		}
         ++t;
     }
 }
@@ -93,7 +96,8 @@ int main( int argc, char **argv )
 {
     QString defaultContext = "@default";
     MetaTranslator fetchedTor;
-    QByteArray codec;
+    QByteArray codecForTr;
+	QByteArray codecForSource;
     QStringList tsFileNames;
 
     bool verbose = false;
@@ -135,8 +139,15 @@ int main( int argc, char **argv )
         if ( !metTsFlag ) {
             QFile f( argv[i] );
             if ( !f.open(QIODevice::ReadOnly) ) {
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+				char buf[100];
+				strerror_s(buf, sizeof(buf), errno);
+				fprintf( stderr, "lupdate error: Cannot open file '%s': %s\n",
+                         argv[i], buf );
+#else
                 fprintf( stderr, "lupdate error: Cannot open file '%s': %s\n",
                          argv[i], strerror(errno) );
+#endif
                 return 1;
             }
 
@@ -150,7 +161,8 @@ int main( int argc, char **argv )
 
         if ( standardSyntax ) {
             fetchedTor = MetaTranslator();
-            codec.truncate( 0 );
+            codecForTr.clear();
+			codecForSource.clear();
             tsFileNames.clear();
 
             QMap<QString, QString> tagMap = proFileTagMap( fullText );
@@ -162,25 +174,27 @@ int main( int argc, char **argv )
 
                 for ( t = toks.begin(); t != toks.end(); ++t ) {
                     if ( it.key() == "HEADERS" || it.key() == "SOURCES" ) {
-                        fetchtr_cpp( (*t).toAscii(), &fetchedTor, defaultContext.toAscii(), true );
+                        fetchtr_cpp( (*t).toAscii(), &fetchedTor, defaultContext.toAscii(), true, codecForSource );
                         metSomething = true;
                     } else if ( it.key() == "INTERFACES" ||
                                 it.key() == "FORMS" ) {
                         fetchtr_ui( (*t).toAscii(), &fetchedTor, defaultContext.toAscii(), true );
-                        fetchtr_cpp( (*t).toAscii() + ".h", &fetchedTor, defaultContext.toAscii(), false );
+                        fetchtr_cpp( (*t).toAscii() + ".h", &fetchedTor, defaultContext.toAscii(), false, codecForSource );
                         metSomething = true;
                     } else if ( it.key() == "TRANSLATIONS" ) {
                         tsFileNames.append( *t );
                         metSomething = true;
                     } else if ( it.key() == "CODEC" ||
-                                it.key() == "DEFAULTCODEC" ) {
-                        codec = (*t).toLatin1();
+                                it.key() == "DEFAULTCODEC" ||
+                                it.key() == "CODECFORTR" ) {
+                        codecForTr = (*t).toLatin1();
+                    } else if ( it.key() == "CODECFORSRC" ) {
+                        codecForSource = (*t).toLatin1();
                     }
                 }
             }
 
-            updateTsFiles( fetchedTor, tsFileNames, codec, noObsolete,
-                           verbose );
+            updateTsFiles( fetchedTor, tsFileNames, codecForTr, noObsolete, verbose );
 
             if ( !metSomething ) {
                 fprintf( stderr,
@@ -215,9 +229,9 @@ int main( int argc, char **argv )
                 if ( QString(argv[i]).toLower().endsWith(".ui") ) {
                     fetchtr_ui( fi.fileName().toAscii(), &fetchedTor, defaultContext.toAscii(), true );
                     fetchtr_cpp( fi.fileName().toAscii() + ".h", &fetchedTor,
-                                 defaultContext.toAscii(), false );
+                                 defaultContext.toAscii(), false, codecForSource );
                 } else {
-                    fetchtr_cpp( fi.fileName().toAscii(), &fetchedTor, defaultContext.toAscii(), true );
+                    fetchtr_cpp( fi.fileName().toAscii(), &fetchedTor, defaultContext.toAscii(), true, codecForSource );
                 }
             }
         }
@@ -225,7 +239,7 @@ int main( int argc, char **argv )
     }
 
     if ( !standardSyntax )
-        updateTsFiles( fetchedTor, tsFileNames, codec, noObsolete, verbose );
+        updateTsFiles( fetchedTor, tsFileNames, codecForTr, noObsolete, verbose );
 
     if ( numFiles == 0 ) {
         printUsage();

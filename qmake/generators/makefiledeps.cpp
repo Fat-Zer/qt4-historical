@@ -4,22 +4,17 @@
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -46,6 +41,7 @@
 #if defined(_MSC_VER) && _MSC_VER >= 1400
 #include <share.h>
 #endif
+#include <qplatformdefs.h>
 
 #if 1
 #define qmake_endOfLine(c) (c == '\r' || c == '\n')
@@ -168,8 +164,8 @@ void SourceFiles::addFile(SourceFile *p, const char *k)
         k = ba;
     int h = hash(k) % num_nodes;
     SourceFileNode *pn = new SourceFileNode;
-    pn->key = strdup(k);
-    pn->file = p;
+    pn->key = qstrdup(k);
+	pn->file = p;
     pn->next = nodes[h];
     nodes[h] = pn;
 }
@@ -356,7 +352,7 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
         int fd;
 #if defined(_MSC_VER) && _MSC_VER >= 1400
         if (_sopen_s(&fd, fixPathForFile(file->file, true).local().toLatin1().constData(),
-            _O_RDONLY, _SH_DENYRW, _S_IREAD) != 0)
+            _O_RDONLY, _SH_DENYNO, _S_IREAD) != 0)
             fd = -1;
 #else
         fd = open(fixPathForFile(file->file, true).local().toLatin1().constData(), O_RDONLY);
@@ -365,9 +361,9 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
             return false;
         buffer = getBuffer(fst.st_size);
         for(int have_read = 0;
-            (have_read = read(fd, buffer + buffer_len, fst.st_size - buffer_len));
+            (have_read = QT_READ(fd, buffer + buffer_len, fst.st_size - buffer_len));
             buffer_len += have_read);
-        close(fd);
+        QT_CLOSE(fd);
     }
     if(!buffer)
         return false;
@@ -619,9 +615,8 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
                         dep->type = QMakeSourceFileInfo::TYPE_C;
                         files->addFile(dep);
                         includes->addFile(dep, inc);
-                    } else {
-                        dep->exists = exists;
                     }
+                    dep->exists = exists;
                 }
             }
             if(dep) {
@@ -666,9 +661,9 @@ bool QMakeSourceFileInfo::findMocs(SourceFile *file)
             return false; //shouldn't happen
         buffer = getBuffer(fst.st_size);
         for(int have_read = buffer_len = 0;
-            (have_read = read(fd, buffer + buffer_len, fst.st_size - buffer_len));
+            (have_read = QT_READ(fd, buffer + buffer_len, fst.st_size - buffer_len));
             buffer_len += have_read);
-        close(fd);
+        QT_CLOSE(fd);
     }
 
     debug_msg(2, "findMocs: %s", file->file.local().toLatin1().constData());

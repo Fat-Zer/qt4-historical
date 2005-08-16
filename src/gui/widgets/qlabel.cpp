@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,7 +22,6 @@
 ****************************************************************************/
 
 #include "qlabel.h"
-#ifndef QT_NO_LABEL
 #include "qpainter.h"
 #include "qevent.h"
 #include "qdrawutil.h"
@@ -79,9 +73,7 @@ public:
     short extraMargin;
     uint scaledcontents :1;
     Qt::TextFormat textformat;
-#ifndef QT_NO_RICHTEXT
     QTextDocument* doc;
-#endif
 };
 
 /*!
@@ -300,9 +292,7 @@ void QLabelPrivate::init()
     extraMargin = -1;
     scaledcontents = false;
     textformat = Qt::AutoText;
-#ifndef QT_NO_RICHTEXT
     doc = 0;
-#endif
 
     q->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
 }
@@ -317,7 +307,7 @@ void QLabelPrivate::init()
 
     The text will be interpreted either as a plain text or as a rich
     text, depending on the text format setting; see setTextFormat().
-    The default setting is \c Qt::AutoText, i.e. QLabel will try to
+    The default setting is Qt::AutoText, i.e. QLabel will try to
     auto-detect the format of the text set.
 
     If the text is interpreted as a plain text and a buddy has been
@@ -342,7 +332,6 @@ void QLabel::setText(const QString &text)
         return;
     d->clearContents();
     d->ltext = text;
-#ifndef QT_NO_RICHTEXT
     if (d->textformat == Qt::RichText
         || ((d->textformat == Qt::AutoText) && Qt::mightBeRichText(d->ltext))) {
         if (!d->doc)
@@ -351,7 +340,6 @@ void QLabel::setText(const QString &text)
         d->doc->setDefaultFont(font());
         d->doc->setHtml(d->ltext);
     }
-#endif
 
     d->updateLabel();
 }
@@ -493,7 +481,7 @@ void QLabel::setAlignment(int alignment)
 {
     Q_D(QLabel);
     d->align = alignment & ~(Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask|Qt::TextWordWrap);
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     if (d->lbuddy)
         d->align |= Qt::TextShowMnemonic;
 #endif
@@ -537,9 +525,9 @@ bool QLabel::wordWrap() const
     \brief the label's text indent in pixels
 
     If a label displays text, the indent applies to the left edge if
-    alignment() is \c Qt::AlignLeft, to the right edge if alignment() is
-    \c Qt::AlignRight, to the top edge if alignment() is \c Qt::AlignTop, and
-    to to the bottom edge if alignment() is \c Qt::AlignBottom.
+    alignment() is Qt::AlignLeft, to the right edge if alignment() is
+    Qt::AlignRight, to the top edge if alignment() is Qt::AlignTop, and
+    to to the bottom edge if alignment() is Qt::AlignBottom.
 
     If indent is negative, or if no indent has been set, the label
     computes the effective indent as follows: If frameWidth() is 0,
@@ -638,7 +626,6 @@ QSize QLabelPrivate::sizeForWidth(int w) const
     else if (mov)
         br = mov->currentPixmap().rect();
 #endif
-#ifndef QT_NO_RICHTEXT
     else if (doc) {
         QTextDocumentLayout *layout = qobject_cast<QTextDocumentLayout *>(doc->documentLayout());
         Q_ASSERT(layout);
@@ -652,7 +639,6 @@ QSize QLabelPrivate::sizeForWidth(int w) const
         }
         br = QRect(QPoint(0, 0), layout->documentSize().toSize());
     }
-#endif
     else {
         bool tryWidth = (w < 0) && (align & Qt::TextWordWrap);
         if (tryWidth)
@@ -682,9 +668,7 @@ int QLabel::heightForWidth(int w) const
 {
     Q_D(const QLabel);
     if (
-#ifndef QT_NO_RICHTEXT
         d->doc ||
-#endif
         (d->align & Qt::TextWordWrap))
         return d->sizeForWidth(w).height();
     return QWidget::heightForWidth(w);
@@ -718,9 +702,7 @@ QSize QLabel::minimumSizeHint() const
     QSize sz(-1, -1);
 
     if (
-#ifndef QT_NO_RICHTEXT
          !d->doc &&
-#endif
          (d->align & Qt::TextWordWrap) == 0) {
         sz = d->sh;
     } else {
@@ -811,7 +793,6 @@ void QLabel::paintEvent(QPaintEvent *)
     }
     else
 #endif
-#ifndef QT_NO_RICHTEXT
     if (d->doc) {
         QTextDocumentLayout *layout = qobject_cast<QTextDocumentLayout *>(d->doc->documentLayout());
         Q_ASSERT(layout);
@@ -852,7 +833,6 @@ void QLabel::paintEvent(QPaintEvent *)
         layout->draw(&paint, context);
         paint.restore();
     } else
-#endif
 #ifndef QT_NO_PICTURE
     if (pic) {
         QRect br = pic->boundingRect();
@@ -861,9 +841,7 @@ void QLabel::paintEvent(QPaintEvent *)
         if (d->scaledcontents) {
             paint.save();
             paint.translate(cr.x(), cr.y());
-#ifndef QT_NO_TRANSFORMATIONS
             paint.scale((double)cr.width()/rw, (double)cr.height()/rh);
-#endif
             paint.drawPicture(-br.x(), -br.y(), *pic);
             paint.restore();
         } else {
@@ -882,7 +860,6 @@ void QLabel::paintEvent(QPaintEvent *)
     } else
 #endif
     {
-#ifndef QT_NO_IMAGE_SMOOTHSCALE
         if (d->scaledcontents && !pix.isNull()) {
             if (!d->img)
                 d->img = new QImage(d->lpixmap->toImage());
@@ -893,7 +870,6 @@ void QLabel::paintEvent(QPaintEvent *)
                 *d->pix = QPixmap::fromImage(d->img->scaled(cr.width(), cr.height()));
             pix = *d->pix;
         }
-#endif
         QStyleOption opt(0);
         opt.init(this);
         if ((align & Qt::TextShowMnemonic) && !style->styleHint(QStyle::SH_UnderlineShortcut, &opt, this))
@@ -924,13 +900,11 @@ void QLabelPrivate::updateLabel()
     policy.setHeightForWidth(wordWrap);
     if (policy != q->sizePolicy())
         q->setSizePolicy(policy);
+#ifndef QT_NO_SHORTCUT
     q->releaseShortcut(shortcutId);
-    if (lbuddy
-#ifndef QT_NO_RICHTEXT
-        && !doc
-#endif
-        )
+    if (lbuddy && !doc)
         shortcutId = q->grabShortcut(QKeySequence::mnemonic(ltext));
+#endif
 
     if (doc) {
         int align = QStyle::visualAlignment(q->layoutDirection(), QFlag(this->align));
@@ -943,6 +917,7 @@ void QLabelPrivate::updateLabel()
     q->update(q->contentsRect());
 }
 
+#ifndef QT_NO_SHORTCUT
 /*!
     Sets this label's buddy to \a buddy.
 
@@ -952,7 +927,7 @@ void QLabelPrivate::updateLabel()
     The buddy mechanism is only available for QLabels that contain
     plain text in which one letter is prefixed with an ampersand, \&.
     This letter is set as the shortcut key. The letter is displayed
-    underlined, and the '\&' is not displayed (i.e. the \c Qt::TextShowMnemonic
+    underlined, and the '\&' is not displayed (i.e. the Qt::TextShowMnemonic
     alignment flag is turned on; see setAlignment()).
 
     In a dialog, you might create two data entry widgets and a label
@@ -1003,6 +978,7 @@ QWidget * QLabel::buddy() const
     Q_D(const QLabel);
     return d->lbuddy;
 }
+#endif // QT_NO_SHORTCUT
 
 
 #ifndef QT_NO_MOVIE
@@ -1064,10 +1040,8 @@ void QLabel::setMovie(QMovie *movie)
 void QLabelPrivate::clearContents()
 {
     Q_Q(QLabel);
-#ifndef QT_NO_RICHTEXT
     delete doc;
     doc = 0;
-#endif
 
     delete lpixmap;
     lpixmap = 0;
@@ -1081,8 +1055,10 @@ void QLabelPrivate::clearContents()
     pix = 0;
 
     ltext.clear();
+#ifndef QT_NO_SHORTCUT
     q->releaseShortcut(shortcutId);
     shortcutId = 0;
+#endif
 #ifndef QT_NO_MOVIE
     lmovie = 0;
 #endif
@@ -1145,17 +1121,14 @@ void QLabel::changeEvent(QEvent *ev)
     Q_D(QLabel);
     if(ev->type() == QEvent::FontChange) {
         if (!d->ltext.isEmpty()) {
-#ifndef QT_NO_RICHTEXT
             if (d->doc)
                 d->doc->setDefaultFont(font());
-#endif
             d->updateLabel();
         }
     }
     QFrame::changeEvent(ev);
 }
 
-#ifndef QT_NO_IMAGE_SMOOTHSCALE
 /*!
     \property QLabel::scaledContents
     \brief whether the label will scale its contents to fill all
@@ -1187,7 +1160,6 @@ void QLabel::setScaledContents(bool enable)
     update(contentsRect());
 }
 
-#endif // QT_NO_IMAGE_SMOOTHSCALE
 
 /*!
     \fn void QLabel::setAlignment(Qt::AlignmentFlag flag)
@@ -1201,4 +1173,3 @@ void QLabel::setScaledContents(bool enable)
 
 #include "moc_qlabel.cpp"
 
-#endif // QT_NO_LABEL

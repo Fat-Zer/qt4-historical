@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -30,6 +25,8 @@
 
 /*!
     \class QDesignerWidgetBoxInterface
+    \brief The QDesignerWidgetBoxInterface class provides an interface that is used to
+    control Qt Designer's widget box component.
     \inmodule QtDesigner
 */
 
@@ -47,6 +44,7 @@ QDesignerWidgetBoxInterface::~QDesignerWidgetBoxInterface()
 }
 
 /*!
+    \internal
 */
 int QDesignerWidgetBoxInterface::findOrInsertCategory(const QString &categoryName)
 {
@@ -62,72 +60,71 @@ int QDesignerWidgetBoxInterface::findOrInsertCategory(const QString &categoryNam
 }
 
 /*!
-    \fn QDesignerWidgetBoxInterface::QDesignerWidgetBoxInterface(QWidget *parent, Qt::WindowFlags flags)
+    \fn int QDesignerWidgetBoxInterface::categoryCount() const
+    \internal
 */
 
 /*!
-    \fn virtual QDesignerWidgetBoxInterface::~QDesignerWidgetBoxInterface()
+    \fn Category QDesignerWidgetBoxInterface::category(int cat_idx) const
+    \internal
 */
 
 /*!
-    \fn virtual int QDesignerWidgetBoxInterface::categoryCount() const = 0
+    \fn void QDesignerWidgetBoxInterface::addCategory(const Category &cat)
+    \internal
 */
 
 /*!
-    \fn virtual Category QDesignerWidgetBoxInterface::category(int cat_idx) const = 0
+    \fn void QDesignerWidgetBoxInterface::removeCategory(int cat_idx)
+    \internal
 */
 
 /*!
-    \fn virtual void QDesignerWidgetBoxInterface::addCategory(const Category &cat) = 0
+    \fn int QDesignerWidgetBoxInterface::widgetCount(int cat_idx) const
+    \internal
 */
 
 /*!
-    \fn virtual void QDesignerWidgetBoxInterface::removeCategory(int cat_idx) = 0
+    \fn Widget QDesignerWidgetBoxInterface::widget(int cat_idx, int wgt_idx) const
+    \internal
 */
 
 /*!
-    \fn virtual int QDesignerWidgetBoxInterface::widgetCount(int cat_idx) const = 0
+    \fn void QDesignerWidgetBoxInterface::addWidget(int cat_idx, const Widget &wgt)
+    \internal
 */
 
 /*!
-    \fn virtual Widget QDesignerWidgetBoxInterface::widget(int cat_idx, int wgt_idx) const = 0
+    \fn void QDesignerWidgetBoxInterface::removeWidget(int cat_idx, int wgt_idx)
+    \internal
 */
 
 /*!
-    \fn virtual void QDesignerWidgetBoxInterface::addWidget(int cat_idx, const Widget &wgt) = 0
+    \fn void QDesignerWidgetBoxInterface::dropWidgets(const QList<QDesignerDnDItemInterface*> &item_list, const QPoint &global_mouse_pos)
+    \internal
 */
 
 /*!
-    \fn virtual void QDesignerWidgetBoxInterface::removeWidget(int cat_idx, int wgt_idx) = 0
+    \fn void QDesignerWidgetBoxInterface::setFileName(const QString &file_name)
 */
 
 /*!
-    \fn int QDesignerWidgetBoxInterface::findOrInsertCategory(const QString &categoryName)
+    \fn QString QDesignerWidgetBoxInterface::fileName() const
 */
 
 /*!
-    \fn virtual void QDesignerWidgetBoxInterface::dropWidgets(const QList<QDesignerDnDItemInterface*> &item_list, const QPoint &global_mouse_pos) = 0
+    \fn bool QDesignerWidgetBoxInterface::load()
 */
 
 /*!
-    \fn virtual void QDesignerWidgetBoxInterface::setFileName(const QString &file_name) = 0
-*/
-
-/*!
-    \fn virtual QString QDesignerWidgetBoxInterface::fileName() const = 0
-*/
-
-/*!
-    \fn virtual bool QDesignerWidgetBoxInterface::load() = 0
-*/
-
-/*!
-    \fn virtual bool QDesignerWidgetBoxInterface::save() = 0
+    \fn bool QDesignerWidgetBoxInterface::save()
 */
 
 
 /*!
     \class QDesignerWidgetBoxInterface::Widget
+    \brief The Widget class specified a widget in Qt Designer's widget box component.
+    \internal
 */
 
 /*!
@@ -180,6 +177,8 @@ int QDesignerWidgetBoxInterface::findOrInsertCategory(const QString &categoryNam
 
 /*!
     \class QDesignerWidgetBoxInterface::Category
+    \brief The Category class specifies a category in Qt Designer's widget box component.
+    \internal
 */
 
 /*!
@@ -227,4 +226,14 @@ int QDesignerWidgetBoxInterface::findOrInsertCategory(const QString &categoryNam
 
 /*!
     \fn bool QDesignerWidgetBoxInterface::Category::isNull() const
+*/
+
+/*!
+    \typedef QDesignerWidgetBoxInterface::CategoryList
+    \internal
+*/
+
+/*!
+    \typedef QDesignerWidgetBoxInterface::WidgetList
+    \internal
 */

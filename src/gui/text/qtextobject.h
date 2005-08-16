@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -31,6 +26,8 @@
 
 #include <QtCore/qobject.h>
 #include <QtGui/qtextformat.h>
+
+QT_MODULE(Gui)
 
 class QTextObjectPrivate;
 class QTextDocument;
@@ -171,8 +168,14 @@ Q_DECLARE_TYPEINFO(QTextFrame::iterator, Q_MOVABLE_TYPE);
 inline void QTextFrame::setFrameFormat(const QTextFrameFormat &aformat)
 { QTextObject::setFormat(aformat); }
 
+class Q_GUI_EXPORT QTextBlockUserData {
+public:
+    virtual ~QTextBlockUserData();
+};
+
 class Q_GUI_EXPORT QTextBlock
 {
+    friend class QSyntaxHighlighter;
 public:
     inline QTextBlock(QTextDocumentPrivate *priv, int b) : p(priv), n(b) {}
     inline QTextBlock() : p(0), n(0) {}
@@ -236,6 +239,12 @@ public:
     inline QTextDocumentPrivate *docHandle() const { return p; }
 
 private:
+    QTextBlockUserData *userData() const;
+    void setUserData(QTextBlockUserData *data);
+
+    int userState() const;
+    void setUserState(int state);
+
     QTextDocumentPrivate *p;
     int n;
     friend class QTextDocumentPrivate;

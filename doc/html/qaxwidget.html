@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/extensions/activeqt/container/qaxwidget.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/extensions/activeqt/container/qaxwidget.cpp -->
 <head>
     <title>Qt 4.0: QAxWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAxWidget Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAxWidget Class Reference<br /><sup><sup>[<a href="qaxcontainer.html">QAxContainer</a> module]</sup></sup></h1>
 <p>The QAxWidget class is a <a href="qwidget.html">QWidget</a> that wraps an ActiveX control. <a href="#details">More...</a></p>
-<pre>#include &lt;QAxWidget&gt;</pre><p>Part of the <a href="qaxcontainer.html">QAxContainer</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a> and <a href="qaxbase.html">QAxBase</a>.</p>
+<pre>#include &lt;QAxWidget&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a> and <a href="qaxbase.html">QAxBase</a>.</p>
 <ul>
 <li><a href="qaxwidget-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -34,7 +33,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QAxAggregated * <b><a href="qaxwidget.html#createAggregate">createAggregate</a></b> ()</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>18 public functions inherited from <a href="qaxbase.html#public-functions">QAxBase</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
@@ -83,13 +82,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Creates a <a href="qaxwidget.html">QAxWidget</a> that wraps the COM object referenced by <i>iface</i>. <i>parent</i> and <i>f</i> are propagated to the <a href="qwidget.html">QWidget</a> contructor.</p>
 <h3 class="fn"><a name="dtor.QAxWidget"></a>QAxWidget::~QAxWidget ()</h3>
 <p>Shuts down the ActiveX control and destroys the <a href="qaxwidget.html">QAxWidget</a> widget, cleaning up all allocated resources.</p>
-<p>See also <a href="qaxwidget.html#clear">clear</a>().</p>
+<p>See also <a href="qaxbase.html#clear">clear</a>().</p>
 <h3 class="fn"><a name="createAggregate"></a><a href="qaxaggregated.html">QAxAggregated</a> * QAxWidget::createAggregate ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Reimplement this function when you want to implement additional COM interfaces for the client site of the ActiveX control, or when you want to provide alternative implementations of COM interfaces. Return a new object of a <a href="qaxaggregated.html">QAxAggregated</a> subclass.</p>
 <p>The default implementation returns the null pointer.</p>
 <h3 class="fn"><a name="createHostWindow"></a>bool QAxWidget::createHostWindow ( bool <i>initialized</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Creates the client site for the ActiveX control, and returns true if the control could be embedded successfully, otherwise returns false. If <i>initialized</i> is true the control has already been initialized.</p>
-<p>This function is called by <a href="qaxwidget.html#initialize">initialize</a>(). If you reimplement initialize to customize the actual control instantiation, call this function in your reimplementation to have the control embedded by the default client side. Creates the client site for the ActiveX control, and returns true if the control could be embedded successfully, otherwise returns false.</p>
+<p>This function is called by <a href="qaxbase.html#initialize">initialize</a>(). If you reimplement initialize to customize the actual control instantiation, call this function in your reimplementation to have the control embedded by the default client side. Creates the client site for the ActiveX control, and returns true if the control could be embedded successfully, otherwise returns false.</p>
 <h3 class="fn"><a name="translateKeyEvent"></a>bool QAxWidget::translateKeyEvent ( int <i>message</i>, int <i>keycode</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Reimplement this function to pass certain key events to the ActiveX control. <i>message</i> is the Window message identifier specifying the message type (ie. WM_KEYDOWN), and <i>keycode</i> is the virtual keycode (ie. VK_TAB).</p>
 <p>If the function returns true the key event is passed on to the ActiveX control, which then either processes the event or passes the event on to Qt.</p>
@@ -104,6 +103,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

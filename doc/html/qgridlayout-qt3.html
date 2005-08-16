@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/kernel/qgridlayout.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/kernel/qgridlayout.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QGridLayout</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QGridLayout</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qgridlayout.html">QGridLayout class reference</a></li></ul></p>
@@ -80,8 +80,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Use cellRect(<i>row</i>, <i>column</i>) instead.</p>
 <h3 class="fn"><a name="colSpacing"></a>int QGridLayout::colSpacing ( int <i>col</i> ) const</h3>
 <p>Use columnSpacing() instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#setColSpacing">setColSpacing</a>().</p>
 <h3 class="fn"><a name="colStretch"></a>int QGridLayout::colStretch ( int <i>col</i> ) const</h3>
 <p>Use <a href="qgridlayout.html#columnStretch">columnStretch</a>() instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#setColStretch">setColStretch</a>().</p>
 <h3 class="fn"><a name="expand"></a>void QGridLayout::expand ( int <i>nRows</i>, int <i>nCols</i> )</h3>
 <p>Expands this grid so that it will have <i>nRows</i> rows and <i>nCols</i> columns. Will not shrink the grid. You should not need to call this function because <a href="qgridlayout.html">QGridLayout</a> expands automatically as new items are inserted.</p>
 <h3 class="fn"><a name="findWidget"></a>bool QGridLayout::findWidget ( <a href="qwidget.html">QWidget</a> * <i>w</i>, int * <i>row</i>, int * <i>column</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -94,20 +96,26 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qgridlayout.html#rowCount">rowCount</a>() instead.</p>
 <h3 class="fn"><a name="origin"></a><a href="qt.html#Corner-enum">Qt::Corner</a> QGridLayout::origin () const</h3>
 <p>Use <a href="qgridlayout.html#originCorner">originCorner</a>() instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#setOrigin">setOrigin</a>().</p>
 <h3 class="fn"><a name="rowSpacing"></a>int QGridLayout::rowSpacing ( int <i>row</i> ) const</h3>
 <p>Use rowMinimumHeight(<i>row</i>) instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#setRowSpacing">setRowSpacing</a>().</p>
 <h3 class="fn"><a name="setColSpacing"></a>void QGridLayout::setColSpacing ( int <i>col</i>, int <i>minSize</i> )</h3>
 <p>Use <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>() instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#colSpacing">colSpacing</a>().</p>
 <h3 class="fn"><a name="setColStretch"></a>void QGridLayout::setColStretch ( int <i>col</i>, int <i>stretch</i> )</h3>
 <p>Use <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>() instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#colStretch">colStretch</a>().</p>
 <h3 class="fn"><a name="setOrigin"></a>void QGridLayout::setOrigin ( <a href="qt.html#Corner-enum">Qt::Corner</a> <i>corner</i> )</h3>
 <p>Use setOriginCorner(<i>corner</i>) instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#origin">origin</a>().</p>
 <h3 class="fn"><a name="setRowSpacing"></a>void QGridLayout::setRowSpacing ( int <i>row</i>, int <i>minSize</i> )</h3>
 <p>Use setRowMinimumHeight(<i>row</i>, <i>minSize</i>) instead.</p>
+<p>See also <a href="qgridlayout-qt3.html#rowSpacing">rowSpacing</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

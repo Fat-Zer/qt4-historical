@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "qlistview.h"
+
+#ifndef QT_NO_LISTVIEW
 #include <qabstractitemdelegate.h>
 #include <qapplication.h>
 #include <qpainter.h>
@@ -155,10 +152,10 @@ void QBinTree<T>::init(const QRect &area, int depth, NodeType type, int index)
     models derived from the QAbstractItemModel class.
 
     Items in a list view can be displayed using one of two view modes:
-    In \c ListMode, the items are displayed in the form of a simple list;
-    in \c IconMode, the list view takes the form of an \e{icon view} in
+    In \l ListMode, the items are displayed in the form of a simple list;
+    in \l IconMode, the list view takes the form of an \e{icon view} in
     which the items are displayed with icons like files in a file manager.
-    By default, the list view is in \c ListMode. To change the view mode,
+    By default, the list view is in \l ListMode. To change the view mode,
     use the setViewMode() function, and to determine the current view mode,
     use viewMode().
 
@@ -227,6 +224,12 @@ QListView::QListView(QWidget *parent)
 {
     setViewMode(ListMode);
     setSelectionMode(SingleSelection);
+    //we want to be sure that the changes on the scrollbar's are atomic
+    //and we can't allow those signals to arrive asynchronously
+    QObject::disconnect(horizontalScrollBar(), SIGNAL(rangeChanged(int,int)),
+                        this, SLOT(showOrHideScrollBars()));
+    QObject::disconnect(verticalScrollBar(), SIGNAL(rangeChanged(int,int)),
+                        this, SLOT(showOrHideScrollBars()));
 }
 
 /*!
@@ -252,9 +255,9 @@ QListView::~QListView()
     grid, or cannot be moved at all.
 
     This property determines how the user can move the items in the
-    view. \c Static means that the items can't be moved the user. \c
+    view. \l Static means that the items can't be moved the user. \l
     Free means that the user can drag and drop the items to any
-    position in the view. \c Snap means that the user can drag and
+    position in the view. \l Snap means that the user can drag and
     drop the items, but only to the positions in a notional grid
     signified by the gridSize property.
 
@@ -269,9 +272,11 @@ void QListView::setMovement(Movement movement)
     d->modeProperties |= uint(QListViewPrivate::Movement);
     d->movement = movement;
 
+#ifndef QT_NO_DRAGANDDROP
     bool movable = (movement != QListView::Static);
     setDragEnabled(movable);
     d->viewport->setAcceptDrops(movable);
+#endif
 
     d->doDelayedItemsLayout();
 }
@@ -286,10 +291,10 @@ QListView::Movement QListView::movement() const
     \property QListView::flow
     \brief which direction the items layout should flow.
 
-    If this property is \c LeftToRight, the items will be laid out left
+    If this property is \l LeftToRight, the items will be laid out left
     to right. If the \l isWrapping property is true, the layout will wrap
     when it reaches the right side of the visible area. If this
-    property is \c TopToBottom, the items will be laid out from the top
+    property is \l TopToBottom, the items will be laid out from the top
     of the visible area, wrapping when it reaches the bottom.
 
     Setting this property when the view is visible will cause the
@@ -338,8 +343,8 @@ bool QListView::isWrapping() const
     \property QListView::resizeMode
     \brief whether the items are laid out again when the view is resized.
 
-    If this property is \c Adjust, the items will be laid out again
-    when the view is resized. If the value is \c Fixed, the items will
+    If this property is \l Adjust, the items will be laid out again
+    when the view is resized. If the value is \l Fixed, the items will
     not be laid out when the view is resized.
 */
 void QListView::setResizeMode(ResizeMode mode)
@@ -359,8 +364,8 @@ QListView::ResizeMode QListView::resizeMode() const
     \brief whether the layout of items should happen immediately or be delayed.
 
     This property holds the layout mode for the items. When the mode
-    is \c Instant (the default), the items are laid out all in one go.
-    When the mode is \c Batched, the items are laid out in batches of 100
+    is \l SinglePass (the default), the items are laid out all in one go.
+    When the mode is \l Batched, the items are laid out in batches of 100
     items, while processing events. This makes it possible to
     instantly view and interact with the visible items while the rest
     are being laid out.
@@ -470,9 +475,11 @@ void QListView::setViewMode(ViewMode mode)
             d->resizeMode = Fixed;
     }
 
+#ifndef QT_NO_DRAGANDDROP
     bool movable = (d->movement != QListView::Static);
     setDragEnabled(movable);
     setAcceptDrops(movable);
+#endif
     d->doDelayedItemsLayout();
 }
 
@@ -629,6 +636,8 @@ void QListView::resizeContents(int width, int height)
     d->contentsSize = QSize(width, height);
     horizontalScrollBar()->setRange(0, width - viewport()->width() - 1);
     verticalScrollBar()->setRange(0, height - viewport()->height() - 1);
+    //### this forces atomic relayout of children
+    setVerticalScrollBarPolicy(verticalScrollBarPolicy());
 }
 
 /*!
@@ -644,6 +653,17 @@ QSize QListView::contentsSize() const
 */
 void QListView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
+    Q_D(QListView);
+    if (d->movement != QListView::Static
+        && d->column >= topLeft.column()
+        && d->column <= bottomRight.column()) {
+        QStyleOptionViewItem option = viewOptions();
+        int bottom = qMin(d->tree.itemCount(), bottomRight.row() + 1);
+        for (int row = topLeft.row(); row < bottom; ++row) {
+            QModelIndex idx = d->model->index(row, d->column, d->root);
+            d->tree.item(row).resize(d->delegate->sizeHint(option, idx));
+        }
+    }
     QAbstractItemView::dataChanged(topLeft, bottomRight);
 }
 
@@ -737,6 +757,8 @@ void QListView::resizeEvent(QResizeEvent *e)
         }
     }
 }
+
+#ifndef QT_NO_DRAGANDDROP
 
 /*!
   \reimp
@@ -866,6 +888,8 @@ void QListView::internalDrag(Qt::DropActions supportedActions)
     }
 }
 
+#endif // QT_NO_DRAGANDDROP
+
 /*!
   \reimp
 */
@@ -947,6 +971,7 @@ void QListView::paintEvent(QPaintEvent *e)
         d->drawItems(&painter, d->draggedItems);
     }
 
+#ifndef QT_NO_RUBBERBAND
     if (d->elasticBand.isValid()) {
         QStyleOptionRubberBand opt;
         opt.init(this);
@@ -958,6 +983,7 @@ void QListView::paintEvent(QPaintEvent *e)
         style()->drawControl(QStyle::CE_RubberBand, &opt, &painter);
         painter.restore();
     }
+#endif
 }
 
 /*!
@@ -980,7 +1006,7 @@ QModelIndex QListView::indexAt(const QPoint &p) const
 */
 int QListView::horizontalOffset() const
 {
-    return isRightToLeft() ? -horizontalScrollBar()->value() : horizontalScrollBar()->value();
+    return isRightToLeft() ? horizontalScrollBar()->maximum() - horizontalScrollBar()->value() : horizontalScrollBar()->value();
 }
 
 /*!
@@ -999,14 +1025,27 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
     Q_D(QListView);
     Q_UNUSED(modifiers);
 
+    if (!model())
+        return QModelIndex();
+
     QModelIndex current = currentIndex();
-    if (!current.isValid())
-        if (model())
-            return model()->index(0, 0, rootIndex());
-        else
-            return current;
+    if (!current.isValid()) {
+        int rowCount = model()->rowCount(rootIndex());
+        if (!rowCount)
+            return QModelIndex();
+        int row = 0;
+        while (row < rowCount && isRowHidden(row))
+            ++row;
+        if (row >= rowCount)
+            return QModelIndex();
+        return model()->index(row, 0, rootIndex());
+    }
 
     QRect rect = rectForIndex(current);
+    if (rect.isEmpty()) {
+        return model()->index(0, 0, rootIndex());
+    }
+
     QSize contents = d->contentsSize;
     QPoint pos = rect.center();
     d->intersectVector.clear();
@@ -1223,6 +1262,9 @@ void QListView::updateGeometries()
         verticalScrollBar()->setRange(0, d->contentsSize.height() - d->viewport->height() - 1);
     }
     QAbstractItemView::updateGeometries();
+
+    //### this forces atomic relayout of children
+    setVerticalScrollBarPolicy(verticalScrollBarPolicy());
 }
 
 /*!
@@ -1546,12 +1588,9 @@ void QListViewPrivate::doDynamicLayout(const QRect &bounds, int first, int last)
             if (useItemSize) {
                 if (flow == QListView::LeftToRight) {
                     deltaFlowPosition = item->w + gap;
-                    deltaSegHint = item->h + gap;
                 } else {
                     deltaFlowPosition = item->h + gap;
-                    deltaSegHint = item->w + gap;
                 }
-                deltaSegPosition = qMax(deltaSegPosition, deltaSegHint);
             }
             // create new segment
             if (wrap
@@ -1561,6 +1600,16 @@ void QListViewPrivate::doDynamicLayout(const QRect &bounds, int first, int last)
                 segPosition += deltaSegPosition;
                 if (useItemSize)
                     deltaSegPosition = 0;
+            }
+            // We must delay calculation of the seg adjustment, as this item
+            // may have caused a wrap to occur
+            if (useItemSize) {
+                if (flow == QListView::LeftToRight) {
+                    deltaSegHint = item->h + gap;
+                } else {
+                    deltaSegHint = item->w + gap;
+                }
+                deltaSegPosition = qMax(deltaSegPosition, deltaSegHint);
             }
             // set the position of the item
             if (flow == QListView::LeftToRight) {
@@ -1813,9 +1862,18 @@ QRect QListViewPrivate::mapToViewport(const QRect &rect) const
     if (!rect.isValid())
         return rect;
     QRect result = rect;
+
     // If the listview is in "listbox-mode", the items are as wide as the view.
-    if (!wrap && movement == QListView::Static && flow == QListView::TopToBottom)
-        result.setWidth(qMax(contentsSize.width(), viewport->width()));
+    if (!wrap && movement == QListView::Static && flow == QListView::TopToBottom) {
+        if (q_func()->isRightToLeft()) {
+            // Adjust the rect by expanding the left edge
+            result.setLeft(result.right() - qMax(contentsSize.width(), viewport->width()));
+        } else {
+            // Adjust the rect by expanding the right edge
+            result.setWidth(qMax(contentsSize.width(), viewport->width()));
+        }
+    }
+    
     int dx = -q->horizontalOffset();
     int dy = -q->verticalOffset();
     result.adjust(dx, dy, dx, dy);
@@ -1854,3 +1912,4 @@ QModelIndex QListViewPrivate::closestIndex(const QPoint &target,
     }
     return closest;
 }
+#endif // QT_NO_LISTVIEW

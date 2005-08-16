@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -239,9 +234,9 @@ static bool block_set_alignment = false;
     conjunction with QSyntaxHighlighter.
 
     We recommend that you always call setTextFormat() to set the mode
-    you want to use. If you use \c Qt::AutoText then setText() and
+    you want to use. If you use Qt::AutoText then setText() and
     append() will try to determine whether the text they are given is
-    plain text or rich text. If you use \c Qt::RichText then setText() and
+    plain text or rich text. If you use Qt::RichText then setText() and
     append() will assume that the text they are given is rich text.
     insert() simply inserts the text it is given.
 
@@ -401,7 +396,7 @@ static bool block_set_alignment = false;
     \target logtextmode
     \section2 Using Q3TextEdit in Qt::LogText Mode
 
-    Setting the text format to \c Qt::LogText puts the widget in a special
+    Setting the text format to Qt::LogText puts the widget in a special
     mode which is optimized for very large texts. In this mode editing
     and rich text support are disabled (the widget is explicitly set
     to read-only mode). This allows the text to be stored in a
@@ -712,7 +707,7 @@ static bool block_set_alignment = false;
 
     Sets the font of the current format to \a f.
 
-    If the widget is in \c Qt::LogText mode this function will do
+    If the widget is in Qt::LogText mode this function will do
     nothing. Use setFont() instead.
 
     \sa currentFont() setPointSize() setFamily()
@@ -934,7 +929,10 @@ void Q3TextEdit::init()
     wPolicy = AtWhiteSpace;
     inDnD = false;
     doc->setFormatter(new Q3TextFormatterBreakWords);
-    doc->formatCollection()->defaultFormat()->setFont(Q3ScrollView::font());
+    QFont f = Q3ScrollView::font();
+    if (f.kerning())
+        f.setKerning(false);
+    doc->formatCollection()->defaultFormat()->setFont(f);
     doc->formatCollection()->defaultFormat()->setColor(palette().color(QPalette::Text));
     currentFormat = doc->formatCollection()->defaultFormat();
     currentAlignment = Qt::AlignAuto;
@@ -2865,7 +2863,7 @@ void Q3TextEdit::insert(const QString &text, bool indent,
 
     The default flags are \c CheckNewLines | \c RemoveSelected.
 
-    If the widget is in \c Qt::LogText mode this function will do nothing.
+    If the widget is in Qt::LogText mode this function will do nothing.
 
     \sa paste() pasteSubType()
 */
@@ -2897,15 +2895,15 @@ void Q3TextEdit::insert(const QString &text, uint insertionFlags)
         // If we are inserting at the end of the previous insertion, we keep this in
         // the same undo/redo command. Otherwise, we separate them in two different commands.
         if (undoRedoInfo.valid() && undoRedoInfo.index + undoRedoInfo.d->text.length() != cursor->index()) {
-            clearUndoRedo();        
+            clearUndoRedo();
             undoRedoInfo.type = UndoRedoInfo::Insert;
         }
-               
-        if (!undoRedoInfo.valid()) {            
+
+        if (!undoRedoInfo.valid()) {
             undoRedoInfo.id = cursor->paragraph()->paragId();
             undoRedoInfo.index = cursor->index();
             undoRedoInfo.d->text.clear();
-        } 
+        }
         oldLen = undoRedoInfo.d->text.length();
     }
 
@@ -3418,8 +3416,8 @@ void Q3TextEdit::setParagType(Q3StyleSheetItem::DisplayMode dm,
 
 /*!
     Sets the alignment of the current paragraph to \a a. Valid
-    alignments are \c Qt::AlignLeft, \c Qt::AlignRight,
-    \c Qt::AlignJustify and \c Qt::AlignCenter (which centers
+    alignments are Qt::AlignLeft, Qt::AlignRight,
+    Qt::AlignJustify and Qt::AlignCenter (which centers
     horizontally).
 */
 
@@ -3595,8 +3593,11 @@ void Q3TextEdit::setVerticalAlignment(VerticalAlignment a)
 
 void Q3TextEdit::setFontInternal(const QFont &f_)
 {
+    QFont font = f_;
+    if (font.kerning())
+        font.setKerning(false);
     Q3TextFormat f(*currentFormat);
-    f.setFont(f_);
+    f.setFont(font);
     Q3TextFormat *f2 = doc->formatCollection()->format(&f);
     setFormat(f2, Q3TextFormat::Font);
 }
@@ -3623,7 +3624,7 @@ QString Q3TextEdit::text() const
 
     Returns the text of paragraph \a para.
 
-    If textFormat() is \c Qt::RichText the text will contain HTML
+    If textFormat() is Qt::RichText the text will contain HTML
     formatting tags.
 */
 
@@ -3647,7 +3648,7 @@ QString Q3TextEdit::text(int para) const
     context to \a context. Any previous text is removed.
 
     \a text may be interpreted either as plain text or as rich text,
-    depending on the textFormat(). The default setting is \c Qt::AutoText,
+    depending on the textFormat(). The default setting is Qt::AutoText,
     i.e. the text edit auto-detects the format from \a text.
 
     For rich text the rendering style and available tags are defined
@@ -3721,7 +3722,7 @@ void Q3TextEdit::setText(const QString &text, const QString &context)
     On setting, any previous text is deleted.
 
     The text may be interpreted either as plain text or as rich text,
-    depending on the textFormat(). The default setting is \c Qt::AutoText,
+    depending on the textFormat(). The default setting is Qt::AutoText,
     i.e. the text edit auto-detects the format of the text.
 
     For richtext, calling text() on an editable Q3TextEdit will cause
@@ -3991,7 +3992,7 @@ void Q3TextEdit::getSelection(int *paraFrom, int *indexFrom,
     limited set of formatting tags (color, bold, underline and italic
     settings).
     \i Qt::AutoText - this is the default. The text edit autodetects which
-    rendering style is best, \c Qt::PlainText or \c Qt::RichText. This is done
+    rendering style is best, Qt::PlainText or Qt::RichText. This is done
     by using the Q3StyleSheet::mightBeRichText() function.
     \endlist
 */
@@ -4309,7 +4310,7 @@ void Q3TextEdit::selectAll(bool select)
 void Q3TextEdit::UndoRedoInfo::clear()
 {
     if (valid()) {
-        if (type == Insert || type == Return) 
+        if (type == Insert || type == Return)
             doc->addCommand(new Q3TextInsertCommand(doc, id, index, d->text.rawData(), styleInformation));
         else if (type == Format)
             doc->addCommand(new Q3TextFormatCommand(doc, id, index, eid, eindex, d->text.rawData(), format, flags));
@@ -4578,8 +4579,8 @@ bool Q3TextEdit::hasSelectedText() const
     \brief The selected text (from selection 0) or an empty string if
     there is no currently selected text (in selection 0).
 
-    The text is always returned as \c Qt::PlainText if the textFormat() is
-    \c Qt::PlainText or \c Qt::AutoText, otherwise it is returned as HTML.
+    The text is always returned as Qt::PlainText if the textFormat() is
+    Qt::PlainText or Qt::AutoText, otherwise it is returned as HTML.
 
     \sa hasSelectedText
 */
@@ -4683,7 +4684,7 @@ QString Q3TextEdit::context() const
     \property Q3TextEdit::documentTitle
     \brief the title of the document parsed from the text.
 
-    For \c Qt::PlainText the title will be an empty string. For \c
+    For Qt::PlainText the title will be an empty string. For \c
     Qt::RichText the title will be the text between the \c{<title>} tags,
     if present, otherwise an empty string.
 */
@@ -4733,7 +4734,7 @@ void Q3TextEdit::scrollToAnchor(const QString& name)
 }
 
 /*!
-    Returns the text for the attribute \a attr (\c Qt::AnchorHref by
+    Returns the text for the attribute \a attr (Qt::AnchorHref by
     default) if there is an anchor at position \a pos (in contents
     coordinates); otherwise returns an empty string.
 */
@@ -5528,10 +5529,16 @@ void Q3TextEdit::changeEvent(QEvent *ev)
 #ifdef QT_TEXTEDIT_OPTIMIZATION
     if (d->optimMode && (ev->type() == QEvent::ApplicationFontChange
                          || ev->type() == QEvent::FontChange)) {
-        Q3ScrollView::setFont(font());
-        doc->setDefaultFormat(font(), doc->formatCollection()->defaultFormat()->color());
+        QFont f = font();
+        if (f.kerning())
+            f.setKerning(false);
+
+        setFont(f);
+
+        Q3ScrollView::setFont(f);
+        doc->setDefaultFormat(f, doc->formatCollection()->defaultFormat()->color());
         // recalculate the max string width
-        QFontMetrics fm(font());
+        QFontMetrics fm(f);
         int i, sw;
         d->od->maxLineWidth = 0;
         for (i = 0; i < d->od->numLines; i++) {
@@ -5556,8 +5563,11 @@ void Q3TextEdit::changeEvent(QEvent *ev)
     }
 
     if (ev->type() == QEvent::ApplicationFontChange || ev->type() == QEvent::FontChange) {
+        QFont f = font();
+        if (f.kerning())
+            f.setKerning(false);
         doc->setMinimumWidth(-1);
-        doc->setDefaultFormat(font(), doc->formatCollection()->defaultFormat()->color());
+        doc->setDefaultFormat(f, doc->formatCollection()->defaultFormat()->color());
         lastFormatted = doc->firstParagraph();
         formatMore();
         repaintChanged();

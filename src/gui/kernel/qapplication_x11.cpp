@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -190,6 +185,8 @@ static const char * x11_atomnames = {
 
     "_NET_WM_PID\0"
 
+    "_NET_WM_WINDOW_OPACITY\0"
+
     "_NET_WM_STATE\0"
     "_NET_WM_STATE_ABOVE\0"
     "_NET_WM_STATE_FULLSCREEN\0"
@@ -325,10 +322,6 @@ TabletDeviceDataList *qt_tablet_devices()
 
 extern bool qt_tabletChokeMouse;
 #endif
-
-// last timestamp read from QSettings
-static uint appliedstamp = 0;
-
 
 static bool qt_x11EventFilter(XEvent* ev)
 {
@@ -508,62 +501,25 @@ static void qt_x11_create_intern_atoms()
 #endif
 }
 
+Q_GUI_EXPORT void qt_x11_apply_settings_in_all_apps()
+{
+    QByteArray stamp;
+    QDataStream s(&stamp, QIODevice::WriteOnly);
+    s << QDateTime::currentDateTime();
+
+    XChangeProperty(QX11Info::display(), QX11Info::appRootWindow(0),
+                    ATOM(_QT_SETTINGS_TIMESTAMP), ATOM(_QT_SETTINGS_TIMESTAMP), 8,
+                    PropModeReplace, (unsigned char *)stamp.data(), stamp.size());
+}
 
 /*! \internal
     apply the settings to the application
 */
 bool QApplicationPrivate::x11_apply_settings()
 {
-    Atom type;
-    int format;
-    long offset = 0;
-    unsigned long nitems, after = 1;
-    unsigned char *data = 0;
-    QDateTime timestamp, settingsstamp;
-    bool update_timestamp = false;
-
-    if (XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
-                           ATOM(_QT_SETTINGS_TIMESTAMP), 0, 0,
-                           False, AnyPropertyType, &type, &format, &nitems,
-                           &after, &data) == Success && format == 8) {
-        if (data)
-            XFree(data);
-
-        QBuffer ts;
-        ts.open(QIODevice::WriteOnly);
-
-        while (after > 0) {
-            XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
-                               ATOM(_QT_SETTINGS_TIMESTAMP),
-                               offset, 1024, False, AnyPropertyType,
-                               &type, &format, &nitems, &after, &data);
-            if (format == 8) {
-                ts.write(reinterpret_cast<char *>(data), nitems);
-                offset += nitems / 4;
-            }
-
-            XFree(data);
-        }
-
-	QByteArray buf = ts.buffer();
-        QDataStream ds(&buf, QIODevice::ReadOnly);
-        ds >> timestamp;
-    }
-
     QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
-    settingsstamp = QFileInfo(settings.fileName()).lastModified();
-    if (!settingsstamp.isValid())
-        return false;
-
-    if (appliedstamp && appliedstamp == settingsstamp.toTime_t())
-        return true;
 
     settings.beginGroup(QLatin1String("Qt"));
-
-    appliedstamp = settingsstamp.toTime_t();
-
-    if (! timestamp.isValid() || settingsstamp > timestamp)
-        update_timestamp = true;
 
     /*
       Qt settings. This is now they are written into the datastream.
@@ -726,7 +682,7 @@ bool QApplicationPrivate::x11_apply_settings()
 #ifndef QT_NO_XIM
     if (qt_xim_preferred_style == 0) {
         QString ximInputStyle = settings.value(QLatin1String("XIMInputStyle"),
-                                               QVariant(QLatin1String("on the spot"))).toString();
+                                               QVariant(QLatin1String("on the spot"))).toString().toLower();
         if (ximInputStyle == QLatin1String("on the spot"))
             qt_xim_preferred_style = XIMPreeditCallbacks | XIMStatusNothing;
         else if (ximInputStyle == QLatin1String("over the spot"))
@@ -742,16 +698,6 @@ bool QApplicationPrivate::x11_apply_settings()
         X11->default_im = QLatin1String("imsw-multi");
     } else {
         X11->default_im = settings.value("DefaultInputMethod", QLatin1String("xim")).toString();
-    }
-
-    if (update_timestamp) {
-        QByteArray stamp;
-        QDataStream s(&stamp, QIODevice::WriteOnly);
-        s << settingsstamp;
-
-        XChangeProperty(X11->display, QX11Info::appRootWindow(0),
-                        ATOM(_QT_SETTINGS_TIMESTAMP), ATOM(_QT_SETTINGS_TIMESTAMP), 8,
-                        PropModeReplace, (unsigned char *)stamp.data(), stamp.size());
     }
 
     settings.endGroup(); // Qt
@@ -1439,7 +1385,7 @@ void qt_init(QApplicationPrivate *priv, int,
         if (f.open(QIODevice::ReadOnly)) {
             s.clear();
             char c;
-            while (f.getChar(&c)) {
+            while (f.getChar(&c) && c) {
                 if (c == '/')
                     s.clear();
                 else
@@ -1548,8 +1494,8 @@ void qt_init(QApplicationPrivate *priv, int,
         getXDefault("Xft", FC_DPI, &dpi);
         if (dpi) {
                     for (int s = 0; s < ScreenCount(X11->display); ++s) {
-                        QX11Info::setAppDpiX(dpi, s);
-                        QX11Info::setAppDpiY(dpi, s);
+                        QX11Info::setAppDpiX(s, dpi);
+                        QX11Info::setAppDpiY(s, dpi);
                     }
                 }
         X11->fc_scale = 1.;
@@ -1557,27 +1503,29 @@ void qt_init(QApplicationPrivate *priv, int,
         for (int s = 0; s < ScreenCount(X11->display); ++s) {
             int subpixel = FC_RGBA_UNKNOWN;
 #if RENDER_MAJOR > 0 || RENDER_MINOR >= 6
-            int rsp = XRenderQuerySubpixelOrder(X11->display, s);
-            switch (rsp) {
-            default:
-            case SubPixelUnknown:
-                subpixel = FC_RGBA_UNKNOWN;
-                break;
-            case SubPixelHorizontalRGB:
-                subpixel = FC_RGBA_RGB;
-                break;
-            case SubPixelHorizontalBGR:
-                subpixel = FC_RGBA_BGR;
-                break;
-            case SubPixelVerticalRGB:
-                subpixel = FC_RGBA_VRGB;
-                break;
-            case SubPixelVerticalBGR:
-                subpixel = FC_RGBA_VBGR;
-            break;
-            case SubPixelNone:
-                subpixel = FC_RGBA_NONE;
-                break;
+            if (X11->use_xrender) {
+                int rsp = XRenderQuerySubpixelOrder(X11->display, s);
+                switch (rsp) {
+                default:
+                case SubPixelUnknown:
+                    subpixel = FC_RGBA_UNKNOWN;
+                    break;
+                case SubPixelHorizontalRGB:
+                    subpixel = FC_RGBA_RGB;
+                    break;
+                case SubPixelHorizontalBGR:
+                    subpixel = FC_RGBA_BGR;
+                    break;
+                case SubPixelVerticalRGB:
+                    subpixel = FC_RGBA_VRGB;
+                    break;
+                case SubPixelVerticalBGR:
+                    subpixel = FC_RGBA_VBGR;
+                    break;
+                case SubPixelNone:
+                    subpixel = FC_RGBA_NONE;
+                    break;
+                }
             }
 #endif
             getXDefault("Xft", FC_RGBA, &subpixel);
@@ -1894,7 +1842,6 @@ void qt_init(QApplicationPrivate *priv, int,
 }
 
 
-#ifndef QT_NO_STYLE
     // run-time search for default style
 /*!
     \internal
@@ -1940,7 +1887,6 @@ void QApplicationPrivate::x11_initialize_style()
         QApplicationPrivate::app_style = QStyleFactory::create("plastique");
     }
 }
-#endif
 
 
 /*****************************************************************************
@@ -1949,8 +1895,6 @@ void QApplicationPrivate::x11_initialize_style()
 
 void qt_cleanup()
 {
-    appliedstamp = 0;
-
     if (app_save_rootinfo)                        // root window must keep state
         qt_save_rootinfo();
 
@@ -2688,7 +2632,8 @@ int QApplication::x11ProcessEvent(XEvent* event)
     switch (event->type) {
 
     case ButtonRelease:                        // mouse event
-	if (!d->inPopupMode() && !QWidget::mouseGrabber() && pressed_window != widget->winId())
+        if (!d->inPopupMode() && !QWidget::mouseGrabber() && pressed_window != widget->winId()
+                && (widget = (QETWidget*) QWidget::find((WId)pressed_window)) == 0)
             break;
         // fall through intended
     case ButtonPress:
@@ -3043,25 +2988,18 @@ bool QApplicationPrivate::modalState()
     return app_do_modal;
 }
 
-void QApplicationPrivate::enterModal(QWidget *widget)
+void QApplicationPrivate::enterModal_sys(QWidget *widget)
 {
-    if (!qt_modal_stack) {                        // create modal stack
+    if (!qt_modal_stack)
         qt_modal_stack = new QWidgetList;
-    }
 
     QApplicationPrivate::dispatchEnterLeave(0, QWidget::find((WId)curWin));
     qt_modal_stack->insert(0, widget);
     app_do_modal = true;
     curWin = 0;
-
-    if (widget->parentWidget()) {
-        QEvent e(QEvent::WindowBlocked);
-        QApplication::sendEvent(widget->parentWidget(), &e);
-    }
 }
 
-
-void QApplicationPrivate::leaveModal(QWidget *widget)
+void QApplicationPrivate::leaveModal_sys(QWidget *widget)
 {
     if (qt_modal_stack && qt_modal_stack->removeAll(widget)) {
         if (qt_modal_stack->isEmpty()) {
@@ -3074,13 +3012,7 @@ void QApplicationPrivate::leaveModal(QWidget *widget)
         }
     }
     app_do_modal = qt_modal_stack != 0;
-
-    if (widget->parentWidget()) {
-        QEvent e(QEvent::WindowUnblocked);
-        QApplication::sendEvent(widget->parentWidget(), &e);
-    }
 }
-
 
 bool qt_try_modal(QWidget *widget, XEvent *event)
 {
@@ -3883,8 +3815,16 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
             d->topData()->parentWinId = 0;
             // map the window if we were waiting for a transition to
             // withdrawn
-            if (X11->deferred_map.removeAll(this))
+            if (X11->deferred_map.removeAll(this)) {
                 XMapWindow(X11->display, winId());
+            } else if (isVisible() && !testAttribute(Qt::WA_Mapped)) {
+                // so that show() will work again. As stated in the
+                // ICCCM section 4.1.4: "Only the client can effect a
+                // transition into or out of the Withdrawn state.",
+                // but apparently this particular window manager
+                // doesn't seem to care
+                hide();
+            }
         } else if (d->topData()->parentWinId != QX11Info::appRootWindow(x11Info().screen())) {
             // the window manager has changed the WM State property...
             // we are wanting to see if we are withdrawn so that we
@@ -3910,8 +3850,17 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                     d->topData()->parentWinId = 0;
                     // map the window if we were waiting for a
                     // transition to withdrawn
-                    if (X11->deferred_map.removeAll(this))
+                    if (X11->deferred_map.removeAll(this)) {
                         XMapWindow(X11->display, winId());
+                    } else if (isVisible() && !testAttribute(Qt::WA_Mapped)) {
+                        // so that show() will work again. As stated
+                        // in the ICCCM section 4.1.4: "Only the
+                        // client can effect a transition into or out
+                        // of the Withdrawn state.", but apparently
+                        // this particular window manager doesn't seem
+                        // to care
+                        hide();
+                    }
                     break;
 
                 case IconicState:
@@ -3934,6 +3883,22 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                 }
             }
         }
+    } else if (event->xproperty.atom == ATOM(_NET_WM_WINDOW_OPACITY)) {
+        // the window opacity was changed
+        if (event->xproperty.state == PropertyNewValue) {
+            e = XGetWindowProperty(event->xclient.display,
+                                   event->xclient.window,
+                                   ATOM(_NET_WM_WINDOW_OPACITY),
+                                   0, 1, False, XA_CARDINAL,
+                                   &ret, &format, &nitems, &after, &data);
+
+            if (e == Success && ret == XA_CARDINAL && format == 32 && nitems == 1
+                && after == 0 && data) {
+                ulong value = *(ulong*)(data);
+                d->topData()->opacity = uint(value >> 24);
+            }
+        } else
+            d->topData()->opacity = 255;
     }
 
     if (data)
@@ -4382,7 +4347,7 @@ bool QETWidget::translateKeyEventInternal(const XEvent *event, int& count, QStri
     uint keystate = event->xkey.state;
     // remove the modifiers where mode_switch exists... HPUX machines seem
     // to have alt *AND* mode_switch both in Mod1Mask, which causes
-    // XLookupString to return things like '� (aring) for Qt::ALT-A.  This
+    // XLookupString to return things like (aring) for Qt::ALT-A.  This
     // completely breaks modifiers.  If we remove the modifier for Mode_switch,
     // then things work correctly...
     xkeyevent.state &= ~qt_mode_switch_remove_mask;
@@ -4694,7 +4659,7 @@ bool QETWidget::translateKeyEvent(const XEvent *event, bool grab)
         curr_autorep = autor ? event->xkey.keycode : 0;
     }
 
-#if defined QT3_SUPPORT && !defined(QT_NO_ACCEL)
+#if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
     // process accelerators before doing key compression
     if (type == QEvent::KeyPress && !grab
         && static_cast<QApplicationPrivate*>(qApp->d_ptr)->use_compat()) {

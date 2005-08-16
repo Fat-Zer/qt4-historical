@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -776,6 +771,8 @@ static void calcLineBreaks(const QString &str, QCharAttributes *charAttributes)
         int tcls = ncls;
         if (tcls >= QUnicodeTables::LineBreak_SA)
             tcls = QUnicodeTables::LineBreak_ID;
+        if (cls >= QUnicodeTables::LineBreak_SA)
+            cls = QUnicodeTables::LineBreak_ID;
 
 	int brk = charAttributes[i].charStop ? breakTable[cls][tcls] : (int)Pbk;
         if (brk == Ibk)
@@ -816,24 +813,19 @@ static void init(QTextEngine *e)
 }
 
 QTextEngine::QTextEngine()
-    : fnt(0)
 {
     init(this);
 }
 
-QTextEngine::QTextEngine(const QString &str, QFontPrivate *f)
+QTextEngine::QTextEngine(const QString &str, const QFont &f)
     : fnt(f)
 {
     init(this);
     text = str;
-    if (fnt)
-        fnt->ref.ref();
 }
 
 QTextEngine::~QTextEngine()
 {
-    if (fnt && !fnt->ref.deref())
-        delete fnt;
     delete layoutData;
     delete specialData;
 }
@@ -853,7 +845,11 @@ void QTextEngine::reallocate(int totalGlyphs)
     m += space_logClusters;
 
 #if defined (Q_WS_WIN) || defined (__i386__)
+#if defined(Q_WS_WIN64)
+    m = (void **) (((__int64(m) + 3) >> 2) << 2);
+#else
     m = (void **) (((long(m) + 3) >> 2) << 2);
+#endif
 #else
     m = (void **) (((long(m) + 7) >> 3) << 3);
 #endif
@@ -899,9 +895,9 @@ const QCharAttributes *QTextEngine::attributes()
 void QTextEngine::shape(int item) const
 {
     if (layoutData->items[item].isObject) {
+        ensureSpace(1);
         if (block.docHandle()) {
             QTextFormat format = formats()->format(formatIndex(&layoutData->items[item]));
-            ensureSpace(1);
             docLayout()->resizeInlineObject(QTextInlineObject(item, const_cast<QTextEngine *>(this)),
                                             layoutData->items[item].position + block.position(), format);
         }
@@ -1072,43 +1068,28 @@ glyph_metrics_t QTextEngine::boundingBox(int from,  int len) const
 
 QFont QTextEngine::font(const QScriptItem &si) const
 {
-    if (block.docHandle()) {
-        QTextFormat f = format(&si);
-        Q_ASSERT(f.isCharFormat());
-        QTextCharFormat chf = f.toCharFormat();
-        QFont fnt = chf.font();
-        fnt = fnt.resolve(block.docHandle()->defaultFont);
+    QTextCharFormat f = format(&si);
+    QFont font = f.font();
 
+    if (block.docHandle()) {
         // Make sure we get the right dpi on printers
         QPaintDevice *pdev = block.docHandle()->layout()->paintDevice();
         if (pdev)
-            fnt = QFont(fnt, pdev);
-
-        if (chf.verticalAlignment() != QTextCharFormat::AlignNormal)
-            fnt.setPointSize((fnt.pointSize() * 2) / 3);
-
-        return fnt;
+            font = QFont(font, pdev);
+    } else {
+        font = font.resolve(fnt);
     }
 
-    if (fnt)
-        return QFont(fnt);
-    return QFont();
-}
+    if (f.verticalAlignment() != QTextCharFormat::AlignNormal)
+        font.setPointSize((font.pointSize() * 2) / 3);
 
-QFont QTextEngine::font() const
-{
-    if (fnt)
-        return QFont(fnt);
-    return QFont();
+    return font;
 }
 
 QFontEngine *QTextEngine::fontEngine(const QScriptItem &si) const
 {
-    if (!fnt) {
-        QFont font = this->font(si);
-        return font.d->engineForScript(si.analysis.script);
-    }
-    return fnt->engineForScript(si.analysis.script);
+    QFont font = this->font(si);
+    return font.d->engineForScript(si.analysis.script);
 }
 
 struct JustificationPoint {
@@ -1319,16 +1300,28 @@ void QScriptLine::setDefaultHeight(QTextEngine *eng)
     QFont f;
     QFontEngine *e;
 
-    if (eng->fnt) {
-        e = eng->fnt->engineForScript(QUnicodeTables::Common);
-    } else {
+    if (eng->block.docHandle()) {
         f = eng->block.charFormat().font();
-        f = f.resolve(eng->block.docHandle()->defaultFont);
+        // Make sure we get the right dpi on printers
+        QPaintDevice *pdev = eng->block.docHandle()->layout()->paintDevice();
+        if (pdev)
+            f = QFont(f, pdev);
         e = f.d->engineForScript(QUnicodeTables::Common);
+    } else {
+        e = eng->fnt.d->engineForScript(QUnicodeTables::Common);
     }
 
-    ascent = e->ascent();
-    descent = e->descent();
+    ascent = qMax(ascent, e->ascent());
+    descent = qMax(descent, e->descent());
+}
+
+QScriptLine &QScriptLine::operator+=(const QScriptLine &other)
+{
+    descent = qMax(descent, other.descent);
+    ascent = qMax(ascent, other.ascent);
+    textWidth += other.textWidth;
+    length += other.length;
+    return *this;
 }
 
 QTextEngine::LayoutData::LayoutData()
@@ -1377,9 +1370,11 @@ int QTextEngine::formatIndex(const QScriptItem *si) const
 }
 
 
-QTextFormat QTextEngine::format(const QScriptItem *si) const
+QTextCharFormat QTextEngine::format(const QScriptItem *si) const
 {
-    QTextFormat format = formats()->format(formatIndex(si));
+    QTextCharFormat format;
+    if (block.docHandle())
+        format = formats()->charFormat(formatIndex(si));
     if (specialData) {
         int end = si->position + length(si);
         for (int i = 0; i < specialData->addFormats.size(); ++i) {

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/sql/models/qsqltablemodel.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/sql/models/qsqltablemodel.cpp -->
 <head>
     <title>Qt 4.0: QSqlTableModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSqlTableModel Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSqlTableModel Class Reference<br /><sup><sup>[<a href="qtsql.html">QtSql</a> module]</sup></sup></h1>
 <p>The QSqlTableModel class provides an editable data model for a single database table. <a href="#details">More...</a></p>
-<pre>#include &lt;QSqlTableModel&gt;</pre><p>Part of the <a href="qtsql.html">QtSql</a> module.</p>
-<p>Inherits <a href="qsqlquerymodel.html">QSqlQueryModel</a>.</p>
+<pre>#include &lt;QSqlTableModel&gt;</pre><p>Inherits <a href="qsqlquerymodel.html">QSqlQueryModel</a>.</p>
 <p>Inherited by <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>.</p>
 <ul>
 <li><a href="qsqltablemodel-members.html">List of all members, including inherited members</a></li>
@@ -118,8 +117,8 @@ body { background: #ffffff; color: black; }</style>
         model-&gt;setEditStrategy(QSqlTableModel::OnManualSubmit);
         model-&gt;select();
         model-&gt;removeColumn(0); // don't show the ID
-        model-&gt;setHeaderData(0, Qt::Horizontal, QObject::tr(&quot;Name&quot;));
-        model-&gt;setHeaderData(1, Qt::Horizontal, QObject::tr(&quot;Salary&quot;));
+        model-&gt;setHeaderData(0, Qt::Horizontal, tr(&quot;Name&quot;));
+        model-&gt;setHeaderData(1, Qt::Horizontal, tr(&quot;Salary&quot;));
 
         QTableView *view = new QTableView;
         view-&gt;setModel(model);
@@ -240,7 +239,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the data for the item <i>index</i> for the role <i>role</i> to <i>value</i>. Depending on the edit strategy, the value might be applied to the database at once or cached in the model.</p>
 <p>Returns true if the value could be set or false on error, for example if <i>index</i> is out of bounds.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#setData">QAbstractItemModel</a>.</p>
-<p>See also <a href="qsqltablemodel.html#editStrategy">editStrategy</a>(), <a href="qsqltablemodel.html#data">data</a>(), <a href="qsqltablemodel.html#submit">submit</a>(), <a href="qsqltablemodel.html#submitAll">submitAll</a>(), and <a href="qsqltablemodel.html#revertRow">revertRow</a>().</p>
+<p>See also <a href="qsqltablemodel.html#editStrategy">editStrategy</a>(), <a href="qabstractitemmodel.html#data">data</a>(), <a href="qsqltablemodel.html#submit">submit</a>(), <a href="qsqltablemodel.html#submitAll">submitAll</a>(), and <a href="qsqltablemodel.html#revertRow">revertRow</a>().</p>
 <h3 class="fn"><a name="setEditStrategy"></a>void QSqlTableModel::setEditStrategy ( <a href="qsqltablemodel.html#EditStrategy-enum">EditStrategy</a> <i>strategy</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the strategy for editing values in the database to <i>strategy</i>.</p>
 <p>This will revert any pending changes.</p>
@@ -261,7 +260,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qsqlquerymodel.html#record">record</a>().</p>
 <h3 class="fn"><a name="setSort"></a>void QSqlTableModel::setSort ( int <i>column</i>, <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the sort oder for <i>column</i> to <i>order</i>. This does not affect the current data, to refresh the data using the new sort order, call <a href="qsqltablemodel.html#select">select</a>().</p>
-<p>See also <a href="qsqltablemodel.html#select">select</a>() and <a href="qsqltablemodel.html#orderByClause">orderByClause</a>().</p>
+<p>See also <a href="qsqltablemodel.html#sort">sort</a>(), <a href="qsqltablemodel.html#select">select</a>(), and <a href="qsqltablemodel.html#orderByClause">orderByClause</a>().</p>
 <h3 class="fn"><a name="setTable"></a>void QSqlTableModel::setTable ( const <a href="qstring.html">QString</a> &amp; <i>tableName</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the database table on which the model operates to <i>tableName</i>. Does not select data from the table, but fetches its field information.</p>
 <p>To populate the model with the table's data, call <a href="qsqltablemodel.html#select">select</a>().</p>
@@ -291,6 +290,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

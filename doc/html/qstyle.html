@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/styles/qstyle.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/styles/qstyle.cpp -->
 <head>
     <title>Qt 4.0: QStyle Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyle Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyle Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QStyle class is an abstract base class that encapsulates the look and feel of a GUI. <a href="#details">More...</a></p>
-<pre>#include &lt;QStyle&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre>#include &lt;QStyle&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p>Inherited by <a href="qcommonstyle.html">QCommonStyle</a>.</p>
 <ul>
 <li><a href="qstyle-members.html">List of all members, including inherited members</a></li>
@@ -95,9 +94,9 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QStyle class is an abstract base class that encapsulates the look and feel of a GUI.</p>
-<p>Qt contains a set of QStyle subclasses that emulate the styles of the different platforms supported by Qt (<a href="qwindowsstyle.html">QWindowsStyle</a>, <a href="qmacstyle.html">QMacStyle</a>, <a href="qmotifstyle.html">QMotifStyle</a>, etc.). By default, these styles are built into the <a href="qtgui.html#qtgui">QtGui</a> library. Styles can also be made available as plugins.</p>
+<p>Qt contains a set of QStyle subclasses that emulate the styles of the different platforms supported by Qt (<a href="qwindowsstyle.html">QWindowsStyle</a>, <a href="qmacstyle.html">QMacStyle</a>, <a href="qmotifstyle.html">QMotifStyle</a>, etc.). By default, these styles are built into the <a href="qtgui.html">QtGui</a> library. Styles can also be made available as plugins.</p>
 <p>Qt's built-in widgets use QStyle to perform nearly all of their drawing, ensuring that they look exactly like the equivalent native widgets. The diagram below shows a <a href="qcombobox.html">QComboBox</a> in eight different styles.</p>
-<center><img src="images/qstyle-comboboxes.png" alt="Eight combo boxes" /></center><p>Topics:</p>
+<p align="center"><img src="images/qstyle-comboboxes.png" alt="Eight combo boxes" /></p><p>Topics:</p>
 <ul><li><a href="#setting-a-style">Setting a Style</a></li>
 <li><a href="#developing-style-aware-custom-widgets">Developing Style-Aware Custom Widgets</a></li>
 <li><a href="#creating-a-custom-style">Creating a Custom Style</a></li>
@@ -545,8 +544,8 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SH_ScrollBar_MiddleClickAbsolutePosition</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A boolean value. If true, middle clicking on a scroll bar causes the slider to jump to that position. If false, middle clicking is ignored.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ScrollBar_LeftClickAbsolutePosition</tt></td><td align="center" valign="top"><tt>39</tt></td><td valign="top">A boolean value. If true, left clicking on a scroll bar causes the slider to jump to that position. If false, left clicking will behave as appropriate for each control.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ScrollBar_ScrollWhenPointerLeavesControl</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A boolean value. If true, when clicking a scroll bar <a href="qstyle.html#SubControl-enum">SubControl</a>, holding the mouse button down and moving the pointer outside the <a href="qstyle.html#SubControl-enum">SubControl</a>, the scroll bar continues to scroll. If false, the scollbar stops scrolling when the pointer leaves the <a href="qstyle.html#SubControl-enum">SubControl</a>.</td></tr>
-<tr><td valign="top"><tt>QStyle::SH_TabBar_Alignment</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The alignment for tabs in a <a href="qtabwidget.html">QTabWidget</a>. Possible values are <tt>Qt::AlignLeft</tt>, <tt>Qt::AlignCenter</tt> and <tt>Qt::AlignRight</tt>.</td></tr>
-<tr><td valign="top"><tt>QStyle::SH_Header_ArrowAlignment</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The placement of the sorting indicator may appear in list or table headers. Possible values are <tt>Qt::Left</tt> or <tt>Qt::Right</tt>.</td></tr>
+<tr><td valign="top"><tt>QStyle::SH_TabBar_Alignment</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The alignment for tabs in a <a href="qtabwidget.html">QTabWidget</a>. Possible values are <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> and <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>.</td></tr>
+<tr><td valign="top"><tt>QStyle::SH_Header_ArrowAlignment</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The placement of the sorting indicator may appear in list or table headers. Possible values are <a href="qt.html#Dock-enum">Qt::Left</a> or <a href="qt.html#Dock-enum">Qt::Right</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_Slider_SnapToValue</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Sliders snap to values while moving, as they do on Windows.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_Slider_SloppyKeyEvents</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Key presses handled in a sloppy manner, i.e., left on a vertical slider subtracts a line.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ProgressDialog_CenterCancelButton</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">Center button on progress dialogs, like Motif, otherwise right aligned.</td></tr>
@@ -625,7 +624,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SC_SpinBoxFrame</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">Spinwidget frame</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_SpinBoxEditField</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">Spinwidget edit field</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_ComboBoxEditField</tt></td><td align="center" valign="top"><tt>0x00000002</tt></td><td valign="top">Combobox edit field; see also <a href="qcombobox.html">QComboBox</a></td></tr>
-<tr><td valign="top"><tt>QStyle::SC_ComboBoxArrow</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">Combobox arrow</td></tr>
+<tr><td valign="top"><tt>QStyle::SC_ComboBoxArrow</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">Combobox arrow button</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_ComboBoxFrame</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Combobox frame</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_ComboBoxListBoxPopup</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">Combobox list box</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_SliderGroove</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Special sub-control which contains the area in which the slider handle may move</td></tr>
@@ -809,7 +808,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="itemTextRect"></a><a href="qrect.html">QRect</a> QStyle::itemTextRect ( const <a href="qfontmetrics.html">QFontMetrics</a> &amp; <i>metrics</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, int <i>alignment</i>, bool <i>enabled</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the appropriate area (see below) within rectangle <i>rect</i> in which to draw <i>text</i> using the font metrics <i>metrics</i>.</p>
 <p>The text is aligned in accordance with <i>alignment</i>. The <i>enabled</i> bool indicates whether or not the item is enabled.</p>
-<p>If <i>rect</i> is larger than the area needed to render the <i>text</i> the rectangle that is returned will be offset within <i>rect</i> in accordance with the alignment <i>alignment</i>. For example, if <i>alignment</i> is <tt>Qt::AlignCenter</tt>, the returned rectangle will be centered within <i>rect</i>. If <i>rect</i> is smaller than the area needed, the rectangle that is returned will be <i>larger</i> than <i>rect</i> (the smallest rectangle large enough to render the <i>text</i>).</p>
+<p>If <i>rect</i> is larger than the area needed to render the <i>text</i> the rectangle that is returned will be offset within <i>rect</i> in accordance with the alignment <i>alignment</i>. For example, if <i>alignment</i> is <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a>, the returned rectangle will be centered within <i>rect</i>. If <i>rect</i> is smaller than the area needed, the rectangle that is returned will be <i>larger</i> than <i>rect</i> (the smallest rectangle large enough to render the <i>text</i>).</p>
 <p>See also <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="pixelMetric"></a>int QStyle::pixelMetric ( <a href="qstyle.html#PixelMetric-enum">PixelMetric</a> <i>metric</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the pixel metric for the given <i>metric</i>. The <i>option</i> and <i>widget</i> can be used for calculating the metric. The <i>option</i> can be cast to the appropriate type based on the value of <i>metric</i>. Note that <i>option</i> may be zero even for PixelMetrics that can make use of <i>option</i>. See the table below for the appropriate <i>option</i> casts:</p>
@@ -925,6 +924,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

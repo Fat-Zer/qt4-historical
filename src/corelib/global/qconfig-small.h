@@ -2,118 +2,124 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 
-#define NO_CHECK
+// Data structures
+#define QT_NO_QUUID_STRING
+#define QT_NO_STL
 
-#define QT_NO_ACTION
-#ifndef QT_NO_TEXTCODEC /* moc? */
-#define QT_NO_TEXTCODEC
-#endif
-#define QT_NO_UNICODETABLES
-#define QT_NO_IMAGEIO_BMP
-#define QT_NO_IMAGEIO_PPM
-#define QT_NO_IMAGEIO_XBM
-#define QT_NO_IMAGEIO_XPM
-/* #define QT_NO_IMAGEIO_PNG //done by configure -no-png */
-#define QT_NO_ASYNC_IO
-#define QT_NO_ASYNC_IMAGE_IO
-/* #define QT_NO_FREETYPE //done by configure -no-freetype */
-#define QT_NO_BDF
-//#define QT_NO_FONTDATABASE
-#define QT_NO_TRANSLATION
-#define QT_NO_MIME
-#define QT_NO_SOUND
-#define QT_NO_PROPERTIES
-#define QT_NO_SYNTAXHIGHLIGHTER
+// Dialogs
+#define QT_NO_COLORDIALOG
+#define QT_NO_ERRORMESSAGE
+#define QT_NO_FONTDIALOG
+#define QT_NO_INPUTDIALOG
+#define QT_NO_MESSAGEBOX
+#define QT_NO_FILEDIALOG
+#define QT_NO_PRINTDIALOG
+#define QT_NO_PROGRESSDIALOG
+#define QT_NO_TABDIALOG
 
-#define QT_NO_QWS_GFX_SPEED
-#define QT_NO_NETWORK /* ?????????????? */
-#define QT_NO_COLORNAMES
-#define QT_NO_TRANSFORMATIONS
-#define QT_NO_PRINTER
-#define QT_NO_PICTURE
-
-#define QT_NO_IMAGE_TRUECOLOR
-/* #define QT_NO_IMAGE_SMOOTHSCALE  //needed for icon --> pushbutton */
-#define QT_NO_IMAGE_TEXT
-#define QT_NO_DIR
-
+// File I/O
 #define QT_NO_TEXTSTREAM
-#define QT_NO_DATASTREAM
-#define QT_NO_QWS_SAVEFONTS
-#define QT_NO_SESSIONMANAGER
+#define QT_NO_SETTINGS
+#define QT_NO_LIBRARY
 
+// Fonts
+#define QT_NO_FREETYPE
 
-#define QT_NO_DIALOG
+// Images
+#define QT_NO_IMAGEFORMATPLUGIN
+#define QT_NO_IMAGEFORMAT_BMP
+#define QT_NO_IMAGEFORMAT_JPEG
+#define QT_NO_IMAGEFORMAT_PPM
+#define QT_NO_IMAGEFORMAT_XBM
+#define QT_NO_IMAGE_TEXT
+#define QT_NO_MOVIE
 
-#define QT_NO_SEMIMODAL
+// Internationalization
+#define QT_NO_QWS_INPUTMETHODS
+#define QT_NO_TEXTCODEC
+#define QT_NO_CODECS
+#define QT_NO_TEXTCODECPLUGIN
+#define QT_NO_TRANSLATION
+#define QT_NO_TRANSLATION_UTF8
 
-/* #define QT_NO_STYLE //will require substantial work... */
+// ItemViews
+#define QT_NO_DIRMODEL
+#define QT_NO_PROXYMODEL
+#define QT_NO_STRINGLISTMODEL
+#define QT_NO_TABLEVIEW
+#define QT_NO_TREEVIEW
 
+// Kernel
+#define QT_NO_ACTION
+#define QT_NO_CLIPBOARD
+#define QT_NO_DRAGANDDROP
 #define QT_NO_EFFECTS
+#define QT_NO_PROPERTIES
+#define QT_NO_SESSIONMANAGER
+#define QT_NO_SHORTCUT
+#define QT_NO_SOUND
+#define QT_NO_WHEELEVENT
+
+// Networking
 #define QT_NO_COP
+#define QT_NO_HOSTINFO
+#define QT_NO_HTTP
 
+// Painting
+#define QT_NO_COLORNAMES
+#define QT_NO_PICTURE
+#define QT_NO_PRINTER
+
+// Qt/Embedded-specific
 #define QT_NO_QWS_PROPERTIES
+#define QT_NO_QWS_SOUNDSERVER
 
-#define QT_NO_RANGECONTROL
-#define QT_NO_SPLITTER
-#define QT_NO_STATUSBAR
-#define QT_NO_TABBAR
-#define QT_NO_TOOLBAR
-#define QT_NO_TOOLTIP
-#define QT_NO_VALIDATOR
-#define QT_NO_WHATSTHIS
-#define QT_NO_WIDGETSTACK
-#define QT_NO_ACCEL
-#define QT_NO_SIZEGRIP
-#define QT_NO_HEADER
-#define QT_NO_WORKSPACE
-#define QT_NO_LCDNUMBER
+// Styles
 #define QT_NO_STYLE_MOTIF
-#define QT_NO_STYLE_PLATINUM
+#define QT_NO_STYLE_CDE
+#define QT_NO_STYLE_PLASTIQUE
+#define QT_NO_STYLE_WINDOWSXP
+
+// Widgets
+#define QT_NO_LCDNUMBER
+#define QT_NO_SPINBOX
+#define QT_NO_DATETIMEEDIT
+#define QT_NO_MENU
+#define QT_NO_MAINWINDOW
+#define QT_NO_DOCKWIDGET
+#define QT_NO_TOOLBAR
+#define QT_NO_MENUBAR
+#define QT_NO_WORKSPACE
 #define QT_NO_PROGRESSBAR
-
-
-#define QT_NO_QWS_DECORATION_HYDRO
-#define QT_NO_QWS_DECORATION_BEOS
-#define QT_NO_QWS_DECORATION_KDE2
-#define QT_NO_QWS_DECORATION_KDE
-#define QT_NO_QWS_DECORATION_WINDOWS
-
-
-/* other widgets that could be removed: */
-/*
-#define QT_NO_MENUDATA
-*/
-
-
-/* possible options: */
-/*
-#define QT_NO_CURSOR
-#define QT_NO_LAYOUT
-#define QT_NO_QWS_MANAGER
-#define QT_NO_QWS_KEYBOARD
-*/
+#define QT_NO_SPLITTER
+#define QT_NO_SIZEGRIP
+#define QT_NO_STACKEDWIDGET
+#define QT_NO_TABWIDGET
+#define QT_NO_STATUSBAR
+#define QT_NO_TABLEWIDGET
+#define QT_NO_TOOLBUTTON
+#define QT_NO_TABBAR
+#define QT_NO_TOOLBOX
+#define QT_NO_WHATSTHIS
+#define QT_NO_TOOLTIP
+#define QT_NO_TREEWIDGET
+#define QT_NO_VALIDATOR

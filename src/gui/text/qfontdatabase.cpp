@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,7 +23,6 @@
 
 #include "qfontdatabase.h"
 
-#ifndef QT_NO_FONTDATABASE
 
 #include <qalgorithms.h>
 #include <qapplication.h>
@@ -898,7 +892,7 @@ QFontDatabase::findFont(int script, const QFontPrivate *fp,
 
             uint score_adjust = 0;
 
-            bool supported = false;
+            bool supported = (script == QUnicodeTables::Common);
             for (int ws = 1; !supported && ws < WritingSystemsCount; ++ws) {
                 if (scriptForWritingSystem[ws] != script)
                     continue;
@@ -1998,12 +1992,16 @@ QString QFontDatabase::writingSystemSample(WritingSystem writingSystem)
         sample += QChar(0x17c0);
         break;
     case SimplifiedChinese:
-        sample += QChar(0x3105);
-        sample += QChar(0x3115);
-        sample += QChar(0x3125);
-        sample += QChar(0x3129);
+        sample += QChar(0x4e2d);
+        sample += QChar(0x6587);
+        sample += QChar(0x8303);
+        sample += QChar(0x4f8b);
         break;
     case TraditionalChinese:
+        sample += QChar(0x4e2d);
+        sample += QChar(0x6587);
+        sample += QChar(0x7bc4);
+        sample += QChar(0x4f8b);
         break;
     case Japanese:
         sample += QChar(0x3050);
@@ -2084,4 +2082,3 @@ void QFontDatabase::parseFontName(const QString &name, QString &foundry, QString
 void QFontDatabase::createDatabase()
 { initializeDb(); }
 
-#endif // QT_NO_FONTDATABASE

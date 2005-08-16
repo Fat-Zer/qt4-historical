@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the xml module of the Qt Toolkit.
+** This file is part of the QtXML module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -33,7 +28,6 @@
 #include "qmap.h"
 #include "qstack.h"
 
-#ifndef QT_NO_XML
 
 #ifdef Q_CC_BOR // borland 6 finds bogus warnings when building this file in uic3
 #    pragma warn -8080
@@ -201,8 +195,9 @@ public:
     int pos;
     int length;
     bool nextReturnedEndOfData;
+#ifndef QT_NO_TEXTCODEC
     QTextDecoder *encMapper;
-
+#endif
 };
 
 class QXmlParseExceptionPrivate
@@ -447,7 +442,7 @@ private:
     occurred using systemId(), publicId(), lineNumber() and
     columnNumber(), along with the error message().
 
-    \sa QXmlErrorHandler QXmlReader
+    \sa QXmlErrorHandler, QXmlReader
 */
 
 /*!
@@ -622,7 +617,7 @@ public:
     to return to the previous namespace context. Use splitName() or
     processName() to split a name into its prefix and local name.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 
 /*!
@@ -763,17 +758,6 @@ void QXmlNamespaceSupport::processName(const QString& qname,
     If there is a default prefix, this function does not return it in
     the list; check for the default prefix using uri() with an
     argument of "".
-
-    Note that if you want to iterate over the list, you should iterate
-    over a copy, e.g.
-    \code
-    QStringList list = myXmlNamespaceSupport.prefixes();
-    QStringList::iterator it = list.begin();
-    while (it != list.end()) {
-        myProcessing(*it);
-        ++it;
-    }
-    \endcode
 */
 QStringList QXmlNamespaceSupport::prefixes() const
 {
@@ -798,20 +782,9 @@ QStringList QXmlNamespaceSupport::prefixes() const
     mapped to the namespace URI, and you don't care which one you get,
     use the prefix() function instead.
 
-    Note: the empty (default) prefix is never included in this list;
-    to check for the presence of a default namespace, use uri() with
-    an argument of "".
-
-    Note that if you want to iterate over the list, you should iterate
-    over a copy, e.g.
-    \code
-    QStringList list = myXmlNamespaceSupport.prefixes("");
-    QStringList::iterator it = list.begin();
-    while(it != list.end()) {
-        myProcessing(*it);
-        ++it;
-    }
-    \endcode
+    Note: The empty (default) prefix is never included in this list;
+    to check for the presence of a default namespace, call uri() with
+    "" as the argument.
 */
 QStringList QXmlNamespaceSupport::prefixes(const QString& uri) const
 {
@@ -911,7 +884,7 @@ void QXmlNamespaceSupport::reset()
 
     Returns the index of the attribute or -1 if it wasn't found.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 int QXmlAttributes::index(const QString& qName) const
 {
@@ -933,7 +906,7 @@ int QXmlAttributes::index(const QString& qName) const
 
     Returns the index of the attribute, or -1 if it wasn't found.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 int QXmlAttributes::index(const QString& uri, const QString& localPart) const
 {
@@ -967,7 +940,7 @@ int QXmlAttributes::length() const
     \a index. If no namespace processing is done, the local name is
     an empty string.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 QString QXmlAttributes::localName(int index) const
 {
@@ -978,7 +951,7 @@ QString QXmlAttributes::localName(int index) const
     Looks up an attribute's XML 1.0 qualified name for the attribute
     at position \a index.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 QString QXmlAttributes::qName(int index) const
 {
@@ -990,7 +963,7 @@ QString QXmlAttributes::qName(int index) const
     position \a index. If no namespace processing is done or if the
     attribute has no namespace, the namespace URI is an empty string.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 QString QXmlAttributes::uri(int index) const
 {
@@ -1052,7 +1025,7 @@ QString QXmlAttributes::value(int index) const
     Returns an attribute's value for the qualified name \a qName, or an
     empty string if no attribute exists for the name given.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \sa {Namespace Support via Features}
 */
 QString QXmlAttributes::value(const QString& qName) const
 {
@@ -1063,15 +1036,13 @@ QString QXmlAttributes::value(const QString& qName) const
 }
 
 /*!
-\overload
+    \overload
 
-Returns an attribute's value by namespace name.
+    Returns an attribute's value by namespace name.
 
-\a uri specifies the namespace URI, or an empty string if the name
-has no namespace URI. \a localName specifies the attribute's local
-name.
-
-See also the \link xml.html#sax2Namespaces namespace description\endlink.
+    \a uri specifies the namespace URI, or an empty string if the name
+    has no namespace URI. \a localName specifies the attribute's local
+    name.
 */
 QString QXmlAttributes::value(const QString& uri, const QString& localName) const
 {
@@ -1173,7 +1144,9 @@ void QXmlInputSource::init()
     d->inputStream = 0;
 
     setData(QString());
+#ifndef QT_NO_TEXTCODEC
     d->encMapper = 0;
+#endif
     d->nextReturnedEndOfData = true; // first call to next() will call fetchData()
 }
 
@@ -1229,7 +1202,9 @@ QXmlInputSource::QXmlInputSource(QFile& file)
 */
 QXmlInputSource::~QXmlInputSource()
 {
+#ifndef QT_NO_TEXTCODEC
     delete d->encMapper;
+#endif
     delete d;
 }
 
@@ -1370,6 +1345,9 @@ void QXmlInputSource::fetchData()
 */
 QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
 {
+#ifdef QT_NO_TEXTCODEC
+    return QString(data);
+#else
     if (data.size() == 0)
         return QString();
     if (beginning) {
@@ -1378,9 +1356,19 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     }
     if (d->encMapper == 0) {
         int mib = 106; // UTF-8
+
         // look for byte order mark and read the first 5 characters
-        if (data.size() >= 2 && (data.startsWith("\xfe\xff") || data.startsWith("\xff\xfe")))
-            mib = 1015; // UTF-16
+        if (data.size() >= 2) {
+            uchar ch1 = data.at(0);
+            uchar ch2 = data.at(1);
+
+            if (ch1 == 0xfe && ch2 == 0xff || ch1 == 0xff && ch2 == 0xfe)
+                mib = 1015; // UTF-16 with byte order mark
+            else if (ch1 == 0x3c && ch2 == 0x00)
+                mib = 1014; // UTF-16LE
+            else if (ch1 == 0x00 && ch2 == 0x3c)
+                mib = 1013; // UTF-16BE
+        }
 
         QTextCodec *codec = QTextCodec::codecForMib(mib);
         Q_ASSERT(codec);
@@ -1422,6 +1410,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
         return input;
     }
     return d->encMapper->toUnicode(data, data.size());
+#endif
 }
 
 
@@ -1468,10 +1457,8 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     is called. At the beginning of prefix-URI scopes
     startPrefixMapping() is called.
 
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDTDHandler QXmlDeclHandler QXmlEntityResolver QXmlErrorHandler
-    QXmlLexicalHandler
+    \sa QXmlDTDHandler, QXmlDeclHandler, QXmlEntityResolver, QXmlErrorHandler,
+        QXmlLexicalHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -1545,9 +1532,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     reports an error. The reader uses the function errorString() to
     get the error message.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
-
-    \sa endPrefixMapping()
+    \sa endPrefixMapping(), {Namespace Support via Features}
 */
 
 /*!
@@ -1560,9 +1545,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     reports an error. The reader uses the function errorString() to
     get the error message.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
-
-    \sa startPrefixMapping()
+    \sa startPrefixMapping(), {Namespace Support via Features}
 */
 
 /*!
@@ -1594,9 +1577,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     reports an error. The reader uses the function errorString() to
     get the error message.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
-
-    \sa endElement()
+    \sa endElement(), {Namespace Support via Features}
 */
 
 /*!
@@ -1610,9 +1591,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     reports an error. The reader uses the function errorString() to
     get the error message.
 
-    See also the \link xml.html#sax2Namespaces namespace description\endlink.
-
-    \sa startElement()
+    \sa startElement(), {Namespace Support via Features}
 */
 
 /*!
@@ -1700,10 +1679,8 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
     Errors can be reported using warning(), error() and fatalError(),
     with the error text being reported with errorString().
 
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDTDHandler QXmlDeclHandler QXmlContentHandler QXmlEntityResolver
-    QXmlLexicalHandler
+    \sa QXmlDTDHandler, QXmlDeclHandler, QXmlContentHandler, QXmlEntityResolver,
+        QXmlLexicalHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -1778,10 +1755,8 @@ events are reported.
     and unparsed entity declarations using notationDecl() and
     unparsedEntityDecl() respectively.
 
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDeclHandler QXmlContentHandler QXmlEntityResolver QXmlErrorHandler
-    QXmlLexicalHandler
+    \sa QXmlDeclHandler, QXmlContentHandler, QXmlEntityResolver, QXmlErrorHandler,
+        QXmlLexicalHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -1843,10 +1818,8 @@ events are reported.
     resolveEntity(), and register it with
     QXmlReader::setEntityResolver().
 
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDTDHandler QXmlDeclHandler QXmlContentHandler QXmlErrorHandler
-    QXmlLexicalHandler
+    \sa QXmlDTDHandler, QXmlDeclHandler, QXmlContentHandler, QXmlErrorHandler,
+        QXmlLexicalHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -1910,10 +1883,8 @@ events are reported.
     The interface provides the startDTD(), endDTD(), startEntity(),
     endEntity(), startCDATA(), endCDATA() and comment() functions.
 
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDTDHandler QXmlDeclHandler QXmlContentHandler QXmlEntityResolver
-    QXmlErrorHandler
+    \sa QXmlDTDHandler, QXmlDeclHandler, QXmlContentHandler, QXmlEntityResolver,
+        QXmlErrorHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -1973,7 +1944,7 @@ events are reported.
     reports an error. The reader uses the function errorString() to
     get the error message.
 
-    \sa endEntity() QXmlSimpleReader::setFeature()
+    \sa endEntity(), QXmlSimpleReader::setFeature()
 */
 
 /*!
@@ -1990,7 +1961,7 @@ events are reported.
     reports an error. The reader uses the function errorString() to
     get the error message.
 
-    \sa startEntity() QXmlContentHandler::skippedEntity() QXmlSimpleReader::setFeature()
+    \sa startEntity(), QXmlContentHandler::skippedEntity(), QXmlSimpleReader::setFeature()
 */
 
 /*!
@@ -2018,7 +1989,7 @@ events are reported.
     an error. The reader uses the function errorString() to get the error
     message.
 
-    \sa startCDATA() QXmlContentHandler::characters()
+    \sa startCDATA(), QXmlContentHandler::characters()
 */
 
 /*!
@@ -2057,10 +2028,8 @@ events are reported.
     The interface provides attributeDecl(), internalEntityDecl() and
     externalEntityDecl() functions.
 
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDTDHandler QXmlContentHandler QXmlEntityResolver QXmlErrorHandler
-    QXmlLexicalHandler
+    \sa QXmlDTDHandler, QXmlContentHandler, QXmlEntityResolver, QXmlErrorHandler,
+        QXmlLexicalHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -2190,14 +2159,8 @@ events are reported.
     to perform some finalization or validation on the content once the
     document has been read completely.
 
-    See the qt/examples/xml/rsslisting example for more information
-    on creating a custom handler.
-
-    See also the \link xml.html#sax2Intro Introduction to SAX2\endlink.
-
-    \sa QXmlDTDHandler QXmlDeclHandler QXmlContentHandler QXmlEntityResolver
-    QXmlErrorHandler QXmlLexicalHandler
-
+    \sa QXmlDTDHandler, QXmlDeclHandler, QXmlContentHandler, QXmlEntityResolver,
+        QXmlErrorHandler, QXmlLexicalHandler, {Introduction to SAX2}
 */
 
 /*!
@@ -2607,7 +2570,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     If \a ok is not 0: \c{*}\a{ok}  is set to true if the reader has the
     feature called \a name; otherwise \c{*}\a{ok} is set to false.
 
-    \sa setFeature() hasFeature()
+    \sa setFeature(), hasFeature()
 */
 
 /*!
@@ -2616,7 +2579,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     Sets the feature called \a name to the given \a value. If the
     reader doesn't have the feature nothing happens.
 
-    \sa feature() hasFeature()
+    \sa feature(), hasFeature()
 */
 
 /*!
@@ -2625,7 +2588,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     Returns \c true if the reader has the feature called \a name;
     otherwise returns false.
 
-    \sa feature() setFeature()
+    \sa feature(), setFeature()
 */
 
 /*!
@@ -2637,7 +2600,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     If \a ok is not 0: if the reader has the \a name property
     \c{*}\a{ok} is set to true; otherwise \c{*}\a{ok} is set to false.
 
-    \sa setProperty() hasProperty()
+    \sa setProperty(), hasProperty()
 */
 
 /*!
@@ -2646,7 +2609,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     Sets the property \a name to \a value. If the reader doesn't have
     the property nothing happens.
 
-    \sa property() hasProperty()
+    \sa property(), hasProperty()
 */
 
 /*!
@@ -2655,7 +2618,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     Returns true if the reader has the property \a name; otherwise
     returns false.
 
-    \sa property() setProperty()
+    \sa property(), setProperty()
 */
 
 /*!
@@ -2843,9 +2806,8 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     to enable reporting of namespace prefixes to the content handler:
 
     \code
-    xmlReader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        xmlReader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
     \endcode
-
 */
 
 static inline bool is_S(QChar ch)
@@ -3001,10 +2963,7 @@ bool QXmlSimpleReader::feature(const QString& name, bool *ok) const
             data in one chunk.
     \endtable
 
-    More information about features can be found in the \link
-    xml.html#sax2Features Qt SAX2 overview. \endlink
-
-    \sa feature() hasFeature()
+    \sa feature(), hasFeature(), {SAX2 Features}
 */
 void QXmlSimpleReader::setFeature(const QString& name, bool enable)
 {
@@ -3256,7 +3215,7 @@ bool QXmlSimpleReader::parse(const QXmlInputSource *input, bool incremental)
     without available data will cause false to be returned whether the
     previous input was well-formed or not.
 
-    \sa parse() QXmlInputSource::data() QXmlInputSource::next()
+    \sa parse(), QXmlInputSource::data(), QXmlInputSource::next()
 */
 bool QXmlSimpleReader::parseContinue()
 {
@@ -7901,5 +7860,3 @@ void QXmlSimpleReaderPrivate::refAddC(QChar ch)
         updateValue(refValue, refArray, refArrayPos, refValueLen);
     refArray[refArrayPos++] = ch;
 }
-
-#endif // QT_NO_XML

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/kernel/qsound.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/kernel/qsound.cpp -->
 <head>
     <title>Qt 4.0: QSound Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSound Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSound Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QSound class provides access to the platform audio facilities. <a href="#details">More...</a></p>
-<pre>#include &lt;QSound&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre>#include &lt;QSound&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qsound-members.html">List of all members, including inherited members</a></li>
 <li><a href="qsound-qt3.html">Qt 3 support members</a></li>
@@ -74,10 +73,10 @@ body { background: #ffffff; color: black; }</style>
 
     bells.play();</pre>
 <p>Sounds played using the second model may use more memory but play more immediately than sounds played using the first model, depending on the underlying platform audio facilities.</p>
-<p>On Microsoft Windows the underlying multimedia system is used; only WAVE format sound files are supported.</p>
-<p>On <a href="winsystem.html#x11">X11</a> the <a href="ftp://ftp.x.org/contrib/audio/nas/">Network Audio System</a> is used if available, otherwise all operations work silently. NAS supports WAVE and AU files.</p>
-<p>On Mac OS X we use <a href="http://quicktime.apple.com/">QuickTime</a> for sound. All QuickTime formats are supported by Qt/Mac.</p>
-<p>On Qt/Embedded, a built-in mixing sound server is used, which accesses <tt>/dev/dsp</tt> directly. Only the WAVE format is supported.</p>
+<p>On Microsoft Windows, the underlying multimedia system is used; only WAVE format sound files are supported.</p>
+<p>On X11, the <a href="ftp://ftp.x.org/contrib/audio/nas/">Network Audio System</a> is used if available, otherwise all operations work silently. NAS supports WAVE and AU files.</p>
+<p>On Mac OS X, we use <a href="http://quicktime.apple.com/">QuickTime</a> for sound. All QuickTime formats are supported by Qt/Mac.</p>
+<p>In Qt/Embedded, a built-in mixing sound server is used, which accesses <tt>/dev/dsp</tt> directly. Only the WAVE format is supported.</p>
 <p>The availability of sound can be tested with <a href="qsound.html#isAvailable">QSound::isAvailable</a>().</p>
 <p>Note that QSound does not support <a href="resources.html">resources</a>. This might be fixed in a future Qt version.</p>
 <hr />
@@ -100,6 +99,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> On Windows this function always returns true for unlooped sounds.</p>
 <h3 class="fn"><a name="loops"></a>int QSound::loops () const</h3>
 <p>Returns the number of times the sound will play.</p>
+<p>See also <a href="qsound.html#setLoops">setLoops</a>().</p>
 <h3 class="fn"><a name="loopsRemaining"></a>int QSound::loopsRemaining () const</h3>
 <p>Returns the number of times the sound will loop. This value decreases each time the sound loops.</p>
 <h3 class="fn"><a name="play"></a>void QSound::play ( const <a href="qstring.html">QString</a> &amp; <i>filename</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -119,6 +119,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

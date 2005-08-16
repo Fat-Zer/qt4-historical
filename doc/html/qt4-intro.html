@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/qt4-intro.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qt4-intro.qdoc -->
 <head>
     <title>Qt 4.0: What's New in Qt 4</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -18,11 +18,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Next: <a href="qt4-tulip.html">The Tulip Container Classes</a>]
 </p>
-<h1 align="center">What's New in Qt 4</h1>
+<h1 align="center">What's New in Qt 4<br /><small></small></h1>
 <p>This document covers the most important differences between Qt 3 and Qt 4. Although it is not intended to be a comprehensive porting guide, it tells you about the most important portability issues that you may encounter. It also explains how to turn on Qt 3 compatibility support.</p>
 <ul><li><a href="#new-technologies">New Technologies</a></li>
 <li><a href="#build-system">Build System</a></li>
@@ -53,27 +53,28 @@ body { background: #ffffff; color: black; }</style>
 <li>The <a href="qt4-network.html">network module</a>, with better support for UDP and synchronous sockets.</li>
 <li>The <a href="qt4-styles.html">style API</a>, which is now decoupled from the widgets, meaning that you can draw any user interface element on any device (widget, pixmap, etc.).</li>
 <li>Enhanced <a href="qt4-threads.html">thread support</a>, with signal-slot connections across threads and per-thread event loops.</li>
-<li>A new <a href="resources.html">resource system</a> for embedding images and other resource files into the application executable.</li>
+<li>A new <a href="resources.html#resource-system">resource system</a> for embedding images and other resource files into the application executable.</li>
 </ul>
 <a name="build-system"></a>
 <h2>Build System</h2>
 <p>Unlike previous Qt releases, Qt 4 is a collection of smaller libraries:</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Library</th><th>Description</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtcore.html#qtcore">QtCore</a></td><td>Core non-GUI functionality</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtgui.html#qtgui">QtGui</a></td><td>Core GUI functionality</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtnetwork.html#qtnetwork">QtNetwork</a></td><td>Network module</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtopengl.html#qtopengl">QtOpenGL</a></td><td>OpenGL module</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtsql.html#qtsql">QtSql</a></td><td>SQL module</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtxml.html#qtxml">QtXml</a></td><td>XML module</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt3support.html#qt3support">Qt3Support</a></td><td>Qt 3 support classes</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qaxcontainer.html#qaxcontainer">QAxContainer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> client extension</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qaxserver.html#qaxserver">QAxServer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> server extension</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtdesigner.html#qtdesigner">QtDesigner</a></td><td>Classes for extending and embedding Qt Designer</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtcore.html">QtCore</a></td><td>Core non-GUI functionality</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtgui.html">QtGui</a></td><td>Core GUI functionality</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtnetwork.html">QtNetwork</a></td><td>Network module</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtopengl.html">QtOpenGL</a></td><td>OpenGL module</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtsql.html">QtSql</a></td><td>SQL module</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtxml.html">QtXml</a></td><td>XML module</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt3support.html">Qt3Support</a></td><td>Qt 3 support classes</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qaxcontainer.html">QAxContainer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> client extension</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qaxserver.html">QAxServer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> server extension</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtdesigner.html">QtDesigner</a></td><td>Classes for extending and embedding Qt Designer</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtassistant.html">QtAssistant</a></td><td>Classes for launching Qt Assistant</td></tr>
 </table>
-<p><a href="qtcore.html#qtcore">QtCore</a> contains tool classes like <a href="qstring.html">QString</a>, <a href="qlist.html">QList</a>, and <a href="qfile.html">QFile</a>, as well as kernel classes like <a href="qobject.html">QObject</a> and <a href="qtimer.html">QTimer</a>. The <a href="qapplication.html">QApplication</a> class has been refactored so that it can be used in non-GUI applications. It is split into <a href="qcoreapplication.html">QCoreApplication</a> (in <a href="qtcore.html#qtcore">QtCore</a>) and <a href="qapplication.html">QApplication</a> (in <a href="qtgui.html#qtgui">QtGui</a>).</p>
-<p>This split makes it possible to develop server applications using Qt without linking in any unnecessary GUI-related code and without requiring GUI-related system libraries to be present on the target machine (e.g. Xlib on <a href="winsystem.html#x11">X11</a>, Carbon on Mac OS X).</p>
-<p>If you use qmake to generate your makefiles, qmake will by default link your application against <a href="qtcore.html#qtcore">QtCore</a> and <a href="qtgui.html#qtgui">QtGui</a>. To remove the dependency upon <a href="qtgui.html#qtgui">QtGui</a>, add the line</p>
+<p><a href="qtcore.html">QtCore</a> contains tool classes like <a href="qstring.html">QString</a>, <a href="qlist.html">QList</a>, and <a href="qfile.html">QFile</a>, as well as kernel classes like <a href="qobject.html">QObject</a> and <a href="qtimer.html">QTimer</a>. The <a href="qapplication.html">QApplication</a> class has been refactored so that it can be used in non-GUI applications. It is split into <a href="qcoreapplication.html">QCoreApplication</a> (in <a href="qtcore.html">QtCore</a>) and <a href="qapplication.html">QApplication</a> (in <a href="qtgui.html">QtGui</a>).</p>
+<p>This split makes it possible to develop server applications using Qt without linking in any unnecessary GUI-related code and without requiring GUI-related system libraries to be present on the target machine (e.g. Xlib on X11, Carbon on Mac OS X).</p>
+<p>If you use qmake to generate your makefiles, qmake will by default link your application against <a href="qtcore.html">QtCore</a> and <a href="qtgui.html">QtGui</a>. To remove the dependency upon <a href="qtgui.html">QtGui</a>, add the line</p>
 <pre>&nbsp;   QT -= gui</pre>
 <p>to your .pro file. To enable the other libraries, add the line</p>
 <pre>&nbsp;   QT += network opengl sql qt3support</pre>
@@ -101,7 +102,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   using namespace Qt;</pre>
 <p>at the top of your source files, after your <tt>#include</tt> directives. If you use the <tt>using namespace</tt> syntax you don't need the prefix (e.g., <tt>yellow</tt> is sufficient).</p>
 <p>When porting Qt 3 applications, you may run into some source compatibility problems with some of these symbols. For example, in Qt 3, it was legal to write <tt>QWidget::yellow</tt> instead of <tt>Qt::yellow</tt>, because <a href="qwidget.html">QWidget</a> inherited from Qt. This won't work in Qt 4; you must write <tt>Qt::yellow</tt> or add the &quot;using namespace&quot; directive and drop the <tt>Qt:</tt>: prefix.</p>
-<p>The <a href="qt3to4.html">qt3to4 porting tool</a> automates this conversion.</p>
+<p>The <a href="qt3to4.html">qt3to4.html</a> porting tool automates this conversion.</p>
 <a name="qobject-qwidget-constructors"></a>
 <h2>QObject/QWidget Constructors</h2>
 <p>In Qt 4 we have tried to simplify the constructors of <a href="qobject.html">QObject</a>/<a href="qwidget.html">QWidget</a> subclasses. This makes subclassing easier, at the same time as it helps make the Qt library more efficient.</p>
@@ -136,10 +137,10 @@ body { background: #ffffff; color: black; }</style>
 <h2>Paint Events</h2>
 <p>Qt 4 supports double buffering transparently on all platforms. This feature can be turned off on a per-widget basis by calling QWidget::setAttribute(<a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a>).</p>
 <p>A consequence of this is that all painting must now be done from the paintEvent() function. This is also required by the HIView API on Mac OS X. In practice, this is seldom a problem, since you can call update() from anywhere in your code to create a paint event, with the region to update as the argument.</p>
-<p>To help porting, <a href="qwidget.html">QWidget</a> supports a <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOutsidePaintEvent</a> attribute that can be set to make it possible to paint outside <a href="qwidget.html#paintEvent">paintEvent()</a> on Windows and <a href="winsystem.html#x11">X11</a>.</p>
+<p>To help porting, <a href="qwidget.html">QWidget</a> supports a <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOutsidePaintEvent</a> attribute that can be set to make it possible to paint outside <a href="qwidget.html#paintEvent">paintEvent()</a> on Windows and X11.</p>
 <a name="qt-3-support-layer"></a>
 <h2>Qt 3 Support Layer</h2>
-<p>Qt 4 provides an extension library that applications based on Qt 3, called <a href="qt3support.html#qt3support">Qt3Support</a>, that Qt applications can link against. This allows for more compatibility than ever before, without bloating Qt.</p>
+<p>Qt 4 provides an extension library that applications based on Qt 3, called <a href="qt3support.html">Qt3Support</a>, that Qt applications can link against. This allows for more compatibility than ever before, without bloating Qt.</p>
 <ul>
 <li>Classes that have been replaced by a different class with the same name, such as <a href="qlistview.html">QListView</a>, and classes that no longer exist in Qt 4 are available with a <tt>3</tt> in their name (e.g., <a href="q3listview.html">Q3ListView</a>, <a href="q3accel.html">Q3Accel</a>).</li>
 <li>Other classes provide compatibility functions. Most of these are implemented inline, so that they don't bloat the Qt libraries.</li>
@@ -150,7 +151,7 @@ body { background: #ffffff; color: black; }</style>
 <p>On Visual C++ 7 and GCC 3.2+, using compatibility functions often results in a compiler warning (e.g., &quot;'find' is deprecated&quot;). If you want to turn off that warning, add the line</p>
 <pre>&nbsp;   DEFINES += QT3_SUPPORT</pre>
 <p>to your <tt>.pro</tt> file.</p>
-<p>If you want to use compatibility functions but don't want to link against the <a href="qt3support.html#qt3support">Qt3Support</a> library, add the line</p>
+<p>If you want to use compatibility functions but don't want to link against the <a href="qt3support.html">Qt3Support</a> library, add the line</p>
 <pre>&nbsp;   DEFINES += QT3_SUPPORT_WARNINGS</pre>
 <p>or</p>
 <pre>&nbsp;   DEFINES += QT3_SUPPORT</pre>
@@ -165,6 +166,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

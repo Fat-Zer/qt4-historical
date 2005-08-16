@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -44,6 +39,8 @@ static const double deg2rad = 0.017453292519943295769;        // pi/180
 static const char piData[] = "version=\"1.0\" standalone=\"no\"";
 static const char publicId[] = "-//W3C//DTD SVG 20001102//EN";
 static const char systemId[] = "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd";
+
+static QString qt_svg_compose_path(const QPainterPath &path);
 
 struct ImgElement {
     QDomElement element;
@@ -199,6 +196,7 @@ void Q3SVGPaintEngine::updateState(const QPaintEngineState &state)
     if (flags & DirtyFont) updateFont(state.font());
     if (flags & DirtyTransform) updateMatrix(state.matrix());
     if (flags & DirtyClipRegion) updateClipRegion(state.clipRegion(), state.clipOperation());
+    if (flags & DirtyClipPath) updateClipPath(state.clipPath(), state.clipOperation());
 }
 
 void Q3SVGPaintEngine::updatePen(const QPen &pen)
@@ -237,7 +235,7 @@ void Q3SVGPaintEngine::updateMatrix(const QMatrix &matrix)
 //     d->wheight = ps->wh;
 }
 
-void Q3SVGPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOperation op)
+void Q3SVGPaintEngine::updateClipPath(const QPainterPath &path, Qt::ClipOperation op)
 {
     Q_D(Q3SVGPaintEngine);
     if (op == Qt::NoClip)
@@ -247,28 +245,19 @@ void Q3SVGPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOpera
     d->currentClip++;
     e = d->doc.createElement("clipPath");
     e.setAttribute("id", QString("clip%1").arg(d->currentClip));
-    QRect br = clipRegion.boundingRect();
-    QDomElement ce;
-    if (clipRegion.rects().count() == 1) {
-        // Then it's just a rect, boundingRect() will do
-        ce = d->doc.createElement("rect");
-        ce.setAttribute("x", br.x());
-        ce.setAttribute("y", br.y());
-        ce.setAttribute("width", br.width());
-        ce.setAttribute("height", br.height());
-    } else {
-        // It's an ellipse, calculate the ellipse
-        // from the boundingRect()
-        ce = d->doc.createElement("ellipse");
-        double cx = br.x() + (br.width() / 2.0);
-        double cy = br.y() + (br.height() / 2.0);
-        ce.setAttribute("cx", cx);
-        ce.setAttribute("cy", cy);
-        ce.setAttribute("rx", cx - br.x());
-        ce.setAttribute("ry", cy - br.y());
-    }
-    e.appendChild(ce);
-    d->appendChild(e, QPicturePrivate::PdcSetClipRegion);
+
+    QDomElement path_element = d->doc.createElement("path");
+    path_element.setAttribute("d", qt_svg_compose_path(path));
+    e.appendChild(path_element);
+
+    d->appendChild(e, QPicturePrivate::PdcSetClipPath);
+}
+
+void Q3SVGPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOperation op)
+{
+    QPainterPath clipPath;
+    clipPath.addRegion(clipRegion);
+    updateClipPath(clipPath, op);
 }
 
 void Q3SVGPaintEngine::updateRenderHints(QPainter::RenderHints)
@@ -349,36 +338,8 @@ void Q3SVGPaintEngine::drawLines(const QLineF *lines, int lineCount)
 void Q3SVGPaintEngine::drawPath(const QPainterPath &path)
 {
     Q_D(Q3SVGPaintEngine);
-    QString str, tmp;
-    for (int i = 0; i < path.elementCount(); ++i) {
-        const QPainterPath::Element &elm = path.elementAt(i);
-        switch (elm.type) {
-        case QPainterPath::LineToElement:
-            tmp.sprintf("L %f %f ", elm.x, elm.y);
-            str += tmp;
-            break;
-        case QPainterPath::MoveToElement:
-            tmp.sprintf("M %f %f ", elm.x, elm.y);
-            str += tmp;
-            break;
-        case QPainterPath::CurveToElement:
-        {
-            Q_ASSERT(path.elementCount() > i+2);
-            const QPainterPath::Element cd1 = path.elementAt(i+1);
-            const QPainterPath::Element cd2 = path.elementAt(i+2);
-            Q_ASSERT(cd1.type == QPainterPath::CurveToDataElement
-                     && cd2.type == QPainterPath::CurveToDataElement);
-            tmp.sprintf("C %f %f %f %f %f %f ", elm.x, elm.y, cd1.x, cd1.y, cd2.x, cd2.y);
-            str += tmp;
-            i += 2;
-            break;
-        }
-        default:
-            break;
-        }
-    }
     QDomElement e = d->doc.createElement("path");
-    e.setAttribute("d", str);
+    e.setAttribute("d", qt_svg_compose_path(path));
     d->appendChild(e, QPicturePrivate::PdcDrawPath);
 }
 
@@ -609,10 +570,14 @@ void Q3SVGPaintEnginePrivate::appendChild(QDomElement &e, QPicturePrivate::Paint
         if (c == QPicturePrivate::PdcSave)
             current = e;
         // ### optimize application of attributes utilizing <g>
-        if (c == QPicturePrivate::PdcSetClipRegion) {
+        if (c == QPicturePrivate::PdcSetClipRegion || c == QPicturePrivate::PdcSetClipPath) {
             QDomElement ne;
             ne = doc.createElement("g");
             ne.setAttribute("style", QString("clip-path:url(#clip%1)").arg(currentClip));
+            if (dirtyTransform) {
+                applyTransform(&ne);
+                dirtyTransform = false;
+            }
             current.appendChild(ne);
             current = ne;
         } else {
@@ -1517,3 +1482,37 @@ QColor Q3SVGPaintEnginePrivate::parseColor(const QString &col)
     // check for predefined Qt color objects, #RRGGBB and #RGB
     return QColor(col);
 }
+
+static QString qt_svg_compose_path(const QPainterPath &path)
+{
+    QString str, tmp;
+    for (int i = 0; i < path.elementCount(); ++i) {
+        const QPainterPath::Element &elm = path.elementAt(i);
+        switch (elm.type) {
+        case QPainterPath::LineToElement:
+            tmp.sprintf("L %f %f ", elm.x, elm.y);
+            str += tmp;
+            break;
+        case QPainterPath::MoveToElement:
+            tmp.sprintf("M %f %f ", elm.x, elm.y);
+            str += tmp;
+            break;
+        case QPainterPath::CurveToElement:
+        {
+            Q_ASSERT(path.elementCount() > i+2);
+            const QPainterPath::Element cd1 = path.elementAt(i+1);
+            const QPainterPath::Element cd2 = path.elementAt(i+2);
+            Q_ASSERT(cd1.type == QPainterPath::CurveToDataElement
+                     && cd2.type == QPainterPath::CurveToDataElement);
+            tmp.sprintf("C %f %f %f %f %f %f ", elm.x, elm.y, cd1.x, cd1.y, cd2.x, cd2.y);
+            str += tmp;
+            i += 2;
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return str;
+}
+

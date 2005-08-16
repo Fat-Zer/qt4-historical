@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,7 +34,7 @@
 #endif
 
 #ifndef QT_NO_STL
-# if defined (Q_CC_MSVC_NET) && _MSV_VER < 1310 // Avoids nasty warning for xlocale, line 450
+# if defined (Q_CC_MSVC_NET) && _MSC_VER < 1310 // Avoids nasty warning for xlocale, line 450
 #  pragma warning (push)
 #  pragma warning (disable : 4189)
 #  include <string>
@@ -62,6 +57,8 @@ typedef std::basic_string<wchar_t> QStdWString;
 #ifdef truncate
 #error qstring.h must be included before any header file that defines truncate
 #endif
+
+QT_MODULE(Core)
 
 class QCharRef;
 class QRegExp;
@@ -128,14 +125,12 @@ public:
     QString arg(const QString &a1, const QString &a2, const QString &a3) const;
     QString arg(const QString &a1, const QString &a2, const QString &a3, const QString &a4) const;
 
-#ifndef QT_NO_SPRINTF
     QString    &vsprintf(const char *format, va_list ap);
     QString    &sprintf(const char *format, ...)
 #if defined(Q_CC_GNU) && !defined(__INSURE__)
         __attribute__ ((format (printf, 2, 3)))
 #endif
         ;
-#endif
 
     int indexOf(QChar c, int from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
     int indexOf(const QString &s, int from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
@@ -214,7 +209,7 @@ public:
     QString &replace(QChar c, const QString &after, Qt::CaseSensitivity cs = Qt::CaseSensitive);
     QString &replace(const QString &before, const QString &after,
                      Qt::CaseSensitivity cs = Qt::CaseSensitive);
-#ifndef QT_NO_REGEXP_CAPTURE
+#ifndef QT_NO_REGEXP
     QString &replace(const QRegExp &rx, const QString &after);
     inline QString &remove(const QRegExp &rx)
     { return replace(rx, QString()); }
@@ -226,7 +221,9 @@ public:
                       Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
     QStringList split(const QChar &sep, SplitBehavior behavior = KeepEmptyParts,
                       Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+#ifndef QT_NO_REGEXP
     QStringList split(const QRegExp &sep, SplitBehavior behavior = KeepEmptyParts) const;
+#endif
 
     enum NormalizationForm {
         NormalizationForm_D,
@@ -809,7 +806,7 @@ inline QStdWString QString::toStdWString() const
     return str;
 }
 inline QString QString::fromStdWString(const QStdWString &s)
-{ return fromWCharArray(s.c_str(), s.length()); }
+{ return fromWCharArray(s.c_str(), int(s.length())); }
 # endif
 #endif
 

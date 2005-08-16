@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "qitemdelegate.h"
+
+#ifndef QT_NO_ITEMVIEWS
 #include <qabstractitemmodel.h>
 #include <qapplication.h>
 #include <qlineedit.h>
@@ -45,7 +42,7 @@
 #include <private/qdnd_p.h>
 #include <qdebug.h>
 
-static const int textMargin = 2;
+static const int textMargin = 1;
 
 class QItemDelegatePrivate : public QObjectPrivate
 {
@@ -242,11 +239,13 @@ QWidget *QItemDelegate::createEditor(QWidget *parent,
 
 void QItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
+#ifndef QT_NO_PROPERTIES
     Q_D(const QItemDelegate);
     QVariant v = index.model()->data(index, Qt::EditRole);
     QByteArray n = d->editorFactory()->valuePropertyName(v.type());
     if (!n.isEmpty())
         editor->setProperty(n, v);
+#endif
 }
 
 /*!
@@ -258,12 +257,14 @@ void QItemDelegate::setModelData(QWidget *editor,
                                  QAbstractItemModel *model,
                                  const QModelIndex &index) const
 {
+#ifndef QT_NO_PROPERTIES
     Q_D(const QItemDelegate);
     Q_ASSERT(model);
     QVariant::Type t = model->data(index, Qt::EditRole).type();
     QByteArray n = d->editorFactory()->valuePropertyName(t);
     if (!n.isEmpty())
         model->setData(index, editor->property(n), Qt::EditRole);
+#endif
 }
 
 /*!
@@ -381,6 +382,7 @@ void QItemDelegate::drawFocus(QPainter *painter,
         QStyleOptionFocusRect o;
         o.QStyleOption::operator=(option);
         o.rect = rect;
+        o.state |= QStyle::State_KeyboardFocusChange;
         QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
                                   ? QPalette::Normal : QPalette::Disabled;
         o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected)
@@ -438,11 +440,18 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
     textRect->adjust(-textMargin, 0, textMargin, 0); // add width padding
 
     QSize pm(0, 0);
-    if (pixmapRect->isValid())
+    if (pixmapRect->isValid()) {
         pm = option.decorationSize;
+        pm.rheight() += 2 * textMargin;
+        pm.rwidth() += 2 * textMargin;
+    }
     if (hint) {
-        w = qMax(textRect->width(), pm.width());
         h = qMax(textRect->height(), pm.height());
+        if (option.decorationPosition == QStyleOptionViewItem::Left || option.decorationPosition == QStyleOptionViewItem::Right) {
+            w = textRect->width() + pm.width();
+        } else {
+            w = qMax(textRect->width(), pm.width());
+        }
     } else {
         w = option.rect.width();
         h = option.rect.height();
@@ -451,54 +460,66 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
     int cw = 0;
     QRect check;
     if (checkRect->isValid()) {
-        check.setRect(x, y, checkRect->width() + textMargin * 2, h);
-        cw = check.width();
-        if (option.direction == Qt::LeftToRight)
-            x += cw;
+        cw = checkRect->width() + 2 * textMargin;
+        if (hint) w += cw;
+        if (option.direction == Qt::RightToLeft) {
+            check.setRect(x + w - cw, y, cw, h);
+        } else {
+            check.setRect(x, y, cw, h);
+        }
     }
+    
+    // at this point w should be the *total* width
 
     QRect display;
     QRect decoration;
-    QStyleOptionViewItem::Position position = option.decorationPosition;
-    if (option.direction == Qt::RightToLeft) {
-        if (position == QStyleOptionViewItem::Right)
-            position = QStyleOptionViewItem::Left;
-        else if (position == QStyleOptionViewItem::Left)
-            position = QStyleOptionViewItem::Right;
-    }
-    switch (position) {
+    switch (option.decorationPosition) {
     case QStyleOptionViewItem::Top: {
         if (!pm.isEmpty())
             pm.setHeight(pm.height() + textMargin); // add space
-        decoration.setRect(x, y, w, pm.height());
         h = hint ? textRect->height() : h - pm.height();
-        display.setRect(x, y + pm.height(), w, h);
+        
+        if (option.direction == Qt::RightToLeft) {
+            decoration.setRect(x, y, w - cw, pm.height());
+            display.setRect(x, y + pm.height(), w - cw, h);
+        } else {
+            decoration.setRect(x + cw, y, w - cw, pm.height());
+            display.setRect(x + cw, y + pm.height(), w - cw, h);
+        }
         break; }
     case QStyleOptionViewItem::Bottom: {
         if (!textRect->isEmpty())
             textRect->setHeight(textRect->height() + textMargin); // add space
         h = hint ? textRect->height() + pm.height() : h;
-        decoration.setRect(x, y + h - pm.height(), w, pm.height());
-        h = hint ? textRect->height() : h - pm.height();
-        display.setRect(x, y, w, h);
+        
+        if (option.direction == Qt::RightToLeft) {
+            display.setRect(x, y, w - cw, textRect->height());
+            decoration.setRect(x, y + h, w - cw, h - textRect->height());
+        } else {
+            display.setRect(x + cw, y, w - cw, textRect->height());
+            decoration.setRect(x + cw, y + h, w - cw, h - textRect->height());        
+        }
         break; }
     case QStyleOptionViewItem::Left: {
-        if (!pm.isEmpty())
-            pm.setWidth(pm.width() + textMargin); // add space
-        decoration.setRect(x, y, pm.width(), h);
-        w = hint ? textRect->width() : w - pm.width() - cw;
-        display.setRect(x + pm.width(), y, w, h);
+        if (option.direction == Qt::LeftToRight) {
+            decoration.setRect(x + cw, y, pm.width(), h);
+            display.setRect(decoration.right() + 1, y, w - pm.width() - cw, h);
+        } else {
+            display.setRect(x, y, w - pm.width() - cw, h);
+            decoration.setRect(display.right() + 1, y, pm.width(), h);
+        }
         break; }
     case QStyleOptionViewItem::Right: {
-        if (!textRect->isEmpty())
-            textRect->setWidth(textRect->width() + textMargin); // add space
-        w = hint ? textRect->width() + pm.width() : w;
-        decoration.setRect(x + w - pm.width() - cw, y, pm.width(), h);
-        w = hint ? textRect->width() : w - pm.width() - cw;
-        display.setRect(x, y, w, h);
+        if (option.direction == Qt::LeftToRight) {
+            display.setRect(x + cw, y, w - pm.width() - cw, h);
+            decoration.setRect(display.right() + 1, y, pm.width(), h);
+        } else {
+            decoration.setRect(x, y, pm.width(), h);
+            display.setRect(decoration.right() + 1, y, w - pm.width() - cw, h);
+        }
         break; }
     default:
-        qWarning("doLayout: decoration positon is invalid");
+        qWarning("doLayout: decoration position is invalid");
         decoration = *pixmapRect;
         break;
     }
@@ -609,30 +630,32 @@ bool QItemDelegate::eventFilter(QObject *object, QEvent *event)
         switch (static_cast<QKeyEvent *>(event)->key()) {
         case Qt::Key_Tab:
             emit commitData(editor);
-            emit closeEditor(editor, EditNextItem);
+            emit closeEditor(editor, QAbstractItemDelegate::EditNextItem);
             return true;
         case Qt::Key_Backtab:
             emit commitData(editor);
-            emit closeEditor(editor, EditPreviousItem);
+            emit closeEditor(editor, QAbstractItemDelegate::EditPreviousItem);
             return true;
         case Qt::Key_Enter:
         case Qt::Key_Return:
             emit commitData(editor);
-            emit closeEditor(editor, SubmitModelCache);
+            emit closeEditor(editor, QAbstractItemDelegate::SubmitModelCache);
             return true;
         case Qt::Key_Escape:
             // don't commit data
-            emit closeEditor(editor, RevertModelCache);
+            emit closeEditor(editor, QAbstractItemDelegate::RevertModelCache);
             return true;
         default:
             break;
         }
     } else if (event->type() == QEvent::FocusOut && !editor->isActiveWindow()) {
+#ifndef QT_NO_DRAGANDDROP
         // The window may loose focus during an drag operation.
         // i.e when dragging involves the task bar on Windows.
         if (QDragManager::self() && QDragManager::self()->object != 0)
             return false;
-
+#endif
+        
         emit commitData(editor);
         emit closeEditor(editor, NoHint);
         return true;
@@ -659,10 +682,10 @@ bool QItemDelegate::editorEvent(QEvent *event,
 
     // check if the event happened in the right place
     QVariant value = model->data(index, Qt::CheckStateRole);
-    QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+    QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignLeft | Qt::AlignVCenter,
                                           check(option, option.rect, value).size(),
                                           QRect(option.rect.x(), option.rect.y(),
-                                                option.rect.height(), option.rect.height()));
+                                                option.rect.width(), option.rect.height()));
     if (checkRect.contains(static_cast<QMouseEvent*>(event)->pos())) {
         Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
         return model->setData(index, (state == Qt::Unchecked ? Qt::Checked : Qt::Unchecked),
@@ -671,3 +694,5 @@ bool QItemDelegate::editorEvent(QEvent *event,
 
     return false;
 }
+
+#endif // QT_NO_ITEMVIEWS

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "private/qxpmhandler_p.h"
+
+#ifndef QT_NO_IMAGEFORMAT_XPM
 
 #include <private/qcolor_p.h>
 #include <qimage.h>
@@ -743,7 +740,7 @@ static int rgb_cmp(const void *d1, const void *d2)
 
 static bool qt_get_named_xpm_rgb(const char *name, QRgb *rgb)
 {
-    int len = strlen(name) + 1;
+    int len = int(strlen(name)) + 1;
     char *name_no_space = (char *)malloc(len);
     for(int o = 0, i = 0; i < len; i++) {
 	if(name[i] != '\t' && name[i] != ' ')
@@ -769,7 +766,6 @@ static bool qt_get_named_xpm_rgb(const char *name, QRgb *rgb)
 /*****************************************************************************
   Misc. utility functions
  *****************************************************************************/
-#if !defined(QT_NO_IMAGEIO_XPM) || !defined(QT_NO_IMAGEIO_XBM)
 static QString fbname(const QString &fileName) // get file basename (sort of)
 {
     QString s = fileName;
@@ -790,7 +786,6 @@ static QString fbname(const QString &fileName) // get file basename (sort of)
         s = QString::fromLatin1("dummy");
     return s;
 }
-#endif
 
 // Skip until ", read until the next ", return the rest in *buf
 // Returns false on error, true on success
@@ -863,7 +858,11 @@ bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, 
     if (!read_xpm_string(buf, device, source, index, state))
         return false;
 
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+	if (sscanf_s(buf, "%d %d %d %d", &w, &h, &ncols, &cpp) < 4)
+#else
     if (sscanf(buf, "%d %d %d %d", &w, &h, &ncols, &cpp) < 4)
+#endif
         return false;                                        // < 4 numbers parsed
 
     if (cpp > 15)
@@ -957,7 +956,7 @@ bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, 
                 char b[16];
                 b[cpp] = '\0';
                 for (x=0; x<w && d<end; x++) {
-                    strncpy(b, (char *)d, cpp);
+                    memcpy(b, (char *)d, sizeof(char)*cpp);
                     *p++ = (uchar)colorMap[xpmHash(b)];
                     d += cpp;
                 }
@@ -970,7 +969,7 @@ bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, 
             char b[16];
             b[cpp] = '\0';
             for (x=0; x<w && d<end; x++) {
-                strncpy(b, (char *)d, cpp);
+                memcpy(b, (char *)d, sizeof(char)*cpp);
                 *p++ = (QRgb)colorMap[xpmHash(b)];
                 d += cpp;
             }
@@ -1161,3 +1160,5 @@ QByteArray QXpmHandler::name() const
 {
     return "xpm";
 }
+
+#endif // QT_NO_IMAGEFORMAT_XPM

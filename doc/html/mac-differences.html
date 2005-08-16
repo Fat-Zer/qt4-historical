@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/mac-differences.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/mac-differences.qdoc -->
 <head>
     <title>Qt 4.0: Qt/Mac-Specific Issues</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt/Mac-Specific Issues</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt/Mac-Specific Issues<br /><small></small></h1>
 <p>This file outlines known issues and possible workarounds for limitations on Mac OS X with Qt. Contact Trolltech support if you find additional issues which are not covered here.</p>
 <p>See also the document <a href="qtmac-as-native.html">Qt/Mac is Mac OS X Native</a>.</p>
 <ul><li><a href="#gui-applications">GUI Applications</a></li>
@@ -40,7 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#menu-bar">Menu Bar</a></li>
 </ul>
 <li><a href="#limitations">Limitations</a></li>
-<ul><li><a href="#menu-items">Menu Items</a></li>
+<ul><li><a href="#menu-actions">Menu Actions</a></li>
 <li><a href="#native-widgets">Native Widgets</a></li>
 </ul>
 </ul>
@@ -74,9 +74,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Compiler Settings</h2>
 <a name="compile-time-flags"></a>
 <h3>Compile-Time Flags</h3>
-<p>There are two flags that are helpful when wanting to define Mac OS X specific code.</p>
-<p><tt>Q_OS_DARWIN</tt> is defined when Qt detects you are on a Darwin-based system (including the Open Source version) <tt>Q_WS_MAC</tt> is defined when we the Mac OS X GUI is present.</p>
-<p><tt>Q_OS_MAC</tt> is defined as a convenience and is available whenever Q_OS_DARWIN is defined.</p>
+<p>There are two flags that are helpful when wanting to define Mac OS X specific code:</p>
+<ul>
+<li><a href="qtglobal.html#Q_OS_DARWIN">Q_OS_DARWIN</a> is defined when Qt detects you are on a Darwin-based system (including the Open Source version)</li>
+<li>Q_WS_MAC is defined when we the Mac OS X GUI is present.</li>
+</ul>
+<p>Q_OS_MAC is defined as a convenience and is available whenever <a href="qtglobal.html#Q_OS_DARWIN">Q_OS_DARWIN</a> is defined.</p>
 <p>If you desire to define for specific versions of Mac OS X, use the availability macros defined in /usr/include/AvailabilityMacros.h.</p>
 <p>See <a href="qsysinfo.html">QSysInfo</a> for information on runtime version checking.</p>
 <a name="mac-os-x-native-api-access"></a>
@@ -95,7 +98,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Do not forget to protect this code with an #if defined(Q_WS_MAC) macro if you are deploying on more than one platform.</p>
 <a name="translating-the-application-menu-and-native-dialogs"></a>
 <h3>Translating the Application Menu and Native Dialogs</h3>
-<p>The items in the Application Menu will be merged correctly for you localized application, but they will not show up translated until you add a localized resource folder inside the Bundle see:</p>
+<p>The items in the Application Menu will be merged correctly for your localized application, but they will not show up translated until you add a localized resource folder inside the Bundle. See:</p>
 <p>http://developer.apple.com/documentation/CoreFoundation/Conceptual/CFBundles/index.html</p>
 <p>And look for the heading: Adding Localized Resources</p>
 <p>The main thing you need to do is create a file called locversion.plist. Here is an example one for Norwegian:</p>
@@ -122,7 +125,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If you want to provide right-mouse click support for Mac OS X, use the <a href="qcontextmenuevent.html">QContextMenuEvent</a> class. This will map to a context menu event, in other words a menu that will display a popup selection. This is the most common use of right-mouse clicks, and maps to a control-click with the Mac OS X one-button mouse support.</p>
 <a name="menu-bar"></a>
 <h3>Menu Bar</h3>
-<p>Qt/Mac will automatically detect your menu bars for you and turn them into Mac native menu bars. Fitting this into your existing Qt application will normally be automatic, however, if you have special needs the Qt/Mac implementation currently selects a menu bar by starting at the active window (i.e. <a href="qapplication.html#activeWindow">QApplication::activeWindow</a>()), and applying:</p>
+<p>Qt/Mac will automatically detect your menu bars for you and turn them into Mac native menubars. Fitting this into your existing Qt application will normally be automatic, however, if you have special needs the Qt/Mac implementation currently selects a menu bar by starting at the active window (i.e. <a href="qapplication.html#activeWindow">QApplication::activeWindow</a>()), and applying:</p>
 <ol type="1">
 <li>If the window has a <a href="qmenubar.html">QMenuBar</a> then it is used.</li>
 <li>If the window is a modal then its menu bar is used. If no menu bar is specified then a default menu bar is used (as documented below).</li>
@@ -131,10 +134,10 @@ body { background: #ffffff; color: black; }</style>
 <p>The above 3 guidelines are followed all the way up the parent window chain until one of the above is satisifed. If all else fails a default menu bar will be created, the default menu bar on Qt/Mac is an empty menu bar, however you can create a different default menu bar by creating a parentless <a href="qmenubar.html">QMenuBar</a>; the first one created will be designated the default menu bar, and will be used whenever a default menu bar is needed.</p>
 <a name="limitations"></a>
 <h2>Limitations</h2>
-<a name="menu-items"></a>
-<h3>Menu Items</h3>
+<a name="menu-actions"></a>
+<h3>Menu Actions</h3>
 <ul>
-<li>Items with accelerators that have more than one keystroke (<a href="qkeysequence.html">QKeySequence</a>) will not be honored, and the first key will be used.</li>
+<li>Actions in into a <a href="qmenu.html">QMenu</a> with accelerators that have more than one keystroke (<a href="qkeysequence.html">QKeySequence</a>) will not display correctly when the <a href="qmenu.html">QMenu</a> is translated into a Mac native menubar. The first key will be displayed, however the shortcut will still be activated as on all other platforms.</li>
 </ul>
 <a name="native-widgets"></a>
 <h3>Native Widgets</h3>
@@ -143,6 +146,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

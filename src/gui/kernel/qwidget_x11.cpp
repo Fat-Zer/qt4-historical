@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -315,7 +310,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
                    || (flags & Qt::MSWindowsFixedSizeDialogHint));
     bool desktop = (type == Qt::Desktop);
     bool tool = (type == Qt::Tool || type == Qt::SplashScreen
-                || type == Qt::ToolTip || type == Qt::Drawer);
+                 || type == Qt::ToolTip || type == Qt::Drawer);
 
     bool customize =  (flags & (
                                 Qt::X11BypassWindowManagerHint
@@ -347,7 +342,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
         // desktop on a certain screen other than the default requested
         QX11InfoData *xd = &X11->screens[qt_x11_create_desktop_on_screen];
         xinfo.setX11Data(xd);
-    } else if (parentWidget &&  parentWidget->d_func()->xinfo.screen() != xinfo.screen()) {
+    } else if (parentWidget && parentWidget->d_func()->xinfo.screen() != xinfo.screen()) {
         xinfo = parentWidget->d_func()->xinfo;
     }
 
@@ -414,7 +409,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
 //             d->setWinId(id);                     // make sure otherDesktop is
 //             otherDesktop->d->setWinId(id);       // found first
 //         } else {
-            setWinId(id);
+        setWinId(id);
 //         }
     } else {
         if (xinfo.defaultVisual() && xinfo.defaultColormap()) {
@@ -652,7 +647,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
 //         if (main_desktop->testWFlags(Qt::WPaintDesktop))
 //             XSelectInput(dpy, id, stdDesktopEventMask | ExposureMask);
 //         else
-            XSelectInput(dpy, id, stdDesktopEventMask);
+        XSelectInput(dpy, id, stdDesktopEventMask);
     } else {
         XSelectInput(dpy, id, stdWidgetEventMask);
 #if !defined (QT_NO_TABLET_SUPPORT)
@@ -813,7 +808,12 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
         QObject *obj = chlist.at(i);
         if (obj->isWidgetType()) {
             QWidget *w = (QWidget *)obj;
-            if (!w->isWindow()) {
+            if (xinfo.screen() != w->d_func()->xinfo.screen()) {
+                // ### force setParent() to not shortcut out (because
+                // ### we're setting the parent to the current parent)
+                w->d_func()->parent = 0;
+                w->setParent(q);
+            } else if (!w->isWindow()) {
                 XReparentWindow(X11->display, w->winId(), q->winId(),
                                 w->geometry().x(), w->geometry().y());
             } else if ((w->windowType() == Qt::Popup)
@@ -918,7 +918,7 @@ QPoint QWidget::mapFromGlobal(const QPoint &pos) const
 void QWidgetPrivate::updateSystemBackground()
 {
     Q_Q(QWidget);
-    QBrush brush = q->palette().brush(q->backgroundRole());
+    QBrush brush = q->palette().brush(QPalette::Active, q->backgroundRole());
     Qt::WindowType type = q->windowType();
     if (brush.style() == Qt::NoBrush
         || q->testAttribute(Qt::WA_NoSystemBackground)
@@ -1039,16 +1039,32 @@ void QWidgetPrivate::setWindowIcon_sys()
     QIcon icon = q->windowIcon();
     if (!icon.isNull()) {
         QSize size = icon.actualSize(QSize(64, 64));
-        topData->iconPixmap = new QPixmap(icon.pixmap(size));
-        h->icon_pixmap = topData->iconPixmap->data->x11ConvertToDefaultDepth();
+        QPixmap pixmap = icon.pixmap(size);
+        /*
+          if the app is not using the default visual, convert the icon
+          to 1bpp as stated in the ICCCM section 4.1.2.4; otherwise,
+          create the icon pixmap in the default depth (even though
+          this violates the ICCCM)
+        */
+        if (!QX11Info::appDefaultVisual(xinfo.screen())
+            || !QX11Info::appDefaultColormap(xinfo.screen())) {
+            // non-default visual/colormap, use 1bpp bitmap
+            topData->iconPixmap = new QBitmap(pixmap);
+            h->icon_pixmap = topData->iconPixmap->handle();
+        } else {
+            // default depth, use a normal pixmap (even though this
+            // violates the ICCCM)
+            topData->iconPixmap = new QPixmap(pixmap);
+            h->icon_pixmap = topData->iconPixmap->data->x11ConvertToDefaultDepth();
+        }
         h->flags |= IconPixmapHint;
 
         QBitmap mask = topData->iconPixmap->mask();
         if (!mask.isNull()) {
-            if (!extra->topextra->iconMask)
-                extra->topextra->iconMask = new QBitmap;
-            *extra->topextra->iconMask = mask;
-            h->icon_mask = extra->topextra->iconMask->handle();
+            if (!topData->iconMask)
+                topData->iconMask = new QBitmap;
+            *topData->iconMask = mask;
+            h->icon_mask = topData->iconMask->handle();
             h->flags |= IconMaskHint;
         }
     } else {
@@ -1185,7 +1201,7 @@ void QWidget::releaseMouse()
 /*!
     Grabs the keyboard input.
 
-    This widget reveives all keyboard events until releaseKeyboard()
+    This widget receives all keyboard events until releaseKeyboard()
     is called; other widgets get no keyboard events at all. Mouse
     events are not affected. Use grabMouse() if you want to grab that.
 
@@ -1269,10 +1285,10 @@ QWidget *QWidget::keyboardGrabber()
 
     On Windows, if you are calling this when the application is not
     currently the active one then it will not make it the active
-    window.  It will flash the task bar entry blue to indicate that
-    the window has done something. This is because Microsoft do not
-    allow an application to interrupt what the user is currently doing
-    in another application.
+    window.  It will change the color of the task bar entry to indicate
+    that the window has changed in some way. This is because Microsoft
+    do not allow an application to interrupt what the user is currently
+    doing in another application.
 
     \sa isActiveWindow(), window(), show()
 */
@@ -1378,10 +1394,10 @@ static void qt_x11_release_double_buffer(QX11DoubleBuffer **db)
     }
 }
 
-static QX11DoubleBuffer *qt_x11_create_double_buffer(Qt::HANDLE hd, int screen, int depth, int width, int height)
+static QX11DoubleBuffer *qt_x11_create_double_buffer(int screen, int depth, int width, int height)
 {
     QX11DoubleBuffer *db = new QX11DoubleBuffer;
-    db->hd = XCreatePixmap(X11->display, hd, width, height, depth);
+    db->hd = XCreatePixmap(X11->display, RootWindow(X11->display, screen), width, height, depth);
     db->picture = 0;
 #ifndef QT_NO_XRENDER
     if (X11->use_xrender)
@@ -1396,11 +1412,11 @@ static QX11DoubleBuffer *qt_x11_create_double_buffer(Qt::HANDLE hd, int screen, 
 }
 
 static
-void qt_x11_get_double_buffer(QX11DoubleBuffer **db, Qt::HANDLE hd, int screen, int depth, int width, int height)
+void qt_x11_get_double_buffer(QX11DoubleBuffer **db, int screen, int depth, int width, int height)
 {
     if (!qt_reuse_double_buffer || qt_x11_global_double_buffer_active) {
         // qDebug("<-- creating temporary double buffer");
-        *db = qt_x11_create_double_buffer(hd, screen, depth, width, height);
+        *db = qt_x11_create_double_buffer(screen, depth, width, height);
 	return;
     }
 
@@ -1426,7 +1442,7 @@ void qt_x11_get_double_buffer(QX11DoubleBuffer **db, Qt::HANDLE hd, int screen, 
         qt_discard_double_buffer();
     }
 
-    qt_x11_global_double_buffer = *db = qt_x11_create_double_buffer(hd, screen, depth, width, height);
+    qt_x11_global_double_buffer = *db = qt_x11_create_double_buffer(screen, depth, width, height);
 }
 
 void QWidget::repaint(const QRegion& rgn)
@@ -1463,7 +1479,7 @@ void QWidget::repaint(const QRegion& rgn)
     QPoint redirectionOffset;
     QX11DoubleBuffer *qDoubleBuffer = 0;
     if (double_buffer) {
-        qt_x11_get_double_buffer(&qDoubleBuffer, d->hd, d->xinfo.screen(), d->xinfo.depth(),
+        qt_x11_get_double_buffer(&qDoubleBuffer, d->xinfo.screen(), d->xinfo.depth(),
                                  br.width(), br.height());
 
 	d->hd = qDoubleBuffer->hd;
@@ -2395,8 +2411,6 @@ bool QWidgetPrivate::setAcceptDrops_sys(bool on)
 
     Note that this effect can be slow if the region is particularly
     complex.
-
-    \sa setMask(), clearMask()
 */
 
 void QWidget::setMask(const QRegion& region)
@@ -2547,17 +2561,30 @@ void QWidgetPrivate::updateFrameStrut() const
    data.fstrut_dirty = 0;
 }
 
-void QWidget::setWindowOpacity(qreal)
+void QWidget::setWindowOpacity(qreal opacity)
 {
+    if (isTopLevel()) {
+        ulong value = ulong(opacity * 0xffffffff);
+        XChangeProperty(QX11Info::display(), winId(), ATOM(_NET_WM_WINDOW_OPACITY), XA_CARDINAL,
+                        32, PropModeReplace, (uchar*)&value, 1);
+    }
 }
 
 qreal QWidget::windowOpacity() const
 {
-    return 1.0;
+    Q_D(const QWidget);
+    if (isTopLevel()) {
+        QTLWExtra *topData = d->topData();
+        return double(topData->opacity) / 255.;
+    } else
+        return 1.0;
 }
 
 /*!
-    \internal
+    Returns information about the configuration of the X display used to display the
+    widget.
+
+    \warning This function is only available on X11.
 */
 const QX11Info &QWidget::x11Info() const
 {
@@ -2603,3 +2630,56 @@ Qt::HANDLE QWidget::x11PictureHandle() const
     return 0;
 #endif // QT_NO_XRENDER
 }
+
+#ifndef QT_NO_XRENDER
+XRenderColor QX11Data::preMultiply(const QColor &c)
+{
+    XRenderColor color;
+    const uint A = c.alpha(),
+               R = c.red(),
+               G = c.green(),
+               B = c.blue();
+    color.alpha = (A | A << 8);
+    color.red   = (R | R << 8) * color.alpha / 0x10000;
+    color.green = (G | G << 8) * color.alpha / 0x10000;
+    color.blue  = (B | B << 8) * color.alpha / 0x10000;
+    return color;
+}
+Picture QX11Data::getSolidFill(int screen, const QColor &c)
+{
+    if (!X11->use_xrender)
+        return XNone;
+
+    XRenderColor color = preMultiply(c);
+    for (int i = 0; i < X11->solid_fill_count; ++i) {
+        if (X11->solid_fills[i].screen == screen
+            && X11->solid_fills[i].color.alpha == color.alpha
+            && X11->solid_fills[i].color.red == color.red
+            && X11->solid_fills[i].color.green == color.green
+            && X11->solid_fills[i].color.blue == color.blue)
+            return X11->solid_fills[i].picture;
+    }
+    // none found, replace one
+    int i = rand() % 16;
+
+    if (X11->solid_fills[i].screen != screen && X11->solid_fills[i].picture) {
+	XRenderFreePicture (X11->display, X11->solid_fills[i].picture);
+	X11->solid_fills[i].picture = 0;
+    }
+
+    if (!X11->solid_fills[i].picture) {
+	Pixmap pixmap = XCreatePixmap (X11->display, RootWindow (X11->display, screen), 1, 1, 32);
+        XRenderPictureAttributes attrs;
+	attrs.repeat = True;
+	X11->solid_fills[i].picture = XRenderCreatePicture (X11->display, pixmap,
+                                                            XRenderFindStandardFormat(X11->display, PictStandardARGB32),
+                                                            CPRepeat, &attrs);
+	XFreePixmap (X11->display, pixmap);
+    }
+
+    X11->solid_fills[i].color = color;
+    X11->solid_fills[i].screen = screen;
+    XRenderFillRectangle (X11->display, PictOpSrc, X11->solid_fills[i].picture, &color, 0, 0, 1, 1);
+    return X11->solid_fills[i].picture;
+}
+#endif

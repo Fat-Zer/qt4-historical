@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/image/qimage.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/image/qimage.cpp -->
 <head>
     <title>Qt 4.0: QImage Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QImage Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QImage Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QImage class provides a hardware-independent pixmap that allows direct access to the pixel data, and can be used as a paint device. <a href="#details">More...</a></p>
-<pre>#include &lt;QImage&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
+<pre>#include &lt;QImage&gt;</pre><p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
 <ul>
 <li><a href="qimage-members.html">List of all members, including inherited members</a></li>
 <li><a href="qimage-qt3.html">Qt 3 support members</a></li>
@@ -29,7 +28,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Types</h3>
 <ul>
 <li><div class="fn"/>enum <b><a href="qimage.html#Endian-enum">Endian</a></b> { IgnoreEndian, BigEndian, LittleEndian }</li>
-<li><div class="fn"/>enum <b><a href="qimage.html#Format-enum">Format</a></b> { Format_Invalid, Format_Mono, Format_MonoLSB, Format_Indexed8, ..., Format_ARGB32_Premultiplied }</li>
+<li><div class="fn"/>enum <b><a href="qimage.html#Format-enum">Format</a></b> { Format_Invalid, Format_Mono, Format_MonoLSB, Format_Indexed8, ..., Format_Grayscale2LSB }</li>
 <li><div class="fn"/>enum <b><a href="qimage.html#InvertMode-enum">InvertMode</a></b> { InvertRgb, InvertRgba }</li>
 </ul>
 <a name="public-functions"></a>
@@ -159,7 +158,7 @@ body { background: #ffffff; color: black; }</style>
             // sets 32 bit pixel at (x,y) to yellow.
             uint *ptr = reinterpret_cast&lt;uint *&gt;(image.scanLine(y)) + x;
             *ptr = qRgb(255, 255, 0);</pre>
-<p>On Qt/Embedded, scanlines are aligned to the pixel depth and may be padded to any degree, while on all other platforms, the scanlines are 32-bit aligned for all depths. The constructor taking a <tt>uchar*</tt> argument always expects 32-bit aligned data. On Qt/Embedded, an additional constructor allows the number of bytes-per-line to be specified.</p>
+<p>In Qt/Embedded, scanlines are aligned to the pixel depth and may be padded to any degree, while on all other platforms, the scanlines are 32-bit aligned for all depths. The constructor taking a <tt>uchar*</tt> argument always expects 32-bit aligned data. In Qt/Embedded, an additional constructor allows the number of bytes-per-line to be specified.</p>
 <p>Pixel colors are retrieved with <a href="qimage.html#pixel">pixel</a>() and set with <a href="qimage.html#setPixel">setPixel</a>().</p>
 <p>QImage supports a variety of functions that can be used to obtain information about the image. <a href="qimage.html#width">width</a>(), <a href="qimage.html#height">height</a>(), <a href="qimage.html#dotsPerMeterX">dotsPerMeterX</a>(), and <a href="qimage.html#dotsPerMeterY">dotsPerMeterY</a>() provide information about the image size and resolution. The <a href="qimage.html#depth">depth</a>(), <a href="qimage.html#numColors">numColors</a>(), <a href="qimage.html#isGrayscale">isGrayscale</a>(), and <a href="qimage.html#colorTable">colorTable</a>() functions provide information about the color depth and available color components used to store the image data.</p>
 <p>It is possible to determine whether a color image can be safely converted to a grayscale image by using the <a href="qimage.html#allGray">allGray</a>() function. The <a href="qimage.html#format">format</a>(), <a href="qimage.html#bytesPerLine">bytesPerLine</a>(), and <a href="qimage.html#numBytes">numBytes</a>() functions provide low-level information about the data stored in the image.</p>
@@ -181,15 +180,28 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QImage::LittleEndian</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Least significant bit first or little endian byte order, as on Intel x86.</td></tr>
 </table>
 <h3 class="fn"><a name="Format-enum"></a>enum QImage::Format</h3>
+<p>The following image formats are available in all versions of Qt:</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QImage::Format_Invalid</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The image is invalid.</td></tr>
 <tr><td valign="top"><tt>QImage::Format_Mono</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The image is stored using 1-bit per pixel. Bytes are packed with the most significant bit (MSB) first.</td></tr>
 <tr><td valign="top"><tt>QImage::Format_MonoLSB</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The image is stored using 1-bit per pixel. Bytes are packed with the less significant bit (LSB) first.</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Indexed8</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The image is stored using 8-bit indexes into a colormap.</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Indexed8</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The image is stored using 8-bit indexes into a colormap. Note that you will also need to call <a href="qimage.html#setNumColors">setNumColors</a>() with a value of 256 before setting any of the colors in the index.</td></tr>
 <tr><td valign="top"><tt>QImage::Format_RGB32</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The image is stored using a 32-bit RGB format (0xffRRGGBB).</td></tr>
 <tr><td valign="top"><tt>QImage::Format_ARGB32</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The image is stored using a 32-bit ARGB format (0xAARRGGBB).</td></tr>
 <tr><td valign="top"><tt>QImage::Format_ARGB32_Premultiplied</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The image is stored using a premultiplied 32-bit ARGB format (0xAARRGGBB), i.e. the red, green, and blue channels are multiplied by the alpha component divided by 255. (If RR, GG, or BB has a higher value than the alpha channel, the results are undefined.)</td></tr>
+</table>
+<p>The following image formats are specific to <a href="http://www.trolltech.com/products/qtopia/">Qt/Embedded</a>:</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QImage::Format_RGB16</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">The image is stored using a 16-bit RGB format.</td></tr>
+<tr><td valign="top"><tt>QImage::Format_RGB15</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">The image is stored using a 15-bit RGB format.</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Grayscale16</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">The image is stored with 65536 levels of gray (16 bits per pixel).</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Grayscale8</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">The image is stored with 256 levels of gray (8 bits per pixel).</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Grayscale4</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">The image is stored with 16 levels of gray (4 bits per pixel).</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Grayscale4LSB</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">The image is stored with 16 levels of gray, stored in a form where the lowest 4 bits in a byte contain the first pixel in each pair.</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Grayscale2</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">The image is stored with 4 levels of gray (2 bits per pixel).</td></tr>
+<tr><td valign="top"><tt>QImage::Format_Grayscale2LSB</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top">The image is stored with 4 levels of gray, stored in a form where the least significant bits contain the first pixel value and the most significant bits contain the last pixel value in each byte containing a group of 4 pixels.</td></tr>
 </table>
 <p>See also <a href="qimage.html#format">format</a>() and <a href="qimage.html#convertToFormat">convertToFormat</a>().</p>
 <h3 class="fn"><a name="InvertMode-enum"></a>enum QImage::InvertMode</h3>
@@ -246,6 +258,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimage.html#isGrayscale">isGrayscale</a>().</p>
 <h3 class="fn"><a name="alphaChannel"></a>QImage QImage::alphaChannel () const</h3>
 <p>Extracts the alpha channel from this image as an 8 bit gray scale image and returns it.</p>
+<p>See also <a href="qimage.html#setAlphaChannel">setAlphaChannel</a>().</p>
 <h3 class="fn"><a name="bits"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QImage::bits ()</h3>
 <p>Returns a pointer to the first pixel data. This is equivalent to scanLine(0).</p>
 <p>See also <a href="qimage.html#numBytes">numBytes</a>(), <a href="qimage.html#scanLine">scanLine</a>(), and <a href="qimage-qt3.html#jumpTable">jumpTable</a>().</p>
@@ -260,7 +273,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimage.html#setColor">setColor</a>(), <a href="qimage.html#numColors">numColors</a>(), and <a href="qcolor.html">QColor</a>.</p>
 <h3 class="fn"><a name="colorTable"></a><a href="qvector.html">QVector</a>&lt;QRgb&gt; QImage::colorTable () const</h3>
 <p>Returns the color table of the image, or an empty list of the image does not have a color table</p>
-<p>See also <a href="qimage.html#numColors">numColors</a>().</p>
+<p>See also <a href="qimage.html#setColorTable">setColorTable</a>() and <a href="qimage.html#numColors">numColors</a>().</p>
 <h3 class="fn"><a name="convertToFormat"></a>QImage QImage::convertToFormat ( <a href="qimage.html#Format-enum">Format</a> <i>format</i>, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor ) const</h3>
 <p>Returns a copy of the image in the given <i>format</i>.</p>
 <p>The image conversion flags specified by <i>flags</i> control how the image data is handled during the conversion process.</p>
@@ -276,7 +289,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns a sub-area of the image.</p>
 <p>The returned image always has the size of the rectangle <i>r</i>. In areas beyond this image pixels are filled with pixel 0.</p>
-<p>If <i>r</i> is a ull rectangle the entire image is copied.</p>
+<p>If <i>r</i> is a null rectangle the entire image is copied.</p>
 <h3 class="fn"><a name="createAlphaMask"></a>QImage QImage::createAlphaMask ( <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor ) const</h3>
 <p>Builds and returns a 1-bpp mask from the alpha buffer in this image. Returns a <a href="qimage.html#isNull">null</a> image if the image is of format RGB32.</p>
 <p>See <a href="qpixmap-qt3.html#convertFromImage">QPixmap::convertFromImage</a>() for a description of the <i>flags</i> argument.</p>
@@ -293,7 +306,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the depth of the image.</p>
 <p>The image depth is the number of bits used to encode a single pixel, also called bits per pixel (bpp) or bit planes of an image.</p>
 <p>The supported depths are 1, 8 and 32.</p>
-<p>See also <a href="qimage-qt3.html#convertDepth">convertDepth</a>().</p>
+<p>See also <a href="qimage.html#convertToFormat">convertToFormat</a>().</p>
 <h3 class="fn"><a name="detach"></a>void QImage::detach ()</h3>
 <p>Detaches from shared image d and makes sure that this image is the only one referring to the data.</p>
 <p>If multiple images share common data, this image makes a copy of the data and detaches itself from the sharing mechanism. Nothing is done if there is just a single reference.</p>
@@ -354,9 +367,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="loadFromData-2"></a>bool QImage::loadFromData ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, const char * <i>format</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Loads an image from the <a href="qbytearray.html">QByteArray</a> <i>data</i>.</p>
-<h3 class="fn"><a name="metric"></a>int QImage::metric ( <a href="qpaintdevice.html#PaintDeviceMetric-enum">PaintDeviceMetric</a> <i>metric</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<h3 class="fn"><a name="metric"></a>int QImage::metric ( PaintDeviceMetric <i>metric</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the size for the specified <i>metric</i> on the device.</p>
-<p>Reimplemented from <a href="qpaintdevice.html#metric">QPaintDevice</a>.</p>
+<p>Reimplemented from QPaintDevice.</p>
 <h3 class="fn"><a name="mirrored"></a>QImage QImage::mirrored ( bool <i>horizontal</i> = false, bool <i>vertical</i> = true ) const</h3>
 <p>Returns a mirror of the image, mirrored in the horizontal and/or the vertical direction depending on whether <i>horizontal</i> and <i>vertical</i> are set to true or false. The original image is not changed.</p>
 <p>See also <a href="qimage.html#scaled">scaled</a>().</p>
@@ -369,6 +382,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimage.html#setNumColors">setNumColors</a>() and <a href="qimage.html#colorTable">colorTable</a>().</p>
 <h3 class="fn"><a name="offset"></a><a href="qpoint.html">QPoint</a> QImage::offset () const</h3>
 <p>Returns the number of pixels by which the image is intended to be offset by when positioning relative to other images.</p>
+<p>See also <a href="qimage.html#setOffset">setOffset</a>().</p>
 <h3 class="fn"><a name="pixel"></a>QRgb QImage::pixel ( int <i>x</i>, int <i>y</i> ) const</h3>
 <p>Returns the color of the pixel at the coordinates (<i>x</i>, <i>y</i>).</p>
 <p>If (<i>x</i>, <i>y</i>) is not <a href="qimage.html#valid">on the image</a>, the results are undefined.</p>
@@ -397,9 +411,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="scaled"></a>QImage QImage::scaled ( int <i>w</i>, int <i>h</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>aspectRatioMode</i> = Qt::IgnoreAspectRatio, <a href="qt.html#TransformationMode-enum">Qt::TransformationMode</a> <i>transformMode</i> = Qt::FastTransformation ) const</h3>
 <p>Returns a copy of the image scaled to a rectangle of width <i>w</i> and height <i>h</i> according to <i>aspectRatioMode</i> and <i>transformMode</i>.</p>
 <ul>
-<li>If <i>aspectRatioMode</i> is <tt>Qt::IgnoreAspectRatio</tt>, the image is scaled to (<i>w</i>, <i>h</i>).</li>
-<li>If <i>aspectRatioMode</i> is <tt>Qt::KeepAspectRatio</tt>, the image is scaled to a rectangle as large as possible inside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
-<li>If <i>aspectRatioMode</i> is <tt>Qt::KeepAspectRatioByExpanding</tt>, the image is scaled to a rectangle as small as possible outside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
+<li>If <i>aspectRatioMode</i> is <a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a>, the image is scaled to (<i>w</i>, <i>h</i>).</li>
+<li>If <i>aspectRatioMode</i> is <a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a>, the image is scaled to a rectangle as large as possible inside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
+<li>If <i>aspectRatioMode</i> is <a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a>, the image is scaled to a rectangle as small as possible outside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
 </ul>
 <p>If either the width <i>w</i> or the height <i>h</i> is zero or negative, this function returns a <a href="qimage.html#isNull">null</a> image.</p>
 <p>See also <a href="qimage.html#scaledToWidth">scaledToWidth</a>(), <a href="qimage.html#scaledToHeight">scaledToHeight</a>(), and <a href="qimage.html#transformed">transformed</a>().</p>
@@ -429,35 +443,43 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the alpha channel of this image to <i>alphaChannel</i>.</p>
 <p>If <i>alphaChannel</i> is an 8 bit grayscale image, the intensity values are written into this buffer directly. Otherwise, <i>alphaChannel</i> is converted to 32 bit and the intensity of the RGB pixel values is used.</p>
 <p>The image will be converted to the format <a href="qimage.html#Format-enum">Format_ARGB32_Premultiplied</a> if the function succeeds.</p>
+<p>See also <a href="qimage.html#alphaChannel">alphaChannel</a>().</p>
 <h3 class="fn"><a name="setColor"></a>void QImage::setColor ( int <i>i</i>, QRgb <i>c</i> )</h3>
 <p>Sets a color in the color table at index <i>i</i> to <i>c</i>.</p>
 <p>A color value is an RGB triplet. Use the <a href="qcolor.html#qRed">qRed</a>(), <a href="qcolor.html#qGreen">qGreen</a>(), and <a href="qcolor.html#qBlue">qBlue</a>() functions to get the color value components.</p>
+<p>Note that, for images in <tt>Format_Indexed8</tt> format, you will first need to call <a href="qimage.html#setNumColors">setNumColors</a>() with a value of 256 before using this function.</p>
 <p>See also <a href="qimage.html#color">color</a>(), <a href="qimage.html#setNumColors">setNumColors</a>(), and <a href="qimage.html#numColors">numColors</a>().</p>
 <h3 class="fn"><a name="setColorTable"></a>void QImage::setColorTable ( const <a href="qvector.html">QVector</a>&lt;QRgb&gt; <i>colors</i> )</h3>
 <p>Sets the color table used to translate color indexes to RGB values to the specified <i>colors</i>.</p>
+<p>See also <a href="qimage.html#colorTable">colorTable</a>().</p>
 <h3 class="fn"><a name="setDotsPerMeterX"></a>void QImage::setDotsPerMeterX ( int <i>x</i> )</h3>
 <p>Sets the value returned by <a href="qimage.html#dotsPerMeterX">dotsPerMeterX</a>() to <i>x</i>.</p>
+<p>See also <a href="qimage.html#dotsPerMeterX">dotsPerMeterX</a>().</p>
 <h3 class="fn"><a name="setDotsPerMeterY"></a>void QImage::setDotsPerMeterY ( int <i>y</i> )</h3>
 <p>Sets the value returned by <a href="qimage.html#dotsPerMeterY">dotsPerMeterY</a>() to <i>y</i>.</p>
+<p>See also <a href="qimage.html#dotsPerMeterY">dotsPerMeterY</a>().</p>
 <h3 class="fn"><a name="setNumColors"></a>void QImage::setNumColors ( int <i>numColors</i> )</h3>
 <p>Resizes the color table to <i>numColors</i> colors.</p>
 <p>If the color table is expanded all the extra colors will be set to black (RGB 0,0,0).</p>
 <p>See also <a href="qimage.html#numColors">numColors</a>(), <a href="qimage.html#color">color</a>(), <a href="qimage.html#setColor">setColor</a>(), and <a href="qimage.html#colorTable">colorTable</a>().</p>
 <h3 class="fn"><a name="setOffset"></a>void QImage::setOffset ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> )</h3>
 <p>Sets the value returned by <a href="qimage.html#offset">offset</a>() to <i>p</i>.</p>
+<p>See also <a href="qimage.html#offset">offset</a>().</p>
 <h3 class="fn"><a name="setPixel"></a>void QImage::setPixel ( int <i>x</i>, int <i>y</i>, <a href="qtglobal.html#uint-typedef">uint</a> <i>index_or_rgb</i> )</h3>
 <p>Sets the pixel index or color at the coordinates (<i>x</i>, <i>y</i>) to <i>index_or_rgb</i>.</p>
 <p>If (<i>x</i>, <i>y</i>) is not <a href="qimage.html#valid">valid</a>, the result is undefined.</p>
 <p>If the image is a paletted image (<a href="qimage.html#depth">depth</a>() &lt;= 8) and <i>index_or_rgb</i> &gt;= <a href="qimage.html#numColors">numColors</a>(), the result is undefined.</p>
 <p>See also <a href="qimage.html#pixelIndex">pixelIndex</a>(), <a href="qimage.html#pixel">pixel</a>(), <a href="qcolor.html#qRgb">qRgb</a>(), <a href="qcolor.html#qRgba">qRgba</a>(), and <a href="qimage.html#valid">valid</a>().</p>
 <h3 class="fn"><a name="setText"></a>void QImage::setText ( const char * <i>key</i>, const char * <i>lang</i>, const <a href="qstring.html">QString</a> &amp; <i>s</i> )</h3>
-<p>Records string <i>s</i> for the keyword <i>key</i>. The <i>key</i> should be a portable keyword recognizable by other software - some suggested values can be found in <a href="http://www.libpng.org/pub/png/spec/PNG-Chunks.html#C.Anc-text">the PNG specification</a>. <i>s</i> can be any text. <i>lang</i> should specify the language code (see <a href="ftp://ftp.isi.edu/in-notes/1766">RFC 1766</a>) or 0.</p>
+<p>Records string <i>s</i> for the keyword <i>key</i>. The <i>key</i> should be a portable keyword recognizable by other software - some suggested values can be found in <a href="http://www.libpng.org/pub/png/spec/1.2/png-1.2-pdg.html#C.Anc-text">the PNG specification</a>. <i>s</i> can be any text. <i>lang</i> should specify the language code (see <a href="http://www.rfc-editor.org/rfc/rfc1766.txt">RFC 1766</a>) or 0.</p>
+<p>See also <a href="qimage.html#text">text</a>().</p>
 <h3 class="fn"><a name="size"></a><a href="qsize.html">QSize</a> QImage::size () const</h3>
 <p>Returns the size of the image, i.e. its width and height.</p>
 <p>See also <a href="qimage.html#width">width</a>(), <a href="qimage.html#height">height</a>(), and <a href="qimage.html#rect">rect</a>().</p>
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QImage::text ( const char * <i>key</i>, const char * <i>lang</i> = 0 ) const</h3>
 <p>Returns the string recorded for the keyword <i>key</i> in language <i>lang</i>, or in a default language if <i>lang</i> is 0.</p>
-<h3 class="fn"><a name="text-2"></a><a href="qstring.html">QString</a> QImage::text ( const <a href="qimagetextkeylang.html">QImageTextKeyLang</a> &amp; <i>kl</i> ) const</h3>
+<p>See also <a href="qimage.html#setText">setText</a>().</p>
+<h3 class="fn"><a name="text-2"></a><a href="qstring.html">QString</a> QImage::text ( const QImageTextKeyLang &amp; <i>kl</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns the string recorded for the keyword and language <i>kl</i>.</p>
 <h3 class="fn"><a name="textKeys"></a><a href="qstringlist.html">QStringList</a> QImage::textKeys () const</h3>
@@ -480,8 +502,8 @@ body { background: #ffffff; color: black; }</style>
         ++it;
     }</pre>
 <p>See also <a href="qimage.html#textList">textList</a>(), <a href="qimage.html#text">text</a>(), <a href="qimage.html#setText">setText</a>(), and <a href="qimage.html#textKeys">textKeys</a>().</p>
-<h3 class="fn"><a name="textList"></a><a href="qlist.html">QList</a>&lt;<a href="qimagetextkeylang.html">QImageTextKeyLang</a>&gt; QImage::textList () const</h3>
-<p>Returns a list of <a href="qimagetextkeylang.html">QImageTextKeyLang</a> objects that enumerate all the texts key/language pairs set by <a href="qimage.html#setText">setText</a>() for this image.</p>
+<h3 class="fn"><a name="textList"></a><a href="qlist.html">QList</a>&lt;QImageTextKeyLang&gt; QImage::textList () const</h3>
+<p>Returns a list of QImageTextKeyLang objects that enumerate all the texts key/language pairs set by <a href="qimage.html#setText">setText</a>() for this image.</p>
 <h3 class="fn"><a name="transformed"></a>QImage QImage::transformed ( const <a href="qmatrix.html">QMatrix</a> &amp; <i>matrix</i>, <a href="qt.html#TransformationMode-enum">Qt::TransformationMode</a> <i>mode</i> = Qt::FastTransformation ) const</h3>
 <p>Returns a copy of the image that is transformed with the transformation matrix specified by <i>matrix</i> and using the transformation mode specified by <i>mode</i>.</p>
 <p>The transformation <i>matrix</i> is internally adjusted to compensate for unwanted translation; i.e. the image produced is the smallest image that contains all the transformed points of the original image.</p>
@@ -525,6 +547,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/inputmethod/qinputcontextplugin.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/inputmethod/qinputcontextplugin.cpp -->
 <head>
     <title>Qt 4.0: QInputContextPlugin Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QInputContextPlugin Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QInputContextPlugin Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QInputContextPlugin class provides an abstract base for custom <a href="qinputcontext.html">QInputContext</a> plugins. <a href="#details">More...</a></p>
-<pre>#include &lt;QInputContextPlugin&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre>#include &lt;QInputContextPlugin&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qinputcontextplugin-members.html">List of all members, including inherited members</a></li>
@@ -52,7 +51,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QInputContextPlugin class provides an abstract base for custom <a href="qinputcontext.html">QInputContext</a> plugins.</p>
 <p>The input context plugin is a simple plugin interface that makes it easy to create custom input contexts that can be loaded dynamically into applications.</p>
-<p>Writing a input context plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qinputcontextplugin.html#keys">keys</a>(), <a href="qinputcontextplugin.html#create">create</a>(), <a href="qinputcontextplugin.html#languages">languages</a>(), <a href="qinputcontextplugin.html#displayName">displayName</a>(), and <a href="qinputcontextplugin.html#description">description</a>(), and exporting the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>To create an input context plugin you subclass this base class, reimplement the pure virtual functions <a href="qinputcontextplugin.html#keys">keys</a>(), <a href="qinputcontextplugin.html#create">create</a>(), <a href="qinputcontextplugin.html#languages">languages</a>(), <a href="qinputcontextplugin.html#displayName">displayName</a>(), and <a href="qinputcontextplugin.html#description">description</a>(), and export the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
 <p>See also <a href="qinputcontext.html">QInputContext</a> and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -60,36 +59,34 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a input context plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
 <h3 class="fn"><a name="dtor.QInputContextPlugin"></a>QInputContextPlugin::~QInputContextPlugin ()</h3>
 <p>Destroys the input context plugin.</p>
-<p>You never have to call this explicitly. Qt destroys a plugin automatically when it is no longer used.</p>
+<p>You never have to call this explicitly. Qt destroys a plugin automatically when it's no longer used.</p>
 <h3 class="fn"><a name="create"></a><a href="qinputcontext.html">QInputContext</a> * QInputContextPlugin::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Creates and returns a <a href="qinputcontext.html">QInputContext</a> instance for the input context key <i>key</i>. The input context key is usually the class name of the required input method.</p>
+<p>Creates and returns a <a href="qinputcontext.html">QInputContext</a> object for the input context key <i>key</i>. The input context key is usually the class name of the required input method.</p>
 <p>Reimplemented from <a href="qinputcontextfactoryinterface.html#create">QInputContextFactoryInterface</a>.</p>
 <p>See also <a href="qinputcontextplugin.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="description"></a><a href="qstring.html">QString</a> QInputContextPlugin::description ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns a <a href="i18n.html">i18n</a>-ized brief description of the <a href="qinputcontext.html">QInputContext</a> instance specified by <i>key</i>. This string may be appeared in some user interfaces.</p>
+<p>Returns an internationalized brief description of the <a href="qinputcontext.html">QInputContext</a> object specified by <i>key</i>. You can, for example, use this description in a user interface.</p>
 <p>Reimplemented from <a href="qinputcontextfactoryinterface.html#description">QInputContextFactoryInterface</a>.</p>
+<p>See also <a href="qinputcontextplugin.html#keys">keys</a>() and <a href="qinputcontextplugin.html#displayName">displayName</a>().</p>
 <h3 class="fn"><a name="displayName"></a><a href="qstring.html">QString</a> QInputContextPlugin::displayName ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns a user friendly <a href="i18n.html">i18n</a>-ized name of the <a href="qinputcontext.html">QInputContext</a> instance specified by <i>key</i>. This string may be appeared in a menu and so on for users.</p>
-<p>There are two different names with different responsibility in the input method domain. This function returns one of them. Another name is called 'identifier name' to identify and specify input methods for the input method switching mechanism and so on.</p>
-<p>Although tr( identifierName ) can provide user friendly <a href="i18n.html">i18n</a>-ized name without this function, the message catalog have to be managed by Qt in the case. However, some sophisticated input method framework manages their own message catalogs to provide this <a href="i18n.html">i18n</a>-ized name string. So we need this function rather than just call <a href="qobject.html#tr">tr</a>() for identifier name.</p>
+<p>Returns a user friendly internationalized name of the <a href="qinputcontext.html">QInputContext</a> object specified by <i>key</i>. You can, for example, use this name in a menu.</p>
 <p>Reimplemented from <a href="qinputcontextfactoryinterface.html#displayName">QInputContextFactoryInterface</a>.</p>
 <p>See also <a href="qinputcontextplugin.html#keys">keys</a>() and <a href="qinputcontext.html#identifierName">QInputContext::identifierName</a>().</p>
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QInputContextPlugin::keys () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the list of <a href="qinputcontext.html">QInputContext</a> keys this plugin provides.</p>
-<p>These keys are usually the class names of the custom input context that are implemented in the plugin.</p>
-<p>Return value is the names to identify and specify input methods for the input method switching mechanism and so on. The names have to be consistent with <a href="qinputcontext.html#identifierName">QInputContext::identifierName</a>(). The names have to consist of ASCII characters only. See also <a href="qinputcontext.html#identifierName">QInputContext::identifierName</a>() for further information.</p>
+<p>These keys are usually the class names of the custom input context that are implemented in the plugin. The names are used, for example, to identify and specify input methods for the input method switching mechanism. They have to be consistent with <a href="qinputcontext.html#identifierName">QInputContext::identifierName</a>(), and may only contain ASCII characters.</p>
 <p>Reimplemented from <a href="qfactoryinterface.html#keys">QFactoryInterface</a>.</p>
 <p>See also <a href="qinputcontextplugin.html#create">create</a>(), <a href="qinputcontextplugin.html#displayName">displayName</a>(), and <a href="qinputcontext.html#identifierName">QInputContext::identifierName</a>().</p>
 <h3 class="fn"><a name="languages"></a><a href="qstringlist.html">QStringList</a> QInputContextPlugin::languages ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns what languages are supported by the <a href="qinputcontext.html">QInputContext</a> instance specified by <i>key</i>.</p>
-<p>The languages are expressed as language code (e.g. &quot;zh_CN&quot;, &quot;zh_TW&quot;, &quot;zh_HK&quot;, &quot;ja&quot;, &quot;ko&quot;, ...). An input context that suports multiple languages can return all supported languages as <a href="qstringlist.html">QStringList</a>. The name has to be consistent with QInputContextPlugin::language().</p>
+<p>Returns the languages supported by the <a href="qinputcontext.html">QInputContext</a> object specified by <i>key</i>.</p>
+<p>The languages are expressed as language code (e.g. &quot;zh_CN&quot;, &quot;zh_TW&quot;, &quot;zh_HK&quot;, &quot;ja&quot;, &quot;ko&quot;, ...). An input context that supports multiple languages can return all supported languages as <a href="qstringlist.html">QStringList</a>. The name has to be consistent with <a href="qinputcontext.html#language">QInputContext::language</a>().</p>
 <p>This information may be used to optimize user interface.</p>
 <p>Reimplemented from <a href="qinputcontextfactoryinterface.html#languages">QInputContextFactoryInterface</a>.</p>
-<p>See also <a href="qinputcontext.html#language">QInputContext::language</a>().</p>
+<p>See also <a href="qinputcontextplugin.html#keys">keys</a>(), <a href="qinputcontext.html#language">QInputContext::language</a>(), and <a href="qlocale.html">QLocale</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

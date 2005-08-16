@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/widgets/qcombobox.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qcombobox.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QComboBox</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QComboBox</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qcombobox.html">QComboBox class reference</a></li></ul></p>
@@ -80,8 +80,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Use setValidator(0) instead.</p>
 <h3 class="fn"><a name="currentItem"></a>int QComboBox::currentItem () const</h3>
 <p>Use <a href="qcombobox.html#currentIndex-prop">currentIndex</a>() instead.</p>
+<p>See also <a href="qcombobox-qt3.html#setCurrentItem">setCurrentItem</a>().</p>
 <h3 class="fn"><a name="editable"></a>bool QComboBox::editable () const</h3>
 <p>Use <a href="qcombobox.html#editable-prop">isEditable</a>() instead.</p>
+<p>See also <a href="qcombobox.html#editable-prop">setEditable</a>().</p>
 <h3 class="fn"><a name="insertItem-3"></a>void QComboBox::insertItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> = -1 )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <h3 class="fn"><a name="insertItem-4"></a>void QComboBox::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, int <i>index</i> = -1 )</h3>
@@ -94,17 +96,20 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qcombobox.html#insertItems">insertItems</a>() instead.</p>
 <h3 class="fn"><a name="insertionPolicy"></a><a href="qcombobox.html#InsertPolicy-enum">InsertPolicy</a> QComboBox::insertionPolicy () const</h3>
 <p>Use <a href="qcombobox.html#insertPolicy-prop">QComboBox::insertPolicy</a> instead.</p>
+<p>See also <a href="qcombobox-qt3.html#setInsertionPolicy">setInsertionPolicy</a>().</p>
 <h3 class="fn"><a name="pixmap"></a><a href="qpixmap.html">QPixmap</a> QComboBox::pixmap ( int <i>index</i> ) const</h3>
 <p>Use <a href="qcombobox.html#itemIcon">itemIcon</a>() instead.</p>
 <h3 class="fn"><a name="popup"></a>void QComboBox::popup ()</h3>
 <p>Use <a href="qcombobox.html#showPopup">showPopup</a>() instead.</p>
 <h3 class="fn"><a name="setCurrentItem"></a>void QComboBox::setCurrentItem ( int <i>index</i> )</h3>
 <p>Use setCurrentIndex(int) instead.</p>
+<p>See also <a href="qcombobox-qt3.html#currentItem">currentItem</a>().</p>
 <h3 class="fn"><a name="setCurrentText"></a>void QComboBox::setCurrentText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Use <a href="qcombobox.html#setItemText">setItemText</a>() instead.</p>
-<p>See also <a href="qcombobox.html#currentIndex-prop">currentIndex</a>().</p>
+<p>See also <a href="qcombobox.html#currentText-prop">currentText</a>() and <a href="qcombobox.html#currentIndex-prop">currentIndex</a>().</p>
 <h3 class="fn"><a name="setInsertionPolicy"></a>void QComboBox::setInsertionPolicy ( <a href="qcombobox.html#InsertPolicy-enum">InsertPolicy</a> <i>policy</i> )</h3>
 <p>Use <a href="qcombobox.html#insertPolicy-prop">QComboBox::insertPolicy</a> instead.</p>
+<p>See also <a href="qcombobox-qt3.html#insertionPolicy">insertionPolicy</a>().</p>
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QComboBox::text ( int <i>index</i> ) const</h3>
 <p>Use <a href="qcombobox.html#itemText">itemText</a>() instead.</p>
 <h3 class="fn"><a name="textChanged"></a>void QComboBox::textChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -113,6 +118,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

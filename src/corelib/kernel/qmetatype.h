@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,11 +24,18 @@
 #ifndef QMETATYPE_H
 #define QMETATYPE_H
 
+#include "QtCore/qglobal.h"
+#include "QtCore/qstring.h"
+
+#ifndef QT_NO_DATASTREAM
 #include "QtCore/qdatastream.h"
+#endif
 
 #ifdef Bool
 #error qmetatype.h must be included before any header file that define Bool
 #endif
+
+QT_MODULE(Core)
 
 class Q_CORE_EXPORT QMetaType {
 public:
@@ -49,20 +51,25 @@ public:
 
     typedef void (*Destructor)(void *);
     typedef void *(*Constructor)(const void *);
+
+#ifndef QT_NO_DATASTREAM
     typedef void (*SaveOperator)(QDataStream &, const void *);
     typedef void (*LoadOperator)(QDataStream &, void *);
-
-    static int registerType(const char *typeName, Destructor destructor,
-                            Constructor constructor);
     static void registerStreamOperators(const char *typeName, SaveOperator saveOp,
                                         LoadOperator loadOp);
+#endif
+    static int registerType(const char *typeName, Destructor destructor,
+                            Constructor constructor);
     static int type(const char *typeName);
     static const char *typeName(int type);
     static bool isRegistered(int type);
     static void *construct(int type, const void *copy);
     static void destroy(int type, void *data);
+
+#ifndef QT_NO_DATASTREAM
     static bool save(QDataStream &stream, int type, const void *data);
     static bool load(QDataStream &stream, int type, void *data);
+#endif
 };
 
 template <typename T>
@@ -79,6 +86,7 @@ void *qMetaTypeConstructHelper(const T *t)
     return new T(*static_cast<const T*>(t));
 }
 
+#ifndef QT_NO_DATASTREAM
 template <typename T>
 void qMetaTypeSaveHelper(QDataStream &stream, const T *t)
 {
@@ -89,18 +97,6 @@ template <typename T>
 void qMetaTypeLoadHelper(QDataStream &stream, T *t)
 {
     stream >> *t;
-}
-
-template <typename T>
-int qRegisterMetaType(const char *typeName, T * = 0)
-{
-    typedef void*(*ConstructPtr)(const T*);
-    ConstructPtr cptr = qMetaTypeConstructHelper<T>;
-    typedef void(*DeletePtr)(T*);
-    DeletePtr dptr = qMetaTypeDeleteHelper<T>;
-
-    return QMetaType::registerType(typeName, reinterpret_cast<QMetaType::Destructor>(dptr),
-                                   reinterpret_cast<QMetaType::Constructor>(cptr));
 }
 
 template <typename T>
@@ -115,6 +111,19 @@ void qRegisterMetaTypeStreamOperators(const char *typeName, T * = 0)
                                        reinterpret_cast<QMetaType::LoadOperator>(lptr));
 }
 
+#endif
+template <typename T>
+int qRegisterMetaType(const char *typeName, T * = 0)
+{
+    typedef void*(*ConstructPtr)(const T*);
+    ConstructPtr cptr = qMetaTypeConstructHelper<T>;
+    typedef void(*DeletePtr)(T*);
+    DeletePtr dptr = qMetaTypeDeleteHelper<T>;
+
+    return QMetaType::registerType(typeName, reinterpret_cast<QMetaType::Destructor>(dptr),
+                                   reinterpret_cast<QMetaType::Constructor>(cptr));
+}
+
 template <typename T>
 struct QMetaTypeId
 {
@@ -122,11 +131,11 @@ struct QMetaTypeId
 
 #define Q_DECLARE_METATYPE(TYPE) \
 template <> \
-struct QMetaTypeId<TYPE> \
+struct QMetaTypeId< TYPE > \
 { \
     static int qt_metatype_id() \
     { \
-       static int id = qRegisterMetaType<TYPE>(#TYPE); \
+       static int id = qRegisterMetaType< TYPE >(#TYPE); \
        return id; \
     } \
 };
@@ -146,7 +155,7 @@ template<> struct QMetaTypeId<QByteArray>
 template<> struct QMetaTypeId<QChar>
 { static inline int qt_metatype_id() { return QMetaType::QChar; } };
 template<> struct QMetaTypeId<void>
-{ static inline int qt_metatype_id() { return QMetaType::VoidStar; } };
+{ static inline int qt_metatype_id() { return QMetaType::Void; } };
 template<> struct QMetaTypeId<long>
 { static inline int qt_metatype_id() { return QMetaType::Long; } };
 template<> struct QMetaTypeId<short>
@@ -167,5 +176,7 @@ template<> struct QMetaTypeId<QObject *>
 class QWidget;
 template<> struct QMetaTypeId<QWidget *>
 { static inline int qt_metatype_id() { return QMetaType::QWidgetStar; } };
+template<> struct QMetaTypeId<void *>
+{ static inline int qt_metatype_id() { return QMetaType::VoidStar; } };
 
 #endif // QMETATYPE_H

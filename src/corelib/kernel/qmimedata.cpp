@@ -2,24 +2,19 @@
  **
  ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
  **
- ** This file is part of the core module of the Qt Toolkit.
+ ** This file is part of the QtCore module of the Qt Toolkit.
  **
- ** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+ ** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,9 +35,13 @@ struct MimeData
 
 class QMimeDataPrivate : public QObjectPrivate
 {
+    Q_DECLARE_PUBLIC(QMimeData)
 public:
     void setData(const QString &format, const QVariant &data);
     QVariant getData(const QString &format) const;
+
+    QVariant retrieveTypedData(const QString &format, QVariant::Type type) const;
+
     QList<MimeData> dataList;
 };
 
@@ -68,6 +67,84 @@ QVariant QMimeDataPrivate::getData(const QString &format) const
     for (int i=0; i<dataList.size(); i++) {
         if (dataList.at(i).format == format) {
             data = dataList.at(i).data;
+            break;
+        }
+    }
+    return data;
+}
+
+QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Type type) const
+{
+    Q_Q(const QMimeData);
+
+    QVariant data = q->retrieveData(format, type);
+    if (data.type() == type || data.type() == QVariant::Invalid)
+        return data;
+
+    // provide more conversion possiblities than just what QVariant provides
+
+    // URLs can be lists as well...
+    if (type == QVariant::Url && data.type() == QVariant::List
+        || type == QVariant::List && data.type() == QVariant::Url)
+        return data;
+
+    // images and pixmaps are interchangeable
+    if (type == QVariant::Pixmap && data.type() == QVariant::Image
+        || type == QVariant::Image && data.type() == QVariant::Pixmap)
+        return data;
+
+    if (data.type() == QVariant::ByteArray) {
+        // see if we can convert to the requested type
+        switch(type) {
+        case QVariant::String:
+            return QString::fromUtf8(data.toByteArray());
+        case QVariant::Color: {
+            QVariant newData = data;
+            newData.convert(QVariant::Color);
+            return newData;
+        }
+        case QVariant::Url: {
+            QList<QVariant> list;
+            QList<QByteArray> urls = data.toByteArray().split('\n');
+            for (int i = 0; i < urls.size(); ++i) {
+                QByteArray ba = urls.at(i).trimmed();
+                list.append(QUrl::fromEncoded(ba));
+            }
+            return list;
+        }
+        default:
+            break;
+        }
+
+    } else if (type == QVariant::ByteArray) {
+
+        // try to convert to bytearray
+        switch(data.type()) {
+        case QVariant::ByteArray:
+        case QVariant::Color:
+            return data.toByteArray();
+            break;
+        case QVariant::String:
+            return data.toString().toUtf8();
+            break;
+        case QVariant::Url:
+            return data.toUrl().toEncoded();
+            break;
+        case QVariant::List: {
+            // has to be list of URLs
+            QByteArray result;
+            QList<QVariant> list = data.toList();
+            for (int i = 0; i < list.size(); ++i) {
+                if (list.at(i).type() == QVariant::Url) {
+                    result += list.at(i).toUrl().toEncoded();
+                    result += "\r\n";
+                }
+            }
+            if (!result.isEmpty())
+                return result;
+            break;
+        }
+        default:
             break;
         }
     }
@@ -142,7 +219,8 @@ QMimeData::~QMimeData()
 */
 QList<QUrl> QMimeData::urls() const
 {
-    QVariant data = retrieveData("text/uri-list", QVariant::Url);
+    Q_D(const QMimeData);
+    QVariant data = d->retrieveTypedData("text/uri-list", QVariant::List);
     QList<QUrl> urls;
     if (data.type() == QVariant::Url)
         urls.append(data.toUrl());
@@ -183,12 +261,9 @@ bool QMimeData::hasUrls() const
 */
 QString QMimeData::text() const
 {
-    QVariant data = retrieveData("text/plain", QVariant::String);
-    if (data.type() == QVariant::ByteArray)
-        return QString::fromUtf8(data.toByteArray());
-    else if (data.type() == QVariant::String)
-        return data.toString();
-    return QString();
+    Q_D(const QMimeData);
+    QVariant data = d->retrieveTypedData("text/plain", QVariant::String);
+    return data.toString();
 }
 
 /*!
@@ -214,12 +289,9 @@ bool QMimeData::hasText() const
 */
 QString QMimeData::html() const
 {
-    QVariant data = retrieveData("text/html", QVariant::String);
-    if (data.type() == QVariant::ByteArray)
-        return QString::fromUtf8(data.toByteArray());
-    else if (data.type() == QVariant::String)
-        return data.toString();
-    return QString();
+    Q_D(const QMimeData);
+    QVariant data = d->retrieveTypedData("text/html", QVariant::String);
+    return data.toString();
 }
 
 /*!
@@ -245,7 +317,8 @@ bool QMimeData::hasHtml() const
 */
 QVariant QMimeData::imageData() const
 {
-    return retrieveData("application/x-qt-image", QVariant::Image);
+    Q_D(const QMimeData);
+    return d->retrieveTypedData("application/x-qt-image", QVariant::Image);
 }
 
 /*!
@@ -271,11 +344,8 @@ bool QMimeData::hasImage() const
 */
 QVariant QMimeData::colorData() const
 {
-    QVariant data = retrieveData("application/x-color", QVariant::Color);
-    if (data.type() == QVariant::Color)
-        return data;
-    // ### try to decode
-    return QVariant();
+    Q_D(const QMimeData);
+    return d->retrieveTypedData("application/x-color", QVariant::Color);
 }
 
 /*!
@@ -302,7 +372,8 @@ bool QMimeData::hasColor() const
 */
 QByteArray QMimeData::data(const QString &mimetype) const
 {
-    QVariant data = retrieveData(mimetype, QVariant::ByteArray);
+    Q_D(const QMimeData);
+    QVariant data = d->retrieveTypedData(mimetype, QVariant::ByteArray);
     return data.toByteArray();
 }
 
@@ -347,70 +418,7 @@ QStringList QMimeData::formats() const
 QVariant QMimeData::retrieveData(const QString &mimetype, QVariant::Type type) const
 {
     Q_D(const QMimeData);
-    QVariant data = d->getData(mimetype);
-    if (data.type() == type || type == QVariant::Invalid)
-        return data;
-
-    // URLs can be lists as well...
-    if (type == QVariant::Url && data.type() == QVariant::List)
-        return data;
-
-    // images and pixmaps are interchangeable
-    if (type == QVariant::Pixmap && data.type() == QVariant::Image
-        || type == QVariant::Image && data.type() == QVariant::Pixmap)
-        return data;
-
-    if (data.type() == QVariant::ByteArray) {
-        QByteArray ba = data.toByteArray();
-        // see if we can convert to the requested type
-        switch(type) {
-        case QVariant::String:
-            return QString::fromUtf8(ba);
-        case QVariant::Color:
-            data.convert(QVariant::Color);
-            return data;
-        case QVariant::Url: {
-            QList<QVariant> list;
-            QList<QByteArray> urls = data.toByteArray().split('\n');
-            for (int i = 0; i < urls.size(); ++i) {
-                QByteArray ba = urls.at(i).trimmed();
-                list.append(QUrl::fromEncoded(ba));
-            }
-            return list;
-        }
-        default:
-            break;
-        }
-    }
-
-    // try to convert to bytearray
-    QByteArray result;
-    switch(data.type()) {
-    case QVariant::ByteArray:
-    case QVariant::Color:
-        result = data.toByteArray();
-        break;
-    case QVariant::String:
-        result = data.toString().toUtf8();
-        break;
-    case QVariant::Url:
-        result = data.toUrl().toEncoded();
-        break;
-    case QVariant::List: {
-        // has to be list of URLs
-        QList<QVariant> list = data.toList();
-        for (int i = 0; i < list.size(); ++i) {
-            if (list.at(i).type() == QVariant::Url) {
-                result += list.at(i).toUrl().toEncoded();
-                result += "\r\n";
-            }
-        }
-        break;
-    }
-    default:
-        break;
-    }
-    return result;
+    return d->getData(mimetype);
 }
 
 /*!

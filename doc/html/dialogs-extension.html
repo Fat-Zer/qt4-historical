@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/examples/extension.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/extension.qdoc -->
 <head>
     <title>Qt 4.0: Extension Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Extension Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Extension Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="dialogs-extension-finddialog-cpp.html">dialogs/extension/finddialog.cpp</a></li>
@@ -25,9 +25,9 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="dialogs-extension-main-cpp.html">dialogs/extension/main.cpp</a></li>
 </ul>
 <p>The Extension example shows how to add an extension to a <a href="qdialog.html">QDialog</a> using the <a href="qabstractbutton.html#toggled">QAbstractButton::toggled</a>() signal and the <a href="qwidget.html#visible-prop">QWidget::setVisible</a>() slot.</p>
-<center><img src="images/extension-example.png" alt="Screenshot of the Extension example" /></center><p>The Extension application is a dialog that allows the user to perform a simple search as well as a more advanced search.</p>
+<p align="center"><img src="images/extension-example.png" alt="Screenshot of the Extension example" /></p><p>The Extension application is a dialog that allows the user to perform a simple search as well as a more advanced search.</p>
 <p>The simple search has two options: <b>Match case</b> and <b>Search from start</b>. The advanced search options include the possibilities to search for <b>Whole words</b>, <b>Search backward</b> and <b>Search selection</b>. Only the simple search is visible when the application starts. The advanced search options are located in the application's extension part, and can be made visible by pressing the <b>More</b> button:</p>
-<center><img src="images/extension_more.png" alt="Screenshot of the Extension example" /></center><a name="finddialog-class-definition"></a>
+<p align="center"><img src="images/extension_more.png" alt="Screenshot of the Extension example" /></p><a name="finddialog-class-definition"></a>
 <h2>FindDialog Class Definition</h2>
 <p>The <tt>FindDialog</tt> class inherits <a href="qdialog.html">QDialog</a>. The <a href="qdialog.html">QDialog</a> class is the base class of dialog windows. A dialog window is a top-level window mostly used for short-term tasks and brief communications with the user.</p>
 <pre>&nbsp;   class FindDialog : public QDialog
@@ -50,10 +50,10 @@ body { background: #ffffff; color: black; }</style>
         QWidget *extension;
     };</pre>
 <p>The <tt>FindDialog</tt> widget is the main application widget, and displays the application's search options and controlling buttons.</p>
-<p>In addition to a constructor, we declare the several child widgets: We need a <a href="qlineedit.html">QLineEdit</a> with an associated <a href="qlabel.html">QLabel</a> to let the user type a word to search for, we need several QCheckBoxes to facilitate the search options, and we need three QPushButtons: the <b>Find</b> button to start a search, the <b>More</b> button to enable an advanced search, and the <b>Close</b> button to exit the application. Finally, we need a <a href="qwidget.html">QWidget</a> representing the application's extension part.</p>
+<p>In addition to a constructor, we declare the several child widgets: We need a <a href="qlineedit.html">QLineEdit</a> with an associated <a href="qlabel.html">QLabel</a> to let the user type a word to search for, we need several <a href="qcheckbox.html">QCheckBox</a>es to facilitate the search options, and we need three <a href="qpushbutton.html">QPushButton</a>s: the <b>Find</b> button to start a search, the <b>More</b> button to enable an advanced search, and the <b>Close</b> button to exit the application. Finally, we need a <a href="qwidget.html">QWidget</a> representing the application's extension part.</p>
 <a name="finddialog-class-implementation"></a>
 <h2>FindDialog Class Implementation</h2>
-<p>In the constructor we first create the standard child widgets for the simple search: the <a href="qlineedit.html">QLineEdit</a> with the associated <a href="qlabel.html">QLabel</a>, two of the QCheckBoxes and all the QPushButtons.</p>
+<p>In the constructor we first create the standard child widgets for the simple search: the <a href="qlineedit.html">QLineEdit</a> with the associated <a href="qlabel.html">QLabel</a>, two of the <a href="qcheckbox.html">QCheckBox</a>es and all the <a href="qpushbutton.html">QPushButton</a>s.</p>
 <pre>&nbsp;   FindDialog::FindDialog(QWidget *parent)
         : QDialog(parent)
     {
@@ -79,7 +79,7 @@ body { background: #ffffff; color: black; }</style>
         wholeWordsCheckBox = new QCheckBox(tr(&quot;&amp;Whole words&quot;));
         backwardCheckBox = new QCheckBox(tr(&quot;Search &amp;backward&quot;));
         searchSelectionCheckBox = new QCheckBox(tr(&quot;Search se&amp;lection&quot;));</pre>
-<p>Then we create the extension widget, and the QCheckBoxes associated with the advanced search options.</p>
+<p>Then we create the extension widget, and the <a href="qcheckbox.html">QCheckBox</a>es associated with the advanced search options.</p>
 <pre>&nbsp;       connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
         connect(moreButton, SIGNAL(toggled(bool)), extension, SLOT(setVisible(bool)));
 
@@ -89,7 +89,7 @@ body { background: #ffffff; color: black; }</style>
         extensionLayout-&gt;addWidget(backwardCheckBox);
         extensionLayout-&gt;addWidget(searchSelectionCheckBox);
         extension-&gt;setLayout(extensionLayout);</pre>
-<p>Now that the extension widget is created, we can connect the <b>More</b> button's <tt>toggled()</tt> signal to the extension widget's <tt>setVisible()</tt> slot.</p>
+<p>Now that the extension widget is created, we can connect the <b>More</b> button's <a href="qabstractbutton.html#toggled">toggled()</a> signal to the extension widget's <a href="qwidget.html#visible-prop">setVisible()</a> slot.</p>
 <p>The <a href="qabstractbutton.html#toggled">QAbstractButton::toggled</a>() signal is emitted whenever a checkable button changes its state. The signal's argument is true if the button is checked, or false if the button is unchecked. The <a href="qwidget.html#visible-prop">QWidget::setVisible</a>() slot sets the widget's visible status. If the status is true the widget is shown, otherwise the widget is hidden.</p>
 <p>Since we made the <b>More</b> button checkable when we created it, the connection makes sure that the extension widget is shown depending on the state of <b>More</b> button.</p>
 <p>We also connect the <b>Close</b> button to the <a href="qwidget.html#close">QWidget::close</a>() slot, and we put the checkboxes associated with the advanced search options into a layout we install on the extension widget.</p>
@@ -125,6 +125,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

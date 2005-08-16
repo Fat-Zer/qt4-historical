@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -535,7 +530,7 @@ QSize Q3DockWindowHandle::minimumSizeHint() const
 {
     if (!dockWindow->dockArea)
         return QSize(0, 0);
-    int wh = dockWindow->isCloseEnabled() ? 17 : style()->pixelMetric(QStyle::PM_DockWidgetHandleExtent, 0, this);
+    int wh = dockWindow->isCloseEnabled() ? 17 : style()->pixelMetric(QStyle::PM_ToolBarHandleExtent, 0, this);
     if (dockWindow->orientation() == Qt::Horizontal)
         return QSize(wh, 0);
     return QSize(0, wh);
@@ -1808,7 +1803,27 @@ QSize Q3DockWindow::minimumSizeHint() const
     return msh;
 }
 
-/*! \internal */
+/*!
+    \fn void Q3DockWindow::undock()
+
+    Undocks the Q3DockWindow from its current dock area if it is
+    docked; otherwise does nothing.
+
+    \sa dock() Q3DockArea::moveDockWindow(),
+    Q3DockArea::removeDockWindow(), Q3MainWindow::moveDockWindow(),
+    Q3MainWindow::removeDockWindow()
+*/
+
+/*!
+    \fn void Q3DockWindow::undock(QWidget *widget)
+
+    Undocks the specified \a widget from its current dock area if it is
+    docked; otherwise does nothing.
+
+    \sa dock() Q3DockArea::moveDockWindow(),
+    Q3DockArea::removeDockWindow(), Q3MainWindow::moveDockWindow(),
+    Q3MainWindow::removeDockWindow()
+*/
 void Q3DockWindow::undock(QWidget *w)
 {
     Q3MainWindow *mw = 0;
@@ -1855,17 +1870,6 @@ void Q3DockWindow::undock(QWidget *w)
         parentWidget()->setActiveWindow();
     emit placeChanged(place());
 }
-
-/*!
-    \fn void Q3DockWindow::undock()
-
-    Undocks the Q3DockWindow from its current dock area if it is
-    docked; otherwise does nothing.
-
-    \sa dock() Q3DockArea::moveDockWindow(),
-    Q3DockArea::removeDockWindow(), Q3MainWindow::moveDockWindow(),
-    Q3MainWindow::removeDockWindow()
-*/
 
 void Q3DockWindow::removeFromDock(bool fixNewLines)
 {
@@ -2010,7 +2014,7 @@ bool Q3DockWindow::event(QEvent *e)
         if (place() == OutsideDock && isWindow() && parentWidget()
              && parentWidget()->isActiveWindow())
             return true;
-        break;        
+        break;
     case QEvent::HideToParent:
         emit visibilityChanged(false);
         break;

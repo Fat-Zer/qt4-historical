@@ -2,31 +2,25 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the porting application of the Qt Toolkit.
+** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 
-#include <iostream>
 #include <QString>
 #include <QFile>
 #include <QFileInfo>
@@ -42,24 +36,20 @@
 #include "fileporter.h"
 #include "logger.h"
 #include "preprocessorcontrol.h"
-using std::cout;
-using std::endl;
 
 QString rulesFilePath;
 QString applicationDirPath;
 
 QString findRulesFile(const QString &fileName)
 {
-    //check QLibraryInfo::DataPath/filename
+    // Check QLibraryInfo::DataPath/filename
     QString filePath;
     filePath = QDir::cleanPath(QLibraryInfo::location(QLibraryInfo::DataPath) + "/" + fileName)  ;
-    //cout << "checking" << filePath.toLatin1().constData() << endl;
     if (QFile::exists(filePath))
         return QFileInfo(filePath).canonicalFilePath();
 
-    //check QLibraryInfo::PrefixPath/tools/porting/src/filename
+    // Check QLibraryInfo::PrefixPath/tools/porting/src/filename
     filePath = QDir::cleanPath(QLibraryInfo::location(QLibraryInfo::PrefixPath) + "/tools/porting/src/" + fileName);
-    //cout << "checking" << filePath.toLatin1().constData() << endl;
     if (QFile::exists(filePath))
         return QFileInfo(filePath).canonicalFilePath();
 
@@ -93,17 +83,15 @@ typedef QList<Option> OptionList;
 
 void usage(const OptionList &optionList)
 {
-    using namespace std;
-
-    cout << "Tool for porting Qt 3 applications to Qt 4, using the compatibility library" << endl;
-    cout << "and compatibility functions in the core library." << endl;
-    cout << "Usage: qt3to4 [options] <Infile>, [Infile], ..." << endl;
-    cout << endl;
-    cout << "Infile can be a source file or a project file." << endl;
-    cout << "If you specify a project file, ending with .pro or .pri," << endl;
-    cout << "qt3to4 will port all files specified in that project." << endl;
-    cout << endl;
-    cout << "Options:" << endl;
+    printf("Tool for porting Qt 3 applications to Qt 4, using the compatibility library\n");
+    printf("and compatibility functions in the core library.\n");
+    printf("Usage: qt3to4 [options] <Infile>, [Infile], ...\n");
+    printf("\n");
+    printf("Infile can be a source file or a project file.\n");
+    printf("If you specify a project file, ending with .pro or .pri,\n");
+    printf("qt3to4 will port all files specified in that project.\n");
+    printf("\n");
+    printf("Options:\n");
 
     // Find the length of the longest argument.
     int argumentMaxLenght = 0;
@@ -115,22 +103,22 @@ void usage(const OptionList &optionList)
     // Print the options, pad with spaces between the argument and description where needed.
     const int extraSpaces = 5;
     foreach (const Option option, optionList) {
-        cout << option.argument.toLocal8Bit().constData();
+        printf(option.argument.toLocal8Bit().constData());
         for (int i = 0; i < argumentMaxLenght - option.argument.count() + extraSpaces; ++i)
-            cout << " ";
-        cout << option.description.toLocal8Bit().constData() << endl;
+            printf(" ");
+        puts(option.description.toLocal8Bit().constData());
     }
 
-    cout << endl;
-    cout << "The porting documentation contains more information on how" << endl;
-    cout << "to use qt3to4 as well as general porting information." << endl;
+    printf("\n");
+    printf("The porting documentation contains more information on how\n");
+    printf("to use qt3to4 as well as general porting information.\n");
 }
 
 int main(int argc, char**argv)
 {
     QCoreApplication app(argc, argv);
     applicationDirPath = app.applicationDirPath();
-    QString defualtRulesFileName = "q3porting.xml";
+    QString defaultRulesFileName = "q3porting.xml";
     QStringList inFileNames;
     QStringList includeSearchDirectories;
     bool enableCppParsing = true;
@@ -168,22 +156,20 @@ int main(int argc, char**argv)
         } else if (rulesFileOption.checkArgument(argText)) {
             ++currentArg;
             if (currentArg >= argc) {
-                cout << "You must specify a file name along with"
-                     << argText.toLocal8Bit().constData() <<  endl;
+                printf("You must specify a file name along with %s \n", argText.toLocal8Bit().constData());
                 return 0;
             }
             rulesFilePath = argv[currentArg];
 
             if (!QFile::exists(rulesFilePath)) {
-                cout << "File not found: " ;
-                cout << rulesFilePath.toLocal8Bit().constData() << endl;
+                printf("File not found: %s\n", rulesFilePath.toLocal8Bit().constData());
                 return 0;
             }
         } else if (includeDirectoryOption.checkArgument(argText)) {
             ++currentArg;
             if (currentArg >= argc) {
-                cout << "You must specify a directory name along with "
-                     << argText.toLocal8Bit().constData() << endl;
+                printf("You must specify a directory name along with %s\n",
+                     argText.toLocal8Bit().constData());
                 return 0;
             }
             includeSearchDirectories += argv[currentArg];
@@ -197,7 +183,7 @@ int main(int argc, char**argv)
             alwaysOverwrite = true;
             FileWriter::instance()->setOverwriteFiles(FileWriter::AlwaysOverWrite);
         } else if (argText[0]  == '-') {
-            cout << "Unknown option " << argText.toLocal8Bit().constData() << endl;
+            printf("Unknown option %s\n", argText.toLocal8Bit().constData());
             return 0;
         } else {
             inFileNames.append(argText);
@@ -206,25 +192,25 @@ int main(int argc, char**argv)
     }
 
     if (rulesFilePath.isEmpty())
-        rulesFilePath = findRulesFile(defualtRulesFileName);
+        rulesFilePath = findRulesFile(defaultRulesFileName);
 
-    //Check if we have a rules file
+    // Check if we have a rule file.
     if (!QFile::exists(rulesFilePath)) {
-        cout << "Error: Could not find the " << defualtRulesFileName.toLocal8Bit().constData() << "rules file: ";
-        cout << "Please try specifying the file with the "
-        << rulesFileOption.argument.toLocal8Bit().constData() << " option" << endl;
+        printf("Error: Could not find the %s rule file: ", defaultRulesFileName.toLocal8Bit().constData());
+        printf("Please try specifying the location of the file with the %s option \n", 
+            rulesFileOption.argument.toLocal8Bit().constData());
         return 0;
     }
 
-    //check if we have any infiles
+    // Check if we have any infiles
     if (inFileNames.isEmpty()) {
-        cout << "You must specify a file name" << endl;
+        printf("You must specify a file name. \n");
         return 0;
     }
 
-    // Create and scan rules file.
-    cout << "Using rules file: ";
-    cout << QDir::convertSeparators(rulesFilePath).toLocal8Bit().constData() <<endl;
+    // Read rule file and create PortingRules instance.
+    printf("Using rules file: ");
+    puts(QDir::convertSeparators(rulesFilePath).toLocal8Bit().constData());
     PortingRules::createInstance(rulesFilePath);
 
 
@@ -251,8 +237,7 @@ int main(int argc, char**argv)
             else
                 porter.portFile(canonicalFileName);
         } else {
-            cout << "File not found: ";
-            cout << QDir::convertSeparators(inFileName).toLocal8Bit().constData() <<endl;
+            printf("File not found: %s \n", QDir::convertSeparators(inFileName).toLocal8Bit().constData());
         }
     }
 
@@ -260,7 +245,7 @@ int main(int argc, char**argv)
     if (Logger::instance()->numEntries() > 0) {
         QStringList report = Logger::instance()->fullReport();
         QString logFileName =  "portinglog.txt";
-        cout << "Writing log to " << logFileName.toLocal8Bit().constData() << endl;
+        printf("Writing log to %s \n", logFileName.toLocal8Bit().constData());
         QByteArray logContents;
         QBuffer logBuffer(&logContents);
         logBuffer.open(QIODevice::Text | QIODevice::WriteOnly);

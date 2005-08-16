@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,6 +24,9 @@
 #include <qplatformdefs.h>
 #include <private/qabstractspinbox_p.h>
 #include <qabstractspinbox.h>
+
+#ifndef QT_NO_SPINBOX
+
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qdatetime.h>
@@ -43,6 +41,7 @@
 #if defined(Q_WS_X11)
 #include <limits.h>
 #endif
+static const int thresholdTime = 500; // ### make this a stylehint in 4.1
 
 //#define QABSTRACTSPINBOX_QSBDEBUG
 #ifdef QABSTRACTSPINBOX_QSBDEBUG
@@ -326,8 +325,7 @@ void QAbstractSpinBox::setFrame(bool enable)
     \property QAbstractSpinBox::alignment
     \brief the alignment of the spin box
 
-    Possible Values are \c Qt::AlignLeft, \c
-    Qt::AlignRight and \c Qt::AlignHCenter.
+    Possible Values are Qt::AlignLeft, Qt::AlignRight, and Qt::AlignHCenter.
 
     By default, the alignment is Qt::AlignLeft
 
@@ -367,8 +365,8 @@ void QAbstractSpinBox::selectAll()
         d->updateEdit();
 
     if (!d->specialValue()) {
-        d->edit->setSelection(d->prefix.length(), d->edit->displayText().length()
-                              - d->prefix.length() - d->suffix.length());
+        const int tmp = d->edit->displayText().size() - d->suffix.size();
+        d->edit->setSelection(tmp, -(tmp - d->prefix.size()));
     } else {
         d->edit->selectAll();
     }
@@ -472,8 +470,8 @@ void QAbstractSpinBox::stepDown()
 /*!
     Virtual function that is called whenever the user triggers a step.
     The \a steps parameter indicates how many steps were taken, e.g.
-    Pressing \c Qt::Key_Down will trigger a call to stepBy(-1),
-    whereas pressing \c Qt::Key_Prior will trigger a call to
+    Pressing Qt::Key_Down will trigger a call to stepBy(-1),
+    whereas pressing Qt::Key_Prior will trigger a call to
     stepBy(10).
 
     If you subclass QAbstractSpinBox you must reimplement this
@@ -613,7 +611,7 @@ void QAbstractSpinBox::showEvent(QShowEvent *)
     Q_D(QAbstractSpinBox);
 
     if (d->dirty) {
-        d->resetState();
+        d->reset();
         d->updateEdit();
     }
     d->updateSpinBox();
@@ -630,16 +628,17 @@ void QAbstractSpinBox::changeEvent(QEvent *e)
     switch(e->type()) {
         case QEvent::StyleChange:
             d->spinClickTimerInterval = style()->styleHint(QStyle::SH_SpinBox_ClickAutoRepeatRate, 0, this);
-            d->resetState();
+            d->spinClickThresholdTimerInterval = thresholdTime;
+            d->reset();
             break;
         case QEvent::EnabledChange:
             if (!isEnabled()) {
-                d->resetState();
+                d->reset();
             }
             break;
         case QEvent::ActivationChange:
             if (!isActiveWindow()){
-                d->resetState();
+                d->reset();
                 if (d->pendingEmit) // pendingEmit can be true even if it hasn't changed.
                     d->interpret(EmitIfChanged); // E.g. 10 to 10.0
             }
@@ -680,13 +679,13 @@ QSize QAbstractSpinBox::sizeHint() const
     QString s;
     s = d->prefix + d->textFromValue(d->minimum) + d->suffix + QLatin1Char(' ');
     s.truncate(18);
-    w = qMax<int>(w, fm.width(s));
+    w = qMax(w, fm.width(s));
     s = d->prefix + d->textFromValue(d->maximum) + d->suffix + QLatin1Char(' ');
     s.truncate(18);
-    w = qMax<int>(w, fm.width(s));
+    w = qMax(w, fm.width(s));
     if (d->specialValueText.size()) {
         s = d->specialValueText;
-        w = qMax<int>(w, fm.width(s));
+        w = qMax(w, fm.width(s));
     }
     w += 2; // cursor blinking space
 
@@ -874,7 +873,7 @@ void QAbstractSpinBox::keyReleaseEvent(QKeyEvent *e)
 
     if (d->buttonState & Keyboard && !e->isAutoRepeat()
         && style()->styleHint(QStyle::SH_SpinBox_AnimateButton, 0, this)) {
-        d->resetState();
+        d->reset();
     } else {
         d->edit->event(e);
     }
@@ -884,6 +883,7 @@ void QAbstractSpinBox::keyReleaseEvent(QKeyEvent *e)
     \reimp
 */
 
+#ifndef QT_NO_WHEELEVENT
 void QAbstractSpinBox::wheelEvent(QWheelEvent *e)
 {
     const int steps = (e->delta() > 0 ? 1 : -1);
@@ -891,6 +891,7 @@ void QAbstractSpinBox::wheelEvent(QWheelEvent *e)
         stepBy(e->modifiers() & Qt::ControlModifier ? steps * 10 : steps);
     e->accept();
 }
+#endif
 
 
 /*!
@@ -917,7 +918,7 @@ void QAbstractSpinBox::focusOutEvent(QFocusEvent *e)
 
     if (d->pendingEmit)
         d->interpret(EmitIfChanged);
-    d->resetState();
+    d->reset();
     d->edit->event(e);
     QWidget::focusOutEvent(e);
     emit editingFinished();
@@ -931,7 +932,7 @@ void QAbstractSpinBox::closeEvent(QCloseEvent *e)
 {
     Q_D(QAbstractSpinBox);
 
-    d->resetState();
+    d->reset();
     if (d->pendingEmit)
         d->interpret(EmitIfChanged);
     QWidget::closeEvent(e);
@@ -944,7 +945,7 @@ void QAbstractSpinBox::closeEvent(QCloseEvent *e)
 void QAbstractSpinBox::hideEvent(QHideEvent *e)
 {
     Q_D(QAbstractSpinBox);
-    d->resetState();
+    d->reset();
     QWidget::hideEvent(e);
 }
 
@@ -956,17 +957,34 @@ void QAbstractSpinBox::timerEvent(QTimerEvent *e)
 {
     Q_D(QAbstractSpinBox);
 
-    if (e->timerId() == d->spinClickTimerId) {
+    bool doStep = false;
+    if (e->timerId() == d->spinClickThresholdTimerId) {
+        killTimer(d->spinClickThresholdTimerId);
+        d->spinClickThresholdTimerId = -1;
+        d->spinClickTimerId = startTimer(d->spinClickTimerInterval);
+        doStep = true;
+    } else if (e->timerId() == d->spinClickTimerId) {
+        doStep = true;
+    }
+
+    if (doStep) {
+        const StepEnabled st = stepEnabled();
         if (d->buttonState & Up) {
-            stepBy(1);
-            if (!(stepEnabled() & StepUpEnabled))
-                d->resetState();
+            if (!(st & StepUpEnabled)) {
+                d->reset();
+            } else {
+                stepBy(1);
+            }
         } else if (d->buttonState & Down) {
-            stepBy(-1);
-            if (!(stepEnabled() & StepDownEnabled))
-                d->resetState();
+            if (!(st & StepDownEnabled)) {
+                d->reset();
+            } else {
+                stepBy(-1);
+            }
         }
     }
+    QWidget::timerEvent(e);
+    return;
 }
 
 /*!
@@ -975,10 +993,10 @@ void QAbstractSpinBox::timerEvent(QTimerEvent *e)
 
 void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *e)
 {
-#ifndef QT_NO_POPUPMENU
+#ifndef QT_NO_MENU
     Q_D(QAbstractSpinBox);
 
-    d->resetState();
+    d->reset();
     QMenu *menu = d->edit->createStandardContextMenu();
     menu->addSeparator();
     const uint se = stepEnabled();
@@ -1021,7 +1039,7 @@ void QAbstractSpinBox::mouseMoveEvent(QMouseEvent *e)
         else if ((se & StepDownEnabled) && d->hoverControl == QStyle::SC_SpinBoxDown)
             d->updateState(false);
         else
-            d->resetState();
+            d->reset();
         e->accept();
     }
 }
@@ -1059,7 +1077,7 @@ void QAbstractSpinBox::mouseReleaseEvent(QMouseEvent *e)
     Q_D(QAbstractSpinBox);
 
     if ((d->buttonState & Mouse) != 0)
-        d->resetState();
+        d->reset();
     e->accept();
 }
 
@@ -1072,8 +1090,8 @@ void QAbstractSpinBox::mouseReleaseEvent(QMouseEvent *e)
 
 QAbstractSpinBoxPrivate::QAbstractSpinBoxPrivate()
     : edit(0), type(QVariant::Invalid), spinClickTimerId(-1),
-      spinClickTimerInterval(100), buttonState(None),
-      dirty(true), cachedText("\x01"), cachedState(QValidator::Invalid),
+      spinClickTimerInterval(100), spinClickThresholdTimerId(-1), spinClickThresholdTimerInterval(thresholdTime),
+      buttonState(None), dirty(true), cachedText("\x01"), cachedState(QValidator::Invalid),
       pendingEmit(false), readOnly(false), wrapping(false),
       ignoreCursorPositionChanged(false), frame(true),
       hoverControl(QStyle::SC_None), buttonSymbols(QAbstractSpinBox::UpDownArrows), validator(0)
@@ -1127,26 +1145,32 @@ QStyle::SubControl QAbstractSpinBoxPrivate::newHoverControl(const QPoint &pos)
     Strips any prefix/suffix from \a text.
 */
 
-QString QAbstractSpinBoxPrivate::stripped(const QString &t) const
+QString QAbstractSpinBoxPrivate::stripped(const QString &t, int *pos) const
 {
     QString text = t;
     if (specialValueText.size() == 0 || text != specialValueText) {
         int from = 0;
-        int length = text.length();
+        int size = text.size();
         bool changed = false;
         if (prefix.size() && text.startsWith(prefix)) {
-            from += prefix.length();
-            length -= from;
+            from += prefix.size();
+            size -= from;
             changed = true;
         }
         if (suffix.size() && text.endsWith(suffix)) {
-            length -= suffix.length();
+            size -= suffix.size();
             changed = true;
         }
         if (changed)
-            text = text.mid(from, length);
+            text = text.mid(from, size);
     }
+
+    const int s = text.size();
+    text = text.trimmed();
+    if (pos)
+        (*pos) -= (s - text.size());
     return text;
+
 }
 
 /*!
@@ -1230,14 +1254,14 @@ void QAbstractSpinBoxPrivate::editorCursorPositionChanged(int oldpos, int newpos
             }
         }
         if (pos != -1) {
-            const int selLength = edit->selectionStart() >= 0 && allowSelection
-                                  ? (edit->selectedText().length()
+            const int selSize = edit->selectionStart() >= 0 && allowSelection
+                                  ? (edit->selectedText().size()
                                      * (newpos < pos ? -1 : 1)) - newpos + pos
                                   : 0;
 
             const bool wasBlocked = edit->blockSignals(true);
-            if (selLength != 0) {
-                edit->setSelection(pos - selLength, selLength);
+            if (selSize != 0) {
+                edit->setSelection(pos - selSize, selSize);
             } else {
                 edit->setCursorPosition(pos);
             }
@@ -1258,6 +1282,7 @@ void QAbstractSpinBoxPrivate::init()
     Q_Q(QAbstractSpinBox);
 
     spinClickTimerInterval = q->style()->styleHint(QStyle::SH_SpinBox_ClickAutoRepeatRate, 0, q);
+    spinClickThresholdTimerInterval = thresholdTime;
     q->setFocusPolicy(Qt::WheelFocus);
     q->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     q->setAttribute(Qt::WA_InputMethodEnabled);
@@ -1294,7 +1319,7 @@ void QAbstractSpinBoxPrivate::updateSpinBox()
     (Keyboard|Up) if Key up is currently pressed.
 */
 
-void QAbstractSpinBoxPrivate::resetState()
+void QAbstractSpinBoxPrivate::reset()
 {
     Q_Q(QAbstractSpinBox);
 
@@ -1302,7 +1327,9 @@ void QAbstractSpinBoxPrivate::resetState()
     if (q) {
         if (spinClickTimerId != -1)
             q->killTimer(spinClickTimerId);
-        spinClickTimerId = -1;
+        if (spinClickThresholdTimerId != -1)
+            q->killTimer(spinClickThresholdTimerId);
+        spinClickTimerId = spinClickThresholdTimerId = -1;
         updateSpinBox();
     }
 }
@@ -1318,10 +1345,10 @@ void QAbstractSpinBoxPrivate::updateState(bool up)
     Q_Q(QAbstractSpinBox);
     if ((up && (buttonState & Up)) || (!up && (buttonState & Down)))
         return;
-    resetState();
+    reset();
     if (q && (q->stepEnabled() & (up ? QAbstractSpinBox::StepUpEnabled
                                   : QAbstractSpinBox::StepDownEnabled))) {
-        spinClickTimerId = q->startTimer(spinClickTimerInterval);
+        spinClickThresholdTimerId = q->startTimer(spinClickThresholdTimerInterval);
         buttonState = (up ? (Mouse | Up) : (Mouse | Down));
         q->stepBy(up ? 1 : -1);
     }
@@ -1428,17 +1455,18 @@ void QAbstractSpinBoxPrivate::updateEdit() const
     QLineEdit *e = const_cast<QLineEdit*>(edit);
     const bool empty = e->text().isEmpty();
     int cursor = e->cursorPosition();
-    int sellength = e->selectedText().length();
+    int selsize = e->selectedText().size();
     const QString newText = specialValue() ? specialValueText : prefix + textFromValue(value) + suffix;
     const bool sb = e->blockSignals(true);
     e->setText(newText);
 
     if (!specialValue()) {
-        cursor = qMin<int>(qMax<int>(cursor, prefix.length()), edit->displayText().length() - suffix.length());
-        if (sellength > 0) {
-            e->setSelection(cursor, sellength);
+        cursor = qBound(prefix.size(), cursor, edit->displayText().size() - suffix.size());
+
+        if (selsize > 0) {
+            e->setSelection(cursor, selsize);
         } else {
-            e->setCursorPosition(empty ? prefix.length() : cursor);
+            e->setCursorPosition(empty ? prefix.size() : cursor);
         }
     }
     e->blockSignals(sb);
@@ -1472,18 +1500,14 @@ void QAbstractSpinBoxPrivate::update()
     Convenience function to set min/max values.
 */
 
-void QAbstractSpinBoxPrivate::setBoundary(Boundary b, const QVariant &val)
+void QAbstractSpinBoxPrivate::setRange(const QVariant &min, const QVariant &max)
 {
-    if (b == Minimum) {
-        minimum = val;
-        if (maximum < minimum)
-            maximum = minimum;
-    } else {
-        maximum = val;
-        if (minimum > maximum)
-            minimum = maximum;
-    }
-    resetState();
+    cachedText.clear();
+    cachedValue.clear();
+    minimum = min;
+    maximum = qMax(min, max);
+
+    reset();
     setValue(bound(value), EmitIfChanged);
 }
 
@@ -1754,7 +1778,7 @@ QVariant operator-(const QVariant &arg1, const QVariant &arg2)
         QDateTime a2 = arg2.toDateTime();
         int days = a2.daysTo(a1);
         int secs = a2.secsTo(a1);
-        int msecs = qMax<int>(0, a1.time().msec() - a2.time().msec());
+        int msecs = qMax(0, a1.time().msec() - a2.time().msec());
         if (days < 0 || secs < 0 || msecs < 0) {
             ret = arg1;
         } else {
@@ -1823,4 +1847,5 @@ double operator/(const QVariant &arg1, const QVariant &arg2)
 }
 
 #include "moc_qabstractspinbox.cpp"
+#endif // QT_NO_SPINBOX
 

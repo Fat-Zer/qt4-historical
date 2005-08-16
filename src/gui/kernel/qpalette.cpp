@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,7 +23,6 @@
 
 #include "qpalette.h"
 #include "qapplication.h"
-#ifndef QT_NO_PALETTE
 #include "qdatastream.h"
 #include "qvariant.h"
 
@@ -441,17 +435,17 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     \value Mid  Between \c Button and \c Dark.
 
     \value Shadow  A very dark color. By default, the shadow color is
-                   \c Qt::black.
+                   Qt::black.
 
 
     Selected (marked) items have two roles:
 
     \value Highlight   A color to indicate a selected item or the current
                        item. By default, the highlight color is
-                       \c Qt::darkBlue.
+                       Qt::darkBlue.
 
     \value HighlightedText  A text color that contrasts with \c Highlight.
-    By default, the highlighted text color is \c Qt::white.
+    By default, the highlighted text color is Qt::white.
 
     Finally, there is a special role for text that needs to be drawn where \c
     Text or \c Foreground would give poor contrast, such as on pressed push
@@ -463,10 +457,10 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
                        \c Foreground, and contrasts well with e.g. \c Dark.
 
     \value Link  A text color used for unvisited hyperlinks.
-                 By default, the link color is \c Qt::blue.
+                 By default, the link color is Qt::blue.
 
     \value LinkVisited  A text color used for already visited hyperlinks.
-                        By default, the linkvisited color is \c Qt::magenta.
+                        By default, the linkvisited color is Qt::magenta.
 
     \omitvalue NColorRoles
     \omitvalue NoRole
@@ -1216,4 +1210,3 @@ QPalette::setColorGroup(ColorGroup cg, const QBrush &foreground, const QBrush &b
     otherwise returns false.
 */
 
-#endif // QT_NO_PALETTE

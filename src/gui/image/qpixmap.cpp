@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -114,7 +109,6 @@ QPixmap::QPixmap(const QSize &s, Type type)
     init(s.width(), s.height(), type);
 }
 
-#ifndef QT_NO_IMAGEIO
 /*!
     Constructs a pixmap from the file with the given \a fileName. If the
     file does not exist or is of an unknown format, the pixmap becomes a
@@ -146,7 +140,6 @@ QPixmap::QPixmap(const QString& fileName, const char *format, Qt::ImageConversio
     init(0, 0);
     load(fileName, format, flags);
 }
-#endif //QT_NO_IMAGEIO
 
 /*!
     Constructs a pixmap that is a copy of \a pixmap.
@@ -230,6 +223,8 @@ int QPixmap::devType() const
 */
 
 /*!
+    \fn QPixmap QPixmap::copy(const QRect &rect) const
+
     Returns a \link shclass.html deep copy\endlink of the subpart of
     the pixmap that is specified by \a rect.
 
@@ -238,9 +233,9 @@ int QPixmap::devType() const
     \sa operator=()
 */
 
+#if defined(Q_WS_WIN) || defined(Q_WS_QWS)
 QPixmap QPixmap::copy(const QRect &rect) const
 {
-    // ### This could be sped up by platform specific implementation.
     QPixmap pm;
     if (data->type == BitmapType)
         pm = QBitmap::fromImage(toImage().copy(rect));
@@ -248,7 +243,7 @@ QPixmap QPixmap::copy(const QRect &rect) const
         pm = fromImage(toImage().copy(rect));
     return pm;
 }
-
+#endif
 
 /*!
     Assigns the pixmap \a pixmap to this pixmap and returns a
@@ -310,12 +305,10 @@ QPixmap::operator QVariant() const
 
     \sa transformed(), QMatrix
 */
-#ifndef QT_NO_PIXMAP_TRANSFORMATION
 QMatrix QPixmap::trueMatrix(const QMatrix &m, int w, int h)
 {
     return QImage::trueMatrix(m, w, h);
 }
-#endif
 
 /*!
     \fn bool QPixmap::isQBitmap() const
@@ -333,8 +326,6 @@ QMatrix QPixmap::trueMatrix(const QMatrix &m, int w, int h)
 
     Resizing an existing pixmap to (0, 0) makes a pixmap into a null
     pixmap.
-
-    \sa resize()
 */
 bool QPixmap::isNull() const
 {
@@ -407,8 +398,15 @@ int QPixmap::depth() const
 /*!
     \fn void QPixmap::resize(const QSize &size)
     \overload
+    \compat
 
-    Resizes the pixmap to size \a size.
+    Use the QPixmap constructor that takes a QSize and pass it \a size.
+
+    \oldcode
+        pixmap.resize(size);
+    \newcode
+        pixmap = QPixmap(size);
+    \endcode
 */
 #ifdef QT3_SUPPORT
 void QPixmap::resize_helper(const QSize &s)
@@ -456,14 +454,17 @@ void QPixmap::resize_helper(const QSize &s)
 #endif
 
 /*!
-  \fn void QPixmap::resize(int w, int h)
+    \fn void QPixmap::resize(int w, int h)
+  \compat
 
-    Resizes the pixmap to \a w width and \a h height. If either \a w
-    or \a h is 0, the pixmap becomes a null pixmap.
+    Use the QPixmap constructor that takes two \c{int}s and pass
+    \a w and \a h.
 
-    If both \a w and \a h are greater than 0, a valid pixmap is
-    created. New pixels will be uninitialized (random) if the pixmap
-    is expanded.
+    \oldcode
+        pixmap.resize(10, 20);
+    \newcode
+        pixmap = QPixmap(10, 20);
+    \endcode
 */
 
 /*!
@@ -525,7 +526,6 @@ QBitmap QPixmap::createMaskFromColor(const QColor &maskColor) const
     return m;
 }
 
-#ifndef QT_NO_IMAGEIO
 /*!
     Loads a pixmap from the file \a fileName at runtime. Returns true
     if successful; otherwise returns false.
@@ -554,6 +554,9 @@ QBitmap QPixmap::createMaskFromColor(const QColor &maskColor) const
 
 bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConversionFlags flags)
 {
+    if (fileName.isEmpty())
+        return false;
+
     QFileInfo info(fileName);
     QString key = QLatin1String("qt_pixmap_") + info.absoluteFilePath() + QLatin1Char('_') + info.lastModified().toString()
                   + QString::number(data->type);
@@ -689,8 +692,6 @@ bool QPixmap::doImageIO(QImageWriter *writer, int quality) const
     return writer->write(toImage());
 }
 
-#endif //QT_NO_IMAGEIO
-
 
 // The implementation of QPixmap::fill(const QWidget *, const QPoint &)
 // is in qwidget.cpp
@@ -764,6 +765,9 @@ static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf,
     If \a rect is a valid rectangle, only the rectangle you specify
     is painted.
 
+    \warning Do not call this function from with a
+    \l{QWidget::paintEvent()}{paintEvent()}.
+
     grabWidget(), QRect::isValid()
 */
 
@@ -827,6 +831,9 @@ QPixmap QPixmap::grabWidget(QWidget * widget, const QRect &rect)
     size of the widget being too large to fit in memory, an isNull()
     pixmap is returned.
 
+    \warning Do not call this function from with a
+    \l{QWidget::paintEvent()}{paintEvent()}.
+
     \sa grabWindow() QWidget::paintEvent()
 */
 
@@ -847,7 +854,6 @@ Qt::HANDLE QPixmap::handle() const
 
 
 #ifdef QT3_SUPPORT
-#ifndef QT_NO_IMAGEIO
 static Qt::ImageConversionFlags colorModeToFlags(QPixmap::ColorMode mode)
 {
     Qt::ImageConversionFlags flags = Qt::AutoColor;
@@ -932,10 +938,9 @@ bool QPixmap::loadFromData(const uchar *buf, uint len, const char *format, Color
 {
     return loadFromData(buf, len, format, colorModeToFlags(mode));
 }
-#endif
 
 /*!
-    Use fromImage() instead.
+    Use the static function QPixmap::fromImage() instead.
 */
 bool QPixmap::convertFromImage(const QImage &image, ColorMode mode)
 {
@@ -951,7 +956,7 @@ bool QPixmap::convertFromImage(const QImage &image, ColorMode mode)
 /*****************************************************************************
   QPixmap stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM) && !defined(QT_NO_IMAGEIO)
+#if !defined(QT_NO_DATASTREAM)
 /*!
     \relates QPixmap
 
@@ -1032,7 +1037,7 @@ void QPixmap::deref()
 /*!
     \fn bool QPixmap::convertFromImage(const QImage &image, Qt::ImageConversionFlags flags)
 
-    Use fromImage() instead.
+    Use the static function QPixmap::fromImage() instead.
 */
 
 /*!
@@ -1048,12 +1053,12 @@ void QPixmap::deref()
     and height \a h according to \a aspectRatioMode and \a transformMode.
 
     \list
-    \i If \a aspectRatioMode is \c Qt::IgnoreAspectRatio, the pixmap
+    \i If \a aspectRatioMode is Qt::IgnoreAspectRatio, the pixmap
        is scaled to (\a w, \a h).
-    \i If \a aspectRatioMode is \c Qt::KeepAspectRatio, the pixmap is
+    \i If \a aspectRatioMode is Qt::KeepAspectRatio, the pixmap is
        scaled to a rectangle as large as possible inside (\a w, \a
        h), preserving the aspect ratio.
-    \i If \a aspectRatioMode is \c Qt::KeepAspectRatioByExpanding,
+    \i If \a aspectRatioMode is Qt::KeepAspectRatioByExpanding,
        the pixmap is scaled to a rectangle as small as possible
        outside (\a w, \a h), preserving the aspect ratio.
     \endlist
@@ -1157,9 +1162,11 @@ QPixmap QPixmap::scaledToHeight(int h, Qt::TransformationMode mode) const
     images, the others being QImage and QPicture. QPixmap is designed
     and optimized for drawing on screen; QImage is designed for I/O
     and for direct pixel access; QPicture provides a scalable,
-    vectorial picture. There are (slow) functions to convert between
-    QImage and QPixmap: toImage() and fromImage(). There's also a
-    QIcon class that stores various versions of an icon.
+    vectorial picture. There are static functions in QPixmap to
+    convert between QImage and QPixmap: QPixmap::toImage() and
+    QPixmap::fromImage(). These function can be slow on some
+    platforms. There's also a QIcon class that stores various versions
+    of an icon.
 
     A common way to create a pixmap is to use the constructor that
     takes a file name. For example:
@@ -1189,7 +1196,7 @@ QPixmap QPixmap::scaledToHeight(int h, Qt::TransformationMode mode) const
 
     You can retrieve the width(), height(), depth(), and size() of a
     pixmap. The enclosing rectangle can be determined with rect().
-    Pixmaps can be filled with fill() and resized with resize(). You
+    Pixmaps can be filled with fill(). You
     can create and set a mask with createHeuristicMask() and setMask().
     Use selfMask() to see if the pixmap is identical to its mask.
 

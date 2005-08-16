@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -38,6 +33,7 @@
 #include <qvarlengtharray.h>
 #include <qvariant.h>
 #include <qhash.h>
+#include <qdebug.h>
 #include <ctype.h>
 
 /*!
@@ -197,7 +193,7 @@ QObject *QMetaObject::cast(QObject *obj) const
 /*!
     \internal
 
-    Forwards a tr() call from the \c Q_OBJECT macro to the QApplication.
+    Forwards a tr() call from the Q_OBJECT macro to the QApplication.
 */
 QString QMetaObject::tr(const char *s, const char *c) const
 {
@@ -209,7 +205,7 @@ QString QMetaObject::tr(const char *s, const char *c) const
 /*!
     \internal
 
-    Forwards a trUtf8() call from the \c Q_OBJECT macro to the
+    Forwards a trUtf8() call from the Q_OBJECT macro to the
     QApplication.
 */
 QString QMetaObject::trUtf8(const char *s, const char *c) const
@@ -257,8 +253,11 @@ int QMetaObject::methodOffset() const
 int QMetaObject::enumeratorOffset() const
 {
     int offset = 0;
-    if (const QMetaObject *m = d.superdata)
-        offset = m->enumeratorCount();
+    const QMetaObject *m = d.superdata;
+    while (m) {
+        offset += priv(m->d.data)->enumeratorCount;
+        m = m->d.superdata;
+    }
     return offset;
 }
 
@@ -328,17 +327,10 @@ int QMetaObject::methodCount() const
 */
 int QMetaObject::enumeratorCount() const
 {
-    int n = 0;
-    const QMetaObject *m = this;
+    int n = priv(d.data)->enumeratorCount;
+    const QMetaObject *m = d.superdata;
     while (m) {
         n += priv(m->d.data)->enumeratorCount;
-        if (m->d.extradata) {
-            const QMetaObject **e = m->d.extradata;
-            while (*e) {
-                n += (*e)->enumeratorCount();
-                ++e;
-            }
-        }
         m = m->d.superdata;
     }
     return n;
@@ -379,7 +371,10 @@ int QMetaObject::classInfoCount() const
 /*!
     Finds \a method and returns its index; otherwise returns -1.
 
-    \sa method(), methodCount(), methodOffset()
+    Note that the \a method has to be in normalized form, as returned
+    by normalizedSignature().
+
+    \sa method(), methodCount(), methodOffset(), normalizedSignature()
 */
 int QMetaObject::indexOfMethod(const char *method) const
 {
@@ -403,7 +398,10 @@ int QMetaObject::indexOfMethod(const char *method) const
     This is the same as indexOfMethod(), except that it will return
     -1 if the method exists but isn't a signal.
 
-    \sa indexOfMethod(), method(), methodCount(), methodOffset()
+    Note that the \a signal has to be in normalized form, as returned
+    by normalizedSignature().
+
+    \sa indexOfMethod(), normalizedSignature(), method(), methodCount(), methodOffset()
 */
 int QMetaObject::indexOfSignal(const char *signal) const
 {
@@ -482,28 +480,15 @@ static const QMetaObject *QMetaObject_findMetaObject(const QMetaObject *self, co
 int QMetaObject::indexOfEnumerator(const char *name) const
 {
     int i = -1;
-    QByteArray enum_name = name;
-    QByteArray scope_name = d.stringdata;
-    int s = enum_name.indexOf("::");
-    if (s > 0) {
-        scope_name = enum_name.left(s);
-        enum_name = enum_name.mid(s + 2);
-    }
-
-    const QMetaObject *scope = QMetaObject_findMetaObject(this, scope_name);
-    if (!scope)
-        return i;
-
-    for (i = enumeratorCount() - 1; i >=0; --i) {
-        QMetaEnum en = enumerator(i);
-        if (enum_name != en.name())
-            continue;
-        const QMetaObject *m = scope;
-        while (m) {
-            if (m == en.mobj)
-                return i;
-            m = m->d.superdata;
-        }
+    const QMetaObject *m = this;
+    while (m && i < 0) {
+        for (i = priv(m->d.data)->enumeratorCount-1; i >= 0; --i)
+            if (strcmp(name, m->d.stringdata
+                       + m->d.data[priv(m->d.data)->enumeratorData + 4*i]) == 0) {
+                i += m->enumeratorOffset();
+                break;
+            }
+        m = m->d.superdata;
     }
     return i;
 }
@@ -565,7 +550,7 @@ QMetaMethod QMetaObject::method(int index) const
         return d.superdata->method(index);
 
     QMetaMethod result;
-    if (i >= 0 && i <= priv(d.data)->methodCount) {
+    if (i >= 0 && i < priv(d.data)->methodCount) {
         result.mobj = this;
         result.handle = priv(d.data)->methodData + 5*i;
     }
@@ -588,16 +573,6 @@ QMetaEnum QMetaObject::enumerator(int index) const
     if (i >= 0 && i < priv(d.data)->enumeratorCount) {
         result.mobj = this;
         result.handle = priv(d.data)->enumeratorData + 4*i;
-    } else if (d.extradata) {
-        i -= priv(d.data)->enumeratorCount;
-        const QMetaObject **e = d.extradata;
-        while (i >= 0 && *e) {
-            int c = (*e)->enumeratorCount();
-            if (i < c)
-                return (*e)->enumerator(i);
-            i -= c;
-            ++e;
-        }
     }
     return result;
 }
@@ -615,7 +590,7 @@ QMetaProperty QMetaObject::property(int index) const
         return d.superdata->property(index);
 
     QMetaProperty result;
-    if (i >= 0 && i <= priv(d.data)->propertyCount) {
+    if (i >= 0 && i < priv(d.data)->propertyCount) {
         int handle = priv(d.data)->propertyData + 3*i;
         int flags = d.data[handle + 2];
         const char *type = d.stringdata + d.data[handle + 1];
@@ -625,6 +600,22 @@ QMetaProperty QMetaObject::property(int index) const
 
         if (flags & EnumOrFlag) {
             result.menum = enumerator(indexOfEnumerator(type));
+            if (!result.menum.isValid()) {
+                QByteArray enum_name = type;
+                QByteArray scope_name = d.stringdata;
+                int s = enum_name.indexOf("::");
+                if (s > 0) {
+                    scope_name = enum_name.left(s);
+                    enum_name = enum_name.mid(s + 2);
+                }
+                const QMetaObject *scope = 0;
+                if (scope_name == "Qt")
+                    scope = &QObject::staticQtMetaObject;
+                else
+                    scope = QMetaObject_findMetaObject(this, scope_name);
+                if (scope)
+                    result.menum = scope->enumerator(scope->indexOfEnumerator(enum_name));
+            }
         }
     }
     return result;
@@ -640,8 +631,8 @@ QMetaProperty QMetaObject::property(int index) const
         class MyClass
         {
             Q_OBJECT
-            Q_CLASSINFO("author", "Sabrina Schweinsteiger");
-            Q_CLASSINFO("url", "http://doc.moosesoft.co.uk/1.0/");
+            Q_CLASSINFO("author", "Sabrina Schweinsteiger")
+            Q_CLASSINFO("url", "http://doc.moosesoft.co.uk/1.0/")
 
         public:
             ...
@@ -658,7 +649,7 @@ QMetaClassInfo QMetaObject::classInfo(int index) const
         return d.superdata->classInfo(index);
 
     QMetaClassInfo result;
-    if (i >= 0 && i <= priv(d.data)->classInfoCount) {
+    if (i >= 0 && i < priv(d.data)->classInfoCount) {
         result.mobj = this;
         result.handle = priv(d.data)->classInfoData + 2*i;
     }
@@ -703,7 +694,7 @@ static inline bool is_space(char s)
 }
 
 // WARNING: a copy of this function is in moc.cpp
-static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = true, bool adjustConst = true)
+static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = false, bool adjustConst = true)
 {
     int len = e - t;
     if (strncmp("void", t, len) == 0)
@@ -883,7 +874,7 @@ QByteArray QMetaObject::normalizedSignature(const char *method)
     \a val2, \a val3, \a val4, \a val5, \a val6, \a val7, \a val8,
     and \a val9) to the \a member function.
 
-    \c QGenericArgument and \c QGenericReturnArgument are internal
+    QGenericArgument and QGenericReturnArgument are internal
     helper classes. Because signals and slots can be dynamically
     invoked, you must enclose the arguments using the Q_ARG() and
     Q_RETURN_ARG() macros. Q_ARG() takes a type name and a
@@ -1005,7 +996,7 @@ bool QMetaObject::invokeMethod(QObject *obj, const char *member, Qt::ConnectionT
             }
         }
 
-        QCoreApplication::postEvent(obj, new QMetaCallEvent(idx, nargs, types, args));
+        QCoreApplication::postEvent(obj, new QMetaCallEvent(idx, 0, nargs, types, args));
     }
     return true;
 }
@@ -1274,8 +1265,8 @@ QMetaMethod::MethodType QMetaMethod::methodType() const
 /*!
     Returns the name of the enumerator (without the scope).
 
-    For example, the \c Qt::AlignmentFlag enumeration has \c
-    AlignmentFlag as the name and \c Qt as the scope.
+    For example, the Qt::AlignmentFlag enumeration has \c
+    AlignmentFlag as the name and \l Qt as the scope.
 
     \sa isValid(), scope()
 */
@@ -1351,7 +1342,7 @@ bool QMetaEnum::isFlag() const
 /*!
     Returns the scope this enumerator was declared in.
 
-    For example, the \c Qt::AlignmentFlag enumeration has \c Qt as
+    For example, the Qt::AlignmentFlag enumeration has \c Qt as
     the scope and \c AlignmentFlag as the name.
 
     \sa name()
@@ -1886,8 +1877,8 @@ bool QMetaProperty::isEditable(const QObject *object) const
         class MyClass
         {
             Q_OBJECT
-            Q_CLASSINFO("author", "Sabrina Schweinsteiger");
-            Q_CLASSINFO("url", "http://doc.moosesoft.co.uk/1.0/");
+            Q_CLASSINFO("author", "Sabrina Schweinsteiger")
+            Q_CLASSINFO("url", "http://doc.moosesoft.co.uk/1.0/")
 
         public:
             ...
@@ -1935,7 +1926,7 @@ const char* QMetaClassInfo::value() const
     \relates QMetaObject
 
     This macro takes a \a Type and a \a value of that type and
-    returns a \c QGenericArgument object that can be passed to
+    returns a \l QGenericArgument object that can be passed to
     QMetaObject::invokeMethod().
 
     \sa Q_RETURN_ARG()
@@ -1946,8 +1937,57 @@ const char* QMetaClassInfo::value() const
     \relates QMetaObject
 
     This macro takes a \a Type and a non-const reference to a \a
-    value of that type and returns a \c QGenericReturnArgument object
+    value of that type and returns a QGenericReturnArgument object
     that can be passed to QMetaObject::invokeMethod().
 
     \sa Q_ARG()
+*/
+
+/*!
+    \class QGenericArgument
+
+    \brief The QGenericArgument class is an internal helper class for
+    marshalling arguments.
+
+    This class should never be used directly. Please use the \l Q_ARG()
+    macro instead.
+
+    \sa Q_ARG(), QMetaObject::invokeMethod(),  QGenericReturnArgument
+*/
+
+/*!
+    \fn QGenericArgument::QGenericArgument(const char *name, const void *data)
+
+    Constructs a QGenericArgument object with the given \a name and \a data.
+*/
+
+/*!
+    \fn QGenericArgument::data () const
+
+    Returns the data set in the constructor.
+*/
+
+/*!
+    \fn QGenericArgument::name () const
+
+    Returns the name set in the constructor.
+*/
+
+/*!
+    \class QGenericReturnArgument
+
+    \brief The QGenericReturnArgument class is an internal helper class for
+    marshalling arguments.
+
+    This class should never be used directly. Please use the
+    Q_RETURN_ARG() macro instead.
+
+    \sa Q_RETURN_ARG(), QMetaObject::invokeMethod(), QGenericArgument
+*/
+
+/*!
+    \fn QGenericReturnArgument::QGenericReturnArgument(const char *name, void *data)
+
+    Constructs a QGenericReturnArgument object with the given \a name
+    and \a data.
 */

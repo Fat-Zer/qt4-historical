@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +22,8 @@
 ****************************************************************************/
 
 #include "qtableview.h"
+
+#ifndef QT_NO_TABLEVIEW
 #include <qheaderview.h>
 #include <qitemdelegate.h>
 #include <qapplication.h>
@@ -62,6 +59,12 @@ void QTableViewPrivate::updateVerticalScrollbar()
 
     int height = viewport->height();
     int count = verticalHeader->count();
+    
+    // if the header is out of sync we have to relayout
+    if (count != model->rowCount(root)) {
+        verticalHeader->doItemsLayout();
+        count = verticalHeader->count();
+    }
 
     // if we have no viewport or no rows, there is nothing to do
     if (height <= 0 || count <= 0) {
@@ -86,6 +89,15 @@ void QTableViewPrivate::updateVerticalScrollbar()
     }
 
     q->verticalScrollBar()->setRange(0, max);
+    
+    if (q->verticalScrollBar()->value() == max) {
+        int newOffset = 0;
+        int oldOffset = verticalHeader->offset();
+        if (verticalHeader->length() >= viewport->height())
+            newOffset = verticalHeader->length() - viewport->height() - 1;
+        verticalHeader->setOffset(newOffset);
+        scrollContentsBy(0, oldOffset - newOffset);
+    }
 }
 
 void QTableViewPrivate::updateHorizontalScrollbar()
@@ -94,6 +106,12 @@ void QTableViewPrivate::updateHorizontalScrollbar()
 
     int width = viewport->width();
     int count = horizontalHeader->count();
+    
+    // if the header is out of sync we have to relayout
+    if (count != model->columnCount(root)) {
+        horizontalHeader->doItemsLayout();
+        count = horizontalHeader->count();
+    }
 
     // if we have no viewport or no columns, there is nothing to do
     if (width <= 0 || count <= 0) {
@@ -118,6 +136,15 @@ void QTableViewPrivate::updateHorizontalScrollbar()
     }
 
     q->horizontalScrollBar()->setRange(0, max);
+
+    if (q->horizontalScrollBar()->value() == max) {
+        int newOffset = 0;
+        int oldOffset = horizontalHeader->offset();
+        if (horizontalHeader->length() >= viewport->width())
+            newOffset = horizontalHeader->length() - viewport->width() - 1;
+        horizontalHeader->setOffset(newOffset);
+        scrollContentsBy(oldOffset - newOffset, 0);
+    }
 }
 
 /*!
@@ -131,7 +158,7 @@ void QTableViewPrivate::updateHorizontalScrollbar()
 
     A QTableView implements a table view that displays items from a
     model. This class is used to provide standard tables that were
-    previously provided by the \c QTable class, but using the more
+    previously provided by the QTable class, but using the more
     flexible approach provided by Qt's model/view architecture.
 
     The QTableView class is one of the \l{Model/View Classes}
@@ -324,6 +351,8 @@ void QTableView::scrollContentsBy(int dx, int dy)
     if (dx) { // horizontal
         int value = horizontalScrollBar()->value();
         int section = d->horizontalHeader->logicalIndex(value / horizontalStepsPerItem());
+        while (d->horizontalHeader->isSectionHidden(section))
+            ++section;
         int steps = horizontalStepsPerItem();
         int left = (value % steps) * d->horizontalHeader->sectionSize(section);
         int offset = (left / steps) + d->horizontalHeader->sectionPosition(section);
@@ -337,6 +366,8 @@ void QTableView::scrollContentsBy(int dx, int dy)
     if (dy) { // vertical
         int value = verticalScrollBar()->value();
         int section = d->verticalHeader->logicalIndex(value / verticalStepsPerItem());
+        while (d->verticalHeader->isSectionHidden(section))
+            ++section;
         int steps = verticalStepsPerItem();
         int above = (value % steps) * d->verticalHeader->sectionSize(section);
         int offset = (above / steps) + d->verticalHeader->sectionPosition(section);
@@ -539,45 +570,122 @@ int QTableView::verticalOffset() const
 QModelIndex QTableView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
 {
     Q_D(QTableView);
-
     Q_UNUSED(modifiers);
 
+    if (!model())
+        return QModelIndex();
+    
+    int bottom = model()->rowCount(rootIndex()) - 1;
+    // make sure that bottom is the bottommost *visible* row
+    while (isRowHidden(bottom) && bottom >= 0) --bottom;
+    
+    int right = model()->columnCount(rootIndex()) - 1;
+    // make sure that right is the rightmost *visible* column
+    while (isColumnHidden(right) && right >= 0) --right;
+
+    if (bottom == -1 || right == -1)
+        return QModelIndex(); // model is empty
+
     QModelIndex current = currentIndex();
-    if (!current.isValid())
-        return current;
+
+    if (!current.isValid()) {
+        int row = 0;
+        int column = 0;
+        while (isColumnHidden(column) && column < right)
+            ++column;
+        while (isRowHidden(row) && row < bottom)
+            ++row;
+        return model()->index(row, column, rootIndex());
+    }
+    
     int visualRow = verticalHeader()->visualIndex(current.row());
     int visualColumn = horizontalHeader()->visualIndex(current.column());
-    int verticalStep = 0;
-    int horizontalStep = 0;
 
-    int bottom = model()->rowCount(rootIndex()) - 1;
-    int right = model()->columnCount(rootIndex()) - 1;
+    if (isRightToLeft()) {
+        if (cursorAction == MoveLeft)
+            cursorAction = MoveRight;
+        else if (cursorAction == MoveRight)
+            cursorAction = MoveLeft;
+    }
+
     switch (cursorAction) {
     case MoveUp:
-        verticalStep = -1;
-        visualRow += verticalStep;
+        --visualRow;
+        while (visualRow > 0 && isRowHidden(verticalHeader()->logicalIndex(visualRow)))
+            --visualRow;
         break;
     case MoveDown:
-        verticalStep = 1;
-        visualRow += verticalStep;
+        ++visualRow;
+        while (visualRow < bottom && isRowHidden(verticalHeader()->logicalIndex(visualRow)))
+            ++visualRow;
         break;
     case MovePrevious:
+        {
+            int left = 0;
+            // make sure that left is the leftmost *visible* column
+            while (isColumnHidden(left) && left < right) left++;
+            
+            if (visualColumn == left) {
+                // wrap up to the last column on the previous row
+                visualColumn = right;
+
+                int visualtop = 0;
+                while (visualtop < bottom && isRowHidden(verticalHeader()->logicalIndex(visualtop)))
+                    ++visualtop;
+
+                // check if we are at top we also need to wrap down to the bottom
+                if (visualRow == visualtop) {
+                    visualRow = bottom;
+                } else {
+                    --visualRow;
+                }
+                while (visualRow > 0 && isRowHidden(verticalHeader()->logicalIndex(visualRow)))
+                    --visualRow;
+                break;
+            }
+        }
     case MoveLeft:
-        horizontalStep = isRightToLeft() ? 1 : -1;
-        visualColumn += horizontalStep;
+        --visualColumn;
+        while (visualColumn < right && isColumnHidden(horizontalHeader()->logicalIndex(visualColumn)))
+            --visualColumn;
         break;
     case MoveNext:
+        if (visualColumn == right) {
+            // wrap down to the next line
+            visualColumn = 0;
+            while (visualColumn < right && isColumnHidden(horizontalHeader()->logicalIndex(visualColumn)))
+                ++visualColumn;
+
+            if (visualRow == bottom) {
+                // check if we are at the bottom, rightmost cell, then wrap to the top left
+                visualRow = 0;
+            } else {
+                ++visualRow;
+            }
+            while (visualRow < bottom && isRowHidden(verticalHeader()->logicalIndex(visualRow)))
+                ++visualRow;
+            break;
+        }
     case MoveRight:
-        horizontalStep = isRightToLeft() ? -1 : 1;
-        visualColumn += horizontalStep;
+        ++visualColumn;
+        while (visualColumn < right && isColumnHidden(horizontalHeader()->logicalIndex(visualColumn)))
+            ++visualColumn;
         break;
     case MoveHome:
-        verticalStep = 1;
-        visualRow = 0;
+        visualColumn = 0;
+        while (visualColumn < right && isColumnHidden(horizontalHeader()->logicalIndex(visualColumn)))
+            ++visualColumn;    
+        if (modifiers & Qt::ControlModifier) {
+            visualRow = 0;
+            while (visualRow < bottom && isRowHidden(verticalHeader()->logicalIndex(visualRow)))
+                ++visualRow;
+        }
         break;
     case MoveEnd:
-        verticalStep = -1;
-        visualRow = bottom;
+        visualColumn = right;
+        if (modifiers & Qt::ControlModifier) {
+            visualRow = bottom;
+        }
         break;
     case MovePageUp: {
         int newRow = rowAt(visualRect(current).top() - d->viewport->height());
@@ -587,21 +695,12 @@ QModelIndex QTableView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifi
         return model()->index(newRow >= 0 ? newRow : bottom, current.column(), rootIndex());}
     }
 
-    while (verticalStep != 0
-           && visualRow >= 0
-           && visualRow <= bottom
-           && verticalHeader()->isSectionHidden(verticalHeader()->logicalIndex(visualRow)))
-        visualRow += verticalStep;
-
-    while (horizontalStep != 0
-           && visualColumn >= 0
-           && visualColumn <= right
-           && horizontalHeader()->isSectionHidden(horizontalHeader()->logicalIndex(visualColumn)))
-        visualColumn += horizontalStep;
-
     int logicalRow = verticalHeader()->logicalIndex(visualRow);
     int logicalColumn = horizontalHeader()->logicalIndex(visualColumn);
-    if (model()->hasIndex(logicalRow, logicalColumn, rootIndex()))
+    if (!model()->hasIndex(logicalRow, logicalColumn, rootIndex()))
+        return QModelIndex();
+    QModelIndex result = model()->index(logicalRow, logicalColumn, rootIndex());
+    if (!isIndexHidden(result))
         return model()->index(logicalRow, logicalColumn, rootIndex());
     return QModelIndex();
 }
@@ -714,7 +813,7 @@ QModelIndexList QTableView::selectedIndexes() const
     previous number of rows is specified by \a oldCount, and the new
     number of rows is specified by \a newCount.
 */
-void QTableView::rowCountChanged(int, int)
+void QTableView::rowCountChanged(int /*oldCount*/, int /*newCount*/ )
 {
     updateGeometries();
     d_func()->viewport->update();
@@ -738,8 +837,8 @@ void QTableView::updateGeometries()
 {
     Q_D(QTableView);
 
-    int width = d->verticalHeader->isVisible() ? d->verticalHeader->sizeHint().width() : 0;
-    int height = d->horizontalHeader->isVisible() ? d->horizontalHeader->sizeHint().height() : 0;
+    int width = !d->verticalHeader->isHidden() ? d->verticalHeader->sizeHint().width() : 0;
+    int height = !d->horizontalHeader->isHidden() ? d->horizontalHeader->sizeHint().height() : 0;
     bool reverse = isRightToLeft();
     setViewportMargins(reverse ? 0 : width, height, reverse ? width : 0, 0);
 
@@ -777,23 +876,23 @@ int QTableView::sizeHintForRow(int row) const
 {
     Q_D(const QTableView);
 
-
     if (!model())
         return -1;
 
-    int columnfirst = columnAt(0);
-    int columnlast = columnAt(d->viewport->width());
-    if (columnlast < 0)
-        columnlast = d->horizontalHeader->count() - 1;
+    int left = qMax(0, columnAt(0));
+    int right = columnAt(d->viewport->width());
+    if (right == -1) // the table don't have enought columns to fill the viewport
+        right = model()->columnCount(rootIndex()) - 1;
 
     QStyleOptionViewItem option = viewOptions();
 
     int hint = 0;
     QModelIndex index;
-    for (int column = columnfirst; column <= columnlast; ++column) {
+    for (int column = left; column <= right; ++column) {
         index = d->model->index(row, column, rootIndex());
         hint = qMax(hint, itemDelegate()->sizeHint(option, index).height());
     }
+
     return d->showGrid ? hint + 1 : hint;
 }
 
@@ -819,19 +918,20 @@ int QTableView::sizeHintForColumn(int column) const
     if (!model())
         return -1;
 
-    int rowfirst = rowAt(0);
-    int rowlast = rowAt(d->viewport->height());
-    if (rowlast < 0)
-        rowlast = d->verticalHeader->count() - 1;
+    int top = qMax(0, rowAt(0));
+    int bottom = rowAt(d->viewport->height());
+    if (bottom == -1) // the table don't have enought rows to fill the viewport
+        bottom = model()->rowCount(rootIndex()) - 1;
 
     QStyleOptionViewItem option = viewOptions();
 
     int hint = 0;
     QModelIndex index;
-    for (int row = rowfirst; row <= rowlast; ++row) {
+    for (int row = top; row <= bottom; ++row) {
         index = d->model->index(row, column, rootIndex());
         hint = qMax(hint, itemDelegate()->sizeHint(option, index).width());
     }
+
     return d->showGrid ? hint + 1 : hint;
 }
 
@@ -904,10 +1004,7 @@ bool QTableView::isRowHidden(int row) const
 */
 void QTableView::setRowHidden(int row, bool hide)
 {
-    if (hide)
-        hideRow(row);
-    else
-        showRow(row);
+    d_func()->verticalHeader->setSectionHidden(row, hide);
 }
 
 /*!
@@ -924,10 +1021,7 @@ bool QTableView::isColumnHidden(int column) const
 */
 void QTableView::setColumnHidden(int column, bool hide)
 {
-    if (hide)
-        hideColumn(column);
-    else
-        showColumn(column);
+    d_func()->horizontalHeader->setSectionHidden(column, hide);
 }
 
 /*!
@@ -1254,6 +1348,9 @@ void QTableView::verticalScrollbarAction(int action)
 {
     Q_D(QTableView);
 
+    int count = d->verticalHeader->count();
+    if (count == 0)
+        return; // nothing to do
     int steps = verticalStepsPerItem();
     int value = verticalScrollBar()->value();
     int row = value / steps;
@@ -1263,7 +1360,7 @@ void QTableView::verticalScrollbarAction(int action)
     if (action == QScrollBar::SliderPageStepAdd) {
         // go down to the bottom of the page
         int h = d->viewport->height();
-        while (y < h && row < d->model->rowCount(rootIndex()))
+        while (y < h && row < count)
             y += d->verticalHeader->sectionSize(row++);
         value = row * steps; // i is now the last item on the page
         if (y > h && row)
@@ -1288,6 +1385,9 @@ void QTableView::horizontalScrollbarAction(int action)
 {
     Q_D(QTableView);
 
+    int count = d->horizontalHeader->count();
+    if (count == 0)
+        return; // nothing to do
     int steps = horizontalStepsPerItem();
     int value = horizontalScrollBar()->value();
     int column = value / steps;
@@ -1297,7 +1397,7 @@ void QTableView::horizontalScrollbarAction(int action)
     if (action == QScrollBar::SliderPageStepAdd) {
         // go down to the right of the page
         int w = d->viewport->width();
-        while (x < w && column < d->model->columnCount(rootIndex()))
+        while (x < w && column < count)
             x += d->horizontalHeader->sectionSize(column++);
         value = column * steps; // i is now the last item on the page
         if (x > w && column)
@@ -1323,3 +1423,5 @@ bool QTableView::isIndexHidden(const QModelIndex &index) const
 {
     return isRowHidden(index.row()) || isColumnHidden(index.column());
 }
+
+#endif // QT_NO_TABLEVIEW

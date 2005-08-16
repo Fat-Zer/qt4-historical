@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.0: Model/View Programming</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -18,11 +18,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Next: <a href="model-view-using.html">Using Models and Views</a>]
 </p>
-<h1 align="center">Model/View Programming</h1>
+<h1 align="center">Model/View Programming<br /><small></small></h1>
 <ul><li><a href="#introduction">Introduction</a></li>
 <li><a href="#the-model-view-architecture">The Model/View Architecture</a></li>
 <ul><li><a href="#models">Models</a></li>
@@ -35,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="introduction"></a>
 <h2>Introduction</h2>
-<p>Qt 4 introduces a new set of item view classes that use a model/view architecture to manage the relationship between data and the way it is presented to the user. The separation of functionality introduced by this architecture gives developers greater flexibility and access to more features than was previously possible. In this document, we give a brief introduction to the model/view paradigm, outline the concepts involved, and describe the architecture of the item view system. Each of the components in the architecture is explained, and examples are given that show how to use the classes provided.</p>
+<p>Qt 4 introduces a new set of item view classes that use a model/view architecture to manage the relationship between data and the way it is presented to the user. The separation of functionality introduced by this architecture gives developers greater flexibility to customize the presentation of items, and provides a standard model interface to allow a wide range of data sources to be used with existing item views. In this document, we give a brief introduction to the model/view paradigm, outline the concepts involved, and describe the architecture of the item view system. Each of the components in the architecture is explained, and examples are given that show how to use the classes provided.</p>
 <a name="the-model-view-architecture"></a>
 <h2>The Model/View Architecture</h2>
 <p>Model-View-Controller (MVC) is a design pattern originating from Smalltalk that is often used when building user interfaces. In <a href="guibooks.html#design-patterns">Design Patterns</a>, Gamma et al. write:</p>
@@ -53,12 +53,19 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li>Signals from the model inform the view about changes to the data held by the data source.</li>
 <li>Signals from the view provide information about the user's interaction with the items being displayed.</li>
-<li>Signals from the delegate are used during editing to tell the other model and view about the state of the editor.</li>
+<li>Signals from the delegate are used during editing to tell the model and view about the state of the editor.</li>
 </ul>
 <a name="models"></a>
 <h3>Models</h3>
 <p>All item models are based on the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class. This class defines an interface that is used by views and delegates to access data. The data itself does not have to be stored in the model; it can be held in a data structure or repository provided by a seperate class, a file, a database, or some other application component. <a href="qabstractitemmodel.html">QAbstractItemModel</a> provides an interface to data that is flexible enough to handle views that represent data in the form of tables, lists, and trees. However, when implementing new models for list and table-like data structures, the <a href="qabstractlistmodel.html">QAbstractListModel</a> and <a href="qabstracttablemodel.html">QAbstractTableModel</a> classes are better starting points because they provide appropriate default implementations of common functions. Each of these classes can be subclassed to provide models that support specialized kinds of lists and tables.</p>
-<p>The <a href="qstandarditemmodel.html">QStandardItemModel</a> class provides a ready-made model that can be used to handle arbitrary pieces of data which it stores internally.</p>
+<p>Qt provides some ready-made models that can be used to handle items of data:</p>
+<ul>
+<li><a href="qstringlistmodel.html">QStringListModel</a> is used to store a simple list of <a href="qstring.html">QString</a> items.</li>
+<li><a href="qstandarditemmodel.html">QStandardItemModel</a> manages more complex tree structures of items, each of which can contain arbitrary data.</li>
+<li><a href="qdirmodel.html">QDirModel</a> provides information about files and directories in the local filing system.</li>
+<li><a href="qsqlquerymodel.html">QSqlQueryModel</a>, <a href="qsqltablemodel.html">QSqlTableModel</a>, and <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a> are used to access databases using model/view conventions.</li>
+</ul>
+<p>If these standard models do not meet your requirements, you can subclass <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstractlistmodel.html">QAbstractListModel</a>, or <a href="qabstracttablemodel.html">QAbstractTableModel</a> to create your own custom models.</p>
 <a name="views"></a>
 <h3>Views</h3>
 <p>Complete implementations are provided for different kinds of views: <a href="qlistview.html">QListView</a> displays a list of items, <a href="qtableview.html">QTableView</a> displays data from a model in a table, and <a href="qtreeview.html">QTreeView</a> shows model items of data in a hierarchical list. Each of these classes is based on the <a href="qabstractitemview.html">QAbstractItemView</a> abstract base class. Although these classes are ready-to-use implementations, they can also be subclassed to provide customized views.</p>
@@ -68,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="convenience-classes"></a>
 <h3>Convenience Classes</h3>
 <p>A number of <i>convenience</i> classes are derived from the standard view classes for the benefit of applications that rely on Qt's item-based item view and table classes. They are not intended to be subclassed, but simply exist to provide a familiar interface to the equivalent classes in Qt 3. Examples of such classes include <a href="qlistwidget.html">QListWidget</a>, <a href="qtreewidget.html">QTreeWidget</a>, and <a href="qtablewidget.html">QTableWidget</a>; these provide similar behavior to the <tt>QListBox</tt>, <tt>QListView</tt>, and <tt>QTable</tt> classes in Qt 3.</p>
-<p>These classes are less flexible than the view classes, and cannot be used with arbitrary models. We recommend that you use a model/view approach to handling data in item views unless you strongly need a item-based set of classes.</p>
+<p>These classes are less flexible than the view classes, and cannot be used with arbitrary models. We recommend that you use a model/view approach to handling data in item views unless you strongly need an item-based set of classes.</p>
 <a name="the-model-view-components"></a>
 <h2>The Model/View Components</h2>
 <p>The following sections describe the way in which the model/view pattern is used in Qt. Each section provides an example of use, and is followed by a section showing how you can create new components.</p>
@@ -89,6 +96,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 </li>
 <li><a href="model-view-creating-models.html">Creating New Models</a> <ul><li><a href="model-view-creating-models.html#introduction">Introduction</a></li>
+<li><a href="model-view-creating-models.html#designing-a-model">Designing a Model</a></li>
 <li><a href="model-view-creating-models.html#a-read-only-example-model">A Read-Only Example Model</a></li>
 <ul><li><a href="model-view-creating-models.html#dimensions-of-the-model">Dimensions of The Model</a></li>
 <li><a href="model-view-creating-models.html#model-headers-and-data">Model Headers and Data</a></li>
@@ -158,6 +166,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

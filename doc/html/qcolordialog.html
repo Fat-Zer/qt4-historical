@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/dialogs/qcolordialog.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/dialogs/qcolordialog.cpp -->
 <head>
     <title>Qt 4.0: QColorDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QColorDialog Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QColorDialog Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QColorDialog class provides a dialog widget for specifying colors. <a href="#details">More...</a></p>
-<pre>#include &lt;QColorDialog&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qdialog.html">QDialog</a>.</p>
+<pre>#include &lt;QColorDialog&gt;</pre><p>Inherits <a href="qdialog.html">QDialog</a>.</p>
 <ul>
 <li><a href="qcolordialog-members.html">List of all members, including inherited members</a></li>
 <li><a href="qcolordialog-qt3.html">Qt 3 support members</a></li>
@@ -45,7 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 <li><div class="fn"/>5 public slots inherited from <a href="qdialog.html#public-slots">QDialog</a></li>
@@ -66,10 +65,11 @@ body { background: #ffffff; color: black; }</style>
 <p>The user can store <a href="qcolordialog.html#customCount">customCount</a>() different custom colors. The custom colors are shared by all color dialogs, and remembered during the execution of the program. Use <a href="qcolordialog.html#setCustomColor">setCustomColor</a>() to set the custom colors, and use <a href="qcolordialog.html#customColor">customColor</a>() to get them.</p>
 <p>Additional widgets that allow users to pick colors are available as <a href="http://www.trolltech.com/products/solutions/index.html">Qt Solutions</a>.</p>
 <p>The <a href="dialogs-standarddialogs.html">Standard Dialogs</a> example shows how to use QColorDialog as well as other built-in Qt dialogs.</p>
-<center><img src="images/qcolordlg-w.png" /></center><hr />
+<p align="center"><img src="images/qcolordlg-w.png" /></p><hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="customColor"></a>QRgb QColorDialog::customColor ( int <i>i</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns custom color number <i>i</i> as a QRgb value.</p>
+<p>See also <a href="qcolordialog.html#setCustomColor">setCustomColor</a>().</p>
 <h3 class="fn"><a name="customCount"></a>int QColorDialog::customCount ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the number of custom colors supported by <a href="qcolordialog.html">QColorDialog</a>. All color dialogs share the same custom colors.</p>
 <h3 class="fn"><a name="getColor"></a><a href="qcolor.html">QColor</a> QColorDialog::getColor ( const <a href="qcolor.html">QColor</a> &amp; <i>initial</i> = Qt::white, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -80,12 +80,13 @@ body { background: #ffffff; color: black; }</style>
 <p>If the user clicks Cancel, the <i>initial</i> value is returned.</p>
 <h3 class="fn"><a name="setCustomColor"></a>void QColorDialog::setCustomColor ( int <i>number</i>, QRgb <i>color</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the custom color <i>number</i> to the QRgb <i>color</i> value.</p>
+<p>See also <a href="qcolordialog.html#customColor">customColor</a>().</p>
 <h3 class="fn"><a name="setStandardColor"></a>void QColorDialog::setStandardColor ( int <i>number</i>, QRgb <i>color</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the standard color <i>number</i> to the QRgb <i>color</i> value given.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

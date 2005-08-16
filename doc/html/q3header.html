@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/qt3support/widgets/q3header.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/qt3support/widgets/q3header.cpp -->
 <head>
     <title>Qt 4.0: Q3Header Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3Header Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3Header Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3Header class provides a header row or column, e.g. for tables and listviews. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3Header&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3Header&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qheader">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="q3header-members.html">List of all members, including inherited members</a></li>
@@ -95,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="q3header.html#tracking-prop">tracking</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -196,7 +195,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="orientation-prop"></a>orientation : <a href="qt.html#Orientation-enum">Qt::Orientation</a></h3>
 <p>This property holds the header's orientation.</p>
-<p>The orientation is either <tt>Qt::Vertical</tt> or <tt>Qt::Horizontal</tt> (the default).</p>
+<p>The orientation is either <a href="qt.html#Orientation-enum">Qt::Vertical</a> or <a href="qt.html#Orientation-enum">Qt::Horizontal</a> (the default).</p>
 <p>Call setOrientation() before adding labels if you don't provide a size parameter otherwise the sizes will be incorrect.</p>
 <p>Access functions:</p>
 <ul>
@@ -245,6 +244,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="cellSize"></a>int Q3Header::cellSize ( int <i>i</i> ) const</h3>
 <p>Use <a href="q3header.html#sectionSize">sectionSize</a>() instead.</p>
 <p>Returns the size in pixels of the section that is displayed at the index <i>i</i>.</p>
+<p>See also <a href="q3header.html#setCellSize">setCellSize</a>().</p>
 <h3 class="fn"><a name="clicked"></a>void Q3Header::clicked ( int <i>section</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>If <a href="q3header.html#isClickEnabled">isClickEnabled</a>() is true, this signal is emitted when the user clicks section <i>section</i>.</p>
 <p>See also <a href="q3header.html#pressed">pressed</a>() and <a href="q3header.html#released">released</a>().</p>
@@ -264,6 +264,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3header.html#setResizeEnabled">setResizeEnabled</a>().</p>
 <h3 class="fn"><a name="label"></a><a href="qstring.html">QString</a> Q3Header::label ( int <i>section</i> ) const</h3>
 <p>Returns the text for section <i>section</i>. If the section does not exist, returns an empty string.</p>
+<p>See also <a href="q3header.html#setLabel">setLabel</a>().</p>
 <h3 class="fn"><a name="mapToActual"></a>int Q3Header::mapToActual ( int <i>l</i> ) const</h3>
 <p>Use <a href="q3header.html#mapToIndex">mapToIndex</a>() instead.</p>
 <p>Translates from logical index <i>l</i> to actual index (index at which the section <i>l</i> is displayed) . Returns -1 if <i>l</i> is outside the legal range.</p>
@@ -322,13 +323,15 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="q3header.html#resizeSection">resizeSection</a>() instead.</p>
 <p>Sets the size of the section <i>section</i> to <i>s</i> pixels.</p>
 <p><b>Warning:</b> does not repaint or send out signals</p>
+<p>See also <a href="q3header.html#cellSize">cellSize</a>().</p>
 <h3 class="fn"><a name="setClickEnabled"></a>void Q3Header::setClickEnabled ( bool <i>enable</i>, int <i>section</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>enable</i> is true, any clicks on section <i>section</i> will result in <a href="q3header.html#clicked">clicked</a>() signals being emitted; otherwise the section will ignore clicks.</p>
 <p>If <i>section</i> is -1 (the default) then the <i>enable</i> value is set for all existing sections and will be applied to any new sections that are added.</p>
-<p>See also <a href="q3header.html#moving-prop">setMovingEnabled</a>() and <a href="q3header.html#setResizeEnabled">setResizeEnabled</a>().</p>
+<p>See also <a href="q3header.html#isClickEnabled">isClickEnabled</a>(), <a href="q3header.html#moving-prop">setMovingEnabled</a>(), and <a href="q3header.html#setResizeEnabled">setResizeEnabled</a>().</p>
 <h3 class="fn"><a name="setLabel"></a>void Q3Header::setLabel ( int <i>section</i>, const <a href="qstring.html">QString</a> &amp; <i>s</i>, int <i>size</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the text of section <i>section</i> to <i>s</i>. The section's width is set to <i>size</i> if <i>size</i> &gt;= 0; otherwise it is left unchanged. Any icon set that has been set for this section remains unchanged.</p>
 <p>If the section does not exist, nothing happens.</p>
+<p>See also <a href="q3header.html#label">label</a>().</p>
 <h3 class="fn"><a name="setLabel-2"></a>void Q3Header::setLabel ( int <i>section</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>s</i>, int <i>size</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Sets the icon for section <i>section</i> to <i>icon</i> and the text to <i>s</i>. The section's width is set to <i>size</i> if <i>size</i> &gt;= 0; otherwise it is left unchanged.</p>
@@ -341,7 +344,7 @@ body { background: #ffffff; color: black; }</style>
     // Disable resizing of section 3, (the fourth section added)
     header-&gt;setResizeEnabled(false, 3);</pre>
 <p>If the user resizes a section, a <a href="q3header.html#sizeChange">sizeChange</a>() signal is emitted.</p>
-<p>See also <a href="q3header.html#moving-prop">setMovingEnabled</a>(), <a href="q3header.html#setClickEnabled">setClickEnabled</a>(), and <a href="q3header.html#tracking-prop">setTracking</a>().</p>
+<p>See also <a href="q3header.html#isResizeEnabled">isResizeEnabled</a>(), <a href="q3header.html#moving-prop">setMovingEnabled</a>(), <a href="q3header.html#setClickEnabled">setClickEnabled</a>(), and <a href="q3header.html#tracking-prop">setTracking</a>().</p>
 <h3 class="fn"><a name="setSortIndicator"></a>void Q3Header::setSortIndicator ( int <i>section</i>, <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> )</h3>
 <p>Sets a sort indicator onto the specified <i>section</i>. The indicator's <i>order</i> is either Ascending or Descending.</p>
 <p>Only one section can show a sort indicator at any one time. If you don't want any section to show a sort indicator pass a <i>section</i> number of -1.</p>
@@ -361,6 +364,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

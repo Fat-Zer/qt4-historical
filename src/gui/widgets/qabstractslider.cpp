@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -63,7 +58,7 @@
     PageUp or PageDown.
 
     \i \l tracking: Whether slider tracking is enabled.
-    
+
     \i \l sliderPosition: The current position of the slider. If \l
     tracking is enabled (the default), this is identical to \l value.
 
@@ -163,9 +158,9 @@
     \fn void QAbstractSlider::actionTriggered(int action)
 
     This signal is emitted when the slider action \a action is
-    triggered. Actions are \c SliderSingleStepAdd, \c
-    SliderSingleStepSub, \c SliderPageStepAdd, \c SliderPageStepSub,
-    \c SliderToMinimum, \c SliderToMaximum, and \c SliderMove.
+    triggered. Actions are \l SliderSingleStepAdd, \l
+    SliderSingleStepSub, \l SliderPageStepAdd, \l SliderPageStepSub,
+    \l SliderToMinimum, \l SliderToMaximum, and \l SliderMove.
 
     When the signal is emitted, the \l sliderPosition has been
     adjusted according to the action, but the \l value has not yet
@@ -266,6 +261,9 @@ QAbstractSlider::~QAbstractSlider()
 void QAbstractSlider::setOrientation(Qt::Orientation orientation)
 {
     Q_D(QAbstractSlider);
+    if (d->orientation == orientation)
+        return;
+
     d->orientation = orientation;
     if (!testAttribute(Qt::WA_WState_OwnSizePolicy)) {
         QSizePolicy sp = sizePolicy();
@@ -416,7 +414,17 @@ bool QAbstractSlider::hasTracking() const
 void QAbstractSlider::setSliderDown(bool down)
 {
     Q_D(QAbstractSlider);
+    bool doEmit = d->pressed != down;
+
     d->pressed = down;
+
+    if (doEmit) {
+        if (down)
+            emit sliderPressed();
+        else
+            emit sliderReleased();
+    }
+
     if (!down && d->position != d->value)
         triggerAction(SliderMove);
 }
@@ -533,9 +541,9 @@ void QAbstractSlider::setInvertedControls(bool invert)
     d->invertedControls = invert;
 }
 
-/*!  Triggers a slider \a action.  Possible actions are \c
-  SliderSingleStepAdd, \c SliderSingleStepSub, \c SliderPageStepAdd,
-  \c SliderPageStepSub, \c SliderToMinimum, \c SliderToMaximum, and \c
+/*!  Triggers a slider \a action.  Possible actions are \l
+  SliderSingleStepAdd, \l SliderSingleStepSub, \l SliderPageStepAdd,
+  \l SliderPageStepSub, \l SliderToMinimum, \l SliderToMaximum, and \l
   SliderMove.
 
   \sa actionTriggered()
@@ -614,8 +622,8 @@ void QAbstractSlider::timerEvent(QTimerEvent *e)
 
 /*!
     Reimplement this virtual function to track slider changes such as
-    \c SliderRangeChange, \c SliderOrientationChange, \c
-    SliderStepsChange, or \c SliderValueChange. The default
+    \l SliderRangeChange, \l SliderOrientationChange, \l
+    SliderStepsChange, or \l SliderValueChange. The default
     implementation only updates the display and ignores the \a change
     parameter.
  */
@@ -628,6 +636,7 @@ void QAbstractSlider::sliderChange(SliderChange)
 /*!
     \reimp
 */
+#ifndef QT_NO_WHEELEVENT
 void QAbstractSlider::wheelEvent(QWheelEvent * e)
 {
     Q_D(QAbstractSlider);
@@ -653,7 +662,7 @@ void QAbstractSlider::wheelEvent(QWheelEvent * e)
     offset -= int(offset);
     e->accept();
 }
-
+#endif
 
 /*!
     \reimp
@@ -666,20 +675,16 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
 
         // It seems we need to use invertedAppearance for Left and right, otherwise, things look weird.
         case Qt::Key_Left:
-            if (d->orientation == Qt::Horizontal)
-                action = !d->invertedAppearance ? SliderSingleStepSub : SliderSingleStepAdd;
+            action = !d->invertedAppearance ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
         case Qt::Key_Right:
-            if (d->orientation == Qt::Horizontal)
-                action = !d->invertedAppearance ? SliderSingleStepAdd : SliderSingleStepSub;
+            action = !d->invertedAppearance ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
         case Qt::Key_Up:
-            if (d->orientation == Qt::Vertical)
-                action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
+            action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
         case Qt::Key_Down:
-            if (d->orientation == Qt::Vertical)
-                action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
+            action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
         case Qt::Key_PageUp:
             action = d->invertedControls ? SliderPageStepSub : SliderPageStepAdd;

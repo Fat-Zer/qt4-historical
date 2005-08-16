@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -722,7 +717,7 @@ are those in table 6.6 of the UNICODE 2.0 book.
 PrioritY        Glyph                   Condition                                       Kashida Location
 
 Arabic_Kashida        User inserted Kashida   The user entered a Kashida in a position.       After the user
-                (Shift+j or Shift+Ê)    Thus, it is the highest priority to insert an   inserted kashida
+                (Shift+j or Shift+[E with hat])    Thus, it is the highest priority to insert an   inserted kashida
                                         automatic kashida.
 
 Arabic_Seen        Seen, Sad               Connecting to the next character.               After the character.
@@ -1318,7 +1313,7 @@ static void shapedString(const QString *uc, int from, int len, QChar *shapeBuffe
     *shapedLength = data - shapeBuffer;
 }
 
-#if defined(QT_HAVE_FREETYPE)
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
 
 static bool arabicSyriacOpenTypeShape(QOpenType *openType, QShaperItem *item)
 {
@@ -1452,7 +1447,7 @@ static bool arabic_shape(QShaperItem *item)
 {
     Q_ASSERT(item->script == QUnicodeTables::Arabic);
 
-#ifdef QT_HAVE_FREETYPE
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
     QOpenType *openType = item->font->openType();
 
     if (openType && openType->supportsScript(QUnicodeTables::Arabic))

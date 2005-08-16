@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -206,15 +201,13 @@ static const int QTEXTSTREAM_BUFFERSIZE = 16384;
 
 #include <qbuffer.h>
 #include <qfile.h>
+#include <qfileengine.h>
 #ifndef QT_NO_TEXTCODEC
 #include <qtextcodec.h>
 #endif
 #ifndef Q_OS_TEMP
 #include <locale.h>
 #endif
-
-#include <qfileengine.h>
-#include <private/qbufferedfsfileengine_p.h>
 
 // for strtod()
 #include <stdlib.h>
@@ -247,29 +240,6 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
         out += "...";
 
     return out;
-}
-#endif
-
-// This function returns true if the device is a QFile based on a
-// FILE* handle.  QTextStream uses a codec buffer on top of QFile's
-// buffer. When using a FILE* handle, QFile is set to Unbuffered mode
-// because FILE* has its own buffer. But QTextStream is often used
-// with stdin for reading lines, and when it fills its input buffer
-// with a call to fread(), this call will block unless EOF is
-// encountered. So we have to make an exception for this very special
-// case. If a FILE* is used with QTextStream when reading lines, we
-// have to use repeated calls to QIODevice::read(data, 1) instead of
-// reading it all in one chunk.
-#ifndef QT_NO_QOBJECT
-static bool isBufferedFSFileEngine(QIODevice *device)
-{
-    QFile *file = qobject_cast<QFile *>(device);
-    return file && file->fileEngine()->type() == QFileEngine::Type(QBufferedFSFileEngine::BufferedFSFileEngine);
-}
-#else
-static bool isBufferedFSFileEngine(QIODevice *)
-{
-    return false;
 }
 #endif
 
@@ -372,7 +342,7 @@ public:
     inline bool putString(const QString &ch);
 
     // buffers
-    bool fillReadBuffer(bool toEndOfLine);
+    bool fillReadBuffer();
     bool flushWriteBuffer();
     QString writeBuffer;
     QString readBuffer;
@@ -440,7 +410,7 @@ void QTextStreamPrivate::reset()
 
 /*! \internal
 */
-bool QTextStreamPrivate::fillReadBuffer(bool toEndOfLine)
+bool QTextStreamPrivate::fillReadBuffer()
 {
     // no buffer next to the QString itself; this function should only
     // be called internally, for devices.
@@ -455,21 +425,18 @@ bool QTextStreamPrivate::fillReadBuffer(bool toEndOfLine)
     // read raw data into a temporary buffer
     char buf[QTEXTSTREAM_BUFFERSIZE];
     qint64 bytesRead = 0;
-    if (toEndOfLine && isBufferedFSFileEngine(device)) {
-        while (bytesRead < QTEXTSTREAM_BUFFERSIZE) {
-            char c;
-            qint64 ret = device->read(&c, 1);
-            if (ret <= 0 && bytesRead == 0) {
-                bytesRead = -1;
-                break;
-            }
-            buf[bytesRead++] = c;
-            if (c == '\n')
-                break;
-        }
-    } else {
+#if defined(Q_OS_WIN) && !defined(QT_NO_QOBJECT)
+    // On Windows, there is no non-blocking stdin - so we fall back to reading
+    // lines instead.
+    QFile *file = qobject_cast<QFile *>(device);
+    if (file && file->isSequential() && file->fileEngine()->type() == QFileEngine::BufferedFile && file->handle() == 0) {
+        bytesRead = device->readLine(buf, sizeof(buf));
+    } else
+#endif
+    {
         bytesRead = device->read(buf, sizeof(buf));
     }
+
 #if defined (QTEXTSTREAM_DEBUG)
     qDebug("QTextStreamPrivate::fillReadBuffer(), device->read(\"%s\", %d) == %d",
            qt_prettyDebug(buf, qMin(32,int(bytesRead)) , int(bytesRead)).constData(), sizeof(buf), int(bytesRead));
@@ -508,7 +475,7 @@ bool QTextStreamPrivate::fillReadBuffer(bool toEndOfLine)
     if (textModeEnabled) {
         device->setTextModeEnabled(true);
         readBuffer.replace(QLatin1String("\r\n"), QLatin1String("\n"));
-        if (readBuffer.endsWith(QLatin1String("\r")) && !device->atEnd()) {
+        if (readBuffer.endsWith(QLatin1Char('\r')) && !device->atEnd()) {
             endOfBufferState = QLatin1String("\r");
             readBuffer.chop(1);
         } else {
@@ -634,7 +601,7 @@ bool QTextStreamPrivate::scan(const QChar **ptr, int *length, int maxlen, TokenD
         }
     } while (!foundToken
              && (!maxlen || totalSize < maxlen)
-             && (device && fillReadBuffer(delimiter == EndOfLine)));
+             && (device && fillReadBuffer()));
 
     // if the token was not found, but we reached the end of input,
     // then we accept what we got. if we are not at the end of input,
@@ -736,7 +703,7 @@ inline bool QTextStreamPrivate::write(const QString &data)
 inline bool QTextStreamPrivate::getChar(QChar *ch)
 {
     if ((string && stringOffset == string->size())
-        || (device && readBuffer.isEmpty() && !fillReadBuffer(false))) {
+        || (device && readBuffer.isEmpty() && !fillReadBuffer())) {
         if (ch)
             *ch = 0;
         return false;
@@ -993,8 +960,24 @@ void QTextStream::flush()
 bool QTextStream::seek(qint64 pos)
 {
     Q_D(QTextStream);
-    if (d->device)
-        return d->device->seek(pos);
+    d->lastTokenSize = 0;
+
+    if (d->device) {
+        // Empty the write buffer
+        d->flushWriteBuffer();
+        if (!d->device->seek(pos))
+            return false;
+        d->readBuffer.clear();
+        d->readBufferOffset = 0;
+        d->endOfBufferState.clear();
+        return true;
+    }
+
+    // string
+    if (d->string && pos < d->string->size()) {
+        d->stringOffset = int(pos);
+        return true;
+    }
     return false;
 }
 
@@ -2732,6 +2715,7 @@ int QTextStream::flagsInternal(int newFlags)
     return oldFlags;
 }
 
+#ifndef QT_NO_TEXTCODEC
 /*!
     Use setCodec() and setAutoDetectUnicode() instead.
 */
@@ -2782,6 +2766,7 @@ void QTextStream::setEncoding(Encoding encoding)
         break;
     }
 }
+#endif
 
 /*!
     \enum QTextStream::Encoding
@@ -2874,13 +2859,13 @@ void QTextStream::setEncoding(Encoding encoding)
 
 /*!
     \variable QTextStream::skipws
-    \variable QTextStream::left 
+    \variable QTextStream::left
     \variable QTextStream::right
     \variable QTextStream::internal
-    \variable QTextStream::bin  
-    \variable QTextStream::oct  
-    \variable QTextStream::dec  
-    \variable QTextStream::hex  
+    \variable QTextStream::bin
+    \variable QTextStream::oct
+    \variable QTextStream::dec
+    \variable QTextStream::hex
     \variable QTextStream::showbase
     \variable QTextStream::showpoint
     \variable QTextStream::uppercase

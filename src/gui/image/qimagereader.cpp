@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -114,18 +109,21 @@
 #include <private/qppmhandler_p.h>
 #include <private/qxbmhandler_p.h>
 #include <private/qxpmhandler_p.h>
-#ifndef QT_NO_IMAGEIO_PNG
+#ifndef QT_NO_IMAGEFORMAT_PNG
 #include <private/qpnghandler_p.h>
 #endif
 
+#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QImageIOHandlerFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/imageformats")))
-
+                          (QImageIOHandlerFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/imageformats")))
+#endif
+    
 static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &format)
 {
     QByteArray form = format.toLower();
     QImageIOHandler *handler = 0;
 
+#ifndef QT_NO_LIBRARY
     // check if we have plugins that support the image format
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
@@ -138,45 +136,62 @@ static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &f
         }
         device->seek(pos);
     }
+#endif // QT_NO_LIBRARY
 
     // check if we have built-in support for the format name
     if (!format.isEmpty()) {
-#ifndef QT_NO_IMAGEIO_PNG
-        if (form == "png") {
+	if (false) {	
+#ifndef QT_NO_IMAGEFORMAT_PNG
+	} else if (form == "png") {
             handler = new QPngHandler;
-        } else
 #endif
-        if (form == "bmp") {
+#ifndef QT_NO_IMAGEFORMAT_BMP
+        } else if (form == "bmp") {
             handler = new QBmpHandler;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XPM
         } else if (form == "xpm") {
             handler = new QXpmHandler;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XBM
         } else if (form == "xbm") {
             handler = new QXbmHandler;
             handler->setOption(QImageIOHandler::SubType, form);
+#endif
+#ifndef QT_NO_IMAGEFORMAT_PPM
         } else if (form == "pbm" || form == "pbmraw" || form == "pgm"
                  || form == "pgmraw" || form == "ppm" || form == "ppmraw") {
             handler = new QPpmHandler;
             handler->setOption(QImageIOHandler::SubType, form);
+#endif
         }
     }
 
     // check if any of our built-in formats can read images from the device
     if (!handler) {
         QByteArray subType;
-#ifndef QT_NO_IMAGEIO_PNG
-        if (QPngHandler::canRead(device)) {
+	if (false) {	
+#ifndef QT_NO_IMAGEFORMAT_PNG
+	} else if (QPngHandler::canRead(device)) {
             handler = new QPngHandler;
-        } else
 #endif
-        if (QBmpHandler::canRead(device)) {
+#ifndef QT_NO_IMAGEFORMAT_BMP
+        } else if (QBmpHandler::canRead(device)) {
             handler = new QBmpHandler;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XPM
         } else if (QXpmHandler::canRead(device)) {
             handler = new QXpmHandler;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_PPM
         } else if (QPpmHandler::canRead(device, &subType)) {
             handler = new QPpmHandler;
             handler->setOption(QImageIOHandler::SubType, subType);
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XBM
         } else if (QXbmHandler::canRead(device)) {
             handler = new QXbmHandler;
+#endif
         }
     }
 
@@ -269,13 +284,15 @@ bool QImageReaderPrivate::initHandler()
         }
     }
 
+#ifndef QT_NO_LIBRARY
     // assign a handler
     if (!handler && (handler = ::createReadHandler(device, format)) == 0) {
         imageReaderError = QImageReader::UnsupportedFormatError;
         errorString = QT_TRANSLATE_NOOP(QImageReader, "Unsupported image format");
         return false;
     }
-
+#endif
+    
     return true;
 }
 
@@ -766,11 +783,21 @@ QByteArray QImageReader::imageFormat(QIODevice *device)
 QList<QByteArray> QImageReader::supportedImageFormats()
 {
     QSet<QByteArray> formats;
-    formats << "bmp" << "pbm" << "pgm" << "ppm" << "xbm" << "xpm";
-#ifndef QT_NO_IMAGEIO_PNG
+    formats << "bmp";
+#ifndef QT_NO_IMAGEFORMAT_PPM
+    formats << "ppm" << "pgm" << "pbm";
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XBM
+    formats << "xbm";
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XPM
+    formats << "xpm";
+#endif
+#ifndef QT_NO_IMAGEFORMAT_PNG
     formats << "png";
 #endif
 
+#ifndef QT_NO_LIBRARY
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
 
@@ -779,6 +806,7 @@ QList<QByteArray> QImageReader::supportedImageFormats()
         if (plugin && plugin->capabilities(0, keys.at(i).toLatin1()) & QImageIOPlugin::CanRead)
             formats << keys.at(i).toLatin1();
     }
+#endif // QT_NO_LIBRARY    
 
     QList<QByteArray> sortedFormats;
     for (QSet<QByteArray>::ConstIterator it = formats.constBegin(); it != formats.constEnd(); ++it)
@@ -787,3 +815,4 @@ QList<QByteArray> QImageReader::supportedImageFormats()
     qSort(sortedFormats);
     return sortedFormats;
 }
+

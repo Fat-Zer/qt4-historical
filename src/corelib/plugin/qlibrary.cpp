@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,8 +22,10 @@
 ****************************************************************************/
 
 #include "qplatformdefs.h"
-
 #include "qlibrary.h"
+
+#ifndef QT_NO_LIBRARY
+
 #include "qlibrary_p.h"
 #include <qstringlist.h>
 #include <qfile.h>
@@ -51,6 +48,8 @@
 #else
 #  define QLIBRARY_AS_DEBUG true
 #endif
+
+Q_GLOBAL_STATIC(QMutex, qt_library_mutex)
 
 /*!
     \class QLibrary
@@ -369,6 +368,7 @@ QLibraryPrivate::QLibraryPrivate(const QString &canonicalFileName)
 
 QLibraryPrivate *QLibraryPrivate::findOrCreate(const QString &fileName)
 {
+    QMutexLocker locker(qt_library_mutex());
     if (QLibraryPrivate *lib = libraryMap()->value(fileName)) {
         lib->libraryUnloadCount.ref();
         lib->libraryRefCount.ref();
@@ -416,6 +416,7 @@ bool QLibraryPrivate::unload()
 
 void QLibraryPrivate::release()
 {
+    QMutexLocker locker(qt_library_mutex());
     if (!libraryRefCount.deref())
         delete this;
 }
@@ -487,7 +488,9 @@ bool QLibraryPrivate::isPlugin()
 
     QFileInfo fileinfo(fileName);
 
+#ifndef QT_NO_DATESTRING
     lastModified  = fileinfo.lastModified().toString(Qt::ISODate);
+#endif
     QString regkey = QString::fromLatin1("Qt Plugin Cache %1.%2.%3/%4")
                      .arg((QT_VERSION & 0xff0000) >> 16)
                      .arg((QT_VERSION & 0xff00) >> 8)
@@ -839,3 +842,4 @@ void *QLibrary::resolve(const QString &fileName, const char *symbol)
     Use load(), isLoaded(), and unload() as necessary instead.
 */
 
+#endif // QT_NO_LIBRARY

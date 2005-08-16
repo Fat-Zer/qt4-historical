@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-x11-opensource-desktop-4.0.0/src/gui/widgets/qtextbrowser.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qtextbrowser.cpp -->
 <head>
     <title>Qt 4.0: QTextBrowser Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextBrowser Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextBrowser Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTextBrowser class provides a rich text browser with hypertext navigation. <a href="#details">More...</a></p>
-<pre>#include &lt;QTextBrowser&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qtextedit.html">QTextEdit</a>.</p>
+<pre>#include &lt;QTextBrowser&gt;</pre><p>Inherits <a href="qtextedit.html">QTextEdit</a>.</p>
 <ul>
 <li><a href="qtextbrowser-members.html">List of all members, including inherited members</a></li>
 <li><a href="qtextbrowser-qt3.html">Qt 3 support members</a></li>
@@ -58,7 +57,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>42 public functions inherited from <a href="qtextedit.html#public-functions">QTextEdit</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -115,6 +114,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This class extends <a href="qtextedit.html">QTextEdit</a> (in read-only mode), adding some navigation functionality so that users can follow links in hypertext documents. The contents of <a href="qtextedit.html">QTextEdit</a> are set with <a href="qtextedit.html#html-prop">setHtml</a>() or <a href="qtextedit.html#setPlainText">setPlainText</a>(), but QTextBrowser also implements the <a href="qtextbrowser.html#source-prop">setSource</a>() function, making it possible to set the text to a named document. The name is looked up in a list of search paths and in the directory of the current document factory. If a document name ends with an anchor (for example, &quot;<tt>#anchor&quot;</tt>), the text browser automatically scrolls to that position (using <a href="qtextedit.html#scrollToAnchor">scrollToAnchor</a>()). When the user clicks on a hyperlink, the browser will call <a href="qtextbrowser.html#source-prop">setSource</a>() itself with the link's <tt>href</tt> value as argument. You can track the current source by connecting to the <a href="qtextbrowser.html#sourceChanged">sourceChanged</a>() signal.</p>
 <p>QTextBrowser provides <a href="qtextbrowser.html#backward">backward</a>() and <a href="qtextbrowser.html#forward">forward</a>() slots which you can use to implement Back and Forward buttons. The <a href="qtextbrowser.html#home">home</a>() slot sets the text to the very first document displayed. The <a href="qtextbrowser.html#anchorClicked">anchorClicked</a>() signal is emitted when the user clicks an anchor.</p>
 <p>If you want to provide your users with editable rich text use <a href="qtextedit.html">QTextEdit</a>. If you want a text browser without hypertext navigation use <a href="qtextedit.html">QTextEdit</a>, and use <a href="qtextedit.html#readOnly-prop">QTextEdit::setReadOnly</a>() to disable editing. If you just need to display a small piece of rich text use <a href="qlabel.html">QLabel</a>.</p>
+<p>If you want to load documents stored in the Qt resource system use qrc as the scheme in the URL to load. For example, for the document resource path <tt>:/docs/index.html</tt> use <tt>qrc:/docs/index.html</tt> as the URL with <a href="qtextbrowser.html#source-prop">setSource</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="modified-prop"></a>modified : const bool</h3>
@@ -192,6 +192,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,24 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed under the terms of the Q Public License
-** as defined by Trolltech AS of Norway and appearing in the file
-** LICENSE.QPL included in the packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-**   information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/qpl/ for QPL licensing information.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -269,7 +264,7 @@ void Q3SocketPrivate::setSocketDevice( Q3Socket *q, Q3SocketDevice *device )
 
 
 /*!
-    Creates a Q3Socket object in \c Q3Socket::Idle state.
+    Creates a Q3Socket object in Q3Socket::Idle state.
 
     The \a parent and \a name arguments are passed on to the QObject
     constructor.
@@ -579,7 +574,7 @@ void Q3Socket::tryConnecting()
     This signal is emitted when a delayed close is finished.
 
     If you call close() and there is buffered output data to be
-    written, Q3Socket goes into the \c Q3Socket::Closing state and
+    written, Q3Socket goes into the Q3Socket::Closing state and
     returns immediately. It will then keep writing to the socket until
     all the data has been written. Then, the delayedCloseFinished()
     signal is emitted.
@@ -645,9 +640,9 @@ bool Q3Socket::open( int m )
     If the output buffer is empty, the state is set to \c
     Q3Socket::Idle and the connection is terminated immediately. If the
     output buffer still contains data to be written, Q3Socket goes into
-    the \c Q3Socket::Closing state and the rest of the data will be
+    the Q3Socket::Closing state and the rest of the data will be
     written. When all of the outgoing data have been written, the
-    state is set to \c Q3Socket::Idle and the connection is terminated.
+    state is set to Q3Socket::Idle and the connection is terminated.
     At this point, the delayedCloseFinished() signal is emitted.
 
     If you don't want that the data of the output buffer is written, call
