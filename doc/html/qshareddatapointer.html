@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-all-opensource-src-4.3.5/src/corelib/tools/qshareddata.cpp -->
+<!-- /fasttmp/mkdist-qt-4.3.5-1211792730/qt-win-opensource-src-4.3.5/src/corelib/tools/qshareddata.cpp -->
 <head>
   <title>Qt 4.3: QSharedDataPointer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSharedDataPointer" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -144,7 +143,6 @@
 <p>See also <a href="qshareddata.html">QSharedData</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/QSharedDataPointer" />
 <h3 class="fn"><a name="QSharedDataPointer"></a>QSharedDataPointer::QSharedDataPointer ()</h3>
 <p>Constructs a <a href="qshareddatapointer.html">QSharedDataPointer</a> initialized with a null pointer.</p>
 <h3 class="fn"><a name="QSharedDataPointer-2"></a>QSharedDataPointer::QSharedDataPointer ( T * <i>sharedData</i> )</h3>
@@ -153,16 +151,13 @@
 <h3 class="fn"><a name="QSharedDataPointer-3"></a>QSharedDataPointer::QSharedDataPointer ( const QSharedDataPointer&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
 <p>This function automatically increments the reference count of the shared data object pointed to by <i>other</i>.</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/~QSharedDataPointer" />
 <h3 class="fn"><a name="dtor.QSharedDataPointer"></a>QSharedDataPointer::~QSharedDataPointer ()</h3>
 <p>Destroys the <a href="qshareddatapointer.html">QSharedDataPointer</a>.</p>
 <p>This function automatically decrements the reference count of the shared object and deletes the object if the reference count reaches 0.</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/constData" />
 <h3 class="fn"><a name="constData"></a>const T * QSharedDataPointer::constData () const</h3>
 <p>Returns a const pointer to the shared object.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
 <p>See also <a href="qshareddatapointer.html#data">data</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/data" />
 <h3 class="fn"><a name="data"></a>T * QSharedDataPointer::data ()</h3>
 <p>Returns a pointer to the shared object.</p>
 <p>This function does a <a href="qshareddatapointer.html#detach">detach</a>().</p>
@@ -170,41 +165,33 @@
 <h3 class="fn"><a name="data-2"></a>const T * QSharedDataPointer::data () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/detach" />
 <h3 class="fn"><a name="detach"></a>void QSharedDataPointer::detach ()</h3>
 <p>If the shared data's reference count is greater than 1, creates a deep copy of the shared data.</p>
 <p>This function is automatically called by <a href="qshareddatapointer.html">QSharedDataPointer</a> when necessary. You should never need to call it yourself.</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator T *" />
 <h3 class="fn"><a name="operator-T--2a"></a>QSharedDataPointer::operator T * ()</h3>
 <p>Returns a pointer to the shared object.</p>
 <p>This function does a <a href="qshareddatapointer.html#detach">detach</a>().</p>
 <p>See also <a href="qshareddatapointer.html#data">data</a>() and <a href="qshareddatapointer.html#constData">constData</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator const T *" />
 <h3 class="fn"><a name="operator-const-T--2a"></a>QSharedDataPointer::operator const T * () const</h3>
 <p>Returns a pointer to the shared object.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator!" />
 <h3 class="fn"><a name="operator-not"></a>bool QSharedDataPointer::operator! () const</h3>
 <p>Returns true if this pointer is null; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QSharedDataPointer::operator!= ( const QSharedDataPointer&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns a true if the pointer to the shared object in <i>other</i> is not equal to to the pointer to the shared data in this else returns false.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator*" />
 <h3 class="fn"><a name="operator-2a"></a>T &amp; QSharedDataPointer::operator* ()</h3>
 <p>Provides access to the shared object's members.</p>
 <p>This function does a <a href="qshareddatapointer.html#detach">detach</a>().</p>
 <h3 class="fn"><a name="operator-2a-2"></a>const T &amp; QSharedDataPointer::operator* () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator->" />
 <h3 class="fn"><a name="operator--gt"></a>T * QSharedDataPointer::operator-&gt; ()</h3>
 <p>Provides access to the shared object's members.</p>
 <p>This function does a <a href="qshareddatapointer.html#detach">detach</a>().</p>
 <h3 class="fn"><a name="operator--gt-2"></a>const T * QSharedDataPointer::operator-&gt; () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QSharedDataPointer&lt;T&gt; &amp; QSharedDataPointer::operator= ( const QSharedDataPointer&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this pointer.</p>
 <p>This function automatically increments the reference count of the shared data object pointed to by <i>other</i>, and decrements the reference count of the object previously pointed to by this <a href="qshareddatapointer.html">QSharedDataPointer</a>. If the reference count reaches 0, the shared data object is deleted.</p>
@@ -212,7 +199,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets this <a href="qshareddatapointer.html">QSharedDataPointer</a> to point to <i>sharedData</i>.</p>
 <p>This function automatically increments <i>sharedData</i>'s reference count, and decrements the reference count of the object previously pointed to by this <a href="qshareddatapointer.html">QSharedDataPointer</a>. If the reference count reaches 0, the shared data object is deleted.</p>
-<a name="//apple_ref/cpp/instm/QSharedDataPointer/operator==" />
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QSharedDataPointer::operator== ( const QSharedDataPointer&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns a true if the pointer to the shared object in <i>other</i> is equal to to the pointer to the shared data in this else returns false.</p>
 <p>This function does not call <a href="qshareddatapointer.html#detach">detach</a>().</p>
