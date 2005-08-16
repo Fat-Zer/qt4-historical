@@ -39,7 +39,7 @@
 
 #ifndef QT_NO_IMAGEFORMAT_XPM
 
-class Q_GUI_EXPORT QXpmHandler : public QImageIOHandler
+class QXpmHandler : public QImageIOHandler
 {
 public:
     QXpmHandler();

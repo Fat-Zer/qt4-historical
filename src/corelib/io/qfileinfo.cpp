@@ -25,6 +25,7 @@
 #include "qfileinfo.h"
 #include "qdatetime.h"
 #include "qabstractfileengine.h"
+#include "qfsfileengine_p.h"
 #include "qglobal.h"
 #include "qatomic.h"
 #include "qhash.h"
@@ -37,6 +38,13 @@ public:
     ~QFileInfoPrivate();
 
     void initFileEngine(const QString &);
+
+    enum Access {
+        ReadAccess,
+        WriteAccess,
+        ExecuteAccess
+    };
+    bool hasAccess(Access access) const;
 
     uint getFileFlags(QAbstractFileEngine::FileFlags) const;
     QDateTime &getFileTime(QAbstractFileEngine::FileTime) const;
@@ -109,6 +117,53 @@ QFileInfoPrivate::initFileEngine(const QString &file)
     data->clear();
     data->fileEngine = QAbstractFileEngine::create(file);
     data->fileName = file;
+}
+
+bool QFileInfoPrivate::hasAccess(Access access) const
+{
+    if (!(data->fileEngine->fileFlags() & QAbstractFileEngine::LocalDiskFlag)) {
+        switch (access) {
+        case ReadAccess:
+            return getFileFlags(QAbstractFileEngine::ReadUserPerm);
+        case WriteAccess:
+            return getFileFlags(QAbstractFileEngine::WriteUserPerm);
+        case ExecuteAccess:
+            return getFileFlags(QAbstractFileEngine::ExeUserPerm);
+        default:
+            return false;
+        }
+    }
+
+    int mode = 0;
+    switch (access) {
+    case ReadAccess:
+        mode = R_OK;
+        break;
+    case WriteAccess:
+        mode = W_OK;
+        break;
+    case ExecuteAccess:
+        mode = X_OK;
+        break;
+    };
+#ifdef Q_OS_UNIX
+    return QT_ACCESS(QFile::encodeName(data->fileName).data(), mode) == 0;
+#endif
+#ifdef Q_OS_WIN
+    if ((access == ReadAccess && !getFileFlags(QAbstractFileEngine::ReadUserPerm))
+        || (access == WriteAccess && !getFileFlags(QAbstractFileEngine::WriteUserPerm))) {
+        return false;
+    }
+    if (access == ExecuteAccess)
+        return getFileFlags(QAbstractFileEngine::ExeUserPerm);
+
+    QT_WA( {
+        return ::_waccess((TCHAR *)QFSFileEnginePrivate::longFileName(data->fileName).utf16(), mode) == 0;
+    } , {
+        return QT_ACCESS(QFSFileEnginePrivate::win95Name(data->fileName), mode) == 0;
+    } );
+#endif
+    return false;
 }
 
 void QFileInfoPrivate::detach()
@@ -192,6 +247,7 @@ QDateTime
     \brief The QFileInfo class provides system-independent file information.
 
     \ingroup io
+    \ingroup shared
 
     QFileInfo provides information about a file's name and position
     (path) in the file system, its access rights and whether it is a
@@ -215,6 +271,16 @@ QDateTime
     later with setFile(). Use exists() to see if the file exists and
     size() to get its size.
 
+    Some of QFileInfo's functions query the file system, but for
+    performance reasons, some functions only operate on the
+    file name itself. For example: To return the absolute path of
+    a relative file name, absolutePath() has to query the file system.
+    The path() function, however, can work on the file name directly,
+    and so it is faster. By convention, QFileInfo interprets any path that
+    ends with a slash '/' as a directory (e.g., "C:/WINDOWS/"), and
+    those without a trailing slash (e.g., "C:/WINDOWS/hosts.txt")
+    are treated as files.
+    
     To speed up performance, QFileInfo caches information about the
     file. Because files can be changed by other users or programs, or
     even by other parts of the same program, there is a function that
@@ -223,7 +289,7 @@ QDateTime
     every time you request information from it call setCaching(false).
 
     The file's type is obtained with isFile(), isDir() and
-    isSymLink(). The readLink() function provides the name of the file
+    isSymLink(). The symLinkTarget() function provides the name of the file
     the symlink points to.
 
     On Unix (including Mac OS X), the symlink has the same size() has
@@ -238,9 +304,9 @@ QDateTime
         info1.isSymLink();          // returns true
         info1.absoluteFilePath();   // returns "/home/bob/bin/untabify"
         info1.size();               // returns 56201
-        info1.readLink();           // returns "/opt/pretty++/bin/untabify"
+        info1.symLinkTarget();      // returns "/opt/pretty++/bin/untabify"
 
-        QFileInfo info2(info1.readLink());
+        QFileInfo info2(info1.symLinkTarget());
         info1.isSymLink();          // returns false
         info1.absoluteFilePath();   // returns "/opt/pretty++/bin/untabify"
         info1.size();               // returns 56201
@@ -258,13 +324,13 @@ QDateTime
 
         QFileInfo info1("C:\\Documents and Settings\\Bob\\untabify.lnk");
         info1.isSymLink();          // returns true
-        info1.absoluteFilePath();   // returns "C:\\Documents and Settings\\Bob\\untabify.lnk"
+        info1.absoluteFilePath();   // returns "C:/Documents and Settings/Bob/untabify.lnk"
         info1.size();               // returns 743
-        info1.readLink();           // returns "C:\\Pretty++\\untabify"
+        info1.symLinkTarget();      // returns "C:/Pretty++/untabify"
 
-        QFileInfo info2(info1.readLink());
+        QFileInfo info2(info1.symLinkTarget());
         info1.isSymLink();          // returns false
-        info1.absoluteFilePath();   // returns "C:\\Pretty++\\untabify"
+        info1.absoluteFilePath();   // returns "C:/Pretty++/untabify"
         info1.size();               // returns 63942
 
         #endif
@@ -380,6 +446,8 @@ bool
 QFileInfo::operator==(const QFileInfo &fileinfo) const
 {
     Q_D(const QFileInfo);
+    // ### Qt 5: understand long and short file names on Windows
+    // ### (GetFullPathName()).
     if(fileinfo.d_func()->data == d->data)
         return true;
     if(!d->data->fileEngine || !fileinfo.d_func()->data->fileEngine)
@@ -412,6 +480,9 @@ QFileInfo::operator==(const QFileInfo &fileinfo) const
 
     \warning This will not compare two different symbolic links
     pointing to the same file.
+
+    \warning Long and short file names that refer to the same file on Windows
+    are treated as if they referred to different files.
 
     \sa operator!=()
 */
@@ -636,9 +707,9 @@ QFileInfo::isRelative() const
 
 
 /*!
-    Converts the file's path to an absolute path.
-
-    If it is already absolute, nothing is done.
+    Converts the file's path to an absolute path if it is not already in that form.
+    Returns true to indicate that the path was converted; otherwise returns false
+    to indicate that the path was already absolute.
 
     \sa filePath(), isRelative()
 */
@@ -728,6 +799,11 @@ QFileInfo::fileName() const
         QString base = fi.baseName();  // base = "archive"
     \endcode
 
+
+    The base name of a file is computed equally on all platforms, independent
+    of file naming conventions (e.g., ".bashrc" on Unix has an empty base
+    name, and the suffix is "bashrc").
+
     \sa fileName(), suffix(), completeSuffix(), completeBaseName()
 */
 
@@ -806,6 +882,10 @@ QFileInfo::completeSuffix() const
         QString ext = fi.suffix();  // ext = "gz"
     \endcode
 
+    The suffix of a file is computed equally on all platforms, independent of
+    file naming conventions (e.g., ".bashrc" on Unix has an empty base name,
+    and the suffix is "bashrc").
+
     \sa fileName(), completeSuffix(), baseName(), completeBaseName()
 */
 
@@ -875,7 +955,7 @@ QFileInfo::isReadable() const
     Q_D(const QFileInfo);
     if(!d->data->fileEngine)
         return false;
-    return d->getFileFlags(QAbstractFileEngine::ReadUserPerm);
+    return d->hasAccess(QFileInfoPrivate::ReadAccess);
 }
 
 /*!
@@ -891,7 +971,7 @@ QFileInfo::isWritable() const
     Q_D(const QFileInfo);
     if(!d->data->fileEngine)
         return false;
-    return d->getFileFlags(QAbstractFileEngine::WriteUserPerm);
+    return d->hasAccess(QFileInfoPrivate::WriteAccess);
 }
 
 /*!
@@ -906,7 +986,7 @@ QFileInfo::isExecutable() const
     Q_D(const QFileInfo);
     if(!d->data->fileEngine)
         return false;
-    return d->getFileFlags(QAbstractFileEngine::ExeUserPerm);
+    return d->hasAccess(QFileInfoPrivate::ExecuteAccess);
 }
 
 /*!
@@ -959,7 +1039,7 @@ QFileInfo::isDir() const
     shortcut on Windows); otherwise returns false.
 
     On Unix (including Mac OS X), opening a symlink effectively opens
-    the \l{readLink()}{link's target}. On Windows, it opens the \c
+    the \l{symLinkTarget()}{link's target}. On Windows, it opens the \c
     .lnk file itself.
 
     Example:
@@ -967,10 +1047,10 @@ QFileInfo::isDir() const
     \code
         QFileInfo info(fileName);
         if (info.isSymLink())
-            fileName = info.readLink();
+            fileName = info.symLinkTarget();
     \endcode
 
-    \sa isFile(), isDir(), readLink()
+    \sa isFile(), isDir(), symLinkTarget()
 */
 
 bool
@@ -998,6 +1078,9 @@ QFileInfo::isRoot() const
 }
 
 /*!
+    \fn QString QFileInfo::symLinkTarget() const
+    \since 4.2
+
     Returns the absolute path to the file or directory a symlink (or shortcut
     on Windows) points to, or a an empty string if the object isn't a symbolic
     link.
@@ -1009,6 +1092,11 @@ QFileInfo::isRoot() const
     \sa exists(), isSymLink(), isDir(), isFile()
 */
 
+/*!
+    \obsolete
+
+    Use symLinkTarget() instead.
+*/
 QString
 QFileInfo::readLink() const
 {
@@ -1139,8 +1227,10 @@ QFileInfo::permissions() const
 
 
 /*!
-    Returns the file size in bytes, or 0 if the file does not exist or
-    if the size is 0 or if the size cannot be fetched.
+    Returns the file size in bytes. If the file does not exist or cannot be
+    fetched, 0 is returned.
+
+    \sa exists()
 */
 
 qint64
@@ -1305,4 +1395,11 @@ QFileInfo::setCaching(bool enable)
     \compat
 
     Use permission() instead.
+*/
+
+/*!
+    \typedef QFileInfoList
+    \relates QFileInfo
+
+    Synonym for QList<QFileInfo>.
 */

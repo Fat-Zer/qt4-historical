@@ -23,6 +23,13 @@
 
 #include "qplatformdefs.h"
 #include "qstring.h"
+#include "qvector.h"
+#include "qlist.h"
+#include "qthreadstorage.h"
+
+#ifndef QT_NO_QOBJECT
+#include <private/qthread_p.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -285,6 +292,13 @@
 */
 
 /*!
+    \fn bool QFlags::testFlag(Enum flag) const
+    \since 4.2
+
+    Returns true if the \a flag is set, otherwise false.
+*/
+
+/*!
     \macro Q_DECLARE_FLAGS(Flags, Enum)
     \relates QFlags
 
@@ -317,8 +331,9 @@
 /*!
     \headerfile <QtGlobal>
     \title Global Qt Declarations
+    \ingroup architecture
 
-    \brief The <QtGlobal> header file provides basic declarations and
+    \brief The <QtGlobal> header provides basic declarations and
     is included by all other Qt headers.
 
     The declarations include \l {types}, \l functions and
@@ -536,6 +551,40 @@
     \endcode
 
     \sa Q_UINT64_C(), qint64, qulonglong
+*/
+
+/*!
+    \typedef quintptr
+    \relates <QtGlobal>
+
+    Integral type for representing a pointers (useful for hashing,
+    etc.).
+
+    Typedef for either quint32 or quint64. This type is guaranteed to
+    be the same size as a pointer on all platforms supported by Qt. On
+    a system with 32-bit pointers, quintptr is a typedef for quint32;
+    on a system with 64-bit pointers, quintptr is a typedef for
+    quint64.
+
+    Note that quintptr is unsigned. Use qptrdiff for signed values.
+
+    \sa qptrdiff, quint32, quint64
+*/
+
+/*!
+    \typedef qptrdiff
+    \relates <QtGlobal>
+
+    Integral type for representing pointer differences.
+
+    Typedef for either qint32 or qint64. This type is guaranteed to be
+    the same size as a pointer on all platforms supported by Qt. On a
+    system with 32-bit pointers, quintptr is a typedef for quint32; on
+    a system with 64-bit pointers, quintptr is a typedef for quint64.
+
+    Note that qptrdiff is signed. Use quintptr for unsigned values.
+
+    \sa quintptr, qint32, qint64
 */
 
 /*!
@@ -931,9 +980,13 @@ bool qSharedBuild()
 */
 
 /*!
-    \variable QSysInfo::WordSize
-    \brief the size in bits of a pointer for the platform on which
-           the application is compiled (32 or 64)
+    \enum QSysInfo::Sizes
+
+    This enum provides platform-specific information about the sizes of data
+    structures used by the underlying architecture.
+
+    \value WordSize The size in bits of a pointer for the platform on which
+           the application is compiled (32 or 64).
 */
 
 /*!
@@ -1004,11 +1057,12 @@ bool qSharedBuild()
     system on which the application is run.
 
     \value MV_9        Mac OS 9 (unsupported)
-    \value MV_10_0     Mac OS X 10.0
-    \value MV_10_1     Mac OS X 10.1
-    \value MV_10_2     Mac OS X 10.2
+    \value MV_10_0     Mac OS X 10.0 (unsupported)
+    \value MV_10_1     Mac OS X 10.1 (unsupported)
+    \value MV_10_2     Mac OS X 10.2 (unsupported)
     \value MV_10_3     Mac OS X 10.3
     \value MV_10_4     Mac OS X 10.4
+    \value MV_10_5     Mac OS X 10.5
     \value MV_Unknown  An unknown and currently unsupported platform
 
     \value MV_CHEETAH  Apple codename for MV_10_0
@@ -1016,6 +1070,7 @@ bool qSharedBuild()
     \value MV_JAGUAR   Apple codename for MV_10_2
     \value MV_PANTHER  Apple codename for MV_10_3
     \value MV_TIGER    Apple codename for MV_10_4
+    \value MV_LEOPARD  Apple codename for MV_10_5
 
     \sa WinVersion
 */
@@ -1088,7 +1143,7 @@ bool qSharedBuild()
     \macro Q_OS_WIN32
     \relates <QtGlobal>
 
-    Defined on Win32 (Windows 98/ME and Windows NT/2000/XP).
+    Defined on all supported versions of Windows.
 */
 
 /*!
@@ -1455,11 +1510,20 @@ Q_CORE_EXPORT QString qt_mac_from_pascal_string(const Str255 pstr) {
     return QCFString(CFStringCreateWithPascalString(0, pstr, CFStringGetSystemEncoding()));
 }
 
+
+
 static QSysInfo::MacVersion macVersion()
 {
-    long gestalt_version;
+#if __LP64__
+typedef signed int SInt32;
+#else
+typedef signed long SInt32;
+#endif
+    SInt32 gestalt_version;
     if (Gestalt(gestaltSystemVersion, &gestalt_version) == noErr) {
-        if (gestalt_version >= 0x1040 && gestalt_version < 0x1050)
+        if (gestalt_version >= 0x1050 && gestalt_version < 0x1060)
+            return QSysInfo::MV_10_5;
+        else if (gestalt_version >= 0x1040 && gestalt_version < 0x1050)
             return QSysInfo::MV_10_4;
         else if (gestalt_version >= 0x1030 && gestalt_version < 0x1040)
             return QSysInfo::MV_10_3;
@@ -1540,7 +1604,7 @@ static QSysInfo::WinVersion winVersion()
         } else if (osver.dwMinorVersion == 2) {
             winver = QSysInfo::WV_2003;
         } else {
-            qWarning("Untested Windows version detected!");
+            qWarning("Qt: Untested Windows version detected!");
             winver = QSysInfo::WV_NT_based;
         }
     }
@@ -1812,9 +1876,8 @@ QString qt_error_string(int errorCode)
             ret = QString::fromLocal8Bit(string);
             LocalFree((HLOCAL)string);
         });
-#elif !defined(Q_OS_MAC) && !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L
-        QByteArray buf;
-	buf.resize(1024);
+#elif !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L
+        QByteArray buf(1024, '\0');
         strerror_r(errorCode, buf.data(), buf.size());
         ret = QString::fromLocal8Bit(buf.constData());
 #else
@@ -1909,6 +1972,7 @@ void qt_message_output(QtMsgType msgType, const char *buf)
         OutputDebugString((fstr + "\n").utf16());
 #else
         fprintf(stderr, "%s\n", buf);
+        fflush(stderr);
 #endif
     }
 
@@ -2165,6 +2229,70 @@ QByteArray qgetenv(const char *varName)
 #endif
 }
 
+
+#if defined(Q_OS_UNIX) && !defined(QT_NO_THREAD)
+static QThreadStorage<uint *> randTLS; // Thread Local Storage for seed value
+#endif
+
+/*!
+    \since 4.2
+
+    Thread-safe version of the standard C++ \c srand() function.
+
+    Sets the argument \a seed to be used to generate a new random number sequence of
+    pseudo random integers to be returned by qrand().
+
+    If no seed value is provided, qrand() is automatically seeded with a value of 1.
+
+    The sequence of random numbers generated is deterministic per thread. For example,
+    if two threads call qsrand(1) and subsequently calls qrand(), the threads will get
+    the same random number sequence.
+
+    \sa qrand()
+*/
+void qsrand(uint seed)
+{
+#if defined(Q_OS_UNIX) && !defined(QT_NO_THREAD)
+    if (!randTLS.hasLocalData())
+        randTLS.setLocalData(new uint);
+    *randTLS.localData() = seed;
+#else
+    // On Windows srand() and rand() already use Thread-Local-Storage
+    // to store the seed between calls
+    srand(seed);
+#endif
+}
+
+/*!
+    \since 4.2
+
+    Thread-safe version of the standard C++ \c rand() function.
+
+    Returns a value between 0 and \c RAND_MAX (defined in \c <cstdlib> and
+    \c <stdlib.h>), the next number in the current sequence of pseudo-random
+    integers.
+
+    Use \c qsrand() to initialize the pseudo-random number generator with
+    a seed value.
+
+    \sa qsrand()
+*/
+int qrand()
+{
+#if defined(Q_OS_UNIX) && !defined(QT_NO_THREAD)
+    if (!randTLS.hasLocalData()) {
+        randTLS.setLocalData(new uint);
+        *randTLS.localData() = 1;
+    }
+
+    return rand_r(randTLS.localData());
+#else
+    // On Windows srand() and rand() already use Thread-Local-Storage
+    // to store the seed between calls
+    return rand();
+#endif
+}
+
 /*!
     \macro forever
     \relates <QtGlobal>
@@ -2197,7 +2325,7 @@ QByteArray qgetenv(const char *varName)
     \relates <QtGlobal>
 
     Same as \l{forever}.
-    
+
     This macro is available even when \c no_keywords is specified
     using the \c .pro file's \c CONFIG variable.
 
@@ -2477,3 +2605,72 @@ const char *qInstallPathSysconf()
     return qInstallLocation(QLibraryInfo::SettingsPath);
 }
 #endif
+
+struct QInternal_CallBackTable {
+    QVector<QList<qInternalCallback> > callbacks;
+};
+
+Q_GLOBAL_STATIC(QInternal_CallBackTable, global_callback_table);
+
+bool QInternal::registerCallback(Callback cb, qInternalCallback callback)
+{
+    if (cb >= 0 && cb < QInternal::LastCallback) {
+        QInternal_CallBackTable *cbt = global_callback_table();
+        cbt->callbacks.resize(cb + 1);
+        cbt->callbacks[cb].append(callback);
+        return true;
+    }
+    return false;
+}
+
+bool QInternal::unregisterCallback(Callback cb, qInternalCallback callback)
+{
+    if (cb >= 0 && cb < QInternal::LastCallback) {
+        QInternal_CallBackTable *cbt = global_callback_table();
+        return (bool) cbt->callbacks[cb].removeAll(callback);
+    }
+    return false;
+}
+
+bool QInternal::activateCallbacks(Callback cb, void **parameters)
+{
+    Q_ASSERT_X(cb >= 0, "QInternal::activateCallback()", "Callback id must be a valid id");
+
+    QInternal_CallBackTable *cbt = global_callback_table();
+    if (cbt && cb < cbt->callbacks.size()) {
+        QList<qInternalCallback> callbacks = cbt->callbacks[cb];
+        bool ret = false;
+        for (int i=0; i<callbacks.size(); ++i)
+            ret |= (callbacks.at(i))(parameters);
+        return ret;
+    }
+    return false;
+}
+
+bool QInternal::callFunction(InternalFunction func, void **args)
+{
+    Q_ASSERT_X(func >= 0 || func < QInternal::LastInternalFunction,
+               "QInternal::callFunction()", "Callback id must be a valid id");
+#ifndef QT_NO_QOBJECT
+    switch (func) {
+#ifndef QT_NO_THREAD
+    case QInternal::CreateThreadForAdoption:
+        *args = QAdoptedThread::createThreadForAdoption();
+        return true;
+#endif
+    case QInternal::RefAdoptedThread:
+        QThreadData::get2((QThread *) *args)->ref();
+        return true;
+    case QInternal::DerefAdoptedThread:
+        QThreadData::get2((QThread *) *args)->deref();
+        return true;
+    default:
+        break;
+    }
+#else
+    Q_UNUSED(args);
+    Q_UNUSED(func);
+#endif
+
+    return false;
+}

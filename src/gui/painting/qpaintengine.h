@@ -83,7 +83,16 @@ public:
         PainterPaths              = 0x00000200, // Can fill, outline and clip paths
         Antialiasing              = 0x00000400, // Can antialias lines
         BrushStroke               = 0x00000800, // Can render brush based pens
+        ConstantOpacity           = 0x00001000, // Can render at constant opacity
+        MaskedBrush               = 0x00002000, // Can fill with textures that has an alpha channel or mask
         PaintOutsidePaintEvent    = 0x20000000, // Engine is capable of painting outside paint events
+        /*                          0x10000000, // Used for emulating
+                                    QGradient::StretchToDevice,
+                                    defined in qpainter.cpp
+
+                                    0x40000000, // Used internally for emulating opaque backgrounds
+        */
+
         AllFeatures               = 0xffffffff  // For convenience
     };
     Q_DECLARE_FLAGS(PaintEngineFeatures, PaintEngineFeature)
@@ -101,6 +110,7 @@ public:
         DirtyHints              = 0x0200,
         DirtyCompositionMode    = 0x0400,
         DirtyClipEnabled        = 0x0800,
+        DirtyOpacity            = 0x1000,
 
         AllDirty                = 0xffff
     };
@@ -205,6 +215,7 @@ protected:
 private:
     void setAutoDestruct(bool autoDestr) { selfDestruct = autoDestr; }
     bool autoDestruct() const { return selfDestruct; }
+    Q_DISABLE_COPY(QPaintEngine)
 
     friend class QFontEngineBox;
     friend class QFontEngineMac;
@@ -218,6 +229,10 @@ private:
     friend class QPSPrintEngine;
     friend class QMacPrintEngine;
     friend class QMacPrintEnginePrivate;
+#ifdef Q_WS_QWS
+    friend class QtopiaPrintEngine;
+    friend class QtopiaPrintEnginePrivate;
+#endif
     friend class QPainter;
     friend class QPainterPrivate;
     friend class QWidget;
@@ -233,15 +248,11 @@ public:
     QPaintEngine::DirtyFlags state() const { return dirtyFlags; }
 
     QPen pen() const;
-
     QBrush brush() const;
     QPointF brushOrigin() const;
-
     QBrush backgroundBrush() const;
     Qt::BGMode backgroundMode() const;
-
     QFont font() const;
-
     QMatrix matrix() const;
 
     Qt::ClipOperation clipOperation() const;
@@ -250,10 +261,8 @@ public:
     bool isClipEnabled() const;
 
     QPainter::RenderHints renderHints() const;
-
     QPainter::CompositionMode compositionMode() const;
-
-
+    qreal opacity() const;
 
     QPainter *painter() const;
 

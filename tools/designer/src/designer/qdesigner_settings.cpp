@@ -1,5 +1,7 @@
 /****************************************************************************
 **
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+**
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
 ** This file may be used under the terms of the GNU General Public
@@ -186,7 +188,11 @@ void QDesignerSettings::setUIMode(int mode)
 
 int QDesignerSettings::uiMode() const
 {
+#if defined(Q_WS_WIN)
+    return value(QLatin1String("UI/currentMode"), QDesignerWorkbench::DockedMode).toInt();
+#else
     return value(QLatin1String("UI/currentMode"), QDesignerWorkbench::TopLevelMode).toInt();
+#endif
 }
 
 QByteArray QDesignerSettings::mainWindowState() const

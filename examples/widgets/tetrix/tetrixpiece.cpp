@@ -29,7 +29,7 @@
 
 void TetrixPiece::setRandomShape()
 {
-    setShape(TetrixShape(rand() % 7 + 1));
+    setShape(TetrixShape(qrand() % 7 + 1));
 }
 
 void TetrixPiece::setShape(TetrixShape shape)

@@ -29,8 +29,10 @@
 
 class QClipboard;
 class QComboBox;
+class QFontComboBox;
 class QLineEdit;
 class QScrollArea;
+class QCheckBox;
 class CharacterWidget;
 
 class MainWindow : public QMainWindow
@@ -41,19 +43,20 @@ public:
     MainWindow();
 
 public slots:
-    void findStyles();
+    void findStyles(const QFont &font);
+    void findSizes(const QFont &font);
     void insertCharacter(const QString &character);
     void updateClipboard();
 
 private:
-    void findFonts();
-
     CharacterWidget *characterWidget;
     QClipboard *clipboard;
-    QComboBox *fontCombo;
     QComboBox *styleCombo;
+    QComboBox *sizeCombo;
+    QFontComboBox *fontCombo;
     QLineEdit *lineEdit;
     QScrollArea *scrollArea;
+    QCheckBox *fontMerging;
 };
 
 #endif

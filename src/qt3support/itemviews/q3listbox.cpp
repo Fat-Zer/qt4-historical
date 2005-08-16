@@ -39,6 +39,7 @@
 #include "qstyleoption.h"
 #include "qtimer.h"
 #include "qvector.h"
+#include "qpointer.h"
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 #endif
@@ -776,7 +777,7 @@ int Q3ListBoxPixmap::rtti() const
     should be cleared on the viewport() after construction.
 */
 
-Q3ListBox::Q3ListBox(QWidget *parent, const char *name, Qt::WFlags f)
+Q3ListBox::Q3ListBox(QWidget *parent, const char *name, Qt::WindowFlags f)
     : Q3ScrollView(parent, name, f | Qt::WStaticContents | Qt::WNoAutoErase)
 {
     d = new Q3ListBoxPrivate(this);
@@ -1061,7 +1062,6 @@ uint Q3ListBox::count() const
     return d->count;
 }
 
-// ### fix before Qt 4.0
 #if 0
 /*!
     Inserts the string list \a list into the list at position \a
@@ -1115,7 +1115,6 @@ void Q3ListBox::insertStringList(const QStringList & list, int index)
 }
 
 
-// ### fix me
 #if 0
 /*!
     \overload
@@ -2227,6 +2226,8 @@ void Q3ListBox::keyPressEvent(QKeyEvent *e)
         return;
     }
 
+    QPointer<Q3ListBox> selfCheck = this;
+
     Q3ListBoxItem *old = d->current;
     if (!old) {
         setCurrentItem(d->head);
@@ -2366,7 +2367,7 @@ void Q3ListBox::keyPressEvent(QKeyEvent *e)
                 toggleCurrentItem();
                 if (selectionMode() == Extended && d->current->isSelected())
                     emit highlighted(currentItem());
-                if (!(e->state() & Qt::ShiftButton) || !d->selectAnchor)
+                if (selfCheck && (!(e->state() & Qt::ShiftButton) || !d->selectAnchor))
                     d->selectAnchor = d->current;
             }
             break;
@@ -2383,7 +2384,7 @@ void Q3ListBox::keyPressEvent(QKeyEvent *e)
                         emit selected(tmp);
                     emit returnPressed(item(currentItem()));
                 }
-                if (!(e->state() & Qt::ShiftButton) || !d->selectAnchor)
+                if (selfCheck && (!(e->state() & Qt::ShiftButton) || !d->selectAnchor))
                     d->selectAnchor = d->current;
             }
             break;
@@ -2460,7 +2461,7 @@ void Q3ListBox::keyPressEvent(QKeyEvent *e)
             }
     }
 
-    if (selectCurrent && selectionMode() == Single &&
+    if (selfCheck && selectCurrent && selectionMode() == Single &&
         d->current && !d->current->s) {
             updateItem(d->current);
             setSelected(d->current, true);
@@ -2667,7 +2668,7 @@ void Q3ListBox::setSelected(Q3ListBoxItem * item, bool select)
         return;
 
     int ind = index(item);
-    bool emitHighlighted = (d->current != item);
+    bool emitHighlighted = (d->current != item) || ( select && (item->s != (uint) select) );
     if (selectionMode() == Single) {
         if (d->current != item) {
             Q3ListBoxItem *o = d->current;
@@ -3520,8 +3521,8 @@ void Q3ListBox::refreshSlot()
         while (i && row < numRows() && d->rowPos[row] <
                 y + visibleHeight()) {
             if (i->dirty)
-                r = r.unite(QRect(d->columnPos[col] - x, d->rowPos[row] - y,
-                                    cw, d->rowPos[row+1] - d->rowPos[row]));
+                r = r.united(QRect(d->columnPos[col] - x, d->rowPos[row] - y,
+                                   cw, d->rowPos[row+1] - d->rowPos[row]));
             row++;
             i = i->n;
         }
@@ -3584,14 +3585,14 @@ void Q3ListBox::viewportPaintEvent(QPaintEvent * e)
             int ch = d->rowPos[row+1] - d->rowPos[row];
             QRect itemRect(d->columnPos[col]-x, d->rowPos[row]-y, cw, ch);
             QRegion tempRegion(itemRect);
-            QRegion itemPaintRegion(tempRegion.intersect(r ));
+            QRegion itemPaintRegion(tempRegion.intersected(r ));
             if (!itemPaintRegion.isEmpty()) {
                 p.save();
                 p.setClipRegion(itemPaintRegion);
                 p.translate(d->columnPos[col]-x, d->rowPos[row]-y);
                 paintCell(&p, row, col);
                 p.restore();
-                r = r.subtract(itemPaintRegion);
+                r = r.subtracted(itemPaintRegion);
             }
             row++;
             if (i->dirty) {
@@ -4158,12 +4159,12 @@ void Q3ListBox::doRubberSelection(const QRect &old, const QRect &rubber)
             continue;
         if (i->isSelected() && !ir.intersects(rubber) && ir.intersects(old)) {
             i->s = false;
-            pr = pr.unite(ir);
+            pr = pr.united(ir);
             changed = true;
         } else if (!i->isSelected() && ir.intersects(rubber)) {
             if (i->isSelectable()) {
                 i->s = true;
-                pr = pr.unite(ir);
+                pr = pr.united(ir);
                 changed = true;
             }
         }

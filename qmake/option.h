@@ -30,7 +30,7 @@
 #include <qfile.h>
 
 #define QMAKE_VERSION_MAJOR 2
-#define QMAKE_VERSION_MINOR 0
+#define QMAKE_VERSION_MINOR 1
 #define QMAKE_VERSION_PATCH 0
 const char *qmake_version();
 
@@ -57,6 +57,7 @@ struct Option
     static QString ui_ext;
     static QStringList h_ext;
     static QStringList cpp_ext;
+    static QStringList c_ext;
     static QString h_moc_ext;
     static QString cpp_moc_ext;
     static QString obj_ext;
@@ -72,6 +73,7 @@ struct Option
     static QString pro_ext;
     static QString res_ext;
     static char field_sep;
+    static const char *application_argv0;
 
     enum CmdLineFlags {
         QMAKE_CMDLINE_SUCCESS       = 0x00,

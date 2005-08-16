@@ -26,6 +26,7 @@
 
 #include <QtCore/qbytearray.h>
 #include <QtCore/qlist.h>
+#include <QtGui/qimageiohandler.h>
 
 QT_BEGIN_HEADER
 
@@ -75,6 +76,8 @@ public:
 
     ImageWriterError error() const;
     QString errorString() const;
+
+    bool supportsOption(QImageIOHandler::ImageOption option) const;
 
     static QList<QByteArray> supportedImageFormats();
 

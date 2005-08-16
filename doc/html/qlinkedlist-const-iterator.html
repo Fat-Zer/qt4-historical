@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/corelib/tools/qlinkedlist.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/corelib/tools/qlinkedlist.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/corelib/tools/qlinkedlist.cpp -->
 <head>
-    <title>Qt 4.1: QLinkedList::const_iterator Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QLinkedList::const_iterator Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QLinkedList::const_iterator Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QLinkedList::const_iterator Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QLinkedList::const_iterator class provides an STL-style const iterator for <a href="qlinkedlist.html">QLinkedList</a>. <a href="#details">More...</a></p>
-<pre>#include &lt;QLinkedList&gt;</pre><p>Inherited by <a href="q3valuelistconstiterator.html">Q3ValueListConstIterator</a>.</p>
+<pre> #include &lt;<a href="qlinkedlist.html">QLinkedList</a>&gt;</pre><p>Inherited by <a href="q3valuelistconstiterator.html">Q3ValueListConstIterator</a>.</p>
 <ul>
 <li><a href="qlinkedlist-const-iterator-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -51,22 +45,22 @@ body { background: #ffffff; color: black; }</style>
 <p><a href="qlinkedlist.html">QLinkedList</a> features both <a href="containers.html#stl-style-iterators">STL-style iterators</a> and <a href="containers.html#java-style-iterators">Java-style iterators</a>. The STL-style iterators are more low-level and more cumbersome to use; on the other hand, they are slightly faster and, for developers who already know STL, have the advantage of familiarity.</p>
 <p><a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;::const_iterator allows you to iterate over a <a href="qlinkedlist.html">QLinkedList</a>&lt;T&gt;. If you want modify the <a href="qlinkedlist.html">QLinkedList</a> as you iterate over it, you must use QLinkedList::const_iterator instead. It is generally good practice to use QLinkedList::const_iterator on a non-const <a href="qlinkedlist.html">QLinkedList</a> as well, unless you need to change the <a href="qlinkedlist.html">QLinkedList</a> through the iterator. Const iterators are slightly faster, and can improve code readability.</p>
 <p>The default QLinkedList::const_iterator constructor creates an uninitialized iterator. You must initialize it using a function like <a href="qlinkedlist.html#constBegin">QLinkedList::constBegin</a>(), <a href="qlinkedlist.html#constEnd">QLinkedList::constEnd</a>(), or <a href="qlinkedlist.html#insert">QLinkedList::insert</a>() before you can start iterating. Here's a typical loop that prints all the items stored in a list:</p>
-<pre>&nbsp;   QLinkedList&lt;QString&gt; list;
-    list.append(&quot;January&quot;);
-    list.append(&quot;February&quot;);
-    ...
-    list.append(&quot;December&quot;);
+<pre> QLinkedList&lt;QString&gt; list;
+ list.append(&quot;January&quot;);
+ list.append(&quot;February&quot;);
+ ...
+ list.append(&quot;December&quot;);
 
-    QLinkedList&lt;QString&gt;::const_iterator i;
-    for (i = list.constBegin(); i != list.constEnd(); ++i)
-        cout &lt;&lt; *i &lt;&lt; endl;</pre>
+ QLinkedList&lt;QString&gt;::const_iterator i;
+ for (i = list.constBegin(); i != list.constEnd(); ++i)
+     cout &lt;&lt; *i &lt;&lt; endl;</pre>
 <p>STL-style iterators can be used as arguments to <a href="qtalgorithms.html">generic algorithms</a>. For example, here's how to find an item in the list using the <a href="qtalgorithms.html#qFind">qFind</a>() algorithm:</p>
-<pre>&nbsp;   QLinkedList&lt;QString&gt; list;
-    ...
-    QLinkedList&lt;QString&gt;::iterator it = qFind(list.constBegin(),
-                                              list.constEnd(), &quot;Joel&quot;);
-    if (it != list.constEnd())
-        cout &lt;&lt; &quot;Found Joel&quot; &lt;&lt; endl;</pre>
+<pre> QLinkedList&lt;QString&gt; list;
+ ...
+ QLinkedList&lt;QString&gt;::iterator it = qFind(list.constBegin(),
+                                           list.constEnd(), &quot;Joel&quot;);
+ if (it != list.constEnd())
+     cout &lt;&lt; &quot;Found Joel&quot; &lt;&lt; endl;</pre>
 <p>Multiple iterators can be used on the same list. If you add items to the list, existing iterators will remain valid. If you remove items from the list, iterators that point to the removed items will become dangling iterators.</p>
 <p>See also <a href="qlinkedlist-iterator.html">QLinkedList::iterator</a> and <a href="qlinkedlistiterator.html">QLinkedListIterator</a>.</p>
 <hr />
@@ -127,6 +121,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

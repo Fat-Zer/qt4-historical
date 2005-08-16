@@ -33,6 +33,7 @@
 #endif
 
 #include <new>
+#undef QT_MAP_DEBUG
 
 QT_BEGIN_HEADER
 
@@ -46,8 +47,8 @@ struct Q_CORE_EXPORT QMapData
     };
     enum { LastLevel = 11, Sparseness = 3 };
 
-    Node *backward;
-    Node *forward[QMapData::LastLevel + 1];
+    QMapData *backward;
+    QMapData *forward[QMapData::LastLevel + 1];
     QBasicAtomic ref;
     int topLevel;
     int size;
@@ -124,11 +125,12 @@ class QMap
         T value;
         QMapData::Node *backward;
     };
-    enum { Payload = sizeof(PayloadNode) - sizeof(QMapData::Node *) };
 
+    static inline int payload() { return sizeof(PayloadNode) - sizeof(QMapData::Node *); }
     static inline Node *concrete(QMapData::Node *node) {
-        return reinterpret_cast<Node *>(reinterpret_cast<char *>(node) - Payload);
+        return reinterpret_cast<Node *>(reinterpret_cast<char *>(node) - payload());
     }
+
 public:
     inline QMap() : d(&QMapData::shared_null) { d->ref.ref(); }
     inline QMap(const QMap<Key, T> &other) : d(other.d)
@@ -164,6 +166,7 @@ public:
     T &operator[](const Key &key);
     const T operator[](const Key &key) const;
 
+    QList<Key> uniqueKeys() const;
     QList<Key> keys() const;
     QList<Key> keys(const T &value) const;
     QList<T> values() const;
@@ -175,6 +178,7 @@ public:
     class iterator
     {
         QMapData::Node *i;
+
     public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
@@ -182,6 +186,7 @@ public:
         typedef T *pointer;
         typedef T &reference;
 
+        // ### Qt 5: get rid of 'operator Node *'
         inline operator QMapData::Node *() const { return i; }
         inline iterator() : i(0) { }
         inline iterator(QMapData::Node *node) : i(node) { }
@@ -195,10 +200,6 @@ public:
         inline T *operator->() const { return &concrete(i)->value; }
         inline bool operator==(const iterator &o) const { return i == o.i; }
         inline bool operator!=(const iterator &o) const { return i != o.i; }
-        inline bool operator==(const const_iterator &o) const
-            { return i == reinterpret_cast<const iterator &>(o).i; }
-        inline bool operator!=(const const_iterator &o) const
-            { return i != reinterpret_cast<const iterator &>(o).i; }
 
         inline iterator &operator++() {
             i = i->forward[0];
@@ -223,12 +224,28 @@ public:
         inline iterator operator-(int j) const { return operator+(-j); }
         inline iterator &operator+=(int j) { return *this = *this + j; }
         inline iterator &operator-=(int j) { return *this = *this - j; }
+
+        // ### Qt 5: not sure this is necessary anymore
+#ifdef QT_STRICT_ITERATORS
+    private:
+#else
+    public:
+#endif
+        inline bool operator==(const const_iterator &o) const
+            { return i == reinterpret_cast<const iterator &>(o).i; }
+        inline bool operator!=(const const_iterator &o) const
+            { return i != reinterpret_cast<const iterator &>(o).i; }
+
+    private:
+        // ### Qt 5: remove
+        inline operator bool() const { return false; }
     };
     friend class iterator;
 
     class const_iterator
     {
         QMapData::Node *i;
+
     public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
@@ -236,10 +253,15 @@ public:
         typedef const T *pointer;
         typedef const T &reference;
 
+        // ### Qt 5: get rid of 'operator Node *'
         inline operator QMapData::Node *() const { return i; }
         inline const_iterator() : i(0) { }
         inline const_iterator(QMapData::Node *node) : i(node) { }
+#ifdef QT_STRICT_ITERATORS
+        explicit inline const_iterator(const iterator &o)
+#else
         inline const_iterator(const iterator &o)
+#endif
         { i = reinterpret_cast<const const_iterator &>(o).i; }
 
         inline const Key &key() const { return concrete(i)->key; }
@@ -275,6 +297,17 @@ public:
         inline const_iterator operator-(int j) const { return operator+(-j); }
         inline const_iterator &operator+=(int j) { return *this = *this + j; }
         inline const_iterator &operator-=(int j) { return *this = *this - j; }
+
+        // ### Qt 5: not sure this is necessary anymore
+#ifdef QT_STRICT_ITERATORS
+    private:
+        inline bool operator==(const iterator &o) { return operator==(const_iterator(o)); }
+        inline bool operator!=(const iterator &o) { return operator!=(const_iterator(o)); }
+#endif
+
+    private:
+        // ### Qt 5: remove
+        inline operator bool() const { return false; }
     };
     friend class const_iterator;
 
@@ -316,7 +349,15 @@ public:
     QMap<Key, T> &unite(const QMap<Key, T> &other);
 
     // STL compatibility
+    typedef Key key_type;
+    typedef T mapped_type;
+    typedef ptrdiff_t difference_type;
+    typedef int size_type;
     inline bool empty() const { return isEmpty(); }
+
+#ifdef QT_QMAP_DEBUG
+    inline void dump() const { d->dump(); }
+#endif
 
 private:
     void detach_helper();
@@ -363,7 +404,7 @@ template <class Key, class T>
 Q_INLINE_TEMPLATE typename QMapData::Node *
 QMap<Key, T>::node_create(QMapData *adt, QMapData::Node *aupdate[], const Key &akey, const T &avalue)
 {
-    QMapData::Node *abstractNode = adt->node_create(aupdate, Payload);
+    QMapData::Node *abstractNode = adt->node_create(aupdate, payload());
     Node *concreteNode = concrete(abstractNode);
     new (&concreteNode->key) Key(akey);
     new (&concreteNode->value) T(avalue);
@@ -519,7 +560,8 @@ Q_INLINE_TEMPLATE QMap<Key, T> &QMap<Key, T>::unite(const QMap<Key, T> &other)
 {
     QMap<Key, T> copy(other);
     const_iterator it = copy.constEnd();
-    while (it != copy.constBegin()) {
+    const const_iterator b = copy.constBegin();
+    while (it != b) {
         --it;
         insertMulti(it.key(), it.value());
     }
@@ -541,7 +583,7 @@ Q_OUTOFLINE_TEMPLATE void QMap<Key, T>::freeData(QMapData *x)
             concreteNode->value.~T();
         }
     }
-    x->continueFreeData(Payload);
+    x->continueFreeData(payload());
 }
 
 template <class Key, class T>
@@ -568,7 +610,7 @@ Q_OUTOFLINE_TEMPLATE int QMap<Key, T>::remove(const Key &akey)
             deleteNext = (next != e && !qMapLessThanKey<Key>(concrete(cur)->key, concrete(next)->key));
             concrete(cur)->key.~Key();
             concrete(cur)->value.~T();
-            d->node_delete(update, Payload, cur);
+            d->node_delete(update, payload(), cur);
         } while (deleteNext);
     }
     return oldSize - d->size;
@@ -593,7 +635,7 @@ Q_OUTOFLINE_TEMPLATE T QMap<Key, T>::take(const Key &akey)
         T t = concrete(next)->value;
         concrete(next)->key.~Key();
         concrete(next)->value.~T();
-        d->node_delete(update, Payload, next);
+        d->node_delete(update, payload(), next);
         return t;
     }
     return T();
@@ -621,7 +663,7 @@ Q_OUTOFLINE_TEMPLATE typename QMap<Key, T>::iterator QMap<Key, T>::erase(iterato
         if (cur == it) {
             concrete(cur)->key.~Key();
             concrete(cur)->value.~T();
-            d->node_delete(update, Payload, cur);
+            d->node_delete(update, payload(), cur);
             return iterator(next);
         }
 
@@ -673,6 +715,25 @@ Q_OUTOFLINE_TEMPLATE QMapData::Node *QMap<Key, T>::mutableFindNode(QMapData::Nod
     } else {
         return e;
     }
+}
+
+template <class Key, class T>
+Q_OUTOFLINE_TEMPLATE QList<Key> QMap<Key, T>::uniqueKeys() const
+{
+    QList<Key> res;
+    const_iterator i = begin();
+    if (i != end()) {
+        for (;;) {
+            const Key &aKey = i.key();
+            res.append(aKey);
+            do {
+                if (++i == end())
+                    goto break_out_of_outer_loop;
+            } while (!(aKey < i.key()));   // loop while (key == i.key())
+        }
+    }
+break_out_of_outer_loop:
+    return res;
 }
 
 template <class Key, class T>

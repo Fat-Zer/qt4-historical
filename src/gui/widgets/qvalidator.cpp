@@ -87,6 +87,8 @@
 
     QValidator is typically used with QLineEdit, QSpinBox and
     QComboBox.
+
+    \sa QIntValidator, QDoubleValidator, QRegExpValidator, {Line Edits Example}
 */
 
 
@@ -225,7 +227,7 @@ void QValidator::fixup(QString &) const
     The minimum and maximum values are set in one call with setRange(),
     or individually with setBottom() and setTop().
 
-    \sa QDoubleValidator QRegExpValidator
+    \sa QDoubleValidator, QRegExpValidator, {Line Edits Example}
 */
 
 
@@ -328,9 +330,9 @@ QIntValidator::~QIntValidator()
 
 QValidator::State QIntValidator::validate(QString & input, int &) const
 {
-    if (input.contains(' '))
+    if (input.contains(QLatin1Char(' ')))
         return Invalid;
-    if (input.isEmpty() || (b < 0 && input == "-"))
+    if (input.isEmpty() || (b < 0 && input == QLatin1String("-")))
         return Intermediate;
     bool ok;
     int entered = input.toInt(&ok);
@@ -401,7 +403,7 @@ void QIntValidator::setTop(int top)
     with setDecimals(). The validate() function returns the validation
     state.
 
-    \sa QIntValidator QRegExpValidator
+    \sa QIntValidator, QRegExpValidator, {Line Edits Example}
 */
 
 /*!
@@ -500,7 +502,7 @@ QDoubleValidator::~QDoubleValidator()
 QValidator::State QDoubleValidator::validate(QString & input, int &) const
 {
     QRegExp empty(QString::fromLatin1("-?\\.?"));
-    if (input.contains(' '))
+    if (input.contains(QLatin1Char(' ')))
         return Invalid;
     if (b >= 0 && input.startsWith(QLatin1Char('-')))
         return Invalid;
@@ -508,7 +510,7 @@ QValidator::State QDoubleValidator::validate(QString & input, int &) const
         return Intermediate;
     bool ok = true;
     double entered = input.toDouble(&ok);
-    int nume = input.count('e', Qt::CaseInsensitive);
+    int nume = input.count(QLatin1Char('e'), Qt::CaseInsensitive);
     if (!ok) {
         // explicit exponent regexp
         QRegExp expexpexp(QString::fromLatin1("[Ee][+-]?(\\d*)$"));
@@ -527,7 +529,7 @@ QValidator::State QDoubleValidator::validate(QString & input, int &) const
         }
     }
 
-    int i = input.indexOf('.');
+    int i = input.indexOf(QLatin1Char('.'));
     if (i >= 0 && nume == 0) {
         // has decimal point (but no E), now count digits after that
         i++;
@@ -661,7 +663,7 @@ void QDoubleValidator::setDecimals(int decimals)
     s = "readm";       v.validate(s, pos); // Returns Intermediate
     \endcode
 
-    \sa QRegExp QIntValidator QDoubleValidator
+    \sa QRegExp, QIntValidator, QDoubleValidator, {Settings Editor Example}
 */
 
 /*!

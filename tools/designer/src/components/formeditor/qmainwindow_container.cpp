@@ -23,6 +23,7 @@
 
 #include "qmainwindow_container.h"
 #include "qdesigner_toolbar_p.h"
+#include "formwindow.h"
 
 #include <QtCore/qdebug.h>
 
@@ -127,12 +128,20 @@ void QMainWindowContainer::addWidget(QWidget *widget)
         m_widgets.append(widget);
         m_mainWindow->addDockWidget(dockWidgetArea(dockWidget), dockWidget);
         dockWidget->show();
+
+        if (FormWindow *fw = FormWindow::findFormWindow(m_mainWindow)) {
+            fw->manageWidget(widget);
+        }
     }
 
     else if (widget) {
         m_widgets.prepend(widget);
 
-        if (widget != m_mainWindow->centralWidget ()) {
+        if (widget != m_mainWindow->centralWidget()) {
+            // note that qmainwindow will delete the current central widget if you
+            // call setCentralWidget(), we end up with dangeling pointers in m_widgets list
+            m_widgets.removeAll(m_mainWindow->centralWidget());
+
             widget->setParent(m_mainWindow);
             m_mainWindow->setCentralWidget(widget);
         }

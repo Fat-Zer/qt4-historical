@@ -67,13 +67,15 @@ public:
         { w = size.width(); h = size.height(); }
     inline void move(const QPoint &position)
         { x = position.x(); y = position.y(); }
+    inline int width() const { return w; }
+    inline int height() const { return h; }
 private:
     inline QRect rect() const
         { return QRect(x, y, w, h); }
     int x, y;
     short w, h;
     mutable int indexHint;
-    uint visited : 16;
+    uint visited;
 };
 
 class QListViewPrivate: public QAbstractItemViewPrivate
@@ -100,7 +102,7 @@ public:
     void intersectingStaticSet(const QRect &area) const;
     inline void intersectingSet(const QRect &area, bool doLayout = true) const {
         if (doLayout) executePostedLayout();
-        QRect a = (q_func()->isRightToLeft() ? flipX(area) : area);
+        QRect a = (q_func()->isRightToLeft() ? flipX(area.normalized()) : area.normalized());
         if (movement == QListView::Static) intersectingStaticSet(a);
         else intersectingDynamicSet(a);
     }
@@ -127,7 +129,7 @@ public:
     static void addLeaf(QVector<int> &leaf, const QRect &area,
                         uint visited, QBspTree::Data data);
 
-    void insertItem(int index, QListViewItem &item);
+    void insertItem(int index);
     void removeItem(int index);
     void moveItem(int index, const QPoint &dest);
 
@@ -139,12 +141,20 @@ public:
     QModelIndex closestIndex(const QPoint &target, const QVector<QModelIndex> &candidates) const;
     QSize itemSize(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
+    int perItemScrollingPageSteps(int length, int bounds) const;
+
     bool selectionAllowed(const QModelIndex &index) const
     {
         if (movement == QListView::Static)
             return index.isValid();
         return true;
     }
+
+    int perItemScrollToValue(int index, int value, int height,
+                             QAbstractItemView::ScrollHint hint,
+                             Qt::Orientation orientation) const;
+
+    QStyleOptionViewItemV2 viewOptionsV2() const;
 
     QRect elasticBand;
 
@@ -204,6 +214,8 @@ public:
     int column;
     bool uniformItemSizes;
     mutable QSize cachedItemSize;
+    int batchSize;
+    bool wrapItemText;
 };
 
 #endif // QT_NO_LISTVIEW

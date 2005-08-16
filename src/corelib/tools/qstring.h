@@ -33,19 +33,19 @@
 #endif
 
 #ifndef QT_NO_STL
-# if defined (Q_CC_MSVC_NET) && _MSC_VER < 1310 // Avoids nasty warning for xlocale, line 450
-#  pragma warning (push)
-#  pragma warning (disable : 4189)
-#  include <string>
-#  pragma warning (pop)
-# else
-#  include <string>
-# endif
+#  if defined (Q_CC_MSVC_NET) && _MSC_VER < 1310 // Avoids nasty warning for xlocale, line 450
+#    pragma warning (push)
+#    pragma warning (disable : 4189)
+#    include <string>
+#    pragma warning (pop)
+#  else
+#    include <string>
+#  endif
 
-#ifndef QT_NO_STL_WCHAR
+#  ifndef QT_NO_STL_WCHAR
 // workaround for some headers not typedef'ing std::wstring
 typedef std::basic_string<wchar_t> QStdWString;
-#endif // QT_NO_STL_WCHAR
+#  endif // QT_NO_STL_WCHAR
 
 #endif // QT_NO_STL
 
@@ -64,6 +64,7 @@ class QRegExp;
 class QStringList;
 class QTextCodec;
 class QLatin1String;
+template <typename T> class QVector;
 
 class Q_CORE_EXPORT QString
 {
@@ -108,21 +109,34 @@ public:
     const QChar operator[](uint i) const;
     QCharRef operator[](uint i);
 
-    QString arg(qlonglong a, int fieldwidth=0, int base=10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(qulonglong a, int fieldwidth=0, int base=10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(long a, int fieldwidth=0, int base=10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(ulong a, int fieldwidth=0, int base=10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(int a, int fieldWidth = 0, int base = 10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(uint a, int fieldWidth = 0, int base = 10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(short a, int fieldWidth = 0, int base = 10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(ushort a, int fieldWidth = 0, int base = 10, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(char a, int fieldWidth = 0, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(QChar a, int fieldWidth = 0, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(const QString &a, int fieldWidth = 0, const QChar &fillChar = QLatin1Char(' ')) const;
-    QString arg(const QString &a1, const QString &a2) const;
-    QString arg(const QString &a1, const QString &a2, const QString &a3) const;
-    QString arg(const QString &a1, const QString &a2, const QString &a3, const QString &a4) const;
+    QString arg(qlonglong a, int fieldwidth=0, int base=10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(qulonglong a, int fieldwidth=0, int base=10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(long a, int fieldwidth=0, int base=10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(ulong a, int fieldwidth=0, int base=10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(int a, int fieldWidth = 0, int base = 10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(uint a, int fieldWidth = 0, int base = 10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(short a, int fieldWidth = 0, int base = 10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(ushort a, int fieldWidth = 0, int base = 10,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(char a, int fieldWidth = 0,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(QChar a, int fieldWidth = 0,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(const QString &a, int fieldWidth = 0,
+                const QChar &fillChar = QLatin1Char(' ')) const Q_REQUIRED_RESULT;
+    QString arg(const QString &a1, const QString &a2) const Q_REQUIRED_RESULT;
+    QString arg(const QString &a1, const QString &a2, const QString &a3) const Q_REQUIRED_RESULT;
+    QString arg(const QString &a1, const QString &a2, const QString &a3,
+                const QString &a4) const Q_REQUIRED_RESULT;
 
     QString    &vsprintf(const char *format, va_list ap);
     QString    &sprintf(const char *format, ...)
@@ -163,9 +177,9 @@ public:
     QString section(const QRegExp &reg, int start, int end = -1, SectionFlags flags = SectionDefault) const;
 #endif
 
-    QString left(int len) const;
-    QString right(int len) const;
-    QString mid(int i, int len = -1) const;
+    QString left(int len) const Q_REQUIRED_RESULT;
+    QString right(int len) const Q_REQUIRED_RESULT;
+    QString mid(int i, int len = -1) const Q_REQUIRED_RESULT;
 
     bool startsWith(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
     bool startsWith(const QLatin1String &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
@@ -174,14 +188,14 @@ public:
     bool endsWith(const QLatin1String &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
     bool endsWith(const QChar &c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
 
-    QString leftJustified(int width, QChar fill = QLatin1Char(' '), bool trunc = false) const;
-    QString rightJustified(int width, QChar fill = QLatin1Char(' '), bool trunc = false) const;
+    QString leftJustified(int width, QChar fill = QLatin1Char(' '), bool trunc = false) const Q_REQUIRED_RESULT;
+    QString rightJustified(int width, QChar fill = QLatin1Char(' '), bool trunc = false) const Q_REQUIRED_RESULT;
 
-    QString toLower() const;
-    QString toUpper() const;
+    QString toLower() const Q_REQUIRED_RESULT;
+    QString toUpper() const Q_REQUIRED_RESULT;
 
-    QString trimmed() const;
-    QString simplified() const;
+    QString trimmed() const Q_REQUIRED_RESULT;
+    QString simplified() const Q_REQUIRED_RESULT;
 
     QString &insert(int i, QChar c);
     QString &insert(int i, const QChar *uc, int len);
@@ -217,11 +231,11 @@ public:
     enum SplitBehavior { KeepEmptyParts, SkipEmptyParts };
 
     QStringList split(const QString &sep, SplitBehavior behavior = KeepEmptyParts,
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+                      Qt::CaseSensitivity cs = Qt::CaseSensitive) const Q_REQUIRED_RESULT;
     QStringList split(const QChar &sep, SplitBehavior behavior = KeepEmptyParts,
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+                      Qt::CaseSensitivity cs = Qt::CaseSensitive) const Q_REQUIRED_RESULT;
 #ifndef QT_NO_REGEXP
-    QStringList split(const QRegExp &sep, SplitBehavior behavior = KeepEmptyParts) const;
+    QStringList split(const QRegExp &sep, SplitBehavior behavior = KeepEmptyParts) const Q_REQUIRED_RESULT;
 #endif
 
     enum NormalizationForm {
@@ -230,29 +244,50 @@ public:
         NormalizationForm_KD,
         NormalizationForm_KC
     };
-    QString normalized(NormalizationForm mode) const;
-    QString normalized(NormalizationForm mode, QChar::UnicodeVersion version) const;
+    QString normalized(NormalizationForm mode) const Q_REQUIRED_RESULT;
+    QString normalized(NormalizationForm mode, QChar::UnicodeVersion version) const Q_REQUIRED_RESULT;
 
     const ushort *utf16() const;
 
-    QByteArray toAscii() const;
-    QByteArray toLatin1() const;
-    QByteArray toUtf8() const;
-    QByteArray toLocal8Bit() const;
+    QByteArray toAscii() const Q_REQUIRED_RESULT;
+    QByteArray toLatin1() const Q_REQUIRED_RESULT;
+    QByteArray toUtf8() const Q_REQUIRED_RESULT;
+    QByteArray toLocal8Bit() const Q_REQUIRED_RESULT;
+    QVector<uint> toUcs4() const Q_REQUIRED_RESULT;
 
     static QString fromAscii(const char *, int size = -1);
     static QString fromLatin1(const char *, int size = -1);
     static QString fromUtf8(const char *, int size = -1);
     static QString fromLocal8Bit(const char *, int size = -1);
     static QString fromUtf16(const ushort *, int size = -1);
+    static QString fromUcs4(const uint *, int size = -1);
     static QString fromRawData(const QChar *, int size);
+
+    int toWCharArray(wchar_t *array) const;
+    static QString fromWCharArray(const wchar_t *, int size = -1);
 
     QString &setUnicode(const QChar *unicode, int size);
     inline QString &setUtf16(const ushort *utf16, int size);
 
+    // ### Qt 5: merge these two functions
     int compare(const QString &s) const;
+    int compare(const QString &s, Qt::CaseSensitivity cs) const;
+
+    int compare(const QLatin1String &other, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+
+    // ### Qt 5: merge these two functions
     static inline int compare(const QString &s1, const QString &s2)
     { return s1.compare(s2); }
+    static inline int compare(const QString &s1, const QString &s2, Qt::CaseSensitivity cs)
+    { return s1.compare(s2, cs); }
+
+    static inline int compare(const QString& s1, const QLatin1String &s2,
+                              Qt::CaseSensitivity cs = Qt::CaseSensitive)
+    { return s1.compare(s2, cs); }
+    static inline int compare(const QLatin1String& s1, const QString &s2,
+                              Qt::CaseSensitivity cs = Qt::CaseSensitive)
+    { return -s2.compare(s1, cs); }
+
     int localeAwareCompare(const QString& s) const;
     static int localeAwareCompare(const QString& s1, const QString& s2)
     { return s1.localeAwareCompare(s2); }
@@ -303,46 +338,51 @@ public:
 
     // ASCII compatibility
 #ifndef QT_NO_CAST_FROM_ASCII
-    inline QString(const char *ch) : d(&shared_null)
-    { d->ref.ref(); *this = fromAscii(ch); }
-    inline QString(const QByteArray &a) : d(&shared_null)
-    { d->ref.ref(); *this = fromAscii(a); }
-    inline QString &operator=(const char *ch)
+    inline QT_ASCII_CAST_WARN_CONSTRUCTOR QString(const char *ch) : d(fromAscii_helper(ch))
+    {}
+    inline QT_ASCII_CAST_WARN_CONSTRUCTOR QString(const QByteArray &a)
+        : d(fromAscii_helper(a.constData(), qstrnlen(a.constData(), a.size())))
+    {}
+    inline QT_ASCII_CAST_WARN QString &operator=(const char *ch)
     { return (*this = fromAscii(ch)); }
-    inline QString &operator=(const QByteArray &a)
-    { return (*this = fromAscii(a)); }
-    inline QString &operator=(char c)
-    { return (*this = QChar(c)); }
+    inline QT_ASCII_CAST_WARN QString &operator=(const QByteArray &a)
+    { return (*this = fromAscii(a.constData(), qstrnlen(a.constData(), a.size()))); }
+    inline QT_ASCII_CAST_WARN QString &operator=(char c)
+    { return (*this = QChar::fromAscii(c)); }
 
     // these are needed, so it compiles with STL support enabled
-    inline QString &prepend(const char *s)
+    inline QT_ASCII_CAST_WARN QString &prepend(const char *s)
     { return prepend(QString::fromAscii(s)); }
-    inline QString &prepend(const QByteArray &s)
-    { return prepend(QString(s)); }
-    inline QString &append(const char *s)
+    inline QT_ASCII_CAST_WARN QString &prepend(const QByteArray &s)
+    { return prepend(QString::fromAscii(s.constData(), qstrnlen(s.constData(), s.size()))); }
+    inline QT_ASCII_CAST_WARN QString &append(const char *s)
     { return append(QString::fromAscii(s)); }
-    inline QString &append(const QByteArray &s)
-    { return append(QString(s)); }
-    inline QString &operator+=(const char *s)
+    inline QT_ASCII_CAST_WARN QString &append(const QByteArray &s)
+    { return append(QString::fromAscii(s.constData(), qstrnlen(s.constData(), s.size()))); }
+    inline QT_ASCII_CAST_WARN QString &operator+=(const char *s)
     { return append(QString::fromAscii(s)); }
-    inline QString &operator+=(const QByteArray &s)
-    { return append(QString(s)); }
-    inline QString &operator+=(char c)
-    { return append(QChar(c)); }
+    inline QT_ASCII_CAST_WARN QString &operator+=(const QByteArray &s)
+    { return append(QString::fromAscii(s.constData(), qstrnlen(s.constData(), s.size()))); }
+    inline QT_ASCII_CAST_WARN QString &operator+=(char c)
+    { return append(QChar::fromAscii(c)); }
 
-    inline bool operator==(const char *s) const;
-    inline bool operator!=(const char *s) const;
-    inline bool operator<(const char *s) const;
-    inline bool operator<=(const char *s2) const;
-    inline bool operator>(const char *s2) const;
-    inline bool operator>=(const char *s2) const;
+    inline QT_ASCII_CAST_WARN bool operator==(const char *s) const;
+    inline QT_ASCII_CAST_WARN bool operator!=(const char *s) const;
+    inline QT_ASCII_CAST_WARN bool operator<(const char *s) const;
+    inline QT_ASCII_CAST_WARN bool operator<=(const char *s2) const;
+    inline QT_ASCII_CAST_WARN bool operator>(const char *s2) const;
+    inline QT_ASCII_CAST_WARN bool operator>=(const char *s2) const;
 
-    inline bool operator==(const QByteArray &s) const { return (*this == s.constData()); }
-    inline bool operator!=(const QByteArray &s) const { return !(*this == s.constData()); }
-    inline bool operator<(const QByteArray &s) const { return *this < s.constData(); }
-    inline bool operator>(const QByteArray &s) const { return *this > s.constData(); }
-    inline bool operator<=(const QByteArray &s) const { return *this <= s.constData(); }
-    inline bool operator>=(const QByteArray &s) const { return *this >= s.constData(); }
+    inline QT_ASCII_CAST_WARN bool operator==(const QByteArray &s) const;
+    inline QT_ASCII_CAST_WARN bool operator!=(const QByteArray &s) const;
+    inline QT_ASCII_CAST_WARN bool operator<(const QByteArray &s) const
+    { return *this < QString::fromAscii(s.constData(), s.size()); }
+    inline QT_ASCII_CAST_WARN bool operator>(const QByteArray &s) const
+    { return *this > QString::fromAscii(s.constData(), s.size()); }
+    inline QT_ASCII_CAST_WARN bool operator<=(const QByteArray &s) const
+    { return *this <= QString::fromAscii(s.constData(), s.size()); }
+    inline QT_ASCII_CAST_WARN bool operator>=(const QByteArray &s) const
+    { return *this >= QString::fromAscii(s.constData(), s.size()); }
 #endif
 
     typedef QChar *iterator;
@@ -400,10 +440,10 @@ public:
     { return replace(before, after, cs?Qt::CaseSensitive:Qt::CaseInsensitive); }
 #ifndef QT_NO_CAST_FROM_ASCII
     inline QT3_SUPPORT QString &replace(char c, const QString &after, bool cs)
-    { return replace(QChar(c), after, cs?Qt::CaseSensitive:Qt::CaseInsensitive); }
+    { return replace(QChar::fromAscii(c), after, cs ? Qt::CaseSensitive : Qt::CaseInsensitive); }
     // strange overload, required to avoid GCC 3.3 error
     inline QT3_SUPPORT QString &replace(char c, const QString &after, Qt::CaseSensitivity cs)
-    { return replace(QChar(c), after, cs?Qt::CaseSensitive:Qt::CaseInsensitive); }
+    { return replace(QChar::fromAscii(c), after, cs ? Qt::CaseSensitive : Qt::CaseInsensitive); }
 #endif
     inline QT3_SUPPORT int find(QChar c, int i = 0, bool cs = true) const
     { return indexOf(c, i, cs?Qt::CaseSensitive:Qt::CaseInsensitive); }
@@ -498,13 +538,11 @@ private:
     void expand(int i);
     void updateProperties() const;
     QString multiArg(int numArgs, const QString **args) const;
-#ifndef QT_NO_STL
-    int toWCharArray(wchar_t *array) const;
-    static QString fromWCharArray(const wchar_t *, int);
-#endif
     static Data *fromLatin1_helper(const char *str, int size = -1);
+    static Data *fromAscii_helper(const char *str, int size = -1);
     friend class QCharRef;
     friend class QTextCodec;
+    friend inline bool qStringComparisonHelper(const QString &s1, const char *s2);
 };
 
 
@@ -625,8 +663,10 @@ public:
 
     // An operator= for each QChar cast constructors
 #ifndef QT_NO_CAST_FROM_ASCII
-    inline QCharRef &operator=(char c) { return operator=(QChar(c)); }
-    inline QCharRef &operator=(uchar c) { return operator=(QChar(c)); }
+    inline QT_ASCII_CAST_WARN QCharRef &operator=(char c)
+    { return operator=(QChar::fromAscii(c)); }
+    inline QT_ASCII_CAST_WARN QCharRef &operator=(uchar c)
+    { return operator=(QChar::fromAscii(c)); }
 #endif
     inline QCharRef &operator=(const QCharRef &c) { return operator=(QChar(c)); }
     inline QCharRef &operator=(ushort rc) { return operator=(QChar(rc)); }
@@ -720,31 +760,57 @@ inline bool operator!=(QString::Null, const QString &s) { return !s.isNull(); }
 inline bool operator!=(const QString &s, QString::Null) { return !s.isNull(); }
 
 #ifndef QT_NO_CAST_FROM_ASCII
-inline bool QString::operator==(const char *s) const {
+inline bool qStringComparisonHelper(const QString &s1, const char *s2)
+{
 #  ifndef QT_NO_TEXTCODEC
-    if (codecForCStrings) return (*this == QString::fromAscii(s));
+    if (QString::codecForCStrings) return (s1 == QString::fromAscii(s2));
 #  endif
-    return (*this == QLatin1String(s));
+    return (s1 == QLatin1String(s2));
 }
-inline bool QString::operator!=(const char *s) const{ return !(*this == s); }
-inline bool QString::operator<(const char *s) const { return *this < QString::fromAscii(s); }
-inline bool QString::operator>(const char *s) const { return *this > QString::fromAscii(s); }
-inline bool QString::operator<=(const char *s) const { return *this <= QString::fromAscii(s); }
-inline bool QString::operator>=(const char *s) const { return *this >= QString::fromAscii(s); }
 
-inline bool operator==(const char *s1, const QString &s2) { return (s2 == s1); }
-inline bool operator!=(const char *s1, const QString &s2) { return !(s2 == s1); }
-inline bool operator<(const char *s1, const QString &s2) { return (QString::fromAscii(s1) < s2); }
-inline bool operator>(const char *s1, const QString &s2) { return (QString::fromAscii(s1) > s2); }
-inline bool operator<=(const char *s1, const QString &s2) { return (QString::fromAscii(s1) <= s2); }
-inline bool operator>=(const char *s1, const QString &s2) { return (QString::fromAscii(s1) >= s2); }
+inline bool QString::operator==(const char *s) const
+{ return qStringComparisonHelper(*this, s); }
+inline bool QString::operator!=(const char *s) const
+{ return !qStringComparisonHelper(*this, s); }
+inline bool QString::operator<(const char *s) const
+{ return *this < QString::fromAscii(s); }
+inline bool QString::operator>(const char *s) const
+{ return *this > QString::fromAscii(s); }
+inline bool QString::operator<=(const char *s) const
+{ return *this <= QString::fromAscii(s); }
+inline bool QString::operator>=(const char *s) const
+{ return *this >= QString::fromAscii(s); }
 
-inline bool QByteArray::operator==(const QString &s) const { return constData() == s; }
-inline bool QByteArray::operator!=(const QString &s) const { return !(constData() == s); }
-inline bool QByteArray::operator<(const QString &s) const { return constData() < s; }
-inline bool QByteArray::operator>(const QString &s) const { return constData() > s; }
-inline bool QByteArray::operator<=(const QString &s) const { return constData() <= s; }
-inline bool QByteArray::operator>=(const QString &s) const { return constData() >= s; }
+inline QT_ASCII_CAST_WARN bool operator==(const char *s1, const QString &s2)
+{ return qStringComparisonHelper(s2, s1); }
+inline QT_ASCII_CAST_WARN bool operator!=(const char *s1, const QString &s2)
+{ return !qStringComparisonHelper(s2, s1); }
+inline QT_ASCII_CAST_WARN bool operator<(const char *s1, const QString &s2)
+{ return (QString::fromAscii(s1) < s2); }
+inline QT_ASCII_CAST_WARN bool operator>(const char *s1, const QString &s2)
+{ return (QString::fromAscii(s1) > s2); }
+inline QT_ASCII_CAST_WARN bool operator<=(const char *s1, const QString &s2)
+{ return (QString::fromAscii(s1) <= s2); }
+inline QT_ASCII_CAST_WARN bool operator>=(const char *s1, const QString &s2)
+{ return (QString::fromAscii(s1) >= s2); }
+
+inline bool QString::operator==(const QByteArray &s) const
+{ return qStringComparisonHelper(*this, s.constData()); }
+inline bool QString::operator!=(const QByteArray &s) const
+{ return !qStringComparisonHelper(*this, s.constData()); }
+
+inline bool QByteArray::operator==(const QString &s) const
+{ return qStringComparisonHelper(s, constData()); }
+inline bool QByteArray::operator!=(const QString &s) const
+{ return !qStringComparisonHelper(s, constData()); }
+inline bool QByteArray::operator<(const QString &s) const
+{ return QString::fromAscii(constData(), size()) < s; }
+inline bool QByteArray::operator>(const QString &s) const
+{ return QString::fromAscii(constData(), size()) > s; }
+inline bool QByteArray::operator<=(const QString &s) const
+{ return QString::fromAscii(constData(), size()) <= s; }
+inline bool QByteArray::operator>=(const QString &s) const
+{ return QString::fromAscii(constData(), size()) >= s; }
 #endif   // QT_NO_CAST_FROM_ASCII
 
 #ifndef QT_NO_CAST_TO_ASCII
@@ -757,19 +823,19 @@ inline QByteArray &QByteArray::replace(char c, const QString &after)
 inline QByteArray &QByteArray::replace(const QString &before, const char *after)
 { return replace(before.toAscii(), after); }
 inline QByteArray &QByteArray::replace(const QString &before, const QByteArray &after)
-{ return replace(before, after.constData()); }
+{ return replace(before.toAscii(), after); }
 inline QByteArray &QByteArray::operator+=(const QString &s)
 { return operator+=(s.toAscii()); }
 inline int QByteArray::indexOf(const QString &s, int from) const
 { return indexOf(s.toAscii(), from); }
 inline int QByteArray::lastIndexOf(const QString &s, int from) const
 { return lastIndexOf(s.toAscii(), from); }
-#ifdef QT3_SUPPORT
+#  ifdef QT3_SUPPORT
 inline int QByteArray::find(const QString &s, int from) const
-{ return indexOf(s, from); }
+{ return indexOf(s.toAscii(), from); }
 inline int QByteArray::findRev(const QString &s, int from) const
-{ return lastIndexOf(s, from); }
-#endif // QT3_SUPPORT
+{ return lastIndexOf(s.toAscii(), from); }
+#  endif // QT3_SUPPORT
 #endif // QT_NO_CAST_TO_ASCII
 
 inline const QString operator+(const QString &s1, const QString &s2)
@@ -779,18 +845,18 @@ inline const QString operator+(const QString &s1, QChar s2)
 inline const QString operator+(QChar s1, const QString &s2)
 { QString t(s1); t += s2; return t; }
 #ifndef QT_NO_CAST_FROM_ASCII
-inline const QString operator+(const QString &s1, const char *s2)
+inline QT_ASCII_CAST_WARN const QString operator+(const QString &s1, const char *s2)
 { QString t(s1); t += QString::fromAscii(s2); return t; }
-inline const QString operator+(const char *s1, const QString &s2)
-{ QString t(s1); t += s2; return t; }
-inline const QString operator+(char c, const QString &s)
-{ QString t = s; t.prepend(QChar(c)); return t; }
-inline const QString operator+(const QString &s, char c)
-{ QString t(s); t += c; return t; }
-inline const QString operator+(const QByteArray &ba, const QString &s)
-{ QString t(ba); t += s; return t; }
-inline const QString operator+(const QString &s, const QByteArray &ba)
-{ QString t(s); t += ba; return t; }
+inline QT_ASCII_CAST_WARN const QString operator+(const char *s1, const QString &s2)
+{ QString t = QString::fromAscii(s1); t += s2; return t; }
+inline QT_ASCII_CAST_WARN const QString operator+(char c, const QString &s)
+{ QString t = s; t.prepend(QChar::fromAscii(c)); return t; }
+inline QT_ASCII_CAST_WARN const QString operator+(const QString &s, char c)
+{ QString t = s; t += QChar::fromAscii(c); return t; }
+inline QT_ASCII_CAST_WARN const QString operator+(const QByteArray &ba, const QString &s)
+{ QString t = QString::fromAscii(ba.constData(), qstrnlen(ba.constData(), ba.size())); t += s; return t; }
+inline QT_ASCII_CAST_WARN const QString operator+(const QString &s, const QByteArray &ba)
+{ QString t(s); t += QString::fromAscii(ba.constData(), qstrnlen(ba.constData(), ba.size())); return t; }
 #endif
 
 #ifndef QT_NO_STL

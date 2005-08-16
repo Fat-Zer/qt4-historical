@@ -120,7 +120,7 @@ void Browser::addConnection()
                            dialog.userName(), dialog.password(), dialog.port());
         if (err.type() != QSqlError::NoError)
             QMessageBox::warning(this, tr("Unable to open database"), tr("An error occured while "
-                                      "opening the connection: ") + err.text());
+                                       "opening the connection: ") + err.text());
     }
 }
 

@@ -75,6 +75,8 @@ protected:
 
     virtual void applyProperties(QObject *o, const QList<DomProperty*> &properties);
 
+    virtual void loadExtraInfo(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);
+
 private:
     QDesignerFormEditorInterface *m_core;
 };

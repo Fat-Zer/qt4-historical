@@ -45,8 +45,6 @@
 
 //#define QSPLITTER_DEBUG
 
-static int mouseOffset;
-
 /*!
     \class QSplitterHandle
     \brief The QSplitterHandle class provides handle functionality of the splitter.
@@ -56,14 +54,43 @@ static int mouseOffset;
     QSplitterHandle is typically what people think about when they think about
     a splitter. It is the handle that is used to resize the widgets.
 
-    A typical developer using QSplitter will never have to worry about QSplitterHandle.
-    It is provided for developers who want splitter handles that do more. The typical
-    way one would create splitter handles is to subclass QSplitter and then
-    reimplement QSplitter::createHandle() to instatiate the custom splitter
-    handle.
+    A typical developer using QSplitter will never have to worry about
+    QSplitterHandle. It is provided for developers who want splitter handles
+    that provide extra features, such as popup menus.
 
-    Most of the functions inside QSplitterHandle are forwards to QSplitter or
-    like orientation() and opaqueResize(), controlled by the QSplitter.
+    The typical way one would create splitter handles is to subclass QSplitter then
+    reimplement QSplitter::createHandle() to instantiate the custom splitter
+    handle. For example, a minimum QSplitter subclass might look like this:
+
+    \quotefromfile snippets/splitterhandle/splitter.h
+    \skipto class Splitter : public QSplitter
+    \printuntil /^\};/
+
+    The \l{QSplitter::}{createHandle()} implementation simply constructs a
+    custom splitter handle, called \c Splitter in this example:
+
+    \quotefromfile snippets/splitterhandle/splitter.cpp
+    \skipto createHandle()
+    \printuntil /^\}/
+
+    Information about a given handle can be obtained using functions like
+    orientation() and opaqueResize(), and is retrieved from its parent splitter.
+    Details like these can be used to give custom handles different appearances
+    depending on the splitter's orientation.
+
+    The complexity of a custom handle subclass depends on the tasks that it
+    needs to perform. A simple subclass might only provide a paintEvent()
+    implementation:
+
+    \quotefromfile snippets/splitterhandle/splitter.cpp
+    \skipto paintEvent
+    \printuntil /^\}/
+
+    In this example, a predefined gradient is set up differently depending on
+    the orientation of the handle. QSplitterHandle provides a reasonable
+    size hint for the handle, so the subclass does not need to provide a
+    reimplementation of sizeHint() unless the handle has special size
+    requirements.
 
     \sa QSplitter
 */
@@ -213,7 +240,7 @@ void QSplitterHandle::mouseMoveEvent(QMouseEvent *e)
     if (!(e->buttons() & Qt::LeftButton))
         return;
     int pos = d->pick(parentWidget()->mapFromGlobal(e->globalPos()))
-                 - mouseOffset;
+                 - d->mouseOffset;
     if (opaqueResize()) {
         moveSplitter(pos);
     } else {
@@ -228,7 +255,7 @@ void QSplitterHandle::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QSplitterHandle);
     if (e->button() == Qt::LeftButton)
-        mouseOffset = d->pick(e->pos());
+        d->mouseOffset = d->pick(e->pos());
 }
 
 /*!
@@ -239,7 +266,7 @@ void QSplitterHandle::mouseReleaseEvent(QMouseEvent *e)
     Q_D(QSplitterHandle);
     if (!opaqueResize() && e->button() == Qt::LeftButton) {
         int pos = d->pick(parentWidget()->mapFromGlobal(e->globalPos()))
-                     - mouseOffset;
+                     - d->mouseOffset;
         d->s->setRubberBand(-1);
         moveSplitter(pos);
     }
@@ -1007,7 +1034,7 @@ void QSplitter::setCollapsible(int index, bool collapse)
     Q_D(QSplitter);
 
     if (index < 0 || index >= d->list.size()) {
-        qWarning("QSplitter::setCollapsible() index %d out of range", index);
+        qWarning("QSplitter::setCollapsible: Index %d out of range", index);
         return;
     }
     d->list.at(index)->collapsible = collapse ? 1 : 0;
@@ -1020,7 +1047,7 @@ bool QSplitter::isCollapsible(int index) const
 {
     Q_D(const QSplitter);
     if (index < 0 || index >= d->list.size()) {
-        qWarning("QSplitter::isCollapsible() index %d out of range", index);
+        qWarning("QSplitter::isCollapsible: Index %d out of range", index);
         return false;
     }
     return d->list.at(index)->collapsible;
@@ -1420,6 +1447,23 @@ void QSplitter::setOpaqueResize(bool on)
 
     Use setCollapsible(indexOf(\a widget, \a collapsible)) instead.
 */
+
+/*!
+    \fn void QSplitter::setMargin(int margin)
+    Sets the width of the margin around the contents of the widget to \a margin.
+    
+    Use QWidget::setContentsMargins() instead.
+    \sa margin(), QWidget::setContentsMargins()
+*/
+
+/*!
+    \fn int QSplitter::margin() const
+    Returns the with of the the margin around the contents of the widget.
+    
+    Use QWidget::getContentsMargins() instead.
+    \sa setMargin(), QWidget::getContentsMargins()
+*/
+
 #endif
 
 /*!
@@ -1721,7 +1765,7 @@ QTextStream& operator>>(QTextStream& ts, QSplitter& splitter)
 {
     QString line = ts.readLine();
     line = line.simplified();
-    line.replace(' ', QString());
+    line.replace(QLatin1Char(' '), QString());
     line = line.toUpper();
 
     splitter.restoreState(line.toAscii());
@@ -1729,4 +1773,5 @@ QTextStream& operator>>(QTextStream& ts, QSplitter& splitter)
 }
 #endif // QT_NO_TEXTSTREAM
 //#endif // QT3_SUPPORT
+
 #endif // QT_NO_SPLITTER

@@ -565,36 +565,28 @@
     \fn char *QTest::toString(const QLatin1String &string)
     \overload
 
-    Returns a textual representation of the given \a string. This function is
-    used by \l QCOMPARE() to output verbose information in case of a test
-    failure.
+    Returns a textual representation of the given \a string.
 */
 
 /*!
     \fn char *QTest::toString(const QString &string)
     \overload
 
-    Returns a textual representation of the given \a string. This function is
-    used by \l QCOMPARE() to output verbose information in case of a test
-    failure.
+    Returns a textual representation of the given \a string.
 */
 
 /*!
     \fn char *QTest::toString(const QTime &time)
     \overload
 
-    Returns a textual representation of the given \a time. This function is
-    used by \l QCOMPARE() to output verbose information in case of a test
-    failure.
+    Returns a textual representation of the given \a time.
 */
 
 /*!
     \fn char *QTest::toString(const QDate &date)
     \overload
 
-    Returns a textual representation of the given \a date. This function is
-    used by \l QCOMPARE() to output verbose information in case of a test
-    failure.
+    Returns a textual representation of the given \a date.
 */
 
 /*!
@@ -602,17 +594,56 @@
     \overload
 
     Returns a textual representation of the date and time specified by
-    \a dateTime. This function is used by \l QCOMPARE() to output verbose
-    information in case of a test failure.
+    \a dateTime.
 */
 
 /*!
     \fn char *QTest::toString(const QChar &character)
     \overload
 
-    Returns a textual representation of the given \a character. This function
-    is used by \l QCOMPARE() to output verbose information in case of a test
-    failure.
+    Returns a textual representation of the given \a character.
+*/
+
+/*!
+    \fn char *QTest::toString(const QPoint &point)
+    \overload
+
+    Returns a textual representation of the given \a point.
+*/
+
+/*!
+    \fn char *QTest::toString(const QSize &size)
+    \overload
+
+    Returns a textual representation of the given \a size.
+*/
+
+/*!
+    \fn char *QTest::toString(const QRect &rectangle)
+    \overload
+
+    Returns a textual representation of the given \a rectangle.
+*/
+
+/*!
+    \fn char *QTest::toString(const QPointF &point)
+    \overload
+
+    Returns a textual representation of the given \a point.
+*/
+
+/*!
+    \fn char *QTest::toString(const QSizeF &size)
+    \overload
+
+    Returns a textual representation of the given \a size.
+*/
+
+/*!
+    \fn char *QTest::toString(const QRectF &rectangle)
+    \overload
+
+    Returns a textual representation of the given \a rectangle.
 */
 
 /*! \fn void QTest::qWait(int ms)
@@ -760,6 +791,7 @@ static void qParseArgs(int argc, char *argv[])
          " -xml       : Outputs results as XML document\n"
          " -lightxml  : Outputs results as stream of XML tags\n"
          " -o filename: Writes all output into a file\n"
+         " -silent    : Only outputs warnings and failures\n"
          " -v1        : Print enter messages for each testfunction\n"
          " -v2        : Also print out each QVERIFY/QCOMPARE/QTEST\n"
          " -vs        : Print every signal emitted\n"
@@ -785,6 +817,8 @@ static void qParseArgs(int argc, char *argv[])
             QTestLog::setLogMode(QTestLog::XML);
         } else if (strcmp(argv[i], "-lightxml") == 0) {
             QTestLog::setLogMode(QTestLog::LightXML);
+        } else if (strcmp(argv[i], "-silent") == 0) {
+            QTestLog::setVerboseLevel(-1);
         } else if (strcmp(argv[i], "-v1") == 0) {
             QTestLog::setVerboseLevel(1);
         } else if (strcmp(argv[i], "-v2") == 0) {
@@ -862,6 +896,18 @@ static void qParseArgs(int argc, char *argv[])
     }
 }
 
+struct QTestDataSetter
+{
+    QTestDataSetter(QTestData *data)
+    {
+        QTestResult::setCurrentTestData(data);
+    }
+    ~QTestDataSetter()
+    {
+        QTestResult::setCurrentTestData(0);
+    }
+};
+
 /*!
     Call init(), slot_data(), slot(), slot(), slot()..., cleanup()
     If data is set then it is the only test that is performed
@@ -903,8 +949,8 @@ static bool qInvokeTestMethod(const char *slotName, const char *data=0)
             do {
                 if (!data || !qstrcmp(data, table.testData(curDataIndex)->dataTag())) {
                     foundFunction = true;
-                    if (!table.isEmpty())
-                        QTestResult::setCurrentTestData(table.testData(curDataIndex));
+                    QTestDataSetter s(table.isEmpty() ? static_cast<QTestData *>(0) 
+                                                      : table.testData(curDataIndex));
                     QTestResult::setCurrentTestLocation(QTestResult::InitFunc);
                     QMetaObject::invokeMethod(QTest::currentTestObject, "init");
                     if (QTest::skipCurrentTest)
@@ -920,7 +966,6 @@ static bool qInvokeTestMethod(const char *slotName, const char *data=0)
                     QTestResult::setCurrentTestLocation(QTestResult::CleanupFunc);
                     QMetaObject::invokeMethod(QTest::currentTestObject, "cleanup");
                     QTestResult::setCurrentTestLocation(QTestResult::NoWhere);
-                    QTestResult::setCurrentTestData(0);
 
                     if (QTest::skipCurrentTest)
                         // check whether SkipAll was requested
@@ -961,7 +1006,7 @@ void *fetchData(QTestData *data, const char *tagName, int typeId)
 
     int idx = data->parent()->indexOf(tagName);
 
-    if (idx == -1) {
+    if (idx == -1 || idx >= data->dataCount()) {
         qFatal("QFETCH: Requested testdata '%s' not available, check your _data function.",
                 tagName);
     }
@@ -1015,6 +1060,8 @@ int QTest::qExec(QObject *testObject, int argc, char **argv)
 #if defined(Q_OS_WIN)
     SetErrorMode(SetErrorMode(0) | SEM_NOGPFAULTERRORBOX);
 #endif
+
+    QTestResult::reset();
 
     QTEST_ASSERT(testObject);
     QTEST_ASSERT(!currentTestObject);

@@ -33,17 +33,24 @@
 
 #include "qthread_p.h"
 
-
 /*
   QThreadData
 */
 
 QThreadData::QThreadData()
-    : id(-1), quitNow(false), eventDispatcher(0), canWait(true), tls(0)
-{ }
+    : _ref(1), thread(0), quitNow(false), eventDispatcher(0), canWait(true), tls(0)
+{
+    // fprintf(stderr, "QThreadData %p created\n", this);
+}
 
 QThreadData::~QThreadData()
 {
+    Q_ASSERT(_ref == 0);
+
+    QThread *t = thread;
+    thread = 0;
+    delete t;
+
     for (int i = 0; i < postEventList.size(); ++i) {
         const QPostEvent &pe = postEventList.at(i);
         if (pe.event) {
@@ -56,14 +63,31 @@ QThreadData::~QThreadData()
             delete pe.event;
         }
     }
+
+    // fprintf(stderr, "QThreadData %p destroyed\n", this);
 }
 
-QThreadData *QThreadData::get(QThread *thread)
+QThreadData *QThreadData::get2(QThread *thread)
 {
     Q_ASSERT_X(thread != 0, "QThread", "internal error");
-    return &thread->d_func()->data;
+    return thread->d_func()->data;
 }
 
+void QThreadData::ref()
+{
+#ifndef QT_NO_THREAD
+    (void) _ref.ref();
+    Q_ASSERT(_ref != 0);
+#endif
+}
+
+void QThreadData::deref()
+{
+#ifndef QT_NO_THREAD
+    if (!_ref.deref())
+        delete this;
+#endif
+}
 
 
 #ifndef QT_NO_THREAD
@@ -71,9 +95,9 @@ QThreadData *QThreadData::get(QThread *thread)
   QThreadPrivate
 */
 
-QThreadPrivate::QThreadPrivate()
+QThreadPrivate::QThreadPrivate(QThreadData *d)
     : QObjectPrivate(), running(false), finished(false), terminated(false),
-      stackSize(0), priority(QThread::InheritPriority)
+      stackSize(0), priority(QThread::InheritPriority), data(d)
 {
 #if defined (Q_OS_UNIX)
     thread_id = 0;
@@ -85,58 +109,44 @@ QThreadPrivate::QThreadPrivate()
     terminatePending = false;
 #endif
 
-    static QBasicAtomic idCounter = Q_ATOMIC_INIT(1);
-    for (;;) {
-        data.id = idCounter;
-        if (idCounter.testAndSet(data.id, data.id + 1))
-            break;
-    }
+    if (!data)
+        data = new QThreadData;
 }
 
-struct QThreadIdHash {
-    QReadWriteLock lock;
-    QHash<int, QThread *> table;
-};
-
-Q_GLOBAL_STATIC(QThreadIdHash, threadIdHash)
-
-/*! \internal
- */
-QThread *QThreadPrivate::threadForId(int id)
+QThreadPrivate::~QThreadPrivate()
 {
-    QThreadIdHash *idHash = threadIdHash();
-    if (!idHash)
-        return 0;
-    QReadLocker locker(&idHash->lock);
-    return idHash->table.value(id);
+    data->deref();
 }
-
 
 /*
   QAdoptedThread
 */
-Q_GLOBAL_STATIC(QMutex, qthread_adopt_mutex);
 
-bool QThreadPrivate::adoptCurrentThreadEnabled = false;
-
-QThread *QThreadPrivate::adoptCurrentThread()
+QAdoptedThread::QAdoptedThread(QThreadData *data)
+    : QThread(*new QThreadPrivate(data))
 {
-    QMutexLocker locker(qthread_adopt_mutex());
-    adoptCurrentThreadEnabled = false;
-    QThread *current = new QAdoptedThread();
-    setCurrentThread(current);
-    adoptCurrentThreadEnabled = true;
-    createEventDispatcher(QThreadData::get(current));
-    return current;
+    // thread should be running and not finished for the lifetime
+    // of the application (even if QCoreApplication goes away)
+    d_func()->running = true;
+    d_func()->finished = false;
+    init();
+
+    // fprintf(stderr, "new QAdoptedThread = %p\n", this);
 }
 
 QAdoptedThread::~QAdoptedThread()
 {
-    // avoid warning from QThread
-    d_func()->running = false;
-    delete d_func()->data.eventDispatcher;
+    QThreadPrivate::finish(this);
+
+    // fprintf(stderr, "~QAdoptedThread = %p\n", this);
 }
 
+QThread *QAdoptedThread::createThreadForAdoption()
+{
+    QThread *t = new QAdoptedThread(0);
+    t->moveToThread(t);
+    return t;
+}
 
 /*!
     \class QThread
@@ -208,7 +218,8 @@ QAdoptedThread::~QAdoptedThread()
     msleep() for millisecond resolution, and usleep() for microsecond
     resolution.
 
-    \sa {threads.html}{Thread Support in Qt}, QThreadStorage, QMutex, QSemaphore, QWaitCondition
+    \sa {Thread Support in Qt}, QThreadStorage, QMutex, QSemaphore, QWaitCondition,
+        {Mandelbrot Example}, {Semaphores Example}, {Wait Conditions Example}
 */
 
 /*!
@@ -260,6 +271,17 @@ QAdoptedThread::~QAdoptedThread()
 */
 
 /*!
+    Returns a pointer to a QThread which represents the currently
+    executing thread.
+*/
+QThread *QThread::currentThread()
+{
+    QThreadData *data = QThreadData::current();
+    Q_ASSERT(data != 0);
+    return data->thread;
+}
+
+/*!
     Constructs a new thread with the given \a parent. The thread does
     not begin executing until start() is called.
 
@@ -269,9 +291,18 @@ QThread::QThread(QObject *parent)
     : QObject(*(new QThreadPrivate), parent)
 {
     Q_D(QThread);
-    QThreadIdHash *idHash = threadIdHash();
-    QWriteLocker locker(&idHash->lock);
-    idHash->table.insert(d->data.id, this);
+    // fprintf(stderr, "QThreadData %p created for thread %p\n", d->data, this);
+    d->data->thread = this;
+}
+
+/*! \internal
+ */
+QThread::QThread(QThreadPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
+    Q_D(QThread);
+    // fprintf(stderr, "QThreadData %p taken from private data for thread %p\n", d->data, this);
+    d->data->thread = this;
 }
 
 /*!
@@ -289,13 +320,9 @@ QThread::~QThread()
     {
         QMutexLocker locker(&d->mutex);
         if (d->running && !d->finished)
-            qWarning("QThread object destroyed while thread is still running.");
-    }
+            qWarning("QThread: Destroyed while thread is still running");
 
-    QThreadIdHash *idHash = threadIdHash();
-    if (idHash) {
-        QWriteLocker locker(&idHash->lock);
-        idHash->table.remove(d->data.id);
+        d->data->thread = 0;
     }
 }
 
@@ -399,9 +426,9 @@ void QThread::exit(int returnCode)
 {
     Q_D(QThread);
     QMutexLocker locker(&d->mutex);
-    d->data.quitNow = true;
-    for (int i = 0; i < d->data.eventLoops.size(); ++i) {
-        QEventLoop *eventLoop = d->data.eventLoops.at(i);
+    d->data->quitNow = true;
+    for (int i = 0; i < d->data->eventLoops.size(); ++i) {
+        QEventLoop *eventLoop = d->data->eventLoops.at(i);
         eventLoop->exit(returnCode);
     }
 }
@@ -497,10 +524,22 @@ QThread::Priority QThread::priority() const
 
 #else // QT_NO_THREAD
 
+#include <private/qcoreapplication_p.h>
+
 QThread* QThread::instance = 0;
 
-QThread::QThread() : QObject(*new QThreadPrivate(this), (QObject*)0)
+QThread::QThread() : QObject(*new QThreadPrivate, (QObject*)0)
 {
+    Q_D(QThread);
+    d->data->thread = this;
+    QCoreApplicationPrivate::theMainThread = this;
+}
+
+QThreadData* QThreadData::current()
+{
+    if (QThread::instance)
+        return QThread::instance->d_func()->data;
+    return 0;
 }
 
 #endif // QT_NO_THREAD

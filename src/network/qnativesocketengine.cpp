@@ -82,6 +82,8 @@
 #include <qabstracteventdispatcher.h>
 #include <qsocketnotifier.h>
 
+#include <private/qthread_p.h>
+
 #define Q_VOID
 
 // Common constructs
@@ -156,73 +158,79 @@ void QNativeSocketEnginePrivate::setError(QAbstractSocket::SocketError error, Er
 
     switch (errorString) {
     case NonBlockingInitFailedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize non-blocking socket");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize non-blocking socket"));
         break;
     case BroadcastingInitFailedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize broadcast socket");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to initialize broadcast socket"));
         break;
     case NoIpV6ErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Attempt to use IPv6 socket on a platform with no IPv6 support");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Attempt to use IPv6 socket on a platform with no IPv6 support"));
         break;
     case RemoteHostClosedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "The remote host closed the connection");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "The remote host closed the connection"));
         break;
     case TimeOutErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network operation timed out");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network operation timed out"));
         break;
     case ResourceErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Out of resources");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Out of resources"));
         break;
     case OperationUnsupportedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unsupported socket operation");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unsupported socket operation"));
         break;
     case ProtocolUnsupportedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Protocol type not supported");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Protocol type not supported"));
         break;
     case InvalidSocketErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Invalid socket descriptor");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Invalid socket descriptor"));
         break;
     case HostUnreachableErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Host unreachable");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Host unreachable"));
         break;
     case NetworkUnreachableErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network unreachable");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network unreachable"));
         break;
     case AccessErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Permission denied");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Permission denied"));
         break;
     case ConnectionTimeOutErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Connection timed out");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Connection timed out"));
         break;
     case ConnectionRefusedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Connection refused");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Connection refused"));
         break;
     case AddressInuseErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "The bound address is already in use");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "The bound address is already in use"));
         break;
     case AddressNotAvailableErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "The address is not available");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "The address is not available"));
         break;
     case AddressProtectedErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "The address is protected");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "The address is protected"));
         break;
     case DatagramTooLargeErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Datagram was to large to send");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Datagram was too large to send"));
         break;
     case SendDatagramErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to send a message");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to send a message"));
         break;
     case ReceiveDatagramErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to receive a message");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to receive a message"));
         break;
     case WriteErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to write");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unable to write"));
         break;
     case ReadErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network error");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Network error"));
         break;
     case PortInuseErrorString:
-        socketErrorString = QT_TRANSLATE_NOOP("QNativeSocketEngine", "Another socket is already listening on the same port");
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Another socket is already listening on the same port"));
+        break;
+    case NotSocketErrorString:
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Operation on non-socket"));
+        break;
+    case UnknownSocketErrorString:
+        socketErrorString = QLatin1String(QT_TRANSLATE_NOOP("QNativeSocketEngine", "Unknown error"));
         break;
     }
 }
@@ -273,12 +281,12 @@ bool QNativeSocketEngine::initialize(QAbstractSocket::SocketType socketType, QAb
     // Create the socket
     if (!d->createNewSocket(socketType, protocol)) {
 #if defined (QNATIVESOCKETENGINE_DEBUG)
-        QString typeStr = "UnknownSocketType";
-        if (socketType == QAbstractSocket::TcpSocket) typeStr = "TcpSocket";
-        else if (socketType == QAbstractSocket::UdpSocket) typeStr = "UdpSocket";
-        QString protocolStr = "UnknownProtocol";
-        if (protocol == QAbstractSocket::IPv4Protocol) protocolStr = "IPv4Protocol";
-        else if (protocol == QAbstractSocket::IPv6Protocol) protocolStr = "IPv6Protocol";
+        QString typeStr = QLatin1String("UnknownSocketType");
+        if (socketType == QAbstractSocket::TcpSocket) typeStr = QLatin1String("TcpSocket");
+        else if (socketType == QAbstractSocket::UdpSocket) typeStr = QLatin1String("UdpSocket");
+        QString protocolStr = QLatin1String("UnknownProtocol");
+        if (protocol == QAbstractSocket::IPv4Protocol) protocolStr = QLatin1String("IPv4Protocol");
+        else if (protocol == QAbstractSocket::IPv6Protocol) protocolStr = QLatin1String("IPv6Protocol");
         qDebug("QNativeSocketEngine::initialize(type == %s, protocol == %s) failed: %s",
                typeStr.toLatin1().constData(), protocolStr.toLatin1().constData(), d->socketErrorString.toLatin1().constData());
 #endif
@@ -655,10 +663,9 @@ qint64 QNativeSocketEngine::read(char *data, qint64 maxSize)
 
     // Handle remote close
     if (readBytes == 0 && d->socketType == QAbstractSocket::TcpSocket) {
-        close();
         d->setError(QAbstractSocket::RemoteHostClosedError,
                     QNativeSocketEnginePrivate::RemoteHostClosedErrorString);
-        d->socketState = QAbstractSocket::UnconnectedState;
+        close();
         return -1;
     }
     return readBytes;
@@ -677,7 +684,7 @@ void QNativeSocketEngine::close()
         d->writeNotifier->setEnabled(false);
     if (d->exceptNotifier)
         d->exceptNotifier->setEnabled(false);
-        
+
     if(d->socketDescriptor != -1) {
         d->nativeClose();
         d->socketDescriptor = -1;
@@ -723,6 +730,9 @@ bool QNativeSocketEngine::waitForRead(int msecs, bool *timedOut) const
     Q_CHECK_NOT_STATE(QNativeSocketEngine::waitForRead(),
                       QAbstractSocket::UnconnectedState, false);
 
+    if (timedOut)
+        *timedOut = false;
+
     int ret = d->nativeSelect(msecs, true);
     if (ret == 0) {
         if (timedOut)
@@ -756,6 +766,9 @@ bool QNativeSocketEngine::waitForWrite(int msecs, bool *timedOut) const
     Q_CHECK_VALID_SOCKETLAYER(QNativeSocketEngine::waitForWrite(), false);
     Q_CHECK_NOT_STATE(QNativeSocketEngine::waitForWrite(),
                       QAbstractSocket::UnconnectedState, false);
+
+    if (timedOut)
+        *timedOut = false;
 
     int ret = d->nativeSelect(msecs, false);
     if (ret == 0) {
@@ -878,16 +891,11 @@ void QNativeSocketEngine::setReadNotificationEnabled(bool enable)
     Q_D(QNativeSocketEngine);
     if (d->readNotifier) {
         d->readNotifier->setEnabled(enable);
-    } else if (enable && QAbstractEventDispatcher::instance(thread())) {
+    } else if (enable && d->threadData->eventDispatcher) {
         d->readNotifier = new QSocketNotifier(d->socketDescriptor,
                                               QSocketNotifier::Read, this);
-#ifdef Q_OS_WIN
-        QObject::connect(d->readNotifier, SIGNAL(activated(int)),
-                         this, SLOT(_q_systemReadNotification()));
-#else
         QObject::connect(d->readNotifier, SIGNAL(activated(int)),
                          this, SIGNAL(readNotification()));
-#endif
         d->readNotifier->setEnabled(true);
     }
 }
@@ -903,7 +911,7 @@ void QNativeSocketEngine::setWriteNotificationEnabled(bool enable)
     Q_D(QNativeSocketEngine);
     if (d->writeNotifier) {
         d->writeNotifier->setEnabled(enable);
-    } else if (enable && QAbstractEventDispatcher::instance(thread())) {
+    } else if (enable && d->threadData->eventDispatcher) {
         d->writeNotifier = new QSocketNotifier(d->socketDescriptor,
                                               QSocketNotifier::Write, this);
         QObject::connect(d->writeNotifier, SIGNAL(activated(int)),
@@ -923,7 +931,7 @@ void QNativeSocketEngine::setExceptionNotificationEnabled(bool enable)
     Q_D(QNativeSocketEngine);
     if (d->exceptNotifier) {
         d->exceptNotifier->setEnabled(enable);
-    } else if (enable && QAbstractEventDispatcher::instance(thread())) {
+    } else if (enable && d->threadData->eventDispatcher) {
         d->exceptNotifier = new QSocketNotifier(d->socketDescriptor,
                                               QSocketNotifier::Exception, this);
         QObject::connect(d->exceptNotifier, SIGNAL(activated(int)),

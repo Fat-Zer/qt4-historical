@@ -37,7 +37,6 @@
 
 #include "QtCore/qobject.h"
 #include "QtGui/qabstracttextdocumentlayout.h"
-#include "private/qtextdocument_p.h"
 
 class QTextImageFormat;
 

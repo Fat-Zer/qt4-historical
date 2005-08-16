@@ -31,6 +31,7 @@
 
 QT_BEGIN_HEADER
 
+#undef QT_QHASH_DEBUG
 QT_MODULE(Core)
 
 class QByteArray;
@@ -105,6 +106,10 @@ struct Q_CORE_EXPORT QHashData
     void rehash(int hint);
     void destroyAndFree();
     Node *firstNode();
+#ifdef QT_QHASH_DEBUG
+    void dump();
+    void checkSanity();
+#endif
     static Node *nextNode(Node *node);
     static Node *previousNode(Node *node);
 
@@ -249,6 +254,7 @@ public:
     T &operator[](const Key &key);
     const T operator[](const Key &key) const;
 
+    QList<Key> uniqueKeys() const;
     QList<Key> keys() const;
     QList<Key> keys(const T &value) const;
     QList<T> values() const;
@@ -260,6 +266,7 @@ public:
     class iterator
     {
         QHashData::Node *i;
+
     public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
@@ -267,6 +274,7 @@ public:
         typedef T *pointer;
         typedef T &reference;
 
+        // ### Qt 5: get rid of 'operator Node *'
         inline operator Node *() const { return concrete(i); }
         inline iterator() : i(0) { }
         explicit inline iterator(void *node) : i(reinterpret_cast<QHashData::Node *>(node)) { }
@@ -277,10 +285,6 @@ public:
         inline T *operator->() const { return &concrete(i)->value; }
         inline bool operator==(const iterator &o) const { return i == o.i; }
         inline bool operator!=(const iterator &o) const { return i != o.i; }
-        inline bool operator==(const const_iterator &o) const
-            { return i == reinterpret_cast<const iterator &>(o).i; }
-        inline bool operator!=(const const_iterator &o) const
-            { return i != reinterpret_cast<const iterator &>(o).i; }
 
         inline iterator &operator++() {
             i = QHashData::nextNode(i);
@@ -305,12 +309,28 @@ public:
         inline iterator operator-(int j) const { return operator+(-j); }
         inline iterator &operator+=(int j) { return *this = *this + j; }
         inline iterator &operator-=(int j) { return *this = *this - j; }
+
+        // ### Qt 5: not sure this is necessary anymore
+#ifdef QT_STRICT_ITERATORS
+    private:
+#else
+    public:
+#endif
+        inline bool operator==(const const_iterator &o) const
+            { return i == reinterpret_cast<const iterator &>(o).i; }
+        inline bool operator!=(const const_iterator &o) const
+            { return i != reinterpret_cast<const iterator &>(o).i; }
+
+    private:
+        // ### Qt 5: remove
+        inline operator bool() const { return false; }
     };
     friend class iterator;
 
     class const_iterator
     {
         QHashData::Node *i;
+
     public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
@@ -318,11 +338,16 @@ public:
         typedef const T *pointer;
         typedef const T &reference;
 
+        // ### Qt 5: get rid of 'operator Node *'
         inline operator Node *() const { return concrete(i); }
         inline const_iterator() : i(0) { }
         explicit inline const_iterator(void *node)
             : i(reinterpret_cast<QHashData::Node *>(node)) { }
+#ifdef QT_STRICT_ITERATORS
+        explicit inline const_iterator(const iterator &o)
+#else
         inline const_iterator(const iterator &o)
+#endif
         { i = reinterpret_cast<const const_iterator &>(o).i; }
 
         inline const Key &key() const { return concrete(i)->key; }
@@ -355,6 +380,17 @@ public:
         inline const_iterator operator-(int j) const { return operator+(-j); }
         inline const_iterator &operator+=(int j) { return *this = *this + j; }
         inline const_iterator &operator-=(int j) { return *this = *this - j; }
+
+        // ### Qt 5: not sure this is necessary anymore
+#ifdef QT_STRICT_ITERATORS
+    private:
+        inline bool operator==(const iterator &o) const { return operator==(const_iterator(o)); }
+        inline bool operator!=(const iterator &o) const { return operator!=(const_iterator(o)); }
+#endif
+
+    private:
+        // ### Qt 5: remove
+        inline operator bool() const { return false; }
     };
     friend class const_iterator;
 
@@ -379,7 +415,17 @@ public:
     QHash<Key, T> &unite(const QHash<Key, T> &other);
 
     // STL compatibility
+    typedef T mapped_type;
+    typedef Key key_type;
+    typedef ptrdiff_t difference_type;
+    typedef int size_type;
+
     inline bool empty() const { return isEmpty(); }
+
+#ifdef QT_QHASH_DEBUG
+    inline void dump() const { d->dump(); }
+    inline void checkSanity() const { d->checkSanity(); }
+#endif
 
 private:
     void detach_helper();
@@ -472,15 +518,8 @@ Q_INLINE_TEMPLATE void QHash<Key, T>::clear()
 template <class Key, class T>
 Q_OUTOFLINE_TEMPLATE void QHash<Key, T>::detach_helper()
 {
-    size_t asize;
-    if (QTypeInfo<T>::isDummy) {
-        asize = reinterpret_cast<char *>(&reinterpret_cast<Node *>(&QHashData::shared_null)->value)
-               - reinterpret_cast<char *>(&QHashData::shared_null);
-    } else {
-        asize = sizeof(Node);
-    }
-
-    QHashData *x = d->detach_helper(duplicateNode, int(asize));
+    QHashData *x = d->detach_helper(duplicateNode,
+        QTypeInfo<T>::isDummy ? sizeof(DummyNode) : sizeof(Node));
     x = qAtomicSetPtr(&d, x);
     if (!x->ref.deref())
         freeData(x);
@@ -521,6 +560,25 @@ Q_INLINE_TEMPLATE const T QHash<Key, T>::value(const Key &akey, const T &adefaul
     } else {
         return node->value;
     }
+}
+
+template <class Key, class T>
+Q_OUTOFLINE_TEMPLATE QList<Key> QHash<Key, T>::uniqueKeys() const
+{
+    QList<Key> res;
+    const_iterator i = begin();
+    if (i != end()) {
+        for (;;) {
+            const Key &aKey = i.key();
+            res.append(aKey);
+            do {
+                if (++i == end())
+                    goto break_out_of_outer_loop;
+            } while (aKey == i.key());
+        }
+    }
+break_out_of_outer_loop:
+    return res;
 }
 
 template <class Key, class T>
@@ -746,6 +804,7 @@ Q_OUTOFLINE_TEMPLATE typename QHash<Key, T>::Node **QHash<Key, T>::findNode(cons
 
     if (d->numBuckets) {
         node = reinterpret_cast<Node **>(&d->buckets[h % d->numBuckets]);
+        Q_ASSERT(*node == e || (*node)->next);
         while (*node != e && !(*node)->same_key(h, akey))
             node = &(*node)->next;
     } else {

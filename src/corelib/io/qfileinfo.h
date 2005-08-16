@@ -87,6 +87,7 @@ public:
     bool isRoot() const;
 
     QString readLink() const;
+    inline QString symLinkTarget() const { return readLink(); }
 
     QString owner() const;
     uint ownerId() const;

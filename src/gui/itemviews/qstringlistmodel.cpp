@@ -22,53 +22,53 @@
 ****************************************************************************/
 
 /*
-  A simple model that uses a QStringList as its data source.
+    A simple model that uses a QStringList as its data source.
 */
 
 #include "qstringlistmodel.h"
 
 #ifndef QT_NO_STRINGLISTMODEL
 /*!
-  \class QStringListModel
-  \brief The QStringListModel class provides a model that supplies strings to views.
+    \class QStringListModel
+    \brief The QStringListModel class provides a model that supplies strings to views.
 
-  \ingroup model-view
-  \mainclass
+    \ingroup model-view
+    \mainclass
 
-  QStringListModel is an editable model that can be used for simple cases
-  where you need to display a number of strings in a view widget, such as
-  a QListView or a QComboBox.
+    QStringListModel is an editable model that can be used for simple
+    cases where you need to display a number of strings in a view
+    widget, such as a QListView or a QComboBox.
 
-  The model provides all the standard functions of an editable model,
-  representing the data in the string list as a model with one column and
-  a number of rows equal to the number of items in the list.
+    The model provides all the standard functions of an editable
+    model, representing the data in the string list as a model with
+    one column and a number of rows equal to the number of items in
+    the list.
 
-  Model indexes corresponding to items are obtained with the
-  \l{QAbstractListModel::index()}{index()} function, and item flags are
-  obtained with flags().
-  Item data is read with the data() function and written with setData().
-  The number of rows (and number of items in the string list) can be found
-  with the rowCount() function.
+    Model indexes corresponding to items are obtained with the
+    \l{QAbstractListModel::index()}{index()} function, and item flags
+    are obtained with flags().  Item data is read with the data()
+    function and written with setData().  The number of rows (and
+    number of items in the string list) can be found with the
+    rowCount() function.
 
-  The model can be constructed with an existing string list, or strings can
-  be set later with the setStringList() convenience function. Strings can
-  also be inserted in the usual way with the insertRows() function, and
-  removed with removeRows(). The contents of the string list can be
-  retrieved with the stringList() convenience function.
-    
+    The model can be constructed with an existing string list, or
+    strings can be set later with the setStringList() convenience
+    function. Strings can also be inserted in the usual way with the
+    insertRows() function, and removed with removeRows(). The contents
+    of the string list can be retrieved with the stringList()
+    convenience function.
+
     An example usage of QStringListModel:
-    \code
-        QStringListModel *model = new QStringListModel();
-        QStringList list;
-        list << "a" << "b" << "c";
-        model->setStringList(list);
-    \endcode
-    
-  \sa QAbstractListModel, QAbstractItemModel, {Model/View Programming}
+
+    \quotefromfile snippets/qstringlistmodel/main.cpp
+    \skipto QStringListModel
+    \printuntil model->setStringList(list)
+
+    \sa QAbstractListModel, QAbstractItemModel, {Model/View Programming}
 */
 
 /*!
-  Constructs a string list model with the given \a parent.
+    Constructs a string list model with the given \a parent.
 */
 
 QStringListModel::QStringListModel(QObject *parent)
@@ -77,8 +77,8 @@ QStringListModel::QStringListModel(QObject *parent)
 }
 
 /*!
-  Constructs a string list model containing the specified \a strings with
-  the given \a parent.
+    Constructs a string list model containing the specified \a strings
+    with the given \a parent.
 */
 
 QStringListModel::QStringListModel(const QStringList &strings, QObject *parent)
@@ -90,9 +90,9 @@ QStringListModel::QStringListModel(const QStringList &strings, QObject *parent)
     Returns the number of rows in the model. This value corresponds to the
     number of items in the model's internal string list.
 
-    The optional \a parent argument is used in most models to specify the
-    parent of the rows to be counted. Because this is a list if a 
-    valid parent is specified the result will always be 0.
+    The optional \a parent argument is in most models used to specify
+    the parent of the rows to be counted. Because this is a list if a
+    valid parent is specified, the result will always be 0.
 
     \sa insertRows(), removeRows(), QAbstractItemModel::rowCount()
 */
@@ -101,12 +101,13 @@ int QStringListModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    
+
     return lst.count();
 }
 
 /*!
-    Returns data from the item with the given \a index for the specified \a role.
+    Returns data for the specified \a role, from the item with the
+    given \a index.
 
     If the view requests an invalid index, an invalid variant is returned.
 
@@ -125,22 +126,24 @@ QVariant QStringListModel::data(const QModelIndex &index, int role) const
 }
 
 /*!
-    Returns the flags for the item that corresponds to the given \a index.
+    Returns the flags for the item with the given \a index.
 
     Valid items are enabled, selectable, and editable.
+
+    \sa QAbstractItemModel::flags()
 */
 
 Qt::ItemFlags QStringListModel::flags(const QModelIndex &index) const
 {
-    if (index.isValid())
-        return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
-    else
+    if (!index.isValid())
         return QAbstractItemModel::flags(index) | Qt::ItemIsDropEnabled;
+
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
 /*!
-    Sets the data for the item corresponding to the given \a index in the
-    model to the \a value for the specifed \a role.
+    Sets the data for the specifed \a role in the item with the given
+    \a index in the model, to the provided \a value.
 
     The dataChanged() signal is emitted if the item is changed.
 
@@ -149,7 +152,8 @@ Qt::ItemFlags QStringListModel::flags(const QModelIndex &index) const
 
 bool QStringListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (index.isValid() && role == Qt::EditRole) {
+    if (index.row() >= 0 && index.row() < lst.size()
+        && (role == Qt::EditRole || role == Qt::DisplayRole)) {
         lst.replace(index.row(), value.toString());
         emit dataChanged(index, index);
         return true;
@@ -158,7 +162,7 @@ bool QStringListModel::setData(const QModelIndex &index, const QVariant &value, 
 }
 
 /*!
-    Inserts \a count rows into the model beginning at the given \a row.
+    Inserts \a count rows into the model, beginning at the given \a row.
 
     The \a parent index of the rows is optional and is only used for
     consistency with QAbstractItemModel. By default, a null index is
@@ -185,7 +189,7 @@ bool QStringListModel::insertRows(int row, int count, const QModelIndex &parent)
 }
 
 /*!
-    Removes \a count rows from the model beginning at the given \a row.
+    Removes \a count rows from the model, beginning at the given \a row.
 
     The \a parent index of the rows is optional and is only used for
     consistency with QAbstractItemModel. By default, a null index is
@@ -200,7 +204,7 @@ bool QStringListModel::removeRows(int row, int count, const QModelIndex &parent)
     Q_UNUSED(parent);
     if (count <= 0 || row < 0 || (row + count) > rowCount(parent))
         return false;
-    
+
     beginRemoveRows(QModelIndex(), row, row + count - 1);
 
     for (int r = 0; r < count; ++r)
@@ -216,10 +220,12 @@ bool QStringListModel::removeRows(int row, int count, const QModelIndex &parent)
 */
 void QStringListModel::sort(int, Qt::SortOrder order)
 {
+    emit layoutAboutToBeChanged();
     if (order == Qt::AscendingOrder)
         qSort(lst.begin(), lst.end(), qLess<QString>());
     else
         qSort(lst.begin(), lst.end(), qGreater<QString>());
+    emit layoutChanged();
 }
 
 /*!

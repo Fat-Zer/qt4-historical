@@ -44,12 +44,12 @@ class QDesignerFormWindowInterface;
 class QListWidgetItem;
 class QModelIndex;
 
+namespace qdesigner_internal {
+
 namespace Ui
 {
     class FindIconDialog;
 } // namespace Ui
-
-namespace qdesigner_internal {
 
 class ResourceEditor;
 
@@ -86,7 +86,7 @@ private:
     void setActiveBox(InputBox box);
     InputBox activeBox() const;
 
-    Ui::FindIconDialog *ui;
+    qdesigner_internal::Ui::FindIconDialog *ui;
     QDesignerFormWindowInterface *m_form;
 
     void setViewDir(const QString &path);
@@ -106,6 +106,11 @@ private:
     static void setDefaultFilePath(const QString &path);
     static InputBox previousInputBox();
     static void setPreviousInputBox(InputBox box);
+
+#ifdef Q_OS_WIN
+    bool isRoot;
+    QString rootDir;
+#endif
 };
 
 } // namespace qdesigner_internal

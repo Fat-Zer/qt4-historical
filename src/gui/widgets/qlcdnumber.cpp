@@ -49,7 +49,7 @@ public:
 };
 
 /*!
-    \class QLCDNumber qlcdnumber.h
+    \class QLCDNumber
 
     \brief The QLCDNumber widget displays a number with LCD-like digits.
 
@@ -100,7 +100,7 @@ public:
     \l{Macintosh Style Widget Gallery}{Macintosh}, \l{Plastique Style Widget Gallery}{Plastique}.
     \endtable
 
-    \sa QLabel, QFrame
+    \sa QLabel, QFrame, {Digital Clock Example}, {Tetrix Example}
 */
 
 /*!
@@ -127,9 +127,9 @@ public:
     This type determines the visual appearance of the QLCDNumber
     widget.
 
-    \value Outline gives raised segments filled with the background brush.
-    \value Filled gives raised segments filled with the foreground brush.
-    \value Flat gives flat segments filled with the foreground brush.
+    \value Outline gives raised segments filled with the background color.
+    \value Filled gives raised segments filled with the windowText color.
+    \value Flat gives flat segments filled with the windowText color.
 */
 
 
@@ -178,18 +178,18 @@ static QString int2string(int num, int base, int ndigits, bool *oflow)
                 } while (n != 0);
                 len = ndigits - len;
                 if (len > 0)
-                s.fill(' ', len);
+                s.fill(QLatin1Char(' '), len);
                 s += QString::fromLatin1(p);
             }
             break;
     }
     if (negative) {
         for (int i=0; i<(int)s.length(); i++) {
-            if (s[i] != ' ') {
+            if (s[i] != QLatin1Char(' ')) {
                 if (i != 0) {
-                    s[i-1] = '-';
+                    s[i-1] = QLatin1Char('-');
                 } else {
-                    s.insert(0, '-');
+                    s.insert(0, QLatin1Char('-'));
                 }
                 break;
             }
@@ -216,10 +216,10 @@ static QString double2string(double num, int base, int ndigits, bool *oflow)
         int nd = ndigits;
         do {
             s.sprintf("%*.*g", ndigits, nd, num);
-            int i = s.indexOf('e');
-            if (i > 0 && s[i+1]=='+') {
-                s[i] = ' ';
-                s[i+1] = 'e';
+            int i = s.indexOf(QLatin1Char('e'));
+            if (i > 0 && s[i+1]==QLatin1Char('+')) {
+                s[i] = QLatin1Char(' ');
+                s[i+1] = QLatin1Char('e');
             }
         } while (nd-- && (int)s.length() > ndigits);
     }
@@ -446,9 +446,9 @@ void QLCDNumber::setNumDigits(int numDigits)
     }
     if (d->digitStr.isNull()) {                  // from constructor
         d->ndigits = numDigits;
-        d->digitStr.fill(' ', d->ndigits);
+        d->digitStr.fill(QLatin1Char(' '), d->ndigits);
         d->points.fill(0, d->ndigits);
-        d->digitStr[d->ndigits - 1] = '0';            // "0" is the default number
+        d->digitStr[d->ndigits - 1] = QLatin1Char('0');            // "0" is the default number
     } else {
         bool doDisplay = d->ndigits == 0;
         if (numDigits == d->ndigits)             // no change
@@ -458,7 +458,7 @@ void QLCDNumber::setNumDigits(int numDigits)
         if (numDigits > d->ndigits) {            // expand
             dif = numDigits - d->ndigits;
             QString buf;
-            buf.fill(' ', dif);
+            buf.fill(QLatin1Char(' '), dif);
             d->digitStr.insert(0, buf);
             d->points.resize(numDigits);
             for (i=numDigits-1; i>=dif; i--)
@@ -749,18 +749,18 @@ void QLCDNumberPrivate::internalSetString(const QString& s)
         if (len == ndigits)
             buffer = s;
         else
-            buffer = s.right(ndigits).rightJustified(ndigits, ' ');
+            buffer = s.right(ndigits).rightJustified(ndigits, QLatin1Char(' '));
     } else {
         int  index = -1;
         bool lastWasPoint = true;
         newPoints.clearBit(0);
         for (i=0; i<len; i++) {
-            if (s[i] == '.') {
+            if (s[i] == QLatin1Char('.')) {
                 if (lastWasPoint) {           // point already set for digit?
                     if (index == ndigits - 1) // no more digits
                         break;
                     index++;
-                    buffer[index] = ' ';        // 2 points in a row, add space
+                    buffer[index] = QLatin1Char(' ');        // 2 points in a row, add space
                 }
                 newPoints.setBit(index);        // set decimal point
                 lastWasPoint = true;
@@ -780,7 +780,7 @@ void QLCDNumberPrivate::internalSetString(const QString& s)
                                    newPoints.testBit(i));
             }
             for(i=0; i<ndigits-index-1; i++) {
-                buffer[i] = ' ';
+                buffer[i] = QLatin1Char(' ');
                 newPoints.clearBit(i);
             }
         }
@@ -1040,8 +1040,7 @@ void QLCDNumberPrivate::drawSegment(const QPoint &pos, char segmentNo, QPainter 
             LINETO(0,0);
             break;
         default :
-            qWarning("QLCDNumber::drawSegment: (%s) Internal error."
-                     "  Illegal segment id: %d\n",
+            qWarning("QLCDNumber::drawSegment: (%s) Illegal segment id: %d\n",
                      q->objectName().toLocal8Bit().constData(), segmentNo);
         }
         // End exact copy
@@ -1174,8 +1173,7 @@ void QLCDNumberPrivate::drawSegment(const QPoint &pos, char segmentNo, QPainter 
             LINETO(0,0);
             break;
         default :
-            qWarning("QLCDNumber::drawSegment: (%s) Internal error."
-                     "  Illegal segment id: %d\n",
+            qWarning("QLCDNumber::drawSegment: (%s) Illegal segment id: %d\n",
                      q->objectName().toLocal8Bit().constData(), segmentNo);
         }
 
@@ -1236,5 +1234,21 @@ bool QLCDNumber::event(QEvent *e)
 {
     return QFrame::event(e);
 }
+
+/*!
+    \fn void QLCDNumber::setMargin(int margin)
+    Sets the width of the margin around the contents of the widget to \a margin.
+    
+    Use QWidget::setContentsMargins() instead.
+    \sa margin(), QWidget::setContentsMargins()
+*/
+
+/*!
+    \fn int QLCDNumber::margin() const
+    Returns the with of the the margin around the contents of the widget.
+    
+    Use QWidget::getContentsMargins() instead.
+    \sa setMargin(), QWidget::getContentsMargins()
+*/
 
 #endif // QT_NO_LCDNUMBER

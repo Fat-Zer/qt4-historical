@@ -315,8 +315,7 @@ void MainWindow::torrentError(TorrentClient::Error)
     QMessageBox::warning(this, tr("Error"),
                          tr("An error occurred while downloading %0: %1")
                          .arg(fileName)
-                         .arg(client->errorString()),
-                         tr("&OK"));
+                         .arg(client->errorString()));
 
     delete torrentView->takeTopLevelItem(row);
     client->deleteLater();
@@ -339,8 +338,7 @@ bool MainWindow::addTorrent(const QString &fileName, const QString &destinationF
     TorrentClient *client = new TorrentClient(this);
     if (!client->setTorrent(fileName)) {
         QMessageBox::warning(this, tr("Error"),
-                             tr("The torrent file you have selected can not be opened."),
-                             tr("&OK"));
+                             tr("The torrent file you have selected can not be opened."));
         delete client;
         return false;
     }

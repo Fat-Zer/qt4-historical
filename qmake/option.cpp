@@ -26,11 +26,13 @@
 #include <qdir.h>
 #include <qregexp.h>
 #include <qhash.h>
+#include <qdebug.h>
 #include <qsettings.h>
 #include <stdlib.h>
 #include <stdarg.h>
 
 //convenience
+const char *Option::application_argv0 = 0;
 QString Option::prf_ext;
 QString Option::prl_ext;
 QString Option::libtool_ext;
@@ -40,6 +42,7 @@ QStringList Option::h_ext;
 QString Option::cpp_moc_ext;
 QString Option::h_moc_ext;
 QStringList Option::cpp_ext;
+QStringList Option::c_ext;
 QString Option::obj_ext;
 QString Option::lex_ext;
 QString Option::yacc_ext;
@@ -122,44 +125,44 @@ bool usage(const char *a0)
             "mode for qmake, but you may use this to test qmake on an existing project\n"
             "\n"
             "Mode:\n"
-            "\t-project       Put qmake into project file generation mode%s\n"
-            "\t               In this mode qmake interprets files as files to\n"
-            "\t               be built,\n"
-            "\t               defaults to %s\n"
-            "\t-makefile      Put qmake into makefile generation mode%s\n"
-            "\t               In this mode qmake interprets files as project files to\n"
-            "\t               be processed, if skipped qmake will try to find a project\n"
-            "\t               file in your current working directory\n"
+            "  -project       Put qmake into project file generation mode%s\n"
+            "                 In this mode qmake interprets files as files to\n"
+            "                 be built,\n"
+            "                 defaults to %s\n"
+            "  -makefile      Put qmake into makefile generation mode%s\n"
+            "                 In this mode qmake interprets files as project files to\n"
+            "                 be processed, if skipped qmake will try to find a project\n"
+            "                 file in your current working directory\n"
             "\n"
             "Warnings Options:\n"
-            "\t-Wnone         Turn off all warnings\n"
-            "\t-Wall          Turn on all warnings\n"
-            "\t-Wparser       Turn on parser warnings\n"
-            "\t-Wlogic        Turn on logic warnings\n"
+            "  -Wnone         Turn off all warnings\n"
+            "  -Wall          Turn on all warnings\n"
+            "  -Wparser       Turn on parser warnings\n"
+            "  -Wlogic        Turn on logic warnings\n"
             "\n"
             "Options:\n"
-            "\t * You can place any variable assignment in options and it will be     *\n"
-            "\t * processed as if it was in [files]. These assignments will be parsed *\n"
-            "\t * before [files].                                                     *\n"
-            "\t-o file        Write output to file\n"
-            "\t-unix          Run in unix mode\n"
-            "\t-win32         Run in win32 mode\n"
-            "\t-macx          Run in Mac OS X mode\n"
-            "\t-d             Increase debug level\n"
-            "\t-t templ       Overrides TEMPLATE as templ\n"
-            "\t-tp prefix     Overrides TEMPLATE so that prefix is prefixed into the value\n"
-            "\t-help          This help\n"
-            "\t-v             Version information\n"
-            "\t-after         All variable assignments after this will be\n"
-            "\t               parsed after [files]\n"
-            "\t-norecursive   Don't do a recursive search\n"
-            "\t-recursive     Do a recursive search\n"
-            "\t-cache file    Use file as cache           [makefile mode only]\n"
-            "\t-spec spec     Use spec as QMAKESPEC       [makefile mode only]\n"
-            "\t-nocache       Don't use a cache file      [makefile mode only]\n"
-            "\t-nodepend      Don't generate dependencies [makefile mode only]\n"
-            "\t-nomoc         Don't generate moc targets  [makefile mode only]\n"
-            "\t-nopwd         Don't look for files in pwd [project mode only]\n"
+            "   * You can place any variable assignment in options and it will be     *\n"
+            "   * processed as if it was in [files]. These assignments will be parsed *\n"
+            "   * before [files].                                                     *\n"
+            "  -o file        Write output to file\n"
+            "  -unix          Run in unix mode\n"
+            "  -win32         Run in win32 mode\n"
+            "  -macx          Run in Mac OS X mode\n"
+            "  -d             Increase debug level\n"
+            "  -t templ       Overrides TEMPLATE as templ\n"
+            "  -tp prefix     Overrides TEMPLATE so that prefix is prefixed into the value\n"
+            "  -help          This help\n"
+            "  -v             Version information\n"
+            "  -after         All variable assignments after this will be\n"
+            "                 parsed after [files]\n"
+            "  -norecursive   Don't do a recursive search\n"
+            "  -recursive     Do a recursive search\n"
+            "  -cache file    Use file as cache           [makefile mode only]\n"
+            "  -spec spec     Use spec as QMAKESPEC       [makefile mode only]\n"
+            "  -nocache       Don't use a cache file      [makefile mode only]\n"
+            "  -nodepend      Don't generate dependencies [makefile mode only]\n"
+            "  -nomoc         Don't generate moc targets  [makefile mode only]\n"
+            "  -nopwd         Don't look for files in pwd [project mode only]\n"
             ,a0,
             default_mode(a0) == Option::QMAKE_GENERATE_PROJECT  ? " (default)" : "", project_builtin_regx().toLatin1().constData(),
             default_mode(a0) == Option::QMAKE_GENERATE_MAKEFILE ? " (default)" : ""
@@ -218,7 +221,7 @@ Option::parseCommandLine(int argc, char **argv, int skip)
                 Option::debug_level++;
             } else if(opt == "version" || opt == "v" || opt == "-version") {
                 fprintf(stdout,
-                        "QMake version: %s\n"
+                        "QMake version %s\n"
                         "Using Qt version %s in %s\n",
                         qmake_version(), QT_VERSION_STR,
                         QLibraryInfo::location(QLibraryInfo::LibrariesPath).toLatin1().constData());
@@ -310,6 +313,7 @@ Option::parseCommandLine(int argc, char **argv, int skip)
 int
 Option::init(int argc, char **argv)
 {
+    Option::application_argv0 = 0;
     Option::cpp_moc_mod = "";
     Option::h_moc_mod = "moc_";
     Option::lex_mod = "_lex";
@@ -320,6 +324,7 @@ Option::init(int argc, char **argv)
     Option::prf_ext = ".prf";
     Option::ui_ext = ".ui";
     Option::h_ext << ".h" << ".hpp" << ".hh" << ".hxx";
+    Option::c_ext << ".c";
 #ifndef Q_OS_WIN
     Option::h_ext << ".H";
 #endif
@@ -341,6 +346,7 @@ Option::init(int argc, char **argv)
     Option::field_sep = ' ';
 
     if(argc && argv) {
+        Option::application_argv0 = argv[0];
         QString argv0 = argv[0];
         if(Option::qmake_mode == Option::QMAKE_GENERATE_NOTHING)
             Option::qmake_mode = default_mode(argv0);
@@ -474,6 +480,9 @@ bool Option::postProcessProject(QMakeProject *project)
     Option::h_ext = project->variables()["QMAKE_EXT_H"];
     if(h_ext.isEmpty())
         h_ext << ".h";
+    Option::c_ext = project->variables()["QMAKE_EXT_C"];
+    if(c_ext.isEmpty())
+        c_ext << ".c"; //something must be there
 
     if(!project->isEmpty("QMAKE_EXT_RES"))
         Option::res_ext = project->first("QMAKE_EXT_RES");
@@ -611,86 +620,6 @@ void warn_msg(QMakeWarn type, const char *fmt, ...)
     fprintf(stderr, "\n");
 }
 
-#include "../src/corelib/global/qconfig.cpp"
-QString QLibraryInfo::location(QLibraryInfo::LibraryLocation loc)
-{
-    QString ret;
-    const char *path = 0;
-    switch (loc) {
-#ifdef QT_CONFIGURE_PREFIX_PATH
-    case PrefixPath:
-        path = QT_CONFIGURE_PREFIX_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_DOCUMENTATION_PATH
-    case DocumentationPath:
-        path = QT_CONFIGURE_DOCUMENTATION_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_HEADERS_PATH
-    case HeadersPath:
-        path = QT_CONFIGURE_HEADERS_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_LIBRARIES_PATH
-    case LibrariesPath:
-        path = QT_CONFIGURE_LIBRARIES_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_BINARIES_PATH
-    case BinariesPath:
-        path = QT_CONFIGURE_BINARIES_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_PLUGINS_PATH
-    case PluginsPath:
-        path = QT_CONFIGURE_PLUGINS_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_DATA_PATH
-    case DataPath:
-        path = QT_CONFIGURE_DATA_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_TRANSLATIONS_PATH
-    case TranslationsPath:
-        path = QT_CONFIGURE_TRANSLATIONS_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_SETTINGS_PATH
-    case SettingsPath:
-        path = QT_CONFIGURE_SETTINGS_PATH;
-        break;
-#endif
-#ifdef QT_CONFIGURE_EXAMPLES_PATH
-        case ExamplesPath:
-            path = QT_CONFIGURE_EXAMPLES_PATH;
-            break;
-#endif
-#ifdef QT_CONFIGURE_DEMOS_PATH
-        case DemosPath:
-            path = QT_CONFIGURE_DEMOS_PATH;
-            break;
-#endif
-    default:
-        break;
-    }
-
-    if (path)
-        ret = QString::fromLocal8Bit(path);
-
-    if (QDir::isRelativePath(ret)) {
-        if (loc == PrefixPath) {
-            // we make the prefix path absolute to the current directory
-            return QDir::current().absoluteFilePath(ret);
-        } else {
-            // we make any other path absolute to the prefix directory
-            return QDir(location(PrefixPath)).absoluteFilePath(ret);
-        }
-    }
-    return ret;
-}
-
 class QMakeCacheClearItem {
 private:
     qmakeCacheClearFunc func;
@@ -715,4 +644,68 @@ void
 qmakeAddCacheClear(qmakeCacheClearFunc func, void **data)
 {
     cache_items.append(new QMakeCacheClearItem(func, data));
+}
+
+#ifdef Q_OS_WIN
+# include <windows.h>
+#endif
+
+QString qmake_libraryInfoFile()
+{
+    QString ret;
+#if defined( Q_OS_WIN )
+    QFileInfo filePath;
+    QT_WA({
+        unsigned short module_name[256];
+        GetModuleFileNameW(0, reinterpret_cast<wchar_t *>(module_name), sizeof(module_name));
+        filePath = QString::fromUtf16(module_name);
+    }, {
+        char module_name[256];
+        GetModuleFileNameA(0, module_name, sizeof(module_name));
+        filePath = QString::fromLocal8Bit(module_name);
+    });
+    ret = filePath.filePath();
+#else
+    QString argv0 = QFile::decodeName(QByteArray(Option::application_argv0));
+    QString absPath;
+
+    if (!argv0.isEmpty() && argv0.at(0) == QLatin1Char('/')) {
+        /*
+          If argv0 starts with a slash, it is already an absolute
+          file path.
+        */
+        absPath = argv0;
+    } else if (argv0.contains(QLatin1Char('/'))) {
+        /*
+          If argv0 contains one or more slashes, it is a file path
+          relative to the current directory.
+        */
+        absPath = QDir::current().absoluteFilePath(argv0);
+    } else {
+        /*
+          Otherwise, the file path has to be determined using the
+          PATH environment variable.
+        */
+        QByteArray pEnv = qgetenv("PATH");
+        QDir currentDir = QDir::current();
+        QStringList paths = QString::fromLocal8Bit(pEnv.constData()).split(QLatin1String(":"));
+        for (QStringList::const_iterator p = paths.constBegin(); p != paths.constEnd(); ++p) {
+            if ((*p).isEmpty())
+                continue;
+            QString candidate = currentDir.absoluteFilePath(*p + QLatin1Char('/') + argv0);
+            if (QFile::exists(candidate)) {
+                absPath = candidate;
+                break;
+            }
+        }
+    }
+
+    absPath = QDir::cleanPath(absPath);
+
+    QFileInfo fi(absPath);
+    ret = fi.exists() ? fi.canonicalFilePath() : QString();
+#endif
+    if(!ret.isEmpty())
+        ret = QDir(QFileInfo(ret).absolutePath()).filePath("qt.conf");
+    return ret;
 }

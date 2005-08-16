@@ -40,7 +40,9 @@ class Q_GUI_EXPORT QHeaderView : public QAbstractItemView
     Q_PROPERTY(bool showSortIndicator READ isSortIndicatorShown WRITE setSortIndicatorShown)
     Q_PROPERTY(bool highlightSections READ highlightSections WRITE setHighlightSections)
     Q_PROPERTY(bool stretchLastSection READ stretchLastSection WRITE setStretchLastSection)
+    Q_PROPERTY(bool cascadingSectionResizes READ cascadingSectionResizes WRITE setCascadingSectionResizes)
     Q_PROPERTY(int defaultSectionSize READ defaultSectionSize WRITE setDefaultSectionSize)
+    Q_PROPERTY(int minimumSectionSize READ minimumSectionSize WRITE setMinimumSectionSize)
     Q_PROPERTY(Qt::Alignment defaultAlignment READ defaultAlignment WRITE setDefaultAlignment)
     Q_ENUMS(ResizeMode)
 
@@ -48,9 +50,11 @@ public:
 
     enum ResizeMode
     {
-        Interactive, // don't change the size (let the user decide)
-        Stretch, // fill available visible space
-        Custom // let somebody else do the resize
+        Interactive,
+        Stretch,
+        Fixed,
+        Custom = Fixed,
+        ResizeToContents
     };
 
     explicit QHeaderView(Qt::Orientation orientation, QWidget *parent = 0);
@@ -75,6 +79,7 @@ public:
     int sectionViewportPosition(int logicalIndex) const;
 
     void moveSection(int from, int to);
+    void swapSections(int first, int second);
     void resizeSection(int logicalIndex, int size);
     void resizeSections(QHeaderView::ResizeMode mode);
 
@@ -113,8 +118,14 @@ public:
     bool stretchLastSection() const;
     void setStretchLastSection(bool stretch);
 
+    bool cascadingSectionResizes() const;
+    void setCascadingSectionResizes(bool enable);
+
     int defaultSectionSize() const;
     void setDefaultSectionSize(int size);
+
+    int minimumSectionSize() const;
+    void setMinimumSectionSize(int size);
 
     Qt::Alignment defaultAlignment() const;
     void setDefaultAlignment(Qt::Alignment alignment);
@@ -125,6 +136,7 @@ public:
 
 public Q_SLOTS:
     void setOffset(int offset);
+    void setOffsetToSectionPosition(int visualIndex);
     void headerDataChanged(Qt::Orientation orientation, int logicalFirst, int logicalLast);
 
 Q_SIGNALS:
@@ -136,6 +148,7 @@ Q_SIGNALS:
     void sectionCountChanged(int oldCount, int newCount);
     void sectionHandleDoubleClicked(int logicalIndex);
     void sectionAutoResize(int logicalIndex, QHeaderView::ResizeMode mode);
+    void geometriesChanged();
 
 protected Q_SLOTS:
     void updateSection(int logicalIndex);
@@ -188,10 +201,8 @@ private:
 
 inline int QHeaderView::logicalIndexAt(int ax, int ay) const
 { return orientation() == Qt::Horizontal ? logicalIndexAt(ax) : logicalIndexAt(ay); }
-
 inline int QHeaderView::logicalIndexAt(const QPoint &apos) const
 { return logicalIndexAt(apos.x(), apos.y()); }
-
 inline void QHeaderView::hideSection(int alogicalIndex)
 { setSectionHidden(alogicalIndex, true); }
 inline void QHeaderView::showSection(int alogicalIndex)

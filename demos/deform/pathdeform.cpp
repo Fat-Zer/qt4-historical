@@ -79,7 +79,14 @@ PathDeformWidget::PathDeformWidget(QWidget *parent)
     QPushButton *showSourceButton = new QPushButton(mainGroup);
     showSourceButton->setText("Show Source");
 //     showSourceButton->setCheckable(true);
-
+#ifdef QT_OPENGL_SUPPORT
+    QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
+    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setCheckable(true);
+    enableOpenGLButton->setChecked(m_renderer->usesOpenGL());
+    if (!QGLFormat::hasOpenGL())
+        enableOpenGLButton->hide();
+#endif
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
     whatsThisButton->setText("What's This?");
     whatsThisButton->setCheckable(true);
@@ -98,6 +105,9 @@ PathDeformWidget::PathDeformWidget(QWidget *parent)
     mainGroupLayout->addWidget(animateButton);
     mainGroupLayout->addStretch(1);
     mainGroupLayout->addWidget(showSourceButton);
+#ifdef QT_OPENGL_SUPPORT
+    mainGroupLayout->addWidget(enableOpenGLButton);
+#endif
     mainGroupLayout->addWidget(whatsThisButton);
 
     QVBoxLayout *radiusGroupLayout = new QVBoxLayout(radiusGroup);
@@ -119,6 +129,9 @@ PathDeformWidget::PathDeformWidget(QWidget *parent)
     connect(animateButton, SIGNAL(clicked(bool)), m_renderer, SLOT(setAnimated(bool)));
     connect(whatsThisButton, SIGNAL(clicked(bool)), m_renderer, SLOT(setDescriptionEnabled(bool)));
     connect(showSourceButton, SIGNAL(clicked()), m_renderer, SLOT(showSource()));
+#ifdef QT_OPENGL_SUPPORT
+    connect(enableOpenGLButton, SIGNAL(clicked(bool)), m_renderer, SLOT(enableOpenGL(bool)));
+#endif
     connect(m_renderer, SIGNAL(descriptionEnabledChanged(bool)),
             whatsThisButton, SLOT(setChecked(bool)));
 
@@ -293,9 +306,16 @@ void PathDeformRenderer::timerEvent(QTimerEvent *e)
             m_pos.setY(height() - m_radius);
         }
 
-        QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
-        update(QRect(rectBefore | rectAfter));
-        QApplication::syncX();
+#ifdef QT_OPENGL_SUPPORT
+        if (usesOpenGL()) {
+            update();
+        } else
+#endif
+        {
+            QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
+            update(rectAfter | rectBefore);
+            QApplication::syncX();
+        }
     }
 //     else if (e->timerId() == m_fpsTimer.timerId()) {
 //         printf("fps: %d\n", m_fpsCounter);
@@ -335,8 +355,15 @@ void PathDeformRenderer::mouseMoveEvent(QMouseEvent *e)
         m_direction = (m_direction + dir) / 2;
     }
     m_pos = e->pos() + m_offset;
-    QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
-    update(rectBefore | rectAfter);
+#ifdef QT_OPENGL_SUPPORT
+    if (usesOpenGL()) {
+        update();
+    } else
+#endif
+    {
+        QRect rectAfter = circle_bounds(m_pos, m_radius, m_fontSize);
+        update(rectBefore | rectAfter);
+    }
 }
 
 QPainterPath PathDeformRenderer::lensDeform(const QPainterPath &source, const QPointF &offset)
@@ -347,7 +374,7 @@ QPainterPath PathDeformRenderer::lensDeform(const QPainterPath &source, const QP
     double flip = m_intensity / 100.0;
 
     for (int i=0; i<path.elementCount(); ++i) {
-        QPainterPath::Element &e = const_cast<QPainterPath::Element &>(path.elementAt(i));
+        const QPainterPath::Element &e = path.elementAt(i);
 
         double x = e.x + offset.x();
         double y = e.y + offset.y();
@@ -357,11 +384,11 @@ QPainterPath PathDeformRenderer::lensDeform(const QPainterPath &source, const QP
         double len = m_radius - sqrt(dx * dx + dy * dy);
 
         if (len > 0) {
-            e.x = x + flip * dx * len / m_radius;
-            e.y = y + flip * dy * len / m_radius;
+            path.setElementPositionAt(i,
+                                      x + flip * dx * len / m_radius,
+                                      y + flip * dy * len / m_radius);
         } else {
-            e.x = x;
-            e.y = y;
+            path.setElementPositionAt(i, x, y);
         }
 
     }
@@ -422,13 +449,29 @@ void PathDeformRenderer::setRadius(int radius)
     double max = qMax(m_radius, (double)radius);
     m_radius = radius;
     generateLensPixmap();
-    if (!m_animated || m_radius < max)
-        update(circle_bounds(m_pos, max, m_fontSize));
+    if (!m_animated || m_radius < max) {
+#ifdef QT_OPENGL_SUPPORT
+        if (usesOpenGL()) {
+            update();
+        } else
+#endif
+        {
+            update(circle_bounds(m_pos, max, m_fontSize));
+        }
+    }
 }
 
 void PathDeformRenderer::setIntensity(int intensity)
 {
     m_intensity = intensity;
-    if (!m_animated)
-        update(circle_bounds(m_pos, m_radius, m_fontSize));
+    if (!m_animated) {
+#ifdef QT_OPENGL_SUPPORT
+        if (usesOpenGL()) {
+            update();
+        } else
+#endif
+        {
+            update(circle_bounds(m_pos, m_radius, m_fontSize));
+        }
+    }
 }

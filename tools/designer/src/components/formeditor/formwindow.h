@@ -45,7 +45,7 @@ class QLabel;
 class QTimer;
 class QAction;
 class QMenu;
-class QtUndoStack;
+class QUndoStack;
 class QRubberBand;
 
 namespace qdesigner_internal {
@@ -165,7 +165,7 @@ public:
     void manageWidget(QWidget *w);
     void unmanageWidget(QWidget *w);
 
-    inline QtUndoStack *commandHistory() const
+    inline QUndoStack *commandHistory() const
     { return m_commandHistory; }
 
     void beginCommand(const QString &description);
@@ -199,6 +199,7 @@ public:
     void dropWidgets(QList<QDesignerDnDItemInterface*> &item_list, QWidget *target,
                         const QPoint &global_mouse_pos);
 
+    QWidget *findContainer(QWidget *w, bool excludeLayout) const;
 signals:
     void contextMenuRequested(QMenu *menu, QWidget *widget);
 
@@ -272,7 +273,6 @@ private:
     QPoint mapToForm(const QWidget *w, const QPoint &pos) const;
     bool canBeBuddy(QWidget *w) const;
 
-    QWidget *findContainer(QWidget *w, bool excludeLayout) const;
     QWidget *findTargetContainer(QWidget *widget) const;
 
     bool isPageOfContainerWidget(QWidget *widget) const;
@@ -321,7 +321,7 @@ private:
     QWidget *targetContainer;
     QPalette restorePalette;
 
-    QtUndoStack *m_commandHistory;
+    QUndoStack *m_commandHistory;
 
     QString m_fileName;
 
@@ -352,7 +352,7 @@ private:
     QString m_exportMacro;
     QStringList m_includeHints;
 
-    QList<QPointer<SetPropertyCommand> > m_moveSelection;
+    QList<SetPropertyCommand*> m_moveSelection;
     int m_lastUndoIndex;
 
 private:

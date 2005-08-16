@@ -78,10 +78,10 @@ QTextCursorPrivate::AdjustResult QTextCursorPrivate::adjustPosition(int position
             position = positionOfChange;
         else
             position += charsAddedOrRemoved;
-        
+
         currentCharFormat = -1;
     }
-    
+
     if (anchor >= positionOfChange
         && (anchor != positionOfChange || op != QTextUndoCommand::KeepCursor)) {
         if (charsAddedOrRemoved < 0 && anchor < positionOfChange - charsAddedOrRemoved)
@@ -89,7 +89,7 @@ QTextCursorPrivate::AdjustResult QTextCursorPrivate::adjustPosition(int position
         else
             anchor += charsAddedOrRemoved;
     }
-    
+
     if (adjusted_anchor >= positionOfChange
         && (adjusted_anchor != positionOfChange || op != QTextUndoCommand::KeepCursor)) {
         if (charsAddedOrRemoved < 0 && adjusted_anchor < positionOfChange - charsAddedOrRemoved)
@@ -97,7 +97,7 @@ QTextCursorPrivate::AdjustResult QTextCursorPrivate::adjustPosition(int position
         else
             adjusted_anchor += charsAddedOrRemoved;
     }
-    
+
     return result;
 }
 
@@ -555,9 +555,12 @@ static void setBlockCharFormat(QTextDocumentPrivate *priv, int pos1, int pos2,
     }
 }
 
-void QTextCursorPrivate::setBlockCharFormat(const QTextCharFormat &format, QTextDocumentPrivate::FormatChangeMode changeMode)
+void QTextCursorPrivate::setBlockCharFormat(const QTextCharFormat &_format, QTextDocumentPrivate::FormatChangeMode changeMode)
 {
     priv->beginEditBlock();
+
+    QTextCharFormat format = _format;
+    format.clearProperty(QTextFormat::ObjectIndex);
 
     QTextTable *table = complexSelectionTable();
     if (table) {
@@ -643,9 +646,12 @@ void QTextCursorPrivate::setBlockFormat(const QTextBlockFormat &format, QTextDoc
     }
 }
 
-void QTextCursorPrivate::setCharFormat(const QTextCharFormat &format, QTextDocumentPrivate::FormatChangeMode changeMode)
+void QTextCursorPrivate::setCharFormat(const QTextCharFormat &_format, QTextDocumentPrivate::FormatChangeMode changeMode)
 {
     Q_ASSERT(position != anchor);
+
+    QTextCharFormat format = _format;
+    format.clearProperty(QTextFormat::ObjectIndex);
 
     QTextTable *table = complexSelectionTable();
     if (table) {
@@ -689,10 +695,11 @@ void QTextCursorPrivate::setCharFormat(const QTextCharFormat &format, QTextDocum
 }
 
 /*!
-    \class QTextCursor qtextcursor.h
+    \class QTextCursor
     \brief The QTextCursor class offers an API to access and modify QTextDocuments.
 
     \ingroup text
+    \ingroup shared
     \mainclass
 
     Text cursors are objects that are used to access and modify the contents
@@ -731,11 +738,15 @@ void QTextCursorPrivate::setCharFormat(const QTextCharFormat &format, QTextDocum
     charFormat(), and the format of the current block is returned by
     blockFormat().
 
-    Formatting can be applied to the current character (the character
-    immedately after position()) using applyCharFormatModifier(), and
-    to the current block (the block that contains position()) using
-    setBlockFormat() and applyBlockFormatModifier(). The text at the
-    current character position can be turned into a list using
+    Formatting can be applied to the current text document using the
+    setCharFormat(), mergeCharFormat(), setBlockFormat() and
+    mergeBlockFormat() functions. The 'set' functions will replace the
+    cursor's current character or block format, while the 'merge'
+    functions add the given format properties to the cursor's current
+    format. If the cursor has a selection the given format is applied
+    to the current selection. Note that when only parts of a block is
+    selected the block format is applied to the entire block. The text
+    at the current character position can be turned into a list using
     createList().
 
     Deletions can be achieved using deleteChar(),
@@ -821,11 +832,15 @@ void QTextCursorPrivate::setCharFormat(const QTextCharFormat &format, QTextDocum
 /*!
     \enum QTextCursor::SelectionType
 
-    \value WordUnderCursor Selects the word under the cursor. If the cursor
+    This enum describes the types of selection that can be applied with the
+    select() function.
+
+    \value Document         Selects the entire document.
+    \value BlockUnderCursor Selects the block of text under the cursor.
+    \value LineUnderCursor  Selects the line of text under the cursor.
+    \value WordUnderCursor  Selects the word under the cursor. If the cursor
            is not positioned within a string of selectable characters, no
            text is selected.
-    \value LineUnderCursor Selects the line of text under the cursor.
-    \value BlockUnderCursor Selects the block of text under the cursor.
 */
 
 /*!
@@ -930,7 +945,7 @@ void QTextCursor::setPosition(int pos, MoveMode m)
         return;
 
     if (pos < 0 || pos >= d->priv->length()) {
-        qWarning("QTextCursor::setPosition: position '%d' out of range", pos);
+        qWarning("QTextCursor::setPosition: Position '%d' out of range", pos);
         return;
     }
 
@@ -1041,16 +1056,20 @@ void QTextCursor::insertText(const QString &text)
 }
 
 /*!
+    \fn void QTextCursor::insertText(const QString &text, const QTextCharFormat &format)
     \overload
 
     Inserts \a text at the current position with the given \a format.
 */
-void QTextCursor::insertText(const QString &text, const QTextCharFormat &format)
+void QTextCursor::insertText(const QString &text, const QTextCharFormat &_format)
 {
     if (!d || !d->priv)
         return;
 
-    Q_ASSERT(format.isValid());
+    Q_ASSERT(_format.isValid());
+
+    QTextCharFormat format = _format;
+    format.clearProperty(QTextFormat::ObjectIndex);
 
     d->priv->beginEditBlock();
 
@@ -1159,7 +1178,6 @@ void QTextCursor::select(SelectionType selection)
     clearSelection();
 
     const QTextBlock block = d->block();
-    const int relativePos = d->position - block.position();
 
     switch (selection) {
         case LineUnderCursor:
@@ -1167,9 +1185,6 @@ void QTextCursor::select(SelectionType selection)
             movePosition(EndOfLine, KeepAnchor);
             break;
         case WordUnderCursor:
-            if (relativePos == block.length() - 1)
-                break;
-
             movePosition(StartOfWord);
             movePosition(EndOfWord, KeepAnchor);
             break;
@@ -1181,6 +1196,10 @@ void QTextCursor::select(SelectionType selection)
                 movePosition(NextBlock, KeepAnchor);
             }
             movePosition(EndOfBlock, KeepAnchor);
+            break;
+        case Document:
+            movePosition(Start);
+            movePosition(End, KeepAnchor);
             break;
     }
 }
@@ -1232,7 +1251,7 @@ void QTextCursor::selectedTableCells(int *firstRow, int *numRows, int *firstColu
 
 
 /*!
-    Clears the current selection.
+    Clears the current selection by setting the anchor to the cursor position.
 
     Note that it does \bold{not} delete the text of the selection.
 
@@ -1384,7 +1403,7 @@ QTextBlockFormat QTextCursor::blockFormat() const
     Sets the block format of the current block (or all blocks that
     are contained in the selection) to \a format.
 
-    \sa blockFormat()
+    \sa blockFormat(), mergeBlockFormat()
 */
 void QTextCursor::setBlockFormat(const QTextBlockFormat &format)
 {
@@ -1399,7 +1418,7 @@ void QTextCursor::setBlockFormat(const QTextBlockFormat &format)
     are contained in the selection) with the block format specified by
     \a modifier.
 
-    \sa setBlockFormat()
+    \sa setBlockFormat(), blockFormat()
 */
 void QTextCursor::mergeBlockFormat(const QTextBlockFormat &modifier)
 {
@@ -1436,7 +1455,7 @@ void QTextCursor::setBlockCharFormat(const QTextCharFormat &format)
     if (!d || !d->priv)
         return;
 
-    d->setBlockCharFormat(format, QTextDocumentPrivate::SetFormat);
+    d->setBlockCharFormat(format, QTextDocumentPrivate::SetFormatAndPreserveObjectIndices);
 }
 
 /*!
@@ -1487,10 +1506,11 @@ QTextCharFormat QTextCursor::charFormat() const
 }
 
 /*!
-    Set the character format to the given \a format for the current selection.
-    Does nothing if the cursor does not have a selection.
+    Sets the cursor's current character format to the given \a
+    format. If the cursor has a selection, the given \a format is
+    applied to the current selection.
 
-    \sa hasSelection()
+    \sa hasSelection(), mergeCharFormat()
 */
 void QTextCursor::setCharFormat(const QTextCharFormat &format)
 {
@@ -1500,15 +1520,16 @@ void QTextCursor::setCharFormat(const QTextCharFormat &format)
         d->currentCharFormat = d->priv->formatCollection()->indexForFormat(format);
         return;
     }
-    d->setCharFormat(format, QTextDocumentPrivate::SetFormat);
+    d->setCharFormat(format, QTextDocumentPrivate::SetFormatAndPreserveObjectIndices);
 }
 
 /*!
-    Applies all the properties set in \a modifier to all the character formats
-    that are part of the selection. Does nothing if the cursor does not
-    have a selection.
+    Merges the cursor's current character format with the properties
+    described by format \a modifier. If the cursor has a selection,
+    this function applies all the properties set in \a modifier to all
+    the character formats that are part of the selection.
 
-    \sa hasSelection()
+    \sa hasSelection(), setCharFormat()
 */
 void QTextCursor::mergeCharFormat(const QTextCharFormat &modifier)
 {
@@ -1607,6 +1628,7 @@ void QTextCursor::insertBlock(const QTextBlockFormat &format)
 }
 
 /*!
+    \fn void QTextCursor::insertBlock(const QTextBlockFormat &format, const QTextCharFormat &charFormat)
     \overload
 
     Inserts a new empty block at the cursor position() with block
@@ -1614,10 +1636,13 @@ void QTextCursor::insertBlock(const QTextBlockFormat &format)
 
     \sa setBlockFormat()
 */
-void QTextCursor::insertBlock(const QTextBlockFormat &format, const QTextCharFormat &charFormat)
+void QTextCursor::insertBlock(const QTextBlockFormat &format, const QTextCharFormat &_charFormat)
 {
     if (!d || !d->priv)
         return;
+
+    QTextCharFormat charFormat = _charFormat;
+    charFormat.clearProperty(QTextFormat::ObjectIndex);
 
     d->priv->beginEditBlock();
     d->remove();
@@ -1815,6 +1840,47 @@ void QTextCursor::insertFragment(const QTextDocumentFragment &fragment)
 }
 
 /*!
+    \since 4.2
+    Inserts the text \a html at the current position(). The text is interpreted as
+    HTML.
+*/
+void QTextCursor::insertHtml(const QString &html)
+{
+    if (!d || !d->priv)
+        return;
+    QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(html, d->priv->document());
+    insertFragment(fragment);
+}
+
+/*!
+    \overload
+    \since 4.2
+
+    Inserts the image defined by the given \a format at the cursor's current position
+    with the specified \a alignment.
+
+    \sa position()
+*/
+void QTextCursor::insertImage(const QTextImageFormat &format, QTextFrameFormat::Position alignment)
+{
+    if (!d || !d->priv)
+        return;
+
+    QTextFrameFormat ffmt;
+    ffmt.setPosition(alignment);
+    QTextObject *obj = d->priv->createObject(ffmt);
+
+    QTextImageFormat fmt = format;
+    fmt.setObjectIndex(obj->objectIndex());
+
+    d->priv->beginEditBlock();
+    d->remove();
+    const int idx = d->priv->formatCollection()->indexForFormat(fmt);
+    d->priv->insert(d->position, QString(QChar(QChar::ObjectReplacementCharacter)), idx);
+    d->priv->endEditBlock();
+}
+
+/*!
     Inserts the image defined by \a format at the current position().
 */
 void QTextCursor::insertImage(const QTextImageFormat &format)
@@ -1827,6 +1893,12 @@ void QTextCursor::insertImage(const QTextImageFormat &format)
 
     Convenience method for inserting the image with the given \a name at the
     current position().
+
+    \code
+    QImage img = ...
+    textDocument->addResource(QTextDocument::ImageResource, QUrl("myimage"), img);
+    cursor.insertImage("myimage");
+    \endcode
 */
 void QTextCursor::insertImage(const QString &name)
 {
@@ -2033,4 +2105,56 @@ void QTextCursor::endEditBlock()
 bool QTextCursor::isCopyOf(const QTextCursor &other) const
 {
     return d == other.d;
+}
+
+/*!
+    \since 4.2
+    Returns the number of the block the cursor is in.
+
+    Note that this function only makes sense in documents without complex objects such
+    as tables or frames.
+*/
+int QTextCursor::blockNumber() const
+{
+    if (!d || !d->priv)
+        return 0;
+
+    // ### naive implementation for now
+    QTextBlock currentBlock = d->block();
+    if (!currentBlock.isValid())
+        return 0;
+
+    int count = 0;
+    for (QTextBlock block = d->priv->blocksBegin();
+         block.isValid() && block != currentBlock;
+         block = block.next(), ++count) {
+    }
+    return count;
+}
+
+/*!
+    \since 4.2
+    Returns the position of the cursor within its containing line.
+*/
+int QTextCursor::columnNumber() const
+{
+    if (!d || !d->priv)
+        return 0;
+
+    QTextBlock block = d->block();
+    if (!block.isValid())
+        return 0;
+
+    const QTextLayout *layout = block.layout();
+    Q_ASSERT(layout); // can't happen
+
+    const int relativePos = d->position - block.position();
+
+    if (layout->lineCount() == 0)
+        return relativePos;
+
+    QTextLine line = layout->lineForTextPosition(relativePos);
+    if (!line.isValid())
+        return 0;
+    return relativePos - line.textStart();
 }

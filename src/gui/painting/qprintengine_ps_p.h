@@ -40,6 +40,10 @@
 
 #include "private/qpdf_p.h"
 #include "qplatformdefs.h"
+#include "QtCore/qlibrary.h"
+#include "QtCore/qstringlist.h"
+#include "QtCore/qhash.h"
+#include "QtCore/qabstractitemmodel.h"
 
 class QPrinter;
 class QPSPrintEnginePrivate;
@@ -63,26 +67,23 @@ public:
     virtual void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
 
     virtual void drawImageInternal(const QRectF &r, QImage img, bool bitmap);
-    
-    virtual QPaintEngine::Type type() const { return QPaintEngine::PostScript; }
 
-    // Printer stuff...
-    void setProperty(PrintEnginePropertyKey key, const QVariant &value);
-    QVariant property(PrintEnginePropertyKey key) const;
+    virtual QPaintEngine::Type type() const { return QPaintEngine::PostScript; }
 
     virtual bool newPage();
     virtual bool abort();
-
-    virtual int metric(QPaintDevice::PaintDeviceMetric metricType) const;
 
     virtual QPrinter::PrinterState printerState() const;
 
     virtual Qt::HANDLE handle() const { return 0; };
 
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    QCUPSSupport* cupsSupport();
+#endif
+
 private:
     Q_DISABLE_COPY(QPSPrintEngine)
 };
-
 
 class QPSPrintEnginePrivate : public QPdfBaseEnginePrivate {
 public:
@@ -93,16 +94,10 @@ public:
     void emitPages();
     void drawImage(qreal x, qreal y, qreal w, qreal h, const QImage &img, const QImage &mask);
     void flushPage(bool last = false);
-    QRect paperRect() const;
-    QRect pageRect() const;
 
     int         pageCount;
     bool        epsf;
     QByteArray     fontsUsed;
-
-    // the device the output is in the end streamed to.
-    QIODevice *outDevice;
-    int fd;
 
     // stores the descriptions of the n first pages.
     QByteArray buffer;
@@ -111,25 +106,9 @@ public:
 
     QRect boundingBox;
 
-    bool        collate;
-    int         copies;
-    QString printerName;
-    QString outputFileName;
-    QString selectionOption;
-    QString printProgram;
-    QString title;
-    QString creator;
-    QPrinter::Orientation orientation;
-    QPrinter::PageSize pageSize;
-    QPrinter::PageOrder pageOrder;
-    int resolution;
-    QPrinter::ColorMode colorMode;
-    bool fullPage;
-    QPrinter::PaperSource paperSource;
     QPrinter::PrinterState printerState;
-    bool embedFonts;
-
-    pid_t pid;
+    bool hugeDocument;
+    bool headerDone;
 };
 
 #endif // QT_NO_PRINTER

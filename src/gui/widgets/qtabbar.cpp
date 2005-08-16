@@ -21,6 +21,8 @@
 **
 ****************************************************************************/
 
+#include "private/qlayoutengine_p.h"
+#include "qabstractitemdelegate.h"
 #include "qapplication.h"
 #include "qbitmap.h"
 #include "qcursor.h"
@@ -28,11 +30,11 @@
 #include "qpainter.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
+#include "qstylepainter.h"
 #include "qtabwidget.h"
 #include "qtooltip.h"
 #include "qwhatsthis.h"
-#include "qstylepainter.h"
-#include <private/qinternal_p.h>
+#include "private/qtextengine_p.h"
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 #endif
@@ -41,6 +43,14 @@
 #include "private/qtabbar_p.h"
 
 #ifndef QT_NO_TABBAR
+
+inline static bool verticalTabs(QTabBar::Shape shape)
+{
+    return shape == QTabBar::RoundedWest
+           || shape == QTabBar::RoundedEast
+           || shape == QTabBar::TriangularWest
+           || shape == QTabBar::TriangularEast;
+}
 
 QStyleOptionTabV2 QTabBarPrivate::getStyleOption(int tab) const
 {
@@ -99,6 +109,10 @@ QStyleOptionTabV2 QTabBarPrivate::getStyleOption(int tab) const
         if (tw->cornerWidget(Qt::TopRightCorner) || tw->cornerWidget(Qt::BottomRightCorner))
             opt.cornerWidgets |= QStyleOptionTab::RightCornerWidget;
     }
+    int hframe  = q->style()->pixelMetric(QStyle::PM_TabBarTabHSpace, &opt, q);
+
+    opt.text = q->fontMetrics().elidedText(opt.text, elideMode, 1 + (verticalTabs(shape) ? ptab->rect.height() : ptab->rect.width()) - hframe,
+                                           Qt::TextShowMnemonic);
 #endif
     return opt;
 }
@@ -238,6 +252,8 @@ void QTabBarPrivate::init()
 #endif
     q->setFocusPolicy(Qt::TabFocus);
     q->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    elideMode = Qt::TextElideMode(q->style()->styleHint(QStyle::SH_TabBar_ElideMode, 0, q));
+    useScrollButtons = !q->style()->styleHint(QStyle::SH_TabBar_PreferNoArrows, 0, q);
 }
 
 QTabBarPrivate::Tab *QTabBarPrivate::at(int index)
@@ -261,15 +277,6 @@ int QTabBarPrivate::indexAtPos(const QPoint &p) const
     return -1;
 }
 
-inline static bool verticalTabs(QTabBar::Shape shape)
-{
-    return shape == QTabBar::RoundedWest
-           || shape == QTabBar::RoundedEast
-           || shape == QTabBar::TriangularWest
-           || shape == QTabBar::TriangularEast;
-}
-
-
 void QTabBarPrivate::layoutTabs()
 {
     Q_Q(QTabBar);
@@ -277,41 +284,88 @@ void QTabBarPrivate::layoutTabs()
     layoutDirty = false;
     QSize size = q->size();
     int last, available;
+    int maxExtent;
+    int i;
     bool vertTabs = verticalTabs(shape);
+    int tabChainIndex = 0;
+    Qt::Alignment tabAlignment = Qt::Alignment(q->style()->styleHint(QStyle::SH_TabBar_Alignment, 0, q));
+    QVector<QLayoutStruct> tabChain(tabList.count() + 2);
+
+    // We put an empty item at the front and back and set its expansive attribute
+    // depending on tabAlignment.
+    tabChain[tabChainIndex].init();
+    tabChain[tabChainIndex].expansive = tabAlignment != Qt::AlignLeft;
+    tabChain[tabChainIndex].empty = true;
+    ++tabChainIndex;
+    
+    // We now go through our list of tabs and set the minimum size and the size hint
+    // This will allow us to elide text if necessary. Since we don't set
+    // a maximum size, tabs will EXPAND to fill up the empty space.
+    // Since tab widget is rather *ahem* strict about keeping the geometry of the
+    // tabbar to its absolute minimum, this won't bleed through, but will show up
+    // if you use tabbar on its own (a.k.a. not a bug, but a feature).
     if (!vertTabs) {
+        int minx = 0;
         int x = 0;
         int maxHeight = 0;
-        int i;
-        for (i = 0; i < tabList.count(); ++i) {
+        for (i = 0; i < tabList.count(); ++i, ++tabChainIndex) {
             QSize sz = q->tabSizeHint(i);
-            tabList[i].rect = QRect(x, 0, sz.width(), sz.height());
-            maxHeight = qMax(maxHeight, sz.height());
+            tabList[i].maxRect = QRect(x, 0, sz.width(), sz.height());
             x += sz.width();
+            maxHeight = qMax(maxHeight, sz.height());
+            sz = minimumTabSizeHint(i);
+            tabList[i].minRect = QRect(minx, 0, sz.width(), sz.height());
+            minx += sz.width();
+            tabChain[tabChainIndex].init();
+            tabChain[tabChainIndex].sizeHint = tabList.at(i).maxRect.width();
+            tabChain[tabChainIndex].minimumSize = sz.width();
+            tabChain[tabChainIndex].empty = false;
+            tabChain[tabChainIndex].expansive = true;
         }
 
-        // Go through the list again and make sure we have a consistent height
-        for (i = 0; i < tabList.count(); ++i)
-            tabList[i].rect.setHeight(maxHeight);
-
-        last = x;
+        last = minx;
         available = size.width();
+        maxExtent = maxHeight;
     } else {
+        int miny = 0;
         int y = 0;
-        int i;
         int maxWidth = 0;
-        for (i = 0; i < tabList.count(); ++i) {
+        for (i = 0; i < tabList.count(); ++i, ++tabChainIndex) {
             QSize sz = q->tabSizeHint(i);
-            tabList[i].rect = QRect(0, y, sz.width(), sz.height());
-            maxWidth = qMax(0, sz.width());
+            tabList[i].maxRect = QRect(0, y, sz.width(), sz.height());
             y += sz.height();
+            maxWidth = qMax(0, sz.width());
+            sz = minimumTabSizeHint(i);
+            tabList[i].minRect = QRect(0, miny, sz.width(), sz.height());
+            miny += sz.height();
+            tabChain[tabChainIndex].init();
+            tabChain[tabChainIndex].sizeHint = tabList.at(i).maxRect.height();
+            tabChain[tabChainIndex].minimumSize = sz.height();
+            tabChain[tabChainIndex].empty = false;
+            tabChain[tabChainIndex].expansive = true;
         }
 
-        // Consistent width
-        for (i = 0; i < tabList.count(); ++i)
-            tabList[i].rect.setWidth(maxWidth);
-
-        last = y;
+        last = miny;
         available = size.height();
+        maxExtent = maxWidth;
+    }
+
+    Q_ASSERT(tabChainIndex == tabChain.count() - 1); // add an assert just to make sure.
+    // Mirror our front item.
+    tabChain[tabChainIndex].init();
+    tabChain[tabChainIndex].expansive = tabAlignment != Qt::AlignRight;
+    tabChain[tabChainIndex].empty = true;
+
+    // Do the calculation
+    qGeomCalc(tabChain, 0, tabChain.count(), 0, qMax(available, last), 0);
+
+    // Use the results
+    for (i = 0; i < tabList.count(); ++i) {
+        const QLayoutStruct &lstruct = tabChain.at(i + 1);
+        if (!vertTabs)
+            tabList[i].rect.setRect(lstruct.pos, 0, lstruct.size, maxExtent);
+        else
+            tabList[i].rect.setRect(0, lstruct.pos, maxExtent, lstruct.size);
     }
 
     if (tabList.count() && last > available) {
@@ -842,6 +896,7 @@ void QTabBar::setCurrentIndex(int index)
     \since 4.1
 
     The default value is style-dependent.
+    \sa QTabWidget::iconSize
 */
 QSize QTabBar::iconSize() const
 {
@@ -883,7 +938,7 @@ QSize QTabBar::sizeHint() const
         const_cast<QTabBarPrivate*>(d)->layoutTabs();
     QRect r;
     for (int i = 0; i < d->tabList.count(); ++i)
-        r = r.unite(d->tabList.at(i).rect);
+        r = r.united(d->tabList.at(i).maxRect);
     QSize sz = QApplication::globalStrut();
     return r.size().expandedTo(sz);
 }
@@ -893,12 +948,52 @@ QSize QTabBar::sizeHint() const
 QSize QTabBar::minimumSizeHint() const
 {
     Q_D(const QTabBar);
-    if (style()->styleHint(QStyle::SH_TabBar_PreferNoArrows, 0, this))
-        return sizeHint();
+    if (!d->useScrollButtons) {
+        QRect r;
+        for (int i = 0; i < d->tabList.count(); ++i)
+            r = r.united(d->tabList.at(i).minRect);
+        return r.size().expandedTo(QApplication::globalStrut());
+    }
     if (verticalTabs(d->shape))
         return QSize(sizeHint().width(), d->rightB->sizeHint().height() * 2 + 75);
     else
         return QSize(d->rightB->sizeHint().width() * 2 + 75, sizeHint().height());
+}
+
+static QString computeElidedText(Qt::TextElideMode mode, const QString &text)
+{
+    if (text.length() <= 7)
+        return text;
+
+    static const QLatin1String Ellipses("...");
+    QString ret;
+    switch (mode) {
+    case Qt::ElideRight:
+        ret = text.left(4) + Ellipses;
+        break;
+    case Qt::ElideMiddle:
+        ret = text.left(2) + Ellipses + text.right(2);
+        break;
+    case Qt::ElideLeft:
+        ret = Ellipses + text.right(4);
+        break;
+    case Qt::ElideNone:
+        ret = text;
+        break;
+    }
+    return ret;
+}
+
+QSize QTabBarPrivate::minimumTabSizeHint(int index)
+{
+    Q_Q(QTabBar);
+    // ### Qt 5: make this a protected virtual function in QTabBar
+    Tab &tab = tabList[index];
+    QString oldText = tab.text;
+    tab.text = computeElidedText(elideMode, oldText);
+    QSize size = q->tabSizeHint(index);
+    tab.text = oldText;
+    return size;
 }
 
 /*!
@@ -909,6 +1004,7 @@ QSize QTabBar::tabSizeHint(int index) const
     Q_D(const QTabBar);
     if (const QTabBarPrivate::Tab *tab = d->at(index)) {
         QStyleOptionTabV2 opt = d->getStyleOption(index);
+        opt.text = d->tabList.at(index).text;
         QSize iconSize = tab->icon.isNull() ? QSize() : opt.iconSize;
         int hframe  = style()->pixelMetric(QStyle::PM_TabBarTabHSpace, &opt, this);
         int vframe  = style()->pixelMetric(QStyle::PM_TabBarTabVSpace, &opt, this);
@@ -918,7 +1014,8 @@ QSize QTabBar::tabSizeHint(int index) const
         if (verticalTabs(d->shape))
             csz.transpose();
 
-        return style()->sizeFromContents(QStyle::CT_TabBarTab, &opt, csz, this);
+        QSize retSize = style()->sizeFromContents(QStyle::CT_TabBarTab, &opt, csz, this);
+        return retSize;
     }
     return QSize();
 }
@@ -1056,7 +1153,6 @@ void QTabBar::paintEvent(QPaintEvent *)
     optTabBase.init(this);
     optTabBase.shape = d->shape;
     if (theParent && overlap > 0) {
-        QPainter::setRedirected(theParent, this, pos());
         QRect rect;
         switch (tabOverlap.shape) {
         case QTabBar::RoundedNorth:
@@ -1077,9 +1173,6 @@ void QTabBar::paintEvent(QPaintEvent *)
             break;
         }
         optTabBase.rect = rect;
-        QPaintEvent e(rect);
-        QApplication::sendEvent(theParent, &e);
-        QPainter::restoreRedirected(theParent);
     }
     QStylePainter p(this);
     int selected = -1;
@@ -1215,6 +1308,57 @@ void QTabBar::changeEvent(QEvent *e)
     QWidget::changeEvent(e);
 }
 
+/*!
+    \property QTabBar::elideMode
+    \brief how to elide text in the tab bar
+    \since 4.2
+
+    This property controls how items are elided when there is not
+    enough space to show them for a given tab bar size.
+
+    By default the value is style dependent.
+
+    \sa QTabWidget::elideMode usesScrollButtons QStyle::SH_TabBar_ElideMode
+*/
+
+Qt::TextElideMode QTabBar::elideMode() const
+{
+    Q_D(const QTabBar);
+    return d->elideMode;
+}
+
+void QTabBar::setElideMode(Qt::TextElideMode mode)
+{
+    Q_D(QTabBar);
+    d->elideMode = mode;
+}
+
+/*!
+    \property QTabBar::usesScrollButtons
+    \brief Whether or not a tab bar should use buttons to scroll tabs when it
+    has many tabs.
+    \since 4.2
+
+    When there are too many tabs in a tab bar for its size, the tab bar can either choose
+    to expand it's size or to add buttons that allow you to scroll through the tabs.
+
+    By default the value is style dependant.
+
+    \sa elideMode QTabWidget::usesScrollButtons QStyle::SH_TabBar_PreferNoArrows
+*/
+bool QTabBar::usesScrollButtons() const
+{
+    return d_func()->useScrollButtons;
+}
+
+void QTabBar::setUsesScrollButtons(bool useButtons)
+{
+    Q_D(QTabBar);
+    if (d->useScrollButtons == useButtons)
+        return;
+    d->useScrollButtons = useButtons;
+    d->refresh();
+}
 
 /*!
     \fn void QTabBar::setCurrentTab(int index)

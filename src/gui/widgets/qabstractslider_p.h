@@ -37,6 +37,7 @@
 
 #include "QtCore/qbasictimer.h"
 #include "private/qwidget_p.h"
+#include "qstyle.h"
 
 class QAbstractSliderPrivate : public QWidgetPrivate
 {
@@ -47,7 +48,7 @@ public:
 
     void setSteps(int single, int page);
 
-    int minimum, maximum, singleStep, pageStep, value, position;
+    int minimum, maximum, singleStep, pageStep, value, position, pressValue;
     uint tracking : 1;
     uint blocktracking :1;
     uint pressed : 1;
@@ -60,6 +61,18 @@ public:
     QAbstractSlider::SliderAction repeatAction;
 
     inline int bound(int val) const { return qMax(minimum, qMin(maximum, val)); }
+    inline void setAdjustedSliderPosition(int position)
+    {
+        Q_Q(QAbstractSlider);
+        if (q->style()->styleHint(QStyle::SH_Slider_StopMouseOverSlider, 0, q)) {
+            if (position >= pressValue - pageStep && position <= pressValue + pageStep) {
+                repeatAction = QAbstractSlider::SliderNoAction;
+                q->setSliderPosition(pressValue);
+                return;
+            }
+        }
+        q->setSliderPosition(position);
+    }
 };
 
 #endif // QABSTRACTSLIDER_P_H

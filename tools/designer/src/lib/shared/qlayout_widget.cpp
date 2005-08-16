@@ -252,7 +252,7 @@ void QLayoutSupport::adjustIndicator(const QPoint &pos, int index)
     // ### cleanup
     if (isEmptyItem(item)) {
         QPalette p;
-        p.setColor(QPalette::Background, Qt::red);
+        p.setColor(QPalette::Window, Qt::red);
         m_indicatorRight->setPalette(p);
         m_indicatorBottom->setPalette(p);
 
@@ -284,7 +284,7 @@ void QLayoutSupport::adjustIndicator(const QPoint &pos, int index)
         }
     } else {
         QPalette p;
-        p.setColor(QPalette::Background, Qt::blue);
+        p.setColor(QPalette::Window, Qt::blue);
         m_indicatorRight->setPalette(p);
         m_indicatorBottom->setPalette(p);
 
@@ -854,7 +854,7 @@ void QLayoutWidget::paintEvent(QPaintEvent*)
     QPainter p(this);
 
     if (layout() != 0) {
-        p.setPen(QPen(QColor(255, 0, 0, 35)));
+        p.setPen(QPen(QColor(255, 0, 0, 35), 1));
 
         int index = 0;
 
@@ -867,7 +867,7 @@ void QLayoutWidget::paintEvent(QPaintEvent*)
 
     }
 
-    p.setPen(QPen(Qt::red));
+    p.setPen(QPen(Qt::red, 1));
     p.drawRect(0, 0, width() - 1, height() - 1);
 }
 

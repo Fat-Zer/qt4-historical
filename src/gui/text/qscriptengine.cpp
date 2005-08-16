@@ -246,12 +246,13 @@ static void heuristicSetGlyphAttributes(QShaperItem *item, const QChar *uc, int 
 #if !defined(Q_WS_MAC)
     int cStart = 0;
 #endif
+    const bool symbolFont = item->font->symbol;
     glyphs[0].attributes.mark = false;
     glyphs[0].attributes.clusterStart = true;
-    glyphs[0].attributes.dontPrint = (uc[0].unicode() == 0x00ad || qIsControlChar(uc[0].unicode()));
+    glyphs[0].attributes.dontPrint = (!symbolFont && uc[0].unicode() == 0x00ad) || qIsControlChar(uc[0].unicode());
 
     int pos = 0;
-    int lastCat = ::category(uc[0]);
+    int lastCat = QUnicodeTables::category(uc[0]);
     for (int i = 1; i < length; ++i) {
         if (logClusters[i] == pos)
             // same glyph
@@ -265,7 +266,7 @@ static void heuristicSetGlyphAttributes(QShaperItem *item, const QChar *uc, int 
             ++pos;
         }
         // hide soft-hyphens by default
-        if (uc[i].unicode() == 0x00ad || qIsControlChar(uc[i].unicode()))
+        if ((!symbolFont && uc[i].unicode() == 0x00ad) || qIsControlChar(uc[i].unicode()))
             glyphs[pos].attributes.dontPrint = true;
         const QUnicodeTables::Properties *prop = QUnicodeTables::properties(uc[i].unicode());
         int cat = prop->category;
@@ -315,7 +316,9 @@ static void heuristicSetGlyphAttributes(QShaperItem *item, const QChar *uc, int 
             glyphs[pos].advance = QFixedPoint();
         }
 #endif
-
+        // one gets an inter character justification point if the current char is not a non spacing mark.
+        // as then the current char belongs to the last one and one gets a space justification point
+        // after the space char.
         if (lastCat == QChar::Separator_Space)
             glyphs[pos-1].attributes.justification = QGlyphLayout::Space;
         else if (cat != QChar::Mark_NonSpacing)
@@ -337,18 +340,56 @@ static void heuristicSetGlyphAttributes(QShaperItem *item)
     heuristicSetGlyphAttributes(item, item->string->unicode() + item->from, item->length);
 }
 
-#if !defined(Q_WS_MAC)
+enum {
+    CcmpProperty = 0x1
+};
+
+#ifndef QT_NO_OPENTYPE
+static const QOpenType::Features basic_features[] = {
+    { FT_MAKE_TAG('c', 'c', 'm', 'p'), CcmpProperty },
+    { FT_MAKE_TAG('l', 'i', 'g', 'a'), CcmpProperty },
+    { FT_MAKE_TAG('c', 'l', 'i', 'g'), CcmpProperty },
+    {0, 0}
+};
+#endif
+
 static bool basic_shape(QShaperItem *item)
 {
-    if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
-        return false;
 
+#ifndef QT_NO_OPENTYPE
+    const int availableGlyphs = item->num_glyphs;
+#endif
+
+    if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length,
+                                  item->glyphs, &item->num_glyphs, QFlag(item->flags)))
+        return false;
     heuristicSetGlyphAttributes(item);
+
+#ifndef QT_NO_OPENTYPE
+    QOpenType *openType = item->font->openType();
+    if (!openType && item->font->type() == QFontEngine::Multi) {
+        openType = static_cast<QFontEngineMulti *>(item->font)->engine(0)->openType();
+        if (openType) {
+            for (int i = 0; i < item->num_glyphs; ++i) {
+                if (item->glyphs[i].glyph & 0xff000000) {
+                    openType = 0;
+                    break;
+                }
+            }
+        }
+    }
+    if (openType && openType->supportsScript(item->script)) {
+        openType->selectScript(item, item->script, basic_features);
+
+        openType->shape(item);
+        return openType->positionAndAdd(item, availableGlyphs);
+    }
+
+#endif
+
     qt_heuristicPosition(item);
     return true;
 }
-#endif
-
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -358,9 +399,6 @@ static bool basic_shape(QShaperItem *item)
 
 // Uniscribe also defines dlig for Hebrew, but we leave this out for now, as it's mostly
 // ligatures one does not want in modern Hebrew (as lam-alef ligatures).
-enum {
-    CcmpProperty = 0x1
-};
 #ifndef QT_NO_OPENTYPE
 static const QOpenType::Features hebrew_features[] = {
     { FT_MAKE_TAG('c', 'c', 'm', 'p'), CcmpProperty },
@@ -381,7 +419,7 @@ static bool hebrew_shape(QShaperItem *item)
     QOpenType *openType = item->font->openType();
 
     if (openType && openType->supportsScript(item->script)) {
-        openType->selectScript(item->script, hebrew_features);
+        openType->selectScript(item, item->script, hebrew_features);
 
         const int availableGlyphs = item->num_glyphs;
         if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
@@ -479,7 +517,7 @@ static bool hebrew_shape(QShaperItem *item)
         }
         if (!shaped) {
             shapedChars[slen] = uc[i];
-            if (::category(uc[i]) != QChar::Mark_NonSpacing) {
+            if (QUnicodeTables::category(uc[i]) != QChar::Mark_NonSpacing) {
                 glyphs[slen].attributes.clusterStart = true;
                 glyphs[slen].attributes.mark = false;
                 glyphs[slen].attributes.combiningClass = 0;
@@ -488,7 +526,7 @@ static bool hebrew_shape(QShaperItem *item)
             } else {
                 glyphs[slen].attributes.clusterStart = false;
                 glyphs[slen].attributes.mark = true;
-                glyphs[slen].attributes.combiningClass = ::combiningClass(uc[i]);
+                glyphs[slen].attributes.combiningClass = QUnicodeTables::combiningClass(uc[i]);
             }
             ++slen;
         }
@@ -711,7 +749,7 @@ static inline ArabicGroup arabicGroup(unsigned short uc)
         return (ArabicGroup) arabic_group[uc-0x600];
     else if (uc == 0x200d)
         return Center;
-    else if (::category(uc) == QChar::Separator_Space)
+    else if (QUnicodeTables::category(uc) == QChar::Separator_Space)
         return ArabicSpace;
     else
         return ArabicNone;
@@ -1276,7 +1314,7 @@ static inline const QChar prevChar(const QString *str, int pos)
     pos--;
     const QChar *ch = str->unicode() + pos;
     while(pos > -1) {
-        if(::category(*ch) != QChar::Mark_NonSpacing)
+        if(QUnicodeTables::category(*ch) != QChar::Mark_NonSpacing)
             return *ch;
         pos--;
         ch--;
@@ -1291,7 +1329,7 @@ static inline const QChar nextChar(const QString *str, int pos)
     const QChar *ch = str->unicode() + pos;
     while(pos < len) {
         //qDebug("rightChar: %d isLetter=%d, joining=%d", pos, ch.isLetter(), ch.joining());
-        if(::category(*ch) != QChar::Mark_NonSpacing)
+        if(QUnicodeTables::category(*ch) != QChar::Mark_NonSpacing)
             return *ch;
         // assume it's a transparent char, this might not be 100% correct
         pos++;
@@ -1341,7 +1379,7 @@ static void shapedString(const QString *uc, int from, int len, QChar *shapeBuffe
                     goto skip;
             }
             if (reverse)
-                *data = mirroredChar(*ch);
+                *data = QUnicodeTables::mirroredChar(*ch);
             else
                 *data = *ch;
         } else {
@@ -1387,7 +1425,7 @@ static void shapedString(const QString *uc, int from, int len, QChar *shapeBuffe
         }
         // ##### Fixme
         //glyphs[gpos].attributes.zeroWidth = zeroWidth;
-        if (::category(*ch) == QChar::Mark_NonSpacing) {
+        if (QUnicodeTables::category(*ch) == QChar::Mark_NonSpacing) {
             glyphs[gpos].attributes.mark = true;
 //             qDebug("glyph %d (char %d) is mark!", gpos, i);
         } else {
@@ -1395,7 +1433,7 @@ static void shapedString(const QString *uc, int from, int len, QChar *shapeBuffe
             clusterStart = data - shapeBuffer;
         }
         glyphs[gpos].attributes.clusterStart = !glyphs[gpos].attributes.mark;
-        glyphs[gpos].attributes.combiningClass = combiningClass(*ch);
+        glyphs[gpos].attributes.combiningClass = QUnicodeTables::combiningClass(*ch);
         glyphs[gpos].attributes.justification = properties[i].justification;
 //         qDebug("data[%d] = %x (from %x)", gpos, (uint)data->unicode(), ch->unicode());
         data++;
@@ -1458,7 +1496,7 @@ static bool arabicSyriacOpenTypeShape(QOpenType *openType, QShaperItem *item, bo
 {
     *ot_ok = true;
 
-    openType->selectScript(item->script, item->script == QUnicodeTables::Arabic ? arabic_features : syriac_features);
+    openType->selectScript(item, item->script, item->script == QUnicodeTables::Arabic ? arabic_features : syriac_features);
     const int nglyphs = item->num_glyphs;
     if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
         return false;
@@ -1576,7 +1614,7 @@ static bool thaana_shape(QShaperItem *item)
     QOpenType *openType = item->font->openType();
 
     if (openType && openType->supportsScript(item->script)) {
-        openType->selectScript(QUnicodeTables::Thaana);
+        openType->selectScript(item, QUnicodeTables::Thaana);
         const int availableGlyphs = item->num_glyphs;
         if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
             return false;
@@ -3186,7 +3224,7 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
         openType->shape(item, properties.data());
 
         int newLen = openType->len();
-        OTL_GlyphItem otl_glyphs = openType->glyphs();
+        HB_GlyphItem otl_glyphs = openType->glyphs();
 
         // move the left matra back to its correct position in malayalam and tamil
         if ((script == QUnicodeTables::Malayalam || script == QUnicodeTables::Tamil) && (form(reordered[0]) == Matra)) {
@@ -3198,7 +3236,7 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
             --basePos;
             if (basePos < newLen && basePos > 1) {
 //                 qDebug("moving prebase matra to position %d in syllable newlen=%d", basePos, newLen);
-                OTL_GlyphItemRec m = otl_glyphs[0];
+                HB_GlyphItemRec m = otl_glyphs[0];
                 --basePos;
                 for (i = 0; i < basePos; ++i)
                     otl_glyphs[i] = otl_glyphs[i+1];
@@ -3333,7 +3371,7 @@ static bool indic_shape(QShaperItem *item)
 #ifndef QT_NO_OPENTYPE
     QOpenType *openType = item->font->openType();
     if (openType)
-        openType->selectScript(item->script, indic_features);
+        openType->selectScript(item, item->script, indic_features);
 #else
     QOpenType *openType = 0;
 #endif
@@ -3425,7 +3463,7 @@ static void thaiWordBreaks(const QChar *string, const int len, QCharAttributes *
 #ifndef QT_NO_LIBRARY
     /* load libthai dynamically */
     if (!th_brk && thaiCodec) {
-        th_brk = (th_brk_def)QLibrary::resolve("thai", "th_brk");
+        th_brk = (th_brk_def)QLibrary::resolve(QLatin1String("thai"), "th_brk");
         if (!th_brk)
             thaiCodec = 0;
     }
@@ -3586,7 +3624,7 @@ static bool tibetan_shape_syllable(QOpenType *openType, QShaperItem *item, bool 
 
 #ifndef QT_NO_OPENTYPE
     if (openType && openType->supportsScript(QUnicodeTables::Tibetan)) {
-        openType->selectScript(QUnicodeTables::Tibetan, tibetan_features);
+        openType->selectScript(item, QUnicodeTables::Tibetan, tibetan_features);
 
         openType->shape(item);
         if (!openType->positionAndAdd(item, availableGlyphs, false))
@@ -4042,7 +4080,7 @@ static bool khmer_shape_syllable(QOpenType *openType, QShaperItem *item)
 {
 #ifndef QT_NO_OPENTYPE
     if (openType)
-        openType->selectScript(QUnicodeTables::Khmer, khmer_features);
+        openType->selectScript(item, QUnicodeTables::Khmer, khmer_features);
 #endif
     // according to the specs this is the max length one can get
     // ### the real value should be smaller
@@ -4579,7 +4617,7 @@ static bool myanmar_shape_syllable(QOpenType *openType, QShaperItem *item, bool 
 {
 #ifndef QT_NO_OPENTYPE
     if (openType)
-        openType->selectScript(QUnicodeTables::Myanmar, myanmar_features);
+        openType->selectScript(item, QUnicodeTables::Myanmar, myanmar_features);
 #endif
     // according to the table the max length of a syllable should be around 14 chars
     Q_ASSERT(item->length < 32);
@@ -5062,7 +5100,7 @@ static bool hangul_shape(QShaperItem *item)
         if (openType && !openType->supportsScript(item->script))
             openType = 0;
         if (openType)
-            openType->selectScript(QUnicodeTables::Hangul, hangul_features);
+            openType->selectScript(item, QUnicodeTables::Hangul, hangul_features);
 #else
         QOpenType *openType = 0;
 #endif
@@ -5128,6 +5166,12 @@ static void hangul_attributes(int script, const QString &text, int from, int len
 const q_scriptEngine qt_scriptEngines[] = {
     // Common
     { basic_shape, 0},
+    // Greek
+    { basic_shape, 0},
+    // Cyrillic
+    { basic_shape, 0},
+    // Armenian
+    { basic_shape, 0},
     // Hebrew
     { hebrew_shape, 0 },
     // Arabic
@@ -5164,8 +5208,14 @@ const q_scriptEngine qt_scriptEngines[] = {
     { tibetan_shape, tibetan_attributes },
     // Myanmar
     { myanmar_shape, myanmar_attributes },
+    // Georgian
+    { basic_shape, 0 },
     // Hangul
     { hangul_shape, hangul_attributes },
+    // Ogham
+    { basic_shape, 0 },
+    // Runic
+    { basic_shape, 0 },
     // Khmer
     { khmer_shape, khmer_attributes }
 };
@@ -5174,6 +5224,12 @@ const q_scriptEngine qt_scriptEngines[] = {
 const q_scriptEngine qt_scriptEngines[] = {
     // Common
     { basic_shape, 0 },
+    // Greek
+    { basic_shape, 0},
+    // Cyrillic
+    { basic_shape, 0},
+    // Armenian
+    { basic_shape, 0},
     // Hebrew
     { hebrew_shape, 0 },
     // Arabic
@@ -5210,7 +5266,13 @@ const q_scriptEngine qt_scriptEngines[] = {
     { basic_shape, 0 },
     // Myanmar
     { basic_shape, 0 },
+    // Georgian
+    { basic_shape, 0 },
     // Hangul
+    { basic_shape, 0 },
+    // Ogham
+    { basic_shape, 0 },
+    // Runic
     { basic_shape, 0 },
     // Khmer
     { basic_shape, 0 }
@@ -5219,6 +5281,9 @@ const q_scriptEngine qt_scriptEngines[] = {
 
 static bool mac_shape(QShaperItem *item)
 {
+    if (item->font->type() != QFontEngine::Multi)
+        return basic_shape(item);
+
     QFontEngineMacMulti *fe = static_cast<QFontEngineMacMulti *>(item->font);
     if (!fe->stringToCMap(item->string->unicode()+item->from, item->length,
                           item->glyphs, &item->num_glyphs, QFlag(item->flags),
@@ -5259,6 +5324,12 @@ static bool mac_arabic_shape(QShaperItem *item)
 const q_scriptEngine qt_scriptEngines[] = {
     // Common
     { mac_shape, 0 },
+    // Greek
+    { mac_shape, 0},
+    // Cyrillic
+    { mac_shape, 0},
+    // Armenian
+    { mac_shape, 0},
     // Hebrew
     { mac_shape, 0 },
     // Arabic
@@ -5295,8 +5366,14 @@ const q_scriptEngine qt_scriptEngines[] = {
     { mac_shape, tibetan_attributes },
     // Myanmar
     { mac_shape, 0 },
+    // Georgian
+    { mac_shape, 0 },
     // Hangul
     { mac_shape, hangul_attributes },
+    // Ogham
+    { mac_shape, 0 },
+    // Runic
+    { mac_shape, 0 },
     // Khmer
     { mac_shape, khmer_attributes }
 };

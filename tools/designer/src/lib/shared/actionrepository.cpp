@@ -24,6 +24,7 @@
 #include "actionrepository_p.h"
 
 #include <QtGui/QDrag>
+#include <QtGui/QContextMenuEvent>
 
 Q_DECLARE_METATYPE(QAction*)
 Q_DECLARE_METATYPE(QListWidgetItem*)
@@ -89,6 +90,11 @@ void ActionRepository::focusInEvent(QFocusEvent *event)
     if (currentItem()) {
         emit currentItemChanged(currentItem(), currentItem());
     }
+}
+
+void ActionRepository::contextMenuEvent(QContextMenuEvent *event)
+{
+    emit contextMenuRequested(event, itemAt(event->pos()));
 }
 
 } // namespace qdesigner_internal

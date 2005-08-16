@@ -103,6 +103,8 @@ struct GLXFBConfig {
 DECLARE_HANDLE(HPBUFFERARB);
 #elif defined(Q_WS_MACX)
 #include <AGL/agl.h>
+#elif defined(Q_WS_QWS)
+#include <GLES/egl.h>
 #endif
 
 class QGLPixelBufferPrivate {
@@ -117,18 +119,23 @@ public:
         share_ctx = 0;
 #endif
     }
+    bool init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget);
+    void common_init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget);
+    bool cleanup();
 
     bool invalid;
-    QSize size;
     QGLContext *qctx;
     QGLPixelBuffer *q_ptr;
     QGLFormat format;
+
+    QGLFormat req_format;
+    QPointer<QGLWidget> req_shareWidget;
+    QSize req_size;
 
 #ifdef Q_WS_X11
     GLXPbuffer pbuf;
     GLXContext ctx;
 #elif defined(Q_WS_WIN)
-    QGLWidget dmy;
     HDC dc;
     HPBUFFERARB pbuf;
     HGLRC ctx;
@@ -140,6 +147,9 @@ public:
 #endif
     AGLContext ctx;
     AGLContext share_ctx;
+#elif defined(Q_WS_QWS)
+    void *pbuf;
+    EGLContext ctx;
 #endif
 };
 

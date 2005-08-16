@@ -150,6 +150,7 @@ protected:
     QAbstractFileEnginePrivate *d_ptr;
 private:
     Q_DECLARE_PRIVATE(QAbstractFileEngine)
+    Q_DISABLE_COPY(QAbstractFileEngine)
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractFileEngine::FileFlags)

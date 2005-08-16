@@ -25,7 +25,7 @@
 
 #include <QtDesigner/QDesignerIconCacheInterface>
 #include <QtDesigner/QDesignerFormEditorInterface>
-#include <QtDesigner/ui4.h>
+#include <QtDesigner/private/ui4_p.h>
 
 #include <Qt3Support/Q3ListView>
 #include <Qt3Support/Q3Header>
@@ -110,7 +110,7 @@ bool Q3ListViewExtraInfo::loadWidgetExtraInfo(DomWidget *ui_widget)
         QString txt = text->elementString()->text();
 
         if (pixmap != 0) {
-            DomResourcePixmap *pix = pixmap->elementIconSet();
+            DomResourcePixmap *pix = pixmap->elementPixmap();
             QIcon icon(core()->iconCache()->resolveQrcPath(pix->text(), pix->attributeResource(), workingDirectory()));
             listView->addColumn(icon, txt);
         } else {

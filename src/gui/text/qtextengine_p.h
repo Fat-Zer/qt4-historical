@@ -45,8 +45,10 @@
 #include "QtGui/qpaintengine.h"
 #include "QtGui/qtextobject.h"
 #include "QtGui/qtextoption.h"
-#include "private/qtextdocument_p.h"
 #include "QtCore/qset.h"
+#ifndef QT_BUILD_COMPAT_LIB
+#include "private/qtextdocument_p.h"
+#endif
 
 #include <stdlib.h>
 #ifndef Q_OS_TEMP
@@ -187,16 +189,23 @@ struct QFixedPoint {
     QPointF toPointF() const { return QPointF(x.toReal(), y.toReal()); }
 };
 
-
+struct QScriptItem;
 class QTextItemInt : public QTextItem
 {
 public:
-    inline QTextItemInt() : flags(0) {}
+    inline QTextItemInt()
+        : underlineStyle(QTextCharFormat::NoUnderline), num_chars(0), chars(0),
+          logClusters(0), f(0), glyphs(0), num_glyphs(0), fontEngine(0)
+    {}
+    
+    void initFontAttributes(const QScriptItem &si, QFont *font, const QTextCharFormat &format = QTextCharFormat());
+
     QFixed descent;
     QFixed ascent;
     QFixed width;
 
     RenderFlags flags;
+    QTextCharFormat::UnderlineStyle underlineStyle;
     int num_chars;
     const QChar *chars;
     const unsigned short *logClusters;
@@ -504,11 +513,19 @@ public:
 
     int findItem(int strPos) const;
     inline QTextFormatCollection *formats() const {
+#ifdef QT_BUILD_COMPAT_LIB
+        return 0; // Compat should never reference this symbol
+#else
         return block.docHandle()->formatCollection();
+#endif
     }
     QTextCharFormat format(const QScriptItem *si) const;
     inline QAbstractTextDocumentLayout *docLayout() const {
+#ifdef QT_BUILD_COMPAT_LIB
+        return 0; // Compat should never reference this symbol
+#else
         return block.docHandle()->document()->documentLayout();
+#endif
     }
     int formatIndex(const QScriptItem *si) const;
 
@@ -546,6 +563,8 @@ public:
 
     bool atWordSeparator(int position) const;
     void indexAdditionalFormats();
+    
+    QString elidedText(Qt::TextElideMode mode, const QFixed &width, int flags = 0) const;
 
 private:
     void setBoundary(int strPos) const;

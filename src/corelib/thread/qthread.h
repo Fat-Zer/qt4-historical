@@ -71,7 +71,7 @@ public:
     void exit(int retcode = 0);
 
 public Q_SLOTS:
-    void start(QThread::Priority = InheritPriority);
+    void start(Priority = InheritPriority);
     void terminate();
     void quit();
 
@@ -100,6 +100,9 @@ public:
     inline QT3_SUPPORT bool running() const { return isRunning(); }
 #endif
 
+protected:
+    QThread(QThreadPrivate &dd, QObject *parent = 0);
+
 private:
     Q_OBJECT
     Q_DECLARE_PRIVATE(QThread)
@@ -119,7 +122,7 @@ public:
     static Qt::HANDLE currentThreadId() { return Qt::HANDLE(currentThread()); }
     static QThread* currentThread()
     { if (!instance) instance = new QThread(); return instance; }
-    
+
 private:
     QThread();
     static QThread *instance;

@@ -40,6 +40,7 @@ class Q_GUI_EXPORT QTableView : public QAbstractItemView
     Q_OBJECT
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
     Q_PROPERTY(Qt::PenStyle gridStyle READ gridStyle WRITE setGridStyle)
+    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
 
 public:
     explicit QTableView(QWidget *parent = 0);
@@ -72,6 +73,9 @@ public:
     bool isColumnHidden(int column) const;
     void setColumnHidden(int column, bool hide);
 
+    void setSortingEnabled(bool enable);
+    bool isSortingEnabled() const;
+
     bool showGrid() const;
 
     Qt::PenStyle gridStyle() const;
@@ -80,6 +84,12 @@ public:
     QRect visualRect(const QModelIndex &index) const;
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
     QModelIndex indexAt(const QPoint &p) const;
+
+    void setSpan(int row, int column, int rowSpan, int columnSpan);
+    int rowSpan(int row, int column) const;
+    int columnSpan(int row, int column) const;
+
+    void sortByColumn(int column, Qt::SortOrder order);
 
 public Q_SLOTS:
     void selectRow(int row);

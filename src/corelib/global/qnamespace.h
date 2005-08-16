@@ -38,7 +38,7 @@ class Q_CORE_EXPORT
 Qt {
 #ifdef Q_MOC_RUN
     Q_OBJECT
-    Q_ENUMS(Orientation TextFormat BackgroundMode DateFormat ScrollBarPolicy FocusPolicy ContextMenuPolicy CaseSensitivity LayoutDirection ArrowType)
+    Q_ENUMS(Orientation TextFormat BackgroundMode DateFormat ScrollBarPolicy FocusPolicy ContextMenuPolicy CaseSensitivity LayoutDirection ArrowType ShortcutContext)
     Q_ENUMS(ToolButtonStyle)
     Q_ENUMS(PenStyle PenCapStyle PenJoinStyle BrushStyle FillRule BGMode ClipOperation GlobalColor)
     Q_FLAGS(Alignment)
@@ -46,6 +46,8 @@ Qt {
     Q_FLAGS(DockWidgetAreas)
     Q_ENUMS(DockWidgetArea)
     Q_ENUMS(TextElideMode)
+    Q_ENUMS(TextInteractionFlags)
+    Q_ENUMS(WindowModality ToolBarAreas DayOfWeek)
 public:
 #endif
     enum GlobalColor {
@@ -78,6 +80,7 @@ public:
         AltModifier          = 0x08000000,
         MetaModifier         = 0x10000000,
         KeypadModifier       = 0x20000000,
+        GroupSwitchModifier  = 0x40000000,
         // Do not extend the mask to include 0x01000000
         KeyboardModifierMask = 0xfe000000
     };
@@ -197,7 +200,8 @@ public:
     enum TextElideMode {
         ElideLeft,
         ElideRight,
-        ElideMiddle
+        ElideMiddle,
+        ElideNone
     };
 
     enum WindowType {
@@ -225,7 +229,8 @@ public:
         WindowMinMaxButtonsHint = WindowMinimizeButtonHint | WindowMaximizeButtonHint,
         WindowContextHelpButtonHint = 0x00010000,
         WindowShadeButtonHint = 0x00020000,
-        WindowStaysOnTopHint = 0x00040000
+        WindowStaysOnTopHint = 0x00040000,
+        CustomizeWindowHint = 0x02000000
 
 #ifdef QT3_SUPPORT
         ,
@@ -366,10 +371,22 @@ public:
         WA_NoX11EventCompression = 81,
         WA_TintedBackground = 82,
         WA_X11OpenGLOverlay = 83,
+        WA_AlwaysShowToolTips = 84,
+        WA_MacOpaqueSizeGrip = 85,
+        WA_SetStyle = 86,
 
-        // Add new attributes above this
+        // Add new attributes before this line
         WA_AttributeCount
     };
+
+    enum ApplicationAttribute
+    {
+        AA_ImmediateWidgetCreation = 0,
+
+        // Add new attributes before this line
+        AA_AttributeCount
+    };
+
 
     // Image conversion flags.  The unusual ordering is caused by
     // compatibility and default requirements.
@@ -817,6 +834,17 @@ public:
         Key_Yes = 0x01010001,
         Key_No = 0x01010002,
 
+        // Newer misc keys
+        Key_Cancel  = 0x01020001,
+        Key_Printer = 0x01020002,
+        Key_Execute = 0x01020003,
+        Key_Sleep   = 0x01020004,
+        Key_Play    = 0x01020005, // Not the same as Key_MediaPlay
+        Key_Zoom    = 0x01020006,
+        //Key_Jisho   = 0x01020007, // IME: Dictionary key
+        //Key_Oyayubi_Left = 0x01020008, // IME: Left Oyayubi key
+        //Key_Oyayubi_Right = 0x01020009, // IME: Right Oyayubi key
+
         // Device keys
         Key_Context1 = 0x01100000,
         Key_Context2 = 0x01100001,
@@ -844,8 +872,10 @@ public:
         DotLine,
         DashDotLine,
         DashDotDotLine,
-        CustomDashLine,
-        MPenStyle = 0x0f
+        CustomDashLine
+#ifndef Q_MOC_RUN
+        , MPenStyle = 0x0f
+#endif
     };
 
     enum PenCapStyle { // line endcap style
@@ -859,7 +889,8 @@ public:
         MiterJoin = 0x00,
         BevelJoin = 0x40,
         RoundJoin = 0x80,
-        MPenJoinStyle = 0xc0
+        SvgMiterJoin = 0x100,
+        MPenJoinStyle = 0x1c0
     };
 
     enum BrushStyle { // brush style
@@ -973,7 +1004,9 @@ public:
         ForbiddenCursor,
         WhatsThisCursor,
         BusyCursor,
-        LastCursor = BusyCursor,
+        OpenHandCursor,
+        ClosedHandCursor,
+        LastCursor = ClosedHandCursor,
         BitmapCursor = 24,
         CustomCursor = 25
 
@@ -1031,9 +1064,10 @@ public:
         BottomDockWidgetArea = 0x8,
 
         DockWidgetArea_Mask = 0xf,
-        AllDockWidgetAreas = DockWidgetArea_Mask
+        AllDockWidgetAreas = DockWidgetArea_Mask,
+        NoDockWidgetArea = 0
     };
-    enum {
+    enum DockWidgetAreaSizes {
         NDockWidgetAreas = 4
     };
 
@@ -1046,10 +1080,11 @@ public:
         BottomToolBarArea = 0x8,
 
         ToolBarArea_Mask = 0xf,
-        AllToolBarAreas = ToolBarArea_Mask
+        AllToolBarAreas = ToolBarArea_Mask,
+        NoToolBarArea = 0
     };
 
-    enum {
+    enum ToolBarAreaSizes {
         NToolBarAreas = 4
     };
 
@@ -1080,7 +1115,9 @@ public:
     enum DateFormat {
         TextDate,      // default Qt
         ISODate,       // ISO 8601
-        LocalDate      // locale dependent
+        SystemLocaleDate, // system format
+        LocalDate = SystemLocaleDate, // ## deprecated!
+        LocaleDate     // default QLocale format
     };
 
     enum TimeSpec {
@@ -1172,6 +1209,14 @@ public:
         UniteClip
     };
 
+    // Shape = 0x1, BoundingRect = 0x2
+    enum ItemSelectionMode {
+        ContainsItemShape = 0x0,
+        IntersectsItemShape = 0x1,
+        ContainsItemBoundingRect = 0x2,
+        IntersectsItemBoundingRect = 0x3
+    };
+
     enum TransformationMode {
         FastTransformation,
         SmoothTransformation
@@ -1193,7 +1238,8 @@ public:
         NoContextMenu,
         DefaultContextMenu,
         ActionsContextMenu,
-        CustomContextMenu
+        CustomContextMenu,
+        PreventContextMenu
     };
 
     enum InputMethodQuery {
@@ -1243,7 +1289,9 @@ public:
         FontRole = 6,
         TextAlignmentRole = 7,
         BackgroundColorRole = 8,
+        BackgroundRole = 8,
         TextColorRole = 9,
+        ForegroundRole = 9,
         CheckStateRole = 10,
         // Accessibility
         AccessibleTextRole = 11,
@@ -1272,6 +1320,7 @@ public:
         MatchEndsWith = 3,
         MatchRegExp = 4,
         MatchWildcard = 5,
+        MatchFixedString = 8,
         MatchCaseSensitive = 16,
         MatchWrap = 32,
         MatchRecursive = 64
@@ -1295,6 +1344,18 @@ public:
         ApplicationModal
     };
 
+    enum TextInteractionFlag {
+        NoTextInteraction         = 0,
+        TextSelectableByMouse     = 1,
+        TextSelectableByKeyboard  = 2,
+        LinksAccessibleByMouse    = 4,
+        LinksAccessibleByKeyboard = 8,
+        TextEditable              = 16,
+
+        TextEditorInteraction     = TextSelectableByMouse | TextSelectableByKeyboard | TextEditable,
+        TextBrowserInteraction    = TextSelectableByMouse | LinksAccessibleByMouse | LinksAccessibleByKeyboard
+    };
+    Q_DECLARE_FLAGS(TextInteractionFlags, TextInteractionFlag)
 }
 #ifdef Q_MOC_RUN
  ;
@@ -1313,6 +1374,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::WindowStates)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::DropActions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::ItemFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::MatchFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Qt::TextInteractionFlags)
+
+typedef bool (*qInternalCallback)(void **);
 
 class Q_CORE_EXPORT QInternal {
 public:
@@ -1323,13 +1387,36 @@ public:
         Image         = 0x03,
         Printer       = 0x04,
         Picture       = 0x05,
-        Pbuffer       = 0x06
+        Pbuffer       = 0x06,    // GL pbuffer
+        FramebufferObject = 0x07, // GL framebuffer object
+        CustomRaster  = 0x08
     };
     enum RelayoutType {
         RelayoutNormal,
         RelayoutDragging,
         RelayoutDropped
     };
+
+
+    enum Callback {
+        ConnectCallback,
+        DisconnectCallback,
+        AdoptCurrentThread,
+        LastCallback
+    };
+
+    enum InternalFunction {
+        CreateThreadForAdoption,
+        RefAdoptedThread,
+        DerefAdoptedThread,
+        LastInternalFunction
+    };
+
+    static bool registerCallback(Callback, qInternalCallback);
+    static bool unregisterCallback(Callback, qInternalCallback);
+
+    static bool activateCallbacks(Callback, void **);
+    static bool callFunction(InternalFunction func, void **);
 };
 
 #ifdef QT3_SUPPORT

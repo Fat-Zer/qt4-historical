@@ -6,9 +6,15 @@ build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
 }
+
+
 HEADERS         = ../shared/metatranslator.h \
                   ../shared/translator.h \
-                  ../shared/proparser.h
+                  ../shared/proparser.h \
+                  ../shared/profileevaluator.h \
+                  ../shared/proparserutils.h \
+                  ../shared/simtexth.h
+
 SOURCES         = fetchtr.cpp \
                   main.cpp \
                   merge.cpp \
@@ -16,11 +22,23 @@ SOURCES         = fetchtr.cpp \
                   sametexth.cpp \
                   ../shared/metatranslator.cpp \
                   ../shared/translator.cpp \
-                  ../shared/proparser.cpp
+                  ../shared/proparser.cpp \
+                  ../shared/profileevaluator.cpp \
+                  ../shared/simtexth.cpp
+
+PROPARSERPATH = ../shared
+INCLUDEPATH += $$PROPARSERPATH
+# Input
+HEADERS += $$PROPARSERPATH/proitems.h \
+        $$PROPARSERPATH/abstractproitemvisitor.h \
+        $$PROPARSERPATH/proreader.h
+SOURCES += $$PROPARSERPATH/proitems.cpp \
+        $$PROPARSERPATH/proreader.cpp
+
 
 TARGET          = lupdate
 INCLUDEPATH     += ../shared
-DESTDIR         = ../../../bin
+DESTDIR          = ../../../bin
 
 target.path=$$[QT_INSTALL_BINS]
 INSTALLS        += target

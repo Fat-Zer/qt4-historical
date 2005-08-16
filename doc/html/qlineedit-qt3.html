@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/widgets/qlineedit.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/gui/widgets/qlineedit.cpp -->
 <head>
-    <title>Qt 4.1: Qt 3 Support Members for QLineEdit</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Qt 3 Support Members for QLineEdit</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QLineEdit</h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Qt 3 Support Members for QLineEdit</h1>
 <p><b>The following class members are part of the <a href="qt3support.html">Qt 3 support layer</a>.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qlineedit.html">QLineEdit class reference</a></li></ul></p>
 <h3>Public Functions</h3>
@@ -35,8 +29,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qlineedit-qt3.html#frame">frame</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qlineedit-qt3.html#getSelection">getSelection</a></b> ( int * <i>start</i>, int * <i>end</i> )</li>
 <li><div class="fn"/>bool <b><a href="qlineedit-qt3.html#hasMarkedText">hasMarkedText</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qlineedit-qt3.html#margin">margin</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qlineedit-qt3.html#markedText">markedText</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qlineedit-qt3.html#setEdited">setEdited</a></b> ( bool <i>on</i> )</li>
+<li><div class="fn"/>void <b><a href="qlineedit-qt3.html#setMargin">setMargin</a></b> ( int <i>margin</i> )</li>
 <li><div class="fn"/>bool <b><a href="qlineedit-qt3.html#validateAndSet">validateAndSet</a></b> ( const QString &amp; <i>newText</i>, int <i>newPos</i>, int <i>newMarkAnchor</i>, int <i>newMarkDrag</i> )</li>
 </ul>
 <ul>
@@ -97,6 +93,10 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the line edit has lost focus.</p>
 <p>Use <a href="qlineedit.html#editingFinished">editingFinished</a>() instead</p>
 <p>See also <a href="qlineedit.html#editingFinished">editingFinished</a>() and <a href="qlineedit.html#returnPressed">returnPressed</a>().</p>
+<h3 class="fn"><a name="margin"></a>int QLineEdit::margin () const</h3>
+<p>Returns the with of the the margin around the contents of the widget.</p>
+<p>Use <a href="qwidget.html#getContentsMargins">QWidget::getContentsMargins</a>() instead.</p>
+<p>See also <a href="qlineedit-qt3.html#setMargin">setMargin</a>() and <a href="qwidget.html#getContentsMargins">QWidget::getContentsMargins</a>().</p>
 <h3 class="fn"><a name="markedText"></a><a href="qstring.html">QString</a> QLineEdit::markedText () const</h3>
 <p>Use <a href="qlineedit.html#selectedText-prop">selectedText</a>() instead.</p>
 <h3 class="fn"><a name="repaintArea"></a>void QLineEdit::repaintArea ( int <i>a</i>, int <i>b</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -104,12 +104,16 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setEdited"></a>void QLineEdit::setEdited ( bool <i>on</i> )</h3>
 <p>Use <a href="qlineedit.html#modified-prop">setModified</a>() or <a href="qlineedit.html#text-prop">setText</a>().</p>
 <p>See also <a href="qlineedit-qt3.html#edited">edited</a>().</p>
+<h3 class="fn"><a name="setMargin"></a>void QLineEdit::setMargin ( int <i>margin</i> )</h3>
+<p>Sets the width of the margin around the contents of the widget to <i>margin</i>.</p>
+<p>Use <a href="qwidget.html#setContentsMargins">QWidget::setContentsMargins</a>() instead.</p>
+<p>See also <a href="qlineedit-qt3.html#margin">margin</a>() and <a href="qwidget.html#setContentsMargins">QWidget::setContentsMargins</a>().</p>
 <h3 class="fn"><a name="validateAndSet"></a>bool QLineEdit::validateAndSet ( const <a href="qstring.html">QString</a> &amp; <i>newText</i>, int <i>newPos</i>, int <i>newMarkAnchor</i>, int <i>newMarkDrag</i> )</h3>
 <p>Use <a href="qlineedit.html#text-prop">setText</a>(), <a href="qlineedit.html#cursorPosition-prop">setCursorPosition</a>() and <a href="qlineedit.html#setSelection">setSelection</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

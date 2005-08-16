@@ -24,6 +24,12 @@
 #ifndef QWINDOWDEFS_WIN_H
 #define QWINDOWDEFS_WIN_H
 
+#include <QtCore/qglobal.h>
+
+QT_BEGIN_HEADER
+
+QT_MODULE(Gui)
+
 #if !defined(Q_NOWINSTRICT)
 #define Q_WINSTRICT
 #endif
@@ -45,8 +51,6 @@
 #define Q_DECLARE_HANDLE(name) typedef HANDLE name
 
 #endif
-
-QT_BEGIN_HEADER
 
 #ifndef HINSTANCE
 Q_DECLARE_HANDLE(HINSTANCE);

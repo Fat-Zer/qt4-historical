@@ -41,6 +41,7 @@ PieView::PieView(QWidget *parent)
     pieSize = totalSize - 2*margin;
     validItems = 0;
     totalValue = 0.0;
+    rubberBand = 0;
 }
 
 void PieView::dataChanged(const QModelIndex &topLeft,
@@ -230,10 +231,28 @@ int PieView::horizontalOffset() const
     return horizontalScrollBar()->value();
 }
 
+void PieView::mousePressEvent(QMouseEvent *event)
+{
+    QAbstractItemView::mousePressEvent(event);
+    origin = event->pos();
+    if (!rubberBand)
+        rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+    rubberBand->setGeometry(QRect(origin, QSize()));
+    rubberBand->show();
+}
+
+void PieView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (rubberBand)
+        rubberBand->setGeometry(QRect(origin, event->pos()).normalized());
+    QAbstractItemView::mouseMoveEvent(event);
+}
+
 void PieView::mouseReleaseEvent(QMouseEvent *event)
 {
     QAbstractItemView::mouseReleaseEvent(event);
-    selectionRect = QRect();
+    if (rubberBand)
+        rubberBand->hide();
     viewport()->update();
 }
 
@@ -275,7 +294,7 @@ void PieView::paintEvent(QPaintEvent *event)
     QStyle::State state = option.state;
 
     QBrush background = option.palette.base();
-    QPen foreground(option.palette.color(QPalette::Foreground));
+    QPen foreground(option.palette.color(QPalette::WindowText));
     QPen textPen(option.palette.color(QPalette::Text));
     QPen highlightedPen(option.palette.color(QPalette::HighlightedText));
 
@@ -429,8 +448,9 @@ void PieView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFlag
     // Use content widget coordinates because we will use the itemRegion()
     // function to check for intersections.
 
-    QRect contentsRect = rect.translated(horizontalScrollBar()->value(),
-                                         verticalScrollBar()->value());
+    QRect contentsRect = rect.translated(
+                            horizontalScrollBar()->value(),
+                            verticalScrollBar()->value()).normalized();
 
     int rows = model()->rowCount(rootIndex());
     int columns = model()->columnCount(rootIndex());
@@ -468,7 +488,6 @@ void PieView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFlag
         selectionModel()->select(selection, command);
     }
 
-    selectionRect = rect;
     update();
 }
 
@@ -511,22 +530,15 @@ QRegion PieView::visualRegionForSelection(const QItemSelection &selection) const
     if (ranges == 0)
         return QRect();
 
-    // Note that we use the top and bottom functions of the selection range
-    // since the data is stored in rows.
-
-    int firstRow = selection.at(0).top();
-    int lastRow = selection.at(0).top();
-
+    QRegion region;
     for (int i = 0; i < ranges; ++i) {
-        firstRow = qMin(firstRow, selection.at(i).top());
-        lastRow = qMax(lastRow, selection.at(i).bottom());
+        QItemSelectionRange range = selection.at(i);
+        for (int row = range.top(); row <= range.bottom(); ++row) {
+            for (int col = range.left(); col <= range.right(); ++col) {
+                QModelIndex index = model()->index(row, col, rootIndex());
+                region += visualRect(index);
+            }
+        }
     }
-
-    QModelIndex firstItem = model()->index(qMin(firstRow, lastRow), 0, rootIndex());
-    QModelIndex lastItem = model()->index(qMax(firstRow, lastRow), 0, rootIndex());
-
-    QRect firstRect = visualRect(firstItem);
-    QRect lastRect = visualRect(lastItem);
-
-    return firstRect.unite(lastRect);
+    return region;
 }

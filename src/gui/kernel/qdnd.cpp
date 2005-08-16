@@ -277,6 +277,9 @@ QDragManager::QDragManager()
     eventLoop = 0;
     dropData = new QDropData();
     currentDropTarget = 0;
+#ifdef Q_WS_X11
+    xdndMimeTransferedPixmapIndex = 0;
+#endif
 }
 
 
@@ -355,8 +358,16 @@ Qt::DropAction QDragManager::defaultAction(Qt::DropActions possibleActions,
 #endif
 
     // Check if the action determined is allowed
-    if (!(possibleActions & defaultAction))
-        defaultAction = Qt::CopyAction;
+    if (!(possibleActions & defaultAction)) {
+        if (possibleActions & Qt::CopyAction)
+            defaultAction = Qt::CopyAction;
+        else if (possibleActions & Qt::MoveAction)
+            defaultAction = Qt::MoveAction;
+        else if (possibleActions & Qt::LinkAction)
+            defaultAction = Qt::LinkAction;
+        else
+            defaultAction = Qt::IgnoreAction;
+    }
 
 #ifdef QDND_DEBUG
     qDebug("default action : %s", dragActionsToString(defaultAction).latin1());
@@ -489,7 +500,7 @@ QVariant QInternalMimeData::retrieveData(const QString &mimeType, QVariant::Type
                       qreal(colBuf[3]) / qreal(0xFFFF));
             data = c;
         } else {
-            qWarning("Invalid color format");
+            qWarning("Qt: Invalid color format");
         }
     } else if (data.type() != type && data.type() == QVariant::ByteArray) {
         // try to use mime data's internal conversion stuf.

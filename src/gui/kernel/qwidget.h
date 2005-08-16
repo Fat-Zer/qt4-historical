@@ -72,6 +72,7 @@ class QShowEvent;
 class QHideEvent;
 class QInputContext;
 class QIcon;
+class QWindowSurface;
 #if defined(Q_WS_X11)
 class QX11Info;
 #endif
@@ -162,7 +163,7 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
     Q_PROPERTY(QString windowTitle READ windowTitle WRITE setWindowTitle DESIGNABLE isWindow)
     Q_PROPERTY(QIcon windowIcon READ windowIcon WRITE setWindowIcon DESIGNABLE isWindow)
     Q_PROPERTY(QString windowIconText READ windowIconText WRITE setWindowIconText DESIGNABLE isWindow)
-    Q_PROPERTY(double windowOpacity READ windowOpacity WRITE setWindowOpacity DESIGNABLE false)
+    Q_PROPERTY(double windowOpacity READ windowOpacity WRITE setWindowOpacity DESIGNABLE isWindow)
     Q_PROPERTY(bool windowModified READ isWindowModified WRITE setWindowModified DESIGNABLE isWindow)
 #ifndef QT_NO_TOOLTIP
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip)
@@ -180,17 +181,23 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
     Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection RESET unsetLayoutDirection)
     QDOC_PROPERTY(Qt::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags)
     Q_PROPERTY(bool autoFillBackground READ autoFillBackground WRITE setAutoFillBackground)
+#ifndef QT_NO_STYLE_STYLESHEET
+    Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
+#endif
 
 public:
-    explicit QWidget(QWidget* parent = 0, Qt::WFlags f = 0);
+    explicit QWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
 #ifdef QT3_SUPPORT
-    QT3_SUPPORT_CONSTRUCTOR QWidget(QWidget* parent, const char *name, Qt::WFlags f = 0);
+    QT3_SUPPORT_CONSTRUCTOR QWidget(QWidget* parent, const char *name, Qt::WindowFlags f = 0);
 #endif
     ~QWidget();
 
     int devType() const;
 
     WId winId() const;
+    void createWinId(); // internal, going away
+    inline WId internalWinId() const { return data->winid; }
+
     // GUI style setting
     QStyle *style() const;
     void setStyle(QStyle *);
@@ -299,7 +306,15 @@ public:
     QRegion mask() const;
     void clearMask();
 
+public Q_SLOTS:
     void setWindowTitle(const QString &);
+#ifndef QT_NO_STYLE_STYLESHEET
+    void setStyleSheet(const QString& styleSheet);
+#endif
+public:
+#ifndef QT_NO_STYLE_STYLESHEET
+    QString styleSheet() const;
+#endif
     QString windowTitle() const;
     void setWindowIcon(const QIcon &icon);
     QIcon windowIcon() const;
@@ -368,6 +383,7 @@ public:
     int grabShortcut(const QKeySequence &key, Qt::ShortcutContext context = Qt::WindowShortcut);
     void releaseShortcut(int id);
     void setShortcutEnabled(int id, bool enable = true);
+    void setShortcutAutoRepeat(int id, bool enable = true);
 #endif
     static QWidget *mouseGrabber();
     static QWidget *keyboardGrabber();
@@ -419,6 +435,8 @@ public:
     void resize(const QSize &);
     inline void setGeometry(int x, int y, int w, int h);
     void setGeometry(const QRect &);
+    QByteArray saveGeometry() const;
+    bool restoreGeometry(const QByteArray &geometry);
     void adjustSize();
     bool isVisible() const;
     bool isVisibleTo(QWidget*) const;
@@ -452,7 +470,7 @@ public:
     void updateGeometry();
 
     void setParent(QWidget *parent);
-    void setParent(QWidget *parent, Qt::WFlags f);
+    void setParent(QWidget *parent, Qt::WindowFlags f);
 
     void scroll(int dx, int dy);
     void scroll(int dx, int dy, const QRect&);
@@ -523,6 +541,9 @@ public:
     bool autoFillBackground() const;
     void setAutoFillBackground(bool enabled);
 
+    void setWindowSurface(QWindowSurface *surface);
+    QWindowSurface *windowSurface() const;
+
 Q_SIGNALS:
     void customContextMenuRequested(const QPoint &pos);
 
@@ -547,8 +568,12 @@ protected:
     virtual void resizeEvent(QResizeEvent *);
     virtual void closeEvent(QCloseEvent *);
     virtual void contextMenuEvent(QContextMenuEvent *);
+#ifndef QT_NO_TABLETEVENT
     virtual void tabletEvent(QTabletEvent *);
+#endif
+#ifndef QT_NO_ACTION
     virtual void actionEvent(QActionEvent *);
+#endif
 
 #ifndef QT_NO_DRAGANDDROP
     virtual void dragEnterEvent(QDragEnterEvent *);
@@ -583,7 +608,9 @@ public:
     virtual QVariant inputMethodQuery(Qt::InputMethodQuery) const;
 protected:
     void resetInputContext();
+protected Q_SLOTS:
     void updateMicroFocus();
+protected:
 
     void create(WId = 0, bool initializeWindow = true,
                          bool destroyOldWindow = true);
@@ -595,7 +622,7 @@ protected:
     inline bool focusPreviousChild() { return focusNextPrevChild(false); }
 
 protected:
-    QWidget(QWidgetPrivate &d, QWidget* parent, Qt::WFlags f);
+    QWidget(QWidgetPrivate &d, QWidget* parent, Qt::WindowFlags f);
 private:
 
     bool testAttribute_helper(Qt::WidgetAttribute) const;
@@ -622,20 +649,25 @@ private:
 
 #ifdef Q_WS_MAC
     friend class QMacSavedPortInfo;
-    friend class QQuickDrawPaintEngine;
     friend class QCoreGraphicsPaintEnginePrivate;
     friend QPoint qt_mac_posInWindow(const QWidget *w);
+    friend WindowPtr qt_mac_window_for(const QWidget *w);
     friend bool qt_mac_is_metal(const QWidget *w);
+    friend HIViewRef qt_mac_hiview_for(const QWidget *w);
 #endif
 #ifdef Q_WS_QWS
     friend class QWSBackingStore;
     friend class QWSManager;
     friend class QWSManagerPrivate;
     friend class QDecoration;
+    friend class QWSWindowSurface;
 #endif
+
+    friend Q_GUI_EXPORT QWidgetData *qt_qwidget_data(QWidget *widget);
 
 private:
     Q_DISABLE_COPY(QWidget)
+    Q_PRIVATE_SLOT(d_func(), void _q_showIfNotHidden())
 
     QWidgetData *data;
 
@@ -648,11 +680,11 @@ public:
     inline QT3_SUPPORT void iconify() { showMinimized(); }
     inline QT3_SUPPORT void constPolish() const { ensurePolished(); }
     inline QT3_SUPPORT void polish() { ensurePolished(); }
-    inline QT3_SUPPORT void reparent(QWidget *parent, Qt::WFlags f, const QPoint &p, bool showIt=false)
+    inline QT3_SUPPORT void reparent(QWidget *parent, Qt::WindowFlags f, const QPoint &p, bool showIt=false)
     { setParent(parent, f); setGeometry(p.x(),p.y(),width(),height()); if (showIt) show(); }
     inline QT3_SUPPORT void reparent(QWidget *parent, const QPoint &p, bool showIt=false)
     { setParent(parent, windowFlags() & ~Qt::WindowType_Mask); setGeometry(p.x(),p.y(),width(),height()); if (showIt) show(); }
-    inline QT3_SUPPORT void recreate(QWidget *parent, Qt::WFlags f, const QPoint & p, bool showIt=false)
+    inline QT3_SUPPORT void recreate(QWidget *parent, Qt::WindowFlags f, const QPoint & p, bool showIt=false)
     { setParent(parent, f); setGeometry(p.x(),p.y(),width(),height()); if (showIt) show(); }
     inline QT3_SUPPORT void setSizePolicy(QSizePolicy::Policy hor, QSizePolicy::Policy ver, bool hfw)
     { QSizePolicy sp(hor, ver); sp.setHeightForWidth(hfw); setSizePolicy(sp);}
@@ -769,9 +801,6 @@ inline Qt::WindowType QWidget::windowType() const
 { return static_cast<Qt::WindowType>(int(data->window_flags & Qt::WindowType_Mask)); }
 inline Qt::WindowFlags QWidget::windowFlags() const
 { return data->window_flags; }
-
-inline WId QWidget::winId() const
-{ return data->winid; }
 
 inline bool QWidget::isTopLevel() const
 { return (windowType() & Qt::Window); }

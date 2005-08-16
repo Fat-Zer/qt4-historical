@@ -1,3 +1,20 @@
+/****************************************************************************
+**
+** This file is part of the QtGui module of the Qt Toolkit.
+**
+** This file contains third party code which is not governed by the Qt
+** Commercial License Agreement. Please read the license headers below
+** for more information.
+** 
+** Further information about Qt licensing is available at:
+** http://www.trolltech.com/products/qt/licensing.html or by
+** contacting info@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /***************************************************************************/
 /*                                                                         */
 /*  qblackraster.c, derived from ftraster.c                                */
@@ -359,8 +376,8 @@ typedef struct  TBand_
 
 typedef struct TRaster_Instance_  TRaster_Instance;
 
-#define precision_bits 8
-#define precision_step 128
+#define precision_bits 12
+#define precision_step (1 << (precision_bits - 1))
 #define precision (1 << precision_bits)
 #define precision_shift (precision_bits - Pixel_Bits)
 

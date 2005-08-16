@@ -33,7 +33,7 @@
 #include <QtDesigner/QExtensionManager>
 #include <QtDesigner/abstractformeditor.h>
 #include <QtDesigner/abstracticoncache.h>
-#include <QtDesigner/ui4.h>
+#include "ui4_p.h"
 
 // shared
 #include <resourcefile_p.h>
@@ -115,16 +115,28 @@ void QDesignerFormBuilder::applyProperties(QObject *o, const QList<DomProperty*>
     QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core()->extensionManager(), o);
     Q_ASSERT(sheet != 0);
 
+    const QMetaObject *meta = o->metaObject();
+    if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(o))
+        meta = promoted->child()->metaObject();
+
     foreach (DomProperty *p, properties) {
-        int index = sheet->indexOf(p->attributeName());
-        QVariant v = toVariant(o->metaObject(), p);
+        QVariant v = toVariant(meta, p);
 
-        if (!v.isNull()) {
-            if (strcmp(o->metaObject()->className(), "QAxWidget") != 0)
-                sheet->setProperty(index, v);
+        if (v.isNull())
+            continue;
 
-            if (o->metaObject()->indexOfProperty(p->attributeName().toUtf8()) != -1)
-                o->setProperty(p->attributeName().toUtf8(), v);
+        QByteArray pname = p->attributeName().toUtf8();
+        int index = o->metaObject()->indexOfProperty(pname);
+
+        if (index != -1) {
+            // a real property
+            o->setProperty(pname, v);
+        }
+
+        else if (strcmp(meta->className(), "QAxWidget") != 0) {
+            // a fake property (but we have have to ignore QAxWidget)
+            index = sheet->indexOf(p->attributeName());
+            sheet->setProperty(index, v);
         }
     }
 }
@@ -158,6 +170,13 @@ QLayout *QDesignerFormBuilder::create(DomLayout *ui_layout, QLayout *layout, QWi
     if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(parentWidget))
         parentWidget = promoted->child();
     return QFormBuilder::create(ui_layout, layout, parentWidget);
+}
+
+void QDesignerFormBuilder::loadExtraInfo(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget)
+{
+    if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(widget))
+        widget = promoted->child();
+    QFormBuilder::loadExtraInfo(ui_widget, widget, parentWidget);
 }
 
 } // namespace qdesigner_internal

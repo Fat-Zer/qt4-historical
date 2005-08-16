@@ -21,6 +21,6 @@
 **
 ****************************************************************************/
 
-#include "arch/qatomic.h"
+#include "QtCore/qatomic_arm.h"
 
 Q_CORE_EXPORT char q_atomic_lock = 0;

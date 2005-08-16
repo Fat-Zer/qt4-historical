@@ -82,16 +82,34 @@ QString QCoreApplicationPrivate::appName() const
     return ::appName;
 }
 
+class QWinMsgHandlerCriticalSection
+{
+    CRITICAL_SECTION cs;
+public:
+    QWinMsgHandlerCriticalSection() 
+    { InitializeCriticalSection(&cs); }
+    ~QWinMsgHandlerCriticalSection() 
+    { DeleteCriticalSection(&cs); }
+
+    void lock()
+    { EnterCriticalSection(&cs); }
+    void unlock()
+    { LeaveCriticalSection(&cs); }
+};
+
 Q_CORE_EXPORT void qWinMsgHandler(QtMsgType t, const char* str)
 {
     Q_UNUSED(t);
     // OutputDebugString is not threadsafe.
-    static QMutex staticMutex;
+
+    // cannot use QMutex here, because qWarning()s in the QMutex
+    // implementation may cause this function to recurse
+    static QWinMsgHandlerCriticalSection staticCriticalSection;
 
     if (!str)
         str = "(null)";
 
-    staticMutex.lock();
+    staticCriticalSection.lock();
     QT_WA({
         QString s(str);
         s += "\n";
@@ -101,7 +119,7 @@ Q_CORE_EXPORT void qWinMsgHandler(QtMsgType t, const char* str)
         s += "\n";
         OutputDebugStringA(s.data());
     })
-    staticMutex.unlock();
+    staticCriticalSection.unlock();
 }
 
 
@@ -196,7 +214,7 @@ void qWinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdParam,
     static bool already_called = false;
 
     if (already_called) {
-        qWarning("Qt internal error: qWinMain should be called only once");
+        qWarning("Qt: Internal error: qWinMain should be called only once");
         return;
     }
     already_called = true;
@@ -242,10 +260,7 @@ bool QCoreApplication::winEventFilter(MSG *msg, long *result)        // Windows 
 
 void QCoreApplicationPrivate::removePostedTimerEvent(QObject *object, int timerId)
 {
-    QThread *thread = object->thread();
-    if (!thread)
-        return;
-    QThreadData *data = QThreadData::get(thread);
+    QThreadData *data = object->d_func()->threadData;
 
     QMutexLocker locker(&data->postEventList.mutex);
     if (data->postEventList.size() == 0)

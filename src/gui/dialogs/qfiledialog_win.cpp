@@ -162,11 +162,11 @@ static OPENFILENAMEA *qt_win_make_OFNA(QWidget *parent,
         parent = qApp->activeWindow();
 
     aTitle = title.toLocal8Bit();
-    aInitDir = QDir::convertSeparators(initialDirectory).toLocal8Bit();
+    aInitDir = QDir::toNativeSeparators(initialDirectory).toLocal8Bit();
     if (initialSelection.isEmpty()) {
         aInitSel = "";
     } else {
-        aInitSel = QDir::convertSeparators(initialSelection).toLocal8Bit();
+        aInitSel = QDir::toNativeSeparators(initialSelection).toLocal8Bit();
 	aInitSel.replace("<", "");
 	aInitSel.replace(">", "");
 	aInitSel.replace("\"", "");
@@ -190,6 +190,7 @@ static OPENFILENAMEA *qt_win_make_OFNA(QWidget *parent,
 #else
     ofn->lStructSize = sizeof(OPENFILENAMEA);
 #endif
+    Q_ASSERT(!parent ||parent->testAttribute(Qt::WA_WState_Created));
     ofn->hwndOwner = parent ? parent->winId() : 0;
     ofn->lpstrFilter = aFilter;
     ofn->lpstrFile = aInitSel.data();
@@ -233,10 +234,10 @@ static OPENFILENAME* qt_win_make_OFN(QWidget *parent,
     else
         parent = qApp->activeWindow();
 
-    tInitDir = QDir::convertSeparators(initialDirectory);
+    tInitDir = QDir::toNativeSeparators(initialDirectory);
     tFilters = filters;
     tTitle = title;
-    QString initSel = QDir::convertSeparators(initialSelection);
+    QString initSel = QDir::toNativeSeparators(initialSelection);
     if (!initSel.isEmpty()) {
 	initSel.replace("<", "");
 	initSel.replace(">", "");
@@ -265,6 +266,7 @@ static OPENFILENAME* qt_win_make_OFN(QWidget *parent,
 #else
     ofn->lStructSize = sizeof(OPENFILENAME);
 #endif
+    Q_ASSERT(!parent ||parent->testAttribute(Qt::WA_WState_Created));
     ofn->hwndOwner = parent ? parent->winId() : 0;
     ofn->lpstrFilter = (TCHAR *)tFilters.utf16();
     ofn->lpstrFile = tInitSel;
@@ -412,6 +414,24 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
     modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
     modal_widget.setParent(args.parent, Qt::Window);
     QApplicationPrivate::enterModal(&modal_widget);
+    
+    // This block is used below for the lpstrDefExt member.
+    // Note that the current MSDN docs document this member wrong.
+    // It should rather be documented as "the default extension if no extension was given and if the
+    // current filter does not have a extension (e.g (*.*)). If the current filter have an extension, use
+    // the extension of the current filter"
+    QString defaultSaveExt;
+    if (selectedFilter && !selectedFilter->isEmpty()) {
+        defaultSaveExt = qt_win_extract_filter(*selectedFilter);
+        // make sure we only have the extension
+        int firstDot = defaultSaveExt.indexOf(QLatin1Char('.'));
+        if (firstDot != -1) {
+            defaultSaveExt.remove(0, firstDot + 1);
+        } else {
+            defaultSaveExt.clear();
+        }
+    }
+
     QT_WA({
         // Use Unicode strings and API
         OPENFILENAME *ofn = qt_win_make_OFN(args.parent, args.selection,
@@ -419,6 +439,9 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
                                             qt_win_filter(args.filter),
 					    QFileDialog::AnyFile,
 					    args.options);
+
+        ofn->lpstrDefExt = (TCHAR *)defaultSaveExt.utf16();
+        
         if (idx)
             ofn->nFilterIndex = idx + 1;
         if (GetSaveFileName(ofn)) {
@@ -433,6 +456,9 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
                                               qt_win_filter(args.filter),
 					      QFileDialog::AnyFile,
 					      args.options);
+        QByteArray asciiExt = defaultSaveExt.toAscii();
+        ofn->lpstrDefExt = asciiExt.data();
+        
         if (idx)
             ofn->nFilterIndex = idx + 1;
         if (GetSaveFileNameA(ofn)) {
@@ -442,7 +468,7 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
         qt_win_clean_up_OFNA(&ofn);
     });
     QApplicationPrivate::leaveModal(&modal_widget);
-    
+
     qt_win_eatMouseMove();
 
     if (result.isEmpty())
@@ -560,7 +586,7 @@ QStringList qt_win_get_open_file_names(const QFileDialogArgs &args,
         }
     });
     QApplicationPrivate::leaveModal(&modal_widget);
-    
+
     qt_win_eatMouseMove();
 
     if (!result.isEmpty()) {
@@ -640,13 +666,14 @@ QString qt_win_get_existing_directory(const QFileDialogArgs &args)
     QApplicationPrivate::enterModal(&modal_widget);
     QT_WA({
         qt_win_resolve_libs();
-        QString initDir = QDir::convertSeparators(args.directory);
+        QString initDir = QDir::toNativeSeparators(args.directory);
         TCHAR path[MAX_PATH];
         TCHAR initPath[MAX_PATH];
         initPath[0] = 0;
         path[0] = 0;
         tTitle = title;
         BROWSEINFO bi;
+        Q_ASSERT(!parent ||parent->testAttribute(Qt::WA_WState_Created));
         bi.hwndOwner = (parent ? parent->winId() : 0);
         bi.pidlRoot = NULL;
         bi.lpszTitle = (TCHAR*)tTitle.utf16();
@@ -669,13 +696,14 @@ QString qt_win_get_existing_directory(const QFileDialogArgs &args)
             result = QString();
         tTitle = QString();
     } , {
-        QString initDir = QDir::convertSeparators(args.directory);
+        QString initDir = QDir::toNativeSeparators(args.directory);
         char path[MAX_PATH];
         char initPath[MAX_PATH];
         QByteArray ctitle = title.toLocal8Bit();
         initPath[0]=0;
         path[0]=0;
         BROWSEINFOA bi;
+        Q_ASSERT(!parent ||parent->testAttribute(Qt::WA_WState_Created));
         bi.hwndOwner = (parent ? parent->winId() : 0);
         bi.pidlRoot = NULL;
         bi.lpszTitle = ctitle;

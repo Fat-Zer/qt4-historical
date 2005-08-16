@@ -69,7 +69,7 @@ QThreadStorageData::QThreadStorageData(void (*func)(void *))
     thread_storage_usage[id].used = true;
     thread_storage_usage[id].func = func;
 
-    DEBUG("QThreadStorageData: allocated id %d", id);
+    DEBUG("QThreadStorageData: Allocated id %d", id);
 }
 
 QThreadStorageData::~QThreadStorageData()
@@ -79,30 +79,28 @@ QThreadStorageData::~QThreadStorageData()
     // thread_storage_usage[id].used = false;
     thread_storage_usage[id].func = 0;
 
-    DEBUG("QThreadStorageData: released id %d", id);
+    DEBUG("QThreadStorageData: Released id %d", id);
 }
 
 void **QThreadStorageData::get() const
 {
-    QThread *thread = QThread::currentThread();
-    if (!thread) {
-        qWarning("QThreadStorage can only be used with threads started with QThread");
+    QThreadData *data = QThreadData::current();
+    if (!data) {
+        qWarning("QThreadStorage::get: QThreadStorage can only be used with threads started with QThread");
         return 0;
     }
-    QThreadData *data = QThreadData::get(thread);
     return data->tls && data->tls[id] ? &data->tls[id] : 0;
 }
 
 void **QThreadStorageData::set(void *p)
 {
-    QThread *thread = QThread::currentThread();
-    if (!thread) {
-        qWarning("QThreadStorage can only be used with threads started with QThread");
+    QThreadData *data = QThreadData::current();
+    if (!data) {
+        qWarning("QThreadStorage::set: QThreadStorage can only be used with threads started with QThread");
         return 0;
     }
-    QThreadData *data = QThreadData::get(thread);
     if (!data->tls) {
-        DEBUG("QThreadStorageData: allocating storage %d for thread %p",
+        DEBUG("QThreadStorageData: Allocating storage %d for thread %p",
               id, QThread::currentThread());
 
         data->tls = new void*[MAX_THREAD_STORAGE];
@@ -111,7 +109,7 @@ void **QThreadStorageData::set(void *p)
 
     // delete any previous data
     if (data->tls[id]) {
-        DEBUG("QThreadStorageData: deleting previous storage %d for thread %p",
+        DEBUG("QThreadStorageData: Deleting previous storage %d for thread %p",
               id, QThread::currentThread());
 
         void *q = data->tls[id];
@@ -121,7 +119,7 @@ void **QThreadStorageData::set(void *p)
 
     // store new data
     data->tls[id] = p;
-    DEBUG("QThreadStorageData: set storage %d for thread %p to %p",
+    DEBUG("QThreadStorageData: Set storage %d for thread %p to %p",
           id, QThread::currentThread(), p);
     return &data->tls[id];
 }
@@ -130,13 +128,13 @@ void QThreadStorageData::finish(void **tls)
 {
     if (!tls) return; // nothing to do
 
-    DEBUG("QThreadStorageData: destroying storage for thread %p",
+    DEBUG("QThreadStorageData: Destroying storage for thread %p",
           QThread::currentThread());
 
     for (int i = 0; i < MAX_THREAD_STORAGE; ++i) {
         if (!tls[i]) continue;
         if (!thread_storage_usage[i].func) {
-            qWarning("QThreadStorage: thread %p exited after QThreadStorage destroyed",
+            qWarning("QThreadStorage: Thread %p exited after QThreadStorage destroyed",
                      QThread::currentThread());
             continue;
         }
@@ -297,4 +295,5 @@ void QThreadStorageData::finish(void **tls)
 
     \sa localData(), hasLocalData()
 */
+
 #endif // QT_NO_THREAD

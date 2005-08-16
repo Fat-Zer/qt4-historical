@@ -22,7 +22,7 @@
 ****************************************************************************/
 
 #include "abstractformbuilder.h"
-#include "ui4.h"
+#include "ui4_p.h"
 
 #include <QtCore/QVariant>
 #include <QtCore/QMetaProperty>
@@ -30,16 +30,17 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QQueue>
+#include <QtCore/QUrl>
 
 #include <QtGui/QAction>
 #include <QtGui/QActionGroup>
 #include <QtGui/QComboBox>
+#include <QtGui/QFontComboBox>
 #include <QtGui/QGridLayout>
 #include <QtGui/QIcon>
 #include <QtGui/QListWidget>
 #include <QtGui/QMainWindow>
 #include <QtGui/QPixmap>
-#include <QtGui/QShortcut>
 #include <QtGui/QStatusBar>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTableWidget>
@@ -61,6 +62,7 @@
 #include <QtCore/qdebug.h>
 
 #include <limits.h>
+#include <private/qfont_p.h>
 
 #ifdef QFORMINTERNAL_NAMESPACE
 using namespace QFormInternal;
@@ -85,6 +87,10 @@ class QAbstractFormBuilderGadget: public QWidget
     Q_PROPERTY(QSizePolicy::Policy sizeType READ fakeSizeType)
     Q_PROPERTY(QPalette::ColorRole colorRole READ fakeColorRole)
     Q_PROPERTY(QPalette::ColorGroup colorGroup READ fakeColorGroup)
+    Q_PROPERTY(Qt::BrushStyle brushStyle READ fakeBrushStyle)
+    Q_PROPERTY(QGradient::Type gradientType READ fakeGradientType)
+    Q_PROPERTY(QGradient::Spread gradientSpread READ fakeGradientSpread)
+    Q_PROPERTY(QGradient::CoordinateMode gradientCoordinate READ fakeGradientCoordinate)
 public:
     QAbstractFormBuilderGadget() { Q_ASSERT(0); }
 
@@ -92,176 +98,11 @@ public:
     QSizePolicy::Policy fakeSizeType() const    { Q_ASSERT(0); return QSizePolicy::Expanding; }
     QPalette::ColorGroup fakeColorGroup() const { Q_ASSERT(0); return static_cast<QPalette::ColorGroup>(0); }
     QPalette::ColorRole fakeColorRole() const   { Q_ASSERT(0); return static_cast<QPalette::ColorRole>(0); }
+    Qt::BrushStyle fakeBrushStyle() const       { Q_ASSERT(0); return Qt::NoBrush; }
+    QGradient::Type fakeGradientType() const    { Q_ASSERT(0); return QGradient::NoGradient; }
+    QGradient::Spread fakeGradientSpread() const  { Q_ASSERT(0); return QGradient::PadSpread; }
+    QGradient::CoordinateMode fakeGradientCoordinate() const  { Q_ASSERT(0); return QGradient::LogicalMode; }
 };
-
-#ifdef Q_WS_MAC
-static struct {
-    int key;
-    const char* name;
-} keyname[] = {
-    { Qt::Key_Space,        QT_TRANSLATE_NOOP("QShortcut", "Space") },
-    { Qt::Key_Escape,       QT_TRANSLATE_NOOP("QShortcut", "Esc") },
-    { Qt::Key_Tab,          QT_TRANSLATE_NOOP("QShortcut", "Tab") },
-    { Qt::Key_Backtab,      QT_TRANSLATE_NOOP("QShortcut", "Backtab") },
-    { Qt::Key_Backspace,    QT_TRANSLATE_NOOP("QShortcut", "Backspace") },
-    { Qt::Key_Return,       QT_TRANSLATE_NOOP("QShortcut", "Return") },
-    { Qt::Key_Enter,        QT_TRANSLATE_NOOP("QShortcut", "Enter") },
-    { Qt::Key_Insert,       QT_TRANSLATE_NOOP("QShortcut", "Ins") },
-    { Qt::Key_Delete,       QT_TRANSLATE_NOOP("QShortcut", "Del") },
-    { Qt::Key_Pause,        QT_TRANSLATE_NOOP("QShortcut", "Pause") },
-    { Qt::Key_Print,        QT_TRANSLATE_NOOP("QShortcut", "Print") },
-    { Qt::Key_SysReq,       QT_TRANSLATE_NOOP("QShortcut", "SysReq") },
-    { Qt::Key_Home,         QT_TRANSLATE_NOOP("QShortcut", "Home") },
-    { Qt::Key_End,          QT_TRANSLATE_NOOP("QShortcut", "End") },
-    { Qt::Key_Left,         QT_TRANSLATE_NOOP("QShortcut", "Left") },
-    { Qt::Key_Up,           QT_TRANSLATE_NOOP("QShortcut", "Up") },
-    { Qt::Key_Right,        QT_TRANSLATE_NOOP("QShortcut", "Right") },
-    { Qt::Key_Down,         QT_TRANSLATE_NOOP("QShortcut", "Down") },
-    { Qt::Key_PageUp,       QT_TRANSLATE_NOOP("QShortcut", "PgUp") },
-    { Qt::Key_PageDown,     QT_TRANSLATE_NOOP("QShortcut", "PgDown") },
-    { Qt::Key_CapsLock,     QT_TRANSLATE_NOOP("QShortcut", "CapsLock") },
-    { Qt::Key_NumLock,      QT_TRANSLATE_NOOP("QShortcut", "NumLock") },
-    { Qt::Key_ScrollLock,   QT_TRANSLATE_NOOP("QShortcut", "ScrollLock") },
-    { Qt::Key_Menu,         QT_TRANSLATE_NOOP("QShortcut", "Menu") },
-    { Qt::Key_Help,         QT_TRANSLATE_NOOP("QShortcut", "Help") },
-
-    // Multimedia keys
-    { Qt::Key_Back,         QT_TRANSLATE_NOOP("QShortcut", "Back") },
-    { Qt::Key_Forward,      QT_TRANSLATE_NOOP("QShortcut", "Forward") },
-    { Qt::Key_Stop,         QT_TRANSLATE_NOOP("QShortcut", "Stop") },
-    { Qt::Key_Refresh,      QT_TRANSLATE_NOOP("QShortcut", "Refresh") },
-    { Qt::Key_VolumeDown,   QT_TRANSLATE_NOOP("QShortcut", "Volume Down") },
-    { Qt::Key_VolumeMute,   QT_TRANSLATE_NOOP("QShortcut", "Volume Mute") },
-    { Qt::Key_VolumeUp,     QT_TRANSLATE_NOOP("QShortcut", "Volume Up") },
-    { Qt::Key_BassBoost,    QT_TRANSLATE_NOOP("QShortcut", "Bass Boost") },
-    { Qt::Key_BassUp,       QT_TRANSLATE_NOOP("QShortcut", "Bass Up") },
-    { Qt::Key_BassDown,     QT_TRANSLATE_NOOP("QShortcut", "Bass Down") },
-    { Qt::Key_TrebleUp,     QT_TRANSLATE_NOOP("QShortcut", "Treble Up") },
-    { Qt::Key_TrebleDown,   QT_TRANSLATE_NOOP("QShortcut", "Treble Down") },
-    { Qt::Key_MediaPlay,    QT_TRANSLATE_NOOP("QShortcut", "Media Play") },
-    { Qt::Key_MediaStop,    QT_TRANSLATE_NOOP("QShortcut", "Media Stop") },
-    { Qt::Key_MediaPrevious,QT_TRANSLATE_NOOP("QShortcut", "Media Previous") },
-    { Qt::Key_MediaNext,    QT_TRANSLATE_NOOP("QShortcut", "Media Next") },
-    { Qt::Key_MediaRecord,  QT_TRANSLATE_NOOP("QShortcut", "Media Record") },
-    { Qt::Key_HomePage,     QT_TRANSLATE_NOOP("QShortcut", "Home") },
-    { Qt::Key_Favorites,    QT_TRANSLATE_NOOP("QShortcut", "Favorites") },
-    { Qt::Key_Search,       QT_TRANSLATE_NOOP("QShortcut", "Search") },
-    { Qt::Key_Standby,      QT_TRANSLATE_NOOP("QShortcut", "Standby") },
-    { Qt::Key_OpenUrl,      QT_TRANSLATE_NOOP("QShortcut", "Open URL") },
-    { Qt::Key_LaunchMail,   QT_TRANSLATE_NOOP("QShortcut", "Launch Mail") },
-    { Qt::Key_LaunchMedia,  QT_TRANSLATE_NOOP("QShortcut", "Launch Media") },
-    { Qt::Key_Launch0,      QT_TRANSLATE_NOOP("QShortcut", "Launch (0)") },
-    { Qt::Key_Launch1,      QT_TRANSLATE_NOOP("QShortcut", "Launch (1)") },
-    { Qt::Key_Launch2,      QT_TRANSLATE_NOOP("QShortcut", "Launch (2)") },
-    { Qt::Key_Launch3,      QT_TRANSLATE_NOOP("QShortcut", "Launch (3)") },
-    { Qt::Key_Launch4,      QT_TRANSLATE_NOOP("QShortcut", "Launch (4)") },
-    { Qt::Key_Launch5,      QT_TRANSLATE_NOOP("QShortcut", "Launch (5)") },
-    { Qt::Key_Launch6,      QT_TRANSLATE_NOOP("QShortcut", "Launch (6)") },
-    { Qt::Key_Launch7,      QT_TRANSLATE_NOOP("QShortcut", "Launch (7)") },
-    { Qt::Key_Launch8,      QT_TRANSLATE_NOOP("QShortcut", "Launch (8)") },
-    { Qt::Key_Launch9,      QT_TRANSLATE_NOOP("QShortcut", "Launch (9)") },
-    { Qt::Key_LaunchA,      QT_TRANSLATE_NOOP("QShortcut", "Launch (A)") },
-    { Qt::Key_LaunchB,      QT_TRANSLATE_NOOP("QShortcut", "Launch (B)") },
-    { Qt::Key_LaunchC,      QT_TRANSLATE_NOOP("QShortcut", "Launch (C)") },
-    { Qt::Key_LaunchD,      QT_TRANSLATE_NOOP("QShortcut", "Launch (D)") },
-    { Qt::Key_LaunchE,      QT_TRANSLATE_NOOP("QShortcut", "Launch (E)") },
-    { Qt::Key_LaunchF,      QT_TRANSLATE_NOOP("QShortcut", "Launch (F)") },
-
-    // --------------------------------------------------------------
-    // More consistent namings
-    { Qt::Key_Print,        QT_TRANSLATE_NOOP("QShortcut", "Print Screen") },
-    { Qt::Key_PageUp,       QT_TRANSLATE_NOOP("QShortcut", "Page Up") },
-    { Qt::Key_PageDown,     QT_TRANSLATE_NOOP("QShortcut", "Page Down") },
-    { Qt::Key_CapsLock,     QT_TRANSLATE_NOOP("QShortcut", "Caps Lock") },
-    { Qt::Key_NumLock,      QT_TRANSLATE_NOOP("QShortcut", "Num Lock") },
-    { Qt::Key_NumLock,      QT_TRANSLATE_NOOP("QShortcut", "Number Lock") },
-    { Qt::Key_ScrollLock,   QT_TRANSLATE_NOOP("QShortcut", "Scroll Lock") },
-    { Qt::Key_Insert,       QT_TRANSLATE_NOOP("QShortcut", "Insert") },
-    { Qt::Key_Delete,       QT_TRANSLATE_NOOP("QShortcut", "Delete") },
-    { Qt::Key_Escape,       QT_TRANSLATE_NOOP("QShortcut", "Escape") },
-    { Qt::Key_SysReq,       QT_TRANSLATE_NOOP("QShortcut", "System Request") },
-
-    { 0, 0 }
-};
-
-static QString qkeysequence_encodeString(int key)
-{
-    QString s;
-    if ((key & Qt::META) == Qt::META)
-        s += QShortcut::tr("Meta");
-    if ((key & Qt::CTRL) == Qt::CTRL) {
-        if (!s.isEmpty())
-            s += QShortcut::tr("+");
-        s += QShortcut::tr("Ctrl");
-    }
-    if ((key & Qt::ALT) == Qt::ALT) {
-        if (!s.isEmpty())
-            s += QShortcut::tr("+");
-        s += QShortcut::tr("Alt");
-    }
-    if ((key & Qt::SHIFT) == Qt::SHIFT) {
-        if (!s.isEmpty())
-            s += QShortcut::tr("+");
-        s += QShortcut::tr("Shift");
-    }
-
-
-    key &= ~(Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier);
-    QString p;
-
-    if (key && key < Qt::Key_Escape) {
-        if (key < 0x10000) {
-            p = QChar(key & 0xffff).toUpper();
-        } else {
-            p = QChar((key-0x10000)/0x400+0xd800);
-            p += QChar((key-0x10000)%400+0xdc00);
-        }
-    } else if (key >= Qt::Key_F1 && key <= Qt::Key_F35) {
-        p = QShortcut::tr("F%1").arg(key - Qt::Key_F1 + 1);
-    } else if (key > Qt::Key_Space && key <= Qt::Key_AsciiTilde) {
-        p.sprintf("%c", key);
-    } else if (key) {
-        int i=0;
-        while (keyname[i].name) {
-            if (key == keyname[i].key) {
-                p = QShortcut::tr(keyname[i].name);
-                break;
-            }
-            ++i;
-        }
-        // If we can't find the actual translatable keyname,
-        // fall back on the unicode representation of it...
-        // Or else characters like Qt::Key_aring may not get displayed
-        // (Really depends on you locale)
-        if (!keyname[i].name) {
-            if (key < 0x10000) {
-                p = QChar(key & 0xffff).toUpper();
-            } else {
-                p = QChar((key-0x10000)/0x400+0xd800);
-                p += QChar((key-0x10000)%400+0xdc00);
-            }
-        }
-    }
-
-    if (!s.isEmpty())
-        s += QShortcut::tr("+");
-
-    s += p;
-    return s;
-}
-
-static QString platformNeutralKeySequence(const QKeySequence &ks)
-{
-    uint k;
-    QString str;
-    for (k = 0; k < ks.count(); ++k) {
-        str += qkeysequence_encodeString(ks[k]) + ", ";
-    }
-    str.truncate(str.size() - 2);
-    return str;
-}
-#endif
-
 
 /*!
     \class QAbstractFormBuilder
@@ -520,6 +361,16 @@ bool QAbstractFormBuilder::addItem(DomWidget *ui_widget, QWidget *widget, QWidge
         else if (QDockWidget *dockWidget = qobject_cast<QDockWidget*>(widget)) {
             if (DomProperty *attr = attributes.value(QLatin1String("dockWidgetArea"))) {
                 Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(attr->elementNumber());
+                if (!dockWidget->isAreaAllowed(area)) {
+                    if (dockWidget->isAreaAllowed(Qt::LeftDockWidgetArea))
+                        area = Qt::LeftDockWidgetArea;
+                    else if (dockWidget->isAreaAllowed(Qt::RightDockWidgetArea))
+                        area = Qt::RightDockWidgetArea;
+                    else if (dockWidget->isAreaAllowed(Qt::TopDockWidgetArea))
+                        area = Qt::TopDockWidgetArea;
+                    else if (dockWidget->isAreaAllowed(Qt::BottomDockWidgetArea))
+                        area = Qt::BottomDockWidgetArea;
+                }
                 mw->addDockWidget(area, dockWidget);
             } else {
                 mw->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
@@ -776,15 +627,33 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
         v = QVariant(pt);
     } break;
 
+    case DomProperty::PointF: {
+        DomPointF *pointf = p->elementPointF();
+        QPointF pt(pointf->elementX(), pointf->elementY());
+        v = QVariant(pt);
+    } break;
+
     case DomProperty::Size: {
         DomSize *size = p->elementSize();
         QSize sz(size->elementWidth(), size->elementHeight());
         v = QVariant(sz);
     } break;
 
+    case DomProperty::SizeF: {
+        DomSizeF *sizef = p->elementSizeF();
+        QSizeF sz(sizef->elementWidth(), sizef->elementHeight());
+        v = QVariant(sz);
+    } break;
+
     case DomProperty::Rect: {
         DomRect *rc = p->elementRect();
         QRect g(rc->elementX(), rc->elementY(), rc->elementWidth(), rc->elementHeight());
+        v = QVariant(g);
+    } break;
+
+    case DomProperty::RectF: {
+        DomRectF *rcf = p->elementRectF();
+        QRectF g(rcf->elementX(), rcf->elementY(), rcf->elementWidth(), rcf->elementHeight());
         v = QVariant(g);
     } break;
 
@@ -800,8 +669,18 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
         v = p->elementNumber();
     } break;
 
+    case DomProperty::LongLong: {
+        v = p->elementLongLong();
+    } break;
+
     case DomProperty::Double: {
         v = p->elementDouble();
+    } break;
+
+    case DomProperty::Char: {
+        DomChar *character = p->elementChar();
+        QChar c(character->elementUnicode());
+        v = qVariantFromValue(c);
     } break;
 
     case DomProperty::Color: {
@@ -814,16 +693,25 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
         DomFont *font = p->elementFont();
 
         QFont f;
-        if (!font->elementFamily().isEmpty())
+        if (font->hasElementFamily() && !font->elementFamily().isEmpty())
             f.setFamily(font->elementFamily());
-        if (font->elementPointSize() > 0)
+        if (font->hasElementPointSize() && font->elementPointSize() > 0)
             f.setPointSize(font->elementPointSize());
-        if (font->elementWeight() > 0)
+        if (font->hasElementWeight() && font->elementWeight() > 0)
             f.setWeight(font->elementWeight());
-        f.setItalic(font->elementItalic());
-        f.setBold(font->elementBold());
-        f.setUnderline(font->elementUnderline());
-        f.setStrikeOut(font->elementStrikeOut());
+        if (font->hasElementItalic())
+            f.setItalic(font->elementItalic());
+        if (font->hasElementBold())
+            f.setBold(font->elementBold());
+        if (font->hasElementUnderline())
+            f.setUnderline(font->elementUnderline());
+        if (font->hasElementStrikeOut())
+            f.setStrikeOut(font->elementStrikeOut());
+        if (font->hasElementKerning())
+            f.setKerning(font->elementKerning());
+        if (font->hasElementAntialiasing()) {
+            f.setStyleStrategy(font->elementAntialiasing() ? QFont::PreferDefault : QFont::NoAntialias);
+        }
         v = qVariantFromValue(f);
     } break;
 
@@ -848,6 +736,12 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
 
         QDateTime dt(d, tm);
         v = QVariant(dt);
+    } break;
+
+    case DomProperty::Url: {
+        DomUrl *url = p->elementUrl();
+        QUrl u(url->elementString()->text());
+        v = QVariant(u);
     } break;
 
     case DomProperty::Pixmap:
@@ -951,6 +845,11 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
         v = qVariantFromValue(sizePolicy);
     } break;
 
+    case DomProperty::StringList: {
+        DomStringList *sl = p->elementStringList();
+        v = sl->elementString();
+    } break;
+
     default:
         qWarning() << "QAbstractFormBuilder::toVariant:" << p->kind() << " not implemented yet!";
         break;
@@ -965,11 +864,30 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
 void QAbstractFormBuilder::setupColorGroup(QPalette &palette, QPalette::ColorGroup colorGroup,
             DomColorGroup *group)
 {
+    // old format
     QList<DomColor*> colors = group->elementColor();
     for (int role = 0; role < colors.size(); ++role) {
         DomColor *color = colors.at(role);
         QColor c(color->elementRed(), color->elementGreen(), color->elementBlue());
-        palette.setColor(colorGroup, QPalette::ColorRole(role), c); // ### TODO: support the QPalette::ColorRole as string
+        palette.setColor(colorGroup, QPalette::ColorRole(role), c);
+    }
+
+    // new format
+    int e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("colorRole");
+    Q_ASSERT(e_index != -1);
+    QMetaEnum colorRole_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+    QList<DomColorRole*> colorRoles = group->elementColorRole();
+    for (int role = 0; role < colorRoles.size(); ++role) {
+        DomColorRole *colorRole = colorRoles.at(role);
+
+        if (colorRole->hasAttributeRole()) {
+            int r = colorRole_enum.keyToValue(colorRole->attributeRole().toLatin1());
+            if (r != -1) {
+                QBrush br = setupBrush(colorRole->elementBrush());
+                palette.setBrush(colorGroup, QPalette::ColorRole(r), br);
+            }
+        }
     }
 }
 
@@ -978,21 +896,212 @@ void QAbstractFormBuilder::setupColorGroup(QPalette &palette, QPalette::ColorGro
 */
 DomColorGroup *QAbstractFormBuilder::saveColorGroup(const QPalette &palette)
 {
+    int e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("colorRole");
+    Q_ASSERT(e_index != -1);
+    QMetaEnum colorRole_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
     DomColorGroup *group = new DomColorGroup();
-    QList<DomColor*> colors;
+    QList<DomColorRole*> colorRoles;
 
-    for (int role = QPalette::Foreground; role < QPalette::NColorRoles; ++role) {
-        QColor c = palette.color(QPalette::ColorRole(role));
+    uint mask = palette.resolve();
+    for (int role = QPalette::WindowText; role < QPalette::NColorRoles; ++role) {
+        if (mask & (1 << role)) {
+            QBrush br = palette.brush(QPalette::ColorRole(role));
 
+            DomColorRole *colorRole = new DomColorRole();
+            colorRole->setElementBrush(saveBrush(br));
+            colorRole->setAttributeRole(colorRole_enum.valueToKey(role));
+            colorRoles.append(colorRole);
+        }
+    }
+
+    group->setElementColorRole(colorRoles);
+    return group;
+}
+
+/*!
+    \internal
+*/
+QBrush QAbstractFormBuilder::setupBrush(DomBrush *brush)
+{
+    int e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("brushStyle");
+    Q_ASSERT(e_index != -1);
+    QMetaEnum brushStyle_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+    QBrush br;
+    if (!brush->hasAttributeBrushStyle())
+        return br;
+
+    int style = brushStyle_enum.keyToValue(brush->attributeBrushStyle().toLatin1());
+    if (style == Qt::LinearGradientPattern ||
+            style == Qt::RadialGradientPattern ||
+            style == Qt::ConicalGradientPattern) {
+        e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("gradientType");
+        Q_ASSERT(e_index != -1);
+        QMetaEnum gradientType_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+        e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("gradientSpread");
+        Q_ASSERT(e_index != -1);
+        QMetaEnum gradientSpread_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+        e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("gradientCoordinate");
+        Q_ASSERT(e_index != -1);
+        QMetaEnum gradientCoordinate_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+        DomGradient *gradient = brush->elementGradient();
+        int type = gradientType_enum.keyToValue(gradient->attributeType().toLatin1());
+
+        QGradient *gr = 0;
+
+        if (type == QGradient::LinearGradient) {
+            gr = new QLinearGradient(QPointF(gradient->attributeStartX(), gradient->attributeStartY()),
+                            QPointF(gradient->attributeEndX(), gradient->attributeEndY()));
+        } else if (type == QGradient::RadialGradient) {
+            gr = new QRadialGradient(QPointF(gradient->attributeCentralX(), gradient->attributeCentralY()),
+                            gradient->attributeRadius(),
+                            QPointF(gradient->attributeFocalX(), gradient->attributeFocalY()));
+        } else if (type == QGradient::ConicalGradient) {
+            gr = new QConicalGradient(QPointF(gradient->attributeCentralX(), gradient->attributeCentralY()),
+                            gradient->attributeAngle());
+        }
+        if (!gr)
+            return br;
+
+        int spread = gradientSpread_enum.keyToValue(gradient->attributeSpread().toLatin1());
+        gr->setSpread((QGradient::Spread)spread);
+
+        int coord = gradientCoordinate_enum.keyToValue(gradient->attributeCoordinateMode().toLatin1());
+        gr->setCoordinateMode((QGradient::CoordinateMode)coord);
+
+        QList<DomGradientStop *> stops = gradient->elementGradientStop();
+        QListIterator<DomGradientStop *> it(stops);
+        while (it.hasNext()) {
+            DomGradientStop *stop = it.next();
+            DomColor *color = stop->elementColor();
+            gr->setColorAt(stop->attributePosition(), QColor::fromRgb(color->elementRed(),
+                            color->elementGreen(), color->elementBlue(), color->attributeAlpha()));
+        }
+        br = QBrush(*gr);
+        delete gr;
+    } else if (style == Qt::TexturePattern) {
+        DomProperty *texture = brush->elementTexture();
+        if (texture && texture->kind() == DomProperty::Pixmap) {
+            DomResourcePixmap *pixmap = texture->elementPixmap();
+            Q_ASSERT(pixmap != 0);
+            QString iconPath = pixmap->text();
+            QString qrcPath = pixmap->attributeResource();
+
+            QPixmap p = nameToPixmap(iconPath, qrcPath);
+            br.setTexture(p);
+        }
+    } else {
+        DomColor *color = brush->elementColor();
+        br.setColor(QColor::fromRgb(color->elementRed(),
+                            color->elementGreen(), color->elementBlue(), color->attributeAlpha()));
+        br.setStyle((Qt::BrushStyle)style);
+    }
+    return br;
+}
+
+/*!
+    \internal
+*/
+DomBrush *QAbstractFormBuilder::saveBrush(const QBrush &br)
+{
+    int e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("brushStyle");
+    Q_ASSERT(e_index != -1);
+    QMetaEnum brushStyle_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+    DomBrush *brush = new DomBrush();
+    Qt::BrushStyle style = br.style();
+    brush->setAttributeBrushStyle(brushStyle_enum.valueToKey(style));
+    if (style == Qt::LinearGradientPattern ||
+                style == Qt::RadialGradientPattern ||
+                style == Qt::ConicalGradientPattern) {
+        e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("gradientType");
+        Q_ASSERT(e_index != -1);
+        QMetaEnum gradientType_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+        e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("gradientSpread");
+        Q_ASSERT(e_index != -1);
+        QMetaEnum gradientSpread_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+        e_index = QAbstractFormBuilderGadget::staticMetaObject.indexOfProperty("gradientCoordinate");
+        Q_ASSERT(e_index != -1);
+        QMetaEnum gradientCoordinate_enum = QAbstractFormBuilderGadget::staticMetaObject.property(e_index).enumerator();
+
+        DomGradient *gradient = new DomGradient();
+        const QGradient *gr = br.gradient();
+        QGradient::Type type = gr->type();
+        gradient->setAttributeType(gradientType_enum.valueToKey(type));
+        gradient->setAttributeSpread(gradientSpread_enum.valueToKey(gr->spread()));
+        gradient->setAttributeCoordinateMode(gradientCoordinate_enum.valueToKey(gr->coordinateMode()));
+        QList<DomGradientStop *> stops;
+        QGradientStops st = gr->stops();
+        QVectorIterator<QPair<qreal, QColor> > it(st);
+        while (it.hasNext()) {
+            QPair<qreal, QColor> pair = it.next();
+            DomGradientStop *stop = new DomGradientStop();
+            stop->setAttributePosition(pair.first);
+            DomColor *color = new DomColor();
+            color->setElementRed(pair.second.red());
+            color->setElementGreen(pair.second.green());
+            color->setElementBlue(pair.second.blue());
+            color->setAttributeAlpha(pair.second.alpha());
+            stop->setElementColor(color);
+            stops.append(stop);
+        }
+        gradient->setElementGradientStop(stops);
+        if (type == QGradient::LinearGradient) {
+            QLinearGradient *lgr = (QLinearGradient *)(gr);
+            gradient->setAttributeStartX(lgr->start().x());
+            gradient->setAttributeStartY(lgr->start().y());
+            gradient->setAttributeEndX(lgr->finalStop().x());
+            gradient->setAttributeEndY(lgr->finalStop().y());
+        } else if (type == QGradient::RadialGradient) {
+            QRadialGradient *rgr = (QRadialGradient *)(gr);
+            gradient->setAttributeCentralX(rgr->center().x());
+            gradient->setAttributeCentralY(rgr->center().y());
+            gradient->setAttributeFocalX(rgr->focalPoint().x());
+            gradient->setAttributeFocalY(rgr->focalPoint().y());
+            gradient->setAttributeRadius(rgr->radius());
+        } else if (type == QGradient::ConicalGradient) {
+            QConicalGradient *cgr = (QConicalGradient *)(gr);
+            gradient->setAttributeCentralX(cgr->center().x());
+            gradient->setAttributeCentralY(cgr->center().y());
+            gradient->setAttributeAngle(cgr->angle());
+        }
+
+        brush->setElementGradient(gradient);
+    } else if (style == Qt::TexturePattern) {
+        QPixmap pixmap = br.texture();
+        if (!pixmap.isNull()) {
+            QString iconPath = pixmapToFilePath(pixmap);
+            QString qrcPath = pixmapToQrcPath(pixmap);
+
+            DomProperty *p = new DomProperty;
+
+            DomResourcePixmap *pix = new DomResourcePixmap;
+            if (!qrcPath.isEmpty())
+                pix->setAttributeResource(qrcPath);
+
+            pix->setText(iconPath);
+
+            p->setAttributeName(QLatin1String("pixmap"));
+            p->setElementPixmap(pix);
+
+            brush->setElementTexture(p);
+        }
+    } else {
+        QColor c = br.color();
         DomColor *color = new DomColor();
         color->setElementRed(c.red());
         color->setElementGreen(c.green());
         color->setElementBlue(c.blue());
-        colors.append(color);
+        color->setAttributeAlpha(c.alpha());
+        brush->setElementColor(color);
     }
-
-    group->setElementColor(colors);
-    return group;
+    return brush;
 }
 
 /*!
@@ -1137,10 +1246,33 @@ DomWidget *QAbstractFormBuilder::createDom(QWidget *widget, DomWidget *ui_parent
         children = widget->children();
     }
 
+    if (qobject_cast<QMainWindow *>(widget) && widget->parent() && widget->parent()->metaObject()->className() == QLatin1String("qdesigner_internal::QDesignerPromotedWidget")) {
+        // add actions of parent promoted widget
+        QObjectList list = widget->parent()->children();
+        QListIterator<QObject *> it(list);
+        while (it.hasNext()) {
+            QObject *obj = it.next();
+            if (qobject_cast<QAction *>(obj) || qobject_cast<QActionGroup *>(obj))
+                children.append(obj);
+        }
+    }
+
     foreach (QObject *obj, children) {
         if (QWidget *childWidget = qobject_cast<QWidget*>(obj)) {
             if (m_laidout.contains(childWidget) || recursive == false)
                 continue;
+
+            if (QMenu *menu = qobject_cast<QMenu *>(childWidget)) {
+                QList<QAction *> actions = menu->parentWidget()->actions();
+                QListIterator<QAction *> it(actions);
+                bool found = false;
+                while (it.hasNext()) {
+                    if (it.next()->menu() == menu)
+                        found = true;
+                }
+                if (!found)
+                    continue;
+            }
 
             if (DomWidget *ui_child = createDom(childWidget, ui_widget)) {
                 ui_widgets.append(ui_child);
@@ -1317,6 +1449,14 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
             dom_prop->setElementNumber(v.toUInt());
         } break;
 
+        case QVariant::LongLong: {
+            dom_prop->setElementLongLong(v.toLongLong());
+        } break;
+
+        case QVariant::ULongLong: {
+            dom_prop->setElementLongLong(v.toULongLong());
+        } break;
+
         case QVariant::Double: {
             dom_prop->setElementDouble(v.toDouble());
         } break;
@@ -1325,12 +1465,27 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
             dom_prop->setElementBool(v.toBool() ? QLatin1String("true") : QLatin1String("false"));
         } break;
 
+        case QVariant::Char: {
+            DomChar *ch = new DomChar();
+            QChar character = v.toChar();
+            ch->setElementUnicode(character.unicode());
+            dom_prop->setElementChar(ch);
+        } break;
+
         case QVariant::Point: {
             DomPoint *pt = new DomPoint();
             QPoint point = v.toPoint();
             pt->setElementX(point.x());
             pt->setElementY(point.y());
             dom_prop->setElementPoint(pt);
+        } break;
+
+        case QVariant::PointF: {
+            DomPointF *ptf = new DomPointF();
+            QPointF pointf = v.toPointF();
+            ptf->setElementX(pointf.x());
+            ptf->setElementY(pointf.y());
+            dom_prop->setElementPointF(ptf);
         } break;
 
         case QVariant::Color: {
@@ -1350,6 +1505,14 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
             dom_prop->setElementSize(sz);
         } break;
 
+        case QVariant::SizeF: {
+            DomSizeF *szf = new DomSizeF();
+            QSizeF sizef = v.toSizeF();
+            szf->setElementWidth(sizef.width());
+            szf->setElementHeight(sizef.height());
+            dom_prop->setElementSizeF(szf);
+        } break;
+
         case QVariant::Rect: {
             DomRect *rc = new DomRect();
             QRect rect = v.toRect();
@@ -1360,16 +1523,38 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
             dom_prop->setElementRect(rc);
         } break;
 
+        case QVariant::RectF: {
+            DomRectF *rcf = new DomRectF();
+            QRectF rectf = v.toRectF();
+            rcf->setElementX(rectf.x());
+            rcf->setElementY(rectf.y());
+            rcf->setElementWidth(rectf.width());
+            rcf->setElementHeight(rectf.height());
+            dom_prop->setElementRectF(rcf);
+        } break;
+
         case QVariant::Font: {
             DomFont *fnt = new DomFont();
             QFont font = qvariant_cast<QFont>(v);
-            fnt->setElementBold(font.bold());
-            fnt->setElementFamily(font.family());
-            fnt->setElementItalic(font.italic());
-            fnt->setElementPointSize(font.pointSize());
-            fnt->setElementStrikeOut(font.strikeOut());
-            fnt->setElementUnderline(font.underline());
-            fnt->setElementWeight(font.weight());
+            uint mask = font.resolve();
+            if (mask & QFontPrivate::Weight) {
+                fnt->setElementBold(font.bold());
+                fnt->setElementWeight(font.weight());
+            }
+            if (mask & QFontPrivate::Family)
+                fnt->setElementFamily(font.family());
+            if (mask & QFontPrivate::Style)
+                fnt->setElementItalic(font.italic());
+            if (mask & QFontPrivate::Size)
+                fnt->setElementPointSize(font.pointSize());
+            if (mask & QFontPrivate::StrikeOut)
+                fnt->setElementStrikeOut(font.strikeOut());
+            if (mask & QFontPrivate::Underline)
+                fnt->setElementUnderline(font.underline());
+            if (mask & QFontPrivate::Kerning)
+                fnt->setElementKerning(font.kerning());
+            if (mask & QFontPrivate::StyleStrategy)
+                fnt->setElementAntialiasing(font.styleStrategy() == QFont::PreferDefault);
             dom_prop->setElementFont(fnt);
         } break;
 
@@ -1379,11 +1564,7 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
 
         case QVariant::KeySequence: {
             DomString *s = new DomString();
-#ifndef Q_WS_MAC
             s->setText(qvariant_cast<QKeySequence>(v).toString(QKeySequence::PortableText));
-#else
-            s->setText(platformNeutralKeySequence(qvariant_cast<QKeySequence>(v)));
-#endif
             dom_prop->setElementString(s);
         } break;
 
@@ -1448,8 +1629,19 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
             dom->setElementYear(dateTime.date().year());
             dom->setElementMonth(dateTime.date().month());
             dom->setElementDay(dateTime.date().day());
-            
+
             dom_prop->setElementDateTime(dom);
+        } break;
+
+        case QVariant::Url: {
+            DomUrl *dom = new DomUrl();
+            QUrl url = v.toUrl();
+
+            DomString *str = new DomString();
+            str->setText(url.toString());
+            dom->setElementString(str);
+
+            dom_prop->setElementUrl(dom);
         } break;
 
         case QVariant::Pixmap:
@@ -1483,6 +1675,12 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
                 dom_prop->setElementIconSet(r);
             else
                 dom_prop->setElementPixmap(r);
+        } break;
+
+        case QVariant::StringList: {
+            DomStringList *sl = new DomStringList;
+            sl->setElementString(qvariant_cast<QStringList>(v));
+            dom_prop->setElementStringList(sl);
         } break;
 
         default: {
@@ -2006,7 +2204,8 @@ void QAbstractFormBuilder::saveExtraInfo(QWidget *widget, DomWidget *ui_widget, 
     } else if (QTableWidget *tableWidget = qobject_cast<QTableWidget*>(widget)) {
         saveTableWidgetExtraInfo(tableWidget, ui_widget, ui_parentWidget);
     } else if (QComboBox *comboBox = qobject_cast<QComboBox*>(widget)) {
-        saveComboBoxExtraInfo(comboBox, ui_widget, ui_parentWidget);
+        if (!qobject_cast<QFontComboBox*>(widget))
+            saveComboBoxExtraInfo(comboBox, ui_widget, ui_parentWidget);
     }
 }
 
@@ -2250,7 +2449,8 @@ void QAbstractFormBuilder::loadExtraInfo(DomWidget *ui_widget, QWidget *widget, 
     } else if (QTableWidget *tableWidget = qobject_cast<QTableWidget*>(widget)) {
         loadTableWidgetExtraInfo(ui_widget, tableWidget, parentWidget);
     } else if (QComboBox *comboBox = qobject_cast<QComboBox*>(widget)) {
-        loadComboBoxExtraInfo(ui_widget, comboBox, parentWidget);
+        if (!qobject_cast<QFontComboBox *>(widget))
+            loadComboBoxExtraInfo(ui_widget, comboBox, parentWidget);
     } else if (QTabWidget *tabWidget = qobject_cast<QTabWidget*>(widget)) {
         DomProperty *currentIndex = propertyMap(ui_widget->elementProperty()).value("currentIndex");
         if (currentIndex)

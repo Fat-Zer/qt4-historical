@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include <QApplication>
+
 #include "movieplayer.h"
 
 int main(int argc, char *argv[])

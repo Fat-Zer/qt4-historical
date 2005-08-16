@@ -45,6 +45,8 @@ class QFontDatabasePrivate;
 
 class Q_GUI_EXPORT QFontDatabase
 {
+    Q_GADGET
+    Q_ENUMS(WritingSystem)
 public:
     enum WritingSystem {
         Any,
@@ -79,7 +81,11 @@ public:
         Korean,
         Vietnamese,
 
-        Other,
+        Symbol,
+        Other = Symbol,
+
+        Ogham,
+        Runic,
 
         WritingSystemsCount
     };
@@ -89,6 +95,8 @@ public:
     QFontDatabase();
 
     QList<WritingSystem> writingSystems() const;
+    QList<WritingSystem> writingSystems(const QString &family) const;
+
     QStringList families(WritingSystem writingSystem = Any) const;
     QStringList styles(const QString &family) const;
     QList<int> pointSizes(const QString &family, const QString &style = QString());
@@ -110,10 +118,16 @@ public:
     static QString writingSystemName(WritingSystem writingSystem);
     static QString writingSystemSample(WritingSystem writingSystem);
 
+    static int addApplicationFont(const QString &fileName);
+    static int addApplicationFontFromData(const QByteArray &fontData);
+    static QStringList applicationFontFamilies(int id);
+    static bool removeApplicationFont(int id);
+    static bool removeAllApplicationFonts();
+
 private:
     static void createDatabase();
     static void parseFontName(const QString &name, QString &foundry, QString &family);
-#if !defined(Q_WS_X11) && !defined(Q_WS_WIN)
+#if !defined(Q_WS_X11) && !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
     static QFontEngine *findFont(int script, const QFontPrivate *fp,
                                  const QFontDef &request, int force_encoding_id = -1);
 #else
@@ -122,7 +136,7 @@ private:
 #ifdef Q_WS_X11
     static QFontEngine *loadXlfd(int screen, int script, const QFontDef &request, int force_encoding_id = -1);
 #endif
-    
+
     friend struct QFontDef;
     friend class QFontPrivate;
     friend class QFontDialog;

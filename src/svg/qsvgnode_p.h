@@ -85,6 +85,7 @@ public:
 
     virtual Type type() const =0;
     virtual QRectF bounds() const;
+    virtual QRectF transformedBounds(const QMatrix &mat) const;
 
     void setRequiredFeatures(const QStringList &lst);
     const QStringList & requiredFeatures() const;
@@ -103,9 +104,17 @@ public:
 
     void setVisible(bool visible);
     bool isVisible() const;
+
+
+    QString nodeId() const;
+    void setNodeId(const QString &i);
+
+    QString xmlClass() const;
+    void setXmlClass(const QString &str);
+protected:
+    QSvgStyle   m_style;
 private:
     QSvgNode   *m_parent;
-    QSvgStyle   m_style;
     QHash<QString, QSvgRefCounter<QSvgStyleProperty> > m_styles;
 
     QStringList m_requiredFeatures;
@@ -115,6 +124,9 @@ private:
     QStringList m_requiredFonts;
 
     bool        m_visible;
+
+    QString m_id;
+    QString m_class;
 };
 
 inline QSvgNode *QSvgNode::parent() const
@@ -125,6 +137,16 @@ inline QSvgNode *QSvgNode::parent() const
 inline bool QSvgNode::isVisible() const
 {
     return m_visible;
+}
+
+inline QString QSvgNode::nodeId() const
+{
+    return m_id;
+}
+
+inline QString QSvgNode::xmlClass() const
+{
+    return m_class;
 }
 
 #endif // QSVGNODE_P_H

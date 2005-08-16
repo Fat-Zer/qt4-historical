@@ -1191,18 +1191,18 @@ void Q3Http::init()
     d = new Q3HttpPrivate;
     d->errorString = QHttp::tr( "Unknown error" );
 
-    connect( &d->socket, SIGNAL( connected() ),
-	    this, SLOT( slotConnected() ) );
-    connect( &d->socket, SIGNAL( connectionClosed() ),
-	    this, SLOT( slotClosed() ) );
-    connect( &d->socket, SIGNAL( delayedCloseFinished() ),
-	    this, SLOT( slotClosed() ) );
-    connect( &d->socket, SIGNAL( readyRead() ),
-	    this, SLOT( slotReadyRead() ) );
-    connect( &d->socket, SIGNAL( error(int) ),
-	    this, SLOT( slotError(int) ) );
-    connect( &d->socket, SIGNAL( bytesWritten(int) ),
-	    this, SLOT( slotBytesWritten(int) ) );
+    connect( &d->socket, SIGNAL(connected()),
+	    this, SLOT(slotConnected()) );
+    connect( &d->socket, SIGNAL(connectionClosed()),
+	    this, SLOT(slotClosed()) );
+    connect( &d->socket, SIGNAL(delayedCloseFinished()),
+	    this, SLOT(slotClosed()) );
+    connect( &d->socket, SIGNAL(readyRead()),
+	    this, SLOT(slotReadyRead()) );
+    connect( &d->socket, SIGNAL(error(int)),
+	    this, SLOT(slotError(int)) );
+    connect( &d->socket, SIGNAL(bytesWritten(int)),
+	    this, SLOT(slotBytesWritten(int)) );
 
     d->idleTimer = startTimer( 0 );
 }
@@ -1982,6 +1982,7 @@ void Q3Http::slotReadyRead()
 			if ( !ok ) {
 			    finishedWithError( QHttp::tr("Invalid HTTP chunked body"), WrongContentLength );
 			    close();
+                            delete arr;
 			    return;
 			}
 			if ( d->chunkedSize == 0 ) // last-chunk
@@ -2028,6 +2029,7 @@ void Q3Http::slotReadyRead()
 			if ( tmp[0] != '\r' || tmp[1] != '\n' ) {
 			    finishedWithError( QHttp::tr("Invalid HTTP chunked body"), WrongContentLength );
 			    close();
+                            delete arr;
 			    return;
 			}
 		    }
@@ -2197,8 +2199,8 @@ int Q3Http::supportedOperations() const
 */
 void Q3Http::operationGet( Q3NetworkOperation *op )
 {
-    connect( this, SIGNAL(readyRead(const Q3HttpResponseHeader&)),
-	    this, SLOT(clientReply(const Q3HttpResponseHeader&)) );
+    connect( this, SIGNAL(readyRead(Q3HttpResponseHeader)),
+	    this, SLOT(clientReply(Q3HttpResponseHeader)) );
     connect( this, SIGNAL(done(bool)),
 	    this, SLOT(clientDone(bool)) );
     connect( this, SIGNAL(stateChanged(int)),
@@ -2217,8 +2219,8 @@ void Q3Http::operationGet( Q3NetworkOperation *op )
 */
 void Q3Http::operationPut( Q3NetworkOperation *op )
 {
-    connect( this, SIGNAL(readyRead(const Q3HttpResponseHeader&)),
-	    this, SLOT(clientReply(const Q3HttpResponseHeader&)) );
+    connect( this, SIGNAL(readyRead(Q3HttpResponseHeader)),
+	    this, SLOT(clientReply(Q3HttpResponseHeader)) );
     connect( this, SIGNAL(done(bool)),
 	    this, SLOT(clientDone(bool)) );
     connect( this, SIGNAL(stateChanged(int)),
@@ -2273,8 +2275,8 @@ void Q3Http::clientReply( const Q3HttpResponseHeader &rep )
 
 void Q3Http::clientDone( bool err )
 {
-    disconnect( this, SIGNAL(readyRead(const Q3HttpResponseHeader&)),
-	    this, SLOT(clientReply(const Q3HttpResponseHeader&)) );
+    disconnect( this, SIGNAL(readyRead(Q3HttpResponseHeader)),
+	    this, SLOT(clientReply(Q3HttpResponseHeader)) );
     disconnect( this, SIGNAL(done(bool)),
 	    this, SLOT(clientDone(bool)) );
     disconnect( this, SIGNAL(stateChanged(int)),

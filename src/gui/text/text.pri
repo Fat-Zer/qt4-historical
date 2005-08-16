@@ -9,6 +9,8 @@ HEADERS += \
 	text/qfont_p.h \
 	text/qfontsubset_p.h \
 	text/qscriptengine_p.h \
+	text/qtextcontrol_p.h \
+	text/qtextcontrol_p_p.h \
 	text/qtextengine_p.h \
 	text/qtextlayout.h \
 	text/qtextformat.h \
@@ -29,7 +31,8 @@ HEADERS += \
 	text/qtextimagehandler_p.h \
 	text/qtexttable.h \
 	text/qtextlist.h \
-	text/qsyntaxhighlighter.h
+	text/qsyntaxhighlighter.h \
+	text/qcssparser_p.h
 
 SOURCES += \
 	text/qfont.cpp \
@@ -38,6 +41,7 @@ SOURCES += \
 	text/qfontmetrics.cpp \
 	text/qfontdatabase.cpp \
 	text/qscriptengine.cpp \
+	text/qtextcontrol.cpp \
 	text/qtextengine.cpp \
 	text/qtextlayout.cpp \
 	text/qtextformat.cpp \
@@ -54,7 +58,8 @@ SOURCES += \
 	text/qtextimagehandler.cpp \
 	text/qtexttable.cpp \
 	text/qtextlist.cpp \
-	text/qsyntaxhighlighter.cpp
+	text/qsyntaxhighlighter.cpp \
+	text/qcssparser.cpp
 
 
 win32 {
@@ -140,7 +145,7 @@ contains(QT_CONFIG, freetype) {
 	../3rdparty/freetype/include \
 	../3rdparty/freetype/builds/unix
 
-    DEFINES += FT_CONFIG_OPTION_SYSTEM_ZLIB
+    DEFINES += FT2_BUILD_LIBRARY FT_CONFIG_OPTION_SYSTEM_ZLIB
     
     embedded:CONFIG += opentype
 } else:contains(QT_CONFIG, system-freetype) {
@@ -157,9 +162,9 @@ contains(QT_CONFIG, fontconfig) {
 }
 
 opentype {
-	INCLUDEPATH += ../3rdparty/opentype
-	HEADERS += text/qopentype_p.h
-	SOURCES += ../3rdparty/opentype/ftxopentype.c \
+	INCLUDEPATH += ../3rdparty/harfbuzz/src
+	HEADERS += text/qopentype_p.h ../3rdparty/harfbuzz/src/harfbuzz.h
+	SOURCES += ../3rdparty/harfbuzz/src/harfbuzz.c \
 		 text/qopentype.cpp
 } else {
 	DEFINES += QT_NO_OPENTYPE

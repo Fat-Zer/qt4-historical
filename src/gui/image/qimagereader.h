@@ -25,6 +25,7 @@
 #define QIMAGEREADER_H
 
 #include <QtCore/qbytearray.h>
+#include <QtGui/qimageiohandler.h>
 
 QT_BEGIN_HEADER
 
@@ -74,6 +75,9 @@ public:
     void setScaledSize(const QSize &size);
     QSize scaledSize() const;
 
+    void setQuality(int quality);
+    int quality() const;
+
     void setScaledClipRect(const QRect &rect);
     QRect scaledClipRect() const;
 
@@ -84,6 +88,7 @@ public:
 
     bool canRead() const;
     QImage read();
+    bool read(QImage *image);
 
     bool jumpToNextImage();
     bool jumpToImage(int imageNumber);
@@ -95,6 +100,8 @@ public:
 
     ImageReaderError error() const;
     QString errorString() const;
+
+    bool supportsOption(QImageIOHandler::ImageOption option) const;
 
     static QByteArray imageFormat(const QString &fileName);
     static QByteArray imageFormat(QIODevice *device);

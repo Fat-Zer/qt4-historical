@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::PaletteEditorButton
+*/
+
 #include "paletteeditorbutton.h"
 #include "paletteeditor.h"
 
@@ -28,11 +32,12 @@
 
 using namespace qdesigner_internal;
 
-PaletteEditorButton::PaletteEditorButton(const QPalette &palette,
+PaletteEditorButton::PaletteEditorButton(QDesignerFormEditorInterface *core, const QPalette &palette,
                 QWidget *selectedWidget, QWidget *parent)
     : QToolButton(parent),
       m_palette(palette)
 {
+    m_core = core;
     m_selectedWidget = selectedWidget;
     setFocusPolicy(Qt::NoFocus);
     setText(tr("Change Palette"));
@@ -61,7 +66,7 @@ void PaletteEditorButton::showPaletteEditor()
                 p = m_selectedWidget->parentWidget()->palette();
         }
     }
-    QPalette pal = PaletteEditor::getPalette(0, m_palette, p, &result);
+    QPalette pal = PaletteEditor::getPalette(m_core, 0, m_palette, p, &result);
     if (result == QDialog::Accepted) {
         m_palette = pal;
         emit changed();

@@ -27,7 +27,6 @@
 */
 
 #include "msgedit.h"
-
 #include "trwindow.h"
 #include "simtexth.h"
 #include "messagemodel.h"
@@ -48,8 +47,14 @@
 #include <QFont>
 #include <QTreeView>
 #include <QScrollArea>
-#include <QTextDocumentFragment>
-#include <QTextCursor>
+#include <QtGui/QTextDocumentFragment>
+#include <QtGui/QTextCursor>
+#include <QtGui/QTextBlock>
+#include <QtGui/QTextFragment>
+#include <QtGui/QTextImageFormat>
+#include <QtGui/QPainter>
+#include <QtGui/QImage>
+#include <QtCore/QUrl>
 #include <QAbstractTextDocumentLayout>
 
 static const int MaxCandidates = 5;
@@ -63,6 +68,227 @@ const char * const MessageEditor::friendlyBackTab[] = {
         QT_TRANSLATE_NOOP("MessageEditor", "carriage return"),
         QT_TRANSLATE_NOOP("MessageEditor", "tab")
     };
+
+const char *bellImageName = "trolltech/bellImage";
+const char *backspaceImageName = "trolltech/bsImage";
+const char *newpageImageName = "trolltech/newpageImage";
+const char *newlineImageName = "trolltech/newlineImage";
+const char *crImageName = "trolltech/crImage";
+const char *tabImageName = "trolltech/tabImage";
+const char *backTabImages[] = {
+    bellImageName, 
+    backspaceImageName, 
+    newpageImageName, 
+    newlineImageName, 
+    crImageName, 
+    tabImageName};
+
+class BackTabTextEdit : public QTextEdit
+{
+public:
+    BackTabTextEdit(QWidget *parent = 0) : QTextEdit(parent) { }
+
+    virtual QVariant loadResource ( int type, const QUrl & name );
+
+    virtual void keyPressEvent ( QKeyEvent * e);
+    virtual void focusInEvent ( QFocusEvent * e);
+
+    QMap<QUrl, QImage> m_backTabOmages;
+    QImage m_tabImg;
+    QImage m_newlineImg;
+};
+
+QVariant BackTabTextEdit::loadResource ( int type, const QUrl & name )
+{
+    QImage img;
+    if (type == QTextDocument::ImageResource) {
+        img = m_backTabOmages.value(name);
+        if (img.isNull()) {
+            for (uint i = 0; i < qstrlen(MessageEditor::backTab); ++i) {
+                if (backTabImages[i] && name == QUrl(QLatin1String(backTabImages[i]))) {
+
+                    QFont fnt = font();
+                    fnt.setItalic(true);
+                    QFontMetrics fm(fnt);
+                    int h = fm.height();
+                    
+                    QString str = QString::fromAscii("(%1)").arg(MessageEditor::friendlyBackTab[i]);
+                    int w = fm.boundingRect(str).width() + 1;   //###
+                    QImage textimg(w, h, QImage::Format_RGB32);
+                    textimg.fill(qRgb(255,255,255));
+
+                    QPainter p(&textimg);
+                    p.setPen(QColor(Qt::blue));
+                    p.setFont(fnt);
+                    p.drawText(0, fm.ascent(), str);            //###
+                    document()->addResource(QTextDocument::ImageResource, QUrl(QLatin1String(backTabImages[i])), textimg);
+
+                    m_backTabOmages.insert(name, textimg);
+                    return textimg;
+                }
+            }                
+        }
+    }
+    return img;
+}
+
+void BackTabTextEdit::focusInEvent ( QFocusEvent * e)
+{
+    TransEditor *te = qobject_cast<TransEditor*>(parent());
+    te->gotFocusInEvent(e);
+    QTextEdit::focusInEvent(e);
+}
+
+void BackTabTextEdit::keyPressEvent ( QKeyEvent * e )
+{
+    bool eatevent = false;
+    QTextCursor tc = textCursor();
+    if (e->modifiers() == Qt::NoModifier) {
+        switch (e->key()) {
+        case Qt::Key_Tab: {
+            tc = textCursor();
+            tc.insertImage(QLatin1String(tabImageName));
+            eatevent = true;
+            break; }
+        case Qt::Key_Return: {
+            tc = textCursor();
+            document()->blockSignals(true);
+            tc.beginEditBlock();
+            tc.insertImage(QLatin1String(newlineImageName));
+            document()->blockSignals(false);
+            tc.insertBlock();
+            tc.endEditBlock();
+            eatevent = true;
+            break; }
+        case Qt::Key_Backspace: 
+            if (tc.anchor() == tc.position()) {
+                QTextCursor tc = textCursor();
+                if (!tc.atStart() && tc.atBlockStart()) {
+                    tc.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, 1);
+                    QTextCharFormat fmt = tc.charFormat();
+                    if (fmt.isImageFormat()) {
+                        tc.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, 1);
+                    }
+                    tc.removeSelectedText();
+                    eatevent = true;
+                }
+            }
+            break;
+        case Qt::Key_Delete:
+            if (tc.anchor() == tc.position()) {
+                QTextCursor tc = textCursor();
+                tc.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+                QTextCharFormat fmt = tc.charFormat();
+                if (fmt.isImageFormat()) {
+                    if (!tc.atEnd() && tc.atBlockEnd()) {
+                        tc.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+                    }
+                    tc.removeSelectedText();
+                    eatevent = true;
+                }
+            }
+            break;
+        }
+    }
+    // Also accept Key_Enter on the numpad
+    if (e->modifiers() == Qt::KeypadModifier && e->key() == Qt::Key_Enter) {
+        tc = textCursor();
+        document()->blockSignals(true);
+        tc.beginEditBlock();
+        tc.insertImage(QLatin1String(newlineImageName));
+        document()->blockSignals(false);
+        tc.insertBlock();
+        tc.endEditBlock();
+        eatevent = true;
+    }
+
+
+    if (eatevent) e->accept();
+    else QTextEdit::keyPressEvent(e);
+}
+
+TransEditor::TransEditor(QWidget *parent /*= 0*/) 
+: QWidget(parent)
+{
+    QVBoxLayout *lout = new QVBoxLayout(this);
+    lout->setSpacing(2);
+    lout->setMargin(0);
+    m_label = new QLabel(this);
+    lout->addWidget(m_label);
+    m_editor = new BackTabTextEdit(this);
+    m_label->setFocusProxy(m_editor );
+    setFocusProxy(m_editor);
+    lout->addWidget(m_editor);
+    setLayout(lout);
+
+    connect(m_editor->document(), SIGNAL(contentsChanged()),
+             this, SLOT(handleTranslationChanges()));
+
+    if (parent) {
+        QFont fnt = parent->font();
+        fnt.setBold(true);
+        m_label->setFont(fnt);
+    }
+}
+
+void TransEditor::gotFocusInEvent ( QFocusEvent * e)
+{
+    Q_UNUSED(e);
+    emit gotFocusIn();
+}
+
+void TransEditor::setLabel(const QString &text)
+{
+    m_label->setText(text);
+}
+
+void TransEditor::handleTranslationChanges()
+{
+    calculateFieldHeight();
+}
+
+
+void TransEditor::calculateFieldHeight()
+{
+    QTextEdit *field = m_editor;
+    int contentsHeight = qRound(field->document()->documentLayout()->documentSize().height());
+    if (contentsHeight != field->height()) {
+        int oldHeight = field->height();
+        if(contentsHeight < 30)
+            contentsHeight = 30;
+
+        resize(width(), m_label->height() + 6 + 2 + contentsHeight);
+        emit heightUpdated(height() + (field->height() - oldHeight));
+    }
+
+}
+
+
+QString TransEditor::translation() const 
+{ 
+    QString plain;
+    QTextBlock tb = m_editor->document()->begin();
+    for (int b = 0; b < m_editor->document()->blockCount(); ++b) {
+        QTextBlock::iterator it = tb.begin();
+        if (it.atEnd()) {
+            plain += tb.text();
+        } else {
+            while ( !it.atEnd() ) {
+                QTextCharFormat fmt = it.fragment().charFormat();
+                if (fmt.isImageFormat()) {
+                    QTextImageFormat tif = fmt.toImageFormat();
+                    if (tif.name() == QLatin1String(tabImageName)) plain += QLatin1Char('\t');
+                    else if (tif.name() == QLatin1String(newlineImageName)) plain += QLatin1Char('\n');
+                } else {
+                    plain += it.fragment().text();
+                }
+                ++it;
+            }
+        }
+        tb = tb.next();
+    }
+    return plain;
+}
 
 void MessageEditor::visualizeBackTabs(const QString &text, QTextEdit *te)
 {
@@ -108,6 +334,8 @@ void MessageEditor::visualizeBackTabs(const QString &text, QTextEdit *te)
             if (i == 0 || i == text.length() - 1 || text[i - 1].isSpace() ||
                 text[i + 1].isSpace())
             {
+                tc.insertText(plainText, defFormat);
+                plainText.clear();
                 blueFormat.setProperty(QTextFormat::UserProperty, ch);
                 tc.insertText(QString("("), blueFormat);
                 blueFormat.setProperty(QTextFormat::UserProperty, -1);
@@ -260,22 +488,20 @@ EditorPage::EditorPage(MessageEditor *parent, const char *name)
     p.setColor(QPalette::Active, QPalette::Base, QColor(Qt::white));
     p.setColor(QPalette::Inactive, QPalette::Base, QColor(Qt::white));
     p.setColor(QPalette::Disabled, QPalette::Base, QColor(Qt::white));
-    p.setColor(QPalette::Active, QPalette::Background,
+    p.setColor(QPalette::Active, QPalette::Window,
                 p.color(QPalette::Active, QPalette::Base));
-    p.setColor(QPalette::Inactive, QPalette::Background,
+    p.setColor(QPalette::Inactive, QPalette::Window,
                 p.color(QPalette::Inactive, QPalette::Base));
-    p.setColor(QPalette::Disabled, QPalette::Background,
+    p.setColor(QPalette::Disabled, QPalette::Window,
                 p.color(QPalette::Disabled, QPalette::Base));
 
     parent->setPalette(p);
 
     srcTextLbl = new QLabel(tr("Source text"), this);
-    transLbl   = new QLabel(tr("Translation"), this);
 
     QFont fnt = font();
     fnt.setBold(true);
     srcTextLbl->setFont(fnt);
-    transLbl->setFont(fnt);
 
     srcText = new SourceTextEdit(this);
     srcText->setFrameStyle(QFrame::NoFrame);
@@ -307,35 +533,80 @@ EditorPage::EditorPage(MessageEditor *parent, const char *name)
 	cmtText->setReadOnly(true);
     connect(cmtText->document(), SIGNAL(contentsChanged()), SLOT(handleCommentChanges()));
 
-    transText = new QTextEdit(this);
-    transText->setObjectName("translation editor");
-    transText->setFrameStyle(QFrame::NoFrame);
-    transText->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,
-                                             QSizePolicy::MinimumExpanding));
-    transText->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    transText->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    transText->setAutoFormatting(QTextEdit::AutoNone);
-    transText->setLineWrapMode(QTextEdit::WidgetWidth);
-    p = transText->palette();
-    p.setColor(QPalette::Disabled, QPalette::Base, p.color(QPalette::Active, QPalette::Base));
-    transText->setPalette(p);
-    connect(transText->document(), SIGNAL(contentsChanged()),
-             SLOT(handleTranslationChanges()));
-    connect(transText, SIGNAL(selectionChanged()),
-             SLOT(translationSelectionChanged()));
+    m_pluralEditMode = false;
+    addPluralForm(m_invariantForm);
 
     pageCurl = new PageCurl(this);
 
     // Focus
-    setFocusPolicy(Qt::StrongFocus);
-    parent->setFocusProxy(transText);
-    transLbl->setFocusProxy(transText);
-    srcTextLbl->setFocusProxy(transText);
-    srcText->setFocusProxy(transText);
-    cmtText->setFocusProxy(transText);
-    setFocusProxy(transText);
+    //setFocusPolicy(Qt::StrongFocus);
+    //parent->setFocusProxy(transText);
+    //transLbl->setFocusProxy(transText);
+    //srcTextLbl->setFocusProxy(transText);
+    //srcText->setFocusProxy(transText);
+    //cmtText->setFocusProxy(transText);
+    //setFocusProxy(transText);
 
     updateCommentField();
+    layoutWidgets();
+
+}
+
+void EditorPage::addPluralForm(const QString &label)
+{
+    TransEditor *te = new TransEditor(this);
+    te->setLabel(label);
+    if (m_transTexts.count()) {
+        te->setVisible(false);
+    }
+    te->label()->adjustSize();
+    
+    te->editor()->setObjectName("translation editor");
+    te->editor()->setFrameStyle(QFrame::NoFrame);
+    te->editor()->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,
+                                             QSizePolicy::MinimumExpanding));
+    te->editor()->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    te->editor()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    te->editor()->setAutoFormatting(QTextEdit::AutoNone);
+    te->editor()->setLineWrapMode(QTextEdit::WidgetWidth);
+    QPalette p = te->editor()->palette();
+    p.setColor(QPalette::Disabled, QPalette::Base, p.color(QPalette::Active, QPalette::Base));
+    te->editor()->setPalette(p);
+    connect(te, SIGNAL(heightUpdated(int)), this, SLOT(updateHeight(int)));
+    connect(te->editor(), SIGNAL(selectionChanged()),
+             SLOT(translationSelectionChanged()));
+    connect(te, SIGNAL(gotFocusIn(void)), this, SIGNAL(currentTranslationEditorChanged(void)));
+
+    m_transTexts << te;
+}
+
+int EditorPage::currentTranslationEditor()
+{
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        QTextEdit *te = m_transTexts[i]->editor();
+        if (te->hasFocus()) return i;
+    }
+    return -1;  //no focus
+}
+
+void EditorPage::updateHeight(int /*h*/)
+{
+    layoutWidgets();
+}
+
+/*! internal
+    Returns all translations for an item.
+    The number of translations is dependent on if we have a plural form or not.
+    If we don't have a plural form, then this should only contain one item.
+    Otherwise it will contain the number of numerus forms for the particular language.
+*/
+QStringList EditorPage::translations() const
+{
+    QStringList translations;
+    for (int i = 0; i < m_transTexts.count() && m_transTexts.at(i)->isVisible(); ++i) {
+        translations << m_transTexts[i]->translation();
+    }
+    return translations;
 }
 
 /*
@@ -356,6 +627,7 @@ void EditorPage::updateCommentField()
 */
 void EditorPage::layoutWidgets()
  {
+
     int margin = 6;
     int space  = 2;
     int w = width();
@@ -369,44 +641,42 @@ void EditorPage::layoutWidgets()
     srcText->move(margin, srcTextLbl->y() + srcTextLbl->height() + space);
     srcText->resize(w - margin*2, srcText->height());
 
-    cmtText->move(margin, srcText->y() + srcText->height() + space);
-    cmtText->resize(w - margin*2, cmtText->height());
+    int ypos = srcText->y() + srcText->height() + space;
+    if (cmtText->isVisible()) {
+        cmtText->move(margin, ypos);
+        cmtText->resize(w - margin*2, cmtText->height());
+        ypos+=cmtText->height() + space;
+    }
 
-    if (cmtText->isHidden())
-        transLbl->move(margin, srcText->y() + srcText->height() + space);
-    else
-        transLbl->move(margin, cmtText->y() + cmtText->height() + space);
-    transLbl->resize( w - margin*2, transLbl->height() );
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        TransEditor *te = m_transTexts[i];
+        te->resize(w - margin * 2, te->height());
+        te->move(margin, ypos);
+        if (te->isVisible()) {
+            ypos += te->height() + space;
+        }
+    }
 
-    transText->move(margin, transLbl->y() + transLbl->height() + space);
-    transText->resize(w - margin*2, transText->height());
+    int totHeight = ypos + margin - srcTextLbl->y();
 
-    // Calculate the total height for the editor page - emit a signal
-    // if the actual page size is larger/smaller
-    int totHeight = margin + srcTextLbl->height() +
-                    srcText->height() + space +
-                    transLbl->height() + space +
-                    transText->height() + space +
-                    frameWidth()*lineWidth()*2 + space * 3;
-
-    if (!cmtText->isHidden())
-        totHeight += cmtText->height() + space;
-
-     if (height() != totHeight)
-         emit pageHeightUpdated(totHeight);
+    if (height() != totHeight)
+        emit pageHeightUpdated(totHeight);
 }
 
 void EditorPage::resizeEvent(QResizeEvent *)
 {
-    handleTranslationChanges();
+    adjustTranslationFieldHeights();
     handleSourceChanges();
     handleCommentChanges();
+
     layoutWidgets();
 }
 
-void EditorPage::handleTranslationChanges()
+void EditorPage::adjustTranslationFieldHeights()
 {
-    calculateFieldHeight(transText);
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        m_transTexts[i]->calculateFieldHeight();
+    }
     if (srcText->textCursor().hasSelection())
         translationSelectionChanged();
 }
@@ -424,11 +694,14 @@ void EditorPage::handleCommentChanges()
 // makes sure only one of the textedits has a selection
 void EditorPage::sourceSelectionChanged()
 {
-    bool oldBlockState = transText->blockSignals(true);
-    QTextCursor c = transText->textCursor();
-    c.clearSelection();
-    transText->setTextCursor(c);
-    transText->blockSignals(oldBlockState);
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        QTextEdit *te = m_transTexts[i]->editor();
+        bool oldBlockState = te->blockSignals(true);
+        QTextCursor c = te->textCursor();
+        c.clearSelection();
+        te->setTextCursor(c);
+        te->blockSignals(oldBlockState);
+    }
     emit selectionChanged();
 }
 
@@ -439,7 +712,70 @@ void EditorPage::translationSelectionChanged()
     c.clearSelection();
     srcText->setTextCursor(c);
     srcText->blockSignals(oldBlockState);
+
+    // clear the selection for all except the sender
+    QTextEdit *te = qobject_cast<QTextEdit*>(sender());
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        QTextEdit *t = m_transTexts[i]->editor();
+        if (t != te) {
+            oldBlockState = t->blockSignals(true);
+            QTextCursor c = t->textCursor();
+            c.clearSelection();
+            t->setTextCursor(c);
+            t->blockSignals(oldBlockState);
+        }
+    }
+
     emit selectionChanged();
+}
+
+int EditorPage::activeTranslationNumerus() const
+{
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        if (m_transTexts[i]->editor()->hasFocus()) {
+            return i;
+        }
+    }
+    //### hmmm.....
+    if (m_transTexts.count()) return 0;
+    return -1;
+}
+
+void EditorPage::setNumerusForms(const QString &invariantForm, const QStringList &numerusForms)
+{
+    m_invariantForm = invariantForm;
+    m_numerusForms = numerusForms;
+
+    if (!m_pluralEditMode) {
+        m_transTexts[0]->setLabel(invariantForm);
+    } else {
+        m_transTexts[0]->setLabel(tr("Translation (%1)").arg(m_numerusForms[0]));
+    }
+    int i;
+    for (i = 1; i < m_numerusForms.count(); ++i) {
+        QString label = tr("Translation (%1)").arg(m_numerusForms[i]);
+        if (i >= m_transTexts.count()) {
+            addPluralForm(label);
+        } else {
+            m_transTexts[i]->setLabel(label);
+        }
+        m_transTexts[i]->setVisible(m_pluralEditMode);
+    }
+    for (int j = m_transTexts.count() - i; j > 0; --j) {
+        TransEditor *te = m_transTexts.takeLast();
+        delete te;
+        ++i;
+    }
+    layoutWidgets();
+}
+
+QTextEdit *EditorPage::activeTransText() const
+{
+    int numerus = activeTranslationNumerus();
+    if (numerus != -1) {
+        return m_transTexts[numerus]->editor();
+    }
+    return 0;
 }
 
 /*
@@ -468,8 +804,11 @@ void EditorPage::fontChange(const QFont &)
     QFontMetrics fm(fnt);
     srcTextLbl->setFont(fnt);
     srcTextLbl->resize(fm.width(srcTextLbl->text()), srcTextLbl->height());
-    transLbl->setFont(fnt);
-    transLbl->resize(fm.width(transLbl->text()), transLbl->height());
+    for (int i = 0; i < m_transTexts.count(); ++i) {
+        QLabel *transLbl = m_transTexts[i]->label();
+        transLbl->setFont(fnt);
+        transLbl->resize(fm.width(transLbl->text()), transLbl->height());
+    }
     update();
 }
 
@@ -478,40 +817,15 @@ void EditorPage::fontChange(const QFont &)
 
    Handle layout of dock windows and the editor page.
 */
-MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
-    : QScrollArea(parent), tor(t)
+MessageEditor::MessageEditor(MessageModel *model, QMainWindow *parent)
+    : QScrollArea(parent->centralWidget()), m_contextModel(model)
 {
-    cutAvail = true;
-    copyAvail = true;
+    cutAvail = false;
+    copyAvail = false;
     doGuesses = true;
     canPaste = false;
-    topDockWnd = new QDockWidget(parent);
-    topDockWnd->setAllowedAreas(Qt::AllDockWidgetAreas);
-    topDockWnd->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    topDockWnd->setWindowTitle(tr("Source text"));
-
-    srcTextView = new QTreeView(topDockWnd);
-    srcMdl = new MessageModel(topDockWnd);
-    srcTextView->setModel(srcMdl);
-    srcTextView->setAlternatingRowColors(true);
-    srcTextView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    srcTextView->setSelectionMode(QAbstractItemView::SingleSelection);
-    srcTextView->setRootIsDecorated(false);
-    srcTextView->setUniformRowHeights(true);
-    QPalette pal = srcTextView->palette();
-    pal.setColor(QPalette::AlternateBase, TREEVIEW_ODD_COLOR);
-    srcTextView->setPalette(pal);
-
-    QFontMetrics fm(font());
-    srcTextView->header()->setResizeMode(1, QHeaderView::Stretch);
-    srcTextView->header()->resizeSection(0, fm.width(MessageModel::tr("Done")) + 20);
-    srcTextView->header()->resizeSection(2, 300);
-    srcTextView->header()->setClickable(true);
-
-    topDockWnd->setWidget(srcTextView);
-    parent->addDockWidget(Qt::TopDockWidgetArea, topDockWnd);
-
     bottomDockWnd = new QDockWidget(parent);
+    bottomDockWnd->setObjectName("PhrasesDockwidget");
     bottomDockWnd->setAllowedAreas(Qt::AllDockWidgetAreas);
     bottomDockWnd->setFeatures(QDockWidget::AllDockWidgetFeatures);
     bottomDockWnd->setWindowTitle(tr("Phrases"));
@@ -531,7 +845,8 @@ MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
     phraseTv->setSelectionBehavior(QAbstractItemView::SelectRows);
     phraseTv->setSelectionMode(QAbstractItemView::SingleSelection);
     phraseTv->setRootIsDecorated(false);
-    pal = phraseTv->palette();
+    phraseTv->setItemsExpandable(false);
+    QPalette pal = phraseTv->palette();
     pal.setColor(QPalette::AlternateBase, TREEVIEW_ODD_COLOR);
     phraseTv->setPalette(pal);
 
@@ -541,7 +856,8 @@ MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
     vl->addWidget(phraseLbl);
     vl->addWidget(phraseTv);
 
-    for (int i = 0; i < 9; ++i) {
+    int i;
+    for (i = 0; i < 9; ++i) {
         (void) new GuessShortcut(i, this, SLOT(guessActivated(int)));
     }
 
@@ -562,22 +878,20 @@ MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
 
     setWidget(sw);
     defFormat = editorPage->srcText->currentCharFormat();
-    editorPage->transText->installEventFilter(this);
 
     // Signals
     connect(editorPage->pageCurl, SIGNAL(nextPage()),
         SIGNAL(nextUnfinished()));
     connect(editorPage->pageCurl, SIGNAL(prevPage()),
         SIGNAL(prevUnfinished()));
-
-    connect(editorPage->transText->document(), SIGNAL(contentsChanged()),
-        this, SLOT(emitTranslationChanged()));
-    connect(editorPage->transText->document(), SIGNAL(contentsChanged()),
+    connect(this, SIGNAL(translationChanged(const QStringList &)),
         this, SLOT(updateButtons()));
-    connect(editorPage->transText->document(), SIGNAL(undoAvailable(bool)),
-        this, SIGNAL(undoAvailable(bool)));
-    connect(editorPage->transText->document(), SIGNAL(redoAvailable(bool)),
-        this, SIGNAL(redoAvailable(bool)));
+
+    connect(this, SIGNAL(translationChanged(const QStringList &)),
+        this, SLOT(checkUndoRedo()));
+    connect(editorPage, SIGNAL(currentTranslationEditorChanged()),
+        this, SLOT(checkUndoRedo()));
+
     connect(editorPage, SIGNAL(selectionChanged()),
         this, SLOT(updateCutAndCopy()));
     connect(qApp->clipboard(), SIGNAL(dataChanged()),
@@ -587,9 +901,6 @@ MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
 
     phraseTv->installEventFilter(this);
 
-    connect(srcTextView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-             parent, SLOT(showNewCurrent(QModelIndex,QModelIndex)));
-
     // What's this
     this->setWhatsThis(tr("This whole panel allows you to view and edit "
                               "the translation of some source text.") );
@@ -597,10 +908,15 @@ MessageEditor::MessageEditor(MetaTranslator *t, QMainWindow *parent)
     editorPage->cmtText->setWhatsThis(tr("This area shows a comment that"
                         " may guide you, and the context in which the text"
                         " occurs.") );
-    editorPage->transText->setWhatsThis(tr("This is where you can enter or modify"
-                        " the translation of some source text.") );
 
     showNothing();
+}
+
+void MessageEditor::checkUndoRedo()
+{
+    QTextEdit *te = editorPage->activeTransText();    
+    undoAvailable(te->document()->isUndoAvailable());
+    redoAvailable(te->document()->isRedoAvailable());
 }
 
 bool MessageEditor::eventFilter(QObject *o, QEvent *e)
@@ -622,8 +938,7 @@ bool MessageEditor::eventFilter(QObject *o, QEvent *e)
             return false;
         }
 
-        if (o == editorPage->transText 
-            && ke->modifiers() & Qt::ControlModifier)
+        if (ke->modifiers() & Qt::ControlModifier)
         {
             if ((ke->key() == Qt::Key_A) &&
                 editorPage->srcText->underMouse())
@@ -654,11 +969,6 @@ void MessageEditor::resizeEvent(QResizeEvent *e)
     QScrollArea::resizeEvent(e);
 }
 
-QTreeView *MessageEditor::sourceTextView() const
-{
-    return srcTextView;
-}
-
 QTreeView *MessageEditor::phraseView() const
 {
     return phraseTv;
@@ -671,17 +981,63 @@ void MessageEditor::showNothing()
     setEditionEnabled(false);
     sourceText.clear();
     editorPage->cmtText->clear();
-    setTranslation(QString(), false);
+    setTranslation(QString(), 0, false);
     editorPage->handleSourceChanges();
     editorPage->handleCommentChanges();
-    editorPage->handleTranslationChanges();
+    editorPage->adjustTranslationFieldHeights();
     editorPage->updateCommentField();
 }
+
+static CandidateList similarTextHeuristicCandidates( MessageModel::iterator it,
+                        const char *text,
+                        int maxCandidates )
+{
+    QList<int> scores;
+    CandidateList candidates;
+
+    StringSimilarityMatcher stringmatcher(QString::fromLatin1(text));
+
+    for (MessageItem *m = 0; (m = it.current()); ++it) {
+        MetaTranslatorMessage mtm = m->message();
+        if ( mtm.type() == MetaTranslatorMessage::Unfinished ||
+             mtm.translation().isEmpty() )
+            continue;
+
+        QString s = m->sourceText();
+
+        int score = stringmatcher.getSimilarityScore(s);
+
+        if ( (int) candidates.count() == maxCandidates &&
+             score > scores[maxCandidates - 1] )
+            candidates.removeAt( candidates.size()-1 );
+        if ( (int) candidates.count() < maxCandidates && score >= textSimilarityThreshold ) {
+            Candidate cand( s, mtm.translation() );
+
+            int i;
+            for ( i = 0; i < (int) candidates.size(); i++ ) {
+                if ( score >= scores.at(i) ) {
+                    if ( score == scores.at(i) ) {
+                        if ( candidates.at(i) == cand )
+                            goto continue_outer_loop;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            scores.insert( i, score );
+            candidates.insert( i, cand );
+        }
+        continue_outer_loop:
+        ;
+    }
+    return candidates;
+}
+
 
 void MessageEditor::showMessage(const QString &text,
                                 const QString &comment,
                                 const QString &fullContext,
-                                const QString &translation,
+                                const QStringList &translations,
                                 MetaTranslatorMessage::Type type,
                                 const QList<Phrase> &phrases)
 {
@@ -703,7 +1059,24 @@ void MessageEditor::showMessage(const QString &text,
     else
         editorPage->cmtText->clear();
 
-    setTranslation(translation, false);
+    editorPage->m_pluralEditMode = translations.count() > 1;
+    if (!editorPage->m_pluralEditMode) {
+        editorPage->m_transTexts[0]->setLabel(editorPage->m_invariantForm);
+    } else {
+        editorPage->m_transTexts[0]->setLabel(tr("Translation (%1)").arg(editorPage->m_numerusForms.first()));
+    }
+    int i;
+    for (i = 0; i < qMax(1, editorPage->m_numerusForms.count()); ++i) {
+        bool shouldShow = i < translations.count();
+        if (shouldShow) {
+            setTranslation(translations[i], i, false);
+        } else {
+            setTranslation(QString(), i, false);
+        }
+        if (i >= 1) {
+            editorPage->m_transTexts[i]->setVisible(shouldShow);
+        }
+    }
     phrMdl->removePhrases();
 
     foreach(Phrase p, phrases) {
@@ -711,7 +1084,7 @@ void MessageEditor::showMessage(const QString &text,
     }
 
     if (doGuesses && !sourceText.isEmpty()) {
-        CandidateList cl = similarTextHeuristicCandidates(tor,
+        CandidateList cl = similarTextHeuristicCandidates(m_contextModel->begin(),
             sourceText.toLatin1(), MaxCandidates);
         int n = 0;
         QList<Candidate>::Iterator it = cl.begin();
@@ -729,26 +1102,85 @@ void MessageEditor::showMessage(const QString &text,
     phrMdl->resort();
     editorPage->handleSourceChanges();
     editorPage->handleCommentChanges();
-    editorPage->handleTranslationChanges();
+    editorPage->adjustTranslationFieldHeights();
     editorPage->updateCommentField();
+    setEditorFocus();
 }
 
-void MessageEditor::setTranslation(const QString &translation, bool emitt)
+void MessageEditor::setNumerusForms(const QString &invariantForm, const QStringList &numerusForms)
 {
+    // uninstall the emitTranslationChanged slots and remove event filters
+    for (int i = 0; i  < editorPage->m_transTexts.count(); ++i) {
+        QTextEdit *transText = editorPage->m_transTexts[i]->editor();
+        disconnect( transText->document(), SIGNAL(contentsChanged()), this, SLOT(emitTranslationChanged()) );
+        transText->removeEventFilter(this);
+    }
+    editorPage->setNumerusForms(invariantForm, numerusForms);
+
+    // reinstall event filters and set up the emitTranslationChanged slot
+    for (int i = 0; i  < editorPage->m_transTexts.count(); ++i) {
+        QTextEdit *transText = editorPage->m_transTexts[i]->editor();
+        transText->installEventFilter(this);
+        connect(transText->document(), SIGNAL(contentsChanged()),
+            this, SLOT(emitTranslationChanged()));
+        // What's this
+        transText->setWhatsThis(tr("This is where you can enter or modify"
+                                " the translation of some source text.") );
+    }
+}
+static void visualizeImages(const QString &text, QTextEdit *te)
+{
+    te->clear();
+    QTextCursor tc(te->textCursor());
+
+    QString plainText;
+    for (int i = 0; i < (int) text.length(); ++i)
+    {
+        int ch = text[i].unicode();
+        if (ch < 0x20)
+        {
+            if (!plainText.isEmpty())
+            {
+                tc.insertText(plainText);
+                plainText.clear();
+            }
+            const char *p = strchr(MessageEditor::backTab, ch);
+            if (p)
+            {
+                if (backTabImages[p - MessageEditor::backTab]) {
+                    tc.insertImage(QLatin1String(backTabImages[p - MessageEditor::backTab]));
+                }
+                if (MessageEditor::backTab[p - MessageEditor::backTab] == '\n') {
+                    tc.insertBlock();
+                }
+            }
+        }
+        else
+        {
+            plainText += QString(ch);
+        }
+    }
+    tc.insertText(plainText);
+}
+
+void MessageEditor::setTranslation(const QString &translation, int numerus, bool emitt)
+{
+    if (numerus >= editorPage->m_transTexts.count()) numerus = 0;
+    QTextEdit *transText = editorPage->m_transTexts[numerus]->editor();
     // Block signals so that a signal is not emitted when
     // for example a new source text item is selected and *not*
     // the actual translation.
     if (!emitt)
-        editorPage->transText->document()->blockSignals(true);
+        transText->document()->blockSignals(true);
 
     if (translation.isNull())
-        editorPage->transText->clear();
+        transText->clear();
     else
-        editorPage->transText->setPlainText(translation);
+        visualizeImages(translation, transText);
 
     if (!emitt)
     {
-        editorPage->transText->document()->blockSignals(false);
+        transText->document()->blockSignals(false);
 
         //don't undo the change
         emit undoAvailable(false);
@@ -761,8 +1193,11 @@ void MessageEditor::setTranslation(const QString &translation, bool emitt)
 
 void MessageEditor::setEditionEnabled(bool enabled)
 {
-    editorPage->transLbl->setEnabled(enabled);
-    editorPage->transText->setReadOnly(!enabled);
+    for (int i = 0; i < editorPage->m_transTexts.count(); ++i) {
+        TransEditor* te = editorPage->m_transTexts[i];
+        te->label()->setEnabled(enabled);
+        te->editor()->setReadOnly(!enabled);
+    }
 
     phraseLbl->setEnabled(enabled);
     phraseTv->setEnabled(enabled);
@@ -771,42 +1206,45 @@ void MessageEditor::setEditionEnabled(bool enabled)
 
 void MessageEditor::undo()
 {
-    editorPage->transText->document()->undo();
+    editorPage->activeTransText()->document()->undo();
 }
 
 void MessageEditor::redo()
 {
-    editorPage->transText->document()->redo();
+    editorPage->activeTransText()->document()->redo();
 }
 
 void MessageEditor::cut()
 {
-    if (editorPage->transText->textCursor().hasSelection())
-        editorPage->transText->cut();
+    if (editorPage->activeTransText()->textCursor().hasSelection())
+        editorPage->activeTransText()->cut();
 }
 
 void MessageEditor::copy()
 {
     if (editorPage->srcText->textCursor().hasSelection()) {
-        editorPage->srcText->copySelection();        
-    } else if (editorPage->transText->textCursor().hasSelection()) {
-        editorPage->transText->copy();
+        editorPage->srcText->copySelection();
+    } else if (editorPage->activeTransText()->textCursor().hasSelection()) {
+        editorPage->activeTransText()->copy();
     }
 }
 
 void MessageEditor::paste()
 {
-    editorPage->transText->paste();
+    editorPage->activeTransText()->paste();
 }
 
 void MessageEditor::selectAll()
 {
-    editorPage->transText->selectAll();
+    // make sure we don't select the selection of a translator textedit, if we really want the
+    // source text editor to be selected.
+    if (!editorPage->srcText->underMouse())
+        editorPage->activeTransText()->selectAll();
 }
 
 void MessageEditor::emitTranslationChanged()
 {
-    emit translationChanged(editorPage->transText->toPlainText());
+    emit translationChanged( editorPage->translations());
 }
 
 void MessageEditor::guessActivated(int key)
@@ -826,27 +1264,28 @@ void MessageEditor::guessActivated(int key)
 
 void MessageEditor::insertPhraseInTranslation(const QModelIndex &index)
 {
-    if (!editorPage->transText->isReadOnly())
+    if (!editorPage->activeTransText()->isReadOnly())
     {
-        editorPage->transText->textCursor().insertText(phrMdl->phrase(index).target());
-        emit translationChanged(editorPage->transText->toPlainText());
+        editorPage->activeTransText()->textCursor().insertText(phrMdl->phrase(index).target());
+        emitTranslationChanged();
     }
 }
 
 void MessageEditor::insertPhraseInTranslationAndLeave(const QModelIndex &index)
 {
-    if (!editorPage->transText->isReadOnly())
+    if (!editorPage->activeTransText()->isReadOnly())
     {
-        editorPage->transText->textCursor().insertText(phrMdl->phrase(index).target());
-        emit translationChanged(editorPage->transText->toPlainText());
-        editorPage->transText->setFocus();
+        editorPage->activeTransText()->textCursor().insertText(phrMdl->phrase(index).target());
+        
+        emitTranslationChanged();
+        editorPage->activeTransText()->setFocus();
     }
 }
 
 void MessageEditor::updateButtons()
 {
-    bool overwrite = (!editorPage->transText->isReadOnly() &&
-             (editorPage->transText->toPlainText().trimmed().isEmpty() ||
+    bool overwrite = (!editorPage->activeTransText()->isReadOnly() &&
+             (editorPage->activeTransText()->toPlainText().trimmed().isEmpty() ||
               mayOverwriteTranslation));
     mayOverwriteTranslation = false;
     emit updateActions(overwrite);
@@ -855,14 +1294,16 @@ void MessageEditor::updateButtons()
 void MessageEditor::beginFromSource()
 {
     mayOverwriteTranslation = true;
-    setTranslation(sourceText, true);
+    for ( int i = 0; i < editorPage->m_transTexts.count(); ++i) {
+        setTranslation(sourceText, i, true);
+    }
     setEditorFocus();
 }
 
 void MessageEditor::setEditorFocus()
 {
     if (!editorPage->hasFocus())
-        editorPage->setFocus();
+        editorPage->activeTransText()->setFocus();
 }
 
 void MessageEditor::updateCutAndCopy()
@@ -871,7 +1312,7 @@ void MessageEditor::updateCutAndCopy()
     bool newCutState = false;
     if (editorPage->srcText->textCursor().hasSelection()) {
         newCopyState = true;
-    } else if (editorPage->transText->textCursor().hasSelection()) {
+    } else if (editorPage->activeTransText()->textCursor().hasSelection()) {
         newCopyState = true;
         newCutState = true;
     }
@@ -890,7 +1331,7 @@ void MessageEditor::updateCutAndCopy()
 void MessageEditor::updateCanPaste()
 {
     bool oldCanPaste = canPaste;
-    canPaste = (!editorPage->transText->isReadOnly() &&
+    canPaste = (!editorPage->activeTransText()->isReadOnly() &&
         !qApp->clipboard()->text().isNull());
     if (canPaste != oldCanPaste)
         emit pasteAvailable(canPaste);

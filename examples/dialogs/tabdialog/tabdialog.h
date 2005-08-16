@@ -25,9 +25,10 @@
 #define TABDIALOG_H
 
 #include <QDialog>
-#include <QFileInfo>
-#include <QString>
-#include <QTabWidget>
+
+class QDialogButtonBox;
+class QFileInfo;
+class QTabWidget;
 
 class GeneralTab : public QWidget
 {
@@ -65,6 +66,7 @@ public:
 
 private:
     QTabWidget *tabWidget;
+    QDialogButtonBox *buttonBox;
 };
 
 #endif

@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::TabOrderEditorTool
+*/
+
 #include "tabordereditor_tool.h"
 #include "tabordereditor.h"
 

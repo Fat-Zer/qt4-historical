@@ -58,10 +58,12 @@ protected:
     virtual void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
     virtual void keyPressEvent(QKeyEvent *ev);
     virtual QStyleOptionViewItem viewOptions() const;
+    virtual void focusInEvent(QFocusEvent *event);
 
 private:
     QPropertyEditorModel *m_model;
     QPropertyEditorDelegate *m_itemDelegate;
+    bool contentsResized;
 };
 
 }  // namespace qdesigner_internal

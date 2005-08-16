@@ -44,28 +44,53 @@ struct QTreeViewItem
     QTreeViewItem() : expanded(false), total(0), level(0), height(0) {}
     QModelIndex index; // we remove items whenever the indexes are invalidated (make persistent ?)
     uint expanded : 1;
-    uint total : 30; // total number of children visible (+ hidden children)
+    uint total : 30; // total number of children visible
     uint level : 16; // indentation
     int height : 16; // row height
 };
 
-class QTreeViewPrivate: public QAbstractItemViewPrivate
+class QTreeViewPrivate : public QAbstractItemViewPrivate
 {
     Q_DECLARE_PUBLIC(QTreeView)
 public:
 
     QTreeViewPrivate()
         : QAbstractItemViewPrivate(),
-          header(0), indent(20), lastViewedItem(0), itemHeight(-1), 
+          header(0), indent(20), lastViewedItem(0), defaultItemHeight(-1),
           uniformRowHeights(false), rootDecoration(true),
-          itemsExpandable(true),
-          columnResizeTimerID(0)  {}
+          itemsExpandable(true), sortingEnabled(false),
+          allColumnsShowFocus(false), animationsEnabled(false),
+          columnResizeTimerID(0) {}
 
     ~QTreeViewPrivate() {}
     void initialize();
 
+    struct AnimatedOperation
+    {
+        enum Type { Expand, Collapse };
+        int item;
+        int top;
+        int duration;
+        Type type;
+        QPixmap before;
+        QPixmap after;
+    };
+
     void expand(int item, bool emitSignal);
     void collapse(int item, bool emitSignal);
+
+    void prepareAnimatedOperation(int item, AnimatedOperation::Type type);
+    void beginAnimatedOperation();
+    void _q_endAnimatedOperation();
+    void drawAnimatedOperation(QPainter *painter) const;
+    QPixmap renderTreeToPixmap(const QRect &rect) const;
+
+    inline QRect animationRect() const
+        { return QRect(0, animatedOperation.top, viewport->width(),
+                       viewport->height() - animatedOperation.top); }
+
+    void _q_currentChanged(const QModelIndex&, const QModelIndex&);
+
     void layout(int item);
 
     int pageUp(int item) const;
@@ -75,71 +100,58 @@ public:
         { return (--item < 0 ? 0 : item); }
     inline int below(int item) const
         { return (++item >= viewItems.count() ? viewItems.count() - 1 : item); }
+    inline void invalidateHeightCache(int item) const
+        { viewItems[item].height = 0; }
 
-    inline int height(int item) const {
-        if (uniformRowHeights)
-            return itemHeight;
-        if (viewItems.isEmpty())
-            return 0;
-        const QModelIndex index = viewItems.at(item).index;
-        int height = viewItems.at(item).height;
-        if (height <= 0 && index.isValid()) {
-            height = q_func()->indexRowSizeHint(index);
-            viewItems[item].height = height;
-        }
-        if (!index.isValid() || height < 0)
-            return 0;
-        return height;
-    }
-
-    inline void invalidateHeightCache(int item) const {
-        viewItems[item].height = 0;
-    }
-        
-    int indentation(int item) const;
-    int coordinate(int item) const;
-    int item(int coordinate) const;
+    int itemHeight(int item) const;
+    int indentationForItem(int item) const;
+    int coordinateForItem(int item) const;
+    int itemAtCoordinate(int coordinate) const;
 
     int viewIndex(const QModelIndex &index) const;
     QModelIndex modelIndex(int i) const;
 
-    int itemAt(int value) const;
-    int topItemDelta(int value, int iheight) const;
+    int firstVisibleItem(int *offset = 0) const;
     int columnAt(int x) const;
+    bool hasVisibleChildren( const QModelIndex& parent) const;
 
     void relayout(const QModelIndex &parent);
     void reexpandChildren(const QModelIndex &parent);
 
-    void updateScrollbars();
+    void updateScrollBars();
 
     int itemDecorationAt(const QPoint &pos) const;
 
     void select(int start, int stop, QItemSelectionModel::SelectionFlags command);
+
+    QPair<int,int> startAndEndColumns(const QRect &rect) const;
+
+    QStyleOptionViewItemV2 viewOptionsV2() const;
 
     QHeaderView *header;
     int indent;
 
     mutable QVector<QTreeViewItem> viewItems;
     mutable int lastViewedItem;
-    int itemHeight; // this is just a number; contentsHeight() / numItems
+    int defaultItemHeight; // this is just a number; contentsHeight() / numItems
     bool uniformRowHeights; // used when all rows have the same height
     bool rootDecoration;
     bool itemsExpandable;
+    bool sortingEnabled;
+    bool allColumnsShowFocus;
 
     // used for drawing
-    int left;
-    int right;
-    int current;
+    mutable QPair<int,int> leftAndRight;
+    mutable int current;
 
-    // used when expanding and closing items
+    // used when expanding and collapsing items
     QVector<QPersistentModelIndex> expandedIndexes;
     QStack<bool> expandParent;
+    AnimatedOperation animatedOperation;
+    bool animationsEnabled;
 
     // used when hiding and showing items
     QVector<QPersistentModelIndex> hiddenIndexes;
-
-    // used for hidden items
-    int hiddenItemsCount;
 
     // used for updating resized columns
     int columnResizeTimerID;

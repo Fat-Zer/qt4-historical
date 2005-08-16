@@ -43,7 +43,7 @@ class QAbstractItemViewPrivate;
 class Q_GUI_EXPORT QAbstractItemView : public QAbstractScrollArea
 {
     Q_OBJECT
-    Q_ENUMS(SelectionMode SelectionBehavior ScrollHint)
+    Q_ENUMS(SelectionMode SelectionBehavior ScrollHint ScrollMode DragDropMode)
     Q_FLAGS(EditTriggers)
     Q_PROPERTY(bool autoScroll READ hasAutoScroll WRITE setAutoScroll)
     Q_PROPERTY(EditTriggers editTriggers READ editTriggers WRITE setEditTriggers)
@@ -51,12 +51,16 @@ class Q_GUI_EXPORT QAbstractItemView : public QAbstractScrollArea
 #ifndef QT_NO_DRAGANDDROP
     Q_PROPERTY(bool showDropIndicator READ showDropIndicator WRITE setDropIndicatorShown)
     Q_PROPERTY(bool dragEnabled READ dragEnabled WRITE setDragEnabled)
+    Q_PROPERTY(bool dragDropOverwriteMode READ dragDropOverwriteMode WRITE setDragDropOverwriteMode)
+    Q_PROPERTY(DragDropMode dragDropMode READ dragDropMode WRITE setDragDropMode)
 #endif
     Q_PROPERTY(bool alternatingRowColors READ alternatingRowColors WRITE setAlternatingRowColors)
     Q_PROPERTY(SelectionMode selectionMode READ selectionMode WRITE setSelectionMode)
     Q_PROPERTY(SelectionBehavior selectionBehavior READ selectionBehavior WRITE setSelectionBehavior)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
     Q_PROPERTY(Qt::TextElideMode textElideMode READ textElideMode WRITE setTextElideMode)
+    Q_PROPERTY(ScrollMode verticalScrollMode READ verticalScrollMode WRITE setVerticalScrollMode)
+    Q_PROPERTY(ScrollMode horizontalScrollMode READ horizontalScrollMode WRITE setHorizontalScrollMode)
 
 public:
     enum SelectionMode {
@@ -76,7 +80,8 @@ public:
     enum ScrollHint {
         EnsureVisible,
         PositionAtTop,
-        PositionAtBottom
+        PositionAtBottom,
+        PositionAtCenter
     };
 
     enum EditTrigger {
@@ -90,6 +95,11 @@ public:
     };
 
     Q_DECLARE_FLAGS(EditTriggers, EditTrigger)
+
+    enum ScrollMode {
+        ScrollPerItem,
+        ScrollPerPixel
+    };
 
     explicit QAbstractItemView(QWidget *parent = 0);
     ~QAbstractItemView();
@@ -115,6 +125,12 @@ public:
     void setEditTriggers(EditTriggers triggers);
     EditTriggers editTriggers() const;
 
+    void setVerticalScrollMode(ScrollMode mode);
+    ScrollMode verticalScrollMode() const;
+
+    void setHorizontalScrollMode(ScrollMode mode);
+    ScrollMode horizontalScrollMode() const;
+
     void setAutoScroll(bool enable);
     bool hasAutoScroll() const;
 
@@ -127,6 +143,20 @@ public:
 
     void setDragEnabled(bool enable);
     bool dragEnabled() const;
+
+    void setDragDropOverwriteMode(bool overwrite);
+    bool dragDropOverwriteMode() const;
+
+    enum DragDropMode {
+        NoDragDrop,
+        DragOnly,
+        DropOnly,
+        DragDrop,
+        InternalMove
+    };
+
+    void setDragDropMode(DragDropMode behavior);
+    DragDropMode dragDropMode() const;
 #endif
     void setAlternatingRowColors(bool enable);
     bool alternatingRowColors() const;
@@ -152,6 +182,16 @@ public:
 
     void setIndexWidget(const QModelIndex &index, QWidget *widget);
     QWidget *indexWidget(const QModelIndex &index) const;
+
+    void setItemDelegateForRow(int row, QAbstractItemDelegate *delegate);
+    QAbstractItemDelegate *itemDelegateForRow(int row) const;
+
+    void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate);
+    QAbstractItemDelegate *itemDelegateForColumn(int column) const;
+
+    QAbstractItemDelegate *itemDelegate(const QModelIndex &index) const;
+
+    virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
 
 public Q_SLOTS:
     virtual void reset();
@@ -230,7 +270,8 @@ protected:
         DragSelectingState,
         EditingState,
         ExpandingState,
-        CollapsingState
+        CollapsingState,
+        AnimatingState
     };
 
     State state() const;
@@ -247,6 +288,7 @@ protected:
     void stopAutoScroll();
     void doAutoScroll();
 
+    bool focusNextPrevChild(bool next);
     bool event(QEvent *event);
     bool viewportEvent(QEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -264,6 +306,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event);
     void timerEvent(QTimerEvent *event);
+    void inputMethodEvent(QInputMethodEvent *event);
 
 #ifndef QT_NO_DRAGANDDROP
     enum DropIndicatorPosition { OnItem, AboveItem, BelowItem, OnViewport };
@@ -276,8 +319,10 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_columnsAboutToBeRemoved(const QModelIndex&, int, int))
     Q_PRIVATE_SLOT(d_func(), void _q_columnsRemoved(const QModelIndex&, int, int))
     Q_PRIVATE_SLOT(d_func(), void _q_rowsRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_modelDestroyed())
 
     friend class QTreeViewPrivate; // needed to compile with MSVC
+    friend class QAccessibleItemRow;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractItemView::EditTriggers)

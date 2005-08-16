@@ -52,7 +52,7 @@ DragWidget::DragWidget(QWidget *parent)
     }
 
     QPalette newPalette = palette();
-    newPalette.setColor(QPalette::Background, Qt::white);
+    newPalette.setColor(QPalette::Window, Qt::white);
     setPalette(newPalette);
 
     setAcceptDrops(true);
@@ -62,10 +62,30 @@ DragWidget::DragWidget(QWidget *parent)
 
 void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasText())
-        event->acceptProposedAction();
-    else
+    if (event->mimeData()->hasText()) {
+        if (children().contains(event->source())) {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
         event->ignore();
+    }
+}
+
+void DragWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (event->mimeData()->hasText()) {
+        if (children().contains(event->source())) {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
+        event->ignore();
+    }
 }
 
 void DragWidget::dropEvent(QDropEvent *event)

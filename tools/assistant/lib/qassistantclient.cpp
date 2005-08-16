@@ -124,7 +124,13 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     Documentation Profile (\c .adp) formats are documented in the \l
     {assistant-manual.html}{Qt Assistant Manual}.
 
-    \sa {Qt Assistant Manual}
+    For a complete example using the QAssistantClient class, see the
+    \l {assistant/simpletextviewer}{Simple Text Viewer} example.  The
+    example shows how you can make Qt Assistant act as a customized
+    help tool for your application using the QAssistantClient class
+    combined with a Qt Assistant Document Profile.
+
+    \sa {Qt Assistant Manual}, {Simple Text Viewer Example}
 */
 
 /*!
@@ -245,8 +251,8 @@ void QAssistantClient::openAssistant()
 
     QAssistantClientPrivate *d = data( this );
     if( d ) {
-        QStringList::ConstIterator it = d->arguments.begin();
-        while( it!=d->arguments.end() ) {
+        QStringList::ConstIterator it = d->arguments.constBegin();
+        while( it!=d->arguments.constEnd() ) {
             args.append( *it );
             ++it;
         }
@@ -295,17 +301,21 @@ void QAssistantClient::closeAssistant()
 {
     if ( !opened )
         return;
+
+    bool blocked = proc->blockSignals(true);
     proc->terminate();
     if (!proc->waitForFinished(2000)) {
         // If the process hasn't died after 2 seconds,
         // we kill it, causing it to exit immediately.
         proc->kill();
     }
+    proc->blockSignals(blocked);
 }
 
 /*!
-    Brings Qt Assistant to the forground showing the given \a page.
-    The \a page parameter is a filename (e.g. \c myhelpfile.html).
+    Brings Qt Assistant to the foreground showing the given \a page.
+    The \a page parameter is a path to an HTML file
+    (e.g., "/home/pasquale/superproduct/docs/html/intro.html").
 
     If Qt Assistant hasn't been opened yet, this function will call
     the openAssistant() slot with the specified page as the start
@@ -315,14 +325,18 @@ void QAssistantClient::closeAssistant()
 */
 void QAssistantClient::showPage( const QString &page )
 {
-    if ( !opened ) {
+    if (opened) {
+        QTextStream os( socket );
+        os << page << "\n";
+    } else {
         pageBuffer = page;
-        openAssistant();
-        pageBuffer.clear();
-        return;
+
+        if (proc->state() == QProcess::NotRunning) {
+            openAssistant();
+            pageBuffer.clear();
+            return;
+        }
     }
-    QTextStream os( socket );
-    os << page << "\n";
 }
 
 /*!

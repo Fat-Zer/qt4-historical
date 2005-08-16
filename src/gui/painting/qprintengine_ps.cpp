@@ -29,11 +29,6 @@
 #include <private/qpaintengine_p.h>
 #include <private/qpdf_p.h>
 
-// <X11/Xlib.h> redefines Status -> int
-#if defined(Status)
-# undef Status
-#endif
-
 #ifndef QT_NO_PRINTER
 
 #include "qprinter.h"
@@ -46,7 +41,6 @@
 #include "qbytearray.h"
 #include "qhash.h"
 #include "qbuffer.h"
-#include "qfile.h"
 #include "qsettings.h"
 #include "qmap.h"
 #include "qbitmap.h"
@@ -57,18 +51,11 @@
 #include <qdebug.h>
 #include <private/qdrawhelper_p.h>
 
+#ifndef Q_OS_WIN
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <limits.h>
-
-#if defined (Q_WS_X11) || defined (Q_WS_QWS)
-#include <qtextlayout.h>
-#endif
-
-#ifdef Q_WS_X11
-#include <qx11info_x11.h>
-#include <private/qt_x11_p.h>
-#endif
 
 static bool qt_gen_epsf = false;
 
@@ -76,8 +63,6 @@ void qt_generate_epsf(bool b)
 {
     qt_gen_epsf = b;
 }
-
-extern int qt_defaultDpi();
 
 static const char *const ps_header =
 "/BD{bind def}bind def/d2{dup dup}BD/ED{exch def}BD/D0{0 ED}BD/F{setfont}BD\n"
@@ -92,239 +77,55 @@ static const char *const ps_header =
 "/S{gs PCol SC stroke gr n}BD/BT{gsave 10 dict begin/_m matrix CM def BCol\n"
 "SC}BD/ET{end grestore}BD/Tf{/_fs ED findfont[_fs 0 0 _fs 0 0]makefont F}BD\n"
 "/Tm{6 array astore concat}BD/Td{translate}BD/Tj{0 0 m show}BD/BDC{pop pop}BD\n"
-"/EMC{}BD/BSt 0 def/LWi 0 def/WFi false def/BCol[1 1 1]def/PCol[0 0 0]def\n"
-"/BDArr[0.94 0.88 0.63 0.50 0.37 0.12 0.06]def/defM matrix def/level3{\n"
-"/languagelevel where{pop languagelevel 3 ge}{false}ie}BD/QCIgray D0/QCIcolor\n"
-"D0/QCIindex D0/QCI{/colorimage where{pop false 3 colorimage}{exec/QCIcolor\n"
-"ED/QCIgray QCIcolor length 3 idiv string def 0 1 QCIcolor length 3 idiv 1\n"
-"sub{/QCIindex ED/_x QCIindex 3 mul def QCIgray QCIindex QCIcolor _x get 0.30\n"
-"mul QCIcolor _x 1 add get 0.59 mul QCIcolor _x 2 add get 0.11 mul add add\n"
-"cvi put}for QCIgray image}ie}BD/di{gs TR 1 i 1 eq{pop pop false 3 1 roll\n"
-"BCol SC imagemask}{dup false ne{level3}{false}ie{/_ma ED 8 eq{/_dc[0 1]def\n"
-"/DeviceGray}{/_dc[0 1 0 1 0 1]def/DeviceRGB}ie scs/_im ED/_mt ED/_h ED/_w ED\n"
-"<</ImageType 3/DataDict <</ImageType 1/Width _w/Height _h/ImageMatrix _mt\n"
-"/DataSource _im/BitsPerComponent 8/Decode _dc >>/MaskDict <</ImageType 1\n"
-"/Width _w/Height _h/ImageMatrix _mt/DataSource _ma/BitsPerComponent 1/Decode\n"
-"[0 1]>>/InterleaveType 3 >> image}{pop 8 4 1 roll 8 eq{image}{QCI}ie}ie}ie\n"
-"gr}BD/BF{gs BSt 1 eq{BCol SC WFi{fill}{eofill}ie}if BSt 2 ge BSt 8 le and{\n"
-"BDArr BSt 2 sub get/_sc ED BCol{1. exch sub _sc mul 1. exch sub}forall 3\n"
-"array astore SC WFi{fill}{eofill}ie}if BSt 9 ge BSt 14 le and{WFi{W}{W*}ie\n"
-"pathbbox 3 i 3 i TR 4 2 roll 3 2 roll exch sub/_h ED sub/_w ED BCol SC 0.3 w\n"
-"n BSt 9 eq BSt 11 eq or{0 4 _h{dup 0 exch m _w exch l}for}if BSt 10 eq BSt\n"
-"11 eq or{0 4 _w{dup 0 m _h l}for}if BSt 12 eq BSt 14 eq or{_w _h gt{0 6 _w\n"
-"_h add{dup 0 m _h sub _h l}for}{0 6 _w _h add{dup 0 exch m _w sub _w exch l}\n"
-"for}ie}if BSt 13 eq BSt 14 eq or{_w _h gt{0 6 _w _h add{dup _h m _h sub 0 l}\n"
-"for}{0 6 _w _h add{dup _w exch m _w sub 0 exch l}for}ie}if S}if BSt 15 eq{}\n"
-"if BSt 24 eq{}if gr}BD/f{/WFi true def BF n}BD/f*{/WFi false def BF n}BD/B{\n"
-"/WFi true def BF S n}BD/B*{/WFi false def BF S n}BD/MF{true exch true exch{\n"
-"exch pop exch pop dup 0 get dup findfont dup/FontName get 3 -1 roll eq{exit}\n"
-"if}forall exch dup 1 get/fxscale ED 2 get/fslant ED exch/fencoding ED[\n"
-"fxscale 0 fslant 1 0 0]makefont fencoding false eq{}{dup maxlength dict\n"
-"begin{1 i/FID ne{def}{pop pop}ifelse}forall/Encoding fencoding def\n"
-"currentdict end}ie definefont pop}BD/MFEmb{findfont dup length dict begin{1\n"
-"i/FID ne{def}{pop pop}ifelse}forall/Encoding ED currentdict end definefont\n"
-"pop}BD/QI{/C save def pageinit q n}BD/QP{Q C restore showpage}BD/SPD{\n"
-"/setpagedevice where{<< 3 1 roll >> setpagedevice}{pop pop}ie}BD\n";
+"/EMC{}BD/BSt 0 def/WFi false def/BCol[1 1 1]def/PCol[0 0 0]def/BDArr[0.94\n"
+"0.88 0.63 0.50 0.37 0.12 0.06]def/level3{/languagelevel where{pop\n"
+"languagelevel 3 ge}{false}ie}BD/QCIgray D0/QCIcolor D0/QCIindex D0/QCI{\n"
+"/colorimage where{pop false 3 colorimage}{exec/QCIcolor ED/QCIgray QCIcolor\n"
+"length 3 idiv string def 0 1 QCIcolor length 3 idiv 1 sub{/QCIindex ED/_x\n"
+"QCIindex 3 mul def QCIgray QCIindex QCIcolor _x get 0.30 mul QCIcolor _x 1\n"
+"add get 0.59 mul QCIcolor _x 2 add get 0.11 mul add add cvi put}for QCIgray\n"
+"image}ie}BD/di{gs TR 1 i 1 eq{pop pop false 3 1 roll BCol SC imagemask}{dup\n"
+"false ne{level3}{false}ie{/_ma ED 8 eq{/_dc[0 1]def/DeviceGray}{/_dc[0 1 0 1\n"
+"0 1]def/DeviceRGB}ie scs/_im ED/_mt ED/_h ED/_w ED <</ImageType 3/DataDict\n"
+"<</ImageType 1/Width _w/Height _h/ImageMatrix _mt/DataSource _im\n"
+"/BitsPerComponent 8/Decode _dc >>/MaskDict <</ImageType 1/Width _w/Height _h\n"
+"/ImageMatrix _mt/DataSource _ma/BitsPerComponent 1/Decode[0 1]>>\n"
+"/InterleaveType 3 >> image}{pop 8 4 1 roll 8 eq{image}{QCI}ie}ie}ie gr}BD/BF\n"
+"{gs BSt 1 eq{BCol SC WFi{fill}{eofill}ie}if BSt 2 ge BSt 8 le and{BDArr BSt\n"
+"2 sub get/_sc ED BCol{1. exch sub _sc mul 1. exch sub}forall 3 array astore\n"
+"SC WFi{fill}{eofill}ie}if BSt 9 ge BSt 14 le and{WFi{W}{W*}ie pathbbox 3 i 3\n"
+"i TR 4 2 roll 3 2 roll exch sub/_h ED sub/_w ED BCol SC 0.3 w n BSt 9 eq BSt\n"
+"11 eq or{0 4 _h{dup 0 exch m _w exch l}for}if BSt 10 eq BSt 11 eq or{0 4 _w{\n"
+"dup 0 m _h l}for}if BSt 12 eq BSt 14 eq or{_w _h gt{0 6 _w _h add{dup 0 m _h\n"
+"sub _h l}for}{0 6 _w _h add{dup 0 exch m _w sub _w exch l}for}ie}if BSt 13\n"
+"eq BSt 14 eq or{_w _h gt{0 6 _w _h add{dup _h m _h sub 0 l}for}{0 6 _w _h\n"
+"add{dup _w exch m _w sub 0 exch l}for}ie}if S}if BSt 15 eq{}if BSt 24 eq{}if\n"
+"gr}BD/f{/WFi true def BF n}BD/f*{/WFi false def BF n}BD/B{/WFi true def BF S\n"
+"n}BD/B*{/WFi false def BF S n}BD/QI{/C save def pageinit q n}BD/QP{Q C\n"
+"restore showpage}BD/SPD{/setpagedevice where{<< 3 1 roll >> setpagedevice}{\n"
+"pop pop}ie}BD/T1AddMapping{10 dict begin/glyphs ED/fnt ED/current fnt\n"
+"/NumGlyphs get def/CMap fnt/CMap get def 0 1 glyphs length 1 sub{glyphs exch\n"
+"get/gn ED current dup 256 mod/min ED 256 idiv/maj ED CMap dup maj get dup\n"
+"null eq{pop 256 array 0 1 255{1 i exch/.notdef put}for}if dup min gn put maj\n"
+"exch put/current current 1 add def}for fnt/CMap CMap put fnt/NumGlyphs\n"
+"current put end}def/T1AddGlyphs{10 dict begin/glyphs ED/fnt ED/current fnt\n"
+"/NumGlyphs get def/CMap fnt/CMap get def/CharStrings fnt/CharStrings get def\n"
+"0 1 glyphs length 2 idiv 1 sub{2 mul dup glyphs exch get/gn ED 1 add glyphs\n"
+"exch get/cs ED current dup 256 mod/min ED 256 idiv/maj ED CMap dup maj get\n"
+"dup null eq{pop 256 array 0 1 255{1 i exch/.notdef put}for}if dup min gn put\n"
+"maj exch put CharStrings gn cs put/current current 1 add def}for fnt\n"
+"/CharStrings CharStrings put fnt/CMap CMap put fnt/NumGlyphs current put end\n"
+"}def/StringAdd{1 i length 1 i length add string 3 1 roll 2 i 0 3 i\n"
+"putinterval 2 i 2 i length 2 i putinterval pop pop}def/T1Setup{10 dict begin\n"
+"dup/FontName ED (-Base) StringAdd cvx cvn/Font ED/MaxPage Font/NumGlyphs get\n"
+"1 sub 256 idiv def/FDepVector MaxPage 1 add array def/Encoding MaxPage 1 add\n"
+"array def 0 1 MaxPage{dup Encoding exch dup put dup/Page ED FontName (-)\n"
+"StringAdd exch 20 string cvs StringAdd cvn Font 0 dict copy d2/CMap get Page\n"
+"get/Encoding exch put definefont FDepVector exch Page exch put}for FontName\n"
+"cvn <</FontType 0/FMapType 2/FontMatrix[1 0 0 1 0 0]/Encoding Encoding\n"
+"/FDepVector FDepVector >> definefont pop end}def\n";
 
 
-
-
-
-#if 0
-// ---------------------------------------------------------------------
-// postscript font substitution dictionary. We assume every postscript printer has at least
-// Helvetica, Times, Courier and Symbol
-
-#if defined (Q_WS_WIN) && defined (Q_CC_MSVC)
-#  pragma warning(disable: 4305)
-#endif
-
-struct psfont {
-    const char *psname;
-    qreal slant;
-    qreal xscale;
-};
-
-static const psfont Arial[] = {
-    { "Arial", 0, 84.04 },
-    { "Arial-Italic", 0, 84.04 },
-    { "Arial-Bold", 0, 88.65 },
-    { "Arial-BoldItalic", 0, 88.65 }
-};
-
-static const psfont AvantGarde[] = {
-    { "AvantGarde-Book", 0, 87.43 },
-    { "AvantGarde-BookOblique", 0, 88.09 },
-    { "AvantGarde-Demi", 0, 88.09 },
-    { "AvantGarde-DemiOblique", 0, 87.43 },
-};
-
-static const psfont Bookman [] = {
-    { "Bookman-Light", 0, 93.78 },
-    { "Bookman-LightItalic", 0, 91.42 },
-    { "Bookman-Demi", 0, 99.86 },
-    { "Bookman-DemiItalic", 0, 101.54 }
-};
-
-static const psfont Charter [] = {
-    { "CharterBT-Roman", 0, 84.04 },
-    { "CharterBT-Italic", 0.0, 81.92 },
-    { "CharterBT-Bold", 0, 88.99 },
-    { "CharterBT-BoldItalic", 0.0, 88.20 }
-};
-
-static const psfont Courier [] = {
-    { "Courier", 0, 100. },
-    { "Courier-Oblique", 0, 100. },
-    { "Courier-Bold", 0, 100. },
-    { "Courier-BoldOblique", 0, 100. }
-};
-
-static const psfont Garamond [] = {
-    { "Garamond-Antiqua", 0, 78.13 },
-    { "Garamond-Kursiv", 0, 78.13 },
-    { "Garamond-Halbfett", 0, 78.13 },
-    { "Garamond-KursivHalbfett", 0, 78.13 }
-};
-
-static const psfont GillSans [] = { // estimated value for xstretch
-    { "GillSans", 0, 82 },
-    { "GillSans-Italic", 0, 82 },
-    { "GillSans-Bold", 0, 82 },
-    { "GillSans-BoldItalic", 0, 82 }
-};
-
-static const psfont Helvetica [] = {
-    { "Helvetica", 0, 84.04 },
-    { "Helvetica-Oblique", 0, 84.04 },
-    { "Helvetica-Bold", 0, 88.65 },
-    { "Helvetica-BoldOblique", 0, 88.65 }
-};
-
-static const psfont Letter [] = {
-    { "LetterGothic", 0, 83.32 },
-    { "LetterGothic-Italic", 0, 83.32 },
-    { "LetterGothic-Bold", 0, 83.32 },
-    { "LetterGothic-Bold", 0.2, 83.32 }
-};
-
-static const psfont LucidaSans [] = {
-    { "LucidaSans", 0, 94.36 },
-    { "LucidaSans-Oblique", 0, 94.36 },
-    { "LucidaSans-Demi", 0, 98.10 },
-    { "LucidaSans-DemiOblique", 0, 98.08 }
-};
-
-static const psfont LucidaSansTT [] = {
-    { "LucidaSans-Typewriter", 0, 100.50 },
-    { "LucidaSans-TypewriterOblique", 0, 100.50 },
-    { "LucidaSans-TypewriterBold", 0, 100.50 },
-    { "LucidaSans-TypewriterBoldOblique", 0, 100.50 }
-};
-
-static const psfont LucidaBright [] = {
-    { "LucidaBright", 0, 93.45 },
-    { "LucidaBright-Italic", 0, 91.98 },
-    { "LucidaBright-Demi", 0, 96.22 },
-    { "LucidaBright-DemiItalic", 0, 96.98 }
-};
-
-static const psfont Palatino [] = {
-    { "Palatino-Roman", 0, 82.45 },
-    { "Palatino-Italic", 0, 76.56 },
-    { "Palatino-Bold", 0, 83.49 },
-    { "Palatino-BoldItalic", 0, 81.51 }
-};
-
-static const psfont Symbol [] = {
-    { "Symbol", 0, 82.56 },
-    { "Symbol", 0.2, 82.56 },
-    { "Symbol", 0, 82.56 },
-    { "Symbol", 0.2, 82.56 }
-};
-
-static const psfont Tahoma [] = {
-    { "Tahoma", 0, 83.45 },
-    { "Tahoma", 0.2, 83.45 },
-    { "Tahoma-Bold", 0, 95.59 },
-    { "Tahoma-Bold", 0.2, 95.59 }
-};
-
-static const psfont Times [] = {
-    { "Times-Roman", 0, 82.45 },
-    { "Times-Italic", 0, 82.45 },
-    { "Times-Bold", 0, 82.45 },
-    { "Times-BoldItalic", 0, 82.45 }
-};
-
-static const psfont Verdana [] = {
-    { "Verdana", 0, 96.06 },
-    { "Verdana-Italic", 0, 96.06 },
-    { "Verdana-Bold", 0, 107.12 },
-    { "Verdana-BoldItalic", 0, 107.10 }
-};
-
-static const psfont Utopia [] = {
-    { "Utopia-Regular", 0, 84.70 },
-    { "Utopia-Regular", 0.2, 84.70 },
-    { "Utopia-Bold", 0, 88.01 },
-    { "Utopia-Bold", 0.2, 88.01 }
-};
-
-static const psfont * const SansSerifReplacements[] = {
-    Helvetica, 0
-        };
-static const psfont * const SerifReplacements[] = {
-    Times, 0
-        };
-static const psfont * const FixedReplacements[] = {
-    Courier, 0
-        };
-static const psfont * const TahomaReplacements[] = {
-    Verdana, AvantGarde, Helvetica, 0
-        };
-static const psfont * const VerdanaReplacements[] = {
-    Tahoma, AvantGarde, Helvetica, 0
-        };
-
-static const struct {
-    const char * input; // spaces are stripped in here, and everything lowercase
-    const psfont * ps;
-    const psfont *const * replacements;
-} postscriptFonts [] = {
-    { "arial", Arial, SansSerifReplacements },
-    { "arialmt", Arial, SansSerifReplacements },
-    { "arialunicodems", Arial, SansSerifReplacements },
-    { "avantgarde", AvantGarde, SansSerifReplacements },
-    { "bookman", Bookman, SerifReplacements },
-    { "charter", Charter, SansSerifReplacements },
-    { "bitstreamcharter", Charter, SansSerifReplacements },
-    { "bitstreamcyberbit", Times, SerifReplacements },
-    { "courier", Courier, 0 },
-    { "couriernew", Courier, 0 },
-    { "fixed", Courier, 0 },
-    { "garamond", Garamond, SerifReplacements },
-    { "gillsans", GillSans, SansSerifReplacements },
-    { "helvetica", Helvetica, 0 },
-    { "letter", Letter, FixedReplacements },
-    { "lucida", LucidaSans, SansSerifReplacements },
-    { "lucidasans", LucidaSans, SansSerifReplacements },
-    { "lucidabright", LucidaBright, SerifReplacements },
-    { "lucidasanstypewriter", LucidaSansTT, FixedReplacements },
-    { "luciduxsans", LucidaSans, SansSerifReplacements },
-    { "luciduxserif", LucidaBright, SerifReplacements },
-    { "luciduxmono", LucidaSansTT, FixedReplacements },
-    { "palatino", Palatino, SerifReplacements },
-    { "symbol", Symbol, 0 },
-    { "tahoma", Tahoma, TahomaReplacements },
-    { "terminal", Courier, 0 },
-    { "times", Times, 0 },
-    { "timesnewroman", Times, 0 },
-    { "verdana", Verdana, VerdanaReplacements },
-    { "utopia", Utopia, SerifReplacements },
-    { 0, 0, 0 }
-};
-#endif
 
 // ------------------------------End of static data ----------------------------------
 
@@ -351,20 +152,12 @@ static QByteArray wrapDSC(const QByteArray &str)
 // ----------------------------- Internal class declarations -----------------------------
 
 QPSPrintEnginePrivate::QPSPrintEnginePrivate(QPrinter::PrinterMode m)
-    : outDevice(0), fd(-1), 
-      collate(false), copies(1), orientation(QPrinter::Portrait),
-      pageSize(QPrinter::A4), pageOrder(QPrinter::FirstPageFirst), colorMode(QPrinter::Color),
-      fullPage(false), printerState(QPrinter::Idle), pid(0)
+    : QPdfBaseEnginePrivate(m),
+      printerState(QPrinter::Idle), hugeDocument(false), headerDone(false)
 {
     postscript = true;
-    backgroundMode = Qt::TransparentMode;
 
     firstPage = true;
-    resolution = 72;
-    if (m == QPrinter::HighResolution)
-        resolution = 1200;
-    else if (m == QPrinter::ScreenResolution)
-        resolution = qt_defaultDpi();
 
 #ifndef QT_NO_SETTINGS
     QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
@@ -641,8 +434,6 @@ void QPSPrintEnginePrivate::emitHeader(bool finished)
 
     if (creator.isEmpty())
         creator = QLatin1String("Qt " QT_VERSION_STR);
-    outDevice = new QFile();
-    static_cast<QFile *>(outDevice)->open(fd, QIODevice::WriteOnly);
 
     QByteArray header;
     QPdf::ByteStream s(&header);
@@ -651,14 +442,14 @@ void QPSPrintEnginePrivate::emitHeader(bool finished)
     qreal scale = 72. / ((qreal) q->metric(QPaintDevice::PdmDpiY));
     QRect pageRect = this->pageRect();
     QRect paperRect = this->paperRect();
-    uint mtop = pageRect.top() - paperRect.top();
-    uint mleft = pageRect.left() - paperRect.left();
-    uint mbottom = paperRect.bottom() - pageRect.bottom();
-    uint mright = paperRect.right() - pageRect.right();
+    int mtop = pageRect.top() - paperRect.top();
+    int mleft = pageRect.left() - paperRect.left();
+    int mbottom = paperRect.bottom() - pageRect.bottom();
+    int mright = paperRect.right() - pageRect.right();
     int width = pageRect.width();
     int height = pageRect.height();
     if (finished && pageCount == 1 && copies == 1 &&
-        ((fullPage && qt_gen_epsf) || (outputFileName.endsWith(".eps")))
+        ((fullPage && qt_gen_epsf) || (outputFileName.endsWith(QLatin1String(".eps"))))
        ) {
         if (!boundingBox.isValid())
             boundingBox.setRect(0, 0, width, height);
@@ -707,7 +498,7 @@ void QPSPrintEnginePrivate::emitHeader(bool finished)
         "\n%%EndComments\n"
 
         "%%BeginProlog\n"
-        "% Prolog copyright 1994-2003 Trolltech. You may copy this prolog in any way\n"
+        "% Prolog copyright 1994-2006 Trolltech. You may copy this prolog in any way\n"
         "% that is directly related to this document. For other use of this prolog,\n"
         "% see your licensing agreement for Qt.\n"
       << ps_header << "\n";
@@ -740,43 +531,63 @@ void QPSPrintEnginePrivate::emitHeader(bool finished)
     s << "%%EndSetup\n";
 
     outDevice->write(header);
-
+    headerDone = true;
 }
 
 
 void QPSPrintEnginePrivate::emitPages()
 {
-    // ############# fix fonts for huge documents
-    for (QHash<QFontEngine::FaceId, QFontSubset *>::Iterator it = fonts.begin(); it != fonts.end(); ++it)
-        outDevice->write((*it)->toType1());
+    if (!hugeDocument) {
+        for (QHash<QFontEngine::FaceId, QFontSubset *>::const_iterator it = fonts.constBegin();
+             it != fonts.constEnd(); ++it)
+            outDevice->write((*it)->toType1());
+    }
 
     outDevice->write(buffer);
 
     buffer = QByteArray();
-    qDeleteAll(fonts);
-    fonts.clear();
+    hugeDocument = true;
 }
 
 
 #ifdef Q_WS_QWS
-const int max_in_memory_size = 50000000;
+static const int max_in_memory_size = 2000000;
 #else
-const int max_in_memory_size = 2000000;
+static const int max_in_memory_size = 32000000;
 #endif
 
 void QPSPrintEnginePrivate::flushPage(bool last)
 {
     if (!last && currentPage->content().isEmpty())
         return;
+
     QPdf::ByteStream s(&buffer);
     s << "%%Page: "
       << pageCount << pageCount << "\n"
-      << "QI\n"
+      << "%%BeginPageSetup\n"
+      << "QI\n";
+    if (hugeDocument) {
+        for (QHash<QFontEngine::FaceId, QFontSubset *>::const_iterator it = fonts.constBegin();
+             it != fonts.constEnd(); ++it) {
+            if (currentPage->fonts.contains((*it)->object_id)) {
+                if ((*it)->downloaded_glyphs == 0) {
+                    s << (*it)->toType1();
+                    (*it)->downloaded_glyphs = 0;
+                } else {
+                    s << (*it)->type1AddedGlyphs();
+                }
+            }
+        }
+    }
+    for (int i = 0; i < currentPage->fonts.size(); ++i)
+        s << "(F" << QByteArray::number(currentPage->fonts.at(i)) << ") T1Setup\n";
+
+    s << "%%EndPageSetup\nq\n"
       << currentPage->content()
-      << "\nQP\n";
-    if (last) { // ############## || buffer.size() > max_in_memory_size) {
+      << "\nQ QP\n";
+    if (last || hugeDocument || buffer.size() > max_in_memory_size) {
 //        qDebug("emiting header at page %d", pageCount);
-        if (!outDevice)
+        if (!headerDone)
             emitHeader(last);
         emitPages();
     }
@@ -796,9 +607,9 @@ QPSPrintEngine::QPSPrintEngine(QPrinter::PrinterMode m)
 {
 }
 
-
 static void ignoreSigPipe(bool b)
 {
+#ifndef QT_NO_LPR
     static struct sigaction *users_sigpipe_handler = 0;
 
     if (b) {
@@ -821,37 +632,24 @@ static void ignoreSigPipe(bool b)
             return; // not ignoring sigpipe
 
         if (sigaction(SIGPIPE, users_sigpipe_handler, 0) == -1)
-            qWarning("QPSPrintEngine: could not restore SIGPIPE handler");
+            qWarning("QPSPrintEngine: Could not restore SIGPIPE handler");
 
         delete users_sigpipe_handler;
         users_sigpipe_handler = 0;
     }
+#else
+    Q_UNUSED(b);
+#endif
 }
-
 QPSPrintEngine::~QPSPrintEngine()
 {
     Q_D(QPSPrintEngine);
     if (d->fd >= 0)
-        ::close(d->fd);
-}
-
-static void closeAllOpenFds()
-{
-    // hack time... getting the maximum number of open
-    // files, if possible.  if not we assume it's the
-    // larger of 256 and the fd we got
-    int i;
-#if defined(_SC_OPEN_MAX)
-    i = (int)sysconf(_SC_OPEN_MAX);
-#elif defined(_POSIX_OPEN_MAX)
-    i = (int)_POSIX_OPEN_MAX;
-#elif defined(OPEN_MAX)
-    i = (int)OPEN_MAX;
+#if defined(Q_OS_WIN) && defined(_MSC_VER) && _MSC_VER >= 1400
+        ::_close(d->fd);
 #else
-    i = 256;
+        ::close(d->fd);
 #endif
-    while(--i > 0)
-	::close(i);
 }
 
 bool QPSPrintEngine::begin(QPaintDevice *pdev)
@@ -861,112 +659,7 @@ bool QPSPrintEngine::begin(QPaintDevice *pdev)
     if (d->fd >= 0)
         return true;
 
-    d->pdev = pdev;
-    if (!d->outputFileName.isEmpty()) {
-        d->fd = QT_OPEN(d->outputFileName.toLocal8Bit().constData(), O_CREAT | O_NOCTTY | O_TRUNC | O_WRONLY,
-#if defined(Q_OS_WIN)
-            _S_IREAD | _S_IWRITE
-#else
-            0666
-#endif
-           );
-    } else {
-        QString pr;
-        if (!d->printerName.isEmpty())
-            pr = d->printerName;
-        int fds[2];
-        if (pipe(fds) != 0) {
-            qWarning("QPSPrinter: could not open pipe to print");
-            return false;
-        }
-
-        d->pid = fork();
-        if (d->pid == 0) {       // child process
-            // if possible, exit quickly, so the actual lp/lpr
-            // becomes a child of init, and ::waitpid() is
-            // guaranteed not to wait.
-            if (fork() > 0) {
-                closeAllOpenFds();
-
-                // try to replace this process with "true" - this prevents
-                // global destructors from being called (that could possibly
-                // do wrong things to the parent process)
-                (void)execlp("true", "true", (char *)0);
-                (void)execl("/bin/true", "true", (char *)0);
-                (void)execl("/usr/bin/true", "true", (char *)0);
-                ::exit(0);
-            }
-            dup2(fds[0], 0);
-
-            closeAllOpenFds();
-
-            if (!d->printProgram.isEmpty()) {
-                if (!d->selectionOption.isEmpty())
-                    pr.prepend(d->selectionOption);
-                else
-                    pr.prepend(QLatin1String("-P"));
-                (void)execlp(d->printProgram.toLocal8Bit().data(), d->printProgram.toLocal8Bit().data(),
-                              pr.toLocal8Bit().data(), (char *)0);
-            } else {
-                // if no print program has been specified, be smart
-                // about the option string too.
-                QList<QByteArray> lprhack;
-                QList<QByteArray> lphack;
-                QByteArray media;
-                if (!pr.isEmpty() || !d->selectionOption.isEmpty()) {
-                    if (!d->selectionOption.isEmpty()) {
-                        QStringList list = d->selectionOption.split(QChar(' '));
-                        for (int i = 0; i < list.size(); ++i)
-                            lprhack.append(list.at(i).toLocal8Bit());
-                        lphack = lprhack;
-                    } else {
-                        lprhack.append("-P");
-                        lphack.append("-d");
-                    }
-                    lprhack.append(pr.toLocal8Bit());
-                    lphack.append(pr.toLocal8Bit());
-                }
-                char ** lpargs = new char *[lphack.size()+6];
-                lpargs[0] = "lp";
-                int i;
-                for (i = 0; i < lphack.size(); ++i)
-                    lpargs[i+1] = (char *)lphack.at(i).constData();
-#ifndef Q_OS_OSF
-                if (QPdf::paperSizeToString(d->pageSize)) {
-                    lpargs[++i] = "-o";
-                    lpargs[++i] = (char *)QPdf::paperSizeToString(d->pageSize);
-                    lpargs[++i] = "-o";
-                    media = "media=";
-                    media += QPdf::paperSizeToString(d->pageSize);
-                    lpargs[++i] = (char *)media.constData();
-                }
-#endif
-                lpargs[++i] = 0;
-                char **lprargs = new char *[lprhack.size()+2];
-                lprargs[0] = "lpr";
-                for (int i = 0; i < lprhack.size(); ++i)
-                    lprargs[i+1] = (char *)lprhack[i].constData();
-                lprargs[lprhack.size() + 1] = 0;
-                (void)execvp("lp", lpargs);
-                (void)execvp("lpr", lprargs);
-                (void)execv("/bin/lp", lpargs);
-                (void)execv("/bin/lpr", lprargs);
-                (void)execv("/usr/bin/lp", lpargs);
-                (void)execv("/usr/bin/lpr", lprargs);
-            }
-            // if we couldn't exec anything, close the fd,
-            // wait for a second so the parent process (the
-            // child of the GUI process) has exited.  then
-            // exit.
-            ::close(0);
-            (void)::sleep(1);
-            ::exit(0);
-        }
-        // parent process
-        ::close(fds[0]);
-        d->fd = fds[1];
-    }
-    if (d->fd < 0)
+    if(!QPdfBaseEngine::begin(pdev))
         return false;
 
     d->pageCount = 1;                // initialize state
@@ -979,6 +672,7 @@ bool QPSPrintEngine::begin(QPaintDevice *pdev)
     d->allClipped = false;
     d->boundingBox = QRect();
     d->fontsUsed = "";
+    d->hugeDocument = false;
 
     setActive(true);
     d->printerState = QPrinter::Active;
@@ -1005,27 +699,15 @@ bool QPSPrintEngine::end()
     d->outDevice->write(trailer);
     ignoreSigPipe(false);
 
-    if (d->outDevice)
-        d->outDevice->close();
-    if (d->fd >= 0)
-        ::close(d->fd);
-    d->fd = -1;
-    delete d->outDevice;
-    d->outDevice = 0;
+    QPdfBaseEngine::end();
 
-    qDeleteAll(d->fonts);
-    d->fonts.clear();
     d->firstPage = true;
+    d->headerDone = false;
 
     setActive(false);
     d->printerState = QPrinter::Idle;
     d->pdev = 0;
 
-    if (d->pid) {
-        (void)::waitpid(d->pid, 0, 0);
-        d->pid = 0;
-    }
-    
     return true;
 }
 
@@ -1077,15 +759,11 @@ void QPSPrintEngine::drawImageInternal(const QRectF &r, QImage image, bool bitma
             mask = image.createAlphaMask(Qt::OrderedAlphaDither);
         }
     }
-    *d->currentPage << "q\n" << QPdf::generateMatrix(d->stroker.matrix);
+    *d->currentPage << "q\n";
+    if(!d->simplePen)
+        *d->currentPage << QPdf::generateMatrix(d->stroker.matrix);
     QBrush b = d->brush;
     if (image.depth() == 1) {
-        if (d->backgroundMode == Qt::OpaqueMode) {
-            // draw background
-            d->brush = d->backgroundBrush;
-            setBrush();
-            *d->currentPage << r.x() << r.y() << r.width() << r.height() << "re f\n";
-        }
         // set current pen as brush
         d->brush = d->pen.brush();
         setBrush();
@@ -1154,7 +832,7 @@ bool QPSPrintEngine::newPage()
     d->currentPage = new QPdfPage;
     d->stroker.stream = d->currentPage;
 
-    return true;
+    return QPdfBaseEngine::newPage();
 }
 
 bool QPSPrintEngine::abort()
@@ -1163,196 +841,21 @@ bool QPSPrintEngine::abort()
     return false;
 }
 
-QRect QPSPrintEnginePrivate::paperRect() const
-{
-    QPdf::PaperSize s = QPdf::paperSize(pageSize);
-    int w = qRound(s.width*resolution/72.);
-    int h = qRound(s.height*resolution/72.);
-    if (orientation == QPrinter::Portrait)
-        return QRect(0, 0, w, h);
-    else
-        return QRect(0, 0, h, w);
-}
-
-QRect QPSPrintEnginePrivate::pageRect() const
-{
-    QRect r = paperRect();
-    if (fullPage)
-        return r;
-    // would be nice to get better margins than this.
-    return QRect(resolution/3, resolution/3, r.width()-2*resolution/3, r.height()-2*resolution/3);
-}
-
-int  QPSPrintEngine::metric(QPaintDevice::PaintDeviceMetric metricType) const
-{
-    Q_D(const QPSPrintEngine);
-    int val;
-    QRect r = d->fullPage ? d->paperRect() : d->pageRect();
-    switch (metricType) {
-    case QPaintDevice::PdmWidth:
-        val = r.width();
-        break;
-    case QPaintDevice::PdmHeight:
-        val = r.height();
-        break;
-    case QPaintDevice::PdmDpiX:
-        val = d->resolution;
-        break;
-    case QPaintDevice::PdmDpiY:
-        val = d->resolution;
-        break;
-    case QPaintDevice::PdmPhysicalDpiX:
-    case QPaintDevice::PdmPhysicalDpiY:
-        val = 1200;
-        break;
-    case QPaintDevice::PdmWidthMM:
-        val = qRound(r.width()*25.4/d->resolution);
-        break;
-    case QPaintDevice::PdmHeightMM:
-        val = qRound(r.height()*25.4/d->resolution);
-        break;
-    case QPaintDevice::PdmNumColors:
-        val = INT_MAX;
-        break;
-    case QPaintDevice::PdmDepth:
-        val = 32;
-        break;
-    default:
-        qWarning("QPrinter::metric: Invalid metric command");
-        return 0;
-    }
-    return val;
-}
-
 QPrinter::PrinterState QPSPrintEngine::printerState() const
 {
     Q_D(const QPSPrintEngine);
     return d->printerState;
 }
 
-void QPSPrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &value)
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+
+QCUPSSupport* QPSPrintEngine::cupsSupport()
 {
     Q_D(QPSPrintEngine);
-    switch (key) {
-    case PPK_CollateCopies:
-        d->collate = value.toBool();
-        break;
-    case PPK_ColorMode:
-        d->colorMode = QPrinter::ColorMode(value.toInt());
-        break;
-    case PPK_Creator:
-        d->creator = value.toString();
-        break;
-    case PPK_DocumentName:
-        d->title = value.toString();
-        break;
-    case PPK_FullPage:
-        d->fullPage = value.toBool();
-        break;
-    case PPK_NumberOfCopies:
-        d->copies = value.toInt();
-        break;
-    case PPK_Orientation:
-        d->orientation = QPrinter::Orientation(value.toInt());
-        break;
-    case PPK_OutputFileName:
-        d->outputFileName = value.toString();
-        break;
-    case PPK_PageOrder:
-        d->pageOrder = QPrinter::PageOrder(value.toInt());
-        break;
-    case PPK_PageSize:
-        d->pageSize = QPrinter::PageSize(value.toInt());
-        break;
-    case PPK_PaperSource:
-        d->paperSource = QPrinter::PaperSource(value.toInt());
-        break;
-    case PPK_PrinterName:
-        d->printerName = value.toString();
-        break;
-    case PPK_PrinterProgram:
-        d->printProgram = value.toString();
-        break;
-    case PPK_Resolution:
-        d->resolution = value.toInt();
-        break;
-    case PPK_SelectionOption:
-        d->selectionOption = value.toString();
-        break;
-    case PPK_FontEmbedding:
-        d->embedFonts = value.toBool();
-        break;
-    default:
-        break;
-    }
+    return &d->cups;
 }
 
-QVariant QPSPrintEngine::property(PrintEnginePropertyKey key) const
-{
-    Q_D(const QPSPrintEngine);
-    QVariant ret;
-    switch (key) {
-    case PPK_CollateCopies:
-        ret = d->collate;
-        break;
-    case PPK_ColorMode:
-        ret = d->colorMode;
-        break;
-    case PPK_Creator:
-        ret = d->creator;
-        break;
-    case PPK_DocumentName:
-        ret = d->title;
-        break;
-    case PPK_FullPage:
-        ret = d->fullPage;
-        break;
-    case PPK_NumberOfCopies:
-        ret = d->copies;
-        break;
-    case PPK_Orientation:
-        ret = d->orientation;
-        break;
-    case PPK_OutputFileName:
-        ret = d->outputFileName;
-        break;
-    case PPK_PageOrder:
-        ret = d->pageOrder;
-        break;
-    case PPK_PageSize:
-        ret = d->pageSize;
-        break;
-    case PPK_PaperSource:
-        ret = d->paperSource;
-        break;
-    case PPK_PrinterName:
-        ret = d->printerName;
-        break;
-    case PPK_PrinterProgram:
-        ret = d->printProgram;
-        break;
-    case PPK_Resolution:
-        ret = d->resolution;
-        break;
-    case PPK_SupportedResolutions:
-        ret = QList<QVariant>() << 72;
-        break;
-    case PPK_PaperRect:
-        ret = d->paperRect();
-        break;
-    case PPK_PageRect:
-        ret = d->pageRect();
-        break;
-    case PPK_SelectionOption:
-        ret = d->selectionOption;
-        break;
-    case PPK_FontEmbedding:
-        ret = d->embedFonts;
-        break;
-    default:
-        break;
-    }
-    return ret;
-}
-
+#endif
 #endif // QT_NO_PRINTER
+
+

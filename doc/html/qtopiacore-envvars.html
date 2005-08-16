@@ -2,46 +2,40 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/emb-envvars.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/emb-envvars.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/emb-envvars.qdoc -->
 <head>
-    <title>Qt 4.1: Environment Variables</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="contents" href="qtopiacore.html" />
+  <title>Qt 4.2: Environment Variables</title>
+  <link rel="contents" href="qtopiacore.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [<a href="qtopiacore.html">Contents</a>]
 </p>
 <h1 align="center">Environment Variables<br /><small></small></h1>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Variable</th><th>Description</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><b>QWS_SW_CURSOR</b> <a name="qws-sw-cursor"></a></td><td>If defined, always use a software mouse cursor even when using an accelerated driver that supports a hardware cursor.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><b>QWS_DISPLAY</b> <a name="qws-display"></a></td><td>Specifies the display type and framebuffer. For example, if the current shell is bash, ksh, zsh or sh:<pre>&nbsp;   export QWS_DISPLAY=&lt;gfx driver&gt;&lt;:driver specific options&gt;&lt;:display number&gt;</pre>
+<thead><tr valign="top" class="qt-style"><th>Variable</th><th>Description</th></tr></thead>
+<tr valign="top" class="odd"><td><b>QWS_SW_CURSOR</b> <a name="qws-sw-cursor"></a></td><td>If defined, always use a software mouse cursor even when using an accelerated driver that supports a hardware cursor.</td></tr>
+<tr valign="top" class="even"><td><b>QWS_DISPLAY</b> <a name="qws-display"></a></td><td>Specifies the display type and framebuffer. For example, if the current shell is bash, ksh, zsh or sh:<pre> export QWS_DISPLAY=&lt;gfx driver&gt;&lt;:driver specific options&gt;&lt;:display number&gt;</pre>
 <p>The default value is an unaccelerated Linux framebuffer driver: <tt>/dev/fb0</tt>. Valid drivers are <tt>QVfb</tt>, <tt>LinuxFb</tt> (unaccelerated Linux framebuffer), <tt>Transformed</tt> (for rotated displays), and <tt>VNC</tt> (when running Qtopia Core as a VNC server).</p>
 <p>Transformed displays have a special format: the specification should include a rotation as a multiple of 90 degrees given as <tt>rot&lt;x&gt;</tt>, for instance <tt>transformed:rot90</tt>.</p>
 <p>See also <a href="qtopiacore-running.html">Running Applications</a>, <a href="qtopiacore-qvfb.html">The Virtual Framebuffer</a> and <a href="qtopiacore-vnc.html">The VNC Protocol</a>.</p>
 </td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><b>QWS_SIZE</b> <a name="qws-size"></a></td><td>Specifies the size of Qtopia Core's window which is centered within the screen. For example, if the current shell is bash, ksh, zsh or sh:<pre>&nbsp;   export QWS_SIZE=&lt;width&gt;x&lt;height&gt;</pre>
+<tr valign="top" class="odd"><td><b>QWS_SIZE</b> <a name="qws-size"></a></td><td>Specifies the size of Qtopia Core's window which is centered within the screen. For example, if the current shell is bash, ksh, zsh or sh:<pre> export QWS_SIZE=&lt;width&gt;x&lt;height&gt;</pre>
 </td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><b>QWS_MOUSE_PROTO</b> <a name="qws-mouse-proto"></a></td><td>Specifies the driver and device for pointer handling. For example, if the current shell is bash, ksh, zsh or sh:<pre>&nbsp;   export QWS_MOUSE_PROTO=&lt;driver&gt;:&lt;device&gt;</pre>
+<tr valign="top" class="even"><td><b>QWS_MOUSE_PROTO</b> <a name="qws-mouse-proto"></a></td><td>Specifies the driver and device for pointer handling. For example, if the current shell is bash, ksh, zsh or sh:<pre> export QWS_MOUSE_PROTO=&lt;driver&gt;:&lt;device&gt;</pre>
 <p>The available drivers are <tt>MouseMan</tt>, <tt>IntelliMouse</tt>, <tt>Microsoft</tt>, <tt>VR41xx</tt>, <tt>LinuxTP</tt> or <tt>Tslib</tt>, and the device is typically <tt>/dev/mouse</tt>, or <tt>/dev/ts</tt> for touch panels. Note that specifying the device is optional.</p>
 <p>The default value is <tt>Auto</tt> which enables auto-detection of the mouse device if the &quot;pc&quot; mouse driver is enabled. Note that Qtopia Core does not support auto-detection of touch panels in which case the driver must be specified explicitly to determine which device to use.</p>
 <p>See also <a href="qtopiacore-pointer.html">Pointer Handling</a>.</p>
 </td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><b>QWS_KEYBOARD</b> <a name="qws-keyboard"></a></td><td>Specifies the driver and device for character input. For example, if the current shell is bash, ksh, zsh or sh:<pre>&nbsp;   export QWS_KEYBOARD=&lt;driver&gt;:&lt;device&gt;</pre>
+<tr valign="top" class="odd"><td><b>QWS_KEYBOARD</b> <a name="qws-keyboard"></a></td><td>Specifies the driver and device for character input. For example, if the current shell is bash, ksh, zsh or sh:<pre> export QWS_KEYBOARD=&lt;driver&gt;:&lt;device&gt;</pre>
 <p>The available drivers are <tt>SL5000</tt>, <tt>Yopy</tt>, <tt>VR41xx</tt>, <tt>TTY</tt> or <tt>USB</tt>, and the device is typically <tt>/dev/tty0</tt>. Note that specifying the device is optional.</p>
 <p>Multiple keyboard drivers can be specified in one go:</p>
-<pre>&nbsp;   export QWS_KEYBOARD=&lt;driver&gt; &lt;driver&gt; &lt;driver&gt;:&lt;device&gt;</pre>
+<pre> export QWS_KEYBOARD=&lt;driver&gt; &lt;driver&gt; &lt;driver&gt;:&lt;device&gt;</pre>
 <p>Input will be read from all of specified drivers.</p>
 <p>See also <a href="qtopiacore-charinput.html">Character Input</a>.</p>
 </td></tr>
@@ -53,6 +47,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

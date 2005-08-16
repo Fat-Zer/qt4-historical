@@ -44,6 +44,9 @@
 #include "qx11info_x11.h"
 extern const QX11Info *qt_x11Info(const QPaintDevice *pd);
 #endif
+#ifdef Q_WS_QWS
+#include "qscreen_qws.h"
+#endif
 
 // #define QFONTCACHE_DEBUG
 #ifdef QFONTCACHE_DEBUG
@@ -129,7 +132,13 @@ Q_GUI_EXPORT int qt_defaultDpi()
     ScreenRes(&hr, &mdpi);
     dpi = int(mdpi);
 #elif defined(Q_WS_QWS)
-    dpi = 72;
+    if (!qt_screen)
+        return 72;
+    QScreen *screen = qt_screen;
+    const QList<QScreen*> subScreens = qt_screen->subScreens();
+    if (!subScreens.isEmpty())
+        screen = subScreens.at(0);
+    dpi = qRound(screen->height() / double(screen->physicalHeight() / 25.4));
 #endif // Q_WS_X11
 
     return dpi;
@@ -143,6 +152,9 @@ QFontPrivate::QFontPrivate()
 #ifdef Q_WS_X11
     screen = QX11Info::appScreen();
 #endif
+#ifdef Q_WS_WIN
+    hdc = 0;
+#endif
 }
 
 QFontPrivate::QFontPrivate(const QFontPrivate &other)
@@ -151,6 +163,9 @@ QFontPrivate::QFontPrivate(const QFontPrivate &other)
       strikeOut(other.strikeOut), kerning(other.kerning)
 {
     ref = 1;
+#ifdef Q_WS_WIN
+    hdc = other.hdc;
+#endif
 }
 
 QFontPrivate::~QFontPrivate()
@@ -212,7 +227,6 @@ void QFontPrivate::resolve(uint mask, const QFontPrivate *other)
 
 
 QFontEngineData::QFontEngineData()
-    : lineWidth(1)
 {
     ref = 1;
 #if defined(Q_WS_X11) || defined(Q_WS_WIN)
@@ -220,9 +234,6 @@ QFontEngineData::QFontEngineData()
 #else
     engine = 0;
 #endif // Q_WS_X11 || Q_WS_WIN
-#ifndef Q_WS_MAC
-    memset(widthCache, 0, widthCacheSize*sizeof(uchar));
-#endif
 }
 
 QFontEngineData::~QFontEngineData()
@@ -244,7 +255,7 @@ QFontEngineData::~QFontEngineData()
 
 
 /*!
-    \class QFont qfont.h
+    \class QFont
     \brief The QFont class specifies a font used for drawing text.
 
     \ingroup multimedia
@@ -270,9 +281,10 @@ QFontEngineData::~QFontEngineData()
     it does not, QPainter will draw an unfilled square.
 
     Create QFonts like this:
+
     \code
-    QFont serifFont("Times", 10, Bold);
-    QFont sansFont("Helvetica [Cronyx]", 12);
+        QFont serifFont("Times", 10, Bold);
+        QFont sansFont("Helvetica [Cronyx]", 12);
     \endcode
 
     The attributes set in the constructor can also be set later, e.g.
@@ -325,14 +337,14 @@ QFontEngineData::~QFontEngineData()
     \target fontmatching
     The font matching algorithm works as follows:
     \list 1
-    \i The specified font family is searched for.
-    \i If not found, the styleHint() is used to select a replacement
+    \o The specified font family is searched for.
+    \o If not found, the styleHint() is used to select a replacement
        family.
-    \i Each replacement font family is searched for.
-    \i If none of these are found or there was no styleHint(), "helvetica"
+    \o Each replacement font family is searched for.
+    \o If none of these are found or there was no styleHint(), "helvetica"
        will be searched for.
-    \i If "helvetica" isn't found Qt will try the lastResortFamily().
-    \i If the lastResortFamily() isn't found Qt will try the
+    \o If "helvetica" isn't found Qt will try the lastResortFamily().
+    \o If the lastResortFamily() isn't found Qt will try the
        lastResortFont() which will always return a name of some kind.
     \endlist
 
@@ -341,10 +353,10 @@ QFontEngineData::~QFontEngineData()
     Once a font is found, the remaining attributes are matched in order of
     priority:
     \list 1
-    \i fixedPitch()
-    \i pointSize() (see below)
-    \i weight()
-    \i style()
+    \o fixedPitch()
+    \o pointSize() (see below)
+    \o weight()
+    \o style()
     \endlist
 
     If you have a font which matches on family, even if none of the
@@ -366,30 +378,33 @@ QFontEngineData::~QFontEngineData()
     Examples:
 
     \code
-    QFont f("Helvetica");
+        QFont f("Helvetica");
     \endcode
     If you had both an Adobe and a Cronyx Helvetica, you might get
     either.
 
     \code
-    QFont f("Helvetica [Cronyx]");
+        QFont f("Helvetica [Cronyx]");
     \endcode
+
     You can specify the foundry you want in the family name. The font f
     in the above example will be set to "Helvetica
     [Cronyx]".
 
     To determine the attributes of the font actually used in the window
     system, use a QFontInfo object, e.g.
+
     \code
-    QFontInfo info(f1);
-    QString family = info.family();
+        QFontInfo info(f1);
+        QString family = info.family();
     \endcode
 
     To find out font metrics use a QFontMetrics object, e.g.
+
     \code
-    QFontMetrics fm(f1);
-    int textWidthInPixels = fm.width("How many pixels wide is this text?");
-    int textHeightInPixels = fm.height();
+        QFontMetrics fm(f1);
+        int textWidthInPixels = fm.width("How many pixels wide is this text?");
+        int textHeightInPixels = fm.height();
     \endcode
 
     For more general information on fonts, see the
@@ -397,9 +412,7 @@ QFontEngineData::~QFontEngineData()
     Information on encodings can be found from
     \link http://czyborra.com/ Roman Czyborra's\endlink page.
 
-    \sa QFontMetrics QFontInfo QFontDatabase QApplication::setFont()
-    QWidget::setFont() QPainter::setFont() QFont::StyleHint
-    QFont::Weight
+    \sa QFontComboBox, QFontMetrics, QFontInfo, QFontDatabase, {Character Map Example}
 */
 
 /*!
@@ -421,7 +434,7 @@ QFontEngineData::~QFontEngineData()
 void qt_font_tread_test()
 {
     if (QApplication::instance() && QThread::currentThread() != QApplication::instance()->thread())
-        qWarning("QFont: It is not safe to use text and fonts outside the gui thread");
+        qWarning("QFont: It is not safe to use text and fonts outside the GUI thread");
 }
 
 /*!
@@ -446,6 +459,10 @@ QFont::QFont(const QFont &font, QPaintDevice *pd)
         d = font.d;
         d->ref.ref();
     }
+#ifdef Q_WS_WIN
+    if (pd->devType() == QInternal::Printer && pd->getDC())
+        d->hdc = pd->getDC();
+#endif
 }
 
 /*!
@@ -1000,6 +1017,9 @@ QFont::StyleHint QFont::styleHint() const
     \value PreferAntialias antialias if possible.
     \value OpenGLCompatible forces the use of OpenGL compatible
            fonts.
+    \value NoFontMerging If a font does not contain a character requested
+           to draw then Qt automatically chooses a similar looking for that contains
+           the character. This flag disables this feature.
 
     Any of these may be OR-ed with one of these flags:
 
@@ -1109,7 +1129,7 @@ int QFont::stretch() const
 void QFont::setStretch(int factor)
 {
     if (factor < 1 || factor > 4000) {
-        qWarning("QFont::setStretch(): parameter '%d' out of range", factor);
+        qWarning("QFont::setStretch: Parameter '%d' out of range", factor);
         return;
     }
 
@@ -1268,7 +1288,8 @@ bool QFont::rawMode() const
 }
 
 /*!
-    Returns a new QFont that has attributes copied from \a other.
+    Returns a new QFont that has attributes copied from \a other that
+    have not been previously set on this font.
 */
 QFont QFont::resolve(const QFont &other) const
 {
@@ -1392,7 +1413,7 @@ QString QFont::substitute(const QString &familyName)
 
     QFontSubst *fontSubst = globalFontSubst();
     Q_ASSERT(fontSubst != 0);
-    QFontSubst::Iterator it = fontSubst->find(familyName.toLower());
+    QFontSubst::ConstIterator it = fontSubst->constFind(familyName.toLower());
     if (it != fontSubst->constEnd() && !(*it).isEmpty())
         return (*it).first();
 
@@ -1580,7 +1601,7 @@ QString QFont::key() const
  */
 QString QFont::toString() const
 {
-    const QChar comma(',');
+    const QChar comma(QLatin1Char(','));
     return family() + comma +
         QString::number(     pointSizeF()) + comma +
         QString::number(      pixelSize()) + comma +
@@ -1603,11 +1624,11 @@ QString QFont::toString() const
  */
 bool QFont::fromString(const QString &descrip)
 {
-    QStringList l(descrip.split(','));
+    QStringList l(descrip.split(QLatin1Char(',')));
 
     int count = l.count();
     if (!count || (count > 2 && count < 9) || count > 11) {
-        qWarning("QFont::fromString: invalid description '%s'",
+        qWarning("QFont::fromString: Invalid description '%s'",
                  descrip.isEmpty() ? "(empty)" : descrip.toLatin1().data());
         return false;
     }
@@ -1724,7 +1745,7 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
     if (s.version() == 1) {
         QByteArray fam;
         s >> fam;
-        font.d->request.family = QString(fam);
+        font.d->request.family = QString::fromLatin1(fam);
     } else {
         s >> font.d->request.family;
     }
@@ -1769,7 +1790,7 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
  *****************************************************************************/
 
 /*!
-    \class QFontInfo qfontinfo.h
+    \class QFontInfo
 
     \brief The QFontInfo class provides general information about fonts.
 
@@ -1790,7 +1811,7 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
 
     There are three ways to create a QFontInfo object.
     \list 1
-    \i Calling the QFontInfo constructor with a QFont creates a font
+    \o Calling the QFontInfo constructor with a QFont creates a font
     info object for a screen-compatible font, i.e. the font cannot be
     a printer font. If the font is changed later, the font
     info object is \e not updated.
@@ -1799,12 +1820,12 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
     inaccurate. Printer fonts are not always accessible so the nearest
     screen font is used if a printer font is supplied.)
 
-    \i QWidget::fontInfo() returns the font info for a widget's font.
+    \o QWidget::fontInfo() returns the font info for a widget's font.
     This is equivalent to calling QFontInfo(widget->font()). If the
     widget's font is changed later, the font info object is \e not
     updated.
 
-    \i QPainter::fontInfo() returns the font info for a painter's
+    \o QPainter::fontInfo() returns the font info for a painter's
     current font. If the painter's font is changed later, the font
     info object is \e not updated.
     \endlist
@@ -2122,7 +2143,6 @@ QFontCache::~QFontCache()
     instance = 0;
 }
 
-#ifdef Q_WS_QWS
 void QFontCache::clear()
 {
     {
@@ -2130,32 +2150,41 @@ void QFontCache::clear()
                                  end = engineDataCache.end();
         while (it != end) {
             QFontEngineData *data = it.value();
-            if (data->engine)
+#if defined(Q_WS_X11) || defined(Q_WS_WIN)
+            for (int i = 0; i < QUnicodeTables::ScriptCount; ++i) {
+                if (data->engines[i]) {
+                    data->engines[i]->ref.deref();
+                    data->engines[i] = 0;
+                }
+            }
+#else
+            if (data->engine) {
                 data->engine->ref.deref();
-            data->engine = 0;
+                data->engine = 0;
+            }
+#endif
             ++it;
         }
     }
 
-    EngineCache::Iterator it = engineCache.begin(),
-                         end = engineCache.end();
-    while (it != end) {
-        if (--it.value().data->cache_count == 0) {
-            if (it.value().data->ref == 0) {
-                FC_DEBUG("QFontCache::~QFontCache: deleting engine %p key=(%d / %g %d %d %d %d)",
-                         it.value().data, it.key().script, it.key().def.pointSize,
-                         it.key().def.pixelSize, it.key().def.weight, it.key().def.style,
-                         it.key().def.fixedPitch);
-                delete it.value().data;
-            } else {
-                FC_DEBUG("QFontCache::~QFontCache: engine = %p still has refcount %d",
-                         it.value().data, it.value().data->ref.atomic);
-            }
+    for (EngineCache::Iterator it = engineCache.begin(), end = engineCache.end();
+         it != end; ++it) {
+        if (it->data->ref == 0) {
+            delete it->data;
+            it->data = 0;
         }
-        ++it;
     }
+
+    for (EngineCache::Iterator it = engineCache.begin(), end = engineCache.end();
+         it != end; ++it) {
+        if (it->data && it->data->ref == 0) {
+            delete it->data;
+            it->data = 0;
+        }
+    }
+
+    engineCache.clear();
 }
-#endif
 
 QFontEngineData *QFontCache::findEngineData(const Key &key) const
 {
@@ -2339,8 +2368,8 @@ void QFontCache::timerEvent(QTimerEvent *)
         const uint engine_data_cost =
             sizeof(QFontEngineData) > 1024 ? sizeof(QFontEngineData) : 1024;
 
-        EngineDataCache::ConstIterator it = engineDataCache.begin(),
-                                      end = engineDataCache.end();
+        EngineDataCache::ConstIterator it = engineDataCache.constBegin(),
+                                      end = engineDataCache.constEnd();
         for (; it != end; ++it) {
 #ifdef QFONTCACHE_DEBUG
             FC_DEBUG("    %p: ref %2d", it.value(), int(it.value()->ref));
@@ -2363,8 +2392,8 @@ void QFontCache::timerEvent(QTimerEvent *)
     {
         FC_DEBUG("  SWEEP engine:");
 
-        EngineCache::ConstIterator it = engineCache.begin(),
-                                  end = engineCache.end();
+        EngineCache::ConstIterator it = engineCache.constBegin(),
+                                  end = engineCache.constEnd();
         for (; it != end; ++it) {
             FC_DEBUG("    %p: timestamp %4u hits %2u ref %2d/%2d, cost %u bytes",
                       it.value().data, it.value().timestamp, it.value().hits,

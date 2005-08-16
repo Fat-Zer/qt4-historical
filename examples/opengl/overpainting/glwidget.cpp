@@ -30,11 +30,15 @@
 #include "bubble.h"
 #include "glwidget.h"
 
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE  0x809D
+#endif
+
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     QTime midnight(0, 0, 0);
-    srand(midnight.secsTo(QTime::currentTime()));
+    qsrand(midnight.secsTo(QTime::currentTime()));
 
     object = 0;
     xRot = 0;
@@ -129,10 +133,11 @@ void GLWidget::paintEvent(QPaintEvent *event)
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-    resizeGL(width(), height());
+    setupViewport(width(), height());
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -148,8 +153,6 @@ void GLWidget::paintEvent(QPaintEvent *event)
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
-    glDisable(GL_CULL_FACE); // ### not required if begin() also does it
-
     foreach (Bubble *bubble, bubbles) {
         if (bubble->rect().intersects(event->rect()))
             bubble->drawBubble(&painter);
@@ -161,14 +164,7 @@ void GLWidget::paintEvent(QPaintEvent *event)
 
 void GLWidget::resizeGL(int width, int height)
 {
-    int side = qMin(width, height);
-    glViewport((width - side) / 2, (height - side) / 2, side, side);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-0.5, +0.5, +0.5, -0.5, 4.0, 15.0);
-    glMatrixMode(GL_MODELVIEW);
-
+    setupViewport(width, height);
     formatInstructions(width, height);
 }
 
@@ -282,11 +278,11 @@ void GLWidget::normalizeAngle(int *angle)
 void GLWidget::createBubbles(int number)
 {
     for (int i = 0; i < number; ++i) {
-        QPointF position(width()*(0.1 + (0.8*rand()/(RAND_MAX+1.0))),
-                        height()*(0.1 + (0.8*rand()/(RAND_MAX+1.0))));
-        qreal radius = qMin(width(), height())*(0.0125 + 0.0875*rand()/(RAND_MAX+1.0));
-        QPointF velocity(width()*0.0125*(-0.5 + rand()/(RAND_MAX+1.0)),
-                        height()*0.0125*(-0.5 + rand()/(RAND_MAX+1.0)));
+        QPointF position(width()*(0.1 + (0.8*qrand()/(RAND_MAX+1.0))),
+                        height()*(0.1 + (0.8*qrand()/(RAND_MAX+1.0))));
+        qreal radius = qMin(width(), height())*(0.0125 + 0.0875*qrand()/(RAND_MAX+1.0));
+        QPointF velocity(width()*0.0125*(-0.5 + qrand()/(RAND_MAX+1.0)),
+                        height()*0.0125*(-0.5 + qrand()/(RAND_MAX+1.0)));
 
         bubbles.append(new Bubble(position, radius, velocity));
     }
@@ -298,10 +294,20 @@ void GLWidget::animate()
 
     while (iter.hasNext()) {
         Bubble *bubble = iter.next();
-        update(bubble->rect().toRect());
         bubble->move(rect());
-        update(bubble->rect().toRect());
     }
+    update();
+}
+
+void GLWidget::setupViewport(int width, int height)
+{
+    int side = qMin(width, height);
+    glViewport((width - side) / 2, (height - side) / 2, side, side);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-0.5, +0.5, +0.5, -0.5, 4.0, 15.0);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void GLWidget::formatInstructions(int width, int height)

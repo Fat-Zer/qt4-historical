@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/corelib/tools/qstring.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/corelib/tools/qstring.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/corelib/tools/qstring.cpp -->
 <head>
-    <title>Qt 4.1: List of All Members for QString</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: List of All Members for QString</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">List of All Members for QString</h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">List of All Members for QString</h1>
 <p>This is the complete list of members for <a href="qstring.html">QString</a>, including inherited members.</p>
 <p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
@@ -33,8 +27,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qstring.html#QString-4">QString</a> ( int, QChar )</li>
 <li><div class="fn"/><a href="qstring.html#QString-5">QString</a> ( const QLatin1String &amp; )</li>
 <li><div class="fn"/><a href="qstring.html#QString-6">QString</a> ( const QString &amp; )</li>
-<li><div class="fn"/><a href="qstring.html#QString-7">QString</a> ( const char * )</li>
-<li><div class="fn"/><a href="qstring.html#QString-8">QString</a> ( const QByteArray &amp; )</li>
+<li><div class="fn"/><a href="qstring.html#QString-7">QString</a> ( const char * ) : QT_ASCII_CAST_WARN_CONSTRUCTOR</li>
+<li><div class="fn"/><a href="qstring.html#QString-8">QString</a> ( const QByteArray &amp; ) : QT_ASCII_CAST_WARN_CONSTRUCTOR</li>
 <li><div class="fn"/><a href="qstring.html#dtor.QString">~QString</a> ()</li>
 <li><div class="fn"/><a href="qstring.html#append">append</a> ( const QString &amp; ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#append-2">append</a> ( const QLatin1String &amp; ) : QString &amp;</li>
@@ -60,8 +54,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qstring.html#capacity">capacity</a> () const : int</li>
 <li><div class="fn"/><a href="qstring.html#chop">chop</a> ( int )</li>
 <li><div class="fn"/><a href="qstring.html#clear">clear</a> ()</li>
-<li><div class="fn"/><a href="qstring.html#compare">compare</a> ( const QString &amp;, const QString &amp; ) : int</li>
-<li><div class="fn"/><a href="qstring.html#compare-2">compare</a> ( const QString &amp; ) const : int</li>
+<li><div class="fn"/><a href="qstring.html#compare">compare</a> ( const QString &amp;, const QString &amp;, Qt::CaseSensitivity ) : int</li>
+<li><div class="fn"/><a href="qstring.html#compare-2">compare</a> ( const QString &amp;, const QString &amp; ) : int</li>
+<li><div class="fn"/><a href="qstring.html#compare-3">compare</a> ( const QString &amp;, const QLatin1String &amp;, Qt::CaseSensitivity ) : int</li>
+<li><div class="fn"/><a href="qstring.html#compare-4">compare</a> ( const QLatin1String &amp;, const QString &amp;, Qt::CaseSensitivity ) : int</li>
+<li><div class="fn"/><a href="qstring.html#compare-5">compare</a> ( const QString &amp; ) const : int</li>
+<li><div class="fn"/><a href="qstring.html#compare-6">compare</a> ( const QString &amp;, Qt::CaseSensitivity ) const : int</li>
+<li><div class="fn"/><a href="qstring.html#compare-7">compare</a> ( const QLatin1String &amp;, Qt::CaseSensitivity ) const : int</li>
 <li><div class="fn"/><a href="qstring.html#constData">constData</a> () const : const QChar *</li>
 <li><div class="fn"/><a href="qstring.html#contains">contains</a> ( const QString &amp;, Qt::CaseSensitivity ) const : bool</li>
 <li><div class="fn"/><a href="qstring.html#contains-4">contains</a> ( QChar, Qt::CaseSensitivity ) const : bool</li>
@@ -82,8 +81,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qstring.html#fromRawData">fromRawData</a> ( const QChar *, int ) : QString</li>
 <li><div class="fn"/><a href="qstring.html#fromStdString">fromStdString</a> ( const std::string &amp; ) : QString</li>
 <li><div class="fn"/><a href="qstring.html#fromStdWString">fromStdWString</a> ( const std::wstring &amp; ) : QString</li>
+<li><div class="fn"/><a href="qstring.html#fromUcs4">fromUcs4</a> ( const uint *, int ) : QString</li>
 <li><div class="fn"/><a href="qstring.html#fromUtf8">fromUtf8</a> ( const char *, int ) : QString</li>
 <li><div class="fn"/><a href="qstring.html#fromUtf16">fromUtf16</a> ( const ushort *, int ) : QString</li>
+<li><div class="fn"/><a href="qstring.html#fromWCharArray">fromWCharArray</a> ( const wchar_t *, int ) : QString</li>
 <li><div class="fn"/><a href="qstring.html#indexOf">indexOf</a> ( const QString &amp;, int, Qt::CaseSensitivity ) const : int</li>
 <li><div class="fn"/><a href="qstring.html#indexOf-2">indexOf</a> ( QChar, int, Qt::CaseSensitivity ) const : int</li>
 <li><div class="fn"/><a href="qstring.html#indexOf-3">indexOf</a> ( const QRegExp &amp;, int ) const : int</li>
@@ -121,9 +122,9 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qstring.html#push_back-2">push_back</a> ( QChar )</li>
 <li><div class="fn"/><a href="qstring.html#push_front">push_front</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qstring.html#push_front-2">push_front</a> ( QChar )</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qstring.html#remove">remove</a> ( int, int ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#remove-4">remove</a> ( const QString &amp;, Qt::CaseSensitivity ) : QString &amp;</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qstring.html#remove-5">remove</a> ( QChar, Qt::CaseSensitivity ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#remove-6">remove</a> ( const QRegExp &amp; ) : QString &amp;</li>
 <li><div class="fn"/><a href="qstring.html#replace">replace</a> ( int, int, const QString &amp; ) : QString &amp;</li>
@@ -178,8 +179,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qstring.html#toULong">toULong</a> ( bool *, int ) const : ulong</li>
 <li><div class="fn"/><a href="qstring.html#toULongLong">toULongLong</a> ( bool *, int ) const : qulonglong</li>
 <li><div class="fn"/><a href="qstring.html#toUShort">toUShort</a> ( bool *, int ) const : ushort</li>
+<li><div class="fn"/><a href="qstring.html#toUcs4">toUcs4</a> () const : QVector&lt;uint&gt;</li>
 <li><div class="fn"/><a href="qstring.html#toUpper">toUpper</a> () const : QString</li>
 <li><div class="fn"/><a href="qstring.html#toUtf8">toUtf8</a> () const : QByteArray</li>
+<li><div class="fn"/><a href="qstring.html#toWCharArray">toWCharArray</a> ( wchar_t * ) const : int</li>
 <li><div class="fn"/><a href="qstring.html#trimmed">trimmed</a> () const : QString</li>
 <li><div class="fn"/><a href="qstring.html#truncate">truncate</a> ( int )</li>
 <li><div class="fn"/><a href="qstring.html#unicode">unicode</a> () const : const QChar *</li>
@@ -232,6 +235,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -151,7 +151,7 @@ static const int QTEXTSTREAM_BUFFERSIZE = 16384;
     parameter: qSetFieldWidth(), qSetPadChar(), and
     qSetRealNumberPrecision().
 
-    \sa QDataStream, QIODevice, QFile, QBuffer, QTcpSocket
+    \sa QDataStream, QIODevice, QFile, QBuffer, QTcpSocket, {Codecs Example}
 */
 
 /*! \enum QTextStream::RealNumberNotation
@@ -374,11 +374,12 @@ public:
     inline bool putString(const QString &ch);
 
     // buffers
-    bool fillReadBuffer();
+    bool fillReadBuffer(qint64 maxBytes = -1);
     bool flushWriteBuffer();
     QString writeBuffer;
     QString readBuffer;
     int readBufferOffset;
+    qint64 readBufferStartDevicePos;
     QString endOfBufferState;
 
     // streaming parameters
@@ -441,6 +442,7 @@ void QTextStreamPrivate::reset()
     stringOpenMode = QIODevice::NotOpen;
 
     readBufferOffset = 0;
+    readBufferStartDevicePos = 0;
     endOfBufferState.clear();
     lastTokenSize = 0;
 
@@ -455,7 +457,7 @@ void QTextStreamPrivate::reset()
 
 /*! \internal
 */
-bool QTextStreamPrivate::fillReadBuffer()
+bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
 {
     // no buffer next to the QString itself; this function should only
     // be called internally, for devices.
@@ -467,19 +469,36 @@ bool QTextStreamPrivate::fillReadBuffer()
     if (textModeEnabled)
         device->setTextModeEnabled(false);
 
+    // Record the device position corresponding to the start of the read
+    // buffer.
+    if (readBuffer.isEmpty() && endOfBufferState.isEmpty())
+        readBufferStartDevicePos = device->pos();
+
     // read raw data into a temporary buffer
     char buf[QTEXTSTREAM_BUFFERSIZE];
     qint64 bytesRead = 0;
-#if defined(Q_OS_WIN) && !defined(QT_NO_QOBJECT)
+#if defined(Q_OS_WIN)
     // On Windows, there is no non-blocking stdin - so we fall back to reading
-    // lines instead.
-    QFile *file = qobject_cast<QFile *>(device);
-    if (file && file->isSequential() && file->handle() == 0) {
-        bytesRead = device->readLine(buf, sizeof(buf));
+    // lines instead. If there is no QOBJECT, we read lines for all sequential
+    // devices; otherwise, we read lines only for stdin.
+    QFile *file = 0;
+    Q_UNUSED(file);
+    if (device->isSequential()
+#if !defined(QT_NO_QOBJECT)
+        && (file = qobject_cast<QFile *>(device)) && file->handle() == 0
+#endif
+        ) {
+        if (maxBytes != -1)
+            bytesRead = device->readLine(buf, qMin<qint64>(sizeof(buf), maxBytes));
+        else
+            bytesRead = device->readLine(buf, sizeof(buf));
     } else
 #endif
     {
-        bytesRead = device->read(buf, sizeof(buf));
+        if (maxBytes != -1)
+            bytesRead = device->read(buf, qMin<qint64>(sizeof(buf), maxBytes));
+        else
+            bytesRead = device->read(buf, sizeof(buf));
     }
 
 #if defined (QTEXTSTREAM_DEBUG)
@@ -502,12 +521,13 @@ bool QTextStreamPrivate::fillReadBuffer()
             writeConverterState.flags |= QTextCodec::IgnoreHeader;
         }
     }
-#endif
 #if defined (QTEXTSTREAM_DEBUG)
     qDebug("QTextStreamPrivate::fillReadBuffer(), using %s codec",
            codec->name().constData());
 #endif
+#endif
 
+    int oldReadBufferSize = readBuffer.size();
     readBuffer += endOfBufferState;
 #ifndef QT_NO_TEXTCODEC
     // convert to unicode
@@ -517,9 +537,33 @@ bool QTextStreamPrivate::fillReadBuffer()
 #endif
 
     // reset the Text flag.
-    if (textModeEnabled) {
+    if (readBuffer.size() > oldReadBufferSize && textModeEnabled) {
         device->setTextModeEnabled(true);
-        readBuffer.replace(QLatin1String("\r\n"), QLatin1String("\n"));
+
+        // remove all '\r\n' in the string.
+        QChar CR = QLatin1Char('\r');
+        QChar LF = QLatin1Char('\n');
+        QChar *writePtr = readBuffer.data();
+        QChar *readPtr = readBuffer.data();
+        QChar *endPtr = readBuffer.data() + readBuffer.size();
+
+        int n = 0;
+        while (readPtr < endPtr) {
+            if (readPtr + 1 < endPtr && *readPtr == CR && *(readPtr + 1) == LF) {
+                *writePtr = LF;
+                if (n < readBufferOffset)
+                    --readBufferOffset;
+                ++readPtr;
+            } else  if (readPtr != writePtr) {
+                *writePtr = *readPtr;
+            }
+
+            ++n;
+            ++writePtr;
+            ++readPtr;
+        }
+        readBuffer.resize(writePtr - readBuffer.data());
+
         if (readBuffer.endsWith(QLatin1Char('\r')) && !device->atEnd()) {
             endOfBufferState = QLatin1String("\r");
             readBuffer.chop(1);
@@ -735,6 +779,7 @@ inline void QTextStreamPrivate::consume(int size)
 inline bool QTextStreamPrivate::write(const QString &data)
 {
     if (string) {
+        // ### What about seek()??
         string->append(data);
     } else {
         writeBuffer += data;
@@ -1009,9 +1054,6 @@ void QTextStream::flush()
 /*!
     Seeks to the position \a pos in the device. Returns true on
     success; otherwise returns false.
-
-    If QTextStream operates on a string, this function does nothing
-    and returns false.
 */
 bool QTextStream::seek(qint64 pos)
 {
@@ -1036,11 +1078,59 @@ bool QTextStream::seek(qint64 pos)
     }
 
     // string
-    if (d->string && pos < d->string->size()) {
+    if (d->string && pos <= d->string->size()) {
         d->stringOffset = int(pos);
         return true;
     }
     return false;
+}
+
+/*!
+    \since 4.2
+
+    Returns the device position corresponding to the current position of the
+    stream, or -1 if an error occurs (e.g., if there is no device or string,
+    or if there's a device error).
+
+    Because QTextStream is buffered, this function may have to rewind the
+    device to reconstruct a valid device position. This operation can be
+    expensive, so you may want to avoid calling this function in a tight loop.
+
+    \sa seek()
+*/
+qint64 QTextStream::pos() const
+{
+    Q_D(const QTextStream);
+    if (d->device) {
+        // Cutoff
+        if (d->readBuffer.isEmpty() && d->endOfBufferState.isEmpty())
+            return d->device->pos();
+        if (d->device->isSequential())
+            return 0;
+
+        // Seek the device
+        if (!d->device->seek(d->readBufferStartDevicePos))
+            return qint64(-1);
+
+        // Reset the read buffer
+        QTextStreamPrivate *thatd = const_cast<QTextStreamPrivate *>(d);
+        thatd->readBuffer.clear();
+
+        // Rewind the device to get to the current position
+        while (d->readBuffer.size() < d->readBufferOffset) {
+            if (!thatd->fillReadBuffer(1))
+                return qint64(-1);
+        }
+
+        // Return the device position.
+        return d->device->pos();
+    }
+
+    if (d->string)
+        return d->stringOffset;
+
+    qWarning("QTextStream::pos: no device");
+    return qint64(-1);
 }
 
 /*!
@@ -1416,14 +1506,12 @@ QString QTextStream::readAll()
     If \a maxlen is 0, the lines can be of any length. A common value
     for \a maxlen is 75.
 
-    The returned line has no trailing end-of-line characters, so
-    calling QString::trimmed() is unnecessary.
+    The returned line has no trailing end-of-line characters ("\\n"
+    or "\\r\\n"), so calling QString::trimmed() is unnecessary.
 
     If the stream has read to the end of the file, the returned string
-    will be a null string - see QString::isNull(). Empty lines are
-    represented by empty, but non-null strings - see QString::isEmpty().
-
-    You can also explicitly test for the end of the file using atEnd().
+    will be an empty string. You can explicitly test for the end of the
+    file using atEnd().
 
     \sa readAll()
 */
@@ -1456,7 +1544,7 @@ QString QTextStream::read(qint64 maxlen)
     CHECK_VALID_STREAM(QString());
 
     if (maxlen <= 0)
-        return QString("");     // empty, not null
+        return QString::fromLatin1("");     // empty, not null
 
     const QChar *readPtr;
     int length;
@@ -2298,7 +2386,7 @@ QTextStream &QTextStream::operator<<(const void *ptr)
     NumberFlags oldFlags = d->numberFlags;
     d->integerBase = 16;
     d->numberFlags |= ShowBase;
-    d->putNumber(reinterpret_cast<qint64>(ptr), false);
+    d->putNumber(reinterpret_cast<quintptr>(ptr), false);
     d->integerBase = oldBase;
     d->numberFlags = oldFlags;
     return *this;
@@ -2933,7 +3021,7 @@ void QTextStream::setEncoding(Encoding encoding)
     case Latin1:
         d->readConverterState.flags |= QTextCodec::IgnoreHeader;
         d->writeConverterState.flags |= QTextCodec::IgnoreHeader;
-        setCodec(QTextCodec::codecForName("ISO-8851-1"));
+        setCodec(QTextCodec::codecForName("ISO-8859-1"));
         d->autoDetectUnicode = false;
         break;
     case Unicode:

@@ -168,6 +168,9 @@ public:
         PE_IndicatorToolBarSeparator,
         PE_PanelTipLabel,
         PE_IndicatorTabTear,
+        PE_PanelScrollAreaCorner,
+
+        PE_Widget,
 
         // do not add any values below/greater this
         PE_CustomBase = 0xf000000
@@ -290,6 +293,9 @@ public:
 
         SE_TreeViewDisclosureItem,
 
+        SE_LineEditContents,
+        SE_FrameContents,
+
         // do not add any values below/greater than this
         SE_CustomBase = 0xf0000000
     };
@@ -364,7 +370,7 @@ public:
         SC_GroupBoxLabel =         0x00000002,
         SC_GroupBoxContents =      0x00000004,
         SC_GroupBoxFrame =         0x00000008,
-        
+
         SC_All =                   0xffffffff
     };
     Q_DECLARE_FLAGS(SubControls, SubControl)
@@ -476,6 +482,8 @@ public:
         PM_TabBarIconSize,
         PM_SizeGripSize,
         PM_DockWidgetTitleMargin,
+        PM_MessageBoxIconSize,
+        PM_ButtonIconSize,
 
 
         // do not add any values below/greater than this
@@ -544,7 +552,8 @@ public:
         SH_Workspace_FillSpaceOnMaximize,
         SH_ComboBox_Popup,
         SH_TitleBar_NoBorder,
-        SH_ScrollBar_StopMouseOverSlider,
+        SH_Slider_StopMouseOverSlider,
+        SH_ScrollBar_StopMouseOverSlider = SH_Slider_StopMouseOverSlider, // obsolete
         SH_BlinkCursorWhenTextSelected,
         SH_RichText_FullWidthSelection,
         SH_Menu_Scrollable,
@@ -573,7 +582,7 @@ public:
         SH_ToolButton_PopupDelay,
         SH_FocusFrame_Mask,
         SH_RubberBand_Mask,
-	SH_WindowFrame_Mask,
+        SH_WindowFrame_Mask,
         SH_SpinControls_DisableOnBounds,
         SH_Dial_BackgroundRole,
         SH_ComboBox_LayoutDirection,
@@ -582,6 +591,19 @@ public:
         SH_ItemView_ActivateItemOnSingleClick,
         SH_ScrollBar_ContextMenu,
         SH_ScrollBar_RollBetweenButtons,
+        SH_Slider_AbsoluteSetButtons,
+        SH_Slider_PageSetButtons,
+        SH_Menu_KeyboardSearch,
+        SH_TabBar_ElideMode,
+        SH_DialogButtonLayout,
+        SH_ComboBox_PopupFrameStyle,
+        SH_MessageBox_TextInteractionFlags,
+        SH_DialogButtonBox_ButtonsHaveIcons,
+        SH_SpellCheckUnderlineStyle,
+        SH_MessageBox_CenterButtons,
+        SH_Menu_SelectionWrap,
+        SH_ItemView_MovementWithoutUpdatingSelection,
+
         // Add new style hint values here
 
 #ifdef QT3_SUPPORT
@@ -635,7 +657,24 @@ public:
         SP_FileDialogContentsView,
         SP_FileDialogListView,
         SP_FileDialogBack,
-
+        SP_DirIcon,
+        SP_DialogOkButton,
+        SP_DialogCancelButton,
+        SP_DialogHelpButton,
+        SP_DialogOpenButton,
+        SP_DialogSaveButton,
+        SP_DialogCloseButton,
+        SP_DialogApplyButton,
+        SP_DialogResetButton,
+        SP_DialogDiscardButton,
+        SP_DialogYesButton,
+        SP_DialogNoButton,
+        SP_ArrowUp,
+        SP_ArrowDown,
+        SP_ArrowLeft,
+        SP_ArrowRight,
+        SP_ArrowBack,
+        SP_ArrowForward,
         // do not add any values below/greater than this
         SP_CustomBase = 0xf0000000
     };
@@ -667,6 +706,9 @@ protected Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(QStyle)
+    friend class QWidget;
+    friend class QWidgetPrivate;
+    friend class QApplication;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyle::State)
@@ -675,7 +717,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QStyle::SubControls)
 #if !defined(QT_NO_DEBUG_STREAM) && !defined(QT_NO_DEBUG)
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, QStyle::State state);
 #endif
-    
+
 QT_END_HEADER
 
 #endif // QSTYLE_H

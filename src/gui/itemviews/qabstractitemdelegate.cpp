@@ -28,9 +28,10 @@
 #include <qfontmetrics.h>
 #include <qstring.h>
 #include <qdebug.h>
+#include <private/qtextengine_p.h>
 
 /*!
-    \class QAbstractItemDelegate qabstractitemdelegate.h
+    \class QAbstractItemDelegate
 
     \brief The QAbstractItemDelegate class is used to display and edit
     data items from a model.
@@ -60,7 +61,8 @@
     The second approach is to handle user events directly by reimplementing
     editorEvent().
 
-    \sa \link model-view-programming.html Model/View Programming\endlink QItemDelegate
+    \sa {model-view-programming}{Model/View Programming}, QItemDelegate,
+        {Pixelator Example}
 */
 
 /*!
@@ -252,63 +254,22 @@ bool QAbstractItemDelegate::editorEvent(QEvent *,
 }
 
 /*!
-    If the string \a text is wider than \a width, returns an elided
-    version of the string (i.e., a string with "..." in it).
-    Otherwise, returns the original string.
+    \obsolete 
 
-    The \a mode parameter specifies whether the text is elided on the
-    left (e.g., "...tech"), in the middle (e.g., "Tr...ch"), or on
-    the right (e.g., "Trol...").
-
-    The \a width is specified in pixels, not characters. The font
-    metrics to be used are given by \a fontMetrics.
+    Use QFontMetrics::elidedText() instead.
+    
+    \oldcode
+        QFontMetrics fm = ...
+        QString str = QAbstractItemDelegate::elidedText(fm, width, mode, text);
+    \newcode
+        QFontMetrics fm = ...
+        QString str = fm.elidedText(text, mode, width);
+    \endcode
 */
 
 QString QAbstractItemDelegate::elidedText(const QFontMetrics &fontMetrics, int width,
                                           Qt::TextElideMode mode, const QString &text)
 {
-    const QLatin1String ellipsis("...");
-    int ellipsisWidth = fontMetrics.width(ellipsis);
-    int length = text.length();
-    int i = 0;
-
-    if (fontMetrics.width(text) <= width)
-        return text;
-
-    if (mode == Qt::ElideMiddle) {
-        QString left, right;
-        i = (length / 2) - 1;
-        do {
-            left = text.left(i);
-            right = text.right(i);
-        } while (--i > -1 &&
-                 fontMetrics.width(left) + ellipsisWidth + fontMetrics.width(right) > width);
-        return left + ellipsis + right;
-    }
-
-    int offset = (mode ==  Qt::ElideLeft) ? length - 1 : 0;
-    QString elided;
-        
-    while (i < length && fontMetrics.width(elided + text.at(offset)) + ellipsisWidth <= width) {
-        if (mode == Qt::ElideLeft) {
-            elided.prepend(text.at(offset));
-            offset = (length - 1) - ++i;
-        } else {
-            elided.append(text.at(offset));
-            offset = ++i;
-        }
-    }
-    
-    if (mode == Qt::ElideLeft) {
-        if (elided.isEmpty())
-            elided = text.right(1);
-        elided.prepend(ellipsis);
-    } else {
-        if (elided.isEmpty())
-            elided = text.left(1);
-        elided.append(ellipsis);
-    }
-    
-    return elided;
+    return fontMetrics.elidedText(text, mode, width);
 }
 #endif // QT_NO_ITEMVIEWS

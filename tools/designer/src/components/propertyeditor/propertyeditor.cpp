@@ -34,8 +34,10 @@
 #include <iconloader_p.h>
 #include <qdesigner_promotedwidget_p.h>
 #include <qdesigner_utils_p.h>
+#include <qdesigner_command_p.h>
 #include <metadatabase_p.h>
 
+#include "paletteeditorbutton.h"
 #include <QtGui/QtGui>
 
 #ifndef Q_MOC_RUN
@@ -51,6 +53,8 @@ IProperty *PropertyEditor::createSpecialProperty(const QVariant &value, const QS
 }
 
 // ---------------------------------------------------------------------------------
+
+namespace qdesigner_internal {
 
 class IconProperty : public AbstractProperty<QIcon>
 {
@@ -82,6 +86,24 @@ public:
     void updateValue(QWidget *editor);
 private:
     QDesignerFormEditorInterface *m_core;
+};
+
+class PaletteProperty : public AbstractProperty<QPalette>
+{
+public:
+    PaletteProperty(QDesignerFormEditorInterface *core, const QPalette &value,
+                QWidget *selectedWidget, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+
+private:
+    QDesignerFormEditorInterface *m_core;
+    QWidget *m_selectedWidget;
 };
 
 // This handles editing of pixmap and icon properties
@@ -335,6 +357,8 @@ void GraphicsPropertyEditor::setPixmap(const QPixmap &pm)
     emit pixmapChanged(m_pixmap);
 }
 
+}  // namespace qdesigner_internal
+
 IconProperty::IconProperty(QDesignerFormEditorInterface *core, const QIcon &value, const QString &name)
     : AbstractProperty<QIcon>(value, name)
 {
@@ -448,6 +472,63 @@ void PixmapProperty::updateValue(QWidget *editor)
     }
 }
 
+// -------------------------------------------------------------------------
+PaletteProperty::PaletteProperty(QDesignerFormEditorInterface *core, const QPalette &value, QWidget *selectedWidget,
+                const QString &name)
+    : AbstractProperty<QPalette>(value, name)
+{
+    m_selectedWidget = selectedWidget;
+    m_core = core;
+}
+
+void PaletteProperty::setValue(const QVariant &value)
+{
+    m_value = qvariant_cast<QPalette>(value);
+    QPalette parentPalette = QPalette();
+    if (m_selectedWidget) {
+        if (m_selectedWidget->isWindow())
+            parentPalette = QApplication::palette(m_selectedWidget);
+        else {
+            if (m_selectedWidget->parentWidget())
+                parentPalette = m_selectedWidget->parentWidget()->palette();
+        }
+    }
+    uint mask = m_value.resolve();
+    m_value = m_value.resolve(parentPalette);
+    m_value.resolve(mask);
+}
+
+QString PaletteProperty::toString() const
+{
+    return QString(); // ### implement me
+}
+
+QWidget *PaletteProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+{
+    PaletteEditorButton *btn = new PaletteEditorButton(m_core, m_value, m_selectedWidget, parent);
+    QObject::connect(btn, SIGNAL(changed()), target, receiver);
+    return btn;
+}
+
+void PaletteProperty::updateEditorContents(QWidget *editor)
+{
+    if (PaletteEditorButton *btn = qobject_cast<PaletteEditorButton*>(editor)) {
+        btn->setPalette(m_value);
+    }
+}
+
+void PaletteProperty::updateValue(QWidget *editor)
+{
+    if (PaletteEditorButton *btn = qobject_cast<PaletteEditorButton*>(editor)) {
+        QPalette newValue = btn->palette();
+
+        if (newValue.resolve() != m_value.resolve() || newValue != m_value) {
+            m_value = newValue;
+            setChanged(true);
+        }
+    }
+}
+
 
 // -------------------------------------------------------------------------------------
 
@@ -468,6 +549,7 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
     QList<Group> groups;
 
     QExtensionManager *m = m_core->extensionManager();
+    QDesignerLanguageExtension *lang = qt_extension<QDesignerLanguageExtension*> (m, m_core);
 
     bool isMainContainer = false;
     if (QWidget *widget = qobject_cast<QWidget*>(object)) {
@@ -475,7 +557,6 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
             isMainContainer = (fw->mainContainer() == widget);
         }
     }
-
     m_prop_sheet = qobject_cast<QDesignerPropertySheetExtension*>(m->extension(object, Q_TYPEID(QDesignerPropertySheetExtension)));
     for (int i=0; i<m_prop_sheet->count(); ++i) {
         if (!m_prop_sheet->isVisible(i))
@@ -487,27 +568,54 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
         IProperty *p = 0;
         if (qVariantCanConvert<FlagType>(value)) {
             FlagType f = qvariant_cast<FlagType>(value);
+
             if (pname == QLatin1String("alignment")) {
+                // ### fixme!!!
                 if (qobject_cast<QLineEdit *>(object)) {
                     QStringList align_keys = QStringList()
-                        << QString::fromUtf8("Qt::AlignLeft")
-                        << QString::fromUtf8("Qt::AlignHCenter")
-                        << QString::fromUtf8("Qt::AlignRight");
+                                             << QString::fromUtf8("Qt::AlignLeft")
+                                             << QString::fromUtf8("Qt::AlignHCenter")
+                                             << QString::fromUtf8("Qt::AlignRight");
                     QMap<QString, QVariant> align_map;
                     foreach (QString align, align_keys) {
                         align_map.insert(align, f.items.value(align));
                     }
                     p = new MapProperty(align_map, uint(f.value.toInt() & Qt::AlignHorizontal_Mask),
-                                    QLatin1String("alignment"));
+                                        QLatin1String("alignment"));
                 } else {
                     p = new AlignmentProperty(f.items, Qt::Alignment(f.value.toInt()), pname);
                 }
             } else {
+                if (lang) {
+                    QMap<QString, QVariant> items;
+                    QMapIterator<QString, QVariant> it (f.items);
+                    while (it.hasNext()) {
+                        it.next();
+                        QString id = lang->enumerator(it.key());
+                        items.insert(id, it.value());
+                    }
+                    f.items = items;
+                }
+
                 p = new FlagsProperty(f.items, f.value.toInt(), pname);
             }
         } else if (qVariantCanConvert<EnumType>(value)) {
             EnumType e = qvariant_cast<EnumType>(value);
-            p = new MapProperty(e.items, e.value, pname);
+
+            if (lang) {
+                QMap<QString, QVariant> items;
+                QMapIterator<QString, QVariant> it (e.items);
+                e.names.clear();
+                while (it.hasNext()) {
+                    it.next();
+                    QString id = lang->enumerator(it.key());
+                    items.insert(id, it.value());
+                    e.names.append(id);
+                }
+                e.items = items;
+            }
+
+            p = new MapProperty(e.items, e.value, pname, e.names);
         }
 
         if (!p) {
@@ -521,8 +629,17 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
             case QVariant::UInt:
                 p = new IntProperty(value.toUInt(), pname);
                 break;
+            case QVariant::LongLong:
+                p = new LongLongProperty(value.toLongLong(), pname);
+                break;
+            case QVariant::ULongLong:
+                p = new LongLongProperty(value.toULongLong(), pname);
+                break;
             case QVariant::Double:
                 p = new DoubleProperty(value.toDouble(), pname);
+                break;
+            case QVariant::Char:
+                p = new CharProperty(value.toChar(), pname);
                 break;
             case QVariant::Bool:
                 p = new BoolProperty(value.toBool(), pname);
@@ -548,11 +665,20 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
             case QVariant::Size:
                 p = new SizeProperty(value.toSize(), pname);
                 break;
+            case QVariant::SizeF:
+                p = new SizeFProperty(value.toSizeF(), pname);
+                break;
             case QVariant::Point:
                 p = new PointProperty(value.toPoint(), pname);
                 break;
+            case QVariant::PointF:
+                p = new PointFProperty(value.toPointF(), pname);
+                break;
             case QVariant::Rect:
                 p = new RectProperty(value.toRect(), pname);
+                break;
+            case QVariant::RectF:
+                p = new RectFProperty(value.toRectF(), pname);
                 break;
             case QVariant::Icon:
                 p = new IconProperty(m_core, qvariant_cast<QIcon>(value), pname);
@@ -561,7 +687,7 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
                 p = new PixmapProperty(m_core, qvariant_cast<QPixmap>(value), pname);
                 break;
             case QVariant::Font:
-                p = new FontProperty(qvariant_cast<QFont>(value), pname);
+                p = new FontProperty(qvariant_cast<QFont>(value), pname, qobject_cast<QWidget *>(object));
                 break;
             case QVariant::Color:
                 p = new ColorProperty(qvariant_cast<QColor>(value), pname);
@@ -585,8 +711,14 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
                 p = new StringProperty(qvariant_cast<QKeySequence>(value), pname);
                 break;
             case QVariant::Palette:
-                p = new PaletteProperty(qvariant_cast<QPalette>(value),
+                p = new PaletteProperty(m_core, qvariant_cast<QPalette>(value),
                                 qobject_cast<QWidget *>(object), pname);
+                break;
+            case QVariant::Url:
+                p = new UrlProperty(value.toUrl(), pname);
+                break;
+            case QVariant::StringList:
+                p = new StringListProperty(qvariant_cast<QStringList>(value), pname);
                 break;
             default:
                 // ### qWarning() << "property" << pname << "with type" << value.type() << "not supported yet!";
@@ -755,19 +887,15 @@ void PropertyEditor::resetProperty(const QString &prop_name)
         return;
     }
 
-    QWidget *w = qobject_cast<QWidget*>(m_object);
-    if (w == 0) {
-        qWarning("PropertyEditor::resetProperty(): object is not a widget");
-        return;
-    }
-
-    QDesignerFormWindowInterface *form = QDesignerFormWindowInterface::findFormWindow(w);
+    QDesignerFormWindowInterface *form = m_core->formWindowManager()->activeFormWindow();
     if (form == 0) {
         qWarning("PropertyEditor::resetProperty(): widget does not belong to any form");
         return;
     }
 
-    form->cursor()->resetWidgetProperty(w, prop_name);
+    ResetPropertyCommand *cmd = new ResetPropertyCommand(form);
+    cmd->init(m_object, prop_name);
+    form->commandHistory()->push(cmd);
 }
 
 QString PropertyEditor::currentPropertyName() const

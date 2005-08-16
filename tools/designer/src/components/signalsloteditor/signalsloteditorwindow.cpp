@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ConnectionModel
+*/
+
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QDebug>
 #include <QtGui/QStandardItemModel>
@@ -31,6 +35,7 @@
 #include <QtGui/QTreeView>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolButton>
+#include <QtGui/QMessageBox>
 
 #include <iconloader_p.h>
 
@@ -247,6 +252,17 @@ Qt::ItemFlags ConnectionModel::flags(const QModelIndex&) const
 void ConnectionModel::connectionChanged(Connection *con)
 {
     int idx = m_editor->indexOfConnection(con);
+    SignalSlotConnection *changedCon = static_cast<SignalSlotConnection*>(m_editor->connection(idx));
+    SignalSlotConnection *c = 0;
+    for (int i=0; i<m_editor->connectionCount(); ++i) {
+        if (i == idx)
+            continue;
+        c = static_cast<SignalSlotConnection*>(m_editor->connection(i));
+        if (c->sender() == changedCon->sender() && c->signal() == changedCon->signal()
+            && c->receiver() == changedCon->receiver() && c->slot() == changedCon->slot())
+            QMessageBox::warning(m_editor->parentWidget(), tr("Signal and Slot Editor"),
+                tr("The connection already exists!"));
+    }
     emit dataChanged(createIndex(idx, 0), createIndex(idx, 3));
 }
 
@@ -275,7 +291,7 @@ public:
 class InlineEditor : public QComboBox
 {
     Q_OBJECT
-    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(QString text READ text WRITE setText USER true)
 public:
     InlineEditor(QWidget *parent = 0);
     ~InlineEditor();
@@ -512,7 +528,7 @@ SignalSlotEditorWindow::SignalSlotEditorWindow(QDesignerFormEditorInterface *cor
     m_editor = 0;
     m_view = new QTreeView(this);
     m_view->setItemDelegate(new ConnectionDelegate(this));
-    m_view->setEditTriggers(QAbstractItemView::SelectedClicked
+    m_view->setEditTriggers(QAbstractItemView::DoubleClicked
                                 | QAbstractItemView::EditKeyPressed);
     m_view->setRootIsDecorated(false);
     connect(m_view, SIGNAL(activated(QModelIndex)), this, SLOT(updateUi()));

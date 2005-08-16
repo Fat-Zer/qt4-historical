@@ -43,11 +43,13 @@ class QTextListFormat;
 
 class QTextDocumentLayoutPrivate;
 
-// ### remove the export again, for the non-public class
-class Q_GUI_EXPORT QTextDocumentLayout : public QAbstractTextDocumentLayout
+class Q_AUTOTEST_EXPORT QTextDocumentLayout : public QAbstractTextDocumentLayout
 {
     Q_DECLARE_PRIVATE(QTextDocumentLayout)
     Q_OBJECT
+    Q_PROPERTY(double tabStopWidth READ tabStopWidth WRITE setTabStopWidth)
+    Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
+    Q_PROPERTY(qreal idealWidth READ idealWidth)
 public:
     explicit QTextDocumentLayout(QTextDocument *doc);
 
@@ -58,8 +60,6 @@ public:
     int pageCount() const;
     QSizeF documentSize() const;
 
-    void adjustSize();
-
     enum { LTR = 0x40000000, RTL = 0x80000000 };
     // flags passed to QTextLayout objects of blocks
     void setBlockTextFlags(int flags);
@@ -67,8 +67,11 @@ public:
     void setWordWrapMode(QTextOption::WrapMode mode);
     QTextOption::WrapMode wordWrapMode() const;
 
-    void setTabStopWidth(qreal width);
-    qreal tabStopWidth() const;
+    void setTabStopWidth(double width);
+    double tabStopWidth() const;
+
+    void setCursorWidth(int width);
+    int cursorWidth() const;
 
     // internal, to support the ugly FixedColumnWidth wordwrap mode in QTextEdit
     void setFixedColumnWidth(int width);
@@ -81,6 +84,8 @@ public:
     int dynamicPageCount() const;
     QSizeF dynamicDocumentSize() const;
     void ensureLayouted(qreal);
+
+    qreal idealWidth() const;
 
 protected:
     void documentChanged(int from, int oldLength, int length);

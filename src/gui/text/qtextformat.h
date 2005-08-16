@@ -145,7 +145,7 @@ public:
         FontSizeIncrement = FontSizeAdjustment, // old name, compat
         FontWeight = 0x2003,
         FontItalic = 0x2004,
-        FontUnderline = 0x2005,
+        FontUnderline = 0x2005, // deprecated, use TextUnderlineStyle instead
         FontOverline = 0x2006,
         FontStrikeOut = 0x2007,
         FontFixedPitch = 0x2008,
@@ -154,6 +154,7 @@ public:
         TextUnderlineColor = 0x2010,
         TextVerticalAlignment = 0x2021,
         TextOutline = 0x2022,
+        TextUnderlineStyle = 0x2023,
 
         IsAnchor = 0x2030,
         AnchorHref = 0x2031,
@@ -175,6 +176,7 @@ public:
         TableColumnWidthConstraints = 0x4101,
         TableCellSpacing = 0x4102,
         TableCellPadding = 0x4103,
+        TableHeaderRowCount = 0x4104,
 
         // table cell properties
         TableCellRowSpan = 0x4810,
@@ -184,6 +186,12 @@ public:
         ImageName = 0x5000,
         ImageWidth = 0x5010,
         ImageHeight = 0x5011,
+
+        // selection properties
+        FullWidthSelection = 0x06000,
+
+        // page break properties
+        PageBreakPolicy = 0x7000,
 
         // --
         UserProperty = 0x100000
@@ -196,6 +204,14 @@ public:
 
         UserObject = 0x1000
     };
+
+    enum PageBreakFlag {
+        PageBreak_Auto = 0,
+        PageBreak_AlwaysBefore = 0x001,
+        PageBreak_AlwaysAfter  = 0x010
+        // PageBreak_AlwaysInside = 0x100
+    };
+    Q_DECLARE_FLAGS(PageBreakFlags, PageBreakFlag)
 
     QTextFormat();
 
@@ -288,10 +304,22 @@ private:
 inline void QTextFormat::setObjectType(int atype)
 { setProperty(ObjectType, atype); }
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(QTextFormat::PageBreakFlags)
+
 class Q_GUI_EXPORT QTextCharFormat : public QTextFormat
 {
 public:
     enum VerticalAlignment { AlignNormal = 0, AlignSuperScript, AlignSubScript };
+    enum UnderlineStyle { // keep in sync with Qt::PenStyle!
+        NoUnderline,
+        SingleUnderline,
+        DashUnderline,
+        DotLine,
+        DashDotLine,
+        DashDotDotLine,
+        WaveUnderline,
+        SpellCheckUnderline
+    };
 
     QTextCharFormat();
 
@@ -319,9 +347,8 @@ public:
     { return boolProperty(FontItalic); }
 
     inline void setFontUnderline(bool underline)
-    { setProperty(FontUnderline, underline); }
-    inline bool fontUnderline() const
-    { return boolProperty(FontUnderline); }
+    { setProperty(TextUnderlineStyle, underline ? SingleUnderline : NoUnderline); }
+    bool fontUnderline() const;
 
     inline void setFontOverline(bool overline)
     { setProperty(FontOverline, overline); }
@@ -342,6 +369,10 @@ public:
     { setProperty(FontFixedPitch, fixedPitch); }
     inline bool fontFixedPitch() const
     { return boolProperty(FontFixedPitch); }
+
+    void setUnderlineStyle(UnderlineStyle style);
+    inline UnderlineStyle underlineStyle() const
+    { return static_cast<UnderlineStyle>(intProperty(TextUnderlineStyle)); }
 
     inline void setVerticalAlignment(VerticalAlignment alignment)
     { setProperty(TextVerticalAlignment, alignment); }
@@ -399,7 +430,7 @@ public:
 
     inline void setAlignment(Qt::Alignment alignment);
     inline Qt::Alignment alignment() const
-    { return QFlag(intProperty(BlockAlignment)); }
+    { int a = intProperty(BlockAlignment); if (a == 0) a = Qt::AlignLeft; return QFlag(a); }
 
     inline void setTopMargin(qreal margin)
     { setProperty(BlockTopMargin, margin); }
@@ -434,6 +465,11 @@ public:
     { setProperty(BlockNonBreakableLines, b); }
     inline bool nonBreakableLines() const
     { return boolProperty(BlockNonBreakableLines); }
+
+    inline void setPageBreakPolicy(PageBreakFlags flags)
+    { setProperty(PageBreakPolicy, int(flags)); }
+    inline PageBreakFlags pageBreakPolicy() const
+    { return PageBreakFlags(intProperty(PageBreakPolicy)); }
 };
 
 inline void QTextBlockFormat::setAlignment(Qt::Alignment aalignment)
@@ -546,6 +582,11 @@ public:
     inline void setHeight(const QTextLength &height);
     inline QTextLength height() const
     { return lengthProperty(FrameHeight); }
+
+    inline void setPageBreakPolicy(PageBreakFlags flags)
+    { setProperty(PageBreakPolicy, int(flags)); }
+    inline PageBreakFlags pageBreakPolicy() const
+    { return PageBreakFlags(intProperty(PageBreakPolicy)); }
 };
 
 inline void QTextFrameFormat::setBorder(qreal aborder)
@@ -597,6 +638,11 @@ public:
     inline void setAlignment(Qt::Alignment alignment);
     inline Qt::Alignment alignment() const
     { return QFlag(intProperty(BlockAlignment)); }
+
+    inline void setHeaderRowCount(int count)
+    { setProperty(TableHeaderRowCount, count); }
+    inline int headerRowCount() const
+    { return intProperty(TableHeaderRowCount); }
 };
 
 inline void QTextTableFormat::setColumns(int acolumns)

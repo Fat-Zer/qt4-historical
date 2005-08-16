@@ -45,7 +45,7 @@ class Q_GUI_EXPORT QTreeWidgetItem
     friend class QTreeWidget;
     friend class QTreeWidgetItemIterator;
 public:
-    enum { Type = 0, UserType = 1000 };
+    enum ItemType { Type = 0, UserType = 1000 };
     QTreeWidgetItem(int type = Type);
     QTreeWidgetItem(const QStringList &strings, int type = Type);
     explicit QTreeWidgetItem(QTreeWidget *view, int type = Type);
@@ -60,6 +60,15 @@ public:
     virtual QTreeWidgetItem *clone() const;
 
     inline QTreeWidget *treeWidget() const { return view; }
+
+    inline void setSelected(bool select);
+    inline bool isSelected() const;
+
+    inline void setHidden(bool hide);
+    inline bool isHidden() const;
+
+    inline void setExpanded(bool expand);
+    inline bool isExpanded() const;
 
     inline Qt::ItemFlags flags() const { return itemFlags; }
     inline void setFlags(Qt::ItemFlags flags);
@@ -102,10 +111,20 @@ public:
     inline void setBackgroundColor(int column, const QColor &color)
         { setData(column, Qt::BackgroundColorRole, color); }
 
+    inline QBrush background(int column) const
+        { return qvariant_cast<QBrush>(data(column, Qt::BackgroundRole)); }
+    inline void setBackground(int column, const QBrush &brush)
+        { setData(column, Qt::BackgroundRole, brush); }
+
     inline QColor textColor(int column) const
         { return qvariant_cast<QColor>(data(column, Qt::TextColorRole)); }
     inline void setTextColor(int column, const QColor &color)
         { setData(column, Qt::TextColorRole, color); }
+
+    inline QBrush foreground(int column) const
+        { return qvariant_cast<QBrush>(data(column, Qt::ForegroundRole)); }
+    inline void setForeground(int column, const QBrush &brush)
+        { setData(column, Qt::ForegroundRole, brush); }
 
     inline Qt::CheckState checkState(int column) const
         { return static_cast<Qt::CheckState>(data(column, Qt::CheckStateRole).toInt()); }
@@ -129,8 +148,11 @@ public:
     QTreeWidgetItem &operator=(const QTreeWidgetItem &other);
 
     inline QTreeWidgetItem *parent() const { return par; }
-    inline QTreeWidgetItem *child(int index) const
-        { if (index < 0 || index >= children.size()) return 0; return children.at(index); }
+    inline QTreeWidgetItem *child(int index) const {
+        if (index < 0 || index >= children.size())
+            return 0;
+        return children.at(index);
+    }
     inline int childCount() const { return children.count(); }
     inline int columnCount() const { return values.count(); }
     inline int indexOfChild(QTreeWidgetItem *child) const;
@@ -144,23 +166,26 @@ public:
     QList<QTreeWidgetItem*> takeChildren();
 
     inline int type() const { return rtti; }
-
+    inline void sortChildren(int column, Qt::SortOrder order)
+        { sortChildren(column, order, false); }
 private:
+    // Qt 5 add private class and move private data into it
     void sortChildren(int column, Qt::SortOrder order, bool climb);
     QVariant childrenCheckState(int column) const;
+    void itemChanged();
 
     int rtti;
     // One item has a vector of column entries. Each column has a vector of (role, value) pairs.
     QVector< QVector<QWidgetItemData> > values;
     QTreeWidget *view;
-    QTreeModel *model;
+    QVariantList display;
     QTreeWidgetItem *par;
     QList<QTreeWidgetItem*> children;
     Qt::ItemFlags itemFlags;
 };
 
 inline void QTreeWidgetItem::setFlags(Qt::ItemFlags aflags)
-{ itemFlags = aflags; }
+{ itemFlags = aflags; itemChanged(); }
 
 inline void QTreeWidgetItem::setText(int column, const QString &atext)
 { setData(column, Qt::DisplayRole, atext); }
@@ -200,7 +225,6 @@ class Q_GUI_EXPORT QTreeWidget : public QTreeView
 {
     Q_OBJECT
     Q_PROPERTY(int columnCount READ columnCount WRITE setColumnCount)
-    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
     Q_PROPERTY(int topLevelItemCount READ topLevelItemCount)
 
     friend class QTreeModel;
@@ -211,12 +235,14 @@ public:
     int columnCount() const;
     void setColumnCount(int columns);
 
+    QTreeWidgetItem *invisibleRootItem() const;
     QTreeWidgetItem *topLevelItem(int index) const;
     int topLevelItemCount() const;
     void insertTopLevelItem(int index, QTreeWidgetItem *item);
     void addTopLevelItem(QTreeWidgetItem *item);
     QTreeWidgetItem *takeTopLevelItem(int index);
-    int indexOfTopLevelItem(QTreeWidgetItem *item);
+    int indexOfTopLevelItem(QTreeWidgetItem *item); // ### Qt 5: remove me
+    int indexOfTopLevelItem(QTreeWidgetItem *item) const;
 
     void insertTopLevelItems(int index, const QList<QTreeWidgetItem*> &items);
     void addTopLevelItems(const QList<QTreeWidgetItem*> &items);
@@ -224,6 +250,7 @@ public:
     QTreeWidgetItem *headerItem() const;
     void setHeaderItem(QTreeWidgetItem *item);
     void setHeaderLabels(const QStringList &labels);
+    inline void setHeaderLabel(const QString &label);
 
     QTreeWidgetItem *currentItem() const;
     int currentColumn() const;
@@ -249,7 +276,8 @@ public:
     bool isItemSelected(const QTreeWidgetItem *item) const;
     void setItemSelected(const QTreeWidgetItem *item, bool select);
     QList<QTreeWidgetItem*> selectedItems() const;
-    QList<QTreeWidgetItem*> findItems(const QString &text, Qt::MatchFlags flags, int column = 0) const;
+    QList<QTreeWidgetItem*> findItems(const QString &text, Qt::MatchFlags flags,
+                                      int column = 0) const;
 
     bool isItemHidden(const QTreeWidgetItem *item) const;
     void setItemHidden(const QTreeWidgetItem *item, bool hide);
@@ -258,7 +286,8 @@ public:
     void setItemExpanded(const QTreeWidgetItem *item, bool expand);
 
 public Q_SLOTS:
-    void scrollToItem(const QTreeWidgetItem *item, QAbstractItemView::ScrollHint hint = EnsureVisible);
+    void scrollToItem(const QTreeWidgetItem *item,
+                      QAbstractItemView::ScrollHint hint = EnsureVisible);
     void expandItem(const QTreeWidgetItem *item);
     void collapseItem(const QTreeWidgetItem *item);
     void clear();
@@ -286,6 +315,7 @@ protected:
 
     QModelIndex indexFromItem(QTreeWidgetItem *item, int column = 0) const;
     QTreeWidgetItem *itemFromIndex(const QModelIndex &index) const;
+    void dropEvent(QDropEvent *event);
 
 private:
     void setModel(QAbstractItemModel *model);
@@ -302,11 +332,33 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_emitItemExpanded(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_emitItemCollapsed(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current))
-
+    Q_PRIVATE_SLOT(d_func(), void _q_sort())
+    Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight))
 };
 
 inline QTreeWidgetItem *QTreeWidget::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
+
+inline void QTreeWidget::setHeaderLabel(const QString &alabel)
+{ setHeaderLabels(QStringList(alabel)); }
+
+inline void QTreeWidgetItem::setSelected(bool aselect)
+{ if (view) view->setItemSelected(this, aselect); }
+
+inline bool QTreeWidgetItem::isSelected() const
+{ return (view ? view->isItemSelected(this) : false); }
+
+inline void QTreeWidgetItem::setHidden(bool ahide)
+{ if (view) view->setItemHidden(this, ahide); }
+
+inline bool QTreeWidgetItem::isHidden() const
+{ return (view ? view->isItemHidden(this) : false); }
+
+inline void QTreeWidgetItem::setExpanded(bool aexpand)
+{ if (view) view->setItemExpanded(this, aexpand); }
+
+inline bool QTreeWidgetItem::isExpanded() const
+{ return (view ? view->isItemExpanded(this) : false); }
 
 #endif // QT_NO_TREEWIDGET
 

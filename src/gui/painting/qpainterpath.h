@@ -65,6 +65,7 @@ public:
 
         bool operator==(const Element &e) const { return qFuzzyCompare(x, e.x)
             && qFuzzyCompare(y, e.y) && type == e.type; }
+        inline bool operator!=(const Element &e) const { return !operator==(e); }
     };
 
     QPainterPath();
@@ -80,6 +81,9 @@ public:
 
     void lineTo(const QPointF &p);
     inline void lineTo(qreal x, qreal y);
+
+    void arcMoveTo(const QRectF &rect, qreal angle);
+    inline void arcMoveTo(qreal x, qreal y, qreal w, qreal h, qreal angle);
 
     void arcTo(const QRectF &rect, qreal startAngle, qreal arcLength);
     inline void arcTo(qreal x, qreal y, qreal w, qreal h, qreal startAngle, qreal arcLength);
@@ -123,6 +127,7 @@ public:
 
     inline int elementCount() const;
     inline const QPainterPath::Element &elementAt(int i) const;
+    inline void setElementPositionAt(int i, qreal x, qreal y);
 
     bool operator==(const QPainterPath &other) const;
     bool operator!=(const QPainterPath &other) const;
@@ -218,6 +223,11 @@ inline void QPainterPath::arcTo(qreal x, qreal y, qreal w, qreal h, qreal startA
     arcTo(QRectF(x, y, w, h), startAngle, arcLenght);
 }
 
+inline void QPainterPath::arcMoveTo(qreal x, qreal y, qreal w, qreal h, qreal angle)
+{
+    arcMoveTo(QRectF(x, y, w, h), angle);
+}
+
 inline void QPainterPath::cubicTo(qreal ctrlPt1x, qreal ctrlPt1y, qreal ctrlPt2x, qreal ctrlPt2y,
                                    qreal endPtx, qreal endPty)
 {
@@ -261,6 +271,17 @@ inline const QPainterPath::Element &QPainterPath::elementAt(int i) const
     Q_ASSERT(i >= 0 && i < elementCount());
     return d_ptr->elements.at(i);
 }
+
+inline void QPainterPath::setElementPositionAt(int i, qreal x, qreal y)
+{
+    Q_ASSERT(d_ptr);
+    Q_ASSERT(i >= 0 && i < elementCount());
+    detach();
+    QPainterPath::Element &e = d_ptr->elements[i];
+    e.x = x;
+    e.y = y;
+}
+
 
 inline void QPainterPath::detach()
 {

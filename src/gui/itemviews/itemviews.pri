@@ -2,7 +2,7 @@
 
 HEADERS += \
 	itemviews/qabstractitemview.h \
-        itemviews/qabstractitemview_p.h \
+    itemviews/qabstractitemview_p.h \
 	itemviews/qheaderview.h \
 	itemviews/qlistview.h \
 	itemviews/qlistview_p.h \
@@ -17,7 +17,9 @@ HEADERS += \
 	itemviews/qitemselectionmodel_p.h \
 	itemviews/qdirmodel.h \
 	itemviews/qlistwidget.h \
+	itemviews/qlistwidget_p.h \
 	itemviews/qtablewidget.h \
+    itemviews/qtablewidget_p.h \
 	itemviews/qtreewidget.h \
 	itemviews/qtreewidget_p.h \
 	itemviews/qwidgetitemdata_p.h \
@@ -30,7 +32,8 @@ HEADERS += \
 	itemviews/qstandarditemmodel.h \
 	itemviews/qstandarditemmodel_p.h \
 	itemviews/qstringlistmodel.h \
-	itemviews/qtreewidgetitemiterator.h
+	itemviews/qtreewidgetitemiterator.h \
+    itemviews/qdatawidgetmapper.h
 
 SOURCES += \
 	itemviews/qabstractitemview.cpp \
@@ -52,5 +55,6 @@ SOURCES += \
 	itemviews/qitemeditorfactory.cpp \
 	itemviews/qstandarditemmodel.cpp \
 	itemviews/qstringlistmodel.cpp \
-	itemviews/qtreewidgetitemiterator.cpp
+	itemviews/qtreewidgetitemiterator.cpp \
+    itemviews/qdatawidgetmapper.cpp
 

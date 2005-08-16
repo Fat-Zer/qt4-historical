@@ -89,12 +89,12 @@ void TetrixBoard::pause()
     update();
 }
 
-void TetrixBoard::paintEvent(QPaintEvent *)
+void TetrixBoard::paintEvent(QPaintEvent *event)
 {
+    QFrame::paintEvent(event);
+
     QPainter painter(this);
     QRect rect = contentsRect();
-
-    drawFrame(&painter);
 
     if (isPaused) {
 	painter.drawText(rect, Qt::AlignCenter, tr("Pause"));
@@ -126,7 +126,7 @@ void TetrixBoard::paintEvent(QPaintEvent *)
 void TetrixBoard::keyPressEvent(QKeyEvent *event)
 {
     if (!isStarted || isPaused || curPiece.shape() == NoShape) {
-	QWidget::keyPressEvent(event);
+	QFrame::keyPressEvent(event);
         return;
     }
 
@@ -150,7 +150,7 @@ void TetrixBoard::keyPressEvent(QKeyEvent *event)
 	oneLineDown();
 	break;
     default:
-	QWidget::keyPressEvent(event);
+	QFrame::keyPressEvent(event);
     }
 }
 

@@ -31,12 +31,15 @@
 #include <qlayout.h>
 #include <qmainwindow.h>
 #include <qmenu.h>
+#include <qmenubar.h>
 #include <qpainter.h>
 #include <qrubberband.h>
 #include <qsignalmapper.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qtoolbutton.h>
+#include <qwidgetaction.h>
+#include <private/qwidgetaction_p.h>
 #ifdef Q_WS_MAC
 #include <private/qt_mac_p.h>
 #endif
@@ -209,8 +212,9 @@ void QToolBarPrivate::init()
     extension->hide();
 
 #ifdef Q_WS_MAC
-    if (q->parentWidget()) {
+    if (q->parentWidget() && q->parentWidget()->isWindow()) {
         // Make sure that the window has the "toolbar" button.
+        reinterpret_cast<QToolBar *>(q->parentWidget())->d_func()->createWinId(); // Please let me create your winId...
         extern WindowPtr qt_mac_window_for(const QWidget *); // qwidget_mac.cpp
         ChangeWindowAttributes(qt_mac_window_for(q->parentWidget()), kWindowToolbarButtonAttribute,
                                kWindowNoAttributes);
@@ -258,11 +262,17 @@ QToolBarItem QToolBarPrivate::createItem(QAction *action)
     QToolBarItem item;
     item.action = action;
     item.hidden = false;
+    item.hasCustomWidget = false;
 
-    QToolBarWidgetAction *widgetAction = qobject_cast<QToolBarWidgetAction *>(action);
+    QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>(action);
     if (widgetAction) {
-        item.widget = widgetAction->widget();
-    } else if (action->isSeparator()) {
+        item.widget = widgetAction->requestWidget(q);
+        if (item.widget) {
+            item.hasCustomWidget = true;
+            return item;
+        }
+    }
+    if (action->isSeparator()) {
         item.widget = new QToolBarSeparator(q);
         QObject::connect(q, SIGNAL(orientationChanged(Qt::Orientation)),
                          item.widget, SLOT(setOrientation(Qt::Orientation)));
@@ -329,7 +339,7 @@ int QToolBarPrivate::indexOf(QAction *action) const
     as usual, but it will be disabled to indicate that some items in
     the toolbar are currently not visible.
 
-    \sa QToolButton
+    \sa QToolButton, QMenu, QAction, {Application Example}
 */
 
 /*!
@@ -407,9 +417,8 @@ QToolBar::QToolBar(QWidget *parent)
 /*!
     Constructs a QToolBar with the given \a parent.
 
-    The window title is set to \a title. This title is used when the
-    toolbar is floating as an independent window. It is also shown
-    in the context menu provided by QMainWindow.
+    The given window \a title identifies the toolbar and is shown in
+    the context menu provided by QMainWindow.
 
     \sa setWindowTitle()
 */
@@ -446,10 +455,19 @@ QToolBar::~QToolBar()
         mainwin_layout->removeToolBarInfo(this);
         mainwin_layout->relayout();
 #ifdef Q_WS_MAC
-        if (mainwin_layout && mainwin_layout->tb_layout_info.isEmpty())
+        if (mainwin_layout && mainwin_layout->tb_layout_info.isEmpty()
+                && mainwindow->testAttribute(Qt::WA_WState_Created))
             ChangeWindowAttributes(qt_mac_window_for(mainwindow), kWindowNoAttributes,
                                    kWindowToolbarButtonAttribute);
 #endif
+    }
+    Q_D(QToolBar);
+    while (!d->items.isEmpty()) {
+        const QToolBarItem item = d->items.takeFirst();
+        QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>(item.action);
+        if (item.hasCustomWidget && widgetAction) {
+            widgetAction->releaseWidget(item.widget);
+        }
     }
 }
 
@@ -564,7 +582,7 @@ void QToolBar::setIconSize(const QSize &iconSize)
             QLayoutItem *item = 0;
             do {
                 item = layout->itemAt(i++);
-                if (item->widget() == this)
+                if (item && (item->widget() == this))
                     sz = mw->iconSize();
             } while (!sz.isValid() && item != 0);
         }
@@ -713,7 +731,9 @@ QAction *QToolBar::insertSeparator(QAction *before)
 */
 QAction *QToolBar::addWidget(QWidget *widget)
 {
-    QToolBarWidgetAction *action = new QToolBarWidgetAction(widget, this);
+    QWidgetAction *action = new QWidgetAction(this);
+    action->setDefaultWidget(widget);
+    action->d_func()->autoCreated = true;
     addAction(action);
     return action;
 }
@@ -730,7 +750,9 @@ QAction *QToolBar::addWidget(QWidget *widget)
 */
 QAction *QToolBar::insertWidget(QAction *before, QWidget *widget)
 {
-    QToolBarWidgetAction *action = new QToolBarWidgetAction(widget, this);
+    QWidgetAction *action = new QWidgetAction(this);
+    action->setDefaultWidget(widget);
+    action->d_func()->autoCreated = true;
     insertAction(before, action);
     return action;
 }
@@ -782,7 +804,7 @@ void QToolBar::actionEvent(QActionEvent *event)
 {
     Q_D(QToolBar);
     QAction *action = event->action();
-    QToolBarWidgetAction *widgetAction = qobject_cast<QToolBarWidgetAction *>(action);
+    QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>(action);
 
     switch (event->type()) {
     case QEvent::ActionAdded:
@@ -792,11 +814,13 @@ void QToolBar::actionEvent(QActionEvent *event)
 
             QToolBarItem item = d->createItem(action);
             bool visible = item.action->isVisible();
-            if (widgetAction && widgetAction->parentWidget() != this) {
-                // reparent the action and its widget to this toolbar
-                widgetAction->setParent(this);
-                widgetAction->widget()->setParent(this);
-            }
+            // reparent the action to this toolbar if it has been created
+            // using the addAction(text) etc. convenience functions, to
+            // preserve Qt 4.1.x behavior. The widget is already
+            // reparented to us due to the createWidget call inside
+            // createItem()
+            if (widgetAction && widgetAction->d_func()->autoCreated)
+                    widgetAction->setParent(this);
             // make sure the layout doesn't show() the widget too soon
             item.widget->hide();
             if (event->before()) {
@@ -810,7 +834,8 @@ void QToolBar::actionEvent(QActionEvent *event)
                 qobject_cast<QBoxLayout *>(layout())->insertWidget(d->items.size(), item.widget);
             }
             item.widget->setVisible(visible);
-            QApplication::postEvent(this, new QResizeEvent(size(), size()));
+            if (isVisible())
+                QApplication::postEvent(this, new QResizeEvent(size(), size()));
             break;
         }
 
@@ -824,7 +849,8 @@ void QToolBar::actionEvent(QActionEvent *event)
                 item.widget->setVisible(item.action->isVisible());
             } else {
                 // more elephant shaving
-                QApplication::postEvent(this, new QResizeEvent(size(), size()));
+                if (isVisible())
+                    QApplication::postEvent(this, new QResizeEvent(size(), size()));
             }
 
             break;
@@ -837,15 +863,20 @@ void QToolBar::actionEvent(QActionEvent *event)
                        "QToolBar::removeAction", "internal error");
             QToolBarItem item = d->items.takeAt(index);
             layout()->removeWidget(item.widget);
-            if (!widgetAction) {
+            if (widgetAction && item.hasCustomWidget) {
+                widgetAction->releaseWidget(item.widget);
+            } else {
                 // destroy the QToolButton/QToolBarSeparator
                 item.widget->hide();
                 item.widget->deleteLater();
-            } else {
-                if (!isHidden() && item.widget->testAttribute(Qt::WA_WState_Created))
-                    item.widget->hide();
             }
-            QApplication::postEvent(this, new QResizeEvent(size(), size()));
+            // show all widgets that might be hidden in the extension
+            // menu, so that QLayout can recalculate their positions
+            for (int i = 0; i< d->items.size(); ++i)
+                d->items[i].widget->show();
+
+            if (isVisible())
+                QApplication::postEvent(this, new QResizeEvent(size(), size()));
             break;
         }
 
@@ -884,9 +915,9 @@ void QToolBar::childEvent(QChildEvent *event)
     if (widget && event->type() == QEvent::ChildRemoved) {
         for (int i = 0; i < d->items.size(); ++i) {
             const QToolBarItem &item = d->items.at(i);
-            QToolBarWidgetAction *widgetAction = 0;
+            QWidgetAction *widgetAction = 0;
             if (item.widget == widget
-                && (widgetAction = qobject_cast<QToolBarWidgetAction *>(item.action))) {
+                && (widgetAction = qobject_cast<QWidgetAction *>(item.action))) {
                 removeAction(widgetAction);
                 // ### should we delete the action, or is it the programmers reponsibility?
                 // delete widgetAction;
@@ -974,18 +1005,22 @@ void QToolBar::resizeEvent(QResizeEvent *event)
     }
 
     int box_spacing = (d->items.size() > 1) ? box->spacing()*2 : box->spacing();
+    int item_min_size = (orientation == Qt::Horizontal) ? d->iconSize.width() : d->iconSize.height();
+    if (!d->items.isEmpty()) {
+        QSize sz(d->items[0].widget->sizeHint());
+#ifndef QT_NO_MENUBAR
+        if (qobject_cast<QMenuBar *>(d->items[0].widget))
+            sz = d->items[0].widget->minimumSizeHint();
+#endif
+        item_min_size = (orientation == Qt::Horizontal) ? sz.width() : sz.height();
+    }
     if (orientation == Qt::Horizontal) {
         setMinimumSize(d->handle->sizeHint().width() + box_spacing + extension_size + margin*2
-                       + (d->items.isEmpty()
-                          ? d->iconSize.width()
-                          : d->items[0].widget->minimumSizeHint().width()),
-                       max_item_extent + margin*2);
+                       + item_min_size, max_item_extent + margin*2);
     } else {
         setMinimumSize(max_item_extent + margin*2,
                        d->handle->sizeHint().height() + box_spacing + extension_size
-                       + margin*2 + (d->items.isEmpty()
-                                     ? d->iconSize.height()
-                                     : d->items[0].widget->minimumSizeHint().height()));
+                       + margin*2 + item_min_size);
     }
 
     if (hidden_count > 0) {
@@ -1012,7 +1047,7 @@ void QToolBar::resizeEvent(QResizeEvent *event)
             const QToolBarItem &item = d->items.at(i);
             if (!item.hidden) continue;
 
-            if (!qobject_cast<QToolBarWidgetAction *>(item.action)) {
+            if (!qobject_cast<QWidgetAction *>(item.action)) {
                 pop->addAction(item.action);
             } else {
 #if !defined(QT_NO_SIGNALMAPPER) && !defined(QT_NO_COMBOBOX)
@@ -1020,17 +1055,36 @@ void QToolBar::resizeEvent(QResizeEvent *event)
                     QMenu *cb_menu = new QMenu(cb->windowTitle(), pop);
                     QSignalMapper *cb_mapper = new QSignalMapper(cb_menu);
                     pop->addMenu(cb_menu);
+                    QActionGroup *ag = new QActionGroup(cb_menu);
+                    ag->setExclusive(true);
                     for (int i=0; i<cb->count(); ++i) {
                         QAction *ac = cb_menu->addAction(cb->itemIcon(i), cb->itemText(i));
+                        ac->setActionGroup(ag);
+                        ac->setCheckable(true);
+                        ac->setChecked(cb->currentIndex() == i);
                         connect(ac, SIGNAL(triggered(bool)), cb_mapper, SLOT(map()));
                         cb_mapper->setMapping(ac, i);
+                        cb_mapper->setMapping(ac, cb->itemText(i));
                     }
                     connect(cb_mapper, SIGNAL(mapped(int)), cb, SIGNAL(activated(int)));
+                    connect(cb_mapper, SIGNAL(mapped(int)), cb, SLOT(setCurrentIndex(int)));
+                    connect(cb_mapper, SIGNAL(mapped(QString)), cb, SIGNAL(activated(QString)));
                 } else
 #endif // QT_NO_SIGNALMAPPER
                     if (QToolButton *tb = qobject_cast<QToolButton *>(item.widget)) {
                         QAction *ac = pop->addAction(tb->icon(), tb->text());
-                        connect(ac, SIGNAL(triggered()), tb, SIGNAL(clicked()));
+                        connect(ac, SIGNAL(triggered()), tb, SLOT(click()));
+                    } else {
+                        QList<QAbstractButton *> children = qFindChildren<QAbstractButton *>(item.widget);
+                        QList<QAbstractButton *>::const_iterator it = children.constBegin();
+                        while (it != children.constEnd()) {
+                            QAction *ac = pop->addAction((*it)->icon(), (*it)->text());
+                            ac->setCheckable((*it)->isCheckable());
+                            ac->setChecked((*it)->isChecked());
+                            ac->setEnabled((*it)->isEnabled());
+                            connect(ac, SIGNAL(triggered()), *it, SLOT(click()));
+                            ++it;
+                        }
                     }
             }
         }
@@ -1104,6 +1158,23 @@ QAction *QToolBar::toggleViewAction() const
     Use windowTitle() instead.
 */
 
+/*!
+    \since 4.2
+
+    Returns the widget associated with the specified \a action.
+
+    \sa addWidget()
+*/
+QWidget *QToolBar::widgetForAction(QAction *action) const
+{
+    Q_D(const QToolBar);
+
+    int index = d->indexOf(action);
+    if (index < 0 || index >= d->items.size())
+        return 0;
+
+    return d->items.at(index).widget;
+}
 
 #include "moc_qtoolbar.cpp"
 #endif // QT_NO_TOOLBAR

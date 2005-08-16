@@ -4,15 +4,12 @@ QT += xml
 CONFIG += qt staticlib
 DESTDIR = ../../../../lib
 DLLDESTDIR = ../../../../bin
-CONFIG += debug_and_release
-CONFIG(debug, debug|release) {
-    unix:TARGET = $$member(TARGET, 0)_debug
-    else:TARGET = $$member(TARGET, 0)d
-}
 
-DEFINES += QUILOADERINTERNAL_NAMESPACE QT_DESIGNER_STATIC
+win32|mac:!macx-xcode:CONFIG += debug_and_release build_all
+
+DEFINES += QFORMINTERNAL_NAMESPACE QT_DESIGNER_STATIC
 isEmpty(QT_MAJOR_VERSION) {
-   VERSION=4.1.0
+   VERSION=4.2.0
 } else {
    VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
 }
@@ -20,6 +17,13 @@ QMAKE_TARGET_COMPANY = Trolltech ASA
 QMAKE_TARGET_PRODUCT = UiLoader
 QMAKE_TARGET_DESCRIPTION = QUiLoader
 QMAKE_TARGET_COPYRIGHT = Copyright (C) 2003-2006 Trolltech ASA
+
+!debug_and_release|build_pass {
+   CONFIG(debug, debug|release) {
+      mac:TARGET = $$member(TARGET, 0)_debug
+      win32:TARGET = $$member(TARGET, 0)d
+   }
+}
 
 include(../lib/uilib/uilib.pri)
 

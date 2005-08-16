@@ -39,7 +39,7 @@
 
 #ifndef QT_NO_IMAGEFORMAT_XBM
 
-class Q_GUI_EXPORT QXbmHandler : public QImageIOHandler
+class QXbmHandler : public QImageIOHandler
 {
 public:
     QXbmHandler();

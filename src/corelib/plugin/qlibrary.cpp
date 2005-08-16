@@ -43,6 +43,8 @@
 #include <qdebug.h>
 #include <qvector.h>
 
+//#define QT_DEBUG_COMPONENT
+
 #ifdef QT_NO_DEBUG
 #  define QLIBRARY_AS_DEBUG false
 #else
@@ -298,14 +300,16 @@ static long qt_find_pattern(const char *s, ulong s_len,
                 information could not be read.
   Returns  true if version/key information is present and successfully read.
 */
-static bool qt_unix_query(const QString &library, uint *version, bool *debug, QByteArray *key)
+static bool qt_unix_query(const QString &library, uint *version, bool *debug, QByteArray *key, QLibraryPrivate *lib = 0)
 {
     QFile file(library);
     if (!file.open(QIODevice::ReadOnly)) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("%s: %s", (const char*) QFile::encodeName(library),
-            qPrintable(qt_error_string(errno)));
-#endif
+        if (lib)
+            lib->errorString = file.errorString();
+        if (qt_debug_component()) {
+            qWarning("%s: %s", (const char*) QFile::encodeName(library),
+                qPrintable(qt_error_string(errno)));
+        }
         return false;
     }
 
@@ -323,9 +327,13 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
         fdlen = maplen;
     } else {
         // mmap failed
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("mmap: %s", qPrintable(qt_error_string(errno)));
-#endif
+        if (qt_debug_component()) {
+            qWarning("mmap: %s", qPrintable(qt_error_string(errno)));
+        }
+        if (lib)
+            lib->errorString = QLibrary::tr("Could not mmap '%1': %2")
+                .arg(library)
+                .arg(qt_error_string());
 #endif // USE_MMAP
         // try reading the data into memory instead
         data = file.readAll();
@@ -344,11 +352,16 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
     if (pos >= 0)
         ret = qt_parse_pattern(filedata + pos, version, debug, key);
 
+    if (!ret && lib)
+        lib->errorString = QLibrary::tr("Plugin verification data mismatch in '%1'").arg(library);
 #ifdef USE_MMAP
     if (mapaddr != MAP_FAILED && munmap(mapaddr, maplen) != 0) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("munmap: %s", qPrintable(qt_error_string(errno)));
-#endif
+        if (qt_debug_component())
+            qWarning("munmap: %s", qPrintable(qt_error_string(errno)));
+        if (lib)
+            lib->errorString = QLibrary::tr("Could not unmap '%1': %2")
+                .arg(library)
+                .arg( qt_error_string() );
     }
 #endif // USE_MMAP
 
@@ -459,31 +472,30 @@ bool QLibrary::isLibrary(const QString &fileName)
     QStringList suffixes = completeSuffix.split(QLatin1Char('.'));
     QString suffix = suffixes.first();
 # if defined(Q_OS_DARWIN)
-    
+
     // On Mac, libs look like libmylib.1.0.0.dylib
     const QString lastSuffix = suffixes.at(suffixes.count() - 1);
     const QString firstSuffix = suffixes.at(0);
-        
-    bool valid = (lastSuffix == "dylib"
-            || firstSuffix == "so"
-            || firstSuffix == "bundle");
+
+    bool valid = (lastSuffix == QLatin1String("dylib")
+            || firstSuffix == QLatin1String("so")
+            || firstSuffix == QLatin1String("bundle"));
 
     return valid;
 # elif defined(Q_OS_HPUX)
-/*  
+/*
     See "HP-UX Linker and Libraries User's Guide", section "Link-time Differences between PA-RISC and IPF":
-    "In PA-RISC (PA-32 and PA-64) shared libraries are suffixed with .sl. In IPF (32-bit and 64-bit), 
+    "In PA-RISC (PA-32 and PA-64) shared libraries are suffixed with .sl. In IPF (32-bit and 64-bit),
     the shared libraries are suffixed with .so. For compatibility, the IPF linker also supports the .sl suffix."
  */
-    bool valid = (suffix == "sl");
+    bool valid = (suffix == QLatin1String("sl"));
 #  if defined __ia64
-    valid |= (suffix == "so")
+    valid = valid || (suffix == QLatin1String("so"))
 #  endif
-# elif defined(Q_OS_UNIX)
-    bool valid = (suffix == "so");
 # elif defined(Q_OS_AIX)
-	bool valid = (suffix == "a"
-			|| suffix == "so");
+    bool valid = (suffix == QLatin1String("a") || suffix == QLatin1String("so"));
+# elif defined(Q_OS_UNIX)
+    bool valid = (suffix == QLatin1String("so"));
 # else
     bool valid = false;
 # endif
@@ -500,9 +512,7 @@ bool QLibraryPrivate::isPlugin()
     if (pluginState != MightBeAPlugin)
         return pluginState == IsAPlugin;
 
-    if (!QLibrary::isLibrary(fileName))
-        return false;
-
+#ifndef QT_NO_PLUGIN_CHECK
     bool debug = !QLIBRARY_AS_DEBUG;
     QByteArray key;
     bool success = false;
@@ -515,7 +525,7 @@ bool QLibraryPrivate::isPlugin()
     QString regkey = QString::fromLatin1("Qt Plugin Cache %1.%2.%3/%4")
                      .arg((QT_VERSION & 0xff0000) >> 16)
                      .arg((QT_VERSION & 0xff00) >> 8)
-                     .arg(QLIBRARY_AS_DEBUG ? "debug" : "false")
+                     .arg(QLIBRARY_AS_DEBUG ? QLatin1String("debug") : QLatin1String("false"))
                      .arg(fileName);
     QStringList reg;
 
@@ -530,7 +540,7 @@ bool QLibraryPrivate::isPlugin()
 #if defined(Q_OS_UNIX)
         if (!pHnd) {
             // use unix shortcut to avoid loading the library
-            success = qt_unix_query(fileName, &qt_version, &debug, &key);
+            success = qt_unix_query(fileName, &qt_version, &debug, &key, this);
         } else
 #endif
         {
@@ -570,22 +580,33 @@ bool QLibraryPrivate::isPlugin()
     pluginState = IsNotAPlugin; // be pessimistic
 
     if ((qt_version > QT_VERSION) || ((QT_VERSION & 0xff0000) > (qt_version & 0xff0000))) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("In %s:\n"
+        if (qt_debug_component()) {
+            qWarning("In %s:\n"
                  "  Plugin uses incompatible Qt library (%d.%d.%d) [%s]",
                  (const char*) QFile::encodeName(fileName),
                  (qt_version&0xff0000) >> 16, (qt_version&0xff00) >> 8, qt_version&0xff,
                  debug ? "debug" : "release");
-#endif
+        }
+        errorString = QLibrary::tr("The plugin '%1' uses incompatible Qt library. (%2.%3.%4) [%5]")
+            .arg(fileName)
+            .arg((qt_version&0xff0000) >> 16)
+            .arg((qt_version&0xff00) >> 8)
+            .arg(qt_version&0xff)
+            .arg(debug ? QLatin1String("debug") : QLatin1String("release"));
     } else if (key != QT_BUILD_KEY) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("In %s:\n"
+        if (qt_debug_component()) {
+            qWarning("In %s:\n"
                  "  Plugin uses incompatible Qt library\n"
                  "  expected build key \"%s\", got \"%s\"",
                  (const char*) QFile::encodeName(fileName),
                  QT_BUILD_KEY,
                  key.isEmpty() ? "<null>" : (const char *) key);
-#endif
+        }
+        errorString = QLibrary::tr("The plugin '%1' uses incompatible Qt library."
+                 " Expected build key \"%2\", got \"%3\"")
+                 .arg(fileName)
+                 .arg(QLatin1String(QT_BUILD_KEY))
+                 .arg(key.isEmpty() ? QLatin1String("<null>") : QLatin1String((const char *) key));
 #ifndef QT_NO_DEBUG_PLUGIN_CHECK
     } else if(debug != QLIBRARY_AS_DEBUG) {
         //don't issue a qWarning since we will hopefully find a non-debug? --Sam
@@ -595,6 +616,9 @@ bool QLibraryPrivate::isPlugin()
     }
 
     return pluginState == IsAPlugin;
+#else
+    return pluginState == MightBeAPlugin;
+#endif
 }
 
 /*!
@@ -605,32 +629,7 @@ bool QLibraryPrivate::isPlugin()
     the library loaded in advance, in which case you would use this
     function.
 
-    On Mac OS X this function uses code from dlcompat, part of the
-    OpenDarwin project.
-
     \sa unload()
-
-    \legalese
-    Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
-
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    "Software"), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 bool QLibrary::load()
 {
@@ -653,7 +652,7 @@ bool QLibrary::load()
     call will fail, and unloading will only happen when every instance
     has called unload().
 
-    Note that on Mac OS X, dynamic libraries cannot be unloaded.
+    Note that on Mac OS X 10.3 (Panther), dynamic libraries cannot be unloaded.
 
     \sa resolve(), load()
 */
@@ -705,6 +704,7 @@ QLibrary::QLibrary(const QString& fileName, QObject *parent)
 /*!
     Constructs a library object with the given \a parent that will
     load the library specified by \a fileName and major version number \a verNum.
+    Currently, the version number is ignored on Windows.
 
     We recommend omitting the file's suffix in \a fileName, since
     QLibrary will automatically look for the file with the appropriate
@@ -773,7 +773,7 @@ QString QLibrary::fileName() const
 
     Sets the fileName property and major version number to \a fileName
     and \a versionNumber respectively.
-
+    The \a versionNumber is ignored on Windows.
     \sa setFileName()
 */
 void QLibrary::setFileNameAndVersion(const QString &fileName, int verNum)
@@ -827,30 +827,6 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, int verNum)
         #endif
     \endcode
 
-    On Mac OS X this function uses code from dlcompat, part of the
-    OpenDarwin project.
-
-    \legalese
-    Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
-
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    "Software"), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 void *QLibrary::resolve(const char *symbol)
 {
@@ -887,6 +863,7 @@ void *QLibrary::resolve(const QString &fileName, const char *symbol)
     returns the address of the exported symbol \a symbol.
     Note that \a fileName should not include the platform-specific file suffix;
     (see \l{fileName}). The library remains loaded until the application exits.
+    \a verNum is ignored on Windows.
 
     The function returns 0 if the symbol could not be resolved or if
     the library could not be loaded.
@@ -910,5 +887,62 @@ void *QLibrary::resolve(const QString &fileName, int verNum, const char *symbol)
 
     Use load(), isLoaded(), and unload() as necessary instead.
 */
+
+/*!
+    \since 4.2
+
+    Returns a text string with the description of the last error that occured.
+    Currently, errorString will only be set if load(), unload() or resolve() for some reason fails.
+*/
+QString QLibrary::errorString() const
+{
+    return d->errorString.isEmpty() ? tr("Unknown error") : d->errorString;
+}
+
+/*!
+    \property QLibrary::loadHints
+    \brief Give the load() function some hints on how it should behave.
+
+    You can give some hints on how the symbols are resolved. Usually,
+    the symbols are not resolved at load time, but resolved lazily,
+    (that is, when resolve() is called).  If you set the loadHint to
+    ResolveAllSymbolsHint, then all symbols will be resolved at load time
+    if the platform supports it. Setting ExportExternalSymbolsHint will
+    make the external symbols in the library available for resolution
+    in subsequent loaded libraries. If LoadArchiveMemberHint is set, the fileName
+    is composed of two components: A path which is a reference to an
+    archive file followed by the second component which is the reference to
+    the archive member. For instance, the fileName \c libGL.a(shr_64.o) will refer
+    to the library \c shr_64.o in the archive file named \c libGL.a. This
+    is only supported on the AIX platform.
+    The interpretation of the loadHints is platform dependent, and if
+    you use it you are probably making some assumptions on which platform
+    you are compiling for, so use them only if you understand the consequences
+    of them.
+
+*/
+void QLibrary::setLoadHints(LoadHints hints)
+{
+    d->loadHints = hints;
+}
+
+QLibrary::LoadHints QLibrary::loadHints() const
+{
+    return d->loadHints;
+}
+
+/* Internal, for debugging */
+bool qt_debug_component()
+{
+#if defined(QT_DEBUG_COMPONENT)
+    return true;    //compatibility?
+#else
+    static int debug_env = -1;
+    if (debug_env == -1)
+       debug_env = ::qgetenv("QT_DEBUG_PLUGINS").toInt();
+
+    return debug_env != 0;
+#endif
+}
 
 #endif // QT_NO_LIBRARY

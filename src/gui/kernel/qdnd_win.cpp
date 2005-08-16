@@ -163,20 +163,6 @@ private:
     DWORD lastKeyState;
 };
 
-
-/***********************************************************
- * Standard implementation of IEnumFormatEtc. This code
- * is from \ole2\samp\ole2ui\enumfetc.c in the OLE 2 SDK.
- ***********************************************************/
-STDAPI_(LPVOID) OleStdMalloc(ULONG ulSize);
-STDAPI_(void) OleStdFree(LPVOID pmem);
-STDAPI_(BOOL) OleStdCopyFormatEtc(LPFORMATETC petcDest, LPFORMATETC petcSrc);
-STDAPI_(DVTARGETDEVICE FAR*) OleStdCopyTargetDevice(DVTARGETDEVICE FAR* ptdSrc);
-STDAPI_(LPENUMFORMATETC)
-  OleStdEnumFmtEtc_Create(ULONG nCount, LPFORMATETC lpEtc);
-
-
-
 QOleDropSource::QOleDropSource()
 {
     m_refs = 1;
@@ -212,37 +198,54 @@ void QOleDropSource::createCursors()
                 h = y2-y1+1;
             }
 
+            QRect srcRect = pm.rect();
+            QPoint pmDest = QPoint(qMax(0, -hotSpot.x()), qMax(0, -hotSpot.y()));
+            QPoint newHotSpot = hotSpot;
+
+			bool limitedCursorSize = (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based)
+				                  || (QSysInfo::WindowsVersion == QSysInfo::WV_NT);
+
 #ifndef Q_OS_TEMP
-            if (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
+            if (limitedCursorSize) {
                 // Limited cursor size
                 int reqw = GetSystemMetrics(SM_CXCURSOR);
                 int reqh = GetSystemMetrics(SM_CYCURSOR);
+
+                QPoint hotspotInPM = newHotSpot - pmDest;
                 if (reqw < w) {
                     // Not wide enough - move objectpm right
-                    hotSpot.setX(hotSpot.x()-w+reqw);
+                    qreal r = qreal(newHotSpot.x()) / w;
+                    newHotSpot = QPoint(r * reqw, newHotSpot.y()); 
+                    if (newHotSpot.x() + cpm.width() > reqw)
+                        newHotSpot.setX(reqw - cpm.width());
+
+                    srcRect = QRect(QPoint(hotspotInPM.x() - newHotSpot.x(), srcRect.top()), QSize(reqw, srcRect.height()));
                 }
                 if (reqh < h) {
-                    // Not tall enough - move objectpm down
-                    hotSpot.setY(hotSpot.y()-h+reqh);
+                    qreal r = qreal(newHotSpot.y()) / h;
+                    newHotSpot = QPoint(newHotSpot.x(), r * reqh);
+                    if (newHotSpot.y() + cpm.height() > reqh)
+                        newHotSpot.setY(reqh - cpm.height());
+                    
+                    srcRect = QRect(QPoint(srcRect.left(), hotspotInPM.y() - newHotSpot.y()), QSize(srcRect.width(), reqh));
                 }
                 // Always use system cursor size
                 w = reqw;
                 h = reqh;
             }
-#endif
-
+#endif            
             QPixmap newCursor(w, h);
             if (!pm.isNull()) {
                 newCursor.fill(QColor(0, 0, 0, 0));
-                QPainter p(&newCursor);
-                p.drawPixmap(qMax(0,-hotSpot.x()),qMax(0,-hotSpot.y()),pm);
-                p.drawPixmap(qMax(0,hotSpot.x()),qMax(0,hotSpot.y()),cpm);
+                QPainter p(&newCursor);                
+                p.drawPixmap(pmDest, pm, srcRect);
+                p.drawPixmap(qMax(0,newHotSpot.x()),qMax(0,newHotSpot.y()),cpm);
             } else {
                 newCursor = cpm;
             }
 
-            cursors[actions.at(cnum)] = QCursor(newCursor, pm.isNull() ? 0 : qMax(0,hotSpot.x()),
-                                                pm.isNull() ? 0 : qMax(0,hotSpot.y()));
+            cursors[actions.at(cnum)] = QCursor(newCursor, pm.isNull() ? 0 : qMax(0,newHotSpot.x()),
+                                                pm.isNull() ? 0 : qMax(0,newHotSpot.y()));
         }
     }
 }
@@ -485,24 +488,25 @@ QOleDataObject::EnumFormatEtc(DWORD dwDirection, LPENUMFORMATETC FAR* ppenumForm
 
     SCODE sc = S_OK;
 
+    QVector<FORMATETC> fmtetcs;
     if (dwDirection == DATADIR_GET) {
-
-        QVector<FORMATETC> fmtetcs = QWindowsMime::allFormatsForMime(data);
-        *ppenumFormatEtc = OleStdEnumFmtEtc_Create(fmtetcs.size(), fmtetcs.data());
-        if (*ppenumFormatEtc == NULL)
-            sc = E_OUTOFMEMORY;
-
+        fmtetcs = QWindowsMime::allFormatsForMime(data);
     } else {
-
         FORMATETC formatetc;
         formatetc.cfFormat = CF_PERFORMEDDROPEFFECT;
         formatetc.dwAspect = DVASPECT_CONTENT;
         formatetc.lindex = -1;
         formatetc.ptd = NULL;
         formatetc.tymed = TYMED_HGLOBAL;
-        *ppenumFormatEtc = OleStdEnumFmtEtc_Create(1, &formatetc);
-        if (*ppenumFormatEtc == NULL)
-            sc = E_OUTOFMEMORY;
+        fmtetcs.append(formatetc);
+    }
+
+    QOleEnumFmtEtc *enumFmtEtc = new QOleEnumFmtEtc(fmtetcs);
+    *ppenumFormatEtc = enumFmtEtc;
+    if (enumFmtEtc->isNull()) {
+        delete enumFmtEtc;
+        *ppenumFormatEtc = NULL;
+        sc = E_OUTOFMEMORY;
     }
 
     return ResultFromScode(sc);
@@ -627,7 +631,7 @@ QOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)
         return NOERROR;
     }
 
-    
+
 
     QPoint tmpPoint = widget->mapFromGlobal(QPoint(pt.x,pt.y));
     // see if we should compress this event
@@ -674,7 +678,7 @@ QOleDropTarget::DragLeave()
     QApplication::sendEvent(widget, &e);
 
     QDragManager *manager = QDragManager::self();
-    
+
     if (manager->dropData->currentDataObject) { // Sanity
         manager->dropData->currentDataObject->Release();
         manager->dropData->currentDataObject = 0;
@@ -741,8 +745,11 @@ QOleDropTarget::Drop(LPDATAOBJECT /*pDataObj*/, DWORD grfKeyState, POINTL pt, LP
     }
     *pdwEffect = choosenEffect;
 
-    manager->dropData->currentDataObject->Release();
-    manager->dropData->currentDataObject = 0;
+
+    if (manager->dropData->currentDataObject) {
+        manager->dropData->currentDataObject->Release();
+        manager->dropData->currentDataObject = 0;
+    }
 
     return NOERROR;
 
@@ -837,7 +844,7 @@ Qt::DropAction QDragManager::drag(QDrag *o)
         } else {
             ret = translateToQDragDropAction(resultEffect);
         }
-        // Force it to be a copy if an unsuported operation occured.
+        // Force it to be a copy if an unsupported operation occured.
         // This indicates a bug in the drop target.
         if (resultEffect != DROPEFFECT_NONE && !(resultEffect & allowedEffects))
             ret = Qt::CopyAction;
@@ -887,7 +894,8 @@ void qt_olednd_unregister(QWidget* widget, QOleDropTarget *dst)
     dst->Release();
 #ifndef Q_OS_TEMP
     CoLockObjectExternal(dst, FALSE, TRUE);
-    RevokeDragDrop(widget->winId());
+    Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
+    RevokeDragDrop(widget->internalWinId());
 #endif
 }
 
@@ -895,7 +903,8 @@ QOleDropTarget* qt_olednd_register(QWidget* widget)
 {
     QOleDropTarget* dst = new QOleDropTarget(widget);
 #ifndef Q_OS_TEMP
-    RegisterDragDrop(widget->winId(), dst);
+    Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
+    RegisterDragDrop(widget->internalWinId(), dst);
     CoLockObjectExternal(dst, TRUE, TRUE);
 #endif
     return dst;

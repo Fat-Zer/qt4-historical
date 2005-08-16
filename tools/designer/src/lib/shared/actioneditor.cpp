@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ActionEditor
+*/
+
 #include "actioneditor_p.h"
 #include "actionrepository_p.h"
 #include "iconloader_p.h"
@@ -41,6 +45,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QLineEdit>
 #include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 
 #include <QtCore/QRegExp>
 
@@ -167,8 +172,10 @@ ActionEditor::ActionEditor(QDesignerFormEditorInterface *core, QWidget *parent, 
     // make it possible for vs integration to reimplement edit action dialog
     connect(m_actionRepository, SIGNAL(itemActivated(QListWidgetItem*)),
             this, SIGNAL(itemActivated(QListWidgetItem*)));
+    connect(m_actionRepository, SIGNAL(contextMenuRequested(QContextMenuEvent*, QListWidgetItem*)),
+            this, SIGNAL(contextMenuRequested(QContextMenuEvent*, QListWidgetItem*)));
     connect(this, SIGNAL(itemActivated(QListWidgetItem*)),
-            this, SLOT(editAction(QListWidgetItem*)));
+            this, SLOT(editAction(QListWidgetItem*)));    
 }
 
 ActionEditor::~ActionEditor()
@@ -256,7 +263,7 @@ QListWidgetItem *ActionEditor::createListWidgetItem(QAction *action)
     QListWidgetItem *item = new QListWidgetItem(m_actionRepository);
     QSize s = m_actionRepository->iconSize();
     item->setSizeHint(QSize(s.width()*3, s.height()*2));
-    item->setText(fixActionText(action->text()));
+    item->setText(fixActionText(action->objectName()));
     item->setIcon(fixActionIcon(action->icon()));
 
     QVariant itemData;
@@ -328,7 +335,7 @@ void ActionEditor::slotActionChanged()
         delete item;
     } else {
         // action text or icon changed, update item
-        item->setText(fixActionText(action->text()));
+        item->setText(fixActionText(action->objectName()));
         item->setIcon(fixActionIcon(action->icon()));
     }
 }

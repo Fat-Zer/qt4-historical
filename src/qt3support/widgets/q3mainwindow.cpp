@@ -249,7 +249,7 @@ protected:
             return;
         QPainter p(this);
         p.setClipRegion(e->rect());
-        p.fillRect(e->rect(), palette().brush(QPalette::Background));
+        p.fillRect(e->rect(), palette().brush(QPalette::Window));
         int x = 0;
         for (int i = 0; i < childs.size(); ++i) {
             QObject *o = childs.at(i);
@@ -693,7 +693,7 @@ void QHideToolTip::maybeTip(const QPoint &pos)
     f to 0.
 */
 
-Q3MainWindow::Q3MainWindow(QWidget * parent, const char * name, Qt::WFlags f)
+Q3MainWindow::Q3MainWindow(QWidget * parent, const char * name, Qt::WindowFlags f)
     : QWidget(*new Q3MainWindowPrivate, parent, f)
 {
     Q_D(Q3MainWindow);
@@ -1050,8 +1050,10 @@ void Q3MainWindow::addDockWindow(Q3DockWindow *dockWindow,
     Q_D(Q3MainWindow);
 #ifdef Q_WS_MAC
     extern WindowPtr qt_mac_window_for(const QWidget*); //qwidget_mac.cpp
-    if(isWindow() && edge == Qt::DockTop)
+    if(isWindow() && edge == Qt::DockTop) {
+        d->createWinId();
         ChangeWindowAttributes(qt_mac_window_for(this), kWindowToolbarButtonAttribute, 0);
+    }
 #endif
     moveDockWindow(dockWindow, edge);
     dockWindow->setNewLine(newLine);
@@ -1979,7 +1981,7 @@ Q3PopupMenu *Q3MainWindow::createDockWindowMenu(DockWindows dockWindows) const
     menu->setObjectName("qt_customize_menu");
     d->dockWindowModes.replace( menu, dockWindows );
     menu->setCheckable(true);
-    connect( menu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
+    connect( menu, SIGNAL(aboutToShow()), this, SLOT(menuAboutToShow()) );
     return menu;
 }
 

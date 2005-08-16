@@ -86,7 +86,6 @@ public:
     void setValue(const QVariant &val, EmitPolicy ep, bool updateEdit = true);
     virtual QVariant bound(const QVariant &val, const QVariant &old = QVariant(), int steps = 0) const;
     QLineEdit *lineEdit();
-    void updateButtons();
     virtual void updateEdit();
 
     virtual QStyleOptionSpinBox getStyleOption() const;
@@ -99,12 +98,14 @@ public:
     void _q_editorTextChanged(const QString &);
     virtual void _q_editorCursorPositionChanged(int oldpos, int newpos);
 
-    QStyle::SubControl newHoverControl(const QPoint &pos);
+    virtual QStyle::SubControl newHoverControl(const QPoint &pos);
     bool updateHoverControl(const QPoint &pos);
 
     void clearCache() const;
+    virtual void updateEditFieldGeometry();
 
     static int variantCompare(const QVariant &arg1, const QVariant &arg2);
+    static QVariant variantBound(const QVariant &min, const QVariant &value, const QVariant &max);
 
     QLineEdit *edit;
     QString prefix, suffix, specialValueText;
@@ -122,6 +123,9 @@ public:
     uint wrapping : 1;
     uint ignoreCursorPositionChanged : 1;
     uint frame : 1;
+    uint accelerate : 1;
+    QAbstractSpinBox::CorrectionMode correctionMode;
+    int acceleration;
     QStyle::SubControl hoverControl;
     QRect hoverRect;
     QAbstractSpinBox::ButtonSymbols buttonSymbols;

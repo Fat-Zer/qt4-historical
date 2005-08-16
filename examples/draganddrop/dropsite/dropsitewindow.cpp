@@ -23,95 +23,82 @@
 
 #include <QtGui>
 
+#include "droparea.h"
 #include "dropsitewindow.h"
 
-DropSiteWindow::DropSiteWindow(QWidget *parent)
-    : QWidget(parent)
+DropSiteWindow::DropSiteWindow()
 {
-    abstractLabel = new QLabel(tr("The Drop Site example accepts drops from other "
-                                  "applications, and displays the MIME formats "
+    abstractLabel = new QLabel(tr("This example accepts drags from other "
+                                  "applications and displays the MIME types "
                                   "provided by the drag object."));
     abstractLabel->setWordWrap(true);
     abstractLabel->adjustSize();
 
-    dropSiteWidget = new DropSiteWidget;
-    connect(dropSiteWidget, SIGNAL(changed(const QMimeData*)),
-            this, SLOT(updateSupportedFormats(const QMimeData*)));
+    dropArea = new DropArea;
+    connect(dropArea, SIGNAL(changed(const QMimeData *)),
+            this, SLOT(updateFormatsTable(const QMimeData *)));
 
-    supportedFormats = new QTableWidget(0, 2);
     QStringList labels;
     labels << tr("Format") << tr("Content");
-    supportedFormats->setHorizontalHeaderLabels(labels);
-    supportedFormats->horizontalHeader()->setStretchLastSection(true);
 
-    quitButton = new QPushButton(tr("Quit"));
-    connect(quitButton, SIGNAL(pressed()), this, SLOT(close()));
+    formatsTable = new QTableWidget;
+    formatsTable->setColumnCount(2);
+    formatsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    formatsTable->setHorizontalHeaderLabels(labels);
+    formatsTable->horizontalHeader()->setStretchLastSection(true);
 
     clearButton = new QPushButton(tr("Clear"));
-    connect(clearButton, SIGNAL(pressed()), dropSiteWidget, SLOT(clear()));
+    quitButton = new QPushButton(tr("Quit"));
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
-    buttonLayout->addStretch();
-    buttonLayout->addWidget(clearButton);
-    buttonLayout->addWidget(quitButton);
-    buttonLayout->addStretch();
+    buttonBox = new QDialogButtonBox;
+    buttonBox->addButton(clearButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
-    layout = new QVBoxLayout;
-    layout->addWidget(abstractLabel);
-    layout->addWidget(dropSiteWidget);
-    layout->addWidget(supportedFormats);
-    layout->addLayout(buttonLayout);
+    connect(quitButton, SIGNAL(pressed()), this, SLOT(close()));
+    connect(clearButton, SIGNAL(pressed()), dropArea, SLOT(clear()));
 
-    setLayout(layout);
-    setMinimumSize(350, 500);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(abstractLabel);
+    mainLayout->addWidget(dropArea);
+    mainLayout->addWidget(formatsTable);
+    mainLayout->addWidget(buttonBox);
+    setLayout(mainLayout);
+
     setWindowTitle(tr("Drop Site"));
+    setMinimumSize(350, 500);
 }
 
-void DropSiteWindow::resizeEvent(QResizeEvent *event)
+void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
 {
-    supportedFormats->resizeColumnToContents(0);
-    QWidget::resizeEvent(event);
-}
-
-void DropSiteWindow::updateSupportedFormats(const QMimeData *mimeData)
-{
-    supportedFormats->setRowCount(0);
-
+    formatsTable->setRowCount(0);
     if (!mimeData)
         return;
 
-    QStringList formats = mimeData->formats();
-
-    foreach (QString format, formats)
-    {
+    foreach (QString format, mimeData->formats()) {
         QTableWidgetItem *formatItem = new QTableWidgetItem(format);
         formatItem->setFlags(Qt::ItemIsEnabled);
         formatItem->setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-        QByteArray data = mimeData->data(format);
-        QTableWidgetItem *dataItem;
-
-        QString text = dropSiteWidget->createPlainText(data, format);
-        qApp->processEvents();
-        if (!text.isEmpty()) {
-            dataItem = new QTableWidgetItem(text);
+        QString text;
+        if (format == "text/plain") {
+            text = mimeData->text().simplified();
+        } else if (format == "text/html") {
+            text = mimeData->html().simplified();
         } else {
-            QString hexdata = "";
-            foreach (uint byte, data) {
-                if (hexdata.length() < 128) {
-                    QString hex = QString("%1").arg(byte, 2, 16, QLatin1Char('0')).toUpper();
-                    hexdata.append(hex + " ");
-                }
+            QByteArray data = mimeData->data(format);
+            for (int i = 0; i < data.size() && i < 32; ++i) {
+                QString hex = QString("%1").arg(uchar(data[i]), 2, 16,
+                                                QChar('0'))
+                                           .toUpper();
+                text.append(hex + " ");
             }
-            dataItem = new QTableWidgetItem(hexdata);
         }
-        dataItem->setFlags(Qt::ItemIsEnabled);
 
-        int row = supportedFormats->rowCount();
-        supportedFormats->insertRow(row);
-        supportedFormats->setItem(row, 0, formatItem);
-        supportedFormats->setItem(row, 1, dataItem);
+        int row = formatsTable->rowCount();
+        formatsTable->insertRow(row);
+        formatsTable->setItem(row, 0, new QTableWidgetItem(format));
+        formatsTable->setItem(row, 1, new QTableWidgetItem(text));
     }
 
-    supportedFormats->resizeColumnToContents(0);
+    formatsTable->resizeColumnToContents(0);
 }

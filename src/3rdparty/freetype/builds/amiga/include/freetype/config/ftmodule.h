@@ -5,7 +5,7 @@
 /*    Amiga-specific FreeType module selection.                            */
 /*                                                                         */
 /*  Copyright 2005 by                                                      */
-/*  Werner Lemberg and Detlef Würkner.                                     */
+/*  Werner Lemberg and Detlef W\374rkner.                                     */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
 /*  modified, and distributed under the terms of the FreeType project      */
@@ -35,6 +35,7 @@
 //#define FT_USE_PFR     // pfr font driver
 //#define FT_USE_WINFNT  // windows .fnt|.fon bitmap font driver
 //#define FT_USE_OTV     // opentype validator
+//#define FT_USE_GXV     // truetype gx validator
 #include "FT:src/base/ftinit.c"
 */
 
@@ -146,6 +147,10 @@ FT_USE_MODULE(otv_module_class)
 
 #ifdef FT_USE_BDF
 FT_USE_MODULE(bdf_driver_class)
+#endif
+
+#ifdef FT_USE_GXV
+FT_USE_MODULE(gxv_module_class)
 #endif
 
 /*

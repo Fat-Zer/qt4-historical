@@ -21,15 +21,17 @@
 **
 ****************************************************************************/
 
-#include <qtundo_p.h>
+#include <QtGui/QUndoCommand>
 #include "signalsloteditor.h"
 #include "default_membersheet.h"
 #include "signalsloteditor_p.h"
+#include "ui4_p.h"
 
 #include <QtDesigner/QtDesigner>
 
 #include <QtGui/QAction>
 #include <QtGui/QDialog>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QListWidget>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QItemDelegate>
@@ -82,8 +84,17 @@ static void merge(QDesignerFormWindowInterface *form, QStringList *lst, const QL
 
 QStringList objectNameList(QDesignerFormWindowInterface *form)
 {
-    QDesignerFormWindowCursorInterface *cursor = form->cursor();
     QStringList result;
+    if (form->mainContainer()) {
+        QDesignerContainerExtension *c = qt_extension<QDesignerContainerExtension *>(
+                    form->core()->extensionManager(), form->mainContainer());
+        if (c) {
+            for (int i = 0 ; i < c->count(); i++)
+                result.append(c->widget(i)->objectName().trimmed());
+        }
+    }
+
+    QDesignerFormWindowCursorInterface *cursor = form->cursor();
     for (int i = 0; i < cursor->widgetCount(); ++i) {
         QString name = cursor->widget(i)->objectName().trimmed();
         if (!name.isEmpty())
@@ -226,6 +237,9 @@ public:
 
     void setSignalSlot(const QString &signal, const QString &slot);
 
+    bool showAllSignalsSlots() const;
+    void setShowAllSignalsSlots(bool showIt);
+
 private slots:
     void selectSignal(QListWidgetItem *item);
     void selectSlot(QListWidgetItem *item);
@@ -234,6 +248,7 @@ private slots:
 
 private:
     QListWidget *m_signal_list, *m_slot_list;
+    QDialogButtonBox *m_buttonBox;
     QPushButton *m_ok_button;
     QWidget *m_source, *m_destination;
     QDesignerFormEditorInterface *m_core;
@@ -387,13 +402,15 @@ OldSignalSlotDialog::OldSignalSlotDialog(QDesignerFormEditorInterface *core, QWi
                 SLOT(selectSlot(QListWidgetItem*)));
     m_slot_list->setEnabled(false);
 
-    m_ok_button = new QPushButton(tr("OK"), this);
-    connect(m_ok_button, SIGNAL(clicked()), this, SLOT(accept()));
-    QPushButton *cancel_button = new QPushButton(tr("Cancel"), this);
-    connect(cancel_button, SIGNAL(clicked()), this, SLOT(reject()));
+    m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+                                       Qt::Horizontal, this);
+    m_ok_button = m_buttonBox->button(QDialogButtonBox::Ok);
+    m_ok_button->setDefault(true);
     m_ok_button->setEnabled(false);
-    m_show_all_checkbox = new QCheckBox(tr("Show all signals and slots"), this);
-    m_show_all_checkbox->setChecked(false);
+    connect(m_buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(m_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    m_show_all_checkbox = new QCheckBox(tr("Show all signals and slots"));
     connect(m_show_all_checkbox, SIGNAL(toggled(bool)), this, SLOT(populateSignalList()));
 
     QLabel *source_label = new QLabel(this);
@@ -418,18 +435,8 @@ OldSignalSlotDialog::OldSignalSlotDialog(QDesignerFormEditorInterface *core, QWi
     l4->addWidget(destination_label);
     l4->addWidget(m_slot_list);
 
-    QHBoxLayout *l5 = new QHBoxLayout();
-    l1->addLayout(l5);
-
-    l5->addWidget(m_show_all_checkbox);
-    l5->addStretch();
-#ifdef Q_WS_MAC
-    l5->addWidget(cancel_button);
-    l5->addWidget(m_ok_button);
-#else
-    l5->addWidget(m_ok_button);
-    l5->addWidget(cancel_button);
-#endif
+    l1->addWidget(m_show_all_checkbox);
+    l1->addWidget(m_buttonBox);
 
     setWindowTitle(tr("Configure Connection"));
 
@@ -468,6 +475,16 @@ void OldSignalSlotDialog::setSignalSlot(const QString &signal, const QString &sl
         if (slot_item != 0)
             selectSlot(slot_item);
     }
+}
+
+bool OldSignalSlotDialog::showAllSignalsSlots() const
+{
+    return m_show_all_checkbox->isChecked();
+}
+
+void OldSignalSlotDialog::setShowAllSignalsSlots(bool showIt)
+{
+    m_show_all_checkbox->setChecked(showIt);
 }
 
 void OldSignalSlotDialog::selectSignal(QListWidgetItem *item)
@@ -596,9 +613,8 @@ void SignalSlotConnection::updateVisibility()
 ** Commands
 */
 
-class SetMemberCommand : public QtCommand, public CETypes
+class SetMemberCommand : public QUndoCommand, public CETypes
 {
-    Q_OBJECT
 public:
     SetMemberCommand(SignalSlotConnection *con, EndPoint::Type type,
                         const QString &member, SignalSlotEditor *editor);
@@ -620,7 +636,10 @@ SetMemberCommand::SetMemberCommand(SignalSlotConnection *con, EndPoint::Type typ
     m_old_member = type == EndPoint::Source ? con->signal() : con->slot();
     m_new_member = member;
 
-    setDescription(tr("Change %1").arg(type == EndPoint::Source ? tr("signal") : tr("slot")));
+    if (type == EndPoint::Source)
+        setText(QApplication::translate("Command", "Change signal"));
+    else
+        setText(QApplication::translate("Command", "Change slot"));
 }
 
 void SetMemberCommand::redo()
@@ -650,7 +669,7 @@ void SetMemberCommand::undo()
 */
 
 SignalSlotEditor::SignalSlotEditor(QDesignerFormWindowInterface *form_window, QWidget *parent)
-    : ConnectionEdit(parent, form_window)
+    : ConnectionEdit(parent, form_window), m_showAllSignalsSlots(false)
 {
     m_form_window = form_window;
     m_model = new ConnectionModel(this, this);
@@ -670,14 +689,18 @@ void SignalSlotEditor::modifyConnection(Connection *con)
 {
     SignalSlotConnection *sigslot_con = static_cast<SignalSlotConnection*>(con);
 
-    OldSignalSlotDialog *dialog = new OldSignalSlotDialog(m_form_window->core(),
+    OldSignalSlotDialog dialog(m_form_window->core(),
                                                     sigslot_con->widget(EndPoint::Source),
                                                     sigslot_con->widget(EndPoint::Target));
-    dialog->setSignalSlot(sigslot_con->signal(), sigslot_con->slot());
-    if (dialog->exec() == QDialog::Accepted) {
-        sigslot_con->setSignal(dialog->signal());
-        sigslot_con->setSlot(dialog->slot());
+    dialog.setSignalSlot(sigslot_con->signal(), sigslot_con->slot());
+    dialog.setShowAllSignalsSlots(m_showAllSignalsSlots);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        sigslot_con->setSignal(dialog.signal());
+        sigslot_con->setSlot(dialog.slot());
     }
+
+    m_showAllSignalsSlots = dialog.showAllSignalsSlots();
 }
 
 Connection *SignalSlotEditor::createConnection(QWidget *source, QWidget *destination)
@@ -687,15 +710,16 @@ Connection *SignalSlotEditor::createConnection(QWidget *source, QWidget *destina
     Q_ASSERT(source != 0);
     Q_ASSERT(destination != 0);
 
-    OldSignalSlotDialog *dialog = new OldSignalSlotDialog(m_form_window->core(), source, destination);
+    OldSignalSlotDialog dialog(m_form_window->core(), source, destination);
+    dialog.setShowAllSignalsSlots(m_showAllSignalsSlots);
 
-    if (dialog->exec() == QDialog::Accepted) {
+    if (dialog.exec() == QDialog::Accepted) {
         con = new SignalSlotConnection(this, source, destination);
-        con->setSignal(dialog->signal());
-        con->setSlot(dialog->slot());
+        con->setSignal(dialog.signal());
+        con->setSlot(dialog.slot());
     }
 
-    delete dialog;
+    m_showAllSignalsSlots = dialog.showAllSignalsSlots();
 
     return con;
 }
@@ -828,7 +852,7 @@ void SignalSlotEditor::setSignal(SignalSlotConnection *con, const QString &membe
     if (member == con->signal())
         return;
 
-    m_form_window->beginCommand(tr("Change signal"));
+    m_form_window->beginCommand(QApplication::translate("Command", "Change signal"));
     undoStack()->push(new SetMemberCommand(con, EndPoint::Source, member, this));
     if (!signalMatchesSlot(member, con->slot()))
         undoStack()->push(new SetMemberCommand(con, EndPoint::Target, QString(), this));
@@ -840,7 +864,7 @@ void SignalSlotEditor::setSlot(SignalSlotConnection *con, const QString &member)
     if (member == con->slot())
         return;
 
-    m_form_window->beginCommand(tr("Change slot"));
+    m_form_window->beginCommand(QApplication::translate("Command", "Change slot"));
     undoStack()->push(new SetMemberCommand(con, EndPoint::Target, member, this));
     if (!signalMatchesSlot(con->signal(), member))
         undoStack()->push(new SetMemberCommand(con, EndPoint::Source, QString(), this));
@@ -854,7 +878,7 @@ void SignalSlotEditor::setSource(Connection *_con, const QString &obj_name)
     if (con->sender() == obj_name)
         return;
 
-    m_form_window->beginCommand(tr("Change sender"));
+    m_form_window->beginCommand(QApplication::translate("Command", "Change sender"));
     ConnectionEdit::setSource(con, obj_name);
 
     QObject *sourceObject = con->object(EndPoint::Source);
@@ -875,7 +899,7 @@ void SignalSlotEditor::setTarget(Connection *_con, const QString &obj_name)
     if (con->receiver() == obj_name)
         return;
 
-    m_form_window->beginCommand(tr("Change receiver"));
+    m_form_window->beginCommand(QApplication::translate("Command", "Change receiver"));
     ConnectionEdit::setTarget(con, obj_name);
 
     QWidget *w = con->widget(EndPoint::Target);

@@ -42,7 +42,7 @@ class Q_GUI_EXPORT QToolBox : public QFrame
     Q_PROPERTY(int count READ count)
 
 public:
-    explicit QToolBox(QWidget *parent = 0, Qt::WFlags f = 0);
+    explicit QToolBox(QWidget *parent = 0, Qt::WindowFlags f = 0);
     ~QToolBox();
 
     int addItem(QWidget *widget, const QString &text);
@@ -86,7 +86,7 @@ protected:
 
 #ifdef QT3_SUPPORT
 public:
-    QT3_SUPPORT_CONSTRUCTOR QToolBox(QWidget *parent, const char *name, Qt::WFlags f = 0);
+    QT3_SUPPORT_CONSTRUCTOR QToolBox(QWidget *parent, const char *name, Qt::WindowFlags f = 0);
     inline QT3_SUPPORT void setItemLabel(int index, const QString &text) { setItemText(index, text); }
     inline QT3_SUPPORT QString itemLabel(int index) const { return itemText(index); }
     inline QT3_SUPPORT QWidget *currentItem() const { return widget(currentIndex()); }
@@ -96,6 +96,9 @@ public:
     inline QT3_SUPPORT int removeItem(QWidget *item)
     { int i = indexOf(item); removeItem(i); return i; }
     inline QT3_SUPPORT QWidget *item(int index) const { return widget(index); }
+    QT3_SUPPORT void setMargin(int margin) { setContentsMargins(margin, margin, margin, margin); }
+    QT3_SUPPORT int margin() const 
+    { int margin; int dummy; getContentsMargins(&margin, &dummy, &dummy, &dummy);  return margin; }    
 #endif
 
 private:

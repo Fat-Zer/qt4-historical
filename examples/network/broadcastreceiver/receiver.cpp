@@ -42,6 +42,7 @@ Receiver::Receiver(QWidget *parent)
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(quitButton);
+    buttonLayout->addStretch(1);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(statusLabel);

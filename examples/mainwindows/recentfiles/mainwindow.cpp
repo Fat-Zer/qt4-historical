@@ -68,13 +68,13 @@ void MainWindow::saveAs()
         return;
 
     if (QFile::exists(fileName)) {
-        int ret = QMessageBox::warning(this, tr("Recent Files"),
+	QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("Recent Files"),
                      tr("File %1 already exists.\n"
                         "Do you want to overwrite it?")
-                     .arg(QDir::convertSeparators(fileName)),
-                     QMessageBox::Yes | QMessageBox::Default,
-                     QMessageBox::No | QMessageBox::Escape);
-        if (ret == QMessageBox::No)
+                     .arg(QDir::toNativeSeparators(fileName)),
+                     QMessageBox::Yes | QMessageBox::Cancel);
+        if (ret == QMessageBox::Cancel)
             return;
     }
     saveFile(fileName);

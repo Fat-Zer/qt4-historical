@@ -80,20 +80,23 @@ Qt::DockWidgetArea QDesignerDockWidget::dockWidgetArea() const
 void QDesignerDockWidget::setDockWidgetArea(Qt::DockWidgetArea dockWidgetArea)
 {
     if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(parentWidget())) {
-        mainWindow->addDockWidget(dockWidgetArea, this);
+        if ((dockWidgetArea != Qt::NoDockWidgetArea)
+            && isAreaAllowed(dockWidgetArea)) {
+            mainWindow->addDockWidget(dockWidgetArea, this);
+        }
     }
 }
 
 bool QDesignerDockWidget::inMainWindow() const
 {
-    if (parentWidget() && parentWidget()->layout()) {
-        QLayout *layout = parentWidget()->layout();
-
-        if (layout->indexOf(const_cast<QDesignerDockWidget*>(this)) != -1)
-            return false;
+    QMainWindow *mw = findMainWindow();
+    if (mw && !mw->centralWidget()->layout()) {
+        if (mw == parentWidget())
+            return true;
+        if (mw->centralWidget() == parentWidget())
+            return true;
     }
-
-    return findMainWindow() != 0;
+    return false;
 }
 
 QDesignerFormWindowInterface *QDesignerDockWidget::formWindow() const

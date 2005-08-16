@@ -86,10 +86,11 @@ public:
     QPainter::RenderHints renderHints;
     QList<QPainterClipInfo> clipInfo;
     QMatrix worldMatrix;       // World transformation matrix, not window and viewport
-    QMatrix matrix;            // Complete transformation matrix, including win and view.
+    QMatrix matrix;            // Complete transformation matrix,
     int txop;
     int wx, wy, ww, wh;         // window rectangle
     int vx, vy, vw, vh;         // viewport rectangle
+    qreal opacity;
 
     uint WxF:1;                 // World transformation
     uint VxF:1;                 // View transformation
@@ -148,6 +149,8 @@ public:
     void updateState(QPainterState *state);
 
     void draw_helper(const QPainterPath &path, DrawOperation operation = StrokeAndFillDraw);
+    void drawStretchToDevice(const QPainterPath &path, DrawOperation operation);
+    void drawOpaqueBackground(const QPainterPath &path, DrawOperation operation);
 
     void updateMatrix();
     void updateInvMatrix();
@@ -156,6 +159,8 @@ public:
     int rectSubtraction() const {
         return state->pen.style() != Qt::NoPen && state->pen.width() == 0 ? 1 : 0;
     }
+
+    QMatrix viewMatrix() const;
 
     QPaintDevice *device;
     QPaintDevice *original_device;

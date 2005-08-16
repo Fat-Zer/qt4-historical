@@ -36,7 +36,7 @@ struct QHolder {
     bool operator==(const QHolder& h) const { return h.holderPos == holderPos && h.holderName == holderName; }
     bool operator!=(const QHolder& h) const { return h.holderPos != holderPos || h.holderName != holderName; }
     QString holderName;
-    int            holderPos;
+    int holderPos;
 };
 
 class QSqlResultPrivate
@@ -336,6 +336,9 @@ const QSqlDriver *QSqlResult::driver() const
 
 void QSqlResult::setActive(bool active)
 {
+    if (active && d->executedQuery.isEmpty())
+        d->executedQuery = d->sql;
+
     d->active = active;
 }
 
@@ -567,11 +570,11 @@ bool QSqlResult::exec()
         QVariant val;
         QString holder;
         for (i = d->holders.count() - 1; i >= 0; --i) {
-            holder = d->holders[i].holderName;
-            val = d->values[d->indexes[holder]];
+            holder = d->holders.at(i).holderName;
+            val = d->values.value(d->indexes.value(holder));
             QSqlField f(QLatin1String(""), val.type());
             f.setValue(val);
-            query = query.replace(d->holders[i].holderPos,
+            query = query.replace(d->holders.at(i).holderPos,
                                    holder.length(), driver()->formatValue(f));
         }
     } else {
@@ -582,7 +585,7 @@ bool QSqlResult::exec()
             i = query.indexOf(QLatin1Char('?'), i);
             if (i == -1)
                 continue;
-            QVariant var = d->values[idx];
+            QVariant var = d->values.value(idx);
             QSqlField f(QLatin1String(""), var.type());
             if (var.isNull())
                 f.clear();

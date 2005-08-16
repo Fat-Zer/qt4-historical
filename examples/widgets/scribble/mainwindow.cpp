@@ -113,8 +113,8 @@ void MainWindow::createActions()
         saveAsActs.append(action);
     }
 
-    printPdfAct = new QAction(tr("&Print as PDF"), this);
-    connect(printPdfAct, SIGNAL(triggered()), scribbleArea, SLOT(printPdf()));
+    printAct = new QAction(tr("&Print..."), this);
+    connect(printAct, SIGNAL(triggered()), scribbleArea, SLOT(print()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
@@ -147,7 +147,7 @@ void MainWindow::createMenus()
     fileMenu = new QMenu(tr("&File"), this);
     fileMenu->addAction(openAct);
     fileMenu->addMenu(saveAsMenu);
-    fileMenu->addAction(printPdfAct);
+    fileMenu->addAction(printAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -169,13 +169,13 @@ void MainWindow::createMenus()
 bool MainWindow::maybeSave()
 {
     if (scribbleArea->isModified()) {
-        int ret = QMessageBox::warning(this, tr("Scribble"),
+       QMessageBox::StandardButton ret;
+       ret = QMessageBox::warning(this, tr("Scribble"),
                           tr("The image has been modified.\n"
                              "Do you want to save your changes?"),
-                          QMessageBox::Yes | QMessageBox::Default,
-                          QMessageBox::No,
-                          QMessageBox::Cancel | QMessageBox::Escape);
-        if (ret == QMessageBox::Yes) {
+                          QMessageBox::Save | QMessageBox::Discard
+			  | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save) {
             return saveFile("png");
         } else if (ret == QMessageBox::Cancel) {
             return false;

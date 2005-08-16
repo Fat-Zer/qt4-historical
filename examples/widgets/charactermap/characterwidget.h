@@ -42,8 +42,10 @@ public:
     QSize sizeHint() const;
 
 public slots:
-    void updateFont(const QString &fontFamily);
+    void updateFont(const QFont &font);
+    void updateSize(const QString &fontSize);
     void updateStyle(const QString &fontStyle);
+    void updateFontMerging(bool enable);
 
 signals:
     void characterSelected(const QString &character);
@@ -55,7 +57,9 @@ protected:
 
 private:
     QFont displayFont;
+    int columns;
     int lastKey;
+    int squareSize;
 };
 
 #endif

@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/widgets/qtabbar.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/widgets/qtabbar.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/gui/widgets/qtabbar.cpp -->
 <head>
-    <title>Qt 4.1: QTabBar Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QTabBar Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTabBar Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QTabBar Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTabBar class provides a tab bar, e.g. for use in tabbed dialogs. <a href="#details">More...</a></p>
-<pre>#include &lt;QTabBar&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre> #include &lt;QTabBar&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qtabbar-members.html">List of all members, including inherited members</a></li>
 <li><a href="qtabbar-qt3.html">Qt 3 support members</a></li>
@@ -37,14 +31,16 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtabbar.html#count-prop">count</a></b> : const int</li>
 <li><div class="fn"/><b><a href="qtabbar.html#currentIndex-prop">currentIndex</a></b> : int</li>
 <li><div class="fn"/><b><a href="qtabbar.html#drawBase-prop">drawBase</a></b> : bool</li>
+<li><div class="fn"/><b><a href="qtabbar.html#elideMode-prop">elideMode</a></b> : Qt::TextElideMode</li>
 </ul></td><td valign="top"><ul>
 <li><div class="fn"/><b><a href="qtabbar.html#iconSize-prop">iconSize</a></b> : QSize</li>
 <li><div class="fn"/><b><a href="qtabbar.html#shape-prop">shape</a></b> : Shape</li>
+<li><div class="fn"/><b><a href="qtabbar.html#usesScrollButtons-prop">usesScrollButtons</a></b> : bool</li>
 </ul>
 </td></tr>
 </table></p>
 <ul>
-<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>55 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -57,12 +53,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qtabbar.html#count-prop">count</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtabbar.html#currentIndex-prop">currentIndex</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qtabbar.html#drawBase-prop">drawBase</a></b> () const</li>
+<li><div class="fn"/>Qt::TextElideMode <b><a href="qtabbar.html#elideMode-prop">elideMode</a></b> () const</li>
 <li><div class="fn"/>QSize <b><a href="qtabbar.html#iconSize-prop">iconSize</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtabbar.html#insertTab">insertTab</a></b> ( int <i>index</i>, const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>int <b><a href="qtabbar.html#insertTab-2">insertTab</a></b> ( int <i>index</i>, const QIcon &amp; <i>icon</i>, const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>bool <b><a href="qtabbar.html#isTabEnabled">isTabEnabled</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#removeTab">removeTab</a></b> ( int <i>index</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#drawBase-prop">setDrawBase</a></b> ( bool <i>drawTheBase</i> )</li>
+<li><div class="fn"/>void <b><a href="qtabbar.html#elideMode-prop">setElideMode</a></b> ( Qt::TextElideMode )</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#iconSize-prop">setIconSize</a></b> ( const QSize &amp; <i>size</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#shape-prop">setShape</a></b> ( Shape <i>shape</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#setTabData">setTabData</a></b> ( int <i>index</i>, const QVariant &amp; <i>data</i> )</li>
@@ -72,6 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtabbar.html#setTabTextColor">setTabTextColor</a></b> ( int <i>index</i>, const QColor &amp; <i>color</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#setTabToolTip">setTabToolTip</a></b> ( int <i>index</i>, const QString &amp; <i>tip</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabbar.html#setTabWhatsThis">setTabWhatsThis</a></b> ( int <i>index</i>, const QString &amp; <i>text</i> )</li>
+<li><div class="fn"/>void <b><a href="qtabbar.html#usesScrollButtons-prop">setUsesScrollButtons</a></b> ( bool <i>useButtons</i> )</li>
 <li><div class="fn"/>Shape <b><a href="qtabbar.html#shape-prop">shape</a></b> () const</li>
 <li><div class="fn"/>QVariant <b><a href="qtabbar.html#tabData">tabData</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>QIcon <b><a href="qtabbar.html#tabIcon">tabIcon</a></b> ( int <i>index</i> ) const</li>
@@ -80,10 +79,11 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QColor <b><a href="qtabbar.html#tabTextColor">tabTextColor</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qtabbar.html#tabToolTip">tabToolTip</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qtabbar.html#tabWhatsThis">tabWhatsThis</a></b> ( int <i>index</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qtabbar.html#usesScrollButtons-prop">usesScrollButtons</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>195 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
@@ -92,7 +92,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtabbar.html#currentIndex-prop">setCurrentIndex</a></b> ( int <i>index</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
+<li><div class="fn"/>19 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 </ul>
 <a name="signals"></a>
@@ -113,14 +113,15 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QSize <b><a href="qtabbar.html#tabSizeHint">tabSizeHint</a></b> ( int <i>index</i> ) const</li>
 </ul>
 <ul>
-<li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
+<li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -143,8 +144,8 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>For subclasses, you might also need the <a href="qtabbar.html#tabRect">tabRect</a>() functions which returns the visual geometry of a single tab.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/plastique-tabbar.png" alt="Screenshot of a Plastique style tab bar" /></td><td>A tab bar shown in the Plastique widget style.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><img src="images/plastique-tabbar-truncated.png" alt="Screenshot of a truncated Plastique tab bar" /></td><td>A truncated tab bar shown in the Plastique widget style.</td></tr>
+<tr valign="top" class="odd"><td><img src="images/plastique-tabbar.png" alt="Screenshot of a Plastique style tab bar" /></td><td>A tab bar shown in the Plastique widget style.</td></tr>
+<tr valign="top" class="even"><td><img src="images/plastique-tabbar-truncated.png" alt="Screenshot of a truncated Plastique tab bar" /></td><td>A truncated tab bar shown in the Plastique widget style.</td></tr>
 </table></p>
 <p>See also <a href="qtabwidget.html">QTabWidget</a>.</p>
 <hr />
@@ -186,6 +187,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setDrawBase ( bool <i>drawTheBase</i> )</b></li>
 </ul>
 <p>See also <a href="qstyle.html#pixelMetric">QStyle::pixelMetric</a>(), <a href="qstyle.html#PixelMetric-enum">QStyle::PM_TabBarBaseOverlap</a>, and <a href="qstyleoptiontabbarbase.html">QStyleOptionTabBarBase</a>.</p>
+<h3 class="fn"><a name="elideMode-prop"></a>elideMode : <a href="qt.html#TextElideMode-enum">Qt::TextElideMode</a></h3>
+<p>This property holds how to elide text in the tab bar.</p>
+<p>This property controls how items are elided when there is not enough space to show them for a given tab bar size.</p>
+<p>By default the value is style dependent.</p>
+<p>This property was introduced in Qt 4.2.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>Qt::TextElideMode elideMode () const</b></li>
+<li><div class="fn"/><b>void setElideMode ( Qt::TextElideMode )</b></li>
+</ul>
+<p>See also <a href="qtabwidget.html#elideMode-prop">QTabWidget::elideMode</a>, <a href="qtabbar.html#usesScrollButtons-prop">usesScrollButtons</a>, and <a href="qstyle.html#StyleHint-enum">QStyle::SH_TabBar_ElideMode</a>.</p>
 <h3 class="fn"><a name="iconSize-prop"></a>iconSize : <a href="qsize.html">QSize</a></h3>
 <p>This property holds the size for icons in the tab bar.</p>
 <p>The default value is style-dependent.</p>
@@ -195,6 +207,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>QSize iconSize () const</b></li>
 <li><div class="fn"/><b>void setIconSize ( const QSize &amp; <i>size</i> )</b></li>
 </ul>
+<p>See also <a href="qtabwidget.html#iconSize-prop">QTabWidget::iconSize</a>.</p>
 <h3 class="fn"><a name="shape-prop"></a>shape : <a href="qtabbar.html#Shape-enum">Shape</a></h3>
 <p>This property holds the shape of the tabs in the tab bar.</p>
 <p>Possible values for this property are described by the Shape enum.</p>
@@ -203,6 +216,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>Shape shape () const</b></li>
 <li><div class="fn"/><b>void setShape ( Shape <i>shape</i> )</b></li>
 </ul>
+<h3 class="fn"><a name="usesScrollButtons-prop"></a>usesScrollButtons : bool</h3>
+<p>This property holds whether or not a tab bar should use buttons to scroll tabs when it has many tabs.</p>
+<p>When there are too many tabs in a tab bar for its size, the tab bar can either choose to expand it's size or to add buttons that allow you to scroll through the tabs.</p>
+<p>By default the value is style dependant.</p>
+<p>This property was introduced in Qt 4.2.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>bool usesScrollButtons () const</b></li>
+<li><div class="fn"/><b>void setUsesScrollButtons ( bool <i>useButtons</i> )</b></li>
+</ul>
+<p>See also <a href="qtabbar.html#elideMode-prop">elideMode</a>, <a href="qtabwidget.html#usesScrollButtons-prop">QTabWidget::usesScrollButtons</a>, and <a href="qstyle.html#StyleHint-enum">QStyle::SH_TabBar_PreferNoArrows</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTabBar"></a>QTabBar::QTabBar ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
@@ -282,10 +306,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the What's This help text of the tab at position <i>index</i>, or an empty string if <i>index</i> is out of range.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qtabbar.html#setTabWhatsThis">setTabWhatsThis</a>().</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="selected"></a>void QTabBar::selected ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>Use <a href="qtabbar.html#currentChanged">currentChanged</a>() instead.</p>
+<h3 class="fn"><a name="setCurrentTab"></a>void QTabBar::setCurrentTab ( int <i>index</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
+<p>Use <a href="qtabbar.html#currentIndex-prop">setCurrentIndex</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

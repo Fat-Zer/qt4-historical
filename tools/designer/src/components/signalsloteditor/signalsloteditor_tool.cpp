@@ -21,13 +21,20 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::SignalSlotEditorTool
+*/
+
 #include "signalsloteditor_tool.h"
 #include "signalsloteditor.h"
+#include "ui4_p.h"
 
 #include <QtDesigner/QtDesigner>
 
 #include <QtGui/QAction>
 #include <QtCore/qdebug.h>
+
+using namespace qdesigner_internal;
 
 SignalSlotEditorTool::SignalSlotEditorTool(QDesignerFormWindowInterface *formWindow, QObject *parent)
     : QDesignerFormWindowToolInterface(parent),

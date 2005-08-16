@@ -48,6 +48,8 @@ class Q_GUI_EXPORT QListView : public QAbstractItemView
     Q_PROPERTY(ViewMode viewMode READ viewMode WRITE setViewMode)
     Q_PROPERTY(int modelColumn READ modelColumn WRITE setModelColumn)
     Q_PROPERTY(bool uniformItemSizes READ uniformItemSizes WRITE setUniformItemSizes)
+    Q_PROPERTY(int batchSize READ batchSize WRITE setBatchSize)
+    Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap) 
 
 public:
     enum Movement { Static, Free, Snap };
@@ -77,6 +79,9 @@ public:
     void setSpacing(int space);
     int spacing() const;
 
+    void setBatchSize(int batchSize);
+    int batchSize() const;
+
     void setGridSize(const QSize &size);
     QSize gridSize() const;
 
@@ -94,6 +99,9 @@ public:
     void setUniformItemSizes(bool enable);
     bool uniformItemSizes() const;
 
+    void setWordWrap(bool on);
+    bool wordWrap() const;
+
     QRect visualRect(const QModelIndex &index) const;
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
     QModelIndex indexAt(const QPoint &p) const;
@@ -101,6 +109,9 @@ public:
     void doItemsLayout();
     void reset();
     void setRootIndex(const QModelIndex &index);
+
+Q_SIGNALS:
+    void indexesMoved(const QModelIndexList &indexes);
 
 protected:
     QListView(QListViewPrivate &, QWidget *parent = 0);

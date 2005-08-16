@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::WidgetEditorTool
+*/
+
 #include "tool_widgeteditor.h"
 #include "formwindow.h"
 
@@ -30,6 +34,7 @@
 
 #include <QtGui/qevent.h>
 #include <QtGui/QAction>
+#include <QtGui/QMainWindow>
 #include <QtCore/qdebug.h>
 
 using namespace qdesigner_internal;
@@ -60,9 +65,45 @@ QDesignerFormWindowInterface *WidgetEditorTool::formWindow() const
     return m_formWindow;
 }
 
+bool WidgetEditorTool::mainWindowSeparatorEvent(QWidget *widget, QEvent *event)
+{
+    QMainWindow *mw = qobject_cast<QMainWindow*>(widget);
+    if (mw == 0)
+        return false;
+
+    if (event->type() != QEvent::MouseButtonPress
+            && event->type() != QEvent::MouseMove
+            && event->type() != QEvent::MouseButtonRelease)
+        return false;
+
+    QMouseEvent *e = static_cast<QMouseEvent*>(event);
+
+    if (event->type() == QEvent::MouseButtonPress) {
+        if (mw->isSeparator(e->pos())) {
+            m_separator_drag_mw = mw;
+            return true;
+        }
+        return false;
+    }
+
+    if (event->type() == QEvent::MouseMove)
+        return m_separator_drag_mw == mw;
+
+    if (event->type() == QEvent::MouseButtonRelease) {
+        if (m_separator_drag_mw != mw)
+            return false;
+        m_separator_drag_mw = 0;
+        return true;
+    }
+
+    return false;
+}
+
 bool WidgetEditorTool::handleEvent(QWidget *widget, QWidget *managedWidget, QEvent *event)
 {
-    bool passive = core()->widgetFactory()->isPassiveInteractor(widget) != 0;
+    bool passive = core()->widgetFactory()->isPassiveInteractor(widget) != 0
+                    || mainWindowSeparatorEvent(widget, event); // separators in QMainWindow
+                                                                // are no longer widgets
 
     switch (event->type()) {
     case QEvent::Resize:

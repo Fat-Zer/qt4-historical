@@ -62,6 +62,8 @@ public:
     QFixed ascent() const;
     QFixed descent() const;
     QFixed leading() const;
+    QFixed xHeight() const;
+    QFixed averageCharWidth() const;
     qreal maxCharWidth() const;
     qreal minLeftBearing() const;
     qreal minRightBearing() const;
@@ -71,6 +73,8 @@ public:
     bool canRender(const QChar *string, int len);
 
     Type type() const;
+
+    virtual QImage alphaMapForGlyph(glyph_t);
 
     enum { widthCacheSize = 0x800, cmapCacheSize = 0x500 };
     mutable unsigned char widthCache[widthCacheSize];

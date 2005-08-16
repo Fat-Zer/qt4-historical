@@ -1,4 +1,4 @@
- /****************************************************************************
+/****************************************************************************
 **
 ** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
@@ -25,10 +25,9 @@
 #define QATOMIC_H
 
 #if defined(QT_MOC) || defined(QT_BUILD_QMAKE) || defined(QT_RCC) || defined(QT_UIC)
-// this allows us to use -I... magic to select a specific arch (e.g. generic)
-#  include <arch/qatomic.h>
+#  include <QtCore/qatomic_generic.h>
 #else
-#  include <QtCore/arch/qatomic.h>
+#  include <QtCore/qatomic_arch.h>
 #endif
 #include <QtCore/qglobal.h>
 

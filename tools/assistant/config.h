@@ -62,14 +62,8 @@ public:
     QPixmap applicationIcon() const;
 
     // From QSettings, read / write
-    QString webBrowser() const { return webBrows; }
-    void setWebBrowser( const QString &cmd ) { webBrows = cmd; }
-
     QString homePage() const;
     void setHomePage( const QString &hom ) { home = hom; }
-
-    QString pdfReader() const { return pdfApp; }
-    void setPdfReader( const QString &cmd ) { pdfApp = cmd; }
 
     QStringList source() const;
     void setSource( const QStringList &s ) { src = s; }
@@ -77,18 +71,15 @@ public:
     int sideBarPage() const { return sideBar; }
     void setSideBarPage( int sbp ) { sideBar = sbp; }
 
-    QRect geometry() const { return geom; }
-    void setGeometry( const QRect &geo ) { geom = geo; }
-
-    bool isMaximized() const { return maximized; }
-    void setMaximized( bool max ) { maximized = max; }
-
+    QByteArray windowGeometry() const { return winGeometry; }
+    void setWindowGeometry( const QByteArray &geometry ) { winGeometry = geometry; }
+    
     QByteArray mainWindowState() const { return mainWinState; }
     void setMainWindowState( const QByteArray &state ) { mainWinState = state; }
 
     qreal fontPointSize() const { return pointFntSize; }
     void setFontPointSize(qreal size) { pointFntSize = size; }
-    
+
     QString assistantDocPath() const;
 
     bool docRebuild() const { return rebuildDocs; }
@@ -96,6 +87,7 @@ public:
 
     void saveProfile( Profile *profile );
     void loadDefaultProfile();
+    bool defaultProfileExists();
 
     static Config *configuration();
     static Config *loadConfig(const QString &profileFileName);
@@ -105,20 +97,17 @@ private:
     Config& operator=( const Config &c );
 
     void saveSettings();
-
+    
 private:
     Profile *profil;
 
     QStringList profileNames;
-    QString webBrows;
     QString home;
-    QString pdfApp;
     QStringList src;
     QByteArray mainWinState;
+    QByteArray winGeometry;
     qreal pointFntSize;
-    QRect geom;
     int sideBar;
-    bool maximized;
     bool hideSidebar;
     bool rebuildDocs;
 };

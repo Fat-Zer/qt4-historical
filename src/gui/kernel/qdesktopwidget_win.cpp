@@ -216,18 +216,18 @@ void QDesktopWidgetPrivate::cleanup()
 }
 
 /*
-  \omit
-  Function is commented out in header
-  \fn void *QDesktopWidget::handle(int screen) const
+    \omit
+    Function is commented out in header
+    \fn void *QDesktopWidget::handle(int screen) const
 
-  Returns the window system handle of the display device with the
-  index \a screen, for low-level access.  Using this function is not
-  portable.
+    Returns the window system handle of the display device with the
+    index \a screen, for low-level access.  Using this function is not
+    portable.
 
-  The return type varies with platform; see qwindowdefs.h for details.
+    The return type varies with platform; see qwindowdefs.h for details.
 
-  \sa x11Display(), QPaintDevice::handle()
-  \endomit
+    \sa x11Display(), QPaintDevice::handle()
+    \endomit
 */
 
 /*!
@@ -235,6 +235,7 @@ void QDesktopWidgetPrivate::cleanup()
     \brief The QDesktopWidget class provides access to screen information on multi-head systems.
 
     \ingroup advanced
+    \ingroup desktop
     \ingroup environment
     \mainclass
 
@@ -445,7 +446,7 @@ int QDesktopWidget::screenNumber(const QWidget *widget) const
         int maxScreen = -1;
 
         for (int i = 0; i < d->screenCount; ++i) {
-            QRect sect = d->rects->at(i).intersect(frame);
+            QRect sect = d->rects->at(i).intersected(frame);
             int size = sect.width() * sect.height();
             if (size > maxSize && sect.width() > 0 && sect.height() > 0) {
                 maxSize = size;

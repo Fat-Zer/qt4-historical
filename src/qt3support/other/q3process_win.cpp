@@ -268,7 +268,7 @@ bool Q3Process::start( QStringList *env )
 	    // rather use "foo"\ than "foo\"
 	    QString endQuote( "\"" );
 	    int i = tmp.length();
-	    while ( i>=0 && tmp.at( i-1 ) == '\\' ) {
+	    while ( i>0 && tmp.at( i-1 ) == '\\' ) {
 		--i;
 		endQuote += "\\";
 	    }
@@ -333,7 +333,7 @@ bool Q3Process::start( QStringList *env )
 		| CREATE_UNICODE_ENVIRONMENT
 #endif
 		, env==0 ? 0 : envlist.data(),
-                (TCHAR*)QDir::convertSeparators(workingDir.absPath()).ucs2(),
+                (TCHAR*)QDir::toNativeSeparators(workingDir.absPath()).ucs2(),
 		&startupInfo, d->pid );
 	free( applicationName );
 	free( commandLine );
@@ -382,7 +382,7 @@ bool Q3Process::start( QStringList *env )
 		const_cast<char *>(args.toLocal8Bit().data()),
 		0, 0, TRUE, comms==0 ? CREATE_NEW_CONSOLE : DETACHED_PROCESS,
 		env==0 ? 0 : envlist.data(),
-                (const char*)QDir::convertSeparators(workingDir.absPath()).local8Bit(),
+                (const char*)QDir::toNativeSeparators(workingDir.absPath()).local8Bit(),
 		&startupInfo, d->pid );
 #endif // Q_OS_TEMP
     }

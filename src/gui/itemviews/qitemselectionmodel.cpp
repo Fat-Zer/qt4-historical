@@ -169,7 +169,16 @@
 
     Returns true if the model item specified by the \a index lies within the
     range of selected items; otherwise returns false.
+*/
 
+/*!
+    \fn bool QItemSelectionRange::contains(int row, int column,
+                                           const QModelIndex &parentIndex) const
+    \overload
+
+    Returns true if the model item specified by (\a row, \a column)
+    and with \a parentIndex as the parent item lies within the range
+    of selected items; otherwise returns false.
 */
 
 /*!
@@ -191,10 +200,17 @@ bool QItemSelectionRange::intersects(const QItemSelectionRange &other) const
 
 /*!
     \fn QItemSelectionRange QItemSelectionRange::intersect(const QItemSelectionRange &other) const
+    \obsolete
+
+    Use intersected(\a other) instead.
+*/
+
+/*!
+    \fn QItemSelectionRange QItemSelectionRange::intersected(const QItemSelectionRange &other) const
+    \since 4.2
 
     Returns a new selection range containing only the items that are found in
     both the selection range and the \a other selection range.
-
 */
 
 QItemSelectionRange QItemSelectionRange::intersect(const QItemSelectionRange &other) const
@@ -402,7 +418,7 @@ void QItemSelection::merge(const QItemSelection &other, QItemSelectionModel::Sel
         }
         for (int t = 0; t < count(); ++t) {
             if ((*it).intersects(at(t)))
-                intersections.append(at(t).intersect(*it));
+                intersections.append(at(t).intersected(*it));
         }
         ++it;
     }
@@ -521,7 +537,6 @@ QItemSelection QItemSelectionModelPrivate::expandSelection(const QItemSelection 
 
 /*!
   \internal
-
 */
 void QItemSelectionModelPrivate::_q_rowsAboutToBeRemoved(const QModelIndex &parent,
                                                          int start, int end)
@@ -553,7 +568,6 @@ void QItemSelectionModelPrivate::_q_rowsAboutToBeRemoved(const QModelIndex &pare
 
 /*!
   \internal
-
 */
 void QItemSelectionModelPrivate::_q_columnsAboutToBeRemoved(const QModelIndex &parent,
                                                             int start, int end)
@@ -581,6 +595,161 @@ void QItemSelectionModelPrivate::_q_columnsAboutToBeRemoved(const QModelIndex &p
     QModelIndex br = model->index(model->rowCount(parent) - 1, end, parent);
     q->select(QItemSelection(tl, br), QItemSelectionModel::Deselect);
     finalize();
+}
+
+/*!
+  \internal
+
+  Split selection ranges if columns are about to be inserted in the middle.
+*/
+void QItemSelectionModelPrivate::_q_columnsAboutToBeInserted(const QModelIndex &parent,
+                                                             int start, int end)
+{
+    Q_UNUSED(end);
+    finalize();
+    QList<QItemSelectionRange> split;
+    QList<QItemSelectionRange>::iterator it = ranges.begin();
+    for (; it != ranges.end(); ) {
+        if ((*it).isValid() && (*it).parent() == parent
+            && (*it).left() <= start && (*it).right() >= start) {
+            QModelIndex bottomMiddle = model->index((*it).bottom(), start - 1, (*it).parent());
+            QItemSelectionRange left((*it).topLeft(), bottomMiddle);
+            QModelIndex topMiddle = model->index((*it).top(), start, (*it).parent());
+            QItemSelectionRange right(topMiddle, (*it).bottomRight());
+            it = ranges.erase(it);
+            split.append(left);
+            split.append(right);
+        } else {
+            ++it;
+        }
+    }
+    ranges += split;
+}
+
+/*!
+  \internal
+
+  Split selection ranges if rows are about to be inserted in the middle.
+*/
+void QItemSelectionModelPrivate::_q_rowsAboutToBeInserted(const QModelIndex &parent,
+                                                          int start, int end)
+{
+    Q_UNUSED(end);
+    finalize();
+    QList<QItemSelectionRange> split;
+    QList<QItemSelectionRange>::iterator it = ranges.begin();
+    for (; it != ranges.end(); ) {
+        if ((*it).isValid() && (*it).parent() == parent
+            && (*it).top() <= start && (*it).bottom() >= start) {
+            QModelIndex middleRight = model->index(start - 1, (*it).right(), (*it).parent());
+            QItemSelectionRange top((*it).topLeft(), middleRight);
+            QModelIndex middleLeft = model->index(start, (*it).left(), (*it).parent());
+            QItemSelectionRange bottom(middleLeft, (*it).bottomRight());
+            it = ranges.erase(it);
+            split.append(top);
+            split.append(bottom);
+        } else {
+            ++it;
+        }
+    }
+    ranges += split;
+}
+
+/*!
+  \internal
+
+  Split selection into individual (persistent) indexes. This is done in
+  preparation for the layoutChanged() signal, where the indexes can be
+  merged again.
+*/
+void QItemSelectionModelPrivate::_q_layoutAboutToBeChanged()
+{
+    savedPersistentIndexes.clear();
+    savedPersistentCurrentIndexes.clear();
+    QModelIndexList indexes = ranges.indexes();
+    QModelIndexList::const_iterator it;
+    for (it = indexes.constBegin(); it != indexes.constEnd(); ++it)
+        savedPersistentIndexes.append(QPersistentModelIndex(*it));
+    indexes = currentSelection.indexes();
+    for (it = indexes.constBegin(); it != indexes.constEnd(); ++it)
+        savedPersistentCurrentIndexes.append(QPersistentModelIndex(*it));
+}
+
+/*!
+  \internal
+
+  Merges \a indexes into an item selection made up of ranges.
+  Assumes that the indexes are sorted.
+*/
+static QItemSelection mergeIndexes(const QList<QPersistentModelIndex> &indexes)
+{
+    QItemSelection colSpans;
+    // merge columns
+    int i = 0;
+    while (i < indexes.count()) {
+        QModelIndex tl = indexes.at(i);
+        QModelIndex br = tl;
+        while (++i < indexes.count()) {
+            QModelIndex next = indexes.at(i);
+            if ((next.parent() == br.parent())
+                 && (next.row() == br.row())
+                 && (next.column() == br.column() + 1))
+                br = next;
+            else
+                break;
+        }
+        colSpans.append(QItemSelectionRange(tl, br));
+    }
+    // merge rows
+    QItemSelection rowSpans;
+    i = 0;
+    while (i < colSpans.count()) {
+        QModelIndex tl = colSpans.at(i).topLeft();
+        QModelIndex br = colSpans.at(i).bottomRight();
+        QModelIndex prevTl = tl;
+        while (++i < colSpans.count()) {
+            QModelIndex nextTl = colSpans.at(i).topLeft();
+            QModelIndex nextBr = colSpans.at(i).bottomRight();
+            if ((nextTl.column() == prevTl.column()) && (nextBr.column() == br.column())
+                && (nextTl.row() == prevTl.row() + 1) && (nextBr.row() == br.row() + 1)) {
+                br = nextBr;
+                prevTl = nextTl;
+            } else {
+                break;
+            }
+        }
+        rowSpans.append(QItemSelectionRange(tl, br));
+    }
+    return rowSpans;
+}
+
+/*!
+  \internal
+
+  Merge the selected indexes into selection ranges again.
+*/
+void QItemSelectionModelPrivate::_q_layoutChanged()
+{
+    if (savedPersistentCurrentIndexes.isEmpty() && savedPersistentIndexes.isEmpty()) {
+        // either the selection was actually empty, or we
+        // didn't get the layoutAboutToBeChanged() signal
+        return;
+    }
+    // clear the "old" selection
+    ranges.clear();
+    currentSelection.clear();
+
+    // sort the "new" selection, as preparation for merging
+    qStableSort(savedPersistentIndexes.begin(), savedPersistentIndexes.end());
+    qStableSort(savedPersistentCurrentIndexes.begin(), savedPersistentCurrentIndexes.end());
+
+    // update the selection by merging the individual indexes
+    ranges = mergeIndexes(savedPersistentIndexes);
+    currentSelection = mergeIndexes(savedPersistentCurrentIndexes);
+
+    // release the persistent indexes
+    savedPersistentIndexes.clear();
+    savedPersistentCurrentIndexes.clear();
 }
 
 /*!
@@ -614,7 +783,7 @@ void QItemSelectionModelPrivate::_q_columnsAboutToBeRemoved(const QModelIndex &p
   selection. All functions operate on both layers; for example,
   selectedItems() will return items from both layers.
 
-  \sa {Model/View Programming}, QAbstractItemModel
+  \sa {Model/View Programming}, QAbstractItemModel, {Chart Example}
 */
 
 /*!
@@ -625,10 +794,18 @@ QItemSelectionModel::QItemSelectionModel(QAbstractItemModel *model)
 {
     d_func()->model = model;
     if (model) {
-        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&,int,int)),
-                this, SLOT(_q_rowsAboutToBeRemoved(const QModelIndex&,int,int)));
-        connect(model, SIGNAL(columnsAboutToBeRemoved(const QModelIndex&,int,int)),
-                this, SLOT(_q_columnsAboutToBeRemoved(const QModelIndex&,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(QModelIndex,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(QModelIndex,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeInserted(QModelIndex,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeInserted(QModelIndex,int,int)));
+        connect(model, SIGNAL(layoutAboutToBeChanged()),
+                this, SLOT(_q_layoutAboutToBeChanged()));
+        connect(model, SIGNAL(layoutChanged()),
+                this, SLOT(_q_layoutChanged()));
     }
 }
 
@@ -640,10 +817,18 @@ QItemSelectionModel::QItemSelectionModel(QAbstractItemModel *model, QObject *par
 {
     d_func()->model = model;
     if (model) {
-        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&,int,int)),
-                this, SLOT(_q_rowsAboutToBeRemoved(const QModelIndex&,int,int)));
-        connect(model, SIGNAL(columnsAboutToBeRemoved(const QModelIndex&,int,int)),
-                this, SLOT(_q_columnsAboutToBeRemoved(const QModelIndex&,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(QModelIndex,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(QModelIndex,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeInserted(QModelIndex,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeInserted(QModelIndex,int,int)));
+        connect(model, SIGNAL(layoutAboutToBeChanged()),
+                this, SLOT(_q_layoutAboutToBeChanged()));
+        connect(model, SIGNAL(layoutChanged()),
+                this, SLOT(_q_layoutChanged()));
     }
 }
 
@@ -655,10 +840,18 @@ QItemSelectionModel::QItemSelectionModel(QItemSelectionModelPrivate &dd, QAbstra
 {
     d_func()->model = model;
     if (model) {
-        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&,int,int)),
-                this, SLOT(_q_rowsAboutToBeRemoved(const QModelIndex&,int,int)));
-        connect(model, SIGNAL(columnsAboutToBeRemoved(const QModelIndex&,int,int)),
-                this, SLOT(_q_columnsAboutToBeRemoved(const QModelIndex&,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(QModelIndex,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(QModelIndex,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeInserted(QModelIndex,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeInserted(QModelIndex,int,int)));
+        connect(model, SIGNAL(layoutAboutToBeChanged()),
+                this, SLOT(_q_layoutAboutToBeChanged()));
+        connect(model, SIGNAL(layoutChanged()),
+                this, SLOT(_q_layoutChanged()));
     }
 }
 
@@ -690,6 +883,8 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
    model item index is replaced by the \a current index as the selection's
    current item.
 
+   Note that this signal will not be emitted when the item model is reset.
+
    \sa currentIndex() setCurrentIndex() selectionChanged()
 */
 
@@ -699,6 +894,8 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
    This signal is emitted if the \a current item changes and its column is
    different to the column of the \a previous current item.
 
+   Note that this signal will not be emitted when the item model is reset.
+
    \sa currentChanged() currentRowChanged() currentIndex() setCurrentIndex()
 */
 
@@ -707,6 +904,8 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
 
    This signal is emitted if the \a current item changes and its row is
    different to the row of the \a previous current item.
+
+   Note that this signal will not be emitted when the item model is reset.
 
    \sa currentChanged() currentColumnChanged() currentIndex() setCurrentIndex()
 */
@@ -719,6 +918,7 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
     an item selection of \a selected items.
 
     Note the that the current index changes independently from the selection.
+    Also note that this signal will not be emitted when the item model is reset.
 
     \sa select() currentChanged()
 */
@@ -795,13 +995,7 @@ void QItemSelectionModel::select(const QItemSelection &selection, QItemSelection
 void QItemSelectionModel::clear()
 {
     Q_D(QItemSelectionModel);
-    if (d->ranges.count() == 0 && d->currentSelection.count() == 0)
-        return;
-    QItemSelection selection = d->ranges;
-    selection.merge(d->currentSelection, d->currentCommand);
-    d->ranges.clear();
-    d->currentSelection.clear();
-    emit selectionChanged(QItemSelection(), selection);
+    clearSelection();
     QModelIndex previous = d->currentIndex;
     d->currentIndex = QModelIndex();
     if (previous.isValid()) {
@@ -819,6 +1013,22 @@ void QItemSelectionModel::reset()
     bool block = blockSignals(true);
     clear();
     blockSignals(block);
+}
+
+/*!
+  \since 4.2
+  Clears the selection in the selection model. Emits selectionChanged().
+*/
+void QItemSelectionModel::clearSelection()
+{
+    Q_D(QItemSelectionModel);
+    if (d->ranges.count() == 0 && d->currentSelection.count() == 0)
+        return;
+    QItemSelection selection = d->ranges;
+    selection.merge(d->currentSelection, d->currentCommand);
+    d->ranges.clear();
+    d->currentSelection.clear();
+    emit selectionChanged(QItemSelection(), selection);
 }
 
 
@@ -866,25 +1076,33 @@ QModelIndex QItemSelectionModel::currentIndex() const
 bool QItemSelectionModel::isSelected(const QModelIndex &index) const
 {
     Q_D(const QItemSelectionModel);
-    if (model() != index.model() || !index.isValid()
-        || (model()->flags(index) & Qt::ItemIsSelectable) == 0)
+    if (d->model != index.model() || !index.isValid())
         return false;
+
     bool selected = false;
-    QList<QItemSelectionRange>::const_iterator it = d->ranges.begin();
     //  search model ranges
-    for (; !selected && it != d->ranges.end(); ++it)
-        if ((*it).contains(index))
+    QList<QItemSelectionRange>::const_iterator it = d->ranges.begin();
+    for (; it != d->ranges.end(); ++it) {
+        if ((*it).contains(index)) {
             selected = true;
+            break;
+        }
+    }
+
     // check  currentSelection
     if (d->currentSelection.count()) {
-        if (d->currentCommand & Deselect && selected)
+        if ((d->currentCommand & Deselect) && selected)
             selected = !d->currentSelection.contains(index);
         else if (d->currentCommand & Toggle)
             selected ^= d->currentSelection.contains(index);
-        else if (d->currentCommand & Select && !selected)
+        else if ((d->currentCommand & Select) && !selected)
             selected = d->currentSelection.contains(index);
     }
-    return selected;
+
+    if (selected && (d->model->flags(index) & Qt::ItemIsSelectable))
+        return true;
+
+    return false;
 }
 
 /*!
@@ -898,7 +1116,7 @@ bool QItemSelectionModel::isSelected(const QModelIndex &index) const
 bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) const
 {
     Q_D(const QItemSelectionModel);
-    if (parent.isValid() && model() != parent.model())
+    if (parent.isValid() && d->model != parent.model())
         return false;
 
     // return false if row exist in currentSelection (Deselect)
@@ -918,7 +1136,7 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
                 d->currentSelection.at(i).bottom() >= row)
                 for (int j=0; j<d->ranges.count(); ++j)
                     if (d->ranges.at(j).top() <= row && d->ranges.at(j).bottom() >= row
-                        && d->currentSelection.at(i).intersect(d->ranges.at(j)).isValid())
+                        && d->currentSelection.at(i).intersected(d->ranges.at(j)).isValid())
                         return false;
     }
     // add ranges and currentSelection and check through them all
@@ -926,14 +1144,14 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
     QList<QItemSelectionRange> joined = d->ranges;
     if (d->currentSelection.count())
         joined += d->currentSelection;
-    int colCount = model()->columnCount(parent);
+    int colCount = d->model->columnCount(parent);
     for (int column = 0; column < colCount; ++column) {
-        for (it = joined.begin(); it != joined.end(); ++it)
-            if ((*it).contains(model()->index(row, column, parent))) {
+        for (it = joined.constBegin(); it != joined.constEnd(); ++it)
+            if ((*it).contains(row, column, parent)) {
                 column = qMax(column, (*it).right());
                 break;
             }
-        if (it == joined.end())
+        if (it == joined.constEnd())
             return false;
     }
     return colCount > 0; // no columns means no selected items
@@ -950,7 +1168,7 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
 bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent) const
 {
     Q_D(const QItemSelectionModel);
-    if (parent.isValid() && model() != parent.model())
+    if (parent.isValid() && d->model != parent.model())
         return false;
 
     // return false if column exist in currentSelection (Deselect)
@@ -970,7 +1188,7 @@ bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent
                 d->currentSelection.at(i).right() >= column) {
                 for (int j = 0; j < d->ranges.count(); ++j) {
                     if (d->ranges.at(j).left() <= column && d->ranges.at(j).right() >= column
-                        && d->currentSelection.at(i).intersect(d->ranges.at(j)).isValid()) {
+                        && d->currentSelection.at(i).intersected(d->ranges.at(j)).isValid()) {
                         return false;
                     }
                 }
@@ -982,15 +1200,15 @@ bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent
     QList<QItemSelectionRange> joined = d->ranges;
     if (d->currentSelection.count())
         joined += d->currentSelection;
-    int rowCount = model()->rowCount(parent);
+    int rowCount = d->model->rowCount(parent);
     for (int row = 0; row < rowCount; ++row) {
-         for (it = joined.begin(); it != joined.end(); ++it) {
-             if ((*it).contains(model()->index(row, column, parent))) {
+         for (it = joined.constBegin(); it != joined.constEnd(); ++it) {
+             if ((*it).contains(row, column, parent)) {
                  row = qMax(row, (*it).bottom());
                  break;
              }
          }
-         if (it == joined.end())
+         if (it == joined.constEnd())
              return false;
     }
     return rowCount > 0; // no rows means no selected items
@@ -1003,7 +1221,7 @@ bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent
 bool QItemSelectionModel::rowIntersectsSelection(int row, const QModelIndex &parent) const
 {
     Q_D(const QItemSelectionModel);
-    if (parent.isValid() && model() != parent.model())
+    if (parent.isValid() && d->model != parent.model())
          return false;
     // check current selection
     for (int i = 0; i < d->currentSelection.count(); ++i)
@@ -1025,7 +1243,7 @@ bool QItemSelectionModel::rowIntersectsSelection(int row, const QModelIndex &par
 bool QItemSelectionModel::columnIntersectsSelection(int column, const QModelIndex &parent) const
 {
     Q_D(const QItemSelectionModel);
-    if (parent.isValid() && model() != parent.model())
+    if (parent.isValid() && d->model != parent.model())
         return false;
     // check current selection
     for (int i = 0; i < d->currentSelection.count(); ++i)
@@ -1041,6 +1259,18 @@ bool QItemSelectionModel::columnIntersectsSelection(int column, const QModelInde
 }
 
 /*!
+    \since 4.2
+
+    Returns true if the selection model contains any selection ranges;
+    otherwise returns false.
+*/
+bool QItemSelectionModel::hasSelection() const
+{
+    Q_D(const QItemSelectionModel);
+    return !(d->ranges.isEmpty() && d->currentSelection.isEmpty());
+}
+
+/*!
   Returns a list of all selected model item indexes. The list contains no
   duplicates, and is not sorted.
 */
@@ -1050,6 +1280,48 @@ QModelIndexList QItemSelectionModel::selectedIndexes() const
     QItemSelection selected = d->ranges;
     selected.merge(d->currentSelection, d->currentCommand);
     return selected.indexes();
+}
+
+/*!
+  \since 4.2
+  Returns the indexes in the given \a column for the rows where all columns are selected.
+
+  \sa selectedIndexes(), selectedColumns()
+*/
+
+QModelIndexList QItemSelectionModel::selectedRows(int column) const
+{
+    QModelIndexList indexes;
+    QItemSelection ranges = selection();
+    for (int i = 0; i < ranges.count(); ++i) {
+        QModelIndex parent = ranges.at(i).parent();
+        int right = ranges.at(i).model()->columnCount(parent) - 1;
+        if (ranges.at(i).left() == 0 && ranges.at(i).right() == right)
+            for (int r = ranges.at(i).top(); r <= ranges.at(i).bottom(); ++r)
+                indexes.append(ranges.at(i).model()->index(r, column, parent));
+    }
+    return indexes;
+}
+
+/*!
+    \since 4.2
+    Returns the indexes in the given \a row for columns where all rows are selected.
+
+    \sa selectedIndexes(), selectedRows()
+*/
+
+QModelIndexList QItemSelectionModel::selectedColumns(int row) const
+{
+    QModelIndexList indexes;
+    QItemSelection ranges = selection();
+    for (int i = 0; i < ranges.count(); ++i) {
+        QModelIndex parent = ranges.at(i).parent();
+        int bottom = ranges.at(i).model()->rowCount(parent) - 1;
+        if (ranges.at(i).top() == 0 && ranges.at(i).bottom() == bottom)
+            for (int c = ranges.at(i).left(); c <= ranges.at(i).right(); ++c)
+                indexes.append(ranges.at(i).model()->index(row, c, parent));
+    }
+    return indexes;
 }
 
 /*!
@@ -1123,7 +1395,7 @@ void QItemSelectionModel::emitSelectionChanged(const QItemSelection &newSelectio
     for (int o = 0; o < deselected.count(); ++o) {
         for (int s = 0; s < selected.count(); ++s) {
             if (deselected.at(o).intersects(selected.at(s)))
-                intersections.append(deselected.at(o).intersect(selected.at(s)));
+                intersections.append(deselected.at(o).intersected(selected.at(s)));
         }
     }
 

@@ -24,8 +24,9 @@
 #include "qdesigner_taskmenu_p.h"
 #include "qdesigner_command_p.h"
 #include "qdesigner_promotedwidget_p.h"
-#include "qtundo_p.h"
+#include <QtGui/QUndoCommand>
 #include "richtexteditor_p.h"
+#include "stylesheeteditor_p.h"
 #include "promotetocustomwidgetdialog_p.h"
 #include "widgetfactory_p.h"
 #include "widgetdatabase_p.h"
@@ -46,6 +47,7 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QStatusBar>
 #include <QtCore/QVariant>
+#include <QtGui/QDialogButtonBox>
 
 #include <QtCore/qdebug.h>
 
@@ -100,6 +102,9 @@ QDesignerTaskMenu::QDesignerTaskMenu(QWidget *widget, QObject *parent)
     m_changeWhatsThis = new QAction(tr("Change whatsThis..."), this);
     connect(m_changeWhatsThis, SIGNAL(triggered()), this, SLOT(changeWhatsThis()));
 
+    m_changeStyleSheet = new QAction(tr("Change styleSheet..."), this);
+    connect(m_changeStyleSheet, SIGNAL(triggered()), this, SLOT(changeStyleSheet()));
+
     m_addMenuBar = new QAction(tr("Create Menu Bar"), this);
     connect(m_addMenuBar, SIGNAL(triggered()), this, SLOT(createMenuBar()));
 
@@ -109,10 +114,14 @@ QDesignerTaskMenu::QDesignerTaskMenu(QWidget *widget, QObject *parent)
     m_addStatusBar = new QAction(tr("Create Status Bar"), this);
     connect(m_addStatusBar, SIGNAL(triggered()), this, SLOT(createStatusBar()));
 
+    m_removeStatusBar = new QAction(tr("Remove Status Bar"), this);
+    connect(m_removeStatusBar, SIGNAL(triggered()), this, SLOT(removeStatusBar()));
+
     m_createDockWidgetAction = new QAction(tr("Create Dock Window"), this);
     connect(m_createDockWidgetAction, SIGNAL(triggered()), this, SLOT(createDockWidget()));
 
     m_promoteToCustomWidgetAction = new QAction(tr("Promote to Custom Widget"), this);
+    m_promoteToCustomWidgetAction->setObjectName(QLatin1String("__qt__promoteToCustomWidgetAction"));
     connect(m_promoteToCustomWidgetAction, SIGNAL(triggered()), this, SLOT(promoteToCustomWidget()));
 
     QString demote_string = tr("Demote from Custom Widget");
@@ -184,6 +193,21 @@ void QDesignerTaskMenu::createStatusBar()
     }
 }
 
+void QDesignerTaskMenu::removeStatusBar()
+{
+    if (QDesignerFormWindowInterface *fw = formWindow()) {
+        QMainWindow *mw = qobject_cast<QMainWindow*>(fw->mainContainer());
+        if (!mw) {
+            // ### warning message
+            return;
+        }
+
+        DeleteStatusBarCommand *cmd = new DeleteStatusBarCommand(fw);
+        cmd->init(findStatusBar(mw));
+        fw->commandHistory()->push(cmd);
+    }
+}
+
 QList<QAction*> QDesignerTaskMenu::taskActions() const
 {
     QDesignerFormWindowInterface *formWindow = QDesignerFormWindowInterface::findFormWindow(widget());
@@ -201,10 +225,10 @@ QList<QAction*> QDesignerTaskMenu::taskActions() const
 
             actions.append(m_addToolBar);
             // ### create the status bar
-#if 0
             if (!findStatusBar(mw))
                 actions.append(m_addStatusBar);
-#endif
+            else
+                actions.append(m_removeStatusBar);
             actions.append(m_separator2);
         }
     }
@@ -212,6 +236,7 @@ QList<QAction*> QDesignerTaskMenu::taskActions() const
     actions.append(m_separator);
     actions.append(m_changeToolTip);
     actions.append(m_changeWhatsThis);
+    actions.append(m_changeStyleSheet);
 
     if (!isMainContainer) {
         actions.append(m_separator);
@@ -284,11 +309,10 @@ void QDesignerTaskMenu::promoteToCustomWidget()
     QDesignerFormEditorInterface *core = fw->core();
     QWidget *wgt = widget();
     QDesignerWidgetDataBaseInterface *db = core->widgetDataBase();
-    WidgetFactory *factory = qobject_cast<WidgetFactory*>(core->widgetFactory());
 
     Q_ASSERT(qobject_cast<QDesignerPromotedWidget*>(wgt) == 0);
 
-    QString base_class_name = QLatin1String(factory->classNameOf(wgt));
+    QString base_class_name = QLatin1String(WidgetFactory::classNameOf(wgt));
 
     PromoteToCustomWidgetDialog dialog(db, base_class_name);
     if (!dialog.exec())
@@ -369,6 +393,15 @@ void QDesignerTaskMenu::changeStatusTip()
 void QDesignerTaskMenu::changeWhatsThis()
 {
     changeRichTextProperty(QLatin1String("whatsThis"));
+}
+
+void QDesignerTaskMenu::changeStyleSheet()
+{
+    if (QDesignerFormWindowInterface *fw = formWindow()) {
+        StyleSheetEditorDialog *dlg = new StyleSheetEditorDialog(fw, m_widget);
+        dlg->exec();
+        delete dlg;
+    }
 }
 
 } // namespace qdesigner_internal

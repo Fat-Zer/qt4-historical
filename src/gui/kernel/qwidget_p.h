@@ -51,6 +51,7 @@
 
 #if defined(Q_WS_QWS)
 #include "QtGui/qinputcontext.h"
+#include "QtGui/qscreen_qws.h"
 #endif
 
 // Extra QWidget data
@@ -78,15 +79,17 @@ struct QTLWExtra {
     QIcon *icon; // widget icon
     QPixmap *iconPixmap;
     short incw, inch; // size increments
-    ulong fleft, fright, ftop, fbottom; // frame strut
+     // frame strut, don't use these directly, use QWidgetPrivate::frameStrut() instead.
+    QRect frameStrut;
     uint opacity : 8;
+    uint posFromMove : 1;
 #ifndef Q_WS_MAC
     QWidgetBackingStore *backingStore;
 #endif
 #if defined(Q_WS_WIN)
     ulong savedFlags; // Save window flags while showing fullscreen
 #else
-    Qt::WFlags savedFlags; // Save widget flags while showing fullscreen
+    Qt::WindowFlags savedFlags; // Save widget flags while showing fullscreen
 #endif
     short basew, baseh; // base sizes
 #if defined(Q_WS_X11)
@@ -94,22 +97,20 @@ struct QTLWExtra {
     uint embedded : 1; // window is embedded in another Qt application
     uint spont_unmapped: 1; // window was spontaneously unmapped
     uint dnd : 1; // DND properties installed
-    uint uspos : 1; // User defined position
-    uint ussize : 1; // User defined size
     uint validWMState : 1; // is WM_STATE valid?
     uint waitingForMapNotify : 1; // show() has been called, haven't got the MapNotify yet
     QPoint fullScreenOffset;
     QBitmap *iconMask;
 #endif
 #if defined(Q_WS_MAC)
+    quint32 wattr;
+    quint32 wclass;
     WindowGroupRef group;
     uint is_moved: 1;
     uint resizer : 4;
 #endif
 #if defined(Q_WS_QWS) && !defined (QT_NO_QWS_MANAGER)
-//    QRegion decor_allocated_region; // decoration allocated region
     QWSManager *qwsManager;
-    QRect frameGeometry;
 #endif
 #if defined Q_WS_QWS
     bool inPaintTransaction;
@@ -120,6 +121,7 @@ struct QTLWExtra {
 #endif
     QRect normalGeometry; // used by showMin/maximized/FullScreen
 
+    QWindowSurface *windowSurface;
 };
 
 struct QWExtra {
@@ -137,19 +139,19 @@ struct QWExtra {
     WId xDndProxy; // XDND forwarding to embedded windows
 #endif
     QRegion mask; // widget mask
-    QStyle* style;
-    QSizePolicy size_policy;
 
 //bit flags at the end to improve packing
 #if defined(Q_WS_WIN)
     uint shown_mode : 8; // widget show mode
 #endif
 #if defined(Q_WS_X11)
-    uint children_use_dnd : 1;
     uint compress_events : 1;
 #endif
     uint explicitMinSize : 2;
     uint autoFillBackground : 1;
+
+    QStyle *style;
+    QString styleSheet;
 };
 
 class Q_GUI_EXPORT QWidgetPrivate : public QObjectPrivate
@@ -162,9 +164,18 @@ public:
 
     QWExtra *extraData() const;
     QTLWExtra *topData() const;
-
-    void init(QWidget *desktopWidget, Qt::WFlags f);
+    QTLWExtra *maybeTopData() const;
+#ifndef Q_WS_MAC
+    QWidgetBackingStore *maybeBackingStore() const;
+#endif
+#ifdef Q_WS_QWS
+    QWindowSurface *currentWindowSurface();
+#endif
+    void init(QWidget *desktopWidget, Qt::WindowFlags f);
     void create_sys(WId window, bool initializeWindow, bool destroyOldWindow);
+    void createRecursively();
+    void uncreateRecursively(bool includeThis = true);
+    void createWinId();
 
     void createTLExtra();
     void createExtra();
@@ -179,6 +190,10 @@ public:
     void setPalette_helper(const QPalette &);
     void resolvePalette();
 
+#ifdef Q_WS_WIN
+    void setMask_sys(const QRegion &);
+#endif
+
     void raise_sys();
     void lower_sys();
     void stackUnder_sys(QWidget *);
@@ -188,6 +203,9 @@ public:
 
     void setLayoutDirection_helper(Qt::LayoutDirection);
     void resolveLayoutDirection();
+
+    void setStyle_helper(QStyle *, bool);
+    void inheritStyle();
 
     bool isBackgroundInherited() const;
 
@@ -204,7 +222,8 @@ public:
 
     QRect clipRect() const;
     QRegion clipRegion() const;
-    void subtractOpaqueChildren(QRegion &rgn, const QRegion &clipRgn, const QPoint &offset) const;
+    void subtractOpaqueChildren(QRegion &rgn, const QRegion &clipRgn, const QPoint &offset, int startIdx = 0) const;
+    void subtractOpaqueSiblings(QRegion &rgn, const QPoint &offset) const;
     void updateIsOpaque();
     bool isOpaque() const;
     bool hasBackground() const;
@@ -222,9 +241,6 @@ public:
     void focusInputContext();
 
 #if defined(Q_WS_X11)
-    void checkChildrenDnd();
-    void fixupDnd();
-
     void setWindowRole(const char *role);
     void sendStartupMessage(const char *message) const;
 #endif
@@ -254,7 +270,7 @@ public:
     void setWinId(WId);
     void showChildren(bool spontaneous);
     void hideChildren(bool spontaneous);
-    void setParent_sys(QWidget *parent, Qt::WFlags);
+    void setParent_sys(QWidget *parent, Qt::WindowFlags);
     void deactivateWidgetCleanup();
     void setGeometry_sys(int, int, int, int, bool);
     void show_recursive();
@@ -262,26 +278,48 @@ public:
     void show_sys();
     void hide_sys();
     void hide_helper();
+    void _q_showIfNotHidden();
+
     void setEnabled_helper(bool);
     void registerDropSite(bool);
-    void updateFrameStrut() const;
+    static void adjustFlags(Qt::WindowFlags &flags, QWidget *w = 0);
+
+    void updateFrameStrut();
+    QRect frameStrut() const;
+
     void setWindowIconText_sys(const QString &cap);
     void setWindowIconText_helper(const QString &cap);
     void setWindowTitle_sys(const QString &cap);
+
+#ifndef QT_NO_CURSOR
+    void setCursor_sys(const QCursor &cursor);
+    void unsetCursor_sys();
+#endif
+
 #ifdef Q_WS_MAC
     void setWindowModified_sys(bool b);
+    void createWindow_sys();
+    void determineWindowClass();
+    void initWindowPtr();
+    void transferChildren();
 #endif
     void setWindowTitle_helper(const QString &cap);
 
+    void setMinimumSize_helper(int minw, int minh);
+    void setMaximumSize_helper(int maxw, int maxh);
     void setConstraints_sys();
 
 #if defined(Q_WS_QWS)
     QRegion localRequestedRegion() const;
+    QRegion localAllocatedRegion() const;
 
     void blitToScreen(const QRegion &globalrgn);
 #ifndef QT_NO_CURSOR
     void updateCursor(const QRegion &r) const;
 #endif
+
+    QScreen* getScreen() const;
+
     friend class QWSManager;
     friend class QWSManagerPrivate;
     friend class QDecoration;
@@ -298,6 +336,7 @@ public:
 
     QWExtra *extra;
     QWidget *focus_next;
+    QWidget *focus_prev;
     QWidget *focus_child;
 #ifndef QT_NO_ACTION
     QList<QAction*> actions;
@@ -306,7 +345,10 @@ public:
 #if !defined(QT_NO_IM)
     QPointer<QInputContext> ic;
 #endif
+    // All widgets are initially added into the uncreatedWidgets set. Once
+    // they receive a window id they are removed and added to the mapper
     static QWidgetMapper *mapper;
+    static QWidgetSet *uncreatedWidgets;
 
     int leftmargin, topmargin, rightmargin, bottommargin;
     // ### TODO: reorganize private/extra/topextra to save memory
@@ -378,6 +420,7 @@ public:
     mutable const QMetaObject *polished;
 
     void setModal_sys();
+    QSizePolicy size_policy;
 };
 
 inline QWExtra *QWidgetPrivate::extraData() const
@@ -390,5 +433,19 @@ inline QTLWExtra *QWidgetPrivate::topData() const
     const_cast<QWidgetPrivate *>(this)->createTLExtra();
     return extra->topextra;
 }
+
+inline QTLWExtra *QWidgetPrivate::maybeTopData() const
+{
+    return extra ? extra->topextra : 0;
+}
+
+#ifndef Q_WS_MAC
+inline QWidgetBackingStore *QWidgetPrivate::maybeBackingStore() const
+{
+    Q_Q(const QWidget);
+    QTLWExtra *x = q->window()->d_func()->maybeTopData();
+    return x ? x->backingStore : 0;
+}
+#endif
 
 #endif // QWIDGET_P_H

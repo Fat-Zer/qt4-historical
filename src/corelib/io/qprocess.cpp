@@ -24,6 +24,7 @@
 //#define QPROCESS_DEBUG
 
 #if defined QPROCESS_DEBUG
+#include <qdebug.h>
 #include <qstring.h>
 #include <ctype.h>
 
@@ -35,7 +36,7 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 {
     if (!data) return "(null)";
     QByteArray out;
-    for (int i = 0; i < len; ++i) {
+    for (int i = 0; i < len && i < maxSize; ++i) {
         char c = data[i];
         if (isprint(c)) {
             out += c;
@@ -44,9 +45,10 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
         case '\r': out += "\\r"; break;
         case '\t': out += "\\t"; break;
         default:
-            QString tmp;
-            tmp.sprintf("\\%o", c);
-            out += tmp.toLatin1();
+            char buf[5];
+            qsnprintf(buf, sizeof(buf), "\\%3o", c);
+            buf[4] = '\0';
+            out += QString::fromLatin1(buf);
         }
     }
 
@@ -142,7 +144,7 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
 
     QProcess can merge the two output channels, so that standard
     output and standard error data from the running process both use
-    the standard output channel. Call setReadChannelMode() with
+    the standard output channel. Call setProcessChannelMode() with
     MergedChannels before starting the process to activative
     this feature. You also have the option of forwarding the output of
     the running process to the calling, main process, by passing
@@ -204,7 +206,7 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxSize)
     \enum QProcess::ProcessChannelMode
 
     This enum describes the process channel modes of QProcess. Pass
-    one of these values to setReadChannelMode() to set the
+    one of these values to setProcessChannelMode() to set the
     current read channel mode.
 
     \value SeparateChannels QProcess manages the output of the
@@ -358,26 +360,16 @@ QProcessPrivate::QProcessPrivate()
     sequenceNumber = 0;
     exitCode = 0;
     exitStatus = QProcess::NormalExit;
-    standardReadSocketNotifier = 0;
-    errorReadSocketNotifier = 0;
-    writeSocketNotifier = 0;
     startupSocketNotifier = 0;
     deathNotifier = 0;
     notifier = 0;
     pipeWriter = 0;
-    standardReadPipe[0] = INVALID_Q_PIPE;
-    standardReadPipe[1] = INVALID_Q_PIPE;
-    errorReadPipe[0] = INVALID_Q_PIPE;
-    errorReadPipe[1] = INVALID_Q_PIPE;
-    writePipe[0] = INVALID_Q_PIPE;
-    writePipe[1] = INVALID_Q_PIPE;
     childStartedPipe[0] = INVALID_Q_PIPE;
     childStartedPipe[1] = INVALID_Q_PIPE;
     deathPipe[0] = INVALID_Q_PIPE;
     deathPipe[1] = INVALID_Q_PIPE;
     exitCode = 0;
     crashed = false;
-    writeChannelClosing = false;
     emittedReadyRead = false;
     emittedBytesWritten = false;
 #ifdef Q_WS_WIN
@@ -393,6 +385,10 @@ QProcessPrivate::QProcessPrivate()
 */
 QProcessPrivate::~QProcessPrivate()
 {
+    if (stdinChannel.process)
+        stdinChannel.process->stdoutChannel.clear();
+    if (stdoutChannel.process)
+        stdoutChannel.process->stdinChannel.clear();
 }
 
 /*! \internal
@@ -417,20 +413,20 @@ void QProcessPrivate::cleanup()
     pid = 0;
     sequenceNumber = 0;
 
-    if (standardReadSocketNotifier) {
-        standardReadSocketNotifier->setEnabled(false);
-        delete standardReadSocketNotifier;
-        standardReadSocketNotifier = 0;
+    if (stdoutChannel.notifier) {
+        stdoutChannel.notifier->setEnabled(false);
+        delete stdoutChannel.notifier;
+        stdoutChannel.notifier = 0;
     }
-    if (errorReadSocketNotifier) {
-        errorReadSocketNotifier->setEnabled(false);
-        delete errorReadSocketNotifier;
-        errorReadSocketNotifier = 0;
+    if (stderrChannel.notifier) {
+        stderrChannel.notifier->setEnabled(false);
+        delete stderrChannel.notifier;
+        stderrChannel.notifier = 0;
     }
-    if (writeSocketNotifier) {
-        writeSocketNotifier->setEnabled(false);
-        delete writeSocketNotifier;
-        writeSocketNotifier = 0;
+    if (stdinChannel.notifier) {
+        stdinChannel.notifier->setEnabled(false);
+        delete stdinChannel.notifier;
+        stdinChannel.notifier = 0;
     }
     if (startupSocketNotifier) {
         startupSocketNotifier->setEnabled(false);
@@ -446,9 +442,9 @@ void QProcessPrivate::cleanup()
         delete notifier;
         notifier = 0;
     }
-    destroyPipe(standardReadPipe);
-    destroyPipe(errorReadPipe);
-    destroyPipe(writePipe);
+    destroyPipe(stdoutChannel.pipe);
+    destroyPipe(stderrChannel.pipe);
+    destroyPipe(stdinChannel.pipe);
     destroyPipe(childStartedPipe);
     destroyPipe(deathPipe);
 #ifdef Q_OS_UNIX
@@ -463,9 +459,12 @@ bool QProcessPrivate::_q_canReadStandardOutput()
     Q_Q(QProcess);
     qint64 available = bytesAvailableFromStdout();
     if (available == 0) {
-        if (standardReadSocketNotifier)
-            standardReadSocketNotifier->setEnabled(false);
-        destroyPipe(standardReadPipe);
+        if (stdoutChannel.notifier)
+            stdoutChannel.notifier->setEnabled(false);
+        destroyPipe(stdoutChannel.pipe);
+#if defined QPROCESS_DEBUG
+        qDebug("QProcessPrivate::canReadStandardOutput(), 0 bytes available");
+#endif
         return false;
     }
 
@@ -475,19 +474,27 @@ bool QProcessPrivate::_q_canReadStandardOutput()
         processError = QProcess::ReadError;
         q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Error reading from process")));
         emit q->error(processError);
+#if defined QPROCESS_DEBUG
+        qDebug("QProcessPrivate::canReadStandardOutput(), failed to read from the process");
+#endif
         return false;
     }
-    if (standardOutputClosed) {
-        outputReadBuffer.truncate(readBytes);
+#if defined QPROCESS_DEBUG
+    qDebug("QProcessPrivate::canReadStandardOutput(), read %d bytes from the process' output",
+            int(readBytes));
+#endif
+
+    if (stdoutChannel.closed) {
+        outputReadBuffer.chop(readBytes);
         return false;
     }
 
-    outputReadBuffer.truncate(available - readBytes);
+    outputReadBuffer.chop(available - readBytes);
 
     bool didRead = false;
     if (readBytes == 0) {
-        if (standardReadSocketNotifier)
-            standardReadSocketNotifier->setEnabled(false);
+        if (stdoutChannel.notifier)
+            stdoutChannel.notifier->setEnabled(false);
     } else if (processChannel == QProcess::StandardOutput) {
         didRead = true;
         if (!emittedReadyRead) {
@@ -507,9 +514,9 @@ bool QProcessPrivate::_q_canReadStandardError()
     Q_Q(QProcess);
     qint64 available = bytesAvailableFromStderr();
     if (available == 0) {
-        if (errorReadSocketNotifier)
-            errorReadSocketNotifier->setEnabled(false);
-        destroyPipe(errorReadPipe);
+        if (stderrChannel.notifier)
+            stderrChannel.notifier->setEnabled(false);
+        destroyPipe(stderrChannel.pipe);
         return false;
     }
 
@@ -521,17 +528,17 @@ bool QProcessPrivate::_q_canReadStandardError()
         emit q->error(processError);
         return false;
     }
-    if (standardErrorClosed) {
-        errorReadBuffer.truncate(readBytes);
+    if (stderrChannel.closed) {
+        errorReadBuffer.chop(readBytes);
         return false;
     }
 
-    errorReadBuffer.truncate(available - readBytes);
+    errorReadBuffer.chop(available - readBytes);
 
     bool didRead = false;
     if (readBytes == 0) {
-        if (errorReadSocketNotifier)
-            errorReadSocketNotifier->setEnabled(false);
+        if (stderrChannel.notifier)
+            stderrChannel.notifier->setEnabled(false);
     } else if (processChannel == QProcess::StandardError) {
         didRead = true;
         if (!emittedReadyRead) {
@@ -549,25 +556,32 @@ bool QProcessPrivate::_q_canReadStandardError()
 bool QProcessPrivate::_q_canWrite()
 {
     Q_Q(QProcess);
+    if (stdinChannel.notifier)
+        stdinChannel.notifier->setEnabled(false);
+
+    if (writeBuffer.isEmpty()) {
 #if defined QPROCESS_DEBUG
-    qDebug("QProcessPrivate::_q_canWrite()");
+        qDebug("QProcessPrivate::canWrite(), not writing anything (empty write buffer).");
 #endif
-
-    if (writeSocketNotifier)
-        writeSocketNotifier->setEnabled(false);
-
-    if (writeBuffer.isEmpty())
         return false;
+    }
 
     qint64 written = writeToStdin(writeBuffer.readPointer(),
                                       writeBuffer.nextDataBlockSize());
     if (written < 0) {
-        destroyPipe(writePipe);
+        destroyPipe(stdinChannel.pipe);
         processError = QProcess::WriteError;
         q->setErrorString(QT_TRANSLATE_NOOP(QProcess, QLatin1String("Error writing to process")));
+#if defined QPROCESS_DEBUG
+        qDebug("QProcessPrivate::canWrite(), failed to write (%s)", strerror(errno));
+#endif
         emit q->error(processError);
         return false;
     }
+
+#if defined QPROCESS_DEBUG
+    qDebug("QProcessPrivate::canWrite(), wrote %d bytes to the process input", int(written));
+#endif
 
     writeBuffer.free(written);
     if (!emittedBytesWritten) {
@@ -575,9 +589,9 @@ bool QProcessPrivate::_q_canWrite()
         emit q->bytesWritten(written);
         emittedBytesWritten = false;
     }
-    if (writeSocketNotifier && !writeBuffer.isEmpty())
-        writeSocketNotifier->setEnabled(true);
-    if (writeBuffer.isEmpty() && writeChannelClosing)
+    if (stdinChannel.notifier && !writeBuffer.isEmpty())
+        stdinChannel.notifier->setEnabled(true);
+    if (writeBuffer.isEmpty() && stdinChannel.closed)
         closeWriteChannel();
     return true;
 }
@@ -670,13 +684,17 @@ void QProcessPrivate::closeWriteChannel()
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::closeWriteChannel()");
 #endif
-
-    if (writeSocketNotifier) {
-        writeSocketNotifier->setEnabled(false);
-        delete writeSocketNotifier;
-        writeSocketNotifier = 0;
+    if (stdinChannel.notifier) {
+        stdinChannel.notifier->setEnabled(false);
+        delete stdinChannel.notifier;
+        stdinChannel.notifier = 0;
     }
-    destroyPipe(writePipe);
+#ifdef Q_OS_WIN
+    // ### Find a better fix, feeding the process little by little
+    // instead.
+    flushPipeWriter();
+#endif
+    destroyPipe(stdinChannel.pipe);
 }
 
 /*!
@@ -697,7 +715,7 @@ QProcess::~QProcess()
 {
     Q_D(QProcess);
     if (d->processState != NotRunning) {
-        qWarning("QProcess object destroyed while process is still running.");
+        qWarning("QProcess: Destroyed while process is still running.");
         kill();
         waitForFinished();
     }
@@ -709,23 +727,53 @@ QProcess::~QProcess()
 }
 
 /*!
-    Returns the read channel mode of the QProcess.
+    \obsolete
+    Returns the read channel mode of the QProcess. This function is
+    equivalent to processChannelMode()
+
+    \sa processChannelMode()
+*/
+QProcess::ProcessChannelMode QProcess::readChannelMode() const
+{
+    return processChannelMode();
+}
+
+/*!
+    \obsolete
+
+    Use setProcessChannelMode(\a mode) instead.
+
+    \sa setProcessChannelMode()
+*/
+void QProcess::setReadChannelMode(ProcessChannelMode mode)
+{
+    setProcessChannelMode(mode);
+}
+
+/*!
+    \since 4.2
+
+    Returns the channel mode of the QProcess standard output and
+    standard error channels.
 
     \sa setReadChannelMode(), ProcessChannelMode, setReadChannel()
 */
-QProcess::ProcessChannelMode QProcess::readChannelMode() const
+QProcess::ProcessChannelMode QProcess::processChannelMode() const
 {
     Q_D(const QProcess);
     return d->processChannelMode;
 }
 
 /*!
-    Sets the read channel mode of the QProcess to the \a mode specified.
+    \since 4.2
+
+    Sets the channel mode of the QProcess standard output and standard
+    error channels to the \a mode specified.
     This mode will be used the next time start() is called. For example:
 
     \code
         QProcess builder;
-        builder.setReadChannelMode(QProcess::MergedChannels);
+        builder.setProcessChannelMode(QProcess::MergedChannels);
         builder.start("make", QStringList() << "-j2");
 
         if (!builder.waitForFinished())
@@ -736,7 +784,7 @@ QProcess::ProcessChannelMode QProcess::readChannelMode() const
 
     \sa readChannelMode(), ProcessChannelMode, setReadChannel()
 */
-void QProcess::setReadChannelMode(ProcessChannelMode mode)
+void QProcess::setProcessChannelMode(ProcessChannelMode mode)
 {
     Q_D(QProcess);
     d->processChannelMode = mode;
@@ -767,7 +815,7 @@ void QProcess::setReadChannel(ProcessChannel channel)
 {
     Q_D(QProcess);
     if (d->processChannel != channel)
-        d->ungetBuffer.clear();
+        d->buffer.clear();
     d->processChannel = channel;
 }
 
@@ -786,9 +834,9 @@ void QProcess::closeReadChannel(ProcessChannel channel)
     Q_D(QProcess);
 
     if (channel == StandardOutput)
-        d->standardOutputClosed = true;
+        d->stdoutChannel.closed = true;
     else
-        d->standardErrorClosed = true;
+        d->stderrChannel.closed = true;
 }
 
 /*!
@@ -818,10 +866,120 @@ void QProcess::closeReadChannel(ProcessChannel channel)
 void QProcess::closeWriteChannel()
 {
     Q_D(QProcess);
-    d->writeChannelClosing = true;
+    d->stdinChannel.closed = true; // closing
     if (d->writeBuffer.isEmpty())
         d->closeWriteChannel();
+}
 
+/*!
+    \since 4.2
+
+    Redirects the process' standard input to the file indicated by \a
+    fileName. When an input redirection is in place, the QProcess
+    object will be in read-only mode (calling write() will result in
+    error).
+
+    If the file \a fileName does not exist at the moment start() is
+    called or is not readable, starting the process will fail.
+
+    Calling setStandardInputFile() after the process has started has no
+    effect.
+
+    \sa setStandardOutputFile(), setStandardErrorFile(),
+        setStandardOutputProcess()
+*/
+void QProcess::setStandardInputFile(const QString &fileName)
+{
+    Q_D(QProcess);
+    d->stdinChannel = fileName;
+}
+
+/*!
+    \since 4.2
+
+    Redirects the process' standard output to the file \a
+    fileName. When the redirection is in place, the standard output
+    read channel is closed: reading from it using read() will always
+    fail, as will readAllStandardOutput().
+
+    If the file \a fileName doesn't exist at the moment start() is
+    called, it will be created. If it cannot be created, the starting
+    will fail.
+
+    If the file exists and \a mode is QIODevice::Truncate, the file
+    will be truncated. Otherwise (if \a mode is QIODevice::Append),
+    the file will be appended to.
+
+    Calling setStandardOutputFile() after the process has started has
+    no effect.
+
+    \sa setStandardInputFile(), setStandardErrorFile(),
+        setStandardOutputProcess()
+*/
+void QProcess::setStandardOutputFile(const QString &fileName, OpenMode mode)
+{
+    Q_ASSERT(mode == Append || mode == Truncate);
+    Q_D(QProcess);
+
+    d->stdoutChannel = fileName;
+    d->stdoutChannel.append = mode == Append;
+}
+
+/*!
+    \since 4.2
+
+    Redirects the process' standard error to the file \a
+    fileName. When the redirection is in place, the standard error
+    read channel is closed: reading from it using read() will always
+    fail, as will readAllStandardError(). The file will be appended to
+    if \a mode is Append, otherwise, it will be truncated.
+
+    See setStandardOutputFile() for more information on how the file
+    is opened.
+
+    Note: if setProcessChannelMode() was called with an argument of
+    QProcess::MergedChannels, this function has no effect.
+
+    \sa setStandardInputFile(), setStandardOutputFile(),
+        setStandardOutputProcess()
+*/
+void QProcess::setStandardErrorFile(const QString &fileName, OpenMode mode)
+{
+    Q_ASSERT(mode == Append || mode == Truncate);
+    Q_D(QProcess);
+
+    d->stderrChannel = fileName;
+    d->stderrChannel.append = mode == Append;
+}
+
+/*!
+    \since 4.2
+
+    Pipes the standard output stream of this process to the \a
+    destination process' standard input.
+
+    The following shell command:
+    \code
+        command1 | command2
+    \endcode
+
+    Can be accomplished with QProcesses with the following code:
+    \code
+        QProcess process1;
+        QProcess process2;
+
+        process1.setStandardOutputProcess(process2);
+
+        process1.start("command1");
+        process2.start("command2");
+    \endcode
+*/
+void QProcess::setStandardOutputProcess(QProcess *destination)
+{
+    QProcessPrivate *dfrom = d_func();
+    QProcessPrivate *dto = destination->d_func();
+    dfrom->stdoutChannel.pipeTo(dto);
+    dto->stdinChannel.pipeFrom(dfrom);
 }
 
 /*!
@@ -871,7 +1029,7 @@ bool QProcess::canReadLine() const
     const QRingBuffer *readBuffer = (d->processChannel == QProcess::StandardError)
                                     ? &d->errorReadBuffer
                                     : &d->outputReadBuffer;
-    return readBuffer->canReadLine();
+    return readBuffer->canReadLine() || QIODevice::canReadLine();
 }
 
 /*!
@@ -900,7 +1058,7 @@ bool QProcess::atEnd() const
     const QRingBuffer *readBuffer = (d->processChannel == QProcess::StandardError)
                                     ? &d->errorReadBuffer
                                     : &d->outputReadBuffer;
-    return !isOpen() || readBuffer->isEmpty();
+    return QIODevice::atEnd() && (!isOpen() || readBuffer->isEmpty());
 }
 
 /*! \reimp
@@ -956,18 +1114,15 @@ QProcess::ProcessState QProcess::state() const
 }
 
 /*!
-    Sets the environment that QProcess will use when starting a
-    process to \a environment. \a environment is a list of key=value
-    pairs. Example:
+    Sets the environment that QProcess will use when starting a process to the
+    \a environment specified which consists of a list of key=value pairs.
 
-    \code
-        QProcess process;
-        QStringList env = QProcess::systemEnvironment();
-        env << "TMPDIR=C:\\MyApp\\temp"; // Add an environment variable
-        env.replaceInStrings(QRegExp("^PATH=(.*)", false), "PATH=\\1;C:\\Bin"); // Add Bin to PATH
-        process.setEnvironment(env);
-        process.start("myapp");
-    \endcode
+    For example, the following code adds the \c{C:\\BIN} directory to the list of
+    executable paths (\c{PATHS}) on Windows:
+
+    \quotefromfile snippets/qprocess-environment/main.cpp
+    \skipto QProcess process;
+    \printuntil process.start
 
     \sa environment(), systemEnvironment()
 */
@@ -1030,9 +1185,9 @@ bool QProcess::waitForReadyRead(int msecs)
 
     if (d->processState == QProcess::NotRunning)
         return false;
-    if (d->processChannel == QProcess::StandardOutput && d->standardOutputClosed)
+    if (d->processChannel == QProcess::StandardOutput && d->stdoutChannel.closed)
         return false;
-    if (d->processChannel == QProcess::StandardError && d->standardErrorClosed)
+    if (d->processChannel == QProcess::StandardError && d->stderrChannel.closed)
         return false;
     return d->waitForReadyRead(msecs);
 }
@@ -1156,14 +1311,14 @@ qint64 QProcess::readData(char *data, qint64 maxlen)
         if (c == -1) {
 #if defined QPROCESS_DEBUG
             qDebug("QProcess::readData(%p \"%s\", %d) == -1",
-                   data, qt_prettyDebug(data, maxlen, 1).constData(), 1);
+                   data, qt_prettyDebug(data, 1, maxlen).constData(), 1);
 #endif
             return -1;
         }
         *data = (char) c;
 #if defined QPROCESS_DEBUG
         qDebug("QProcess::readData(%p \"%s\", %d) == 1",
-               data, qt_prettyDebug(data, maxlen, 1).constData(), 1);
+               data, qt_prettyDebug(data, 1, maxlen).constData(), 1);
 #endif
         return 1;
     }
@@ -1171,7 +1326,7 @@ qint64 QProcess::readData(char *data, qint64 maxlen)
     qint64 bytesToRead = qint64(qMin(readBuffer->size(), (int)maxlen));
     qint64 readSoFar = 0;
     while (readSoFar < bytesToRead) {
-        char *ptr = readBuffer->readPointer();
+        const char *ptr = readBuffer->readPointer();
         int bytesToReadFromThisBlock = qMin<qint64>(bytesToRead - readSoFar,
                                             readBuffer->nextDataBlockSize());
         memcpy(data + readSoFar, ptr, bytesToReadFromThisBlock);
@@ -1192,7 +1347,7 @@ qint64 QProcess::writeData(const char *data, qint64 len)
 {
     Q_D(QProcess);
 
-    if (d->writeChannelClosing) {
+    if (d->stdinChannel.closed) {
 #if defined QPROCESS_DEBUG
     qDebug("QProcess::writeData(%p \"%s\", %lld) == 0 (write channel closing)",
            data, qt_prettyDebug(data, len, 16).constData(), len);
@@ -1202,8 +1357,8 @@ qint64 QProcess::writeData(const char *data, qint64 len)
 
     if (len == 1) {
         d->writeBuffer.putChar(*data);
-        if (d->writeSocketNotifier)
-            d->writeSocketNotifier->setEnabled(true);
+        if (d->stdinChannel.notifier)
+            d->stdinChannel.notifier->setEnabled(true);
 #if defined QPROCESS_DEBUG
     qDebug("QProcess::writeData(%p \"%s\", %lld) == 1 (written to buffer)",
            data, qt_prettyDebug(data, len, 16).constData(), len);
@@ -1213,8 +1368,8 @@ qint64 QProcess::writeData(const char *data, qint64 len)
 
     char *dest = d->writeBuffer.reserve(len);
     memcpy(dest, data, len);
-    if (d->writeSocketNotifier)
-        d->writeSocketNotifier->setEnabled(true);
+    if (d->stdinChannel.notifier)
+        d->stdinChannel.notifier->setEnabled(true);
 #if defined QPROCESS_DEBUG
     qDebug("QProcess::writeData(%p \"%s\", %lld) == %lld (written to buffer)",
            data, qt_prettyDebug(data, len, 16).constData(), len, len);
@@ -1263,23 +1418,41 @@ QByteArray QProcess::readAllStandardError()
 
     On Windows, arguments that contain spaces are wrapped in quotes.
 
-    \sa pid(), started()
+    Note: processes are started asynchronously, which means the started()
+    and error() signals may be delayed. Call waitForStarted() to make
+    sure the process has started (or has failed to start) and those signals
+    have been emitted.
+
+    \sa pid(), started(), waitForStarted()
 */
 void QProcess::start(const QString &program, const QStringList &arguments, OpenMode mode)
 {
     Q_D(QProcess);
     if (d->processState != NotRunning) {
-        qWarning("QProcess::start() called when a process is already running.");
+        qWarning("QProcess::start: Process is already running");
         return;
     }
 
+#if defined QPROCESS_DEBUG
+    qDebug() << "QProcess::start(" << program << "," << arguments << "," << mode << ")";
+#endif
+
     d->outputReadBuffer.clear();
     d->errorReadBuffer.clear();
+
+    if (d->stdinChannel.type != QProcessPrivate::Channel::Normal)
+        mode &= ~WriteOnly;     // not open for writing
+    if (d->stdoutChannel.type != QProcessPrivate::Channel::Normal &&
+        (d->stderrChannel.type != QProcessPrivate::Channel::Normal ||
+         d->processChannelMode == MergedChannels))
+        mode &= ~ReadOnly;      // not open for reading
+    if (mode == 0)
+        mode = Unbuffered;
     setOpenMode(mode);
 
-    d->writeChannelClosing = false;
-    d->standardOutputClosed = false;
-    d->standardErrorClosed = false;
+    d->stdinChannel.closed = false;
+    d->stdoutChannel.closed = false;
+    d->stderrChannel.closed = false;
 
     d->program = program;
     d->arguments = arguments;
@@ -1287,7 +1460,7 @@ void QProcess::start(const QString &program, const QStringList &arguments, OpenM
     d->exitCode = 0;
     d->exitStatus = NormalExit;
     d->processError = QProcess::UnknownError;
-    setErrorString(tr("Unknown error"));
+    d->errorString.clear();
     d->startProcess();
 }
 
@@ -1535,6 +1708,17 @@ QStringList QProcess::systemEnvironment()
         tmp << QString::fromLocal8Bit(entry);
     return tmp;
 }
+
+/*!
+    \typedef Q_PID
+    \relates QProcess
+
+    Typedef for the identifiers used to represent processes on the underlying
+    platform. On Unix, this corresponds to \l qint64; on Windows, it
+    corresponds to \c{_PROCESS_INFORMATION*}.
+
+    \sa QProcess::pid()
+*/
 
 #include "moc_qprocess.cpp"
 

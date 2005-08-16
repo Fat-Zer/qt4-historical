@@ -33,8 +33,11 @@
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
-class SignalSlotEditor;
 class QAction;
+
+namespace qdesigner_internal {
+
+class SignalSlotEditor;
 
 class QT_SIGNALSLOTEDITOR_EXPORT SignalSlotEditorTool: public QDesignerFormWindowToolInterface
 {
@@ -63,5 +66,7 @@ private:
     mutable QPointer<qdesigner_internal::SignalSlotEditor> m_editor;
     QAction *m_action;
 };
+
+}  // namespace qdesigner_internal
 
 #endif // SIGNALSLOTEDITOR_TOOL_H

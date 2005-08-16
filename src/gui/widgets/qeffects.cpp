@@ -43,7 +43,7 @@ class QAccessWidget : public QWidget
     friend class QAlphaWidget;
     friend class QRollEffect;
 public:
-    QAccessWidget(QWidget* parent=0, Qt::WFlags f = 0)
+    QAccessWidget(QWidget* parent=0, Qt::WindowFlags f = 0)
         : QWidget(parent, f) {}
 };
 
@@ -58,7 +58,7 @@ class QAlphaWidget: public QWidget, private QEffects
 {
     Q_OBJECT
 public:
-    QAlphaWidget(QWidget* w, Qt::WFlags f = 0);
+    QAlphaWidget(QWidget* w, Qt::WindowFlags f = 0);
 
     void run(int time);
 
@@ -89,7 +89,7 @@ static QAlphaWidget* q_blend = 0;
 /*
   Constructs a QAlphaWidget.
 */
-QAlphaWidget::QAlphaWidget(QWidget* w, Qt::WFlags f)
+QAlphaWidget::QAlphaWidget(QWidget* w, Qt::WindowFlags f)
     : QWidget(QApplication::desktop()->screen(QApplication::desktop()->screenNumber(w)), f)
 {
 #ifndef Q_WS_WIN
@@ -262,7 +262,7 @@ class QRollEffect : public QWidget, private QEffects
 {
     Q_OBJECT
 public:
-    QRollEffect(QWidget* w, Qt::WFlags f, DirFlags orient);
+    QRollEffect(QWidget* w, Qt::WindowFlags f, DirFlags orient);
 
     void run(int time);
 
@@ -298,7 +298,7 @@ static QRollEffect* q_roll = 0;
 /*
   Construct a QRollEffect widget.
 */
-QRollEffect::QRollEffect(QWidget* w, Qt::WFlags f, DirFlags orient)
+QRollEffect::QRollEffect(QWidget* w, Qt::WindowFlags f, DirFlags orient)
     : QWidget(0, f), orientation(orient)
 {
 #ifndef Q_WS_WIN
@@ -489,7 +489,7 @@ void qScrollEffect(QWidget* w, QEffects::DirFlags orient, int time)
 
     qApp->sendPostedEvents(w, QEvent::Move);
     qApp->sendPostedEvents(w, QEvent::Resize);
-    Qt::WFlags flags = Qt::ToolTip;
+    Qt::WindowFlags flags = Qt::ToolTip;
 
     // those can be popups - they would steal the focus, but are disabled
     q_roll = new QRollEffect(w, flags, orient);
@@ -512,7 +512,7 @@ void qFadeEffect(QWidget* w, int time)
     qApp->sendPostedEvents(w, QEvent::Move);
     qApp->sendPostedEvents(w, QEvent::Resize);
 
-    Qt::WFlags flags = Qt::ToolTip;
+    Qt::WindowFlags flags = Qt::ToolTip;
 
     // those can be popups - they would steal the focus, but are disabled
     q_blend = new QAlphaWidget(w, flags);

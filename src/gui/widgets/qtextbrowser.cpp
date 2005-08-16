@@ -38,14 +38,15 @@
 #include <qdir.h>
 #include <qwhatsthis.h>
 #include <qtextobject.h>
+#include <qdesktopservices.h>
 
 class QTextBrowserPrivate : public QTextEditPrivate
 {
     Q_DECLARE_PUBLIC(QTextBrowser)
 public:
-    QTextBrowserPrivate() 
-        : textOrSourceChanged(false), forceLoadOnSourceChange(false),
-          hadSelectionOnMousePress(false) {}
+    inline QTextBrowserPrivate()
+        : textOrSourceChanged(false), forceLoadOnSourceChange(false), openExternalLinks(false)
+    {}
 
     void init();
 
@@ -66,8 +67,9 @@ public:
       semantics when somebody connected to it calls setText() or
       setSource() */
     bool textOrSourceChanged;
-
     bool forceLoadOnSourceChange;
+
+    bool openExternalLinks;
 
 #ifndef QT_NO_CURSOR
     QCursor oldCursor;
@@ -78,27 +80,25 @@ public:
     inline void _q_documentModified()
     {
         textOrSourceChanged = true;
-        forceLoadOnSourceChange = true;
+        forceLoadOnSourceChange = !currentURL.path().isEmpty();
     }
 
-    void activateAnchor(const QString &href);
+    void _q_activateAnchor(const QString &href);
+    void _q_highlightLink(const QString &href);
 
     void setSource(const QUrl &url);
-    bool findNextPrevAnchor(bool next, int &start, int &end);
 
-    QString anchorOnMousePress;
-    bool hadSelectionOnMousePress;
+    QUrl resolveUrl(const QUrl &url) const;
 
 #ifdef QT_KEYPAD_NAVIGATION
     void keypadMove(bool next);
-    int lastPos;
 #endif
 };
 
 static bool isAbsoluteFileName(const QString &name)
 {
     return !name.isEmpty()
-           && (name[0] == '/'
+           && (name[0] == QLatin1Char('/')
 #if defined(Q_WS_WIN)
                || (name[0].isLetter() && name[1] == QLatin1Char(':')) || name.startsWith("\\\\")
 #endif
@@ -118,24 +118,39 @@ QString QTextBrowserPrivate::findFile(const QUrl &name) const
     if (isAbsoluteFileName(fileName))
         return fileName;
 
-    QString slash("/");
-
     foreach (QString path, searchPaths) {
-        if (!path.endsWith(slash))
-            path.append(slash);
+        if (!path.endsWith(QLatin1Char('/')))
+            path.append(QLatin1Char('/'));
         path.append(fileName);
         if (QFileInfo(path).isReadable())
             return path;
     }
 
-    if (stack.isEmpty())
-        return fileName;
-
-    QFileInfo path(QFileInfo(currentURL.toLocalFile()).absolutePath(), fileName);
-    return path.absoluteFilePath();
+    return fileName;
 }
 
-void QTextBrowserPrivate::activateAnchor(const QString &href)
+QUrl QTextBrowserPrivate::resolveUrl(const QUrl &url) const
+{
+    if (!url.isRelative())
+        return url;
+
+    // For the second case QUrl can merge "#someanchor" with "foo.html"
+    // correctly to "foo.html#someanchor"
+    if (!currentURL.isRelative() || (url.hasFragment() && url.path().isEmpty()))
+        return currentURL.resolved(url);
+
+    // this is our last resort when current url and new url are both relative
+    // we try to resolve against the current working directory in the local
+    // file system.
+    QFileInfo fi(currentURL.toLocalFile());
+    if (fi.exists()) {
+        return QUrl::fromLocalFile(fi.absolutePath() + QDir::separator()).resolved(url);
+    }
+
+    return url;
+}
+
+void QTextBrowserPrivate::_q_activateAnchor(const QString &href)
 {
     if (href.isEmpty())
         return;
@@ -143,12 +158,46 @@ void QTextBrowserPrivate::activateAnchor(const QString &href)
 
     textOrSourceChanged = false;
 
-    const QUrl url = isAbsoluteFileName(currentURL.toLocalFile())
-                     ? currentURL.resolved(href) : QUrl(href);
+    const QUrl url = resolveUrl(href);
+
+#ifndef QT_NO_DESKTOPSERVICES
+    if (openExternalLinks
+        && url.scheme() != QLatin1String("file")
+        && url.scheme() != QLatin1String("qrc")) {
+        QDesktopServices::openUrl(url);
+        return;
+    }
+#endif
+
     emit q->anchorClicked(url);
 
-    if (!textOrSourceChanged)
-        q->setSource(url);
+    if (textOrSourceChanged)
+        return;
+
+    q->setSource(url);
+}
+
+void QTextBrowserPrivate::_q_highlightLink(const QString &anchor)
+{
+    Q_Q(QTextBrowser);
+    if (anchor.isEmpty()) {
+#ifndef QT_NO_CURSOR
+        if (viewport->cursor().shape() != Qt::PointingHandCursor)
+            oldCursor = viewport->cursor();
+        viewport->setCursor(oldCursor);
+#endif
+        emit q->highlighted(QUrl());
+        emit q->highlighted(QString());
+    } else {
+#ifndef QT_NO_CURSOR
+        viewport->setCursor(Qt::PointingHandCursor);
+#endif
+
+        const QUrl url = resolveUrl(anchor);
+        emit q->highlighted(url);
+        // convenience to ease connecting to QStatusBar::showMessage(const QString &)
+        emit q->highlighted(url.toString());
+    }
 }
 
 void QTextBrowserPrivate::setSource(const QUrl &url)
@@ -171,7 +220,7 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
 
     if (url.isValid()
         && (newUrlWithoutFragment != currentUrlWithoutFragment || forceLoadOnSourceChange)) {
-        QVariant data = q->loadResource(QTextDocument::HtmlResource, url);
+        QVariant data = q->loadResource(QTextDocument::HtmlResource, resolveUrl(url));
         if (data.type() == QVariant::String) {
             txt = data.toString();
         } else if (data.type() == QVariant::ByteArray) {
@@ -184,11 +233,11 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
 #endif
         }
         if (txt.isEmpty())
-            qWarning("QTextBrowser: no document for %s", url.toString().toLatin1().constData());
+            qWarning("QTextBrowser: No document for %s", url.toString().toLatin1().constData());
 
         if (q->isVisible()) {
-            QString firstTag = txt.left(txt.indexOf('>') + 1);
-            if (firstTag.left(3) == "<qt" && firstTag.contains("type") && firstTag.contains("detail")) {
+            QString firstTag = txt.left(txt.indexOf(QLatin1Char('>')) + 1);
+            if (firstTag.left(3) == QLatin1String("<qt") && firstTag.contains(QLatin1String("type")) && firstTag.contains(QLatin1String("detail"))) {
 #ifndef QT_NO_CURSOR
                 qApp->restoreOverrideCursor();
 #endif
@@ -199,7 +248,7 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
             }
         }
 
-        currentURL = currentURL.resolved(url);
+        currentURL = resolveUrl(url);
         doSetText = true;
     }
 
@@ -225,164 +274,16 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
     emit q->sourceChanged(url);
 }
 
-bool QTextBrowserPrivate::findNextPrevAnchor(bool next, int &start, int &end)
-{
-    if (!focusIndicator.hasSelection()) {
-        focusIndicator = QTextCursor(doc);
-        if (next)
-            focusIndicator.movePosition(QTextCursor::Start);
-        else
-            focusIndicator.movePosition(QTextCursor::End);
-    }
-
-    Q_ASSERT(!focusIndicator.isNull());
-
-    int anchorStart = -1;
-    int anchorEnd = -1;
-
-    if (next) {
-        const int startPos = focusIndicator.selectionEnd();
-
-        QTextBlock block = doc->findBlock(startPos);
-        QTextBlock::Iterator it = block.begin();
-
-        while (!it.atEnd() && it.fragment().position() < startPos)
-            ++it;
-
-        while (block.isValid()) {
-            anchorStart = -1;
-
-            // find next anchor
-            for (; !it.atEnd(); ++it) {
-                const QTextFragment fragment = it.fragment();
-                const QTextCharFormat fmt = fragment.charFormat();
-
-                if (fmt.isAnchor() && fmt.hasProperty(QTextFormat::AnchorHref)) {
-                    anchorStart = fragment.position();
-                    break;
-                }
-            }
-
-            if (anchorStart != -1) {
-                anchorEnd = -1;
-
-                // find next non-anchor fragment
-                for (; !it.atEnd(); ++it) {
-                    const QTextFragment fragment = it.fragment();
-                    const QTextCharFormat fmt = fragment.charFormat();
-
-                    if (!fmt.isAnchor()) {
-                        anchorEnd = fragment.position();
-                        break;
-                    }
-                }
-
-                if (anchorEnd == -1)
-                    anchorEnd = block.position() + block.length() - 1;
-
-                // make found selection
-                break;
-            }
-
-            block = block.next();
-            it = block.begin();
-        }
-    } else {
-        int startPos = focusIndicator.selectionStart();
-        if (startPos > 0)
-            --startPos;
-
-        QTextBlock block = doc->findBlock(startPos);
-        QTextBlock::Iterator blockStart = block.begin();
-        QTextBlock::Iterator it = block.end();
-
-        if (startPos == block.position()) {
-            it = block.begin();
-        } else {
-            do {
-                if (it == blockStart) {
-                    it = QTextBlock::Iterator();
-                    block = QTextBlock();
-                } else {
-                    --it;
-                }
-            } while (!it.atEnd() && it.fragment().position() + it.fragment().length() - 1 > startPos);
-        }
-
-        while (block.isValid()) {
-            anchorStart = -1;
-
-            if (!it.atEnd()) {
-                do {
-                    const QTextFragment fragment = it.fragment();
-                    const QTextCharFormat fmt = fragment.charFormat();
-
-                    if (fmt.isAnchor() && fmt.hasProperty(QTextFormat::AnchorHref)) {
-                        anchorStart = fragment.position() + fragment.length();
-                        break;
-                    }
-
-                    if (it == blockStart)
-                        it = QTextBlock::Iterator();
-                    else
-                        --it;
-                } while (!it.atEnd());
-            }
-
-            if (anchorStart != -1 && !it.atEnd()) {
-                anchorEnd = -1;
-
-                do {
-                    const QTextFragment fragment = it.fragment();
-                    const QTextCharFormat fmt = fragment.charFormat();
-
-                    if (!fmt.isAnchor()) {
-                        anchorEnd = fragment.position() + fragment.length();
-                        break;
-                    }
-
-                    if (it == blockStart)
-                        it = QTextBlock::Iterator();
-                    else
-                        --it;
-                } while (!it.atEnd());
-
-                if (anchorEnd == -1)
-                    anchorEnd = qMax(0, block.position());
-
-                break;
-            }
-
-            block = block.previous();
-            it = block.end();
-            if (it != block.begin())
-                --it;
-            blockStart = block.begin();
-        }
-
-    }
-
-    if (anchorStart != -1 && anchorEnd != -1) {
-        start = anchorStart;
-        end = anchorEnd;
-        return true;
-    }
-    
-    return false;
-}
-
 #ifdef QT_KEYPAD_NAVIGATION
 void QTextBrowserPrivate::keypadMove(bool next)
 {
     Q_Q(QTextBrowser);
 
     const int height = viewport->height();
-    int anchorStart, anchorEnd;
-    if (findNextPrevAnchor(next, anchorStart, anchorEnd)) {
-        QTextBlock block = doc->findBlock(next ? anchorEnd : anchorStart);
-        const int yOffset = vbar->value();
-        const int cursYOffset = (int)block.layout()->position().y();
-        const int overlap = 20;
+    const int yOffset = vbar->value(); // current y
+    const int overlap = 20;
+    if (control->setFocusToNextOrPreviousAnchor(next)) {
+        const int cursYOffset = int(control->cursorRect().top()); // desired y (cursor)
         if (next) {
             if (cursYOffset > yOffset + height) {
                 vbar->setValue(yOffset + height - overlap);
@@ -392,74 +293,69 @@ void QTextBrowserPrivate::keypadMove(bool next)
                     return;
                 }
             } else if (cursYOffset < yOffset) {
-                if (yOffset < vbar->maximum())
-                    vbar->setValue(yOffset + height - overlap);
-                else
+                if (yOffset >= vbar->maximum()) {
+                    // We have to wrap back to the beginning.
                     vbar->setValue(0);
-                emit q->highlighted(QUrl());
-                emit q->highlighted(QString());
-                return;
-            }
-        } else {
-            qDebug("found anchor");
-            if (cursYOffset < yOffset) {
-                qDebug("1");
-                vbar->setValue(yOffset - height + overlap);
-                if (cursYOffset < vbar->value()) {
                     emit q->highlighted(QUrl());
                     emit q->highlighted(QString());
                     return;
                 }
-            } else if (cursYOffset > yOffset + height) {
-                qDebug("2");
-                if (yOffset > 0)
+            }
+        } else {
+            // Going up.
+            if (cursYOffset > yOffset + height) {
+                if (yOffset > 0) {
                     vbar->setValue(yOffset - height + overlap);
-                else
+                } else {
                     vbar->setValue(vbar->maximum());
+                }
                 emit q->highlighted(QUrl());
                 emit q->highlighted(QString());
                 return;
             }
         }
-        focusIndicator.setPosition(anchorStart);
-        
-        if(next)
-            focusIndicator.setPosition(anchorEnd, QTextCursor::KeepAnchor);
-        
-        QTextCharFormat charFmt;
-        charFmt = focusIndicator.charFormat();
+
+        // Ensure that the new selection is highlighted.
+        QTextCursor cursor = control->textCursor();
+        if (cursor.selectionStart() != cursor.position())
+            cursor.setPosition(cursor.selectionStart());
+        cursor.movePosition(QTextCursor::NextCharacter);
+        QTextCharFormat charFmt = cursor.charFormat();
         emit q->highlighted(QUrl(charFmt.anchorHref()));
         emit q->highlighted(charFmt.anchorHref());
-        
-        if(!next)
-            focusIndicator.setPosition(anchorEnd, QTextCursor::KeepAnchor);
     } else {
-        const int yOffset = vbar->value();
-        const int overlap = 20;
+        // Couldn't find any links.
         if (next) {
             if (yOffset == vbar->maximum())
+                // We're at the end, so wrap around to the beginning.
                 vbar->setValue(0);
             else
+                // Page down.
                 vbar->setValue(yOffset + height - overlap);
         } else {
+            // Going up.
             if (yOffset == 0)
+                // We're at the top already; we want to wrap back to the end.
                 vbar->setValue(vbar->maximum());
             else
+                // Page up.
                 vbar->setValue(yOffset - height + overlap);
         }
-        focusIndicator.clearSelection();
-        
+        QTextCursor cursor = control->textCursor();
+        cursor.clearSelection();
+
+        // setTextCursor ensures that the cursor is visible. save & restore
+        // the scrollbar values therefore
+        const int savedXOffset = hbar->value();
+        const int savedYOffset = vbar->value();
+
+        control->setTextCursor(cursor);
+
+        hbar->setValue(savedXOffset);
+        vbar->setValue(savedYOffset);
+
         emit q->highlighted(QUrl());
         emit q->highlighted(QString());
-    }
-
-    if (focusIndicator.hasSelection()) {
-        qSwap(focusIndicator, cursor);
-        q->ensureCursorVisible();
-        qSwap(focusIndicator, cursor);
-        viewport->update();
-    } else {
-        viewport->update();
     }
 }
 #endif
@@ -470,18 +366,31 @@ void QTextBrowserPrivate::keypadMove(bool next)
 
     \ingroup text
 
-    This class extends QTextEdit (in read-only mode), adding some
-    navigation functionality so that users can follow links in
-    hypertext documents. The contents of QTextEdit are set with
-    setHtml() or setPlainText(), but QTextBrowser also implements the
-    setSource() function, making it possible to set the text to a named
-    document. The name is looked up in a list of search paths and in the
-    directory of the current document factory. If a document name ends with
+    This class extends QTextEdit (in read-only mode), adding some navigation
+    functionality so that users can follow links in hypertext documents.
+
+    If you want to provide your users with an editable rich text editor,
+    use QTextEdit. If you want a text browser without hypertext navigation
+    use QTextEdit, and use QTextEdit::setReadOnly() to disable
+    editing. If you just need to display a small piece of rich text
+    use QLabel.
+
+    \section1 Document Source and Contents
+
+    The contents of QTextEdit are set with setHtml() or setPlainText(),
+    but QTextBrowser also implements the setSource() function, making it
+    possible to use a named document as the source text. The name is looked
+    up in a list of search paths and in the directory of the current document
+    factory.
+
+    If a document name ends with
     an anchor (for example, "\c #anchor"), the text browser automatically
     scrolls to that position (using scrollToAnchor()). When the user clicks
     on a hyperlink, the browser will call setSource() itself with the link's
     \c href value as argument. You can track the current source by connecting
     to the sourceChanged() signal.
+
+    \section1 Navigation
 
     QTextBrowser provides backward() and forward() slots which you can
     use to implement Back and Forward buttons. The home() slot sets
@@ -491,14 +400,8 @@ void QTextBrowserPrivate::keypadMove(bool next)
     function to supply new document text in a slot connected to this
     signal.
 
-    If you want to provide your users with editable rich text use
-    QTextEdit. If you want a text browser without hypertext navigation
-    use QTextEdit, and use QTextEdit::setReadOnly() to disable
-    editing. If you just need to display a small piece of rich text
-    use QLabel.
-
     If you want to load documents stored in the Qt resource system use
-    qrc as the scheme in the URL to load. For example, for the document
+    \c{qrc} as the scheme in the URL to load. For example, for the document
     resource path \c{:/docs/index.html} use \c{qrc:/docs/index.html} as
     the URL with setSource().
 
@@ -523,13 +426,17 @@ void QTextBrowserPrivate::keypadMove(bool next)
 void QTextBrowserPrivate::init()
 {
     Q_Q(QTextBrowser);
-    q->setReadOnly(true);
+    control->setTextInteractionFlags(Qt::TextBrowserInteraction);
 #ifndef QT_NO_CURSOR
     viewport->setCursor(oldCursor);
 #endif
     q->setUndoRedoEnabled(false);
     viewport->setMouseTracking(true);
     QObject::connect(q->document(), SIGNAL(contentsChanged()), q, SLOT(_q_documentModified()));
+    QObject::connect(control, SIGNAL(linkActivated(QString)),
+                     q, SLOT(_q_activateAnchor(QString)));
+    QObject::connect(control, SIGNAL(linkHovered(QString)),
+                     q, SLOT(_q_highlightLink(QString)));
 }
 
 /*!
@@ -646,9 +553,9 @@ void QTextBrowser::setSource(const QUrl &url)
         entry.hpos = 0;
         entry.vpos = 0;
         d->stack.push(entry);
-        
+
         emit backwardAvailable(d->stack.count() > 1);
-        
+
         if (!d->forwardStack.isEmpty() && d->forwardStack.top().url == url) {
             d->forwardStack.pop();
             emit forwardAvailable(d->forwardStack.count() > 0);
@@ -782,8 +689,6 @@ void QTextBrowser::home()
 */
 void QTextBrowser::keyPressEvent(QKeyEvent *ev)
 {
-    Q_D(QTextBrowser);
-
 #ifdef QT_KEYPAD_NAVIGATION
     switch (ev->key()) {
     case Qt::Key_Select:
@@ -825,26 +730,10 @@ void QTextBrowser::keyPressEvent(QKeyEvent *ev)
             ev->accept();
             return;
         }
-    } else if ((ev->key() == Qt::Key_Return
-#ifdef QT_KEYPAD_NAVIGATION
-                || ev->key() == Qt::Key_Select
-#endif
-                || ev->key() == Qt::Key_Enter)
-               && d->focusIndicator.hasSelection()) {
-
-        QTextCursor cursor = d->focusIndicator;
-        if (cursor.selectionStart() != cursor.position())
-            cursor.setPosition(cursor.selectionStart());
-        cursor.movePosition(QTextCursor::NextCharacter);
-
-        ev->accept();
-
-        const QString href = cursor.charFormat().anchorHref();
-        d->activateAnchor(href);
-        return;
     }
 #ifdef QT_KEYPAD_NAVIGATION
-    else if (QApplication::keypadNavigationEnabled()) {
+    else {
+        Q_D(QTextBrowser);
         if (ev->key() == Qt::Key_Up) {
             d->keypadMove(false);
             return;
@@ -862,30 +751,7 @@ void QTextBrowser::keyPressEvent(QKeyEvent *ev)
 */
 void QTextBrowser::mouseMoveEvent(QMouseEvent *e)
 {
-    Q_D(QTextBrowser);
     QTextEdit::mouseMoveEvent(e);
-
-    QString anchor = anchorAt(e->pos());
-    if (anchor.isEmpty()) {
-#ifndef QT_NO_CURSOR
-        if (d->viewport->cursor().shape() != Qt::PointingHandCursor)
-            d->oldCursor = d->viewport->cursor();
-        d->viewport->setCursor(d->oldCursor);
-#endif
-        emit highlighted(QUrl());
-        emit highlighted(QString());
-    } else {
-#ifndef QT_NO_CURSOR        
-        d->viewport->setCursor(Qt::PointingHandCursor);
-#endif
-
-        const QUrl url = isAbsoluteFileName(d->currentURL.toLocalFile())
-                         ? d->currentURL.resolved(anchor) : QUrl(anchor);
-        emit highlighted(url);
-        // convenience to ease connecting to QStatusBar::showMessage(const QString &)
-        emit highlighted(url.toString());
-    }
-
 }
 
 /*!
@@ -893,14 +759,7 @@ void QTextBrowser::mouseMoveEvent(QMouseEvent *e)
 */
 void QTextBrowser::mousePressEvent(QMouseEvent *e)
 {
-    Q_D(QTextBrowser);
-    d->anchorOnMousePress = anchorAt(e->pos());
-    if (!d->cursor.hasSelection() && !d->anchorOnMousePress.isEmpty())
-        d->setCursorPosition(e->pos());
-
     QTextEdit::mousePressEvent(e);
-
-    d->hadSelectionOnMousePress = d->cursor.hasSelection();
 }
 
 /*!
@@ -908,20 +767,7 @@ void QTextBrowser::mousePressEvent(QMouseEvent *e)
 */
 void QTextBrowser::mouseReleaseEvent(QMouseEvent *e)
 {
-    Q_D(QTextBrowser);
     QTextEdit::mouseReleaseEvent(e);
-
-    if (!(e->button() & Qt::LeftButton))
-        return;
-
-    const QString anchor = anchorAt(e->pos());
-
-    if (anchor.isEmpty())
-        return;
-
-    if (!d->cursor.hasSelection()
-        || (anchor == d->anchorOnMousePress && d->hadSelectionOnMousePress))
-        d->activateAnchor(anchor);
 }
 
 /*!
@@ -930,13 +776,8 @@ void QTextBrowser::mouseReleaseEvent(QMouseEvent *e)
 void QTextBrowser::focusOutEvent(QFocusEvent *ev)
 {
     Q_D(QTextBrowser);
-    if (ev->reason() != Qt::ActiveWindowFocusReason
-        && ev->reason() != Qt::PopupFocusReason) {
-        d->focusIndicator.clearSelection();
-        d->viewport->update();
-    }
 #ifndef QT_NO_CURSOR
-    d->viewport->setCursor(d->readOnly ? d->oldCursor : Qt::IBeamCursor);
+    d->viewport->setCursor((!(d->control->textInteractionFlags() & Qt::TextEditable)) ? d->oldCursor : Qt::IBeamCursor);
 #endif
     QTextEdit::focusOutEvent(ev);
 }
@@ -947,28 +788,9 @@ void QTextBrowser::focusOutEvent(QFocusEvent *ev)
 bool QTextBrowser::focusNextPrevChild(bool next)
 {
     Q_D(QTextBrowser);
-
-    if (!d->readOnly)
-        return QTextEdit::focusNextPrevChild(next);
-
-    int anchorStart, anchorEnd;
-    if (d->findNextPrevAnchor(next, anchorStart, anchorEnd)) {
-        d->focusIndicator.setPosition(anchorStart);
-        d->focusIndicator.setPosition(anchorEnd, QTextCursor::KeepAnchor);
-    } else {
-        d->focusIndicator.clearSelection();
-    }
-
-    if (d->focusIndicator.hasSelection()) {
-        qSwap(d->focusIndicator, d->cursor);
-        ensureCursorVisible();
-        qSwap(d->focusIndicator, d->cursor);
-        d->viewport->update();
+    if (d->control->setFocusToNextOrPreviousAnchor(next))
         return true;
-    } else {
-        d->viewport->update();
-        return QTextEdit::focusNextPrevChild(next);
-    }
+    return QTextEdit::focusNextPrevChild(next);
 }
 
 /*!
@@ -1001,6 +823,7 @@ void QTextBrowser::paintEvent(QPaintEvent *e)
     \header \i ResourceType  \i QVariant::Type
     \row    \i QTextDocument::HtmlResource  \i QString or QByteArray
     \row    \i QTextDocument::ImageResource \i QImage, QPixmap or QByteArray
+    \row    \i QTextDocument::StyleSheetResource \i QString or QByteArray
     \endtable
 */
 QVariant QTextBrowser::loadResource(int /*type*/, const QUrl &name)
@@ -1008,19 +831,86 @@ QVariant QTextBrowser::loadResource(int /*type*/, const QUrl &name)
     Q_D(QTextBrowser);
 
     QByteArray data;
-    QUrl resolved = name;
-    if (!isAbsoluteFileName(name.toLocalFile()) && isAbsoluteFileName(source().toLocalFile()))
-        resolved = source().resolved(name);
-    QString fileName = d->findFile(resolved);
+    QString fileName = d->findFile(d->resolveUrl(name));
     QFile f(fileName);
     if (f.open(QFile::ReadOnly)) {
         data = f.readAll();
         f.close();
     } else {
-        qWarning("QTextBrowser: cannot open '%s' for reading", fileName.toLocal8Bit().data());
+        qWarning("QTextBrowser: Cannot open '%s' for reading", name.toString().toLocal8Bit().data());
+        return QVariant();
     }
 
     return data;
+}
+
+/*!
+    \since 4.2
+
+    Returns true if the text browser can go backward in the document history
+    using backward().
+
+    \sa backwardAvailable(), backward()
+*/
+bool QTextBrowser::isBackwardAvailable() const
+{
+    Q_D(const QTextBrowser);
+    return d->stack.count() > 1;
+}
+
+/*!
+    \since 4.2
+
+    Returns true if the text browser can go forward in the document history
+    using forward().
+
+    \sa forwardAvailable(), forward()
+*/
+bool QTextBrowser::isForwardAvailable() const
+{
+    Q_D(const QTextBrowser);
+    return !d->forwardStack.isEmpty();
+}
+
+/*!
+    \since 4.2
+
+    Clears the history of visited documents and disables the forward and
+    backward navigation.
+
+    \sa backward(), forward()
+*/
+void QTextBrowser::clearHistory()
+{
+    Q_D(QTextBrowser);
+    d->forwardStack.clear();
+    if (!d->stack.isEmpty())
+        d->stack.resize(1);
+    emit forwardAvailable(false);
+    emit backwardAvailable(false);
+}
+
+/*!
+    \property QTextBrowser::openExternalLinks
+    \since 4.2
+
+    Specifies whether QTextBrowser should automatically open links to external
+    sources using QDesktopServices::openUrl() instead of emitting the
+    anchorClicked signal. Links are considered external if their scheme is
+    neither file or qrc.
+
+    The default value is false.
+*/
+bool QTextBrowser::openExternalLinks() const
+{
+    Q_D(const QTextBrowser);
+    return d->openExternalLinks;
+}
+
+void QTextBrowser::setOpenExternalLinks(bool open)
+{
+    Q_D(QTextBrowser);
+    d->openExternalLinks = open;
 }
 
 /*! \reimp */

@@ -2,26 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/richtext.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/richtext.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/richtext.qdoc -->
 <head>
-    <title>Qt 4.1: The QTextCursor Interface</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="prev" href="richtext-structure.html" />
-    <link rel="contents" href="richtext.html" />
-    <link rel="next" href="richtext-common-tasks.html" />
+  <title>Qt 4.2: The QTextCursor Interface</title>
+  <link rel="prev" href="richtext-structure.html" />
+  <link rel="contents" href="richtext.html" />
+  <link rel="next" href="richtext-common-tasks.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="richtext-structure.html">Rich Text Document Structure</a>]
 [<a href="richtext.html">Contents</a>]
 [Next: <a href="richtext-common-tasks.html">Common Rich Text Editing Tasks</a>]
@@ -50,19 +44,19 @@ body { background: #ffffff; color: black; }</style>
 <a name="using-a-cursor"></a>
 <h3>Using a Cursor</h3>
 <p>The main use of a cursor is to insert or modify text within a block. We can use a text editor's cursor to do this:</p>
-<pre>&nbsp;       QTextEdit *editor = new QTextEdit();
-        QTextCursor cursor(editor-&gt;textCursor());</pre>
+<pre>     QTextEdit *editor = new QTextEdit();
+     QTextCursor cursor(editor-&gt;textCursor());</pre>
 <p>Alternatively, we can obtain a cursor directly from a document:</p>
-<pre>&nbsp;       QTextDocument *document = new QTextDocument(editor);
-        QTextCursor cursor(document);</pre>
+<pre>     QTextDocument *document = new QTextDocument(editor);
+     QTextCursor cursor(document);</pre>
 <p>The cursor is positioned at the start of the document so that we can write into the first (empty) block in the document.</p>
 <a name="grouping-cursor-operations"></a>
 <h3>Grouping Cursor Operations</h3>
 <p>A series of editing operations can be packaged together so that they can be replayed, or undone together in a single action. This is achieved by using the <tt>beginEditBlock()</tt> and <tt>endEditBlock()</tt> functions in the following way, as in the following example where we select the word that contains the cursor:</p>
-<pre>&nbsp;       cursor.beginEditBlock();
-        cursor.movePosition(QTextCursor::StartOfWord);
-        cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-        cursor.endEditBlock();</pre>
+<pre>     cursor.beginEditBlock();
+     cursor.movePosition(QTextCursor::StartOfWord);
+     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+     cursor.endEditBlock();</pre>
 <p>If editing operations are not grouped, the document automatically records the individual operations so that they can be undone later. Grouping operations into larger packages can make editing more efficient both for the user and for the application, but care has to be taken not to group too many operations together as the user may want find-grained control over the undo process.</p>
 <a name="multiple-cursors"></a>
 <h3>Multiple Cursors</h3>
@@ -88,103 +82,103 @@ body { background: #ffffff; color: black; }</style>
 <a name="text-and-text-fragments"></a>
 <h3>Text and Text Fragments</h3>
 <p>Text can be inserted into the current block in the current character format, or in a custom format that is specified with the text:</p>
-<pre>&nbsp;       cursor.insertText(tr(&quot;Character formats&quot;),
-                          headingFormat);
+<pre>     cursor.insertText(tr(&quot;Character formats&quot;),
+                       headingFormat);
 
-        cursor.insertBlock();
+     cursor.insertBlock();
 
-        cursor.insertText(tr(&quot;Text can be displayed in a variety of &quot;
-                                      &quot;different character formats. &quot;), plainFormat);
-        cursor.insertText(tr(&quot;We can emphasize text by &quot;));
-        cursor.insertText(tr(&quot;making it italic&quot;), emphasisFormat);</pre>
+     cursor.insertText(tr(&quot;Text can be displayed in a variety of &quot;
+                                   &quot;different character formats. &quot;), plainFormat);
+     cursor.insertText(tr(&quot;We can emphasize text by &quot;));
+     cursor.insertText(tr(&quot;making it italic&quot;), emphasisFormat);</pre>
 <p>Once the character format has been used with a cursor, that format becomes the default format for any text inserted with that cursor until another character format is specified.</p>
 <p>If a cursor is used to insert text without specifying a character format, the text will be given the character format used at that position in the document.</p>
 <a name="blocks"></a>
 <h3>Blocks</h3>
 <p>Text blocks are inserted into the document with the <a href="qtextcursor.html#insertBlock">insertBlock()</a> function.</p>
-<pre>&nbsp;       QTextBlockFormat backgroundFormat = blockFormat;
-        backgroundFormat.setBackground(QColor(&quot;lightGray&quot;));
+<pre>     QTextBlockFormat backgroundFormat = blockFormat;
+     backgroundFormat.setBackground(QColor(&quot;lightGray&quot;));
 
-        cursor.setBlockFormat(backgroundFormat);</pre>
+     cursor.setBlockFormat(backgroundFormat);</pre>
 <p>The cursor is positioned at the start of the new block.</p>
 <a name="frames"></a>
 <h3>Frames</h3>
 <p>Frames are inserted into a document using the cursor, and will be placed within the cursor's current frame <i>after</i> the current block. The following code shows how a frame can be inserted between two text blocks in a document's root frame. We begin by finding the cursor's current frame:</p>
-<pre>&nbsp;       QTextFrame *mainFrame = cursor.currentFrame();
-        cursor.insertText(...);</pre>
+<pre>     QTextFrame *mainFrame = cursor.currentFrame();
+     cursor.insertText(...);</pre>
 <p>We insert some text in this frame then set up a frame format for the child frame:</p>
-<pre>&nbsp;       QTextFrameFormat frameFormat;
-        frameFormat.setMargin(32);
-        frameFormat.setPadding(8);
-        frameFormat.setBorder(4);</pre>
+<pre>     QTextFrameFormat frameFormat;
+     frameFormat.setMargin(32);
+     frameFormat.setPadding(8);
+     frameFormat.setBorder(4);</pre>
 <p>The frame format will give the frame an external margin of 32 pixels, internal padding of 8 pixels, and a border that is 4 pixels wide. See the <a href="qtextframeformat.html">QTextFrameFormat</a> documentation for more information about frame formats.</p>
 <p>The frame is inserted into the document after the preceding text:</p>
-<pre>&nbsp;       cursor.insertFrame(frameFormat);
-        cursor.insertText(...);</pre>
+<pre>     cursor.insertFrame(frameFormat);
+     cursor.insertText(...);</pre>
 <p>We add some text to the document immediately after we insert the frame. Since the text cursor is positioned <i>inside the frame</i> when it is inserted into the document, this text will also be inserted inside the frame.</p>
 <p>Finally, we position the cursor outside the frame by taking the last available cursor position inside the frame we recorded earlier:</p>
-<pre>&nbsp;       cursor = mainFrame-&gt;lastCursorPosition();
-        cursor.insertText(...);</pre>
+<pre>     cursor = mainFrame-&gt;lastCursorPosition();
+     cursor.insertText(...);</pre>
 <p>The text that we add last is inserted after the child frame in the document. Since each frame is padded with text blocks, this ensures that more elements can always be inserted with a cursor.</p>
 <a name="tables"></a>
 <h3>Tables</h3>
 <p>Tables are inserted into the document using the cursor, and will be placed within the cursor's current frame <i>after</i> the current block:</p>
-<pre>&nbsp;       QTextCursor cursor(editor-&gt;textCursor());
-        QTextTable *table = cursor.insertTable(rows, columns, tableFormat);</pre>
+<pre>     QTextCursor cursor(editor-&gt;textCursor());
+     QTextTable *table = cursor.insertTable(rows, columns, tableFormat);</pre>
 <p>Tables can be created with a specific format that defines the overall properties of the table, such as its alignment, background color, and the cell spacing used. It can also determine the constraints on each column, allowing each of them to have a fixed width, or resize according to the available space.</p>
-<pre>&nbsp;       QTextTableFormat tableFormat;
-        tableFormat.setBackground(QColor(&quot;#e0e0e0&quot;));
-        QVector&lt;QTextLength&gt; constraints;
-        constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 16);
-        constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 28);
-        constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 28);
-        constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 28);
-        tableFormat.setColumnWidthConstraints(constraints);
-        QTextTable *table = cursor.insertTable(rows, columns, tableFormat);</pre>
+<pre>     QTextTableFormat tableFormat;
+     tableFormat.setBackground(QColor(&quot;#e0e0e0&quot;));
+     QVector&lt;QTextLength&gt; constraints;
+     constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 16);
+     constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 28);
+     constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 28);
+     constraints &lt;&lt; QTextLength(QTextLength::PercentageLength, 28);
+     tableFormat.setColumnWidthConstraints(constraints);
+     QTextTable *table = cursor.insertTable(rows, columns, tableFormat);</pre>
 <p>The columns in the table created above will each take up a certain percentage of the available width. Note that the table format is optional; if you insert a table without a format, some sensible default values will be used for the table's properties.</p>
 <p>Since cells can contain other document elements, they too can be formatted and styled as necessary.</p>
 <p>Text can be added to the table by navigating to each cell with the cursor and inserting text.</p>
-<pre>&nbsp;       cell = table-&gt;cellAt(0, 0);
-        cellCursor = cell.firstCursorPosition();
-        cellCursor.insertText(tr(&quot;Week&quot;), charFormat);</pre>
+<pre>     cell = table-&gt;cellAt(0, 0);
+     cellCursor = cell.firstCursorPosition();
+     cellCursor.insertText(tr(&quot;Week&quot;), charFormat);</pre>
 <p>We can create a simple timetable by following this approach:</p>
-<pre>&nbsp;       for (column = 1; column &lt; columns; ++column) {
-            cell = table-&gt;cellAt(0, column);
-            cellCursor = cell.firstCursorPosition();
-            cellCursor.insertText(tr(&quot;Team %1&quot;).arg(column), charFormat);
-        }
+<pre>     for (column = 1; column &lt; columns; ++column) {
+         cell = table-&gt;cellAt(0, column);
+         cellCursor = cell.firstCursorPosition();
+         cellCursor.insertText(tr(&quot;Team %1&quot;).arg(column), charFormat);
+     }
 
-        for (row = 1; row &lt; rows; ++row) {
-            cell = table-&gt;cellAt(row, 0);
-            cellCursor = cell.firstCursorPosition();
-            cellCursor.insertText(tr(&quot;%1&quot;).arg(row), charFormat);
+     for (row = 1; row &lt; rows; ++row) {
+         cell = table-&gt;cellAt(row, 0);
+         cellCursor = cell.firstCursorPosition();
+         cellCursor.insertText(tr(&quot;%1&quot;).arg(row), charFormat);
 
-            for (column = 1; column &lt; columns; ++column) {
-                if ((row-1) % 3 == column-1) {
-                    cell = table-&gt;cellAt(row, column);
-                    QTextCursor cellCursor = cell.firstCursorPosition();
-                    cellCursor.insertText(tr(&quot;On duty&quot;), charFormat);
-                }
-            }
-        }</pre>
+         for (column = 1; column &lt; columns; ++column) {
+             if ((row-1) % 3 == column-1) {
+                 cell = table-&gt;cellAt(row, column);
+                 QTextCursor cellCursor = cell.firstCursorPosition();
+                 cellCursor.insertText(tr(&quot;On duty&quot;), charFormat);
+             }
+         }
+     }</pre>
 <a name="lists"></a>
 <h3>Lists</h3>
 <p>Lists of block elements can be automatically created and inserted into the document at the current cursor position. Each list that is created in this way requires a list format to be specified:</p>
-<pre>&nbsp;       QTextListFormat listFormat;
-        if (list) {
-            listFormat = list-&gt;format();
-            listFormat.setIndent(listFormat.indent() + 1);
-        }
+<pre>     QTextListFormat listFormat;
+     if (list) {
+         listFormat = list-&gt;format();
+         listFormat.setIndent(listFormat.indent() + 1);
+     }
 
-        listFormat.setStyle(QTextListFormat::ListDisc);
-        cursor.insertList(listFormat);</pre>
+     listFormat.setStyle(QTextListFormat::ListDisc);
+     cursor.insertList(listFormat);</pre>
 <p>The above code first checks whether the cursor is within an existing list and, if so, gives the list format for the new list a suitable level of indentation. This allows nested lists to be created with increasing levels of indentation. A more sophisticated implementation would also use different kinds of symbol for the bullet points in each level of the list.</p>
 <a name="images"></a>
 <h3>Images</h3>
 <p>Inline images are added to documents through the cursor in the usual manner. Unlike many other elements, all of the image properties are specified by the image's format. This means that a <a href="qtextimageformat.html">QTextImageFormat</a> object has to be created before an image can be inserted:</p>
-<pre>&nbsp;       QTextImageFormat imageFormat;
-        imageFormat.setName(&quot;:/images/advert.png&quot;);
-        cursor.insertImage(imageFormat);</pre>
+<pre>     QTextImageFormat imageFormat;
+     imageFormat.setName(&quot;:/images/advert.png&quot;);
+     cursor.insertImage(imageFormat);</pre>
 <p>The image name refers to an entry in the application's resource file. The method used to derive this name is described in <a href="resources.html">The Qt Resource System</a>.</p>
 <p>
 [Previous: <a href="richtext-structure.html">Rich Text Document Structure</a>]
@@ -195,6 +189,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

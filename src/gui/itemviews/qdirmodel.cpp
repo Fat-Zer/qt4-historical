@@ -68,9 +68,13 @@
 class QFileIconProviderPrivate
 {
     Q_DECLARE_PUBLIC(QFileIconProvider)
+
 public:
     QFileIconProviderPrivate();
+    QIcon getIcon(QStyle::StandardPixmap name) const;
+    QFileIconProvider *q_ptr;
 
+private:
     QIcon file;
     QIcon fileLink;
     QIcon directory;
@@ -85,28 +89,53 @@ public:
     QIcon trashcan;
     QIcon generic;
 
-    QFileIconProvider *q_ptr;
 };
 
 QFileIconProviderPrivate::QFileIconProviderPrivate()
 {
     QStyle *style = QApplication::style();
+    file = style->standardIcon(QStyle::SP_FileIcon);
+    directory = style->standardIcon(QStyle::SP_DirIcon);
+    fileLink = style->standardIcon(QStyle::SP_FileLinkIcon);
+    directoryLink = style->standardIcon(QStyle::SP_DirLinkIcon);
+    harddisk = style->standardIcon(QStyle::SP_DriveHDIcon);
+    floppy = style->standardIcon(QStyle::SP_DriveFDIcon);
+    cdrom = style->standardIcon(QStyle::SP_DriveCDIcon);
+    network = style->standardIcon(QStyle::SP_DriveNetIcon);
+    computer = style->standardIcon(QStyle::SP_ComputerIcon);
+    desktop = style->standardIcon(QStyle::SP_DesktopIcon);
+    trashcan = style->standardIcon(QStyle::SP_TrashIcon);
+}
 
-    file = QIcon(style->standardPixmap(QStyle::SP_FileIcon));
-    fileLink = QIcon(style->standardPixmap(QStyle::SP_FileLinkIcon));
-
-    directory = QIcon(style->standardPixmap(QStyle::SP_DirClosedIcon));
-    directory.addPixmap(style->standardPixmap(QStyle::SP_DirOpenIcon), QIcon::Normal, QIcon::On);
-    directoryLink = QIcon(style->standardPixmap(QStyle::SP_DirLinkIcon));
-
-    harddisk = QIcon(style->standardPixmap(QStyle::SP_DriveHDIcon));
-    floppy = QIcon(style->standardPixmap(QStyle::SP_DriveFDIcon));
-    cdrom = QIcon(style->standardPixmap(QStyle::SP_DriveCDIcon));
-    generic = ram = harddisk; // FIXME
-    network = QIcon(style->standardPixmap(QStyle::SP_DriveNetIcon));
-    computer = QIcon(style->standardPixmap(QStyle::SP_ComputerIcon));
-    desktop = QIcon(style->standardPixmap(QStyle::SP_DesktopIcon));
-    trashcan = QIcon(style->standardPixmap(QStyle::SP_TrashIcon));
+QIcon QFileIconProviderPrivate::getIcon(QStyle::StandardPixmap name) const
+{
+    switch(name) {
+    case QStyle::SP_FileIcon:
+        return file;
+    case QStyle::SP_FileLinkIcon:
+        return fileLink;
+    case QStyle::SP_DirIcon:
+        return directory;
+    case QStyle::SP_DirLinkIcon:
+        return directoryLink;
+    case QStyle::SP_DriveHDIcon:
+        return harddisk;
+    case QStyle::SP_DriveFDIcon:
+        return floppy;
+    case QStyle::SP_DriveCDIcon:
+        return cdrom;
+    case QStyle::SP_DriveNetIcon:
+        return network;
+    case QStyle::SP_ComputerIcon:
+        return computer;
+    case QStyle::SP_DesktopIcon:
+        return desktop;
+    case QStyle::SP_TrashIcon:
+        return trashcan;
+    default:
+        return QIcon();
+    }
+    return QIcon();
 }
 
 /*!
@@ -134,21 +163,22 @@ QFileIconProvider::~QFileIconProvider()
 
 QIcon QFileIconProvider::icon(IconType type) const
 {
+    Q_D(const QFileIconProvider);
     switch (type) {
     case Computer:
-        return d_ptr->computer;
+        return d->getIcon(QStyle::SP_ComputerIcon);
     case Desktop:
-        return d_ptr->desktop;
+        return d->getIcon(QStyle::SP_DesktopIcon);
     case Trashcan:
-        return d_ptr->trashcan;
+        return d->getIcon(QStyle::SP_TrashIcon);
     case Network:
-        return d_ptr->network;
+        return d->getIcon(QStyle::SP_DriveNetIcon);
     case Drive:
-        return d_ptr->generic;
+        return d->getIcon(QStyle::SP_DriveHDIcon);
     case Folder:
-        return d_ptr->directory;
+        return d->getIcon(QStyle::SP_DirIcon);
     case File:
-        return d_ptr->file;
+        return d->getIcon(QStyle::SP_FileIcon);
     default:
         break;
     };
@@ -161,43 +191,43 @@ QIcon QFileIconProvider::icon(IconType type) const
 
 QIcon QFileIconProvider::icon(const QFileInfo &info) const
 {
+    Q_D(const QFileIconProvider);
     if (info.isRoot())
 #ifdef Q_OS_WIN
     {
         uint type = DRIVE_UNKNOWN;
 	QT_WA({ type = GetDriveTypeW((wchar_t *)info.absoluteFilePath().utf16()); },
         { type = GetDriveTypeA(info.absoluteFilePath().toLocal8Bit()); });
-	switch (type) {
+
+        switch (type) {
 	case DRIVE_REMOVABLE:
-            return d_ptr->floppy;
+            return d->getIcon(QStyle::SP_DriveFDIcon);
 	case DRIVE_FIXED:
-            return d_ptr->harddisk;
+            return d->getIcon(QStyle::SP_DriveHDIcon);
 	case DRIVE_REMOTE:
-            return d_ptr->network;
+            return d->getIcon(QStyle::SP_DriveNetIcon);
 	case DRIVE_CDROM:
-            return d_ptr->cdrom;
+            return d->getIcon(QStyle::SP_DriveCDIcon);
 	case DRIVE_RAMDISK:
-            return d_ptr->ram;
 	case DRIVE_UNKNOWN:
-            return d_ptr->generic;
 	case DRIVE_NO_ROOT_DIR:
         default:
-            return d_ptr->generic;
+            return d->getIcon(QStyle::SP_DriveHDIcon);
 	}
     }
 #else
-    return d_ptr->generic;
+    return d->getIcon(QStyle::SP_DriveHDIcon);
 #endif
   if (info.isFile())
     if (info.isSymLink())
-      return d_ptr->fileLink;
+      return d->getIcon(QStyle::SP_FileLinkIcon);
     else
-      return d_ptr->file;
+      return d->getIcon(QStyle::SP_FileIcon);
   if (info.isDir())
     if (info.isSymLink())
-      return d_ptr->directoryLink;
+      return d->getIcon(QStyle::SP_DirLinkIcon);
     else
-      return d_ptr->directory;
+      return d->getIcon(QStyle::SP_DirIcon);
   return QIcon();
 }
 
@@ -209,12 +239,38 @@ QString QFileIconProvider::type(const QFileInfo &info) const
 {
     if (info.isRoot())
         return QApplication::translate("QFileDialog", "Drive");
-    if (info.isFile())
-        return info.suffix() + QLatin1String(" ") + QApplication::translate("QFileDialog", "File");
+    if (info.isFile()) {
+        if (!info.suffix().isEmpty())
+            return info.suffix() + QLatin1Char(' ') + QApplication::translate("QFileDialog", "File");
+        return QApplication::translate("QFileDialog", "File");
+    }
+
     if (info.isDir())
-        return QApplication::translate("QFileDialog", "Directory");
+        return QApplication::translate("QFileDialog",
+#ifdef Q_OS_WIN
+                                       "File Folder", "Match Windows Explorer"
+#else
+                                       "Folder", "All other platforms"
+#endif
+            );
+    // Windows   - "File Folder"
+    // OS X      - "Folder"
+    // Konqueror - "Folder"
+    // Nautilus  - "folder"
+
     if (info.isSymLink())
-        return QApplication::translate("QFileDialog", "Symbolic Link");
+        return QApplication::translate("QFileDialog",
+#ifdef Q_OS_MAC
+                                       "Alias", "Match OS X Finder"
+#else
+                                       "Shortcut", "All other platforms"
+#endif
+            );
+    // OS X      - "Alias"
+    // Windows   - "Shortcut"
+    // Konqueror - "Folder" or "TXT File" i.e. what it is pointing to
+    // Nautilus  - "link to folder" or "link to object file", same as Konqueror
+
     return QApplication::translate("QFileDialog", "Unknown");
 }
 
@@ -374,8 +430,8 @@ void QDirModelPrivate::invalidate()
   Directories can be created and removed using mkdir(), rmdir(), and the
   model will be automatically updated to take the changes into account.
 
-  \sa nameFilters(), setFilter(), filter(), {Model/View Programming}, QListView, QTreeView
-
+  \sa nameFilters(), setFilter(), filter(), {Model/View Programming}, QListView, QTreeView,
+      {Dir View Example}
 */
 
 /*!
@@ -393,7 +449,7 @@ QDirModel::QDirModel(const QStringList &nameFilters,
 {
     Q_D(QDirModel);
     // we always start with QDir::drives()
-    d->nameFilters = nameFilters.isEmpty() ? QStringList("*") : nameFilters;
+    d->nameFilters = nameFilters.isEmpty() ? QStringList(QLatin1String("*")) : nameFilters;
     d->filters = filters;
     d->sort = sort;
     d->root.parent = 0;
@@ -444,14 +500,14 @@ QModelIndex QDirModel::index(int row, int column, const QModelIndex &parent) con
     if (column < 0 || column >= 4 || row < 0 || parent.column() > 0)
         return QModelIndex();
     // make sure the list of children is up to date
-    QDirModelPrivate::QDirNode *p = (parent.isValid() ? d->node(parent) : &d->root);
+    QDirModelPrivate::QDirNode *p = (d->indexValid(parent) ? d->node(parent) : &d->root);
     Q_ASSERT(p);
     if (!p->populated)
         d->populate(p); // populate without stat'ing
     if (row >= p->children.count())
         return QModelIndex();
     // now get the internal pointer for the index
-    QDirModelPrivate::QDirNode *n = d->node(row, parent.isValid() ? p : 0);
+    QDirModelPrivate::QDirNode *n = d->node(row, d->indexValid(parent) ? p : 0);
     Q_ASSERT(n);
 
     return createIndex(row, column, n);
@@ -465,7 +521,7 @@ QModelIndex QDirModel::parent(const QModelIndex &child) const
 {
     Q_D(const QDirModel);
 
-    if (!child.isValid())
+    if (!d->indexValid(child))
 	return QModelIndex();
     QDirModelPrivate::QDirNode *node = d->node(child);
     QDirModelPrivate::QDirNode *par = (node ? node->parent : 0);
@@ -498,6 +554,8 @@ int QDirModel::rowCount(const QModelIndex &parent) const
             d->populate(&d->root);
         return d->root.children.count();
     }
+    if (parent.model() != this)
+        return 0;
     QDirModelPrivate::QDirNode *p = d->node(parent);
     if (p->info.isDir() && !p->populated) // lazy population
         d->populate(p);
@@ -522,7 +580,7 @@ int QDirModel::columnCount(const QModelIndex &parent) const
 QVariant QDirModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QDirModel);
-    if (!index.isValid())
+    if (!d->indexValid(index))
         return QVariant();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
@@ -545,6 +603,10 @@ QVariant QDirModel::data(const QModelIndex &index, int role) const
         if (role == FileNameRole)
             return fileName(index);
     }
+
+    if (index.column() == 1 && Qt::TextAlignmentRole == role) {
+        return Qt::AlignRight;
+    }
     return QVariant();
 }
 
@@ -559,7 +621,7 @@ QVariant QDirModel::data(const QModelIndex &index, int role) const
 bool QDirModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     Q_D(QDirModel);
-    if (!index.isValid() || index.column() != 0
+    if (!d->indexValid(index) || index.column() != 0
         || (flags(index) & Qt::ItemIsEditable) == 0 || role != Qt::EditRole)
         return false;
 
@@ -594,8 +656,17 @@ QVariant QDirModel::headerData(int section, Qt::Orientation orientation, int rol
 	switch (section) {
         case 0: return tr("Name");
         case 1: return tr("Size");
-        case 2: return tr("Type");
-        case 3: return tr("Modified");
+        case 2: return
+#ifdef Q_OS_MAC
+                       tr("Kind", "Match OS X Finder");
+#else
+                       tr("Type", "All other platforms");
+#endif
+        // Windows   - Type
+        // OS X      - Kind
+        // Konqueror - File Type
+        // Nautilus  - Type
+        case 3: return tr("Date Modified");
         default: return QVariant();
         }
     }
@@ -632,7 +703,7 @@ Qt::ItemFlags QDirModel::flags(const QModelIndex &index) const
 {
     Q_D(const QDirModel);
     Qt::ItemFlags flags = QAbstractItemModel::flags(index);
-    if (!index.isValid())
+    if (!d->indexValid(index))
         return flags;
     flags |= Qt::ItemIsDragEnabled;
     if (d->readOnly)
@@ -653,7 +724,7 @@ Qt::ItemFlags QDirModel::flags(const QModelIndex &index) const
 
 void QDirModel::sort(int column, Qt::SortOrder order)
 {
-    QDir::SortFlags sort = QDir::DirsFirst;
+    QDir::SortFlags sort = QDir::DirsFirst | QDir::IgnoreCase;
     if (order == Qt::DescendingOrder)
         sort |= QDir::Reversed;
 
@@ -719,30 +790,31 @@ QMimeData *QDirModel::mimeData(const QModelIndexList &indexes) const
 bool QDirModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                              int /* row */, int /* column */, const QModelIndex &parent)
 {
-    if (!parent.isValid() || isReadOnly())
+    Q_D(QDirModel);
+    if (!d->indexValid(parent) || isReadOnly())
         return false;
 
     bool success = true;
     QString to = filePath(parent) + QDir::separator();
 
     QList<QUrl> urls = data->urls();
-    QList<QUrl>::const_iterator it = urls.begin();
+    QList<QUrl>::const_iterator it = urls.constBegin();
 
     switch (action) {
     case Qt::CopyAction:
-        for (; it != urls.end(); ++it) {
+        for (; it != urls.constEnd(); ++it) {
             QString path = (*it).toLocalFile();
             success = QFile::copy(path, to + QFileInfo(path).fileName()) && success;
         }
         break;
     case Qt::LinkAction:
-        for (; it != urls.end(); ++it) {
+        for (; it != urls.constEnd(); ++it) {
             QString path = (*it).toLocalFile();
             success = QFile::link(path, to + QFileInfo(path).fileName()) && success;
         }
         break;
     case Qt::MoveAction:
-        for (; it != urls.end(); ++it) {
+        for (; it != urls.constEnd(); ++it) {
             QString path = (*it).toLocalFile();
             success = QFile::copy(path, to + QFileInfo(path).fileName())
                       && QFile::remove(path) && success;
@@ -754,7 +826,7 @@ bool QDirModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
     if (success)
         refresh(parent);
-    
+
     return success;
 }
 
@@ -798,6 +870,7 @@ void QDirModel::setNameFilters(const QStringList &filters)
 {
     Q_D(QDirModel);
     d->nameFilters = filters;
+    emit layoutAboutToBeChanged();
     if (d->shouldStat)
        refresh(QModelIndex());
     else
@@ -828,6 +901,7 @@ void QDirModel::setFilter(QDir::Filters filters)
 {
     Q_D(QDirModel);
     d->filters = filters;
+    emit layoutAboutToBeChanged();
     if (d->shouldStat)
         refresh(QModelIndex());
     else
@@ -857,6 +931,7 @@ void QDirModel::setSorting(QDir::SortFlags sort)
 {
     Q_D(QDirModel);
     d->sort = sort;
+    emit layoutAboutToBeChanged();
     if (d->shouldStat)
         refresh(QModelIndex());
     else
@@ -921,7 +996,7 @@ bool QDirModel::isReadOnly() const
   \brief Whether the directory model optimizes the hasChildren function
   to only check if the item is a directory.
 
-  If this property is set to true, the directory model will make sure that a directory
+  If this property is set to false, the directory model will make sure that a directory
   actually containes any files before reporting that it has children.
   Otherwise the directory model will report that an item has children if the item
   is a directory.
@@ -949,22 +1024,25 @@ void QDirModel::refresh(const QModelIndex &parent)
 {
     Q_D(QDirModel);
 
-    QDirModelPrivate::QDirNode *n = parent.isValid() ? d->node(parent) : &(d->root);
+    QDirModelPrivate::QDirNode *n = d->indexValid(parent) ? d->node(parent) : &(d->root);
 
     int rows = n->children.count();
     if (rows == 0) {
+        emit layoutAboutToBeChanged();
         n->stat = true; // make sure that next time we read all the info
         n->populated = false;
         emit layoutChanged();
         return;
     }
 
+    emit layoutAboutToBeChanged();
     d->savePersistentIndexes();
-    beginRemoveRows(parent, 0, rows - 1);
+    d->rowsAboutToBeRemoved(parent, 0, rows - 1);
     n->stat = true; // make sure that next time we read all the info
     d->clear(n);
-    endRemoveRows();
+    d->rowsRemoved(parent, 0, rows - 1);
     d->restorePersistentIndexes();
+    emit layoutChanged();
 }
 
 /*!
@@ -994,7 +1072,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
     }
 #endif
 
-    QStringList pathElements = absolutePath.split(QChar('/'), QString::SkipEmptyParts);
+    QStringList pathElements = absolutePath.split(QLatin1Char('/'), QString::SkipEmptyParts);
     if ((pathElements.isEmpty() || !QFileInfo(path).exists())
 #ifndef Q_OS_WIN
         && path != QLatin1String("/")
@@ -1055,7 +1133,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
 
         // we couldn't find the path element, we create a new node since we _know_ that the path is valid
         if (row == -1) {
-            QString newPath = parent->info.absoluteFilePath() + "/" + element;
+            QString newPath = parent->info.absoluteFilePath() + QLatin1Char('/') + element;
             if (!d->allowAppendChild || !QFileInfo(newPath).isDir())
                 return QModelIndex();
             d->appendChild(parent, newPath);
@@ -1083,7 +1161,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
 bool QDirModel::isDir(const QModelIndex &index) const
 {
     Q_D(const QDirModel);
-    Q_ASSERT(index.isValid());
+    Q_ASSERT(d->indexValid(index));
     QDirModelPrivate::QDirNode *node = d->node(index);
     return node->info.isDir();
 }
@@ -1095,7 +1173,7 @@ bool QDirModel::isDir(const QModelIndex &index) const
 QModelIndex QDirModel::mkdir(const QModelIndex &parent, const QString &name)
 {
     Q_D(QDirModel);
-    if (!parent.isValid() || isReadOnly())
+    if (!d->indexValid(parent) || isReadOnly())
         return QModelIndex();
 
     QDirModelPrivate::QDirNode *p = d->node(parent);
@@ -1130,7 +1208,8 @@ QModelIndex QDirModel::mkdir(const QModelIndex &parent, const QString &name)
 
 bool QDirModel::rmdir(const QModelIndex &index)
 {
-    if (!index.isValid() || isReadOnly())
+    Q_D(QDirModel);
+    if (!d->indexValid(index) || isReadOnly())
         return false;
 
     QDirModelPrivate::QDirNode *n = d_func()->node(index);
@@ -1158,7 +1237,8 @@ bool QDirModel::rmdir(const QModelIndex &index)
 
 bool QDirModel::remove(const QModelIndex &index)
 {
-    if (!index.isValid() || isReadOnly())
+    Q_D(QDirModel);
+    if (!d->indexValid(index) || isReadOnly())
         return false;
 
     QDirModelPrivate::QDirNode *n = d_func()->node(index);
@@ -1186,7 +1266,7 @@ bool QDirModel::remove(const QModelIndex &index)
 QString QDirModel::filePath(const QModelIndex &index) const
 {
     Q_D(const QDirModel);
-    if (index.isValid()) {
+    if (d->indexValid(index)) {
         QFileInfo fi = fileInfo(index);
         if (d->resolveSymlinks && fi.isSymLink())
             fi = d->resolvedInfo(fi);
@@ -1204,7 +1284,7 @@ QString QDirModel::filePath(const QModelIndex &index) const
 QString QDirModel::fileName(const QModelIndex &index) const
 {
     Q_D(const QDirModel);
-    if (!index.isValid())
+    if (!d->indexValid(index))
         return QString();
     QFileInfo info = fileInfo(index);
     if (info.isRoot())
@@ -1222,7 +1302,7 @@ QString QDirModel::fileName(const QModelIndex &index) const
 QIcon QDirModel::fileIcon(const QModelIndex &index) const
 {
     Q_D(const QDirModel);
-    if (!index.isValid())
+    if (!d->indexValid(index))
         return d->iconProvider->icon(QFileIconProvider::Computer);
     QDirModelPrivate::QDirNode *node = d->node(index);
     if (node->icon.isNull())
@@ -1237,9 +1317,10 @@ QIcon QDirModel::fileIcon(const QModelIndex &index) const
 
 QFileInfo QDirModel::fileInfo(const QModelIndex &index) const
 {
-    Q_ASSERT(index.isValid());
+    Q_D(const QDirModel);
+    Q_ASSERT(d->indexValid(index));
 
-    QDirModelPrivate::QDirNode *node = d_func()->node(index);
+    QDirModelPrivate::QDirNode *node = d->node(index);
     return node->info;
 }
 
@@ -1249,7 +1330,7 @@ QFileInfo QDirModel::fileInfo(const QModelIndex &index) const
 
 void QDirModelPrivate::init()
 {
-    filters = QDir::AllEntries;
+    filters = QDir::AllEntries | QDir::NoDotAndDotDot;
     sort = QDir::Name;
     nameFilters << QLatin1String("*");
     root.parent = 0;
@@ -1283,8 +1364,9 @@ QVector<QDirModelPrivate::QDirNode> QDirModelPrivate::children(QDirNode *parent,
         parent = 0;
         infoList = QDir::drives();
     } else if (parent->info.isDir()) {
-        if (parent->info.isSymLink()) {
-            QString link = parent->info.readLink();
+        //resolve directory links only if requested.
+        if (parent->info.isSymLink() && resolveSymlinks) {
+            QString link = parent->info.symLinkTarget();
             if (link.size() > 1 && link.at(link.size() - 1) == QDir::separator())
                 link.chop(1);
             if (stat)
@@ -1350,13 +1432,13 @@ void QDirModelPrivate::restorePersistentIndexes()
 QFileInfoList QDirModelPrivate::entryInfoList(const QString &path) const
 {
     const QDir dir(path);
-    return dir.entryInfoList(nameFilters, filters | QDir::NoDotAndDotDot, sort);
+    return dir.entryInfoList(nameFilters, filters, sort);
 }
 
 QStringList QDirModelPrivate::entryList(const QString &path) const
 {
     const QDir dir(path);
-    return dir.entryList(nameFilters, filters | QDir::NoDotAndDotDot, sort);
+    return dir.entryList(nameFilters, filters, sort);
 }
 
 QString QDirModelPrivate::name(const QModelIndex &index) const
@@ -1378,14 +1460,35 @@ QString QDirModelPrivate::name(const QModelIndex &index) const
 
 QString QDirModelPrivate::size(const QModelIndex &index) const
 {
-    quint64 bytes = node(index)->info.size();
-    if (bytes >= 1000000000)
-        return QLocale().toString(bytes / 1000000000) + QString(" GB");
-    if (bytes >= 1000000)
-        return QLocale().toString(bytes / 1000000) + QString(" MB");
-    if (bytes >= 1000)
-        return QLocale().toString(bytes / 1000) + QString(" KB");
-    return QLocale().toString(bytes) + QString(" bytes");
+    const QDirNode *n = node(index);
+    if (n->info.isDir()) {
+#ifdef Q_OS_MAC
+        return QLatin1String("--");
+#else
+        return QLatin1String("");
+#endif
+    // Windows   - ""
+    // OS X      - "--"
+    // Konqueror - "4 KB"
+    // Nautilus  - "9 items" (the number of children)
+    }
+
+    // According to the Si standard KB is 1000 bytes, KiB is 1024
+    // but on windows sizes are calulated by dividing by 1024 so we do what they do.
+    const quint64 kb = 1024;
+    const quint64 mb = 1024 * kb;
+    const quint64 gb = 1024 * mb;
+    const quint64 tb = 1024 * gb;
+    quint64 bytes = n->info.size();
+    if (bytes >= tb)
+        return QLocale().toString(bytes / tb) + QString(QLatin1String(" TB"));
+    if (bytes >= gb)
+        return QLocale().toString(bytes / gb) + QString(QLatin1String(" GB"));
+    if (bytes >= mb)
+        return QLocale().toString(bytes / mb) + QString(QLatin1String(" MB"));
+    if (bytes >= kb)
+        return QLocale().toString(bytes / kb) + QString(QLatin1String(" KB"));
+    return QLocale().toString(bytes) + QString(QLatin1String(" bytes"));
 }
 
 QString QDirModelPrivate::type(const QModelIndex &index) const
@@ -1396,7 +1499,7 @@ QString QDirModelPrivate::type(const QModelIndex &index) const
 QString QDirModelPrivate::time(const QModelIndex &index) const
 {
 #ifndef QT_NO_DATESTRING
-    return node(index)->info.lastModified().toString("yyyy-MM-dd hh:mm:ss");
+    return node(index)->info.lastModified().toString(Qt::LocalDate);
 #else
     Q_UNUSED(index);
     return QString();
@@ -1429,11 +1532,11 @@ QFileInfo QDirModelPrivate::resolvedInfo(QFileInfo info)
 {
 #ifdef Q_OS_WIN
     // On windows, we cannot create a shortcut to a shortcut.
-    return QFileInfo(info.readLink());
+    return QFileInfo(info.symLinkTarget());
 #else
     QStringList paths;
     do {
-        QFileInfo link(info.readLink());
+        QFileInfo link(info.symLinkTarget());
         if (link.isRelative())
             info.setFile(info.absolutePath(), link.filePath());
         else

@@ -59,9 +59,10 @@ public:
         Qt_3_1 = 5,
         Qt_3_3 = 6,
         Qt_4_0 = 7,
-        Qt_4_1 = Qt_4_0
-#if QT_VERSION >= 0x040200
-#error Add Qt_4_2 = Qt_4_1
+        Qt_4_1 = Qt_4_0,
+        Qt_4_2 = 8
+#if QT_VERSION >= 0x040300
+#error Add Qt_4_3 = Qt_4_2
 #endif
     };
 
@@ -274,8 +275,7 @@ template<typename T>
 QDataStream& operator<<(QDataStream& s, const QVector<T>& v)
 {
     s << quint32(v.size());
-    const T* it = v.begin();
-    for(; it != v.end(); ++it)
+    for (typename QVector<T>::const_iterator it = v.begin(); it != v.end(); ++it)
         s << *it;
     return s;
 }

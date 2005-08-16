@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/q3dict.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/q3dict.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/q3dict.qdoc -->
 <head>
-    <title>Qt 4.1: Q3DictIterator Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Q3DictIterator Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DictIterator Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3DictIterator Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3DictIterator class provides an iterator for <a href="q3dict.html">Q3Dict</a> collections. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3DictIterator&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
+<pre> #include &lt;Q3DictIterator&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <ul>
 <li><a href="q3dictiterator-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -46,24 +40,24 @@ body { background: #ffffff; color: black; }</style>
 <p>The traversal order is arbitrary; when we speak of the &quot;first&quot;, &quot;last&quot; and &quot;next&quot; item we are talking in terms of this arbitrary order.</p>
 <p>Multiple iterators may independently traverse the same dictionary. A <a href="q3dict.html">Q3Dict</a> knows about all the iterators that are operating on the dictionary. When an item is removed from the dictionary, <a href="q3dict.html">Q3Dict</a> updates all iterators that are referring to the removed item to point to the next item in the (arbitrary) traversal order.</p>
 <p>Example:</p>
-<pre>&nbsp;   Q3Dict&lt;QLineEdit&gt; fields;
-    fields.insert( &quot;forename&quot;, new QLineEdit( this ) );
-    fields.insert( &quot;surname&quot;, new QLineEdit( this ) );
-    fields.insert( &quot;age&quot;, new QLineEdit( this ) );
+<pre> Q3Dict&lt;QLineEdit&gt; fields;
+ fields.insert( &quot;forename&quot;, new QLineEdit( this ) );
+ fields.insert( &quot;surname&quot;, new QLineEdit( this ) );
+ fields.insert( &quot;age&quot;, new QLineEdit( this ) );
 
-    fields[&quot;forename&quot;]-&gt;setText( &quot;Homer&quot; );
-    fields[&quot;surname&quot;]-&gt;setText( &quot;Simpson&quot; );
-    fields[&quot;age&quot;]-&gt;setText( &quot;45&quot; );
+ fields[&quot;forename&quot;]-&gt;setText( &quot;Homer&quot; );
+ fields[&quot;surname&quot;]-&gt;setText( &quot;Simpson&quot; );
+ fields[&quot;age&quot;]-&gt;setText( &quot;45&quot; );
 
-    Q3DictIterator&lt;QLineEdit&gt; it( fields );
-    for( ; it.current(); ++it )
-        cout &lt;&lt; it.currentKey() &lt;&lt; &quot;: &quot; &lt;&lt; it.current()-&gt;text() &lt;&lt; endl;
-    cout &lt;&lt; endl;
+ Q3DictIterator&lt;QLineEdit&gt; it( fields );
+ for( ; it.current(); ++it )
+     cout &lt;&lt; it.currentKey() &lt;&lt; &quot;: &quot; &lt;&lt; it.current()-&gt;text() &lt;&lt; endl;
+ cout &lt;&lt; endl;
 
-    // Output (random order):
-    //  age: 45
-    //  surname: Simpson
-    //  forename: Homer</pre>
+<span class="comment"> // Output (random order):</span>
+<span class="comment"> //  age: 45</span>
+<span class="comment"> //  surname: Simpson</span>
+<span class="comment"> //  forename: Homer</span></pre>
 <p>In the example we insert some pointers to line edits into a dictionary, then iterate over the dictionary printing the strings associated with the line edits.</p>
 <p>See also <a href="q3dict.html">Q3Dict</a>.</p>
 <hr />
@@ -97,6 +91,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

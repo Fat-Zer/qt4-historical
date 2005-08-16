@@ -72,9 +72,11 @@ private slots:
     void changeToolTip();
     void changeStatusTip();
     void changeWhatsThis();
+    void changeStyleSheet();
     void createMenuBar();
     void addToolBar();
     void createStatusBar();
+    void removeStatusBar();
 
 private:
     QPointer<QWidget> m_widget;
@@ -84,6 +86,7 @@ private:
     QAction *m_changeToolTip;
     QAction *m_changeStatusTip;
     QAction *m_changeWhatsThis;
+    QAction *m_changeStyleSheet;
     QAction *m_createDockWidgetAction;
     QAction *m_promoteToCustomWidgetAction;
     QAction *m_demoteFromCustomWidgetAction;
@@ -91,6 +94,7 @@ private:
     QAction *m_addMenuBar;
     QAction *m_addToolBar;
     QAction *m_addStatusBar;
+    QAction *m_removeStatusBar;
 };
 
 class QDESIGNER_SHARED_EXPORT QDesignerTaskMenuFactory: public QExtensionFactory

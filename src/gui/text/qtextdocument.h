@@ -26,6 +26,7 @@
 
 #include <QtCore/qobject.h>
 #include <QtCore/qsize.h>
+#include <QtCore/qrect.h>
 #include <QtGui/qfont.h>
 
 QT_BEGIN_HEADER
@@ -93,6 +94,11 @@ class Q_GUI_EXPORT QTextDocument : public QObject
     Q_PROPERTY(QSizeF pageSize READ pageSize WRITE setPageSize)
     Q_PROPERTY(QFont defaultFont READ defaultFont WRITE setDefaultFont)
     Q_PROPERTY(bool useDesignMetrics READ useDesignMetrics WRITE setUseDesignMetrics)
+    Q_PROPERTY(QSizeF size READ size)
+    Q_PROPERTY(qreal textWidth READ textWidth WRITE setTextWidth)
+    Q_PROPERTY(int blockCount READ blockCount)
+    Q_PROPERTY(QString defaultStyleSheet READ defaultStyleSheet WRITE setDefaultStyleSheet)
+    Q_PROPERTY(int maximumBlockCount READ maximumBlockCount WRITE setMaximumBlockCount)
 
 public:
     explicit QTextDocument(QObject *parent = 0);
@@ -133,8 +139,11 @@ public:
     };
     Q_DECLARE_FLAGS(FindFlags, FindFlag)
 
-    QTextCursor find(const QString &expr, int from = 0, FindFlags options = 0) const;
-    QTextCursor find(const QString &expr, const QTextCursor &from, FindFlags options = 0) const;
+    QTextCursor find(const QString &subString, int from = 0, FindFlags options = 0) const;
+    QTextCursor find(const QString &subString, const QTextCursor &from, FindFlags options = 0) const;
+
+    QTextCursor find(const QRegExp &expr, int from = 0, FindFlags options = 0) const;
+    QTextCursor find(const QRegExp &expr, const QTextCursor &from, FindFlags options = 0) const;
 
     QTextFrame *frameAt(int pos) const;
     QTextFrame *rootFrame() const;
@@ -159,10 +168,11 @@ public:
 #ifndef QT_NO_PRINTER
     void print(QPrinter *printer) const;
 #endif
-    
+
     enum ResourceType {
         HtmlResource  = 1,
         ImageResource = 2,
+        StyleSheetResource = 3,
 
         UserResource  = 100
     };
@@ -176,6 +186,27 @@ public:
 
     void setUseDesignMetrics(bool b);
     bool useDesignMetrics() const;
+
+    void drawContents(QPainter *painter, const QRectF &rect = QRectF());
+
+    void setTextWidth(qreal width);
+    qreal textWidth() const;
+
+    qreal idealWidth() const;
+
+    void adjustSize();
+    QSizeF size() const;
+
+    int blockCount() const;
+
+    void setDefaultStyleSheet(const QString &sheet);
+    QString defaultStyleSheet() const;
+
+    void undo(QTextCursor *cursor);
+    void redo(QTextCursor *cursor);
+
+    int maximumBlockCount() const;
+    void setMaximumBlockCount(int maximum);
 
 Q_SIGNALS:
     void contentsChange(int from, int charsRemoves, int charsAdded);
@@ -195,6 +226,7 @@ protected:
     virtual QTextObject *createObject(const QTextFormat &f);
     virtual QVariant loadResource(int type, const QUrl &name);
 
+    QTextDocument(QTextDocumentPrivate &dd, QObject *parent);
 public:
     QTextDocumentPrivate *docHandle() const;
 private:

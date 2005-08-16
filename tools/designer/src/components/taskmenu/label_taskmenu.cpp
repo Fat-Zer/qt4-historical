@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::LabelTaskMenu
+*/
+
 #include "label_taskmenu.h"
 
 #include <QtDesigner/QtDesigner>

@@ -28,8 +28,8 @@
 #include <QList>
 
 class QComboBox;
+class QDialogButtonBox;
 class QLabel;
-class QPushButton;
 class QTextCodec;
 class QTextEdit;
 
@@ -54,8 +54,7 @@ private:
     QComboBox *encodingComboBox;
     QLabel *encodingLabel;
     QTextEdit *textEdit;
-    QPushButton *okButton;
-    QPushButton *cancelButton;
+    QDialogButtonBox *buttonBox;
 };
 
 #endif

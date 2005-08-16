@@ -165,6 +165,10 @@ QSvgGradientStyle::QSvgGradientStyle(QGradient *grad, bool resolveBounds)
 
 void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
 {
+    if (!m_link.isEmpty()) {
+        resolveStops();
+    }
+    
     m_oldFill = p->brush();
 
     //resolving stop colors
@@ -179,6 +183,7 @@ void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
         }
     }
 
+    QBrush brush;
     //we need to resolve boundries
     //the code is funky i'll have to verify it
     //(testcases right now are bugs/resolve_radial.svg
@@ -194,8 +199,7 @@ void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
             QLinearGradient gradient(xs, ys,
                                      xf, yf);
             gradient.setStops(m_gradient->stops());
-            QBrush b(gradient);
-            p->setBrush(b);
+            brush = QBrush(gradient);
         } else {
             QRadialGradient *grad = (QRadialGradient*)m_gradient;
             qreal cx, cy, r, fx, fy;
@@ -209,21 +213,31 @@ void QSvgGradientStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *)
             r  = rect.width() * grad->radius();
             fx = rect.width() * grad->focalPoint().x();
             fy = rect.width() * grad->focalPoint().y();
+            //qDebug()<<cx << cy << r << fx << fy;
             QRadialGradient gradient(cx, cy,
                                      r, fx, fy);
             gradient.setStops(m_gradient->stops());
-            QBrush b(gradient);
-            p->setBrush(b);
+            brush = QBrush(gradient);
         }
     } else {
-        QBrush b(*m_gradient);
-        p->setBrush(b);
+        brush = QBrush(*m_gradient);
     }
+    
+    if (!m_matrix.isIdentity())
+        brush.setMatrix(m_matrix);
+    
+    p->setBrush(brush);
 }
 
 void QSvgGradientStyle::revert(QPainter *p)
 {
     p->setBrush(m_oldFill);
+}
+
+
+void QSvgGradientStyle::setMatrix(const QMatrix &mat)
+{
+    m_matrix = mat;
 }
 
 void QSvgGradientStyle::addResolve(qreal offset)
@@ -339,6 +353,10 @@ void QSvgStyle::apply(QPainter *p, const QRectF &rect, QSvgNode *node)
             (*itr)->apply(p, rect, node);
         }
     }
+
+    if (opacity) {
+        opacity->apply(p, rect, node);
+    }
 }
 
 void QSvgStyle::revert(QPainter *p)
@@ -389,6 +407,10 @@ void QSvgStyle::revert(QPainter *p)
 
     if (animateColor) {
         animateColor->revert(p);
+    }
+
+    if (opacity) {
+        opacity->revert(p);
     }
 }
 
@@ -697,3 +719,48 @@ void QSvgFontStyle::setTextAnchor(const QString &anchor)
 {
     m_textAnchor = anchor;
 }
+
+QSvgOpacityStyle::QSvgOpacityStyle(qreal opacity)
+    : m_opacity(opacity)
+{
+    
+}
+
+void QSvgOpacityStyle::apply(QPainter *p, const QRectF &, QSvgNode *)
+{
+    m_oldOpacity = p->opacity();
+    p->setOpacity(m_opacity);
+}
+
+void QSvgOpacityStyle::revert(QPainter *p)
+{
+    p->setOpacity(m_oldOpacity);
+}
+
+QSvgStyleProperty::Type QSvgOpacityStyle::type() const
+{
+    return OPACITY;
+}
+
+void QSvgGradientStyle::setStopLink(const QString &link, QSvgTinyDocument *doc)
+{
+    m_link = link;
+    m_doc  = doc;
+}
+
+void QSvgGradientStyle::resolveStops()
+{
+    if (!m_link.isEmpty() && m_doc) {
+        QSvgStyleProperty *prop = m_doc->scopeStyle(m_link);
+        if (prop) {
+            if (prop->type() == QSvgStyleProperty::GRADIENT) {
+                QSvgGradientStyle *st =
+                    static_cast<QSvgGradientStyle*>(prop);
+                st->resolveStops();
+                m_gradient->setStops(st->qgradient()->stops());
+            }
+        }
+        m_link = QString();
+    }
+}
+

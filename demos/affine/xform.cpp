@@ -46,7 +46,7 @@ XFormView::XFormView(QWidget *parent)
     pts->setPointSize(QSize(15, 15));
     pts->setShapeBrush(QBrush(QColor(151, 0, 0, alpha)));
     pts->setShapePen(QPen(QColor(255, 100, 50, alpha)));
-    pts->setConnectionPen(QPen(QColor(151, 0, 0, alpha), 0, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin));
+    pts->setConnectionPen(QPen(QColor(151, 0, 0, 50)));
     pts->setBoundingRect(QRectF(0, 0, 500, 500));
     ctrlPoints << QPointF(250, 250) << QPointF(350, 250);
     pts->setPoints(ctrlPoints);
@@ -60,9 +60,10 @@ void XFormView::mousePressEvent(QMouseEvent *)
     setDescriptionEnabled(false);
 }
 
-void XFormView::resizeEvent(QResizeEvent *)
+void XFormView::resizeEvent(QResizeEvent *e)
 {
     pts->setBoundingRect(rect());
+    ArthurFrame::resizeEvent(e);
 }
 
 void XFormView::paint(QPainter *p)
@@ -236,11 +237,12 @@ void XFormView::drawPixmapType(QPainter *painter)
 
 void XFormView::drawTextType(QPainter *painter)
 {
+    QPainterPath path;
     QFont f("times new roman,utopia");
     f.setStyleStrategy(QFont::ForceOutline);
     f.setPointSize(72);
     f.setStyleHint(QFont::Times);
-    painter->setFont(f);
+    path.addText(0, 0, f, textEditor->text());
 
     QFontMetrics fm(f);
     QRectF br(fm.boundingRect(textEditor->text()));
@@ -253,7 +255,8 @@ void XFormView::drawTextType(QPainter *painter)
     painter->shear(0, m_shear);
     painter->translate(-center);
 
-    painter->drawText(0, 0, textEditor->text());
+    painter->fillPath(path, Qt::black);
+
     painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(br.adjusted(-1, -1, 1, 1));
@@ -723,6 +726,7 @@ XFormWidget::XFormWidget(QWidget *parent)
     setWindowTitle("Affine Transformations");
 
     view = new XFormView(this);
+    view->setMinimumSize(200, 200);
 
     QGroupBox *mainGroup = new QGroupBox(this);
     mainGroup->setFixedWidth(180);
@@ -769,7 +773,14 @@ XFormWidget::XFormWidget(QWidget *parent)
 
     QPushButton *showSourceButton = new QPushButton(mainGroup);
     showSourceButton->setText("Show Source");
-
+#ifdef QT_OPENGL_SUPPORT
+    QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
+    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setCheckable(true);
+    enableOpenGLButton->setChecked(view->usesOpenGL());
+    if (!QGLFormat::hasOpenGL())
+        enableOpenGLButton->hide();
+#endif
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
     whatsThisButton->setText("What's This?");
     whatsThisButton->setCheckable(true);
@@ -803,6 +814,9 @@ XFormWidget::XFormWidget(QWidget *parent)
     mainGroupLayout->addWidget(resetButton);
     mainGroupLayout->addWidget(animateButton);
     mainGroupLayout->addWidget(showSourceButton);
+#ifdef QT_OPENGL_SUPPORT
+    mainGroupLayout->addWidget(enableOpenGLButton);
+#endif
     mainGroupLayout->addWidget(whatsThisButton);
 
     connect(rotateSlider, SIGNAL(valueChanged(int)), view, SLOT(changeRotation(int)));
@@ -826,7 +840,9 @@ XFormWidget::XFormWidget(QWidget *parent)
     connect(view, SIGNAL(descriptionEnabledChanged(bool)), view->hoverPoints(), SLOT(setDisabled(bool)));
     connect(view, SIGNAL(descriptionEnabledChanged(bool)), whatsThisButton, SLOT(setChecked(bool)));
     connect(showSourceButton, SIGNAL(clicked()), view, SLOT(showSource()));
-
+#ifdef QT_OPENGL_SUPPORT
+    connect(enableOpenGLButton, SIGNAL(clicked(bool)), view, SLOT(enableOpenGL(bool)));
+#endif
     view->loadSourceFile(":res/xform.cpp");
     view->loadDescription(":res/xform.html");
 

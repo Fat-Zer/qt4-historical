@@ -6,13 +6,15 @@ HEADERS += \
 	styles/qstyleoption.h \
 	styles/qstyleplugin.h \
 	styles/qcommonstylepixmaps_p.h \
-	styles/qcommonstyle.h
+	styles/qcommonstyle.h \
+	styles/qstylesheetstyle_p.h
 SOURCES += \
 	styles/qstyle.cpp \
 	styles/qstylefactory.cpp \
 	styles/qstyleoption.cpp \
 	styles/qstyleplugin.cpp \
-	styles/qcommonstyle.cpp
+	styles/qcommonstyle.cpp \
+	styles/qstylesheetstyle.cpp
 
 RESOURCES += styles/qstyle.qrc
 
@@ -73,6 +75,18 @@ contains( styles, plastique ) {
 	}
 } else {
 	DEFINES += QT_NO_STYLE_PLASTIQUE
+}
+
+contains( styles, cleanlooks ) {
+	HEADERS += styles/qcleanlooksstyle.h
+	SOURCES += styles/qcleanlooksstyle.cpp
+	!contains( styles, windows ) {
+		message( cleanlooks requires windows )
+		styles += windows
+		DEFINES+= QT_STYLE_WINDOWS
+	}
+} else {
+	DEFINES += QT_NO_STYLE_CLEANLOOKS
 }
 				
 contains( styles, windows ) {

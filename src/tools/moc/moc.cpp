@@ -26,109 +26,12 @@
 #include "qdatetime.h"
 #include "utils.h"
 #include "outputrevision.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-// WARNING: a copy of this function is in qmetaobject.cpp
-static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = false, bool adjustConst = true)
-{
-    int len = e - t;
-    /*
-      Convert 'char const *' into 'const char *'. Start at index 1,
-      not 0, because 'const char *' is already OK.
-    */
-    QByteArray constbuf;
-    for (int i = 1; i < len; i++) {
-        if ( t[i] == 'c'
-             && strncmp(t + i + 1, "onst", 4) == 0
-             && (i + 5 >= len || !is_ident_char(t[i + 5]))
-             && !is_ident_char(t[i-1])
-            ) {
-            constbuf = QByteArray(t, len);
-            if (is_space(t[i-1]))
-                constbuf.remove(i-1, 6);
-            else
-                constbuf.remove(i, 5);
-            constbuf.prepend("const ");
-            t = constbuf.data();
-            e = constbuf.data() + constbuf.length();
-            break;
-        }
-        /*
-          We musn't convert 'char * const *' into 'const char **'
-          and we must beware of 'Bar<const Bla>'.
-        */
-        if (t[i] == '&' || t[i] == '*' ||t[i] == '<')
-            break;
-    }
-    if (adjustConst && e > t + 6 && strncmp("const ", t, 6) == 0) {
-        if (*(e-1) == '&') { // treat const reference as value
-            t += 6;
-            --e;
-        } else if (is_ident_char(*(e-1))) { // treat const value as value
-            t += 6;
-        }
-    }
-    QByteArray result;
-    result.reserve(len);
-
-    // some type substitutions for 'unsigned x'
-    if (strncmp("unsigned ", t, 9) == 0) {
-        if (strncmp("int", t+9, 3) == 0) {
-            t += 9+3;
-            result += "uint";
-        } else if (strncmp("long", t+9, 4) == 0
-                   // preserve '[unsigned] long int'
-                   && (strlen(t + 9 + 4) < 4
-                       || strncmp(t + 9 + 4, " int", 4) != 0
-                      )
-                   // preserve '[unsigned] long long'
-                   && (strlen(t + 9 + 4) < 5
-                       || strncmp(t + 9 + 4, " long", 5) != 0
-                      )
-                  ) {
-            t += 9+4;
-            result += "ulong";
-        }
-    }
-
-    while (t != e) {
-        char c = *t++;
-        if (fixScope && c == ':' && *t == ':' ) {
-            ++t;
-            c = *t++;
-            int i = result.size() - 1;
-            while (i >= 0 && is_ident_char(result.at(i)))
-                   --i;
-            result.resize(i + 1);
-        }
-        result += c;
-        if (c == '<') {
-            //template recursion
-            const char* tt = t;
-            int templdepth = 1;
-            while (t != e) {
-                c = *t++;
-                if (c == '<')
-                    ++templdepth;
-                if (c == '>')
-                    --templdepth;
-                if (templdepth == 0) {
-                    result += normalizeTypeInternal(tt, t-1, fixScope, false);
-                    result += c;
-                    if (*t == '>')
-                        result += ' '; // avoid >>
-                    break;
-                }
-            }
-        }
-    }
-
-    return result;
-}
+// for normalizeTypeInternal
+#include <private/qmetaobject_p.h>
 
 // only moc needs this function
-QByteArray normalizeType(const char *s, bool fixScope)
+static QByteArray normalizeType(const char *s, bool fixScope = false)
 {
     int len = qstrlen(s);
     char stackbuf[64];
@@ -154,93 +57,6 @@ QByteArray normalizeType(const char *s, bool fixScope)
     return result;
 }
 
-static const char *error_msg = 0;
-
-#ifdef Q_CC_MSVC
-#define ErrorFormatString "%s(%d): "
-#else
-#define ErrorFormatString "%s:%d: "
-#endif
-
-void Moc::error(int rollback) {
-    index -= rollback;
-    error();
-}
-void Moc::error(const char *msg) {
-    if (msg || error_msg)
-        qWarning(ErrorFormatString "Error: %s",
-               currentFilenames.top().constData(), symbol().lineNum, msg?msg:error_msg);
-    else
-        qWarning(ErrorFormatString "Parse error at \"%s\"",
-               currentFilenames.top().constData(), symbol().lineNum, symbol().lexem().data());
-    exit(EXIT_FAILURE);
-}
-
-void Moc::warning(const char *msg) {
-    if (displayWarnings && msg)
-        fprintf(stderr, ErrorFormatString "Warning: %s\n",
-                filename.constData(), qMax(0, symbol().lineNum), msg);
-}
-
-bool Moc::until(Token target) {
-    int braceCount = 0;
-    int brackCount = 0;
-    int parenCount = 0;
-    int angleCount = 0;
-    if (index) {
-        switch(symbols.at(index-1).token) {
-        case LBRACE: ++braceCount; break;
-        case LBRACK: ++brackCount; break;
-        case LPAREN: ++parenCount; break;
-        case LANGLE: ++angleCount; break;
-        default: ;
-        }
-    }
-    while (index < symbols.size()) {
-        Token t = symbols.at(index++).token;
-        switch (t) {
-        case LBRACE: ++braceCount; break;
-        case RBRACE: --braceCount; break;
-        case LBRACK: ++brackCount; break;
-        case RBRACK: --brackCount; break;
-        case LPAREN: ++parenCount; break;
-        case RPAREN: --parenCount; break;
-        case LANGLE: ++angleCount; break;
-        case RANGLE: --angleCount; break;
-        default: break;
-        }
-        if (t == target
-            && braceCount <= 0
-            && brackCount <= 0
-            && parenCount <= 0
-            && (target != RANGLE || angleCount <= 0))
-            return true;
-
-        if (braceCount < 0 || brackCount < 0 || parenCount < 0
-            || (target == RANGLE && angleCount < 0)) {
-            --index;
-            break;
-        }
-    }
-    return false;
-}
-
-QByteArray Moc::lexemUntil(Token target)
-{
-    int from = index;
-    until(target);
-    QByteArray s;
-    while (from <= index) {
-        QByteArray n = symbols.at(from++-1).lexem();
-        if (s.size() && n.size()
-            && is_ident_char(s.at(s.size()-1))
-            && is_ident_char(n.at(0)))
-            s += ' ';
-        s += n;
-    }
-    return s;
-}
-
 bool Moc::parseClassHead(ClassDef *def)
 {
     // figure out whether this is a class declaration, or only a
@@ -255,7 +71,8 @@ bool Moc::parseClassHead(ClassDef *def)
             return false;
     } while (token);
 
-    next(IDENTIFIER);
+    if (!test(IDENTIFIER)) // typedef struct { ... }
+        return false;
     QByteArray name = lexem();
 
     // support "class IDENT name" and "class IDENT(IDENT) name"
@@ -296,12 +113,13 @@ bool Moc::parseClassHead(ClassDef *def)
             }
         } while (test(COMMA));
     }
-    next(LBRACE);
+    if (!test(LBRACE))
+        return false;
     def->begin = index - 1;
-    until(RBRACE);
-    def->end = index ;
+    bool foundRBrace = until(RBRACE);
+    def->end = index;
     index = def->begin + 1;
-    return true;
+    return foundRBrace;
 }
 
 Type Moc::parseType()
@@ -309,6 +127,7 @@ Type Moc::parseType()
     Type type;
     bool hasSignedOrUnsigned = false;
     bool isVoid = false;
+    type.firstToken = lookup();
     for (;;) {
         switch (next()) {
             case SIGNED:
@@ -322,6 +141,14 @@ Type Moc::parseType()
                 if (lookup(0) == VOLATILE)
                     type.isVolatile = true;
                 continue;
+            case Q_MOC_COMPAT_TOKEN:
+            case Q_QT3_SUPPORT_TOKEN:
+            case Q_INVOKABLE_TOKEN:
+            case Q_SCRIPTABLE_TOKEN:
+            case Q_SIGNALS_TOKEN:
+            case Q_SLOTS_TOKEN:
+                type.name += lexem();
+                return type;
             default:
                 prev();
                 break;
@@ -459,15 +286,15 @@ bool Moc::parseFunction(FunctionDef *def, bool inMacro)
     } else {
         Type tempType = parseType();;
         while (!tempType.name.isEmpty() && lookup() != LPAREN) {
-            if (def->type.name == "QT_MOC_COMPAT" || def->type.name == "QT3_SUPPORT")
+            if (def->type.firstToken == Q_MOC_COMPAT_TOKEN || def->type.firstToken == Q_QT3_SUPPORT_TOKEN)
                 def->isCompat = true;
-            else if (def->type.name == "Q_INVOKABLE")
+            else if (def->type.firstToken == Q_INVOKABLE_TOKEN)
                 def->isInvokable = true;
-            else if (def->type.name == "Q_SCRIPTABLE")
+            else if (def->type.firstToken == Q_SCRIPTABLE_TOKEN)
                 def->isInvokable = def->isScriptable = true;
-            else if (def->type.name == "Q_SIGNAL")
+            else if (def->type.firstToken == Q_SIGNALS_TOKEN)
                 error();
-            else if (def->type.name == "Q_SLOT")
+            else if (def->type.firstToken == Q_SLOTS_TOKEN)
                 error();
             else {
                 if (!def->tag.isEmpty())
@@ -481,7 +308,7 @@ bool Moc::parseFunction(FunctionDef *def, bool inMacro)
         def->name = tempType.name;
         scopedFunctionName = tempType.isScoped;
     }
-    
+
     // we don't support references as return types, it's too dangerous
     if (def->type.referenceType == Type::Reference)
         def->type = Type("void");
@@ -531,7 +358,7 @@ bool Moc::parseMaybeFunction(FunctionDef *def)
     def->type = parseType();
     if (def->type.name.isEmpty())
         return false;
-    bool scopedFunctionName = false;    
+    bool scopedFunctionName = false;
     if (test(LPAREN)) {
         def->name = def->type.name;
         scopedFunctionName = def->type.isScoped;
@@ -589,8 +416,6 @@ bool Moc::parseMaybeFunction(FunctionDef *def)
 
 void Moc::parse()
 {
-    currentFilenames.push(filename);
-
     QList<NamespaceDef> namespaceList;
     bool templateClass = false;
     while (hasNext()) {
@@ -624,7 +449,6 @@ void Moc::parse()
                 templateClass = true;
                 break;
             case MOC_INCLUDE_BEGIN:
-                next(STRING_LITERAL);
                 currentFilenames.push(symbol().unquotedLexem());
                 break;
             case MOC_INCLUDE_END:
@@ -632,6 +456,9 @@ void Moc::parse()
                 break;
             case Q_DECLARE_INTERFACE_TOKEN:
                 parseDeclareInterface();
+                break;
+            case Q_DECLARE_METATYPE_TOKEN:
+                parseDeclareMetatype();
                 break;
             case USING:
                 if (test(NAMESPACE)) {
@@ -642,7 +469,7 @@ void Moc::parse()
                 break;
             default: break;
         }
-        if (t != CLASS || currentFilenames.size() > 1)
+        if ((t != CLASS && t != STRUCT)|| currentFilenames.size() > 1)
             continue;
         ClassDef def;
         FunctionDef::Access access = FunctionDef::Private;
@@ -654,17 +481,17 @@ void Moc::parse()
                 switch ((t = next())) {
                 case PRIVATE:
                     access = FunctionDef::Private;
-                    if (test(SIGNALS))
+                    if (test(Q_SIGNALS_TOKEN))
                         error("Signals cannot have access specifier");
                     break;
                 case PROTECTED:
                     access = FunctionDef::Protected;
-                    if (test(SIGNALS))
+                    if (test(Q_SIGNALS_TOKEN))
                         error("Signals cannot have access specifier");
                     break;
                 case PUBLIC:
                     access = FunctionDef::Public;
-                    if (test(SIGNALS))
+                    if (test(Q_SIGNALS_TOKEN))
                         error("Signals cannot have access specifier");
                     break;
                 case CLASS: {
@@ -677,10 +504,10 @@ void Moc::parse()
                         }
                     }
                 } break;
-                case SIGNALS:
+                case Q_SIGNALS_TOKEN:
                     parseSignals(&def);
                     break;
-                case SLOTS:
+                case Q_SLOTS_TOKEN:
                     switch (lookup(-1)) {
                     case PUBLIC:
                     case PROTECTED:
@@ -826,7 +653,7 @@ void Moc::generate(FILE *out)
 
 
     for (i = 0; i < classList.size(); ++i) {
-        Generator generator(out, &classList[i]);
+        Generator generator(out, &classList[i], metaTypes);
         generator.generateCode();
     }
 }
@@ -841,8 +668,8 @@ void Moc::parseSlots(ClassDef *def, FunctionDef::Access access)
         case PUBLIC:
         case PROTECTED:
         case PRIVATE:
-        case SIGNALS:
-        case SLOTS:
+        case Q_SIGNALS_TOKEN:
+        case Q_SLOTS_TOKEN:
             prev();
             return;
         case SEMIC:
@@ -877,8 +704,8 @@ void Moc::parseSignals(ClassDef *def)
         case PUBLIC:
         case PROTECTED:
         case PRIVATE:
-        case SIGNALS:
-        case SLOTS:
+        case Q_SIGNALS_TOKEN:
+        case Q_SLOTS_TOKEN:
             prev();
             return;
         case SEMIC:
@@ -1097,13 +924,22 @@ void Moc::parseDeclareInterface()
     next(COMMA);
     QByteArray iid;
     if (test(STRING_LITERAL)) {
-        iid = symbol().lexem();
+        iid = lexem();
     } else {
         next(IDENTIFIER);
         iid = lexem();
     }
     interface2IdMap.insert(interface, iid);
     next(RPAREN);
+}
+
+void Moc::parseDeclareMetatype()
+{
+    next(LPAREN);
+    QByteArray typeName = lexemUntil(RPAREN);
+    typeName.remove(0, 1);
+    typeName.chop(1);
+    metaTypes.append(typeName);
 }
 
 void Moc::parseSlotInPrivate(ClassDef *def, FunctionDef::Access access)
@@ -1127,3 +963,64 @@ void Moc::parseSlotInPrivate(ClassDef *def, FunctionDef::Access access)
         def->slotList += funcDef;
     }
 }
+
+QByteArray Moc::lexemUntil(Token target)
+{
+    int from = index;
+    until(target);
+    QByteArray s;
+    while (from <= index) {
+        QByteArray n = symbols.at(from++-1).lexem();
+        if (s.size() && n.size()
+            && is_ident_char(s.at(s.size()-1))
+            && is_ident_char(n.at(0)))
+            s += ' ';
+        s += n;
+    }
+    return s;
+}
+
+bool Moc::until(Token target) {
+    int braceCount = 0;
+    int brackCount = 0;
+    int parenCount = 0;
+    int angleCount = 0;
+    if (index) {
+        switch(symbols.at(index-1).token) {
+        case LBRACE: ++braceCount; break;
+        case LBRACK: ++brackCount; break;
+        case LPAREN: ++parenCount; break;
+        case LANGLE: ++angleCount; break;
+        default: ;
+        }
+    }
+    while (index < symbols.size()) {
+        Token t = symbols.at(index++).token;
+        switch (t) {
+        case LBRACE: ++braceCount; break;
+        case RBRACE: --braceCount; break;
+        case LBRACK: ++brackCount; break;
+        case RBRACK: --brackCount; break;
+        case LPAREN: ++parenCount; break;
+        case RPAREN: --parenCount; break;
+        case LANGLE: ++angleCount; break;
+        case RANGLE: --angleCount; break;
+        default: break;
+        }
+        if (t == target
+            && braceCount <= 0
+            && brackCount <= 0
+            && parenCount <= 0
+            && (target != RANGLE || angleCount <= 0))
+            return true;
+
+        if (braceCount < 0 || brackCount < 0 || parenCount < 0
+            || (target == RANGLE && angleCount < 0)) {
+            --index;
+            break;
+        }
+    }
+    return false;
+}
+
+

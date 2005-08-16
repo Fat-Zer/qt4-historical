@@ -56,6 +56,7 @@ public:
     QColor(const QString& name);
     QColor(const char *name);
     QColor(const QColor &color);
+    QColor(Spec spec);
 
     bool isValid() const;
 

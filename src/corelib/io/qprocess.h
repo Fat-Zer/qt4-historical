@@ -27,10 +27,10 @@
 #include <QtCore/qiodevice.h>
 #include <QtCore/qstringlist.h>
 
-#if defined(Q_OS_WIN32)
-typedef struct _PROCESS_INFORMATION* Q_PID;
-#else
+#if !defined(Q_OS_WIN32) || defined(qdoc)
 typedef qint64 Q_PID;
+#else
+typedef struct _PROCESS_INFORMATION *Q_PID;
 #endif
 
 QT_BEGIN_HEADER
@@ -80,12 +80,19 @@ public:
 
     ProcessChannelMode readChannelMode() const;
     void setReadChannelMode(ProcessChannelMode mode);
+    ProcessChannelMode processChannelMode() const;
+    void setProcessChannelMode(ProcessChannelMode mode);
 
     ProcessChannel readChannel() const;
     void setReadChannel(ProcessChannel channel);
 
     void closeReadChannel(ProcessChannel channel);
     void closeWriteChannel();
+
+    void setStandardInputFile(const QString &fileName);
+    void setStandardOutputFile(const QString &fileName, OpenMode mode = Truncate);
+    void setStandardErrorFile(const QString &fileName, OpenMode mode = Truncate);
+    void setStandardOutputProcess(QProcess *destination);
 
     QString workingDirectory() const;
     void setWorkingDirectory(const QString &dir);

@@ -35,6 +35,8 @@
 #include "qlayoutwidget_propertysheet.h"
 #include "spacer_propertysheet.h"
 #include "line_propertysheet.h"
+#include "qtbrushmanager.h"
+#include "brushmanagerproxy.h"
 #include "iconcache.h"
 
 // sdk
@@ -87,6 +89,12 @@ FormEditor::FormEditor(QObject *parent)
     setExtensionManager(mgr);
 
     setIconCache(new IconCache(this));
+
+    QtBrushManager *brushManager = new QtBrushManager(this);
+    setBrushManager(brushManager);
+
+    BrushManagerProxy *brushProxy = new BrushManagerProxy(this, this);
+    brushProxy->setBrushManager(brushManager);
 }
 
 FormEditor::~FormEditor()

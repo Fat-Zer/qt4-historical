@@ -257,13 +257,11 @@ void MainWindow::createActions()
     connect(arrangeAct, SIGNAL(triggered()), workspace, SLOT(arrangeIcons()));
 
     nextAct = new QAction(tr("Ne&xt"), this);
-    nextAct->setShortcut(tr("Ctrl+F6"));
     nextAct->setStatusTip(tr("Move the focus to the next window"));
     connect(nextAct, SIGNAL(triggered()),
             workspace, SLOT(activateNextWindow()));
 
     previousAct = new QAction(tr("Pre&vious"), this);
-    previousAct->setShortcut(tr("Ctrl+Shift+F6"));
     previousAct->setStatusTip(tr("Move the focus to the previous "
                                  "window"));
     connect(previousAct, SIGNAL(triggered()),
@@ -289,6 +287,8 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();
+    QAction *action = fileMenu->addAction(tr("Switch layout direction"));
+    connect(action, SIGNAL(triggered()), this, SLOT(switchLayoutDirection()));
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -356,4 +356,12 @@ MdiChild *MainWindow::findMdiChild(const QString &fileName)
             return mdiChild;
     }
     return 0;
+}
+
+void MainWindow::switchLayoutDirection()
+{
+    if (layoutDirection() == Qt::LeftToRight)
+        qApp->setLayoutDirection(Qt::RightToLeft);
+    else
+        qApp->setLayoutDirection(Qt::LeftToRight);
 }

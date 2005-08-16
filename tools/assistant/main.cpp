@@ -39,7 +39,38 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#if defined(USE_STATIC_JPEG_PLUGIN)
+  #include <QtPlugin>
+  Q_IMPORT_PLUGIN(qjpeg)
+#endif
+
 #define INDEX_CHECK( text ) if( i+1 >= argc ) { fprintf(stderr, "%s\n", text); return 1; }
+
+
+#if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusAbstractAdaptor>
+
+class AssistantAdaptor : public QDBusAbstractAdaptor
+{
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.trolltech.Assistant.HelpViewer")
+
+public:
+    AssistantAdaptor(MainWindow *mw) : QDBusAbstractAdaptor(mw), mw(mw)
+    {
+        QDBusConnection connection = QDBusConnection::sessionBus();
+        connection.registerService("com.trolltech.Assistant");
+        connection.registerObject("/Assistant", mw);
+    }
+
+public slots:
+    void showLink(const QString &link) { mw->showLink(link); }
+
+private:
+    MainWindow *mw;
+};
+#endif // QT_NO_DBUS
 
 class AssistantSocket : public QTcpSocket
 {
@@ -74,7 +105,6 @@ public slots:
 private:
     quint16 p;
 };
-
 
 AssistantSocket::AssistantSocket( int sock, QObject *parent )
     : QTcpSocket( parent )
@@ -179,7 +209,7 @@ int main( int argc, char ** argv )
                 profileName = QFile::decodeName(argv[++i]);
             } else if ( opt == QLatin1String("-addcontentfile") ) {
                 INDEX_CHECK( "Missing content file!" );
-                Config *c = Config::loadConfig( QString() );
+                Config *c = Config::loadConfig(QString());
                 QFileInfo file( QFile::decodeName(argv[i+1]) );
                 if( !file.exists() ) {
                     fprintf(stderr, "Could not locate content file: %s\n", qPrintable(file.absoluteFilePath()));
@@ -198,8 +228,8 @@ int main( int argc, char ** argv )
                 }
                 return 0;
             } else if ( opt == QLatin1String("-removecontentfile") ) {
-                INDEX_CHECK( "Missing content file!" );
-                Config *c = Config::loadConfig( QString() );
+                INDEX_CHECK("Missing content file!");
+                Config *c = Config::loadConfig(QString());
                 Profile *profile = c->profile();
                 QString contentFile = QString::fromLocal8Bit(argv[i+i]);
                 QStringList entries;
@@ -280,11 +310,11 @@ int main( int argc, char ** argv )
         resourceDir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
 
     QTranslator translator( 0 );
-    translator.load( QLatin1String("assistant_") + QLocale::system().name().toLower(), resourceDir );
+    translator.load( QLatin1String("assistant_") + QLocale::system().name(), resourceDir );
     a.installTranslator( &translator );
 
     QTranslator qtTranslator( 0 );
-    qtTranslator.load( QLatin1String("qt_") + QLocale::system().name().toLower(), resourceDir );
+    qtTranslator.load( QLatin1String("qt_") + QLocale::system().name(), resourceDir );
     a.installTranslator( &qtTranslator );
 
     Config *conf = Config::loadConfig( profileName );
@@ -294,7 +324,6 @@ int main( int argc, char ** argv )
         return -1;
     }
 
-    bool max = conf->isMaximized();
     QStringList links = conf->source();
     conf->hideSideBar( hideSidebar );
 
@@ -309,8 +338,10 @@ int main( int argc, char ** argv )
                      mw, SLOT(showLinkFromClient(QString)) );
     }
 
-    if ( max )
-        mw->setWindowState(mw->windowState() | Qt::WindowMaximized);
+#if !defined(QT_NO_DBUS) && defined(Q_OS_UNIX)
+    new AssistantAdaptor(mw);
+#endif // QT_NO_DBUS
+
     mw->show();
 
     if ( !file.isEmpty() ) {

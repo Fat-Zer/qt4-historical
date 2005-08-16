@@ -85,6 +85,8 @@ private:
     Q_DISABLE_COPY(Q3ButtonGroup)
 
     void init();
+    void fixChildren() const;
+    int insert_helper(QAbstractButton* , int id=-1);
 
     bool excl_grp; // Not used.
     bool radio_excl;

@@ -34,6 +34,7 @@
     \brief The QRegion class specifies a clip region for a painter.
 
     \ingroup multimedia
+    \ingroup shared
 
     QRegion is used with QPainter::setClipRegion() to limit the paint
     area to what needs to be painted. There is also a
@@ -42,7 +43,7 @@
 
     A region can be created from a rectangle, an ellipse, a polygon or
     a bitmap. Complex regions may be created by combining simple
-    regions using unite(), intersect(), subtract(), or eor() (exclusive
+    regions using united(), intersected(), subtracted(), or xored() (exclusive
     or). You can move a region using translate().
 
     You can test whether a region isEmpty() or if it
@@ -56,19 +57,18 @@
     \code
         void MyWidget::paintEvent(QPaintEvent *)
         {
-            QPainter p;                       // our painter
-            QRegion r1(QRect(100,100,200,80), // r1 = elliptic region
+            QRegion r1(QRect(100, 100, 200, 80),    // r1: elliptic region
                        QRegion::Ellipse);
-            QRegion r2(QRect(100,120,90,30)); // r2 = rectangular region
-            QRegion r3 = r1.intersect(r2);    // r3 = intersection
-            p.begin(this);                    // start painting widget
-            p.setClipRegion(r3);              // set clip region
-            ...                               // paint clipped graphics
-            p.end();                          // painting done
+            QRegion r2(QRect(100, 120, 90, 30));    // r2: rectangular region
+            QRegion r3 = r1.intersected(r2);        // r3: intersection
+
+            QPainter painter(this);
+	    painter.setClipRegion(r3);
+            ...                                     // paint clipped graphics
         }
     \endcode
 
-    QRegion is an \link shclass.html implicitly shared\endlink class.
+    QRegion is an \l{implicitly shared class}.
 
     \warning Due to window system limitations, the whole coordinate space for a
     region is limited to the points between -32767 and 32767 on Windows
@@ -76,7 +76,7 @@
 
     \section1 Additional License Information
 
-    On Qt/X11 and Qtopia Core, parts of this class rely on code obtained
+    For Qt/X11 and Qtopia Core, parts of this class rely on code obtained
     under the following license:
 
     \legalese
@@ -160,7 +160,7 @@
 
     Returns a platform-specific region handle. The \c Handle type is
     \c HRGN on Windows, \c Region on X11, and \c RgnHandle on Mac OS
-    X.
+    X. On \l {Qtopia Core} it is \c {void *}.
 
     \warning This function is not portable.
 */
@@ -196,10 +196,7 @@ QRegion::QRegion(const QPolygon &pa, bool winding)
 #endif
 
 /*!
-    Detaches from shared region data to make sure that this region is
-    the only one referring to the data.
-
-    \sa copy(), \link shclass.html shared classes\endlink
+    \internal
 */
 
 void QRegion::detach()
@@ -278,16 +275,16 @@ void QRegion::exec(const QByteArray &buffer, int ver)
 
             switch (id) {
                 case QRGN_OR:
-                    rgn = r1.unite(r2);
+                    rgn = r1.united(r2);
                     break;
                 case QRGN_AND:
-                    rgn = r1.intersect(r2);
+                    rgn = r1.intersected(r2);
                     break;
                 case QRGN_SUB:
-                    rgn = r1.subtract(r2);
+                    rgn = r1.subtracted(r2);
                     break;
                 case QRGN_XOR:
-                    rgn = r1.eor(r2);
+                    rgn = r1.xored(r2);
                     break;
             }
         } else if (id == QRGN_RECTS) {
@@ -297,7 +294,7 @@ void QRegion::exec(const QByteArray &buffer, int ver)
             QRect r;
             for (int i=0; i<(int)n; i++) {
                 s >> r;
-                rgn = rgn.unite(QRegion(r));
+                rgn = rgn.united(QRegion(r));
             }
         }
     }
@@ -378,96 +375,96 @@ QDebug operator<<(QDebug s, const QRegion &r)
 
 
 /*!
-    Applies the unite() function to this region and \a r. \c r1|r2 is
-    equivalent to \c r1.unite(r2)
+    Applies the united() function to this region and \a r. \c r1|r2 is
+    equivalent to \c r1.united(r2).
 
-    \sa unite(), operator+()
+    \sa united(), operator+()
 */
 const QRegion QRegion::operator|(const QRegion &r) const
-    { return unite(r); }
+    { return united(r); }
 
 /*!
-    Applies the unite() function to this region and \a r. \c r1+r2 is
-    equivalent to \c r1.unite(r2)
+    Applies the united() function to this region and \a r. \c r1+r2 is
+    equivalent to \c r1.united(r2).
 
-    \sa unite(), operator|()
+    \sa united(), operator|()
 */
 const QRegion QRegion::operator+(const QRegion &r) const
-    { return unite(r); }
+    { return united(r); }
 
 /*!
-    Applies the intersect() function to this region and \a r. \c r1&r2
-    is equivalent to \c r1.intersect(r2)
+    Applies the intersected() function to this region and \a r. \c r1&r2
+    is equivalent to \c r1.intersected(r2).
 
-    \sa intersect()
+    \sa intersected()
 */
 const QRegion QRegion::operator&(const QRegion &r) const
-    { return intersect(r); }
+    { return intersected(r); }
 
 /*!
-    Applies the subtract() function to this region and \a r. \c r1-r2
-    is equivalent to \c r1.subtract(r2)
+    Applies the subtracted() function to this region and \a r. \c r1-r2
+    is equivalent to \c r1.subtracted(r2).
 
-    \sa subtract()
+    \sa subtracted()
 */
 const QRegion QRegion::operator-(const QRegion &r) const
-    { return subtract(r); }
+    { return subtracted(r); }
 
 /*!
-    Applies the eor() function to this region and \a r. \c r1^r2 is
-    equivalent to \c r1.eor(r2)
+    Applies the xored() function to this region and \a r. \c r1^r2 is
+    equivalent to \c r1.xored(r2).
 
-    \sa eor()
+    \sa xored()
 */
 const QRegion QRegion::operator^(const QRegion &r) const
-    { return eor(r); }
+    { return xored(r); }
 
 /*!
-    Applies the unite() function to this region and \a r and assigns
+    Applies the united() function to this region and \a r and assigns
     the result to this region. \c r1|=r2 is equivalent to \c
-    r1=r1.unite(r2).
+    {r1 = r1.united(r2)}.
 
-    \sa unite()
+    \sa united()
 */
 QRegion& QRegion::operator|=(const QRegion &r)
     { return *this = *this | r; }
 
 /*!
-    Applies the unite() function to this region and \a r and assigns
+    Applies the united() function to this region and \a r and assigns
     the result to this region. \c r1+=r2 is equivalent to \c
-    r1=r1.unite(r2).
+    {r1 = r1.united(r2)}.
 
-    \sa intersect()
+    \sa intersected()
 */
 QRegion& QRegion::operator+=(const QRegion &r)
     { return *this = *this + r; }
 
 /*!
-    Applies the intersect() function to this region and \a r and
+    Applies the intersected() function to this region and \a r and
     assigns the result to this region. \c r1&=r2 is equivalent to \c
-    r1=r1.intersect(r2).
+    r1 = r1.intersected(r2).
 
-    \sa intersect()
+    \sa intersected()
 */
 QRegion& QRegion::operator&=(const QRegion &r)
     { return *this = *this & r; }
 
 /*!
-    Applies the subtract() function to this region and \a r and
+    Applies the subtracted() function to this region and \a r and
     assigns the result to this region. \c r1-=r2 is equivalent to \c
-    r1=r1.subtract(r2).
+    {r1 = r1.subtracted(r2)}.
 
-    \sa subtract()
+    \sa subtracted()
 */
 QRegion& QRegion::operator-=(const QRegion &r)
     { return *this = *this - r; }
 
 /*!
-    Applies the eor() function to this region and \a r and
+    Applies the xored() function to this region and \a r and
     assigns the result to this region. \c r1^=r2 is equivalent to \c
-    r1=r1.eor(r2).
+    {r1 = r1.xored(r2)}.
 
-    \sa eor()
+    \sa xored()
 */
 QRegion& QRegion::operator^=(const QRegion &r)
     { return *this = *this ^ r; }
@@ -524,4 +521,45 @@ QRegion::translated(int dx, int dy) const
     QRegion ret(*this);
     ret.translate(dx, dy);
     return ret;
+}
+
+
+inline bool rect_intersects(const QRect &r1, const QRect &r2)
+{
+    return qMax(r1.left(), r2.left()) <= qMin(r1.right(), r2.right())
+        && qMax(r1.top(), r2.top()) <= qMin(r1.bottom(), r2.bottom());
+}
+
+/*!
+    \since 4.2
+
+    Returns true if this region intersects with \a region, otherwise
+    returns false.
+*/
+bool QRegion::intersects(const QRegion &region) const
+{
+    const QVector<QRect> myRects = rects();
+    const QVector<QRect> otherRects = region.rects();
+
+    for (QVector<QRect>::const_iterator i1 = myRects.begin(); i1 < myRects.end(); ++i1)
+        for (QVector<QRect>::const_iterator i2 = otherRects.begin(); i2 < otherRects.end(); ++i2)
+            if (rect_intersects(*i1, *i2))
+                return true;
+    return false;
+}
+
+/*!
+    \since 4.2
+
+    Returns true if this region intersects with \a rect, otherwise
+    returns false.
+*/
+bool QRegion::intersects(const QRect &rect) const
+{
+    QRect r = rect.normalized();
+    const QVector<QRect> myRects = rects();
+    for (QVector<QRect>::const_iterator it = myRects.begin(); it < myRects.end(); ++it)
+        if (rect_intersects(r, *it))
+            return true;
+    return false;
 }

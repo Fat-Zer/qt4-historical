@@ -135,6 +135,7 @@ public:
     void draw(QPainter *p, const QPointF &pos, const QVector<FormatRange> &selections = QVector<FormatRange>(),
               const QRectF &clip = QRectF()) const;
     void drawCursor(QPainter *p, const QPointF &pos, int cursorPosition) const;
+    void drawCursor(QPainter *p, const QPointF &pos, int cursorPosition, int width) const;
 
     QPointF position() const;
     void setPosition(const QPointF &p);
@@ -151,6 +152,8 @@ private:
 
     friend class QPainter;
     friend class QPSPrinter;
+    friend class QGraphicsSimpleTextItemPrivate;
+    friend class QGraphicsSimpleTextItem;
     friend void qt_format_text(const QFont &font, const QRectF &_r, int tf, const QString& str,
                                QRectF *brect, int tabstops, int* tabarray, int tabarraylen,
                                QPainter *painter);
@@ -193,6 +196,7 @@ public:
     void setNumColumns(int columns);
 
     void setPosition(const QPointF &pos);
+    QPointF position() const;
 
     int textStart() const;
     int textLength() const;

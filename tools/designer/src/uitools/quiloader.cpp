@@ -26,7 +26,7 @@
 #include "customwidget.h"
 
 #include <formbuilder.h>
-#include <ui4.h>
+#include <ui4_p.h>
 
 #include <qdebug.h>
 #include <QAction>
@@ -43,6 +43,7 @@
 #include <QTableWidget>
 #include <QToolBox>
 #include <QComboBox>
+#include <QFontComboBox>
 #include <private/qobject_p.h>
 
 typedef QMap<QString, bool> widget_map;
@@ -55,8 +56,8 @@ namespace QFormInternal
 
 class FormBuilderPrivate: public QFormBuilder
 {
-    friend class QUiLoader;
-    friend class QUiLoaderPrivate;
+    friend class ::QUiLoader;
+    friend class ::QUiLoaderPrivate;
     typedef QFormBuilder ParentClass;
 
 public:
@@ -228,13 +229,15 @@ QWidget *FormBuilderPrivate::create(DomWidget *ui_widget, QWidget *parentWidget)
             }
         }
     } else if (QComboBox *combow = qobject_cast<QComboBox*>(w)) {
-        int cnt = combow->count();
-        for (int i = 0; i < cnt; ++i) {
-            QString text = QApplication::translate(m_class.toUtf8(),
-                                                    combow->itemText(i).toUtf8(),
-                                                    "",
-                                                    QCoreApplication::UnicodeUTF8);
-            combow->setItemText(i, text);
+        if (!qobject_cast<QFontComboBox*>(w)) {
+            int cnt = combow->count();
+            for (int i = 0; i < cnt; ++i) {
+                QString text = QApplication::translate(m_class.toUtf8(),
+                        combow->itemText(i).toUtf8(),
+                        "",
+                        QCoreApplication::UnicodeUTF8);
+                combow->setItemText(i, text);
+            }
         }
     } else if (QToolBox *toolw = qobject_cast<QToolBox*>(w)) {
         int cnt = toolw->count();
@@ -258,7 +261,11 @@ class QUiLoaderPrivate: public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QUiLoader)
 public:
+#ifdef QFORMINTERNAL_NAMESPACE
+    QFormInternal::FormBuilderPrivate builder;
+#else
     FormBuilderPrivate builder;
+#endif
 
     void setupWidgetMap() const;
 };
@@ -274,6 +281,7 @@ void QUiLoaderPrivate::setupWidgetMap() const
 #include "widgets.table"
 
 #undef DECLARE_WIDGET
+#undef DECLARE_WIDGET_1
 #undef DECLARE_LAYOUT
 }
 
@@ -285,10 +293,10 @@ void QUiLoaderPrivate::setupWidgetMap() const
     create user interfaces at run-time using the information stored in
     .ui files or specified plugin paths.
 
-    In addition, you can intervene the process of creating an user
-    interface by deriving your own loader class.
+    In addition, you can customize of creating an user interface by
+    deriving your own loader class.
 
-    If you have a custom component or application that embed Qt
+    If you have a custom component or an application that embeds Qt
     Designer, you can also use the QFormBuilder class provided by the
     QtDesigner module to create user interfaces from .ui files.
 
@@ -299,50 +307,25 @@ void QUiLoaderPrivate::setupWidgetMap() const
     the pluginPaths() function. You can retrieve the contents of an \c
     .ui file using the load() function. For example:
 
-    \code
-    MyForm::MyForm(QWidget *parent)
-        : QWidget(parent)
-    {
-        QUiLoader loader;
-        QFile file(":/forms/mywidget.ui");
-        file.open(QFile::ReadOnly);
-        QWidget *myWidget = loader.load(&file, this);
-        file.close();
+    \quotefromfile snippets/quiloader/mywidget.cpp
+    \skipto MyWidget::MyWidget
+    \printuntil /^\}/
 
-        QVBoxLayout *layout = new QVBoxLayout;
-        layout->addWidget(myWidget);
-        setLayout(layout);
-    }
-    \endcode
+    By including the user interface in the form's resources (\c myform.qrc),
+    we ensure that it will be present at run-time:
 
-    By including the user interface in the form's resources (\c
-    myForm.grc), we ensure that it will be present at run-time:
-
-    \code
-        <!DOCTYPE RCC><RCC version="1.0">
-        <qresource prefix="/forms">
-        <file>mywidget.ui</file>
-        </qresource>
-        </RCC>
-    \endcode
+    \quotefromfile snippets/quiloader/mywidget.qrc
+    \skipto <!DOCTYPE
+    \printuntil </RCC>
 
     The availableWidgets() function returns a QStringList with the
     class names of the widgets available in the specified plugin
     paths. You can create any of these widgets using the
     createWidget() function. For example:
 
-    \code
-        QUiLoader loader;
-        MyCustomWidget *myWidget;
-        QWidget parent;
-
-        QStringList availableWidgets = loader.availableWidgets();
-
-        if (availableWidgets.contains("MyCustomWidget"))
-            myWidget = qobject_cast<MyCustomWidget *>loader.createWidget("MyCustomWidget",
-                                                                          parent)
-        }
-    \endcode
+    \quotefromfile snippets/quiloader/main.cpp
+    \skipto loadCustomWidget
+    \printuntil /^\}/
 
     You can make a custom widget available to the loader using the
     addPluginPath() function, and you can remove all the available widgets
@@ -524,4 +507,30 @@ QStringList QUiLoader::availableWidgets() const
     }
 
     return available.keys();
+}
+
+/*!
+    Sets the working directory of the loader. The loader looks for
+    other resources, such as icons and resource files, in paths relative
+    to this directory.
+
+    \sa workingDirectory()
+*/
+
+void QUiLoader::setWorkingDirectory(const QDir &dir)
+{
+    Q_D(QUiLoader);
+    d->builder.setWorkingDirectory(dir);
+}
+
+/*!
+    Returns the working directory of the loader.
+
+    \sa setWorkingDirectory()
+*/
+
+QDir QUiLoader::workingDirectory() const
+{
+    Q_D(const QUiLoader);
+    return d->builder.workingDirectory();
 }

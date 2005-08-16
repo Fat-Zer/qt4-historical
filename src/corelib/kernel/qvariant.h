@@ -42,6 +42,7 @@ class QDateTime;
 class QLine;
 class QLineF;
 class QLocale;
+class QMatrix;
 class QStringList;
 class QTime;
 class QPoint;
@@ -104,7 +105,9 @@ class Q_CORE_EXPORT QVariant
         Point = 25,
         PointF = 26,
 	RegExp = 27,
+        LastCoreType = RegExp,
 
+        // value 62 is internally reserved
 #ifdef QT3_SUPPORT
         ColorGroup = 63,
 #endif
@@ -124,6 +127,9 @@ class Q_CORE_EXPORT QVariant
         Pen = 77,
         TextLength = 78,
         TextFormat = 79,
+        Matrix = 80,
+        LastGuiType = Matrix,
+
         UserType = 127,
 #ifdef QT3_SUPPORT
         IconSet = Icon,
@@ -150,7 +156,7 @@ class Q_CORE_EXPORT QVariant
     QVariant(bool b);
     QVariant(double d);
 #ifndef QT_NO_CAST_FROM_ASCII
-    QVariant(const char *str);
+    QT_ASCII_CAST_WARN_CONSTRUCTOR QVariant(const char *str);
 #endif
 
     QVariant(const QByteArray &bytearray);
@@ -177,6 +183,7 @@ class Q_CORE_EXPORT QVariant
     QVariant(const QUrl &url);
     QVariant(const QLocale &locale);
     QVariant(const QRegExp &regExp);
+    QVariant(Qt::GlobalColor color);
 
     QVariant& operator=(const QVariant &other);
 
@@ -293,7 +300,7 @@ class Q_CORE_EXPORT QVariant
     struct PrivateShared
     {
         inline PrivateShared() : ref(1) { }
-        inline PrivateShared(void *v) : ref(1) { ptr = v; }
+        inline PrivateShared(void *v) : ptr(v), ref(1) { }
         void *ptr;
         QAtomic ref;
     };
@@ -306,6 +313,7 @@ class Q_CORE_EXPORT QVariant
         {}
         union Data
         {
+            char c;
             int i;
             uint u;
             bool b;
@@ -385,113 +393,16 @@ private:
 typedef QList<QVariant> QVariantList;
 typedef QMap<QString, QVariant> QVariantMap;
 
+Q_DECLARE_BUILTIN_METATYPE(QVariantList, QVariantList)
+Q_DECLARE_BUILTIN_METATYPE(QVariantMap, QVariantMap)
+
 inline bool qvariant_cast_helper(const QVariant &v, QVariant::Type tp, void *ptr)
 { return QVariant::handler->convert(&v.d, tp, ptr, 0); }
 
 template <typename T>
-inline int qt_variant_metatype_id(T *)
-{ return QMetaTypeId<T>::qt_metatype_id(); }
-
-template<>
-inline int qt_variant_metatype_id(QVariantMap *) { return QVariant::Map; }
-template<>
-inline int qt_variant_metatype_id(QVariantList *) { return QVariant::List; }
-template<>
-inline int qt_variant_metatype_id(QStringList *) { return QVariant::StringList; }
-class QFont;
-template<>
-inline int qt_variant_metatype_id(QFont *) { return QVariant::Font; }
-class QPixmap;
-template<>
-inline int qt_variant_metatype_id(QPixmap *) { return QVariant::Pixmap; }
-class QBrush;
-template<>
-inline int qt_variant_metatype_id(QBrush *) { return QVariant::Brush; }
-template<>
-inline int qt_variant_metatype_id(QRect *) { return QVariant::Rect; }
-template<>
-inline int qt_variant_metatype_id(QSize *) { return QVariant::Size; }
-template<>
-inline int qt_variant_metatype_id(QSizeF *) { return QVariant::SizeF; }
-class QColor;
-template<>
-inline int qt_variant_metatype_id(QColor *) { return QVariant::Color; }
-class QPalette;
-template<>
-inline int qt_variant_metatype_id(QPalette *) { return QVariant::Palette; }
-class QIcon;
-template<>
-inline int qt_variant_metatype_id(QIcon *) { return QVariant::Icon; }
-class QPoint;
-template<>
-inline int qt_variant_metatype_id(QPoint *) { return QVariant::Point; }
-class QPointF;
-template<>
-inline int qt_variant_metatype_id(QPointF *) { return QVariant::PointF; }
-class QImage;
-template<>
-inline int qt_variant_metatype_id(QImage*) { return QVariant::Image; }
-class QPolygon;
-template<>
-inline int qt_variant_metatype_id(QPolygon *) { return QVariant::Polygon; }
-class QRegion;
-template<>
-inline int qt_variant_metatype_id(QRegion *) { return QVariant::Region; }
-class QBitmap;
-template<>
-inline int qt_variant_metatype_id(QBitmap *) { return QVariant::Bitmap; }
-class QCursor;
-template<>
-inline int qt_variant_metatype_id(QCursor *) { return QVariant::Cursor; }
-class QSizePolicy;
-template<>
-inline int qt_variant_metatype_id(QSizePolicy *) { return QVariant::SizePolicy; }
-template<>
-inline int qt_variant_metatype_id(QDate *) { return QVariant::Date; }
-template<>
-inline int qt_variant_metatype_id(QTime *) { return QVariant::Time; }
-template<>
-inline int qt_variant_metatype_id(QDateTime *) { return QVariant::DateTime; }
-template<>
-inline int qt_variant_metatype_id(QBitArray *) { return QVariant::BitArray; }
-class QKeySequence;
-template<>
-inline int qt_variant_metatype_id(QKeySequence *) { return QVariant::KeySequence; }
-class QPen;
-template<>
-inline int qt_variant_metatype_id(QPen *) { return QVariant::Pen; }
-template<>
-inline int qt_variant_metatype_id(qlonglong *) { return QVariant::LongLong; }
-template<>
-inline int qt_variant_metatype_id(qulonglong *) { return QVariant::ULongLong; }
-template<>
-inline int qt_variant_metatype_id(QUrl *) { return QVariant::Url; }
-class QTextLength;
-template<>
-inline int qt_variant_metatype_id(QTextLength *) { return QVariant::TextLength; }
-class QTextFormat;
-template<>
-inline int qt_variant_metatype_id(QTextFormat *) { return QVariant::TextFormat; }
-template<>
-inline int qt_variant_metatype_id(QLocale *) { return QVariant::Locale; }
-template<>
-inline int qt_variant_metatype_id(QRegExp *) { return QVariant::RegExp; }
-template<>
-inline int qt_variant_metatype_id(QLineF *) { return QVariant::LineF; }
-template<>
-inline int qt_variant_metatype_id(QLine *) { return QVariant::Line; }
-template<>
-inline int qt_variant_metatype_id(QRectF *) { return QVariant::RectF; }
-#ifdef QT3_SUPPORT
-class QColorGroup;
-template<>
-inline int qt_variant_metatype_id(QColorGroup *) { return QVariant::ColorGroup; }
-#endif
-
-template <typename T>
 inline QVariant qVariantFromValue(const T &t)
 {
-    return QVariant(qt_variant_metatype_id<T>(reinterpret_cast<T *>(0)), &t);
+    return QVariant(qMetaTypeId<T>(reinterpret_cast<T *>(0)), &t);
 }
 
 template <>
@@ -500,7 +411,7 @@ inline QVariant qVariantFromValue(const QVariant &t) { return t; }
 template <typename T>
 inline void qVariantSetValue(QVariant &v, const T &t)
 {
-    v = QVariant(qt_variant_metatype_id<T>(reinterpret_cast<T *>(0)), &t);
+    v = QVariant(qMetaTypeId<T>(reinterpret_cast<T *>(0)), &t);
 }
 #endif
 
@@ -597,10 +508,10 @@ inline bool operator!=(const QVariant &v1, const QVariantComparisonHelper &v2)
 
 template<typename T> T qvariant_cast(const QVariant &v, T * = 0)
 {
-    const int vid = qt_variant_metatype_id<T>(static_cast<T *>(0));
+    const int vid = qMetaTypeId<T>(static_cast<T *>(0));
     if (vid == v.userType())
         return *reinterpret_cast<const T *>(v.constData());
-    if (vid < int(QVariant::UserType)) {
+    if (vid < int(QMetaType::User)) {
         T t;
         qvariant_cast_helper(v, QVariant::Type(vid), &t);
         return t;
@@ -615,16 +526,16 @@ inline T qVariantValue(const QVariant &variant, T *t = 0)
 template<typename T>
 inline bool qVariantCanConvert(const QVariant &variant, T *t = 0)
 {
-    return variant.canConvert(static_cast<QVariant::Type>(qt_variant_metatype_id<T>(t)));
+    return variant.canConvert(static_cast<QVariant::Type>(qMetaTypeId<T>(t)));
 }
 #else
 
 template<typename T> T qvariant_cast(const QVariant &v)
 {
-    const int vid = qt_variant_metatype_id<T>(static_cast<T *>(0));
+    const int vid = qMetaTypeId<T>(static_cast<T *>(0));
     if (vid == v.userType())
         return *reinterpret_cast<const T *>(v.constData());
-    if (vid < int(QVariant::UserType)) {
+    if (vid < int(QMetaType::User)) {
         T t;
         qvariant_cast_helper(v, QVariant::Type(vid), &t);
         return t;
@@ -640,7 +551,7 @@ template<typename T>
 inline bool qVariantCanConvert(const QVariant &variant)
 {
     return variant.canConvert(static_cast<QVariant::Type>(
-                qt_variant_metatype_id<T>(static_cast<T *>(0))));
+                qMetaTypeId<T>(static_cast<T *>(0))));
 }
 #endif
 #endif

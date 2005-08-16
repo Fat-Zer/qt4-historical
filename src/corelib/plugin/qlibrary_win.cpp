@@ -33,6 +33,9 @@ extern QString qt_error_string(int code);
 bool QLibraryPrivate::load_sys()
 {
     QString attempt = fileName;
+
+    //avoid 'Bad Image' messagebox
+    UINT oldmode = SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
     QT_WA({
             pHnd = LoadLibraryW((TCHAR*)attempt.utf16());
         } , {
@@ -50,28 +53,24 @@ bool QLibraryPrivate::load_sys()
         }
     }
 
-#if defined(QT_DEBUG_COMPONENT)
+    SetErrorMode(oldmode);
     if (!pHnd) {
-        qWarning("QLibrary::load_sys: Cannot load %s (%s)",
-                 QFile::encodeName(fileName).constData(),
-                 qt_error_string(GetLastError()).latin1());
+        errorString = QLibrary::tr("QLibrary::load_sys: Cannot load %1 (%2)").arg(fileName).arg(::qt_error_string());
     }
-#endif
-    if (pHnd)
+    if (pHnd) {
         qualifiedFileName = attempt;
+        errorString.clear();
+    }
     return (pHnd != 0);
 }
 
 bool QLibraryPrivate::unload_sys()
 {
     if (!FreeLibrary(pHnd)) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("QLibrary::unload_sys: Cannot unload %s (%s)",
-                 QFile::encodeName(fileName).constData(),
-                 qt_error_string(GetLastError()).toLatin1().data());
-#endif
+        errorString = QLibrary::tr("QLibrary::unload_sys: Cannot unload %1 (%2)").arg(fileName).arg(::qt_error_string());
         return false;
     }
+    errorString.clear();
     return true;
 }
 
@@ -82,13 +81,12 @@ void* QLibraryPrivate::resolve_sys(const char* symbol)
 #else
     void* address = (void*)GetProcAddress(pHnd, symbol);
 #endif
-#if defined(QT_DEBUG_COMPONENT)
-    if (!address)
-        qWarning("QLibrary::resolve_sys: Symbol \"%s\" undefined in %s (%s)",
-                 symbol,
-                 QFile::encodeName(fileName).constData(),
-                 qt_error_string(GetLastError()).latin1());
-#endif
+    if (!address) {
+        errorString = QLibrary::tr("QLibrary::resolve_sys: Symbol \"%1\" undefined in %2 (%3)").arg(
+            QString::fromAscii(symbol)).arg(fileName).arg(::qt_error_string());
+    } else {
+        errorString.clear();
+    }
     return address;
 }
 

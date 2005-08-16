@@ -2,12 +2,18 @@ TEMPLATE        = subdirs
 no-png {
     message("Tools not available without PNG support")
 } else {
-    SUBDIRS		= assistant/lib \
+    unix:contains(QT_CONFIG, qdbus):SUBDIRS += qdbus
+    SUBDIRS		+= assistant/lib \
 			assistant \
-			linguist \
 			porting \
-                        qtestlib
-    !contains(QT_EDITION, Console):SUBDIRS += designer
+                        qtestlib \
+			pixeltool
+    contains(QT_EDITION, Console) {
+        SUBDIRS += designer/src/uitools     # Linguist depends on this
+    } else {
+        SUBDIRS += designer
+    }
+    SUBDIRS     += linguist
     unix:!embedded:contains(QT_CONFIG, qt3support):SUBDIRS += qtconfig
     win32:!contains(QT_EDITION, OpenSource|Console):SUBDIRS += activeqt
 }

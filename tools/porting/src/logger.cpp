@@ -23,6 +23,7 @@
 
 #include "logger.h"
 #include <QFile>
+#include <QDateTime>
 
 LogEntry::LogEntry(QString type, QString location)
 :type(type), location(location)
@@ -105,7 +106,7 @@ QStringList Logger::fullReport()
 {
     commitSection();
     QStringList report;
-    report << "Number of log entries: " + QString("%1").arg(logEntries.size());
+    report << "Log for qt3to4 on " + QDateTime::currentDateTime().toString() + ". Number of log entries: " + QString("%1").arg(logEntries.size());
     foreach(LogEntry *logEntry, logEntries) {
         report << logEntry->description();
     }

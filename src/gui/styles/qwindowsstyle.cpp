@@ -42,6 +42,15 @@
 #include "qwidget.h"
 #include "qdebug.h"
 #include "qmainwindow.h"
+#include "qfile.h"
+#include "qtextstream.h"
+#include "qpixmapcache.h"
+
+#ifdef Q_WS_X11
+#include "qfileinfo.h"
+#include "qdir.h"
+#include <private/qt_x11_p.h>
+#endif
 
 #if defined(Q_WS_WIN)
 #include "qt_windows.h"
@@ -166,12 +175,12 @@ bool QWindowsStyle::eventFilter(QObject *o, QEvent *e)
         }
         break;
     case QEvent::Destroy:
-        d->bars.removeAll(reinterpret_cast<QProgressBar *>(o));
-        break;
     case QEvent::Hide:
-        if (QProgressBar *bar = qobject_cast<QProgressBar *>(o)) {
+        // reinterpret_cast because there is no type info when getting
+        // the destroy event. We know that it is a QProgressBar.
+        if (QProgressBar *bar = reinterpret_cast<QProgressBar *>(o)) {
             d->bars.removeAll(bar);
-            if (d->bars.isEmpty()) {
+            if (d->bars.isEmpty() && d->animateTimer) {
                 killTimer(d->animateTimer);
                 d->animateTimer = 0;
             }
@@ -429,7 +438,7 @@ int QWindowsStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt, const QW
 #endif // Q_WS_WIN
 
     case PM_SplitterWidth:
-        ret = qMax(6, QApplication::globalStrut().width());
+        ret = qMax(4, QApplication::globalStrut().width());
         break;
 
 #if defined(Q_WS_WIN)
@@ -762,142 +771,6 @@ static const char *const question_xpm[] = {
 ".................cc**...........",
 "..................***...........",
 "...................**..........."};
-/* XPM */
-static const char* const dir_open_xpm[]={
-    "16 16 6 1",
-    ". c None",
-    "b c #ffff00",
-    "d c #000000",
-    "* c #999999",
-    "c c #cccccc",
-    "a c #ffffff",
-    "................",
-    "................",
-    "...*****........",
-    "..*aaaaa*.......",
-    ".*abcbcba******.",
-    ".*acbcbcaaaaaa*d",
-    ".*abcbcbcbcbcb*d",
-    "*************b*d",
-    "*aaaaaaaaaa**c*d",
-    "*abcbcbcbcbbd**d",
-    ".*abcbcbcbcbcd*d",
-    ".*acbcbcbcbcbd*d",
-    "..*acbcbcbcbb*dd",
-    "..*************d",
-    "...ddddddddddddd",
-    "................"};
-
-/* XPM */
-static const char * const dir_closed_xpm[]={
-    "16 16 6 1",
-    ". c None",
-    "b c #ffff00",
-    "d c #000000",
-    "* c #999999",
-    "a c #cccccc",
-    "c c #ffffff",
-    "................",
-    "................",
-    "..*****.........",
-    ".*ababa*........",
-    "*abababa******..",
-    "*cccccccccccc*d.",
-    "*cbababababab*d.",
-    "*cabababababa*d.",
-    "*cbababababab*d.",
-    "*cabababababa*d.",
-    "*cbababababab*d.",
-    "*cabababababa*d.",
-    "*cbababababab*d.",
-    "**************d.",
-    ".dddddddddddddd.",
-    "................"};
-
-/* XPM */
-static const char * const dir_link_xpm[]={
-    "16 16 10 1",
-    "h c #808080",
-    "g c #a0a0a0",
-    "d c #000000",
-    "b c #ffff00",
-    "f c #303030",
-    "# c #999999",
-    "a c #cccccc",
-    "e c #585858",
-    "c c #ffffff",
-    ". c None",
-    "................",
-    "................",
-    "..#####.........",
-    ".#ababa#........",
-    "#abababa######..",
-    "#cccccccccccc#d.",
-    "#cbababababab#d.",
-    "#cabababababa#d.",
-    "#cbababdddddddd.",
-    "#cababadccccccd.",
-    "#cbababdcececcd.",
-    "#cababadcefdfcd.",
-    "#cbababdccgdhcd.",
-    "#######dccchccd.",
-    ".dddddddddddddd.",
-    "................"};
-/* XPM */
-static const char* const file_xpm[]={
-    "16 16 5 1",
-    ". c #7f7f7f",
-    "# c None",
-    "c c #000000",
-    "b c #bfbfbf",
-    "a c #ffffff",
-    "################",
-    "..........######",
-    ".aaaaaaaab.#####",
-    ".aaaaaaaaba.####",
-    ".aaaaaaaacccc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".bbbbbbbbbbbc###",
-    "ccccccccccccc###"};
-/* XPM */
-static const char * const file_link_xpm[]={
-    "16 16 10 1",
-    "h c #808080",
-    "g c #a0a0a0",
-    "d c #c3c3c3",
-    ". c #7f7f7f",
-    "c c #000000",
-    "b c #bfbfbf",
-    "f c #303030",
-    "e c #585858",
-    "a c #ffffff",
-    "# c None",
-    "################",
-    "..........######",
-    ".aaaaaaaab.#####",
-    ".aaaaaaaaba.####",
-    ".aaaaaaaacccc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaabc###",
-    ".aaaaaaaaaadc###",
-    ".aaaaaaaaaadc###",
-    ".aaaacccccccc###",
-    ".aaaacaaaaaac###",
-    ".aaaacaeaeaac###",
-    ".aaaacaefcfac###",
-    ".aaaacaagchac###",
-    ".ddddcaaahaac###",
-    "ccccccccccccc###"};
-
-
 
 #endif //QT_NO_IMAGEFORMAT_XPM
 
@@ -910,38 +783,43 @@ QPixmap convertHIconToPixmap( const HICON icon)
 
     ICONINFO iconinfo;
     GetIconInfo(icon, &iconinfo); //x and y Hotspot describes the icon center
+    
+    BITMAPINFOHEADER bitmapInfo;
+    bitmapInfo.biSize        = sizeof(BITMAPINFOHEADER);
+    bitmapInfo.biWidth       = iconinfo.xHotspot * 2;
+    bitmapInfo.biHeight      = iconinfo.yHotspot * 2;
+    bitmapInfo.biPlanes      = 1;
+    bitmapInfo.biBitCount    = 32;
+    bitmapInfo.biCompression = BI_RGB;
+    bitmapInfo.biSizeImage   = 0;
+    bitmapInfo.biXPelsPerMeter = 0;
+    bitmapInfo.biYPelsPerMeter = 0;
+    bitmapInfo.biClrUsed       = 0;
+    bitmapInfo.biClrImportant  = 0;
+    DWORD* bits;
 
-    //create image
-    HBITMAP winBitmap = CreateBitmap(iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 1, 32, 0);
-    HGDIOBJ oldhdc = SelectObject(hdc, winBitmap);
+    HBITMAP winBitmap = CreateDIBSection(hdc, (BITMAPINFO*)&bitmapInfo, DIB_RGB_COLORS, (VOID**)&bits, NULL, 0);
+    HGDIOBJ oldhdc = (HBITMAP)SelectObject(hdc, winBitmap);
     DrawIconEx( hdc, 0, 0, icon, iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 0, 0, DI_NORMAL);
+    
     QPixmap::HBitmapFormat alphaType = QPixmap::PremultipliedAlpha;
-
-    BITMAP bitmapData;
-    GetObject(iconinfo.hbmColor, sizeof(BITMAP), &bitmapData);
-
     QPixmap iconpixmap = QPixmap::fromWinHBITMAP(winBitmap, alphaType);
     QImage img = iconpixmap.toImage();
 
-    if ( bitmapData.bmBitsPixel == 32 ) { //only check 32 bit images for alpha
-        for (int y = 0 ; y < iconpixmap.height() && !foundAlpha ; y++) {
-            QRgb *scanLine= reinterpret_cast<QRgb *>(img.scanLine(y));
-            for (int x = 0; x < img.width() ; x++) {
-                if (qAlpha(scanLine[x]) != 0) {
-                    foundAlpha = true;
-                    break;
-                }
+    for (int y = 0 ; y < iconpixmap.height() && !foundAlpha ; y++) {
+        QRgb *scanLine= reinterpret_cast<QRgb *>(img.scanLine(y));
+        for (int x = 0; x < img.width() ; x++) {
+            if (qAlpha(scanLine[x]) != 0) {
+                foundAlpha = true;
+                break;
             }
         }
     }
 
     if (!foundAlpha) {
         //If no alpha was found, we use the mask to set alpha values
-        HBITMAP winMask = CreateBitmap(iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 1, 32, 0);
-        SelectObject(hdc, winMask);
         DrawIconEx( hdc, 0, 0, icon, iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 0, 0, DI_MASK);
-
-        QPixmap maskPixmap = QPixmap::fromWinHBITMAP(winMask, alphaType);
+        QPixmap maskPixmap = QPixmap::fromWinHBITMAP(winBitmap, alphaType);
         QImage mask = maskPixmap.toImage();
 
         for (int y = 0 ; y< iconpixmap.height() ; y++){
@@ -954,7 +832,6 @@ QPixmap convertHIconToPixmap( const HICON icon)
                     scanlineImage[x] |= 0xff000000; // set the alpha channel to 255
             }
         }
-        DeleteObject(winMask);
     }
 
     //dispose resources created by iconinfo call
@@ -962,8 +839,8 @@ QPixmap convertHIconToPixmap( const HICON icon)
     DeleteObject(iconinfo.hbmColor);
 
     SelectObject(hdc, oldhdc); //restore state
-    DeleteDC(hdc);
     DeleteObject(winBitmap);
+    DeleteDC(hdc);
     return QPixmap::fromImage(img);
 }
 
@@ -1058,11 +935,6 @@ QPixmap QWindowsStyle::standardPixmap(StandardPixmap standardPixmap, const QStyl
             desktopIcon = loadIconFromShell32(319, 16);
             break;
         }
-    case SP_FileDialogToParent:
-        {
-            desktopIcon = loadIconFromShell32(255, 16);
-            break;
-        }
     case SP_TrashIcon:
         {
             desktopIcon = loadIconFromShell32(191, 16);
@@ -1104,31 +976,31 @@ QPixmap QWindowsStyle::standardPixmap(StandardPixmap standardPixmap, const QStyl
 #ifndef QT_NO_IMAGEFORMAT_XPM
     switch (standardPixmap) {
     case SP_TitleBarMenuButton:
-        return QPixmap((const char **)qt_menu_xpm);
+        return QPixmap(qt_menu_xpm);
     case SP_TitleBarShadeButton:
-        return QPixmap((const char **)qt_shade_xpm);
+        return QPixmap(qt_shade_xpm);
     case SP_TitleBarUnshadeButton:
-        return QPixmap((const char **)qt_unshade_xpm);
+        return QPixmap(qt_unshade_xpm);
     case SP_TitleBarNormalButton:
-        return QPixmap((const char **)qt_normalizeup_xpm);
+        return QPixmap(qt_normalizeup_xpm);
     case SP_TitleBarMinButton:
-        return QPixmap((const char **)qt_minimize_xpm);
+        return QPixmap(qt_minimize_xpm);
     case SP_TitleBarMaxButton:
-        return QPixmap((const char **)qt_maximize_xpm);
+        return QPixmap(qt_maximize_xpm);
     case SP_TitleBarCloseButton:
-        return QPixmap((const char **)qt_close_xpm);
+        return QPixmap(qt_close_xpm);
     case SP_TitleBarContextHelpButton:
-        return QPixmap((const char **)qt_help_xpm);
+        return QPixmap(qt_help_xpm);
     case SP_DockWidgetCloseButton:
-        return QPixmap((const char **)dock_widget_close_xpm);
+        return QPixmap(dock_widget_close_xpm);
     case SP_MessageBoxInformation:
-        return QPixmap((const char **)information_xpm);
+        return QPixmap(information_xpm);
     case SP_MessageBoxWarning:
-        return QPixmap((const char **)warning_xpm);
+        return QPixmap(warning_xpm);
     case SP_MessageBoxCritical:
-        return QPixmap((const char **)critical_xpm);
+        return QPixmap(critical_xpm);
     case SP_MessageBoxQuestion:
-        return QPixmap((const char **)question_xpm);
+        return QPixmap(question_xpm);
     default:
         break;
     }
@@ -1505,7 +1377,8 @@ void QWindowsStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
         break;
     case PE_FrameFocusRect:
         if (const QStyleOptionFocusRect *fropt = qstyleoption_cast<const QStyleOptionFocusRect *>(opt)) {
-            if (!(fropt->state & State_KeyboardFocusChange))
+            //### check for d->alt_down
+            if (!(fropt->state & State_KeyboardFocusChange) && !styleHint(SH_UnderlineShortcut, opt))
                 return;
             QRect r = opt->rect;
             p->save();
@@ -1785,9 +1658,9 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
             if (menuitem->menuItemType == QStyleOptionMenuItem::Separator){
                 int yoff = y-1 + h / 2;
                 p->setPen(menuitem->palette.dark().color());
-                p->drawLine(x, yoff, x + w, yoff);
+                p->drawLine(x + 2, yoff, x + w - 4, yoff);
                 p->setPen(menuitem->palette.light().color());
-                p->drawLine(x, yoff + 1, x + w, yoff + 1);
+                p->drawLine(x + 2, yoff + 1, x + w - 4, yoff + 1);
                 return;
             }
 
@@ -1852,13 +1725,14 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
             QString s = menuitem->text;
             if (!s.isEmpty()) {                     // draw text
                 p->save();
-                int t = s.indexOf('\t');
+                int t = s.indexOf(QLatin1Char('\t'));
                 int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
                 if (!styleHint(SH_UnderlineShortcut, menuitem, widget))
                     text_flags |= Qt::TextHideMnemonic;
                 text_flags |= Qt::AlignLeft;
                 if (t >= 0) {
-                    QRect vShortcutRect = visualRect(opt->direction, menuitem->rect, QRect(textRect.topRight(), menuitem->rect.bottomRight()));
+                    QRect vShortcutRect = visualRect(opt->direction, menuitem->rect, 
+                        QRect(textRect.topRight(), QPoint(menuitem->rect.right(), textRect.bottom())));
                     if (dis && !act) {
                         p->setPen(menuitem->palette.light().color());
                         p->drawText(vShortcutRect.adjusted(1,1,1,1), text_flags, s.mid(t + 1));
@@ -1980,6 +1854,9 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     x1 += firstTab ? borderThinkness : 0;
                     x2 -= lastTab ? borderThinkness : 0;
                 }
+
+                p->fillRect(QRect(x1 + 1, y1 + 1, (x2 - x1) - 1, (y2 - y1) - 2), tab->palette.background());
+
                 // Delete border
                 if (selected) {
                     p->setPen(background);
@@ -2022,11 +1899,14 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     x1 += firstTab ? borderThinkness : 0;
                     x2 -= lastTab ? borderThinkness : 0;
                 }
+
+                p->fillRect(QRect(x1 + 1, y1 + 2, (x2 - x1) - 1, (y2 - y1) - 1), tab->palette.background());
+
                 // Delete border
                 if (selected) {
                     p->setPen(background);
-                    p->drawLine(x1, y1 + 1, x2, y1 + 1);
-                    p->drawLine(x1, y1, x2, y1);
+                    p->drawLine(x1, y1 + 1, x2 - 1, y1 + 1);
+                    p->drawLine(x1, y1, x2 - 1, y1);
                 }
                 // Left
                 if (firstTab || selected || onlyOne || !previousSelected) {
@@ -2062,6 +1942,9 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     y1 += firstTab ? borderThinkness : 0;
                     y2 -= lastTab ? borderThinkness : 0;
                 }
+
+                p->fillRect(QRect(x1 + 1, y1 + 1, (x2 - x1) - 2, (y2 - y1) - 1), tab->palette.background());
+
                 // Delete border
                 if (selected) {
                     p->setPen(background);
@@ -2106,11 +1989,14 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     y1 += firstTab ? borderThinkness : 0;
                     y2 -= lastTab ? borderThinkness : 0;
                 }
+
+                p->fillRect(QRect(x1 + 2, y1 + 1, (x2 - x1) - 1, (y2 - y1) - 1), tab->palette.background());
+
                 // Delete border
                 if (selected) {
                     p->setPen(background);
-                    p->drawLine(x1 + 1, y1, x1 + 1, y2);
-                    p->drawLine(x1, y1, x1, y2);
+                    p->drawLine(x1 + 1, y1, x1 + 1, y2 - 1);
+                    p->drawLine(x1, y1, x1, y2 - 1);
                 }
                 // Top
                 if (firstTab || selected || onlyOne || !previousSelected) {
@@ -2151,27 +2037,9 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                         &opt->palette.brush(QPalette::Button));
         break;
 #ifndef QT_NO_SPLITTER
-case CE_Splitter: {
-        QPen oldPen = p->pen();
-        p->setPen(opt->palette.light().color());
-        if (opt->state & State_Horizontal) {
-            p->drawLine(opt->rect.x() + 1, opt->rect.y(), opt->rect.x() + 1, opt->rect.height());
-            p->setPen(opt->palette.dark().color());
-            p->drawLine(opt->rect.x(), opt->rect.y(), opt->rect.x(), opt->rect.height());
-            p->drawLine(opt->rect.right() - 1, opt->rect.y(), opt->rect.right() - 1,
-                        opt->rect.height());
-            p->setPen(opt->palette.shadow().color());
-            p->drawLine(opt->rect.right(), opt->rect.y(), opt->rect.right(), opt->rect.height());
-        } else {
-            p->drawLine(opt->rect.x(), opt->rect.y() + 1, opt->rect.width(), opt->rect.y() + 1);
-            p->setPen(opt->palette.dark().color());
-            p->drawLine(opt->rect.x(), opt->rect.bottom() - 1, opt->rect.width(),
-                        opt->rect.bottom() - 1);
-            p->setPen(opt->palette.shadow().color());
-            p->drawLine(opt->rect.x(), opt->rect.bottom(), opt->rect.width(), opt->rect.bottom());
-        }
-        p->setPen(oldPen);
-        break; }
+    case CE_Splitter:
+        p->eraseRect(opt->rect);
+        break;
 #endif // QT_NO_SPLITTER
 #ifndef QT_NO_SCROLLBAR
     case CE_ScrollBarSubLine:
@@ -2401,7 +2269,7 @@ case CE_Splitter: {
                 QRect clip = rect;
                 clip.setLeft(clip.left() + margin);
                 clip.setRight(clip.right() - margin);
-                QRegion intersection = prevClip.intersect(clip);
+                QRegion intersection = prevClip.intersected(clip);
 
                 int x0 = reverse ? rect.right() - unit_width*(step) - unit_width  : margin + unit_width * step;
                 int x = 0;
@@ -2488,13 +2356,13 @@ case CE_Splitter: {
                     p->setFont(font);
                 }
                 QPalette palette = dwOpt->palette;
-                palette.setColor(QPalette::Background, inactiveCaptionTextColor);
+                palette.setColor(QPalette::Window, inactiveCaptionTextColor);
                 bool active = dwOpt->state & State_Active;
                 const int indent = p->fontMetrics().descent();
                 drawItemText(p, r.adjusted(indent + 1, - menuOffset, -indent - 1, -1),
                             Qt::AlignLeft | Qt::AlignVCenter, palette,
                             dwOpt->state & State_Enabled, dwOpt->title,
-                            floating ? (active ? QPalette::BrightText : QPalette::Background) : QPalette::Foreground);
+                            floating ? (active ? QPalette::BrightText : QPalette::Window) : QPalette::WindowText);
                 p->setFont(oldFont);
             }
         }
@@ -2536,10 +2404,8 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
             int thickness  = pixelMetric(PM_SliderControlThickness, slider, widget);
             int len        = pixelMetric(PM_SliderLength, slider, widget);
             int ticks = slider->tickPosition;
-            QRect groove = QCommonStyle::subControlRect(CC_Slider, slider,
-                                                                SC_SliderGroove, widget);
-            QRect handle = QCommonStyle::subControlRect(CC_Slider, slider,
-                                                                SC_SliderHandle, widget);
+            QRect groove = subControlRect(CC_Slider, slider, SC_SliderGroove, widget);
+            QRect handle = subControlRect(CC_Slider, slider, SC_SliderHandle, widget);
 
             if ((slider->subControls & SC_SliderGroove) && groove.isValid()) {
                 int mid = thickness / 2;
@@ -2908,8 +2774,7 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
 #ifndef QT_NO_COMBOBOX
     case CC_ComboBox:
         if (const QStyleOptionComboBox *cmb = qstyleoption_cast<const QStyleOptionComboBox *>(opt)) {
-            QBrush editBrush = (cmb->state & State_Enabled) ? cmb->palette.brush(QPalette::Base)
-                                : cmb->palette.brush(QPalette::Background);
+            QBrush editBrush = cmb->palette.brush(QPalette::Base);
             if ((cmb->subControls & SC_ComboBoxFrame) && cmb->frame)
                 qDrawWinPanel(p, opt->rect, opt->palette, true, &editBrush);
             else
@@ -3018,7 +2883,7 @@ QSize QWindowsStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
                               + 2 * windowsItemFrame));
             int maxpmw = mi->maxIconWidth;
             int tabSpacing = use2000style ? 20 :windowsTabSpacing;
-            if (mi->text.contains('\t'))
+            if (mi->text.contains(QLatin1Char('\t')))
                 w += tabSpacing;
             else if (mi->menuItemType == QStyleOptionMenuItem::SubMenu)
                 w += 2 * windowsArrowHMargin;
@@ -3048,9 +2913,7 @@ QSize QWindowsStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
                 // Otherwise, fall through
     case CT_ToolButton:
         if (qstyleoption_cast<const QStyleOptionToolButton *>(opt))
-        {
             return sz += QSize(7, 6);
-        }
         // Otherwise, fall through
 
     default:
@@ -3058,4 +2921,233 @@ QSize QWindowsStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
     }
     return sz;
 }
+
+/*!
+    \internal
+*/
+QIcon QWindowsStyle::standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *option,
+                                                const QWidget *widget) const
+{
+    QIcon icon;
+    QPixmap pixmap;
+#ifdef Q_OS_WIN
+    switch (standardIcon) {
+    case SP_DirIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(4, size);
+            icon.addPixmap(pixmap, QIcon::Normal, QIcon::Off);
+            pixmap = loadIconFromShell32(5, size);
+            icon.addPixmap(pixmap, QIcon::Normal, QIcon::On);
+        }
+        break;
+    case SP_DirLinkIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            QPixmap link = loadIconFromShell32(30, size);
+            pixmap = loadIconFromShell32(4, size);
+            if (!pixmap.isNull() && !link.isNull()) {
+                QPainter painter(&pixmap);
+                painter.drawPixmap(0, 0, size, size, link);
+                icon.addPixmap(pixmap, QIcon::Normal, QIcon::Off);
+            }
+            link = loadIconFromShell32(30, size);
+            pixmap = loadIconFromShell32(5, size);
+            if (!pixmap.isNull() && !link.isNull()) {
+                QPainter painter(&pixmap);
+                painter.drawPixmap(0, 0, size, size, link);
+                icon.addPixmap(pixmap, QIcon::Normal, QIcon::On);
+            }
+        }
+        break;
+    case SP_FileIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(1, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+    case SP_ComputerIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(16, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+
+    case SP_DesktopIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(35, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+    case SP_DriveCDIcon:
+    case SP_DriveDVDIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(12, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+    case SP_DriveNetIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(10, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+    case SP_DriveHDIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(9, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+    case SP_DriveFDIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            pixmap = loadIconFromShell32(7, size);
+            icon.addPixmap(pixmap, QIcon::Normal);
+        }
+        break;
+    case SP_FileLinkIcon:
+        for (int size = 16 ; size <= 32 ; size += 16) {
+            QPixmap link;
+            link = loadIconFromShell32(30, size);
+            pixmap = loadIconFromShell32(1, size);
+            if (!pixmap.isNull() && !link.isNull()) {
+                QPainter painter(&pixmap);
+                painter.drawPixmap(0, 0, size, size, link);
+                icon.addPixmap(pixmap, QIcon::Normal);
+            }
+        }
+        break;
+    default:
+        break;
+    }
 #endif
+
+    if (icon.isNull())
+        icon = QCommonStyle::standardIconImplementation(standardIcon, option, widget);
+    return icon;
+}
+
+
+#ifdef Q_WS_X11
+IconTheme QWindowsStylePrivate::parseIndexFile(const QString &themeName) const
+{
+    Q_Q(const QWindowsStyle);
+    IconTheme theme;
+    QFile themeIndex;
+    QStringList parents;
+    QHash <int, QString> dirList;
+
+    for ( int i = 0 ; i < iconDirs.size() && !themeIndex.exists() ; ++i) {
+          themeIndex.setFileName(iconDirs[i] + "/icons/" +
+                                 themeName + QLatin1String("/index.theme"));
+    }
+
+    if (themeIndex.open(QIODevice::ReadOnly | QIODevice::Text)) {
+
+        QTextStream in(&themeIndex);
+
+        while (!in.atEnd()) {
+
+            QString line = in.readLine();
+
+            if (line.startsWith(QLatin1String("Inherits="))) {
+                line = line.right(line.length() - 9);
+                parents = line.split(QLatin1Char(','));
+            }
+
+            if (line.startsWith(QLatin1String("["))) {
+                line = line.trimmed();
+                line.chop(1);
+                QString dirName = line.right(line.length() - 1);
+                if (!in.atEnd()) {
+                    line = in.readLine();
+                    int size;
+                    if (line.startsWith("Size=")) {
+                        size = line.right(line.length() - 5).toInt();
+                        if (size)
+                            dirList.insertMulti(size, dirName);
+                    }
+                }
+            }
+        }
+    }	
+
+    if (q->inherits("QPlastiqueStyle")) {
+        QFileInfo fileInfo("/usr/share/icons/default.kde");
+        QDir dir(fileInfo.canonicalFilePath());
+        QString defaultKDETheme = dir.exists() ? dir.dirName() : "crystalsvg";
+        if (!parents.contains(defaultKDETheme) && themeName != defaultKDETheme)
+            parents.append(defaultKDETheme);        
+    } else if (parents.isEmpty() && themeName != "hicolor") {
+        parents.append("hicolor");
+    }
+    theme = IconTheme(dirList, parents);
+    return theme;
+}
+
+QPixmap QWindowsStylePrivate::findIconHelper(int size,
+                                                   const QString &themeName,
+                                                   const QString &iconName,
+                                                   QStringList &visited) const
+{
+    QPixmap pixmap;
+
+    if (!themeName.isEmpty()) {
+
+        visited << themeName;
+        IconTheme theme = themeList.value(themeName);
+
+        if (!theme.isValid()) {
+            theme = parseIndexFile(themeName);
+            themeList.insert(themeName, theme);
+        }
+
+        if (!theme.isValid())
+            return QPixmap();
+
+        QList <QString> subDirs = theme.dirList().values(size);
+
+        for ( int i = 0 ; i < iconDirs.size() ; ++i) {
+            for ( int j = 0 ; j < subDirs.size() ; ++j) {
+                QString fileName = iconDirs[i] + "/icons/" + themeName + "/" + subDirs[j] + QLatin1Char('/') + iconName;
+                pixmap.load(fileName);
+                if (!pixmap.isNull())
+                    break;
+            }
+        }
+
+        if (pixmap.isNull()) {
+            QStringList parents = theme.parents();
+            //search recursively through inherited themes
+            for (int i = 0 ; pixmap.isNull() && i < parents.size() ; ++i) {
+               QString parentTheme = parents[i].trimmed();
+               if (!visited.contains(parentTheme)) //guard against endless recursion
+                  pixmap = findIconHelper(size, parentTheme, iconName, visited);
+            }
+        }
+    }
+    return pixmap;
+}
+#endif
+
+QPixmap QWindowsStylePrivate::findIcon(int size, const QString &name) const
+{
+#ifdef Q_WS_X11
+    QPixmap pixmap;
+    QString pixmapName = QLatin1String("$qt") + name + QString::number(size);
+
+    if (QPixmapCache::find(pixmapName, pixmap))
+        return pixmap;
+
+    if (!themeName.isEmpty()) {
+        QStringList visited;
+        pixmap = findIconHelper(size, themeName, name, visited);
+    }
+    QPixmapCache::insert(pixmapName, pixmap);
+
+    return pixmap;
+#else
+    Q_UNUSED(size);
+    Q_UNUSED(name);
+    return QPixmap();
+#endif
+}
+
+#endif // QT_NO_STYLE_WINDOWS

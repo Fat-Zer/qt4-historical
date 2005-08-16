@@ -35,7 +35,7 @@
     Creates a new frame with the given \a parent, object \a name, and
     with widget flags \a f.
 */
-Q3Frame::Q3Frame(QWidget* parent, const char* name, Qt::WFlags f)
+Q3Frame::Q3Frame(QWidget* parent, const char* name, Qt::WindowFlags f)
     :QFrame(parent, f), marg(0)
 {
     if (name)
@@ -59,12 +59,12 @@ void Q3Frame::paintEvent(QPaintEvent * event)
     QPainter paint(this);
     if (!contentsRect().contains(event->rect())) {
         paint.save();
-        paint.setClipRegion(event->region().intersect(frameRect()));
+        paint.setClipRegion(event->region().intersected(frameRect()));
         drawFrame(&paint);
         paint.restore();
     }
     if (event->rect().intersects(contentsRect())) {
-        paint.setClipRegion(event->region().intersect(contentsRect()));
+        paint.setClipRegion(event->region().intersected(contentsRect()));
         drawContents(&paint);
     }
 }
@@ -116,9 +116,10 @@ void Q3Frame::drawFrame(QPainter *p)
     This just calls frameChanged(); it does not make use of the \a
     event itself.
 */
-void Q3Frame::resizeEvent(QResizeEvent *)
+void Q3Frame::resizeEvent(QResizeEvent *e)
 {
-    frameChanged();
+    if (e->size() == e->oldSize())
+        frameChanged();
 }
 
 /*!

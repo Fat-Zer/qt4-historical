@@ -95,28 +95,38 @@ static void paintGrid(QWidget *widget, QDesignerFormWindowInterface *formWindow,
 
 void QDesignerDialog::paintEvent(QPaintEvent *e)
 {
-    if (m_formWindow->currentTool() == 0 && m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature)) {
+    if (m_formWindow && m_formWindow->currentTool() == 0 && m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature)) {
         paintGrid(this, m_formWindow, e);
     } else {
         QPainter p(this);
-        p.fillRect(e->rect(), palette().brush(QPalette::Background));
+        p.fillRect(e->rect(), palette().brush(QPalette::Window));
     }
 }
 
 void QDesignerLabel::updateBuddy()
 {
-    if (myBuddy.isEmpty())
+    if (myBuddy.isEmpty()) {
+        QLabel::setBuddy(0);
         return;
+    }
 
-    if (QWidget *widget = qFindChild<QWidget*>(topLevelWidget(), QString::fromUtf8(myBuddy)))
-        QLabel::setBuddy(widget);
+    QList<QWidget *> widgets = qFindChildren<QWidget*>(topLevelWidget(), QString::fromUtf8(myBuddy));
+    QListIterator<QWidget *> it(widgets);
+    while (it.hasNext()) {
+        QWidget *widget = it.next();
+        if (widget && !widget->isHidden()) {
+            QLabel::setBuddy(widget);
+            return;
+        }
+    }
+    QLabel::setBuddy(0);
 }
 
 QDesignerWidget::QDesignerWidget(QDesignerFormWindowInterface* formWindow, QWidget *parent)
     : QWidget(parent), m_formWindow(formWindow)
 {
     need_frame = true;
-    setBackgroundRole(QPalette::Background);
+    setBackgroundRole(QPalette::Window);
 }
 
 QDesignerWidget::~QDesignerWidget()
@@ -125,7 +135,7 @@ QDesignerWidget::~QDesignerWidget()
 
 void QDesignerWidget::paintEvent(QPaintEvent *e)
 {
-    if (m_formWindow->currentTool() == 0 && m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature))
+    if (m_formWindow && m_formWindow->currentTool() == 0 && m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature))
         paintGrid(this, m_formWindow, e);
     else
         QWidget::paintEvent(e);

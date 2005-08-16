@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ResourceEditor
+*/
+
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/qdebug.h>
@@ -42,6 +46,7 @@
 #include <QtGui/QItemDelegate>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDrag>
+#include <QtGui/QDockWidget>
 
 #include <QtDesigner/QtDesigner>
 
@@ -101,7 +106,8 @@ void QrcItemDelegate::setModelData(QWidget *_editor,
         return;
 
     model->changePrefix(index, new_prefix);
-    model->save();
+    if (!model->save())
+        model->changePrefix(index, old_prefix);
 }
 
 void QrcItemDelegate::setEditorData(QWidget *_editor, const QModelIndex &index) const
@@ -278,6 +284,8 @@ Qt::ItemFlags EditableResourceModel::flags(const QModelIndex &index) const
 
     if (file.isEmpty())
         result |= Qt::ItemIsEditable;
+    else if (!iconFileExtension(file))
+        result &= ~Qt::ItemIsEnabled & ~Qt::ItemIsSelectable;
 
     return result;
 }
@@ -431,7 +439,6 @@ ResourceEditor::ResourceEditor(QDesignerFormEditorInterface *core, QWidget *pare
     connect(m_add_files_button, SIGNAL(clicked()), this, SLOT(addFiles()));
 
     updateQrcStack();
-    updateUi();
 }
 
 void ResourceEditor::insertEmptyComboItem()
@@ -533,11 +540,11 @@ void ResourceEditor::addFiles()
         return;
 
     QStringList file_list = QFileDialog::getOpenFileNames(this, tr("Open file"),
-                                                            model->absolutePath(QString()),
+                                                            model->lastResourceOpenDirectory(),
                                                             tr("All files (*)"));
     if (file_list.isEmpty())
         return;
-
+    
     QModelIndex idx = model->addFiles(view->currentIndex(), file_list);
     if (idx.isValid()) {
         view->setExpanded(model->prefixIndex(view->currentIndex()), true);
@@ -588,11 +595,23 @@ void ResourceEditor::updateUi()
     QString name;
     if (m_form != 0)
         name = QFileInfo(m_form->fileName()).fileName();
-    if (name.isEmpty())
-        name = tr("Untitled");
 
-    setWindowTitle(tr("Resource Editor: %1").arg(name));
+    QString suffix;
+    name.isEmpty() ? suffix = tr("Resource Editor") : suffix = tr("Resource Editor: %1").arg(name);
 
+    QWidget* widget = 0;
+    if (m_form != 0)
+        widget = m_form->core()->topLevel();
+
+    if (widget && (widget->objectName() == QLatin1String("MDIWindow"))) {
+        QDockWidget* dockWidget = qFindChild<QDockWidget*>(widget, (parentWidget()->objectName() + QLatin1String("_dock")));
+        if(dockWidget)
+            dockWidget->setWindowTitle(suffix);
+    }
+    else if ((widget = parentWidget()) != 0 && widget->isWindow())
+        widget->setWindowTitle(suffix);
+    else
+        setWindowTitle(suffix);
 }
 
 int ResourceEditor::currentIndex() const
@@ -677,7 +696,7 @@ void ResourceEditor::updateQrcPaths()
 {
     for (int i = 0; i < m_qrc_stack->count(); ++i) {
         ResourceModel *model = this->model(i);
-        m_qrc_combo->setItemText(i, qrcName(model->fileName()));
+        m_qrc_combo->setItemText(i, model->fileName());
     }
 
     updateUi();
@@ -694,7 +713,7 @@ void ResourceEditor::addView(const QString &qrc_file)
     removeEmptyComboItem();
 
     view->setModel(model);
-    m_qrc_combo->insertItem(idx, qrcName(qrc_file));
+    m_qrc_combo->insertItem(idx, model->fileName());
     m_qrc_stack->addWidget(view);
     connect(view->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(updateUi()));
@@ -784,13 +803,17 @@ void ResourceEditor::saveCurrentView()
                                                             tr("Resource files (*.qrc)"));
         if (file_name.isEmpty())
             return;
+
+        if (QFileInfo(file_name).suffix() != QLatin1String("qrc"))
+            file_name.append(QLatin1String(".qrc"));
+
         model->setFileName(file_name);
         m_ignore_update = true;
         m_form->addResourceFile(file_name);
         m_ignore_update = false;
         QString s = QFileInfo(file_name).fileName();
         bool blocked = m_qrc_combo->blockSignals(true);
-        m_qrc_combo->setItemText(currentIndex(), s);
+        m_qrc_combo->setItemText(currentIndex(), model->fileName());
         m_qrc_combo->setCurrentIndex(-1);
         m_qrc_combo->setCurrentIndex(currentIndex());
         m_qrc_combo->blockSignals(blocked);
@@ -866,6 +889,9 @@ void ResourceEditor::newView()
         setCurrentIndex(m_qrc_stack->count() == 0 ? 0 : m_qrc_stack->currentIndex());
         return;
     }
+        
+    if (QFileInfo(file_name).suffix() != QLatin1String("qrc"))
+		file_name.append(QLatin1String(".qrc"));
 
     ResourceFile rf(file_name);
     rf.save();
@@ -900,7 +926,7 @@ void ResourceEditor::setActiveForm(QDesignerFormWindowInterface *form)
 
     m_form = form;
     updateQrcStack();
-
+    
     if (m_form != 0) {
         connect(m_form, SIGNAL(fileNameChanged(QString)),
                     this, SLOT(updateQrcPaths()));

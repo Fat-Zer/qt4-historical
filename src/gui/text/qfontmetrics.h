@@ -61,6 +61,7 @@ public:
     int maxWidth() const;
 
     int xHeight() const;
+    int averageCharWidth() const;
 
     bool inFont(QChar) const;
 
@@ -80,6 +81,8 @@ public:
         { return boundingRect(QRect(x, y, w, h), flags, text, tabstops, tabarray); }
     QSize size(int flags, const QString& str, int tabstops=0, int *tabarray=0) const;
 
+    QString elidedText(const QString &text, Qt::TextElideMode mode, int width, int flags = 0) const;
+
     int underlinePos() const;
     int overlinePos() const;
     int strikeOutPos() const;
@@ -87,7 +90,8 @@ public:
 
     bool operator==(const QFontMetrics &other); // 5.0 - remove me
     bool operator==(const QFontMetrics &other) const;
-    inline bool operator !=(const QFontMetrics &other) { return !operator==(other); }
+    inline bool operator !=(const QFontMetrics &other) { return !operator==(other); } // 5.0 - remove me
+    inline bool operator !=(const QFontMetrics &other) const { return !operator==(other); }
 
 #ifdef QT3_SUPPORT
     inline QRect boundingRect(const QString &text, int len) const
@@ -102,6 +106,8 @@ private:
 #if defined(Q_WS_MAC)
     friend class QFontPrivate;
 #endif
+    friend class QFontMetricsF;
+    friend class QStackTextEngine;
 
     QFontPrivate *d;
 };
@@ -112,12 +118,12 @@ class Q_GUI_EXPORT QFontMetricsF
 public:
     QFontMetricsF(const QFont &);
     QFontMetricsF(const QFont &, QPaintDevice *pd);
-//    QFontMetricsF(const QFontMetrics &);
+    QFontMetricsF(const QFontMetrics &);
     QFontMetricsF(const QFontMetricsF &);
     ~QFontMetricsF();
 
     QFontMetricsF &operator=(const QFontMetricsF &);
-//    QFontMetricsF &operator=(const QFontMetrics &);
+    QFontMetricsF &operator=(const QFontMetrics &);
 
     qreal ascent() const;
     qreal descent() const;
@@ -129,6 +135,7 @@ public:
     qreal maxWidth() const;
 
     qreal xHeight() const;
+    qreal averageCharWidth() const;
 
     bool inFont(QChar) const;
 
@@ -142,6 +149,7 @@ public:
     QRectF boundingRect(QChar) const;
     QRectF boundingRect(const QRectF &r, int flags, const QString& string, int tabstops=0, int *tabarray=0) const;
     QSizeF size(int flags, const QString& str, int tabstops=0, int *tabarray=0) const;
+    QString elidedText(const QString &text, Qt::TextElideMode mode, qreal width, int flags = 0) const;
 
     qreal underlinePos() const;
     qreal overlinePos() const;

@@ -42,7 +42,10 @@
     buttons except the one that was clicked. By default, a button
     group is exclusive. The buttons in a button group are usually
     checkable QPushButton's, \l{QCheckBox}es (normally for
-    non-exclusive button groups), or \l{QRadioButton}s.
+    non-exclusive button groups), or \l{QRadioButton}s. If you create
+    an exclusive button group, you should ensure that one of the
+    buttons in the group is initially checked; otherwise, the group
+    will initially be in a state where no buttons are checked.
 
     A button is added to the group with addButton(). It can be removed
     from the group with removeButton(). If the group is exclusive, the
@@ -81,15 +84,26 @@
     \property QButtonGroup::exclusive
     \brief whether the button group is exclusive
 
-    If this property is true, then the buttons in the group are
-    checked (toggled), and to untoggle a button you must click on
-    another button in the group. The default value is true.
+    If this property is true then only one button in the group can be checked
+    at any given time. The user can click on any button to check it, and that
+    button will replace the existing one as the checked button in the group.
+
+    In an exclusive group, the user cannot uncheck the currently checked button
+    by clicking on it; instead, another button in the group must be clicked
+    to set the new checked button for that group.
+
+    By default, this property is true.
 */
 
 /*!
     \fn void QButtonGroup::buttonClicked(QAbstractButton *button)
 
-    This signal is emitted when the given \a button is clicked.
+    This signal is emitted when the given \a button is clicked. A
+    button is clicked when it is first pressed and then released, when
+    its shortcut key is typed, or programmatically when
+    QAbstractButton::click() or QAbstractButton::animateClick() is
+    called.
+
 
     \sa checkedButton(), QAbstractButton::clicked()
 */
@@ -103,6 +117,43 @@
     \sa checkedButton(), QAbstractButton::clicked()
 */
 
+/*!
+    \fn void QButtonGroup::buttonPressed(QAbstractButton *button)
+    \since 4.2
+
+    This signal is emitted when the given \a button is pressed down. 
+
+    \sa QAbstractButton::pressed()
+*/
+
+/*!
+    \fn void QButtonGroup::buttonPressed(int id)
+    \since 4.2
+
+    This signal is emitted when a button with the given \a id is
+    pressed down.
+
+    \sa QAbstractButton::pressed()
+*/
+
+/*!
+    \fn void QButtonGroup::buttonReleased(QAbstractButton *button)
+    \since 4.2
+
+    This signal is emitted when the given \a button is released. 
+
+    \sa QAbstractButton::released()
+*/
+
+/*!
+    \fn void QButtonGroup::buttonReleased(int id)
+    \since 4.2
+
+    This signal is emitted when a button with the given \a id is
+    released.
+
+    \sa QAbstractButton::released()
+*/
 
 /*!
     \fn void QButtonGroup::addButton(QAbstractButton *button, int id = -1);

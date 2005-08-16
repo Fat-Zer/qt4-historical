@@ -26,11 +26,10 @@
 #include "window.h"
 
 Window::Window(QWidget *parent)
-    : QWidget(parent)
+    : QDialog(parent)
 {
     browseButton = createButton(tr("&Browse..."), SLOT(browse()));
     findButton = createButton(tr("&Find"), SLOT(find()));
-    quitButton = createButton(tr("&Quit"), SLOT(close()));
 
     fileComboBox = createComboBox(tr("*"));
     textComboBox = createComboBox();
@@ -46,7 +45,6 @@ Window::Window(QWidget *parent)
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch();
     buttonsLayout->addWidget(findButton);
-    buttonsLayout->addWidget(quitButton);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(fileLabel, 0, 0);
@@ -69,8 +67,10 @@ void Window::browse()
 {
     QString directory = QFileDialog::getExistingDirectory(this,
                                tr("Find Files"), QDir::currentPath());
-    directoryComboBox->addItem(directory);
-    directoryComboBox->setCurrentIndex(directoryComboBox->currentIndex() + 1);
+    if (!directory.isEmpty()) {
+        directoryComboBox->addItem(directory);
+        directoryComboBox->setCurrentIndex(directoryComboBox->currentIndex() + 1);
+    }
 }
 
 void Window::find()

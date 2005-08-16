@@ -1,7 +1,8 @@
 TEMPLATE = lib
 TARGET = QtDesignerComponents
 contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
-CONFIG += qt debug_and_release depend_prl
+CONFIG += qt depend_prl
+win32|mac: CONFIG += debug_and_release
 DESTDIR = $$QT_BUILD_TREE/lib
 DLLDESTDIR = $$QT_BUILD_TREE/bin
 
@@ -9,7 +10,7 @@ DLLDESTDIR = $$QT_BUILD_TREE/bin
 DEFINES += QT_STATICPLUGIN
 
 isEmpty(QT_MAJOR_VERSION) {
-   VERSION=4.1.0
+   VERSION=4.2.0
 } else {
    VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
 }
@@ -18,8 +19,18 @@ QMAKE_TARGET_PRODUCT = Designer
 QMAKE_TARGET_DESCRIPTION = Graphical user interface designer.
 QMAKE_TARGET_COPYRIGHT = Copyright (C) 2003-2006 Trolltech ASA
 
-target.path=$$[QT_INSTALL_LIBS]
-INSTALLS        += target
+
+#load up the headers info
+CONFIG += qt_install_headers
+HEADERS_PRI = $$QT_BUILD_TREE/include/QtDesigner/headers.pri
+include($$HEADERS_PRI)|clear(HEADERS_PRI)
+
+#mac frameworks
+mac:!static:contains(QT_CONFIG, qt_framework) {
+   QMAKE_FRAMEWORK_BUNDLE_NAME = $$TARGET
+   CONFIG += lib_bundle qt_no_framework_direct_includes qt_framework
+   CONFIG(debug, debug|release):!build_pass:CONFIG += build_all
+}
 
 SOURCES += qdesigner_components.cpp
 
@@ -51,3 +62,7 @@ PRECOMPILED_HEADER= lib_pch.h
 
 include(../../sharedcomponents.pri)
 include(../component.pri)
+
+target.path=$$[QT_INSTALL_LIBS]
+INSTALLS        += target
+

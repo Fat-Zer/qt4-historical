@@ -1,10 +1,10 @@
 /****************************************************************************
- **
- ** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
- **
- ** This file is part of the Qt3Support module of the Qt Toolkit.
- **
- ** This file may be used under the terms of the GNU General Public
+**
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+**
+** This file is part of the Qt3Support module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
 ** License version 2.0 as published by the Free Software Foundation
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
@@ -15,11 +15,11 @@
 ** review the following information:
 ** http://www.trolltech.com/products/qt/licensing.html or contact the
 ** sales department at sales@trolltech.com.
- **
- ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- **
- ****************************************************************************/
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
 
 
 #include "q3gridview.h"
@@ -73,7 +73,7 @@ using namespace Qt;
   The \a parent, \a name and widget flag, \a f, arguments are passed
   to the Q3ScrollView constructor.
 */
-Q3GridView::Q3GridView(QWidget *parent, const char *name, Qt::WFlags f)
+Q3GridView::Q3GridView(QWidget *parent, const char *name, Qt::WindowFlags f)
     : Q3ScrollView(parent, name, f | WStaticContents),
       nrows(5), ncols(5), cellw(12), cellh(12)
 {
@@ -216,7 +216,7 @@ void Q3GridView::paintEmptyArea(QPainter *p, int cx ,int cy, int cw, int ch)
     contentsToViewport(cx, cy, cx, cy);
     QRegion reg(QRect(cx, cy, cw, ch));
     // Subtract the table from it
-    reg = reg.subtract(QRect(contentsToViewport(QPoint(0, 0)), gridSize()));
+    reg = reg.subtracted(QRect(contentsToViewport(QPoint(0, 0)), gridSize()));
 
     // And draw the rectangles (transformed as needed)
     QVector<QRect> r = reg.rects();

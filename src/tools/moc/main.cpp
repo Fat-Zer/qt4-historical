@@ -22,9 +22,9 @@
 ****************************************************************************/
 
 #include "preprocessor.h"
-#include "scanner.h"
 #include "moc.h"
 #include "outputrevision.h"
+#include "../../corelib/global/qconfig.cpp"
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
@@ -83,31 +83,137 @@ void error(const char *msg = "Invalid argument")
     if (msg)
         fprintf(stderr, "moc: %s\n", msg);
     fprintf(stderr, "Usage: moc [options] <header-file>\n"
-            "    -o<file>           Write output to file rather than stdout\n"
-            "    -I<dir>            Add dir to the include path for header files\n"
-            "    -E                 Preprocess only; do not generate meta object code\n"
-            "    -D<macro>[=<def>]  Define macro, with optional definition\n"
-            "    -U<macro>          Undefine macro\n"
-            "    -i                 Do not generate an #include statement\n"
-            "    -p<path>           Path prefix for included file\n"
-            "    -f[<file>]         Force #include, optional file name\n"
-            "    -nw                Do not display warnings\n"
-            "    -v                 Display version of moc\n");
+            "  -o<file>           write output to file rather than stdout\n"
+            "  -I<dir>            add dir to the include path for header files\n"
+            "  -E                 preprocess only; do not generate meta object code\n"
+            "  -D<macro>[=<def>]  define macro, with optional definition\n"
+            "  -U<macro>          undefine macro\n"
+            "  -i                 do not generate an #include statement\n"
+            "  -p<path>           path prefix for included file\n"
+            "  -f[<file>]         force #include, optional file name\n"
+            "  -nw                do not display warnings\n"
+            "  -v                 display version of moc\n");
     exit(1);
 }
 
-int main(int argc, char **argv)
+
+static inline bool hasNext(const Symbols &symbols, int i)
+{ return (i < symbols.size()); }
+
+static inline const Symbol &next(const Symbols &symbols, int &i)
+{ return symbols.at(i++); }
+
+
+QByteArray composePreprocessorOutput(const Symbols &symbols) {
+    QByteArray output;
+    int lineNum = 1;
+    Token last = PP_NOTOKEN;
+    Token secondlast = last;
+    int i = 0;
+    while (hasNext(symbols, i)) {
+        Symbol sym = next(symbols, i);
+        switch (sym.token) {
+        case PP_NEWLINE:
+        case PP_WHITESPACE:
+            if (last != PP_WHITESPACE) {
+                secondlast = last;
+                last = PP_WHITESPACE;
+                output += ' ';
+            }
+            continue;
+        case PP_STRING_LITERAL:
+            if (last == PP_STRING_LITERAL)
+                output.chop(1);
+            else if (secondlast == PP_STRING_LITERAL && last == PP_WHITESPACE)
+                output.chop(2);
+            else
+                break;
+            output += sym.lexem().mid(1);
+            secondlast = last;
+            last = PP_STRING_LITERAL;
+            continue;
+        case MOC_INCLUDE_BEGIN:
+            lineNum = 0;
+            continue;
+        case MOC_INCLUDE_END:
+            lineNum = sym.lineNum;
+            continue;
+        default:
+            break;
+        }
+        secondlast = last;
+        last = sym.token;
+
+        const int padding = sym.lineNum - lineNum;
+        if (padding > 0) {
+            output.resize(output.size() + padding);
+            qMemSet(output.data() + output.size() - padding, '\n', padding);
+            lineNum = sym.lineNum;
+        }
+
+        output += sym.lexem();
+    }
+
+    return output;
+}
+
+
+int main(int _argc, char **_argv)
 {
     bool autoInclude = true;
-    Preprocessor::macros["Q_MOC_RUN"] = "";
-    Preprocessor::macros["__cplusplus"] = "";
+    Preprocessor pp;
     Moc moc;
+    pp.macros["Q_MOC_RUN"];
+    pp.macros["__cplusplus"];
     QByteArray filename;
     QByteArray output;
     FILE *in = 0;
     FILE *out = 0;
     bool ignoreConflictingOptions = false;
-    for (int n = 1; n < argc; ++n) {
+
+    QVector<QByteArray> argv;
+    argv.resize(_argc - 1);
+    for (int n = 1; n < _argc; ++n)
+        argv[n - 1] = _argv[n];
+    int argc = argv.count();
+
+    for (int n = 0; n < argv.count(); ++n) {
+        if (argv.at(n).startsWith('@')) {
+            QByteArray optionsFile = argv.at(n);
+            optionsFile.remove(0, 1);
+            if (optionsFile.isEmpty())
+                error("The @ option requires an input file");
+            QFile f(optionsFile);
+            if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+                error("Cannot open options file specified with @");
+            argv.remove(n);
+            while (!f.atEnd()) {
+                QByteArray line = f.readLine();
+                if (line.endsWith('\n'))
+                    line.chop(1);
+                if (!line.isEmpty())
+                    argv.insert(n++, line);
+            }
+        }
+    }
+
+    // report Qt usage for commercial customers with a "metered license" (currently experimental)
+#if QT_EDITION != QT_EDITION_OPENSOURCE
+#ifdef QT_CONFIGURE_BINARIES_PATH
+    const char *binariesPath = QT_CONFIGURE_BINARIES_PATH;
+    QString reporterPath = QString::fromLocal8Bit(binariesPath) + QDir::separator()
+                           + "qtusagereporter";
+#if defined(Q_OS_WIN)
+    reporterPath += ".exe";
+#endif
+    if (QFile::exists(reporterPath))
+        system(qPrintable(reporterPath + " moc"));
+#endif
+#endif
+
+    argc = argv.count();
+
+    for (int n = 0; n < argc; ++n) {
         QByteArray arg(argv[n]);
         if (arg[0] != '-') {
             if (filename.isEmpty()) {
@@ -128,7 +234,7 @@ int main(int argc, char **argv)
                 output = opt.mid(1);
             break;
         case 'E': // only preprocessor
-            Preprocessor::onlyPreprocess = true;
+            pp.preprocessOnly = true;
             break;
         case 'i': // no #include statement
             if (more)
@@ -159,27 +265,29 @@ int main(int argc, char **argv)
             if (!more) {
                 if (!(n < argc-1))
                     error("Missing path name for the -I option.");
-                Preprocessor::includes += argv[++n];
+                pp.includes += argv[++n];
             } else {
-                Preprocessor::includes += opt.mid(1);
+                pp.includes += opt.mid(1);
             }
             break;
         case 'D': // define macro
             {
-                QByteArray macro, value;
+                QByteArray name, value;
                 if (!more) {
                     if (n < argc-1)
-                        macro = argv[++n];
+                        name = argv[++n];
                 } else
-                    macro = opt.mid(1);
-                int eq = macro.indexOf('=');
+                    name = opt.mid(1);
+                int eq = name.indexOf('=');
                 if (eq >= 0) {
-                    value = macro.mid(eq + 1);
-                    macro = macro.left(eq);
+                    value = name.mid(eq + 1);
+                    name = name.left(eq);
                 }
-                if (macro.isEmpty())
+                if (name.isEmpty())
                     error("Missing macro name");
-                Preprocessor::macros[macro] = value;
+                Macro macro;
+                macro.symbols += Symbol(0, PP_IDENTIFIER, value);
+                pp.macros.insert(name, macro);
 
             }
             break;
@@ -193,12 +301,12 @@ int main(int argc, char **argv)
                     macro = opt.mid(1);
                 if (macro.isEmpty())
                     error("Missing macro name");
-                Preprocessor::macros.remove(macro);
+                pp.macros.remove(macro);
 
             }
             break;
         case 'v':  // version number
-            if (more)
+            if (more && opt != "version")
                 error();
             fprintf(stderr, "Qt Meta Object Compiler version %d (Qt %s)\n",
                     mocOutputRevision, QT_VERSION_STR);
@@ -211,9 +319,12 @@ int main(int argc, char **argv)
             moc.displayWarnings = false;
             break;
         case 'h': // help
-            error(0); // 0 means usage only
+            if (more && opt != "help")
+                error();
+            else
+                error(0); // 0 means usage only
             break;
-        case '-': 
+        case '-':
             if (more && arg == "--ignore-option-clashes") {
                 // -- ignore all following moc specific options that conflict
                 // with for example gcc, like -pthread conflicting with moc's
@@ -230,7 +341,7 @@ int main(int argc, char **argv)
 
     if (autoInclude) {
         int ppos = filename.lastIndexOf('.');
-        moc.noInclude = (ppos >= 0 
+        moc.noInclude = (ppos >= 0
                          && tolower(filename[ppos + 1]) != 'h'
                          && tolower(filename[ppos + 1]) != QDir::separator().toLatin1()
                         );
@@ -264,29 +375,27 @@ int main(int argc, char **argv)
         moc.filename = filename;
     }
 
+    moc.currentFilenames.push(filename);
+
     // 1. preprocess
-    QByteArray input = Preprocessor::preprocessed(moc.filename, in);
+    moc.symbols = pp.preprocessed(moc.filename, in);
     fclose(in);
 
-    if (Preprocessor::onlyPreprocess)
-        goto step4;
+    if (!pp.preprocessOnly) {
+        // 2. parse
+        moc.parse();
+    }
 
-    // 2. tokenize
-    moc.symbols = Scanner::scan(input);
-
-    // 3. parse
-    moc.parse();
-
-    // 4. and output meta object code
- step4:
+    // 3. and output meta object code
 
     if (output.size()) { // output file specified
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-		if (fopen_s(&out, output.data(), "w")) {
+        if (fopen_s(&out, output.data(), "w"))
 #else
         out = fopen(output.data(), "w"); // create output file
-        if (!out) {
+        if (!out)
 #endif
+        {
             fprintf(stderr, "moc: Cannot create %s\n", (const char*)output);
             return 1;
         }
@@ -294,8 +403,8 @@ int main(int argc, char **argv)
         out = stdout;
     }
 
-    if (Preprocessor::onlyPreprocess) {
-        fprintf(out, "%s%s\n", Preprocessor::protocol.constData(), input.constData());
+    if (pp.preprocessOnly) {
+        fprintf(out, "%s\n", composePreprocessorOutput(moc.symbols).constData());
     } else {
         if (moc.classList.isEmpty())
             moc.warning("No relevant classes found. No output generated.");

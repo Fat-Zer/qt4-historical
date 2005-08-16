@@ -88,23 +88,23 @@ QStyleOptionRubberBand QRubberBandPrivate::getStyleOption() const
     pattern is to do this in conjunction with mouse events. For example:
 
     \code
-        void Widget::mousePressEvent(QMouseEvent *e)
+        void Widget::mousePressEvent(QMouseEvent *event)
         {
-            origin = e->pos(); // origin is a QPoint
+            origin = event->pos();
             if (!rubberBand)
                 rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
             rubberBand->setGeometry(QRect(origin, QSize()));
-            band->show();
+            rubberBand->show();
         }
 
-        void Widget::mouseMoveEvent(QMouseEvent *e)
+        void Widget::mouseMoveEvent(QMouseEvent *event)
         {
-            band->setGeometry(QRect(origin, e->pos()).normalized());
+            rubberBand->setGeometry(QRect(origin, event->pos()).normalized());
         }
 
-        void Widget::mouseReleaseEvent(QMouseEvent *e)
+        void Widget::mouseReleaseEvent(QMouseEvent *event)
         {
-            band->hide();
+            rubberBand->hide();
             // determine selection, for example using QRect::intersects()
             // and QRect::contains().
         }
@@ -147,6 +147,7 @@ QRubberBand::QRubberBand(Shape s, QWidget *p)
     setVisible(false);
 #ifdef Q_WS_MAC
     if(isWindow()) {
+        winId();
         extern WindowPtr qt_mac_window_for(const QWidget *); //qwidget_mac.cpp
         ChangeWindowAttributes(qt_mac_window_for(this), kWindowNoShadowAttribute, 0);
     }
@@ -231,7 +232,9 @@ void QRubberBand::changeEvent(QEvent *e)
         break;
     }
 
-    raise();
+    // calling raise() on LayoutDirectionChange breaks QWidgetPrivate::setLayoutDirection_helper()
+    if (e->type() != QEvent::LayoutDirectionChange)
+        raise();
 }
 
 /*!

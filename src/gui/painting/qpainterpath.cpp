@@ -288,7 +288,7 @@ static void qt_debug_path(const QPainterPath &path)
     \o \l {demos/deform}{Vector Deformation Demo}
     \endtable
 
-    \sa QPainterPathStroker, QPainter, QRegion
+    \sa QPainterPathStroker, QPainter, QRegion, {Painter Paths Example}
 */
 
 /*!
@@ -355,8 +355,23 @@ static void qt_debug_path(const QPainterPath &path)
 */
 
 /*!
-    \fn bool QPainterPath::Element::operator== ( const Element & e ) const
-    \internal
+    \fn bool QPainterPath::Element::operator==(const Element &other) const
+    \since 4.2
+
+    Returns true if this element is equal to \a other;
+    otherwise returns false.
+
+    \sa operator!=()
+*/
+
+/*!
+    \fn bool QPainterPath::Element::operator!=(const Element &other) const
+    \since 4.2
+
+    Returns true if this element is not equal to \a other;
+    otherwise returns false.
+
+    \sa operator==()
 */
 
 /*!
@@ -424,6 +439,14 @@ static void qt_debug_path(const QPainterPath &path)
     Returns the element at the given \a index in the painter path.
 
     \sa ElementType, elementCount(), isEmpty()
+*/
+
+/*!
+    \fn void QPainterPath::setElementPositionAt(int index, qreal x, qreal y)
+    \since 4.2
+
+    Sets the x and y coordinate of the element at index \a index to \a
+    x and \a y.
 */
 
 /*###
@@ -569,7 +592,7 @@ void QPainterPath::moveTo(const QPointF &p)
 #endif
 #ifndef QT_NO_DEBUG
     if (qIsNan(p.x()) || qIsNan(p.y()))
-        qWarning("QPainterPath::moveTo(): adding point where x or y is nan, results are undefined.");
+        qWarning("QPainterPath::moveTo: Adding point where x or y is NaN, results are undefined");
 #endif
     ensureData();
     detach();
@@ -615,7 +638,7 @@ void QPainterPath::lineTo(const QPointF &p)
 #endif
 #ifndef QT_NO_DEBUG
     if (qIsNan(p.x()) || qIsNan(p.y()))
-        qWarning("QPainterPath::lineTo(): adding point where x or y is nan, results are undefined.");
+        qWarning("QPainterPath::lineTo: Adding point where x or y is NaN, results are undefined");
 #endif
     ensureData();
     detach();
@@ -680,7 +703,7 @@ void QPainterPath::cubicTo(const QPointF &c1, const QPointF &c2, const QPointF &
 #ifndef QT_NO_DEBUG
     if (qIsNan(c1.x()) || qIsNan(c1.y()) || qIsNan(c2.x()) || qIsNan(c2.y())
         || qIsNan(e.x()) || qIsNan(e.y()))
-        qWarning("QPainterPath::cubicTo(): adding point where x or y is nan, results are undefined.");
+        qWarning("QPainterPath::cubicTo: Adding point where x or y is NaN, results are undefined");
 #endif
     ensureData();
     detach();
@@ -732,7 +755,7 @@ void QPainterPath::quadTo(const QPointF &c, const QPointF &e)
 #endif
 #ifndef QT_NO_DEBUG
     if (qIsNan(c.x()) || qIsNan(c.y()) || qIsNan(e.x()) || qIsNan(e.y()))
-        qWarning("QPainterPath::quadTo(): adding point where x or y is nan, results are undefined.");
+        qWarning("QPainterPath::quadTo: Adding point where x or y is NaN, results are undefined");
 #endif
     ensureData();
     detach();
@@ -802,7 +825,7 @@ void QPainterPath::quadTo(const QPointF &c, const QPointF &e)
     \endcode
     \endtable
 
-    \sa addEllipse(), QPainter::drawArc(), QPainter::drawPie(),
+    \sa arcMoveTo(), addEllipse(), QPainter::drawArc(), QPainter::drawPie(),
     {QPainterPath#Composing a QPainterPath}{Composing a
     QPainterPath}
 */
@@ -815,7 +838,7 @@ void QPainterPath::arcTo(const QRectF &rect, qreal startAngle, qreal sweepLength
 #ifndef QT_NO_DEBUG
     if (qIsNan(rect.x()) || qIsNan(rect.y()) || qIsNan(rect.width()) || qIsNan(rect.height())
         || qIsNan(startAngle) || qIsNan(sweepLength))
-        qWarning("QPainterPath::arcTo(): adding arc where a parameter is nan, results are undefined.");
+        qWarning("QPainterPath::arcTo: Adding arc where a parameter is NaN, results are undefined");
 #endif
     if (rect.isNull())
         return;
@@ -835,6 +858,41 @@ void QPainterPath::arcTo(const QRectF &rect, qreal startAngle, qreal sweepLength
     }
 
 }
+
+
+/*!
+    \fn void QPainterPath::arcMoveTo(qreal x, qreal y, qreal width, qreal height, qreal angle)
+    \overload
+    \since 4.2
+
+    Creates a move to that lies on the arc that occupies the
+    QRectF(\a x, \a y, \a width, \a height) at \a angle.
+*/
+
+
+/*!
+    \fn void QPainterPath::arcMoveTo(const QRectF &rectangle, qreal angle)
+    \since 4.2
+
+    Creates a move to that lies on the arc that occupies the given \a
+    rectangle at \a angle.
+
+    Angles are specified in degrees. Clockwise arcs can be specified
+    using negative angles.
+
+    \sa moveTo(), arcTo()
+*/
+
+void QPainterPath::arcMoveTo(const QRectF &rect, qreal angle)
+{
+    if (rect.isNull())
+        return;
+
+    QPointF pt;
+    qt_find_ellipse_coords(rect, angle, 0, &pt, 0);
+    moveTo(pt);
+}
+
 
 
 /*!
@@ -894,7 +952,7 @@ void QPainterPath::addRect(const QRectF &r)
 {
 #ifndef QT_NO_DEBUG
     if (qIsNan(r.x()) || qIsNan(r.y()) || qIsNan(r.width()) || qIsNan(r.height()))
-        qWarning("QPainterPath::addRect(): adding rect where a parameter is nan, results are undefined.");
+        qWarning("QPainterPath::addRect: Adding rect where a parameter is NaN, results are undefined");
 #endif
     if (r.isNull())
         return;
@@ -996,7 +1054,7 @@ void QPainterPath::addEllipse(const QRectF &boundingRect)
 #ifndef QT_NO_DEBUG
     if (qIsNan(boundingRect.x()) || qIsNan(boundingRect.y())
         || qIsNan(boundingRect.width()) || qIsNan(boundingRect.height()))
-        qWarning("QPainterPath::addEllipse(): adding ellipse where a parameter is nan, results are undefined.");
+        qWarning("QPainterPath::addEllipse: Adding ellipse where a parameter is NaN, results are undefined");
 #endif
     if (boundingRect.isNull())
         return;
@@ -1600,6 +1658,8 @@ QList<QPolygonF> QPainterPath::toFillPolygons(const QMatrix &matrix) const
 
     // find all intersections
     for (int j=0; j<count; ++j) {
+        if (subpaths.at(j).size() <= 2)
+            continue;
         QRectF cbounds = bounds.at(j);
         for (int i=0; i<count; ++i) {
             if (rect_intersects(cbounds, bounds.at(i))) {
@@ -1971,8 +2031,14 @@ static bool qt_painterpath_check_crossing(const QPainterPath *path, const QRectF
 /*!
     \fn bool QPainterPath::intersects(const QRectF &rectangle) const
 
-    Returns true if any point in the given \a rectangle is inside the
+    Returns true if any point in the given \a rectangle intersects the
     path; otherwise returns false.
+
+    There is an intersection if any of the lines making up the
+    rectangle crosses a part of the path or if any part of the
+    rectangle overlaps with any area enclosed by the path. This
+    function respects the current fillRule to determine what is
+    considered inside the path.
 
     \sa contains()
 */
@@ -2180,7 +2246,7 @@ QDataStream &operator>>(QDataStream &s, QPainterPath &p)
         Q_ASSERT(type >= 0 && type <= 3);
 #ifndef QT_NO_DEBUG
         if (qIsNan(x) || qIsNan(y))
-            qWarning("operator>>(): adding a nan element to path, results are undefined.");
+            qWarning("QDataStream::operator>>: Adding a NaN element to path, results are undefined");
 #endif
         QPainterPath::Element elm = { x, y, QPainterPath::ElementType(type) };
         p.d_func()->elements.append(elm);
@@ -2446,6 +2512,15 @@ void QPainterPathStroker::setDashPattern(Qt::PenStyle style)
     Sets the dash pattern for the generated outlines to \a
     dashPattern.  This function makes it possible to specify custom
     dash patterns.
+
+    Each element in the vector contains the lengths of the dashes and spaces
+    in the stroke, beginning with the first dash in the first element, the
+    first space in the second element, and alternating between dashes and
+    spaces for each following pair of elements.
+
+    The vector can contain an odd number of elements, in which case the last
+    element will be extended by the length of the first element when the
+    pattern repeats.
 */
 void QPainterPathStroker::setDashPattern(const QVector<qreal> &dashPattern)
 {

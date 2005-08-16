@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include "qtabwidget.h"
+
 #ifndef QT_NO_TABWIDGET
 #include "private/qwidget_p.h"
 #include "qapplication.h"
@@ -37,7 +38,7 @@
 #include "qtoolbutton.h"
 
 /*!
-    \class QTabWidget qtabwidget.h
+    \class QTabWidget
     \brief The QTabWidget class provides a stack of tabbed widgets.
 
     \ingroup organizers
@@ -105,7 +106,7 @@
          \o A Plastique style tab widget.
     \endtable
 
-    \sa QTabBar QStackedWidget QToolBox
+    \sa QTabBar, QStackedWidget, QToolBox, {Tab Dialog Example}
 */
 
 /*!
@@ -129,20 +130,17 @@
     \value Triangular  triangular look
 */
 
-/* undocumented now
-  \obsolete
+/*!
+    \fn void QTabWidget::selected(const QString &tabLabel)
 
-  \fn void QTabWidget::selected(const QString &tabLabel);
+    This signal is emitted whenever a tab is selected (raised),
+    including during the first show().
 
-  This signal is emitted whenever a tab is selected (raised),
-  including during the first show().
-
-  \sa raise()
+    You can normally use currentChanged() instead.
 */
 
-
 /*!
-    \fn void QTabWidget::currentChanged(int index);
+    \fn void QTabWidget::currentChanged(int index)
 
     This signal is emitted whenever the current page index changes.
     The parameter is the new current page \a index position.
@@ -187,9 +185,11 @@ void QTabWidgetPrivate::init()
 {
     Q_Q(QTabWidget);
     stack = new QStackedWidget(q);
+    stack->setObjectName(QLatin1String("qt_tabwidget_stackedwidget"));
     stack->setLineWidth(0);
     QObject::connect(stack, SIGNAL(widgetRemoved(int)), q, SLOT(_q_removeTab(int)));
     QTabBar *tabBar = new QTabBar(q);
+    tabBar->setObjectName(QLatin1String("qt_tabwidget_tabbar"));
     tabBar->setDrawBase(false);
     q->setTabBar(tabBar);
 
@@ -259,7 +259,7 @@ QTabWidget::QTabWidget(QWidget *parent)
     Use one of the constructors that doesn't take the \a name
     argument and then use setObjectName() instead.
 */
-QTabWidget::QTabWidget(QWidget *parent, const char *name, Qt::WFlags f)
+QTabWidget::QTabWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
     : QWidget(*new QTabWidgetPrivate, parent, f)
 {
     Q_D(QTabWidget);
@@ -285,6 +285,13 @@ QTabWidget::~QTabWidget()
     label is "Bro\&wse" then Alt+W becomes a shortcut which will
     move the focus to this tab.
 
+    If you call addTab() after show(), the layout system will try
+    to adjust to the changes in it's widgets hierarchy and may cause
+    flicker. To prevent this, you can set the QWidget::updatesEnabled
+    property to false prior to changes; remember to set the property
+    to true when the changes are done, making the widget receive paint
+    events again.
+
     \sa insertTab()
 */
 int QTabWidget::addTab(QWidget *child, const QString &label)
@@ -308,14 +315,15 @@ int QTabWidget::addTab(QWidget *child, const QIcon& icon, const QString &label)
 
 
 /*!
+    \fn int QTabWidget::insertTab(int index, QWidget *widget, const QString &label)
+
     Inserts another tab and page to the tab view.
 
-    The new page is \a w; the tab's label is \a label. Note the
-    difference between the widget name (which you supply to widget
-    constructors and to setTabEnabled(), for example) and the tab
-    label. The name is internal to the program and invariant, whereas
-    the label is shown on-screen and may vary according to language
-    and other factors.
+    The given \a widget is the new page, and the tab's label is
+    specified by \a label. Note the difference between the widget name
+    and the tab label: The name is internal to the program and
+    invariant, whereas the label is shown on-screen and may vary
+    according to language and other factors.
 
     If the tab's \a label contains an ampersand, the letter following
     the ampersand is used as a shortcut for the tab, e.g. if the
@@ -325,14 +333,17 @@ int QTabWidget::addTab(QWidget *child, const QIcon& icon, const QString &label)
     If \a index is out of range, the tab is simply appended.
     Otherwise it is inserted at the specified position.
 
-    If the QTabWidget was empty before this function is called,
-    \a w becomes the current page.
+    If the QTabWidget was empty before this function is called, the
+    new page becomes the current page. Inserting a new tab at an index
+    less than or equal to the current index will increment the current
+    index, but keep the current page.
 
-    Inserting a new tab at an index less than or equal to the current index
-    will increment the current index, but keep the current page.
-
-    If you call insertTab() after show(), the screen will flicker and
-    the user may be confused.
+    If you call insertTab() after show(), the layout system will try
+    to adjust to the changes in it's widgets hierarchy and may cause
+    flicker. To prevent this, you can set the QWidget::updatesEnabled
+    property to false prior to changes; remember to set the property
+    to true when the changes are done, making the widget receive paint
+    events again.
 
     \sa addTab()
 */
@@ -343,6 +354,7 @@ int QTabWidget::insertTab(int index, QWidget *w, const QString &label)
 
 
 /*!
+    \fn int QTabWidget::insertTab(int index, QWidget *widget, const QIcon& icon, const QString &label)
     \overload
 
     Inserts another tab and page to the tab view.
@@ -444,6 +456,9 @@ void QTabWidget::setTabEnabled(int index, bool enable)
   tab widget.
 
   Only the horizontal element of the \a corner will be used.
+
+  Note: Corner widgets are designed for \l North and \l South tab positions;
+  other orientations are known to not work properly.
 
   \sa cornerWidget(), setTabPosition()
 */
@@ -566,7 +581,7 @@ void QTabWidget::setTabBar(QTabBar* tb)
     d->tabs = tb;
     setFocusProxy(d->tabs);
     connect(d->tabs, SIGNAL(currentChanged(int)),
-             this,    SLOT(_q_showTab(int)));
+            this, SLOT(_q_showTab(int)));
     setUpLayout();
 }
 
@@ -594,6 +609,7 @@ void QTabWidgetPrivate::_q_showTab(int index)
         stack->setCurrentIndex(index);
         emit q->currentChanged(index);
 #ifdef QT3_SUPPORT
+        emit q->selected(q->tabText(index));
         emit q->currentChanged(stack->widget(index));
 #endif
     }
@@ -663,7 +679,7 @@ QSize QTabWidget::sizeHint() const
     }
     QSize s(d->stack->sizeHint());
     QSize t(d->tabs->sizeHint());
-    if(!style()->styleHint(QStyle::SH_TabBar_PreferNoArrows, &opt, d->tabs))
+    if(usesScrollButtons())
         t = t.boundedTo(QSize(200,200));
     else
         t = t.boundedTo(QApplication::desktop()->size());
@@ -947,8 +963,71 @@ void QTabWidget::paintEvent(QPaintEvent *)
 }
 
 /*!
-    \fn void QTabWidget::insertTab(QWidget * widget, const QString
-    &label, int index)
+    \property QTabWidget::iconSize
+    \brief The size for icons in the tab bar
+    \since 4.2
+
+    The default value is style-dependent.
+
+    \sa QTabBar::iconSize
+*/
+QSize QTabWidget::iconSize() const
+{
+    return d_func()->tabs->iconSize();
+}
+
+void QTabWidget::setIconSize(const QSize &size)
+{
+    d_func()->tabs->setIconSize(size);
+}
+
+/*!
+    \property QTabWidget::elideMode
+    \brief how to elide text in the tab bar
+    \since 4.2
+
+    This property controls how items are elided when there is not
+    enough space to show them for a given tab bar size.
+
+    By default the value is style dependant.
+
+    \sa QTabBar::elideMode usesScrollButtons QStyle::SH_TabBar_ElideMode
+*/
+Qt::TextElideMode QTabWidget::elideMode() const
+{
+    return d_func()->tabs->elideMode();
+}
+
+void QTabWidget::setElideMode(Qt::TextElideMode mode)
+{
+    d_func()->tabs->setElideMode(mode);
+}
+
+/*!
+    \property QTabWidget::usesScrollButtons
+    \brief Whether or not a tab bar should use buttons to scroll tabs when it
+    has many tabs.
+    \since 4.2
+
+    When there are too many tabs in a tab bar for its size, the tab bar can either choose
+    to expand it's size or to add buttons that allow you to scroll through the tabs.
+
+    By default the value is style dependant.
+
+    \sa elideMode QTabBar::usesScrollButtons QStyle::SH_TabBar_PreferNoArrows
+*/
+bool QTabWidget::usesScrollButtons() const
+{
+    return d_func()->tabs->usesScrollButtons();
+}
+
+void QTabWidget::setUsesScrollButtons(bool useButtons)
+{
+    d_func()->tabs->setUsesScrollButtons(useButtons);
+}
+
+/*!
+    \fn void QTabWidget::insertTab(QWidget *widget, const QString &label, int index)
 
     Use insertTab(index, widget, label) instead.
 */

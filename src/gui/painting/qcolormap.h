@@ -49,7 +49,7 @@ public:
     QColormap(const QColormap &colormap);
     ~QColormap();
 
-    // QColormap &operator=(const QColormap &colormap);
+    QColormap &operator=(const QColormap &colormap);
 
     Mode mode() const;
 

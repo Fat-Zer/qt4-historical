@@ -40,7 +40,7 @@
 #  define QSBDEBUG if (false) qDebug
 #endif
 
-static bool isIntermediateValueHelper(qint64 num, qint64 min, qint64 max, qint64 *match = 0);
+static bool isIntermediateValueHelper(qint64 num, qint64 minimum, qint64 maximum, qint64 *match = 0);
 
 class QSpinBoxPrivate : public QAbstractSpinBoxPrivate
 {
@@ -90,13 +90,8 @@ public:
     QSpinBox allows the user to choose a value by clicking the up/down
     buttons or pressing up/down on the keyboard to increase/decrease
     the value currently displayed. The user can also type the value in
-    manually. If the value is entered directly into the spin box, the
-    value will be changed and valueChanged() will be emitted with the
-    new value when Enter/Return is pressed, when the spin box loses
-    focus or when the spin box is deactivated (see
-    QWidget::windowActivationChanged()). The spin box supports integer
-    values but can be extended to use different strings with
-    validate(), textFromValue() and valueFromText().
+    manually. The spin box supports integer values but can be extended to
+    use different strings with validate(), textFromValue() and valueFromText().
 
     Every time the value changes QSpinBox emits the valueChanged()
     signals. The current value can be fetched with value() and set
@@ -152,7 +147,7 @@ public:
     See the \l{widgets/icons}{Icons} example for the full source
     code.
 
-    \sa QDoubleSpinBox, QSlider, {fowler}{GUI Design Handbook: Slider}
+    \sa QDoubleSpinBox, QDateTimeEdit, QSlider, {Spin Boxes Example}
 */
 
 /*!
@@ -199,12 +194,12 @@ QSpinBox::QSpinBox(QWidget *parent, const char *name)
     Use one of the constructors that doesn't take the \a name
     argument and then use setObjectName() instead.
 */
-QSpinBox::QSpinBox(int min, int max, int step, QWidget *parent, const char *name)
+QSpinBox::QSpinBox(int minimum, int maximum, int step, QWidget *parent, const char *name)
     : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
 {
     Q_D(QSpinBox);
-    d->minimum = QVariant(qMin<int>(min, max));
-    d->maximum = QVariant(qMax<int>(min, max));
+    d->minimum = QVariant(qMin<int>(minimum, maximum));
+    d->maximum = QVariant(qMax<int>(minimum, maximum));
     d->singleStep = QVariant(step);
     setObjectName(QString::fromAscii(name));
 }
@@ -225,10 +220,10 @@ int QSpinBox::value() const
     return d->value.toInt();
 }
 
-void QSpinBox::setValue(int val)
+void QSpinBox::setValue(int value)
 {
     Q_D(QSpinBox);
-    d->setValue(QVariant(val), EmitIfChanged);
+    d->setValue(QVariant(value), EmitIfChanged);
 }
 
 /*!
@@ -258,11 +253,11 @@ QString QSpinBox::prefix() const
     return d->prefix;
 }
 
-void QSpinBox::setPrefix(const QString &p)
+void QSpinBox::setPrefix(const QString &prefix)
 {
     Q_D(QSpinBox);
 
-    d->prefix = p;
+    d->prefix = prefix;
     d->updateEdit();
 }
 
@@ -294,11 +289,11 @@ QString QSpinBox::suffix() const
     return d->suffix;
 }
 
-void QSpinBox::setSuffix(const QString &s)
+void QSpinBox::setSuffix(const QString &suffix)
 {
     Q_D(QSpinBox);
 
-    d->suffix = s;
+    d->suffix = suffix;
     d->updateEdit();
 }
 
@@ -336,11 +331,11 @@ int QSpinBox::singleStep() const
     return d->singleStep.toInt();
 }
 
-void QSpinBox::setSingleStep(int val)
+void QSpinBox::setSingleStep(int value)
 {
     Q_D(QSpinBox);
-    if (val >= 0) {
-        d->singleStep = QVariant(val);
+    if (value >= 0) {
+        d->singleStep = QVariant(value);
         d->updateEdit();
     }
 }
@@ -365,10 +360,10 @@ int QSpinBox::minimum() const
     return d->minimum.toInt();
 }
 
-void QSpinBox::setMinimum(int min)
+void QSpinBox::setMinimum(int minimum)
 {
     Q_D(QSpinBox);
-    const QVariant m(min);
+    const QVariant m(minimum);
     d->setRange(m, (d->variantCompare(d->maximum, m) > 0 ? d->maximum : m));
 }
 
@@ -393,42 +388,40 @@ int QSpinBox::maximum() const
     return d->maximum.toInt();
 }
 
-void QSpinBox::setMaximum(int max)
+void QSpinBox::setMaximum(int maximum)
 {
     Q_D(QSpinBox);
-    const QVariant m(max);
+    const QVariant m(maximum);
     d->setRange((d->variantCompare(d->minimum, m) < 0 ? d->minimum : m), m);
 }
 
 /*!
-    Convenience function to set the minimum, \a min, and maximum, \a
-    max, values with a single function call.
+    Convenience function to set the \a minimum, and \a maximum values
+    with a single function call.
 
     \code
-    setRange(min, max);
+    setRange(minimum, maximum);
     \endcode
     is equivalent to:
     \code
-    setMinimum(min);
-    setMaximum(max);
+    setMinimum(minimum);
+    setMaximum(maximum);
     \endcode
 
     \sa minimum maximum
 */
 
-void QSpinBox::setRange(int min, int max)
+void QSpinBox::setRange(int minimum, int maximum)
 {
     Q_D(QSpinBox);
-    d->setRange(QVariant(min), QVariant(max));
+    d->setRange(QVariant(minimum), QVariant(maximum));
 }
 
 /*!
-    \fn QString QSpinBox::textFromValue(int v) const
-
-    This virtual function is used by the spin box whenever it needs to
-    display value \a v. The default implementation returns a string
-    containing \a v printed in the standard way using
-    QLocale().toString(v). Reimplementations may return anything. (See
+    This virtual function is used by the spin box whenever it needs
+    to display the given \a value. The default implementation returns
+    a string containing \a value printed in the standard way using
+    QLocale().toString(). Reimplementations may return anything. (See
     the example in the detailed description.)
 
     Note: QSpinBox does not call this function for specialValueText()
@@ -441,11 +434,11 @@ void QSpinBox::setRange(int min, int max)
     \sa valueFromText(), validate()
 */
 
-QString QSpinBox::textFromValue(int v) const
+QString QSpinBox::textFromValue(int value) const
 {
     Q_D(const QSpinBox);
-    QString str = QLocale().toString(v);
-    if (qAbs(v) >= 1000) {
+    QString str = QLocale().toString(value);
+    if (qAbs(value) >= 1000) {
         str.remove(d->thousand);
     }
 
@@ -556,7 +549,7 @@ void QSpinBox::fixup(QString &input) const
     choice in addition to the range of numeric values. See
     setSpecialValueText() for how to do this with QDoubleSpinBox.
 
-    \sa QSpinBox, QSlider, {fowler}{GUI Design Handbook: Slider}
+    \sa QSpinBox, QDateTimeEdit, QSlider, {Spin Boxes Example}
 */
 
 /*!
@@ -606,10 +599,10 @@ double QDoubleSpinBox::value() const
     return d->value.toDouble();
 }
 
-void QDoubleSpinBox::setValue(double val)
+void QDoubleSpinBox::setValue(double value)
 {
     Q_D(QDoubleSpinBox);
-    QVariant v(d->round(val));
+    QVariant v(d->round(value));
     d->setValue(v, EmitIfChanged);
 }
 /*!
@@ -640,11 +633,11 @@ QString QDoubleSpinBox::prefix() const
     return d->prefix;
 }
 
-void QDoubleSpinBox::setPrefix(const QString &p)
+void QDoubleSpinBox::setPrefix(const QString &prefix)
 {
     Q_D(QDoubleSpinBox);
 
-    d->prefix = p;
+    d->prefix = prefix;
     d->updateEdit();
 }
 
@@ -676,11 +669,11 @@ QString QDoubleSpinBox::suffix() const
     return d->suffix;
 }
 
-void QDoubleSpinBox::setSuffix(const QString &s)
+void QDoubleSpinBox::setSuffix(const QString &suffix)
 {
     Q_D(QDoubleSpinBox);
 
-    d->suffix = s;
+    d->suffix = suffix;
     d->updateEdit();
 }
 
@@ -716,12 +709,12 @@ double QDoubleSpinBox::singleStep() const
     return d->singleStep.toDouble();
 }
 
-void QDoubleSpinBox::setSingleStep(double val)
+void QDoubleSpinBox::setSingleStep(double value)
 {
     Q_D(QDoubleSpinBox);
 
-    if (val >= 0) {
-        d->singleStep = val;
+    if (value >= 0) {
+        d->singleStep = value;
         d->updateEdit();
     }
 }
@@ -749,10 +742,10 @@ double QDoubleSpinBox::minimum() const
     return d->minimum.toDouble();
 }
 
-void QDoubleSpinBox::setMinimum(double min)
+void QDoubleSpinBox::setMinimum(double minimum)
 {
     Q_D(QDoubleSpinBox);
-    const QVariant m(d->round(min));
+    const QVariant m(d->round(minimum));
     d->setRange(m, (d->variantCompare(d->maximum, m) > 0 ? d->maximum : m));
 }
 
@@ -779,36 +772,36 @@ double QDoubleSpinBox::maximum() const
     return d->maximum.toDouble();
 }
 
-void QDoubleSpinBox::setMaximum(double max)
+void QDoubleSpinBox::setMaximum(double maximum)
 {
     Q_D(QDoubleSpinBox);
-    const QVariant m(d->round(max));
+    const QVariant m(d->round(maximum));
     d->setRange((d->variantCompare(d->minimum, m) < 0 ? d->minimum : m), m);
 }
 
 /*!
-    Convenience function to set the minimum, \a min, and maximum, \a
-    max, values with a single function call.
+    Convenience function to set the \a minimum and \a maximum values
+    with a single function call.
 
     Note: The maximum and minimum values will be rounded to match the
     decimals property.
 
     \code
-    setRange(min, max);
+    setRange(minimum, maximum);
     \endcode
     is equivalent to:
     \code
-    setMinimum(min);
-    setMaximum(max);
+    setMinimum(minimum);
+    setMaximum(maximum);
     \endcode
 
     \sa minimum maximum
 */
 
-void QDoubleSpinBox::setRange(double min, double max)
+void QDoubleSpinBox::setRange(double minimum, double maximum)
 {
     Q_D(QDoubleSpinBox);
-    d->setRange(QVariant(d->round(min)), QVariant(d->round(max)));
+    d->setRange(QVariant(d->round(minimum)), QVariant(d->round(maximum)));
 }
 
 /*!
@@ -842,11 +835,9 @@ void QDoubleSpinBox::setDecimals(int decimals)
 }
 
 /*!
-    \fn QString QDoubleSpinBox::textFromValue(double v) const
-
     This virtual function is used by the spin box whenever it needs to
-    display value \a v. The default implementation returns a string
-    containing \a v printed using QLocale().toString(v,
+    display the given \a value. The default implementation returns a string
+    containing \a value printed using QLocale().toString(\a value,
     QLatin1Char('f'), decimals()) and will remove the thousand
     seperator. Reimplementations may return anything.
 
@@ -861,11 +852,11 @@ void QDoubleSpinBox::setDecimals(int decimals)
 */
 
 
-QString QDoubleSpinBox::textFromValue(double v) const
+QString QDoubleSpinBox::textFromValue(double value) const
 {
     Q_D(const QDoubleSpinBox);
-    QString str = QLocale().toString(v, 'f', d->decimals);
-    if (qAbs(v) >= 1000.0) {
+    QString str = QLocale().toString(value, 'f', d->decimals);
+    if (qAbs(value) >= 1000.0) {
         str.remove(d->thousand);
     }
     return str;
@@ -959,28 +950,30 @@ void QSpinBoxPrivate::emitSignals(EmitPolicy ep, const QVariant &old)
     \reimp
 */
 
-QString QSpinBoxPrivate::textFromValue(const QVariant &f) const
+QString QSpinBoxPrivate::textFromValue(const QVariant &value) const
 {
     Q_Q(const QSpinBox);
-    return q->textFromValue(f.toInt());
+    return q->textFromValue(value.toInt());
 }
 /*!
     \internal
     \reimp
 */
 
-QVariant QSpinBoxPrivate::valueFromText(const QString &f) const
+QVariant QSpinBoxPrivate::valueFromText(const QString &text) const
 {
     Q_Q(const QSpinBox);
 
-    return QVariant(q->valueFromText(f));
+    return QVariant(q->valueFromText(text));
 }
 
 
 /*!
-  \internal Return true if str can become a number which is between min
-  and max or false if this is not possible.
-  */
+  \internal
+
+  Return true if str can become a number which is between minimum and
+  maximum or false if this is not possible.
+*/
 
 bool QSpinBoxPrivate::isIntermediateValue(const QString &str) const
 {
@@ -1031,7 +1024,7 @@ QVariant QSpinBoxPrivate::validateAndInterpret(QString &input, int &pos,
 {
     if (cachedText == input && !input.isEmpty()) {
         state = cachedState;
-        QSBDEBUG() << "cachedText was" << "'" + cachedText + "'" << "state was "
+        QSBDEBUG() << "cachedText was" << "'" << cachedText << "'" << "state was "
                    << state << " and value was " << cachedValue;
 
         return cachedValue;
@@ -1141,7 +1134,7 @@ bool QDoubleSpinBoxPrivate::isIntermediateValue(const QString &str) const
     for (int i=0; i<decimals; ++i)
         dec *= 10;
 
-    const char dot = '.';
+    const QLatin1Char dot('.');
 
     // I know QString::number() uses CLocale so I use dot
     const QString minstr = QString::number(minimum.toDouble(), 'f', decimals);
@@ -1160,14 +1153,14 @@ bool QDoubleSpinBoxPrivate::isIntermediateValue(const QString &str) const
     if (dotindex == -1) {
         left = str.toLongLong();
         doright = false;
-    } else if (dotindex == 0 || (dotindex == 1 && str.at(0) == '+')) {
+    } else if (dotindex == 0 || (dotindex == 1 && str.at(0) == QLatin1Char('+'))) {
         if (negative) {
             QSBDEBUG() << __FILE__ << __LINE__ << "returns false";
             return false;
         }
         doleft = false;
         right = str.mid(dotindex + 1).toLongLong();
-    } else if (dotindex == 1 && str.at(0) == '-') {
+    } else if (dotindex == 1 && str.at(0) == QLatin1Char('-')) {
         if (!negative) {
             QSBDEBUG() << __FILE__ << __LINE__ << "returns false";
             return false;
@@ -1182,7 +1175,7 @@ bool QDoubleSpinBoxPrivate::isIntermediateValue(const QString &str) const
             right = str.mid(dotindex + 1).toLongLong();
         }
     }
-    if ((left >= 0 && max_left < 0 && !str.startsWith('-')) || (left < 0 && min_left >= 0)) {
+    if ((left >= 0 && max_left < 0 && !str.startsWith(QLatin1Char('-'))) || (left < 0 && min_left >= 0)) {
         QSBDEBUG("returns false 0");
         return false;
     }
@@ -1248,20 +1241,8 @@ QVariant QDoubleSpinBoxPrivate::valueFromText(const QString &f) const
 
 double QDoubleSpinBoxPrivate::round(double value) const
 {
-    const int dec = decimals + 1;
-    const QString strDbl = QString::number(value, 'f', dec);
-
-    const double intPart = strDbl.left(strDbl.length() - dec - 1).toDouble();
-
-    qlonglong decPart = strDbl.right(dec).toLongLong();
-    decPart = (decPart + 5) / 10;
-
-    const double power = pow(10.0, decimals);
-
-    if (value >= 0.0)
-        return intPart + decPart / power;
-    else
-        return intPart - decPart / power;
+    const QString strDbl = QString::number(value, 'f', decimals);
+    return strDbl.toDouble();
 }
 
 
@@ -1276,7 +1257,7 @@ QVariant QDoubleSpinBoxPrivate::validateAndInterpret(QString &input, int &pos,
 {
     if (cachedText == input && !input.isEmpty()) {
         state = cachedState;
-        QSBDEBUG() << "cachedText was" << "'" + cachedText + "'" << "state was "
+        QSBDEBUG() << "cachedText was" << "'" << cachedText << "'" << "state was "
                    << state << " and value was " << cachedValue;
         return cachedValue;
     }
@@ -1444,13 +1425,13 @@ QString QDoubleSpinBoxPrivate::textFromValue(const QVariant &f) const
 */
 
 /*!
-    \fn void QSpinBox::setMaxValue(int val)
+    \fn void QSpinBox::setMaxValue(int value)
 
     Use setMaximum() instead.
 */
 
 /*!
-    \fn void QSpinBox::setMinValue(int val)
+    \fn void QSpinBox::setMinValue(int value)
 
     Use setMinimum() instead.
 */
@@ -1524,9 +1505,9 @@ static bool isIntermediateValueHelper(qint64 num, qint64 min, qint64 max, qint64
 }
 
 /*! \reimp */
-bool QSpinBox::event(QEvent *e)
+bool QSpinBox::event(QEvent *event)
 {
-    return QAbstractSpinBox::event(e);
+    return QAbstractSpinBox::event(event);
 }
 
 #endif // QT_NO_SPINBOX

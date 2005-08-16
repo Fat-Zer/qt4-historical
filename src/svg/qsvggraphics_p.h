@@ -58,8 +58,10 @@ public:
     QSvgArc(QSvgNode *parent, const QPainterPath &path);
     virtual void draw(QPainter *p);
     virtual Type type() const;
+    virtual QRectF bounds() const;
 private:
     QPainterPath cubic;
+    QRectF m_cachedBounds;
 };
 
 class QSvgCircle : public QSvgNode
@@ -91,6 +93,7 @@ public:
               const QRect &bounds);
     virtual void draw(QPainter *p);
     virtual Type type() const;
+    virtual QRectF bounds() const;
 private:
     QImage m_image;
     QRect  m_bounds;
@@ -102,7 +105,7 @@ public:
     QSvgLine(QSvgNode *parent, const QLineF &line);
     virtual void draw(QPainter *p);
     virtual Type type() const;
-    //virtual QRectF bounds() const;
+    virtual QRectF bounds() const;
 private:
     QLineF m_bounds;
 };
@@ -136,6 +139,7 @@ public:
     QSvgPolyline(QSvgNode *parent, const QPolygonF &poly);
     virtual void draw(QPainter *p);
     virtual Type type() const;
+    virtual QRectF bounds() const;
 private:
     QPolygonF m_poly;
 };
@@ -185,11 +189,16 @@ public:
 class QSvgUse : public QSvgNode
 {
 public:
-    QSvgUse(QSvgNode *parent, QSvgNode *link);
+    QSvgUse(const QPointF &start, QSvgNode *parent, QSvgNode *link);
     virtual void draw(QPainter *p);
     virtual Type type() const;
+    virtual QRectF bounds() const;
+    virtual QRectF transformedBounds(const QMatrix &mat) const;
+    
 private:
     QSvgNode *m_link;
+    QPointF   m_start;
+    mutable QRectF    m_bounds;
 };
 
 class QSvgVideo : public QSvgNode

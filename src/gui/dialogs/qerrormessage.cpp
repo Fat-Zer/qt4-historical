@@ -35,6 +35,8 @@
 #include "qtextedit.h"
 #include "qdialog_p.h"
 #include "qpixmap.h"
+#include "qmetaobject.h"
+#include "qthread.h"
 #include <qhash.h>
 
 #include <stdio.h>
@@ -110,7 +112,7 @@ QSize QErrorMessageTextView::sizeHint() const
 
     \img qerrormessage.png
 
-    \sa QMessageBox QStatusBar::showMessage()
+    \sa QMessageBox, QStatusBar::showMessage(), {Standard Dialogs Example}
 */
 
 static QErrorMessage * qtMessageHandler = 0;
@@ -143,15 +145,22 @@ static void jump(QtMsgType t, const char * m)
     case QtFatalMsg:
         rich = QErrorMessage::tr("Fatal Error:");
     }
-    rich = QString("<p><b>%1</b></p>").arg(rich);
-    rich += Qt::convertFromPlainText(m, Qt::WhiteSpaceNormal);
+    rich = QString(QLatin1String("<p><b>%1</b></p>")).arg(rich);
+    rich += Qt::convertFromPlainText(QLatin1String(m), Qt::WhiteSpaceNormal);
 
     // ### work around text engine quirk
-    if (rich.endsWith("</p>"))
+    if (rich.endsWith(QLatin1String("</p>")))
         rich.chop(4);
 
     if (!metFatal) {
-        qtMessageHandler->showMessage(rich);
+        if (QThread::currentThread() == qApp->thread()) {
+            qtMessageHandler->showMessage(rich);
+        } else {
+            QMetaObject::invokeMethod(qtMessageHandler,
+                                      "showMessage",
+                                      Qt::QueuedConnection,
+                                      Q_ARG(QString, rich));
+        }
         metFatal = (t == QtFatalMsg);
     }
 }

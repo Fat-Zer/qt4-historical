@@ -31,8 +31,16 @@
 #include <QPainter>
 #include <QImage>
 #include <QColor>
+#include <QDialog>
+#include <QGridLayout>
+#include <QSpinBox>
+#include <QLabel>
 #include <QPainterPath>
+#include <QPushButton>
+#include <QHBoxLayout>
 #include <QtDebug>
+
+#undef DEBUG_SIZEHINTS
 
 QColor bgColorForName(const QString &name)
 {
@@ -48,7 +56,7 @@ QColor bgColorForName(const QString &name)
         return QColor("#D8D8F1");
     else if (name == "Yellow")
         return QColor("#F1F0D8");
-    return QColor();
+    return QColor(name).light(110);
 }
 
 QColor fgColorForName(const QString &name)
@@ -65,32 +73,163 @@ QColor fgColorForName(const QString &name)
         return QColor("#6C6CF8");
     else if (name == "Yellow")
         return QColor("#F8F76C");
-    return QColor();
+    return QColor(name);
 }
 
 class ColorDock : public QFrame
 {
+    Q_OBJECT
 public:
-    ColorDock(const QString &c, QWidget *parent)
-        : QFrame(parent)
-        , color(c)
-    {
-    }
+    ColorDock(const QString &c, QWidget *parent);
+
+    virtual QSize sizeHint() const;
+    virtual QSize minimumSizeHint() const;
+
+public slots:
+    void changeSizeHints();
 
 protected:
-    void paintEvent(QPaintEvent *) {
-        QPainter p(this);
-        p.setRenderHint(QPainter::Antialiasing);
-        p.fillRect(rect(), bgColorForName(color));
-
-        extern void render_qt_text(QPainter *, int, int, const QColor &);
-        render_qt_text(&p, width(), height(), fgColorForName(color));
-    }
-
+    void paintEvent(QPaintEvent *);
     QString color;
+    QSize szHint, minSzHint;
 };
 
-ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WFlags flags)
+ColorDock::ColorDock(const QString &c, QWidget *parent)
+    : QFrame(parent) , color(c)
+{
+    QFont font = this->font();
+    font.setPointSize(8);
+    setFont(font);
+    szHint = QSize(-1, -1);
+    minSzHint = QSize(125, 75);
+}
+
+QSize ColorDock::sizeHint() const
+{
+    return szHint;
+}
+
+QSize ColorDock::minimumSizeHint() const
+{
+    return minSzHint;
+}
+
+void ColorDock::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.fillRect(rect(), bgColorForName(color));
+
+    p.save();
+
+    extern void render_qt_text(QPainter *, int, int, const QColor &);
+    render_qt_text(&p, width(), height(), fgColorForName(color));
+
+    p.restore();
+
+#ifdef DEBUG_SIZEHINTS
+    p.setRenderHint(QPainter::Antialiasing, false);
+
+    QSize sz = size();
+    QSize szHint = sizeHint();
+    QSize minSzHint = minimumSizeHint();
+    QSize maxSz = maximumSize();
+    QString text = QString::fromLatin1("sz: %1x%2\nszHint: %3x%4\nminSzHint: %5x%6\n"
+                                        "maxSz: %8x%9")
+                    .arg(sz.width()).arg(sz.height())
+                    .arg(szHint.width()).arg(szHint.height())
+                    .arg(minSzHint.width()).arg(minSzHint.height())
+                    .arg(maxSz.width()).arg(maxSz.height());
+
+    QRect r = fontMetrics().boundingRect(rect(), Qt::AlignLeft|Qt::AlignTop, text);
+    r.adjust(-2, -2, 1, 1);
+    p.translate(4, 4);
+    QColor bg = Qt::yellow;
+    bg.setAlpha(120);
+    p.setBrush(bg);
+    p.setPen(Qt::black);
+    p.drawRect(r);
+    p.drawText(rect(), Qt::AlignLeft|Qt::AlignTop, text);
+#endif // DEBUG_SIZEHINTS
+}
+
+static QSpinBox *createSpinBox(int value, QWidget *parent, int max = 1000)
+{
+    QSpinBox *result = new QSpinBox(parent);
+    result->setMinimum(-1);
+    result->setMaximum(max);
+    result->setValue(value);
+    return result;
+}
+
+void ColorDock::changeSizeHints()
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(color);
+
+    QVBoxLayout *topLayout = new QVBoxLayout(&dialog);
+
+    QGridLayout *inputLayout = new QGridLayout();
+    topLayout->addLayout(inputLayout);
+
+    inputLayout->addWidget(new QLabel(tr("Size Hint:"), &dialog), 0, 0);
+    inputLayout->addWidget(new QLabel(tr("Min Size Hint:"), &dialog), 1, 0);
+    inputLayout->addWidget(new QLabel(tr("Max Size:"), &dialog), 2, 0);
+    inputLayout->addWidget(new QLabel(tr("Dockwgt Max Size:"), &dialog), 3, 0);
+
+    QSpinBox *szHintW = createSpinBox(szHint.width(), &dialog);
+    inputLayout->addWidget(szHintW, 0, 1);
+    QSpinBox *szHintH = createSpinBox(szHint.height(), &dialog);
+    inputLayout->addWidget(szHintH, 0, 2);
+
+    QSpinBox *minSzHintW = createSpinBox(minSzHint.width(), &dialog);
+    inputLayout->addWidget(minSzHintW, 1, 1);
+    QSpinBox *minSzHintH = createSpinBox(minSzHint.height(), &dialog);
+    inputLayout->addWidget(minSzHintH, 1, 2);
+
+    QSize maxSz = maximumSize();
+    QSpinBox *maxSzW = createSpinBox(maxSz.width(), &dialog, QWIDGETSIZE_MAX);
+    inputLayout->addWidget(maxSzW, 2, 1);
+    QSpinBox *maxSzH = createSpinBox(maxSz.height(), &dialog, QWIDGETSIZE_MAX);
+    inputLayout->addWidget(maxSzH, 2, 2);
+
+    QSize dwMaxSz = parentWidget()->maximumSize();
+    QSpinBox *dwMaxSzW = createSpinBox(dwMaxSz.width(), &dialog, QWIDGETSIZE_MAX);
+    inputLayout->addWidget(dwMaxSzW, 3, 1);
+    QSpinBox *dwMaxSzH = createSpinBox(dwMaxSz.height(), &dialog, QWIDGETSIZE_MAX);
+    inputLayout->addWidget(dwMaxSzH, 3, 2);
+
+    inputLayout->setColumnStretch(1, 1);
+    inputLayout->setColumnStretch(2, 1);
+
+    topLayout->addStretch();
+
+    QHBoxLayout *buttonBox = new QHBoxLayout();
+    topLayout->addLayout(buttonBox);
+
+    QPushButton *okButton = new QPushButton(tr("Ok"), &dialog);
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"), &dialog);
+    connect(okButton, SIGNAL(clicked()), &dialog, SLOT(accept()));
+    connect(cancelButton, SIGNAL(clicked()), &dialog, SLOT(reject()));
+    buttonBox->addStretch();
+    buttonBox->addWidget(cancelButton);
+    buttonBox->addWidget(okButton);
+
+
+    if (!dialog.exec())
+        return;
+
+    szHint = QSize(szHintW->value(), szHintH->value());
+    minSzHint = QSize(minSzHintW->value(), minSzHintH->value());
+    maxSz = QSize(maxSzW->value(), maxSzH->value());
+    setMaximumSize(maxSz);
+    dwMaxSz = QSize(dwMaxSzW->value(), dwMaxSzH->value());
+    parentWidget()->setMaximumSize(dwMaxSz);
+    updateGeometry();
+    update();
+}
+
+ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WindowFlags flags)
     : QDockWidget(parent, flags)
 {
     setObjectName(colorName + QLatin1String(" Dock Widget"));
@@ -98,9 +237,11 @@ ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WFlags f
 
     QFrame *swatch = new ColorDock(colorName, this);
     swatch->setFrameStyle(QFrame::Box | QFrame::Sunken);
-    swatch->setMinimumSize(125, 75);
 
     setWidget(swatch);
+
+    changeSizeHintsAction = new QAction(tr("Change Size Hints"), this);
+    connect(changeSizeHintsAction, SIGNAL(triggered()), swatch, SLOT(changeSizeHints()));
 
     closableAction = new QAction(tr("Closable"), this);
     closableAction->setCheckable(true);
@@ -175,8 +316,23 @@ ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WFlags f
     connect(floatingAction, SIGNAL(triggered(bool)), floatableAction, SLOT(setDisabled(bool)));
     connect(movableAction, SIGNAL(triggered(bool)), floatableAction, SLOT(setEnabled(bool)));
 
+    tabMenu = new QMenu(this);
+    tabMenu->setTitle(tr("Tab into"));
+    connect(tabMenu, SIGNAL(triggered(QAction*)), this, SLOT(tabInto(QAction*)));
+
+    splitHMenu = new QMenu(this);
+    splitHMenu->setTitle(tr("Split horizontally into"));
+    connect(splitHMenu, SIGNAL(triggered(QAction*)), this, SLOT(splitInto(QAction*)));
+
+    splitVMenu = new QMenu(this);
+    splitVMenu->setTitle(tr("Split vertically into"));
+    connect(splitVMenu, SIGNAL(triggered(QAction*)), this, SLOT(splitInto(QAction*)));
+
     menu = new QMenu(colorName, this);
     menu->addAction(toggleViewAction());
+    QAction *action = menu->addAction(tr("Raise"));
+    connect(action, SIGNAL(triggered()), this, SLOT(raise()));
+    menu->addAction(changeSizeHintsAction);
     menu->addSeparator();
     menu->addAction(closableAction);
     menu->addAction(movableAction);
@@ -186,6 +342,12 @@ ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WFlags f
     menu->addActions(allowedAreasActions->actions());
     menu->addSeparator();
     menu->addActions(areaActions->actions());
+    menu->addSeparator();
+    menu->addMenu(splitHMenu);
+    menu->addMenu(splitVMenu);
+    menu->addMenu(tabMenu);
+
+    connect(menu, SIGNAL(aboutToShow()), this, SLOT(updateContextMenu()));
 
     if(colorName == "Black") {
         leftAction->setShortcut(Qt::CTRL|Qt::Key_W);
@@ -194,17 +356,8 @@ ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WFlags f
     }
 }
 
-void ColorSwatch::contextMenuEvent(QContextMenuEvent *event)
+void ColorSwatch::updateContextMenu()
 {
-    event->accept();
-    menu->exec(event->globalPos());
-}
-
-bool ColorSwatch::event(QEvent *e)
-{
-    if (e->type() != QEvent::Polish)
-        return QDockWidget::event(e);
-
     QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parentWidget());
     const Qt::DockWidgetArea area = mainWindow->dockWidgetArea(this);
     const Qt::DockWidgetAreas areas = allowedAreas();
@@ -254,7 +407,60 @@ bool ColorSwatch::event(QEvent *e)
         topAction->setEnabled(areas & Qt::TopDockWidgetArea);
         bottomAction->setEnabled(areas & Qt::BottomDockWidgetArea);
     }
-    return QDockWidget::event(e);
+
+    tabMenu->clear();
+    splitHMenu->clear();
+    splitVMenu->clear();
+    QList<ColorSwatch*> dock_list = qFindChildren<ColorSwatch*>(mainWindow);
+    foreach (ColorSwatch *dock, dock_list) {
+//        if (!dock->isVisible() || dock->isFloating())
+//            continue;
+        tabMenu->addAction(dock->windowTitle());
+        splitHMenu->addAction(dock->windowTitle());
+        splitVMenu->addAction(dock->windowTitle());
+    }
+}
+
+void ColorSwatch::splitInto(QAction *action)
+{
+    QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parentWidget());
+    QList<ColorSwatch*> dock_list = qFindChildren<ColorSwatch*>(mainWindow);
+    ColorSwatch *target = 0;
+    foreach (ColorSwatch *dock, dock_list) {
+        if (action->text() == dock->windowTitle()) {
+            target = dock;
+            break;
+        }
+    }
+    if (target == 0)
+        return;
+
+    Qt::Orientation o = action->parent() == splitHMenu
+                        ? Qt::Horizontal : Qt::Vertical;
+    mainWindow->splitDockWidget(target, this, o);
+}
+
+void ColorSwatch::tabInto(QAction *action)
+{
+    QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parentWidget());
+    QList<ColorSwatch*> dock_list = qFindChildren<ColorSwatch*>(mainWindow);
+    ColorSwatch *target = 0;
+    foreach (ColorSwatch *dock, dock_list) {
+        if (action->text() == dock->windowTitle()) {
+            target = dock;
+            break;
+        }
+    }
+    if (target == 0)
+        return;
+
+    mainWindow->tabifyDockWidget(target, this);
+}
+
+void ColorSwatch::contextMenuEvent(QContextMenuEvent *event)
+{
+    event->accept();
+    menu->exec(event->globalPos());
 }
 
 void ColorSwatch::allow(Qt::DockWidgetArea area, bool a)
@@ -321,3 +527,5 @@ void ColorSwatch::placeTop(bool p)
 
 void ColorSwatch::placeBottom(bool p)
 { place(Qt::BottomDockWidgetArea, p); }
+
+#include "colorswatch.moc"

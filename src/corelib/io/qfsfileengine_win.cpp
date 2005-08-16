@@ -25,6 +25,7 @@
 #include "qplatformdefs.h"
 #include "qabstractfileengine.h"
 #include "private/qfsfileengine_p.h"
+#include <qdebug.h>
 
 #include "qfile.h"
 #include "qdir.h"
@@ -72,6 +73,12 @@ static PtrGetEffectiveRightsFromAclW ptrGetEffectiveRightsFromAclW = 0;
 typedef DECLSPEC_IMPORT PVOID (WINAPI *PtrFreeSid)(PSID);
 static PtrFreeSid ptrFreeSid = 0;
 static TRUSTEE_W currentUserTrusteeW;
+
+typedef BOOL (WINAPI *PtrOpenProcessToken)(HANDLE, DWORD, PHANDLE );
+static PtrOpenProcessToken ptrOpenProcessToken = 0;
+typedef BOOL (WINAPI *PtrGetUserProfileDirectoryW)( HANDLE, LPWSTR, LPDWORD);
+static PtrGetUserProfileDirectoryW ptrGetUserProfileDirectoryW = 0;
+
 
 static void resolveLibs()
 {
@@ -142,6 +149,11 @@ static void resolveLibs()
                         free(versionData);
                     }
                 }
+            }
+            ptrOpenProcessToken = (PtrOpenProcessToken)GetProcAddress(advapiHnd, "OpenProcessToken");
+	        HINSTANCE userenvHnd = LoadLibraryW(L"userenv");
+            if (userenvHnd) {
+                ptrGetUserProfileDirectoryW = (PtrGetUserProfileDirectoryW)GetProcAddress(userenvHnd, "GetUserProfileDirectoryW");
             }
         }
     }
@@ -266,7 +278,7 @@ static bool uncListSharesOnServer(const QString &server, QStringList *list)
 
 static bool isUncRoot(const QString &server)
 {
-    QString localPath = QDir::convertSeparators(server);
+    QString localPath = QDir::toNativeSeparators(server);
     QStringList parts = localPath.split('\\', QString::SkipEmptyParts);
     return localPath.startsWith("\\\\") && parts.count() <= 1;
 }
@@ -347,7 +359,25 @@ QString QFSFileEnginePrivate::fixToQtSlashes(const QString &path)
     return ret;
 }
 
-static QString nativeAbsoluteFilePath(const QString &path)
+// If you change this function, remember to also change the UNICODE version
+static QString nativeAbsoluteFilePathA(const QString &path)
+{
+    QString ret;
+    QVarLengthArray<char, MAX_PATH> buf(MAX_PATH);
+    char *fileName = 0;
+    QByteArray ba = path.toLocal8Bit();
+    DWORD retLen = GetFullPathNameA(ba.constData(), buf.size(), buf.data(), &fileName);
+    if (retLen > (DWORD)buf.size()) {
+        buf.resize(retLen);
+        retLen = GetFullPathNameA(ba.constData(), buf.size(), buf.data(), &fileName);
+    }
+    if (retLen != 0)
+        ret = QString::fromLocal8Bit(buf.data(), retLen);
+    return ret;
+}
+
+// If you change this function, remember to also change the NON-UNICODE version
+static QString nativeAbsoluteFilePathW(const QString &path)
 {
     QString ret;
     QVarLengthArray<wchar_t, MAX_PATH> buf(MAX_PATH);
@@ -387,7 +417,7 @@ QByteArray QFSFileEnginePrivate::win95Name(const QString &path)
 */
 QString QFSFileEnginePrivate::longFileName(const QString &path)
 {
-    QString absPath = nativeAbsoluteFilePath(path);
+    QString absPath = QT_WA_INLINE(nativeAbsoluteFilePathW(path), nativeAbsoluteFilePathA(path));
     QString prefix = "\\\\?\\";
     if (isUncPath(path)) {
         prefix = "\\\\?\\UNC\\";
@@ -406,6 +436,7 @@ void QFSFileEnginePrivate::init()
 #endif
 int QFSFileEnginePrivate::sysOpen(const QString &fileName, int flags)
 {
+    flags |= _O_NOINHERIT;  // Do not inherit file handles.
 #if defined(_MSC_VER) && _MSC_VER >= 1400
 	QT_WA({
 		int fd;
@@ -476,6 +507,7 @@ bool QFSFileEngine::rename(const QString &newName)
 qint64 QFSFileEngine::size() const
 {
     Q_D(const QFSFileEngine);
+    const_cast<QFSFileEngine *>(this)->flush();
     if(d->fd != -1) {
         HANDLE fh = (HANDLE)_get_osfhandle(d->fd);
         if (fh != INVALID_HANDLE_VALUE) {
@@ -505,7 +537,7 @@ qint64 QFSFileEngine::size() const
     return 0;
 }
 
-static inline bool mkDir(const QString &path) 
+static inline bool mkDir(const QString &path)
 {
     QT_WA({
         return ::CreateDirectoryW((TCHAR*)QFSFileEnginePrivate::longFileName(path).utf16(), 0);
@@ -517,7 +549,7 @@ static inline bool mkDir(const QString &path)
 /*!
     \reimp
 */
-static inline bool rmDir(const QString &path) 
+static inline bool rmDir(const QString &path)
 {
     QT_WA({
         return ::RemoveDirectoryW((TCHAR*)QFSFileEnginePrivate::longFileName(path).utf16());
@@ -529,12 +561,12 @@ static inline bool rmDir(const QString &path)
 /*!
     \reimp
 */
-static inline bool isDirPath(const QString &dirPath, bool *existed) 
+static inline bool isDirPath(const QString &dirPath, bool *existed)
 {
     QString path = dirPath;
     if (path.length() == 2 &&path.at(1) == QLatin1Char(':'))
         path += QLatin1Char('\\');
-    
+
     DWORD fileAttrib = INVALID_FILE_ATTRIBUTES;
     QT_WA({
         fileAttrib = ::GetFileAttributesW((TCHAR*)QFSFileEnginePrivate::longFileName(path).utf16());
@@ -544,7 +576,7 @@ static inline bool isDirPath(const QString &dirPath, bool *existed)
 
     if (existed)
         *existed = fileAttrib != INVALID_FILE_ATTRIBUTES;
- 
+
     if (fileAttrib == INVALID_FILE_ATTRIBUTES)
         return false;
 
@@ -558,9 +590,22 @@ bool QFSFileEngine::mkdir(const QString &name, bool createParentDirectories) con
 {
     QString dirName = name;
     if (createParentDirectories) {
-        dirName = QDir::convertSeparators(QDir::cleanPath(dirName));
+        dirName = QDir::toNativeSeparators(QDir::cleanPath(dirName));
         // We spefically search for / so \ would break it..
-        for (int oldslash = -1, slash=0; slash != -1; oldslash = slash) {
+        int oldslash = -1;
+        if (dirName.startsWith(QString("\\\\"))) {
+            // Don't try to create the root path of a UNC path;
+            // CreateDirectory() will just return ERROR_INVALID_NAME.
+            for (int i = 0; i < dirName.size(); ++i) {
+                if (dirName.at(i) != QDir::separator()) {
+                    oldslash = i;
+                    break;
+                }
+            }
+            if (oldslash != -1)
+                oldslash = dirName.indexOf(QDir::separator(), oldslash);
+        }
+        for (int slash=0; slash != -1; oldslash = slash) {
             slash = dirName.indexOf(QDir::separator(), oldslash+1);
             if (slash == -1) {
                 if(oldslash == dirName.length())
@@ -588,7 +633,7 @@ bool QFSFileEngine::rmdir(const QString &name, bool recurseParentDirectories) co
 {
     QString dirName = name;
     if (recurseParentDirectories) {
-        dirName = QDir::convertSeparators(QDir::cleanPath(dirName));
+        dirName = QDir::toNativeSeparators(QDir::cleanPath(dirName));
         for (int oldslash = 0, slash=dirName.length(); slash > 0; oldslash = slash) {
             QString chunk = dirName.left(slash);
             if (chunk.length() == 2 && chunk.at(0).isLetter() && chunk.at(1) == QLatin1Char(':'))
@@ -672,7 +717,7 @@ QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &f
 
     if (ff == FF_ERROR) {
         if (d->file.startsWith("//") && doDirs)
-            uncEntryList(QDir::convertSeparators(d->file), (filters & QDir::AllDirs) ? QStringList() : filterNames, &ret);
+            uncEntryList(QDir::toNativeSeparators(d->file), (filters & QDir::AllDirs) ? QStringList() : filterNames, &ret);
         return ret; // cannot read the directory or was //unc
     }
     for (;;) {
@@ -768,7 +813,7 @@ QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &f
             if(filters & QDir::NoDotAndDotDot
                && (name == QLatin1String(".") || name == QLatin1String(".."))) {
                 continue;
-            }                
+            }
             if(!doHidden && isHidden)
                 continue;
             if(!doSystem && isSystem)
@@ -879,13 +924,47 @@ QString QFSFileEngine::currentPath(const QString &fileName)
 */
 QString QFSFileEngine::homePath()
 {
-    QString ret = QString::fromLocal8Bit(qgetenv("USERPROFILE").constData());
+    QString ret;
+#if !defined(QT_NO_LIBRARY)
+    QT_WA (
+    {
+        resolveLibs();
+		if (ptrOpenProcessToken && ptrGetUserProfileDirectoryW) {
+			HANDLE hnd = ::GetCurrentProcess();
+			HANDLE token = 0;
+			BOOL ok = ::ptrOpenProcessToken(hnd, TOKEN_QUERY, &token);
+			if (ok) {
+				DWORD dwBufferSize = 0;
+				// First call, to determine size of the strings (with '\0').
+				ok = ::ptrGetUserProfileDirectoryW(token, NULL, &dwBufferSize);
+				if (!ok && dwBufferSize != 0) {		// We got the required buffer size
+					wchar_t *userDirectory = new wchar_t[dwBufferSize];
+					// Second call, now we can fill the allocated buffer.
+					ok = ::ptrGetUserProfileDirectoryW(token, userDirectory, &dwBufferSize);
+					if (ok)
+						ret = QString::fromUtf16((ushort*)userDirectory);
+
+					delete [] userDirectory;
+				}
+				::CloseHandle(token);
+			}
+		}
+    }
+    ,
+    {
+        // GetUserProfileDirectory is only available from NT 4.0,
+		// so fall through for Win98 and friends version.
+    })
+#endif
     if(ret.isEmpty() || !QFile::exists(ret)) {
-        ret = QString::fromLocal8Bit(qgetenv("HOMEDRIVE").constData()) + QString::fromLocal8Bit(qgetenv("HOMEPATH").constData());
+        ret = QString::fromLocal8Bit(qgetenv("USERPROFILE").constData());
         if(ret.isEmpty() || !QFile::exists(ret)) {
-            ret = QString::fromLocal8Bit(qgetenv("HOME").constData());
-            if(ret.isEmpty() || !QFile::exists(ret))
-                ret = rootPath();
+            ret = QString::fromLocal8Bit(qgetenv("HOMEDRIVE").constData()) + QString::fromLocal8Bit(qgetenv("HOMEPATH").constData());
+            if(ret.isEmpty() || !QFile::exists(ret)) {
+                ret = QString::fromLocal8Bit(qgetenv("HOME").constData());
+                if(ret.isEmpty() || !QFile::exists(ret))
+                    ret = rootPath();
+            }
         }
     }
     return QFSFileEnginePrivate::fixToQtSlashes(ret);
@@ -925,7 +1004,7 @@ QString QFSFileEngine::tempPath()
     } , {
         char tempPath[MAX_PATH];
         GetTempPathA(MAX_PATH, tempPath);
-        ret = QString(tempPath);
+        ret = QString::fromLocal8Bit(tempPath);
     });
     if (ret.isEmpty()) {
         ret = QString::fromLatin1("c:/tmp");
@@ -979,6 +1058,13 @@ bool QFSFileEnginePrivate::doStat() const
         if (file.isEmpty())
             return could_stat;
         QString fname = file.endsWith(".lnk") ? readLink(file) : file;
+        if (q_ptr->isRelativePath()) {
+            QString currentPath = QDir::currentPath() + QLatin1Char('/');
+            if (currentPath.startsWith("//")) {
+                // UNC
+                fname.prepend(currentPath);
+            }
+        }
 
         UINT oldmode = SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
@@ -1001,10 +1087,14 @@ bool QFSFileEnginePrivate::doStat() const
             if (!could_stat) {
                 if (!fname.isEmpty() && fname.at(0).isLetter() && fname.mid(1, fname.length()) == ":/") {
                     // an empty drive ??
-                    fileAttrib = FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN;
-                    could_stat = true;
+                    DWORD drivesBitmask = ::GetLogicalDrives();
+                    int drivebit = 1 << (fname.at(0).toUpper().unicode() - QLatin1Char('A').unicode());
+                    if (drivesBitmask & drivebit) {
+                        fileAttrib = FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN;
+                        could_stat = true;
+                    }
                 } else {
-                    QString path = QDir::convertSeparators(fname);
+                    QString path = QDir::toNativeSeparators(fname);
                     bool is_dir = false;
                     if (path.startsWith("\\\\")) {
                         // UNC - stat doesn't work for all cases (Windows bug)
@@ -1068,14 +1158,11 @@ static QString readLink(const QString &link)
             hres = psl->QueryInterface(IID_IPersistFile, (LPVOID *)&ppf);
             if(SUCCEEDED(hres))  {
                 hres = ppf->Load((LPOLESTR)link.utf16(), STGM_READ);
-                if(SUCCEEDED(hres)) {        // Resolve the link.
-
-                    hres = psl->Resolve(0, SLR_ANY_MATCH | SLR_NO_UI | SLR_UPDATE);
-
-                    if(SUCCEEDED(hres)) {
-                        if (psl->GetPath(szGotPath, MAX_PATH, &wfd, SLGP_UNCPRIORITY) == NOERROR)
-                            ret = QString::fromUtf16((ushort*)szGotPath);
-                    }
+                //The original path of the link is retrieved. If the file/folder
+                //was moved, the return value still have the old path.
+                if(SUCCEEDED(hres)) {
+                    if (psl->GetPath(szGotPath, MAX_PATH, &wfd, SLGP_UNCPRIORITY) == NOERROR)
+                        ret = QString::fromUtf16((ushort*)szGotPath);
                 }
                 ppf->Release();
             }
@@ -1105,14 +1192,11 @@ static QString readLink(const QString &link)
             hres = psl->QueryInterface(IID_IPersistFile, (LPVOID *)&ppf);
             if(SUCCEEDED(hres))  {
                 hres = ppf->Load((LPOLESTR)QFileInfo(link).absoluteFilePath().utf16(), STGM_READ);
-                if(SUCCEEDED(hres)) {        // Resolve the link.
-
-                    hres = psl->Resolve(0, SLR_ANY_MATCH | SLR_NO_UI | SLR_UPDATE);
-
-                    if(SUCCEEDED(hres)) {
-                        if (psl->GetPath((char*)szGotPath, MAX_PATH, &wfd, SLGP_UNCPRIORITY) == NOERROR)
-                            ret = QString::fromLocal8Bit(szGotPath);
-                    }
+                //The original path of the link is retrieved. If the file/folder
+                //was moved, the return value still have the old path.
+                 if(SUCCEEDED(hres)) {
+                    if (psl->GetPath((char*)szGotPath, MAX_PATH, &wfd, SLGP_UNCPRIORITY) == NOERROR)
+                        ret = QString::fromLocal8Bit(szGotPath);
                 }
                 ppf->Release();
             }
@@ -1145,7 +1229,7 @@ bool QFSFileEngine::link(const QString &newName)
 
     QString linkName = newName;
     //### assume that they add .lnk
-    
+
     QT_WA({
         HRESULT hres;
         IShellLink *psl;
@@ -1313,11 +1397,11 @@ QAbstractFileEngine::FileFlags QFSFileEnginePrivate::getPermissions() const
                 ret &= ~(QAbstractFileEngine::WriteOwnerPerm | QAbstractFileEngine::WriteUserPerm |
                 QAbstractFileEngine::WriteGroupPerm | QAbstractFileEngine::WriteOtherPerm);
         }
-        
+
         QString ext = file.right(4).toLower();
         if (ext == ".exe" || ext == ".com" || ext == ".bat" ||
             ext == ".pif" || ext == ".cmd" || (fileAttrib & FILE_ATTRIBUTE_DIRECTORY))
-            ret |= QAbstractFileEngine::ExeOwnerPerm | QAbstractFileEngine::ExeGroupPerm | 
+            ret |= QAbstractFileEngine::ExeOwnerPerm | QAbstractFileEngine::ExeGroupPerm |
             QAbstractFileEngine::ExeOtherPerm | QAbstractFileEngine::ExeUserPerm;
     }
     return ret;
@@ -1334,7 +1418,7 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
     if (type & QAbstractFileEngine::FileFlag(0x1000000)) { // QDir::Refresh
         d->tried_stat = 0;
     }
-    
+
     if (type & PermsMask) {
         ret |= d->getPermissions();
         // ### Workaround pascals ### above. Since we always set all properties to true
@@ -1408,10 +1492,19 @@ QString QFSFileEngine::fileName(FileName file) const
         }
     } else if(file == AbsoluteName || file == AbsolutePathName) {
         QString ret;
-        if (!isRelativePath())
-            ret = d->file;
-        else
+
+        if (!isRelativePath()) {
+            if (d->file.size() > 2 && d->file.at(1) == QLatin1Char(':')
+                && d->file.at(2) != QLatin1Char('/') || // It's a drive-relative path, so Z:a.txt -> Z:\currentpath\a.txt
+                d->file.startsWith(QLatin1Char('/'))    // It's a absolute path to the current drive, so \a.txt -> Z:\a.txt
+                ) {
+                ret = QDir::fromNativeSeparators(QT_WA_INLINE(nativeAbsoluteFilePathW(d->file), nativeAbsoluteFilePathA(d->file)));
+            } else {
+                ret = d->file;
+            }
+        } else {
             ret = QDir::cleanPath(QDir::currentPath() + QLatin1Char('/') + d->file);
+        }
 
         // The path should be absolute at this point.
         // From the docs :
@@ -1614,7 +1707,7 @@ bool QFSFileEngine::setSize(qint64 size)
                 file1.remove();
                 if (file2.rename(file1.fileName()))
                     return true;
-                qWarning("QFSFileEngine::rename: Failed to rename %s: %s", 
+                qWarning("QFSFileEngine::rename: Failed to rename %s: %s",
                     qPrintable(file2.fileName()), qPrintable(qt_error_string(errno)));
             }
         }

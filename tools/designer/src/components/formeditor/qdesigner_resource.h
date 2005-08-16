@@ -28,6 +28,8 @@
 
 #include <QtDesigner/QtDesigner>
 
+#include "qsimpleresource_p.h"
+
 #include <QtCore/QHash>
 #include <QtCore/QStack>
 
@@ -48,7 +50,7 @@ namespace qdesigner_internal {
 
 class FormWindow;
 
-class QT_FORMEDITOR_EXPORT QDesignerResource : public QAbstractFormBuilder
+class QT_FORMEDITOR_EXPORT QDesignerResource : public QSimpleResource
 {
 public:
     QDesignerResource(FormWindow *fw);
@@ -61,12 +63,9 @@ public:
     QList<QWidget*> paste(DomUI *ui, QWidget *parentWidget);
     QList<QWidget*> paste(QIODevice *dev, QWidget *parentWidget);
 
-    inline QDesignerFormEditorInterface *core() const
-    { return m_core; }
-
 protected:
-    using QAbstractFormBuilder::create;
-    using QAbstractFormBuilder::createDom;
+    using QSimpleResource::create;
+    using QSimpleResource::createDom;
 
     virtual void saveDom(DomUI *ui, QWidget *widget);
     virtual QWidget *create(DomUI *ui, QWidget *parentWidget);
@@ -101,13 +100,6 @@ protected:
     virtual QAction *createAction(QObject *parent, const QString &name);
     virtual QActionGroup *createActionGroup(QObject *parent, const QString &name);
 
-    virtual QIcon nameToIcon(const QString &filePath, const QString &qrcPath);
-    virtual QString iconToFilePath(const QIcon &pm) const;
-    virtual QString iconToQrcPath(const QIcon &pm) const;
-    virtual QPixmap nameToPixmap(const QString &filePath, const QString &qrcPath);
-    virtual QString pixmapToFilePath(const QPixmap &pm) const;
-    virtual QString pixmapToQrcPath(const QPixmap &pm) const;
-
     virtual bool checkProperty(QObject *obj, const QString &prop) const;
 
     DomWidget *saveWidget(QDesignerTabWidget *widget, DomWidget *ui_parentWidget);
@@ -123,6 +115,8 @@ protected:
 
     virtual void layoutInfo(DomLayout *layout, QObject *parent, int *margin, int *spacing);
 
+    virtual void loadExtraInfo(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);
+
     DomProperty *createIconProperty(const QVariant &v) const;
 
     void changeObjectName(QObject *o, QString name);
@@ -131,13 +125,13 @@ protected:
 private:
     FormWindow *m_formWindow;
     bool m_isMainWidget;
-    QDesignerFormEditorInterface *m_core;
     QHash<QString, QString> m_internal_to_qt;
     QHash<QString, QString> m_qt_to_internal;
     QStack<QLayout*> m_chain;
     QHash<QDesignerWidgetDataBaseItemInterface*, bool> m_usedCustomWidgets;
     int m_topLevelSpacerCount;
     bool m_copyWidget;
+    QWidget *m_selected;
 };
 
 }  // namespace qdesigner_internal

@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTESTCASE_P_H
-#define QTESTCASE_P_H
+#ifndef QTESTCASE_H
+#define QTESTCASE_H
 
 #include <QtTest/qtest_global.h>
 
@@ -73,10 +73,10 @@ do {\
 } while (0)
 
 #define QFETCH(type, name)\
-    type name = *static_cast<type *>(QTest::qData(#name, qMetaTypeId<type >()))
+    type name = *static_cast<type *>(QTest::qData(#name, ::qMetaTypeId<type >()))
 
 #define QFETCH_GLOBAL(type, name)\
-    type name = *static_cast<type *>(QTest::qGlobalData(#name, qMetaTypeId<type >()))
+    type name = *static_cast<type *>(QTest::qGlobalData(#name, ::qMetaTypeId<type >()))
 
 #define DEPENDS_ON(funcName)
 

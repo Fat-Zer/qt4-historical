@@ -36,23 +36,8 @@
 //
 
 #include "private/qpaintengine_raster_p.h"
-#ifdef Q_WS_QWS
-#include "private/qwidget_qws_p.h"
-#endif
 
-#ifdef Q_WS_WIN
-class QBackingStoreDevice : public QPaintDevice
-{
-    QRasterPaintEngine engine;
-    QWidget *tlw;
-
-public:
-    QBackingStoreDevice(QWidget *topLevel) : tlw(topLevel)  { engine.setFlushOnEnd(false); }
-    QSize size() const { return engine.size(); }
-    virtual int metric(PaintDeviceMetric metric) const {  return tlw->metric(metric); }
-    QPaintEngine *paintEngine() const { return const_cast<QRasterPaintEngine *>(&engine); }
-};
-#endif
+class QWindowSurface;
 
 class QWidgetBackingStore
 {
@@ -62,11 +47,6 @@ public:
     void bltRect(const QRect &rect, int dx, int dy, QWidget *widget);
     void dirtyRegion(const QRegion &rgn, QWidget *widget=0);
     void cleanRegion(const QRegion &rgn, QWidget *widget=0, bool recursiveCopyToScreen = true);
-#if defined(Q_WS_X11)
-    QPixmap backingPixmap() const { return buffer; }
-#elif defined(Q_WS_QWS)
-    const QImage &backingImage()  { return buffer.image(); }
-#endif
 #if defined (Q_WS_QWS) || defined (Q_WS_WIN)
     void releaseBuffer();
 #endif
@@ -81,14 +61,8 @@ private:
     QWidget *tlw;
     QRegion dirty;
 
-#if defined(Q_WS_WIN)
-    QBackingStoreDevice buffer;
-#elif defined(Q_WS_QWS)
-    QWSBackingStore buffer;
-    QRegion dirty_on_screen;
-#else
-    QPixmap buffer;
-#endif
+    QWindowSurface *windowSurface;
+
     QPoint tlwOffset;
 
     static bool isOpaque(const QWidget *widget);
@@ -104,6 +78,7 @@ private:
     friend class QWidgetPrivate;
     friend class QWidget;
     friend class QWSManagerPrivate;
+    friend class QETWidget;
 };
 
 #endif // QBACKINGSTORE_P_H

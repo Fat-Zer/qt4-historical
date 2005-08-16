@@ -36,6 +36,7 @@ class QPlastiqueStylePrivate;
 class Q_GUI_EXPORT QPlastiqueStyle : public QWindowsStyle
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(QPlastiqueStyle)
 public:
     QPlastiqueStyle();
     ~QPlastiqueStyle();
@@ -60,6 +61,9 @@ public:
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = 0, const QWidget *widget = 0) const;
 
+    QPixmap standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt,
+                           const QWidget *widget = 0) const;
+    
     void polish(QWidget *widget);
     void polish(QApplication *app);
     void polish(QPalette &pal);
@@ -68,12 +72,17 @@ public:
 
     QPalette standardPalette() const;
 
+protected Q_SLOTS:
+    QIcon standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt = 0,
+                                     const QWidget *widget = 0) const;
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
     void timerEvent(QTimerEvent *event);
-    
+
 private:
-    QPlastiqueStylePrivate *d;
+    Q_DISABLE_COPY(QPlastiqueStyle)
+    void *reserved;
 };
 
 #endif // QT_NO_STYLE_PLASTIQUE

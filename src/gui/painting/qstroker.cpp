@@ -1,4 +1,4 @@
-/***************************************************************************
+/****************************************************************************
 **
 ** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
@@ -15,6 +15,9 @@
 ** review the following information:
 ** http://www.trolltech.com/products/qt/licensing.html or contact the
 ** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 
@@ -79,7 +82,7 @@ public:
             ce.type = QPainterPath::CurveToDataElement;
             break;
         default:
-            qWarning("QSubpathReverseIterator::next(), unhandled case, %d", ce.type);
+            qWarning("QSubpathReverseIterator::next: Case %d unhandled", ce.type);
             break;
         }
         --m_pos;
@@ -367,6 +370,7 @@ Qt::PenJoinStyle QStroker::joinForJoinMode(LineJoinMode mode)
 {
     if (mode == FlatJoin) return Qt::BevelJoin;
     else if (mode == MiterJoin) return Qt::MiterJoin;
+    else if (mode == SvgMiterJoin) return Qt::SvgMiterJoin;
     else return Qt::RoundJoin;
 }
 
@@ -374,6 +378,7 @@ QStroker::LineJoinMode QStroker::joinModeForJoin(Qt::PenJoinStyle joinStyle)
 {
     if (joinStyle == Qt::BevelJoin) return FlatJoin;
     else if (joinStyle == Qt::MiterJoin) return MiterJoin;
+    else if (joinStyle == Qt::SvgMiterJoin) return SvgMiterJoin;
     else return RoundJoin;
 }
 
@@ -547,6 +552,16 @@ void QStroker::joinPoints(qfixed focal_x, qfixed focal_y, const QLineF &nextLine
                         qt_real_to_fixed(l1.y2()),
                         qt_real_to_fixed(l1.x1()),
                         qt_real_to_fixed(l1.y1()));
+        } else if (join == SvgMiterJoin) {
+            QLineF miterLine(QPointF(qt_fixed_to_real(focal_x),
+                                     qt_fixed_to_real(focal_y)), isect);
+            if (miterLine.length() > qt_fixed_to_real(m_strokeWidth * m_miterLimit) / 2) {
+                emitLineTo(qt_real_to_fixed(nextLine.x1()),
+                           qt_real_to_fixed(nextLine.y1()));
+            } else {
+                emitLineTo(qt_real_to_fixed(isect.x()), qt_real_to_fixed(isect.y()));
+                emitLineTo(qt_real_to_fixed(nextLine.x1()), qt_real_to_fixed(nextLine.y1()));
+            }
         } else {
             qFatal("QStroker::joinPoints(), bad join style...");
         }
@@ -713,7 +728,7 @@ QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLengt
 #ifndef QT_NO_DEBUG
     if (qIsNan(rect.x()) || qIsNan(rect.y()) || qIsNan(rect.width()) || qIsNan(rect.height())
         || qIsNan(startAngle) || qIsNan(sweepLength))
-        qWarning("QPainterPath::arcTo(): adding arc where a parameter is nan, results are undefined.");
+        qWarning("QPainterPath::arcTo: Adding arc where a parameter is NaN, results are undefined");
 #endif
     *point_count = 0;
 

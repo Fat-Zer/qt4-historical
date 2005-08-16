@@ -56,6 +56,8 @@ public:
         { return key < other.key || key==other.key && lang < other.lang; }
     bool operator== (const QImageTextKeyLang& other) const
         { return key==other.key && lang==other.lang; }
+    inline bool operator!= (const QImageTextKeyLang &other) const
+        { return !operator==(other); }
 };
 #endif //QT_NO_IMAGE_TEXT
 
@@ -71,8 +73,7 @@ public:
         Format_Indexed8,
         Format_RGB32,
         Format_ARGB32,
-        Format_ARGB32_Premultiplied, 
-#ifdef Q_WS_QWS
+        Format_ARGB32_Premultiplied,
         Format_RGB16,
 #if 0
         // reserved for future use
@@ -84,7 +85,6 @@ public:
         Format_Grayscale2,
         Format_Grayscale2LSB
 #endif
-#endif
 #ifndef qdoc
         NImageFormats
 #endif
@@ -94,6 +94,7 @@ public:
     QImage(const QSize &size, Format format);
     QImage(int width, int height, Format format);
     QImage(uchar *data, int width, int height, Format format);
+    QImage(const uchar *data, int width, int height, Format format);
 
 #ifndef QT_NO_IMAGEFORMAT_XPM
     explicit QImage(const char * const xpm[]);
@@ -123,8 +124,8 @@ public:
 
     Format format() const;
 
-    QImage convertToFormat(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor) const;
-    QImage convertToFormat(Format f, const QVector<QRgb> &colorTable, Qt::ImageConversionFlags flags = Qt::AutoColor) const;
+    QImage convertToFormat(Format f, Qt::ImageConversionFlags flags = Qt::AutoColor) const Q_REQUIRED_RESULT;
+    QImage convertToFormat(Format f, const QVector<QRgb> &colorTable, Qt::ImageConversionFlags flags = Qt::AutoColor) const Q_REQUIRED_RESULT;
 
     int width() const;
     int height() const;
@@ -150,9 +151,16 @@ public:
     int bytesPerLine() const;
 
     bool valid(int x, int y) const;
+    bool valid(const QPoint &pt) const;
+
     int pixelIndex(int x, int y) const;
+    int pixelIndex(const QPoint &pt) const;
+
     QRgb pixel(int x, int y) const;
+    QRgb pixel(const QPoint &pt) const;
+
     void setPixel(int x, int y, uint index_or_rgb);
+    void setPixel(const QPoint &pt, uint index_or_rgb);
 
     QVector<QRgb> colorTable() const;
     void setColorTable(const QVector<QRgb> colors);
@@ -187,8 +195,8 @@ public:
     inline bool loadFromData(const QByteArray &data, const char* aformat=0)
         { return loadFromData(reinterpret_cast<const uchar *>(data.constData()), data.size(), aformat); }
 
-    bool save(const QString &fileName, const char* format, int quality=-1) const;
-    bool save(QIODevice *device, const char* format, int quality=-1) const;
+    bool save(const QString &fileName, const char* format=0, int quality=-1) const;
+    bool save(QIODevice *device, const char* format=0, int quality=-1) const;
 
     static QImage fromData(const uchar *data, int size, const char *format = 0);
     inline static QImage fromData(const QByteArray &data, const char *format = 0)
@@ -282,6 +290,13 @@ private:
 
 Q_DECLARE_SHARED(QImage)
 Q_DECLARE_TYPEINFO(QImage, Q_MOVABLE_TYPE);
+
+// Inline functions...
+
+Q_GUI_EXPORT_INLINE bool QImage::valid(const QPoint &pt) const { return valid(pt.x(), pt.y()); }
+Q_GUI_EXPORT_INLINE int QImage::pixelIndex(const QPoint &pt) const { return pixelIndex(pt.x(), pt.y());}
+Q_GUI_EXPORT_INLINE QRgb QImage::pixel(const QPoint &pt) const { return pixel(pt.x(), pt.y()); }
+Q_GUI_EXPORT_INLINE void QImage::setPixel(const QPoint &pt, uint index_or_rgb) { setPixel(pt.x(), pt.y(), index_or_rgb); }
 
 // QImage stream functions
 

@@ -6,6 +6,12 @@ SOURCES        = main.cpp \
                  mainwindow.cpp \
                  paintarea.cpp \
                  plugindialog.cpp
+LIBS           = -L../plugandpaintplugins/basictools -lpnp_basictools
+
+CONFIG(debug, debug|release) {
+   mac:LIBS = $$member(LIBS, 0) $$member(LIBS, 1)_debug
+   win32:LIBS = $$member(LIBS, 0) $$member(LIBS, 1)d
+}
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/tools/plugandpaint

@@ -76,16 +76,38 @@ public:
     inline explicit QMutexLocker(QMutex *m) : mtx(m) { relock(); }
     inline ~QMutexLocker() { unlock(); }
 
-    inline void unlock() { if (mtx) mtx->unlock(); }
+    inline void unlock()
+    {
+        if (mtx) {
+            if ((val & quintptr(1u)) == quintptr(1u)) {
+                val &= ~quintptr(1u);
+                mtx->unlock();
+            }
+        }
+    }
 
-    inline void relock() { if (mtx) mtx->lock(); }
+    inline void relock()
+    {
+        if (mtx) {
+            if ((val & quintptr(1u)) == quintptr(0u)) {
+                mtx->lock();
+                val |= quintptr(1u);
+            }
+        }
+    }
 
-    inline QMutex *mutex() const { return mtx; }
+    inline QMutex *mutex() const
+    {
+        return reinterpret_cast<QMutex *>(val & ~quintptr(1u));
+    }
 
 private:
     Q_DISABLE_COPY(QMutexLocker)
 
-    QMutex *mtx;
+    union {
+        QMutex *mtx;
+        quintptr val;
+    };
 };
 
 #else // QT_NO_THREAD

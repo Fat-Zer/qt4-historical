@@ -146,6 +146,7 @@ public:
         inline bool operator<=(const iterator& other) const { return i <= other.i; }
         inline bool operator>(const iterator& other) const { return i > other.i; }
         inline bool operator>=(const iterator& other) const { return i >= other.i; }
+#ifndef QT_STRICT_ITERATORS
         inline bool operator==(const const_iterator &o) const
             { return i == reinterpret_cast<const iterator &>(o).i; }
         inline bool operator!=(const const_iterator &o) const
@@ -158,6 +159,7 @@ public:
             { return i > reinterpret_cast<const iterator &>(other).i; }
         inline bool operator>=(const const_iterator& other) const
             { return i >= reinterpret_cast<const iterator &>(other).i; }
+#endif
         inline iterator &operator++() { ++i; return *this; }
         inline iterator operator++(int) { Node *n = i; ++i; return n; }
         inline iterator &operator--() { i--; return *this; }
@@ -182,7 +184,11 @@ public:
         inline const_iterator() : i(0) {}
         inline const_iterator(Node *n) : i(n) {}
         inline const_iterator(const const_iterator &o): i(o.i) {}
+#ifdef QT_STRICT_ITERATORS
+        inline explicit const_iterator(const iterator &o): i(o.i) {}
+#else
         inline const_iterator(const iterator &o): i(o.i) {}
+#endif
         inline const T &operator*() const { return i->t(); }
         inline const T *operator->() const { return &i->t(); }
         inline const T &operator[](int j) const { return i[j].t(); }
@@ -197,7 +203,7 @@ public:
         inline const_iterator &operator--() { i--; return *this; }
         inline const_iterator operator--(int) { Node *n = i; i--; return n; }
         inline const_iterator &operator+=(int j) { i+=j; return *this; }
-        inline const_iterator &operator-=(int j) { i+=j; return *this; }
+        inline const_iterator &operator-=(int j) { i-=j; return *this; }
         inline const_iterator operator+(int j) const { return const_iterator(i+j); }
         inline const_iterator operator-(int j) const { return const_iterator(i-j); }
         inline int operator-(const_iterator j) const { return i - j.i; }
@@ -246,6 +252,7 @@ public:
     typedef const value_type *const_pointer;
     typedef value_type &reference;
     typedef const value_type &const_reference;
+    typedef ptrdiff_t difference_type;
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT iterator remove(iterator pos) { return erase(pos); }

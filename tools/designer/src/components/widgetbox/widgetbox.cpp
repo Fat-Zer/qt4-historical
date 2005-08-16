@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::WidgetBoxTreeView
+*/
+
 #include "widgetbox.h"
 
 // sdk
@@ -30,6 +34,7 @@
 #include <pluginmanager_p.h>
 #include <sheet_delegate_p.h>
 #include <iconloader_p.h>
+#include <ui4_p.h>
 
 #include <QtGui/QtGui>
 #include <QtCore/qdebug.h>
@@ -205,6 +210,7 @@ private:
     QDesignerFormEditorInterface *m_core;
     QString m_file_name;
     mutable QHash<QString, QIcon> m_pluginIcons;
+    QStringList m_widgetNames;
 
     CategoryList domToCateogryList(const QDomDocument &doc) const;
     Category domToCategory(const QDomElement &cat_elt) const;
@@ -242,6 +248,7 @@ WidgetBoxTreeView::WidgetBoxTreeView(QDesignerFormEditorInterface *core, QWidget
     : QTreeWidget(parent)
 {
     setFocusPolicy(Qt::NoFocus);
+    setIconSize(QSize(22, 22));
 
     setItemDelegate(new WidgetBoxItemDelegate(this, this));
     setRootIsDecorated(false);
@@ -417,7 +424,6 @@ bool WidgetBoxTreeView::load()
         }
     }
 
-    clear();
     foreach(Category cat, cat_list) {
         if (cat.type() != Category::Scratchpad)
             addCategory(cat);
@@ -478,9 +484,9 @@ QDomDocument WidgetBoxTreeView::categoryListToDom(const CategoryList &cat_list) 
             DomWidget *dom_wgt = xmlToUi(widgetDomXml(wgt));
             QDomElement wgt_elt = dom_wgt->write(doc);
             wgt_elt.setAttribute(QLatin1String("name"), wgt.name());
-	    QString iconName = wgt.iconName();
-	    if (!iconName.startsWith("__qt_icon__"))
-	      wgt_elt.setAttribute(QLatin1String("icon"), wgt.iconName());
+            QString iconName = wgt.iconName();
+            if (!iconName.startsWith("__qt_icon__"))
+              wgt_elt.setAttribute(QLatin1String("icon"), wgt.iconName());
             wgt_elt.setAttribute(QLatin1String("type"), QLatin1String("default"));
             cat_elt.appendChild(wgt_elt);
         }
@@ -517,9 +523,14 @@ WidgetBoxTreeView::CategoryList
 
 WidgetBoxTreeView::Category WidgetBoxTreeView::domToCategory(const QDomElement &cat_elt) const
 {
-    Category result(cat_elt.attribute(QLatin1String("name")));
-    if (cat_elt.attribute(QLatin1String("type"))
-                                        == QLatin1String("scratchpad"))
+    QString name = cat_elt.attribute(QLatin1String("name"));
+
+    if (name == QLatin1String("[invisible]"))
+        return Category();
+
+    Category result(name);
+
+    if (cat_elt.attribute(QLatin1String("type")) == QLatin1String("scratchpad"))
         result.setType(Category::Scratchpad);
 
     QDomElement widget_elt = cat_elt.firstChildElement();
@@ -566,6 +577,8 @@ WidgetBoxTreeView::CategoryList WidgetBoxTreeView::loadCustomCategoryList() cons
         QString cat_name = c->group();
         if (cat_name.isEmpty())
             cat_name = tr("Custom Widgets");
+        else if (cat_name == QLatin1String("[invisible]"))
+            continue;
 
         int idx = findCategory(cat_name, result);
         if (idx == -1) {
@@ -578,11 +591,11 @@ WidgetBoxTreeView::CategoryList WidgetBoxTreeView::loadCustomCategoryList() cons
 
         QString icon_name;
         if (icon.isNull())
-	    icon_name = QLatin1String("qtlogo.png");
-	else {
-	    icon_name = QLatin1String("__qt_icon__") + c->name();
-	    m_pluginIcons.insert(icon_name, icon);
-	}
+            icon_name = QLatin1String("qtlogo.png");
+        else {
+            icon_name = QLatin1String("__qt_icon__") + c->name();
+            m_pluginIcons.insert(icon_name, icon);
+        }
 
         cat.addWidget(Widget(c->name(), dom_xml, icon_name, Widget::Custom));
     }
@@ -594,6 +607,9 @@ QTreeWidgetItem *WidgetBoxTreeView::widgetToItem(const Widget &wgt,
                                                     QTreeWidgetItem *parent,
                                                     bool editable)
 {
+    if (!editable && m_widgetNames.contains(wgt.name()))
+        return 0;
+
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
@@ -603,6 +619,9 @@ QTreeWidgetItem *WidgetBoxTreeView::widgetToItem(const Widget &wgt,
 
     bool block = blockSignals(true);
     item->setText(0, wgt.name());
+
+    if (!editable)
+        m_widgetNames.append(wgt.name());
 
     QIcon icon;
     if (icon_name.startsWith("__qt_icon__"))
@@ -769,7 +788,9 @@ void WidgetBoxTreeView::updateItemData(QTreeWidgetItem *item)
     Widget widget = qvariant_cast<Widget>(item->data(0, Qt::UserRole));
 
     if (item->text(0).isEmpty()) {
-        item->setText(0, widget.name());
+        QString widgetName = widget.name();
+        if (!widgetName.isEmpty())
+            item->setText(0, widgetName);
         return;
     }
 
@@ -856,7 +877,7 @@ void WidgetBoxTreeView::dropWidgets(const QList<QDesignerDnDItemInterface*> &ite
 ** WidgetBox
 */
 
-WidgetBox::WidgetBox(QDesignerFormEditorInterface *core, QWidget *parent, Qt::WFlags flags)
+WidgetBox::WidgetBox(QDesignerFormEditorInterface *core, QWidget *parent, Qt::WindowFlags flags)
     : QDesignerWidgetBoxInterface(parent, flags), m_core(core)
 {
     m_core = core;

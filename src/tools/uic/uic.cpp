@@ -27,13 +27,22 @@
 #include "option.h"
 #include "treewalker.h"
 #include "validator.h"
-#include "writeincludes.h"
-#include "writedeclaration.h"
+
+#ifdef QT_UIC_CPP_GENERATOR
+#include "cppwriteincludes.h"
+#include "cppwritedeclaration.h"
+#endif
+
+#ifdef QT_UIC_JAVA_GENERATOR
+#include "javawriteincludes.h"
+#include "javawritedeclaration.h"
+#endif
 
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QRegExp>
 #include <QTextStream>
+#include <QDateTime>
 
 #if defined Q_WS_WIN
 #include <qt_windows.h>
@@ -114,6 +123,15 @@ void Uic::writeCopyrightHeader(DomUI *ui)
     QString comment = ui->elementComment();
     if (comment.size())
         out << "/*\n" << comment << "\n*/\n\n";
+
+	out << "/********************************************************************************\n";
+	out << "** Form generated from reading ui file '" << QFileInfo(opt.inputFile).fileName() << "'\n";
+	out << "**\n";
+	out << "** Created: " << QDateTime::currentDateTime().toString() << "\n";
+	out << "**      " << QString("by: Qt User Interface Compiler version %1\n").arg(QT_VERSION_STR);
+	out << "**\n";
+	out << "** WARNING! All changes made in this file will be lost when recompiling ui file!\n";
+	out << "********************************************************************************/\n\n";
 }
 
 bool Uic::write(QIODevice *in)
@@ -121,6 +139,11 @@ bool Uic::write(QIODevice *in)
     QDomDocument doc;
     if (!doc.setContent(in))
         return false;
+
+    if (option().generator == Option::JavaGenerator) {
+         // the Java generator ignores header protection
+        opt.headerProtection = false;
+    }
 
     QDomElement root = doc.firstChild().toElement();
     DomUI *ui = new DomUI();
@@ -134,14 +157,32 @@ bool Uic::write(QIODevice *in)
         return false;
     }
 
-    bool rtn = write(ui);
+    bool rtn = false;
+
+    if (option().generator == Option::JavaGenerator) {
+#ifdef QT_UIC_JAVA_GENERATOR
+        rtn = jwrite (ui);
+#else
+        fprintf(stderr, "uic: option to generate java code not compiled in\n");
+#endif
+    } else {
+#ifdef QT_UIC_CPP_GENERATOR
+        rtn = write (ui);
+#else
+        fprintf(stderr, "uic: option to generate cpp code not compiled in\n");
+#endif
+    }
+
     delete ui;
 
     return rtn;
 }
 
+#ifdef QT_UIC_CPP_GENERATOR
 bool Uic::write(DomUI *ui)
 {
+    using namespace CPP;
+
     if (!ui || !ui->elementWidget())
         return false;
 
@@ -171,6 +212,37 @@ bool Uic::write(DomUI *ui)
 
     return true;
 }
+#endif
+
+#ifdef QT_UIC_JAVA_GENERATOR
+bool Uic::jwrite(DomUI *ui)
+{
+    using namespace Java;
+
+    if (!ui || !ui->elementWidget())
+        return false;
+
+    if (opt.copyrightHeader)
+        writeCopyrightHeader(ui);
+
+    pixFunction = ui->elementPixmapFunction();
+    if (pixFunction == QLatin1String("QPixmap::fromMimeSource"))
+        pixFunction = QLatin1String("qPixmapFromMimeSource");
+
+    externalPix = ui->elementImages() == 0;
+
+    info.acceptUI(ui);
+    cWidgetsInfo.acceptUI(ui);
+    WriteIncludes(this).acceptUI(ui);
+
+    Validator(this).acceptUI(ui);
+    WriteDeclaration(this).acceptUI(ui);
+
+    return true;
+}
+#endif
+
+#ifdef QT_UIC_CPP_GENERATOR
 
 void Uic::writeHeaderProtectionStart()
 {
@@ -184,6 +256,7 @@ void Uic::writeHeaderProtectionEnd()
     QString h = drv->headerFileName();
     out << "#endif // " << h << "\n";
 }
+#endif
 
 bool Uic::isMainWindow(const QString &className) const
 {

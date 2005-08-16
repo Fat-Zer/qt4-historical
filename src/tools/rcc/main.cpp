@@ -54,10 +54,9 @@ bool processResourceFile(const QStringList &filenamesIn, const QString &filename
     FILE *out_fd = stdout;
     if (!filenameOut.isEmpty() && filenameOut != QLatin1String("-")) {
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-		if (fopen_s(&out_fd, filenameOut.toLocal8Bit().constData(), "w")) {
+        if (fopen_s(&out_fd, filenameOut.toLocal8Bit().constData(), writeBinary ? "wb": "w")) {
 #else
-        out_fd = fopen(filenameOut.toLocal8Bit().constData(), "w");
-        if(!out_fd) {
+        if(!(out_fd = fopen(filenameOut.toLocal8Bit().constData(), writeBinary ? "wb": "w"))) {
 #endif
             fprintf(stderr, "Unable to open %s for writing\n", filenameOut.toLatin1().constData());
             return false;
@@ -87,14 +86,15 @@ int showHelp(const char *argv0, const QString &error)
         fprintf(stderr, "%s: %s\n", argv0, error.toLatin1().constData());
     fprintf(stderr, "Usage: %s  [options] <inputs>\n\n"
             "Options:\n"
-            "\t-o file           Write output to file rather than stdout\n"
-            "\t-name name        Create an external initialization function with name\n"
-            "\t-threshold level  Threshold to consider compressing files\n"
-            "\t-compress level   Compress input files by level\n"
-            "\t-root path        Prefix resource access path with root path\n"
-            "\t-no-compress      Disable all compression\n"
-            "\t-version          Display version\n"
-            "\t-help             Display this information\n",
+            "  -o file           write output to file rather than stdout\n"
+            "  -name name        create an external initialization function with name\n"
+            "  -threshold level  threshold to consider compressing files\n"
+            "  -compress level   compress input files by level\n"
+            "  -root path        prefix resource access path with root path\n"
+            "  -no-compress      disable all compression\n"
+            "  -binary           output a binary file for use as a dynamic resource\n"
+            "  -version          display version\n"
+            "  -help             display this information\n",
             argv0);
     return 1;
 }
@@ -148,8 +148,8 @@ int main(int argc, char *argv[])
                 verbose = true;
             } else if(opt == "list") {
                 list = true;
-            } else if(opt == "version") {
-                fprintf(stderr, "Resource Compiler for Qt version %s\n", QT_VERSION_STR);
+            } else if(opt == "version" || opt == "v") {
+                fprintf(stderr, "Qt Resource Compiler version %s\n", QT_VERSION_STR);
                 return 1;
             } else if(opt == "help" || opt == "h") {
                 helpRequested = true;

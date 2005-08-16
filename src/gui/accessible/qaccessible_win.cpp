@@ -30,6 +30,7 @@
 #include "qmessagebox.h" // ### dependency
 #include "qt_windows.h"
 #include "qwidget.h"
+#include "qsettings.h"
 
 #include <winable.h>
 #include <oleacc.h>
@@ -88,14 +89,19 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
             {
                 soundName = "SystemAsterisk";
             }
+
         }
         break;
     default:
         break;
     }
 
-    if (soundName.size())
-        PlaySoundA(soundName.constData(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
+    if (soundName.size()) {
+        QSettings settings("HKEY_CURRENT_USER\\AppEvents\\Schemes\\Apps\\.Default\\" + soundName, QSettings::NativeFormat);
+        QString file = settings.value(".Current/.").toString();
+        if (!file.isEmpty())
+            PlaySoundA(soundName.constData(), 0, SND_ALIAS | SND_ASYNC | SND_NODEFAULT | SND_NOWAIT );
+    }
 
     if (!isActive())
         return;
@@ -145,8 +151,10 @@ void QAccessible::updateAccessibility(QObject *o, int who, Event reason)
         }
     }
 
-    if (reason != MenuCommand) // MenuCommand is faked
+    if (reason != MenuCommand) { // MenuCommand is faked
+        Q_ASSERT(w->testAttribute(Qt::WA_WState_Created));
         ptrNotifyWinEvent(reason, w->winId(), OBJID_CLIENT, who);
+    }
 }
 
 void QAccessible::setRootObject(QObject *o)

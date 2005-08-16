@@ -63,7 +63,7 @@ OBJS        = project.obj main.obj makefile.obj unixmake.obj unixmake2.obj mingw
 
 !IFNDEF QMAKE_OPENSOURCE_EDITION
 OBJS        = $(OBJS) borland_bmake.obj msvc_nmake.obj msvc_dsp.obj msvc_vcproj.obj \
-              msvc_objectmodel.obj metrowerks_xml.obj
+              msvc_objectmodel.obj
 !ELSE
 CFLAGS      = $(CFLAGS) -DQMAKE_OPENSOURCE_EDITION
 !ENDIF
@@ -87,7 +87,6 @@ QTOBJS= \
 	qglobal.obj \
 	qhash.obj \
 	qiodevice.obj \
-	qinternal.obj \
 	qlistdata.obj \
 	qlocale.obj \
 	qmap.obj \
@@ -101,6 +100,7 @@ QTOBJS= \
 	quuid.obj \
 	qvector.obj \
 	qsettings.obj \
+	qlibraryinfo.obj \
 	qvariant.obj \
         qurl.obj \
 	qsettings_win.obj \
@@ -130,7 +130,6 @@ clean::
 	-del qglobal.obj
 	-del qhash.obj
 	-del qiodevice.obj
-	-del qinternal.obj
 	-del qlistdata.obj
 	-del qlocale.obj
 	-del qmap.obj
@@ -144,6 +143,7 @@ clean::
 	-del quuid.obj
 	-del qvector.obj
 	-del qsettings.obj
+	-del qlibraryinfo.obj
 	-del qvariant.obj
         -del qurl.obj
 	-del qsettings_win.obj
@@ -168,7 +168,6 @@ clean::
 	-del msvc_dsp.obj
 	-del msvc_vcproj.obj
 	-del msvc_objectmodel.obj
-	-del metrowerks_xml.obj
 	-del pbuilder_pbx.obj
 	-del vc60.pdb
 	-del vc70.pdb
@@ -197,6 +196,9 @@ qsettings_win.obj: ..\src\corelib\io\qsettings_win.cpp
 qsettings.obj: ..\src\corelib\io\qsettings.cpp
 	$(CXX) $(CXXFLAGS) ..\src\corelib\io\qsettings.cpp
 
+qlibraryinfo.obj: ..\src\corelib\global\qlibraryinfo.cpp
+	$(CXX) $(CXXFLAGS) ..\src\corelib\global\qlibraryinfo.cpp
+
 qvariant.obj: ..\src\corelib\kernel\qvariant.cpp
 	$(CXX) $(CXXFLAGS) ..\src\corelib\kernel\qvariant.cpp
 
@@ -211,9 +213,6 @@ qdatastream.obj: ..\src\corelib\io\qdatastream.cpp
 
 qiodevice.obj: ..\src\corelib\io\qiodevice.cpp
 	$(CXX) $(CXXFLAGS) ..\src\corelib\io\qiodevice.cpp
-
-qinternal.obj: ..\src\corelib\kernel\qinternal.cpp
-	$(CXX) $(CXXFLAGS) ..\src\corelib\kernel\qinternal.cpp
 
 qglobal.obj: ..\src\corelib\global\qglobal.cpp
 	$(CXX) $(CXXFLAGS) ..\src\corelib\global\qglobal.cpp
@@ -352,9 +351,6 @@ property.obj: property.cpp project.h option.h
 
 projectgenerator.obj: generators/projectgenerator.cpp
 	$(CXX) $(CXXFLAGS) generators/projectgenerator.cpp
-
-metrowerks_xml.obj: generators/mac/metrowerks_xml.cpp
-	$(CXX) $(CXXFLAGS) generators/mac/metrowerks_xml.cpp
 
 pbuilder_pbx.obj: generators/mac/pbuilder_pbx.cpp
 	$(CXX) $(CXXFLAGS) generators/mac/pbuilder_pbx.cpp

@@ -11,6 +11,7 @@ QT += xml qt3support
 DESTDIR = ../../../bin
 
 include(../uic/uic.pri)
+include(../uic/cpp/cpp.pri)
 
 INCLUDEPATH += .
 
@@ -34,7 +35,7 @@ SOURCES += main.cpp \
            deps.cpp
 
 DEFINES -= QT_COMPAT_WARNINGS
-DEFINES += QT_COMPAT
+DEFINES += QT_COMPAT QT_UIC
 
 target.path=$$[QT_INSTALL_BINS]
 INSTALLS += target

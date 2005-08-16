@@ -36,6 +36,7 @@ QT_MODULE(Gui)
 class QValidator;
 class QMenu;
 class QLineEditPrivate;
+class QCompleter;
 
 class Q_GUI_EXPORT QLineEdit : public QWidget
 {
@@ -79,11 +80,7 @@ public:
     void setFrame(bool);
     bool hasFrame() const;
 
-    enum EchoMode { Normal, NoEcho, Password 
-#ifdef Q_WS_QWS
-    ,PasswordEchoOnEdit
-#endif
-    };
+    enum EchoMode { Normal, NoEcho, Password, PasswordEchoOnEdit };
     EchoMode echoMode() const;
     void setEchoMode(EchoMode);
 
@@ -94,7 +91,12 @@ public:
     void setValidator(const QValidator *);
     const QValidator * validator() const;
 #endif
-    
+
+#ifndef QT_NO_COMPLETER
+    void setCompleter(QCompleter *completer);
+    QCompleter *completer() const;
+#endif
+
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
@@ -147,10 +149,10 @@ public Q_SLOTS:
 public:
     void deselect();
     void insert(const QString &);
-#ifndef QT_NO_MENU
+#ifndef QT_NO_CONTEXTMENU
     QMenu *createStandardContextMenu();
 #endif
-    
+
 Q_SIGNALS:
     void textChanged(const QString &);
     void textEdited(const QString &);
@@ -175,7 +177,7 @@ protected:
     void dropEvent(QDropEvent *);
 #endif
     void changeEvent(QEvent *);
-#ifndef QT_NO_MENU
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *);
 #endif
 #ifdef QT3_SUPPORT
@@ -205,6 +207,26 @@ public:
     QT3_SUPPORT int characterAt(int, QChar*) const;
     QT3_SUPPORT bool getSelection(int *, int *);
 
+    QT3_SUPPORT void setFrameRect(QRect) {}
+    QT3_SUPPORT QRect frameRect() const { return QRect(); }
+    enum DummyFrame { Box, Sunken, Plain, Raised, MShadow, NoFrame, Panel, StyledPanel, 
+                      HLine, VLine, GroupBoxPanel, WinPanel, ToolBarPanel, MenuBarPanel, 
+                      PopupPanel, LineEditPanel, TabWidgetPanel, MShape };
+    QT3_SUPPORT void setFrameShadow(DummyFrame) {}
+    QT3_SUPPORT DummyFrame frameShadow() const { return Plain; }
+    QT3_SUPPORT void setFrameShape(DummyFrame) {}
+    QT3_SUPPORT DummyFrame frameShape() const { return NoFrame; }
+    QT3_SUPPORT void setFrameStyle(int) {}
+    QT3_SUPPORT int frameStyle() const  { return 0; }
+    QT3_SUPPORT int frameWidth() const { return 0; }
+    QT3_SUPPORT void setLineWidth(int) {}
+    QT3_SUPPORT int lineWidth() const { return 0; }    
+    QT3_SUPPORT void setMargin(int margin) { setContentsMargins(margin, margin, margin, margin); }
+    QT3_SUPPORT int margin() const 
+    { int margin; int dummy; getContentsMargins(&margin, &dummy, &dummy, &dummy);  return margin; }    
+    QT3_SUPPORT void setMidLineWidth(int) {}
+    QT3_SUPPORT int midLineWidth() const { return 0; }
+
 Q_SIGNALS:
     QT_MOC_COMPAT void lostFocus();
 #endif
@@ -214,6 +236,9 @@ private:
     Q_DECLARE_PRIVATE(QLineEdit)
     Q_PRIVATE_SLOT(d_func(), void _q_clipboardChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_deleteSelected())
+#ifndef QT_NO_COMPLETER
+    Q_PRIVATE_SLOT(d_func(), void _q_completionHighlighted(QString))
+#endif
 };
 
 #endif // QT_NO_LINEEDIT

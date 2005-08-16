@@ -48,21 +48,24 @@ private:
     ~QClipboard();
 
 public:
-    enum Mode { Clipboard, Selection };
+    enum Mode { Clipboard, Selection, FindBuffer, LastMode = FindBuffer };
 
     void clear(Mode mode = Clipboard);
 
     bool supportsSelection() const;
+    bool supportsFindBuffer() const;
+
     bool ownsSelection() const;
     bool ownsClipboard() const;
+    bool ownsFindBuffer() const;
 
     QString text(Mode mode = Clipboard) const;
     QString text(QString& subtype, Mode mode = Clipboard) const;
     void setText(const QString &, Mode mode = Clipboard);
 
 #ifdef QT3_SUPPORT
-    QT3_SUPPORT QMimeSource *data(Mode mode  = Clipboard) const;
-    QT3_SUPPORT void setData(QMimeSource*, Mode mode  = Clipboard);
+    QT3_SUPPORT QMimeSource *data(Mode mode = Clipboard) const;
+    QT3_SUPPORT void setData(QMimeSource*, Mode mode = Clipboard);
 #endif
     const QMimeData *mimeData(Mode mode = Clipboard ) const;
     void setMimeData(QMimeData *data, Mode mode = Clipboard);
@@ -73,9 +76,10 @@ public:
     void setPixmap(const QPixmap &, Mode mode  = Clipboard);
 
 Q_SIGNALS:
+    void changed(QClipboard::Mode mode);
     void selectionChanged();
+    void findBufferChanged();
     void dataChanged();
-
 private Q_SLOTS:
     void ownerDestroyed();
 
@@ -92,10 +96,9 @@ protected:
 private:
     Q_DISABLE_COPY(QClipboard)
 
-#if defined(Q_WS_MAC)
-    void loadScrap(bool convert);
-    void saveScrap();
-#endif
+    bool supportsMode(Mode mode) const;
+    bool ownsMode(Mode mode) const;
+    void emitChanged(Mode mode);
 };
 
 #endif // QT_NO_CLIPBOARD

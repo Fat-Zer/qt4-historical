@@ -57,12 +57,49 @@ public:
 
     inline void detach() { q_hash.detach(); }
     inline bool isDetached() const { return q_hash.isDetached(); }
+    inline void setSharable(bool sharable) { q_hash.setSharable(sharable); }
 
     inline void clear() { q_hash.clear(); }
 
     inline bool remove(const T &value) { return q_hash.remove(value) != 0; }
 
     inline bool contains(const T &value) const { return q_hash.contains(value); }
+
+    class const_iterator;
+
+    class iterator
+    {
+        typedef QHash<T, QHashDummyValue> Hash;
+        typename Hash::iterator i;
+
+    public:
+        typedef std::bidirectional_iterator_tag iterator_category;
+        typedef ptrdiff_t difference_type;
+        typedef T value_type;
+        typedef const T *pointer;
+        typedef const T &reference;
+
+        inline iterator() {}
+        inline iterator(typename Hash::iterator o) : i(o) {}
+        inline iterator(const iterator &o) : i(o.i) {}
+        inline iterator &operator=(const iterator &o) { i = o.i; return *this; }
+        inline const T &operator*() const { return i.key(); }
+        inline const T *operator->() const { return &i.key(); }
+        inline bool operator==(const iterator &o) const { return i == o.i; }
+        inline bool operator!=(const iterator &o) const { return i != o.i; }
+        inline bool operator==(const const_iterator &o) const
+            { return i == reinterpret_cast<const iterator &>(o).i; }
+        inline bool operator!=(const const_iterator &o) const
+            { return i != reinterpret_cast<const iterator &>(o).i; }
+        inline iterator &operator++() { ++i; return *this; }
+        inline iterator operator++(int) { iterator r = *this; ++i; return r; }
+        inline iterator &operator--() { --i; return *this; }
+        inline iterator operator--(int) { iterator r = *this; --i; return r; }
+        inline iterator operator+(int j) const { return i + j; }
+        inline iterator operator-(int j) const { return i - j; }
+        inline iterator &operator+=(int j) { i += j; return *this; }
+        inline iterator &operator-=(int j) { i -= j; return *this; }
+    };
 
     class const_iterator
     {
@@ -79,6 +116,8 @@ public:
         inline const_iterator() {}
         inline const_iterator(typename Hash::const_iterator o) : i(o) {}
         inline const_iterator(const const_iterator &o) : i(o.i) {}
+        inline const_iterator(const iterator &o)
+            : i(reinterpret_cast<const const_iterator &>(o).i) {}
         inline const_iterator &operator=(const const_iterator &o) { i = o.i; return *this; }
         inline const T &operator*() const { return i.key(); }
         inline const T *operator->() const { return &i.key(); }
@@ -95,22 +134,39 @@ public:
     };
 
     // STL style
+    inline iterator begin() { return q_hash.begin(); }
     inline const_iterator begin() const { return q_hash.begin(); }
     inline const_iterator constBegin() const { return q_hash.constBegin(); }
+    inline iterator end() { return q_hash.end(); }
     inline const_iterator end() const { return q_hash.end(); }
     inline const_iterator constEnd() const { return q_hash.constEnd(); }
+    iterator erase(iterator i)
+        { return q_hash.erase(reinterpret_cast<typename Hash::iterator &>(i)); }
 
     // more Qt
+    typedef iterator Iterator;
     typedef const_iterator ConstIterator;
     inline int count() const { return q_hash.count(); }
-    inline const_iterator insert(const T &value)
+    inline const_iterator insert(const T &value) // ### should return an 'iterator' in Qt 5
         { return static_cast<typename Hash::const_iterator>(q_hash.insert(value,
                                                                           QHashDummyValue())); }
+    iterator find(const T &value) { return q_hash.find(value); }
+    const_iterator find(const T &value) const { return q_hash.find(value); }
+    inline const_iterator constFind(const T &value) const { return find(value); }
     QSet<T> &unite(const QSet<T> &other);
     QSet<T> &intersect(const QSet<T> &other);
     QSet<T> &subtract(const QSet<T> &other);
 
     // STL compatibility
+    typedef T key_type;
+    typedef T value_type;
+    typedef value_type *pointer;
+    typedef const value_type *const_pointer;
+    typedef value_type &reference;
+    typedef const value_type &const_reference;
+    typedef ptrdiff_t difference_type;
+    typedef int size_type;
+
     inline bool empty() const { return isEmpty(); }
 
     // comfort
@@ -220,6 +276,41 @@ QList<T> QList<T>::fromSet(const QSet<T> &set)
 }
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(Set)
+
+template <typename T>
+class QMutableSetIterator
+{
+    typedef typename QSet<T>::iterator iterator;
+    QSet<T> *c;
+    iterator i, n;
+    inline bool item_exists() const { return n != c->constEnd(); }
+
+public:
+    inline QMutableSetIterator(QSet<T> &container)
+        : c(&container)
+    { c->setSharable(false); i = c->begin(); n = c->end(); }
+    inline ~QMutableSetIterator()
+    { c->setSharable(true); }
+    inline QMutableSetIterator &operator=(QSet<T> &container)
+    { c->setSharable(true); c = &container; c->setSharable(false);
+      i = c->begin(); n = c->end(); return *this; }
+    inline void toFront() { i = c->begin(); n = c->end(); }
+    inline void toBack() { i = c->end(); n = i; }
+    inline bool hasNext() const { return c->constEnd() != i; }
+    inline const T &next() { n = i++; return *n; }
+    inline const T &peekNext() const { return *i; }
+    inline bool hasPrevious() const { return c->constBegin() != i; }
+    inline const T &previous() { n = --i; return *n; }
+    inline const T &peekPrevious() const { iterator p = i; return *--p; }
+    inline void remove()
+    { if (c->constEnd() != n) { i = c->erase(n); n = c->end(); } }
+    inline const T &value() const { Q_ASSERT(item_exists()); return *n; }
+    inline bool findNext(const T &t)
+    { while (c->constEnd() != (n = i)) if (*i++ == t) return true; return false; }
+    inline bool findPrevious(const T &t)
+    { while (c->constBegin() != i) if (*(n = --i) == t) return true;
+      n = c->end(); return false;  }
+};
 
 QT_END_HEADER
 

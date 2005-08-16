@@ -56,8 +56,8 @@
     to construct the shortcut with a key sequence. For example:
 
     \code
-        shortcut = QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")),
-                             parent);
+        shortcut = new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")),
+                                 parent);
     \endcode
 
     When the user types the \l{QKeySequence}{key sequence}
@@ -109,10 +109,11 @@ class QShortcutPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QShortcut)
 public:
-    QShortcutPrivate() : sc_context(Qt::WindowShortcut), sc_enabled(true), sc_id(0) {}
+    QShortcutPrivate() : sc_context(Qt::WindowShortcut), sc_enabled(true), sc_autorepeat(true), sc_id(0) {}
     QKeySequence sc_sequence;
     Qt::ShortcutContext sc_context;
     bool sc_enabled;
+    bool sc_autorepeat;
     int sc_id;
     QString sc_whatsthis;
     void redoGrab(QShortcutMap &map);
@@ -123,7 +124,7 @@ void QShortcutPrivate::redoGrab(QShortcutMap &map)
     Q_Q(QShortcut);
     QWidget *parent = q->parentWidget();
     if (!parent) {
-        qWarning("QShortcut: no widget parent defined");
+        qWarning("QShortcut: No widget parent defined");
         return;
     }
 
@@ -134,6 +135,8 @@ void QShortcutPrivate::redoGrab(QShortcutMap &map)
     sc_id = map.addShortcut(q, sc_sequence, sc_context);
     if (!sc_enabled)
         map.setShortcutEnabled(false, sc_id, q);
+    if (!sc_autorepeat)
+        map.setShortcutAutoRepeat(false, sc_id, q);
 }
 
 /*!
@@ -290,6 +293,31 @@ QString QShortcut::whatsThis() const
 {
     Q_D(const QShortcut);
     return d->sc_whatsthis;
+}
+
+/*!
+    \property QShortcut::autoRepeat
+    \brief whether the shortcut can auto repeat
+    \since 4.2
+
+    If true, the shortcut will auto repeat when the keyboard shortcut
+    combination is held down, provided that keyboard auto repeat is
+    enabled on the system.
+    The default value is true.
+*/
+void QShortcut::setAutoRepeat(bool on)
+{
+    Q_D(QShortcut);
+    if (d->sc_autorepeat == on)
+        return;
+    d->sc_autorepeat = on;
+    qApp->d_func()->shortcutMap.setShortcutAutoRepeat(on, d->sc_id, this);
+}
+
+bool QShortcut::autoRepeat() const
+{
+    Q_D(const QShortcut);
+    return d->sc_autorepeat;
 }
 
 /*!

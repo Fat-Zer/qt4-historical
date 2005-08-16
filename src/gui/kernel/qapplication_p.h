@@ -45,6 +45,9 @@
 #include "QtCore/qbasictimer.h"
 #include "private/qcoreapplication_p.h"
 #include "private/qshortcutmap_p.h"
+#ifdef Q_WS_QWS
+#include "QtGui/qscreen_qws.h"
+#endif
 
 class QWidget;
 class QObject;
@@ -70,6 +73,7 @@ extern QSysInfo::MacVersion qt_macver;
 #endif
 #if defined(Q_WS_QWS)
 class QWSManager;
+class QDirectPainter;
 #endif
 
 #ifndef QT_NO_TABLET
@@ -96,6 +100,12 @@ struct QTabletDeviceData
     int xinput_key_release;
     int xinput_button_press;
     int xinput_button_release;
+    int xinput_proximity_in;
+    int xinput_proximity_out;
+#elif defined(Q_WS_WIN)
+    qint64 llId;
+    int currentDevice;
+    int currentPointerType;
 #endif
 };
 
@@ -185,6 +195,17 @@ public:
     static void x11_initialize_style();
 #endif
 
+    enum KeyPlatform {
+        KB_Win = 1,
+        KB_Mac = 2,
+        KB_X11 = 4,
+        KB_KDE = 8,
+        KB_Gnome = 16,
+        KB_CDE = 32,
+        KB_All = 0xffff
+    };
+
+    static uint currentPlatform();
     bool inPopupMode() const;
     void closePopup(QWidget *popup);
     void openPopup(QWidget *popup);
@@ -275,15 +296,17 @@ public:
 #ifdef Q_WS_QWS
     QPointer<QWSManager> last_manager;
 # ifndef QT_NO_DIRECTPAINTER
-    int directPainterID;
-    bool seenRegionEvent;
-    QRegion directPainterRegion;
+    QMap<WId, QDirectPainter *> *directPainters;
 # endif
+    QRect maxWindowRect(const QScreen *screen) const { return maxWindowRects[screen]; }
+    void setMaxWindowRect(const QScreen *screen, const QRect &rect);
 #endif
 
     static QApplicationPrivate *instance() { return self; }
 
     static QString *styleOverride;
+
+    static int app_compile_version;
 
 #ifdef QT_KEYPAD_NAVIGATION
     static bool keypadNavigation;
@@ -291,8 +314,13 @@ public:
 #endif
 
     void _q_tryEmitLastWindowClosed();
+    static QString styleSheet;
 
 private:
+#ifdef Q_WS_QWS
+    QMap<const QScreen*, QRect> maxWindowRects;
+#endif
+
     static QApplicationPrivate *self;
 };
 

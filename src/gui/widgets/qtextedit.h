@@ -27,12 +27,12 @@
 #include <QtGui/qabstractscrollarea.h>
 #include <QtGui/qtextdocument.h>
 #include <QtGui/qtextoption.h>
+#include <QtGui/qtextcursor.h>
+#include <QtGui/qtextformat.h>
 
 #ifndef QT_NO_TEXTEDIT
 
 #ifdef QT3_SUPPORT
-#include <QtGui/qtextcursor.h>
-#include <QtGui/qtextformat.h>
 #include <QtGui/qtextobject.h>
 #include <QtGui/qtextlayout.h>
 #endif
@@ -41,11 +41,8 @@ QT_BEGIN_HEADER
 
 QT_MODULE(Gui)
 
-class QTextCharFormat;
 class QStyleSheet;
 class QTextDocument;
-class QTextCursor;
-class QTextBlockFormat;
 class QMenu;
 class QTextEditPrivate;
 class QMimeData;
@@ -68,6 +65,8 @@ class Q_GUI_EXPORT QTextEdit : public QAbstractScrollArea
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
     Q_PROPERTY(int tabStopWidth READ tabStopWidth WRITE setTabStopWidth)
     Q_PROPERTY(bool acceptRichText READ acceptRichText WRITE setAcceptRichText)
+    Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
+    Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags WRITE setTextInteractionFlags)
 public:
     enum LineWrapMode {
         NoWrap,
@@ -84,6 +83,7 @@ public:
 
     Q_DECLARE_FLAGS(AutoFormatting, AutoFormattingFlag)
 
+#if defined(QT3_SUPPORT)
     enum CursorAction {
         MoveBackward,
         MoveForward,
@@ -97,12 +97,13 @@ public:
         MoveEnd,
         MovePageUp,
         MovePageDown
-#if defined(QT3_SUPPORT) && !defined(Q_MOC_RUN)
+#if !defined(Q_MOC_RUN)
         ,
         MovePgUp = MovePageUp,
         MovePgDown = MovePageDown
 #endif
     };
+#endif
 
     explicit QTextEdit(QWidget *parent = 0);
     explicit QTextEdit(const QString &text, QWidget *parent = 0);
@@ -116,6 +117,9 @@ public:
 
     bool isReadOnly() const;
     void setReadOnly(bool ro);
+
+    void setTextInteractionFlags(Qt::TextInteractionFlags flags);
+    Qt::TextInteractionFlags textInteractionFlags() const;
 
     qreal fontPointSize() const;
     QString fontFamily() const;
@@ -166,10 +170,10 @@ public:
     void ensureCursorVisible();
 
     virtual QVariant loadResource(int type, const QUrl &name);
-#ifndef QT_NO_MENU
+#ifndef QT_NO_CONTEXTMENU
     QMenu *createStandardContextMenu();
 #endif
-    
+
     QTextCursor cursorForPosition(const QPoint &pos) const;
     QRect cursorRect(const QTextCursor &cursor) const;
     QRect cursorRect() const;
@@ -181,9 +185,24 @@ public:
 
     int tabStopWidth() const;
     void setTabStopWidth(int width);
-    
+
+    int cursorWidth() const;
+    void setCursorWidth(int width);
+
     bool acceptRichText() const;
     void setAcceptRichText(bool accept);
+
+    struct ExtraSelection
+    {
+        QTextCursor cursor;
+        QTextCharFormat format;
+    };
+    void setExtraSelections(const QList<ExtraSelection> &selections);
+    QList<ExtraSelection> extraSelections() const;
+
+    void moveCursor(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
+
+    bool canPaste() const;
 
 public Q_SLOTS:
     void setFontPointSize(qreal s);
@@ -197,13 +216,17 @@ public Q_SLOTS:
 
     void setPlainText(const QString &text);
     void setHtml(const QString &text);
+    void setText(const QString &text);
 
 #ifndef QT_NO_CLIPBOARD
     void cut();
     void copy();
     void paste();
 #endif
-    
+
+    void undo();
+    void redo();
+
     void clear();
     void selectAll();
 
@@ -230,9 +253,7 @@ protected:
     virtual bool event(QEvent *e);
     virtual void timerEvent(QTimerEvent *e);
     virtual void keyPressEvent(QKeyEvent *e);
-#ifdef QT_KEYPAD_NAVIGATION
     virtual void keyReleaseEvent(QKeyEvent *e);
-#endif
     virtual void resizeEvent(QResizeEvent *e);
     virtual void paintEvent(QPaintEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
@@ -254,7 +275,7 @@ protected:
 #ifndef QT_NO_WHEELEVENT
     virtual void wheelEvent(QWheelEvent *e);
 #endif
-    
+
     virtual QMimeData *createMimeDataFromSelection() const;
     virtual bool canInsertFromMimeData(const QMimeData *source) const;
     virtual void insertFromMimeData(const QMimeData *source);
@@ -286,9 +307,7 @@ public:
     inline QT3_SUPPORT void sync() {}
 
     QT3_SUPPORT void moveCursor(CursorAction action, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
-    inline QT3_SUPPORT void moveCursor(CursorAction action, bool select) {
-        moveCursor(action, select ? QTextCursor::KeepAnchor : QTextCursor::MoveAnchor);
-    }
+    QT3_SUPPORT void moveCursor(CursorAction action, bool select);
 
     enum KeyboardAction {
         ActionBackspace,
@@ -301,7 +320,6 @@ public:
 
     QT3_SUPPORT void doKeyboardAction(KeyboardAction action);
 
-    QT3_SUPPORT void setText(const QString &text);
     QT3_SUPPORT QString text() const;
     QT3_SUPPORT void setTextFormat(Qt::TextFormat);
     QT3_SUPPORT Qt::TextFormat textFormat() const;
@@ -355,19 +373,16 @@ public Q_SLOTS:
 private:
     Q_DISABLE_COPY(QTextEdit)
     Q_PRIVATE_SLOT(d_func(), void _q_repaintContents(const QRectF &r))
-    Q_PRIVATE_SLOT(d_func(), void _q_updateCurrentCharFormatAndSelection())
+    Q_PRIVATE_SLOT(d_func(), void _q_currentCharFormatChanged(const QTextCharFormat &))
     Q_PRIVATE_SLOT(d_func(), void _q_adjustScrollbars())
-    Q_PRIVATE_SLOT(d_func(), void _q_emitCursorPosChanged(const QTextCursor &))
-    Q_PRIVATE_SLOT(d_func(), void _q_deleteSelected())
-    // undo and redo are semi-public slots to keep Qt3 code working, don't use _q_ prefix.
-    // Will be made public in a later release
-    Q_PRIVATE_SLOT(d_func(), void undo())
-    Q_PRIVATE_SLOT(d_func(), void redo())
-    Q_PRIVATE_SLOT(d_func(), void _q_setCursorAfterUndoRedo(int, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_ensureVisible(const QRectF &))
+    friend class QTextEditControl;
 };
 
-#endif // QT_NO_TEXTEDIT
+Q_DECLARE_OPERATORS_FOR_FLAGS(QTextEdit::AutoFormatting)
 
 QT_END_HEADER
+
+#endif // QT_NO_TEXTEDIT
 
 #endif // QTEXTEDIT_H

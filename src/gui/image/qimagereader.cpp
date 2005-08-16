@@ -21,6 +21,8 @@
 **
 ****************************************************************************/
 
+//#define QIMAGEREADER_DEBUG
+
 /*!
     \class QImageReader
     \brief The QImageReader class provides a format independent interface
@@ -106,8 +108,11 @@
 #include "qimagereader.h"
 
 #include <qbytearray.h>
+#ifdef QIMAGEREADER_DEBUG
 #include <qdebug.h>
+#endif
 #include <qfile.h>
+#include <qfileinfo.h>
 #include <qimage.h>
 #include <qimageiohandler.h>
 #include <qlist.h>
@@ -134,7 +139,52 @@
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
                           (QImageIOHandlerFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/imageformats")))
 #endif
-    
+
+enum _qt_BuiltInFormatType {
+#ifndef QT_NO_IMAGEFORMAT_PNG
+    _qt_PngFormat,
+#endif
+    _qt_BmpFormat,
+#ifndef QT_NO_IMAGEFORMAT_PPM
+    _qt_PpmFormat,
+    _qt_PgmFormat,
+    _qt_PbmFormat,
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XBM
+    _qt_XbmFormat,
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XPM
+    _qt_XpmFormat,
+#endif
+    _qt_NumFormats,
+    _qt_NoFormat = -1
+};
+
+struct _qt_BuiltInFormatStruct
+{
+    _qt_BuiltInFormatType type;
+    const char *extension;
+};
+
+static const _qt_BuiltInFormatStruct _qt_BuiltInFormats[] = {
+#ifndef QT_NO_IMAGEFORMAT_PNG
+    {_qt_PngFormat, "png"},
+#endif
+    {_qt_BmpFormat, "bmp"},
+#ifndef QT_NO_IMAGEFORMAT_PPM
+    {_qt_PpmFormat, "ppm"},
+    {_qt_PgmFormat, "pgm"},
+    {_qt_PbmFormat, "pbm"},
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XBM
+    {_qt_XbmFormat, "xbm"},
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XPM
+    {_qt_XpmFormat, "xpm"},
+#endif
+    {_qt_NoFormat, ""}
+};
+
 static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &format)
 {
     QByteArray form = format.toLower();
@@ -144,79 +194,221 @@ static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &f
     // check if we have plugins that support the image format
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
-    const qint64 pos = device->pos();
-    for (int i = 0; i < keys.count(); ++i) {
-        QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(keys.at(i)));
-        if (plugin && plugin->capabilities(device, form) & QImageIOPlugin::CanRead) {
-            handler = plugin->create(device, form);
-            break;
+#endif
+    QByteArray suffix;
+
+#ifdef QIMAGEREADER_DEBUG
+    qDebug() << "QImageReader::createReadHandler( device =" << (void *)device << ", format =" << format << "),"
+             << keys.size() << "plugins available: " << keys;
+#endif
+
+    int suffixPluginIndex = -1;
+#ifndef QT_NO_LIBRARY
+    if (device && format.isEmpty()) {
+        // if there's no format, see if \a device is a file, and if so, find
+        // the file suffix and find support for that format among our plugins.
+        // this allows plugins to override our built-in handlers.
+        if (QFile *file = qobject_cast<QFile *>(device)) {
+#ifdef QIMAGEREADER_DEBUG
+            qDebug() << "QImageReader::createReadHandler: device is a file:" << file->fileName();
+#endif
+            if (!(suffix = QFileInfo(file->fileName()).suffix().toLower().toLatin1()).isEmpty()) {
+                int index = keys.indexOf(suffix);
+                if (index != -1) {
+#ifdef QIMAGEREADER_DEBUG
+                    qDebug() << "QImageReader::createReadHandler: suffix recognized; the"
+                             << suffix << "plugin might be able to read this";
+#endif
+                    suffixPluginIndex = index;
+                }
+            }
         }
-        device->seek(pos);
     }
 #endif // QT_NO_LIBRARY
 
-    // check if we have built-in support for the format name
-    if (!format.isEmpty()) {
-	if (false) {	
-#ifndef QT_NO_IMAGEFORMAT_PNG
-	} else if (form == "png") {
-            handler = new QPngHandler;
-#endif
-#ifndef QT_NO_IMAGEFORMAT_BMP
-        } else if (form == "bmp") {
-            handler = new QBmpHandler;
-#endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
-        } else if (form == "xpm") {
-            handler = new QXpmHandler;
-#endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
-        } else if (form == "xbm") {
-            handler = new QXbmHandler;
-            handler->setOption(QImageIOHandler::SubType, form);
-#endif
-#ifndef QT_NO_IMAGEFORMAT_PPM
-        } else if (form == "pbm" || form == "pbmraw" || form == "pgm"
-                 || form == "pgmraw" || form == "ppm" || form == "ppmraw") {
-            handler = new QPpmHandler;
-            handler->setOption(QImageIOHandler::SubType, form);
+    QByteArray testFormat = !form.isEmpty() ? form : suffix;
+
+#ifndef QT_NO_LIBRARY
+    if (suffixPluginIndex != -1) {
+        // check if the plugin that claims support for this format can load
+        // from this device with this format.
+        const qint64 pos = device ? device->pos() : 0;
+        QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(suffix));
+        if (plugin && plugin->capabilities(device, testFormat) & QImageIOPlugin::CanRead) {
+            handler = plugin->create(device, testFormat);
+#ifdef QIMAGEREADER_DEBUG
+            qDebug() << "QImageReader::createReadHandler: using the" << suffix
+                     << "plugin";
 #endif
         }
+        if (device && !device->isSequential())
+            device->seek(pos);
     }
-    
-    // check if any of our built-in formats can read images from the device
-    if (!handler) {
-        QByteArray subType;
-	if (false) {	
+
+    if (!handler && !testFormat.isEmpty()) {
+        // check if any plugin supports the format (they are not allowed to
+        // read from the device yet).
+        const qint64 pos = device ? device->pos() : 0;
+        for (int i = 0; i < keys.size(); ++i) {
+            if (i != suffixPluginIndex) {
+                QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(keys.at(i)));
+                if (plugin && plugin->capabilities(device, testFormat) & QImageIOPlugin::CanRead) {
+#ifdef QIMAGEREADER_DEBUG
+                    qDebug() << "QImageReader::createReadHandler: the" << keys.at(i) << "plugin can read this format";
+#endif
+                    handler = plugin->create(device, testFormat);
+                    break;
+                }
+            }
+        }
+        if (device && !device->isSequential())
+            device->seek(pos);
+    }
+#endif // QT_NO_LIBRARY
+
+    // if we don't have a handler yet, check if we have built-in support for
+    // the format
+    if (!handler && !testFormat.isEmpty()) {
+        if (false) {
 #ifndef QT_NO_IMAGEFORMAT_PNG
-	} else if (QPngHandler::canRead(device)) {
+	} else if (testFormat == "png") {
             handler = new QPngHandler;
 #endif
 #ifndef QT_NO_IMAGEFORMAT_BMP
-        } else if (QBmpHandler::canRead(device)) {
+        } else if (testFormat == "bmp") {
             handler = new QBmpHandler;
 #endif
 #ifndef QT_NO_IMAGEFORMAT_XPM
-        } else if (QXpmHandler::canRead(device)) {
+        } else if (testFormat == "xpm") {
             handler = new QXpmHandler;
 #endif
+#ifndef QT_NO_IMAGEFORMAT_XBM
+        } else if (testFormat == "xbm") {
+            handler = new QXbmHandler;
+            handler->setOption(QImageIOHandler::SubType, testFormat);
+#endif
 #ifndef QT_NO_IMAGEFORMAT_PPM
-        } else if (QPpmHandler::canRead(device, &subType)) {
+        } else if (testFormat == "pbm" || testFormat == "pbmraw" || testFormat == "pgm"
+                   || testFormat == "pgmraw" || testFormat == "ppm" || testFormat == "ppmraw") {
             handler = new QPpmHandler;
-            handler->setOption(QImageIOHandler::SubType, subType);
+            handler->setOption(QImageIOHandler::SubType, testFormat);
+#endif
+        }
+
+#ifdef QIMAGEREADER_DEBUG
+        if (handler)
+            qDebug() << "QImageReader::createReadHandler: using the built-in handler for" << testFormat;
+#endif
+    }
+
+#ifndef QT_NO_LIBRARY
+    if (!handler) {
+        // check if any of our plugins recognize the file from its contents.
+        const qint64 pos = device ? device->pos() : 0;
+        for (int i = 0; i < keys.size(); ++i) {
+            if (i != suffixPluginIndex) {
+                QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(keys.at(i)));
+                if (plugin && plugin->capabilities(device, QByteArray()) & QImageIOPlugin::CanRead) {
+                    handler = plugin->create(device, testFormat);
+#ifdef QIMAGEREADER_DEBUG
+                    qDebug() << "QImageReader::createReadHandler: the" << keys.at(i) << "plugin can read this data";
+#endif
+                    break;
+                }
+            }
+        }
+        if (device && !device->isSequential())
+            device->seek(pos);
+    }
+#endif
+
+    if (!handler) {
+        // check if any of our built-in handlers recognize the file from its
+        // contents.
+        int currentFormat = 0;
+        if (!suffix.isEmpty()) {
+            // If reading from a file with a suffix, start testing our
+            // built-in handler for that suffix first.
+            for (int i = 0; i < _qt_NumFormats; ++i) {
+                if (_qt_BuiltInFormats[i].extension == suffix) {
+                    currentFormat = i;
+                    break;
+                }
+            }
+        }
+
+        QByteArray subType;
+        int numFormats = _qt_NumFormats;
+        while (device && numFormats >= 0) {
+            const _qt_BuiltInFormatStruct *formatStruct = &_qt_BuiltInFormats[currentFormat];
+
+            const qint64 pos = device->pos();
+            switch (formatStruct->type) {
+#ifndef QT_NO_IMAGEFORMAT_PNG
+            case _qt_PngFormat:
+                if (QPngHandler::canRead(device))
+                    handler = new QPngHandler;
+                break;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_BMP
+            case _qt_BmpFormat:
+                if (QBmpHandler::canRead(device))
+                    handler = new QBmpHandler;
+                break;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_XPM
+            case _qt_XpmFormat:
+                if (QXpmHandler::canRead(device))
+                    handler = new QXpmHandler;
+                break;
+#endif
+#ifndef QT_NO_IMAGEFORMAT_PPM
+            case _qt_PbmFormat:
+            case _qt_PgmFormat:
+            case _qt_PpmFormat:
+                if (QPpmHandler::canRead(device, &subType)) {
+                    handler = new QPpmHandler;
+                    handler->setOption(QImageIOHandler::SubType, subType);
+                }
+                break;
 #endif
 #ifndef QT_NO_IMAGEFORMAT_XBM
-        } else if (QXbmHandler::canRead(device)) {
-            handler = new QXbmHandler;
+            case _qt_XbmFormat:
+                if (QXbmHandler::canRead(device))
+                    handler = new QXbmHandler;
+                break;
 #endif
+            default:
+                break;
+            }
+            if (!device->isSequential())
+                device->seek(pos);
+
+            if (handler) {
+#ifdef QIMAGEREADER_DEBUG
+                qDebug() << "QImageReader::createReadHandler: the" << formatStruct->extension
+                         << "built-in handler can read this data";
+#endif
+                break;
+            }
+
+            --numFormats;
+            ++currentFormat;
+            currentFormat %= _qt_NumFormats;
         }
     }
 
-    if (!handler)
+    if (!handler) {
+#ifdef QIMAGEREADER_DEBUG
+        qDebug() << "QImageReader::createReadHandler: no handlers found. giving up.";
+#endif
+        // no handler: give up.
         return 0;
+    }
 
     handler->setDevice(device);
-    handler->setFormat(format);
+    if (!form.isEmpty())
+        handler->setFormat(form);
     return handler;
 }
 
@@ -237,6 +429,7 @@ public:
     QRect clipRect;
     QSize scaledSize;
     QRect scaledClipRect;
+    int quality;
     QMap<QString, QString> text;
     void getText();
 
@@ -255,8 +448,9 @@ QImageReaderPrivate::QImageReaderPrivate(QImageReader *qq)
     device = 0;
     deleteDevice = false;
     handler = 0;
+    quality = -1;
     imageReaderError = QImageReader::UnknownError;
-    errorString = QT_TRANSLATE_NOOP(QImageReader, "Unknown error");
+    errorString = QLatin1String(QT_TRANSLATE_NOOP(QImageReader, "Unknown error"));
 
     q = qq;
 }
@@ -279,39 +473,44 @@ bool QImageReaderPrivate::initHandler()
     // check some preconditions
     if (!device || (!deleteDevice && !device->isOpen())) {
         imageReaderError = QImageReader::DeviceError;
-        errorString = QT_TRANSLATE_NOOP(QImageReader, "Invalid device");
+        errorString = QLatin1String(QT_TRANSLATE_NOOP(QImageReader, "Invalid device"));
         return false;
     }
 
     // probe the file extension
     if (deleteDevice && !device->isOpen() && !device->open(QIODevice::ReadOnly)) {
         QList<QByteArray> extensions = QImageReader::supportedImageFormats();
+        if (!format.isEmpty()) {
+            // Try the most probable extension first
+            int currentFormatIndex = extensions.indexOf(format.toLower());
+            if (currentFormatIndex > 0)
+                extensions.swap(0, currentFormatIndex);
+        }
+
         int currentExtension = 0;
 
         QFile *file = static_cast<QFile *>(device);
         QString fileName = file->fileName();
 
         do {
-            file->setFileName(fileName + QLatin1Char('.') + extensions.at(currentExtension++));
+            file->setFileName(fileName + QLatin1Char('.')
+                    + QString::fromLatin1(extensions.at(currentExtension++).constData()));
             file->open(QIODevice::ReadOnly);
         } while (!file->isOpen() && currentExtension < extensions.size());
 
         if (!device->isOpen()) {
             imageReaderError = QImageReader::FileNotFoundError;
-            errorString = QT_TRANSLATE_NOOP(QImageReader, "File not found");
+            errorString = QLatin1String(QT_TRANSLATE_NOOP(QImageReader, "File not found"));
             return false;
         }
     }
 
-#ifndef QT_NO_LIBRARY
     // assign a handler
     if (!handler && (handler = ::createReadHandler(device, format)) == 0) {
         imageReaderError = QImageReader::UnsupportedFormatError;
-        errorString = QT_TRANSLATE_NOOP(QImageReader, "Unsupported image format");
+        errorString = QLatin1String(QT_TRANSLATE_NOOP(QImageReader, "Unsupported image format"));
         return false;
     }
-#endif
-    
     return true;
 }
 
@@ -322,10 +521,11 @@ void QImageReaderPrivate::getText()
 {
     if (!text.isEmpty() || (!handler && !initHandler()) || !handler->supportsOption(QImageIOHandler::Description))
         return;
-    foreach (QString pair, handler->option(QImageIOHandler::Description).toString().split("\n\n")) {
-        int index = pair.indexOf(":");
-        if (index >= 0 && pair.indexOf(" ") < index) {
-            text.insert("Description", pair.simplified());
+    foreach (QString pair, handler->option(QImageIOHandler::Description).toString().split(
+                QLatin1String("\n\n"))) {
+        int index = pair.indexOf(QLatin1Char(':'));
+        if (index >= 0 && pair.indexOf(QLatin1Char(' ')) < index) {
+            text.insert(QLatin1String("Description"), pair.simplified());
         } else {
             QString key = pair.left(index);
             text.insert(key, pair.mid(index + 2).simplified());
@@ -398,10 +598,24 @@ void QImageReader::setFormat(const QByteArray &format)
 /*!
     Returns the format QImageReader uses for reading images.
 
+    You can call this function after assigning a device to the
+    reader to determine the format of the device. For example:
+
+    \code
+        QImageReader reader("image.png");
+        // reader.format() == "png"
+    \endcode
+
     \sa setFormat()
 */
 QByteArray QImageReader::format() const
 {
+    if (d->format.isEmpty()) {
+        if (!d->initHandler())
+            return QByteArray();
+        return d->handler->canRead() ? d->handler->format() : QByteArray();
+    }
+
     return d->format;
 }
 
@@ -471,9 +685,45 @@ QString QImageReader::fileName() const
 }
 
 /*!
-    Returns the size of the image. This function may or may not read
-    the entire image, depending on whether the image format supports
-    checking the size of an image before loading it.
+    \since 4.2
+
+    This is an image format specific function that sets the quality
+    level of the image to \a quality. For image formats that do not
+    support setting the quality, this value is ignored.
+
+    The value range of \a quality depends on the image format. For
+    example, the "jpeg" format supports a quality range from 0 (low
+    quality, high compression) to 100 (high quality, low compression).
+
+    \sa quality()
+*/
+void QImageReader::setQuality(int quality)
+{
+    d->quality = quality;
+}
+
+/*!
+    \since 4.2
+
+    Returns the quality level of the image.
+
+    \sa setQuality()
+*/
+int QImageReader::quality() const
+{
+    return d->quality;
+}
+
+
+/*!
+    Returns the size of the image, without actually reading the image
+    contents.
+
+    If the image format does not support this feature, this function returns
+    an invalid size. Qt's built-in image handlers all support this feature,
+    but custom image format plugins are not required to do so.
+
+    \sa QImageIOHandler::ImageOption, QImageIOHandler::option(), QImageIOHandler::supportsOption()
 */
 QSize QImageReader::size() const
 {
@@ -483,15 +733,7 @@ QSize QImageReader::size() const
     if (d->handler->supportsOption(QImageIOHandler::Size))
         return d->handler->option(QImageIOHandler::Size).toSize();
 
-    QImage image;
-    if (!d->handler->read(&image)) {
-        // ### skips a frame in animations
-        d->imageReaderError = InvalidDataError;
-        d->errorString = QT_TRANSLATE_NOOP(QImageReader, "Unable to read image data");
-        return QSize();
-    }
-
-    return image.size();
+    return QSize();
 }
 
 /*!
@@ -525,7 +767,7 @@ QStringList QImageReader::textKeys() const
 QString QImageReader::text(const QString &key) const
 {
     d->getText();
-    return d->text.value(key);    
+    return d->text.value(key);
 }
 
 /*!
@@ -612,9 +854,8 @@ void QImageReader::setBackgroundColor(const QColor &color)
 {
     if (!d->initHandler())
         return;
-    if (d->handler->supportsOption(QImageIOHandler::BackgroundColor)) {
+    if (d->handler->supportsOption(QImageIOHandler::BackgroundColor))
         d->handler->setOption(QImageIOHandler::BackgroundColor, color);
-    }
 }
 
 /*!
@@ -688,82 +929,127 @@ bool QImageReader::canRead() const
 */
 QImage QImageReader::read()
 {
+    // Because failed image reading might have side effects, we explicitly
+    // return a null image instead of the image we've just created.
+    QImage image;
+    return read(&image) ? image : QImage();
+}
+
+/*!
+    \overload
+
+    Reads an image from the device into \a image, which must point to a
+    QImage. Returns true on success; otherwise, returns false.
+
+    If \a image has same format and size as the image data that is about to be
+    read, this function may not need to allocate a new image before
+    reading. Because of this, it can be faster than the other read() overload,
+    which always constructs a new image; especially when reading several
+    images with the same format and size.
+
+    \code
+        QImage icon(64, 64, QImage::Format_RGB32);
+        QImageReader reader("icon_64x64.bmp");
+        if (reader.read(&icon)) {
+            // Display icon
+        }
+    \endcode
+
+    For image formats that support animation, calling read() repeatedly will
+    return the next frame. When all frames have been read, a null image will
+    be returned.
+
+    \sa canRead(), supportedImageFormats(), supportsAnimation(), QMovie
+*/
+bool QImageReader::read(QImage *image)
+{
+    if (!image) {
+        qWarning("QImageReader::read: cannot read into null pointer");
+        return false;
+    }
+
     if (!d->handler && !d->initHandler())
-        return QImage();
+        return false;
 
     // set the handler specific options.
-    if (d->handler->supportsOption(QImageIOHandler::ClipRect))
+    if (d->handler->supportsOption(QImageIOHandler::ScaledSize) && d->scaledSize.isValid()) {
+        if ((d->handler->supportsOption(QImageIOHandler::ClipRect) && !d->clipRect.isNull())
+            || d->clipRect.isNull()) {
+            // Only enable the ScaledSize option if there is no clip rect, or
+            // if the handler also supports ClipRect.
+            d->handler->setOption(QImageIOHandler::ScaledSize, d->scaledSize);
+        }
+    }
+    if (d->handler->supportsOption(QImageIOHandler::ClipRect) && !d->clipRect.isNull())
         d->handler->setOption(QImageIOHandler::ClipRect, d->clipRect);
-    if (d->handler->supportsOption(QImageIOHandler::ScaledSize))
-        d->handler->setOption(QImageIOHandler::ScaledSize, d->scaledSize);
-    if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect))
+    if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect) && !d->scaledClipRect.isNull())
         d->handler->setOption(QImageIOHandler::ScaledClipRect, d->scaledClipRect);
+    if (d->handler->supportsOption(QImageIOHandler::Quality))
+        d->handler->setOption(QImageIOHandler::Quality, d->quality);
 
     // read the image
-    QImage image;
-    if (!d->handler->read(&image)) {
+    if (!d->handler->read(image)) {
         d->imageReaderError = InvalidDataError;
-        d->errorString = QT_TRANSLATE_NOOP(QImageReader, "Unable to read image data");
-        return QImage();
+        d->errorString = QLatin1String(QT_TRANSLATE_NOOP(QImageReader, "Unable to read image data"));
+        return false;
     }
 
     // provide default implementations for any unsupported image
     // options
-    if (d->handler->supportsOption(QImageIOHandler::ClipRect)) {
-        if (d->handler->supportsOption(QImageIOHandler::ScaledSize)) {
-            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect)) {
+    if (d->handler->supportsOption(QImageIOHandler::ClipRect) && !d->clipRect.isNull()) {
+        if (d->handler->supportsOption(QImageIOHandler::ScaledSize) && d->scaledSize.isValid()) {
+            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect) && !d->scaledClipRect.isNull()) {
                 // all features are supported by the handler; nothing to do.
             } else {
                 // the image is already scaled, so apply scaled clipping.
-                if (d->scaledClipRect.isValid()) {
-                    image = image.copy(d->scaledClipRect);
-                }
+                if (!d->scaledClipRect.isNull())
+                    *image = image->copy(d->scaledClipRect);
             }
         } else {
-            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect)) {
+            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect) && !d->scaledClipRect.isNull()) {
                 // supports scaled clipping but not scaling, most
                 // likely a broken handler.
-          } else {
+            } else {
                 if (d->scaledSize.isValid()) {
-                    image = image.scaled(d->scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    *image = image->scaled(d->scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
                 }
                 if (d->scaledClipRect.isValid()) {
-                    image = image.copy(d->scaledClipRect);
+                    *image = image->copy(d->scaledClipRect);
                 }
             }
         }
     } else {
-        if (d->handler->supportsOption(QImageIOHandler::ScaledSize)) {
+        if (d->handler->supportsOption(QImageIOHandler::ScaledSize) && d->scaledSize.isValid()) {
             // in this case, there's nothing we can do. if the
             // plugin supports scaled size but not ClipRect, then
             // we have to ignore ClipRect."
 
-            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect)) {
+            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect) && !d->scaledClipRect.isNull()) {
                 // nothing to do (ClipRect is ignored!)
             } else {
                 // provide all workarounds.
                 if (d->scaledClipRect.isValid()) {
-                    image = image.copy(d->scaledClipRect);
+                    *image = image->copy(d->scaledClipRect);
                 }
             }
         } else {
-            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect)) {
+            if (d->handler->supportsOption(QImageIOHandler::ScaledClipRect) && !d->scaledClipRect.isNull()) {
                 // this makes no sense; a handler that supports
                 // ScaledClipRect but not ScaledSize is broken, and we
                 // can't work around it.
             } else {
                 // provide all workarounds.
                 if (d->clipRect.isValid())
-                    image = image.copy(d->clipRect);
+                    *image = image->copy(d->clipRect);
                 if (d->scaledSize.isValid())
-                    image = image.scaled(d->scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                    *image = image->scaled(d->scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
                 if (d->scaledClipRect.isValid())
-                    image = image.copy(d->scaledClipRect);
+                    *image = image->copy(d->scaledClipRect);
             }
         }
     }
 
-    return image;
+    return true;
 }
 
 /*!
@@ -890,6 +1176,33 @@ QString QImageReader::errorString() const
 }
 
 /*!
+    \since 4.2
+
+    Returns true if the reader supports \a option; otherwise returns
+    false.
+
+    Different image formats support different options. Call this function to
+    determine whether a certain option is supported by the current format. For
+    example, the PNG format allows you to embed text into the image's metadata
+    (see text()), and the BMP format allows you to determine the image's size
+    without loading the whole image into memory (see size()).
+
+    \code
+        QImageReader reader(":/image.png");
+        if (reader.supportsOption(QImageIOHandler::Size))
+            qDebug() << "Size:" << reader.size();
+    \endcode
+
+    \sa QImageWriter::supportsOption()
+*/
+bool QImageReader::supportsOption(QImageIOHandler::ImageOption option) const
+{
+    if (!d->initHandler())
+        return false;
+    return d->handler->supportsOption(option);
+}
+
+/*!
     If supported, this function returns the image format of the file
     \a fileName. Otherwise, an empty string is returned.
 */
@@ -947,19 +1260,8 @@ QByteArray QImageReader::imageFormat(QIODevice *device)
 QList<QByteArray> QImageReader::supportedImageFormats()
 {
     QSet<QByteArray> formats;
-    formats << "bmp";
-#ifndef QT_NO_IMAGEFORMAT_PPM
-    formats << "ppm" << "pgm" << "pbm";
-#endif
-#ifndef QT_NO_IMAGEFORMAT_XBM
-    formats << "xbm";
-#endif
-#ifndef QT_NO_IMAGEFORMAT_XPM
-    formats << "xpm";
-#endif
-#ifndef QT_NO_IMAGEFORMAT_PNG
-    formats << "png";
-#endif
+    for (int i = 0; i < _qt_NumFormats; ++i)
+        formats << _qt_BuiltInFormats[i].extension;
 
 #ifndef QT_NO_LIBRARY
     QFactoryLoader *l = loader();
@@ -970,7 +1272,7 @@ QList<QByteArray> QImageReader::supportedImageFormats()
         if (plugin && plugin->capabilities(0, keys.at(i).toLatin1()) & QImageIOPlugin::CanRead)
             formats << keys.at(i).toLatin1();
     }
-#endif // QT_NO_LIBRARY    
+#endif // QT_NO_LIBRARY
 
     QList<QByteArray> sortedFormats;
     for (QSet<QByteArray>::ConstIterator it = formats.constBegin(); it != formats.constEnd(); ++it)

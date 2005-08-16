@@ -76,7 +76,8 @@ const uchar *qt_patternForBrush(int brushStyle, bool invert)
 QPixmap qt_pixmapForBrush(int brushStyle, bool invert)
 {
     QPixmap pm;
-    QString key = "$qt-brush$" + QString::number(brushStyle) + QString::number((int)invert);
+    QString key = QLatin1String("$qt-brush$") + QString::number(brushStyle)
+                  + QString::number((int)invert);
     if (!QPixmapCache::find(key, pm)) {
         pm = QBitmap::fromData(QSize(8, 8), qt_patternForBrush(brushStyle, invert),
                                QImage::Format_MonoLSB);
@@ -86,10 +87,59 @@ QPixmap qt_pixmapForBrush(int brushStyle, bool invert)
     return pm;
 }
 
+QImage qt_imageForBrush(int brushStyle, bool invert)
+{
+    QImage image(8, 8, QImage::Format_MonoLSB);
+    const uchar *pattern = qt_patternForBrush(brushStyle, invert);
+
+    for (int y=0; y<8; ++y)
+        *image.scanLine(y) = pattern[y];
+
+    return image;
+}
+
 
 struct QTexturedBrushData : public QBrushData
 {
-    QPixmap pixmap;
+    QTexturedBrushData() {
+        m_pixmap = 0;
+    }
+    ~QTexturedBrushData() {
+        delete m_pixmap;
+    }
+
+    void setPixmap(const QPixmap &pm) {
+        delete m_pixmap;
+
+        if (pm.isNull())
+            m_pixmap = 0;
+        else
+            m_pixmap = new QPixmap(pm);
+
+        m_image = QImage();
+    }
+
+    void setImage(const QImage &image) {
+        m_image = image;
+        delete m_pixmap;
+        m_pixmap = 0;
+    }
+
+    QPixmap &pixmap() {
+        if (!m_pixmap) {
+            m_pixmap = new QPixmap(QPixmap::fromImage(m_image));
+        }
+        return *m_pixmap;
+    }
+
+    QImage &image() {
+        if (m_image.isNull() && m_pixmap)
+            m_image = m_pixmap->toImage();
+        return m_image;
+    }
+
+    QPixmap *m_pixmap;
+    QImage m_image;
 };
 
 struct QGradientBrushData : public QBrushData
@@ -134,7 +184,7 @@ struct QGradientBrushData : public QBrushData
     when the current style is Qt::TexturePattern.
 
     Note that applying setTexture() makes style() ==
-    Qt::TexturePattern, independently of previous style
+    Qt::TexturePattern, regardless of previous style
     settings. Also, calling setColor() will not make a difference if
     the style is a gradient. The same is the case if the style is
     Qt::TexturePattern style unless the current texture is a QBitmap.
@@ -144,7 +194,7 @@ struct QGradientBrushData : public QBrushData
 
     \list
     \o The alpha component of the color() is 255.
-    \o Its texture() does not an alpha channel and is not a QBitmap.
+    \o Its texture() does not have an alpha channel and is not a QBitmap.
     \o The colors in the gradient() all have an alpha component that is 255.
     \endlist
 
@@ -175,7 +225,7 @@ struct QGradientBrushData : public QBrushData
 
     \endtable
 
-    For more information about painting in general, see {The Paint
+    For more information about painting in general, see \l{The Paint
     System} documentation.
 
     \sa Qt::BrushStyle, QPainter, QColor
@@ -212,6 +262,22 @@ static QBrushData *nullBrushInstance()
     return defaultBrush.pointer;
 }
 
+static bool qbrush_check_type(Qt::BrushStyle style) {
+    switch (style) {
+    case Qt::TexturePattern:
+         qWarning("QBrush: Incorrect use of TexturePattern");
+         break;
+    case Qt::LinearGradientPattern:
+    case Qt::RadialGradientPattern:
+    case Qt::ConicalGradientPattern:
+        qWarning("QBrush: Wrong use of a gradient pattern");
+        break;
+    default:
+        return true;
+    }
+    return false;
+}
+
 /*!
   \internal
   Initializes the brush.
@@ -226,7 +292,7 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
         return;
     case Qt::TexturePattern:
         d = new QTexturedBrushData;
-        static_cast<QTexturedBrushData *>(d)->pixmap = QPixmap();
+        static_cast<QTexturedBrushData *>(d)->setPixmap(QPixmap());
         break;
     case Qt::LinearGradientPattern:
     case Qt::RadialGradientPattern:
@@ -263,10 +329,22 @@ QBrush::QBrush()
 
 QBrush::QBrush(const QPixmap &pixmap)
 {
-// ## if pixmap was image, we could pick a nice color rather than
-// assuming black.
     init(Qt::black, Qt::TexturePattern);
     setTexture(pixmap);
+}
+
+
+/*!
+    Constructs a brush with a black color and a texture set to the
+    given \a image. The style is set to Qt::TexturePattern.
+
+    \sa setTextureImage()
+*/
+
+QBrush::QBrush(const QImage &image)
+{
+    init(Qt::black, Qt::TexturePattern);
+    setTextureImage(image);
 }
 
 /*!
@@ -277,7 +355,12 @@ QBrush::QBrush(const QPixmap &pixmap)
 
 QBrush::QBrush(Qt::BrushStyle style)
 {
-    init(Qt::black, style);
+    if (qbrush_check_type(style))
+        init(Qt::black, style);
+    else {
+        d = nullBrushInstance();
+        d->ref.ref();
+    }
 }
 
 /*!
@@ -288,7 +371,12 @@ QBrush::QBrush(Qt::BrushStyle style)
 
 QBrush::QBrush(const QColor &color, Qt::BrushStyle style)
 {
-    init(color, style);
+    if (qbrush_check_type(style))
+        init(color, style);
+    else {
+        d = nullBrushInstance();
+        d->ref.ref();
+    }
 }
 
 /*!
@@ -300,7 +388,12 @@ QBrush::QBrush(const QColor &color, Qt::BrushStyle style)
 */
 QBrush::QBrush(Qt::GlobalColor color, Qt::BrushStyle style)
 {
-    init(color, style);
+    if (qbrush_check_type(style))
+        init(color, style);
+    else {
+        d = nullBrushInstance();
+        d->ref.ref();
+    }
 }
 
 /*!
@@ -403,11 +496,14 @@ void QBrush::detach(Qt::BrushStyle newStyle)
 
     QBrushData *x;
     switch(newStyle) {
-    case Qt::TexturePattern:
-        x = new QTexturedBrushData;
-        static_cast<QTexturedBrushData*>(x)->pixmap =
-            d->style == Qt::TexturePattern ? static_cast<QTexturedBrushData *>(d)->pixmap : QPixmap();
+    case Qt::TexturePattern: {
+        QTexturedBrushData *tbd = new QTexturedBrushData;
+        tbd->setPixmap(d->style == Qt::TexturePattern
+                       ? static_cast<QTexturedBrushData *>(d)->pixmap()
+                       : QPixmap());
+        x = tbd;
         break;
+        }
     case Qt::LinearGradientPattern:
     case Qt::RadialGradientPattern:
     case Qt::ConicalGradientPattern:
@@ -471,10 +567,11 @@ void QBrush::setStyle(Qt::BrushStyle style)
 {
     if (d->style == style)
         return;
-    if (style == Qt::TexturePattern)
-        qWarning("QBrush::setStyle: TexturePattern is for internal use");
-    detach(style);
-    d->style = style;
+
+    if (qbrush_check_type(style)) {
+        detach(style);
+        d->style = style;
+    }
 }
 
 
@@ -536,7 +633,8 @@ QPixmap *QBrush::pixmap() const
     if (d->style != Qt::TexturePattern)
         return 0;
     QTexturedBrushData *data  = static_cast<QTexturedBrushData*>(d);
-    return data->pixmap.isNull() ? 0 : &data->pixmap;
+    QPixmap &pixmap = data->pixmap();
+    return pixmap.isNull() ? 0 : &pixmap;
 }
 #endif
 
@@ -551,7 +649,8 @@ QPixmap *QBrush::pixmap() const
 QPixmap QBrush::texture() const
 {
     return d->style == Qt::TexturePattern
-                     ? static_cast<const QTexturedBrushData*>(d)->pixmap : QPixmap();
+                     ? ((QTexturedBrushData*) d)->pixmap()
+                     : QPixmap();
 }
 
 /*!
@@ -569,7 +668,51 @@ void QBrush::setTexture(const QPixmap &pixmap)
     if (!pixmap.isNull()) {
         detach(Qt::TexturePattern);
         QTexturedBrushData *data = static_cast<QTexturedBrushData *>(d);
-        data->pixmap = pixmap;
+        data->setPixmap(pixmap);
+    } else {
+        detach(Qt::NoBrush);
+    }
+}
+
+
+/*!
+    \since 4.2
+
+    Returns the custom brush pattern, or a null image if no custom
+    brush pattern has been set.
+
+    If the texture was set as a QPixmap it will be converted to a
+    QImage.
+
+    \sa setTextureImage()
+*/
+
+QImage QBrush::textureImage() const
+{
+    return d->style == Qt::TexturePattern
+                     ? ((QTexturedBrushData *) d)->image()
+                     : QImage();
+}
+
+
+/*!
+    \since 4.2
+
+    Sets the brush image to \a image. The style is set to
+    Qt::TexturePattern.
+
+    The current brush color will only have an effect for monochrome
+    images, i.e. for QImage::depth() == 1.
+
+    \sa textureImage()
+*/
+
+void QBrush::setTextureImage(const QImage &image)
+{
+    if (!image.isNull()) {
+        detach(Qt::TexturePattern);
+        QTexturedBrushData *data = static_cast<QTexturedBrushData *>(d);
+        data->setImage(image);
     } else {
         detach(Qt::NoBrush);
     }
@@ -596,7 +739,7 @@ const QGradient *QBrush::gradient() const
 
     \list
     \i The alpha component of the color() is 255.
-    \i Its texture() does not an alpha channel and is not a QBitmap.
+    \i Its texture() does not have an alpha channel and is not a QBitmap.
     \i The colors in the gradient() all have an alpha component that is 255.
     \endlist
 */
@@ -621,9 +764,34 @@ bool QBrush::isOpaque() const
         return !texture().hasAlpha();
     }
 
-    return opaqueColor;
+    return false;
 }
 
+
+/*!
+    \since 4.2
+
+    Sets \a matrix as an explicit transformation matrix on the
+    current brush. The brush transformation matrix is merged with
+    QPainter transformation matrix to produce the final result.
+
+    \sa matrix()
+*/
+void QBrush::setMatrix(const QMatrix &matrix)
+{
+    detach(d->style);
+    d->transform = matrix;
+}
+
+
+/*!
+    \fn void QBrush::matrix() const
+    \since 4.2
+
+    Returns the current transformation matrix for the brush.
+
+    \sa setMatrix()
+*/
 
 /*!
     \fn bool QBrush::operator!=(const QBrush &brush) const
@@ -656,8 +824,8 @@ bool QBrush::operator==(const QBrush &b) const
     if (b.d->style == d->style && b.d->color == d->color) {
         switch (d->style) {
         case Qt::TexturePattern: {
-            QPixmap us = static_cast<QTexturedBrushData *>(d)->pixmap;
-            QPixmap them = static_cast<QTexturedBrushData *>(b.d)->pixmap;
+            QPixmap &us = ((QTexturedBrushData *) d)->pixmap();
+            QPixmap &them = ((QTexturedBrushData *) b.d)->pixmap();
             return ((us.isNull() && them.isNull()) || us.serialNumber() == them.serialNumber());
         }
         case Qt::LinearGradientPattern:
@@ -904,6 +1072,7 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
     \internal
 */
 QGradient::QGradient()
+    : dummy(0)
 {
 }
 
@@ -982,12 +1151,12 @@ QGradient::QGradient()
 void QGradient::setColorAt(qreal pos, const QColor &color)
 {
     if (pos > 1 || pos < 0) {
-        qWarning("QGradient::setColorAt(), colors positions must be specified in the range 0 to 1");
+        qWarning("QGradient::setColorAt: Color position must be specified in the range 0 to 1");
         return;
     }
 
     int index = 0;
-    while (index < m_stops.size() && m_stops.at(index).first < pos) ++index;
+    while (index < m_stops.size() && m_stops.at(index).first <= pos) ++index;
     m_stops.insert(index, QGradientStop(pos, color));
 }
 
@@ -1026,13 +1195,67 @@ QGradientStops QGradient::stops() const
     return m_stops;
 }
 
+/*!
+    \enum QGradient::CoordinateMode
+    \internal
+
+    This enum specifies how gradient coordinates map to the paint
+    device on which the gradient is used.
+
+    \value LogicalMode
+    \value StretchToDeviceMode 
+*/
 
 /*!
     \internal
+
+    Returns the coordinate mode of this gradient. The default mode is
+    LogicalMode.
+*/
+QGradient::CoordinateMode QGradient::coordinateMode() const
+{
+    if (dummy == 0)
+        return LogicalMode;
+    else
+        return StretchToDeviceMode;
+}
+
+/*!
+    \internal
+
+    Sets the coordinate mode of this gradient to \a mode. The default
+    mode is LogicalMode.
+*/
+void QGradient::setCoordinateMode(CoordinateMode mode)
+{
+    if (mode == LogicalMode)
+        dummy = 0;
+    else
+        dummy = (void *) 1;
+}
+
+
+/*!
+    \fn bool QGradient::operator!=(const QGradient &gradient) const
+    \since 4.2
+
+    Returns true if the gradient is the same as the other \a gradient
+    specified; otherwise returns false.
+
+    \sa operator==()
+*/
+
+/*!
+    Returns true if the gradient is the same as the other \a gradient
+    specified; otherwise returns false.
+
+    \sa operator!=()
 */
 bool QGradient::operator==(const QGradient &gradient) const
 {
-    if (gradient.m_type != m_type || gradient.m_spread != m_spread) return false;
+    if (gradient.m_type != m_type
+        || gradient.m_spread != m_spread
+        || gradient.dummy != dummy) return false;
 
     if (m_type == LinearGradient) {
         if (m_data.linear.x1 != gradient.m_data.linear.x1
@@ -1058,14 +1281,12 @@ bool QGradient::operator==(const QGradient &gradient) const
 }
 
 /*!
-    Returns true if the gradient is the same as the other \a gradient
-    specified; otherwise returns false.
+    \internal
 */
 bool QGradient::operator==(const QGradient &gradient)
 {
     return const_cast<const QGradient *>(this)->operator==(gradient);
 }
-
 
 /*!
     \class QLinearGradient
@@ -1106,6 +1327,24 @@ bool QGradient::operator==(const QGradient &gradient)
     \sa QRadialGradient, QConicalGradient, {demos/gradients}{The
     Gradients Demo}
 */
+
+
+/*!
+    Constructs a default linear gradient with interpolation area
+    between (0, 0) and (1, 1).
+
+    \sa QGradient::setColorAt(), setStart(), setFinalStop()
+*/
+
+QLinearGradient::QLinearGradient()
+{
+    m_type = LinearGradient;
+    m_spread = PadSpread;
+    m_data.linear.x1 = 0;
+    m_data.linear.y1 = 0;
+    m_data.linear.x2 = 1;
+    m_data.linear.y2 = 1;
+}
 
 
 /*!
@@ -1155,6 +1394,44 @@ QPointF QLinearGradient::start() const
     return QPointF(m_data.linear.x1, m_data.linear.y1);
 }
 
+/*!
+    \fn void QLinearGradient::setStart(qreal x, qreal y)
+    \overload
+    \since 4.2
+
+    Sets the start point of this linear gradient in logical
+    coordinates to \a x, \a y.
+
+    \sa start()
+*/
+
+/*!
+    \since 4.2
+
+    Sets the start point of this linear gradient in logical
+    coordinates to \a start.
+
+    \sa start()
+*/
+
+void QLinearGradient::setStart(const QPointF &start)
+{
+    Q_ASSERT(m_type == LinearGradient);
+    m_data.linear.x1 = start.x();
+    m_data.linear.y1 = start.y();
+}
+
+
+/*!
+    \fn void QLinearGradient::setFinalStop(qreal x, qreal y)
+    \overload
+    \since 4.2
+
+    Sets the final stop point of this linear gradient in logical
+    coordinates to \a x, \a y.
+
+    \sa start()
+*/
 
 /*!
     Returns the final stop point of this linear gradient in logical coordinates.
@@ -1166,6 +1443,23 @@ QPointF QLinearGradient::finalStop() const
 {
     Q_ASSERT(m_type == LinearGradient);
     return QPointF(m_data.linear.x2, m_data.linear.y2);
+}
+
+
+/*!
+    \since 4.2
+
+    Sets the final stop point of this linear gradient in logical
+    coordinates to \a stop.
+
+    \sa finalStop()
+*/
+
+void QLinearGradient::setFinalStop(const QPointF &stop)
+{
+    Q_ASSERT(m_type == LinearGradient);
+    m_data.linear.x2 = stop.x();
+    m_data.linear.y2 = stop.y();
 }
 
 
@@ -1215,9 +1509,10 @@ static QPointF qt_radial_gradient_adapt_focal_point(const QPointF &center,
 {
     // We have a one pixel buffer zone to avoid numerical instability on the
     // circle border
-    const qreal compensated_radius = radius - 1;
+    //### this is hacky because technically we should adjust based on current matrix
+    const qreal compensated_radius = radius - 0.0000000001;
     QLineF line(center, focalPoint);
-    if (line.length() >= (compensated_radius))
+    if (line.length() > (compensated_radius))
         line.setLength(compensated_radius);
     return line.p2();
 }
@@ -1225,10 +1520,6 @@ static QPointF qt_radial_gradient_adapt_focal_point(const QPointF &center,
 /*!
     Constructs a radial gradient with the given \a center, \a
     radius and \a focalPoint.
-
-    The default focalPoint is the circle center. If the \a focalPoint
-    is outside the circle defined by the given \a center and \a
-    radius, it is clamped to the circle's boundary.
 
     \sa QGradient::setColorAt(), QGradient::setStops()
 */
@@ -1246,15 +1537,27 @@ QRadialGradient::QRadialGradient(const QPointF &center, qreal radius, const QPoi
     m_data.radial.fy = adapted_focal.y();
 }
 
+/*!
+    Constructs a radial gradient with the given \a center, \a
+    radius and the focal point in the circle center.
+
+    \sa QGradient::setColorAt(), QGradient::setStops()
+*/
+QRadialGradient::QRadialGradient(const QPointF &center, qreal radius)
+{
+    m_type = RadialGradient;
+    m_spread = PadSpread;
+    m_data.radial.cx = center.x();
+    m_data.radial.cy = center.y();
+    m_data.radial.radius = radius;
+    m_data.radial.fx = center.x();
+    m_data.radial.fy = center.y();
+}
 
 
 /*!
     Constructs a radial gradient with the given center (\a cx, \a cy),
     \a radius and focal point (\a fx, \a fy).
-
-    The default focal point is the circle center. If the focal point
-    is outside the circle defined by the given center and \a radius,
-    it is clamped to the circle's boundary.
 
     \sa QGradient::setColorAt(), QGradient::setStops()
 */
@@ -1275,6 +1578,39 @@ QRadialGradient::QRadialGradient(qreal cx, qreal cy, qreal radius, qreal fx, qre
     m_data.radial.fy = adapted_focal.y();
 }
 
+/*!
+    Constructs a radial gradient with the center at (\a cx, \a cy) and the
+    specified \a radius. The focal point lies at the center of the circle.
+
+    \sa QGradient::setColorAt(), QGradient::setStops()
+ */
+QRadialGradient::QRadialGradient(qreal cx, qreal cy, qreal radius)
+{
+    m_type = RadialGradient;
+    m_spread = PadSpread;
+    m_data.radial.cx = cx;
+    m_data.radial.cy = cy;
+    m_data.radial.radius = radius;
+    m_data.radial.fx = cx;
+    m_data.radial.fy = cy;
+}
+
+
+/*!
+    Constructs a radial gradient with the center and focal point at
+    (0, 0) with a radius of 1.
+*/
+QRadialGradient::QRadialGradient()
+{
+    m_type = RadialGradient;
+    m_spread = PadSpread;
+    m_data.radial.cx = 0;
+    m_data.radial.cy = 0;
+    m_data.radial.radius = 1;
+    m_data.radial.fx = 0;
+    m_data.radial.fy = 0;
+}
+
 
 /*!
     Returns the center of this radial gradient in logical coordinates.
@@ -1288,9 +1624,36 @@ QPointF QRadialGradient::center() const
     return QPointF(m_data.radial.cx, m_data.radial.cy);
 }
 
+/*!
+    \fn void QRadialGradient::setCenter(qreal x, qreal y)
+    \overload
+    \since 4.2
+
+    Sets the center of this radial gradient in logical coordinates
+    to (\a x, \a y).
+
+    \sa center()
+*/
 
 /*!
-    Returns the radius of the radial gradient in logical coordinates.
+    \since 4.2
+
+    Sets the center of this radial gradient in logical coordinates
+    to \a center.
+
+    \sa center()
+*/
+
+void QRadialGradient::setCenter(const QPointF &center)
+{
+    Q_ASSERT(m_type == RadialGradient);
+    m_data.radial.cx = center.x();
+    m_data.radial.cy = center.y();
+}
+
+
+/*!
+    Returns the radius of this radial gradient in logical coordinates.
 
     \sa QGradient::stops()
 */
@@ -1299,6 +1662,19 @@ qreal QRadialGradient::radius() const
 {
     Q_ASSERT(m_type == RadialGradient);
     return m_data.radial.radius;
+}
+
+
+/*!
+    \since 4.2
+
+    Sets the radius of this radial gradient in logical coordinates
+    to \a radius
+*/
+void QRadialGradient::setRadius(qreal radius)
+{
+    Q_ASSERT(m_type == RadialGradient);
+    m_data.radial.radius = radius;
 }
 
 
@@ -1314,6 +1690,34 @@ QPointF QRadialGradient::focalPoint() const
     Q_ASSERT(m_type == RadialGradient);
     return QPointF(m_data.radial.fx, m_data.radial.fy);
 }
+
+/*!
+    \fn void QRadialGradient::setFocalPoint(qreal x, qreal y)
+    \overload
+    \since 4.2
+
+    Sets the focal point of this radial gradient in logical
+    coordinates to (\a x, \a y).
+
+    \sa focalPoint()
+*/
+
+/*!
+    \since 4.2
+
+    Sets the focal point of this radial gradient in logical
+    coordinates to \a focalPoint.
+
+    \sa focalPoint()
+*/
+
+void QRadialGradient::setFocalPoint(const QPointF &focalPoint)
+{
+    Q_ASSERT(m_type == RadialGradient);
+    m_data.radial.fx = focalPoint.x();
+    m_data.radial.fy = focalPoint.y();
+}
+
 
 
 /*!
@@ -1353,11 +1757,11 @@ QPointF QRadialGradient::focalPoint() const
 
 
 /*!
-    Constructs a conical with the given \a center, starting the
-    interpolation at the given \a angle. The \a angle must be specified in
-    degrees between 0 and 360.
+    Constructs a conical gradient with the given \a center, starting
+    the interpolation at the given \a angle. The \a angle must be
+    specified in degrees between 0 and 360.
 
-    \sa setColorAt(), setStops()
+    \sa QGradient::setColorAt(), QGradient::setStops()
 */
 
 QConicalGradient::QConicalGradient(const QPointF &center, qreal angle)
@@ -1371,11 +1775,11 @@ QConicalGradient::QConicalGradient(const QPointF &center, qreal angle)
 
 
 /*!
-    Constructs a conical with the given center (\a cx, \a cy),
-    starting the interpolation at the given \a angle. The angle must
-    be specified in degrees between 0 and 360.
+    Constructs a conical gradient with the given center (\a cx, \a
+    cy), starting the interpolation at the given \a angle. The angle
+    must be specified in degrees between 0 and 360.
 
-    \sa setColorAt(), setStops()
+    \sa QGradient::setColorAt(), QGradient::setStops()
 */
 
 QConicalGradient::QConicalGradient(qreal cx, qreal cy, qreal angle)
@@ -1389,7 +1793,25 @@ QConicalGradient::QConicalGradient(qreal cx, qreal cy, qreal angle)
 
 
 /*!
-    Returns the center of the conical gradient in logical coordinates
+    Constructs a conical with center at (0, 0) starting the
+    interpolation at angle 0.
+
+    \sa QGradient::setColorAt(), setCenter(), setAngle()
+*/
+
+QConicalGradient::QConicalGradient()
+{
+    m_type = ConicalGradient;
+    m_spread = PadSpread;
+    m_data.conical.cx = 0;
+    m_data.conical.cy = 0;
+    m_data.conical.angle = 0;
+}
+
+
+/*!
+    Returns the center of the conical gradient in logical
+    coordinates.
 
     \sa stops()
 */
@@ -1402,7 +1824,33 @@ QPointF QConicalGradient::center() const
 
 
 /*!
-    Returns the start angle of the conical gradient in logical coordinates
+    \fn void QConicalGradient::setCenter(qreal x, qreal y)
+
+    \overload
+
+    Sets the center of this conical gradient in logical coordinates to
+    (\a x, \a y).
+
+    \sa center()
+*/
+
+/*!
+    Sets the center of this conical gradient in logical coordinates to
+    \a center.
+
+    \sa center()
+*/
+
+void QConicalGradient::setCenter(const QPointF &center)
+{
+    Q_ASSERT(m_type == ConicalGradient);
+    m_data.conical.cx = center.x();
+    m_data.conical.cy = center.y();
+}
+
+/*!
+    Returns the start angle of the conical gradient in logical
+    coordinates.
 
     \sa stops()
 */
@@ -1412,6 +1860,23 @@ qreal QConicalGradient::angle() const
     Q_ASSERT(m_type == ConicalGradient);
     return m_data.conical.angle;
 }
+
+
+/*!
+    \since 4.2
+
+    Sets \a angle to be the start angle for this conical gradient in
+    logical coordinates.
+
+    \sa angle()
+*/
+
+void QConicalGradient::setAngle(qreal angle)
+{
+    Q_ASSERT(m_type == ConicalGradient);
+    m_data.conical.angle = angle;
+}
+
 
 /*!
     \typedef QGradientStop

@@ -128,7 +128,8 @@ public:
         GRADIENT,
         TRANSFORM,
         ANIMATE_TRANSFORM,
-        ANIMATE_COLOR
+        ANIMATE_COLOR,
+        OPACITY
     };
 public:
     virtual ~QSvgStyleProperty();
@@ -165,6 +166,20 @@ private:
     // image-rendering v 	v 	'auto' | 'optimizeSpeed' | 'optimizeQuality' |
     //                                      'inherit'
     //QSvgImageRendering m_imageRendering;
+};
+
+
+
+class QSvgOpacityStyle : public QSvgStyleProperty
+{
+public:
+    QSvgOpacityStyle(qreal opacity);
+    virtual void apply(QPainter *p, const QRectF &, QSvgNode *node);
+    virtual void revert(QPainter *p);
+    virtual Type type() const;
+private:
+    qreal m_opacity;
+    qreal m_oldOpacity;
 };
 
 class QSvgFillStyle : public QSvgStyleProperty
@@ -316,6 +331,16 @@ public:
     virtual void revert(QPainter *p);
     virtual Type type() const;
 
+    void setStopLink(const QString &link, QSvgTinyDocument *doc);
+    QString stopLink() const { return m_link; }
+    void resolveStops();
+
+    void setMatrix(const QMatrix &matrix);
+    QMatrix  qmatrix() const
+    {
+        return m_matrix;
+    }
+
     QGradient *qgradient() const
     {
         return m_gradient;
@@ -328,6 +353,11 @@ private:
 
     QBrush m_oldFill;
     bool   m_resolveBounds;
+
+    QMatrix m_matrix;
+
+    QSvgTinyDocument *m_doc;
+    QString           m_link;
 };
 
 class QSvgTransformStyle : public QSvgStyleProperty
@@ -436,6 +466,7 @@ public:
     QSvgRefCounter<QSvgTransformStyle>    transform;
     QSvgRefCounter<QSvgAnimateColor>      animateColor;
     QList<QSvgRefCounter<QSvgAnimateTransform> >   animateTransforms;
+    QSvgRefCounter<QSvgOpacityStyle>      opacity;
 };
 
 /********************************************************/

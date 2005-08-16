@@ -2,27 +2,29 @@
 
 HEADERS += \
         widgets/qbuttongroup.h \
-        widgets/qdockseparator_p.h \
         widgets/qabstractbutton.h \
         widgets/qabstractbutton_p.h \
         widgets/qabstractslider.h \
         widgets/qabstractslider_p.h \
         widgets/qabstractspinbox.h \
         widgets/qabstractspinbox_p.h \
+        widgets/qcalendarwidget.h \
         widgets/qcheckbox.h \
         widgets/qcombobox.h \
         widgets/qcombobox_p.h \
         widgets/qdatetimeedit.h \
+        widgets/qdatetimeedit_p.h \
         widgets/qdial.h \
-        widgets/qdialogbuttons_p.h \
+        widgets/qdialogbuttonbox.h \
         widgets/qdockwidget.h \
         widgets/qdockwidget_p.h \
         widgets/qdockwidgetlayout_p.h \
-        widgets/qdockwidgetseparator_p.h \
+        widgets/qfontcombobox.h \
         widgets/qframe.h \
         widgets/qframe_p.h \
         widgets/qgroupbox.h \
         widgets/qlabel.h \
+        widgets/qlabel_p.h \
         widgets/qlcdnumber.h \
         widgets/qlineedit.h \
         widgets/qlineedit_p.h \
@@ -30,11 +32,13 @@ HEADERS += \
         widgets/qmainwindowlayout_p.h \
         widgets/qmenu.h \
         widgets/qmenubar.h \
+        widgets/qmenudata.h \
         widgets/qprogressbar.h \
         widgets/qpushbutton.h \
         widgets/qradiobutton.h \
         widgets/qrubberband.h \
         widgets/qscrollbar.h \
+        widgets/qscrollarea_p.h \
         widgets/qsizegrip.h \
         widgets/qslider.h \
         widgets/qspinbox.h \
@@ -62,22 +66,23 @@ HEADERS += \
         widgets/qwidgetresizehandler_p.h \
         widgets/qfocusframe.h \
         widgets/qscrollarea.h \
-        widgets/qworkspace.h
+        widgets/qworkspace.h \
+        widgets/qwidgetanimator_p.h
 
 SOURCES += \
         widgets/qabstractbutton.cpp \
         widgets/qabstractslider.cpp \
         widgets/qabstractspinbox.cpp \
+        widgets/qcalendarwidget.cpp \
         widgets/qcheckbox.cpp \
         widgets/qcombobox.cpp \
         widgets/qdatetimeedit.cpp \
         widgets/qdial.cpp \
-        widgets/qdialogbuttons.cpp \
-        widgets/qdockseparator.cpp \
+        widgets/qdialogbuttonbox.cpp \
         widgets/qdockwidget.cpp \
         widgets/qdockwidgetlayout.cpp \
-        widgets/qdockwidgetseparator.cpp \
         widgets/qeffects.cpp \
+        widgets/qfontcombobox.cpp \
         widgets/qframe.cpp \
         widgets/qgroupbox.cpp \
         widgets/qlabel.cpp \
@@ -115,10 +120,15 @@ SOURCES += \
         widgets/qwidgetresizehandler.cpp \
         widgets/qfocusframe.cpp \
         widgets/qscrollarea.cpp \
-        widgets/qworkspace.cpp
+        widgets/qworkspace.cpp \
+        widgets/qwidgetanimator.cpp
 
 
-!embedded:mac:SOURCES += widgets/qmenu_mac.cpp
+!embedded:mac {
+    HEADERS += widgets/qhiviewwidget_mac_p.h
+    SOURCES += widgets/qmenu_mac.cpp \
+               widgets/qhiviewwidget_mac.cpp
+}
 
 wince-* {
         SOURCES += widgets/ce/qcemainwindow.cpp

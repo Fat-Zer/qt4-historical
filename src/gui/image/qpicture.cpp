@@ -40,7 +40,7 @@
 #include "qdebug.h"
 
 /*!
-    \class QPicture qpicture.h
+    \class QPicture
     \brief The QPicture class is a paint device that records and
     replays QPainter commands.
 
@@ -64,13 +64,14 @@
     and scales the painter to match differences in resolution
     depending on the window system.
 
-    QPicture is an \link shclass.html implicitly shared\endlink class.
-
     Example of how to record a picture:
     \quotefromfile snippets/picture/picture.cpp
     \skipto RECORD
     \skipto QPicture
     \printuntil save
+
+    Note that the list of painter commands is reset on each call to
+    the QPainter::begin() function.
 
     Example of how to replay a picture:
     \quotefromfile snippets/picture/picture.cpp
@@ -128,7 +129,9 @@ QPicture::QPicture(int formatVersion)
 }
 
 /*!
-    Constructs a \link shclass.html shallow copy\endlink of \a pic.
+    Constructs a copy of \a pic.
+
+    This constructor is fast thanks to \l{implicit sharing}.
 */
 
 QPicture::QPicture(const QPicture &pic)
@@ -1020,7 +1023,7 @@ static QStringList qToStringList(const QList<QByteArray> arr)
 {
     QStringList list;
     for (int i = 0; i < arr.count(); ++i)
-        list.append(QString(arr.at(i)));
+        list.append(QString::fromLatin1(arr.at(i)));
     return list;
 }
 
@@ -1206,7 +1209,7 @@ Q_GLOBAL_STATIC(QMutex, mutex)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
                           (QPictureFormatInterface_iid,
                            QCoreApplication::libraryPaths(),
-                           "/pictureformats"))
+                           QLatin1String("/pictureformats")))
 #endif
 void qt_init_picture_plugins()
 {
@@ -1560,7 +1563,7 @@ QByteArray QPictureIO::pictureFormat(QIODevice *d)
     if (rdlen != buflen)
         return format;
 
-    memcpy(buf2, buf, sizeof(char)*buflen);
+    memcpy(buf2, buf, buflen);
 
     for (int n = 0; n < rdlen; n++)
         if (buf[n] == '\0')

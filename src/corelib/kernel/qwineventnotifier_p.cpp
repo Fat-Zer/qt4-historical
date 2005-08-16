@@ -26,6 +26,8 @@
 #include "qeventdispatcher_win_p.h"
 #include "qcoreapplication.h"
 
+#include <private/qthread_p.h>
+
 /*
     \class QWinEventNotifier qwineventnotifier.h
     \brief The QWinEventNotifier class provides support for the Windows Wait functions.
@@ -33,7 +35,7 @@
     \ingroup io
 
     The QWinEventNotifier class makes it possible to use the wait
-    functions on windows in a asynchronous manor. With this class
+    functions on windows in a asynchronous manner. With this class
     you can register a HANDLE to an event and get notification when
     that event becomes signalled. The state of the event is not modified
     in the process so if it is a manual reset event you will need to
@@ -48,7 +50,8 @@ QWinEventNotifier::QWinEventNotifier(QObject *parent)
 QWinEventNotifier::QWinEventNotifier(HANDLE hEvent, QObject *parent)
  : QObject(parent), handleToEvent(hEvent), enabled(false)
 {
-    QEventDispatcherWin32 *eventDispatcher = qobject_cast<QEventDispatcherWin32 *>(QAbstractEventDispatcher::instance(thread()));
+    Q_D(QObject);
+    QEventDispatcherWin32 *eventDispatcher = qobject_cast<QEventDispatcherWin32 *>(d->threadData->eventDispatcher);
     Q_ASSERT_X(eventDispatcher, "QWinEventNotifier::QWinEventNotifier()",
                "Cannot create a win event notifier without a QEventDispatcherWin32");
     eventDispatcher->registerEventNotifier(this);
@@ -82,7 +85,8 @@ void QWinEventNotifier::setEnabled(bool enable)
         return;
     enabled = enable;
 
-    QEventDispatcherWin32 *eventDispatcher = qobject_cast<QEventDispatcherWin32 *>(QAbstractEventDispatcher::instance(thread()));
+    Q_D(QObject);
+    QEventDispatcherWin32 *eventDispatcher = qobject_cast<QEventDispatcherWin32 *>(d->threadData->eventDispatcher);
     if (!eventDispatcher) // perhaps application is shutting down
         return;
 

@@ -108,6 +108,8 @@ public:
     void setPath(const QString &path);
     QString path() const;
 
+    bool hasQuery() const;
+
     void setEncodedQuery(const QByteArray &query);
     QByteArray encodedQuery() const;
 
@@ -126,6 +128,7 @@ public:
 
     void setFragment(const QString &fragment);
     QString fragment() const;
+    bool hasFragment() const;
 
     QUrl resolved(const QUrl &relative) const;
 
@@ -155,6 +158,10 @@ public:
                                         const QByteArray &include = QByteArray());
     static QString fromPunycode(const QByteArray &);
     static QByteArray toPunycode(const QString &);
+    static QString fromAce(const QByteArray &);
+    static QByteArray toAce(const QString &);
+    static QStringList idnWhitelist();
+    static void setIdnWhitelist(const QStringList &);
 
 #if defined QT3_SUPPORT
     inline QT3_SUPPORT QString protocol() const { return scheme(); }
@@ -200,6 +207,8 @@ public:
         return QUrl(url).isRelative();
     }
 #endif
+
+    QString errorString() const;
 
 protected:
 #if defined (QT3_SUPPORT)

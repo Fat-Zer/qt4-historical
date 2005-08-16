@@ -15,11 +15,13 @@ contains(QT_CONFIG, opengl):CONFIG += opengl
 HEADERS += qgl.h \
 	   qglcolormap.h \
 	   qpaintengine_opengl_p.h \
-	   qglpixelbuffer.h
+	   qglpixelbuffer.h \
+	   qglframebufferobject.h
 SOURCES	+= qgl.cpp \
 	   qglcolormap.cpp \
 	   qpaintengine_opengl.cpp \
-	   qglpixelbuffer.cpp
+	   qglpixelbuffer.cpp \
+	   qglframebufferobject.cpp
 x11 {
     SOURCES += qgl_x11.cpp \
 	       qglpixelbuffer_x11.cpp
@@ -38,6 +40,18 @@ mac {
 win32 {
     SOURCES += qgl_win.cpp \
 	       qglpixelbuffer_win.cpp
+}
+
+embedded {
+    SOURCES += qgl_qws.cpp \
+	       qglpixelbuffer_qws.cpp \
+               qttessellator.cpp
+    HEADERS += qttessellator_p.h
+     	contains(QT_CONFIG, fontconfig) {
+ 		include($$QT_SOURCE_TREE/config.tests/unix/freetype/freetype.pri)
+	} else {
+	    DEFINES *= QT_NO_FREETYPE
+ 	}
 }
 
 QMAKE_LIBS += $$QMAKE_LIBS_OPENGL

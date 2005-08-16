@@ -84,7 +84,7 @@ public:
                         Aborted,
                         Error };
 
-    enum OutputFormat { NativeFormat, PdfFormat };
+    enum OutputFormat { NativeFormat, PdfFormat, PostScriptFormat };
 
     // ### Qt 5: Merge with QAbstractPrintDialog::PrintRange
     enum PrintRange { AllPages, Selection, PageRange };
@@ -143,6 +143,9 @@ public:
     void setFontEmbeddingEnabled(bool enable);
     bool fontEmbeddingEnabled() const;
 
+    void setDoubleSidedPrinting(bool enable);
+    bool doubleSidedPrinting() const;
+
 #ifdef Q_WS_WIN
     void setWinPageSize(int winPageSize);
     int winPageSize() const;
@@ -173,8 +176,10 @@ public:
     int fromPage() const;
     int toPage() const;
 
+#ifndef QT_NO_PRINTDIALOG
     void setPrintRange(PrintRange range);
     PrintRange printRange() const;
+#endif
 
 #ifdef QT3_SUPPORT
 #ifdef Q_WS_MAC

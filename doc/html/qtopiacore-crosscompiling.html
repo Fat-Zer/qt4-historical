@@ -2,24 +2,18 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/emb-crosscompiling.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/emb-crosscompiling.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/emb-crosscompiling.qdoc -->
 <head>
-    <title>Qt 4.1: Cross-Compiling Applications</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="contents" href="qtopiacore.html" />
+  <title>Qt 4.2: Cross-Compiling Applications</title>
+  <link rel="contents" href="qtopiacore.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [<a href="qtopiacore.html">Contents</a>]
 </p>
 <h1 align="center">Cross-Compiling Applications<br /><small></small></h1>
@@ -33,19 +27,19 @@ body { background: #ffffff; color: black; }</style>
 <a name="step-1-setting-the-cross-compiler-s-path"></a>
 <h2>Step 1: Setting the Cross-Compiler's Path</h2>
 <p>Specify the cross compiler by setting the <tt>PATH</tt> environment variable. For example, if the current shell is bash, ksh, zsh or sh:</p>
-<pre>&nbsp;   export PATH=path/to/cross/compiler:$PATH</pre>
+<pre> export PATH=path/to/cross/compiler:$PATH</pre>
 <a name="step-2-including-the-required-libraries"></a>
 <h2>Step 2: Including the Required Libraries</h2>
 <p>Make sure that all the libraries needed for the application, as well as for the Qt libraries, are present in the tool chain. In particular, if the zlib and jpeg libraries are not available, they must be included by running the <tt>configure</tt> script with the <tt>-L</tt> and <tt>-I</tt> options. For example:</p>
-<pre>&nbsp;   cd path/to/Qtopia/Core
-    ./configure -L /path/to/libjpeg/libraries -I /path/to/libjpeg/headers</pre>
+<pre> cd path/to/Qtopia/Core
+ ./configure -L /path/to/libjpeg/libraries -I /path/to/libjpeg/headers</pre>
 <p>The JPEG source can be downloaded from <a href="http://www.ijg.org/">http://www.ijg.org/</a>. The Qtopia Core distribution includes a version of the zlib source that can be compiled into the Qtopia core library. If integrators wish to use a later version of the zlib library, it can be downloaded from the <a href="http://www.gzip.org/zlib/">http://www.gzip.org/zlib/</a> website.</p>
 <a name="step-3-creating-a-target-specific-qmake-specification"></a>
 <h2>Step 3: Creating a Target Specific qmake Specification</h2>
 <p>The qmake tool requires a <tt>qmake.conf</tt> file describing the platform and compiler specific default values used to generate appropriate Makefiles. The standard Qtopia Core distribution provides such files for several combinations of platforms and compilers. These files are located in the <tt>mkspecs</tt> subdirectory.</p>
 <p>Create a <tt>qmake.conf</tt> fitting your target environment by copying an already existing file. It is recommended to copy the entire directory, for example:</p>
-<pre>&nbsp;   cp path/to/Qtopia/Core/mkspecs/qws/linux-mips-g++/...
-       path/to/Qtopia/Core/mkspecs/qws/linux-myplatform-g++/...</pre>
+<pre> cp path/to/Qtopia/Core/mkspecs/qws/linux-mips-g++/...
+    path/to/Qtopia/Core/mkspecs/qws/linux-myplatform-g++/...</pre>
 <p>Then customize the new platform specific <tt>qmake.conf</tt> file.</p>
 <a name="step-4-providing-mouse-and-keyboard-drivers"></a>
 <h2>Step 4: Providing Mouse and Keyboard Drivers</h2>
@@ -55,17 +49,17 @@ body { background: #ffffff; color: black; }</style>
 <a name="step-5-building-the-target-specific-executable"></a>
 <h2>Step 5: Building the Target Specific Executable</h2>
 <p>Before building the executable, run the <tt>configure</tt> script specifying the platform architecture as well as the platform specific mouse, keyboard and graphics drivers:</p>
-<pre>&nbsp;   cd path/to/Qtopia/Core
-    ./configure -embedded myplatform -qt-kbd-&lt;mykeyboarddriver&gt;
-                -qt-mouse-&lt;mymousedriver&gt; -qt-gfx-&lt;mygraphicsdriver&gt;
+<pre> cd path/to/Qtopia/Core
+ ./configure -embedded myplatform -qt-kbd-&lt;mykeyboarddriver&gt;
+             -qt-mouse-&lt;mymousedriver&gt; -qt-gfx-&lt;mygraphicsdriver&gt;
 
-    cd path/to/myApplication
-    qmake -project
-    qmake
-    make</pre>
+ cd path/to/myApplication
+ qmake -project
+ qmake
+ make</pre>
 <p>That's all. Your target specific executable is ready for deployment.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><b>See also:</b><p><a href="qtopiacore-charinput.html">Character Input</a>, <a href="qtopiacore-pointer.html">Pointer Handling</a> and <a href="qtopiacore-deployment.html">Deploying an Application on Qtopia Core</a>.</p>
+<tr valign="top" class="odd"><td><b>See also:</b><p><a href="qtopiacore-charinput.html">Character Input</a>, <a href="qtopiacore-pointer.html">Pointer Handling</a> and <a href="qtopiacore-deployment.html">Deploying an Application on Qtopia Core</a>.</p>
 </td></tr>
 </table></p>
 <p>
@@ -75,6 +69,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

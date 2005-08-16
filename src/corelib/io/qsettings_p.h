@@ -49,23 +49,46 @@
 #include "QtCore/qt_windows.h"
 #endif
 
+#if defined(Q_WS_QWS)
+#define QT_QSETTINGS_ALWAYS_CASE_SENSITIVE
+#endif
+
+// used in testing framework
+#define QSETTINGS_P_H_VERSION 2
+
+#ifdef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE
+static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseSensitive;
+
 class QSettingsKey : public QString
 {
 public:
     inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs)
-         : QString(key), theRealKey(key)
+        : QString(key) { Q_ASSERT(cs == Qt::CaseSensitive); Q_UNUSED(cs); }
+
+    inline QString originalCaseKey() const { return *this; }
+};
+#else
+static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseInsensitive;
+
+class QSettingsKey : public QString
+{
+public:
+    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs)
+         : QString(key), theOriginalKey(key)
     {
         if (cs == Qt::CaseInsensitive)
             QString::operator=(toLower());
     }
 
-    inline QString realKey() const { return theRealKey; }
+    inline QString originalCaseKey() const { return theOriginalKey; }
 
 private:
-    QString theRealKey;
+    QString theOriginalKey;
 };
+#endif
 
-typedef QMap<QSettingsKey, QVariant> InternalSettingsMap;
+typedef QMap<QSettingsKey, QByteArray> UnparsedSettingsMap;
+typedef QMap<QSettingsKey, QVariant> ParsedSettingsMap;
 
 class QSettingsGroup
 {
@@ -103,7 +126,7 @@ inline QString QSettingsGroup::toString() const
 class Q_CORE_EXPORT QConfFile
 {
 public:
-    InternalSettingsMap mergedKeyMap() const;
+    ParsedSettingsMap mergedKeyMap() const;
 
     static QConfFile *fromName(const QString &name, bool _userPerms);
     static void clearCache();
@@ -111,9 +134,10 @@ public:
     QString name;
     QDateTime timeStamp;
     qint64 size;
-    InternalSettingsMap originalKeys;
-    InternalSettingsMap addedKeys;
-    InternalSettingsMap removedKeys;
+    UnparsedSettingsMap unparsedIniSections;
+    ParsedSettingsMap originalKeys;
+    ParsedSettingsMap addedKeys;
+    ParsedSettingsMap removedKeys;
     QAtomic ref;
     QMutex mutex;
     bool userPerms;
@@ -124,10 +148,11 @@ private:
     QConfFile &operator=(const QConfFile &);
 #endif
     QConfFile(const QString &name, bool _userPerms);
+
     friend class QConfFile_createsItself; // supress compiler warning
 };
 
-class Q_INTERNAL_EXPORT QSettingsPrivate
+class Q_AUTOTEST_EXPORT QSettingsPrivate
 #ifndef QT_NO_QOBJECT
     : public QObjectPrivate
 #endif
@@ -156,7 +181,7 @@ public:
 
     QString actualKey(const QString &key) const;
     void beginGroupOrArray(const QSettingsGroup &group);
-    void setStatus(QSettings::Status status);
+    void setStatus(QSettings::Status status) const;
     void requestUpdate();
     void update();
 
@@ -172,17 +197,14 @@ public:
     static QVariant stringListToVariantList(const QStringList &l);
 
     // parser functions
-    static QString &escapedLeadingAt(QString &s);
-    static QString &unescapedLeadingAt(QString &s);
     static QString variantToString(const QVariant &v);
     static QVariant stringToVariant(const QString &s);
     static void iniEscapedKey(const QString &key, QByteArray &result);
     static bool iniUnescapedKey(const QByteArray &key, int from, int to, QString &result);
     static void iniEscapedString(const QString &str, QByteArray &result);
-    static void iniChopTrailingSpaces(QString *str);
     static void iniEscapedStringList(const QStringList &strs, QByteArray &result);
-    static QStringList *iniUnescapedStringList(const QByteArray &str, int from, int to,
-                                                QString &result);
+    static bool iniUnescapedStringList(const QByteArray &str, int from, int to,
+                                       QString &stringResult, QStringList &stringListResult);
     static QStringList splitArgs(const QString &s, int idx);
 
     /*
@@ -204,7 +226,7 @@ protected:
     int spec;
     bool fallbacks;
     bool pendingChanges;
-    QSettings::Status status;
+    mutable QSettings::Status status;
 };
 
 class QConfFileSettingsPrivate : public QSettingsPrivate
@@ -227,18 +249,23 @@ public:
     bool isWritable() const;
     QString fileName() const;
 
-    static bool readIniLine(QIODevice &device, QByteArray &line, int &len, int &equalsCharPos);
-    static bool readIniFile(QIODevice &device, InternalSettingsMap *map);
+    static bool readIniFile(const QByteArray &data, UnparsedSettingsMap *unparsedIniSections);
+    static bool readIniSection(const QSettingsKey &section, const QByteArray &data,
+                               ParsedSettingsMap *settingsMap);
+    static bool readIniLine(const QByteArray &data, int &dataPos, int &lineStart, int &lineLen,
+                            int &equalsPos);
 
 private:
     void initFormat();
     void initAccess();
     void syncConfFile(int confFileNo);
-    bool writeIniFile(QIODevice &device, const InternalSettingsMap &map);
+    bool writeIniFile(QIODevice &device, const ParsedSettingsMap &map);
 #ifdef Q_OS_MAC
-    bool readPlistFile(const QString &fileName, InternalSettingsMap *map) const;
-    bool writePlistFile(const QString &fileName, const InternalSettingsMap &map) const;
+    bool readPlistFile(const QString &fileName, ParsedSettingsMap *map) const;
+    bool writePlistFile(const QString &fileName, const ParsedSettingsMap &map) const;
 #endif
+    void ensureAllSectionsParsed(QConfFile *confFile) const;
+    void ensureSectionParsed(QConfFile *confFile, const QSettingsKey &key) const;
 
     QConfFile *confFiles[NumConfFiles];
     QSettings::Format format;

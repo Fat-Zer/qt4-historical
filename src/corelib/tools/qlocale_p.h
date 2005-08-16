@@ -35,22 +35,20 @@
 // We mean it.
 //
 
-#include "QtCore/QString"
-#include "QtCore/QVarLengthArray"
+#include "QtCore/qstring.h"
+#include "QtCore/qvarlengtharray.h"
 
 struct QLocalePrivate
 {
 public:
-    const QChar &decimal() const { return reinterpret_cast<const QChar&>(m_decimal); }
-    const QChar &group() const { return reinterpret_cast<const QChar&>(m_group); }
-    const QChar &list() const { return reinterpret_cast<const QChar&>(m_list); }
-    const QChar &percent() const { return reinterpret_cast<const QChar&>(m_percent); }
-    const QChar &zero() const { return reinterpret_cast<const QChar&>(m_zero); }
+    QChar decimal() const { return QChar(m_decimal); }
+    QChar group() const { return QChar(m_group); }
+    QChar list() const { return QChar(m_list); }
+    QChar percent() const { return QChar(m_percent); }
+    QChar zero() const { return QChar(m_zero); }
     QChar plus() const { return QLatin1Char('+'); }
-    const QChar &minus() const { return reinterpret_cast<const QChar&>(m_minus); }
-    const QChar &exponential() const { return reinterpret_cast<const QChar&>(m_exponential); }
-    QString infinity() const;
-    QString nan() const;
+    QChar minus() const { return QChar(m_minus); }
+    QChar exponential() const { return QChar(m_exponential); }
 
     quint32 languageId() const { return m_language_id; }
     quint32 countryId() const { return m_country_id; }
@@ -105,8 +103,7 @@ public:
     	    	    	  GroupSeparatorMode group_sep_mode,
                           CharBuff *result) const;
 
-    QString month(int index, bool short_format = false) const;
-    QString day(int index, bool short_format = false) const;
+    static void updateSystemPrivate();
 
     quint32 m_language_id, m_country_id;
 
@@ -117,8 +114,6 @@ public:
     quint32 m_short_time_format_idx, m_long_time_format_idx;
     quint32 m_short_month_names_idx, m_long_month_names_idx;
     quint32 m_short_day_names_idx, m_long_day_names_idx;
-
-    static QByteArray systemLocaleName();
 };
 
 #endif // QLOCALE_P_H

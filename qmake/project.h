@@ -74,7 +74,8 @@ class QMakeProject
     enum IncludeFlags {
         IncludeFlagNone = 0x00,
         IncludeFlagFeature = 0x01,
-        IncludeFlagNewProject = 0x02
+        IncludeFlagNewParser = 0x02,
+        IncludeFlagNewProject = 0x04
     };
     IncludeStatus doProjectInclude(QString file, uchar flags, QMap<QString, QStringList> &place);
     bool doProjectTest(QString str, QMap<QString, QStringList> &place);
@@ -82,14 +83,20 @@ class QMakeProject
                        QMap<QString, QStringList> &place);
     bool doProjectTest(QString func, QStringList args,
                        QMap<QString, QStringList> &place);
-    QString doProjectExpand(QString func, const QString &params,
-                            QMap<QString, QStringList> &place);
-    QString doProjectExpand(QString func, QStringList args,
-                            QMap<QString, QStringList> &place);
+    bool doProjectTest(QString func, QList<QStringList> args,
+                       QMap<QString, QStringList> &place);
+    QStringList doProjectExpand(QString func, const QString &params,
+                                QMap<QString, QStringList> &place);
+    QStringList doProjectExpand(QString func, QStringList args,
+                                QMap<QString, QStringList> &place);
+    QStringList doProjectExpand(QString func, QList<QStringList> args,
+                                QMap<QString, QStringList> &place);
 
     bool doProjectCheckReqs(const QStringList &deps, QMap<QString, QStringList> &place);
     bool doVariableReplace(QString &str, QMap<QString, QStringList> &place);
+    QStringList doVariableReplaceExpand(const QString &str, QMap<QString, QStringList> &place, bool *ok=0);
     void init(QMakeProperty *, const QMap<QString, QStringList> *);
+    QStringList &values(const QString &v, QMap<QString, QStringList> &place);
 
 public:
     QMakeProject() { init(0, 0); }
@@ -108,9 +115,10 @@ public:
     QString configFile();
     inline QMakeProperty *properities() { return prop; }
 
-    QString expand(const QString &v);
+    QStringList expand(const QString &v);
+    QStringList expand(const QString &func, const QList<QStringList> &args);
     bool test(const QString &v);
-    bool test(const QString &func, const QStringList &args);
+    bool test(const QString &func, const QList<QStringList> &args);
     bool isActiveConfig(const QString &x, bool regex=false,
                         QMap<QString, QStringList> *place=NULL);
 
@@ -136,17 +144,18 @@ inline QString QMakeProject::projectFile()
 inline QString QMakeProject::configFile()
 { return cfile; }
 
-inline bool QMakeProject::isEmpty(const QString &v)
-{ return !vars.contains(v) || vars[v].isEmpty(); }
-
 inline QStringList &QMakeProject::values(const QString &v)
-{ return vars[v]; }
+{ return values(v, vars); }
+
+inline bool QMakeProject::isEmpty(const QString &v)
+{ return values(v).isEmpty(); }
 
 inline QString QMakeProject::first(const QString &v)
 {
-    if (isEmpty(v))
+    const QStringList vals = values(v);
+    if(vals.isEmpty())
         return QString("");
-    return vars[v].first();
+    return vals.first();
 }
 
 inline QMap<QString, QStringList> &QMakeProject::variables()

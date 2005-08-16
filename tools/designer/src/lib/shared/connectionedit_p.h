@@ -44,11 +44,11 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPolygonF>
 
-#include "qtundo_p.h"
+#include <QtGui/QUndoCommand>
 #include "shared_global_p.h"
 
 class QDesignerFormWindowInterface;
-class QtUndoStack;
+class QUndoStack;
 
 namespace qdesigner_internal {
 
@@ -157,15 +157,15 @@ public:
     Connection *connection(int i) const { return m_con_list.at(i); }
     int indexOfConnection(Connection *con) const { return m_con_list.indexOf(con); }
 
-    void deleteSelected();
+    virtual void deleteSelected();
 
     virtual void setSource(Connection *con, const QString &obj_name);
     virtual void setTarget(Connection *con, const QString &obj_name);
 
-    QtUndoStack *undoStack() const { return m_undo_stack; }
+    QUndoStack *undoStack() const { return m_undo_stack; }
 
     void clear();
-    
+
     void showEvent(QShowEvent * /*e*/)
     {
         updateBackground();
@@ -182,8 +182,8 @@ signals:
 
 public slots:
     virtual void setBackground(QWidget *background);
-    void updateBackground();
-    void widgetRemoved(QWidget *w);
+    virtual void updateBackground();
+    virtual void widgetRemoved(QWidget *w);
     void updateLines();
     void enableUpdateBackground(bool enable);
 
@@ -206,9 +206,10 @@ protected:
     enum State { Editing, Connecting, Dragging };
     State state() const;
 
+    virtual void endConnection(QWidget *target, const QPoint &pos);
 private:
     QWidget *m_bg_widget;
-    QtUndoStack *m_undo_stack;
+    QUndoStack *m_undo_stack;
     bool m_enable_update_background;
 
     Connection *m_tmp_con; // the connection we are currently editing
@@ -216,7 +217,6 @@ private:
     bool m_start_connection_on_drag;
     void startConnection(QWidget *source, const QPoint &pos);
     void continueConnection(QWidget *target, const QPoint &pos);
-    void endConnection(QWidget *target, const QPoint &pos);
     void abortConnection();
 
     void findObjectsUnderMouse(const QPoint &pos);
@@ -243,25 +243,28 @@ private:
 
 private:
     friend class Connection;
+    friend class BuddyEditor;
     friend class AddConnectionCommand;
     friend class DeleteConnectionsCommand;
     friend class SetEndPointCommand;
 };
 
-class QDESIGNER_SHARED_EXPORT CECommand : public QtCommand, public CETypes
+class QDESIGNER_SHARED_EXPORT CECommand : public QUndoCommand, public CETypes
 {
-    Q_OBJECT
 public:
     CECommand(ConnectionEdit *edit)
-        : m_edit(edit) { setCanMerge(false); }
+        : m_edit(edit) {}
+
+    virtual bool mergeWith(const QUndoCommand *) { return false; }
+
     ConnectionEdit *edit() const { return m_edit; }
+
 private:
     ConnectionEdit *m_edit;
 };
 
 class QDESIGNER_SHARED_EXPORT AddConnectionCommand : public CECommand
 {
-    Q_OBJECT
 public:
     AddConnectionCommand(ConnectionEdit *edit, Connection *con);
     virtual void redo();

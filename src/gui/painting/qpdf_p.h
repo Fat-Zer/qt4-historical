@@ -43,6 +43,7 @@
 #include "private/qfontsubset_p.h"
 #include "private/qpaintengine_p.h"
 #include "qprintengine.h"
+#include "private/qcups_p.h"
 
 #ifndef QT_NO_PRINTER
 
@@ -97,7 +98,7 @@ namespace QPdf {
     QByteArray ascii85Encode(const QByteArray &input);
 
     const char *toHex(ushort u, char *buffer);
-    const char *toHex(uchar u, char *buffer);    
+    const char *toHex(uchar u, char *buffer);
 
 
     struct PaperSize {
@@ -105,6 +106,9 @@ namespace QPdf {
     };
     PaperSize paperSize(QPrinter::PageSize pageSize);
     const char *paperSizeToString(QPrinter::PageSize pageSize);
+
+
+    QByteArray stripSpecialCharacters(const QByteArray &string);
 };
 
 
@@ -135,6 +139,9 @@ public:
     ~QPdfBaseEngine() {}
 
     // reimplementations QPaintEngine
+    bool begin(QPaintDevice *pdev);
+    bool end();
+
     void drawPoints(const QPointF *points, int pointCount);
     void drawLines(const QLineF *lines, int lineCount);
     void drawRects(const QRectF *rects, int rectCount);
@@ -144,10 +151,18 @@ public:
     void drawTextItem(const QPointF &p, const QTextItem &textItem);
 
     void updateState(const QPaintEngineState &state);
+
+    int metric(QPaintDevice::PaintDeviceMetric metricType) const;
     // end reimplementations QPaintEngine
+
+    // Printer stuff...
+    bool newPage();
+    void setProperty(PrintEnginePropertyKey key, const QVariant &value);
+    QVariant property(PrintEnginePropertyKey key) const;
 
     void setPen();
     virtual void setBrush() = 0;
+    void setupGraphicsState(QPaintEngine::DirtyFlags flags);
 
 private:
     void updateClipPath(const QPainterPath & path, Qt::ClipOperation op);
@@ -157,11 +172,18 @@ class QPdfBaseEnginePrivate : public QPaintEnginePrivate
 {
     Q_DECLARE_PUBLIC(QPdfBaseEngine)
 public:
-    QPdfBaseEnginePrivate();
+    QPdfBaseEnginePrivate(QPrinter::PrinterMode m);
     ~QPdfBaseEnginePrivate();
-    
+
+    bool openPrintDevice();
+    void closePrintDevice();
+
+
     void drawTextItem(const QPointF &p, const QTextItemInt &ti);
     inline uint requestObject() { return currentObject++; }
+
+    QRect paperRect() const;
+    QRect pageRect() const;
 
     bool postscript;
     int currentObject;
@@ -169,8 +191,6 @@ public:
     QPdfPage* currentPage;
     QPdf::Stroker stroker;
 
-    Qt::BGMode backgroundMode;
-    QBrush backgroundBrush;
     QPointF brushOrigin;
     QBrush brush;
     QPen pen;
@@ -179,8 +199,37 @@ public:
     bool allClipped;
     bool hasPen;
     bool hasBrush;
+    bool simplePen;
 
     QHash<QFontEngine::FaceId, QFontSubset *> fonts;
+
+    QPaintDevice *pdev;
+
+    // the device the output is in the end streamed to.
+    QIODevice *outDevice;
+    int fd;
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    QCUPSSupport cups;
+#endif
+
+    // printer options
+    QString outputFileName;
+    QString printerName;
+    QString printProgram;
+    QString selectionOption;
+    QString title;
+    QString creator;
+    bool duplex;
+    bool collate;
+    bool fullPage;
+    bool embedFonts;
+    int copies;
+    int resolution;
+    QPrinter::PageOrder pageOrder;
+    QPrinter::Orientation orientation;
+    QPrinter::PageSize pageSize;
+    QPrinter::ColorMode colorMode;
+    QPrinter::PaperSource paperSource;
 };
 
 #endif

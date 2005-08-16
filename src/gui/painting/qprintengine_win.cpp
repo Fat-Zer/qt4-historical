@@ -222,6 +222,7 @@ bool QWin32PrintEngine::begin(QPaintDevice *)
         d->fileName = d->port;
 
     QT_WA({
+    d->devModeW()->dmCopies = d->num_copies;
 	DOCINFO di;
 	memset(&di, 0, sizeof(DOCINFO));
 	di.cbSize = sizeof(DOCINFO);
@@ -233,6 +234,7 @@ bool QWin32PrintEngine::begin(QPaintDevice *)
 	    ok = false;
 	}
     } , {
+    d->devModeA()->dmCopies = d->num_copies;
 	DOCINFOA di;
 	memset(&di, 0, sizeof(DOCINFOA));
 	di.cbSize = sizeof(DOCINFOA);
@@ -364,15 +366,16 @@ bool QWin32PrintEngine::abort()
 }
 
 extern void qt_draw_text_item(const QPointF &pos, const QTextItemInt &ti, HDC hdc,
-                              bool convertToText);
+                              bool convertToText, const QMatrix &matrix, const QPointF &topLeft);
 
 void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
 {
     Q_D(const QWin32PrintEngine);
 
     QRgb brushColor = state->pen().brush().color().rgb();
-    bool fallBack = (d->txop >= QPainterPrivate::TxScale || state->pen().brush().style() != Qt::SolidPattern
-        || qAlpha(brushColor) != 0xff);
+    bool fallBack = state->pen().brush().style() != Qt::SolidPattern
+                    || qAlpha(brushColor) != 0xff
+                    || QT_WA_INLINE(false, d->txop >= QPainterPrivate::TxScale);
 
 
     if (!fallBack) {
@@ -416,8 +419,8 @@ void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
     SelectObject(d->hdc, CreateSolidBrush(cf));
     SelectObject(d->hdc, CreatePen(PS_SOLID, 1, cf));
     SetTextColor(d->hdc, cf);
-    qt_draw_text_item(QPointF(d->matrix.dx(), d->matrix.dy()) + p,
-                      ti, d->hdc, latin1String);
+
+    qt_draw_text_item(p, ti, d->hdc, latin1String, d->matrix, d->devPaperRect.topLeft());
     DeleteObject(SelectObject(d->hdc,GetStockObject(HOLLOW_BRUSH)));
     DeleteObject(SelectObject(d->hdc,GetStockObject(BLACK_PEN)));
 }
@@ -425,6 +428,10 @@ void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
 int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
 {
     Q_D(const QWin32PrintEngine);
+
+    if (!d->hdc)
+        return 0;
+
     int val;
     int res = d->resolution;
 
@@ -872,7 +879,7 @@ void QWin32PrintEnginePrivate::queryDefault()
 			  reinterpret_cast<wchar_t *>(buffer), 256);
 	output = QString::fromUtf16(buffer);
 	if (output == noPrinters) { // no printers
-	    qWarning("System has no default printer, are any printers installed?");
+	    qWarning("QPrinter: System has no default printer, are any printers installed?");
 	    return;
 	}
     }, {
@@ -880,14 +887,17 @@ void QWin32PrintEnginePrivate::queryDefault()
 	GetProfileStringA("windows", "device", noPrinters.toLatin1(), buffer, 256);
         output = QString::fromLocal8Bit(buffer);
 	if (output == noPrinters) { // no printers
-	    qWarning("System has no default printer, are any printers installed?");
+	    qWarning("QPrinter: System has no default printer, are any printers installed?");
 	    return;
 	}
     });
     QStringList info = output.split(',');
-    name = info.at(0);
-    program = info.at(1);
-    port = info.at(2);
+    if(name.isEmpty())
+        name = info.at(0);
+    if(program.isEmpty())
+        program = info.at(1);
+    if(port.isEmpty())
+        port = info.at(2);
 }
 
 QWin32PrintEnginePrivate::~QWin32PrintEnginePrivate()
@@ -957,8 +967,15 @@ void QWin32PrintEnginePrivate::initialize()
     } );
 
     Q_ASSERT(hPrinter);
-    Q_ASSERT(devMode);
     Q_ASSERT(pInfo);
+
+    if (devMode) {
+        QT_WA( {
+            num_copies = devModeW()->dmCopies;
+        }, {
+            num_copies = devModeA()->dmCopies;
+        } );
+    }
 
     initHDC();
 
@@ -1016,7 +1033,8 @@ void QWin32PrintEnginePrivate::initDevRects()
 
 void QWin32PrintEnginePrivate::release()
 {
-    Q_ASSERT(hdc);
+    if (hdc == 0)
+        return ;
 
     if (globalDevMode) { // Devmode comes from print dialog
         GlobalUnlock(globalDevMode);
@@ -1083,8 +1101,8 @@ void QWin32PrintEnginePrivate::updateOrigin()
     int o_y = devPageRect.y();
 
     if (fullPage) {
-        origin_x = qRound(-o_x);
-        origin_y = qRound(-o_y);
+        origin_x = -o_x;
+        origin_y = -o_y;
     } else {
         origin_x = 0;
         origin_y = 0;
@@ -1096,7 +1114,14 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
     Q_D(QWin32PrintEngine);
     switch (key) {
     case PPK_CollateCopies:
-        d->doReinit();
+        {
+            if (!d->devMode)
+                break;
+            short collate = value.toBool() ? DMCOLLATE_TRUE : DMCOLLATE_FALSE;
+            QT_WA( { d->devModeW()->dmCollate = collate; },
+                   { d->devModeA()->dmCollate = collate; } );
+            d->doReinit();
+        }
         break;
 
     case PPK_ColorMode:
@@ -1115,7 +1140,7 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
 
     case PPK_DocumentName:
         if (isActive()) {
-            qWarning("Cannot change document name while printing is active");
+            qWarning("QWin32PrintEngine: Cannot change document name while printing is active");
             return;
         }
         d->docName = value.toString();
@@ -1127,13 +1152,10 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         break;
 
     case PPK_NumberOfCopies:
-        if (!d->devMode)
-            break;
-        QT_WA( {
-            d->devModeW()->dmCopies = value.toInt();
-        }, {
-            d->devModeA()->dmCopies = value.toInt();
-        } );
+        d->num_copies = value.toInt();
+        QT_WA( { d->devModeW()->dmCopies = d->num_copies; },
+               { d->devModeA()->dmCopies = d->num_copies; });
+        d->doReinit();
         break;
 
     case PPK_Orientation:
@@ -1148,7 +1170,7 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
 
     case PPK_OutputFileName:
         if (isActive()) {
-            qWarning("QWin32PrintEngine: cannot change filename while printing");
+            qWarning("QWin32PrintEngine: Cannot change filename while printing");
         } else {
             d->fileName = value.toString();
             d->printToFile = !value.toString().isEmpty();
@@ -1208,6 +1230,8 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
 
     case PPK_PrinterName:
         d->name = value.toString();
+        if(d->name.isEmpty())
+            d->queryDefault();
         d->initialize();
         break;
 
@@ -1464,12 +1488,16 @@ void QWin32PrintEnginePrivate::readDevmode(HGLOBAL globalDevmode)
             devMode = dm;
             hdc = CreateDC(reinterpret_cast<const wchar_t *>(program.utf16()),
                            reinterpret_cast<const wchar_t *>(name.utf16()), 0, dm);
+
+            num_copies = devModeW()->dmCopies;
         }, {
             DEVMODEA *dm = (DEVMODEA*) GlobalLock(globalDevmode);
             release();
             globalDevMode = globalDevmode;
             devMode = dm;
             hdc = CreateDCA(program.toLatin1(), name.toLatin1(), 0, dm);
+
+            num_copies = devModeA()->dmCopies;
         } );
     }
 

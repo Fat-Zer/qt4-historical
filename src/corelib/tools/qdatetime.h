@@ -64,6 +64,7 @@ public:
     QString toString(const QString &format) const;
 #endif
     bool setYMD(int y, int m, int d);
+    bool setDate(int year, int month, int date);
 
     QDate addDays(int days) const;
     QDate addMonths(int months) const;
@@ -88,6 +89,7 @@ public:
     inline static QT3_SUPPORT bool leapYear(int year) { return isLeapYear(year); }
 #endif
 
+    // ### Qt 5: remove these two functions
     static uint gregorianToJulian(int y, int m, int d);
     static void julianToGregorian(uint jd, int &y, int &m, int &d);
 
@@ -157,7 +159,7 @@ public:
     int elapsed() const;
 
 private:
-    enum { NullTime = -1 };
+    enum TimeFlag { NullTime = -1 };
     inline int ds() const { return mds == -1 ? 0 : mds; }
     int mds;
 
@@ -221,6 +223,7 @@ public:
     static QDateTime fromString(const QString &s, Qt::DateFormat f = Qt::TextDate);
 #endif
     static QDateTime fromString(const QString &s, const QString &format);
+    static QDateTime fromTime_t(uint secsSince1Jan1970UTC);
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT void setTime_t(uint secsSince1Jan1970UTC, Qt::TimeSpec spec) {

@@ -24,10 +24,35 @@
 #ifndef PROPARSER_H
 #define PROPARSER_H
 
-#include <QMap>
-#include <QString>
+#include "profileevaluator.h"
 
-bool proFileTagMap( const QString& text, QMap<QString, QString> *ret );
-QStringList tokenizeFileNames(const QString &fileNames);
+// Subclass it to intercept the logMessage method
+class ProFileTranslationsScanner : public ProFileEvaluator {
+public:
+    ProFileTranslationsScanner(bool verbose) : ProFileEvaluator() 
+    {
+        m_verbose = verbose;
+    }
+
+    ProFile *queryProFile(const QString &filename) {
+        return ProFileEvaluator::queryProFile(filename);
+    }
+
+private:
+    /* reimp */
+    void logMessage(const LogMessage &msg) {
+        if (m_verbose && (msg.m_type == ProFileEvaluator::MT_DebugLevel1
+            || msg.m_type == ProFileEvaluator::MT_Error)) {
+            ProFileEvaluator::logMessage(msg);
+        }
+    }
+
+private:
+    bool m_verbose;
+};
 
 #endif
+
+void removeDuplicates(QStringList *strings, bool alreadySorted = true);
+
+bool evaluateProFile(const QString &fileName, bool verbose, QMap<QByteArray, QStringList> *varMap);

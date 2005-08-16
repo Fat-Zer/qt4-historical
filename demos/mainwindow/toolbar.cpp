@@ -54,6 +54,7 @@ ToolBar::ToolBar(QWidget *parent)
     : QToolBar(parent), spinbox(0), spinboxAction(0)
 {
     setWindowTitle(tr("Main Tool Bar"));
+    setObjectName("MainToolBar");
 
     setIconSize(QSize(32, 32));
 
@@ -162,11 +163,12 @@ ToolBar::ToolBar(QWidget *parent)
     menu->addSeparator();
     menu->addActions(areaActions->actions());
 
+    connect(menu, SIGNAL(aboutToShow()), this, SLOT(updateMenu()));
+
     randomize();
 }
 
-
-void ToolBar::polishEvent(QEvent *)
+void ToolBar::updateMenu()
 {
     QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parentWidget());
     Q_ASSERT(mainWindow != 0);

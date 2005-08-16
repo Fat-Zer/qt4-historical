@@ -51,7 +51,6 @@ protected:
     Qt::KeyboardModifiers modState;
 };
 
-
 class Q_GUI_EXPORT QMouseEvent : public QInputEvent
 {
 public:
@@ -139,6 +138,7 @@ protected:
 };
 #endif
 
+#ifndef QT_NO_TABLETEVENT
 class Q_GUI_EXPORT QTabletEvent : public QInputEvent
 {
 public:
@@ -181,23 +181,35 @@ protected:
     // new devices coming along, and there seem to be "holes" in the
     // OS-specific events for this.
     void *mExtra;
-
 };
-
+#endif // QT_NO_TABLETEVENT
 
 class Q_GUI_EXPORT QKeyEvent : public QInputEvent
 {
 public:
-    QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers,
-              const QString& text = QString(),
+    QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers, const QString& text = QString(),
               bool autorep = false, ushort count = 1);
     ~QKeyEvent();
 
     int key() const { return k; }
+#ifndef QT_NO_SHORTCUT
+    bool matches(QKeySequence::StandardKey key) const;
+#endif
     Qt::KeyboardModifiers modifiers() const;
     inline QString text() const { return txt; }
     inline bool isAutoRepeat() const { return autor; }
     inline int count() const { return int(c); }
+
+    // Functions for the extended key event information
+    static QKeyEvent *createExtendedKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers,
+                                             quint32 nativeScanCode, quint32 nativeVirtualKey,
+                                             quint32 nativeModifiers,
+                                             const QString& text = QString(), bool autorep = false,
+                                             ushort count = 1);
+    inline bool hasExtendedInfo() const { return reinterpret_cast<const QKeyEvent*>(d) == this; }
+    quint32 nativeScanCode() const;
+    quint32 nativeVirtualKey() const;
+    quint32 nativeModifiers() const;
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT_CONSTRUCTOR QKeyEvent(Type type, int key, int /*ascii*/,
@@ -239,6 +251,7 @@ public:
                   Popup=Qt::PopupFocusReason, Shortcut=Qt::ShortcutFocusReason };
 #endif
     Qt::FocusReason reason();
+    Qt::FocusReason reason() const;
 
 private:
     Qt::FocusReason m_reason;
@@ -256,7 +269,7 @@ public:
     inline const QRegion &region() const { return m_region; }
 
 #ifdef QT3_SUPPORT
-    QT_COMPAT_CONSTRUCTOR QPaintEvent(const QRegion &paintRegion, const QRect &paintRect);
+    QT3_SUPPORT_CONSTRUCTOR QPaintEvent(const QRegion &paintRegion, const QRect &paintRect);
     inline QT3_SUPPORT bool erased() const { return m_erased; }
     inline QT3_SUPPORT void setErased(bool b) { m_erased = b; }
 #endif
@@ -342,7 +355,6 @@ public:
     ~QHideEvent();
 };
 
-
 class Q_GUI_EXPORT QContextMenuEvent : public QInputEvent
 {
 public:
@@ -374,6 +386,7 @@ protected:
     uint reas : 8;
 };
 
+#ifndef QT_NO_INPUTMETHOD
 class Q_GUI_EXPORT QInputMethodEvent : public QEvent
 {
 public:
@@ -412,6 +425,7 @@ private:
     int replace_from;
     int replace_length;
 };
+#endif // QT_NO_INPUTMETHOD
 
 #ifndef QT_NO_DRAGANDDROP
 
@@ -546,7 +560,7 @@ private:
     QPoint gp;
 };
 
-
+#ifndef QT_NO_STATUSTIP
 class Q_GUI_EXPORT QStatusTipEvent : public QEvent
 {
 public:
@@ -557,7 +571,9 @@ public:
 private:
     QString s;
 };
+#endif
 
+#ifndef QT_NO_WHATSTHIS
 class Q_GUI_EXPORT QWhatsThisClickedEvent : public QEvent
 {
 public:
@@ -568,8 +584,9 @@ public:
 private:
     QString s;
 };
+#endif
 
-
+#ifndef QT_NO_ACTION
 class Q_GUI_EXPORT QActionEvent : public QEvent
 {
     QAction *act, *bef;
@@ -580,7 +597,7 @@ public:
     inline QAction *action() const { return act; }
     inline QAction *before() const { return bef; }
 };
-
+#endif
 
 class Q_GUI_EXPORT QFileOpenEvent : public QEvent
 {
@@ -593,6 +610,7 @@ private:
     QString f;
 };
 
+#ifndef QT_NO_TOOLBAR
 class Q_GUI_EXPORT QToolBarChangeEvent : public QEvent
 {
 public:
@@ -603,7 +621,9 @@ public:
 private:
     uint tog : 1;
 };
+#endif
 
+#ifndef QT_NO_SHORTCUT
 class Q_GUI_EXPORT QShortcutEvent : public QEvent
 {
 public:
@@ -611,14 +631,19 @@ public:
     ~QShortcutEvent();
 
     inline const QKeySequence &key() { return sequence; }
+    inline const QKeySequence &key() const { return sequence; }
     inline int shortcutId() { return sid; }
+    inline int shortcutId() const { return sid; }
     inline bool isAmbiguous() { return ambig; }
+    inline bool isAmbiguous() const { return ambig; }
 protected:
     QKeySequence sequence;
     bool ambig;
     int  sid;
 };
+#endif
 
+#ifndef QT_NO_CLIPBOARD
 class Q_GUI_EXPORT QClipboardEvent : public QEvent
 {
 public:
@@ -627,6 +652,7 @@ public:
 
     QEventPrivate *data() { return d; };
 };
+#endif
 
 class Q_GUI_EXPORT QWindowStateChangeEvent: public QEvent
 {
@@ -657,6 +683,11 @@ private:
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QEvent *);
 #endif
+
+#ifndef QT_NO_SHORTCUT
+inline bool operator==(QKeyEvent *e, QKeySequence::StandardKey key){return (e ? e->matches(key) : false);}
+inline bool operator==(QKeySequence::StandardKey key, QKeyEvent *e){return (e ? e->matches(key) : false);}
+#endif // QT_NO_SHORTCUT
 
 QT_END_HEADER
 

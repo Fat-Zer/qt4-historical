@@ -1621,7 +1621,7 @@ void Q3TextDocument::setRichTextInternal(const QString &text, Q3TextCursor* curs
             if (!hasPrefix(doc, length, pos+1, QChar('/'))) {
                 // open tag
                 QMap<QString, QString> attr;
-                QMap<QString, QString>::ConstIterator it, end = attr.end();
+                QMap<QString, QString>::Iterator it, end = attr.end();
                 bool emptyTag = false;
                 QString tagname = parseOpenTag(doc, length, pos, attr, emptyTag);
                 if (tagname.isEmpty())
@@ -1904,7 +1904,7 @@ void Q3TextDocument::setRichTextInternal(const QString &text, Q3TextCursor* curs
 
                         NEWPAR;
 
-                        if (curtag.style->displayMode() == Q3StyleSheetItem::DisplayListItem) {
+                        if (curtag.style && curtag.style->displayMode() == Q3StyleSheetItem::DisplayListItem) {
                             it = attr.find("value");
                             if (it != end)
                                 curpar->setListValue((*it).toInt());
@@ -2891,8 +2891,8 @@ QString Q3TextDocument::selectedText(int id, bool asRichText) const
 
 void Q3TextDocument::setFormat(int id, Q3TextFormat *f, int flags)
 {
-    QMap<int, Q3TextDocumentSelection>::ConstIterator it = selections.find(id);
-    if (it == selections.end())
+    QMap<int, Q3TextDocumentSelection>::ConstIterator it = selections.constFind(id);
+    if (it == selections.constEnd())
         return;
 
     Q3TextDocumentSelection sel = *it;
@@ -4707,8 +4707,8 @@ void Q3TextParagraph::paint(QPainter &painter, const QPalette &pal, Q3TextCursor
                 else if (chr->customItem()->placement() == Q3TextCustomItem::PlaceInline) {
                     bool inSelection = false;
                     if (drawSelections) {
-                        QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->find(Q3TextDocument::Standard);
-                        inSelection = (it != mSelections->end() && (*it).start <= i && (*it).end > i);
+                        QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->constFind(Q3TextDocument::Standard);
+                        inSelection = (it != mSelections->constEnd() && (*it).start <= i && (*it).end > i);
                     }
                     chr->customItem()->draw(&painter, chr->x, y,
                                              clipx == -1 ? clipx : (clipx - r.x()),
@@ -4806,8 +4806,8 @@ void Q3TextParagraph::drawString(QPainter &painter, const QString &str, int star
 
     bool allSelected = false;
     if (drawSelections) {
-        QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->find(Q3TextDocument::Standard);
-        allSelected = (it != mSelections->end() && (*it).start <= start && (*it).end >= start+len);
+        QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->constFind(Q3TextDocument::Standard);
+        allSelected = (it != mSelections->constEnd() && (*it).start <= start && (*it).end >= start+len);
     }
     if (!allSelected)
         painter.drawText(xstart, y + baseLine, str.mid(start, len));
@@ -4829,8 +4829,8 @@ void Q3TextParagraph::drawString(QPainter &painter, const QString &str, int star
 
     // check if we are in a selection and draw it
     if (drawSelections) {
-        QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->end();
-        while (it != mSelections->begin()) {
+        QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->constEnd();
+        while (it != mSelections->constBegin()) {
             --it;
             int selStart = (*it).start;
             int selEnd = (*it).end;
@@ -5138,7 +5138,7 @@ QString Q3TextParagraph::richText() const
 	    lastAnchorName = c->anchorName();
             if (c->anchorName().contains('#')) {
                 QStringList l = c->anchorName().split('#');
-                for (QStringList::ConstIterator it = l.begin(); it != l.end(); ++it)
+                for (QStringList::ConstIterator it = l.constBegin(); it != l.constEnd(); ++it)
                     s += "<a name=\"" + *it + "\"></a>";
             } else {
                 s += "<a name=\"" + c->anchorName() + "\"></a>";
@@ -5819,7 +5819,7 @@ int Q3TextFormatterBreakWords::format(Q3TextDocument *doc, Q3TextParagraph *para
         }
 
         // ignore non spacing marks for column count.
-        if (col != 0 && ::category(c->c) == QChar::Mark_NonSpacing)
+        if (col != 0 && QUnicodeTables::category(c->c) == QChar::Mark_NonSpacing)
             --col;
 
 #ifndef QT_NO_TEXTCUSTOMITEM
@@ -6656,7 +6656,7 @@ Q3TextImage::Q3TextImage(Q3TextDocument *p, const QMap<QString, QString> &attr, 
         if (pm.hasAlphaChannel()) {
             QRegion mask(pm.mask());
             QRegion all(0, 0, pm.width(), pm.height());
-            reg = new QRegion(all.subtract(mask));
+            reg = new QRegion(all.subtracted(mask));
         }
     }
 
@@ -7545,11 +7545,11 @@ QRect Q3TextFlow::boundingRect() const
 #ifndef QT_NO_TEXTCUSTOMITEM
     for (int idx = 0; idx < leftItems.size(); ++idx) {
         Q3TextCustomItem* item = leftItems.at(idx);
-        br = br.unite(item->geometry());
+        br = br.united(item->geometry());
     }
     for (int idx = 0; idx < rightItems.size(); ++idx) {
         Q3TextCustomItem* item = rightItems.at(idx);
-        br = br.unite(item->geometry());
+        br = br.united(item->geometry());
     }
 #endif
     return br;
@@ -7635,6 +7635,7 @@ Q3TextTable::Q3TextTable(Q3TextDocument *p, const QMap<QString, QString> & attr 
                 stretch = s.left(s.length()-1).toInt();
         }
     }
+    us_fixwidth = fixwidth;
 
     place = PlaceInline;
     if (attr["align"] == "left")
@@ -7672,8 +7673,8 @@ QString Q3TextTable::richText() const
             needEnd = true;
         }
         s += "<td";
-        it = cell->attributes.begin();
-        for (; it != cell->attributes.end(); ++it)
+        it = cell->attributes.constBegin();
+        for (; it != cell->attributes.constEnd(); ++it)
             s += " " + it.key() + "=" + *it;
         s += ">";
         s += cell->richText()->richText();
@@ -7692,6 +7693,7 @@ void Q3TextTable::adjustToPainter(QPainter* p)
     border = scale(us_b , p);
     innerborder = scale(us_ib, p);
     outerborder = scale(us_ob ,p);
+    fixwidth = scale( us_fixwidth, p);
     width = 0;
     cachewidth = 0;
     for (int idx = 0; idx < cells.size(); ++idx) {
@@ -8181,7 +8183,7 @@ QSize Q3TextTableCell::minimumSize() const
 
 QSize Q3TextTableCell::maximumSize() const
 {
-    return QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    return QSize(maxw, QWIDGETSIZE_MAX);
 }
 
 Qt::Orientations Q3TextTableCell::expandingDirections() const

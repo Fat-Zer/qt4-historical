@@ -785,8 +785,6 @@ static bool block_set_alignment = false;
     format has changed.
 
     The new vertical alignment is \a a.
-
-    \sa setVerticalAlignment()
 */
 
 /*!
@@ -1612,7 +1610,7 @@ static bool qtextedit_ignore_readonly = false;
     key event handler.
 */
 
-void Q3TextEdit::doKeyboardAction(KeyboardAction action)
+void Q3TextEdit::doKeyboardAction(Q3TextEdit::KeyboardAction action)
 {
     if (isReadOnly() && !qtextedit_ignore_readonly)
         return;
@@ -1875,7 +1873,7 @@ void Q3TextEdit::removeSelectedText(int selNum)
     should be selected.
 */
 
-void Q3TextEdit::moveCursor(CursorAction action, bool select)
+void Q3TextEdit::moveCursor(Q3TextEdit::CursorAction action, bool select)
 {
 #ifdef QT_TEXTEDIT_OPTIMIZATION
     if (d->optimMode)
@@ -1958,7 +1956,7 @@ void Q3TextEdit::moveCursor(CursorAction action, bool select)
     \overload
 */
 
-void Q3TextEdit::moveCursor(CursorAction action)
+void Q3TextEdit::moveCursor(Q3TextEdit::CursorAction action)
 {
     resetInputContext();
     switch (action) {
@@ -3657,7 +3655,7 @@ void Q3TextEdit::setColor(const QColor &c)
     \sa color() setPaper()
 */
 
-void Q3TextEdit::setVerticalAlignment(VerticalAlignment a)
+void Q3TextEdit::setVerticalAlignment(Q3TextEdit::VerticalAlignment a)
 {
     Q3TextFormat f(*currentFormat);
     f.setVAlign((Q3TextFormat::VerticalAlignment)a);
@@ -4494,10 +4492,10 @@ void Q3TextEdit::setPaper(const QBrush& pap)
     if ( pap.pixmap() )
         viewport()->setBackgroundPixmap( *pap.pixmap() );
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, pap.color());
+    pal.setColor(QPalette::Window, pap.color());
     setPalette(pal);
     pal = viewport()->palette();
-    pal.setColor(QPalette::Background, pap.color());
+    pal.setColor(QPalette::Window, pap.color());
     viewport()->setPalette(pal);
 #ifdef QT_TEXTEDIT_OPTIMIZATION
     // force a repaint of the entire viewport - using updateContents()
@@ -4855,6 +4853,10 @@ void Q3TextEdit::updateStyles()
 
 void Q3TextEdit::setDocument(Q3TextDocument *dc)
 {
+    if (dc == 0) {
+        qWarning("Q3TextEdit::setDocument() called with null Q3TextDocument pointer");
+        return;
+    }
     if (dc == doc)
         return;
     doc = dc;
@@ -6002,7 +6004,7 @@ QString Q3TextEdit::optimText() const
         } else {
             tmp = d->od->lines[LOGOFFSET(i)] + "\n";
             // inject the tags for this line
-            if ((it = d->od->tagIndex.find(LOGOFFSET(i))) != d->od->tagIndex.end())
+            if ((it = d->od->tagIndex.constFind(LOGOFFSET(i))) != d->od->tagIndex.constEnd())
                 ftag = it.value();
             offset = 0;
             while (ftag && ftag->line == i) {
@@ -6094,7 +6096,7 @@ Q3TextEditOptimPrivate::Tag *Q3TextEdit::optimInsertTag(int line, int index, con
 
     // find insertion pt. in tag struct.
     QMap<int,Q3TextEditOptimPrivate::Tag *>::ConstIterator it;
-    if ((it = d->od->tagIndex.find(LOGOFFSET(line))) != d->od->tagIndex.end()) {
+    if ((it = d->od->tagIndex.constFind(LOGOFFSET(line))) != d->od->tagIndex.constEnd()) {
         tmp = *it;
         if (tmp->index >= index) { // the exisiting tag may be placed AFTER the one we want to insert
             tmp = tmp->prev;
@@ -6326,7 +6328,7 @@ bool Q3TextEdit::optimHasBoldMetrics(int line)
 {
     Q3TextEditOptimPrivate::Tag *t;
     QMap<int,Q3TextEditOptimPrivate::Tag *>::ConstIterator it;
-    if ((it = d->od->tagIndex.find(line)) != d->od->tagIndex.end()) {
+    if ((it = d->od->tagIndex.constFind(line)) != d->od->tagIndex.constEnd()) {
         t = *it;
         while (t && t->line == line) {
             if (t->bold)
@@ -6460,7 +6462,7 @@ void Q3TextEdit::optimInsert(const QString& text, int line, int index)
         qStripTags(&stripped);
         d->od->lines[LOGOFFSET(line)].insert(index, stripped);
         // move the tag indices following the insertion pt.
-        if ((ii = d->od->tagIndex.find(LOGOFFSET(line))) != d->od->tagIndex.end()) {
+        if ((ii = d->od->tagIndex.constFind(LOGOFFSET(line))) != d->od->tagIndex.constEnd()) {
             tag = *ii;
             while (tag && (LOGOFFSET(tag->line) == line && tag->index < index))
                 tag = tag->next;
@@ -6485,7 +6487,7 @@ void Q3TextEdit::optimInsert(const QString& text, int line, int index)
         // fix the tag index and the tag line/index numbers - this
         // might take a while..
         for (x = line; x < d->od->numLines; x++) {
-            if ((ii = d->od->tagIndex.find(LOGOFFSET(line))) != d->od->tagIndex.end()) {
+            if ((ii = d->od->tagIndex.constFind(LOGOFFSET(line))) != d->od->tagIndex.constEnd()) {
                 tag = ii.value();
                 if (LOGOFFSET(tag->line) == line)
                     while (tag && (LOGOFFSET(tag->line) == line && tag->index < index))
@@ -6506,7 +6508,7 @@ void Q3TextEdit::optimInsert(const QString& text, int line, int index)
         d->od->tagIndex.clear();
         tag = d->od->tags;
         while (tag) {
-            if (!((ii = d->od->tagIndex.find(LOGOFFSET(tag->line))) != d->od->tagIndex.end()))
+            if (!((ii = d->od->tagIndex.constFind(LOGOFFSET(tag->line))) != d->od->tagIndex.constEnd()))
                 d->od->tagIndex[LOGOFFSET(tag->line)] = tag;
             tag = tag->next;
         }
@@ -6514,7 +6516,7 @@ void Q3TextEdit::optimInsert(const QString& text, int line, int index)
         // update the tag indices on the spliced line - needs to be done before new tags are added
         QString stripped = strl[strl.count() - 1];
         qStripTags(&stripped);
-        if ((ii = d->od->tagIndex.find(LOGOFFSET(line + numNewLines))) != d->od->tagIndex.end()) {
+        if ((ii = d->od->tagIndex.constFind(LOGOFFSET(line + numNewLines))) != d->od->tagIndex.constEnd()) {
             tag = *ii;
             while (tag && (LOGOFFSET(tag->line) == line + numNewLines)) {
                 tag->index += stripped.length();
@@ -6567,7 +6569,7 @@ Q3TextEditOptimPrivate::Tag * Q3TextEdit::optimPreviousLeftTag(int line)
 {
     Q3TextEditOptimPrivate::Tag * ftag = 0;
     QMap<int,Q3TextEditOptimPrivate::Tag *>::ConstIterator it;
-    if ((it = d->od->tagIndex.find(LOGOFFSET(line))) != d->od->tagIndex.end())
+    if ((it = d->od->tagIndex.constFind(LOGOFFSET(line))) != d->od->tagIndex.constEnd())
         ftag = it.value();
     if (!ftag) {
         // start searching for an open tag
@@ -6699,7 +6701,7 @@ void Q3TextEdit::optimDrawContents(QPainter * p, int clipx, int clipy,
         // Step 1 - find previous left-tag
         tmp = optimPreviousLeftTag(i);
         for (; i < startLine + nLines; i++) {
-            if ((it = d->od->tagIndex.find(LOGOFFSET(i))) != d->od->tagIndex.end())
+            if ((it = d->od->tagIndex.constFind(LOGOFFSET(i))) != d->od->tagIndex.constEnd())
                 tag = it.value();
             // Step 2 - iterate over tags on the current line
             int lastIndex = 0;

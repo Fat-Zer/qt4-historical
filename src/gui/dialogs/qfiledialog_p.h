@@ -43,12 +43,14 @@
 #include "QtGui/qtreeview.h"
 #include "QtGui/qtoolbutton.h"
 #include "QtGui/qevent.h"
+#include "QtGui/qdialogbuttonbox.h"
 
 class QDirModel;
 class QComboBox;
 class QAction;
 class QPushButton;
 class QFileDialogLineEdit;
+class QFileDialogModeButton;
 class QGridLayout;
 class QLabel;
 class QFileDialogListView;
@@ -111,7 +113,7 @@ public:
     // inlined stuff
     inline QString tr(const char *text) const { return QObject::tr(text); }
     inline QString toNative(const QString &path) const
-        { return QDir::convertSeparators(path); }
+        { return QDir::toNativeSeparators(path); }
     inline QString toInternal(const QString &path) const
         {
 #if defined(Q_FS_FAT) || defined(Q_OS_OS2EMX)
@@ -123,8 +125,7 @@ public:
             return path;
 #endif
         }
-    inline QFileDialog::ViewMode viewMode() const
-        { return (listModeButton->isDown() ? QFileDialog::List : QFileDialog::Detail); }
+    QFileDialog::ViewMode viewMode() const;
 
     // static stuff
     static QString workingDirectory(const QString &path);
@@ -159,14 +160,13 @@ public:
     QAction *unsortedAction;
     QAction *showHiddenAction;
 
-    QPushButton *acceptButton;
-    QPushButton *rejectButton;
+    QDialogButtonBox *buttonBox;
 
     QToolButton *backButton;
     QToolButton *toParentButton;
     QToolButton *newFolderButton;
-    QToolButton *detailModeButton;
-    QToolButton *listModeButton;
+    QFileDialogModeButton *detailModeButton;
+    QFileDialogModeButton *listModeButton;
 
     QLabel *lookInLabel;
     QLabel *fileNameLabel;

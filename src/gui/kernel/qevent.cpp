@@ -24,10 +24,13 @@
 #include "qevent.h"
 #include "qcursor.h"
 #include "qapplication.h"
+#include "private/qapplication_p.h"
+#include "private/qkeysequence_p.h"
 #include "qwidget.h"
 #include "qdebug.h"
 #include "qmime.h"
 #include "qdnd_p.h"
+#include "qevent_p.h"
 
 /*!
     \class QInputEvent
@@ -140,30 +143,30 @@ QMouseEvent::~QMouseEvent()
 
 #ifdef QT3_SUPPORT
 /*!
-    Use QMouseEvent(\a type, \a pos, \a button, \c mouseButtons, \c
-    keyboardModifiers) instead, where \c mouseButton is \a state &
-    Qt::MouseButtonMask and \c keyboardModifiers is \a state &
+    Use QMouseEvent(\a type, \a pos, \a button, \c buttons, \c
+    modifiers) instead, where \c buttons is \a state &
+    Qt::MouseButtonMask and \c modifiers is \a state &
     Qt::KeyButtonMask.
 */
 QMouseEvent::QMouseEvent(Type type, const QPoint &pos, Qt::ButtonState button, int state)
     : QInputEvent(type), p(pos), b((Qt::MouseButton)button)
 {
     g = QCursor::pos();
-    mouseState = Qt::MouseButtons(state & Qt::MouseButtonMask);
+    mouseState = Qt::MouseButtons((state ^ b) & Qt::MouseButtonMask);
     modState = Qt::KeyboardModifiers(state & (int)Qt::KeyButtonMask);
 }
 
 /*!
     Use QMouseEvent(\a type, \a pos, \a globalPos, \a button,
-    \c mouseButtons, \c keyboardModifiers) instead, where
-    \c mouseButton is \a state & Qt::MouseButtonMask and
-    \c keyboardModifiers is \a state & Qt::KeyButtonMask.
+    \c buttons, \c modifiers) instead, where
+    \c buttons is \a state & Qt::MouseButtonMask and
+    \c modifiers is \a state & Qt::KeyButtonMask.
 */
 QMouseEvent::QMouseEvent(Type type, const QPoint &pos, const QPoint &globalPos,
                          Qt::ButtonState button, int state)
     : QInputEvent(type), p(pos), g(globalPos), b((Qt::MouseButton)button)
 {
-    mouseState = Qt::MouseButtons(state & Qt::MouseButtonMask);
+    mouseState = Qt::MouseButtons((state ^ b) & Qt::MouseButtonMask);
     modState = Qt::KeyboardModifiers(state & (int)Qt::KeyButtonMask);
 }
 #endif
@@ -630,6 +633,98 @@ QKeyEvent::~QKeyEvent()
 }
 
 /*!
+    \internal
+*/
+QKeyEvent *QKeyEvent::createExtendedKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers,
+                                             quint32 nativeScanCode, quint32 nativeVirtualKey,
+                                             quint32 nativeModifiers,
+                                             const QString& text, bool autorep, ushort count)
+{
+    return new QKeyEventEx(type, key, modifiers, text, autorep, count,
+                           nativeScanCode, nativeVirtualKey, nativeModifiers);
+}
+
+/*!
+    \fn bool QKeyEvent::hasExtendedInfo() const
+    \internal
+*/
+
+/*!
+    \since 4.2
+
+    Returns the native scan code of the key event.
+    If the key event does not contain this data 0 is returned.
+
+    Note: The native scan code may be 0, even if the key event contains extended information.
+*/
+quint32 QKeyEvent::nativeScanCode() const
+{
+    return (reinterpret_cast<const QKeyEvent*>(d) != this
+            ? 0 : reinterpret_cast<const QKeyEventEx*>(this)->nScanCode);
+}
+
+/*!
+    \since 4.2
+
+    Returns the native virtual key, or key sym of the key event.
+    If the key event does not contain this data 0 is returned.
+
+    Note: The native virtual key may be 0, even if the key event contains extended information.
+*/
+quint32 QKeyEvent::nativeVirtualKey() const
+{
+    return (reinterpret_cast<const QKeyEvent*>(d) != this
+            ? 0 : reinterpret_cast<const QKeyEventEx*>(this)->nVirtualKey);
+}
+
+/*!
+    \since 4.2
+
+    Returns the native modifiers of a key event.
+    If the key event does not contain this data 0 is returned.
+
+    Note: The native modifiers may be 0, even if the key event contains extended information.
+*/
+quint32 QKeyEvent::nativeModifiers() const
+{
+    return (reinterpret_cast<const QKeyEvent*>(d) != this
+            ? 0 : reinterpret_cast<const QKeyEventEx*>(this)->nModifiers);
+}
+
+/*!
+    \internal
+    Creates an extended key event object, which in addition to the normal key event data, also
+    contains the native scan code, virtual key and modifiers. This extra data is used by the
+    shortcut system, to determine which shortcuts to trigger.
+*/
+QKeyEventEx::QKeyEventEx(Type type, int key, Qt::KeyboardModifiers modifiers,
+                         const QString &text, bool autorep, ushort count,
+                         quint32 nativeScanCode, quint32 nativeVirtualKey, quint32 nativeModifiers)
+    : QKeyEvent(type, key, modifiers, text, autorep, count),
+      nScanCode(nativeScanCode), nVirtualKey(nativeVirtualKey), nModifiers(nativeModifiers)
+{
+    d = reinterpret_cast<QEventPrivate*>(this);
+}
+
+/*!
+    \internal
+    Creates a copy of an other extended key event.
+*/
+QKeyEventEx::QKeyEventEx(const QKeyEventEx &other)
+    : QKeyEvent(QEvent::Type(other.t), other.k, other.modState, other.txt, other.autor, other.c),
+      nScanCode(other.nScanCode), nVirtualKey(other.nVirtualKey), nModifiers(other.nModifiers)
+{
+    d = reinterpret_cast<QEventPrivate*>(this);
+}
+
+/*!
+    \internal
+*/
+QKeyEventEx::~QKeyEventEx()
+{
+}
+
+/*!
     \fn int QKeyEvent::key() const
 
     Returns the code of the key that was pressed or released.
@@ -665,7 +760,7 @@ QKeyEvent::~QKeyEvent()
     after the event occurred.
 
     \warning This function cannot always be trusted. The user can
-    confuse it by pressing both \key{Shift} keys simulatenously and
+    confuse it by pressing both \key{Shift} keys simultaneously and
     releasing one of them, for example.
 
     \sa QApplication::keyboardModifiers()
@@ -683,6 +778,65 @@ Qt::KeyboardModifiers QKeyEvent::modifiers() const
         return Qt::KeyboardModifiers(QInputEvent::modifiers()^Qt::MetaModifier);
     return QInputEvent::modifiers();
 }
+
+#ifndef QT_NO_SHORTCUT
+/*!
+    \fn bool QKeyEvent::matches(QKeySequence::StandardKey key) const
+    \since 4.2
+
+    Returns true if the key event matches the given standard \a key;
+    otherwise returns false.
+*/
+bool QKeyEvent::matches(QKeySequence::StandardKey matchKey) const
+{
+    uint searchkey = (modifiers() | key()) & ~(Qt::KeypadModifier); //The keypad modifier should not make a difference
+    uint platform = QApplicationPrivate::currentPlatform();
+
+    uint N = QKeySequencePrivate::numberOfKeyBindings;
+    int first = 0;
+    int last = N - 1;
+
+    while (first <= last) {
+        int mid = (first + last) / 2;
+        QKeyBinding midVal = QKeySequencePrivate::keyBindings[mid];
+
+        if (searchkey > midVal.shortcut){
+            first = mid + 1;  // Search in top half
+        }
+        else if (searchkey < midVal.shortcut){
+            last = mid - 1; // Search in bottom half
+        }
+        else {
+            //found correct shortcut value, now we must check for platform match
+            if ((midVal.platform & platform) && (midVal.standardKey == matchKey)) {
+                return true;
+            } else { //We may have several equal values for different platforms, so we must search in both directions
+
+                //search forward
+                for ( unsigned int i = mid + 1 ; i < N - 1 ; ++i) {
+                    QKeyBinding current = QKeySequencePrivate::keyBindings[i];
+                    if (current.shortcut != searchkey)
+                        break;
+                    else if (current.platform & platform && current.standardKey == matchKey)
+                        return true;
+                }
+
+                //search back
+                for ( int i = mid - 1 ; i >= 0 ; --i) {
+                    QKeyBinding current = QKeySequencePrivate::keyBindings[i];
+                    if (current.shortcut != searchkey)
+                        break;
+                    else if (current.platform & platform && current.standardKey == matchKey)
+                        return true;
+                }
+                return false; //we could not find it among the matching keySequences
+            }
+        }
+    }
+    return false; //we could not find matching keySequences at all
+}
+#endif // QT_NO_SHORTCUT
+
 
 /*!
     \fn bool QKeyEvent::isAutoRepeat() const
@@ -770,10 +924,19 @@ QFocusEvent::~QFocusEvent()
 {
 }
 
+// ### Qt 5: remove
+/*!
+    \internal
+ */
+Qt::FocusReason QFocusEvent::reason()
+{
+    return m_reason;
+}
+
 /*!
     Returns the reason for this focus event.
  */
-Qt::FocusReason QFocusEvent::reason()
+Qt::FocusReason QFocusEvent::reason() const
 {
     return m_reason;
 }
@@ -1285,6 +1448,11 @@ Qt::ButtonState QContextMenuEvent::state() const
     used to enter text into a widget. Input methods are widely used
     to enter text for languages with non-Latin alphabets.
 
+    Note that when creating custom text editing widgets, the
+    Qt::WA_InputMethodEnabled window attribute must be set explicitly
+    (using the QWidget::setAttribute() function) in order to receive
+    input method events.
+
     The events are of interest to authors of keyboard entry widgets
     who want to be able to correctly handle languages with complex
     character input. Text input in such languages is usually a three
@@ -1536,6 +1704,8 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
     \sa replacementStart(), setCommitString()
 */
 
+#ifndef QT_NO_TABLETEVENT
+
 /*!
     \class QTabletEvent
     \brief The QTabletEvent class contains parameters that describe a Tablet event.
@@ -1554,10 +1724,12 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
     \l{TabletDevice}). It can also give you the minimum and maximum values for
     each device's pressure and high resolution coordinates.
 
-    A tablet event contains a special accept flag that indicates
-    whether the receiver wants the event. You should call
-    QTabletEvent::accept() if you handle the tablet event; otherwise
-    it will be sent to the parent widget.
+    A tablet event contains a special accept flag that indicates whether the
+    receiver wants the event. You should call QTabletEvent::accept() if you
+    handle the tablet event; otherwise it will be sent to the parent widget.
+    The exception are TabletEnterProximity and TabletLeaveProximity events,
+    these are only sent to QApplication and don't check whether or not they are
+    accepted.
 
     The QWidget::setEnabled() function can be used to enable or
     disable mouse and keyboard events for a widget.
@@ -1567,7 +1739,6 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
     accepted, it will send a mouse event. This allows applications that
     don't utilize tablets to use a tablet like a mouse, while also
     enabling those who want to use both tablets and mouses differently.
-
 */
 
 /*!
@@ -1808,9 +1979,20 @@ QTabletEvent::~QTabletEvent()
     to differentiate between multiple devices being used at the same
     time on the tablet.
 
+    Support of this feature is dependent on the tablet.
+
     Values for the same device may vary from OS to OS.
 
-    It is possible to generate a unique ID for any Wacom device.
+    Later versions of the Wacom driver for Linux will now report
+    the ID information. If you have a tablet that supports unique ID
+    and are not getting the information on Linux, consider upgrading
+    your driver.
+
+    As of Qt 4.2, the unique ID is the same regardless of the orientation
+    of the pen. Earlier versions would report a different value when using
+    the eraser-end versus the pen-end of the stylus on some OS's.
+
+    \sa pointerType()
 */
 
 /*!
@@ -1833,6 +2015,8 @@ QTabletEvent::~QTabletEvent()
 
     The high precision y position of the tablet device.
 */
+
+#endif // QT_NO_TABLETEVENT
 
 #ifndef QT_NO_DRAGANDDROP
 /*!
@@ -1929,9 +2113,15 @@ QDragMoveEvent::~QDragMoveEvent()
     widget, you should call the acceptProposedAction() function. Since the
     proposed action can be a combination of \l Qt::DropAction values, it may be
     useful to either select one of these values as a default action or ask
-    the user to select their preferred action. If the required drop action is
-    different to the proposed action, you can call setDropAction() instead of
-    acceptProposedAction() to complete the drop operation.
+    the user to select their preferred action.
+
+    If the proposed drop action is not suitable, perhaps because your custom
+    widget does not support that action, you can replace it with any of the
+    \l{possibleActions()}{possible drop actions} by calling setDropAction()
+    with your preferred action. If you set a value that is not present in the
+    bitwise OR combination of values returned by possibleActions(), the default
+    copy action will be used. Once a replacement drop action has been set, call
+    accept() instead of acceptProposedAction() to complete the drop operation.
 
     The mimeData() function provides the data dropped on the widget in a QMimeData
     object. This contains information about the MIME type of the data in addition to
@@ -2130,17 +2320,18 @@ void QDropEvent::setDropAction(Qt::DropAction action)
     If you set a drop action that is not one of the possible actions, the
     drag and drop operation will default to a copy operation.
 
+    Once you have supplied a replacement drop action, call accept()
+    instead of acceptProposedAction().
+
     \sa dropAction()
 */
 
 /*!
     \fn Qt::DropAction QDropEvent::dropAction() const
 
-    Returns the action that the target is expected to perform on the
-    data. If your application understands the action and can
-    process the supplied data, call acceptAction(); if your
-    application can process the supplied data but can only perform the
-    Copy action, call accept().
+    Returns the action to be performed on the data by the target. This may be
+    different from the action supplied in proposedAction() if you have called
+    setDropAction() to explicitly choose a drop action.
 
     \sa setDropAction()
 */
@@ -2212,15 +2403,20 @@ QT3_SUPPORT QDropEvent::Action QDropEvent::action() const
 
 /*!
     \class QDragEnterEvent
-    \brief The QDragEnterEvent class provides an event which is sent to a widget when a drag and drop action enters it.
+    \brief The QDragEnterEvent class provides an event which is sent
+    to a widget when a drag and drop action enters it.
 
     \ingroup events
     \ingroup draganddrop
 
-    This event is always immediately followed by a QDragMoveEvent, so
-    you only need to respond to one or the other event. This class
-    inherits most of its functionality from QDragMoveEvent, which in
-    turn inherits most of its functionality from QDropEvent.
+    A widget must accept this event in order to receive the \l
+    {QDragMoveEvent}{drag move events} that are sent while the drag
+    and drop action is in progress. The drag enter event is always
+    immediately followed by a drag move event.
+
+    QDragEnterEvent inherits most of its functionality from
+    QDragMoveEvent, which in turn inherits most of its functionality
+    from QDropEvent.
 
     \sa QDragLeaveEvent, QDragMoveEvent, QDropEvent
 */
@@ -2270,10 +2466,11 @@ QDragResponseEvent::~QDragResponseEvent()
     \ingroup events
     \ingroup draganddrop
 
-    When a widget \l{QWidget::setAcceptDrops()}{accepts drop events},
-    it will receive this event repeatedly while the drag is within
-    the widget's boundaries. The widget should examine the event to
-    see what kind of data it
+    A widget will receive drag move events repeatedly while the drag
+    is within its boundaries, if it accepts
+    \l{QWidget::setAcceptDrops()}{drop events} and \l
+    {QWidget::dragEnterEvent()}{enter events}. The widget should
+    examine the event to see what kind of data it
     \l{QDragMoveEvent::provides()}{provides}, and call the accept()
     function to accept the drop if appropriate.
 
@@ -2404,6 +2601,8 @@ QHelpEvent::~QHelpEvent()
 {
 }
 
+#ifndef QT_NO_STATUSTIP
+
 /*!
     \class QStatusTipEvent
     \brief The QStatusTipEvent class provides an event that is used to show messages in a status bar.
@@ -2475,6 +2674,10 @@ QStatusTipEvent::~QStatusTipEvent()
     \sa QStatusBar::showMessage()
 */
 
+#endif // QT_NO_STATUSTIP
+
+#ifndef QT_NO_WHATSTHIS
+
 /*!
     \class QWhatsThisClickedEvent
     \brief The QWhatsThisClickedEvent class provides an event that
@@ -2508,6 +2711,10 @@ QWhatsThisClickedEvent::~QWhatsThisClickedEvent()
     Returns the URL that was clicked by the user in the "What's
     This?" text.
 */
+
+#endif // QT_NO_WHATSTHIS
+
+#ifndef QT_NO_ACTION
 
 /*!
     \class QActionEvent
@@ -2561,6 +2768,8 @@ QActionEvent::~QActionEvent()
 
     \sa action(), QWidget::actions()
 */
+
+#endif // QT_NO_ACTION
 
 /*!
     \class QHideEvent
@@ -2670,6 +2879,7 @@ QFileOpenEvent::~QFileOpenEvent()
     Returns the file that is being opened.
 */
 
+#ifndef QT_NO_TOOLBAR
 /*!
     \internal
     \class QToolBarChangeEvent
@@ -2714,13 +2924,30 @@ QToolBarChangeEvent::~QToolBarChangeEvent()
     Qt::ShiftButton, Qt::ControlButton, Qt::MetaButton, and Qt::AltButton.
 */
 
+#endif // QT_NO_TOOLBAR
+
+#ifndef QT_NO_SHORTCUT
+
+/*!
+    Constructs a shortcut event for the given \a key press,
+    associated with the QShortcut ID \a id.
+
+    \a ambiguous specifies whether there is more than one QShortcut
+    for the same key sequence.
+*/
 QShortcutEvent::QShortcutEvent(const QKeySequence &key, int id, bool ambiguous)
     : QEvent(Shortcut), sequence(key), ambig(ambiguous), sid(id)
-{}
+{
+}
 
+/*!
+    Destroys the event object.
+*/
 QShortcutEvent::~QShortcutEvent()
 {
 }
+
+#endif // QT_NO_SHORTCUT
 
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QEvent *e) {
@@ -2762,10 +2989,11 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
     }
     return dbg.space();
 
-
+#ifndef QT_NO_TOOLTIP
     case QEvent::ToolTip:
         n = "ToolTip";
         break;
+#endif
     case QEvent::WindowActivate:
         n = "WindowActivate";
         break;
@@ -2777,8 +3005,9 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
         break;
 #ifndef QT_NO_WHEELEVENT
     case QEvent::Wheel:
-        n = "Wheel";
-        break;
+        dbg.nospace() << "QWheelEvent("  << static_cast<const QWheelEvent *>(e)->delta()
+                      << ")";
+        return dbg.space();
 #endif
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
@@ -2865,26 +3094,30 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
 }
 #endif
 
-
+#ifndef QT_NO_CLIPBOARD
 /*!
-    \internal
-
     \class QClipboardEvent
     \ingroup events
+    \internal
 
     \brief The QClipboardEvent class provides the parameters used in a clipboard event.
 
     This class is for internal use only, and exists to aid the clipboard on various
-    platforms to get all the information it needs.  Use QEvent::Clipboard instead.
+    platforms to get all the information it needs. Use QEvent::Clipboard instead.
+
+    \sa QClipboard
 */
 
 QClipboardEvent::QClipboardEvent(QEventPrivate *data)
     : QEvent(QEvent::Clipboard)
-{ d = data; }
+{
+    d = data;
+}
 
 QClipboardEvent::~QClipboardEvent()
 {
 }
+#endif // QT_NO_CLIPBOARD
 
 /*!
     \class QShortcutEvent
@@ -2900,29 +3133,20 @@ QClipboardEvent::~QClipboardEvent()
 */
 
 /*!
-    \fn QShortcutEvent::QShortcutEvent(const QKeySequence &key, int id, bool ambiguous = false)
-
-    Constructs a shortcut event for the given \a key press,
-    associated with the QShortcut ID \a id.
-
-    \a ambiguous specifies whether there is more than one QShortcut
-    for the same key sequence.
-*/
-
-/*!
-    \fn QShortcutEvent::~QShortcutEvent()
-
-    Destroys the event object.
-*/
-
-/*!
-    \fn const QKeySequence &QShortcutEvent::key()
+    \fn const QKeySequence &QShortcutEvent::key() const
 
     Returns the key sequence that triggered the event.
 */
 
+// ### Qt 5: remove
 /*!
-    \fn int QShortcutEvent::shortcutId()
+    \fn const QKeySequence &QShortcutEvent::key()
+
+    \internal
+*/
+
+/*!
+    \fn int QShortcutEvent::shortcutId() const
 
     Returns the ID of the QShortcut object for which this event was
     generated.
@@ -2930,13 +3154,28 @@ QClipboardEvent::~QClipboardEvent()
     \sa QShortcut::id()
 */
 
+// ### Qt 5: remove
 /*!
-    \fn bool QShortcutEvent::isAmbiguous()
+    \fn int QShortcutEvent::shortcutId()
+    \overload
+
+    \internal
+*/
+
+/*!
+    \fn bool QShortcutEvent::isAmbiguous() const
 
     Returns true if the key sequence that triggered the event is
     ambiguous.
 
     \sa QShortcut::activatedAmbiguously()
+*/
+
+// ### Qt 5: remove
+/*!
+    \fn bool QShortcutEvent::isAmbiguous()
+
+    \internal
 */
 
 /*!
@@ -2998,6 +3237,40 @@ QMenubarUpdatedEvent::QMenubarUpdatedEvent(QMenuBar * const menuBar)
 /*!
     \fn QMenuBar *QMenubarUpdatedEvent::menuBar()
     \internal
+*/
+
+/*!
+    \fn bool operator==(QKeyEvent *e, QKeySequence::StandardKey key)
+
+    \relates QKeyEvent
+
+    Returns true if \a key is currently bound to the key combination
+    specified by \a e.
+
+    Equivalent to \c {e->matches(key)}.
+*/
+
+/*!
+    \fn bool operator==(QKeySequence::StandardKey key, QKeyEvent *e)
+
+    \relates QKeyEvent
+
+    Returns true if \a key is currently bound to the key combination
+    specified by \a e.
+
+    Equivalent to \c {e->matches(key)}.
+*/
+
+/*!
+    \internal
+
+    \class QKeyEventEx
+    \ingroup events
+
+    \brief The QKeyEventEx class provides more extended information about a keyevent.
+
+    This class is for internal use only, and exists to aid the shortcut system on
+    various platforms to get all the information it needs.
 */
 
 #endif

@@ -41,7 +41,9 @@
 #include "QtCore/qlist.h"
 #include "QtCore/qvector.h"
 #include "QtCore/qreadwritelock.h"
+#include "QtCore/qvariant.h"
 
+class QVariant;
 class QThreadData;
 
 /* mirrored in QtTestLib, DON'T CHANGE without prior warning */
@@ -76,13 +78,18 @@ public:
     virtual ~QObjectPrivate();
 
     // id of the thread that owns the object
-    int thread;
-    void moveToThread_helper(QThread *targetThread);
-    void setThreadId_helper(QThreadData *currentData, QThreadData *targetData, int id);
+    QThreadData *threadData;
+    void moveToThread_helper();
+    void setThreadData_helper(QThreadData *currentData, QThreadData *targetData);
     void _q_reregisterTimers(void *pointer);
 
     // object currently activating the object
-    QObject *currentSender;
+    union {
+        QObject *currentSender;
+        QObject *currentChildBeingDeleted;
+    };
+    int currentSenderSignalIdStart;
+    int currentSenderSignalIdEnd;
 
     bool isSender(const QObject *receiver, const char *signal) const;
     QObjectList receiverList(const char *signal) const;
@@ -92,9 +99,19 @@ public:
 
     void setParent_helper(QObject *);
 
+    void deleteChildren();
+
+    static void clearGuards(QObject *);
+
+    struct ExtraData
+    {
 #ifndef QT_NO_USERDATA
-    QVector<QObjectUserData *> userData;
+        QVector<QObjectUserData *> userData;
 #endif
+        QList<QByteArray> propertyNames;
+        QList<QVariant> propertyValues;
+    };
+    ExtraData *extraData;
 
     QString objectName;
 };
@@ -104,15 +121,21 @@ class Q_CORE_EXPORT QMetaCallEvent : public QEvent
 public:
     QMetaCallEvent(int id, const QObject *sender = 0,
                    int nargs = 0, int *types = 0, void **args = 0);
+    QMetaCallEvent(int id, const QObject *sender, int idFrom, int idTo,
+                   int nargs = 0, int *types = 0, void **args = 0);
     ~QMetaCallEvent();
 
     inline int id() const { return id_; }
     inline const QObject *sender() const { return sender_; }
+    inline int signalIdStart() const { return idFrom_; }
+    inline int signalIdEnd() const { return idTo_; }
     inline void **args() const { return args_; }
 
 private:
     int id_;
     const QObject *sender_;
+    int idFrom_;
+    int idTo_;
     int nargs_;
     int *types_;
     void **args_;

@@ -64,6 +64,7 @@ SOURCES += \
         unix:LIBS  += -lpng
         win32:LIBS += libpng.lib
     } else {
+        !isEqual(QT_ARCH, i386):DEFINES += PNG_NO_ASSEMBLER_CODE PNG_NO_MMX_CODE
         INCLUDEPATH  += ../3rdparty/libpng ../3rdparty/zlib
         SOURCES	+= ../3rdparty/libpng/png.c \
     	  ../3rdparty/libpng/pngerror.c \
@@ -79,7 +80,8 @@ SOURCES += \
     	  ../3rdparty/libpng/pngwio.c \
     	  ../3rdparty/libpng/pngwrite.c \
     	  ../3rdparty/libpng/pngwtran.c \
-    	  ../3rdparty/libpng/pngwutil.c
+    	  ../3rdparty/libpng/pngwutil.c \
+	  ../3rdparty/libpng/pnggccrd.c
     }
 } else {
     DEFINES *= QT_NO_IMAGEFORMAT_PNG

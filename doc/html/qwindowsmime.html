@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/kernel/qmime_win.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/kernel/qmime_win.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/gui/kernel/qmime_win.cpp -->
 <head>
-    <title>Qt 4.1: QWindowsMime Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QWindowsMime Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWindowsMime Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QWindowsMime Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QWindowsMime class maps open-standard MIME to Window Clipboard formats. <a href="#details">More...</a></p>
-<pre>#include &lt;QWindowsMime&gt;</pre><ul>
+<pre> #include &lt;QWindowsMime&gt;</pre><ul>
 <li><a href="qwindowsmime-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -48,13 +42,13 @@ body { background: #ffffff; color: black; }</style>
 <p>By instantiating subclasses of QWindowsMime that provide conversions between Windows Clipboard and MIME formats, you can convert proprietary clipboard formats to MIME formats.</p>
 <p>Qt has predefined support for the following Windows Clipboard formats:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Windows Format</th><th>Equivalent MIME type</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>CF_UNICODETEXT</tt></td><td><tt>text/plain</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>CF_TEXT</tt></td><td><tt>text/plain</tt></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>CF_DIB</tt></td><td><tt>image/xyz</tt>, where <tt>xyz</tt> is a <a href="qimagewriter.html#supportedImageFormats">Qt image format</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>CF_HDROP</tt></td><td><tt>text/uri-list</tt></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>CF_INETURL</tt></td><td><tt>text/uri-list</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>CF_HTML</tt></td><td><tt>text/html</tt></td></tr>
+<thead><tr valign="top" class="qt-style"><th>Windows Format</th><th>Equivalent MIME type</th></tr></thead>
+<tr valign="top" class="odd"><td><tt>CF_UNICODETEXT</tt></td><td><tt>text/plain</tt></td></tr>
+<tr valign="top" class="even"><td><tt>CF_TEXT</tt></td><td><tt>text/plain</tt></td></tr>
+<tr valign="top" class="odd"><td><tt>CF_DIB</tt></td><td><tt>image/xyz</tt>, where <tt>xyz</tt> is a <a href="qimagewriter.html#supportedImageFormats">Qt image format</a></td></tr>
+<tr valign="top" class="even"><td><tt>CF_HDROP</tt></td><td><tt>text/uri-list</tt></td></tr>
+<tr valign="top" class="odd"><td><tt>CF_INETURL</tt></td><td><tt>text/uri-list</tt></td></tr>
+<tr valign="top" class="even"><td><tt>CF_HTML</tt></td><td><tt>text/html</tt></td></tr>
 </table></p>
 <p>An example use of this class would be to map the Windows Metafile clipboard format (<tt>CF_METAFILEPICT</tt>) to and from the MIME type <tt>image/x-wmf</tt>. This conversion might simply be adding or removing a header, or even just passing on the data. See <a href="dnd.html">Drag and Drop</a> for more information on choosing and definition MIME types.</p>
 <p>You can check if a MIME type is convertible using <a href="qwindowsmime.html#canConvertFromMime">canConvertFromMime</a>() and can perform conversions with <a href="qwindowsmime.html#convertToMime">convertToMime</a>() and <a href="qwindowsmime.html#convertFromMime">convertFromMime</a>().</p>
@@ -89,6 +83,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

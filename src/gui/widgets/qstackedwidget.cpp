@@ -84,7 +84,7 @@ public:
     The widget() function returns the widget at a given index
     position. The index of the widget that is shown on screen is given
     by currentIndex() and can be changed using setCurrentIndex(). In a
-    similar manor, the currently shown widget can be retrieved using
+    similar manner, the currently shown widget can be retrieved using
     the currentWidget() function, and altered using the
     setCurrentWidget() function.
 
@@ -92,7 +92,7 @@ public:
     widget is removed from the stacked widget, the currentChanged()
     and widgetRemoved() signals are emitted respectively.
 
-    \sa QStackedLayout, QTabWidget
+    \sa QStackedLayout, QTabWidget, {Config Dialog Example}
 */
 
 /*!
@@ -111,7 +111,7 @@ public:
     \fn void QStackedWidget::widgetRemoved(int index)
 
     This signal is emitted whenever a widget is removed. The widget's
-    index is passed as parameter.
+    \a index is passed as parameter.
 
     \sa removeWidget()
 */
@@ -219,9 +219,14 @@ QWidget *QStackedWidget::currentWidget() const
 
     \sa currentWidget(), setCurrentIndex()
  */
-void QStackedWidget::setCurrentWidget(QWidget *w)
+void QStackedWidget::setCurrentWidget(QWidget *widget)
 {
-    d_func()->layout->setCurrentWidget(w);
+    Q_D(QStackedWidget);
+    if (d->layout->indexOf(widget) == -1) {
+        qWarning("QStackedWidget::setCurrentWidget: widget %p not contained in stack", widget);
+        return;
+    }
+    d->layout->setCurrentWidget(widget);
 }
 
 /*!

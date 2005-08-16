@@ -25,6 +25,9 @@
 #include "qhostaddress.h"
 #include "qplatformdefs.h"
 #include "qstringlist.h"
+#ifndef QT_NO_DATASTREAM
+#include <qdatastream.h>
+#endif
 
 #define QT_ENSURE_PARSED(a) \
     do { \
@@ -114,7 +117,7 @@ void QHostAddressPrivate::setAddress(const Q_IPV6ADDR &a_)
 
 static bool parseIp4(const QString& address, quint32 *addr)
 {
-    QStringList ipv4 = address.split(".");
+    QStringList ipv4 = address.split(QLatin1String("."));
     if (ipv4.count() != 4)
         return false;
 
@@ -136,7 +139,7 @@ static bool parseIp4(const QString& address, quint32 *addr)
 static bool parseIp6(const QString &address, quint8 *addr, QString *scopeId)
 {
     QString tmp = address;
-    int scopeIdPos = tmp.lastIndexOf('%');
+    int scopeIdPos = tmp.lastIndexOf(QLatin1Char('%'));
     if (scopeIdPos != -1) {
         *scopeId = tmp.mid(scopeIdPos + 1);
         tmp.chop(tmp.size() - scopeIdPos);
@@ -144,7 +147,7 @@ static bool parseIp6(const QString &address, quint8 *addr, QString *scopeId)
         scopeId->clear();
     }
 
-    QStringList ipv6 = tmp.split(":");
+    QStringList ipv6 = tmp.split(QLatin1String(":"));
     int count = ipv6.count();
     if (count < 3 || count > 8)
         return false;
@@ -210,7 +213,7 @@ bool QHostAddressPrivate::parse()
     QString a = ipString.simplified();
 
     // All IPv6 addresses contain a ':', and may contain a '.'.
-    if (a.contains(':')) {
+    if (a.contains(QLatin1Char(':'))) {
         quint8 maybeIp6[16];
         if (parseIp6(a, maybeIp6, &scopeId)) {
             setAddress(maybeIp6);
@@ -220,7 +223,7 @@ bool QHostAddressPrivate::parse()
     }
 
     // All IPv4 addresses contain a '.'.
-    if (a.contains('.')) {
+    if (a.contains(QLatin1Char('.'))) {
         quint32 maybeIp4 = 0;
         if (parseIp4(a, &maybeIp4)) {
             setAddress(maybeIp4);
@@ -361,19 +364,19 @@ QHostAddress::QHostAddress(SpecialAddress address)
     case Null:
         break;
     case Broadcast:
-        setAddress("255.255.255.255");
+        setAddress(QLatin1String("255.255.255.255"));
         break;
     case LocalHost:
-        setAddress("127.0.0.1");
+        setAddress(QLatin1String("127.0.0.1"));
         break;
     case LocalHostIPv6:
-        setAddress("::1");
+        setAddress(QLatin1String("::1"));
         break;
     case Any:
-        setAddress("0.0.0.0");
+        setAddress(QLatin1String("0.0.0.0"));
         break;
     case AnyIPv6:
-        setAddress("::");
+        setAddress(QLatin1String("::"));
         break;
     }
 }
@@ -407,6 +410,21 @@ QHostAddress &QHostAddress::operator=(const QString &address)
     setAddress(address);
     return *this;
 }
+
+/*!
+    \fn bool QHostAddress::operator!=(const QHostAddress &other) const
+    \since 4.2
+
+    Returns true if this host address is not the same as the \a other
+    address given; otherwise returns false.
+*/
+
+/*!
+    \fn bool QHostAddress::operator!=(SpecialAddress other) const
+
+    Returns true if this host address is not the same as the \a other
+    address given; otherwise returns false.
+*/
 
 /*!
     Sets the host address to 0.0.0.0.
@@ -702,3 +720,83 @@ QDebug operator<<(QDebug d, const QHostAddress &address)
     return d.space();
 }
 #endif
+
+uint qHash(const QHostAddress &key)
+{
+    return qHash(key.toString());
+}
+
+#ifndef QT_NO_DATASTREAM
+
+/*! \relates QHostAddress
+
+    Writes host address \a address to the stream \a out and returns a reference
+    to the stream.
+
+    \sa {Format of the QDataStream operators}
+*/
+QDataStream &operator<<(QDataStream &out, const QHostAddress &address)
+{
+    qint8 prot;
+    prot = qint8(address.protocol());
+    out << prot;
+    switch (address.protocol()) {
+    case QAbstractSocket::UnknownNetworkLayerProtocol:
+        break;
+    case QAbstractSocket::IPv4Protocol:
+        out << address.toIPv4Address();
+        break;
+    case QAbstractSocket::IPv6Protocol:
+    {
+        Q_IPV6ADDR ipv6 = address.toIPv6Address();
+        for (int i = 0; i < 16; ++i)
+            out << ipv6[i];
+        out << address.scopeId();
+    }
+        break;
+    }
+    return out;
+}
+
+/*! \relates QHostAddress
+
+    Reads a host address into \a address from the stream \a in and returns a
+    reference to the stream.
+
+    \sa {Format of the QDataStream operators}
+*/
+QDataStream &operator>>(QDataStream &in, QHostAddress &address)
+{
+    qint8 prot;
+    in >> prot;
+    switch (QAbstractSocket::NetworkLayerProtocol(prot)) {
+    case QAbstractSocket::UnknownNetworkLayerProtocol:
+        address.clear();
+        break;
+    case QAbstractSocket::IPv4Protocol:
+    {
+        quint32 ipv4;
+        in >> ipv4;
+        address.setAddress(ipv4);
+    }
+        break;
+    case QAbstractSocket::IPv6Protocol:
+    {
+        Q_IPV6ADDR ipv6;
+        for (int i = 0; i < 16; ++i)
+            in >> ipv6[i];
+        address.setAddress(ipv6);
+
+        QString scope;
+        in >> scope;
+        address.setScopeId(scope);
+    }
+        break;
+    default:
+        address.clear();
+        in.setStatus(QDataStream::ReadCorruptData);
+    }
+    return in;
+}
+
+#endif //QT_NO_DATASTREAM

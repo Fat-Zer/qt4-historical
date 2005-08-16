@@ -2,31 +2,52 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/emb-accel.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/emb-accel.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/emb-accel.qdoc -->
 <head>
-    <title>Qt 4.1: Adding an Accelerated Graphics Driver</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="contents" href="qtopiacore.html" />
+  <title>Qt 4.2: Adding an Accelerated Graphics Driver</title>
+  <link rel="contents" href="qtopiacore.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [<a href="qtopiacore.html">Contents</a>]
 </p>
 <h1 align="center">Adding an Accelerated Graphics Driver<br /><small></small></h1>
-<p>Qtopia Core uses Qt's premade raster-based implementation of <a href="qpaintengine.html">QPaintEngine</a> (<tt>QRasterPaintEngine</tt>) to implement painting operations. In addition <a href="qscreen.html">QScreen</a> implements window composition. Both are complete software implementations.</p>
-<p>Painting is performed in two steps: each window is rendered into a backingstore using <a href="qpaintengine.html">QPaintEngine</a>, and then the server composes the backingstore images and copies them to the screen. Composition is done by the <a href="qscreen.html#exposeRegion">QScreen::exposeRegion</a>() function which again calls the more basic functions <a href="qscreen.html#blit">QScreen::blit</a>() and <a href="qscreen.html#solidFill">QScreen::solidFill</a>().</p>
-<p>In order to make use of accelerated graphics hardware, it is possible to derive from <a href="qpaintengine.html">QPaintEngine</a> and <a href="qscreen.html">QScreen</a>.</p>
-<p>The acceleration API is still work in progress, and details are subject to change.</p>
+<p>Painting in Qtopia Core is a pure software implementation and is normally performed in two steps: Each window is rendered onto a <a href="qwswindowsurface.html">QWSWindowSurface</a> using <a href="qpaintengine.html">QPaintEngine</a>, and then the server composes the surface images and copies them to the screen. Qtopia Core uses <a href="qrasterpaintengine.html">QRasterPaintEngine</a> (a raster-based implementation of <a href="qpaintengine.html">QPaintEngine</a>) to implement painting operations and <a href="qscreen.html">QScreen</a> to implement window composition.</p>
+<p>Starting with Qtopia Core 4.2, it is possible to add an accelerated graphics driver to take advantage of available hardware resources, using the following approach:</p>
+<ul><li><a href="#step-1-create-a-custom-screen">Step 1: Create a Custom Screen</a></li>
+<li><a href="#step-2-implement-a-custom-raster-paint-engine">Step 2: Implement a Custom Raster Paint Engine</a></li>
+<li><a href="#step-3-make-the-paint-device-aware-of-your-paint-engine">Step 3: Make the Paint Device Aware of Your Paint Engine</a></li>
+<li><a href="#step-4-make-the-window-surface-aware-of-your-paint-device">Step 4: Make the Window Surface Aware of Your Paint Device</a></li>
+<li><a href="#step-5-enable-the-screen-to-create-an-instance-of-your-window-surface">Step 5: Enable the Screen to Create an Instance of Your Window Surface</a></li>
+</ul>
+<p><b>Warning:</b> This feature is under development and is subject to change.</p>
+<a name="step-1-create-a-custom-screen"></a>
+<h2>Step 1: Create a Custom Screen</h2>
+<p>Create a custom screen by deriving from the <a href="qscreen.html">QScreen</a> class.</p>
+<p>You might want to accelerate the final copying to the screen by reimplementing the <a href="qscreen.html#blit">blit()</a> and <a href="qscreen.html#solidFill">solidFill()</a> functions.</p>
+<a name="step-2-implement-a-custom-raster-paint-engine"></a>
+<h2>Step 2: Implement a Custom Raster Paint Engine</h2>
+<p>Implement the painting operations by subclassing the <a href="qrasterpaintengine.html">QRasterPaintEngine</a> class.</p>
+<p>To accelerate a graphics primitive, simply reimplement it in your custom paint engine. If there are cases you do not want to implement yourself (such as certain pens, brushes, modes, etc.), you can just call the <a href="qrasterpaintengine.html">QRasterPaintEngine</a> versions.</p>
+<a name="step-3-make-the-paint-device-aware-of-your-paint-engine"></a>
+<h2>Step 3: Make the Paint Device Aware of Your Paint Engine</h2>
+<p>To activate your paint engine you must create a subclass of the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class and reimplement its <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function. Let this function return a pointer to your paint engine. In addition, the <a href="qcustomrasterpaintdevice.html#memory">QCustomRasterPaintDevice::memory</a>() function must be reimplemented to return a pointer to the buffer where the painting should be done.</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<thead><tr valign="top" class="qt-style"><th>Acceleration Without a Framebuffer</th></tr></thead>
+<tr valign="top" class="odd"><td>If you are writing a driver for a device with an graphic I/O controller and no framebuffer support, the <a href="qcustomrasterpaintdevice.html#memory">QCustomRasterPaintDevice::memory</a>() function must return 0 (meaning no buffer available) in which case the paint engine will call the <a href="qrasterpaintengine.html#drawColorSpans">QRasterPaintEngine::drawColorSpans</a>() and <a href="qrasterpaintengine.html#drawBufferSpan">QRasterPaintEngine::drawBufferSpan</a>() functions instead whenever a color or buffer should be written into memory.<p>Note that the default implementations of these functions only calls <a href="qtglobal.html#qFatal">qFatal</a>() with an error message; reimplement the functions and let them do the appropriate communication with the I/O controller.</p>
+</td></tr>
+</table></p>
+<a name="step-4-make-the-window-surface-aware-of-your-paint-device"></a>
+<h2>Step 4: Make the Window Surface Aware of Your Paint Device</h2>
+<p>Derive from the <a href="qwswindowsurface.html">QWSWindowSurface</a> class and reimplement its <a href="qwswindowsurface.html#paintDevice">paintDevice()</a> function. Make this function return your custom raster paint device.</p>
+<a name="step-5-enable-the-screen-to-create-an-instance-of-your-window-surface"></a>
+<h2>Step 5: Enable the Screen to Create an Instance of Your Window Surface</h2>
+<p>Finally, reimplement <a href="qscreen.html">QScreen</a>'s <a href="qscreen.html#createSurface">createSurface()</a> function and make this function able to create an instance of your <a href="qwswindowsurface.html">QWSWindowSurface</a> subclass.</p>
 <p>
 [<a href="qtopiacore.html">Contents</a>]
 </p>
@@ -34,6 +55,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

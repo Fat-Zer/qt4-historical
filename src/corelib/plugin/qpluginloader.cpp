@@ -70,10 +70,26 @@
     library, the call will fail, and unloading will only happen when
     every instance has called unload().
 
+    In order to speed up loading and validation of plugins, some of
+    the information that is collected during loading is cached in
+    persistent memory (through QSettings). For instance, the result
+    of a load operation (e.g. succeeded or failed) is stored in the
+    cache, so that subsequent load operations don't try to load an
+    invalid plugin. However, if the "last modified" timestamp of
+    a plugin has changed, the plugin's cache entry is invalidated
+    and the plugin is reloaded regardless of the values in the cache
+    entry. The cache entry is then updated with the new result of the
+    load operation.
+
+    This also means that the timestamp must be updated each time the
+    plugin or any dependent resources (such as a shared library) is
+    updated, since the dependent resources might influence the result
+    of loading a plugin.
+
     See \l{How to Create Qt Plugins} for more information about
     how to make your application extensible through plugins.
 
-    \sa QLibrary
+    \sa QLibrary, {Plug & Paint Example}
 */
 
 /*!
@@ -150,32 +166,7 @@ QObject *QPluginLoader::instance()
     the plugin loaded in advance, in which case you would use this
     function.
 
-    On Mac OS X this function uses code from dlcompat, part of the
-    OpenDarwin project.
-
     \sa unload()
-
-    \legalese
-    Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
-
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    "Software"), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 bool QPluginLoader::load()
 {
@@ -235,6 +226,7 @@ bool QPluginLoader::isLoaded() const
 */
 void QPluginLoader::setFileName(const QString &fileName)
 {
+#if defined(QT_SHARED)
     if (d) {
         d->release();
         d = 0;
@@ -243,6 +235,13 @@ void QPluginLoader::setFileName(const QString &fileName)
     d = QLibraryPrivate::findOrCreate(QFileInfo(fileName).canonicalFilePath());
     if (d && d->pHnd && d->instance)
         did_load = true;
+#else
+    if (qt_debug_component()) {
+        qWarning("Cannot load %s into a statically linked Qt library.", 
+            (const char*)QFile::encodeName(fileName));
+    }
+    Q_UNUSED(fileName);
+#endif
 }
 
 QString QPluginLoader::fileName() const
@@ -251,6 +250,17 @@ QString QPluginLoader::fileName() const
         return d->fileName;
     return QString();
 }
+
+/*!
+    \since 4.2
+
+    Returns a text string with the description of the last error that occured.
+*/
+QString QPluginLoader::errorString() const
+{
+    return d->errorString.isEmpty() ? tr("Unknown error") : d->errorString;
+}
+
 typedef QList<QtPluginInstanceFunction> StaticInstanceFunctionList;
 Q_GLOBAL_STATIC(StaticInstanceFunctionList, staticInstanceFunctionList)
 

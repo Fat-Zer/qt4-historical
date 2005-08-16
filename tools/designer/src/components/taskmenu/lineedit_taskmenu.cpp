@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::LineEditTaskMenu
+*/
+
 #include "lineedit_taskmenu.h"
 #include "inplace_editor.h"
 

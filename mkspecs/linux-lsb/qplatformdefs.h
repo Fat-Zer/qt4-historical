@@ -1,3 +1,26 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+**
+** This file is part of the qmake spec of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 #ifndef QPLATFORMDEFS_H
 #define QPLATFORMDEFS_H
 
@@ -27,6 +50,7 @@
 #include <pwd.h>
 #include <signal.h>
 #include <dlfcn.h>
+#include <time.h>
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -40,6 +64,9 @@
 #ifndef QT_NO_IPV6IFNAME
 #include <net/if.h>
 #endif
+
+// LSB 3.1 defines htonl and friends here
+#include <arpa/inet.h>
 
 #ifdef QT_LARGEFILE_SUPPORT
 #define QT_STATBUF              struct stat64
@@ -107,6 +134,10 @@
 #define QT_SIGNAL_RETTYPE	void
 #define QT_SIGNAL_ARGS		int
 #define QT_SIGNAL_IGNORE	SIG_IGN
+
+#ifndef SIOCGIFBRDADDR
+#  define SIOCGIFBRDADDR 0x8919
+#endif
 
 #if defined(__GLIBC__) && (__GLIBC__ >= 2)
 #define QT_SOCKLEN_T		socklen_t

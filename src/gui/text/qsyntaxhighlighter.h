@@ -56,6 +56,9 @@ public:
     void setDocument(QTextDocument *doc);
     QTextDocument *document() const;
 
+public Q_SLOTS:
+    void rehighlight();
+
 protected:
     virtual void highlightBlock(const QString &text) = 0;
 
@@ -74,7 +77,7 @@ protected:
 private:
     Q_DISABLE_COPY(QSyntaxHighlighter)
     Q_PRIVATE_SLOT(d_func(), void _q_reformatBlocks(int from, int charsRemoved, int charsAdded))
-    Q_PRIVATE_SLOT(d_func(), void _q_reformatDocument())
+    Q_PRIVATE_SLOT(d_func(), void _q_delayedRehighlight())
 };
 
 QT_END_HEADER

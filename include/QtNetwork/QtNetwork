@@ -1,5 +1,6 @@
 #include <QtCore/QtCore>
 #include "qhttp.h"
+#include "qnetworkinterface.h"
 #include "qhostinfo.h"
 #include "qnetworkproxy.h"
 #include "qhostaddress.h"

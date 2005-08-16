@@ -2,32 +2,26 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/embedded/qmousetslib_qws.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/embedded/qmousetslib_qws.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/gui/embedded/qmousetslib_qws.cpp -->
 <head>
-    <title>Qt 4.1: QWSTslibMouseHandler Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QWSTslibMouseHandler Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSTslibMouseHandler Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QWSTslibMouseHandler Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QWSTslibMouseHandler class implements a mouse driver for the Universal Touch Screen Library, tslib. <a href="#details">More...</a></p>
-<pre>#include &lt;QWSTslibMouseHandler&gt;</pre><p>Inherits <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a>.</p>
+<pre> #include &lt;QWSTslibMouseHandler&gt;</pre><p>Inherits <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a>.</p>
 <ul>
 <li><a href="qwstslibmousehandler-members.html">List of all members, including inherited members</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>2 public functions inherited from <a href="qwscalibratedmousehandler.html#public-functions">QWSCalibratedMouseHandler</a></li>
-<li><div class="fn"/>7 public functions inherited from <a href="qwsmousehandler.html#public-functions">QWSMouseHandler</a></li>
+<li><div class="fn"/>8 public functions inherited from <a href="qwsmousehandler.html#public-functions">QWSMouseHandler</a></li>
 <li><div class="fn"/>5 protected functions inherited from <a href="qwscalibratedmousehandler.html#protected-functions">QWSCalibratedMouseHandler</a></li>
 </ul>
 <a name="details"></a>
@@ -36,14 +30,17 @@ body { background: #ffffff; color: black; }</style>
 <p>The QWSTslibMouseHandler class implements a mouse driver for the Universal Touch Screen Library, tslib.</p>
 <p>QWSTslibMouseHandler inherits the <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a> class, providing calibration and noise reduction functionality in addition to generating mouse events, for devices using the Universal Touch Screen Library.</p>
 <p>To be able to compile this mouse handler, <a href="qtopiacore.html">Qtopia Core</a> must be configured with the <tt>-qt-mouse-tslib</tt> option, see the <a href="qtopiacore-pointer.html">Pointer Handling</a> documentation for details. In addition, the tslib headers and library must be present in the build environment. The tslib sources can be downloaded from <a href="http://cvs.arm.linux.org.uk">http://cvs.arm.linux.org.uk</a>. Use the <tt>-L</tt> and <tt>-I</tt> options with <tt>configure</tt> to explicitly specify the location of the library and its headers:</p>
-<pre>&nbsp;   configure  -L &lt;path to tslib library&gt; -I &lt;path to tslib headers&gt;</pre>
+<pre> configure  -L &lt;path to tslib library&gt; -I &lt;path to tslib headers&gt;</pre>
 <p>In order to use this mouse handler, tslib must also be correctly installed on the target machine. This includes providing a <tt>ts.conf</tt> configuration file and setting the neccessary environment variables, see the README file provided with tslib for details.</p>
+<p>The ts.conf file will usually contain the following two lines</p>
+<pre> module_raw input
+ module linear</pre>
 <p>To make <a href="qtopiacore.html">Qtopia Core</a> explicitly choose the tslib mouse handler, set the <a href="qtopiacore-envvars.html#qws-mouse-proto">QWS_MOUSE_PROTO</a> environment variable.</p>
 <p>See also <a href="qtopiacore-pointer.html">Pointer Handling</a> and <a href="qtopiacore.html">Qtopia Core</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

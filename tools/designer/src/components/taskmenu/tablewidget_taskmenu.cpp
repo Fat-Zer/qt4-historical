@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::TableWidgetTaskMenu
+*/
+
 #include "tablewidget_taskmenu.h"
 #include "inplace_editor.h"
 #include "tablewidgeteditor.h"

@@ -62,6 +62,7 @@ Server::Server(QWidget *parent)
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(quitButton);
+    buttonLayout->addStretch(1);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(statusLabel);
@@ -77,7 +78,7 @@ void Server::sendFortune()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
     out << (quint16)0;
-    out << fortunes.at(rand() % fortunes.size());
+    out << fortunes.at(qrand() % fortunes.size());
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 

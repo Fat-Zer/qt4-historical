@@ -25,7 +25,7 @@ OBJS        = project.o main.o makefile.o unixmake.o unixmake2.o mingw_make.o \
 
 ifndef QMAKE_OPENSOURCE_EDITION
 OBJS        += borland_bmake.o msvc_nmake.o msvc_dsp.o msvc_vcproj.o \
-              msvc_objectmodel.o metrowerks_xml.o
+              msvc_objectmodel.o
 else
 CFLAGS      += -DQMAKE_OPENSOURCE_EDITION
 endif
@@ -50,7 +50,7 @@ QTOBJS= \
 	qglobal.o \
 	qhash.o \
 	qiodevice.o \
-	qinternal.o \
+	qlibraryinfo.o \
 	qlistdata.o \
 	qlocale.o \
 	qmap.o \
@@ -70,13 +70,13 @@ QTOBJS= \
 
 qmake.exe: $(OBJS) $(QTOBJS)
 	$(LINKQMAKE)
-	-cmd /C copy qmake.exe ..\bin\qmake.exe
+	-copy qmake.exe ..\bin\qmake.exe
 
 clean::
-	-cmd /C del $(OBJS) $(QTOBJS) $(ADDCLEAN)
+	-del $(OBJS) $(QTOBJS) $(ADDCLEAN)
 
 distclean:: clean
-	-cmd /C del qmake
+	-del qmake
 
 .c.o:
 	$(CXX) $(CFLAGS) $<
@@ -105,8 +105,8 @@ qtextstream.o: ..\src\corelib\io\qtextstream.cpp
 qiodevice.o: ..\src\corelib\io\qiodevice.cpp
 	$(CXX) $(CXXFLAGS) ..\src\corelib\io\qiodevice.cpp
 
-qinternal.o: ..\src\corelib\kernel\qinternal.cpp
-	$(CXX) $(CXXFLAGS) ..\src\corelib\kernel\qinternal.cpp
+qlibraryinfo.o: ..\src\corelib\global\qlibraryinfo.cpp
+	$(CXX) $(CXXFLAGS) ..\src\corelib\global\qlibraryinfo.cpp
 
 qglobal.o: ..\src\corelib\global\qglobal.cpp
 	$(CXX) $(CXXFLAGS) ..\src\corelib\global\qglobal.cpp
@@ -245,9 +245,6 @@ property.o: property.cpp project.h option.h
 
 projectgenerator.o: generators/projectgenerator.cpp
 	$(CXX) $(CXXFLAGS) generators/projectgenerator.cpp
-
-metrowerks_xml.o: generators/mac/metrowerks_xml.cpp
-	$(CXX) $(CXXFLAGS) generators/mac/metrowerks_xml.cpp
 
 pbuilder_pbx.o: generators/mac/pbuilder_pbx.cpp
 	$(CXX) $(CXXFLAGS) generators/mac/pbuilder_pbx.cpp

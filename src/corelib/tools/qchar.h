@@ -48,8 +48,8 @@ class Q_CORE_EXPORT QChar {
 public:
     QChar();
 #ifndef QT_NO_CAST_FROM_ASCII
-    QChar(char c);
-    QChar(uchar c);
+    QT_ASCII_CAST_WARN_CONSTRUCTOR QChar(char c);
+    QT_ASCII_CAST_WARN_CONSTRUCTOR QChar(uchar c);
 #endif
     QChar(QLatin1Char ch);
     QChar(uchar c, uchar r);
@@ -221,7 +221,7 @@ public:
     inline const char toLatin1() const;
     inline const ushort unicode() const { return ucs; }
 #ifdef Q_NO_PACKED_REFERENCE
-    inline ushort &unicode() { return *(&ucs); }
+    inline ushort &unicode() { return const_cast<ushort&>(ucs); }
 #else
     inline ushort &unicode() { return ucs; }
 #endif

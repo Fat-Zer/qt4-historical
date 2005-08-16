@@ -60,6 +60,7 @@ void QSvgCircle::draw(QPainter *p)
 QSvgArc::QSvgArc(QSvgNode *parent, const QPainterPath &path)
     : QSvgNode(parent), cubic(path)
 {
+    m_cachedBounds = path.boundingRect();
 }
 
 void QSvgArc::draw(QPainter *p)
@@ -189,6 +190,7 @@ QRectF QSvgRect::bounds() const
 void QSvgRect::draw(QPainter *p)
 {
     applyStyle(p);
+    
     if (m_rx || m_ry)
         p->drawRoundRect(m_rect, m_rx, m_ry);
     else
@@ -308,8 +310,8 @@ void QSvgTextArea::draw(QPainter *p)
     revertStyle(p);
 }
 
-QSvgUse::QSvgUse(QSvgNode *parent, QSvgNode *node)
-    : QSvgNode(parent), m_link(node)
+QSvgUse::QSvgUse(const QPointF &start, QSvgNode *parent, QSvgNode *node)
+    : QSvgNode(parent), m_link(node), m_start(start)
 {
 
 }
@@ -317,7 +319,15 @@ QSvgUse::QSvgUse(QSvgNode *parent, QSvgNode *node)
 void QSvgUse::draw(QPainter *p)
 {
     applyStyle(p);
+
+    if (!m_start.isNull()) {
+        p->translate(m_start);
+    }   
     m_link->draw(p);
+    if (!m_start.isNull()) {
+        p->translate(-m_start);
+    }
+    
     revertStyle(p);
 }
 
@@ -396,5 +406,63 @@ QSvgNode::Type QSvgUse::type() const
 QSvgNode::Type QSvgVideo::type() const
 {
     return VIDEO;
+}
+
+QRectF QSvgUse::bounds() const
+{
+    if (m_link && m_bounds.isEmpty())  {
+        m_bounds = m_link->bounds();
+        m_bounds = QRectF(m_bounds.x()+m_start.x(),
+                          m_bounds.y()+m_start.y(),
+                          m_bounds.width(),
+                          m_bounds.height());
+        
+        return m_bounds;
+    }
+    return m_bounds;
+}
+
+QRectF QSvgUse::transformedBounds(const QMatrix &mat) const
+{
+    QRectF bounds;
+    QMatrix m = mat;
+    
+    if (m_link)  {       
+        QSvgTransformStyle *trans = m_style.transform;
+        if (trans) {
+            m = trans->qmatrix() * m;
+        }
+        m.translate(m_start.x(), m_start.y());
+
+        bounds = m_link->transformedBounds(m);
+        
+        return bounds;
+    }
+    return bounds;
+}
+
+QRectF QSvgPolyline::bounds() const
+{
+    return m_poly.boundingRect();
+}
+
+QRectF QSvgArc::bounds() const
+{
+    return m_cachedBounds;
+}
+
+QRectF QSvgImage::bounds() const
+{
+    return m_bounds;
+}
+
+QRectF QSvgLine::bounds() const
+{
+    qreal minX = qMin(m_bounds.x1(), m_bounds.x2());
+    qreal minY = qMin(m_bounds.y1(), m_bounds.y2());
+    qreal maxX = qMax(m_bounds.x1(), m_bounds.x2());
+    qreal maxY = qMax(m_bounds.y1(), m_bounds.y2());
+    
+    return QRectF(minX, minY, maxX-minX, maxY-minY);
 }
 

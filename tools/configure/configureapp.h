@@ -48,6 +48,7 @@ public:
 
     void generateOutputVars();
 #if !defined(EVAL)
+    void generateBuildKey();
     void generateCachefile();
     void displayConfig();
     void buildQmake();

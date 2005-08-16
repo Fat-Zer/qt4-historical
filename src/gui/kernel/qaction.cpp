@@ -53,7 +53,8 @@ static QString qt_strippedText(QString s)
 
 
 QActionPrivate::QActionPrivate() : group(0), enabled(1), forceDisabled(0),
-                                   visible(1), forceInvisible(0), checkable(0), checked(0), separator(0), fontSet(false)
+                                   visible(1), forceInvisible(0), checkable(0), checked(0), separator(0), fontSet(false),
+                                   menuRole(QAction::TextHeuristicRole)
 {
 #ifdef QT3_SUPPORT
     static int qt_static_action_id = -1;
@@ -63,6 +64,7 @@ QActionPrivate::QActionPrivate() : group(0), enabled(1), forceDisabled(0),
 #ifndef QT_NO_SHORTCUT
     shortcutId = 0;
     shortcutContext = Qt::WindowShortcut;
+    autorepeat = true;
 #endif
 }
 
@@ -94,6 +96,33 @@ void QActionPrivate::redoGrab(QShortcutMap &map)
     shortcutId = map.addShortcut(q, shortcut, shortcutContext);
     if (!enabled)
         map.setShortcutEnabled(false, shortcutId, q);
+    if (!autorepeat)
+        map.setShortcutAutoRepeat(false, shortcutId, q);
+}
+
+void QActionPrivate::redoGrabAlternate(QShortcutMap &map)
+{
+    Q_Q(QAction);
+    foreach (int id, alternateShortcutIds)
+        if (id)
+            map.removeShortcut(id, q);
+    alternateShortcutIds.clear();
+    if (alternateShortcuts.isEmpty())
+        return;
+    foreach (const QKeySequence& alternate, alternateShortcuts) {
+        if (!alternate.isEmpty())
+            alternateShortcutIds.append(map.addShortcut(q, alternate, shortcutContext));
+        else
+            alternateShortcutIds.append(0);
+    }
+    if (!enabled) {
+        foreach (int id, alternateShortcutIds)
+            map.setShortcutEnabled(false, id, q);
+    }
+    if (!autorepeat) {
+        foreach (int id, alternateShortcutIds)
+            map.setShortcutEnabled(false, id, q);
+    }
 }
 
 void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
@@ -101,6 +130,9 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
     Q_Q(QAction);
     if (shortcutId)
         map.setShortcutEnabled(enable, shortcutId, q);
+    foreach (int id, alternateShortcutIds)
+        if (id)
+            map.setShortcutEnabled(enable, id, q);
 }
 #endif // QT_NO_SHORTCUT
 
@@ -157,6 +189,8 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
     We recommend that actions are created as children of the window
     they are used in. In most cases actions will be children of
     the application's main window.
+
+    \sa QMenu, QToolBar, {Application Example}
 */
 
 /*!
@@ -169,6 +203,21 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
     \fn void QAction::hover()
 
     This is a convenience slot that calls activate(Hover).
+*/
+
+/*!
+    \enum QAction::MenuRole
+
+    This enum describes how an action should be moved into the application menu on Mac OS X.
+
+    \value NoRole This action should not be put into the application menu
+    \value TextHeuristicRole This action should be put in the application menu based on the action's text
+           as described in the QMenuBar documentation.
+    \value ApplicationSpecificRole This action should be put in the application menu with an application specific role
+    \value AboutQtRole This action matches handles the "About Qt" menu item.
+    \value AboutRole This action should be placed where the "About" menu item is in the application menu.
+    \value PreferencesRole This action should be placed where the  "Preferences..." menu item is in the application menu.
+    \value QuitRole This action should be placed where the Quit menu item is in the application menu.
 */
 
 /*!
@@ -232,6 +281,18 @@ QAction::QAction(const QIcon &icon, const QString &text, QObject* parent)
 }
 
 /*!
+    \internal
+*/
+QAction::QAction(QActionPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
+    Q_D(QAction);
+    d->group = qobject_cast<QActionGroup *>(parent);
+    if (d->group)
+        d->group->addAction(this);
+}
+
+/*!
     Returns the parent widget.
 */
 QWidget *QAction::parentWidget() const
@@ -242,10 +303,22 @@ QWidget *QAction::parentWidget() const
     return (QWidget*)ret;
 }
 
+/*!
+  \since 4.2
+  Returns a list of widgets this action has been added to.
+
+  \sa QWidget::addAction()
+*/
+QList<QWidget *> QAction::associatedWidgets() const
+{
+    Q_D(const QAction);
+    return d->widgets;
+}
+
 #ifndef QT_NO_SHORTCUT
 /*!
     \property QAction::shortcut
-    \brief the action's shortcut key
+    \brief the action's primary shortcut key
 
     Valid keycodes for this property can be found in \l Qt::Key and
     \l Qt::Modifier. There is no default shortcut key.
@@ -261,10 +334,78 @@ void QAction::setShortcut(const QKeySequence &shortcut)
     d->sendDataChanged();
 }
 
+/*!
+    \since 4.2
+
+    Sets \a shortcuts as the list of shortcuts that trigger the
+    action. The first element of the list is the primary shortcut.
+
+    \sa shortcut
+*/
+void QAction::setShortcuts(const QList<QKeySequence> &shortcuts)
+{
+    Q_D(QAction);
+
+    QList <QKeySequence> listCopy = shortcuts;
+
+    QKeySequence primary;
+    if (!listCopy.isEmpty())
+        primary = listCopy.takeFirst();
+
+    if (d->shortcut == primary && d->alternateShortcuts == listCopy)
+        return;
+
+    d->shortcut = primary;
+    d->alternateShortcuts = listCopy;
+    d->redoGrab(qApp->d_func()->shortcutMap);
+    d->redoGrabAlternate(qApp->d_func()->shortcutMap);
+    d->sendDataChanged();
+}
+
+/*!
+    \since 4.2
+
+    Sets a platform dependent list of shortcuts based on the \a key.
+    The result of calling this function will depend on the currently running platform.
+    Note that more than one shortcut can assigned by this action.
+    If only the primary shortcut is required, use setShortcut instead.
+
+    \sa QKeySequence::keyBindings()
+*/
+void QAction::setShortcuts(QKeySequence::StandardKey key)
+{
+    QList <QKeySequence> list = QKeySequence::keyBindings(key);
+    setShortcuts(list);
+}
+
+/*!
+    Returns the primary shortcut.
+
+    \sa setShortcuts()
+*/
 QKeySequence QAction::shortcut() const
 {
     Q_D(const QAction);
     return d->shortcut;
+}
+
+/*!
+    \since 4.2
+
+    Returns the list of shortcuts, with the primary shortcut as
+    the first element of the list.
+
+    \sa setShortcuts()
+*/
+QList<QKeySequence> QAction::shortcuts() const
+{
+    Q_D(const QAction);
+    QList <QKeySequence> shortcuts;
+    if (!d->shortcut.isEmpty())
+        shortcuts << d->shortcut;
+    if (!d->alternateShortcuts.isEmpty())
+        shortcuts << d->alternateShortcuts;
+    return shortcuts;
 }
 
 /*!
@@ -274,7 +415,6 @@ QKeySequence QAction::shortcut() const
     Valid values for this property can be found in \l Qt::ShortcutContext.
     The default value is Qt::WindowShortcut.
 */
-
 void QAction::setShortcutContext(Qt::ShortcutContext context)
 {
     Q_D(QAction);
@@ -282,6 +422,7 @@ void QAction::setShortcutContext(Qt::ShortcutContext context)
         return;
     d->shortcutContext = context;
     d->redoGrab(qApp->d_func()->shortcutMap);
+    d->redoGrabAlternate(qApp->d_func()->shortcutMap);
     d->sendDataChanged();
 }
 
@@ -289,6 +430,33 @@ Qt::ShortcutContext QAction::shortcutContext() const
 {
     Q_D(const QAction);
     return d->shortcutContext;
+}
+
+/*!
+    \property QAction::autoRepeat
+    \brief whether the action can auto repeat
+    \since 4.2
+
+    If true, the action will auto repeat when the keyboard shortcut
+    combination is held down, provided that keyboard auto repeat is
+    enabled on the system.
+    The default value is true.
+*/
+void QAction::setAutoRepeat(bool on)
+{
+    Q_D(QAction);
+    if (d->autorepeat == on)
+        return;
+    d->autorepeat = on;
+    d->redoGrab(qApp->d_func()->shortcutMap);
+    d->redoGrabAlternate(qApp->d_func()->shortcutMap);
+    d->sendDataChanged();
+}
+
+bool QAction::autoRepeat() const
+{
+    Q_D(const QAction);
+    return d->autorepeat;
 }
 #endif // QT_NO_SHORTCUT
 
@@ -814,11 +982,11 @@ QAction::event(QEvent *e)
 #ifndef QT_NO_SHORTCUT
     if (e->type() == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
-        Q_ASSERT_X(se->key() == d_func()->shortcut,
+        Q_ASSERT_X(se->key() == d_func()->shortcut || d_func()->alternateShortcuts.contains(se->key()),
                    "QAction::event",
                    "Received shortcut event from incorrect shortcut");
         if (se->isAmbiguous())
-            qWarning("QAction::eventFilter: ambiguous shortcut overload: %s", QString(se->key()).toLatin1().constData());
+            qWarning("QAction::eventFilter: Ambiguous shortcut overload: %s", QString(se->key()).toLatin1().constData());
         else
             activate(Trigger);
         return true;
@@ -840,9 +1008,9 @@ QAction::data() const
 }
 
 /*!
-  Sets internal data to \a data. This can be used for user data to store anything that a
-  QVariant can store. The ownership of anything the the user data will remain with the
-  variant and thus be referenced counted as appropriate.
+  \fn void QAction::setData(const QVariant &userData)
+
+  Sets the action's internal data to the given \a userData.
 
   \sa data()
 */
@@ -865,11 +1033,15 @@ QAction::setData(const QVariant &data)
 bool
 QAction::showStatusText(QWidget *widget)
 {
+#ifdef QT_NO_STATUSTIP
+    Q_UNUSED(widget);
+#else
     if(QObject *object = widget ? widget : parent()) {
         QStatusTipEvent tip(statusTip());
         QApplication::sendEvent(object, &tip);
         return true;
     }
+#endif
     return false;
 }
 
@@ -1055,6 +1227,35 @@ void QAction::activate(ActionEvent event)
     Use triggered() instead.
 */
 
+
+/*!
+    \property QAction::menuRole
+    \brief the action's menu role
+    \since 4.2
+
+    This indicates what role the action serves in the application menu on Mac
+    OS X. By default all action have the TextHeuristicRole, which means that
+    the action is added based on its text (see QMenuBar for more information).
+
+    The menu role can only be changed before the actions are put into the menu
+    bar in Mac OS X (usually just before the first application window is
+    shown).
+*/
+void QAction::setMenuRole(MenuRole menuRole)
+{
+    Q_D(QAction);
+    if (d->menuRole == menuRole)
+        return;
+
+    d->menuRole = menuRole;
+    d->sendDataChanged();
+}
+
+QAction::MenuRole QAction::menuRole() const
+{
+    Q_D(const QAction);
+    return d->menuRole;
+}
 
 #include "moc_qaction.cpp"
 #endif // QT_NO_ACTION

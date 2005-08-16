@@ -34,11 +34,6 @@
 
 #include <qdebug.h>
 
-void QSqlTableModelPrivate::translateFieldNames(int, QSqlRecord &) const
-{
-    // do nothing
-}
-
 /*! \internal
     Populates our record with values.
 */
@@ -256,7 +251,8 @@ QSqlRecord QSqlTableModelPrivate::primaryValues(int row)
     the QSqlRelationalTableModel and QSqlRelationalDelegate if you
     want to resolve foreign keys.
 
-    \sa QSqlRelationalTableModel, QSqlQuery, {Model/View Programming}
+    \sa QSqlRelationalTableModel, QSqlQuery, {Model/View Programming},
+        {Table Model Example}, {Cached Table Example}
 */
 
 /*!
@@ -597,7 +593,6 @@ bool QSqlTableModel::insertRowIntoTable(const QSqlRecord &values)
 {
     Q_D(QSqlTableModel);
     QSqlRecord rec = values;
-    d->translateFieldNames(0, rec);
     emit beforeInsert(rec);
 
     bool prepStatement = d->db.driver()->hasFeature(QSqlDriver::PreparedQueries);
@@ -645,6 +640,11 @@ bool QSqlTableModel::deleteRowFromTable(int row)
     Submits all pending changes and returns true on success.
     Returns false on error, detailed error information can be
     obtained with lastError().
+
+    Note: In OnManualSubmit mode, already submitted changes won't
+    be cleared from the cache when submitAll() fails. This allows
+    transactions to be rolled back and resubmitted again without
+    losing data.
 
     \sa revertAll(), lastError()
 */
@@ -796,22 +796,15 @@ void QSqlTableModel::revertAll()
     case OnFieldChange:
         break;
     case OnRowChange:
-        d->editBuffer.clear();
-        if (d->editIndex != -1) {
-            int oldIndex = d->editIndex;
-            d->editIndex = -1;
-            emit dataChanged(createIndex(oldIndex, 0),
-                             createIndex(oldIndex, columnCount()));
-        }
-        d->revertInsertedRow();
+        if (d->editIndex != -1)
+            revertRow(d->editIndex);
+        else if (d->insertIndex != -1)
+            revertRow(d->insertIndex);
         break;
-    case OnManualSubmit: {
-        QSqlTableModelPrivate::CacheMap::ConstIterator it = d->cache.constBegin();
-        while (it != d->cache.constEnd()) {
-            d->revertCachedRow(it.key());
-            it = d->cache.constBegin();
-        }
-        break; }
+    case OnManualSubmit:
+        while (!d->cache.isEmpty())
+            revertRow(d->cache.constBegin().key());
+        break;
     }
 }
 
@@ -822,12 +815,23 @@ void QSqlTableModel::revertAll()
 */
 void QSqlTableModel::revertRow(int row)
 {
+    if (row < 0)
+        return;
+
     Q_D(QSqlTableModel);
     switch (d->strategy) {
     case OnFieldChange:
-    case OnRowChange:
-        revertAll();
         break;
+    case OnRowChange: {
+        if (d->editIndex == row) {
+            d->editBuffer.clear();
+            int oldIndex = d->editIndex;
+            d->editIndex = -1;
+            emit dataChanged(createIndex(oldIndex, 0), createIndex(oldIndex, columnCount()));
+        } else if (d->insertIndex == row) {
+            d->revertInsertedRow();
+        }
+        break; }
     case OnManualSubmit:
         d->revertCachedRow(row);
         break;
@@ -879,9 +883,7 @@ QSqlDatabase QSqlTableModel::database() const
 */
 void QSqlTableModel::sort(int column, Qt::SortOrder order)
 {
-    Q_D(QSqlTableModel);
-    d->sortColumn = column;
-    d->sortOrder = order;
+    setSort(column, order);
     select();
 }
 
@@ -964,11 +966,6 @@ QString QSqlTableModel::selectStatement() const
     return query;
 }
 
-void QSqlTableModelPrivate::removeColumnWorkaround(int, int)
-{
-    // do nothing
-}
-
 /*!
     Removes \a count columns from the \a parent model, starting at
     index \a column.
@@ -983,7 +980,6 @@ bool QSqlTableModel::removeColumns(int column, int count, const QModelIndex &par
     Q_D(QSqlTableModel);
     if (parent.isValid() || column < 0 || column + count > d->rec.count())
         return false;
-    d->removeColumnWorkaround(column, count);
     for (int i = 0; i < count; ++i)
         d->rec.remove(column);
     if (d->query.isActive())
@@ -1065,14 +1061,14 @@ bool QSqlTableModel::insertRows(int row, int count, const QModelIndex &parent)
     case OnRowChange:
         if (count != 1)
             return false;
-        beginInsertRows(parent, row, row + 1);
+        beginInsertRows(parent, row, row);
         d->insertIndex = row;
         // ### apply dangling changes...
         d->clearEditBuffer();
         emit primeInsert(row, d->editBuffer);
         break;
     case OnManualSubmit:
-        beginInsertRows(parent, row, row + count);
+        beginInsertRows(parent, row, row + count - 1);
         if (!d->cache.isEmpty()) {
             QMap<int, QSqlTableModelPrivate::ModifiedRow>::Iterator it = d->cache.end();
             while (it != d->cache.begin() && (--it).key() >= row) {
@@ -1183,12 +1179,14 @@ QString QSqlTableModel::filter() const
 }
 
 /*!
-    Sets the current filter to \a filter. Note that no new records
-    are selected. To select new records, use select(). The \a filter
-    will apply to any subsequent select() calls.
+    Sets the current filter to \a filter.
 
     The filter is a SQL \c WHERE clause without the keyword \c WHERE
     (for example, \c{name='Josephine')}.
+
+    If the model is already populated with data from a database,
+    the model re-selects it with the new filter. Otherwise, the filter
+    will be applied the next time select() is called.
 
     \sa filter(), select(), selectStatement(), orderByClause()
 */

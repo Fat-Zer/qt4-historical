@@ -220,13 +220,12 @@ void MainWindow::writeSettings()
 bool MainWindow::maybeSave()
 {
     if (textEdit->document()->isModified()) {
-        int ret = QMessageBox::warning(this, tr("Application"),
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("Application"),
                      tr("The document has been modified.\n"
                         "Do you want to save your changes?"),
-                     QMessageBox::Yes | QMessageBox::Default,
-                     QMessageBox::No,
-                     QMessageBox::Cancel | QMessageBox::Escape);
-        if (ret == QMessageBox::Yes)
+                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save)
             return save();
         else if (ret == QMessageBox::Cancel)
             return false;

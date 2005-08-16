@@ -65,6 +65,10 @@ private:
     QBasicTimer timer;
 
 #if defined(Q_WS_X11)
+private slots:
+    void toggleXRender();
+
+private:
     int numFrames;
     int frameTime;
     int avgRate;

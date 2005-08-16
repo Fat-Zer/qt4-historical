@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/assistant-manual.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/assistant-manual.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/assistant-manual.qdoc -->
 <head>
-    <title>Qt 4.1: Qt Assistant Manual</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Qt Assistant Manual</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt Assistant Manual<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Qt Assistant Manual<br /><small></small></h1>
 <a name="qt-assistant"></a><a name="introduction"></a>
 <h2>Introduction</h2>
 <p>This document introduces <i>Qt Assistant</i>, a tool for presenting on-line documentation. It also introduces the Qt Reference Documentation which is accessible using <i>Qt Assistant</i>, or with a web browser. The document is divided into the following sections:</p>
@@ -39,7 +33,6 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#the-dialogs">The Dialogs</a></li>
 <ul><li><a href="#the-print-dialog">The Print Dialog</a></li>
 <li><a href="#the-find-text-dialog">The Find Text Dialog</a></li>
-<li><a href="#the-settings-dialog">The Settings Dialog</a></li>
 </ul>
 </ul>
 <li><a href="#full-text-searching">Full Text Searching</a></li>
@@ -119,7 +112,6 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><b>Edit|Copy</b> copies any selected text to the clipboard.</li>
 <li><b>Edit|Find in Text</b> invokes the <b>Find Text</b> dialog.</li>
-<li><b>Edit|Settings</b> invokes the <b>Settings</b> dialog.</li>
 </ul>
 <a name="the-view-menu"></a>
 <h4>The View Menu</h4>
@@ -152,16 +144,6 @@ body { background: #ffffff; color: black; }</style>
 <a name="the-find-text-dialog"></a>
 <h4>The Find Text Dialog</h4>
 <p>This dialog is used to find text in the current page. Enter the text you want to find in the Find line edit. If you check the 'Whole words only' checkbox, the search will only consider whole words, i.e. if you search for 'spin' with this checkbox checked it will not match 'spinbox', but will match 'spin'. If you check the 'Case sensitive' check box then, for example, 'spin' will match 'spin' but not 'Spin'. You can search Forward or Backward from your current position in the page by clicking one of the Direction radio buttons. Click the <b>Find</b> button to search (or search again), and click the <b>Close</b> button to finish.</p>
-<a name="the-settings-dialog"></a>
-<h4>The Settings Dialog</h4>
-<p>The Settings dialog is used to set your preferences for <i>Qt Assistant</i>. The dialog has two tabs: The <b>Web</b> settings tab allows you to customize the way external content is displayed, and the <b>PDF</b> settings tab provides a similar facility for PDF files. <i>Qt Assistant</i> will remember your settings between sessions, including window sizes and positions, and which pages you have open. Each of the tabs is discussed as follows:</p>
-<ul>
-<li>Web Settings<p align="center"><img src="images/assistant-web.png" /></p><p>Some pages contain links to external web pages. In order to display these links, you must specify a web browser. Type the name of your browser's executable in the Web Browser Application line edit. Alternatively, click the <b>(ellipsis)</b> button to invoke the <b>Set Web Browser</b> dialog and navigate until you find the web browser you want to use. Click <b>Save</b> to accept the selection.</p>
-<p>To change <i>Qt Assistant</i>'s default home page, enter the file name in the Home Page line edit. Alternatively, click the <b>(ellipsis)</b> button to invoke the <b>Set Homepage</b> dialog. Navigate until you find the home page file you want to use and then click <b>Save</b> to accept the selection.</p>
-</li>
-<li>PDF Settings<p align="center"><img src="images/assistant-pdf1.png" /></p><p>Some pages contain links to PDF documents. In order to display these links, you must specify a PDF viewer. Type in the name of your PDF viewer's executable in the line edit. Alternatively, click the <b>(ellipsis)</b> button to invoke the <b>Set PDF Browser</b> dialog and navigate until you find the PDF viewer you want to use. Click <b>Save</b> to accept the selection.</p>
-</li>
-</ul>
 <a name="full-text-searching"></a>
 <h2>Full Text Searching</h2>
 <p align="center"><img src="images/assistant-search.png" /></p><p><i>Qt Assistant</i> provides a powerful full text search engine. To search for certain words or text, click the 'Search' tab in the sidebar. Then enter the text you want to look for and press <b>Enter</b> or click <b>Search</b>. The search is not case sensitive, so Foo, fOo and FOO are all treated as the same. The following are examples of common search patterns:</p>
@@ -181,37 +163,37 @@ body { background: #ffffff; color: black; }</style>
 <h3>Modifying the Default Documentation Set</h3>
 <p>When it is started without any options, <i>Qt Assistant</i> displays a default set of documentation. When Qt is installed, the default documentation set in <i>Qt Assistant</i> contains the Qt reference documentation as well as the tools that come with Qt, such as <i>Qt Designer</i> and qmake.</p>
 <p>Documentation can be added or removed from <i>Qt Assistant</i> by adding and removing the content files. The format of the content files are specified below. To add a content file, type the following command line option: <tt>-addContentFile docfile</tt>. To remove a content file from the default set, type the following command line option: <tt>-removeContentFile docfile</tt>. For example:</p>
-<pre>&nbsp;   1: &gt; assistant -addContentFile file.dcf
-    2: &gt; assistant
-    3: &gt; assistant -removeContentFile file.dcf</pre>
+<pre> 1: &gt; assistant -addContentFile file.dcf
+ 2: &gt; assistant
+ 3: &gt; assistant -removeContentFile file.dcf</pre>
 <p>In line one, we add the content file <tt>file.dcf</tt>. In line two, we start <i>Qt Assistant</i>. The default set will now be extended with the doc file <tt>file.dcf</tt>. In line three we remove the file <tt>file.dcf</tt> from the default documentation set so that subsequent use of <i>Qt Assistant</i> will not contain this file.</p>
 <a name="documentation-content-file-format"></a>
 <h4>Documentation Content File Format</h4>
 <p>The Documentation Content File must contain the documentation's table of contents and all important keywords for the index. In addition, it may inherit an icon for the documentation which is displayed in the <i>Qt Assistant</i> toolbar. You can also specify an extra directory path for additional images used in the documentation.</p>
 <p>An example of a content file that uses all the available tags and attributes is shown below:</p>
-<pre>&nbsp;   &lt;assistantconfig version=&quot;3.2.0&quot;&gt;
-        &lt;DCF ref=&quot;demo.html&quot; icon=&quot;handbook.png&quot; imagedir=&quot;../img/&quot;
-                title=&quot;Development Demo Handbook&quot;&gt;
-            &lt;section ref=&quot;./chap1/chap1.html&quot; title=&quot;Chapter1&quot;&gt;
-                &lt;section ref=&quot;./chap1/section1.html&quot; title=&quot;Section1&quot;&gt;
-                    &lt;keyword ref=&quot;./chap1/section1.html#foo&quot;&gt;foo&lt;/keyword&gt;
-                    &lt;keyword ref=&quot;./chap1/section1.html#bla&quot;&gt;bla&lt;/keyword&gt;
-                    &lt;section ref=&quot;./chap1/section1.html#subsection1&quot; title=&quot;Subsection 1&quot;/&gt;
-                    &lt;section ref=&quot;./chap1/section1.html#subsection2&quot; title=&quot;Subsection 2&quot;/&gt;
-                    &lt;section ref=&quot;./chap1/section1.html#subsection3&quot; title=&quot;Subsection 3&quot;/&gt;
-                &lt;/section&gt;
-                &lt;section ref=&quot;./chap1/section2&quot; title=&quot;Section2&quot;&gt;
-                    &lt;section ref=&quot;./chap1/section2.html#subsection1&quot; title=&quot;Subsection 1&quot;/&gt;
-                    &lt;section ref=&quot;./chap1/section2.html#subsection2&quot; title=&quot;Subsection 2&quot;/&gt;
-                    &lt;section ref=&quot;./chap1/section2.html#subsection3&quot; title=&quot;Subsection 3&quot;/&gt;
-                &lt;/section&gt;
-            &lt;/section&gt;
-            &lt;section ref=&quot;./chap2/chap2.html&quot; title=&quot;Chapter2&quot;&gt;
-                &lt;keyword ref=&quot;./chap2/chap2.html#foo&quot;&gt;foo&lt;/keyword&gt;
-                &lt;section ref=&quot;./chap2/section1.html&quot; title=&quot;Section1&quot;/&gt;
-            &lt;/section&gt;
-        &lt;/DCF&gt;
-    &lt;/assistantconfig&gt;</pre>
+<pre> &lt;assistantconfig version=&quot;3.2.0&quot;&gt;
+     &lt;DCF ref=&quot;demo.html&quot; icon=&quot;handbook.png&quot; imagedir=&quot;../img/&quot;
+             title=&quot;Development Demo Handbook&quot;&gt;
+         &lt;section ref=&quot;./chap1/chap1.html&quot; title=&quot;Chapter1&quot;&gt;
+             &lt;section ref=&quot;./chap1/section1.html&quot; title=&quot;Section1&quot;&gt;
+                 &lt;keyword ref=&quot;./chap1/section1.html#foo&quot;&gt;foo&lt;/keyword&gt;
+                 &lt;keyword ref=&quot;./chap1/section1.html#bla&quot;&gt;bla&lt;/keyword&gt;
+                 &lt;section ref=&quot;./chap1/section1.html#subsection1&quot; title=&quot;Subsection 1&quot;/&gt;
+                 &lt;section ref=&quot;./chap1/section1.html#subsection2&quot; title=&quot;Subsection 2&quot;/&gt;
+                 &lt;section ref=&quot;./chap1/section1.html#subsection3&quot; title=&quot;Subsection 3&quot;/&gt;
+             &lt;/section&gt;
+             &lt;section ref=&quot;./chap1/section2&quot; title=&quot;Section2&quot;&gt;
+                 &lt;section ref=&quot;./chap1/section2.html#subsection1&quot; title=&quot;Subsection 1&quot;/&gt;
+                 &lt;section ref=&quot;./chap1/section2.html#subsection2&quot; title=&quot;Subsection 2&quot;/&gt;
+                 &lt;section ref=&quot;./chap1/section2.html#subsection3&quot; title=&quot;Subsection 3&quot;/&gt;
+             &lt;/section&gt;
+         &lt;/section&gt;
+         &lt;section ref=&quot;./chap2/chap2.html&quot; title=&quot;Chapter2&quot;&gt;
+             &lt;keyword ref=&quot;./chap2/chap2.html#foo&quot;&gt;foo&lt;/keyword&gt;
+             &lt;section ref=&quot;./chap2/section1.html&quot; title=&quot;Section1&quot;/&gt;
+         &lt;/section&gt;
+     &lt;/DCF&gt;
+ &lt;/assistantconfig&gt;</pre>
 <p>Sections may be nested as deeply as necessary. All references should be related.</p>
 <p>Note that any <tt>keyword</tt> tags for a given section must appear <i>before</i> any sections nested within the given section.</p>
 <p>The paths in the <tt>refs</tt> attribute are always written Unix-style (forward slashes) and are relative to the location of the documentation content file itself.</p>
@@ -230,51 +212,16 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>To define a profile, one needs to specify a <i>Qt Assistant</i> Document Profile, usually abbreviated <tt>.adp</tt>. The profile is an extension of the Documentation Content File described above. We add a <tt>profile</tt> tag containing <tt>property</tt> tags to the format.</p>
 <p>An example of a document profile file is shown below:</p>
-<pre>&nbsp;   &lt;!DOCTYPE DCF&gt;
-    &lt;assistantconfig version=&quot;3.2.0&quot;&gt;
-
-    &lt;profile&gt;
-      &lt;property name=&quot;name&quot;&gt;simpletextviewer&lt;/property&gt;
-      &lt;property name=&quot;title&quot;&gt;Simple Text Viewer&lt;/property&gt;
-      &lt;property name=&quot;applicationicon&quot;&gt;images/handbook.png&lt;/property&gt;
-      &lt;property name=&quot;startpage&quot;&gt;index.html&lt;/property&gt;
-      &lt;property name=&quot;aboutmenutext&quot;&gt;About Simple Text Viewer&lt;/property&gt;
-      &lt;property name=&quot;abouturl&quot;&gt;about.txt&lt;/property&gt;
-      &lt;property name=&quot;assistantdocs&quot;&gt;.&lt;/property&gt;
-    &lt;/profile&gt;
-
-    &lt;DCF ref=&quot;index.html&quot; icon=&quot;images/handbook.png&quot; title=&quot;Simple Text Viewer&quot;&gt;
-      &lt;section ref=&quot;./findfile.html&quot; title=&quot;Find File&quot;&gt;
-        &lt;keyword ref=&quot;./index.html&quot;&gt;Display&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./index.html&quot;&gt;Rich text&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./index.html&quot;&gt;Plain text&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./findfile.html&quot;&gt;Find&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./findfile.html&quot;&gt;File menu&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./filedialog.html&quot;&gt;File name&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./filedialog.html&quot;&gt;File dialog&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./wildcardmatching.html&quot;&gt;File globbing&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./wildcardmatching.html&quot;&gt;Wildcard matching&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./wildcardmatching.html&quot;&gt;Wildcard syntax&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./browse.html&quot;&gt;Browse&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./browse.html&quot;&gt;Directory&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./openfile.html&quot;&gt;Open&lt;/keyword&gt;
-        &lt;keyword ref=&quot;./openfile.html&quot;&gt;Select&lt;/keyword&gt;
-
-        &lt;section ref=&quot;./filedialog.html&quot; title=&quot;File Dialog&quot; /&gt;
-        &lt;section ref=&quot;./wildcardmatching.html&quot; title=&quot;Wildcard Matching&quot; /&gt;
-        &lt;section ref=&quot;./browse.html&quot; title=&quot;Browse&quot; /&gt;
-      &lt;/section&gt;
-      &lt;section ref=&quot;./openfile.html&quot; title=&quot;Open File&quot; /&gt;
-    &lt;/DCF&gt;
-    &lt;/assistantconfig&gt;</pre>
+<p><tt>simpletextviewer.adp</tt></p>
 <a name="using-profiles"></a>
 <h4>Using Profiles</h4>
 <p>To use a profile, run <i>Qt Assistant</i> with the option <tt>-profile filename</tt>. This will load the profile specified in the file and will customize <i>Qt Assistant</i> accordingly. For example, to run <i>Qt Assistant</i> with the example file above, <tt>simpletextviewer.adp</tt>, we would run the command as follows:</p>
-<pre>&nbsp;   &gt; assistant -profile simpletextviewer.adp</pre>
+<pre> &gt; assistant -profile simpletextviewer.adp</pre>
+<p>See the <a href="assistant-simpletextviewer.html">Simple Text Viewer</a> example in the Qt distribution for a demonstration on how to use <i>Qt Assistant</i> with profiles for your own applications.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2313,7 +2313,7 @@ extern const char qt3_file_dialog_filter_reg_exp[] = "([a-zA-Z0-9]*)\\(([a-zA-Z0
 Q3FileDialog::Q3FileDialog(QWidget *parent, const char *name, bool modal)
     : QDialog(parent, name, modal,
                (modal ?
-                (Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu) : Qt::WFlags(0)))
+                (Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu) : Qt::WindowFlags(0)))
 {
     init();
     d->mode = ExistingFile;
@@ -2340,7 +2340,7 @@ Q3FileDialog::Q3FileDialog(const QString& dirName, const QString & filter,
                           QWidget *parent, const char *name, bool modal)
     : QDialog(parent, name, modal,
               (modal ? (Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu)
-               : Qt::WFlags(0)))
+               : Qt::WindowFlags(0)))
 {
     init();
     d->mode = ExistingFile;
@@ -2405,8 +2405,8 @@ void Q3FileDialog::init()
              this, SLOT(urlStart(Q3NetworkOperation*)));
     connect(&d->url, SIGNAL(finished(Q3NetworkOperation*)),
              this, SLOT(urlFinished(Q3NetworkOperation*)));
-    connect(&d->url, SIGNAL(newChildren(const Q3ValueList<QUrlInfo> &,Q3NetworkOperation*)),
-             this, SLOT(insertEntry(const Q3ValueList<QUrlInfo> &,Q3NetworkOperation*)));
+    connect(&d->url, SIGNAL(newChildren(Q3ValueList<QUrlInfo>,Q3NetworkOperation*)),
+             this, SLOT(insertEntry(Q3ValueList<QUrlInfo>,Q3NetworkOperation*)));
     connect(&d->url, SIGNAL(removed(Q3NetworkOperation*)),
              this, SLOT(removeEntry(Q3NetworkOperation*)));
     connect(&d->url, SIGNAL(createdDirectory(QUrlInfo,Q3NetworkOperation*)),
@@ -3569,7 +3569,7 @@ void Q3FileDialog::okClicked()
 #if defined(Q_WS_WIN)
     QFileInfo fi(d->url.path() + fn);
     if (fi.isSymLink()) {
-        nameEdit->setText(fi.readLink());
+        nameEdit->setText(fi.symLinkTarget());
     }
 #endif
 
@@ -3795,7 +3795,7 @@ void Q3FileDialog::updateGeometries()
 
     QSize r, t;
 
-    // we really should have a QSize::unite()
+    // we really should use QSize::expandedTo()
 #define RM r.setWidth(qMax(r.width(),t.width())); \
 r.setHeight(qMax(r.height(),t.height()))
 
@@ -4036,7 +4036,7 @@ void Q3FileDialog::selectDirectoryOrFile(Q3ListViewItem * newItem)
         QFileInfo fi(d->url.path() + newItem->text(0));
 #if defined(Q_WS_WIN)
         if (fi.isSymLink()) {
-            nameEdit->setText(fi.readLink());
+            nameEdit->setText(fi.symLinkTarget());
             okClicked();
             return;
         }
@@ -5096,7 +5096,7 @@ QWindowsIconProvider::~QWindowsIconProvider()
 const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
 {
     if (fi.isSymLink()) {
-        QString real = fi.readLink();
+        QString real = fi.symLinkTarget();
         if (!real.isEmpty())
             return pixmap(QFileInfo(real));
     }
@@ -5155,33 +5155,34 @@ const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
 
         HICON si;
         UINT res = 0;
-        QString filepath = lst[0].stripWhiteSpace();
-        if (!filepath.isEmpty()) {
-            if (filepath.find("%1") != -1) {
-                filepath = filepath.arg(fi.filePath());
-                if (ext.toLower() == ".dll") {
-                    pix = defaultFile;
-                    return &pix;
+        if (lst.count() >= 2) { // don't just assume that lst has two entries
+            QString filepath = lst[0].stripWhiteSpace();
+            if (!filepath.isEmpty()) {
+                if (filepath.find("%1") != -1) {
+                    filepath = filepath.arg(fi.filePath());
+                    if (ext.toLower() == ".dll") {
+                        pix = defaultFile;
+                        return &pix;
+                    }
                 }
-            }
-            if (filepath[0] == '"' && filepath[(int)filepath.length()-1] == '"')
-                filepath = filepath.mid(1, filepath.length()-2);
-
-            resolveLibs();
+                if (filepath[0] == '"' && filepath[(int)filepath.length()-1] == '"')
+                    filepath = filepath.mid(1, filepath.length()-2);
+                
+                resolveLibs();
 #ifndef Q_OS_TEMP
-            QT_WA({
-                res = ptrExtractIconEx((TCHAR*)filepath.ucs2(), lst[1].stripWhiteSpace().toInt(),
-                                      0, &si, 1);
-            } , {
-                res = ExtractIconExA(filepath.local8Bit(), lst[1].stripWhiteSpace().toInt(),
-                                      0, &si, 1);
-            });
+                QT_WA({
+                    res = ptrExtractIconEx((TCHAR*)filepath.ucs2(), lst[1].stripWhiteSpace().toInt(),
+                        0, &si, 1);
+                } , {
+                    res = ExtractIconExA(filepath.local8Bit(), lst[1].stripWhiteSpace().toInt(),
+                        0, &si, 1);
+                });
 #else
                 res = (UINT)ExtractIconEx((TCHAR*)filepath.ucs2(), lst[1].stripWhiteSpace().toInt(),
-                                            0, &si, 1);
+                    0, &si, 1);
 #endif
+            }
         }
-
         if (res) {
             pix = fromHICON(si);
             pix.setMask(pix.createHeuristicMask());
@@ -5189,7 +5190,7 @@ const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
         } else {
             pix = defaultFile;
         }
-
+        
         cache[key] = pix;
         return &pix;
     } else {
@@ -6253,12 +6254,12 @@ void Q3FileDialog::doMimeTypeLookup()
             if (files->isVisible()) {
                 QRect ir(files->itemRect(item));
                 if (ir != QRect(0, 0, -1, -1)) {
-                    r = r.unite(ir);
+                    r = r.united(ir);
                 }
             } else {
                 QRect ir(d->moreFiles->itemRect(item->i));
                 if (ir != QRect(0, 0, -1, -1)) {
-                    r = r.unite(ir);
+                    r = r.united(ir);
                 }
             }
         }

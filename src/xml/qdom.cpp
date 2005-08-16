@@ -81,10 +81,10 @@
 */
 static void qt_split_namespace(QString& prefix, QString& name, const QString& qName, bool hasURI)
 {
-    int i = qName.indexOf(':');
+    int i = qName.indexOf(QLatin1Char(':'));
     if (i == -1) {
         if (hasURI)
-            prefix = "";
+            prefix = QLatin1String("");
         else
             prefix.clear();
         name = qName;
@@ -1166,8 +1166,8 @@ QDomImplementation::~QDomImplementation()
 */
 bool QDomImplementation::hasFeature(const QString& feature, const QString& version) const
 {
-    if (feature == "XML") {
-        if (version.isEmpty() || version == "1.0") {
+    if (feature == QLatin1String("XML")) {
+        if (version.isEmpty() || version == QLatin1String("1.0")) {
             return true;
         }
     }
@@ -1883,9 +1883,9 @@ QDomNodePrivate* QDomNodePrivate::insertAfter(QDomNodePrivate* newChild, QDomNod
 
 QDomNodePrivate* QDomNodePrivate::replaceChild(QDomNodePrivate* newChild, QDomNodePrivate* oldChild)
 {
-    if (oldChild->parent() != this)
-        return 0;
     if (!newChild || !oldChild)
+        return 0;
+    if (oldChild->parent() != this)
         return 0;
     if (newChild == oldChild)
         return 0;
@@ -2278,7 +2278,7 @@ QString QDomNode::nodeName() const
         return QString();
 
     if (!IMPL->prefix.isEmpty())
-        return IMPL->prefix + ":" + IMPL->name;
+        return IMPL->prefix + QLatin1Char(':') + IMPL->name;
     return IMPL->name;
 }
 
@@ -3878,7 +3878,7 @@ QString QDomDocumentType::internalSubset() const
 QDomDocumentFragmentPrivate::QDomDocumentFragmentPrivate(QDomDocumentPrivate* doc, QDomNodePrivate* parent)
     : QDomNodePrivate(doc, parent)
 {
-    name = "#document-fragment";
+    name = QLatin1String("#document-fragment");
 }
 
 QDomDocumentFragmentPrivate::QDomDocumentFragmentPrivate(QDomNodePrivate* n, bool deep)
@@ -3984,7 +3984,7 @@ QDomCharacterDataPrivate::QDomCharacterDataPrivate(QDomDocumentPrivate* d, QDomN
     : QDomNodePrivate(d, p)
 {
     value = data;
-    name = "#character-data";
+    name = QLatin1String("#character-data");
 }
 
 QDomCharacterDataPrivate::QDomCharacterDataPrivate(QDomCharacterDataPrivate* n, bool deep)
@@ -4254,20 +4254,20 @@ static QString encodeAttr(const QString& str, bool encodeQuotes = true)
     uint len = tmp.length();
     uint i = 0;
     while (i < len) {
-        if (tmp[(int)i] == '<') {
-            tmp.replace(i, 1, "&lt;");
+        if (tmp[(int)i] == QLatin1Char('<')) {
+            tmp.replace(i, 1, QLatin1String("&lt;"));
             len += 3;
             i += 4;
-        } else if (encodeQuotes && (tmp[(int)i] == '"')) {
-            tmp.replace(i, 1, "&quot;");
+        } else if (encodeQuotes && (tmp[(int)i] == QLatin1Char('"'))) {
+            tmp.replace(i, 1, QLatin1String("&quot;"));
             len += 5;
             i += 6;
-        } else if (tmp[(int)i] == '&') {
-            tmp.replace(i, 1, "&amp;");
+        } else if (tmp[(int)i] == QLatin1Char('&')) {
+            tmp.replace(i, 1, QLatin1String("&amp;"));
             len += 4;
             i += 5;
-        } else if (tmp[(int)i] == '>' && i>=2 && tmp[(int)i-1]==']' && tmp[(int)i-2]==']') {
-            tmp.replace(i, 1, "&gt;");
+        } else if (tmp[(int)i] == QLatin1Char('>') && i>=2 && tmp[(int)i-1] == QLatin1Char(']') && tmp[(int)i-2] == QLatin1Char(']')) {
+            tmp.replace(i, 1, QLatin1String("&gt;"));
             len += 3;
             i += 4;
         } else {
@@ -4604,7 +4604,7 @@ bool QDomElementPrivate::hasAttributeNS(const QString& nsURI, const QString& loc
 
 QString QDomElementPrivate::text()
 {
-    QString t("");
+    QString t(QLatin1String(""));
 
     QDomNodePrivate* p = first;
     while (p) {
@@ -4625,7 +4625,7 @@ void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
             s << " ";
 
     QString qName(name);
-    QString nsDecl("");
+    QString nsDecl(QLatin1String(""));
     if (!namespaceURI.isNull()) {
         // ### optimize this, so that you only declare namespaces that are not
         // yet declared -- we lose default namespace mappings, so maybe we
@@ -4633,12 +4633,12 @@ void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
         // startPrefixMapping()/endPrefixMapping() and use them (you have to
         // take care if the DOM tree is modified, though)
         if (prefix.isEmpty()) {
-            nsDecl = " xmlns";
+            nsDecl = QLatin1String(" xmlns");
         } else {
-            qName = prefix + ":" + name;
-            nsDecl = " xmlns:" + prefix;
+            qName = prefix + QLatin1Char(':') + name;
+            nsDecl = QLatin1String(" xmlns:") + prefix;
         }
-        nsDecl += "=\"" + encodeAttr(namespaceURI) + "\"";
+        nsDecl += QLatin1String("=\"") + encodeAttr(namespaceURI) + QLatin1String("\"");
     }
     s << "<" << qName << nsDecl;
 
@@ -5164,8 +5164,12 @@ bool QDomElement::hasAttributeNS(const QString& nsURI, const QString& localName)
     <h1>Hello <b>Qt</b> <![CDATA[<xml is cool>]]></h1>
     \endcode
 
-    The function text() of the QDomElement for the &lt;h1&gt; tag,
-    will return "Hello Qt &lt;xml is cool&gt;".
+    The function text() of the QDomElement for the \c{<h1>} tag,
+    will return the following text:
+
+    \code
+    Hello Qt &lt;xml is cool&gt;
+    \endcode
 
     Comments are ignored by this function. It only evaluates QDomText
     and QDomCDATASection objects.
@@ -5188,7 +5192,7 @@ QString QDomElement::text() const
 QDomTextPrivate::QDomTextPrivate(QDomDocumentPrivate* d, QDomNodePrivate* parent, const QString& val)
     : QDomCharacterDataPrivate(d, parent, val)
 {
-    name = "#text";
+    name = QLatin1String("#text");
 }
 
 QDomTextPrivate::QDomTextPrivate(QDomTextPrivate* n, bool deep)
@@ -5324,7 +5328,7 @@ QDomText QDomText::splitText(int offset)
 QDomCommentPrivate::QDomCommentPrivate(QDomDocumentPrivate* d, QDomNodePrivate* parent, const QString& val)
     : QDomCharacterDataPrivate(d, parent, val)
 {
-    name = "#comment";
+    name = QLatin1String("#comment");
 }
 
 QDomCommentPrivate::QDomCommentPrivate(QDomCommentPrivate* n, bool deep)
@@ -5434,7 +5438,7 @@ QDomCDATASectionPrivate::QDomCDATASectionPrivate(QDomDocumentPrivate* d, QDomNod
                                                     const QString& val)
     : QDomTextPrivate(d, parent, val)
 {
-    name = "#cdata-section";
+    name = QLatin1String("#cdata-section");
 }
 
 QDomCDATASectionPrivate::QDomCDATASectionPrivate(QDomCDATASectionPrivate* n, bool deep)
@@ -6172,7 +6176,7 @@ QDomDocumentPrivate::QDomDocumentPrivate()
     impl = new QDomImplementationPrivate;
     type = new QDomDocumentTypePrivate(this, this);
 
-    name = "#document";
+    name = QLatin1String("#document");
 }
 
 QDomDocumentPrivate::QDomDocumentPrivate(const QString& aname)
@@ -6182,7 +6186,7 @@ QDomDocumentPrivate::QDomDocumentPrivate(const QString& aname)
     type = new QDomDocumentTypePrivate(this, this);
     type->name = aname;
 
-    name = "#document";
+    name = QLatin1String("#document");
 }
 
 QDomDocumentPrivate::QDomDocumentPrivate(QDomDocumentTypePrivate* dt)
@@ -6196,7 +6200,7 @@ QDomDocumentPrivate::QDomDocumentPrivate(QDomDocumentTypePrivate* dt)
         type = new QDomDocumentTypePrivate(this, this);
     }
 
-    name = "#document";
+    name = QLatin1String("#document");
 }
 
 QDomDocumentPrivate::QDomDocumentPrivate(QDomDocumentPrivate* n, bool deep)
@@ -6233,9 +6237,9 @@ void QDomDocumentPrivate::clear()
 bool QDomDocumentPrivate::setContent(QXmlInputSource *source, bool namespaceProcessing, QString *errorMsg, int *errorLine, int *errorColumn)
 {
     QXmlSimpleReader reader;
-    reader.setFeature("http://xml.org/sax/features/namespaces", namespaceProcessing);
-    reader.setFeature("http://xml.org/sax/features/namespace-prefixes", !namespaceProcessing);
-    reader.setFeature("http://trolltech.com/xml/features/report-whitespace-only-CharData", false);
+    reader.setFeature(QLatin1String("http://xml.org/sax/features/namespaces"), namespaceProcessing);
+    reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), !namespaceProcessing);
+    reader.setFeature(QLatin1String("http://trolltech.com/xml/features/report-whitespace-only-CharData"), false);
 
     return setContent(source, &reader, errorMsg, errorLine, errorColumn);
 }
@@ -6246,8 +6250,8 @@ bool QDomDocumentPrivate::setContent(QXmlInputSource *source, QXmlReader *reader
     impl = new QDomImplementationPrivate;
     type = new QDomDocumentTypePrivate(this, this);
 
-    bool namespaceProcessing = reader->feature("http://xml.org/sax/features/namespaces")
-        && !reader->feature("http://xml.org/sax/features/namespace-prefixes");
+    bool namespaceProcessing = reader->feature(QLatin1String("http://xml.org/sax/features/namespaces"))
+        && !reader->feature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"));
 
     QDomHandler hnd(this, namespaceProcessing);
     reader->setContentHandler(&hnd);
@@ -6460,7 +6464,7 @@ void QDomDocumentPrivate::save(QTextStream& s, int, int indent) const
 
     QDomNodePrivate* n = first;
 #ifndef QT_NO_TEXTCODEC
-    if (n && n->isProcessingInstruction() && n->nodeName()=="xml") {
+    if (n && n->isProcessingInstruction() && n->nodeName() == QLatin1String("xml")) {
         // we have an XML declaration
         QString data = n->nodeValue();
         QRegExp encoding(QString::fromLatin1("encoding\\s*=\\s*((\"([^\"]*)\")|('([^']*)'))"));
@@ -6479,7 +6483,7 @@ void QDomDocumentPrivate::save(QTextStream& s, int, int indent) const
     s.setAutoDetectUnicode(true);
 #endif
     while (n) {
-        if (!doc && !(n->isProcessingInstruction()&&n->nodeName()=="xml")) {
+        if (!doc && !(n->isProcessingInstruction()&&n->nodeName() == QLatin1String("xml"))) {
             // save doctype after XML declaration
             type->save(s, 0, indent);
             doc = true;
@@ -6605,6 +6609,8 @@ void QDomDocumentPrivate::save(QTextStream& s, int, int indent) const
     \l{http://www.w3.org/TR/REC-DOM-Level-1/}{Level 1} and
     \l{http://www.w3.org/TR/DOM-Level-2-Core/}{Level 2 Core}
     Specifications.
+
+    \sa {DOM Bookmarks Example}, {Simple DOM Model Example}
 */
 
 
@@ -6700,11 +6706,15 @@ bool QDomDocument::setContent(const QString& text, bool namespaceProcessing, QSt
     is false, the parser does no namespace processing when it reads
     the XML file.
 
-    If a parse error occurs, the function returns false; otherwise it
-    returns true. If a parse error occurs and \a errorMsg, \a
-    errorLine and \a errorColumn are not 0, the error message is
-    placed in \c{*}\a{errorMsg}, the line number \c{*}\a{errorLine} and the
-    column number in \c{*}\a{errorColumn}.
+    If a parse error occurs, this function returns false and the error
+    message is placed in \c{*}\a{errorMsg}, the line number in
+    \c{*}\a{errorLine} and the column number in \c{*}\a{errorColumn}
+    (unless the associated pointer is set to 0); otherwise this
+    function returns true. The various error messages are described in
+    the QXmlParseException class documentation. Note that, if you
+    want to display these error messages to your application's users,
+    they will be displayed in English unless they are explicitly
+    translated.
 
     If \a namespaceProcessing is true, the function QDomNode::prefix()
     returns a string for all elements and attributes. It returns an

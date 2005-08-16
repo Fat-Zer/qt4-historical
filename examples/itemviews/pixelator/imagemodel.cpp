@@ -25,10 +25,15 @@
 
 #include "imagemodel.h"
 
-ImageModel::ImageModel(const QImage &image, QObject *parent)
+ImageModel::ImageModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    modelImage = QImage(image);
+}
+
+void ImageModel::setImage(const QImage &image)
+{
+    modelImage = image;
+    reset();
 }
 
 int ImageModel::rowCount(const QModelIndex & /* parent */) const
@@ -43,10 +48,16 @@ int ImageModel::columnCount(const QModelIndex & /* parent */) const
 
 QVariant ImageModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid() || role != Qt::DisplayRole)
         return QVariant();
-    else if (role != Qt::DisplayRole)
-        return QVariant();
-
     return qGray(modelImage.pixel(index.column(), index.row()));
+}
+
+QVariant ImageModel::headerData(int /* section */,
+                                Qt::Orientation /* orientation */,
+                                int role) const
+{
+    if (role == Qt::SizeHintRole)
+        return QSize(1, 1);
+    return QVariant();
 }

@@ -34,7 +34,6 @@
 #include "qdatastream.h"
 #include "qbuffer.h"
 #include "qapplication.h"
-#include <private/qinternal_p.h>
 #include <private/qwidget_p.h>
 #include "qevent.h"
 #include "qfile.h"
@@ -43,6 +42,7 @@
 #include "qdatetime.h"
 #include "qimagereader.h"
 #include "qimagewriter.h"
+#include "qpaintengine.h"
 
 #if defined(Q_WS_X11)
 #include "qx11info_x11.h"
@@ -589,7 +589,7 @@ bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConvers
                   + QString::number(data->type);
 
     if (QPixmapCache::find(key, *this))
-            return true;
+        return true;
     QImage image = QImageReader(fileName, format).read();
     if (image.isNull())
         return false;
@@ -662,6 +662,9 @@ bool QPixmap::loadFromData(const uchar *buf, uint len, const char *format, Qt::I
     The \a quality factor must be in the range [0,100] or -1. Specify
     0 to obtain small compressed files, 100 for large uncompressed
     files, and -1 to use the default settings.
+
+    If \a format is 0, an image format will be chosen from \a fileName's
+    suffix.
 
     \sa {QPixmap#Reading and Writing Image Files}{Reading and Writing
     Image Files}
@@ -745,36 +748,19 @@ int QPixmap::serialNumber() const
         return data->ser_no;
 }
 
-/*
-  Fills \a buf with \a r in \a widget. Then blits \a buf on \a res at
-  position \a offset
- */
-#ifdef Q_WS_MAC
-static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf,
-                              const QRect &r, const QPoint &offset)
+static void sendResizeEvents(QWidget *target)
 {
-    buf.fill(widget, r.topLeft());
-    QPainter::setRedirected(widget, &buf, r.topLeft());
-    QPaintEvent e(r & widget->rect());
-    QApplication::sendEvent(widget, &e);
-    QPainter::restoreRedirected(widget);
-    {
-        QPainter pt(&res);
-        pt.drawPixmap(offset.x(), offset.y(), buf, 0, 0, r.width(), r.height());
-    }
+    QResizeEvent e(target->size(), QSize());
+    QApplication::sendEvent(target, &e);
 
-    const QObjectList children = widget->children();
+    const QObjectList children = target->children();
     for (int i = 0; i < children.size(); ++i) {
         QWidget *child = static_cast<QWidget*>(children.at(i));
-        if (!child->isWidgetType() || child->isWindow()
-            || child->isHidden() || !child->geometry().intersects(r))
-            continue;
-        QRect cr = r & child->geometry();
-        cr.translate(-child->pos());
-        grabWidget_helper(child, res, buf, cr, offset + child->pos());
+        if (child->isWidgetType() && !child->isWindow() && child->testAttribute(Qt::WA_PendingResizeEvent))
+            sendResizeEvents(child);
     }
 }
-#endif
+
 /*!
     \fn QPixmap QPixmap::grabWidget(QWidget * widget, const QRect &rectangle)
 
@@ -808,6 +794,9 @@ QPixmap QPixmap::grabWidget(QWidget * widget, const QRect &rect)
     if (!widget)
         return QPixmap();
 
+    if (widget->testAttribute(Qt::WA_PendingResizeEvent) || !widget->testAttribute(Qt::WA_WState_Created))
+        sendResizeEvents(widget);
+
     QRect r(rect);
     if (r.width() < 0)
         r.setWidth(widget->width() - rect.x());
@@ -818,17 +807,16 @@ QPixmap QPixmap::grabWidget(QWidget * widget, const QRect &rect)
         return QPixmap();
 
      QPixmap res(r.size());
-
-#ifndef Q_WS_MAC
-    widget->d_func()->drawWidget(&res, r, -r.topLeft(),
-                                 QWidgetPrivate::DrawRecursive | QWidgetPrivate::DrawAsRoot
-                                 | QWidgetPrivate::DrawPaintOnScreen | QWidgetPrivate::DrawInvisible);
-#else
+#ifdef Q_WS_MAC
     QPixmap buf(r.size());
     if(res.isNull() || buf.isNull())
         return res;
 
-    grabWidget_helper(widget, res, buf, r, QPoint());
+    grabWidget_helper(widget, res, buf, r, QPoint(), true);
+#else
+    widget->d_func()->drawWidget(&res, r, -r.topLeft(),
+                                 QWidgetPrivate::DrawRecursive | QWidgetPrivate::DrawAsRoot
+                                 | QWidgetPrivate::DrawPaintOnScreen | QWidgetPrivate::DrawInvisible);
 #endif
     return res;
 }
@@ -966,7 +954,6 @@ bool QPixmap::convertFromImage(const QImage &image, ColorMode mode)
  *****************************************************************************/
 #if !defined(QT_NO_DATASTREAM)
 /*!
-    \fn QDataStream &operator<<(QDataStream &stream, const QPixmap &pixmap)
     \relates QPixmap
 
     Writes the given \a pixmap to the the given \a stream as a PNG
@@ -976,14 +963,12 @@ bool QPixmap::convertFromImage(const QImage &image, ColorMode mode)
     \sa QPixmap::save(), {Format of the QDataStream Operators}
 */
 
-QDataStream &operator<<(QDataStream &s, const QPixmap &pixmap)
+QDataStream &operator<<(QDataStream &stream, const QPixmap &pixmap)
 {
-    s << pixmap.toImage();
-    return s;
+    return stream << pixmap.toImage();
 }
 
 /*!
-    \fn QDataStream &operator>>(QDataStream &stream, QPixmap &pixmap)
     \relates QPixmap
 
     Reads an image from the given \a stream into the given \a pixmap.
@@ -991,15 +976,20 @@ QDataStream &operator<<(QDataStream &s, const QPixmap &pixmap)
     \sa QPixmap::load(), {Format of the QDataStream Operators}
 */
 
-QDataStream &operator>>(QDataStream &s, QPixmap &pixmap)
+QDataStream &operator>>(QDataStream &stream, QPixmap &pixmap)
 {
-    QImage img;
-    s >> img;
-    if (pixmap.data->type == QPixmap::BitmapType)
-        pixmap = QBitmap::fromImage(img);
-    else
-        pixmap = QPixmap::fromImage(img);
-    return s;
+    QImage image;
+    stream >> image;
+
+    QPixmap::Type type = pixmap.data->type;
+    if (image.isNull()) {
+        pixmap = QPixmap(QSize(0, 0), type);
+    } else if (pixmap.data->type == QPixmap::BitmapType) {
+        pixmap = QBitmap::fromImage(image);
+    } else {
+        pixmap = QPixmap::fromImage(image);
+    }
+    return stream;
 }
 
 #endif //QT_NO_DATASTREAM
@@ -1008,14 +998,27 @@ QDataStream &operator>>(QDataStream &s, QPixmap &pixmap)
 Q_GUI_EXPORT void copyBlt(QPixmap *dst, int dx, int dy,
                           const QPixmap *src, int sx, int sy, int sw, int sh)
 {
-    Q_ASSERT_X(dst, "::copyBlt", "Destination pixmap must be non null");
-    Q_ASSERT_X(src, "::copyBlt", "Source pixmap must be non null");
+    Q_ASSERT_X(dst, "::copyBlt", "Destination pixmap must be non-null");
+    Q_ASSERT_X(src, "::copyBlt", "Source pixmap must be non-null");
 
-    QImage image = dst->toImage();
-    QPainter p(&image);
-    p.setCompositionMode(QPainter::CompositionMode_Source);
-    p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
-    *dst = QPixmap::fromImage(image);
+    if (src->hasAlphaChannel()) {
+        if (dst->paintEngine()->hasFeature(QPaintEngine::PorterDuff)) {
+            QPainter p(dst);
+            p.setCompositionMode(QPainter::CompositionMode_Source);
+            p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
+        } else {
+            QImage image = dst->toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
+            QPainter p(&image);
+            p.setCompositionMode(QPainter::CompositionMode_Source);
+            p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
+            p.end();
+            *dst = QPixmap::fromImage(image);
+        }
+    } else {
+        QPainter p(dst);
+        p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
+    }
+
 }
 #endif
 
@@ -1216,10 +1219,10 @@ QPixmap QPixmap::scaledToHeight(int h, Qt::TransformationMode mode) const
     if the system allows, the preferred format is premultiplied alpha.
     Note also that QPixmap, unlike QImage, may be hardware dependent.
     On X11 and Mac, a QPixmap is stored on the server side while a
-    QImage is stored on the client side(on Windows, these two classes
+    QImage is stored on the client side (on Windows, these two classes
     have an equivalent internal representation, i.e. both QImage and
-    QPixmap are stored on the client side which means that QPixmap
-    doesn't use GDI resources).
+    QPixmap are stored on the client side and don't use any GDI
+    resources).
 
     There are functions to convert between QImage and
     QPixmap. Typically, the QImage class is used to load an image

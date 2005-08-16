@@ -100,7 +100,7 @@ void ProjectPorter::portProject(QString basePath, QString proFileName)
     QString fullInFileName = basePath + "/" + proFileName;
     QFileInfo infileInfo(fullInFileName);
     if (!infileInfo.exists()) {
-        printf("Could not open file: %s\n", QDir::convertSeparators(fullInFileName).toLocal8Bit().constData());
+        printf("Could not open file: %s\n", QDir::toNativeSeparators(fullInFileName).toLocal8Bit().constData());
         return;
     }
 
@@ -202,7 +202,7 @@ void ProjectPorter::portFiles(QString basePath, QStringList fileNames)
 
         QFileInfo fullFilePathInfo(fullFilePath);
         if (!fullFilePathInfo.exists()) {
-            printf("Could not find file: %s\n", QDir::convertSeparators(fullFilePath).toLocal8Bit().constData());
+            printf("Could not find file: %s\n", QDir::toNativeSeparators(fullFilePath).toLocal8Bit().constData());
             continue;
         }
 

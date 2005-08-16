@@ -83,7 +83,7 @@ public:
     {
         connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(cleanup()));
         connect(QCoreApplication::instance(), SIGNAL(destroyed(QObject *)), this, SLOT(cleanup()));
-        QCoreApplicationPrivate::moveToMainThread(this);
+        moveToThread(QCoreApplicationPrivate::mainThread());
         quit = false;
         pendingQueryId = -1;
     }
@@ -143,7 +143,7 @@ class QHostInfoPrivate
 public:
     inline QHostInfoPrivate()
         : err(QHostInfo::NoError),
-          errorStr(QT_TRANSLATE_NOOP("QHostInfo", "Unknown error"))
+          errorStr(QLatin1String(QT_TRANSLATE_NOOP("QHostInfo", "Unknown error")))
     {
     }
 

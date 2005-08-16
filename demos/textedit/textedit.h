@@ -30,6 +30,7 @@
 
 class QAction;
 class QComboBox;
+class QFontComboBox;
 class QTextEdit;
 class QTextCharFormat;
 class QMenu;
@@ -58,6 +59,7 @@ private slots:
     bool fileSave();
     bool fileSaveAs();
     void filePrint();
+    void filePrintPreview();
     void filePrintPdf();
 
     void textBold();
@@ -70,10 +72,12 @@ private slots:
     void textAlign(QAction *a);
 
     void currentCharFormatChanged(const QTextCharFormat &format);
+    void cursorPositionChanged();
 
     void clipboardDataChanged();
 
 private:
+    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void fontChanged(const QFont &f);
     void colorChanged(const QColor &c);
     void alignmentChanged(Qt::Alignment a);
@@ -93,9 +97,9 @@ private:
         *actionCopy,
         *actionPaste;
 
-    QComboBox *comboStyle,
-              *comboFont,
-              *comboSize;
+    QComboBox *comboStyle;
+    QFontComboBox *comboFont;
+    QComboBox *comboSize;
 
     QToolBar *tb;
     QString fileName;

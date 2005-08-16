@@ -48,6 +48,10 @@ Client::Client(QWidget *parent)
 
     quitButton = new QPushButton(tr("Quit"));
 
+    buttonBox = new QDialogButtonBox;
+    buttonBox->addButton(getFortuneButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
+
     tcpSocket = new QTcpSocket(this);
 
     connect(hostLineEdit, SIGNAL(textChanged(const QString &)),
@@ -58,12 +62,8 @@ Client::Client(QWidget *parent)
             this, SLOT(requestNewFortune()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
-
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(getFortuneButton);
-    buttonLayout->addWidget(quitButton);
+    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+            this, SLOT(displayError(QAbstractSocket::SocketError)));
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(hostLabel, 0, 0);
@@ -71,7 +71,7 @@ Client::Client(QWidget *parent)
     mainLayout->addWidget(portLabel, 1, 0);
     mainLayout->addWidget(portLineEdit, 1, 1);
     mainLayout->addWidget(statusLabel, 2, 0, 1, 2);
-    mainLayout->addLayout(buttonLayout, 3, 0, 1, 2);
+    mainLayout->addWidget(buttonBox, 3, 0, 1, 2);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Fortune Client"));

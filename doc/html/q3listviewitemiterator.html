@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/qt3support/itemviews/q3listview.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/qt3support/itemviews/q3listview.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/qt3support/itemviews/q3listview.cpp -->
 <head>
-    <title>Qt 4.1: Q3ListViewItemIterator Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Q3ListViewItemIterator Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3ListViewItemIterator Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3ListViewItemIterator Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3ListViewItemIterator class provides an iterator for collections of Q3ListViewItems. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3ListViewItemIterator&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
+<pre> #include &lt;Q3ListViewItemIterator&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <ul>
 <li><a href="q3listviewitemiterator-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -56,20 +50,20 @@ body { background: #ffffff; color: black; }</style>
 <p>Construct an instance of a Q3ListViewItemIterator, with either a <a href="q3listview.html">Q3ListView</a>* or a <a href="q3listviewitem.html">Q3ListViewItem</a>* as argument, to operate on the tree of Q3ListViewItems, starting from the argument.</p>
 <p>A Q3ListViewItemIterator iterates over all the items from its starting point. This means that it always makes the first child of the current item the new current item. If there is no child, the next sibling becomes the new current item; and if there is no next sibling, the next sibling of the parent becomes current.</p>
 <p>The following example creates a list of all the items that have been selected by the user, storing pointers to the items in a <a href="qlist.html">QList</a>:</p>
-<pre>&nbsp;   QList&lt;Q3ListViewItem *&gt; lst;
-    Q3ListViewItemIterator it(myListView);
-    while (it.current()) {
-        if (it.current()-&gt;isSelected())
-            lst.append(it.current());
-        ++it;
-    }</pre>
+<pre> QList&lt;Q3ListViewItem *&gt; lst;
+ Q3ListViewItemIterator it(myListView);
+ while (it.current()) {
+     if (it.current()-&gt;isSelected())
+         lst.append(it.current());
+     ++it;
+ }</pre>
 <p>An alternative approach is to use an <tt>IteratorFlag</tt>:</p>
-<pre>&nbsp;   QList&lt;Q3ListViewItem *&gt; lst;
-    Q3ListViewItemIterator it(myListView, Selected);
-    while (it.current()) {
-        lst.append(it.current());
-        ++it;
-    }</pre>
+<pre> QList&lt;Q3ListViewItem *&gt; lst;
+ Q3ListViewItemIterator it(myListView, Selected);
+ while (it.current()) {
+     lst.append(it.current());
+     ++it;
+ }</pre>
 <p>A Q3ListViewItemIterator provides a convenient and easy way to traverse a hierarchical <a href="q3listview.html">Q3ListView</a>.</p>
 <p>Multiple Q3ListViewItemIterators can operate on the tree of Q3ListViewItems. A <a href="q3listview.html">Q3ListView</a> knows about all iterators operating on its Q3ListViewItems. So when a <a href="q3listviewitem.html">Q3ListViewItem</a> gets removed all iterators that point to this item are updated and point to the following item if possible, otherwise to a valid item before the current one or to 0. Note however that deleting the parent item of an item that an iterator points to is not safe.</p>
 <p>See also <a href="q3listview.html">Q3ListView</a> and <a href="q3listviewitem.html">Q3ListViewItem</a>.</p>
@@ -136,6 +130,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

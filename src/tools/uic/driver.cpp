@@ -30,7 +30,7 @@
 #include <QtDebug>
 
 Driver::Driver()
-    : m_stdout(stdout, QFile::WriteOnly)
+    : m_stdout(stdout, QFile::WriteOnly | QFile::Text)
 {
     m_output = &m_stdout;
 }
@@ -107,7 +107,7 @@ QString Driver::normalizedName(const QString &name)
     QString result = name;
     result.replace(QRegExp(QLatin1String("[^a-zA-Z_0-9]")), QLatin1String("_"));
     return result;
-};
+}
 
 QString Driver::unique(const QString &instanceName, const QString &className)
 {
@@ -164,6 +164,18 @@ static bool isAnsiCCharacter(const QChar& c)
            || c.isDigit() || c == QLatin1Char('_');
 }
 
+QString Driver::headerFileName() const
+{
+    QString name = m_option.outputFile;
+
+    if (name.isEmpty()) {
+        name = QLatin1String("ui_"); // ### use ui_ as prefix.
+        name.append(m_option.inputFile);
+    }
+
+    return headerFileName(name);
+}
+
 QString Driver::headerFileName(const QString &fileName)
 {
     if (fileName.isEmpty())
@@ -205,7 +217,14 @@ bool Driver::uic(const QString &fileName, DomUI *ui, QTextStream *out)
     m_output = out != 0 ? out : &m_stdout;
 
     Uic tool(this);
-    bool rtn = tool.write(ui);
+    bool rtn = false;
+#ifdef QT_UIC_CPP_GENERATOR
+    rtn = tool.write(ui);
+#else
+    Q_UNUSED(ui);
+    fprintf(stderr, "uic: option to generate cpp code not compiled in [%s:%d]\n",
+            __FILE__, __LINE__);
+#endif
 
     m_output = oldOutput;
 
@@ -231,7 +250,7 @@ bool Driver::uic(const QString &fileName, QTextStream *out)
     if (out) {
         m_output = out;
     } else {
-        m_output = new QTextStream(stdout, QIODevice::WriteOnly);
+        m_output = new QTextStream(stdout, QIODevice::WriteOnly | QFile::Text);
         deleteOutput = true;
     }
 

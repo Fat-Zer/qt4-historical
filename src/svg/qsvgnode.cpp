@@ -74,6 +74,9 @@ void QSvgNode::appendStyleProperty(QSvgStyleProperty *prop, const QString &id,
             m_style.animateTransforms.append(
                 static_cast<QSvgAnimateTransform*>(prop));
             break;
+        case QSvgStyleProperty::OPACITY:
+            m_style.opacity = static_cast<QSvgOpacityStyle*>(prop);
+            break;
         default:
             qDebug("QSvgNode: Trying to append unknown property!");
             break;
@@ -139,6 +142,10 @@ QSvgStyleProperty * QSvgNode::styleProperty(QSvgStyleProperty::Type type) const
             if (!node->m_style.animateTransforms.isEmpty())
                 return node->m_style.animateTransforms.first();
             break;
+        case QSvgStyleProperty::OPACITY:
+            if (!node->m_style.opacity)
+                return node->m_style.opacity;
+            break;
         default:
             break;
         }
@@ -151,7 +158,7 @@ QSvgStyleProperty * QSvgNode::styleProperty(QSvgStyleProperty::Type type) const
 QSvgStyleProperty * QSvgNode::styleProperty(const QString &id) const
 {
     QString rid = id;
-    if (rid.startsWith("#"))
+    if (rid.startsWith(QLatin1Char('#')))
         rid.remove(0, 1);
     const QSvgNode *node = this;
     while (node) {
@@ -241,4 +248,30 @@ void QSvgNode::setVisible(bool visible)
         m_parent->setVisible(true);
 
     m_visible = visible;
+}
+
+QRectF QSvgNode::transformedBounds(const QMatrix &mat) const
+{
+    QMatrix m = mat;
+
+    QSvgTransformStyle *trans = m_style.transform;
+    if (trans) {
+        m = trans->qmatrix() * m;
+    }
+
+    QRectF rect = bounds();
+
+    rect = m.mapRect(rect);
+    
+    return rect;
+}
+
+void QSvgNode::setNodeId(const QString &i)
+{
+    m_id = i;
+}
+
+void QSvgNode::setXmlClass(const QString &str)
+{
+    m_class = str;
 }

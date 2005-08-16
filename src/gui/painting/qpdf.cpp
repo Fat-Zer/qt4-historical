@@ -20,8 +20,12 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+#include "qplatformdefs.h"
 #include <qdebug.h>
 #include "qpdf_p.h"
+#include <qfile.h>
+
+extern int qt_defaultDpi();
 
 #ifndef QT_NO_PRINTER
 
@@ -769,6 +773,24 @@ const char *QPdf::paperSizeToString(QPrinter::PageSize pageSize)
 }
 
 
+QByteArray QPdf::stripSpecialCharacters(const QByteArray &string)
+{
+    QByteArray s = string;
+    s.replace(" ", "");
+    s.replace("(", "");
+    s.replace(")", "");
+    s.replace("<", "");
+    s.replace(">", "");
+    s.replace("[", "");
+    s.replace("]", "");
+    s.replace("{", "");
+    s.replace("}", "");
+    s.replace("/", "");
+    s.replace("%", "");
+    return s;
+}
+
+
 // -------------------------- base engine, shared code between PS and PDF -----------------------
 
 QPdfBaseEngine::QPdfBaseEngine(QPdfBaseEnginePrivate &d, PaintEngineFeatures f)
@@ -808,11 +830,28 @@ void QPdfBaseEngine::drawRects (const QRectF *rects, int rectCount)
     if (!rects)
         return;
 
-    QPainterPath p;
-    for (int i=0; i!=rectCount; ++i) {
-        p.addRect(rects[i]);
+    Q_D(QPdfBaseEngine);
+    if (d->clipEnabled && d->allClipped)
+        return;
+    if (!d->hasPen && !d->hasBrush)
+        return;
+
+    QBrush penBrush = d->pen.brush();
+    if (d->simplePen || !d->hasPen) {
+        // draw strokes natively in this case for better output
+        if(!d->simplePen && !d->stroker.matrix.isIdentity())
+            *d->currentPage << "q\n" << QPdf::generateMatrix(d->stroker.matrix);
+        for (int i = 0; i < rectCount; ++i)
+            *d->currentPage << rects[i].x() << rects[i].y() << rects[i].width() << rects[i].height() << "re\n";
+        *d->currentPage << (d->hasPen ? (d->hasBrush ? "B\n" : "S\n") : "f\n");
+        if(!d->simplePen && !d->stroker.matrix.isIdentity())
+            *d->currentPage << "Q\n";
+    } else {
+        QPainterPath p;
+        for (int i=0; i!=rectCount; ++i)
+            p.addRect(rects[i]);
+        drawPath(p);
     }
-    drawPath(p);
 }
 
 void QPdfBaseEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
@@ -855,19 +894,15 @@ void QPdfBaseEngine::drawPath (const QPainterPath &p)
     Q_D(QPdfBaseEngine);
     if (d->clipEnabled && d->allClipped)
         return;
+    if (!d->hasPen && !d->hasBrush)
+        return;
 
-    QBrush penBrush = d->pen.brush();
-    if (d->hasPen && penBrush == Qt::SolidPattern && penBrush.isOpaque()) {
+    if (d->simplePen) {
         // draw strokes natively in this case for better output
-        *d->currentPage << "q\n";
-        setPen();
-        *d->currentPage << QPdf::generateMatrix(d->stroker.matrix);
         *d->currentPage << QPdf::generatePath(p, QMatrix(), d->hasBrush ? QPdf::FillAndStrokePath : QPdf::StrokePath);
-        *d->currentPage << "Q\n";
     } else {
-        if (d->hasBrush) {
+        if (d->hasBrush)
             *d->currentPage << QPdf::generatePath(p, d->stroker.matrix, QPdf::FillPath);
-        }
         if (d->hasPen) {
             *d->currentPage << "q\n";
             QBrush b = d->brush;
@@ -887,7 +922,9 @@ void QPdfBaseEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     if (!d->hasPen || (d->clipEnabled && d->allClipped))
         return;
 
-    *d->currentPage << "q " << QPdf::generateMatrix(d->stroker.matrix);
+    *d->currentPage << "q\n";
+    if(!d->simplePen)
+        *d->currentPage << QPdf::generateMatrix(d->stroker.matrix);
 
     bool hp = d->hasPen;
     d->hasPen = false;
@@ -911,25 +948,25 @@ void QPdfBaseEngine::updateState(const QPaintEngineState &state)
 
     if (flags & DirtyTransform)
         d->stroker.matrix = state.matrix();
-    
+
     if (flags & DirtyPen) {
         d->pen = state.pen();
-        d->hasPen = d->pen != Qt::NoPen;
+        d->hasPen = d->pen.style() != Qt::NoPen;
         d->stroker.setPen(d->pen);
+        QBrush penBrush = d->pen.brush();
+        bool oldSimple = d->simplePen;
+        d->simplePen = (d->hasPen && penBrush == Qt::SolidPattern && penBrush.isOpaque());
+        if (oldSimple != d->simplePen)
+            flags |= DirtyTransform;
     }
     if (flags & DirtyBrush) {
         d->brush = state.brush();
-        d->hasBrush = d->brush != Qt::NoBrush;
+        d->hasBrush = d->brush.style() != Qt::NoBrush;
     }
     if (flags & DirtyBrushOrigin) {
         d->brushOrigin = state.brushOrigin();
         flags |= DirtyBrush;
     }
-
-    if (flags & DirtyBackground)
-        d->backgroundBrush = state.backgroundBrush();
-    if (flags & DirtyBackgroundMode)
-        d->backgroundMode = state.backgroundMode();
 
     bool ce = d->clipEnabled;
     if (flags & DirtyClipPath) {
@@ -952,12 +989,23 @@ void QPdfBaseEngine::updateState(const QPaintEngineState &state)
     else if (!d->clipEnabled)
         flags &= ~DirtyClipPath;
 
-    if (flags & DirtyClipPath) {
-        *d->currentPage << "Q q\n";
+    setupGraphicsState(flags);
+}
+
+void QPdfBaseEngine::setupGraphicsState(QPaintEngine::DirtyFlags flags)
+{
+    Q_D(QPdfBaseEngine);
+    if (flags & DirtyClipPath)
+        flags |= DirtyTransform|DirtyPen|DirtyBrush;
+
+    if (flags & DirtyTransform) {
+        *d->currentPage << "Q\n";
         flags |= DirtyPen|DirtyBrush;
     }
 
     if (flags & DirtyClipPath) {
+        *d->currentPage << "Q q\n";
+
         d->allClipped = false;
         if (d->clipEnabled && !d->clips.isEmpty()) {
             for (int i = 0; i < d->clips.size(); ++i) {
@@ -974,8 +1022,15 @@ void QPdfBaseEngine::updateState(const QPaintEngineState &state)
         }
     }
 
+    if (flags & DirtyTransform) {
+        *d->currentPage << "q\n";
+        if (d->simplePen && !d->stroker.matrix.isIdentity())
+            *d->currentPage << QPdf::generateMatrix(d->stroker.matrix);
+    }
     if (flags & DirtyBrush)
         setBrush();
+    if (d->simplePen && flags & DirtyPen)
+        setPen();
 }
 
 void QPdfBaseEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperation op)
@@ -1050,15 +1105,464 @@ void QPdfBaseEngine::setPen()
     *d->currentPage << QPdf::generateDashes(d->pen) << " 0 d\n";
 }
 
-QPdfBaseEnginePrivate::QPdfBaseEnginePrivate()
+bool QPdfBaseEngine::newPage()
 {
+    setupGraphicsState(DirtyBrush|DirtyPen|DirtyClipPath);
+    return true;
+}
+
+
+int QPdfBaseEngine::metric(QPaintDevice::PaintDeviceMetric metricType) const
+{
+    Q_D(const QPdfBaseEngine);
+    int val;
+    QRect r = d->fullPage ? d->paperRect() : d->pageRect();
+    switch (metricType) {
+    case QPaintDevice::PdmWidth:
+        val = r.width();
+        break;
+    case QPaintDevice::PdmHeight:
+        val = r.height();
+        break;
+    case QPaintDevice::PdmDpiX:
+    case QPaintDevice::PdmDpiY:
+        val = d->resolution;
+        break;
+    case QPaintDevice::PdmPhysicalDpiX:
+    case QPaintDevice::PdmPhysicalDpiY:
+        val = 1200;
+        break;
+    case QPaintDevice::PdmWidthMM:
+        val = qRound(r.width()*25.4/d->resolution);
+        break;
+    case QPaintDevice::PdmHeightMM:
+        val = qRound(r.height()*25.4/d->resolution);
+        break;
+    case QPaintDevice::PdmNumColors:
+        val = INT_MAX;
+        break;
+    case QPaintDevice::PdmDepth:
+        val = 32;
+        break;
+    default:
+        qWarning("QPrinter::metric: Invalid metric command");
+        return 0;
+    }
+    return val;
+}
+
+void QPdfBaseEngine::setProperty(PrintEnginePropertyKey key, const QVariant &value)
+{
+    Q_D(QPdfBaseEngine);
+    switch (key) {
+    case PPK_CollateCopies:
+        d->collate = value.toBool();
+        break;
+    case PPK_ColorMode:
+        d->colorMode = QPrinter::ColorMode(value.toInt());
+        break;
+    case PPK_Creator:
+        d->creator = value.toString();
+        break;
+    case PPK_DocumentName:
+        d->title = value.toString();
+        break;
+    case PPK_FullPage:
+        d->fullPage = value.toBool();
+        break;
+    case PPK_NumberOfCopies:
+        d->copies = value.toInt();
+        break;
+    case PPK_Orientation:
+        d->orientation = QPrinter::Orientation(value.toInt());
+        break;
+    case PPK_OutputFileName:
+        d->outputFileName = value.toString();
+        break;
+    case PPK_PageOrder:
+        d->pageOrder = QPrinter::PageOrder(value.toInt());
+        break;
+    case PPK_PageSize:
+        d->pageSize = QPrinter::PageSize(value.toInt());
+        break;
+    case PPK_PaperSource:
+        d->paperSource = QPrinter::PaperSource(value.toInt());
+        break;
+    case PPK_PrinterName:
+        d->printerName = value.toString();
+        break;
+    case PPK_PrinterProgram:
+        d->printProgram = value.toString();
+        break;
+    case PPK_Resolution:
+        d->resolution = value.toInt();
+        break;
+    case PPK_SelectionOption:
+        d->selectionOption = value.toString();
+        break;
+    case PPK_FontEmbedding:
+        d->embedFonts = value.toBool();
+        break;
+    case PPK_Duplex:
+        d->duplex = value.toBool();
+        break;
+    default:
+        break;
+    }
+}
+
+QVariant QPdfBaseEngine::property(PrintEnginePropertyKey key) const
+{
+    Q_D(const QPdfBaseEngine);
+//     qDebug() << "cups page rect" << d->cups.pageRect() << "paperrect" << d->cups.paperRect();
+
+    QVariant ret;
+    switch (key) {
+    case PPK_CollateCopies:
+        ret = d->collate;
+        break;
+    case PPK_ColorMode:
+        ret = d->colorMode;
+        break;
+    case PPK_Creator:
+        ret = d->creator;
+        break;
+    case PPK_DocumentName:
+        ret = d->title;
+        break;
+    case PPK_FullPage:
+        ret = d->fullPage;
+        break;
+    case PPK_NumberOfCopies:
+        ret = d->copies;
+        break;
+    case PPK_Orientation:
+        ret = d->orientation;
+        break;
+    case PPK_OutputFileName:
+        ret = d->outputFileName;
+        break;
+    case PPK_PageOrder:
+        ret = d->pageOrder;
+        break;
+    case PPK_PageSize:
+        ret = d->pageSize;
+        break;
+    case PPK_PaperSource:
+        ret = d->paperSource;
+        break;
+    case PPK_PrinterName:
+        ret = d->printerName;
+        break;
+    case PPK_PrinterProgram:
+        ret = d->printProgram;
+        break;
+    case PPK_Resolution:
+        ret = d->resolution;
+        break;
+    case PPK_SupportedResolutions:
+        ret = QList<QVariant>() << 72;
+        break;
+    case PPK_PaperRect:
+        ret = d->paperRect();
+        break;
+    case PPK_PageRect:
+        ret = d->pageRect();
+        break;
+    case PPK_SelectionOption:
+        ret = d->selectionOption;
+        break;
+    case PPK_FontEmbedding:
+        ret = d->embedFonts;
+        break;
+    case PPK_Duplex:
+        ret = d->duplex;
+        break;
+    default:
+        break;
+    }
+    return ret;
+}
+
+QPdfBaseEnginePrivate::QPdfBaseEnginePrivate(QPrinter::PrinterMode m)
+    : clipEnabled(false), allClipped(false), hasPen(true), hasBrush(false), simplePen(true),
+      outDevice(0), fd(-1),
+      duplex(false), collate(false), fullPage(false), embedFonts(true), copies(1),
+      pageOrder(QPrinter::FirstPageFirst), orientation(QPrinter::Portrait),
+      pageSize(QPrinter::A4), colorMode(QPrinter::Color), paperSource(QPrinter::Auto)
+
+{
+    resolution = 72;
+    if (m == QPrinter::HighResolution)
+        resolution = 1200;
+    else if (m == QPrinter::ScreenResolution)
+        resolution = qt_defaultDpi();
+
     postscript = false;
     currentObject = 1;
+    currentPage = 0;
+    stroker.stream = 0;
+}
 
-    currentPage = new QPdfPage;
-    stroker.stream = currentPage;
+bool QPdfBaseEngine::begin(QPaintDevice *pdev)
+{
+    Q_D(QPdfBaseEngine);
+    d->pdev = pdev;
 
-    backgroundMode = Qt::TransparentMode;
+    d->postscript = false;
+    d->currentObject = 1;
+
+    d->currentPage = new QPdfPage;
+    d->stroker.stream = d->currentPage;
+
+    return d->openPrintDevice();
+}
+
+bool QPdfBaseEngine::end()
+{
+    Q_D(QPdfBaseEngine);
+    qDeleteAll(d->fonts);
+    d->fonts.clear();
+    delete d->currentPage;
+    d->currentPage = 0;
+
+    d->closePrintDevice();
+    return true;
+}
+
+#ifndef QT_NO_LPR
+static void closeAllOpenFds()
+{
+    // hack time... getting the maximum number of open
+    // files, if possible.  if not we assume it's the
+    // larger of 256 and the fd we got
+    int i;
+#if defined(_SC_OPEN_MAX)
+    i = (int)sysconf(_SC_OPEN_MAX);
+#elif defined(_POSIX_OPEN_MAX)
+    i = (int)_POSIX_OPEN_MAX;
+#elif defined(OPEN_MAX)
+    i = (int)OPEN_MAX;
+#else
+    i = 256;
+#endif
+    // leave stdin/out/err untouched
+    while(--i > 2)
+        ::close(i);
+}
+#endif
+
+bool QPdfBaseEnginePrivate::openPrintDevice()
+{
+    if(outDevice)
+        return false;
+
+    if (!outputFileName.isEmpty()) {
+        QFile *file = new QFile(outputFileName);
+        outDevice = file;
+        file->open(QFile::WriteOnly|QFile::Truncate);
+#ifndef QT_NO_LPR
+    } else {
+        QString pr;
+        if (!printerName.isEmpty())
+            pr = printerName;
+        int fds[2];
+        if (pipe(fds) != 0) {
+            qWarning("QPSPrinter: Could not open pipe to print");
+            return false;
+        }
+
+        pid_t pid = fork();
+        if (pid == 0) {       // child process
+            // if possible, exit quickly, so the actual lp/lpr
+            // becomes a child of init, and ::waitpid() is
+            // guaranteed not to wait.
+            if (fork() > 0) {
+                closeAllOpenFds();
+
+                // try to replace this process with "true" - this prevents
+                // global destructors from being called (that could possibly
+                // do wrong things to the parent process)
+                (void)execlp("true", "true", (char *)0);
+                (void)execl("/bin/true", "true", (char *)0);
+                (void)execl("/usr/bin/true", "true", (char *)0);
+                ::exit(0);
+            }
+            dup2(fds[0], 0);
+
+            closeAllOpenFds();
+
+            if (!printProgram.isEmpty()) {
+                if (!selectionOption.isEmpty())
+                    pr.prepend(selectionOption);
+                else
+                    pr.prepend(QLatin1String("-P"));
+                (void)execlp(printProgram.toLocal8Bit().data(), printProgram.toLocal8Bit().data(),
+                             pr.toLocal8Bit().data(), (char *)0);
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+            } else if (cups.isAvailable()) {
+
+                QStringList cupsArgList;
+
+                cupsArgList << QLatin1String("lpr");
+
+                if (!printerName.isEmpty()) {
+                    cupsArgList << QLatin1String("-P");
+                    cupsArgList << printerName;
+                }
+
+                const ppd_option_t* pageSizes = cups.pageSizes();
+		if (pageSizes) {
+                    cupsArgList << QLatin1String("-o");
+                    cupsArgList << QString::fromLatin1("media=%1").arg(
+                        QString::fromLocal8Bit(pageSizes->choices[pageSize].choice));
+		}
+
+                if (copies > 1) {
+                    cupsArgList << QLatin1String("-#");
+                    cupsArgList << QString::number(copies);
+                }
+
+#if 0 // ##########
+                if (printer->printRange() == QPrinter::PageRange) {
+                    cupsArgList << "-o";
+                    cupsArgList << QString("print-ranges=%1-%2").arg(printer->fromPage()).arg(printer->toPage());
+                }
+#endif
+
+                if (collate) {
+                    cupsArgList << QLatin1String("-o");
+                    cupsArgList << QLatin1String("Collate=True");
+                }
+
+                if (pageOrder == QPrinter::LastPageFirst) {
+                    cupsArgList << QLatin1String("-o");
+                    cupsArgList << QLatin1String("outputorder=reverse");
+                }
+
+                if (duplex) {
+                    cupsArgList << QLatin1String("-o");
+                    if (orientation == QPrinter::Portrait)
+                        cupsArgList << QLatin1String("sides=two-sided-long-edge");
+                    else
+                        cupsArgList << QLatin1String("sides=two-sided-short-edge");
+                }
+
+                if (orientation == QPrinter::Landscape) {
+                    cupsArgList << QLatin1String("-o");
+                    cupsArgList << QLatin1String("landscape");
+                }
+
+                if (!title.isEmpty()) {
+                    cupsArgList << QLatin1String("-J");
+                    cupsArgList << title;
+                }
+
+                QStringList list = cups.options();
+                QStringList::const_iterator it = list.constBegin();
+                while (it != list.constEnd()) {
+                    cupsArgList << QLatin1String("-o");
+                    cupsArgList << QString::fromLatin1("%1=%2").arg(*it).arg(*(it+1));
+                    it += 2;
+                }
+
+                char** lprargs = new char*[cupsArgList.count() + 1];
+                int i;
+                for (i = 0; i < cupsArgList.count(); ++i) {
+                    lprargs[i] = cupsArgList.at(i).toLocal8Bit().data();
+                }
+                lprargs[i] = 0;
+
+                // if the CUPS is available we expect lpr arround
+                (void)execvp( "lpr", lprargs );
+                (void)execv( "/bin/lpr", lprargs);
+                (void)execv( "/usr/bin/lpr", lprargs);
+#endif
+            } else {
+                // if no print program has been specified, be smart
+                // about the option string too.
+                QList<QByteArray> lprhack;
+                QList<QByteArray> lphack;
+                QByteArray media;
+                if (!pr.isEmpty() || !selectionOption.isEmpty()) {
+                    if (!selectionOption.isEmpty()) {
+                        QStringList list = selectionOption.split(QLatin1Char(' '));
+                        for (int i = 0; i < list.size(); ++i)
+                            lprhack.append(list.at(i).toLocal8Bit());
+                        lphack = lprhack;
+                    } else {
+                        lprhack.append("-P");
+                        lphack.append("-d");
+                    }
+                    lprhack.append(pr.toLocal8Bit());
+                    lphack.append(pr.toLocal8Bit());
+                }
+                char ** lpargs = new char *[lphack.size()+6];
+                lpargs[0] = "lp";
+                int i;
+                for (i = 0; i < lphack.size(); ++i)
+                    lpargs[i+1] = (char *)lphack.at(i).constData();
+#ifndef Q_OS_OSF
+                if (QPdf::paperSizeToString(pageSize)) {
+                    lpargs[++i] = "-o";
+                    lpargs[++i] = (char *)QPdf::paperSizeToString(pageSize);
+                    lpargs[++i] = "-o";
+                    media = "media=";
+                    media += QPdf::paperSizeToString(pageSize);
+                    lpargs[++i] = (char *)media.constData();
+                }
+#endif
+                lpargs[++i] = 0;
+                char **lprargs = new char *[lprhack.size()+2];
+                lprargs[0] = "lpr";
+                for (int i = 0; i < lprhack.size(); ++i)
+                    lprargs[i+1] = (char *)lprhack[i].constData();
+                lprargs[lprhack.size() + 1] = 0;
+                (void)execvp("lp", lpargs);
+                (void)execvp("lpr", lprargs);
+                (void)execv("/bin/lp", lpargs);
+                (void)execv("/bin/lpr", lprargs);
+                (void)execv("/usr/bin/lp", lpargs);
+                (void)execv("/usr/bin/lpr", lprargs);
+            }
+            // if we couldn't exec anything, close the fd,
+            // wait for a second so the parent process (the
+            // child of the GUI process) has exited.  then
+            // exit.
+            ::close(0);
+            (void)::sleep(1);
+            ::exit(0);
+        }
+        // parent process
+        ::close(fds[0]);
+        fd = fds[1];
+        (void)::waitpid(pid, 0, 0);
+
+        if (fd < 0)
+            return false;
+
+        outDevice = new QFile();
+        static_cast<QFile *>(outDevice)->open(fd, QIODevice::WriteOnly);
+#endif
+    }
+
+    return true;
+}
+
+void QPdfBaseEnginePrivate::closePrintDevice()
+{
+    if (!outDevice)
+        return;
+    outDevice->close();
+    if (fd >= 0)
+#if defined(Q_OS_WIN) && defined(_MSC_VER) && _MSC_VER >= 1400
+        ::_close(fd);
+#else
+        ::close(fd);
+#endif
+    fd = -1;
+    delete outDevice;
+    outDevice = 0;
 }
 
 QPdfBaseEnginePrivate::~QPdfBaseEnginePrivate()
@@ -1114,19 +1618,6 @@ void QPdfBaseEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &t
     int synthesized = ti.fontEngine->synthesized();
     qreal stretch = synthesized & QFontEngine::SynthesizedStretch ? ti.fontEngine->fontDef.stretch/100. : 1.;
 
-    if (ti.flags & (QTextItem::Underline|QTextItem::StrikeOut|QTextItem::Overline)) {
-        qreal lw = fe->lineThickness().toReal();
-        if (ti.flags & (QTextItem::Underline))
-            *currentPage << p.x() << (p.y() + fe->underlinePosition().toReal())
-                           << ti.width.toReal() << lw << "re ";
-        if (ti.flags & (QTextItem::StrikeOut))
-            *currentPage  << p.x() << (p.y() - fe->ascent().toReal()/qreal(3.))
-                            << ti.width.toReal() << lw << "re ";
-        if (ti.flags & (QTextItem::Overline))
-            *currentPage  << p.x() << (p.y() - fe->ascent().toReal())
-                            << ti.width.toReal() << lw << "re ";
-        *currentPage << "f\n";
-    }
     *currentPage << "BT\n"
                  << "/F" << font->object_id << size << "Tf "
                  << stretch << (synthesized & QFontEngine::SynthesizedItalic
@@ -1198,6 +1689,60 @@ void QPdfBaseEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &t
 
     *currentPage << "ET\n";
 }
+
+QRect QPdfBaseEnginePrivate::paperRect() const
+{
+    int w;
+    int h;
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    if (QCUPSSupport::isAvailable() && cups.currentPPD()) {
+        QRect r = cups.paperRect();
+        w = r.width();
+        h = r.height();
+    } else
+#endif
+    {
+        QPdf::PaperSize s = QPdf::paperSize(pageSize);
+        w = s.width;
+        h = s.height;
+    }
+    w = qRound(w*resolution/72.);
+    h = qRound(h*resolution/72.);
+    if (orientation == QPrinter::Portrait)
+        return QRect(0, 0, w, h);
+    else
+        return QRect(0, 0, h, w);
+}
+
+QRect QPdfBaseEnginePrivate::pageRect() const
+{
+    if(fullPage)
+        return paperRect();
+
+    QRect r;
+
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    if (QCUPSSupport::isAvailable() && cups.currentPPD()) {
+        r = cups.pageRect();
+        if (r == cups.paperRect())
+            // if cups doesn't define any margins, give it at least approx 3.5 mm
+            r = QRect(10, 10, r.width() - 20, r.height() - 20);
+    } else
+#endif
+    {
+        QPdf::PaperSize s = QPdf::paperSize(pageSize);
+        r = QRect(72/3, 72/3, s.width - 2*72/3, s.height - 2*72/3);
+    }
+    int x = qRound(r.left()*resolution/72.);
+    int y = qRound(r.top()*resolution/72.);
+    int w = qRound(r.width()*resolution/72.);
+    int h = qRound(r.height()*resolution/72.);
+    if (orientation == QPrinter::Portrait)
+        return QRect(x, y, w, h);
+    else
+        return QRect(y, x, h, w);
+}
+
 
 #endif
 

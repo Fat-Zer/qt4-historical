@@ -24,6 +24,17 @@
 #ifndef ORDERDIALOG_P_H
 #define ORDERDIALOG_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <QDialog>
 #include "ui_orderdialog.h"
 
@@ -41,9 +52,9 @@ public:
     void setPageList(QList<QWidget*> *pages);
 
 private slots:
+    void accept();
     void on_upButton_clicked();
     void on_downButton_clicked();
-    void on_okButton_clicked();
     void on_pageList_currentRowChanged(int row);
 
 private:

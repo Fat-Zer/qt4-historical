@@ -27,10 +27,10 @@
 #include "mainwindow.h"
 #include "pixeldelegate.h"
 
-MainWindow::MainWindow() : QMainWindow()
+MainWindow::MainWindow()
 {
-    currentPath = QDir::home().absolutePath();
-    model = new ImageModel(QImage(), this);
+    currentPath = QDir::homePath();
+    model = new ImageModel(this);
 
     QWidget *centralWidget = new QWidget;
 
@@ -38,13 +38,16 @@ MainWindow::MainWindow() : QMainWindow()
     view->setShowGrid(false);
     view->horizontalHeader()->hide();
     view->verticalHeader()->hide();
+    view->horizontalHeader()->setMinimumSectionSize(1);
+    view->verticalHeader()->setMinimumSectionSize(1);
+    view->setModel(model);
 
     PixelDelegate *delegate = new PixelDelegate(this);
     view->setItemDelegate(delegate);
 
     QLabel *pixelSizeLabel = new QLabel(tr("Pixel size:"));
     QSpinBox *pixelSizeSpinBox = new QSpinBox;
-    pixelSizeSpinBox->setMinimum(1);
+    pixelSizeSpinBox->setMinimum(4);
     pixelSizeSpinBox->setMaximum(32);
     pixelSizeSpinBox->setValue(12);
 
@@ -105,11 +108,7 @@ void MainWindow::openImage(const QString &fileName)
     QImage image;
 
     if (image.load(fileName)) {
-        ImageModel *newModel = new ImageModel(image, this);
-        view->setModel(newModel);
-        delete model;
-        model = newModel;
-
+        model->setImage(image);
         if (!fileName.startsWith(":/")) {
             currentPath = fileName;
             setWindowTitle(tr("%1 - Pixelator").arg(currentPath));
@@ -124,10 +123,11 @@ void MainWindow::printImage()
 {
     if (model->rowCount(QModelIndex())*model->columnCount(QModelIndex())
         > 90000) {
-        int answer = QMessageBox::question(this, tr("Large Image Size"),
+	    QMessageBox::StandardButton answer;
+	    answer = QMessageBox::question(this, tr("Large Image Size"),
             tr("The printed image may be very large. Are you sure that "
                "you want to print it?"),
-            QMessageBox::Yes, QMessageBox::No);
+            QMessageBox::Yes | QMessageBox::No);
         if (answer == QMessageBox::No)
             return;
     }
@@ -163,6 +163,7 @@ void MainWindow::printImage()
     QModelIndex parent = QModelIndex();
 
     QProgressDialog progress(tr("Printing..."), tr("Cancel"), 0, rows, this);
+    progress.setWindowModality(Qt::ApplicationModal);
     float y = ItemSize/2;
 
     for (int row = 0; row < rows; ++row) {
@@ -202,8 +203,6 @@ void MainWindow::showAboutBox()
 
 void MainWindow::updateView()
 {
-    for (int row = 0; row < model->rowCount(QModelIndex()); ++row)
-        view->resizeRowToContents(row);
-    for (int column = 0; column < model->columnCount(QModelIndex()); ++column)
-        view->resizeColumnToContents(column);
+    view->resizeColumnsToContents();
+    view->resizeRowsToContents();
 }

@@ -167,9 +167,9 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
     instance = this;
     setAttribute(Qt::WA_DeleteOnClose, true);
     setAttribute(Qt::WA_NoSystemBackground, true);
-    QPalette pal(Qt::black, QColor(255,255,220),
-                 QColor(96,96,96), Qt::black, Qt::black,
-                 Qt::black, QColor(255,255,220));
+    QPalette pal(Qt::black, QColor(255,255,238),
+                 QColor(96,96,96), QColor(192,192,192), Qt::black,
+                 Qt::black, QColor(255,255,238));
     setPalette(pal);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
@@ -184,11 +184,11 @@ QWhatsThat::QWhatsThat(const QString& txt, QWidget* parent, QWidget *showTextFor
         doc->setUndoRedoEnabled(false);
         doc->setDefaultFont(QApplication::font(this));
         doc->setHtml(text);
-        QTextDocumentLayout *layout = qobject_cast<QTextDocumentLayout *>(doc->documentLayout());
-        layout->adjustSize();
+        doc->setUndoRedoEnabled(false);
+        doc->adjustSize();
         r.setTop(0);
         r.setLeft(0);
-        r.setSize(layout->documentSize().toSize());
+        r.setSize(doc->size().toSize());
     }
     else
     {
@@ -222,7 +222,7 @@ QWhatsThat::~QWhatsThat()
 
 void QWhatsThat::showEvent(QShowEvent *)
 {
-    background = QPixmap::grabWindow(QApplication::desktop()->winId(),
+    background = QPixmap::grabWindow(QApplication::desktop()->internalWinId(),
                                      x(), y(), width(), height());
 }
 
@@ -290,16 +290,17 @@ void QWhatsThat::paintEvent(QPaintEvent*)
 #endif
 
     QRect r = rect();
+    r.adjust(0, 0, -1, -1);
     if (drawShadow)
         r.adjust(0, 0, -shadowWidth, -shadowWidth);
     QPainter p(this);
     p.drawPixmap(0, 0, background);
     p.setPen(palette().foreground().color());
+    p.setBrush(palette().brush(QPalette::Window));
     p.drawRect(r);
-    p.setPen(palette().mid().color());
-    p.setBrush(palette().brush(QPalette::Background));
     int w = r.width();
     int h = r.height();
+    p.setPen(palette().brush(QPalette::Dark).color());
     p.drawRect(1, 1, w-2, h-2);
     if (drawShadow) {
         p.setPen(palette().shadow().color());

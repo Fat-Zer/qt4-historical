@@ -67,16 +67,16 @@ LocationDialog::LocationDialog(QWidget *parent)
     labels << tr("Location") << tr("Access");
 
     locationsTable = new QTableWidget;
-    locationsTable->setSelectionMode(QAbstractItemView::NoSelection);
+    locationsTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    locationsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     locationsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     locationsTable->setColumnCount(2);
     locationsTable->setHorizontalHeaderLabels(labels);
     locationsTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
     locationsTable->horizontalHeader()->resizeSection(1, 180);
 
-    okButton = new QPushButton(tr("OK"));
-    cancelButton = new QPushButton(tr("Cancel"));
-    okButton->setDefault(true);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                     | QDialogButtonBox::Cancel);
 
     connect(formatComboBox, SIGNAL(activated(int)),
             this, SLOT(updateLocationsTable()));
@@ -86,17 +86,12 @@ LocationDialog::LocationDialog(QWidget *parent)
             this, SLOT(updateLocationsTable()));
     connect(applicationComboBox, SIGNAL(editTextChanged(const QString &)),
             this, SLOT(updateLocationsTable()));
-    connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     QVBoxLayout *locationsLayout = new QVBoxLayout;
     locationsLayout->addWidget(locationsTable);
     locationsGroupBox->setLayout(locationsLayout);
-
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(okButton);
-    buttonLayout->addWidget(cancelButton);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(formatLabel, 0, 0);
@@ -108,7 +103,7 @@ LocationDialog::LocationDialog(QWidget *parent)
     mainLayout->addWidget(applicationLabel, 3, 0);
     mainLayout->addWidget(applicationComboBox, 3, 1);
     mainLayout->addWidget(locationsGroupBox, 4, 0, 1, 2);
-    mainLayout->addLayout(buttonLayout, 5, 0, 1, 2);
+    mainLayout->addWidget(buttonBox, 5, 0, 1, 2);
     setLayout(mainLayout);
 
     updateLocationsTable();
@@ -184,7 +179,7 @@ void LocationDialog::updateLocationsTable()
                 } else {
                     item1->setText(tr("Read-only"));
                 }
-                okButton->setDisabled(disable);
+                buttonBox->button(QDialogButtonBox::Ok)->setDisabled(disable);
             } else {
                 item1->setText(tr("Read-only fallback"));
             }

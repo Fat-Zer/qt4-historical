@@ -144,7 +144,7 @@ QEventDispatcherWin32Private::QEventDispatcherWin32Private()
     wakeUpNotifier.setHandle(QT_WA_INLINE(CreateEventW(0, FALSE, FALSE, 0),
                                           CreateEventA(0, FALSE, FALSE, 0)));
     if (!wakeUpNotifier.handle())
-        qWarning("QEventDispatcherWin32Private::QEventDispatcherWin32Private(): Creating wakeup event failed");
+        qWarning("QEventDispatcher: Creating QEventDispatcherWin32Private wakeup event failed");
 }
 
 QEventDispatcherWin32Private::~QEventDispatcherWin32Private()
@@ -340,7 +340,7 @@ static HWND qt_create_internal_window(const QEventDispatcherWin32 *eventDispatch
 #endif
 
     if (!wnd) {
-        qWarning("Failed to create QEventDispatcherWin32 internal window: %d\n", (int)GetLastError());
+        qWarning("QEventDispatcher: Failed to create QEventDispatcherWin32 internal window: %d\n", (int)GetLastError());
     }
     return wnd;
 }
@@ -365,7 +365,7 @@ QEventDispatcherWin32::~QEventDispatcherWin32()
 bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
     Q_D(QEventDispatcherWin32);
-    
+
     d->interrupt = false;
     emit awake();
 
@@ -376,7 +376,7 @@ bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
 
         DWORD waitRet = 0;
         HANDLE pHandles[MAXIMUM_WAIT_OBJECTS - 1];
-        QVarLengthArray<uint> processedTimers;
+        QVarLengthArray<MSG> processedTimers;
         while (!d->interrupt) {
             DWORD nCount = d->winEventNotifierList.count();
             Q_ASSERT(nCount < MAXIMUM_WAIT_OBJECTS - 1);
@@ -415,12 +415,13 @@ bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
                 if (msg.message == WM_TIMER) {
                     // avoid live-lock by keeping track of the timers we've already sent
                     bool found = false;
-                    for (int i = 0; !found && i < processedTimers.count(); ++i)
-                        found = (processedTimers.constData()[i] == msg.wParam);
-                    if (!found)
-                        processedTimers.append(msg.wParam);
-                    else
+                    for (int i = 0; !found && i < processedTimers.count(); ++i) {
+                        const MSG processed = processedTimers.constData()[i];
+                        found = (processed.wParam == msg.wParam && processed.hwnd == msg.hwnd && processed.lParam == msg.lParam);
+                    }
+                    if (found)
                         continue;
+                    processedTimers.append(msg);
                 } else if (msg.message == WM_QUIT) {
                     if (QCoreApplication::instance())
                         QCoreApplication::instance()->quit();
@@ -445,7 +446,7 @@ bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
         }
 
         // still nothing - wait for message or signalled objects
-        QThreadData *data = QThreadData::get(thread());
+        QThreadData *data = d->threadData;
         canWait = (!retVal
                    && data->canWait
                    && !d->interrupt
@@ -499,7 +500,7 @@ void QEventDispatcherWin32::registerSocketNotifier(QSocketNotifier *notifier)
         return; // after sn_cleanup, don't reinitialize.
 
     if (dict->contains(socket)) {
-        const char *t[] = { "read", "write", "exception" };
+        const char *t[] = { "Read", "Write", "Exception" };
         qWarning("QSocketNotifier: Multiple socket notifiers for "
                     "same socket %d and type %s", socket, t[type]);
     }
@@ -642,7 +643,7 @@ void QEventDispatcherWin32::registerTimer(int timerId, int interval, QObject *ob
 bool QEventDispatcherWin32::unregisterTimer(int timerId)
 {
     if (timerId < 1) {
-        qWarning("QEventDispatcherUNIX::unregisterTimer: invalid argument");
+        qWarning("QEventDispatcherWin32::unregisterTimer: invalid argument");
         return false;
     }
     QThread *currentThread = QThread::currentThread();
@@ -664,11 +665,16 @@ bool QEventDispatcherWin32::unregisterTimer(int timerId)
 
     switch (t->type) {
     case ::TimerInfo::Fast:
-        EnterCriticalSection(&d->fastTimerCriticalSection);
-        t->type = ::TimerInfo::Off; // kill timer (and delete t) from callback
-        LeaveCriticalSection(&d->fastTimerCriticalSection);
-        QCoreApplicationPrivate::removePostedTimerEvent(t->obj, t->timerId);
-        break;
+        {
+            // save these here, because the timer callback may delete t right when we leave critical section
+            QObject *obj = t->obj;
+            int timerId = t->timerId;
+            EnterCriticalSection(&d->fastTimerCriticalSection);
+            t->type = ::TimerInfo::Off; // kill timer (and delete t) from callback
+            LeaveCriticalSection(&d->fastTimerCriticalSection);
+            QCoreApplicationPrivate::removePostedTimerEvent(obj, timerId);
+            break;
+        }
     case ::TimerInfo::Normal:
         KillTimer(d->internalHwnd(), t->timerId);
         delete t;
@@ -680,7 +686,7 @@ bool QEventDispatcherWin32::unregisterTimer(int timerId)
 bool QEventDispatcherWin32::unregisterTimers(QObject *object)
 {
     if (!object) {
-        qWarning("QEventDispatcherUNIX::unregisterTimers: invalid argument");
+        qWarning("QEventDispatcherWin32::unregisterTimers: invalid argument");
         return false;
     }
     QThread *currentThread = QThread::currentThread();
@@ -721,7 +727,7 @@ QList<QEventDispatcherWin32::TimerInfo>
 QEventDispatcherWin32::registeredTimers(QObject *object) const
 {
     if (!object) {
-        qWarning("QEventDispatcherUNIX:registeredTimers: invalid argument");
+        qWarning("QEventDispatcherWin32:registeredTimers: invalid argument");
         return QList<TimerInfo>();
     }
 
@@ -751,7 +757,7 @@ bool QEventDispatcherWin32::registerEventNotifier(QWinEventNotifier *notifier)
         return true;
 
     if (d->winEventNotifierList.count() >= MAXIMUM_WAIT_OBJECTS - 2) {
-        qWarning("QWinEventNotifier: Can not have more then %d enabled at one time", MAXIMUM_WAIT_OBJECTS - 2);
+        qWarning("QWinEventNotifier: Cannot have more than %d enabled at one time", MAXIMUM_WAIT_OBJECTS - 2);
         return false;
     }
     d->winEventNotifierList.append(notifier);

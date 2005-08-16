@@ -1246,7 +1246,7 @@ bool Parser::parseDeclarator(DeclaratorAST *&node)
     }
 
     {
-        bool isVector = true;
+        bool isVector = false;
 
         while (tokenStream->lookAhead() == '[') {
             int startArray = tokenStream->cursor();
@@ -1358,7 +1358,7 @@ bool Parser::parseAbstractDeclarator(DeclaratorAST *&node)
 
 label1:
     {
-        bool isVector = true;
+        bool isVector = false;
 
         while (tokenStream->lookAhead() == '[') {
             int startArray = tokenStream->cursor();

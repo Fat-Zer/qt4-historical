@@ -53,21 +53,9 @@
     The following code snippet shows how to use a specific
     QStyleOption subclass to paint a push button:
 
-    \code
-        void MyPushButton::paintEvent(QPaintEvent *)
-        {
-            QStyleOptionButton option;
-            option.initFrom(this);
-            option.state = isDown() ? QStyle::State_Sunken : QStyle::State_Raised;
-            if (isDefault())
-                option.features |= QStyleOptionButton::DefaultButton;
-            option.text = text();
-            option.icon = icon();
-
-            QPainter painter(this);
-            style().drawControl(QStyle::CE_PushButton, &option, &painter, this);
-        }
-    \endcode
+    \quotefromfile snippets/qstyleoption/main.cpp
+    \skipto MyPushButton::paintEvent
+    \printuntil /^\}/
 
     In our example, the control is a QStyle::CE_PushButton, and
     according to the QStyle::drawControl() documentation the
@@ -75,29 +63,18 @@
 
     When reimplementing QStyle functions that take a QStyleOption
     parameter, you often need to cast the QStyleOption to a subclass.
-    For safety, you can use qstyleoption_cast<T>() to ensure that the pointer
-    type is correct. For example:
+    For safety, you can use qstyleoption_cast() to ensure that the
+    pointer type is correct. For example:
 
-    \code
-        void MyStyle::drawPrimitive(PrimitiveElement element,
-                                    const QStyleOption *option,
-                                    QPainter *painter,
-                                    const QWidget *widget)
-        {
-            if (element == PE_FocusRect) {
-                const QStyleOptionFocusRect *focusRectOption =
-                        qstyleoption_cast<const QStyleOptionFocusRect *>(option);
-                if (focusRectOption) {
-                    ...
-                }
-            } else {
-                ...
-            }
-        }
-    \endcode
+    \quotefromfile snippets/qstyleoption/main.cpp
+    \skipto MyStyle::drawPrimitive
+    \printuntil /^\}/
 
-    qstyleoption_cast<T>() will return 0 if the object to which \c option
-    points isn't of the correct type.
+    The qstyleoption_cast() function will return 0 if the object to
+    which \c option points is not of the correct type.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
 
     \sa QStyle, QStylePainter
 */
@@ -110,39 +87,49 @@
     general you do not need to worry about this unless you want to
     create your own QStyleOption subclass and your own styles.
 
-    \value SO_Default QStyleOption
-    \value SO_FocusRect \l QStyleOptionFocusRect
     \value SO_Button \l QStyleOptionButton
-    \value SO_Tab \l QStyleOptionTab
-    \value SO_TabWidgetFrame \l QStyleOptionTabWidgetFrame
-    \value SO_TabBarBase \l QStyleOptionTabBarBase
-    \value SO_MenuItem \l QStyleOptionMenuItem
-    \value SO_Complex \l QStyleOptionComplex
-    \value SO_Slider \l QStyleOptionSlider
-    \value SO_Frame \l QStyleOptionFrame \l QStyleOptionFrameV2
-    \value SO_GroupBox \l QStyleOptionGroupBox
-    \value SO_ProgressBar \l QStyleOptionProgressBar \l QStyleOptionProgressBarV2
-    \value SO_Q3ListView \l QStyleOptionQ3ListView
-    \value SO_Q3ListViewItem \l QStyleOptionQ3ListViewItem
-    \value SO_Header \l QStyleOptionHeader
-    \value SO_Q3DockWindow \l QStyleOptionQ3DockWindow
-    \value SO_DockWidget \l QStyleOptionDockWidget
-    \value SO_SpinBox \l QStyleOptionSpinBox
-    \value SO_ToolButton \l QStyleOptionToolButton
     \value SO_ComboBox \l QStyleOptionComboBox
-    \value SO_ToolBox \l QStyleOptionToolBox
-    \value SO_ToolBar \l QStyleOptionToolBar
+    \value SO_Complex \l QStyleOptionComplex
+    \value SO_Default QStyleOption
+    \value SO_DockWidget \l QStyleOptionDockWidget
+    \value SO_FocusRect \l QStyleOptionFocusRect
+    \value SO_Frame \l QStyleOptionFrame \l QStyleOptionFrameV2
+    \value SO_GraphicsItem \l QStyleOptionGraphicsItem
+    \value SO_GroupBox \l QStyleOptionGroupBox
+    \value SO_Header \l QStyleOptionHeader
+    \value SO_MenuItem \l QStyleOptionMenuItem
+    \value SO_ProgressBar \l QStyleOptionProgressBar \l QStyleOptionProgressBarV2
     \value SO_RubberBand \l QStyleOptionRubberBand
+    \value SO_SizeGrip \l QStyleOptionSizeGrip
+    \value SO_Slider \l QStyleOptionSlider
+    \value SO_SpinBox \l QStyleOptionSpinBox
+    \value SO_Tab \l QStyleOptionTab
+    \value SO_TabBarBase \l QStyleOptionTabBarBase
+    \value SO_TabWidgetFrame \l QStyleOptionTabWidgetFrame
     \value SO_TitleBar \l QStyleOptionTitleBar
+    \value SO_ToolBar \l QStyleOptionToolBar
+    \value SO_ToolBox \l QStyleOptionToolBox
+    \value SO_ToolButton \l QStyleOptionToolButton
     \value SO_ViewItem \l QStyleOptionViewItem (used in Interviews)
+
+    The following values are used for custom controls:
+
     \value SO_CustomBase Reserved for custom QStyleOptions;
                          all custom controls values must be above this value
     \value SO_ComplexCustomBase Reserved for custom QStyleOptions;
                          all custom complex controls values must be above this value
+
+    Some style options are defined for various Qt3Support controls:
+
+    \value SO_Q3DockWindow \l QStyleOptionQ3DockWindow
+    \value SO_Q3ListView \l QStyleOptionQ3ListView
+    \value SO_Q3ListViewItem \l QStyleOptionQ3ListViewItem
+
+    \sa type
 */
 
 /*!
-    Constructs a QStyleOption with version \a version and type \a
+    Constructs a QStyleOption with the specified \a version and \a
     type.
 
     The version has no special meaning for QStyleOption; it can be
@@ -163,7 +150,7 @@ QStyleOption::QStyleOption(int version, int type)
 
 
 /*!
-    Destroys the style option object.
+    Destroys this style option object.
 */
 QStyleOption::~QStyleOption()
 {
@@ -174,10 +161,10 @@ QStyleOption::~QStyleOption()
     \since 4.1
 
     Initializes the \l state, \l direction, \l rect, \l palette, and
-    \l fontMetrics member variables based on \a widget.
+    \l fontMetrics member variables based on the specified \a widget.
 
-    This function is provided only for convenience. You can also
-    initialize the variables manually if you want.
+    This is a convenience function; the member variables can also be
+    initialized manually.
 
     \sa QWidget::layoutDirection(), QWidget::rect(),
         QWidget::palette(), QWidget::fontMetrics()
@@ -236,30 +223,62 @@ QStyleOption &QStyleOption::operator=(const QStyleOption &other)
 }
 
 /*!
-    \variable QStyleOption::Type
+    \enum QStyleOption::StyleOptionType
 
-    Equals SO_Default.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Default} for
+           this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOption::Version
+    \enum QStyleOption::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOption::palette
     \brief the palette that should be used when painting the control
+
+    By default, the application's default palette is used.
+
+    \sa initFrom()
 */
 
 /*!
     \variable QStyleOption::direction
     \brief the text layout direction that should be used when drawing text in the control
+
+    By default, the layout direction is Qt::LeftToRight.
+
+    \sa initFrom()
 */
 
 /*!
     \variable QStyleOption::fontMetrics
     \brief the font metrics that should be used when drawing text in the control
+
+    By default, the application's default font is used.
+
+    \sa initFrom()
 */
 
 /*!
@@ -267,23 +286,32 @@ QStyleOption &QStyleOption::operator=(const QStyleOption &other)
     \brief the area that should be used for various calculations and painting.
 
     This can have different meanings for different types of elements.
-    For example, for \l QStyle::CE_PushButton it would be the
-    rectangle for the entire button, while for \l
-    QStyle::CE_PushButtonLabel it would be just the area for the push
-    button label.
+    For example, for a \l QStyle::CE_PushButton element it would be
+    the rectangle for the entire button, while for a \l
+    QStyle::CE_PushButtonLabel element it would be just the area for
+    the push button label.
+
+    The default value is a null rectangle, i.e. a rectangle with both
+    the width and the height set to 0.
+
+    \sa initFrom()
 */
 
 /*!
     \variable QStyleOption::state
     \brief the style flags that are used when drawing the control
 
-    \sa QStyle::drawPrimitive(), QStyle::drawControl(), QStyle::drawComplexControl(),
-        QStyle::State
+    The default value is QStyle::State_None.
+
+    \sa initFrom(), QStyle::drawPrimitive(), QStyle::drawControl(),
+    QStyle::drawComplexControl(), QStyle::State
 */
 
 /*!
     \variable QStyleOption::type
     \brief the option type of the style option
+
+    The default value is SO_Default.
 
     \sa OptionType
 */
@@ -293,19 +321,32 @@ QStyleOption &QStyleOption::operator=(const QStyleOption &other)
     \brief the version of the style option
 
     This value can be used by subclasses to implement extensions
-    without breaking compatibility. If you use qstyleoption_cast<T>(), you
-    normally don't need to check it.
+    without breaking compatibility. If you use the qstyleoption_cast()
+    function, you normally don't need to check it.
+
+    The default value is 1.
 */
 
 /*!
     \class QStyleOptionFocusRect
+
     \brief The QStyleOptionFocusRect class is used to describe the
     parameters for drawing a focus rectangle with QStyle.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
 */
 
 /*!
-    Constructs a QStyleOptionFocusRect. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionFocusRect, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionFocusRect::QStyleOptionFocusRect()
@@ -324,15 +365,34 @@ QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
 }
 
 /*!
-    \variable QStyleOptionFocusRect::Type
+    \enum QStyleOptionFocusRect::StyleOptionType
 
-    Equals SO_FocusRect.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_FocusRect} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionFocusRect::Version
+    \enum QStyleOptionFocusRect::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
@@ -344,6 +404,10 @@ QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
 /*!
     \variable QStyleOptionFocusRect::backgroundColor
     \brief The background color on which the focus rectangle is being drawn.
+
+    The default value is an invalid color with the RGB value (0, 0,
+    0). An invalid color is a color that is not properly set up for
+    the underlying window system.
 */
 
 /*!
@@ -352,7 +416,7 @@ QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
     \brief The QStyleOptionFrame class is used to describe the
     parameters for drawing a frame.
 
-    QStyleOptionFrame is used for drawing several built-in Qt widget,
+    QStyleOptionFrame is used for drawing several built-in Qt widgets,
     including QFrame, QGroupBox, QLineEdit, and QMenu. Note that to
     describe the parameters necessary for drawing a frame in Qt 4.1 or
     above, you must use the QStyleOptionFrameV2 subclass.
@@ -378,8 +442,8 @@ QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
 */
 
 /*!
-    Constructs a QStyleOptionFrame. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionFrame, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionFrame::QStyleOptionFrame()
@@ -402,29 +466,41 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
 */
 
 /*!
-    \variable QStyleOptionFrame::Type
+    \enum QStyleOptionFrame::StyleOptionType
 
-    Equals SO_Frame.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Frame} for this class).
 
     The type is used internally by QStyleOption, its subclasses, and
     qstyleoption_cast() to determine the type of style option. In
     general you do not need to worry about this unless you want to
     create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionFrame::Version
+    \enum QStyleOptionFrame::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
 
     The version is used by QStyleOption subclasses to implement
     extensions without breaking compatibility. If you use
     qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionFrame::lineWidth
     \brief The line width for drawing the frame.
+
+    The default value is 0.
 
     \sa QFrame::lineWidth
 */
@@ -433,6 +509,8 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
     \variable QStyleOptionFrame::midLineWidth
     \brief The mid-line width for drawing the frame. This is usually used in
     drawing sunken or raised frames.
+
+    The default value is 0.
 
     \sa QFrame::midLineWidth
 */
@@ -446,7 +524,7 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
     \since 4.1
 
     QStyleOptionFrameV2 inherits QStyleOptionFrame which is used for
-    drawing several built-in Qt widget, including QFrame, QGroupBox,
+    drawing several built-in Qt widgets, including QFrame, QGroupBox,
     QLineEdit, and QMenu.
 
     An instance of the QStyleOptionFrameV2 class has \l type SO_Frame
@@ -462,14 +540,10 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
     QStyleOptionFrame and QStyleOptionFrameV2. One way to achieve this
     is to use the QStyleOptionFrameV2 copy constructor. For example:
 
-    \code
-        if (const QStyleOptionFrame *frameOption =
-               qstyleoption_cast<const QStyleOptionFrame *>(option)) {
-            QStyleOptionFrameV2 frameOptionV2(*frameOption);
-
-            // draw the frame using frameOptionV2
-        }
-    \endcode
+    \quotefromfile snippets/qstyleoption/main.cpp
+    \skipto MyStyle()
+    \skipto QStyleOptionFrame
+    \printuntil }
 
     In the example above: If the \c frameOption's version is 1, \l
     FrameFeature is set to \l None for \c frameOptionV2. If \c
@@ -483,7 +557,7 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
 */
 
 /*!
-    Constructs a QStyleOptionFrameV2.
+    Constructs a QStyleOptionFrameV2 object.
 */
 QStyleOptionFrameV2::QStyleOptionFrameV2()
     : QStyleOptionFrame(Version), features(None)
@@ -554,6 +628,135 @@ QStyleOptionFrameV2 &QStyleOptionFrameV2::operator=(const QStyleOptionFrame &oth
     \value Flat Indicates a flat frame.
 */
 
+/*!
+    \enum QStyleOptionFrameV2::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 2
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+
+/*!
+    \class QStyleOptionViewItemV2
+    \brief The QStyleOptionViewItemV2 class is used to describe the
+    parameters necessary for drawing a frame in Qt 4.2 or above.
+    \since 4.2
+
+    QStyleOptionViewItemV2 inherits QStyleOptionViewItem.
+
+    An instance of the QStyleOptionViewItemV2 class has \l type SO_ViewItem
+    and \l version 2. The type is used internally by QStyleOption,
+    its subclasses, and qstyleoption_cast() to determine the type of
+    style option. In general you do not need to worry about this
+    unless you want to create your own QStyleOption subclass and your
+    own styles. The version is used by QStyleOption subclasses to
+    implement extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    See QStyleOptionFrameV2's detailed description for a discussion
+    of how to handle "V2" classes.
+
+    \sa QStyleOptionViewItem, QStyleOption
+*/
+
+/*!
+    \enum QStyleOptionViewItemV2::StyleOptionVersion
+
+    This enum is used to hold information about the version of the
+    style option, and is defined for each QStyleOption subclass.
+
+    \value Version 2
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+
+/*!
+    \variable QStyleOptionViewItemV2::features
+    \brief a bitwise OR of the features that describe this view item.
+
+    \sa ViewItemFeature
+*/
+
+/*!
+    Constructs a QStyleOptionViewItemV2 object.
+*/
+QStyleOptionViewItemV2::QStyleOptionViewItemV2()
+    : QStyleOptionViewItem(Version), features(None)
+{
+}
+
+/*!
+    \fn QStyleOptionViewItemV2::QStyleOptionViewItemV2(const QStyleOptionViewItemV2 &other)
+
+    Constructs a copy of \a other.
+*/
+
+/*!
+    Constructs a QStyleOptionViewItemV2 copy of the \a other style option
+    which can be either of the QStyleOptionViewItemV2 or
+    QStyleOptionViewItem types.
+
+    If the \a other style option's version is 1, the new style option's \l
+    ViewItemFeature value is set to \l QStyleOptionViewItemV2::None. If its
+    version is 2, its \l ViewItemFeature value is simply copied to the
+    new style option.
+
+    \sa version
+*/
+QStyleOptionViewItemV2::QStyleOptionViewItemV2(const QStyleOptionViewItem &other)
+    : QStyleOptionViewItem(Version)
+{
+    (void)QStyleOptionViewItemV2::operator=(other);
+}
+
+/*!
+    \internal
+*/
+QStyleOptionViewItemV2::QStyleOptionViewItemV2(int version)
+    : QStyleOptionViewItem(version)
+{
+
+}
+
+/*!
+    Assigns the \a other style option to this style option. The \a
+    other style option can be either of the QStyleOptionViewItemV2 or
+    QStyleOptionViewItem types.
+
+    If the \a{other} style option's version is 1, this style option's
+    \l ViewItemFeature value is set to \l QStyleOptionViewItemV2::None.
+    If its version is 2, its \l ViewItemFeature value is simply copied
+    to this style option.
+*/
+QStyleOptionViewItemV2 &QStyleOptionViewItemV2::operator=(const QStyleOptionViewItem &other)
+{
+    QStyleOptionViewItem::operator=(other);
+    const QStyleOptionViewItemV2 *v2 = qstyleoption_cast<const QStyleOptionViewItemV2 *>(&other);
+    features = v2 ? v2->features : ViewItemFeatures(QStyleOptionViewItemV2::None);
+    return *this;
+}
+
+/*!
+    \enum QStyleOptionViewItemV2::ViewItemFeature
+
+    This enum describles the different types of features an item can have.
+
+    \value None      Indicates a normal item.
+    \value WrapText  Indicates an item with wrapped text.
+    \value Alternate Indicates that the item's background is rendered using alternateBase.
+*/
+
 
 /*!
     \class QStyleOptionGroupBox
@@ -563,32 +766,71 @@ QStyleOptionFrameV2 &QStyleOptionFrameV2::operator=(const QStyleOptionFrame &oth
 
     \since 4.1
 
-    The QStyleOptionGroupBox class is used to draw the group box'
-    frame, title, and optional check box.
+    QStyleOptionButton contains all the information that QStyle
+    functions need the various graphical elements of a group box.
 
     It holds the lineWidth and the midLineWidth for drawing the panel,
     the group box's \l {text}{title} and the title's \l
     {textAlignment}{alignment} and \l {textColor}{color}.
 
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
     For an example demonstrating how style options can be used, see
     the \l {widgets/styles}{Styles} example.
 
-    \sa QStyleOption
+    \sa QStyleOption, QStyleOptionComplex, QGroupBox
+*/
 
+/*!
+    \enum QStyleOptionGroupBox::StyleOptionType
+
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_GroupBox} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
+*/
+
+/*!
+    \enum QStyleOptionGroupBox::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionGroupBox::lineWidth
 
-    \brief The line width for drawing the panel.
+    \brief the line width for drawing the panel
+
+    The default value is 0.
 
     \sa QFrame::lineWidth
 */
 
 /*!
     \variable QStyleOptionGroupBox::midLineWidth
-    \brief The mid-line width for drawing the panel. This is usually used in
-    drawing sunken or raised group box frames.
+    \brief The mid-line width for drawing the panel.
+
+    The mid-line width is usually used when drawing sunken or raised
+    group box frames. The default value is 0.
 
     \sa QFrame::midLineWidth
 */
@@ -596,7 +838,9 @@ QStyleOptionFrameV2 &QStyleOptionFrameV2::operator=(const QStyleOptionFrame &oth
 /*!
     \variable QStyleOptionGroupBox::text
 
-    The text of the group box.
+    \brief the text of the group box
+
+    The default value is an empty string.
 
     \sa QGroupBox::title
 */
@@ -604,7 +848,9 @@ QStyleOptionFrameV2 &QStyleOptionFrameV2::operator=(const QStyleOptionFrame &oth
 /*!
     \variable QStyleOptionGroupBox::textAlignment
 
-    The alignment of the group box title.
+    \brief the alignment of the group box title
+
+    The default value is Qt::AlignLeft.
 
     \sa QGroupBox::alignment
 */
@@ -612,12 +858,16 @@ QStyleOptionFrameV2 &QStyleOptionFrameV2::operator=(const QStyleOptionFrame &oth
 /*!
     \variable QStyleOptionGroupBox::textColor
 
-    The color of the group box title.
+    \brief the color of the group box title
+
+    The default value is an invalid color with the RGB value (0, 0,
+    0). An invalid color is a color that is not properly set up for
+    the underlying window system.
 */
 
 /*!
-    Constructs a QStyleOptionGroupBox. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionGroupBox, initializing the members
+    variables to their default values.
 */
 QStyleOptionGroupBox::QStyleOptionGroupBox()
     : QStyleOptionComplex(Version, Type), features(QStyleOptionFrameV2::None),
@@ -645,18 +895,29 @@ QStyleOptionGroupBox::QStyleOptionGroupBox(int version)
     \brief The QStyleOptionHeader class is used to describe the
     parameters for drawing a header.
 
-    The QStyleOptionHeader class is used for drawing the item views'
-    header pane, header sort arrow, and header label.
+    QStyleOptionHeader contains all the information that QStyle
+    functions need to draw the item views' header pane, header sort
+    arrow, and header label.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
 */
 
 /*!
-    Constructs a QStyleOptionHeader. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionHeader, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionHeader::QStyleOptionHeader()
     : QStyleOption(QStyleOptionHeader::Version, SO_Header),
-      section(0), textAlignment(0), iconAlignment(0),
+      section(0), textAlignment(Qt::AlignLeft), iconAlignment(Qt::AlignLeft),
       position(QStyleOptionHeader::Beginning),
       selectedPosition(QStyleOptionHeader::NotAdjacent), sortIndicator(None),
       orientation(Qt::Horizontal)
@@ -668,7 +929,7 @@ QStyleOptionHeader::QStyleOptionHeader()
 */
 QStyleOptionHeader::QStyleOptionHeader(int version)
     : QStyleOption(version, SO_Header),
-      section(0), textAlignment(0), iconAlignment(0),
+      section(0), textAlignment(Qt::AlignLeft), iconAlignment(Qt::AlignLeft),
       position(QStyleOptionHeader::Beginning),
       selectedPosition(QStyleOptionHeader::NotAdjacent), sortIndicator(None),
       orientation(Qt::Horizontal)
@@ -679,7 +940,7 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \variable QStyleOptionHeader::orientation
     \brief the header's orientation (horizontal or vertical)
 
-    \sa Qt::Orientation
+    The default orientation is Qt::Horizontal
 */
 
 /*!
@@ -689,59 +950,91 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
 */
 
 /*!
-    \variable QStyleOptionHeader::Type
+    \enum QStyleOptionHeader::StyleOptionType
 
-    Equals SO_Header.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Header} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionHeader::Version
+    \enum QStyleOptionHeader::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionHeader::section
-    \brief Which section of the header is being painted.
+    \brief which section of the header is being painted
+
+    The default value is 0.
 */
 
 /*!
     \variable QStyleOptionHeader::text
     \brief The text of the header.
+
+    The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionHeader::textAlignment
-    \brief The alignment flags for the text of the header.
+    \brief the alignment flags for the text of the header
 
-    \sa Qt::Alignment
+    The default value is Qt::AlignLeft.
 */
 
 /*!
     \variable QStyleOptionHeader::icon
-    \brief The icon of the header.
+    \brief the icon of the header
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 */
 
 /*!
     \variable QStyleOptionHeader::iconAlignment
     \brief The alignment flags for the icon of the header.
 
-    \sa Qt::Alignment
+    The default value is Qt::AlignLeft.
 */
 
 /*!
     \variable QStyleOptionHeader::position
     \brief the section's position in relation to the other sections
+
+    The default value is QStyleOptionHeader::Beginning.
 */
 
 /*!
     \variable QStyleOptionHeader::selectedPosition
     \brief the section's position in relation to the selected section
+
+    The default value is QStyleOptionHeader::NotAdjacent
 */
 
 /*!
     \variable QStyleOptionHeader::sortIndicator
     \brief the direction the sort indicator should be drawn
+
+    The default value is QStyleOptionHeader::None.
 */
 
 /*!
@@ -753,6 +1046,8 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \value Middle In the middle of the header
     \value End At the end of the header
     \value OnlyOneSection Only one header section
+
+    \sa position
 */
 
 /*!
@@ -764,15 +1059,20 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \value NextIsSelected The next section is selected
     \value PreviousIsSelected The previous section is selected
     \value NextAndPreviousAreSelected Both the next and previous section are selected
+
+    \sa selectedPosition
 */
 
 /*!
     \enum QStyleOptionHeader::SortIndicator
 
     Indicates which direction the sort indicator should be drawn
+
     \value None No sort indicator is needed
     \value SortUp Draw an up indicator
     \value SortDown Draw a down indicator
+
+    \sa sortIndicator
 */
 
 /*!
@@ -780,10 +1080,19 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \brief The QStyleOptionButton class is used to describe the
     parameters for drawing buttons.
 
-    The QStyleOptionButton class is used to draw \l QPushButton, \l
-    QCheckBox, and \l QRadioButton.
+    QStyleOptionButton contains all the information that QStyle
+    functions need to draw graphical elements like QPushButton,
+    QCheckBox, and QRadioButton.
 
-    \sa QStyleOptionToolButton
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionToolButton
 */
 
 /*!
@@ -801,8 +1110,8 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
 */
 
 /*!
-    Constructs a QStyleOptionButton. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionButton, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionButton::QStyleOptionButton()
@@ -825,22 +1134,39 @@ QStyleOptionButton::QStyleOptionButton(int version)
 */
 
 /*!
-    \variable QStyleOptionButton::Type
+    \enum QStyleOptionButton::StyleOptionType
 
-    Equals SO_Button.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Button} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionButton::Version
+    \enum QStyleOptionButton::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionButton::features
-    \brief The features for the button
-
-    This variable is a bitwise OR of the features that describe this button.
+    \brief a bitwise OR of the features that describe this button.
 
     \sa ButtonFeature
 */
@@ -848,11 +1174,16 @@ QStyleOptionButton::QStyleOptionButton(int version)
 /*!
     \variable QStyleOptionButton::text
     \brief The text of the button.
+
+    The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionButton::icon
     \brief The icon of the button.
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 
     \sa iconSize
 */
@@ -860,6 +1191,8 @@ QStyleOptionButton::QStyleOptionButton(int version)
 /*!
     \variable QStyleOptionButton::iconSize
     \brief The size of the icon for the button
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 */
 
 
@@ -871,6 +1204,14 @@ QStyleOptionButton::QStyleOptionButton(int version)
     parameters for drawing a toolbar.
 
     \since 4.1
+
+    QStyleOptionToolBar contains all the information that QStyle
+    functions need to draw QToolBar.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
 
     The QStyleOptionToolBar class holds the lineWidth and the
     midLineWidth for drawing the widget. It also stores information
@@ -892,8 +1233,8 @@ QStyleOptionButton::QStyleOptionButton(int version)
 */
 
 /*!
-    Constructs a QStyleOptionToolBar. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionToolBar, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionToolBar::QStyleOptionToolBar()
@@ -1008,6 +1349,37 @@ QStyleOptionToolBar::QStyleOptionToolBar(int version)
     The default value is 0.
 */
 
+/*!
+    \enum QStyleOptionToolBar::StyleOptionType
+
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ToolBar} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
+*/
+
+/*!
+    \enum QStyleOptionToolBar::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+
 
 #endif
 
@@ -1041,8 +1413,8 @@ QStyleOptionToolBar::QStyleOptionToolBar(int version)
 */
 
 /*!
-    Constructs a QStyleOptionTab object. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionTab object, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionTab::QStyleOptionTab()
@@ -1073,27 +1445,40 @@ QStyleOptionTab::QStyleOptionTab(int version)
 */
 
 /*!
-    \variable QStyleOptionTab::Type
+    \enum QStyleOptionTab::StyleOptionType
 
-    Equals SO_Tab.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Tab} for this class).
 
     The type is used internally by QStyleOption, its subclasses, and
     qstyleoption_cast() to determine the type of style option. In
     general you do not need to worry about this unless you want to
     create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionTab::Version
+    \enum QStyleOptionTab::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
 
     The version is used by QStyleOption subclasses to implement
     extensions without breaking compatibility. If you use
     qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
-/*! \enum QStyleOptionTab::TabPosition
+/*!
+    \enum QStyleOptionTab::TabPosition
+
+    This enum describes the position of the tab.
 
     \value Beginning The tab is the first tab in the tab bar.
     \value Middle The tab is neither the first nor the last tab in the tab bar.
@@ -1117,6 +1502,10 @@ QStyleOptionTab::QStyleOptionTab(int version)
 
 /*! \enum QStyleOptionTab::SelectedPosition
 
+    This enum describes the position of the selected tab. Some styles
+    need to draw a tab differently depending on whether or not it is
+    adjacent to the selected tab.
+
     \value NotAdjacent The tab is not adjacent to a selected tab (or is the selected tab).
     \value NextIsSelected The next tab (typically the tab on the right) is selected.
     \value PreviousIsSelected The previous tab (typically the tab on the left) is selected.
@@ -1127,15 +1516,17 @@ QStyleOptionTab::QStyleOptionTab(int version)
 /*!
     \variable QStyleOptionTab::selectedPosition
 
-    \brief The position of the selected tab in relation to this tab. Some styles
-    need to draw a tab differently depending on whether or not it is adjacent
-    to the selected tab.
+    \brief the position of the selected tab in relation to this tab
+
+    The default value is NotAdjacent, i.e. the tab is not adjacent to
+    a selected tab nor is it the selected tab.
 */
 
 /*!
     \variable QStyleOptionTab::cornerWidgets
 
-    \brief Information on the cornerwidgets of the tab bar.
+    \brief an OR combination of CornerWidget values indicating the
+    corner widgets of the tab bar; the default value is NoCornerWidgets
 
     \sa CornerWidget
 */
@@ -1143,32 +1534,42 @@ QStyleOptionTab::QStyleOptionTab(int version)
 
 /*!
     \variable QStyleOptionTab::shape
-    \brief The tab shape used to draw the tab.
+
+    \brief the tab shape used to draw the tab; by default
+    QTabBar::RoundedNorth
+
     \sa QTabBar::Shape
 */
 
 /*!
     \variable QStyleOptionTab::text
     \brief The text of the tab.
+
+    The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionTab::icon
     \brief The icon for the tab.
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 */
 
 /*!
     \variable QStyleOptionTab::row
     \brief which row the tab is currently in
 
-    0 indicates the front row.
-
-    Currently this property can only be 0.
+    The default value is 0, indicating the front row.  Currently this
+    property can only be 0.
 */
 
 /*!
     \variable QStyleOptionTab::position
     \brief the position of the tab in the tab bar
+
+    The default value is \l Beginning, i.e. the tab is the first tab
+    in the tab bar.
 */
 
 /*!
@@ -1191,16 +1592,12 @@ QStyleOptionTab::QStyleOptionTab(int version)
     QStyleOptionTab and QStyleOptionTabV2. One way to achieve this is
     to use the QStyleOptionTabV2 copy constructor. For example:
 
-    \code
-        if (const QStyleOptionTab *tabOption =
-               qstyleoption_cast<const QStyleOptionTab *>(option)) {
-            QStyleOptionTabV2 tabV2(*tabOption);
+    \quotefromfile snippets/qstyleoption/main.cpp
+    \skipto MyStyle::MyStyle()
+    \skipto *tabOption
+    \printuntil }
 
-            // draw the tab using tabV2
-        }
-    \endcode
-
-    in the example above: If \c tabOption's version is 1, the extra
+    In the example above: If \c tabOption's version is 1, the extra
     member (\l iconSize) will be set to an invalid size for \c tabV2.
     If \c tabOption's version is 2, the constructor will simply copy
     the \c tab's iconSize.
@@ -1212,13 +1609,29 @@ QStyleOptionTab::QStyleOptionTab(int version)
 */
 
 /*!
+    \enum QStyleOptionTabV2::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 2
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+
+/*!
     \variable QStyleOptionTabV2::iconSize
 
-    The size for the icons. If this size is invalid and you need an
-    icon size, you can use QStyle::pixelMetric() to find the default
-    icon size for tab bars.
+    \brief the size for the icons
 
-    \sa QTabBar::iconSize() QStyle::pixelMetric()
+    The default value is QSize(-1, -1), i.e. an invalid size; use
+    QStyle::pixelMetric() to find the default icon size for tab bars.
+
+    \sa QTabBar::iconSize()
 */
 
 /*!
@@ -1316,13 +1729,13 @@ QStyleOptionTabV2 &QStyleOptionTabV2::operator=(const QStyleOptionTab &other)
 */
 
 /*!
-    Constructs a QStyleOptionProgressBar. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionProgressBar, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionProgressBar::QStyleOptionProgressBar()
     : QStyleOption(QStyleOptionProgressBar::Version, SO_ProgressBar),
-      minimum(0), maximum(0), progress(0), textAlignment(0), textVisible(false)
+      minimum(0), maximum(0), progress(0), textAlignment(Qt::AlignLeft), textVisible(false)
 {
 }
 
@@ -1331,7 +1744,7 @@ QStyleOptionProgressBar::QStyleOptionProgressBar()
 */
 QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     : QStyleOption(version, SO_ProgressBar),
-      minimum(0), maximum(0), progress(0), textAlignment(0), textVisible(false)
+      minimum(0), maximum(0), progress(0), textAlignment(Qt::AlignLeft), textVisible(false)
 {
 }
 
@@ -1342,57 +1755,73 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
 */
 
 /*!
-    \variable QStyleOptionProgressBar::Type
+    \enum QStyleOptionProgressBar::StyleOptionType
 
-    Equals SO_ProgressBar.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ProgressBar} for this class).
 
     The type is used internally by QStyleOption, its subclasses, and
     qstyleoption_cast() to determine the type of style option. In
     general you do not need to worry about this unless you want to
     create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionProgressBar::Version
+    \enum QStyleOptionProgressBar::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
 
     The version is used by QStyleOption subclasses to implement
     extensions without breaking compatibility. If you use
     qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionProgressBar::minimum
     \brief The minimum value for the progress bar
 
-    This is the minimum value in the progress bar.
+    This is the minimum value in the progress bar. The default value
+    is 0.
+
     \sa QProgressBar::minimum
 */
 
 /*!
     \variable QStyleOptionProgressBar::maximum
-    \brief The maximum value for the progress bar
+    \brief the maximum value for the progress bar
 
-    This is the maximum value in the progress bar.
+    This is the maximum value in the progress bar. The default value
+    is 0.
+
     \sa QProgressBar::maximum
 */
 
 /*!
     \variable QStyleOptionProgressBar::text
-    \brief The text for the progress bar.
+    \brief the text for the progress bar
 
-    The progress bar text is usually just the progress expressed as a string.
-    An empty string indicates that the progress bar has not started yet.
+    The progress bar text is usually just the progress expressed as a
+    string.  An empty string indicates that the progress bar has not
+    started yet. The default value is an empty string.
 
     \sa QProgressBar::text
 */
 
 /*!
     \variable QStyleOptionProgressBar::textVisible
-    \brief A flag indicating whether or not text is visible.
+    \brief a flag indicating whether or not text is visible
 
-    If this flag is true then the text is visible. Otherwise, the text is not visible.
+    If this flag is true then the text is visible. Otherwise, the text
+    is not visible. The default value is false.
 
     \sa QProgressBar::textVisible
 */
@@ -1400,17 +1829,19 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
 
 /*!
     \variable QStyleOptionProgressBar::textAlignment
-    \brief The text alignment for the text in the QProgressBar
+    \brief the text alignment for the text in the QProgressBar
 
-    This can be used as a guide on where the text should be in the progressbar.
+    This can be used as a guide on where the text should be in the
+    progressbar. The default value is Qt::AlignLeft.
 */
 
 /*!
     \variable QStyleOptionProgressBar::progress
     \brief the current progress for the progress bar.
 
-    The current progress. A value of QStyleOptionProgressBar::minimum - 1
-    indicates that the progress hasn't started yet.
+    The current progress. A value of QStyleOptionProgressBar::minimum
+    - 1 indicates that the progress hasn't started yet. The default
+    value is 0.
 
     \sa QProgressBar::value
 */
@@ -1438,14 +1869,10 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     to achieve this is to use the QStyleOptionProgressBarV2 copy
     constructor. For example:
 
-    \code
-        if (const QStyleOptionProgressBar *progressBarOption =
-               qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
-               QStyleOptionProgressBarV2 progressBarV2(*progressBarOption);
-
-            // draw the progress bar using progressBarV2
-        }
-    \endcode
+    \quotefromfile snippets/qstyleoption/main.cpp
+    \skipto MyStyle::MyStyle()
+    \skipto *progressBarOption
+    \printuntil }
 
     In the example above: If the \c progressBarOption's version is 1,
     the extra members (\l orientation, \l invertedAppearance, and \l
@@ -1460,8 +1887,8 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
 */
 
 /*!
-    Constructs a QStyleOptionProgressBarV2. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionProgressBarV2, initializing he members
+    variables to their default values.
 */
 
 QStyleOptionProgressBarV2::QStyleOptionProgressBarV2()
@@ -1534,37 +1961,83 @@ QStyleOptionProgressBarV2 &QStyleOptionProgressBarV2::operator=(const QStyleOpti
 
 /*!
     \variable QStyleOptionProgressBarV2::orientation
-    \brief the progress bar's orientation (horizontal or vertical)
+    \brief the progress bar's orientation (horizontal or vertical);
+    the default orentation is Qt::Horizontal
 
     \sa QProgressBar::orientation
 */
 
 /*!
     \variable QStyleOptionProgressBarV2::invertedAppearance
-    \brief whether the progress bar's appearance is inverted
+    \brief whether the progress bar's appearance is inverted; the
+    default value is false
 
     \sa QProgressBar::invertedAppearance
 */
 
 /*!
     \variable QStyleOptionProgressBarV2::bottomToTop
-    \brief whether the text reads from bottom to top when the progress bar is vertical
+    \brief whether the text reads from bottom to top when the progress
+    bar is vertical; the default value is false
 
     \sa QProgressBar::textDirection
 */
+
+/*!
+    \enum QStyleOptionProgressBarV2::StyleOptionType
+
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ProgressBar} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
+*/
+
+/*!
+    \enum QStyleOptionProgressBarV2::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 2
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+
 
 /*!
     \class QStyleOptionMenuItem
     \brief The QStyleOptionMenuItem class is used to describe the
     parameter necessary for drawing a menu item.
 
-    The QStyleOptionMenuItem is used for drawing menu items from \l
-    QMenu. It is also used for drawing other menu-related widgets.
+    QStyleOptionMenuItem contains all the information that QStyle
+    functions need to draw the menu items from \l QMenu. It is also
+    used for drawing other menu-related widgets.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
 */
 
 /*!
-    Constructs a QStyleOptionMenuItem. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionMenuItem, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionMenuItem::QStyleOptionMenuItem()
@@ -1589,21 +2062,40 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
 */
 
 /*!
-    \variable QStyleOptionMenuItem::Type
+    \enum QStyleOptionMenuItem::StyleOptionType
 
-    Equals SO_MenuItem.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_MenuItem} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionMenuItem::Version
+    \enum QStyleOptionMenuItem::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \enum QStyleOptionMenuItem::MenuItemType
 
-    These values indicate the type of menu item that the structure describes.
+    This enum indicates the type of menu item that the structure describes.
 
     \value Normal A normal menu item.
     \value DefaultItem A menu item that is the default action as specified with \l QMenu::defaultAction().
@@ -1613,19 +2105,21 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
     \value TearOff A tear-off handle for the menu.
     \value Margin The margin of the menu.
     \value EmptyArea The empty area of the menu.
+
+    \sa menuItemType
 */
 
 /*!
     \enum QStyleOptionMenuItem::CheckType
 
-    These enums are used to indicate whether or not a check mark should be
+    This enum is used to indicate whether or not a check mark should be
     drawn for the item, or even if it should be drawn at all.
 
     \value NotCheckable The item is not checkable.
     \value Exclusive The item is an exclusive check item (like a radio button).
     \value NonExclusive The item is a non-exclusive check item (like a check box).
 
-    \sa QAction::checkable, QAction::checked, QActionGroup::exclusive
+    \sa checkType, QAction::checkable, QAction::checked, QActionGroup::exclusive
 */
 
 /*!
@@ -1633,23 +2127,28 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
 
     \brief the type of menu item
 
+    The default value is \l Normal.
+
     \sa MenuItemType
 */
 
 /*!
     \variable QStyleOptionMenuItem::checkType
     \brief The type of checkmark of the menu item
+
+    The default value is \l NotCheckable.
+
     \sa CheckType
 */
 
 /*!
     \variable QStyleOptionMenuItem::checked
-    \brief whether the menu item is checked or not.
+    \brief whether the menu item is checked or not; by default false.
 */
 
 /*!
     \variable QStyleOptionMenuItem::menuHasCheckableItems
-    \brief whether the menu as a whole has checkable items or not.
+    \brief whether the menu as a whole has checkable items or not; by default true
 
     If this option is set to false, then the menu has no checkable
     items. This makes it possible for GUI styles to save some
@@ -1658,23 +2157,29 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
 
 /*!
     \variable QStyleOptionMenuItem::menuRect
-    \brief The rectangle for the entire menu.
+    \brief the rectangle for the entire menu
+
+    The default value is a null rectangle, i.e. a rectangle with both
+    the width and the height set to 0.
 */
 
 /*!
     \variable QStyleOptionMenuItem::text
-    \brief The text for the menu item.
+    \brief the text for the menu item
 
     Note that the text format is something like this "Menu
     text\bold{\\t}Shortcut".
 
-    If the menu item doesn't have a shortcut, it will just contain
-    the menu item's text.
+    If the menu item doesn't have a shortcut, it will just contain the
+    menu item's text. The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionMenuItem::icon
-    \brief The icon for the menu item.
+    \brief the icon for the menu item
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 */
 
 /*!
@@ -1683,7 +2188,7 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
 
     This can be used for drawing the icon into the correct place or
     properly aligning items. The variable must be set regardless of
-    whether or not the menu item has an icon.
+    whether or not the menu item has an icon. The default value is 0.
 */
 
 /*!
@@ -1691,7 +2196,7 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
     \brief The tab width for the menu item.
 
     The tab width is the distance between the text of the menu item
-    and the shortcut.
+    and the shortcut. The default value is 0.
 */
 
 
@@ -1699,8 +2204,10 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
     \variable QStyleOptionMenuItem::font
     \brief The font used for the menu item text.
 
-    This is the font that should be used for drawing the menu text minus the
-    shortcut. The shortcut is usually drawn using the painter's font.
+    This is the font that should be used for drawing the menu text
+    minus the shortcut. The shortcut is usually drawn using the
+    painter's font. By default, the application's default font is
+    used.
 */
 
 /*!
@@ -1708,18 +2215,23 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
     \brief The QStyleOptionComplex class is used to hold parameters that are
     common to all complex controls.
 
-    This class is not used on its own. Instead it is used to derive other
-    complex control options, for example \l QStyleOptionSlider and
-    \l QStyleOptionSpinBox.
+    This class is not used on its own. Instead it is used to derive
+    other complex control options, for example QStyleOptionSlider and
+    QStyleOptionSpinBox.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator).
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
 */
 
 /*!
-    Constructs a QStyleOptionComplex of type \a type and version \a
-    version. Usually this constructor is called by subclasses.
-
-    The \l subControls member is initialized to \l QStyle::SC_All.
-    The \l activeSubControls member is initialized to \l
-    QStyle::SC_None.
+    Constructs a QStyleOptionComplex of the specified \a type and \a
+    version, initializing the member variables to their default
+    values. This constructor is usually called by subclasses.
 */
 
 QStyleOptionComplex::QStyleOptionComplex(int version, int type)
@@ -1734,31 +2246,52 @@ QStyleOptionComplex::QStyleOptionComplex(int version, int type)
 */
 
 /*!
-    \variable QStyleOptionComplex::Type
+    \enum QStyleOptionComplex::StyleOptionType
 
-    Equals SO_Complex.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Complex} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionComplex::Version
+    \enum QStyleOptionComplex::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionComplex::subControls
-    \brief The sub-controls that need to be painted.
+    \brief a bitwise OR of the various sub-controls that need to be
+    drawn for the complex control
 
-    This is a bitwise OR of the various sub-controls that need to be drawn for the complex control.
+    The default value is QStyle::SC_All.
 
     \sa QStyle::SubControl
 */
 
 /*!
     \variable QStyleOptionComplex::activeSubControls
-    \brief The sub-controls that are active for the complex control.
+    \brief a bitwise OR of the various sub-controls that are active
+    (pressed) for the complex control.
 
-    This a bitwise OR of the various sub-controls that are active (pressed) for the complex control.
+    The default value is QStyle::SC_None.
 
     \sa QStyle::SubControl
 */
@@ -1769,13 +2302,23 @@ QStyleOptionComplex::QStyleOptionComplex(int version, int type)
     \brief The QStyleOptionSlider class is used to describe the
     parameters needed for drawing a slider.
 
-    The QStyleOptionSlider class is used for drawing \l QSlider and
-    \l QScrollBar.
+    QStyleOptionSlider contains all the information that QStyle
+    functions need to draw QSlider and QScrollBar.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionComplex, QSlider, QScrollBar
 */
 
 /*!
-    Constructs a QStyleOptionSlider. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionSlider, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionSlider::QStyleOptionSlider()
@@ -1804,106 +2347,147 @@ QStyleOptionSlider::QStyleOptionSlider(int version)
 */
 
 /*!
-    \variable QStyleOptionSlider::Type
+    \enum QStyleOptionSlider::StyleOptionType
 
-    Equals SO_Slider.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Slider} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionSlider::Version
+    \enum QStyleOptionSlider::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionSlider::orientation
     \brief the slider's orientation (horizontal or vertical)
 
+    The default orientation is Qt::Horizontal.
+
     \sa Qt::Orientation
 */
 
 /*!
     \variable QStyleOptionSlider::minimum
-    \brief The minimum value for the slider.
+    \brief the minimum value for the slider
+
+    The default value is 0.
 */
 
 /*!
     \variable QStyleOptionSlider::maximum
-    \brief The maximum value for the slider.
+    \brief the maximum value for the slider
+
+    The default value is 0.
 */
 
 /*!
     \variable QStyleOptionSlider::tickPosition
-    \brief the position of the slider's tick marks, if any.
+    \brief the position of the slider's tick marks, if any
+
+    The default value is QSlider::NoTicks.
 
     \sa QSlider::TickPosition
 */
 
 /*!
     \variable QStyleOptionSlider::tickInterval
-    \brief The interval that should be drawn between tick marks.
+    \brief the interval that should be drawn between tick marks
+
+    The default value is 0.
 */
 
 /*!
     \variable QStyleOptionSlider::notchTarget
-    \brief The number of pixel between notches
+    \brief the number of pixel between notches
+
+    The default value is 0.0.
 
     \sa QDial::notchTarget()
 */
 
 /*!
     \variable QStyleOptionSlider::dialWrapping
-    \brief Indicates whether or not the dial should wrap or not
+    \brief whether or not the dial should wrap or not
+
+    The default value is false, i.e. the dial is not wrapped.
 
     \sa QDial::wrapping()
 */
 
 /*!
     \variable QStyleOptionSlider::upsideDown
-    \brief Indicates slider control orientation.
+    \brief the slider control orientation
 
-    Normally a slider increases as it moves up or to the right; upsideDown
-    indicates that it should do the opposite (increase as it moves down or to
-    the left).
+    Normally a slider increases as it moves up or to the right;
+    upsideDown indicates that it should do the opposite (increase as
+    it moves down or to the left).  The default value is false,
+    i.e. the slider increases as it moves up or to the right.
 
-    \sa QStyle::sliderPositionFromValue(), QStyle::sliderValueFromPosition(),
-        QAbstractSlider::invertedAppearance
+    \sa QStyle::sliderPositionFromValue(),
+    QStyle::sliderValueFromPosition(),
+    QAbstractSlider::invertedAppearance
 */
 
 /*!
     \variable QStyleOptionSlider::sliderPosition
-    \brief The position of the slider handle.
+    \brief the position of the slider handle
 
     If the slider has active feedback (i.e.,
-    QAbstractSlider::tracking is true), this value will be the same
-    as \l sliderValue. Otherwise, it will have the current position
-    of the handle.
+    QAbstractSlider::tracking is true), this value will be the same as
+    \l sliderValue. Otherwise, it will have the current position of
+    the handle. The default value is 0.
 
     \sa QAbstractSlider::tracking, sliderValue
 */
 
 /*!
     \variable QStyleOptionSlider::sliderValue
-    \brief The value of the slider.
+    \brief the value of the slider
 
     If the slider has active feedback (i.e.,
     QAbstractSlider::tracking is true), this value will be the same
     as \l sliderPosition. Otherwise, it will have the value the
     slider had before the mouse was pressed.
 
+    The default value is 0.
+
     \sa QAbstractSlider::tracking sliderPosition
 */
 
 /*!
     \variable QStyleOptionSlider::singleStep
-    \brief The size of the single step of the slider.
+    \brief the size of the single step of the slider
+
+    The default value is 0.
 
     \sa QAbstractSlider::singleStep
 */
 
 /*!
     \variable QStyleOptionSlider::pageStep
-    \brief The size of the page step of the slider.
+    \brief the size of the page step of the slider
+
+    The default value is 0.
 
     \sa QAbstractSlider::pageStep
 */
@@ -1915,12 +2499,23 @@ QStyleOptionSlider::QStyleOptionSlider(int version)
     \brief The QStyleOptionSpinBox class is used to describe the
     parameters necessary for drawing a spin box.
 
-    The QStyleOptionSpinBox is used for drawing QSpinBox and QDateTimeEdit.
+    QStyleOptionSpinBox contains all the information that QStyle
+    functions need to draw QSpinBox and QDateTimeEdit.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionComplex
 */
 
 /*!
-    Constructs a QStyleOptionSpinBox. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionSpinBox, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionSpinBox::QStyleOptionSpinBox()
@@ -1945,35 +2540,60 @@ QStyleOptionSpinBox::QStyleOptionSpinBox(int version)
 */
 
 /*!
-    \variable QStyleOptionSpinBox::Type
+    \enum QStyleOptionSpinBox::StyleOptionType
 
-    Equals SO_SpinBox.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_SpinBox} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionSpinBox::Version
+    \enum QStyleOptionSpinBox::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionSpinBox::buttonSymbols
-    \brief The type of button symbols to draw for the spin box.
+    \brief the type of button symbols to draw for the spin box
+
+    The default value is QAbstractSpinBox::UpDownArrows specufying
+    little arrows in the classic style.
 
     \sa QAbstractSpinBox::ButtonSymbols
 */
 
 /*!
     \variable QStyleOptionSpinBox::stepEnabled
-    \brief Indicates which buttons of the spin box are enabled.
+    \brief which buttons of the spin box that are enabled
+
+    The default value is QAbstractSpinBox::StepNone.
 
     \sa QAbstractSpinBox::StepEnabled
 */
 
 /*!
     \variable QStyleOptionSpinBox::frame
-    \brief Indicates whether whether the spin box has a frame.
+    \brief whether the spin box has a frame.
 
+    The default value is false, i.e. the spin box has no frame.
 */
 #endif // QT_NO_SPINBOX
 
@@ -1982,10 +2602,21 @@ QStyleOptionSpinBox::QStyleOptionSpinBox(int version)
     \brief The QStyleOptionQ3ListViewItem class is used to describe an
     item drawn in a Q3ListView.
 
-    This is used by the compatibility Q3ListView to draw its items.
-    It should be avoided for new classes.
+    This class is used for drawing the compatibility Q3ListView's
+    items. \bold {It is not recommended for new classes}.
 
-    \sa Q3ListView, Q3ListViewItem
+    QStyleOptionQ3ListViewItem contains all the information that
+    QStyle functions need to draw the Q3ListView items.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionQ3ListView, Q3ListViewItem
 */
 
 /*!
@@ -2004,8 +2635,8 @@ QStyleOptionSpinBox::QStyleOptionSpinBox(int version)
 */
 
 /*!
-    Constructs a QStyleOptionQ3ListViewItem. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionQ3ListViewItem, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionQ3ListViewItem::QStyleOptionQ3ListViewItem()
@@ -2030,22 +2661,41 @@ QStyleOptionQ3ListViewItem::QStyleOptionQ3ListViewItem(int version)
 */
 
 /*!
-    \variable QStyleOptionQ3ListViewItem::Type
+    \enum QStyleOptionQ3ListViewItem::StyleOptionType
 
-    Equals SO_Q3ListViewItem.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Q3ListViewItem} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionQ3ListViewItem::Version
+    \enum QStyleOptionQ3ListViewItem::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionQ3ListViewItem::features
-    \brief The features for this item
+    \brief the features for this item
 
-    This variable is a bitwise OR of the features of the item.
+    This variable is a bitwise OR of the features of the item. The deafult value is \l None.
 
     \sa Q3ListViewItemFeature
 */
@@ -2054,7 +2704,7 @@ QStyleOptionQ3ListViewItem::QStyleOptionQ3ListViewItem(int version)
     \variable QStyleOptionQ3ListViewItem::height
     \brief The height of the item
 
-    This doesn't include the height of the item's children.
+    This doesn't include the height of the item's children. The default height is 0.
 
     \sa Q3ListViewItem::height()
 */
@@ -2063,12 +2713,14 @@ QStyleOptionQ3ListViewItem::QStyleOptionQ3ListViewItem(int version)
     \variable QStyleOptionQ3ListViewItem::totalHeight
     \brief The total height of the item, including its children
 
+    The default total height is 0.
+
     \sa Q3ListViewItem::totalHeight()
 */
 
 /*!
     \variable QStyleOptionQ3ListViewItem::itemY
-    \brief The Y-coordinate for the item
+    \brief The Y-coordinate for the item; the default value is 0
 
     \sa Q3ListViewItem::itemPos()
 */
@@ -2083,18 +2735,31 @@ QStyleOptionQ3ListViewItem::QStyleOptionQ3ListViewItem(int version)
     \brief The QStyleOptionQ3ListView class is used to describe the
     parameters for drawing a Q3ListView.
 
-    The class is used for drawing the compat \l Q3ListView. It is not
-    recommended for use in new code.
+    This class is used for drawing the compatibility Q3ListView. \bold
+    {It is not recommended for new classes}.
+
+    QStyleOptionQ3ListView contains all the information that QStyle
+    functions need to draw Q3ListView.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOptionComplex, Q3ListView, QStyleOptionQ3ListViewItem
 */
 
 /*!
-    Creates a QStyleOptionQ3ListView. The members variables are
-    initialized to default values.
+    Creates a QStyleOptionQ3ListView, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionQ3ListView::QStyleOptionQ3ListView()
-    : QStyleOptionComplex(Version, SO_Q3ListView), sortColumn(0), itemMargin(0), treeStepSize(0),
-      rootIsDecorated(false)
+    : QStyleOptionComplex(Version, SO_Q3ListView), viewportBGRole(QPalette::Base),
+      sortColumn(0), itemMargin(0), treeStepSize(0), rootIsDecorated(false)
 {
 }
 
@@ -2102,8 +2767,8 @@ QStyleOptionQ3ListView::QStyleOptionQ3ListView()
     \internal
 */
 QStyleOptionQ3ListView::QStyleOptionQ3ListView(int version)
-    : QStyleOptionComplex(version, SO_Q3ListView), sortColumn(0), itemMargin(0), treeStepSize(0),
-      rootIsDecorated(false)
+    : QStyleOptionComplex(version, SO_Q3ListView),  viewportBGRole(QPalette::Base),
+      sortColumn(0), itemMargin(0), treeStepSize(0), rootIsDecorated(false)
 {
 }
 
@@ -2114,20 +2779,39 @@ QStyleOptionQ3ListView::QStyleOptionQ3ListView(int version)
 */
 
 /*!
-    \variable QStyleOptionQ3ListView::Type
+    \enum QStyleOptionQ3ListView::StyleOptionType
 
-    Equals SO_Q3ListView.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Q3ListView} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionQ3ListView::Version
+    \enum QStyleOptionQ3ListView::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionQ3ListView::items
-    \brief A list of items in the \l Q3ListView.
+    \brief a list of items in the Q3ListView
 
     This is a list of \l {QStyleOptionQ3ListViewItem}s. The first item
     can be used for most of the calculation that are needed for
@@ -2139,40 +2823,46 @@ QStyleOptionQ3ListView::QStyleOptionQ3ListView(int version)
 
 /*!
     \variable QStyleOptionQ3ListView::viewportPalette
-    \brief The palette of Q3ListView's viewport.
+    \brief the palette of Q3ListView's viewport
+
+    By default, the application's default palette is used.
 */
 
 /*!
     \variable QStyleOptionQ3ListView::viewportBGRole
-    \brief The background role of \l Q3ListView's viewport.
+    \brief the background role of Q3ListView's viewport
+
+    The default value is QPalette::Base.
 
     \sa QWidget::backgroundRole()
 */
 
 /*!
     \variable QStyleOptionQ3ListView::sortColumn
-    \brief The sort column of the list view.
+    \brief the sort column of the list view; the default value is 0
 
     \sa Q3ListView::sortColumn()
 */
 
 /*!
     \variable QStyleOptionQ3ListView::itemMargin
-    \brief The margin for items in the list view.
+    \brief the margin for items in the list view; the default value is 0
 
     \sa Q3ListView::itemMargin()
 */
 
 /*!
     \variable QStyleOptionQ3ListView::treeStepSize
-    \brief The number of pixel to offset children items from their parents.
+
+    \brief the number of pixel to offset children items from their
+    parents; the default value is 0
 
     \sa Q3ListView::treeStepSize()
 */
 
 /*!
     \variable QStyleOptionQ3ListView::rootIsDecorated
-    \brief Whether root items are decorated
+    \brief whether root items are decorated; the default value is false
 
     \sa Q3ListView::rootIsDecorated()
 */
@@ -2183,12 +2873,25 @@ QStyleOptionQ3ListView::QStyleOptionQ3ListView(int version)
     parameters for drawing various parts of a \l Q3DockWindow.
 
     This class is used for drawing the old Q3DockWindow and its
-    parts. It is not recommended for new classes.
+    parts. \bold {It is not recommended for new classes}.
+
+    QStyleOptionQ3DockWindow contains all the information that QStyle
+    functions need to draw Q3DockWindow and its parts.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption,  Q3DockWindow
 */
 
 /*!
-    Constructs a QStyleOptionQ3DockWindow. The member variables are
-    initialized to default values.
+    Constructs a QStyleOptionQ3DockWindow, initializing the member
+    variables to their default values.
 */
 
 QStyleOptionQ3DockWindow::QStyleOptionQ3DockWindow()
@@ -2211,36 +2914,71 @@ QStyleOptionQ3DockWindow::QStyleOptionQ3DockWindow(int version)
 */
 
 /*!
-    \variable QStyleOptionQ3DockWindow::Type
+    \enum QStyleOptionQ3DockWindow::StyleOptionType
 
-    Equals SO_Q3DockWindow.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_Q3DockWindow} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionQ3DockWindow::Version
+    \enum QStyleOptionQ3DockWindow::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionQ3DockWindow::docked
-    \brief Indicates that the dock window is currently docked.
+
+    \brief indicates whether the dock window is currently docked; the
+    default value is false
 */
 
 /*!
     \variable QStyleOptionQ3DockWindow::closeEnabled
-    \brief Indicates that the dock window has a close button.
+    \brief indicates wheter the dock window has a close button; ; the
+    default value is false
 */
 
 /*!
     \class QStyleOptionDockWidget
     \brief The QStyleOptionDockWidget class is used to describe the
-    parameters for drawing a dock window.
+    parameters for drawing a dock widget.
+
+    QStyleOptionDockWidget contains all the information that QStyle
+    functions need to draw graphical elements like QDockWidget.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption
 */
 
 /*!
-    Constructs a QStyleOptionDockWidget. The member variables are
-    initialized to default values.
+    Constructs a QStyleOptionDockWidget, initializing the member
+    variables to their default values.
 */
 
 QStyleOptionDockWidget::QStyleOptionDockWidget()
@@ -2264,35 +3002,62 @@ QStyleOptionDockWidget::QStyleOptionDockWidget(int version)
 */
 
 /*!
-    \variable QStyleOptionDockWidget::Type
+    \enum QStyleOptionDockWidget::StyleOptionType
 
-    Equals SO_DockWidget.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_DockWidget} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionDockWidget::Version
+    \enum QStyleOptionDockWidget::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionDockWidget::title
-    \brief The title of the dock window
+    \brief the title of the dock window
+
+    The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionDockWidget::closable
-    \brief Indicates that the dock window is closable.
+
+    \brief Indicates that the dock window is closable; true by
+    default.
 */
 
 /*!
     \variable QStyleOptionDockWidget::movable
-    \brief Indicates that the dock window is movable.
+
+    \brief Indicates that the dock window is movable; false by
+    default.
 */
 
 /*!
     \variable QStyleOptionDockWidget::floatable
-    \brief Indicates that the dock window is floatable.
+
+    \brief Indicates that the dock window is floatable; true by
+    default.
 */
 
 /*!
@@ -2300,7 +3065,18 @@ QStyleOptionDockWidget::QStyleOptionDockWidget(int version)
     \brief The QStyleOptionToolButton class is used to describe the
     parameters for drawing a tool button.
 
-    The QStyleOptionToolButton class is used for drawing QToolButton.
+    QStyleOptionToolButton contains all the information that QStyle
+    functions need to draw QToolButton.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionComplex, QStyleOptionButton
 */
 
 /*!
@@ -2316,8 +3092,8 @@ QStyleOptionDockWidget::QStyleOptionDockWidget(int version)
 */
 
 /*!
-    Constructs a QStyleOptionToolButton. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionToolButton, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionToolButton::QStyleOptionToolButton()
@@ -2343,29 +3119,52 @@ QStyleOptionToolButton::QStyleOptionToolButton(int version)
 */
 
 /*!
-    \variable QStyleOptionToolButton::Type
+    \enum QStyleOptionToolButton::StyleOptionType
 
-    Equals SO_ToolButton.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ToolButton} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionToolButton::Version
+    \enum QStyleOptionToolButton::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionToolButton::features
-    \brief The features of the tool button.
 
-    This variable is a bitwise OR describing the features of the button.
+    \brief an OR combination of the tool button's features
+
+    The default value is \l None.
 
     \sa ToolButtonFeature
 */
 
 /*!
     \variable QStyleOptionToolButton::icon
-    \brief The icon for the tool button.
+    \brief the icon for the tool button
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 
     \sa iconSize
 */
@@ -2373,41 +3172,53 @@ QStyleOptionToolButton::QStyleOptionToolButton(int version)
 /*!
     \variable QStyleOptionToolButton::iconSize
     \brief the size of the icon for the tool button
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 */
 
 /*!
     \variable QStyleOptionToolButton::text
     \brief The text of the tool button.
 
-    This value is only used if toolButtonStyle is Qt::ToolButtonTextUnderIcon,
-    Qt::ToolButtonTextBesideIcon, or Qt::ToolButtonTextOnly
+    This value is only used if toolButtonStyle is
+    Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or
+    Qt::ToolButtonTextOnly. The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionToolButton::arrowType
-    \brief The direction of the arrow for the tool button
+    \brief the direction of the arrow for the tool button
 
-    This value is only used if \l features includes \l Arrow.
+    This value is only used if \l features includes \l Arrow. The
+    default value is Qt::DownArrow.
 */
 
 /*!
     \variable QStyleOptionToolButton::toolButtonStyle
-    \brief Used to describe the appearance of a tool button
+
+    \brief a Qt::ToolButtonStyle value describing the appearance of
+    the tool button
+
+    The default value is Qt::ToolButtonIconOnly.
 
     \sa QToolButton::toolButtonStyle()
 */
 
 /*!
     \variable QStyleOptionToolButton::pos
-    \brief The position of the tool button
+    \brief the position of the tool button
+
+    The default value is a null point, i.e. (0, 0)
 */
 
 /*!
     \variable QStyleOptionToolButton::font
-    \brief The font that is used for the text.
+    \brief the font that is used for the text
 
-    This value is only used if toolButtonStyle is Qt::ToolButtonTextUnderIcon,
-    Qt::ToolButtonTextBesideIcon, or Qt::ToolButtonTextOnly
+    This value is only used if toolButtonStyle is
+    Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or
+    Qt::ToolButtonTextOnly. By default, the application's default font
+    is used.
 */
 
 /*!
@@ -2415,12 +3226,23 @@ QStyleOptionToolButton::QStyleOptionToolButton(int version)
     \brief The QStyleOptionComboBox class is used to describe the
     parameter for drawing a combobox.
 
-    The QStyleOptionComboBox class is used for drawing QComboBox.
+    QStyleOptionButton contains all the information that QStyle
+    functions need to draw QComboBox.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionComplex, QComboBox
 */
 
 /*!
-    Creates a QStyleOptionComboBox. The members variables are
-    initialized to default values.
+    Creates a QStyleOptionComboBox, initializing the members variables
+    to their default values.
 */
 
 QStyleOptionComboBox::QStyleOptionComboBox()
@@ -2443,20 +3265,41 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
 */
 
 /*!
-    \variable QStyleOptionComboBox::Type
+    \enum QStyleOptionComboBox::StyleOptionType
 
-    Equals SO_ComboBox.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ComboBox} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionComboBox::Version
+    \enum QStyleOptionComboBox::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionComboBox::editable
-    \brief whether or not the combobox is editable or not.
+
+    \brief whether or not the combobox is editable or not; the default
+    value is false
 
     \sa QComboBox::isEditable()
 */
@@ -2464,31 +3307,43 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
 
 /*!
     \variable QStyleOptionComboBox::frame
-    \brief Indicates whether whether the combo box has a frame.
+
+    \brief indicates whether whether the combo box has a frame; the
+    default value is true
 */
 
 /*!
     \variable QStyleOptionComboBox::currentText
-    \brief The text for the current item of the combo box
+    \brief the text for the current item of the combo box
+
+    The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionComboBox::currentIcon
-    \brief The icon for the current item of the combo box
+    \brief the icon for the current item of the combo box
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 */
 
 /*!
     \variable QStyleOptionComboBox::iconSize
-    \brief The icon size for the current item of the combo box
+    \brief the icon size for the current item of the combo box
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 */
 
 /*!
     \variable QStyleOptionComboBox::popupRect
     \brief The popup rectangle for the combobox.
 
-    This variable is currently unused, you can safely ignore it,
+    The default value is a null rectangle, i.e. a rectangle with both
+    the width and the height set to 0.
 
-    \sa SC_ComboBoxListBoxPopup
+    This variable is currently unused. You can safely ignore it.
+
+    \sa QStyle::SC_ComboBoxListBoxPopup
 */
 
 /*!
@@ -2496,12 +3351,23 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
     \brief The QStyleOptionToolBox class is used to describe the
     parameters needed for drawing a tool box.
 
-    The QStyleOptionToolBox class is used for drawing QToolBox.
+    QStyleOptionToolBox contains all the information that QStyle
+    functions need to draw QToolBox.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QToolBox
 */
 
 /*!
-    Creates a QStyleOptionToolBox. The members variables are
-    initialized to default values.
+    Creates a QStyleOptionToolBox, initializing the members variables
+    to their default values.
 */
 
 QStyleOptionToolBox::QStyleOptionToolBox()
@@ -2524,25 +3390,49 @@ QStyleOptionToolBox::QStyleOptionToolBox(int version)
 */
 
 /*!
-    \variable QStyleOptionToolBox::Type
+    \enum QStyleOptionToolBox::StyleOptionType
 
-    Equals SO_ToolBox.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ToolBox} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionToolBox::Version
+    \enum QStyleOptionToolBox::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionToolBox::icon
     \brief The icon for the tool box tab.
+
+   The default value is an empty icon, i.e. an icon with neither a
+   pixmap nor a filename.
 */
 
 /*!
     \variable QStyleOptionToolBox::text
     \brief The text for the tool box tab.
+
+    The default value is an empty string.
 */
 
 #ifndef QT_NO_RUBBERBAND
@@ -2551,16 +3441,27 @@ QStyleOptionToolBox::QStyleOptionToolBox(int version)
     \brief The QStyleOptionRubberBand class is used to describe the
     parameters needed for drawing a rubber band.
 
-    The QStyleOptionRubberBand class is used for drawing QRubberBand.
+    QStyleOptionRubberBand contains all the information that
+    QStyle functions need to draw QRubberBand.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QRubberBand
 */
 
 /*!
-    Creates a QStyleOptionRubberBand. The members variables are
-    initialized to default values.
+    Creates a QStyleOptionRubberBand, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionRubberBand::QStyleOptionRubberBand()
-    : QStyleOption(Version, SO_RubberBand)
+    : QStyleOption(Version, SO_RubberBand), shape(QRubberBand::Line), opaque(false)
 {
 }
 
@@ -2568,7 +3469,7 @@ QStyleOptionRubberBand::QStyleOptionRubberBand()
     \internal
 */
 QStyleOptionRubberBand::QStyleOptionRubberBand(int version)
-    : QStyleOption(version, SO_RubberBand)
+    : QStyleOption(version, SO_RubberBand), shape(QRubberBand::Line), opaque(false)
 {
 }
 
@@ -2579,25 +3480,48 @@ QStyleOptionRubberBand::QStyleOptionRubberBand(int version)
 */
 
 /*!
-    \variable QStyleOptionRubberBand::Type
+    \enum QStyleOptionRubberBand::StyleOptionType
 
-    Equals SO_RubberBand.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_RubberBand} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionRubberBand::Version
+    \enum QStyleOptionRubberBand::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionRubberBand::shape
-    \brief The shape of the rubber band.
+    \brief the shape of the rubber band
+
+    The default shape is QRubberBand::Line.
 */
 
 /*!
     \variable QStyleOptionRubberBand::opaque
-    \brief Whether the rubber band is required to be drawn in an opque style.
+
+    \brief whether the rubber band is required to be drawn in an opque
+    style; the default value is true
 */
 #endif // QT_NO_RUBBERBAND
 
@@ -2606,13 +3530,24 @@ QStyleOptionRubberBand::QStyleOptionRubberBand(int version)
     \brief The QStyleOptionTitleBar class is used to describe the
     parameters for drawing a title bar.
 
-    The QStyleOptionTitleBar class is used to draw the title bars of
-    QWorkspace's MDI children.
+    QStyleOptionTitleBar contains all the information that QStyle
+    functions need to draw the title bars of QWorkspace's MDI
+    children.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionComplex, QWorkspace
 */
 
 /*!
-    Constructs a QStyleOptionTitleBar. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionTitleBar, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionTitleBar::QStyleOptionTitleBar()
@@ -2627,15 +3562,34 @@ QStyleOptionTitleBar::QStyleOptionTitleBar()
 */
 
 /*!
-    \variable QStyleOptionTitleBar::Type
+    \enum QStyleOptionTitleBar::StyleOptionType
 
-    Equals SO_TitleBar.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_TitleBar} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionTitleBar::Version
+    \enum QStyleOptionTitleBar::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
@@ -2649,28 +3603,36 @@ QStyleOptionTitleBar::QStyleOptionTitleBar(int version)
 
 /*!
     \variable QStyleOptionTitleBar::text
-    \brief The text of the title bar.
+    \brief the text of the title bar
+
+    The default value is an empty string.
 */
 
 /*!
     \variable QStyleOptionTitleBar::icon
-    \brief The icon for the title bar.
+    \brief the icon for the title bar
+
+    The default value is an empty icon, i.e. an icon with neither a
+    pixmap nor a filename.
 */
 
 /*!
     \variable QStyleOptionTitleBar::titleBarState
-    \brief The state of the title bar.
+    \brief The state of the title bar
 
-    This is basically the window state of the underlying widget.
+    This is basically the window state of the underlying widget. The
+    default value is 0.
 
     \sa QWidget::windowState()
 */
 
 /*!
     \variable QStyleOptionTitleBar::titleBarFlags
-    \brief The widget flags for the title bar.
+    \brief the widget flags for the title bar
 
-    \sa Qt::WFlags
+    The default value is Qt::Widget.
+
+    \sa Qt::WindowFlags
 */
 
 /*!
@@ -2678,10 +3640,19 @@ QStyleOptionTitleBar::QStyleOptionTitleBar(int version)
     \brief The QStyleOptionViewItem class is used to describe the
     parameters used to draw an item in a view widget.
 
-    The QStyleOptionViewItem class is used by Qt's model/view classes
-    to draw their items.
+    QStyleOptionViewItem contains all the information that QStyle
+    functions need to draw the items for Qt's model/view classes.
 
-    \sa {model-view-programming.html}{Model/View Programming}
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, {model-view-programming.html}{Model/View
+    Programming}
 */
 
 /*!
@@ -2700,11 +3671,12 @@ QStyleOptionTitleBar::QStyleOptionTitleBar(int version)
 /*!
     \variable QStyleOptionViewItem::showDecorationSelected
 
-    \brief Whether the decoration should be highlighted on selected items.
+    \brief whether the decoration should be highlighted on selected
+    items
 
     If this option is true, the branch and any decorations on selected items
     should be highlighted, indicating that the item is selected; otherwise, no
-    highlighting is required.
+    highlighting is required. The default value is false.
 
     \sa QStyle::SH_ItemView_ShowDecorationSelected, QAbstractItemView
 */
@@ -2712,20 +3684,23 @@ QStyleOptionTitleBar::QStyleOptionTitleBar(int version)
 /*!
     \variable QStyleOptionViewItem::textElideMode
 
-    \brief Where ellipsis should be added for text that is too long to fit
-    into an item.
+    \brief where ellipsis should be added for text that is too long to fit
+    into an item
+
+    The default value is Qt::ElideMiddle, i.e. the ellipsis appears in
+    the middle of the text.
 
     \sa Qt::TextElideMode, QStyle::SH_ItemView_EllipsisLocation
 */
 
 /*!
-    Constructs a QStyleOptionViewItem. The members variables are
-    initialized to default values.
+    Constructs a QStyleOptionViewItem, initializing the members
+    variables to their default values.
 */
 
 QStyleOptionViewItem::QStyleOptionViewItem()
     : QStyleOption(Version, SO_ViewItem),
-      displayAlignment(0), decorationAlignment(0),
+      displayAlignment(Qt::AlignLeft), decorationAlignment(Qt::AlignLeft),
       textElideMode(Qt::ElideMiddle), decorationPosition(Left),
       showDecorationSelected(false)
 {
@@ -2736,7 +3711,7 @@ QStyleOptionViewItem::QStyleOptionViewItem()
 */
 QStyleOptionViewItem::QStyleOptionViewItem(int version)
     : QStyleOption(version, SO_ViewItem),
-      displayAlignment(0), decorationAlignment(0),
+      displayAlignment(Qt::AlignLeft), decorationAlignment(Qt::AlignLeft),
       textElideMode(Qt::ElideMiddle), decorationPosition(Left),
       showDecorationSelected(false)
 {
@@ -2749,44 +3724,73 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
 */
 
 /*!
-    \variable QStyleOptionViewItem::Type
+    \enum QStyleOptionViewItem::StyleOptionType
 
-    Equals SO_ViewItem.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_ViewItem} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionViewItem::Version
+    \enum QStyleOptionViewItem::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionViewItem::displayAlignment
-    \brief The alignment of the display value for the item.
+    \brief the alignment of the display value for the item
+
+    The default value is Qt::AlignLeft.
 */
 
 /*!
     \variable QStyleOptionViewItem::decorationAlignment
-    \brief The alignment of the decoration for the item.
+    \brief the alignment of the decoration for the item
+
+    The default value is Qt::AlignLeft.
 */
 
 /*!
     \variable QStyleOptionViewItem::decorationPosition
-    \brief The position of the decoration for the item.
+    \brief the position of the decoration for the item
+
+    The default value is \l Left.
 
     \sa Position
 */
 
 /*!
     \variable QStyleOptionViewItem::decorationSize
-    \brief The size of the decoration for the item.
+    \brief the size of the decoration for the item
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 
     \sa decorationAlignment, decorationPosition
 */
 
 /*!
     \variable QStyleOptionViewItem::font
-    \brief The font used for the item
+    \brief the font used for the item
+
+    By default, the application's default font is used.
 
     \sa QFont
 */
@@ -2795,27 +3799,14 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     \fn T qstyleoption_cast<T>(const QStyleOption *option)
     \relates QStyleOption
 
-    Returns a T or 0 depending on the \l{QStyleOption::type}{type}
-    and \l{QStyleOption::version}{version} of \a option.
+    Returns a T or 0 depending on the \l{QStyleOption::type}{type} and
+    \l{QStyleOption::version}{version} of the given \a option.
 
     Example:
 
-    \code
-        void MyStyle::drawPrimitive(PrimitiveElement element,
-                                    const QStyleOption *option,
-                                    QPainter *painter,
-                                    const QWidget *widget)
-        {
-            if (element == PE_FocusRect) {
-                const QStyleOptionFocusRect *focusRectOption =
-                        qstyleoption_cast<const QStyleOptionFocusRect *>(option);
-                if (focusRectOption) {
-                    ...
-                }
-            }
-            ...
-        }
-    \endcode
+    \quotefromfile snippets/qstyleoption/main.cpp
+    \skipto MyStyle::drawPrimitive
+    \printuntil /^\}/
 
     \sa QStyleOption::type, QStyleOption::version
 */
@@ -2825,7 +3816,7 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     \overload
     \relates QStyleOption
 
-    Returns a T or 0 depending on the type of \a option.
+    Returns a T or 0 depending on the type of the given \a option.
 */
 
 #ifndef QT_NO_TABWIDGET
@@ -2834,12 +3825,23 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     \brief The QStyleOptionTabWidgetFrame class is used to describe the
     parameters for drawing the frame around a tab widget.
 
-    QStyleOptionTabWidgetFrame is used for drawing QTabWidget.
+    QStyleOptionTabWidgetFrame contains all the information that
+    QStyle functions need to draw the frame around QTabWidget.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QTabWidget
 */
 
 /*!
-    Constructs a QStyleOptionTabWidgetFrame. The members variables
-    are initialized to default values.
+    Constructs a QStyleOptionTabWidgetFrame, initializing the members
+    variables to their default values.
 */
 QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame()
     : QStyleOption(Version, SO_TabWidgetFrame), lineWidth(0), midLineWidth(0),
@@ -2861,45 +3863,76 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
 }
 
 /*!
-    \variable QStyleOptionTabWidgetFrame::Type
+    \enum QStyleOptionTabWidgetFrame::StyleOptionType
 
-    Equals SO_TabWidgetFrame.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_TabWidgetFrame} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionTabWidgetFrame::Version
+    \enum QStyleOptionTabWidgetFrame::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionTabWidgetFrame::lineWidth
-    \brief The line width for drawing the panel.
+    \brief the line width for drawing the panel
+
+    The default value is 0.
 */
 
 /*!
     \variable QStyleOptionTabWidgetFrame::midLineWidth
-    \brief The mid-line width for drawing the panel. This is usually used in
-    drawing sunken or raised frames.
+    \brief the mid-line width for drawing the panel
+
+    The mid line width is usually used in drawing sunken or raised
+    frames. The default value is 0.
 */
 
 /*!
     \variable QStyleOptionTabWidgetFrame::shape
-    \brief The tab shape used to draw the tabs.
+    \brief the tab shape used to draw the tabs
+
+    The default value is QTabBar::RoundedNorth.
 */
 
 /*!
     \variable QStyleOptionTabWidgetFrame::tabBarSize
     \brief The size of the tab bar.
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 */
 
 /*!
     \variable QStyleOptionTabWidgetFrame::rightCornerWidgetSize
     \brief The size of the right-corner widget.
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 */
 
 /*! \variable QStyleOptionTabWidgetFrame::leftCornerWidgetSize
     \brief The size of the left-corner widget.
+
+    The default value is QSize(-1, -1), i.e. an invalid size.
 */
 #endif // QT_NO_TABWIDGET
 
@@ -2907,16 +3940,30 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
 
 /*!
     \class QStyleOptionTabBarBase
-    \brief The QStyleOptionTabBarBase class is used to describe the
-    the base of a tabbar. That is the part that the tabbar usually overlaps with.
 
-   This is drawn by a standalone QTabBar (one that isn't part of a QTabWidget).
+    \brief The QStyleOptionTabBarBase class is used to describe
+    the base of a tabbar, i.e. the part that the tabbar usually
+    overlaps with.
 
-   \sa QTabBar::drawBase()
+    QStyleOptionTabBarBase  contains all the information that QStyle
+    functions need to draw the tab bar base. Note that this is only
+    drawn for a standalone QTabBar (one that isn't part of a
+    QTabWidget).
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QTabBar::drawBase()
 */
 
 /*!
-    Construct a QStyleOptionTabBarBase. The members are given default values.
+    Construct a QStyleOptionTabBarBase, initializing the members
+    vaiables to their default values.
 */
 QStyleOptionTabBarBase::QStyleOptionTabBarBase()
     : QStyleOption(Version, SO_TabBarBase), shape(QTabBar::RoundedNorth)
@@ -2934,39 +3981,260 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
 
     Constructs a copy of \a other.
 */
-/*!
-    \variable QStyleOptionTabBarBase::Type
 
-    Equals SO_TabBarBase.
+/*!
+    \enum QStyleOptionTabBarBase::StyleOptionType
+
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_TabBarBase} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleOptionTabBarBase::Version
+    \enum QStyleOptionTabBarBase::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
     \variable QStyleOptionTabBarBase::shape
 
-    The shape of the tabbar.
+    \brief the shape of the tabbar
+
+    The default value is QTabBar::RoundedNorth.
 */
 
 /*!
     \variable QStyleOptionTabBarBase::tabBarRect
 
-    The rectangle containing all the tabs.
+    \brief the rectangle containing all the tabs
+
+    The default value is a null rectangle, i.e. a rectangle with both
+    the width and the height set to 0.
 */
 
 /*!
     \variable QStyleOptionTabBarBase::selectedTabRect
 
-    The rectangle containing the selected tab
+    \brief the rectangle containing the selected tab
 
-    This is within the bounds of the tabBarRect.
+    This rectangle is contained within the tabBarRect. The default
+    value is a null rectangle, i.e. a rectangle with both the width
+    and the height set to 0.
 */
 
 #endif // QT_NO_TABBAR
+
+#ifndef QT_NO_SIZEGRIP
+/*!
+    \class QStyleOptionSizeGrip
+    \brief The QStyleOptionSizeGrip class is used to describe the
+    parameter for drawing a size grip.
+    \since 4.2
+
+    QStyleOptionButton contains all the information that QStyle
+    functions need to draw QSizeGrip.
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters used by the style functions.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QStyleOptionComplex, QSizeGrip
+*/
+
+/*!
+    Constructs a QStyleOptionSizeGrip.
+*/
+QStyleOptionSizeGrip::QStyleOptionSizeGrip()
+    : QStyleOptionComplex(Version, Type), corner(Qt::BottomRightCorner)
+{
+}
+
+/*!
+    \fn QStyleOptionSizeGrip::QStyleOptionSizeGrip(const QStyleOptionSizeGrip &other)
+
+    Constructs a copy of the \a other style option.
+*/
+
+/*!
+    \internal
+*/
+QStyleOptionSizeGrip::QStyleOptionSizeGrip(int version)
+    : QStyleOptionComplex(version, Type), corner(Qt::BottomRightCorner)
+{
+}
+
+/*!
+    \variable QStyleOptionSizeGrip::corner
+
+    The corner in which the size grip is located.
+*/
+
+/*!
+    \enum QStyleOptionSizeGrip::StyleOptionType
+
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l{SO_TabBarBase} for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
+*/
+
+/*!
+    \enum QStyleOptionSizeGrip::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+#endif // QT_NO_SIZEGRIP
+
+/*!
+    \class QStyleOptionGraphicsItem
+    \brief The QStyleOptionGraphicsItem class is used to describe
+    the parameters needed to draw a QGraphicsItem.
+    \since 4.2
+    \ingroup multimedia
+
+    For performance reasons, the access to the member variables is
+    direct (i.e., using the \c . or \c -> operator). This low-level feel
+    makes the structures straightforward to use and emphasizes that
+    these are simply parameters.
+
+    For an example demonstrating how style options can be used, see
+    the \l {widgets/styles}{Styles} example.
+
+    \sa QStyleOption, QGraphicsItem::paint()
+*/
+
+/*!
+    \enum QStyleOptionGraphicsItem::StyleOptionType
+
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Type The type of style option provided (\l SO_GraphicsItem for this class).
+
+    The type is used internally by QStyleOption, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleOption subclass and your own styles.
+
+    \sa StyleOptionVersion
+*/
+
+/*!
+    \enum QStyleOptionGraphicsItem::StyleOptionVersion
+
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleOption subclass.
+
+    \value Version 1
+
+    The version is used by QStyleOption subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
+*/
+
+/*!
+    Constructs a QStyleOptionGraphicsItem. The levelOfDetail parameter is
+    initialized to 1.
+*/
+QStyleOptionGraphicsItem::QStyleOptionGraphicsItem()
+    : levelOfDetail(1)
+{
+}
+
+/*!
+    \internal
+*/
+QStyleOptionGraphicsItem::QStyleOptionGraphicsItem(int version)
+    : QStyleOption(version, Type), levelOfDetail(1)
+{
+}
+
+/*!
+    \fn QStyleOptionGraphicsItem::QStyleOptionGraphicsItem(const QStyleOptionGraphicsItem &other)
+
+    Constructs a copy of \a other.
+*/
+
+/*!
+    \variable QStyleOptionGraphicsItem::exposedRect
+    \brief the exposed rectangle, in item coordinates
+
+    Make use of this rectangle to speed up item drawing when only parts of the
+    item are exposed. If the whole item is exposed, this rectangle will be the
+    same as QGraphicsItem::boundingRect().
+*/
+
+/*!
+     \variable QStyleOptionGraphicsItem::matrix
+     \brief the complete transformation matrix for the item
+
+     This matrix is the sum of the item's scene matrix and the matrix of the
+     painter used for drawing the item. It is provided for convenience,
+     allowing anvanced level-of-detail metrics that can be used to speed up
+     item drawing.
+
+     To find the dimentions of an item in screen coordinates (i.e., pixels),
+     you can use the mapping functions of QMatrix, such as QMatrix::map().
+
+     \sa QStyleOptionGraphicsItem::levelOfDetail
+*/
+
+/*!
+    \variable QStyleOptionGraphicsItem::levelOfDetail
+    \brief a simple metric for determining an item's level of detail
+
+    This simple metric provides an easy way to determine the level of detail
+    for an item. Its value represents the maximum value of the height and
+    width of a unity rectangle, mapped using the complete transformation
+    matrix of the painter used to draw the item. By default, if no
+    transformations are applied, its value is 1. If zoomed out 1:2, the level
+    of detail will be 0.5, and if zoomed in 2:1, its value is 2.
+
+    For more advanced level-of-detail metrics, use
+    QStyleOptionGraphicsItem::matrix directly.
+
+    \sa QStyleOptionGraphicsItem::matrix
+*/
 
 /*!
     \class QStyleHintReturn
@@ -2993,15 +4261,35 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
 */
 
 /*!
-    \variable QStyleHintReturn::Type
+    \enum QStyleHintReturn::StyleOptionType
 
-    Equals SH_Default.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleHintReturn subclass.
+
+    \value Type The type of style option provided (\l SH_Default for
+           this class).
+
+    The type is used internally by QStyleHintReturn, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleHintReturn subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleHintReturn::Version
+    \enum QStyleHintReturn::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleHintReturn subclass.
+
+    \value Version 1
+
+    The version is used by QStyleHintReturn subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
@@ -3073,15 +4361,35 @@ QStyleHintReturnMask::QStyleHintReturnMask() : QStyleHintReturn(Version, Type)
 }
 
 /*!
-    \variable QStyleHintReturnMask::Type
+    \enum QStyleHintReturnMask::StyleOptionType
 
-    Equals SH_Mask.
+    This enum is used to hold information about the type of the style option, and
+    is defined for each QStyleHintReturn subclass.
+
+    \value Type The type of style option provided (\l{SH_Mask} for
+           this class).
+
+    The type is used internally by QStyleHintReturn, its subclasses, and
+    qstyleoption_cast() to determine the type of style option. In
+    general you do not need to worry about this unless you want to
+    create your own QStyleHintReturn subclass and your own styles.
+
+    \sa StyleOptionVersion
 */
 
 /*!
-    \variable QStyleHintReturnMask::Version
+    \enum QStyleHintReturnMask::StyleOptionVersion
 
-    Equals 1.
+    This enum is used to hold information about the version of the style option, and
+    is defined for each QStyleHintReturn subclass.
+
+    \value Version 1
+
+    The version is used by QStyleHintReturn subclasses to implement
+    extensions without breaking compatibility. If you use
+    qstyleoption_cast(), you normally don't need to check it.
+
+    \sa StyleOptionType
 */
 
 /*!
@@ -3177,7 +4485,10 @@ QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType)
         debug << "SO_ToolBar"; break;
     case QStyleOption::SO_ComplexCustomBase:
         debug << "SO_ComplexCustomBase"; break;
-        break;
+    case QStyleOption::SO_SizeGrip:
+        debug << "SO_SizeGrip"; break;
+    case QStyleOption::SO_GraphicsItem:
+        debug << "SO_GraphicsItem"; break;
     }
     return debug;
 }

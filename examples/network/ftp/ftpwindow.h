@@ -27,6 +27,7 @@
 #include <QDialog>
 #include <QHash>
 
+class QDialogButtonBox;
 class QFile;
 class QFtp;
 class QLabel;
@@ -62,10 +63,11 @@ private:
     QLineEdit *ftpServerLineEdit;
     QLabel *statusLabel;
     QListWidget *fileList;
-    QPushButton *quitButton;
+    QPushButton *cdToParentButton;
     QPushButton *connectButton;
     QPushButton *downloadButton;
-    QPushButton *cdToParentButton;
+    QPushButton *quitButton;
+    QDialogButtonBox *buttonBox;
     QProgressDialog *progressDialog;
 
     QHash<QString, bool> isDirectory;

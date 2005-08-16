@@ -4,7 +4,7 @@ HEADERS		= ../../../sql/drivers/sqlite/qsql_sqlite.h
 SOURCES		= smain.cpp \
 		  ../../../sql/drivers/sqlite/qsql_sqlite.cpp
 
-!contains( LIBS, .*sqlite.* ) {
+!system-sqlite:!contains( LIBS, .*sqlite.* ) {
     CONFIG(release, debug|release):DEFINES *= NDEBUG
     INCLUDEPATH += ../../../3rdparty/sqlite
 
@@ -24,6 +24,7 @@ SOURCES		= smain.cpp \
                ../../../3rdparty/sqlite/legacy.c \
                ../../../3rdparty/sqlite/main.c \
                ../../../3rdparty/sqlite/opcodes.c \
+               ../../../3rdparty/sqlite/os.c \
                ../../../3rdparty/sqlite/pager.c \
                ../../../3rdparty/sqlite/parse.c \
                ../../../3rdparty/sqlite/pragma.c \
@@ -47,6 +48,9 @@ SOURCES		= smain.cpp \
 
                unix:SOURCES += ../../../3rdparty/sqlite/os_unix.c
                win32:SOURCES += ../../../3rdparty/sqlite/os_win.c
+} else {
+    LIBS *= $$QT_LFLAGS_SQLITE
+    QMAKE_CXXFLAGS *= $$QT_CFLAGS_SQLITE
 }
 
 include(../qsqldriverbase.pri)

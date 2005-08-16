@@ -215,7 +215,7 @@ int main(int argc, char**argv)
 
     // Read rule file and create PortingRules instance.
     printf("Using rules file: ");
-    puts(QDir::convertSeparators(rulesFilePath).toLocal8Bit().constData());
+    puts(QDir::toNativeSeparators(rulesFilePath).toLocal8Bit().constData());
     PortingRules::createInstance(rulesFilePath);
 
 
@@ -242,7 +242,7 @@ int main(int argc, char**argv)
             else
                 porter.portFile(canonicalFileName);
         } else {
-            printf("File not found: %s \n", QDir::convertSeparators(inFileName).toLocal8Bit().constData());
+            printf("File not found: %s \n", QDir::toNativeSeparators(inFileName).toLocal8Bit().constData());
         }
     }
 
@@ -258,10 +258,11 @@ int main(int argc, char**argv)
         foreach (QString logLine, report) {
             logStream << logLine << endl;
         }
-        FileWriter fileWriter(FileWriter::AskOnOverWrite, "Overwrite file ");
-        if (alwaysOverwrite)
-            fileWriter.setOverwriteFiles(FileWriter::AlwaysOverWrite);
-        fileWriter.writeFile(logFileName, logContents);
+        logStream << endl;
+
+        QFile logFile(logFileName);
+        logFile.open(QIODevice::WriteOnly | QIODevice::Append);
+        logFile.write(logContents);
     }
     Logger::deleteInstance();
     PortingRules::deleteInstance();

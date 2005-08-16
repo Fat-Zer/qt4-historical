@@ -68,10 +68,18 @@ public:
 
     bool preserveAspectRatio() const;
 
-    QRect viewBox() const;
-    void setViewBox(const QRect &rect);
+    QRectF viewBox() const;
+    void setViewBox(const QRectF &rect);
 
-    void draw(QPainter *p);
+    virtual void draw(QPainter *p);//from the QSvgNode
+    
+    void draw(QPainter *p, const QRectF &bounds);
+    void draw(QPainter *p, const QString &id,
+              const QRectF &bounds=QRectF());
+
+    QMatrix matrixForElement(const QString &id) const;
+    QRectF boundsOnElement(const QString &id) const;
+    bool   elementExists(const QString &id) const;
 
     void addSvgFont(QSvgFont *);
     QSvgFont *svgFont(const QString &family) const;
@@ -80,17 +88,27 @@ public:
     int currentElapsed() const;
     bool animated() const;
     void setAnimated(bool a);
+    int animationDuration() const;
+    int currentFrame() const;
+    void setCurrentFrame(int);
+    void setFramesPerSecond(int num);
 private:
-    QSize m_size;
-    bool  m_widthPercent;
-    bool  m_heightPercent;
+    void adjustWindowBounds(QPainter *p, 
+                            const QRectF &desired,
+                            const QRectF &current);
+private:
+    QSize  m_size;
+    bool   m_widthPercent;
+    bool   m_heightPercent;
 
-    QRect m_viewBox;
+    QRectF m_viewBox;
 
     QHash<QString, QSvgRefCounter<QSvgFont> > m_fonts;
 
     QTime m_time;
     bool  m_animated;
+    int   m_animationDuration;
+    int   m_fps;
 };
 
 inline QSize QSvgTinyDocument::size() const
@@ -118,7 +136,7 @@ inline bool QSvgTinyDocument::heightPercent() const
     return m_heightPercent;
 }
 
-inline QRect QSvgTinyDocument::viewBox() const
+inline QRectF QSvgTinyDocument::viewBox() const
 {
     return m_viewBox;
 }
@@ -131,6 +149,11 @@ inline bool QSvgTinyDocument::preserveAspectRatio() const
 inline int QSvgTinyDocument::currentElapsed() const
 {
     return m_time.elapsed();
+}
+
+inline int QSvgTinyDocument::animationDuration() const
+{
+    return m_animationDuration;
 }
 
 #endif // QSVGTINYDOCUMENT_P_H

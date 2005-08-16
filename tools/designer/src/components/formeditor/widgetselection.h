@@ -82,7 +82,7 @@ private:
 private:
     QWidget *widget;
     Type type;
-    QPoint oldPressPos;
+    QPoint origPressPos;
     FormWindow *formWindow;
     WidgetSelection *sel;
     QRect geom, origGeom;

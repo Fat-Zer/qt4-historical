@@ -108,14 +108,19 @@ public:
     virtual bool eventFilter(QObject *, QEvent *);
 
 #ifdef qdoc
-    static QString tr(const char *, const char *);
-    static QString trUtf8(const char *, const char *);
+    static QString tr(const char *sourceText, const char *comment = 0, int n = -1);
+    static QString trUtf8(const char *sourceText, const char *comment = 0, int n = -1);
     virtual const QMetaObject *metaObject() const;
+    static const QMetaObject staticMetaObject;
 #endif
 #ifdef QT_NO_TRANSLATION
+    static QString tr(const char *sourceText, const char *, int)
+        { return QString::fromLatin1(sourceText); }
     static QString tr(const char *sourceText, const char * = 0)
         { return QString::fromLatin1(sourceText); }
 #ifndef QT_NO_TEXTCODEC
+    static QString trUtf8(const char *sourceText, const char *, int)
+        { return QString::fromUtf8(sourceText); }
     static QString trUtf8(const char *sourceText, const char * = 0)
         { return QString::fromUtf8(sourceText); }
 #endif
@@ -197,6 +202,7 @@ public:
 #ifndef QT_NO_PROPERTIES
     bool setProperty(const char *name, const QVariant &value);
     QVariant property(const char *name) const;
+    QList<QByteArray> dynamicPropertyNames() const;
 #endif // QT_NO_PROPERTIES
 
 #ifndef QT_NO_USERDATA
@@ -283,11 +289,9 @@ public:
 };
 #endif
 
-
 Q_CORE_EXPORT void qt_qFindChildren_helper(const QObject *parent, const QString &name, const QRegExp *re,
-                         const QMetaObject &mo, QList<void*> *list);
+                                           const QMetaObject &mo, QList<void *> *list);
 Q_CORE_EXPORT QObject *qt_qFindChild_helper(const QObject *parent, const QString &name, const QMetaObject &mo);
-
 
 #if defined Q_CC_MSVC && _MSC_VER < 1300
 
@@ -300,7 +304,7 @@ inline QList<T> qFindChildren(const QObject *o, const QString &name, T)
 {
     QList<T> list;
     qt_qFindChildren_helper(o, name, 0, ((T)0)->staticMetaObject,
-                        reinterpret_cast<QList<void *>*>(&list));
+                            reinterpret_cast<QList<void *>*>(&list));
     return list;
 }
 
@@ -326,7 +330,7 @@ inline QList<T> qFindChildren(const QObject *o, const QRegExp &re, T)
 {
     QList<T> list;
     qt_qFindChildren_helper(o, 0, &re, ((T)0)->staticMetaObject,
-                        reinterpret_cast<QList<void*>*>(&list));
+                            reinterpret_cast<QList<void *> *>(&list));
     return list;
 }
 
@@ -335,6 +339,11 @@ inline QList<T> qFindChildren(const QObject *o, const QRegExp &re)
 { return qFindChildren<T>(o, re, T(0)); }
 
 #endif
+
+#ifdef Q_MOC_RUN
+# define Q_DECLARE_INTERFACE(IFace, IId) Q_DECLARE_INTERFACE(IFace, IId)
+#endif // Q_MOC_RUN
+
 
 template <class T> inline T qobject_cast_helper(QObject *object, T)
 { return static_cast<T>(((T)0)->staticMetaObject.cast(object)); }
@@ -350,11 +359,13 @@ template <class T>
 inline T qobject_cast(const QObject *object)
 { return qobject_cast_helper<T>(object, T(0)); }
 
-#define Q_DECLARE_INTERFACE(IFace, IId) \
-template <> inline IFace *qobject_cast_helper<IFace *>(QObject *object, IFace *) \
-{ return (IFace *)(object ? object->qt_metacast(IId) : 0); } \
-template <> inline IFace *qobject_cast_helper<IFace *>(const QObject *object, IFace *) \
-{ return (IFace *)(object ? const_cast<QObject *>(object)->qt_metacast(IId) : 0); }
+#ifndef Q_MOC_RUN
+#  define Q_DECLARE_INTERFACE(IFace, IId) \
+    template <> inline IFace *qobject_cast_helper<IFace *>(QObject *object, IFace *) \
+    { return (IFace *)(object ? object->qt_metacast(IId) : 0); } \
+    template <> inline IFace *qobject_cast_helper<IFace *>(const QObject *object, IFace *) \
+    { return (IFace *)(object ? const_cast<QObject *>(object)->qt_metacast(IId) : 0); }
+#endif // Q_MOC_RUN
 
 #else
 
@@ -367,7 +378,7 @@ inline QList<T> qFindChildren(const QObject *o, const QString &name)
 {
     QList<T> list;
     qt_qFindChildren_helper(o, name, 0, reinterpret_cast<T>(0)->staticMetaObject,
-                         reinterpret_cast<QList<void *>*>(&list));
+                            reinterpret_cast<QList<void *>*>(&list));
     return list;
 }
 
@@ -377,7 +388,7 @@ inline QList<T> qFindChildren(const QObject *o, const QRegExp &re)
 {
     QList<T> list;
     qt_qFindChildren_helper(o, 0, &re, reinterpret_cast<T>(0)->staticMetaObject,
-                        reinterpret_cast<QList<void*>*>(&list));
+                            reinterpret_cast<QList<void *>*>(&list));
     return list;
 }
 #endif
@@ -391,11 +402,13 @@ inline T qobject_cast(const QObject *object)
 { return static_cast<T>(const_cast<const QObject *>(reinterpret_cast<T>(0)->staticMetaObject.cast(const_cast<QObject *>(object)))); }
 
 
-#define Q_DECLARE_INTERFACE(IFace, IId) \
-template <> inline IFace *qobject_cast<IFace *>(QObject *object) \
-{ return reinterpret_cast<IFace *>((object ? object->qt_metacast(IId) : 0)); } \
-template <> inline IFace *qobject_cast<IFace *>(const QObject *object) \
-{ return reinterpret_cast<IFace *>((object ? const_cast<QObject *>(object)->qt_metacast(IId) : 0)); }
+#ifndef Q_MOC_RUN
+#  define Q_DECLARE_INTERFACE(IFace, IId) \
+    template <> inline IFace *qobject_cast<IFace *>(QObject *object) \
+    { return reinterpret_cast<IFace *>((object ? object->qt_metacast(IId) : 0)); } \
+    template <> inline IFace *qobject_cast<IFace *>(const QObject *object) \
+    { return reinterpret_cast<IFace *>((object ? const_cast<QObject *>(object)->qt_metacast(IId) : 0)); }
+#endif // Q_MOC_RUN
 
 #endif
 

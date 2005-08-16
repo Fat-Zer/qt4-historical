@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ToolBarTaskMenu
+*/
+
 #include "toolbar_taskmenu.h"
 
 #include <QtDesigner/QtDesigner>

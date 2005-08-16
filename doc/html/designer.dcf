@@ -48,7 +48,4 @@
 <section ref="designer-recursive-shadow-casting.html" title="Implementation of the Recursive Shadow Casting Algorithm in Qt Designer">
     <keyword ref="designer-recursive-shadow-casting.html">Implementation of the Recursive Shadow Casting Algorithm in Qt Designer</keyword>
 </section>
-<section ref="designer-treewalker.html" title="Contributions to the Following Qt Designer Files: treewalker.h, treedump.cpp, treedump.h, treewalker.cpp">
-    <keyword ref="designer-treewalker.html">Contributions to the Following Qt Designer Files: treewalker.h, treedump.cpp, treedump.h, treewalker.cpp</keyword>
-</section>
 </DCF>

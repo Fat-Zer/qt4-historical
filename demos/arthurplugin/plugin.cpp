@@ -36,7 +36,6 @@
 #include "composition.h"
 
 class QDesignerFormEditorInterface;
-
 class PathDeformRendererEx : public PathDeformRenderer
 {
     Q_OBJECT

@@ -24,15 +24,28 @@
 #ifndef QPROPERTYEDITOR_ITEMS_P_H
 #define QPROPERTYEDITOR_ITEMS_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include "propertyeditor_global.h"
 
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
 #include <QtCore/QDateTime>
+#include <QtCore/QUrl>
 
 #include <QtGui/QCursor>
 #include <QtGui/QPalette>
+#include <QtGui/QFont>
 #include <QtGui/QKeySequence>
 
 class QWidget;
@@ -272,10 +285,59 @@ public:
     void updateValue(QWidget *editor);
 };
 
+class QT_PROPERTYEDITOR_EXPORT LongLongProperty: public AbstractProperty<qlonglong>
+{
+public:
+    LongLongProperty(qlonglong value, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+};
+
 class QT_PROPERTYEDITOR_EXPORT DoubleProperty: public AbstractProperty<double>
 {
 public:
     DoubleProperty(double value, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+};
+
+class QT_PROPERTYEDITOR_EXPORT SpinBoxDoubleProperty: public AbstractProperty<double>
+{
+public:
+    SpinBoxDoubleProperty(double value, const QString &name);
+
+    QString specialValue() const;
+    void setSpecialValue(const QString &specialValue);
+
+    void setRange(double low, double hi);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+
+private:
+    QString m_specialValue;
+    double m_low;
+    double m_hi;
+};
+
+class QT_PROPERTYEDITOR_EXPORT CharProperty: public AbstractProperty<QChar>
+{
+public:
+    CharProperty(QChar value, const QString &name);
 
     void setValue(const QVariant &value);
     QString toString() const;
@@ -346,7 +408,7 @@ class QT_PROPERTYEDITOR_EXPORT MapProperty: public AbstractProperty<QVariant>
 {
 public:
     MapProperty(const QMap<QString, QVariant> &items, const QVariant &value,
-                const QString &name);
+                const QString &name, const QStringList &overrideKeys = QStringList());
 
     QStringList keys() const;
     QMap<QString, QVariant> items() const;
@@ -362,7 +424,7 @@ public:
 
 private:
     QMap<QString, QVariant> m_items;
-    QStringList m_keys;
+    QStringList m_keys, comboKeys;
 };
 
 class QT_PROPERTYEDITOR_EXPORT FlagsProperty: public MapProperty
@@ -385,10 +447,28 @@ public:
     void setValue(const QVariant &value);
 };
 
+class QT_PROPERTYEDITOR_EXPORT PointFProperty: public AbstractPropertyGroup
+{
+public:
+    PointFProperty(const QPointF &value, const QString &name);
+
+    QVariant value() const;
+    void setValue(const QVariant &value);
+};
+
 class QT_PROPERTYEDITOR_EXPORT SizeProperty: public AbstractPropertyGroup
 {
 public:
     SizeProperty(const QSize &value, const QString &name);
+
+    QVariant value() const;
+    void setValue(const QVariant &value);
+};
+
+class QT_PROPERTYEDITOR_EXPORT SizeFProperty: public AbstractPropertyGroup
+{
+public:
+    SizeFProperty(const QSizeF &value, const QString &name);
 
     QVariant value() const;
     void setValue(const QVariant &value);
@@ -412,6 +492,15 @@ public:
     void setValue(const QVariant &value);
 };
 
+class QT_PROPERTYEDITOR_EXPORT RectFProperty: public AbstractPropertyGroup
+{
+public:
+    RectFProperty(const QRectF &value, const QString &name);
+
+    QVariant value() const;
+    void setValue(const QVariant &value);
+};
+
 class QT_PROPERTYEDITOR_EXPORT ColorProperty: public AbstractPropertyGroup
 {
 public:
@@ -427,12 +516,15 @@ public:
 class QT_PROPERTYEDITOR_EXPORT FontProperty: public AbstractPropertyGroup
 {
 public:
-    FontProperty(const QFont &value, const QString &name);
+    FontProperty(const QFont &value, const QString &name, QWidget *selectedWidget);
 
     QString toString() const;
     QVariant value() const;
     void setValue(const QVariant &value);
     QVariant decoration() const;
+private:
+    QFont m_font;
+    QWidget *m_selectedWidget;
 };
 
 class QT_PROPERTYEDITOR_EXPORT SizePolicyProperty: public AbstractPropertyGroup
@@ -504,11 +596,12 @@ private:
     void addCursor(QComboBox *combo, int shape) const;
 };
 
-class QT_PROPERTYEDITOR_EXPORT PaletteProperty: public AbstractProperty<QPalette>
+class QT_PROPERTYEDITOR_EXPORT UrlProperty: public AbstractPropertyGroup
 {
 public:
-    PaletteProperty(const QPalette &value, QWidget *selectedWidget, const QString &name);
+    UrlProperty(const QUrl &value, const QString &name);
 
+    QVariant value() const;
     void setValue(const QVariant &value);
     QString toString() const;
 
@@ -516,7 +609,21 @@ public:
     void updateEditorContents(QWidget *editor);
     void updateValue(QWidget *editor);
 
-    QWidget *m_selectedWidget;
+private:
+    QUrl m_value;
+};
+
+class QT_PROPERTYEDITOR_EXPORT StringListProperty: public AbstractProperty<QStringList>
+{
+public:
+    StringListProperty(const QStringList &value, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
 };
 
 }  // namespace qdesigner_internal

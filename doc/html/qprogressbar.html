@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/widgets/qprogressbar.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/src/gui/widgets/qprogressbar.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/src/gui/widgets/qprogressbar.cpp -->
 <head>
-    <title>Qt 4.1: QProgressBar Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QProgressBar Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QProgressBar Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QProgressBar Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QProgressBar widget provides a horizontal or vertical progress bar. <a href="#details">More...</a></p>
-<pre>#include &lt;QProgressBar&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre> #include &lt;QProgressBar&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qprogressbar-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -34,11 +28,12 @@ body { background: #ffffff; color: black; }</style>
 <p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qprogressbar.html#alignment-prop">alignment</a></b> : Qt::Alignment</li>
+<li><div class="fn"/><b><a href="qprogressbar.html#format-prop">format</a></b> : QString</li>
 <li><div class="fn"/><b><a href="qprogressbar.html#invertedAppearance-prop">invertedAppearance</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qprogressbar.html#maximum-prop">maximum</a></b> : int</li>
 <li><div class="fn"/><b><a href="qprogressbar.html#minimum-prop">minimum</a></b> : int</li>
-<li><div class="fn"/><b><a href="qprogressbar.html#orientation-prop">orientation</a></b> : Qt::Orientation</li>
 </ul></td><td valign="top"><ul>
+<li><div class="fn"/><b><a href="qprogressbar.html#orientation-prop">orientation</a></b> : Qt::Orientation</li>
 <li><div class="fn"/><b><a href="qprogressbar.html#text-prop">text</a></b> : const QString</li>
 <li><div class="fn"/><b><a href="qprogressbar.html#textDirection-prop">textDirection</a></b> : Direction</li>
 <li><div class="fn"/><b><a href="qprogressbar.html#textVisible-prop">textVisible</a></b> : bool</li>
@@ -47,7 +42,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table></p>
 <ul>
-<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>55 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -55,12 +50,14 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qprogressbar.html#QProgressBar">QProgressBar</a></b> ( QWidget * <i>parent</i> = 0 )</li>
 <li><div class="fn"/>Qt::Alignment <b><a href="qprogressbar.html#alignment-prop">alignment</a></b> () const</li>
+<li><div class="fn"/>QString <b><a href="qprogressbar.html#format-prop">format</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qprogressbar.html#invertedAppearance-prop">invertedAppearance</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qprogressbar.html#textVisible-prop">isTextVisible</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qprogressbar.html#maximum-prop">maximum</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qprogressbar.html#minimum-prop">minimum</a></b> () const</li>
 <li><div class="fn"/>Qt::Orientation <b><a href="qprogressbar.html#orientation-prop">orientation</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qprogressbar.html#alignment-prop">setAlignment</a></b> ( Qt::Alignment <i>alignment</i> )</li>
+<li><div class="fn"/>void <b><a href="qprogressbar.html#format-prop">setFormat</a></b> ( const QString &amp; <i>format</i> )</li>
 <li><div class="fn"/>void <b><a href="qprogressbar.html#invertedAppearance-prop">setInvertedAppearance</a></b> ( bool <i>invert</i> )</li>
 <li><div class="fn"/>void <b><a href="qprogressbar.html#setRange">setRange</a></b> ( int <i>minimum</i>, int <i>maximum</i> )</li>
 <li><div class="fn"/>void <b><a href="qprogressbar.html#textDirection-prop">setTextDirection</a></b> ( QProgressBar::Direction <i>textDirection</i> )</li>
@@ -70,8 +67,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qprogressbar.html#value-prop">value</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>195 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
@@ -84,7 +81,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qprogressbar.html#value-prop">setValue</a></b> ( int <i>value</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
+<li><div class="fn"/>19 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 </ul>
 <a name="signals"></a>
@@ -99,10 +96,11 @@ body { background: #ffffff; color: black; }</style>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
+<li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -113,11 +111,11 @@ body { background: #ffffff; color: black; }</style>
 <p>You can specify the minimum and maximum number of steps with <a href="qprogressbar.html#minimum-prop">setMinimum</a>() and setMaximum. The current number of steps is set with <a href="qprogressbar.html#value-prop">setValue</a>(). The progress bar can be rewound to the beginning with <a href="qprogressbar.html#reset">reset</a>().</p>
 <p>If minimum and maximum both are set to 0, the bar shows a busy indicator instead of a percentage of steps. This is useful, for example, when using <a href="qftp.html">QFtp</a> or <a href="qhttp.html">QHttp</a> to download items when they are unable to determine the size of the item being downloaded.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/macintosh-progressbar.png" alt="Screenshot of a Macintosh style progress bar" /></td><td>A progress bar shown in the Macintosh widget style.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><img src="images/windowsxp-progressbar.png" alt="Screenshot of a Windows XP style progress bar" /></td><td>A progress bar shown in the Windows XP widget style.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/plastique-progressbar.png" alt="Screenshot of a Plastique style progress bar" /></td><td>A progress bar shown in the Plastique widget style.</td></tr>
+<tr valign="top" class="odd"><td><img src="images/macintosh-progressbar.png" alt="Screenshot of a Macintosh style progress bar" /></td><td>A progress bar shown in the Macintosh widget style.</td></tr>
+<tr valign="top" class="even"><td><img src="images/windowsxp-progressbar.png" alt="Screenshot of a Windows XP style progress bar" /></td><td>A progress bar shown in the Windows XP widget style.</td></tr>
+<tr valign="top" class="odd"><td><img src="images/plastique-progressbar.png" alt="Screenshot of a Plastique style progress bar" /></td><td>A progress bar shown in the Plastique widget style.</td></tr>
 </table></p>
-<p>See also <a href="qprogressdialog.html">QProgressDialog</a> and <a href="guibooks.html#fowler">GUI Design Handbook: Progress Indicator</a>.</p>
+<p>See also <a href="qtimeline.html">QTimeLine</a>, <a href="qprogressdialog.html">QProgressDialog</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Progress Indicator</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Direction-enum"></a>enum QProgressBar::Direction</h3>
@@ -138,6 +136,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>Qt::Alignment alignment () const</b></li>
 <li><div class="fn"/><b>void setAlignment ( Qt::Alignment <i>alignment</i> )</b></li>
 </ul>
+<h3 class="fn"><a name="format-prop"></a>format : <a href="qstring.html">QString</a></h3>
+<p>This property holds the string used to generate the current text.</p>
+<p>%p - is replaced by the percentage completed. %v - is replaced by the current value. %m - is replaced by the total number of steps.</p>
+<p>The default value is &quot;%p%&quot;.</p>
+<p>This property was introduced in Qt 4.2.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>QString format () const</b></li>
+<li><div class="fn"/><b>void setFormat ( const QString &amp; <i>format</i> )</b></li>
+</ul>
+<p>See also <a href="qprogressbar.html#text-prop">text</a>().</p>
 <h3 class="fn"><a name="invertedAppearance-prop"></a>invertedAppearance : bool</h3>
 <p>This property holds whether or not a progress bar shows its progress inverted.</p>
 <p>If this property is false, the progress bar grows in the other direction (e.g. from right to left). By default, the progress bar is not inverted.</p>
@@ -228,6 +237,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

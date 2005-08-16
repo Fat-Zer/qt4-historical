@@ -28,7 +28,6 @@
 #include <sys/shm.h>
 
 
-
 QSharedMemory::QSharedMemory()
     : shmBase(0), shmSize(0), character(0),  shmId(-1), key(-1)
 {
@@ -140,16 +139,13 @@ QSharedMemory::QSharedMemory (int size, const QString &filename, char c)
 bool QSharedMemory::create ()
 {
   shmId = shmget (key, shmSize, IPC_CREAT | 0666);
-  if (shmId == -1)
-    return false;
-  else
-    return true;
+  return (shmId != -1);
 }
 
 void QSharedMemory::destroy ()
 {
-  struct shmid_ds shm;
-  shmctl (shmId, IPC_RMID, &shm);
+    if (shmId != -1)
+        shmctl(shmId, IPC_RMID, 0);
 }
 
 bool QSharedMemory::attach ()

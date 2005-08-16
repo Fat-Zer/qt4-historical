@@ -29,6 +29,7 @@
 #include <QtGui/qevent.h>
 
 class QAction;
+class QMainWindow;
 
 namespace qdesigner_internal {
 
@@ -63,6 +64,9 @@ public:
 private:
     FormWindow *m_formWindow;
     QAction *m_action;
+
+    bool mainWindowSeparatorEvent(QWidget *widget, QEvent *event);
+    QPointer<QMainWindow> m_separator_drag_mw;
 };
 
 }  // namespace qdesigner_internal

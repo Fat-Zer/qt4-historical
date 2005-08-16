@@ -119,7 +119,9 @@ public:
     QString absoluteFilePath(const QString &fileName) const;
     QString relativeFilePath(const QString &fileName) const;
 
-    static QString convertSeparators(const QString &pathName);
+    QT_DEPRECATED static QString convertSeparators(const QString &pathName);
+    static QString toNativeSeparators(const QString &pathName);
+    static QString fromNativeSeparators(const QString &pathName);
 
     bool cd(const QString &dirName);
     bool cdUp();
@@ -222,6 +224,12 @@ public:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::SortFlags)
+
+#ifndef QT_NO_DEBUG
+class QDebug;
+Q_CORE_EXPORT QDebug operator<<(QDebug debug, QDir::Filters filters);
+Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QDir &dir);
+#endif
 
 QT_END_HEADER
 

@@ -38,7 +38,7 @@ class QMenu;
 class Q_GUI_EXPORT QToolButton : public QAbstractButton
 {
     Q_OBJECT
-    Q_ENUMS(Qt::ToolButtonStyle Qt::ArrowType)
+    Q_ENUMS(Qt::ToolButtonStyle Qt::ArrowType ToolButtonPopupMode)
 #ifndef QT_NO_MENU
     Q_PROPERTY(ToolButtonPopupMode popupMode READ popupMode WRITE setPopupMode)
 #endif
@@ -64,10 +64,10 @@ public:
     Qt::ArrowType arrowType() const;
     void setArrowType(Qt::ArrowType type);
 
-#ifndef QT_NO_MENU    
+#ifndef QT_NO_MENU
     void setMenu(QMenu* menu);
     QMenu* menu() const;
-    
+
     void setPopupMode(ToolButtonPopupMode mode);
     ToolButtonPopupMode popupMode() const;
 #endif
@@ -91,6 +91,7 @@ protected:
     QToolButton(QToolButtonPrivate &, QWidget* parent);
     bool event(QEvent *e);
     void mousePressEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *);
     void actionEvent(QActionEvent *);
 
@@ -99,6 +100,7 @@ protected:
     void timerEvent(QTimerEvent *);
     void changeEvent(QEvent *);
 
+    bool hitButton(const QPoint &pos) const;
     void nextCheckState();
 
 private:

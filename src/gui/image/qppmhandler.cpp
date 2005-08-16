@@ -99,7 +99,6 @@ static bool read_pbm_body(QIODevice *device, char type, int w, int h, int mcc, Q
     int nbits, y;
     int pbm_bpl;
     bool raw;
-    QImage image;
 
     QImage::Format format;
     switch (type) {
@@ -126,9 +125,11 @@ static bool read_pbm_body(QIODevice *device, char type, int w, int h, int mcc, Q
     int maxc = mcc;
     if (maxc > 255)
         maxc = 255;
-    image = QImage(w, h, format);
-    if (image.isNull())
-        return false;
+    if (outImage->size() != QSize(w, h) || outImage->format() != format) {
+        *outImage = QImage(w, h, format);
+        if (outImage->isNull())
+            return false;
+    }
 
     pbm_bpl = (nbits*w+7)/8;                        // bytes per scanline in PBM
 
@@ -143,7 +144,7 @@ static bool read_pbm_body(QIODevice *device, char type, int w, int h, int mcc, Q
                     delete[] buf24;
                     return false;
                 }
-                p = (QRgb *)image.scanLine(y);
+                p = (QRgb *)outImage->scanLine(y);
                 end = p + w;
                 b = buf24;
                 while (p < end) {
@@ -154,7 +155,7 @@ static bool read_pbm_body(QIODevice *device, char type, int w, int h, int mcc, Q
             delete[] buf24;
         } else {                                // type 4,5
             for (y=0; y<h; y++) {
-                if (device->read((char *)image.scanLine(y), pbm_bpl)
+                if (device->read((char *)outImage->scanLine(y), pbm_bpl)
                         != pbm_bpl)
                     return false;
             }
@@ -163,7 +164,7 @@ static bool read_pbm_body(QIODevice *device, char type, int w, int h, int mcc, Q
         register uchar *p;
         int n;
         for (y=0; y<h; y++) {
-            p = image.scanLine(y);
+            p = outImage->scanLine(y);
             n = pbm_bpl;
             if (nbits == 1) {
                 int b;
@@ -214,16 +215,15 @@ static bool read_pbm_body(QIODevice *device, char type, int w, int h, int mcc, Q
     }
 
     if (nbits == 1) {                                // bitmap
-        image.setNumColors(2);
-        image.setColor(0, qRgb(255,255,255)); // white
-        image.setColor(1, qRgb(0,0,0));        // black
+        outImage->setNumColors(2);
+        outImage->setColor(0, qRgb(255,255,255)); // white
+        outImage->setColor(1, qRgb(0,0,0));        // black
     } else if (nbits == 8) {                        // graymap
-        image.setNumColors(maxc+1);
+        outImage->setNumColors(maxc+1);
         for (int i=0; i<=maxc; i++)
-            image.setColor(i, qRgb(i*255/maxc,i*255/maxc,i*255/maxc));
+            outImage->setColor(i, qRgb(i*255/maxc,i*255/maxc,i*255/maxc));
     }
 
-    *outImage = image;
     return true;
 }
 
@@ -234,9 +234,9 @@ static bool write_pbm_image(QIODevice *out, const QImage &sourceImage, const QBy
     QByteArray format = sourceFormat;
 
     format = format.left(3);                        // ignore RAW part
-    bool gray = format == "PGM";
+    bool gray = format == "pgm";
 
-    if (format == "PBM") {
+    if (format == "pbm") {
         image = image.convertToFormat(QImage::Format_MonoLSB);
     } else if (image.depth() == 1) {
         image = image.convertToFormat(QImage::Format_Indexed8);

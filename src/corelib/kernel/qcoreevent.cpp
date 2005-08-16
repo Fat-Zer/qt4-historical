@@ -91,17 +91,32 @@
     \value Close                            Widget was closed (QCloseEvent).
     \value ContextMenu                      Context popup menu (QContextMenuEvent).
     \value DeferredDelete                   The object will be deleted after it has cleaned up.
-    \value DragEnter                        The cursor enters a widget during a drag and drop action (QDragEnterEvent).
-    \value DragLeave                        The cursor leaves a widget during a drag and drop action (QDragLeaveEvent).
-    \value DragMove                         A drag and drop action is in progress (QDragMoveEvent).
-    \value Drop                             A drag and drop action is completed (QDropEvent).
+    \value DragEnter                        The cursor enters a widget during a drag and drop operation (QDragEnterEvent).
+    \value DragLeave                        The cursor leaves a widget during a drag and drop operation (QDragLeaveEvent).
+    \value DragMove                         A drag and drop operation is in progress (QDragMoveEvent).
+    \value Drop                             A drag and drop operation is completed (QDropEvent).
     \value EnabledChange                    Widget's enabled state has changed.
     \value Enter                            Mouse enters widget's boundaries.
+    \value EnterEditFocus                   An editor widget gains focus for editing.
     \value EnterWhatsThisMode               Send to toplevel widgets when the application enters "What's This?" mode.
     \value FileOpen                         File open request (QFileOpenEvent).
     \value FocusIn                          Widget gains keyboard focus (QFocusEvent).
     \value FocusOut                         Widget loses keyboard focus (QFocusEvent).
     \value FontChange                       Widget's font has changed.
+    \value GraphicsSceneContextMenu         Context popup menu over a graphics scene (QGraphicsSceneContextMenuEvent).
+    \value GraphicsSceneDragEnter           The cursor enters a graphics scene during a drag and drop operation.
+    \value GraphicsSceneDragLeave           The cursor leaves a graphics scene during a drag and drop operation.
+    \value GraphicsSceneDragMove            A drag and drop operation is in progress over a scene.
+    \value GraphicsSceneDrop                A drag and drop operation is completed over a scene.
+    \value GraphicsSceneHelp                The user requests help for a graphics scene (QHelpEvent).
+    \value GraphicsSceneHoverEnter          The mouse cursor enters a hover item in a graphics scene (QGraphicsSceneHoverEvent).
+    \value GraphicsSceneHoverLeave          The mouse cursor leaves a hover item in a graphics scene (QGraphicsSceneHoverEvent).
+    \value GraphicsSceneHoverMove           The mouse cursor moves inside a hover item in a graphics scene (QGraphicsSceneHoverEvent).
+    \value GraphicsSceneMouseDoubleClick    Mouse press again (double click) in a graphics scene (QGraphicsSceneMouseEvent).
+    \value GraphicsSceneMouseMove           Move mouse in a graphics scene (QGraphicsSceneMouseEvent).
+    \value GraphicsSceneMousePress          Mouse press in a graphics scene (QGraphicsSceneMouseEvent).
+    \value GraphicsSceneMouseRelease        Mouse release in a graphics scene (QGraphicsSceneMouseEvent).
+    \value GraphicsSceneWheel               Mouse wheel rolled in a graphics scene (QGraphicsSceneWheelEvent).
     \value Hide                             Widget was hidden (QHideEvent).
     \value HideToParent                     A child widget has been hidden.
     \value HoverEnter                       The mouse cursor enters a hover widget (QHoverEvent).
@@ -116,6 +131,7 @@
     \value LayoutDirectionChange            The direction of layouts changed.
     \value LayoutRequest                    Widget layout needs to be redone.
     \value Leave                            Mouse leaves widget's boundaries.
+    \value LeaveEditFocus                   An editor widget loses focus for editing.
     \value LeaveWhatsThisMode               Send to toplevel widgets when the application leaves "What's This?" mode.
     \value LocaleChange                     The system locale has changed.
     \value MenubarUpdated                   The window's menu bar has been updated.
@@ -145,6 +161,8 @@
     \value TabletMove                       Wacom tablet move (QTabletEvent).
     \value TabletPress                      Wacom tablet press (QTabletEvent).
     \value TabletRelease                    Wacom tablet release (QTabletEvent).
+    \value TabletEnterProximity             Wacom tablet enter proximity event (QTabletEvent), sent to QApplication.
+    \value TabletLeaveProximity             Wacom tablet leave proximity event (QTabletEvent), sent to QApplication.
     \value Timer                            Regular timer events (QTimerEvent).
     \value ToolBarChange                    The toolbar button is toggled on Mac OS X.
     \value ToolTip                          A tooltip was requested (QHelpEvent).
@@ -162,6 +180,8 @@
     \value WindowTitleChange                The window title has changed.
     \value WindowUnblocked                  The window is unblocked after a modal dialog exited.
     \value ZOrderChange                     The widget's z-order has changed. This event is never sent to top level windows.
+    \value KeyboardLayoutChange             The keyboard layout has changed.
+    \value DynamicPropertyChange            A dynamic property was added, changed or removed from the object.
 
     User events should have values between \c User and \c{MaxUser}:
 
@@ -444,4 +464,39 @@ QCustomEvent::~QCustomEvent()
     A child has been inserted if the event's type() is ChildInserted.
 */
 
+/*!
+    \class QDynamicPropertyChangeEvent
+    \since 4.2
+    \brief The QDynamicPropertyChangeEvent class contains event parameters for dynamic
+    property change events.
 
+    \ingroup events
+
+    Dynamic property change events are sent to objects when properties are
+    dynamically added, changed or removed using QObject::setProperty().
+*/
+
+/*!
+    Constructs a dynamic property change event object with the property name set to
+    \a name.
+*/
+QDynamicPropertyChangeEvent::QDynamicPropertyChangeEvent(const QByteArray &name)
+    : QEvent(QEvent::DynamicPropertyChange), n(name)
+{
+}
+
+/*!
+    \internal
+*/
+QDynamicPropertyChangeEvent::~QDynamicPropertyChangeEvent()
+{
+}
+
+/*!
+    \fn QByteArray QDynamicPropertyChangeEvent::propertyName() const
+
+    Returns the name of the dynamic property that was added, changed or
+    removed.
+
+    \sa QObject::setProperty(), QObject::dynamicPropertyNames()
+*/

@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/mac-differences.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-win-opensource-src-4.1.5/doc/src/mac-differences.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-win-opensource-src-4.2.0/doc/src/mac-differences.qdoc -->
 <head>
-    <title>Qt 4.1: Qt/Mac-Specific Issues</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Qt/Mac-Specific Issues</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt/Mac-Specific Issues<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Qt/Mac-Specific Issues<br /><small></small></h1>
 <p>This file outlines known issues and possible workarounds for limitations on Mac OS X with Qt. Contact Trolltech support if you find additional issues which are not covered here.</p>
 <p>See also the document <a href="qtmac-as-native.html">Qt/Mac is Mac OS X Native</a>.</p>
 <ul><li><a href="#gui-applications">GUI Applications</a></li>
@@ -63,12 +57,12 @@ body { background: #ffffff; color: black; }</style>
 <p>If you want to incorporate dynamic libraries as part of your Mac OS X application bundle (the application directory), then you place these into a directory called Frameworks, a subdirectory of the application bundle.</p>
 <p>The application finds these dynamic libraries if the libraries have an install name of &quot;<a href="mailto:@executable_path">@executable_path</a>/../Frameworks/libname.dylib.</p>
 <p>If you use <tt>qmake</tt> and Makefiles, use the <tt>QMAKE_LFLAGS_SONAME</tt> setting:</p>
-<pre>&nbsp;   QMAKE_LFLAGS_SONAME  = -Wl,-install_name,@executable_path/../Frameworks/</pre>
+<pre> QMAKE_LFLAGS_SONAME  = -Wl,-install_name,@executable_path/../Frameworks/</pre>
 <p>Alternatively you can modify the intall name using the install_name_tool(1) command line tool. See its manpage for more information.</p>
 <p>Note that the <tt>DYLD_LIBRARY_PATH</tt> environment variable will override these settings, and any other default paths such as a lookup of dynamic libraries inside <tt>/usr/lib</tt> and similar default locations.</p>
 <a name="combining-libraries"></a>
 <h3>Combining Libraries</h3>
-<p>If you want to build a new dynamic library combining the Qt 4.0 dynamic libraries, you need to introduce the <tt>ld -r</tt> flag. Then relocation information is stored in the the output file, so that this file could be the subject of another <tt>ld</tt> run. This is done by setting the <tt>-r</tt> flag in the <tt>.pro</tt> file, and the <tt>LFLAGS</tt> settings.</p>
+<p>If you want to build a new dynamic library combining the Qt 4 dynamic libraries, you need to introduce the <tt>ld -r</tt> flag. Then relocation information is stored in the the output file, so that this file could be the subject of another <tt>ld</tt> run. This is done by setting the <tt>-r</tt> flag in the <tt>.pro</tt> file, and the <tt>LFLAGS</tt> settings.</p>
 <a name="initialization-order"></a>
 <h3>Initialization Order</h3>
 <p>dyld(1) will call global static initializers in the order in which they are linked into your application. If a library links against Qt and references globals in Qt (from global initializers in your own library) you should be sure to link against Qt before your library, otherwise the result will be undefined (as Qt's global initializers have not been called yet).</p>
@@ -89,14 +83,14 @@ body { background: #ffffff; color: black; }</style>
 <a name="accessing-the-bundle-path"></a>
 <h3>Accessing the Bundle Path</h3>
 <p>The Mac OS X application is actually a directory (ending with <tt>.app</tt>). This directory has various sub-directories and sources. In case you want to place for example the plugin directory, inside this bundle, then you need to find out where the bundle resides on the disk. The following code will do this:</p>
-<pre>&nbsp;   CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
-                                           kCFURLPOSIXPathStyle);
-    const char *pathPtr = CFStringGetCStringPtr(macPath,
-                                           CFStringGetSystemEncoding());
-    qDebug(&quot;Path = %s&quot;, pathPtr);
-    CFRelease(pluginRef);
-    CFRelease(macPath);</pre>
+<pre> CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+ CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
+                                        kCFURLPOSIXPathStyle);
+ const char *pathPtr = CFStringGetCStringPtr(macPath,
+                                        CFStringGetSystemEncoding());
+ qDebug(&quot;Path = %s&quot;, pathPtr);
+ CFRelease(pluginRef);
+ CFRelease(macPath);</pre>
 <p>Do not forget to protect this code with an #if defined(<a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a>) macro if you are deploying on more than one platform.</p>
 <a name="translating-the-application-menu-and-native-dialogs"></a>
 <h3>Translating the Application Menu and Native Dialogs</h3>
@@ -104,21 +98,21 @@ body { background: #ffffff; color: black; }</style>
 <p>http://developer.apple.com/documentation/CoreFoundation/Conceptual/CFBundles/index.html</p>
 <p>And look for the heading: Adding Localized Resources</p>
 <p>The main thing you need to do is create a file called locversion.plist. Here is an example one for Norwegian:</p>
-<pre>&nbsp;   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-    &lt;!DOCTYPE plist PUBLIC &quot;-//Apple Computer//DTD PLIST 1.0//EN&quot;
-    &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
-    &lt;plist version=&quot;1.0&quot;&gt;
-    &lt;dict&gt;
-        &lt;key&gt;LprojCompatibleVersion&lt;/key&gt;
-        &lt;string&gt;123&lt;/string&gt;
-        &lt;key&gt;LprojLocale&lt;/key&gt;
-        &lt;string&gt;no&lt;/string&gt;
-        &lt;key&gt;LprojRevisionLevel&lt;/key&gt;
-        &lt;string&gt;1&lt;/string&gt;
-        &lt;key&gt;LprojVersion&lt;/key&gt;
-        &lt;string&gt;123&lt;/string&gt;
-    &lt;/dict&gt;
-    &lt;/plist&gt;</pre>
+<pre> &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+ &lt;!DOCTYPE plist PUBLIC &quot;-<span class="comment">//Apple Computer//DTD PLIST 1.0//EN&quot;</span>
+ &quot;http:<span class="comment">//www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
+ &lt;plist version=&quot;1.0&quot;&gt;
+ &lt;dict&gt;
+     &lt;key&gt;LprojCompatibleVersion&lt;/key&gt;
+     &lt;string&gt;123&lt;/string&gt;
+     &lt;key&gt;LprojLocale&lt;/key&gt;
+     &lt;string&gt;no&lt;/string&gt;
+     &lt;key&gt;LprojRevisionLevel&lt;/key&gt;
+     &lt;string&gt;1&lt;/string&gt;
+     &lt;key&gt;LprojVersion&lt;/key&gt;
+     &lt;string&gt;123&lt;/string&gt;
+ &lt;/dict&gt;
+ &lt;/plist&gt;</pre>
 <p>Then when you run the application with your preferred language set to Norwegian you should see menu items like &quot;Avslutt&quot; instead of &quot;Quit&quot;.</p>
 <a name="user-interface"></a>
 <h2>User Interface</h2>
@@ -146,11 +140,11 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="native-widgets"></a>
 <h3>Native Widgets</h3>
-<p>Qt/Mac has support for sheets, drawers. Represented by <a href="qt.html#WindowType-enum">Qt::Sheet</a> and <a href="qt.html#WindowType-enum">Qt::Drawer</a> in the window flags respectiviely. Brushed metal windows are also possible using <a href="qt.html#WidgetAttribute-enum">Qt::WA_MacMetalStyle</a> window attribute.</p>
+<p>Qt/Mac has support for sheets and drawers, represented in the window flags by <a href="qt.html#WindowType-enum">Qt::Sheet</a> and <a href="qt.html#WindowType-enum">Qt::Drawer</a> respectiviely. Brushed metal windows can also be created by using the <a href="qt.html#WidgetAttribute-enum">Qt::WA_MacMetalStyle</a> window attribute.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

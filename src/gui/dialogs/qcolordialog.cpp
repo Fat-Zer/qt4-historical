@@ -821,7 +821,7 @@ void QColorPicker::setCol(int h, int s)
         return;
     QRect r(colPt(), QSize(20,20));
     hue = nhue; sat = nsat;
-    r = r.unite(QRect(colPt(), QSize(20,20)));
+    r = r.united(QRect(colPt(), QSize(20,20)));
     r.translate(contentsRect().x()-9, contentsRect().y()-9);
     //    update(r);
     repaint(r);
@@ -1389,7 +1389,7 @@ void QColorDialogPrivate::_q_addCustom()
 
 
 /*!
-    \class QColorDialog qcolordialog.h
+    \class QColorDialog
     \brief The QColorDialog class provides a dialog widget for specifying colors.
 
     \mainclass
@@ -1416,14 +1416,14 @@ void QColorDialogPrivate::_q_addCustom()
     the custom colors, and use customColor() to get them.
 
     Additional widgets that allow users to pick colors are available
-    as \link
-    http://www.trolltech.com/products/solutions/index.html Qt
-    Solutions\endlink.
+    as \l{Qt Solutions}.
 
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
     how to use QColorDialog as well as other built-in Qt dialogs.
 
     \image plastique-colordialog.png A color dialog in the Plastique widget style.
+
+    \sa QColor, QFileDialog, QPrintDialog, QFontDialog, {Standard Dialogs Example}
 */
 
 /*!

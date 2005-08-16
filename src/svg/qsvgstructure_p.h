@@ -53,10 +53,14 @@ public:
     QSvgNode *scopeNode(const QString &id) const;
     QSvgStyleProperty *scopeStyle(const QString &id) const;
     void addChild(QSvgNode *child, const QString &id, bool def = false);
+    virtual QRectF bounds() const;
+    virtual QRectF transformedBounds(const QMatrix &mat) const;
+    QSvgNode *previousSiblingNode(QSvgNode *n) const;
 protected:
     QList<QSvgNode*>          m_renderers;
     QHash<QString, QSvgNode*> m_scope;
     QList<QSvgStructureNode*> m_linkedScopes;
+    mutable QRectF m_bounds;
 };
 
 class QSvgG : public QSvgStructureNode

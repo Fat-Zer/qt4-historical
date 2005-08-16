@@ -26,6 +26,7 @@
 
 #include <QDialog>
 
+class QDialogButtonBox;
 class QPushButton;
 class QSqlTableModel;
 
@@ -43,6 +44,7 @@ private:
     QPushButton *submitButton;
     QPushButton *revertButton;
     QPushButton *quitButton;
+    QDialogButtonBox *buttonBox;
     QSqlTableModel *model;
 };
 

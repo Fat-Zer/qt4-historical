@@ -44,11 +44,11 @@ class Q_COMPAT_EXPORT Q3ProgressBar : public QFrame
     Q_PROPERTY(bool percentageVisible READ percentageVisible WRITE setPercentageVisible)
 
 public:
-    Q3ProgressBar(QWidget *parent, const char *name, Qt::WFlags f=0);
+    Q3ProgressBar(QWidget *parent, const char *name, Qt::WindowFlags f=0);
     Q3ProgressBar(int totalSteps, QWidget *parent, const char *name,
-                  Qt::WFlags f=0);
-    Q3ProgressBar(QWidget *parent = 0, Qt::WFlags f = 0);
-    Q3ProgressBar(int totalSteps, QWidget *parent = 0, Qt::WFlags f=0);
+                  Qt::WindowFlags f=0);
+    Q3ProgressBar(QWidget *parent = 0, Qt::WindowFlags f = 0);
+    Q3ProgressBar(int totalSteps, QWidget *parent = 0, Qt::WindowFlags f=0);
 
     int totalSteps() const;
     int progress() const;
@@ -64,6 +64,10 @@ public:
     void setPercentageVisible(bool);
 
     void setVisible(bool visible);
+
+    void setMargin(int margin) { setContentsMargins(margin, margin, margin, margin); }
+    int margin() const 
+    { int margin; int dummy; getContentsMargins(&margin, &dummy, &dummy, &dummy);  return margin; }    
 
 public Q_SLOTS:
     void reset();

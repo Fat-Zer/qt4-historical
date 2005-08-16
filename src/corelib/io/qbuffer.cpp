@@ -35,7 +35,7 @@ public:
 #ifndef QT_NO_QOBJECT
         signalsEmitted(false), writtenSinceLastEmit(0),
 #endif
-        ioIndex(0), buf(0)  { }
+        buf(0)  { }
     ~QBufferPrivate() { }
 
 #ifndef QT_NO_QOBJECT
@@ -46,8 +46,8 @@ public:
     qint64 writtenSinceLastEmit;
 #endif
 
-    qint64 ioIndex;
     QByteArray *buf;
+    int ioIndex;
 
     QByteArray defaultBuf;
 };
@@ -119,7 +119,7 @@ void QBufferPrivate::_q_emitSignals()
     arrived. QBuffer also emits bytesWritten() every time new data
     has been written to the buffer.
 
-    \sa QFile, QDataStream, QTextStream, QByteArray, \link shclass.html Shared Classes\endlink
+    \sa QFile, QDataStream, QTextStream, QByteArray
 */
 
 #ifdef QT_NO_QOBJECT
@@ -128,12 +128,14 @@ QBuffer::QBuffer()
 {
     Q_D(QBuffer);
     d->buf = &d->defaultBuf;
+    d->ioIndex = 0;
 }
 QBuffer::QBuffer(QByteArray *buf)
     : QIODevice(*new QBufferPrivate)
 {
     Q_D(QBuffer);
     d->buf = buf ? buf : &d->defaultBuf;
+    d->ioIndex = 0;
     d->defaultBuf.clear();
 }
 #else
@@ -149,6 +151,7 @@ QBuffer::QBuffer(QObject *parent)
 {
     Q_D(QBuffer);
     d->buf = &d->defaultBuf;
+    d->ioIndex = 0;
 }
 
 /*!
@@ -177,6 +180,7 @@ QBuffer::QBuffer(QByteArray *byteArray, QObject *parent)
     Q_D(QBuffer);
     d->buf = byteArray ? byteArray : &d->defaultBuf;
     d->defaultBuf.clear();
+    d->ioIndex = 0;
 }
 #endif
 
@@ -226,6 +230,7 @@ void QBuffer::setBuffer(QByteArray *byteArray)
         d->buf = &d->defaultBuf;
     }
     d->defaultBuf.clear();
+    d->ioIndex = 0;
 }
 
 /*!
@@ -237,7 +242,7 @@ void QBuffer::setBuffer(QByteArray *byteArray)
 
 QByteArray &QBuffer::buffer()
 {
-    Q_D(const QBuffer);
+    Q_D(QBuffer);
     return *d->buf;
 }
 
@@ -282,6 +287,7 @@ void QBuffer::setData(const QByteArray &data)
         return;
     }
     *d->buf = data;
+    d->ioIndex = 0;
 }
 
 /*!
@@ -308,12 +314,13 @@ bool QBuffer::open(OpenMode flags)
         return false;
     }
 
-    if ((flags & QIODevice::Truncate) == QIODevice::Truncate)
+    if ((flags & QIODevice::Truncate) == QIODevice::Truncate) {
         d->buf->resize(0);
+    }
     if ((flags & QIODevice::Append) == QIODevice::Append) // append to end of buffer
-        d->ioIndex = qint64(d->buf->size());
+        seek(d->buf->size());
     else
-        d->ioIndex = 0;
+        seek(0);
 
     return true;
 }
@@ -324,9 +331,6 @@ bool QBuffer::open(OpenMode flags)
 void QBuffer::close()
 {
     QIODevice::close();
-
-    Q_D(QBuffer);
-    d->ioIndex = qint64(-1);
 }
 
 /*!
@@ -334,10 +338,7 @@ void QBuffer::close()
 */
 qint64 QBuffer::pos() const
 {
-    Q_D(const QBuffer);
-    if (!isOpen())
-        return 0;
-    return d->ioIndex;
+    return QIODevice::pos();
 }
 
 /*!
@@ -355,23 +356,12 @@ qint64 QBuffer::size() const
 bool QBuffer::seek(qint64 pos)
 {
     Q_D(QBuffer);
-    if (!isOpen()) {
-        qWarning("QBuffer::seek: IODevice is not open");
+    if (pos < 0 || pos >= d->buf->size() + 1) {
+        qWarning("QBuffer::seek: Invalid pos: %d", int(pos));
         return false;
     }
-
-    // #### maybe resize if not readonly?
-    if (pos > qint64(d->buf->size()) || pos < qint64(0)) {
-        qWarning("QBuffer::seek: Index %lld out of range", pos);
-        return false;
-    }
-
-    if (!QIODevice::seek(pos)) {
-        return false;
-    }
-    d->ioIndex = pos;
-
-    return true;
+    d->ioIndex = int(pos);
+    return QIODevice::seek(pos);
 }
 
 /*!
@@ -379,12 +369,7 @@ bool QBuffer::seek(qint64 pos)
 */
 bool QBuffer::atEnd() const
 {
-    if (!isOpen()) {
-        qWarning("QBuffer::atEnd: IODevice is not open");
-        return false;
-    }
-
-    return d_func()->ioIndex == qint64(d_func()->buf->size());
+    return QIODevice::atEnd();
 }
 
 /*!
@@ -394,9 +379,9 @@ bool QBuffer::canReadLine() const
 {
     Q_D(const QBuffer);
     if (!isOpen())
-	return false;
+        return false;
 
-    return d->buf->indexOf('\n', d->ioIndex) != -1;
+    return d->buf->indexOf('\n', int(pos())) != -1 || QIODevice::canReadLine();
 }
 
 /*!
@@ -405,15 +390,10 @@ bool QBuffer::canReadLine() const
 qint64 QBuffer::readData(char *data, qint64 len)
 {
     Q_D(QBuffer);
-    if (d->ioIndex + len > qint64(d->buf->size())) {   // overflow
-        if (d->ioIndex >= qint64(d->buf->size())) {
-            return 0;
-        } else {
-            len = qint64(d->buf->size()) - d->ioIndex;
-        }
-    }
-    memcpy(data, d->buf->constData() + int(d->ioIndex), int(len));
-    d->ioIndex += len;
+    if ((len = qMin(len, qint64(d->buf->size()) - d->ioIndex)) <= 0)
+        return qint64(0);
+    memcpy(data, d->buf->constData() + d->ioIndex, len);
+    d->ioIndex += int(len);
     return len;
 }
 
@@ -423,16 +403,18 @@ qint64 QBuffer::readData(char *data, qint64 len)
 qint64 QBuffer::writeData(const char *data, qint64 len)
 {
     Q_D(QBuffer);
-    if (d->ioIndex + len > qint64(d->buf->size())) { // overflow
-        d->buf->resize(int(d->ioIndex + len));
-        if (qint64(d->buf->size()) != d->ioIndex + len) { // could not resize
+    int extraBytes = d->ioIndex + len - d->buf->size();
+    if (extraBytes > 0) { // overflow
+        int newSize = d->buf->size() + extraBytes;
+        d->buf->resize(newSize);
+        if (d->buf->size() != newSize) { // could not resize
             qWarning("QBuffer::writeData: Memory allocation error");
             return -1;
         }
     }
 
-    memcpy(d->buf->data() + int(d->ioIndex), (uchar *)data, int(len));
-    d->ioIndex += len;
+    memcpy(d->buf->data() + d->ioIndex, (uchar *)data, int(len));
+    d->ioIndex += int(len);
 
 #ifndef QT_NO_QOBJECT
     d->writtenSinceLastEmit += len;

@@ -27,6 +27,7 @@
 #include "qpainter.h"
 #include "qpainterpath.h"
 #include "qvarlengtharray.h"
+#include <private/qpdf_p.h>
 
 #include <math.h>
 
@@ -66,21 +67,32 @@ QFixed QFontEngine::xHeight() const
     return bb.height;
 }
 
-void QFontEngine::addGlyphsToPath(glyph_t *, QFixedPoint *, int ,
-                                  QPainterPath *, QTextItem::RenderFlags)
+QFixed QFontEngine::averageCharWidth() const
 {
+    QGlyphLayout glyphs[8];
+    int nglyphs = 7;
+    QChar x((ushort)'x');
+    stringToCMap(&x, 1, glyphs, &nglyphs, 0);
+
+    glyph_metrics_t bb = const_cast<QFontEngine *>(this)->boundingBox(glyphs[0].glyph);
+    return bb.xoff;
 }
 
-void QFontEngine::getGlyphPositions(const QGlyphLayout *glyphs, int nglyphs, const QMatrix &matrix, QTextItem::RenderFlags flags, 
+
+void QFontEngine::getGlyphPositions(const QGlyphLayout *glyphs, int nglyphs, const QMatrix &matrix, QTextItem::RenderFlags flags,
                                     QVarLengthArray<glyph_t> &glyphs_out, QVarLengthArray<QFixedPoint> &positions)
 {
-    QFixed xpos = QFixed::fromReal(matrix.dx());
-    QFixed ypos = QFixed::fromReal(matrix.dy());
+    QFixed xpos;
+    QFixed ypos;
 
-    bool transform = matrix.m11() != 1.
-                     || matrix.m12() != 0.
-                     || matrix.m21() != 0.
-                     || matrix.m22() != 1.;
+    const bool transform = matrix.m11() != 1.
+                           || matrix.m12() != 0.
+                           || matrix.m21() != 0.
+                           || matrix.m22() != 1.;
+    if (!transform) {
+        xpos = QFixed::fromReal(matrix.dx());
+        ypos = QFixed::fromReal(matrix.dy());
+    }
 
     int current = 0;
     if (flags & QTextItem::RightToLeft) {
@@ -93,7 +105,7 @@ void QFontEngine::getGlyphPositions(const QGlyphLayout *glyphs, int nglyphs, con
         }
         positions.resize(nglyphs+totalKashidas);
         glyphs_out.resize(nglyphs+totalKashidas);
-        
+
         i = 0;
         while(i < nglyphs) {
             if (glyphs[i].attributes.dontPrint) {
@@ -179,7 +191,7 @@ void QFontEngine::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs,
 {
     if (!numGlyphs)
         return;
-    
+
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> positioned_glyphs;
     QMatrix matrix;
@@ -188,13 +200,111 @@ void QFontEngine::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs,
     addGlyphsToPath(positioned_glyphs.data(), positions.data(), positioned_glyphs.size(), path, flags);
 }
 
+#define GRID(x, y) grid[(y)*(w+1) + (x)]
+#define SET(x, y) (*(image_data + (y)*bpl + ((x) >> 3)) & (0x80 >> ((x) & 7)))
+
+enum { EdgeRight = 0x1,
+       EdgeDown = 0x2,
+       EdgeLeft = 0x4,
+       EdgeUp = 0x8
+};
+
+static void collectSingleContour(qreal x0, qreal y0, uint *grid, int x, int y, int w, int h, QPainterPath *path)
+{
+    Q_UNUSED(h);
+
+    path->moveTo(x + x0, y + y0);
+    while (GRID(x, y)) {
+        if (GRID(x, y) & EdgeRight) {
+            while (GRID(x, y) & EdgeRight) {
+                GRID(x, y) &= ~EdgeRight;
+                ++x;
+            }
+            Q_ASSERT(x <= w);
+            path->lineTo(x + x0, y + y0);
+            continue;
+        }
+        if (GRID(x, y) & EdgeDown) {
+            while (GRID(x, y) & EdgeDown) {
+                GRID(x, y) &= ~EdgeDown;
+                ++y;
+            }
+            Q_ASSERT(y <= h);
+            path->lineTo(x + x0, y + y0);
+            continue;
+        }
+        if (GRID(x, y) & EdgeLeft) {
+            while (GRID(x, y) & EdgeLeft) {
+                GRID(x, y) &= ~EdgeLeft;
+                --x;
+            }
+            Q_ASSERT(x >= 0);
+            path->lineTo(x + x0, y + y0);
+            continue;
+        }
+        if (GRID(x, y) & EdgeUp) {
+            while (GRID(x, y) & EdgeUp) {
+                GRID(x, y) &= ~EdgeUp;
+                --y;
+            }
+            Q_ASSERT(y >= 0);
+            path->lineTo(x + x0, y + y0);
+            continue;
+        }
+    }
+    path->closeSubpath();
+}
+
+void qt_addBitmapToPath(qreal x0, qreal y0, const uchar *image_data, int bpl, int w, int h, QPainterPath *path)
+{
+    uint *grid = new uint[(w+1)*(h+1)];
+    // set up edges
+    for (int y = 0; y <= h; ++y) {
+        for (int x = 0; x <= w; ++x) {
+            bool topLeft = (x == 0)|(y == 0) ? false : SET(x - 1, y - 1);
+            bool topRight = (x == w)|(y == 0) ? false : SET(x, y - 1);
+            bool bottomLeft = (x == 0)|(y == h) ? false : SET(x - 1, y);
+            bool bottomRight = (x == w)|(y == h) ? false : SET(x, y);
+
+            GRID(x, y) = 0;
+            if ((!topRight) & bottomRight)
+                GRID(x, y) |= EdgeRight;
+            if ((!bottomRight) & bottomLeft)
+                GRID(x, y) |= EdgeDown;
+            if ((!bottomLeft) & topLeft)
+                GRID(x, y) |= EdgeLeft;
+            if ((!topLeft) & topRight)
+                GRID(x, y) |= EdgeUp;
+        }
+    }
+
+    // collect edges
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            if (!GRID(x, y))
+                continue;
+            // found start of a contour, follow it
+            collectSingleContour(x0, y0, grid, x, y, w, h, path);
+        }
+    }
+    delete [] grid;
+}
+
+#undef GRID
+#undef SET
+
+
 void QFontEngine::addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs,
                                       QPainterPath *path, QTextItem::RenderFlags flags)
 {
     glyph_metrics_t metrics = boundingBox(glyphs, numGlyphs);
-    QBitmap bm(metrics.width.toInt(), metrics.height.toInt());
+    int w = metrics.width.toInt();
+    int h = metrics.height.toInt();
+    if (w <= 0 || h <= 0)
+        return;
+    QBitmap bm(w, h);
     QPainter p(&bm);
-    p.fillRect(0, 0, metrics.width.toInt(), metrics.height.toInt(), Qt::color0);
+    p.fillRect(0, 0, w, h, Qt::color0);
     p.setPen(Qt::color1);
 
     QTextItemInt item;
@@ -213,16 +323,90 @@ void QFontEngine::addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout *glyp
     p.drawTextItem(QPointF(0, item.ascent.toReal()), item);
     p.end();
 
-    QRegion region(bm);
-    region.translate(qRound(x), qRound(y - item.ascent.toReal()));
-    path->addRegion(region);
+    QImage image = bm.toImage();
+    image = image.convertToFormat(QImage::Format_Mono);
+    const uchar *image_data = image.bits();
+    uint bpl = image.bytesPerLine();
+    qt_addBitmapToPath(x, y - item.ascent.toReal(), image_data, bpl, w, h, path);
+}
+
+void QFontEngine::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nGlyphs,
+                                  QPainterPath *path, QTextItem::RenderFlags flags)
+{
+    qreal x = positions[0].x.toReal();
+    qreal y = positions[0].y.toReal();
+    QVarLengthArray<QGlyphLayout> g(nGlyphs);
+    memset(g.data(), 0, nGlyphs*sizeof(QGlyphLayout));
+
+    for (int i = 0; i < nGlyphs; ++i) {
+        g[i].glyph = glyphs[i];
+        if (i < nGlyphs - 1) {
+            g[i].advance.x = positions[i+1].x - positions[i].x;
+            g[i].advance.y = positions[i+1].y - positions[i].y;
+        } else {
+            g[i].advance.x = QFixed::fromReal(maxCharWidth());
+            g[i].advance.y = 0;
+        }
+    }
+
+    addBitmapFontToPath(x, y, g.data(), nGlyphs, path, flags);
+}
+
+
+
+QImage QFontEngine::alphaMapForGlyph(glyph_t glyph)
+{
+    glyph_metrics_t gm = boundingBox(glyph);
+    int glyph_x = int(floor(gm.x.toReal()));
+    int glyph_y = int(floor(gm.y.toReal()));
+    int glyph_width = int(ceil((gm.x + gm.width).toReal())) -  glyph_x + 2;
+    int glyph_height = int(ceil((gm.y + gm.height).toReal())) - glyph_y + 2;
+
+    if (glyph_width <= 0 || glyph_height <= 0)
+        return QImage();
+    QFixedPoint pt;
+    pt.x = -glyph_x;
+    pt.y = -glyph_y; // the baseline
+    QPainterPath path;
+    QImage im(glyph_width + glyph_x, glyph_height, QImage::Format_ARGB32_Premultiplied);
+    im.fill(Qt::transparent);
+    QPainter p(&im);
+    p.setRenderHint(QPainter::Antialiasing);
+    addGlyphsToPath(&glyph, &pt, 1, &path, 0);
+    p.setPen(Qt::NoPen);
+    p.setBrush(Qt::black);
+    p.drawPath(path);
+    p.end();
+
+    QImage indexed(im.width(), im.height(), QImage::Format_Indexed8);
+    QVector<QRgb> colors(256);
+    for (int i=0; i<256; ++i)
+        colors[i] = qRgba(0, 0, 0, i);
+    indexed.setColorTable(colors);
+
+    for (int y=0; y<im.height(); ++y) {
+        uchar *dst = (uchar *) indexed.scanLine(y);
+        uint *src = (uint *) im.scanLine(y);
+        for (int x=0; x<im.width(); ++x)
+            dst[x] = qAlpha(src[x]);
+    }
+
+    return indexed;
 }
 
 QFontEngine::Properties QFontEngine::properties() const
 {
     Properties p;
+#ifndef QT_NO_PRINTER
+    QByteArray psname = QPdf::stripSpecialCharacters(fontDef.family.toUtf8());
+#else
     QByteArray psname = fontDef.family.toUtf8();
-    psname.replace(" ", "");
+#endif
+    psname += '-';
+    psname += QByteArray::number(fontDef.style);
+    psname += '-';
+    psname += QByteArray::number(fontDef.weight);
+
     p.postscriptName = psname;
     p.ascent = ascent();
     p.descent = descent();
@@ -235,7 +419,7 @@ QFontEngine::Properties QFontEngine::properties() const
     return p;
 }
 
-void QFontEngine::getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics) 
+void QFontEngine::getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics)
 {
     *metrics = boundingBox(glyph);
     QFixedPoint p;
@@ -295,7 +479,7 @@ void QFontEngineBox::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyp
 {
     if (!numGlyphs)
         return;
-    
+
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> positioned_glyphs;
     QMatrix matrix;
@@ -305,7 +489,7 @@ void QFontEngineBox::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyp
 
     int size = qRound(ascent());
     QSize s(size - 3, size - 3);
-    for (int k = 0; k < positions.size(); k++) 
+    for (int k = 0; k < positions.size(); k++)
         path->addRect(QRectF(positions[k].toPointF(), s));
 }
 
@@ -528,7 +712,7 @@ void QFontEngineMulti::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *gl
     if (flags & QTextItem::RightToLeft) {
         for (int gl = 0; gl < numGlyphs; gl++) {
             x += glyphs[gl].advance.x.toReal();
-            y += glyphs[gl].advance.x.toReal();
+            y += glyphs[gl].advance.y.toReal();
         }
     }
     for (end = 0; end < numGlyphs; ++end) {
@@ -686,6 +870,11 @@ QFixed QFontEngineMulti::leading() const
 QFixed QFontEngineMulti::xHeight() const
 {
     return engine(0)->xHeight();
+}
+
+QFixed QFontEngineMulti::averageCharWidth() const
+{
+    return engine(0)->averageCharWidth();
 }
 
 QFixed QFontEngineMulti::lineThickness() const

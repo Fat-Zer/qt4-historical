@@ -47,7 +47,7 @@ class QMenuItemEmitter;
 
 class QShortcutMap;
 
-class QActionPrivate : public QObjectPrivate
+class Q_AUTOTEST_EXPORT QActionPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QAction)
 public:
@@ -63,11 +63,14 @@ public:
     QString whatsthis;
 #ifndef QT_NO_SHORTCUT
     QKeySequence shortcut;
+    QList<QKeySequence> alternateShortcuts;
 #endif
     QVariant userData;
 #ifndef QT_NO_SHORTCUT
     int shortcutId;
+    QList<int> alternateShortcutIds;
     Qt::ShortcutContext shortcutContext;
+    uint autorepeat : 1;
 #endif
     QFont font;
     QPointer<QMenu> menu;
@@ -77,15 +80,16 @@ public:
     uint checked : 1;
     uint separator : 1;
     uint fontSet : 1;
-
+    QAction::MenuRole menuRole;
     QList<QWidget *> widgets;
 #ifndef QT_NO_SHORTCUT
     void redoGrab(QShortcutMap &map);
+    void redoGrabAlternate(QShortcutMap &map);
     void setShortcutEnabled(bool enable, QShortcutMap &map);
 
     static QShortcutMap *globalMap;
 #endif // QT_NO_SHORTCUT
-    
+
 #ifdef QT3_SUPPORT //for menubar/menu compat
     QMenuItemEmitter *act_signal;
     int id, param;

@@ -1,3 +1,20 @@
+/****************************************************************************
+**
+** This file is part of the QtGui module of the Qt Toolkit.
+**
+** This file contains third party code which is not governed by the Qt
+** Commercial License Agreement. Please read the license headers below
+** for more information.
+** 
+** Further information about Qt licensing is available at:
+** http://www.trolltech.com/products/qt/licensing.html or by
+** contacting info@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 /***************************************************************************/
 /*                                                                         */
 /*  ftimage.h                                                              */
@@ -26,6 +43,17 @@
 
 #ifndef __QT_FTIMAGE_H__
 #define __QT_FTIMAGE_H__
+
+/*
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+*/
 
 QT_FT_BEGIN_HEADER
 

@@ -59,7 +59,7 @@
 
     \code
         QPainter painter(this);
-        QPen pen(Qt::green, 3, Qt::DashDotLine, Qt::RoundCap. Qt::RoundJoin);
+        QPen pen(Qt::green, 3, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
         painter.setPen(pen);
     \endcode
 
@@ -223,7 +223,8 @@
     patterns.
     \endtable
 
-    \sa QPainter, QBrush, {demos/pathstroke}{The Path Stroking Demo}
+    \sa QPainter, QBrush, {demos/pathstroke}{Path Stroking Demo},
+        {Scribble Example}
 */
 
 class QPenPrivate {
@@ -518,7 +519,11 @@ QVector<qreal> QPen::dashPattern() const
     extend 0.5 pixels out in each direction resulting in a total width
     of 2.
 
-    \sa setStyle(), dashPattern()
+    Note that the default cap style is Qt::SquareCap, meaning that a
+    square line end covers the end point and extends beyond it by half
+    the line width.
+
+    \sa setStyle(), dashPattern(), setCapStyle()
  */
 void QPen::setDashPattern(const QVector<qreal> &pattern)
 {
@@ -529,7 +534,7 @@ void QPen::setDashPattern(const QVector<qreal> &pattern)
     d->style = Qt::CustomDashLine;
 
     if ((d->dashPattern.size() % 2) == 1) {
-        qWarning("QPen::setDashPattern(), pattern not of even length");
+        qWarning("QPen::setDashPattern: Pattern not of even length");
         d->dashPattern << 1;
     }
 }
@@ -610,7 +615,7 @@ qreal QPen::widthF() const
 void QPen::setWidth(int width)
 {
     if (width < 0)
-        qWarning("QPen::setWidth(): Setting a pen width with a negative value is not defined.");
+        qWarning("QPen::setWidth: Setting a pen width with a negative value is not defined");
     if ((qreal)width == d->width)
         return;
     detach();
@@ -633,7 +638,7 @@ void QPen::setWidth(int width)
 void QPen::setWidthF(qreal width)
 {
     if (width < 0.f)
-        qWarning("QPen::setWidthF(): Setting a pen width with a negative value is not defined.");
+        qWarning("QPen::setWidthF: Setting a pen width with a negative value is not defined");
     if (qAbs(d->width - width) < 0.00000001f)
         return;
     detach();

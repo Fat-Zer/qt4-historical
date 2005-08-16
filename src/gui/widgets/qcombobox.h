@@ -38,6 +38,7 @@ QT_MODULE(Gui)
 class QAbstractItemView;
 class QLineEdit;
 class QComboBoxPrivate;
+class QCompleter;
 
 class Q_GUI_EXPORT QComboBox : public QWidget
 {
@@ -48,18 +49,22 @@ class Q_GUI_EXPORT QComboBox : public QWidget
     Q_PROPERTY(bool editable READ isEditable WRITE setEditable)
     Q_PROPERTY(int count READ count)
     Q_PROPERTY(QString currentText READ currentText)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged USER true)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(int maxVisibleItems READ maxVisibleItems WRITE setMaxVisibleItems)
     Q_PROPERTY(int maxCount READ maxCount WRITE setMaxCount)
     Q_PROPERTY(InsertPolicy insertPolicy READ insertPolicy WRITE setInsertPolicy)
     Q_PROPERTY(SizeAdjustPolicy sizeAdjustPolicy READ sizeAdjustPolicy WRITE setSizeAdjustPolicy)
     Q_PROPERTY(int minimumContentsLength READ minimumContentsLength WRITE setMinimumContentsLength)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
-    Q_PROPERTY(bool autoCompletion READ autoCompletion WRITE setAutoCompletion)
-    Q_PROPERTY(Qt::CaseSensitivity autoCompletionCaseSensitivity READ autoCompletionCaseSensitivity WRITE setAutoCompletionCaseSensitivity)
+
+#ifndef QT_NO_COMPLETER
+    Q_PROPERTY(bool autoCompletion READ autoCompletion WRITE setAutoCompletion DESIGNABLE false)
+    Q_PROPERTY(Qt::CaseSensitivity autoCompletionCaseSensitivity READ autoCompletionCaseSensitivity WRITE setAutoCompletionCaseSensitivity DESIGNABLE false)
+#endif // QT_NO_COMPLETER
+
     Q_PROPERTY(bool duplicatesEnabled READ duplicatesEnabled WRITE setDuplicatesEnabled)
     Q_PROPERTY(bool frame READ hasFrame WRITE setFrame)
-    Q_PROPERTY(bool modelColumn READ modelColumn WRITE setModelColumn)
+    Q_PROPERTY(int modelColumn READ modelColumn WRITE setModelColumn)
 
 public:
     explicit QComboBox(QWidget *parent = 0);
@@ -72,11 +77,13 @@ public:
     void setMaxCount(int max);
     int maxCount() const;
 
+#ifndef QT_NO_COMPLETER
     bool autoCompletion() const;
     void setAutoCompletion(bool enable);
 
     Qt::CaseSensitivity autoCompletionCaseSensitivity() const;
     void setAutoCompletionCaseSensitivity(Qt::CaseSensitivity sensitivity);
+#endif
 
     bool duplicatesEnabled() const;
     void setDuplicatesEnabled(bool enable);
@@ -96,7 +103,8 @@ public:
         InsertAtCurrent,
         InsertAtBottom,
         InsertAfterCurrent,
-        InsertBeforeCurrent
+        InsertBeforeCurrent,
+        InsertAlphabetically
 #if defined(QT3_SUPPORT) && !defined(Q_MOC_RUN)
         ,
         NoInsertion = NoInsert,
@@ -117,7 +125,7 @@ public:
     enum SizeAdjustPolicy {
         AdjustToContents,
         AdjustToContentsOnFirstShow,
-        AdjustToMinimumContentsLength
+        AdjustToMinimumContentsLength // ### remove in Qt 5
     };
 
     SizeAdjustPolicy sizeAdjustPolicy() const;
@@ -134,6 +142,11 @@ public:
 #ifndef QT_NO_VALIDATOR
     void setValidator(const QValidator *v);
     const QValidator *validator() const;
+#endif
+
+#ifndef QT_NO_COMPLETER
+    void setCompleter(QCompleter *c);
+    QCompleter *completer() const;
 #endif
 
     QAbstractItemDelegate *itemDelegate() const;
@@ -260,6 +273,9 @@ Q_SIGNALS:
     QT_MOC_COMPAT void textChanged(const QString &);
 #endif
 
+protected:
+    QComboBox(QComboBoxPrivate &, QWidget *);
+
 private:
     Q_DECLARE_PRIVATE(QComboBox)
     Q_DISABLE_COPY(QComboBox)
@@ -267,7 +283,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_emitHighlighted(const QModelIndex &))
     Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentIndexChanged(int index))
     Q_PRIVATE_SLOT(d_func(), void _q_returnPressed())
-    Q_PRIVATE_SLOT(d_func(), void _q_complete())
     Q_PRIVATE_SLOT(d_func(), void _q_resetButton())
     Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &, const QModelIndex &))
     Q_PRIVATE_SLOT(d_func(), void _q_rowsAboutToBeInserted(const QModelIndex & parent, int start, int end))

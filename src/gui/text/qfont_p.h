@@ -118,17 +118,12 @@ public:
     ~QFontEngineData();
 
     QAtomic ref;
-    uint lineWidth;
 
 #if defined(Q_WS_X11) || defined(Q_WS_WIN)
     QFontEngine *engines[QUnicodeTables::ScriptCount];
 #else
     QFontEngine *engine;
 #endif // Q_WS_X11 || Q_WS_WIN
-#ifndef Q_WS_MAC
-    enum { widthCacheSize = 0x500 };
-    uchar widthCache[widthCacheSize];
-#endif
 };
 
 
@@ -143,7 +138,7 @@ public:
     QFontPrivate(const QFontPrivate &other);
     ~QFontPrivate();
 
-#ifndef Q_WS_X11
+#if !defined(Q_WS_X11) && !defined(Q_WS_MAC)
     void load(int script);
 #endif
 #if defined(Q_WS_X11) || defined(Q_WS_WIN)
@@ -154,6 +149,15 @@ public:
         if (!engineData || !engineData->engines[script])
             QFontDatabase::load(this, script);
         return engineData->engines[script];
+    }
+#elif defined(Q_WS_MAC)
+    inline QFontEngine *engineForScript(int script) const
+    {
+        if (script >= QUnicodeTables::Inherited)
+            script = QUnicodeTables::Common;
+        if (!engineData || !engineData->engine)
+            QFontDatabase::load(this, script);
+        return engineData->engine;
     }
 #else
     inline QFontEngine *engineForScript(int script) const
@@ -171,6 +175,10 @@ public:
     mutable QFontEngineData *engineData;
     int dpi;
     int screen;
+
+#ifdef Q_WS_WIN
+    HDC hdc;
+#endif
 
     uint rawMode    :  1;
     uint underline  :  1;
@@ -207,9 +215,7 @@ public:
     QFontCache();
     ~QFontCache();
 
-#ifdef Q_WS_QWS
     void clear();
-#endif
     // universal key structure.  QFontEngineDatas and QFontEngines are cached using
     // the same keys
     struct Key {

@@ -34,7 +34,7 @@ class QDesignerFormEditorInterface;
 class QDesignerFormWindowCursorInterface;
 class QDesignerFormWindowToolInterface;
 class DomUI;
-class QtUndoStack;
+class QUndoStack;
 class QDir;
 
 class QDESIGNER_SDK_EXPORT QDesignerFormWindowInterface: public QWidget
@@ -106,7 +106,7 @@ public:
 
     static QDesignerFormWindowInterface *findFormWindow(QWidget *w);
 
-    virtual QtUndoStack *commandHistory() const = 0;
+    virtual QUndoStack *commandHistory() const = 0;
     virtual void beginCommand(const QString &description) = 0;
     virtual void endCommand() = 0;
 

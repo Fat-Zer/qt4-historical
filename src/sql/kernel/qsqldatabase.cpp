@@ -381,7 +381,7 @@ void QSqlDatabasePrivate::disable()
     isDriverAvailable(). If you have created your own custom driver,
     you can register it with registerSqlDriver().
 
-    \sa QSqlDriver, QSqlQuery
+    \sa QSqlDriver, QSqlQuery, {QtSql Module}
 */
 
 /*!
@@ -1170,6 +1170,7 @@ QSqlRecord QSqlDatabase::record(const QString& tablename) const
     \i CLIENT_ODBC
     \i CLIENT_NO_SCHEMA
     \i CLIENT_INTERACTIVE
+    \i UNIX_SOCKET
     \endlist
 
     \i
@@ -1213,7 +1214,7 @@ QSqlRecord QSqlDatabase::record(const QString& tablename) const
     \code
     ...
     // MySQL connection
-    db.setConnectOptions("CLIENT_SSL;CLIENT_IGNORE_SPACE"); // use an SSL connection to the server
+    db.setConnectOptions("CLIENT_SSL=1;CLIENT_IGNORE_SPACE=1"); // use an SSL connection to the server
     if (!db.open()) {
         db.setConnectOptions(); // clears the connect option string
         ...

@@ -82,11 +82,21 @@ PathStrokeWidget::PathStrokeWidget()
     dashDotLine->setText("Dash Dot Line");
     dashDotDotLine->setText("Dash Dot Dot Line");
 #else
-    solidLine->setIcon(QPixmap(":res/images/line_solid.png"));
-    dashLine->setIcon(QPixmap(":res/images/line_dashed.png"));
-    dotLine->setIcon(QPixmap(":res/images/line_dotted.png"));
-    dashDotLine->setIcon(QPixmap(":res/images/line_dash_dot.png"));
-    dashDotDotLine->setIcon(QPixmap(":res/images/line_dash_dot_dot.png"));
+    QPixmap line_solid(":res/images/line_solid.png");
+    solidLine->setIcon(line_solid);
+    solidLine->setIconSize(line_solid.size());
+    QPixmap line_dashed(":res/images/line_dashed.png");
+    dashLine->setIcon(line_dashed);
+    dashLine->setIconSize(line_dashed.size());
+    QPixmap line_dotted(":res/images/line_dotted.png");
+    dotLine->setIcon(line_dotted);
+    dotLine->setIconSize(line_dotted.size());
+    QPixmap line_dash_dot(":res/images/line_dash_dot.png");
+    dashDotLine->setIcon(line_dash_dot);
+    dashDotLine->setIconSize(line_dash_dot.size());
+    QPixmap line_dash_dot_dot(":res/images/line_dash_dot_dot.png");
+    dashDotDotLine->setIcon(line_dash_dot_dot);
+    dashDotDotLine->setIconSize(line_dash_dot_dot.size());
     customDashLine->setText("Custom Style");
 
     int fixedHeight = bevelJoin->sizeHint().height();
@@ -123,7 +133,14 @@ PathStrokeWidget::PathStrokeWidget()
 
     QPushButton *showSourceButton = new QPushButton(mainGroup);
     showSourceButton->setText("Show Source");
-
+#ifdef QT_OPENGL_SUPPORT
+    QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
+    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setCheckable(true);
+    enableOpenGLButton->setChecked(m_renderer->usesOpenGL());
+    if (!QGLFormat::hasOpenGL())
+        enableOpenGLButton->hide();
+#endif
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
     whatsThisButton->setText("What's This?");
     whatsThisButton->setCheckable(true);
@@ -143,6 +160,9 @@ PathStrokeWidget::PathStrokeWidget()
     mainGroupLayout->addWidget(animated);
     mainGroupLayout->addStretch(1);
     mainGroupLayout->addWidget(showSourceButton);
+#ifdef QT_OPENGL_SUPPORT
+    mainGroupLayout->addWidget(enableOpenGLButton);
+#endif
     mainGroupLayout->addWidget(whatsThisButton);
 
     QVBoxLayout *capGroupLayout = new QVBoxLayout(capGroup);
@@ -195,7 +215,9 @@ PathStrokeWidget::PathStrokeWidget()
     connect(customDashLine, SIGNAL(clicked()), m_renderer, SLOT(setCustomDashLine()));
 
     connect(showSourceButton, SIGNAL(clicked()), m_renderer, SLOT(showSource()));
-
+#ifdef QT_OPENGL_SUPPORT
+    connect(enableOpenGLButton, SIGNAL(clicked(bool)), m_renderer, SLOT(enableOpenGL(bool)));
+#endif
     connect(whatsThisButton, SIGNAL(clicked(bool)), m_renderer, SLOT(setDescriptionEnabled(bool)));
     connect(m_renderer, SIGNAL(descriptionEnabledChanged(bool)),
             whatsThisButton, SLOT(setChecked(bool)));

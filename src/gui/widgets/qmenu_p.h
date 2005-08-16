@@ -39,6 +39,7 @@
 #include "QtGui/qstyleoption.h"
 #include "QtCore/qdatetime.h"
 #include "QtCore/qmap.h"
+#include "QtCore/qhash.h"
 #include "QtCore/qbasictimer.h"
 #include "private/qwidget_p.h"
 
@@ -60,7 +61,7 @@ class QMenuPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QMenu)
 public:
-    QMenuPrivate() : itemsDirty(0), maxIconWidth(0), tabWidth(0), ncols(0), mouseDown(0), hasHadMouse(0), motions(0),
+    QMenuPrivate() : itemsDirty(0), maxIconWidth(0), tabWidth(0), ncols(0), collapsibleSeparators(true), mouseDown(0), hasHadMouse(0), motions(0),
                       currentAction(0), scroll(0), eventLoop(0), tearoff(0), tornoff(0), tearoffHighlighted(0),
                       hasCheckableItems(0), sloppyAction(0)
 #ifdef Q_WS_MAC
@@ -81,18 +82,26 @@ public:
     QRect actionRect(QAction *) const;
     mutable QMap<QAction*, QRect> actionRects;
     mutable QList<QAction*> actionList;
+    mutable QHash<QAction *, QWidget *> widgetItems;
     void calcActionRects(QMap<QAction*, QRect> &actionRects, QList<QAction*> &actionList) const;
     void updateActions();
+    const QRect popupGeometry(int screen) const;
+    QList<QAction *> filterActions(const QList<QAction *> &actions) const;
     uint ncols : 4; //4 bits is probably plenty
+    uint collapsibleSeparators : 1;
 
     //selection
     uint mouseDown : 1, hasHadMouse : 1;
     int motions;
     QAction *currentAction;
     static QBasicTimer menuDelayTimer;
+    enum SelectionReason {
+        SelectedFromKeyboard,
+        SelectedFromElsewhere
+    };
     QAction *actionAt(QPoint p) const;
     void setFirstActionActive();
-    void setCurrentAction(QAction *, int =-1, bool =false);
+    void setCurrentAction(QAction *, int popup = -1, SelectionReason reason = SelectedFromElsewhere, bool activateFirst = false);
     void popupAction(QAction *, int, bool);
 
     //scrolling support
@@ -113,6 +122,10 @@ public:
     QEventLoop *eventLoop;
     QPointer<QAction> syncAction;
     QStyleOptionMenuItem getStyleOption(const QAction *action) const;
+
+    //search buffer
+    QString searchBuffer;
+    QBasicTimer searchBufferTimer;
 
     //passing of mouse events up the parent heirarchy
     QPointer<QMenu> activeMenu;
@@ -163,8 +176,9 @@ public:
         QMacMenuPrivate();
         ~QMacMenuPrivate();
 
-        void addAction(QAction *, QMacMenuAction* =0);
-        void addAction(QMacMenuAction *, QMacMenuAction* =0);
+        bool merged(const QAction *action) const;
+        void addAction(QAction *, QMacMenuAction* =0, QMenuPrivate *qmenu = 0);
+        void addAction(QMacMenuAction *, QMacMenuAction* =0, QMenuPrivate *qmenu = 0);
         void syncAction(QMacMenuAction *);
         inline void syncAction(QAction *a) { syncAction(findAction(a)); }
         void removeAction(QMacMenuAction *);

@@ -157,7 +157,7 @@ static HKEY createOrOpenKey(HKEY parentHandle, REGSAM perms, const QString &rSub
     if (res == ERROR_SUCCESS)
         return resultHandle;
 
-    //qWarning("QSettings: failed to create subkey \"%s\": %s",
+    //qWarning("QSettings: Failed to create subkey \"%s\": %s",
     //        rSubKey.toLatin1().data(), errorCodeToString(res).toLatin1().data());
 
     return 0;
@@ -454,11 +454,16 @@ QWinSettingsPrivate::QWinSettingsPrivate(QString rPath)
         regList.append(RegistryKey(HKEY_LOCAL_MACHINE, rPath.mid(19), false));
     else if (rPath == QLatin1String("HKEY_LOCAL_MACHINE"))
         regList.append(RegistryKey(HKEY_LOCAL_MACHINE, QString(), false));
+    else if (rPath.startsWith("HKEY_CLASSES_ROOT\\"))
+        regList.append(RegistryKey(HKEY_CLASSES_ROOT, rPath.mid(18), false));
+    else if (rPath == QLatin1String("HKEY_CLASSES_ROOT"))
+        regList.append(RegistryKey(HKEY_CLASSES_ROOT, QString(), false));
+    else if (rPath.startsWith("HKEY_USERS\\"))
+        regList.append(RegistryKey(HKEY_USERS, rPath.mid(11), false));
+    else if (rPath == QLatin1String("HKEY_USERS"))
+        regList.append(RegistryKey(HKEY_USERS, QString(), false));
     else
-        regList.append(RegistryKey(HKEY_LOCAL_MACHINE, QString(), false));
-
-    if (regList.isEmpty())
-        setStatus(QSettings::AccessError);
+        regList.append(RegistryKey(HKEY_LOCAL_MACHINE, rPath, false));
 }
 
 bool QWinSettingsPrivate::readKey(HKEY parentHandle, const QString &rSubKey, QVariant *value) const
@@ -559,7 +564,7 @@ bool QWinSettingsPrivate::readKey(HKEY parentHandle, const QString &rSubKey, QVa
         }
 
         default:
-            qWarning("QSettings: unknown data %d type in windows registry", static_cast<int>(dataType));
+            qWarning("QSettings: Unknown data %d type in Windows registry", static_cast<int>(dataType));
             if (value != 0)
                 *value = QVariant();
             break;
@@ -590,7 +595,7 @@ QWinSettingsPrivate::~QWinSettingsPrivate()
             res = RegDeleteKeyA(writeHandle(), emptyKey.toLocal8Bit());
         } );
         if (res != ERROR_SUCCESS) {
-            qWarning("QSettings: failed to delete key \"%s\": %s",
+            qWarning("QSettings: Failed to delete key \"%s\": %s",
                     regList.at(0).key().toLatin1().data(), errorCodeToString(res).toLatin1().data());
         }
     }
@@ -734,6 +739,24 @@ void QWinSettingsPrivate::set(const QString &uKey, const QVariant &value)
             regValueBuff = QByteArray((const char*)&i, sizeof(int));
             break;
         }
+
+        case QVariant::ByteArray:
+            // On Win95/98/Me QString::toLocal8Bit() fails to handle chars > 0x7F. So we don't go through variantToString() at all.
+            if (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
+                QByteArray ba = value.toByteArray();
+                regValueBuff = "@ByteArray(";
+                regValueBuff += ba;
+                regValueBuff += ')';
+                if (ba.contains('\0')) {
+                    type = REG_BINARY;
+                } else {
+                    type = REG_SZ;
+                    regValueBuff += '\0';
+                }
+                    
+                break;
+            }
+            // fallthrough intended
 
         default: {
             // If the string does not contain '\0', we can use REG_SZ, the native registry

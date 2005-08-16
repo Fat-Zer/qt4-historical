@@ -59,6 +59,8 @@ class QMatrix;
 class Q_GUI_EXPORT QPainter
 {
     Q_DECLARE_PRIVATE(QPainter)
+    Q_GADGET
+    Q_FLAGS(RenderHint RenderHints)
 
 public:
     enum RenderHint {
@@ -125,6 +127,9 @@ public:
     void setBackground(const QBrush &bg);
     const QBrush &background() const;
 
+    qreal opacity() const;
+    void setOpacity(qreal opacity);
+
     // Clip functions
     QRegion clipRegion() const;
     QPainterPath clipPath() const;
@@ -149,8 +154,16 @@ public:
     const QMatrix &deviceMatrix() const;
     void resetMatrix();
 
+    void setWorldMatrix(const QMatrix &matrix, bool combine = false);
+    const QMatrix &worldMatrix() const;
+
+    QMatrix combinedMatrix() const;
+
     void setMatrixEnabled(bool enabled);
     bool matrixEnabled() const;
+
+    void setWorldMatrixEnabled(bool enabled);
+    bool worldMatrixEnabled() const;
 
     void scale(qreal sx, qreal sy);
     void shear(qreal sh, qreal sv);
@@ -314,6 +327,7 @@ public:
     inline void eraseRect(const QRect &);
 
     void setRenderHint(RenderHint hint, bool on = true);
+    void setRenderHints(RenderHints hints, bool on = true);
     RenderHints renderHints() const;
 
     QPaintEngine *paintEngine() const;
@@ -376,8 +390,6 @@ public:
     static inline QT3_SUPPORT QPaintDevice *redirect(QPaintDevice *pdev)
     { return const_cast<QPaintDevice*>(redirected(pdev)); }
 
-    inline QT3_SUPPORT void setWorldMatrix(const QMatrix &wm, bool combine=false) { setMatrix(wm, combine); }
-    inline QT3_SUPPORT const QMatrix &worldMatrix() const { return matrix(); }
     inline QT3_SUPPORT void setWorldXForm(bool enabled) { setMatrixEnabled(enabled); }
     inline QT3_SUPPORT bool hasWorldXForm() const { return matrixEnabled(); }
     inline QT3_SUPPORT void resetXForm() { resetMatrix(); }
@@ -399,6 +411,7 @@ public:
 #endif
 
 private:
+    Q_DISABLE_COPY(QPainter)
     friend class Q3Painter;
     friend void qt_format_text(const QFont &font, const QRectF &_r, int tf, const QString& str,
                                QRectF *brect, int tabstops, int* tabarray, int tabarraylen,

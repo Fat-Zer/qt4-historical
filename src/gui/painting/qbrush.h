@@ -28,6 +28,9 @@
 #include <QtCore/qpoint.h>
 #include <QtCore/qvector.h>
 #include <QtGui/qcolor.h>
+#include <QtGui/qmatrix.h>
+#include <QtGui/qimage.h>
+#include <QtGui/qpixmap.h>
 
 QT_BEGIN_HEADER
 
@@ -49,6 +52,7 @@ public:
     QBrush(const QColor &color, const QPixmap &pixmap);
     QBrush(Qt::GlobalColor color, const QPixmap &pixmap);
     QBrush(const QPixmap &pixmap);
+    QBrush(const QImage &image);
 
     QBrush(const QBrush &brush);
 
@@ -61,8 +65,14 @@ public:
     inline Qt::BrushStyle style() const;
     void setStyle(Qt::BrushStyle);
 
+    inline const QMatrix &matrix() const;
+    void setMatrix(const QMatrix &mat);
+
     QPixmap texture() const;
     void setTexture(const QPixmap &pixmap);
+
+    QImage textureImage() const;
+    void setTextureImage(const QImage &image);
 
     inline const QColor &color() const;
     void setColor(const QColor &color);
@@ -115,10 +125,12 @@ struct QBrushData
     QAtomic ref;
     Qt::BrushStyle style;
     QColor color;
+    QMatrix transform;
 };
 
 inline Qt::BrushStyle QBrush::style() const { return d->style; }
 inline const QColor &QBrush::color() const { return d->color; }
+inline const QMatrix &QBrush::matrix() const { return d->transform; }
 
 #ifdef QT3_SUPPORT
 inline QBrush::operator const QColor&() const { return d->color; }
@@ -135,6 +147,8 @@ typedef QVector<QGradientStop> QGradientStops;
 
 class Q_GUI_EXPORT QGradient
 {
+    Q_GADGET
+    Q_ENUMS(Type Spread CoordinateMode)
 public:
     enum Type {
         LinearGradient,
@@ -149,6 +163,11 @@ public:
         RepeatSpread
     };
 
+    enum CoordinateMode {
+        LogicalMode,
+        StretchToDeviceMode
+    };
+
     QGradient();
 
     Type type() const { return m_type; }
@@ -161,9 +180,14 @@ public:
     void setStops(const QGradientStops &stops);
     QGradientStops stops() const;
 
-    bool operator==(const QGradient &gradient); // 5.0 - remove me
-    bool operator==(const QGradient &gradient) const;
+    CoordinateMode coordinateMode() const;
+    void setCoordinateMode(CoordinateMode mode);
 
+    bool operator==(const QGradient &gradient) const;
+    inline bool operator!=(const QGradient &other) const
+    { return !operator==(other); }
+
+    bool operator==(const QGradient &gradient); // ### Qt 5.0 - remove me
 
 private:
     friend class QLinearGradient;
@@ -193,34 +217,56 @@ inline void QGradient::setSpread(Spread aspread)
 class Q_GUI_EXPORT QLinearGradient : public QGradient
 {
 public:
+    QLinearGradient();
     QLinearGradient(const QPointF &start, const QPointF &finalStop);
     QLinearGradient(qreal xStart, qreal yStart, qreal xFinalStop, qreal yFinalStop);
 
     QPointF start() const;
+    void setStart(const QPointF &start);
+    inline void setStart(qreal x, qreal y) { setStart(QPointF(x, y)); }
+
     QPointF finalStop() const;
+    void setFinalStop(const QPointF &stop);
+    inline void setFinalStop(qreal x, qreal y) { setFinalStop(QPointF(x, y)); }
 };
 
 
 class Q_GUI_EXPORT QRadialGradient : public QGradient
 {
 public:
-    QRadialGradient(const QPointF &center, qreal radius, const QPointF &focalPoint = QPointF());
-    QRadialGradient(qreal cx, qreal cy, qreal radius, qreal fx=0, qreal fy=0);
+    QRadialGradient();
+    QRadialGradient(const QPointF &center, qreal radius, const QPointF &focalPoint);
+    QRadialGradient(qreal cx, qreal cy, qreal radius, qreal fx, qreal fy);
+
+    QRadialGradient(const QPointF &center, qreal radius);
+    QRadialGradient(qreal cx, qreal cy, qreal radius);
 
     QPointF center() const;
+    void setCenter(const QPointF &center);
+    inline void setCenter(qreal x, qreal y) { setCenter(QPointF(x, y)); }
+
     QPointF focalPoint() const;
+    void setFocalPoint(const QPointF &focalPoint);
+    inline void setFocalPoint(qreal x, qreal y) { setFocalPoint(QPointF(x, y)); }
+
     qreal radius() const;
+    void setRadius(qreal radius);
 };
 
 
 class Q_GUI_EXPORT QConicalGradient : public QGradient
 {
 public:
+    QConicalGradient();
     QConicalGradient(const QPointF &center, qreal startAngle);
     QConicalGradient(qreal cx, qreal cy, qreal startAngle);
 
     QPointF center() const;
+    void setCenter(const QPointF &center);
+    inline void setCenter(qreal x, qreal y) { setCenter(QPointF(x, y)); }
+
     qreal angle() const;
+    void setAngle(qreal angle);
 };
 
 QT_END_HEADER

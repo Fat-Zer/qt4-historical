@@ -771,7 +771,7 @@ QTextFrame::iterator &QTextFrame::iterator::operator--()
     QTextBlockUserData provides an abstract interface for container classes that are used
     to associate application-specific user data with text blocks in a QTextDocument.
 
-    Generally, this subclasses of this class provide functions to allow data to be stored
+    Generally, subclasses of this class provide functions to allow data to be stored
     and retrieved, and instances are attached to blocks of text using
     QTextBlock::setUserData(). This makes it possible to store additional data per text
     block in a way that can be retrieved safely by the application.
@@ -965,7 +965,7 @@ QTextBlockUserData::~QTextBlockUserData()
 */
 
 /*!
-    Returns the starting position of the block within the document.
+    Returns the index of the block's first character within the document.
  */
 int QTextBlock::position() const
 {
@@ -1145,7 +1145,9 @@ QTextBlockUserData *QTextBlock::userData() const
     QTextBlockUserData can be used to store custom settings.  The
     ownership is passed to the underlying text document, i.e. the
     provided QTextBlockUserData object will be deleted if the
-    corresponding text block gets deleted.
+    corresponding text block gets deleted. The user data object is
+    not stored in the undo history, so it will not be available after
+    undoing the deletion of a text block.
 
     For example, if you write a programming editor in an IDE, you may
     want to let your user set breakpoints visually in your code for an

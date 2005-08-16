@@ -50,8 +50,9 @@ class QDesktopWidget;
 class QStyle;
 class QEventLoop;
 class QIcon;
-template <typename T> class QList;
 class QInputContext;
+template <typename T> class QList;
+class QLocale;
 #if defined(Q_WS_QWS)
 class QDecoration;
 #endif
@@ -75,15 +76,20 @@ class Q_GUI_EXPORT QApplication : public QCoreApplication
     Q_PROPERTY(int startDragTime  READ startDragTime WRITE setStartDragTime)
     Q_PROPERTY(int startDragDistance  READ startDragDistance WRITE setStartDragDistance)
     Q_PROPERTY(bool quitOnLastWindowClosed  READ quitOnLastWindowClosed WRITE setQuitOnLastWindowClosed)
+#ifndef QT_NO_STYLE_STYLESHEET
+    Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
+#endif
 
 public:
-    QApplication(int &argc, char **argv);
-    QApplication(int &argc, char **argv, bool GUIenabled);
     enum Type { Tty, GuiClient, GuiServer };
-    QApplication(int &argc, char **argv, Type);
+#ifndef qdoc
+    QApplication(int &argc, char **argv, int = QT_VERSION);
+    QApplication(int &argc, char **argv, bool GUIenabled, int = QT_VERSION);
+    QApplication(int &argc, char **argv, Type, int = QT_VERSION);
 #if defined(Q_WS_X11)
-    QApplication(Display* dpy, Qt::HANDLE visual = 0, Qt::HANDLE cmap = 0);
-    QApplication(Display *dpy, int &argc, char **argv, Qt::HANDLE visual = 0, Qt::HANDLE cmap= 0);
+    QApplication(Display* dpy, Qt::HANDLE visual = 0, Qt::HANDLE cmap = 0, int = QT_VERSION);
+    QApplication(Display *dpy, int &argc, char **argv, Qt::HANDLE visual = 0, Qt::HANDLE cmap= 0, int = QT_VERSION);
+#endif
 #endif
     virtual ~QApplication();
 
@@ -106,7 +112,9 @@ public:
     static QPalette palette(const QWidget *);
     static QPalette palette(const char *className);
     static void setPalette(const QPalette &, const char* className = 0);
-    static QFont font(const QWidget* = 0);
+    static QFont font();
+    static QFont font(const QWidget*);
+    static QFont font(const char *className);
     static void setFont(const QFont &, const char* className = 0);
     static QFontMetrics fontMetrics();
 
@@ -214,6 +222,9 @@ public:
     void setInputContext(QInputContext *);
     QInputContext *inputContext() const;
 
+    static QLocale keyboardInputLocale();
+    static Qt::LayoutDirection keyboardInputDirection();
+
     static int exec();
     bool notify(QObject *, QEvent *);
 
@@ -229,8 +240,17 @@ public:
 Q_SIGNALS:
     void lastWindowClosed();
     void focusChanged(QWidget *old, QWidget *now);
+#ifndef QT_NO_SESSIONMANAGER
+    void commitDataRequest(QSessionManager &sessionManager);
+    void saveStateRequest(QSessionManager &sessionManager);
+#endif
 
+public:
+    QString styleSheet() const;
 public Q_SLOTS:
+#ifndef QT_NO_STYLE_STYLESHEET
+    void setStyleSheet(const QString& sheet);
+#endif
     static void closeAllWindows();
     static void aboutQt();
 
@@ -279,6 +299,16 @@ public:
         { QWidget *w = widgetAt(p); return child ? w : (w ? w->window() : 0); }
 #endif // QT3_SUPPORT
 
+#if defined(Q_INTERNAL_QAPP_SRC) || defined(qdoc)
+    QApplication(int &argc, char **argv);
+    QApplication(int &argc, char **argv, bool GUIenabled);
+    QApplication(int &argc, char **argv, Type);
+#if defined(Q_WS_X11)
+    QApplication(Display* dpy, Qt::HANDLE visual = 0, Qt::HANDLE cmap = 0);
+    QApplication(Display *dpy, int &argc, char **argv, Qt::HANDLE visual = 0, Qt::HANDLE cmap= 0);
+#endif
+#endif
+
 private:
     Q_DISABLE_COPY(QApplication)
     Q_DECLARE_PRIVATE(QApplication)
@@ -295,7 +325,9 @@ private:
 
 #if defined(Q_WS_QWS)
     friend class QInputContext;
+    friend class QWSDirectPainterSurface;
     friend class QDirectPainter;
+    friend class QDirectPainterPrivate;
 #endif
 
     Q_PRIVATE_SLOT(d_func(), void _q_tryEmitLastWindowClosed())

@@ -34,9 +34,6 @@
 #include "private/qabstractslider_p.h"
 #include "qdebug.h"
 
-static const int thresholdTime = 300;
-static const int repeatTime = 100;
-
 class QSliderPrivate : public QAbstractSliderPrivate
 {
     Q_DECLARE_PUBLIC(QSlider)
@@ -98,7 +95,6 @@ inline int QSliderPrivate::pick(const QPoint &pt) const
 {
     return orientation == Qt::Horizontal ? pt.x() : pt.y();
 }
-
 
 QStyleOptionSlider QSliderPrivate::getStyleOption() const
 {
@@ -230,7 +226,7 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
          \o A slider shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
     \endtable
 
-    \sa QScrollBar, QSpinBox, {fowler}{GUI Design Handbook: Slider}
+    \sa QScrollBar, QSpinBox, QDial, {fowler}{GUI Design Handbook: Slider}, {Sliders Example}
 */
 
 
@@ -401,26 +397,31 @@ bool QSlider::event(QEvent *event)
 void QSlider::mousePressEvent(QMouseEvent *ev)
 {
     Q_D(QSlider);
-    if (d->maximum == d->minimum
-        || (ev->buttons() ^ ev->button())
-        || (ev->button() == Qt::RightButton)) {
+    if (d->maximum == d->minimum || (ev->buttons() ^ ev->button())) {
         ev->ignore();
         return;
     }
     ev->accept();
-    if (ev->button() == Qt::MidButton) {
-        setSliderPosition(d->pixelPosToRangeValue(d->pick(ev->pos())));
+    if ((ev->button() & style()->styleHint(QStyle::SH_Slider_AbsoluteSetButtons)) == ev->button()) {
+        QStyleOptionSlider opt = d->getStyleOption();
+        const QRect sliderRect = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
+        const QPoint center = sliderRect.center() - sliderRect.topLeft();
+        // to take half of the slider off for the setSliderPosition call we use the center - topLeft
+
+        setSliderPosition(d->pixelPosToRangeValue(d->pick(ev->pos() - center)));
         triggerAction(SliderMove);
         setRepeatAction(SliderNoAction);
         d->pressedControl = QStyle::SC_SliderHandle;
         update();
-    } else {
+    } else if ((ev->button() & style()->styleHint(QStyle::SH_Slider_PageSetButtons)) == ev->button()) {
         QStyleOptionSlider opt = d->getStyleOption();
         d->pressedControl = style()->hitTestComplexControl(QStyle::CC_Slider,
                                                            &opt, ev->pos(), this);
         SliderAction action = SliderNoAction;
         if (d->pressedControl == QStyle::SC_SliderGroove) {
-            int pressValue = d->pixelPosToRangeValue(d->pick(ev->pos()));
+            const QRect sliderRect = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
+            int pressValue = d->pixelPosToRangeValue(d->pick(ev->pos() - sliderRect.center() + sliderRect.topLeft()));
+            d->pressValue = pressValue;
             if (pressValue > d->value)
                 action = SliderPageStepAdd;
             else if (pressValue < d->value)
@@ -429,16 +430,21 @@ void QSlider::mousePressEvent(QMouseEvent *ev)
                 triggerAction(action);
                 setRepeatAction(action);
             }
-        } else if (d->pressedControl == QStyle::SC_SliderHandle) {
+        }
+    } else {
+        ev->ignore();
+        return;
+    }
+
+    if (d->pressedControl == QStyle::SC_SliderHandle) {
+        QStyleOptionSlider opt = d->getStyleOption();
             setRepeatAction(SliderNoAction);
             QRect sr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
             d->clickOffset = d->pick(ev->pos() - sr.topLeft());
             d->snapBackPosition = d->position;
             update(sr);
-        }
-    }
-    if (d->pressedControl == QStyle::SC_SliderHandle)
         setSliderDown(true);
+    }
 }
 
 /*!
@@ -447,7 +453,7 @@ void QSlider::mousePressEvent(QMouseEvent *ev)
 void QSlider::mouseMoveEvent(QMouseEvent *ev)
 {
     Q_D(QSlider);
-    if (d->pressedControl != QStyle::SC_SliderHandle || (ev->buttons() & Qt::RightButton)) {
+    if (d->pressedControl != QStyle::SC_SliderHandle) {
         ev->ignore();
         return;
     }
@@ -458,8 +464,9 @@ void QSlider::mouseMoveEvent(QMouseEvent *ev)
     if (m >= 0) {
         QRect r = rect();
         r.adjust(-m, -m, m, m);
-        if (!r.contains(ev->pos()))
+        if (!r.contains(ev->pos())) {
             newPosition = d->snapBackPosition;
+    }
     }
     setSliderPosition(newPosition);
 }
@@ -596,5 +603,12 @@ int QSlider::tickInterval() const
     Use setValue() instead.
 */
 
+/*! \internal
+    Returns the style option for slider.
+*/
+Q_GUI_EXPORT QStyleOptionSlider qt_qsliderStyleOption(QSlider *slider)
+{
+    return slider->d_func()->getStyleOption();
+}
 
 #endif

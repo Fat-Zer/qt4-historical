@@ -31,7 +31,6 @@
 #include "qdatastream.h"
 #include "qbuffer.h"
 #include "qapplication.h"
-#include <private/qinternal_p.h>
 #include <private/qwidget_p.h>
 #include "qevent.h"
 #include "qfile.h"
@@ -41,6 +40,7 @@
 #include "qimagereader.h"
 #include "qimagewriter.h"
 #include "qdebug.h"
+#include "qpaintengine.h"
 
 typedef void (*_qt_pixmap_cleanup_hook)(int);
 Q_GUI_EXPORT _qt_pixmap_cleanup_hook qt_pixmap_cleanup_hook = 0;
@@ -273,6 +273,11 @@ QBitmap QPixmap::mask() const
 
 void QPixmap::setMask(const QBitmap &mask)
 {
+    if (paintingActive()) {
+        qWarning("QPixmap::setMask: Cannot set mask while pixmap is being painted on");
+        return;
+    }
+
     if (mask.size().isEmpty()) {
         if (depth() != 1) {
             detach();
@@ -352,10 +357,27 @@ QBitmap QPixmap::createMaskFromColor(const QColor &maskColor) const
 }
 
 
+static void sendResizeEvents(QWidget *target)
+{
+    QResizeEvent e(target->size(), QSize());
+    QApplication::sendEvent(target, &e);
+
+    const QObjectList children = target->children();
+    for (int i = 0; i < children.size(); ++i) {
+        QWidget *child = static_cast<QWidget*>(children.at(i));
+        if (child->isWidgetType() && !child->isWindow() && child->testAttribute(Qt::WA_PendingResizeEvent))
+            sendResizeEvents(child);
+    }
+}
+
+
 QPixmap QPixmap::grabWidget(QWidget *widget, const QRect &rect)
 {
     if (!widget)
         return QPixmap();
+
+    if (widget->testAttribute(Qt::WA_PendingResizeEvent) || !widget->testAttribute(Qt::WA_WState_Created))
+        sendResizeEvents(widget);
 
     QRect r(rect);
     if (r.width() < 0)
@@ -414,7 +436,9 @@ QPixmap QPixmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags )
     switch (image.format()) {
     case QImage::Format_Mono:
     case QImage::Format_MonoLSB:
-        pixmap.data->image = image.convertToFormat(QImage::Format_RGB32);
+        pixmap.data->image = image.hasAlphaChannel()
+                             ? image.convertToFormat(QImage::Format_ARGB32_Premultiplied)
+                             : image.convertToFormat(QImage::Format_RGB32);
         break;
     case QImage::Format_RGB32:
     case QImage::Format_ARGB32_Premultiplied:
@@ -616,6 +640,11 @@ QPaintEngine *QPixmap::paintEngine() const
 
 void QPixmap::setAlphaChannel(const QPixmap &alphaChannel)
 {
+    if (paintingActive()) {
+        qWarning("QPixmap::setAlphaChannel: Cannot set alpha channel while pixmap is being painted on");
+        return;
+    }
+
     detach();
     data->image.setAlphaChannel(alphaChannel.toImage());
 }
@@ -643,10 +672,23 @@ Q_GUI_EXPORT void copyBlt(QPixmap *dst, int dx, int dy,
     Q_ASSERT_X(dst, "::copyBlt", "Destination pixmap must be non null");
     Q_ASSERT_X(src, "::copyBlt", "Source pixmap must be non null");
 
-    QImage image = dst->toImage();
-    QPainter p(&image);
-    p.setCompositionMode(QPainter::CompositionMode_Source);
-    p.drawImage(dx, dy, src->toImage(), sx, sy, sw, sh);
-    *dst = QPixmap::fromImage(image);
+    if (src->hasAlphaChannel()) {
+        if (dst->paintEngine()->hasFeature(QPaintEngine::PorterDuff)) {
+            QPainter p(dst);
+            p.setCompositionMode(QPainter::CompositionMode_Source);
+            p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
+        } else {
+            QImage image = dst->toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
+            QPainter p(&image);
+            p.setCompositionMode(QPainter::CompositionMode_Source);
+            p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
+            p.end();
+            *dst = QPixmap::fromImage(image);
+        }
+    } else {
+        QPainter p(dst);
+        p.drawPixmap(dx, dy, *src, sx, sy, sw, sh);
+    }
+
 }
 #endif

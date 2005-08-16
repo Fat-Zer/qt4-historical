@@ -55,34 +55,34 @@ static bool read_xbm_header(QIODevice *device, int& w, int& h)
 
     // "#define .._width <num>"
     readBytes = device->readLine(buf, buflen);
-    if (readBytes == -1)
+    if (readBytes <= 0)
 	return false;
-    buf[readBytes] = '\0';
+    buf[readBytes - 1] = '\0';
 
     // skip initial comment, if any
     while (buf[0] != '#' && (readBytes = device->readLine( buf, buflen )) > 0);
 
-    if (readBytes == -1)
+    if (readBytes <= 0)
 	return false;
-    buf[readBytes] = '\0';
+    buf[readBytes - 1] = '\0';
     QString sbuf;
     sbuf = QString::fromLatin1(buf);
 
     if (r1.indexIn(sbuf) == 0 &&
          r2.indexIn(sbuf, r1.matchedLength()) == r1.matchedLength())
-        w = QString(&buf[r1.matchedLength()]).toInt();
+        w = QByteArray(&buf[r1.matchedLength()]).trimmed().toInt();
 
     // "#define .._height <num>"
     readBytes = device->readLine(buf, buflen);
-    if (readBytes == -1)
+    if (readBytes <= 0)
 	return false;
-    buf[readBytes] = '\0';
+    buf[readBytes - 1] = '\0';
 
     sbuf = QString::fromLatin1(buf);
 
     if (r1.indexIn(sbuf) == 0 &&
          r2.indexIn(sbuf, r1.matchedLength()) == r1.matchedLength())
-        h = QString(&buf[r1.matchedLength()]).toInt();
+        h = QByteArray(&buf[r1.matchedLength()]).trimmed().toInt();
 
     // format error
     if (w <= 0 || w > 32767 || h <= 0 || h > 32767)
@@ -111,16 +111,18 @@ static bool read_xbm_body(QIODevice *device, int w, int h, QImage *outImage)
             break;
     }
 
-    image = QImage(w, h, QImage::Format_MonoLSB);
-    if (image.isNull())
-        return false;
+    if (outImage->size() != QSize(w, h) || outImage->format() != QImage::Format_MonoLSB) {
+        *outImage = QImage(w, h, QImage::Format_MonoLSB);
+        if (outImage->isNull())
+            return false;
+    }
 
-    image.setNumColors(2);
-    image.setColor(0, qRgb(255,255,255));        // white
-    image.setColor(1, qRgb(0,0,0));                // black
+    outImage->setNumColors(2);
+    outImage->setColor(0, qRgb(255,255,255));        // white
+    outImage->setColor(1, qRgb(0,0,0));                // black
 
     int           x = 0, y = 0;
-    uchar *b = image.scanLine(0);
+    uchar *b = outImage->scanLine(0);
     char  *p = buf + QByteArray::fromRawData(buf, readBytes).indexOf("0x");
     w = (w+7)/8;                                // byte width
 
@@ -129,7 +131,7 @@ static bool read_xbm_body(QIODevice *device, int w, int h, QImage *outImage)
             *b++ = hex2byte(p+2);
             p += 2;
             if (++x == w && ++y < h) {
-                b = image.scanLine(y);
+                b = outImage->scanLine(y);
                 x = 0;
             }
             p = strstr(p, "0x");
@@ -140,13 +142,12 @@ static bool read_xbm_body(QIODevice *device, int w, int h, QImage *outImage)
         }
     }
 
-    *outImage = image;
     return true;
 }
 
 static bool read_xbm_image(QIODevice *device, QImage *outImage)
 {
-    int w, h;
+    int w = 0, h = 0;
     if (!read_xbm_header(device, w, h))
         return false;
     return read_xbm_body(device, w, h, outImage);
