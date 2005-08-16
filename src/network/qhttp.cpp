@@ -1036,6 +1036,7 @@ QHttpResponseHeader::QHttpResponseHeader(const QString &str)
     \sa statusCode() reasonPhrase() majorVersion() minorVersion()
 */
 QHttpResponseHeader::QHttpResponseHeader(int code, const QString &text, int majorVer, int minorVer)
+    : QHttpHeader(*new QHttpResponseHeaderPrivate)
 {
     setStatusLine(code, text, majorVer, minorVer);
 }

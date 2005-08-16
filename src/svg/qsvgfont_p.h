@@ -4,6 +4,7 @@
 #include "qpainterpath.h"
 #include "qhash.h"
 #include "qstring.h"
+#include "qsvgstyle_p.h"
 
 class QSvgGlyph
 {
@@ -17,7 +18,7 @@ public:
 };
 
 
-class QSvgFont
+class QSvgFont : public QSvgRefCounted
 {
 public:
     QSvgFont(qreal horizAdvX);

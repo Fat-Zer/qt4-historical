@@ -1233,6 +1233,8 @@ void QFileDialogPrivate::autoCompleteFileName(const QString &text)
         QModelIndex index = model->index(absoluteInfo.absoluteFilePath());
         if (index.isValid()) 
             treeView->setCurrentIndex(index);
+        else
+            selections->clear();
         return;
     }
     // if the user is removing text, don't autocomplete
@@ -1984,8 +1986,9 @@ QString QFileDialogPrivate::workingDirectory(const QString &path)
 {
     if (!path.isEmpty()) {
         QFileInfo info(path);
-        if (info.exists())
-            return info.isDir() ? path : info.absolutePath();
+        if (info.exists() && info.isDir())
+            return path;
+        return info.absolutePath();
     }
     return QDir::currentPath();
 }

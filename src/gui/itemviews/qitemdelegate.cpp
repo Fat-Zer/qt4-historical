@@ -199,13 +199,20 @@ void QItemDelegate::paint(QPainter *painter,
     // display
     QRect textRect;
     QString text = index.data(Qt::DisplayRole).toString();
-    if (!text.isEmpty())
-    {
-        if (!text.contains(QLatin1Char('\n'))) {
+    if (!text.isEmpty()) {
+        const QString text = index.data(Qt::DisplayRole).toString();
+        const QChar *chr = text.constData();
+        const QChar *end = chr + text.length();
+        while (chr != end
+               && *chr != QLatin1Char('\n')
+               && *chr != QLatin1Char('\t')
+               && *chr != QLatin1Char('&')) ++chr;
+        if (chr == end) {
             textRect = QRect(0, 0, opt.fontMetrics.width(text), opt.fontMetrics.lineSpacing());
         } else {
             QRectF result;
-            qt_format_text(opt.font, option.rect, Qt::TextDontPrint|Qt::TextDontClip,
+            qt_format_text(opt.font, option.rect,
+                           Qt::TextDontPrint|Qt::TextDontClip|Qt::TextExpandTabs,
                        text, &result, 0, 0, 0, painter);
             textRect = result.toRect();
         }
@@ -261,18 +268,25 @@ QSize QItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     QFont fnt = value.isValid() ? qvariant_cast<QFont>(value) : option.font;
     // In qt 4.2 there will be a proper option in QStyleOptionViewItem
     // Not calling fontMetrics.width speeds up the code _significatly_
+    const QString text = index.data(Qt::DisplayRole).toString();
     if (option.rect.width() == -1) {
         QFontMetrics fontMetrics(fnt);
-        textRect = QRect(0, 0, 0, fontMetrics.lineSpacing());
+        textRect = QRect(0, 0, 0, fontMetrics.lineSpacing() * (text.count(QLatin1Char('\n')) + 1));
     } else {
-        QString text = index.data(Qt::DisplayRole).toString();
-        if (!text.contains(QLatin1Char('\n'))) {
+        const QChar *chr = text.constData();
+        const QChar *end = chr + text.length();
+        while (chr != end
+               && *chr != QLatin1Char('\n')
+               && *chr != QLatin1Char('\t')
+               && *chr != QLatin1Char('&')) ++chr;
+        if (chr == end) {
             QFontMetrics fontMetrics(fnt);
             textRect = QRect(0, 0, fontMetrics.width(text), fontMetrics.lineSpacing());
         } else {
             QRectF result;
-            qt_format_text(fnt, option.rect, Qt::TextDontPrint|Qt::TextDontClip,
-                       text, &result, 0, 0, 0, 0);
+            qt_format_text(fnt, option.rect,
+                           Qt::TextDontPrint|Qt::TextDontClip|Qt::TextExpandTabs,
+                           text, &result, 0, 0, 0, 0);
             textRect = result.toRect();
         }
     }

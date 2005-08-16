@@ -1398,10 +1398,10 @@ QTextEngine::LayoutData::LayoutData()
     glyphPtr = 0;
 }
 
-QTextEngine::LayoutData::LayoutData(const QString &str, void **stack_memory, int mem_size)
+QTextEngine::LayoutData::LayoutData(const QString &str, void **stack_memory, int _allocated)
     : string(str)
 {
-    allocated = mem_size/sizeof(void*);
+    allocated = _allocated;
     
     int space_charAttributes = sizeof(QCharAttributes)*string.length()/sizeof(void*) + 1;
     int space_logClusters = sizeof(unsigned short)*string.length()/sizeof(void*) + 1;
@@ -1457,7 +1457,8 @@ void QTextEngine::LayoutData::reallocate(int totalGlyphs)
     void **old_mem = memory;
     memory = (void **)::realloc(memory_on_stack ? 0 : old_mem, newAllocated*sizeof(void *));
     if (memory_on_stack && memory)
-        memcpy(memory, old_mem, allocated);
+        memcpy(memory, old_mem, allocated*sizeof(void *));
+    memory_on_stack = false;
 
     void **m = memory;
     m += space_charAttributes;
