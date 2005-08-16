@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/plugins-howto.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/plugins-howto.qdoc -->
 <head>
     <title>Qt 4.0: How to Create Qt Plugins</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,14 +16,14 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">How to Create Qt Plugins</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">How to Create Qt Plugins<br /><small></small></h1>
 <p>Qt provides two APIs for creating plugins:</p>
 <ul>
 <li>A higher-level API for writing extensions to Qt itself: custom database drivers, image formats, text codecs, custom styles, etc.</li>
 <li>A lower-lever API for extending Qt applications.</li>
 </ul>
-<p>For example, if you want to write a custom <a href="qstyle.html">QStyle</a> subclass and have Qt applications load it dynamically, you would then use the higher-level API; whereas if you want to extend <i>Qt Designer</i>, you would use the lower-level API.</p>
+<p>For example, if you want to write a custom <a href="qstyle.html">QStyle</a> subclass and have Qt applications load it dynamically, you would use the higher-level API; whereas if you want to extend <i>Qt Designer</i>, you would use the lower-level API.</p>
 <p>Since the higher-level API is built on top of the lower-level API, some issues are common to both.</p>
 <p>Topics:</p>
 <ul><li><a href="#the-higher-level-api-writing-qt-extensions">The Higher-Level API: Writing Qt Extensions</a></li>
@@ -40,7 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a></td><td><tt>plugins/accessiblebridge</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qaccessibleplugin.html">QAccessiblePlugin</a></td><td><tt>plugins/accessible</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdecorationplugin.html">QDecorationPlugin</a></td><td><tt>plugins/decorations</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qgfxdriverplugin.html">QGfxDriverPlugin</a></td><td><tt>plugins/gfxdrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QGfxDriverPlugin</td><td><tt>plugins/gfxdrivers</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qiconengineplugin.html">QIconEnginePlugin</a></td><td><tt>plugins/iconengines</tt></td><td>Case Insensitive</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qimageioplugin.html">QImageIOPlugin</a></td><td><tt>plugins/imageformats</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qinputcontextplugin.html">QInputContextPlugin</a></td><td><tt>plugins/inputmethods</tt></td><td>Case Sensitive</td></tr>
@@ -90,7 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <li>Declare a plugin class that inherits from <a href="qobject.html">QObject</a> and from the interfaces that the plugin wants to provide.</li>
 <li>Use the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interfaces.</li>
 <li>Export the plugin using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</li>
-<li>Build the plugin using an adequate <tt>.pro</tt> file.</li>
+<li>Build the plugin using an suitable <tt>.pro</tt> file.</li>
 </ol>
 <p>For example, here's the definition of an interface class:</p>
 <pre>&nbsp;   class FilterInterface
@@ -127,7 +127,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Loading and Verifying Plugins</h2>
 <p>When loading plugins, the Qt library does some sanity checking to determine whether or not the plugin can be loaded and used. This provides the ability to have multiple versions and configurations of the Qt library installed side by side.</p>
 <ul>
-<li>Plugins linked with a Qt library that has a higher major and/or minor version number will not be loaded by a library with a lower major and/or minor version number.<p><i>Rationale:</i> A plugin linked against a newer Qt library may use new features that are not available in older versions. Trolltech has a policy of adding new features and APIs only between minor releases, which is why this test only looks at the major and minor version numbers, and not at the bug-fix version number.</p>
+<li>Plugins linked with a Qt library that has a higher major and/or minor version number will not be loaded by a library with a lower major and/or minor version number.<p><i>Rationale:</i> A plugin linked against a newer Qt library may use new features that are not available in older versions. Trolltech has a policy of adding new features and APIs only between minor releases, which is why this test only looks at the major and minor version numbers, and not at the patch version number.</p>
 </li>
 <li>The Qt library and all plugins are built using a <i>build key</i>. The build key in the Qt library is examined against the build key in the plugin, and if they match, the plugin is loaded. If the build keys do not match, then the Qt library refuses to load the plugin.<p><i>Rationale:</i> See the Rationale for the build key below.</p>
 </li>
@@ -154,6 +154,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

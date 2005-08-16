@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -30,11 +30,11 @@
 #include <new>
 #endif
 
-#define QT_VERSION_STR   "4.0.0"
+#define QT_VERSION_STR   "4.0.1"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
  */
-#define QT_VERSION 0x040000
+#define QT_VERSION 0x040001
 
 #if !defined(QT_BUILD_MOC)
 #include "QtCore/qconfig.h"
@@ -255,7 +255,6 @@
 /* these are not useful to our customers */
 #    define QT_QWS_NO_SHM
 #    define QT_NO_QWS_MULTIPROCESS
-#    define QT_NO_SQL
 #    define QT_NO_QWS_CURSOR
 #  endif
 
@@ -958,12 +957,21 @@ public:
 #ifdef Q_WS_MAC
     enum MacVersion {
         MV_Unknown = 0x0000,
+
+        //version
         MV_9 = 0x0001,
         MV_10_0 = 0x0002,
         MV_10_1 = 0x0003,
         MV_10_2 = 0x0004,
         MV_10_3 = 0x0005,
-        MV_10_4 = 0x0006
+        MV_10_4 = 0x0006,
+
+        //codenames
+        MV_CHEETAH = MV_10_0,
+        MV_PUMA = MV_10_1,
+        MV_JAGUAR = MV_10_2,
+        MV_PANTHER = MV_10_3,
+        MV_TIGER = MV_10_4
     };
     static const MacVersion MacintoshVersion;
 #endif
@@ -1484,8 +1492,8 @@ public:
 #define Q_FOREACH(variable, container)                                \
 for (QForeachContainer<__typeof__(container)> _container_(container); \
      !_container_.brk && _container_.i != _container_.e;              \
-     ({ ++_container_.brk; ++_container_.i; }))                       \
-    for (variable = *_container_.i;;({--_container_.brk; break;}))
+     __extension__  ({ ++_container_.brk; ++_container_.i; }))                       \
+    for (variable = *_container_.i;; __extension__ ({--_container_.brk; break;}))
 
 #else
 
@@ -1596,6 +1604,83 @@ QT3_SUPPORT Q_CORE_EXPORT const char *qInstallPathData();
 QT3_SUPPORT Q_CORE_EXPORT const char *qInstallPathTranslations();
 QT3_SUPPORT Q_CORE_EXPORT const char *qInstallPathSysconf();
 #endif
+
+/*
+  This gives us the possibility to check which modules the user can
+  use. These are purely compile time checks and will generate no code.
+*/
+
+// Qt modules
+#define QT_MODULE_CORE                  0x01
+#define QT_MODULE_GUI                   0x02
+#define QT_MODULE_NETWORK               0x04
+#define QT_MODULE_OPENGL                0x08
+#define QT_MODULE_SQL                   0x10
+#define QT_MODULE_XML                   0x20
+#define QT_MODULE_QT3SUPPORTLIGHT       0x40
+#define QT_MODULE_QT3SUPPORT            0x80
+
+// Qt editions
+#define QT_EDITION_CONSOLE      (QT_MODULE_CORE \
+                                 | QT_MODULE_NETWORK \
+                                 | QT_MODULE_SQL \
+                                 | QT_MODULE_XML)
+#define QT_EDITION_DESKTOPLIGHT (QT_MODULE_CORE \
+                                 | QT_MODULE_GUI \
+                                 | QT_MODULE_QT3SUPPORTLIGHT)
+#define QT_EDITION_DESKTOP      (QT_MODULE_CORE \
+                                 | QT_MODULE_GUI \
+                                 | QT_MODULE_NETWORK \
+                                 | QT_MODULE_OPENGL \
+                                 | QT_MODULE_SQL \
+                                 | QT_MODULE_XML \
+                                 | QT_MODULE_QT3SUPPORTLIGHT \
+                                 | QT_MODULE_QT3SUPPORT)
+#define QT_EDITION_UNIVERSAL    QT_EDITION_DESKTOP
+#define QT_EDITION_ACADEMIC     QT_EDITION_DESKTOP
+#define QT_EDITION_EDUCATIONAL  QT_EDITION_DESKTOP
+#define QT_EDITION_EVALUATION   QT_EDITION_DESKTOP
+#define QT_EDITION_OPENSOURCE   QT_EDITION_DESKTOP
+
+// Determine which modules can be used
+#ifndef QT_EDITION
+#  ifdef QT_BUILD_QMAKE
+#    define QT_EDITION QT_EDITION_DESKTOP
+#  else
+#    error "Qt not configured correctly, please run configure"
+#  endif
+#endif
+
+#define QT_LICENSED_MODULE(x) \
+    enum QtValidLicenseFor##x##Module { Licensed##x = true };
+
+#if (QT_EDITION & QT_MODULE_CORE)
+QT_LICENSED_MODULE(Core)
+#endif
+#if (QT_EDITION & QT_MODULE_GUI)
+QT_LICENSED_MODULE(Gui)
+#endif
+#if (QT_EDITION & QT_MODULE_NETWORK)
+QT_LICENSED_MODULE(Network)
+#endif
+#if (QT_EDITION & QT_MODULE_OPENGL)
+QT_LICENSED_MODULE(OpenGL)
+#endif
+#if (QT_EDITION & QT_MODULE_SQL)
+QT_LICENSED_MODULE(Sql)
+#endif
+#if (QT_EDITION & QT_MODULE_XML)
+QT_LICENSED_MODULE(Xml)
+#endif
+#if (QT_EDITION & QT_MODULE_QT3SUPPORTLIGHT)
+QT_LICENSED_MODULE(Qt3SupportLight)
+#endif
+#if (QT_EDITION & QT_MODULE_QT3SUPPORT)
+QT_LICENSED_MODULE(Qt3Support)
+#endif
+
+#define QT_MODULE(x) \
+    typedef QtValidLicenseFor##x##Module Qt##x##Module;
 
 #endif /* __cplusplus */
 

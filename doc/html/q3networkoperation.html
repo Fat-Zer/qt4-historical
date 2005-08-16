@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/qt3support/network/q3networkprotocol.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/network/q3networkprotocol.cpp -->
 <head>
     <title>Qt 4.0: Q3NetworkOperation Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3NetworkOperation Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3NetworkOperation Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3NetworkOperation class provides common operations for network protocols. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3NetworkOperation&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3NetworkOperation&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="q3networkoperation-members.html">List of all members, including inherited members</a></li>
@@ -73,8 +72,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Destructor.</p>
 <h3 class="fn"><a name="arg"></a><a href="qstring.html">QString</a> Q3NetworkOperation::arg ( int <i>num</i> ) const</h3>
 <p>Returns the operation's <i>num</i>-th argument. If this argument was not already set, an empty string is returned.</p>
+<p>See also <a href="q3networkoperation.html#setArg">setArg</a>().</p>
 <h3 class="fn"><a name="errorCode"></a>int Q3NetworkOperation::errorCode () const</h3>
 <p>Returns the error code for the last error that occurred.</p>
+<p>See also <a href="q3networkoperation.html#setErrorCode">setErrorCode</a>().</p>
 <h3 class="fn"><a name="free"></a>void Q3NetworkOperation::free ()</h3>
 <p>Sets this object to delete itself when it hasn't been used for one second.</p>
 <p>Because <a href="q3networkoperation.html">Q3NetworkOperation</a> pointers are passed around a lot the <a href="q3networkprotocol.html">Q3NetworkProtocol</a> generally does not have enough knowledge to delete these at the correct time. If a <a href="q3networkprotocol.html">Q3NetworkProtocol</a> doesn't need an operation any more it will call this function instead.</p>
@@ -83,27 +84,33 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the type of the operation.</p>
 <h3 class="fn"><a name="protocolDetail"></a><a href="qstring.html">QString</a> Q3NetworkOperation::protocolDetail () const</h3>
 <p>Returns a detailed error message for the last error. This must have been set using <a href="q3networkoperation.html#setProtocolDetail">setProtocolDetail</a>().</p>
+<p>See also <a href="q3networkoperation.html#setProtocolDetail">setProtocolDetail</a>().</p>
 <h3 class="fn"><a name="rawArg"></a><a href="qbytearray.html">QByteArray</a> Q3NetworkOperation::rawArg ( int <i>num</i> ) const</h3>
 <p>Returns the operation's <i>num</i>-th raw data argument. If this argument was not already set, an empty bytearray is returned.</p>
+<p>See also <a href="q3networkoperation.html#setRawArg">setRawArg</a>().</p>
 <h3 class="fn"><a name="setArg"></a>void Q3NetworkOperation::setArg ( int <i>num</i>, const <a href="qstring.html">QString</a> &amp; <i>arg</i> )</h3>
 <p>Sets the network operation's <i>num</i>-th argument to <i>arg</i>.</p>
+<p>See also <a href="q3networkoperation.html#arg">arg</a>().</p>
 <h3 class="fn"><a name="setErrorCode"></a>void Q3NetworkOperation::setErrorCode ( int <i>ec</i> )</h3>
 <p>Sets the error code to <i>ec</i>.</p>
 <p>If the operation failed, the protocol should set an error code to describe the error in more detail. If possible, one of the error codes defined in <a href="q3networkprotocol.html">Q3NetworkProtocol</a> should be used.</p>
-<p>See also <a href="q3networkoperation.html#setProtocolDetail">setProtocolDetail</a>() and <a href="q3networkprotocol.html#Error-enum">Q3NetworkProtocol::Error</a>.</p>
+<p>See also <a href="q3networkoperation.html#errorCode">errorCode</a>(), <a href="q3networkoperation.html#setProtocolDetail">setProtocolDetail</a>(), and <a href="q3networkprotocol.html#Error-enum">Q3NetworkProtocol::Error</a>.</p>
 <h3 class="fn"><a name="setProtocolDetail"></a>void Q3NetworkOperation::setProtocolDetail ( const <a href="qstring.html">QString</a> &amp; <i>detail</i> )</h3>
 <p>If the operation failed, the error message can be specified as <i>detail</i>.</p>
+<p>See also <a href="q3networkoperation.html#protocolDetail">protocolDetail</a>().</p>
 <h3 class="fn"><a name="setRawArg"></a>void Q3NetworkOperation::setRawArg ( int <i>num</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>arg</i> )</h3>
 <p>Sets the network operation's <i>num</i>-th raw data argument to <i>arg</i>.</p>
+<p>See also <a href="q3networkoperation.html#rawArg">rawArg</a>().</p>
 <h3 class="fn"><a name="setState"></a>void Q3NetworkOperation::setState ( <a href="q3networkprotocol.html#State-enum">Q3NetworkProtocol::State</a> <i>state</i> )</h3>
 <p>Sets the <i>state</i> of the operation object. This should be done by the network protocol during processing; at the end it should be set to <a href="q3networkprotocol.html#State-enum">Q3NetworkProtocol::StDone</a> or <a href="q3networkprotocol.html#State-enum">Q3NetworkProtocol::StFailed</a>, depending on success or failure.</p>
-<p>See also <a href="q3networkprotocol.html#State-enum">Q3NetworkProtocol::State</a>.</p>
+<p>See also <a href="q3networkoperation.html#state">state</a>() and <a href="q3networkprotocol.html#State-enum">Q3NetworkProtocol::State</a>.</p>
 <h3 class="fn"><a name="state"></a><a href="q3networkprotocol.html#State-enum">Q3NetworkProtocol::State</a> Q3NetworkOperation::state () const</h3>
 <p>Returns the state of the operation. You can determine whether an operation is still waiting to be processed, is being processed, has been processed successfully, or failed.</p>
+<p>See also <a href="q3networkoperation.html#setState">setState</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

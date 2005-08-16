@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the network module of the Qt Toolkit.
+** This file is part of the QtNetwork module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,7 +27,7 @@
 #include "qftp.h"
 #include "qabstractsocket.h"
 
-#ifndef QT_NO_NETWORKPROTOCOL_FTP
+#ifndef QT_NO_FTP
 
 #include "qcoreapplication.h"
 #include "qtcpsocket.h"
@@ -91,7 +91,7 @@ signals:
 private slots:
     void socketConnected();
     void socketReadyRead();
-    void socketError(QTcpSocket::SocketError);
+    void socketError(QAbstractSocket::SocketError);
     void socketConnectionClosed();
     void socketBytesWritten(qint64);
     void setupSocket();
@@ -161,7 +161,7 @@ private slots:
     void connectionClosed();
     void delayedCloseFinished();
     void readyRead();
-    void error(QTcpSocket::SocketError);
+    void error(QAbstractSocket::SocketError);
 
     void dtpConnectState(int);
 
@@ -307,7 +307,7 @@ void QFtpDTP::connectToHost(const QString & host, quint16 port)
     socket->setObjectName("QFtpDTP Passive state socket");
     connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
     connect(socket, SIGNAL(readyRead()), SLOT(socketReadyRead()));
-    connect(socket, SIGNAL(error(SocketError)), SLOT(socketError(SocketError)));
+    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
     connect(socket, SIGNAL(disconnected()), SLOT(socketConnectionClosed()));
     connect(socket, SIGNAL(bytesWritten(qint64)), SLOT(socketBytesWritten(qint64)));
 
@@ -533,9 +533,11 @@ bool QFtpDTP::parseDir(const QString &buffer, const QString &userName, QUrlInfo 
         dateStr += lst[7];
     }
 
+#ifndef QT_NO_DATESTRING
     QDate date = QDate::fromString(dateStr);
     info->setLastModified(QDateTime(date, time));
-
+#endif
+    
     if (lst[7].contains(":")) {
         // if the year-field is missing, check the modification date/time of
         // the file and compare to "now". If the file was changed in the
@@ -638,7 +640,7 @@ void QFtpDTP::socketReadyRead()
     }
 }
 
-void QFtpDTP::socketError(QTcpSocket::SocketError e)
+void QFtpDTP::socketError(QAbstractSocket::SocketError e)
 {
     if (e == QTcpSocket::HostNotFoundError) {
 #if defined(QFTPDTP_DEBUG)
@@ -683,7 +685,7 @@ void QFtpDTP::setupSocket()
     socket->setObjectName("QFtpDTP Active state socket");
     connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
     connect(socket, SIGNAL(readyRead()), SLOT(socketReadyRead()));
-    connect(socket, SIGNAL(error(SocketError)), SLOT(socketError(SocketError)));
+    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
     connect(socket, SIGNAL(disconnected()), SLOT(socketConnectionClosed()));
     connect(socket, SIGNAL(bytesWritten(qint64)), SLOT(socketBytesWritten(qint64)));
 
@@ -721,8 +723,8 @@ QFtpPI::QFtpPI(QObject *parent) :
             SLOT(connectionClosed()));
     connect(&commandSocket, SIGNAL(readyRead()),
             SLOT(readyRead()));
-    connect(&commandSocket, SIGNAL(error(SocketError)),
-            SLOT(error(SocketError)));
+    connect(&commandSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+            SLOT(error(QAbstractSocket::SocketError)));
 
     connect(&dtp, SIGNAL(connectState(int)),
              SLOT(dtpConnectState(int)));
@@ -808,7 +810,7 @@ void QFtpPI::delayedCloseFinished()
     emit connectState(QFtp::Unconnected);
 }
 
-void QFtpPI::error(QTcpSocket::SocketError e)
+void QFtpPI::error(QAbstractSocket::SocketError e)
 {
     if (e == QTcpSocket::HostNotFoundError) {
         emit connectState(QFtp::Unconnected);
@@ -1343,7 +1345,7 @@ int QFtpPrivate::addCommand(QFtpCommand *cmd)
     The \l{network/ftp}{FTP} example illustrates how to write FTP clients
     using QFtp.
 
-    \sa {Network Module}, QHttp
+    \sa QHttp
 */
 
 
@@ -2356,4 +2358,4 @@ QFtp::~QFtp()
 
 #include "moc_qftp.cpp"
 
-#endif // QT_NO_NETWORKPROTOCOL_FTP
+#endif // QT_NO_FTP

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,19 +27,15 @@
 #include "QtGui/qcommonstyle.h"
 #include "QtCore/qpointer.h"
 
-#if !defined(QT_NO_STYLE_MOTIF) || defined(QT_PLUGIN)
+QT_MODULE(Gui)
+
+#if !defined(QT_NO_STYLE_MOTIF)
 
 class QPalette;
 class QFocusFrame;
 
-#if defined(QT_PLUGIN)
-#define Q_GUI_EXPORT_STYLE_MOTIF
-#else
-#define Q_GUI_EXPORT_STYLE_MOTIF Q_GUI_EXPORT
-#endif
-
 class QMotifStylePrivate;
-class Q_GUI_EXPORT_STYLE_MOTIF QMotifStyle : public QCommonStyle
+class Q_GUI_EXPORT QMotifStyle : public QCommonStyle
 {
     Q_OBJECT
 public:

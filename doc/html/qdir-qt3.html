@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/corelib/io/qdir.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/io/qdir.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QDir</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QDir</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qdir.html">QDir class reference</a></li></ul></p>
@@ -65,12 +65,14 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdir-qt3.html#currentDirPath">currentDirPath</a>() and <a href="qdir-qt3.html#rootDirPath">rootDirPath</a>().</p>
 <h3 class="fn"><a name="matchAllDirs"></a>bool QDir::matchAllDirs () const</h3>
 <p>Use <a href="qdir.html#filter">filter</a>() &amp; <a href="qdir.html#Filter-enum">AllDirs</a> instead.</p>
+<p>See also <a href="qdir-qt3.html#setMatchAllDirs">setMatchAllDirs</a>().</p>
 <h3 class="fn"><a name="mkdir-2"></a>bool QDir::mkdir ( const <a href="qstring.html">QString</a> &amp; <i>dirName</i>, bool <i>acceptAbsPath</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Use mkdir(<i>dirName</i>) instead.</p>
 <p>The <i>acceptAbsPath</i> parameter is ignored.</p>
 <h3 class="fn"><a name="nameFilter"></a><a href="qstring.html">QString</a> QDir::nameFilter () const</h3>
 <p>Use <a href="qdir.html#nameFilters">nameFilters</a>() instead.</p>
+<p>See also <a href="qdir-qt3.html#setNameFilter">setNameFilter</a>().</p>
 <h3 class="fn"><a name="rmdir-2"></a>bool QDir::rmdir ( const <a href="qstring.html">QString</a> &amp; <i>dirName</i>, bool <i>acceptAbsPath</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Use rmdir(<i>dirName</i>) instead.</p>
@@ -80,6 +82,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdir-qt3.html#homeDirPath">homeDirPath</a>() and <a href="qdir-qt3.html#currentDirPath">currentDirPath</a>().</p>
 <h3 class="fn"><a name="setMatchAllDirs"></a>void QDir::setMatchAllDirs ( bool <i>on</i> )</h3>
 <p>Use <a href="qdir.html#setFilter">setFilter</a>() instead.</p>
+<p>See also <a href="qdir-qt3.html#matchAllDirs">matchAllDirs</a>().</p>
 <h3 class="fn"><a name="setNameFilter"></a>void QDir::setNameFilter ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i> )</h3>
 <p>Use <a href="qdir.html#setNameFilters">setNameFilters</a>() instead.</p>
 <p>The <i>nameFilter</i> is a wildcard (globbing) filter that understands &quot;*&quot; and &quot;?&quot; wildcards. (See <a href="qregexp.html#qregexp-wildcard-matching">QRegExp wildcard matching</a>.) You may specify several filter entries, each separated by spaces or by semicolons.</p>
@@ -90,10 +93,11 @@ body { background: #ffffff; color: black; }</style>
 <p>you can rewrite it as</p>
 <pre>    QString filter = &quot;*.cpp *.cxx *.cc&quot;;
     dir.setNameFilters(filter.split(' '));</pre>
+<p>See also <a href="qdir-qt3.html#nameFilter">nameFilter</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

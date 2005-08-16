@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/itemviews/qtreewidget.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/itemviews/qtreewidget.cpp -->
 <head>
     <title>Qt 4.0: QTreeWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTreeWidget Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTreeWidget Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTreeWidget class provides a tree view that uses a predefined tree model. <a href="#details">More...</a></p>
-<pre>#include &lt;QTreeWidget&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qtreeview.html">QTreeView</a>.</p>
+<pre>#include &lt;QTreeWidget&gt;</pre><p>Inherits <a href="qtreeview.html">QTreeView</a>.</p>
 <ul>
 <li><a href="qtreewidget-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -80,7 +79,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>37 public functions inherited from <a href="qabstractitemview.html#public-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -90,7 +89,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtreewidget.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qtreewidget.html#collapseItem">collapseItem</a></b> ( const QTreeWidgetItem * <i>item</i> )</li>
 <li><div class="fn"/>void <b><a href="qtreewidget.html#expandItem">expandItem</a></b> ( const QTreeWidgetItem * <i>item</i> )</li>
-<li><div class="fn"/>void <b><a href="qtreewidget.html#scrollToItem">scrollToItem</a></b> ( const QTreeWidgetItem * <i>item</i>, ScrollHint <i>hint</i> = EnsureVisible )</li>
+<li><div class="fn"/>void <b><a href="qtreewidget.html#scrollToItem">scrollToItem</a></b> ( const QTreeWidgetItem * <i>item</i>, QAbstractItemView::ScrollHint <i>hint</i> = EnsureVisible )</li>
 </ul>
 <ul>
 <li><div class="fn"/>7 public slots inherited from <a href="qtreeview.html#public-slots">QTreeView</a></li>
@@ -148,11 +147,11 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QTreeWidget class provides a tree view that uses a predefined tree model.</p>
-<p>The QTreeWidget class is a convenience class that provides a standard tree widget with a classic item-based interface similar to that used by the <tt>QListView</tt> class in Qt 3. This class is based on Qt's Model/View architecture and uses a default model to hold items, each of which is a <a href="qtreewidgetitem.html">QTreeWidgetItem</a>.</p>
+<p>The QTreeWidget class is a convenience class that provides a standard tree widget with a classic item-based interface similar to that used by the <a href="qlistview.html">QListView</a> class in Qt 3. This class is based on Qt's Model/View architecture and uses a default model to hold items, each of which is a <a href="qtreewidgetitem.html">QTreeWidgetItem</a>.</p>
 <p>Developers who do not need the flexibility of the Model/View framework can use this class to create simple hierarchical lists very easily. A more flexible approach involves combining a <a href="qtreeview.html">QTreeView</a> with a standard item model. This allows the storage of data to be separated from its representation.</p>
 <p>In its simplest form, a tree widget can be constructed in the following way:</p>
 <pre>&nbsp;       QTreeWidget *treeWidget;
-        treeWidget = new QTreeWidget(this);</pre>
+        QTreeWidget *treeWidget = new QTreeWidget(this);</pre>
 <p>Before items can be added to the tree widget, the number of columns must be set with <a href="qtreewidget.html#columnCount-prop">setColumnCount</a>(). This allows each item to have one or more labels or other decorations. The number of columns in use can be found with the <a href="qtreewidget.html#columnCount-prop">columnCount</a>() function.</p>
 <p>The tree can have a header that contains a section for each column in the widget. It is easiest to set up the labels for each section by supplying a list of strings with <a href="qtreewidget.html#setHeaderLabels">setHeaderLabels</a>(), but a custom header can be constructed with a <a href="qtreewidgetitem.html">QTreeWidgetItem</a> and inserted into the tree with the <a href="qtreewidget.html#setHeaderItem">setHeaderItem</a>() function.</p>
 <p>The items in the tree can be sorted by column according to a predefined sort order. If sorting is enabled, the user can sort the items by clicking on a column header. Sorting can be enabled or disabled by calling <a href="qtreewidget.html#sortingEnabled-prop">setSortingEnabled</a>(). The <a href="qtreewidget.html#sortingEnabled-prop">isSortingEnabled</a>() function indicates whether sorting is enabled.</p>
@@ -245,7 +244,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the mouse cursor enters an <i>item</i> over the specified <i>column</i>.</p>
 <h3 class="fn"><a name="itemExpanded"></a>void QTreeWidget::itemExpanded ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the specified <i>item</i> is expanded so that all of its children are displayed.</p>
-<p>See also <a href="qtreewidget.html#isItemExpanded">isItemExpanded</a>().</p>
+<p>See also <a href="qtreewidget.html#setItemExpanded">setItemExpanded</a>() and <a href="qtreewidget.html#isItemExpanded">isItemExpanded</a>().</p>
 <h3 class="fn"><a name="itemFromIndex"></a><a href="qtreewidgetitem.html">QTreeWidgetItem</a> * QTreeWidget::itemFromIndex ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns a pointer to the <a href="qtreewidgetitem.html">QTreeWidgetItem</a> assocated with the given <i>index</i>.</p>
 <h3 class="fn"><a name="itemPressed"></a>void QTreeWidget::itemPressed ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, int <i>column</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -262,8 +261,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtreewidget.html#mimeData">mimeData</a>().</p>
 <h3 class="fn"><a name="openPersistentEditor"></a>void QTreeWidget::openPersistentEditor ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, int <i>column</i> = 0 )</h3>
 <p>Opens a persistent editor for the <i>item</i> in the given <i>column</i>.</p>
-<h3 class="fn"><a name="scrollToItem"></a>void QTreeWidget::scrollToItem ( const <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, <a href="qabstractitemview.html#ScrollHint-enum">ScrollHint</a> <i>hint</i> = EnsureVisible )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Ensures that the <i>item</i> is visible, scrolling the view if necessary using the specified <i>hint</i>.</p>
+<h3 class="fn"><a name="scrollToItem"></a>void QTreeWidget::scrollToItem ( const <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, <a href="qabstractitemview.html#ScrollHint-enum">QAbstractItemView::ScrollHint</a> <i>hint</i> = EnsureVisible )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <h3 class="fn"><a name="selectedItems"></a><a href="qlist.html">QList</a>&lt;<a href="qtreewidgetitem.html">QTreeWidgetItem</a> *&gt; QTreeWidget::selectedItems () const</h3>
 <p>Returns a list of all selected non-hidden items.</p>
 <h3 class="fn"><a name="setCurrentItem"></a>void QTreeWidget::setCurrentItem ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> )</h3>
@@ -276,11 +274,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Adds a column in the header for each item in the <i>labels</i> list, and sets the label for each column.</p>
 <h3 class="fn"><a name="setItemExpanded"></a>void QTreeWidget::setItemExpanded ( const <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, bool <i>expand</i> )</h3>
 <p>Sets the item referred to by <i>item</i> to either closed or opened, depending on the value of <i>expand</i>.</p>
-<p>See also <a href="qtreewidget.html#expandItem">expandItem</a>() and <a href="qtreewidget.html#collapseItem">collapseItem</a>().</p>
+<p>See also <a href="qtreewidget.html#itemExpanded">itemExpanded</a>(), <a href="qtreewidget.html#expandItem">expandItem</a>(), and <a href="qtreewidget.html#collapseItem">collapseItem</a>().</p>
 <h3 class="fn"><a name="setItemHidden"></a>void QTreeWidget::setItemHidden ( const <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, bool <i>hide</i> )</h3>
 <p>Hides the given <i>item</i> if <i>hide</i> is true; otherwise shows the item.</p>
+<p>See also <a href="qtreewidget.html#isItemHidden">isItemHidden</a>().</p>
 <h3 class="fn"><a name="setItemSelected"></a>void QTreeWidget::setItemSelected ( const <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, bool <i>select</i> )</h3>
 <p>If <i>select</i> is true, the given <i>item</i> is selected; otherwise it is deselected.</p>
+<p>See also <a href="qtreewidget.html#isItemSelected">isItemSelected</a>().</p>
 <h3 class="fn"><a name="sortItems"></a>void QTreeWidget::sortItems ( int <i>column</i>, <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> )</h3>
 <p>Sorts the items in the widget in the specified <i>order</i> by the values in the given <i>column</i>.</p>
 <h3 class="fn"><a name="supportedDropActions"></a><a href="qt.html#DropAction-enum">Qt::DropActions</a> QTreeWidget::supportedDropActions () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -296,6 +296,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

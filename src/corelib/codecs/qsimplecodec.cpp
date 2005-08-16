@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,6 +23,8 @@
 
 #include "qsimplecodec_p.h"
 #include "qlist.h"
+
+#ifndef QT_NO_TEXTCODEC
 
 #ifdef Q_WS_QWS
 static const QSimpleTextCodec * reverseOwner = 0;
@@ -499,7 +501,7 @@ static const struct {
         0x0111, 0x00F1, 0x0323, 0x00F3, 0x00F4, 0x01A1, 0x00F6, 0x00F7,
         0x00F8, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x01B0, 0x20AB, 0x00FF} },
 
-    { "Apple Roman", { 0 }, 0,
+    { "Apple Roman", { 0 }, -168,
       { 0x00C4, 0x00C5, 0x00C7, 0x00C9, 0x00D1, 0x00D6, 0x00DC, 0x00E1,
         0x00E0, 0x00E2, 0x00E4, 0x00E3, 0x00E5, 0x00E7, 0x00E9, 0x00E8,
         0x00EA, 0x00EB, 0x00ED, 0x00EC, 0x00EE, 0x00EF, 0x00F1, 0x00F3,
@@ -521,8 +523,8 @@ static const struct {
 
     // This one is based on the charmap file
     // /usr/share/i18n/charmaps/SAMI-WS2.gz, which is manually adapted
-    // to this format by Børre Gaup <boerre@subdimension.com>
-    { "WINSAMI2", { "WS2", 0 }, 0,
+    // to this format by Boerre Gaup <boerre@subdimension.com>
+    { "WINSAMI2", { "WS2", 0 }, -165,
       { 0x20AC, 0xFFFD, 0x010C, 0x0192, 0x010D, 0x01B7, 0x0292, 0x01EE,
         0x01EF, 0x0110, 0x0160, 0x2039, 0x0152, 0xFFFD, 0xFFFD, 0xFFFD,
         0xFFFD, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
@@ -741,3 +743,5 @@ int QSimpleTextCodec::mibEnum() const
 {
     return unicodevalues[forwardIndex].mib;
 }
+
+#endif // QT_NO_TEXTCODEC

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -640,8 +640,8 @@
         while (pos >= 0) {
             pos = rx.indexIn(str, pos);
             if (pos >= 0) {
-                pos++;      // move along in str
-                count++;    // count our Eric or Eirik
+                ++pos;      // move along in str
+                ++count;    // count our Eric or Eirik
             }
         }
     \endcode
@@ -752,8 +752,8 @@ static void mergeInto(QVector<int> *a, const QVector<int> &b)
         while (i < asize) {
             if (j < bsize) {
                 if (a->at(i) == b[j]) {
-                    i++;
-                    csize--;
+                    ++i;
+                    --csize;
                 } else if (a->at(i) < b[j]) {
                     c[k++] = a->at(i++);
                 } else {
@@ -1717,9 +1717,9 @@ bool QRegExpEngine::goodStringMatch()
         while (mmPos <= to) {
             if (matchHere())
                 return true;
-            mmPos++;
+            ++mmPos;
         }
-        k++;
+        ++k;
     }
     return false;
 }
@@ -1784,7 +1784,7 @@ bool QRegExpEngine::badCharMatch()
                 mmSlideTab[k] = sk;
         }
         slideHead = slideNext;
-        mmPos++;
+        ++mmPos;
     }
     return false;
 }
@@ -1794,7 +1794,7 @@ bool QRegExpEngine::bruteMatch()
     while (mmPos <= mmLen) {
         if (matchHere())
             return true;
-        mmPos++;
+        ++mmPos;
     }
     return false;
 }
@@ -1907,7 +1907,7 @@ bool QRegExpEngine::matchHere()
                                         if (mmIn[mmPos + mmCurCapBegin[ell] + n]
                                             != mmIn[mmPos + i + n])
                                             break;
-                                        n++;
+                                        ++n;
                                     }
                                 } else {
                                     while (n < delta) {
@@ -1915,7 +1915,7 @@ bool QRegExpEngine::matchHere()
                                         QChar b = mmIn[mmPos + i + n];
                                         if (a.toLower() != b.toLower())
                                             break;
-                                        n++;
+                                        ++n;
                                     }
                                 }
                                 in = (n == delta);
@@ -2138,7 +2138,7 @@ bool QRegExpEngine::matchHere()
 #endif
         ncur = nnext;
         nnext = 0;
-        i++;
+        ++i;
     }
 
 #ifndef QT_NO_REGEXP_BACKREF
@@ -2210,7 +2210,6 @@ void QRegExpEngine::CharClass::addRange(ushort from, ushort to)
     int i;
 
     if (to - from < NumBadChars) {
-        occ1.detach();
         if (from % NumBadChars <= to % NumBadChars) {
             for (i = from % NumBadChars; i <= to % NumBadChars; i++)
                 occ1[i] = 0;
@@ -2295,13 +2294,11 @@ void QRegExpEngine::Box::set(QChar ch)
     ls.resize(1);
     ls[0] = eng->createState(ch);
     rs = ls;
-    rs.detach();
 #ifndef QT_NO_REGEXP_OPTIM
     str = ch;
     leftStr = ch;
     rightStr = ch;
     maxl = 1;
-    occ1.detach();
     occ1[BadChar(ch)] = 0;
 #endif
     minl = 1;
@@ -2312,7 +2309,6 @@ void QRegExpEngine::Box::set(const CharClass &cc)
     ls.resize(1);
     ls[0] = eng->createState(cc);
     rs = ls;
-    rs.detach();
 #ifndef QT_NO_REGEXP_OPTIM
     maxl = 1;
     occ1 = cc.firstOccurrence();
@@ -2326,7 +2322,6 @@ void QRegExpEngine::Box::set(int bref)
     ls.resize(1);
     ls[0] = eng->createState(bref);
     rs = ls;
-    rs.detach();
     if (bref >= 1 && bref <= MaxBackRefs)
         skipanchors = Anchor_BackRef0Empty << bref;
 #ifndef QT_NO_REGEXP_OPTIM
@@ -2393,7 +2388,6 @@ void QRegExpEngine::Box::cat(const Box &b)
         maxl += b.maxl;
     }
 
-    occ1.detach();
     for (int i = 0; i < NumBadChars; i++) {
         if (b.occ1[i] != NoOccurrence && minl + b.occ1[i] < occ1[i])
             occ1[i] = minl + b.occ1[i];
@@ -2422,7 +2416,6 @@ void QRegExpEngine::Box::orx(const Box &b)
     }
 
 #ifndef QT_NO_REGEXP_OPTIM
-    occ1.detach();
     for (int i = 0; i < NumBadChars; i++) {
         if (occ1[i] > b.occ1[i])
             occ1[i] = b.occ1[i];
@@ -3226,7 +3219,6 @@ static void prepareEngine(QRegExpPrivate *priv)
             priv->rxpattern = priv->pattern.isNull() ? QString::fromLatin1("") : priv->pattern;
 
         priv->eng = refEngine(priv->rxpattern, priv->cs);
-        priv->captured.detach();
         priv->captured.fill(-1, 2 + 2 * priv->eng->numCaptures());
     }
 }
@@ -3314,6 +3306,7 @@ QRegExp::QRegExp(const QString &pattern, Qt::CaseSensitivity cs, PatternSyntax s
 #endif
     priv->min = false;
     priv->cs = cs;
+    prepareEngine(priv);
 }
 
 /*!
@@ -3345,7 +3338,7 @@ QRegExp &QRegExp::operator=(const QRegExp &rx)
 {
     QRegExpEngine *otherEng = rx.priv->eng;
     if (otherEng)
-        otherEng->ref++;
+        ++otherEng->ref;
     invalidateEngine(priv);
     priv->eng = otherEng;
     priv->pattern = rx.priv->pattern;
@@ -3460,8 +3453,8 @@ void QRegExp::setPattern(const QString &pattern)
 }
 
 /*!
-    Returns \c Qt::CaseSensitive if the regexp is matched case
-    sensitively; otherwise returns \c Qt::CaseInsensitive.
+    Returns Qt::CaseSensitive if the regexp is matched case
+    sensitively; otherwise returns Qt::CaseInsensitive.
 
     \sa setCaseSensitivity()
 */
@@ -3473,7 +3466,7 @@ Qt::CaseSensitivity QRegExp::caseSensitivity() const
 /*!
     Sets case sensitive matching to \a cs.
 
-    If \a cs is \c Qt::CaseSensitive, \bold{\\.txt$} matches
+    If \a cs is Qt::CaseSensitive, \bold{\\.txt$} matches
     \c{readme.txt} but not \c{README.TXT}.
 
     \sa caseSensitivity()
@@ -3607,7 +3600,7 @@ bool QRegExp::exactMatch(const QString &str) const
         int count = 0;
         int pos = 0;
         while ((pos = rx.indexIn(str, pos)) != -1) {
-            count++;
+            ++count;
             pos += rx.matchedLength();
         }
         // pos will be 9, 14, 18 and finally 24; count will end up as 4
@@ -3658,7 +3651,6 @@ int QRegExp::lastIndexIn(const QString &str, int offset, CaretMode caretMode) co
     if (offset < 0)
         offset += str.length();
     if (offset < 0 || offset > str.length()) {
-        priv->captured.detach();
         priv->captured.fill(-1);
         return -1;
     }
@@ -3668,7 +3660,7 @@ int QRegExp::lastIndexIn(const QString &str, int offset, CaretMode caretMode) co
                          priv->captured);
         if (priv->captured[0] == offset)
             return offset;
-        offset--;
+        --offset;
     }
     return -1;
 }
@@ -3865,7 +3857,7 @@ QString QRegExp::escape(const QString &str)
     while (i < quoted.length()) {
         if (strchr(meta, quoted.at(i).toLatin1()) != 0)
             quoted.insert(i++, QLatin1Char('\\'));
-        i++;
+        ++i;
     }
     return quoted;
 }

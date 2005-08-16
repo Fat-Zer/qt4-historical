@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the network module of the Qt Toolkit.
+** This file is part of the QtNetwork module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -93,7 +93,7 @@ Q_GLOBAL_STATIC(QHostInfoAgent, agent)
     To retrieve the name of the local host, use the static
     QHostInfo::localHostName() function.
 
-    \sa QAbstractSocket, {http://ietf.org/rfc/rfc3492}{RFC 3492}
+    \sa QAbstractSocket, {http://www.rfc-editor.org/rfc/rfc3492.txt}{RFC 3492}
 */
 
 static QBasicAtomic idCounter = Q_ATOMIC_INIT(1);
@@ -217,10 +217,10 @@ int QHostInfo::lookupHost(const QString &name, QObject *receiver,
     if (!agent->isRunning())
         agent->start();
 #else
-    if (!agent->isRunning())
-        agent->run();
-    else
-        agent->wakeOne();
+//    if (!agent->isRunning())
+	agent->run();
+//    else
+//	agent->wakeOne();
 #endif
     return result->lookupId;
 }
@@ -281,9 +281,13 @@ QHostInfo QHostInfo::fromName(const QString &name)
 */
 void QHostInfoAgent::run()
 {
-    forever {
+#ifndef QT_NO_THREAD
+    forever
+#endif
+    {
         QHostInfoQuery *query;
         {
+#ifndef QT_NO_THREAD
             // the queries list is shared between threads. lock all
             // access to it.
             QMutexLocker locker(&mutex);
@@ -293,6 +297,10 @@ void QHostInfoAgent::run()
                 break;
 	    if (queries.isEmpty())
 		continue;
+#else
+	    if (queries.isEmpty())
+		return;
+#endif
             query = queries.takeFirst();
         }
 

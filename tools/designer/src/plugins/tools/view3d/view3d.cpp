@@ -2,40 +2,34 @@
 **
 ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 
-#include <QScrollBar>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QtOpenGL/QGLWidget>
-#include <QPalette>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QApplication>
+#include <QtCore>
+#include <QtGui>
+#include <QtOpenGL>
 
-#include <QtCore/qdebug.h>
-
-#include "qextensionmanager.h"
+#include "abstractformeditor.h"
+//#include "qextensionmanager.h"
 #include "abstractmetadatabase.h"
-#include "container.h"
-#include "formwindow.h"
+//#include "container.h"
+#include "abstractformwindow.h"
 #include "view3d.h"
 
 #define SELECTION_BUFSIZE 512
@@ -130,8 +124,8 @@ void View3DWidget::addTexture(QWidget *w, const QPixmap &pm)
     glBindTexture(GL_TEXTURE_2D, tx_id);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     if (m_use_mipmaps) {
-        glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        //glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.f);
     } else {
@@ -344,6 +338,7 @@ void View3DWidget::contextMenuEvent(QContextMenuEvent *e)
 
 class WalkWidgetTreeFunction
 {
+public:
     virtual void operator () (int depth, QWidget *widget) const = 0;
 };
 
@@ -414,8 +409,8 @@ static QPixmap grabWidget(QWidget * widget, QDesignerFormEditorInterface *core)
 
     QRect r = widget->rect();
 
-    res.resize(r.size());
-    buf.resize(r.size());
+    res = res.scaled(r.size());
+    buf = buf.scaled(r.size());
     if(!res || !buf)
         return res;
 
@@ -429,23 +424,25 @@ static QPixmap grabWidget(QWidget * widget, QDesignerFormEditorInterface *core)
 
 class AddTexture : public WalkWidgetTreeFunction
 {
+public:
     inline AddTexture(QDesignerFormEditorInterface *core, View3DWidget *w)
         : m_core(core), m_3d_widget(w) {}
     inline virtual void operator ()(int, QWidget *w) const
-        { m_3d_widget->addTexture(w, ::grabWidget(w, m_core).toImage()); }
+        { m_3d_widget->addTexture(w, ::grabWidget(w, m_core)); }
     QDesignerFormEditorInterface *m_core;
     View3DWidget *m_3d_widget;
 };
 
 class AddWidget : public WalkWidgetTreeFunction
 {
+public:
     inline AddWidget(View3DWidget *w) : m_3d_widget(w) {}
     inline virtual void operator ()(int depth, QWidget *w) const
         { m_3d_widget->addWidget(depth, w); }
     View3DWidget *m_3d_widget;
 };
 
-View3D::View3D(FormWindow *form_window, QWidget *parent)
+View3D::View3D(QDesignerFormWindowInterface *form_window, QWidget *parent)
     : QWidget(parent)
 {
     m_form_window = form_window;

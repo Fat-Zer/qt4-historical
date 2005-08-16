@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -62,11 +62,11 @@ public:
 class QPostEventList : public QList<QPostEvent>
 {
 public:
-    int offset;
+    int recursion;
     QMutex mutex;
 
     inline QPostEventList()
-        : QList<QPostEvent>(), offset(0)
+        : QList<QPostEvent>(), recursion(0)
     { }
 };
 
@@ -77,15 +77,17 @@ public:
     ~QThreadData();
 
     static QThreadData *get(QThread *thread);
-
+    
     int id;
-    bool quitNow, allowDeferredDelete;
+    bool quitNow;
     QAbstractEventDispatcher *eventDispatcher;
     QStack<QEventLoop *> eventLoops;
     QPostEventList postEventList;
+    bool canWait;
     void **tls;
 };
 
+#ifndef QT_NO_THREAD
 class QThreadPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QThread)
@@ -125,5 +127,20 @@ public:
 
     QThreadData data;
 };
+
+#else // QT_NO_THREAD
+
+class QThreadPrivate : public QObjectPrivate
+{
+public:
+    QThreadPrivate(QThread *threadInstance)
+    { Q_ASSERT(!QThread::instance); QThread::instance = threadInstance; }
+    QThreadData data;
+    static void setCurrentThread(QThread*) {}
+    static QThread *threadForId(int) { return QThread::currentThread(); }
+
+    Q_DECLARE_PUBLIC(QThread)
+};
+#endif // QT_NO_THREAD
 
 #endif // QTHREAD_P_H

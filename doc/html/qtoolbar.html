@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/widgets/qtoolbar.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/widgets/qtoolbar.cpp -->
 <head>
     <title>Qt 4.0: QToolBar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QToolBar Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QToolBar Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QToolBar class provides a movable panel that contains a set of controls. <a href="#details">More...</a></p>
-<pre>#include &lt;QToolBar&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre>#include &lt;QToolBar&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qtoolbar-members.html">List of all members, including inherited members</a></li>
 <li><a href="qtoolbar-qt3.html">Qt 3 support members</a></li>
@@ -71,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Qt::ToolButtonStyle <b><a href="qtoolbar.html#toolButtonStyle-prop">toolButtonStyle</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -112,12 +111,13 @@ body { background: #ffffff; color: black; }</style>
 <p>The QToolBar class provides a movable panel that contains a set of controls.</p>
 <p>Toolbar buttons are added by adding <i>actions</i>, using <a href="qtoolbar.html#addAction">addAction</a>() or <a href="qwidget.html#insertAction">insertAction</a>(). Groups of buttons can be separated using <a href="qtoolbar.html#addSeparator">addSeparator</a>() or <a href="qtoolbar.html#insertSeparator">insertSeparator</a>(). If a toolbar button is not appropriate, a widget can be inserted instead using <a href="qtoolbar.html#addWidget">addWidget</a>() or <a href="qtoolbar.html#insertWidget">insertWidget</a>(); examples of suitable widgets are <a href="qspinbox.html">QSpinBox</a>, <a href="qdoublespinbox.html">QDoubleSpinBox</a>, and <a href="qcombobox.html">QComboBox</a>. When a toolbar button is pressed it emits the <a href="qtoolbar.html#actionTriggered">actionTriggered</a>() signal. Toolbars may only be added to <a href="qmainwindow.html">QMainWindow</a> and <a href="qmainwindow.html">QMainWindow</a> subclasses.</p>
 <p>A toolbar can be fixed in place in a particular area (e.g. at the top of the window), or it can be movable (<a href="qtoolbar.html#movable-prop">isMovable</a>()) between toolbar areas; see <a href="qtoolbar.html#allowedAreas-prop">allowedAreas</a>() and <a href="qtoolbar.html#isAreaAllowed">isAreaAllowed</a>().</p>
+<p>When a toolbar is resized in such a way that it is too small to show all the items it contains, an extension button will appear as the last item in the toolbar. Pressing the extension button will pop up a menu containing the items that does not currently fit in the toolbar. Note that only action based items will be shown in the menu. If only non-action based items are to appear in the extension menu (e.g. a <a href="qspinbox.html">QSpinBox</a>), the extension button will appear as usual, but it will be disabled to indicate that some items in the toolbar are currently not visible.</p>
 <p>See also <a href="qtoolbutton.html">QToolButton</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="allowedAreas-prop"></a>allowedAreas : <a href="qt.html#ToolBarArea-enum">Qt::ToolBarAreas</a></h3>
 <p>This property holds areas where the toolbar may be placed.</p>
-<p>The default is <tt>Qt::AllToolBarAreas</tt>.</p>
+<p>The default is <a href="qt.html#ToolBarArea-enum">Qt::AllToolBarAreas</a>.</p>
 <p>This property only makes sense if the toolbar is in a <a href="qmainwindow.html">QMainWindow</a>.</p>
 <p>Access functions:</p>
 <ul>
@@ -145,7 +145,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtoolbar.html#allowedAreas-prop">allowedAreas</a>.</p>
 <h3 class="fn"><a name="orientation-prop"></a>orientation : <a href="qt.html#Orientation-enum">Qt::Orientation</a></h3>
 <p>This property holds orientation of the toolbar.</p>
-<p>The default is <tt>Qt::Horizontal</tt>.</p>
+<p>The default is <a href="qt.html#Orientation-enum">Qt::Horizontal</a>.</p>
 <p>The orientation is updated automatically when the toolbar is managed by <a href="qmainwindow.html">QMainWindow</a>.</p>
 <p>Access functions:</p>
 <ul>
@@ -229,6 +229,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

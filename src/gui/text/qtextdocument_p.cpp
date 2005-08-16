@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -167,6 +167,7 @@ QTextDocumentPrivate::QTextDocumentPrivate()
     modifiedState = 0;
 
     undoEnabled = true;
+    inContentsChange = false;
 }
 
 void QTextDocumentPrivate::init()
@@ -206,7 +207,8 @@ void QTextDocumentPrivate::clear()
     blocks.clear();
     resources.clear();
     q->contentsChange(0, len, 0);
-    lout->documentChanged(0, len, 0);
+    if (lout)
+        lout->documentChanged(0, len, 0);
     delete frame;
     init();
     cursors = oldCursors;
@@ -879,7 +881,11 @@ void QTextDocumentPrivate::endEditBlock()
         scan_frames(docChangeFrom, docChangeOldLength, docChangeLength);
 
     if (lout && docChangeFrom >= 0) {
-        emit q->contentsChange(docChangeFrom, docChangeOldLength, docChangeLength);
+        if (!inContentsChange) {
+            inContentsChange = true;
+            emit q->contentsChange(docChangeFrom, docChangeOldLength, docChangeLength);
+            inContentsChange = false;
+        }
         lout->documentChanged(docChangeFrom, docChangeOldLength, docChangeLength);
     }
 

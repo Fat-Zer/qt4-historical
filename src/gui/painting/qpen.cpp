@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,8 +39,8 @@
 
     A pen has a style, width, brush, cap style and join style.
 
-    The pen style defines the line type. The default pen style is \c
-    Qt::SolidLine. Setting the style to \c Qt::NoPen tells the painter to
+    The pen style defines the line type. The default pen style is
+    Qt::SolidLine. Setting the style to Qt::NoPen tells the painter to
     not draw lines or outlines.
 
     The pen brush defines the fill of lines and text. The default pen
@@ -301,6 +301,7 @@ void QPen::setWidth(int width)
 {
     if (width < 0)
         qWarning("QPen::setWidth(): Setting a pen width with a negative value is not defined.");
+    detach();
     d->width = width;
 }
 
@@ -336,7 +337,7 @@ Qt::PenCapStyle QPen::capStyle() const
 /*!
     Sets the pen's cap style to \a c.
 
-    The default value is \c Qt::SquareCap.
+    The default value is Qt::SquareCap.
 
     \img pen-cap-styles.png Pen Cap Styles
 
@@ -364,7 +365,7 @@ Qt::PenJoinStyle QPen::joinStyle() const
 /*!
     Sets the pen's join style to \a j.
 
-    The default value is \c Qt::BevelJoin.
+    The default value is Qt::BevelJoin.
 
     \img pen-join-styles.png Pen Join Styles
 

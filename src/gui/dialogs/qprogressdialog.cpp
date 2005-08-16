@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -41,15 +41,9 @@
 
 // If the operation is expected to take this long (as predicted by
 // progress time), show the progress dialog.
-static const int defaultShowTime    = 4000;
+static const int defaultShowTime = 4000;
 // Wait at least this long before attempting to make a prediction.
 static const int minWaitTime = 50;
-
-// Various layout values
-static const int margin_lr   = 10;
-static const int margin_tb   = 10;
-static const int spacing     = 4;
-
 
 class QProgressDialogPrivate : public QDialogPrivate
 {
@@ -65,17 +59,17 @@ public:
     void init(const QString &labelText, const QString &cancelText, int min, int max);
     void layout();
 
-    QLabel         *label;
-    QPushButton         *cancel;
+    QLabel *label;
+    QPushButton *cancel;
     QProgressBar *bar;
     QTimer *forceTimer;
-    bool          shown_once;
-    bool          cancellation_flag;
-    QTime          starttime;
+    bool shown_once;
+    bool cancellation_flag;
+    QTime starttime;
 #ifndef QT_NO_CURSOR
-    QCursor          parentCursor;
+    QCursor parentCursor;
 #endif
-    int                  showTime;
+    int showTime;
     bool autoClose;
     bool autoReset;
     bool forceHide;
@@ -102,9 +96,9 @@ void QProgressDialogPrivate::init(const QString &labelText, const QString &cance
 void QProgressDialogPrivate::layout()
 {
     Q_Q(QProgressDialog);
-    int sp = spacing;
-    int mtb = margin_tb;
-    int mlr = qMin(q->width() / 10, margin_lr);
+    int sp = q->style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing);
+    int mtb = q->style()->pixelMetric(QStyle::PM_DefaultTopLevelMargin);
+    int mlr = qMin(q->width() / 10, mtb);
     const bool centered =
         bool(q->style()->styleHint(QStyle::SH_ProgressDialog_CenterCancelButton, 0, q));
 
@@ -135,7 +129,7 @@ void QProgressDialogPrivate::layout()
     if (cancel) {
         cancel->setGeometry(
             centered ? q->width()/2 - cs.width()/2 : q->width() - mlr - cs.width(),
-            q->height() - mtb - cs.height() + sp,
+            q->height() - mtb - cs.height(),
             cs.width(), cs.height());
     }
 
@@ -182,7 +176,7 @@ void QProgressDialogPrivate::layout()
   QEventLoop::processEvents(ExcludeUserInput) to keep the event loop
   running to ensure that the application doesn't freeze. Do the
   operation in a loop, call \l setValue() at intervals, and check
-  for cancelation with wasCanceled(). For example:
+  for cancellation with wasCanceled(). For example:
 
   \quotefromfile snippets/dialogs/dialogs.cpp
   \skipto QProgressDialog progress("Copying files...", "Abort Copy", 0, numFiles, this);
@@ -372,7 +366,9 @@ void QProgressDialog::setCancelButton(QPushButton *cancelButton)
             cancelButton->setParent(this, 0);
         }
         connect(d->cancel, SIGNAL(clicked()), this, SIGNAL(canceled()));
+#ifndef QT_NO_SHORTCUT
         new QShortcut(Qt::Key_Escape, this, SIGNAL(canceled()));
+#endif
     }
     int w = qMax(isVisible() ? width() : 0, sizeHint().width());
     int h = qMax(isVisible() ? height() : 0, sizeHint().height());
@@ -626,10 +622,12 @@ QSize QProgressDialog::sizeHint() const
     Q_D(const QProgressDialog);
     QSize sh = d->label->sizeHint();
     QSize bh = d->bar->sizeHint();
-    int h = margin_tb*2 + bh.height() + sh.height() + spacing;
+    int margin = style()->pixelMetric(QStyle::PM_DefaultTopLevelMargin);
+    int spacing = style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing);
+    int h = margin * 2 + bh.height() + sh.height() + spacing;
     if (d->cancel)
         h += d->cancel->sizeHint().height() + spacing;
-    return QSize(qMax(200, sh.width() + 2*margin_lr), h);
+    return QSize(qMax(200, sh.width() + 2 * margin), h);
 }
 
 /*!\reimp

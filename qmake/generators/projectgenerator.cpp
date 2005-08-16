@@ -4,17 +4,17 @@
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -54,6 +54,10 @@ ProjectGenerator::init()
         return;
     int file_count = 0;
     init_flag = true;
+    verifyCompilers();
+
+    project->read(QMakeProject::ReadFeatures);
+    project->variables()["CONFIG"].clear();
 
     QMap<QString, QStringList> &v = project->variables();
     QString templ = Option::user_template.isEmpty() ? QString("app") : Option::user_template;
@@ -235,6 +239,7 @@ ProjectGenerator::init()
             if(!tmp.isEmpty()) {
                 for(int dep_it = 0; dep_it < tmp.size(); ++dep_it) {
                     QString dep = tmp[dep_it];
+                    dep = fixPathToQmake(dep);
                     QString file_dir = dep.section(Option::dir_sep, 0, -2),
                         file_no_path = dep.section(Option::dir_sep, -1);
                     if(!file_dir.isEmpty()) {
@@ -281,35 +286,46 @@ ProjectGenerator::init()
         }
     }
 
-#if 0
-    //if we find a file that matches an forms it needn't be included in the project
-    QStringList &u = v["FORMS"];
-    QString no_ui[] = { "SOURCES", "HEADERS", QString() };
-    {
-        for(int i = 0; !no_ui[i].isNull(); i++) {
-            QStringList &l = v[no_ui[i]];
-            for(QStringList::Iterator val_it = l.begin(); val_it != l.end();) {
-                bool found = false;
-                for(QStringList::Iterator ui_it = u.begin(); ui_it != u.end(); ++ui_it) {
-                    QString s1 = (*val_it).right((*val_it).length() - ((*val_it).lastIndexOf(Option::dir_sep) + 1));
-                    if(s1.lastIndexOf('.') != -1)
-                        s1 = s1.left(s1.lastIndexOf('.')) + Option::ui_ext;
-                    QString u1 = (*ui_it).right((*ui_it).length() - ((*ui_it).lastIndexOf(Option::dir_sep) + 1));
-                    if(s1 == u1) {
-                        found = true;
-                        break;
+    //strip out files that are actually output from internal compilers (ie temporary files)
+    const QStringList &quc = project->variables()["QMAKE_EXTRA_COMPILERS"];
+    for(QStringList::ConstIterator it = quc.begin(); it != quc.end(); ++it) {
+        QString tmp_out = project->variables()[(*it) + ".output"].first();
+        if(tmp_out.isEmpty())
+            continue;
+
+        QStringList var_out = project->variables()[(*it) + ".variable_out"];
+        bool defaults = var_out.isEmpty();
+        for(int i = 0; i < var_out.size(); ++i) {
+            QString v = var_out.at(i);
+            if(v.startsWith("GENERATED_")) {
+                defaults = true;
+                break;
+            }
+        }
+        if(defaults) {
+            var_out << "SOURCES";
+            var_out << "HEADERS";
+            var_out << "FORMS";
+        }
+        const QStringList &tmp = project->variables()[(*it) + ".input"];
+        for(QStringList::ConstIterator it2 = tmp.begin(); it2 != tmp.end(); ++it2) {
+            QStringList &inputs = project->variables()[(*it2)];
+            for(QStringList::Iterator input = inputs.begin(); input != inputs.end(); ++input) {
+                QString path = replaceExtraCompilerVariables(tmp_out, (*input), QString());
+                path = fixPathToQmake(path).section('/', -1);
+                for(int i = 0; i < var_out.size(); ++i) {
+                    QString v = var_out.at(i);
+                    QStringList &list = project->variables()[v];
+                    for(int src = 0; src < list.size(); ) {
+                        if(list[src] == path || list[src].endsWith("/" + path))
+                            list.removeAt(src);
+                        else
+                            ++src;
                     }
                 }
-                if(!found && (*val_it).endsWith(Option::cpp_moc_ext))
-                    found = true;
-                if(found)
-                    val_it = l.erase(val_it);
-                else
-                    ++val_it;
             }
         }
     }
-#endif
 }
 
 bool
@@ -404,9 +420,7 @@ ProjectGenerator::addFile(QString file)
             where = "RESOURCES";
     }
 
-    QString newfile = fileFixify(file);
-    if(Option::dir_sep != QLatin1String("/"))
-        newfile = newfile.replace(Option::dir_sep, QLatin1String("/"));
+    QString newfile = fixPathToQmake(fileFixify(file));
     if(!where.isEmpty() && !project->variables()[where].contains(file)) {
         project->variables()[where] += newfile;
         return true;
@@ -415,7 +429,7 @@ ProjectGenerator::addFile(QString file)
 }
 
 QString
-ProjectGenerator::getWritableVar(const QString &v, bool fixPath)
+ProjectGenerator::getWritableVar(const QString &v, bool)
 {
     QStringList &vals = project->variables()[v];
     if(vals.isEmpty())
@@ -435,14 +449,6 @@ ProjectGenerator::getWritableVar(const QString &v, bool fixPath)
             spaces += " ";
         join = vals.join(" \\\n" + spaces);
     }
-#if 0
-    // ### Commented out for now so that project generation works.
-    // Sam: it had to do with trailing \'s (ie considered continuation lines)
-    if(fixPath)
-        join = join.replace("\\", "/");
-#else
-    Q_UNUSED(fixPath);
-#endif
     return ret + join + "\n";
 }
 
@@ -463,4 +469,14 @@ ProjectGenerator::openOutput(QFile &file, const QString &build) const
         file.setFileName(outdir + dir + Option::pro_ext);
     }
     return MakefileGenerator::openOutput(file, build);
+}
+
+
+QString
+ProjectGenerator::fixPathToQmake(const QString &file)
+{
+    QString ret = file;
+    if(Option::dir_sep != QLatin1String("/"))
+        ret = ret.replace(Option::dir_sep, QLatin1String("/"));
+    return ret;
 }

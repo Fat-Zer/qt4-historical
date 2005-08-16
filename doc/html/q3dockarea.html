@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/qt3support/widgets/q3dockarea.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/widgets/q3dockarea.cpp -->
 <head>
     <title>Qt 4.0: Q3DockArea Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DockArea Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DockArea Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3DockArea class manages and lays out Q3DockWindows. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3DockArea&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3DockArea&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qdockarea">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="q3dockarea-members.html">List of all members, including inherited members</a></li>
@@ -60,7 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="q3dockarea.html#setAcceptDockWindow">setAcceptDockWindow</a></b> ( Q3DockWindow * <i>dw</i>, bool <i>accept</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -94,7 +93,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The Q3DockArea class manages and lays out Q3DockWindows.</p>
 <p>A Q3DockArea is a container which manages a list of <a href="q3dockwindow.html">Q3DockWindow</a>s which it lays out within its area. In cooperation with the <a href="q3dockwindow.html">Q3DockWindow</a>s it is responsible for the docking and undocking of <a href="q3dockwindow.html">Q3DockWindow</a>s and moving them inside the dock area. Q3DockAreas also handle the wrapping of <a href="q3dockwindow.html">Q3DockWindow</a>s to fill the available space as compactly as possible. Q3DockAreas can contain Q3ToolBars since <a href="q3toolbar.html">Q3ToolBar</a> is a <a href="q3dockwindow.html">Q3DockWindow</a> subclass.</p>
 <p><a href="qmainwindow.html">QMainWindow</a> contains four Q3DockAreas which you can use for your Q3ToolBars and Q3DockWindows, so in most situations you do not need to use the Q3DockArea class directly. Although <a href="qmainwindow.html">QMainWindow</a> contains support for its own dock areas it isn't convenient for adding new Q3DockAreas. If you need to create your own dock areas we suggest that you create a subclass of <a href="qwidget.html">QWidget</a> and add your Q3DockAreas to your subclass.</p>
-<center><img src="images/qmainwindow-qdockareas.png" alt="QMainWindow's Q3DockAreas" /></center><a name="lines"></a><p><i>Lines</i>. Q3DockArea uses the concept of lines. A line is a horizontal region which may contain dock windows side-by-side. A dock area may have room for more than one line. When dock windows are docked into a dock area they are usually added at the right hand side of the top-most line that has room (unless manually placed by the user). When users move dock windows they may leave empty lines or gaps in non-empty lines. <a href="qt.html#Dock-enum">Qt::Dock</a> windows can be lined up to minimize wasted space using the <a href="q3dockarea.html#lineUp">lineUp</a>() function.</p>
+<p align="center"><img src="images/qmainwindow-qdockareas.png" alt="QMainWindow's Q3DockAreas" /></p><a name="lines"></a><p><i>Lines</i>. Q3DockArea uses the concept of lines. A line is a horizontal region which may contain dock windows side-by-side. A dock area may have room for more than one line. When dock windows are docked into a dock area they are usually added at the right hand side of the top-most line that has room (unless manually placed by the user). When users move dock windows they may leave empty lines or gaps in non-empty lines. <a href="qt.html#Dock-enum">Qt::Dock</a> windows can be lined up to minimize wasted space using the <a href="q3dockarea.html#lineUp">lineUp</a>() function.</p>
 <p>The Q3DockArea class maintains a position list of all its child dock windows. <a href="qt.html#Dock-enum">Qt::Dock</a> windows are added to a dock area from position 0 onwards. <a href="qt.html#Dock-enum">Qt::Dock</a> windows are laid out sequentially in position order from left to right, and in the case of multiple lines of dock windows, from top to bottom. If a dock window is floated it still retains its position since this is where the window will return if the user double clicks its caption. A dock window's position can be determined with <a href="q3dockarea.html#hasDockWindow">hasDockWindow</a>(). The position can be changed with <a href="q3dockarea.html#moveDockWindow">moveDockWindow</a>().</p>
 <p>To dock or undock a dock window use <a href="q3dockwindow.html#dock">Q3DockWindow::dock</a>() and <a href="q3dockwindow.html#undock">Q3DockWindow::undock</a>() respectively. If you want to control which dock windows can dock in a dock area use <a href="q3dockarea.html#setAcceptDockWindow">setAcceptDockWindow</a>(). To see if a dock area contains a particular dock window use <a href="q3dockarea.html#hasDockWindow">hasDockWindow</a>(); to see how many dock windows a dock area contains use <a href="q3dockarea.html#count-prop">count</a>().</p>
 <p>The streaming operators can write the positions of the dock windows in the dock area to a <a href="qtextstream.html">QTextStream</a>. The positions can be read back later to restore the saved positions.</p>
@@ -180,6 +179,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

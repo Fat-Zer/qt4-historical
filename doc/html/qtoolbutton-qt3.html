@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/widgets/qtoolbutton.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/widgets/qtoolbutton.cpp -->
 <head>
     <title>Qt 4.0: Qt 3 Support Members for QToolButton</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,7 +16,7 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QToolButton</h1>
 <p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qtoolbutton.html">QToolButton class reference</a></li></ul></p>
@@ -57,7 +57,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3>Public Slots</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qtoolbutton-qt3.html#setTextPosition">setTextPosition</a></b> ( TextPosition <i>pos</i> )</li>
+<li><div class="fn"/>void <b><a href="qtoolbutton-qt3.html#setTextPosition">setTextPosition</a></b> ( QToolButton::TextPosition <i>pos</i> )</li>
 <li><div class="fn"/>void <b><a href="qtoolbutton-qt3.html#setUsesBigPixmap">setUsesBigPixmap</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qtoolbutton-qt3.html#setUsesTextLabel">setUsesTextLabel</a></b> ( bool <i>enable</i> )</li>
 </ul>
@@ -79,7 +79,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QToolButton-3"></a>QToolButton::QToolButton ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
 <p>Constructs an empty tool button called <i>name</i>, with parent <i>parent</i>.</p>
 <h3 class="fn"><a name="QToolButton-4"></a>QToolButton::QToolButton ( <a href="qt.html#ArrowType-enum">Qt::ArrowType</a> <i>type</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Constructs a tool button as an arrow button. The <tt>Qt::ArrowType</tt> <i>type</i> defines the arrow direction. Possible values are <tt>Qt::LeftArrow</tt>, <tt>Qt::RightArrow</tt>, <tt>Qt::UpArrow</tt> and <tt>Qt::DownArrow</tt>.</p>
+<p>Constructs a tool button as an arrow button. The <a href="qt.html#ArrowType-enum">Qt::ArrowType</a> <i>type</i> defines the arrow direction. Possible values are <a href="qt.html#ArrowType-enum">Qt::LeftArrow</a>, <a href="qt.html#ArrowType-enum">Qt::RightArrow</a>, <a href="qt.html#ArrowType-enum">Qt::UpArrow</a>, and <a href="qt.html#ArrowType-enum">Qt::DownArrow</a>.</p>
 <p>An arrow button has auto-repeat turned on by default.</p>
 <p>The <i>parent</i> and <i>name</i> arguments are sent to the <a href="qwidget.html">QWidget</a> constructor.</p>
 <h3 class="fn"><a name="QToolButton-5"></a>QToolButton::QToolButton ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>textLabel</i>, const <a href="qstring.html">QString</a> &amp; <i>statusTip</i>, <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>slot</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> = 0 )</h3>
@@ -87,22 +87,28 @@ body { background: #ffffff; color: black; }</style>
 <p>The tool button will display the given <i>icon</i>, with its text label and tool tip set to <i>textLabel</i> and its status bar message set to <i>statusTip</i>. It will be connected to the <i>slot</i> in object <i>receiver</i>.</p>
 <h3 class="fn"><a name="iconSet"></a><a href="qicon.html">QIcon</a> QToolButton::iconSet () const</h3>
 <p>Use <a href="qabstractbutton.html#icon-prop">icon</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setIconSet">setIconSet</a>().</p>
 <h3 class="fn"><a name="iconSet-2"></a><a href="qicon.html">QIcon</a> QToolButton::iconSet ( bool <i>on</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Since Qt 3.0, <a href="qicon.html">QIcon</a> contains both the On and Off icons.</p>
 <p>For ease of porting, this function ignores the <i>on</i> parameter and returns the <a href="qabstractbutton.html#icon-prop">icon</a> property. If you relied on the <i>on</i> parameter, you probably want to update your code to use the <a href="qicon.html">QIcon</a> On/Off mechanism.</p>
 <h3 class="fn"><a name="offIconSet"></a><a href="qicon.html">QIcon</a> QToolButton::offIconSet () const</h3>
 <p>Use <a href="qabstractbutton.html#icon-prop">icon</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setOffIconSet">setOffIconSet</a>().</p>
 <h3 class="fn"><a name="onIconSet"></a><a href="qicon.html">QIcon</a> QToolButton::onIconSet () const</h3>
 <p>Use <a href="qabstractbutton.html#icon-prop">icon</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setOnIconSet">setOnIconSet</a>().</p>
 <h3 class="fn"><a name="openPopup"></a>void QToolButton::openPopup ()</h3>
 <p>Use <a href="qtoolbutton.html#showMenu">showMenu</a>() instead.</p>
 <h3 class="fn"><a name="popup"></a><a href="qmenu.html">QMenu</a> * QToolButton::popup () const</h3>
 <p>Use <a href="qtoolbutton.html#menu">menu</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setPopup">setPopup</a>().</p>
 <h3 class="fn"><a name="popupDelay"></a>int QToolButton::popupDelay () const</h3>
 <p>Use the style hint <a href="qstyle.html#StyleHint-enum">QStyle::SH_ToolButton_PopupDelay</a> instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setPopupDelay">setPopupDelay</a>().</p>
 <h3 class="fn"><a name="setIconSet"></a>void QToolButton::setIconSet ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i> )</h3>
 <p>Use <a href="qabstractbutton.html#icon-prop">setIcon</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#iconSet">iconSet</a>().</p>
 <h3 class="fn"><a name="setIconSet-2"></a>void QToolButton::setIconSet ( const <a href="qicon.html">QIcon</a> &amp; <i>set</i>, bool <i>on</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Since Qt 3.0, <a href="qicon.html">QIcon</a> contains both the On and Off icons.</p>
@@ -110,34 +116,45 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractbutton.html#icon-prop">icon</a> and <a href="qicon.html#State-enum">QIcon::State</a>.</p>
 <h3 class="fn"><a name="setOffIconSet"></a>void QToolButton::setOffIconSet ( const <a href="qicon.html">QIcon</a> &amp; <i>set</i> )</h3>
 <p>Use <a href="qabstractbutton.html#icon-prop">setIcon</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#offIconSet">offIconSet</a>().</p>
 <h3 class="fn"><a name="setOnIconSet"></a>void QToolButton::setOnIconSet ( const <a href="qicon.html">QIcon</a> &amp; <i>set</i> )</h3>
 <p>Use <a href="qabstractbutton.html#icon-prop">setIcon</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#onIconSet">onIconSet</a>().</p>
 <h3 class="fn"><a name="setPixmap"></a>void QToolButton::setPixmap ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i> )</h3>
 <p>Use setIcon(<a href="qicon.html">QIcon</a>(pixmap)) instead.</p>
 <h3 class="fn"><a name="setPopup"></a>void QToolButton::setPopup ( <a href="qmenu.html">QMenu</a> * <i>popup</i> )</h3>
 <p>Use <a href="qtoolbutton.html#setMenu">setMenu</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#popup">popup</a>().</p>
 <h3 class="fn"><a name="setPopupDelay"></a>void QToolButton::setPopupDelay ( int <i>delay</i> )</h3>
 <p>Use the style hint <a href="qstyle.html#StyleHint-enum">QStyle::SH_ToolButton_PopupDelay</a> instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#popupDelay">popupDelay</a>().</p>
 <h3 class="fn"><a name="setTextLabel"></a>void QToolButton::setTextLabel ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, bool <i>tooltip</i> = true )</h3>
 <p>Use <a href="qabstractbutton.html#text-prop">setText</a>() and <a href="qwidget.html#toolTip-prop">setToolTip</a>() instead.</p>
-<h3 class="fn"><a name="setTextPosition"></a>void QToolButton::setTextPosition ( <a href="qtoolbutton-qt3.html#TextPosition-enum">TextPosition</a> <i>pos</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Use <a href="qtoolbutton.html#toolButtonStyle-prop">setToolButtonStyle</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#textLabel">textLabel</a>().</p>
+<h3 class="fn"><a name="setTextPosition"></a>void QToolButton::setTextPosition ( <a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::TextPosition</a> <i>pos</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
+<p>See also <a href="qtoolbutton-qt3.html#textPosition">textPosition</a>().</p>
 <h3 class="fn"><a name="setUsesBigPixmap"></a>void QToolButton::setUsesBigPixmap ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Use <a href="qabstractbutton.html#iconSize-prop">setIconSize</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#usesBigPixmap">usesBigPixmap</a>().</p>
 <h3 class="fn"><a name="setUsesTextLabel"></a>void QToolButton::setUsesTextLabel ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Use <a href="qtoolbutton.html#toolButtonStyle-prop">setToolButtonStyle</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#usesTextLabel">usesTextLabel</a>().</p>
 <h3 class="fn"><a name="textLabel"></a><a href="qstring.html">QString</a> QToolButton::textLabel () const</h3>
 <p>Use <a href="qabstractbutton.html#text-prop">text</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setTextLabel">setTextLabel</a>().</p>
 <h3 class="fn"><a name="textPosition"></a><a href="qtoolbutton-qt3.html#TextPosition-enum">TextPosition</a> QToolButton::textPosition () const</h3>
 <p>Use <a href="qtoolbutton.html#toolButtonStyle-prop">toolButtonStyle</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setTextPosition">setTextPosition</a>().</p>
 <h3 class="fn"><a name="usesBigPixmap"></a>bool QToolButton::usesBigPixmap () const</h3>
 <p>Use <a href="qabstractbutton.html#iconSize-prop">iconSize</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setUsesBigPixmap">setUsesBigPixmap</a>().</p>
 <h3 class="fn"><a name="usesTextLabel"></a>bool QToolButton::usesTextLabel () const</h3>
 <p>Use <a href="qtoolbutton.html#toolButtonStyle-prop">toolButtonStyle</a>() instead.</p>
+<p>See also <a href="qtoolbutton-qt3.html#setUsesTextLabel">setUsesTextLabel</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

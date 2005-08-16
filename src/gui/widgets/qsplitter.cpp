@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -788,7 +788,7 @@ void QSplitter::setResizeMode(QWidget *w, ResizeMode mode)
 
         This function tries to simulate the Qt 3.x ResizeMode
         behavior using QSizePolicy stretch factors. This isn't easy,
-        because the default \c ResizeMode was \c Stretch, not \c
+        because the default \l ResizeMode was \l Stretch, not \l
         KeepSize, whereas the default stetch factor is 0.
 
         So what we do is this: When the user calls setResizeMode()
@@ -1087,7 +1087,7 @@ void QSplitter::setCollapsible(int index, bool collapse)
     Q_D(QSplitter);
 
     if (index < 0 || index >= d->list.size()) {
-        qWarning() << "QSplitter::setCollapsible() index" << index << "out of range";
+        qWarning("QSplitter::setCollapsible() index %d out of range", index);
         return;
     }
     d->list.at(index)->collapsible = collapse ? 1 : 0;
@@ -1100,7 +1100,7 @@ bool QSplitter::isCollapsible(int index) const
 {
     Q_D(const QSplitter);
     if (index < 0 || index >= d->list.size()) {
-        qWarning() << "QSplitter::isCollapsible() index" << index << "out of range";
+        qWarning("QSplitter::isCollapsible() index %d out of range", index);
         return false;
     }
     return d->list.at(index)->collapsible;
@@ -1395,7 +1395,7 @@ void QSplitter::moveSplitter(int pos, int index)
 
 /*!
     Returns the valid range of the splitter with index \a index in
-    \c{*}\a{min} and \c{*}\a{max} if \a min and \a max are not 0.
+    *\a{min} and *\a{max} if \a min and \a max are not 0.
 */
 
 void QSplitter::getRange(int index, int *min, int *max) const

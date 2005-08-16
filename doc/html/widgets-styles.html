@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/examples/styles.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/styles.qdoc -->
 <head>
     <title>Qt 4.0: Styles Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Styles Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Styles Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="widgets-styles-norwegianwoodstyle-cpp.html">widgets/styles/norwegianwoodstyle.cpp</a></li>
@@ -28,7 +28,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="widgets-styles-styles-qrc.html">widgets/styles/styles.qrc</a></li>
 </ul>
 <p>The Styles example illustrates how to create custom widget drawing styles using Qt, and demonstrates Qt's predefined styles.</p>
-<center><img src="images/styles-enabledwood.png" alt="Screenshot of the Styles example" /></center><p>A style in Qt is a subclass of <a href="qstyle.html">QStyle</a> or of one of its subclasses. Styles perform drawing on behalf of widgets. Qt provides a whole range of predefined styles, either built into the <a href="qtgui.html#qtgui">QtGui</a> library or found in plugins. Custom styles are usually created by subclassing one of Qt's existing style and reimplementing a few virtual functions.</p>
+<p align="center"><img src="images/styles-enabledwood.png" alt="Screenshot of the Styles example" /></p><p>A style in Qt is a subclass of <a href="qstyle.html">QStyle</a> or of one of its subclasses. Styles perform drawing on behalf of widgets. Qt provides a whole range of predefined styles, either built into the <a href="qtgui.html">QtGui</a> library or found in plugins. Custom styles are usually created by subclassing one of Qt's existing style and reimplementing a few virtual functions.</p>
 <p>In this example, the custom style is called <tt>NorwegianWoodStyle</tt> and derives from <a href="qmotifstyle.html">QMotifStyle</a>. Its main features are the wooden textures used for filling most of the widgets and its round buttons and comboboxes.</p>
 <p>To implement the style, we use some advanced features provided by <a href="qpainter.html">QPainter</a>, such as <a href="qpainter.html#RenderHint-enum">antialiasing</a> (to obtain smoother button edges), <a href="qcolor.html#alpha">alpha blending</a> (to make the buttons appeared raised or sunken), and <a href="qpainterpath.html">painter paths</a> (to fill the buttons and draw the outline). We also use many features of <a href="qbrush.html">QBrush</a> and <a href="qpalette.html">QPalette</a>.</p>
 <p>The example consists of the following classes:</p>
@@ -115,7 +115,7 @@ body { background: #ffffff; color: black; }</style>
 <p>We initialize the <a href="qpalette.html">QPalette</a> object with a brown color. Qt automatically derivates all color roles for all color groups from that single color. We then override some of the default values. For example, we use <a href="qt.html#GlobalColor-enum">Qt::darkGreen</a> instead of the default (<a href="qt.html#GlobalColor-enum">Qt::darkBlue</a>) for the <a href="qpalette.html#ColorRole-enum">QPalette::Highlight</a> role. The <a href="qpalette.html#setBrush">QPalette::setBrush</a>() overload that we use here sets the same color or brush for all three color groups.</p>
 <p>The <tt>setTexture()</tt> function is a private function that sets the texture for a certain color role, while preserving the existing color in the <a href="qbrush.html">QBrush</a>. A <a href="qbrush.html">QBrush</a> can hold both a solid color and a texture at the same time. The solid color is used for drawing text and other graphical elements where textures don't look good.</p>
 <p>At the end, we set the brush for the disabled color group of the palette. We use <tt>woodbackground.png</tt> as the texture for all disabled widgets, including buttons, and use a darker color to accompany the texture.</p>
-<center><img src="images/styles-disabledwood.png" alt="The Norwegian Wood style with disabled widgets" /></center><p>Let's move on to the other functions reimplemented from <a href="qmotifstyle.html">QMotifStyle</a>:</p>
+<p align="center"><img src="images/styles-disabledwood.png" alt="The Norwegian Wood style with disabled widgets" /></p><p>Let's move on to the other functions reimplemented from <a href="qmotifstyle.html">QMotifStyle</a>:</p>
 <pre>&nbsp;   void NorwegianWoodStyle::polish(QWidget *widget)
     {
         if (qobject_cast&lt;QPushButton *&gt;(widget)
@@ -207,14 +207,14 @@ body { background: #ffffff; color: black; }</style>
 <li>Otherwise, we use the <a href="qpalette.html#ColorRole-enum">Button</a> component of the palette.</li>
 </ul>
 <p>The screenshot below illustrates how <a href="qpushbutton.html">QPushButton</a>s are rendered based on their state:</p>
-<center><img src="images/styles-woodbuttons.png" alt="Norwegian Wood buttons in different states" /></center><p>To discover whether the button is flat or not, we need to cast the <tt>option</tt> parameter to <a href="qstyleoptionbutton.html">QStyleOptionButton</a> and check if the <a href="qstyleoptionbutton.html#features-var">features</a> member specifies the <a href="qstyleoptionbutton.html#ButtonFeature-enum">QStyleOptionButton::Flat</a> flag. The <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() function performs a dynamic cast; if <tt>option</tt> is not a <a href="qstyleoptionbutton.html">QStyleOptionButton</a>, <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() returns a null pointer.</p>
+<p align="center"><img src="images/styles-woodbuttons.png" alt="Norwegian Wood buttons in different states" /></p><p>To discover whether the button is flat or not, we need to cast the <tt>option</tt> parameter to <a href="qstyleoptionbutton.html">QStyleOptionButton</a> and check if the <a href="qstyleoptionbutton.html#features-var">features</a> member specifies the <a href="qstyleoptionbutton.html#ButtonFeature-enum">QStyleOptionButton::Flat</a> flag. The <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() function performs a dynamic cast; if <tt>option</tt> is not a <a href="qstyleoptionbutton.html">QStyleOptionButton</a>, <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() returns a null pointer.</p>
 <pre>&nbsp;               painter-&gt;save();
                 painter-&gt;setRenderHint(QPainter::Antialiasing, true);
                 painter-&gt;fillPath(roundRect, brush);
                 if (darker)
                     painter-&gt;fillPath(roundRect, slightlyOpaqueBlack);</pre>
 <p>We turn on antialiasing on <a href="qpainter.html">QPainter</a>. Antialiasing is a technique that reduces the visual distortion that occurs when the edges of a shape are converted into pixels. For the Norwegian Wood style, we use it to obtain smoother edges for the round buttons.</p>
-<center><img src="images/styles-aliasing.png" alt="Norwegian wood buttons with and without antialiasing" /></center><p>The first call to <a href="qpainter.html#fillPath">QPainter::fillPath</a>() draws the background of the button with a wooden texture. The second call to <a href="qpainter.html#fillPath">fillPath()</a> paints the same area with a semi-transparent black color (a black color with an alpha channel of 63) to make the area darker if <tt>darker</tt> is true.</p>
+<p align="center"><img src="images/styles-aliasing.png" alt="Norwegian wood buttons with and without antialiasing" /></p><p>The first call to <a href="qpainter.html#fillPath">QPainter::fillPath</a>() draws the background of the button with a wooden texture. The second call to <a href="qpainter.html#fillPath">fillPath()</a> paints the same area with a semi-transparent black color (a black color with an alpha channel of 63) to make the area darker if <tt>darker</tt> is true.</p>
 <pre>&nbsp;               int penWidth;
                 if (radius &lt; 10)
                     penWidth = 3;
@@ -252,7 +252,7 @@ body { background: #ffffff; color: black; }</style>
                 painter-&gt;drawPath(roundRect);</pre>
 <p>We draw the top-left part of the outline by calling <a href="qpainter.html#drawPath">QPainter::drawPath</a>() with an appropriate <a href="qpainter.html#setClipRegion">clip region</a>. If the <a href="qstyleoption.html#direction-var">layout direction</a> is right-to-left instead of left-to-right, we swap the <tt>x1</tt>, <tt>x2</tt>, <tt>x3</tt>, and <tt>x4</tt> variables to obtain correct results. On right-to-left desktop, the &quot;light&quot; comes from the top-right corner of the screen instead of the top-left corner; raised and sunken widgets must be drawn accordingly.</p>
 <p>The diagram below illustrates how 3D effects are drawn according to the layout direction. The area in red on the diagram corresponds to the <tt>topHalf</tt> polygon:</p>
-<center><img src="images/styles-3d.png" /></center><p>An easy way to test how a style looks in right-to-left mode is to pass the <tt>-reverse</tt> command-line option to the application. This option is recognized by the <a href="qapplication.html">QApplication</a> constructor.</p>
+<p align="center"><img src="images/styles-3d.png" /></p><p>An easy way to test how a style looks in right-to-left mode is to pass the <tt>-reverse</tt> command-line option to the application. This option is recognized by the <a href="qapplication.html">QApplication</a> constructor.</p>
 <pre>&nbsp;               QPolygon bottomHalf = topHalf;
                 bottomHalf[0] = QPoint(x4, y + height);
 
@@ -490,6 +490,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

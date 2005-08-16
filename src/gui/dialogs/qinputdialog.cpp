@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -60,8 +60,6 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
 {
     Q_Q(QInputDialog);
     QVBoxLayout *vbox = new QVBoxLayout(q);
-    vbox->setMargin(6);
-    vbox->setSpacing(6);
 
     label = new QLabel(lbl, q);
     vbox->addWidget(label);
@@ -90,7 +88,6 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
     vbox->addStretch(1);
 
     QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->setSpacing(6);
     vbox->addLayout(hbox, Qt::AlignRight);
 
     ok = new QPushButton(QInputDialog::tr("OK"), q);
@@ -102,8 +99,13 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
     cancel->setFixedSize(bs);
 
     hbox->addStretch();
+#ifdef Q_WS_MAC
+    hbox->addWidget(cancel);
+    hbox->addWidget(ok);
+#else
     hbox->addWidget(ok);
     hbox->addWidget(cancel);
+#endif
 
     QObject::connect(ok, SIGNAL(clicked()), q, SLOT(accept()));
     QObject::connect(cancel, SIGNAL(clicked()), q, SLOT(reject()));
@@ -218,14 +220,12 @@ QString QInputDialog::getText(QWidget *parent, const QString &title, const QStri
                                bool *ok, Qt::WFlags f)
 {
     QInputDialog dlg(label, parent, LineEdit, f);
-    dlg.setObjectName("qt_inputdlg_gettext");
 
-#ifndef QT_NO_WIDGET_TOPEXTRA
     dlg.setWindowTitle(title);
-#endif
     QLineEdit *le = qobject_cast<QLineEdit *>(dlg.d_func()->input);
     le->setText(text);
     le->setEchoMode(mode);
+    le->setFocus();
 
     QString result;
     bool accepted = (dlg.exec() == QDialog::Accepted);
@@ -269,11 +269,8 @@ int QInputDialog::getInteger(QWidget *parent, const QString &title, const QStrin
                              Qt::WFlags f)
 {
     QInputDialog dlg(label, parent, SpinBox, f);
-    dlg.setObjectName("qt_inputdlg_getint");
 
-#ifndef QT_NO_WIDGET_TOPEXTRA
     dlg.setWindowTitle(title);
-#endif
     QSpinBox *sb = qobject_cast<QSpinBox *>(dlg.d_func()->input);
     sb->setRange(minValue, maxValue);
     sb->setSingleStep(step);
@@ -318,10 +315,7 @@ double QInputDialog::getDouble( QWidget *parent, const QString &title, const QSt
                                 int decimals, bool *ok, Qt::WFlags f)
 {
     QInputDialog dlg(label, parent, DoubleSpinBox, f);
-    dlg.setObjectName("qt_inputdlg_getdbl");
-#ifndef QT_NO_WIDGET_TOPEXTRA
     dlg.setWindowTitle(title);
-#endif
     QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox *>(dlg.d_func()->input);
     sb->setRange(minValue, maxValue);
     sb->setDecimals(decimals);
@@ -365,10 +359,7 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
                               int current, bool editable, bool *ok, Qt::WFlags f)
 {
     QInputDialog dlg(label, parent, editable ? EditableComboBox : ComboBox, f);
-    dlg.setObjectName("qt_inputdlg_getitem");
-#ifndef QT_NO_WIDGET_TOPEXTRA
     dlg.setWindowTitle(title);
-#endif
 
     QComboBox *combo = qobject_cast<QComboBox *>(dlg.d_func()->input);
     combo->addItems(list);

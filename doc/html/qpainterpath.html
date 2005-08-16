@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/painting/qpainterpath.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/painting/qpainterpath.cpp -->
 <head>
     <title>Qt 4.0: QPainterPath Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPainterPath Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPainterPath Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPainterPath class provides a container for painting operations, enabling graphical shapes to be constructed and reused. <a href="#details">More...</a></p>
-<pre>#include &lt;QPainterPath&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QPainterPath&gt;</pre><ul>
 <li><a href="qpainterpath-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -108,6 +107,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addEllipse"></a>void QPainterPath::addEllipse ( const <a href="qrectf.html">QRectF</a> &amp; <i>boundingRect</i> )</h3>
 <p>Creates an ellipse within the bounding rectangle specified by <i>boundingRect</i> and adds it to the painter path.</p>
 <p>If the current subpath is closed, a new subpath is started. The ellipse is composed of a clockwise curve, starting and finishing at zero degrees (the 3 o'clock position).</p>
+<p>Example:</p>
+<pre>&nbsp;   QPainterPath path;
+    path.addEllipse(10, 10, 70, 100);</pre>
+<p align="center"><img src="images/draw_ellipse.png" alt="An elliptic path" /></p><p>See also <a href="qpainterpath.html#arcTo">arcTo</a>() and <a href="qpainter.html#drawEllipse">QPainter::drawEllipse</a>().</p>
 <h3 class="fn"><a name="addEllipse-2"></a>void QPainterPath::addEllipse ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>width</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>height</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Creates an ellipse within a bounding rectangle defined by its top-left corner at (<i>x</i>, <i>y</i>), <i>width</i> and <i>height</i>, and adds it to the painter path.</p>
@@ -125,7 +128,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Adds the region <i>region</i> to the path. This is done by adding each rectangle in the region as a separate subpath.</p>
 <h3 class="fn"><a name="addText"></a>void QPainterPath::addText ( const <a href="qpointf.html">QPointF</a> &amp; <i>point</i>, const <a href="qfont.html">QFont</a> &amp; <i>font</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Adds the given <i>text</i> to this path as a set of closed subpaths created from the <i>font</i> supplied. The subpaths are positioned so that the left end of the text's baseline lies at the <i>point</i> specified.</p>
-<center><img src="images/qpainterpath-addtext.png" /></center><p>See also <a href="qpainter.html#drawText">QPainter::drawText</a>().</p>
+<p align="center"><img src="images/qpainterpath-addtext.png" /></p><p>See also <a href="qpainter.html#drawText">QPainter::drawText</a>().</p>
 <h3 class="fn"><a name="addText-2"></a>void QPainterPath::addText ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, const <a href="qfont.html">QFont</a> &amp; <i>font</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Adds the given <i>text</i> to this path as a set of closed subpaths created from the <i>font</i> supplied. The subpaths are positioned so that the left end of the text's baseline lies at the point specified by (<i>x</i>, <i>y</i>).</p>
@@ -133,7 +136,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="arcTo"></a>void QPainterPath::arcTo ( const <a href="qrectf.html">QRectF</a> &amp; <i>rectangle</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>startAngle</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>sweepLength</i> )</h3>
 <p>Creates an arc that occupies the given <i>rectangle</i>, beginning at <i>startAngle</i> and extending <i>sweepLength</i> degrees counter-clockwise. Angles are specified in degrees. Clockwise arcs can be specified using negative angles.</p>
 <p>This function connects the current point to the starting point of the arc if they are not already connected.</p>
-<p>See also <a href="qpainter.html#drawArc">QPainter::drawArc</a>().</p>
+<p>Example:</p>
+<pre>&nbsp;   QPainterPath path;
+    QRect boundingRect(10, 10, 70, 100);
+    path.moveTo(boundingRect.center());
+    path.arcTo(boundingRect, 50, 100);
+    path.closeSubpath();</pre>
+<p align="center"><img src="images/draw_pie.png" alt="An pie-shaped path" /></p><p>See also <a href="qpainterpath.html#addEllipse">addEllipse</a>(), <a href="qpainter.html#drawArc">QPainter::drawArc</a>(), and <a href="qpainter.html#drawPie">QPainter::drawPie</a>().</p>
 <h3 class="fn"><a name="arcTo-2"></a>void QPainterPath::arcTo ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>width</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>height</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>startAngle</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>sweepLength</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>The arc's lies within the rectangle given by the point (<i>x</i>, <i>y</i>), <i>width</i> and <i>height</i>, beginning at <i>startAngle</i> and extending <i>sweepLength</i> degrees counter-clockwise. Angles are specified in degrees. Clockwise arcs can be specified using negative angles.</p>
@@ -162,12 +171,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Adds a Bezier curve between the current point and the endpoint (<i>endPtx</i>, <i>endPty</i>) with control points specified by (<i>ctrlPt1x</i>, <i>ctrlPt1y</i>) and (<i>ctrlPt2x</i>, <i>ctrlPt2y</i>). After the curve is added, the current point is updated to be at the end point of the curve.</p>
 <h3 class="fn"><a name="currentPosition"></a><a href="qpointf.html">QPointF</a> QPainterPath::currentPosition () const</h3>
 <p>Returns the current position of the path.</p>
-<h3 class="fn"><a name="elementAt"></a>const <a href="qpainterpath-element.html">QPainterPath::Element</a> &amp; QPainterPath::elementAt ( int <i>index</i> ) const</h3>
+<h3 class="fn"><a name="elementAt"></a>const QPainterPath::Element &amp; QPainterPath::elementAt ( int <i>index</i> ) const</h3>
 <p>Returns the element at the given <i>index</i> in the painter path.</p>
 <h3 class="fn"><a name="elementCount"></a>int QPainterPath::elementCount () const</h3>
 <p>Returns the number of path elements in the painter path.</p>
 <h3 class="fn"><a name="fillRule"></a><a href="qt.html#FillRule-enum">Qt::FillRule</a> QPainterPath::fillRule () const</h3>
-<p>Returns the fill rule of the painter path. The default fill rule is <tt>Qt::OddEvenFill</tt>.</p>
+<p>Returns the fill rule of the painter path. The default fill rule is <a href="qt.html#FillRule-enum">Qt::OddEvenFill</a>.</p>
 <p>See also <a href="qt.html#FillRule-enum">Qt::FillRule</a> and <a href="qpainterpath.html#setFillRule">setFillRule</a>().</p>
 <h3 class="fn"><a name="intersects"></a>bool QPainterPath::intersects ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i> ) const</h3>
 <p>Returns true if any point in rect <i>rect</i> is inside the path; otherwise returns false.</p>
@@ -227,6 +236,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

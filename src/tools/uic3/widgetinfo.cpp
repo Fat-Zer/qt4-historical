@@ -4,17 +4,17 @@
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -55,6 +55,8 @@
 #include <Qt3Support/Q3MainWindow>
 #include <Qt3Support/Q3GroupBox>
 #include <Qt3Support/Q3ButtonGroup>
+#include <Qt3Support/Q3IconView>
+#include <Qt3Support/Q3ProgressBar>
 
 WidgetInfo::WidgetInfo()
 {
@@ -94,6 +96,8 @@ const QMetaObject *WidgetInfo::metaObject(const QString &widgetName)
     else if (widgetName == QLatin1String("QListView") ||
              widgetName == QLatin1String("Q3ListView"))
         return &Q3ListView::staticMetaObject;
+    else if (widgetName == QLatin1String("Q3IconView"))
+        return &Q3IconView::staticMetaObject;
     else if (widgetName == QLatin1String("QLineEdit"))
         return &QLineEdit::staticMetaObject;
     else if (widgetName == QLatin1String("QSpinBox"))
@@ -120,6 +124,8 @@ const QMetaObject *WidgetInfo::metaObject(const QString &widgetName)
         return &QLCDNumber::staticMetaObject;
     else if (widgetName == QLatin1String("QProgressBar"))
         return &QProgressBar::staticMetaObject;
+    else if (widgetName == QLatin1String("Q3ProgressBar"))
+        return &Q3ProgressBar::staticMetaObject;
     else if (widgetName == QLatin1String("QTextView")
              || widgetName == QLatin1String("Q3TextView"))
         return &Q3TextView::staticMetaObject;
@@ -211,7 +217,7 @@ QString WidgetInfo::resolveEnumerator(const QString &className, const QString &n
         if (e.size())
             return e;
 
-        return QLatin1String(name);
+        return name;
     }
 
     return resolveEnumerator(meta, name);
@@ -219,11 +225,14 @@ QString WidgetInfo::resolveEnumerator(const QString &className, const QString &n
 
 QString WidgetInfo::resolveEnumerator(const QMetaObject *meta, const QString &name)
 {
-    for (int i=0; i<meta->enumeratorCount(); ++i) {
+    for (int i=meta->enumeratorCount() - 1; i>=0; --i) {
         QString e = resolveEnumerator(meta->enumerator(i), name);
         if (e.size())
             return e;
     }
+
+    if (meta != &staticQtMetaObject)
+        return resolveEnumerator(&staticQtMetaObject, name);
 
     return QString();
 }

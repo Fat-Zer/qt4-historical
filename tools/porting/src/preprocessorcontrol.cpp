@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the porting application of the Qt Toolkit.
+** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -130,7 +130,7 @@ QByteArray PreprocessorCache::readFile(const QString &filename) const
 {
     // If anybody is connected to the readFile signal we tell them to
     // read the file for us.
-    if (receivers(SIGNAL(readFile(QByteArray &, QString))) > 0) {
+    if (receivers(SIGNAL(readFile(QByteArray&,QString))) > 0) {
         QByteArray array;
         // Workaround for "not beeing able to emit from const function"
         PreprocessorCache *cache = const_cast<PreprocessorCache *>(this);
@@ -253,17 +253,17 @@ PreprocessorController::PreprocessorController(IncludeFiles includeFiles,
             }
         }
     }
-
+    
     //connect include callback
     connect(&m_rppTreeEvaluator,
-        SIGNAL(includeCallback(Source *&, const Source *,
-        const QString &, RppTreeEvaluator::IncludeType)),
-        SLOT(includeSlot(Source *&, const Source *,
-        const QString &, RppTreeEvaluator::IncludeType)));
+        SIGNAL(includeCallback(::Rpp::Source *&, const ::Rpp::Source *,
+        const QString &, ::Rpp::RppTreeEvaluator::IncludeType)),
+        SLOT(includeSlot(::Rpp::Source *&, const ::Rpp::Source *,
+        const QString &, ::Rpp::RppTreeEvaluator::IncludeType)));
 
     // connect readFile callback
-    connect(&m_preprocessorCache, SIGNAL(readFile(QByteArray &, QString)),
-        SLOT(readFile(QByteArray &, QString)));
+    connect(&m_preprocessorCache, SIGNAL(readFile(QByteArray&,QString)),
+        SLOT(readFile(QByteArray&,QString)));
 
     //connect error handlers
     connect(&m_preprocessorCache , SIGNAL(error(QString,QString)),
@@ -378,7 +378,7 @@ Rpp::DefineMap *defaultMacros(PreprocessorCache &cache)
 void StandardOutErrorHandler::error(QString type, QString text)
 {
     Q_UNUSED(type);
-    cout << qPrintable(text) << endl;
+    puts(qPrintable(text));
 }
 
 /*
@@ -390,7 +390,7 @@ RppPreprocessor::RppPreprocessor(QString basePath, QStringList includePaths, QSt
 ,m_activeDefinitions(defaultMacros(m_cache))
 ,m_controller(m_includeFiles, m_cache, preLoadFilesFilenames)
 {
-    QObject::connect(&m_controller, SIGNAL(error(QString, QString)), &m_errorHandler, SLOT(error(QString, QString)));
+    QObject::connect(&m_controller, SIGNAL(error(QString,QString)), &m_errorHandler, SLOT(error(QString,QString)));
 }
 
 RppPreprocessor::~RppPreprocessor()

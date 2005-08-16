@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/richtext.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/richtext.qdoc -->
 <head>
     <title>Qt 4.0: The QTextCursor Interface</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="richtext-structure.html">Rich Text Document Structure</a>]
 [<a href="richtext.html">Contents</a>]
 [Next: <a href="richtext-common-tasks.html">Common Rich Text Editing Tasks</a>]
 </p>
-<h1 align="center">The QTextCursor Interface</h1>
+<h1 align="center">The QTextCursor Interface<br /><small></small></h1>
 <ul><li><a href="#cursor-based-editing">Cursor-Based Editing</a></li>
 <ul><li><a href="#using-a-cursor">Using a Cursor</a></li>
 <li><a href="#grouping-cursor-operations">Grouping Cursor Operations</a></li>
@@ -44,7 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This chapter describes most of the common editing operations that you will need to perform using a cursor, from basic insertion of text and document elements to more complex manipulation of document structures.</p>
 <a name="cursor-based-editing"></a>
 <h2>Cursor-Based Editing</h2>
-<p>At the simplest level, text documents are made up of a string of characters, marked up in some way to represent the block structure of the text within the document. <tt>QTextCursor</tt> provides a cursor-based interface that allows the contents of a <tt>QTextDocument</tt> to be manipulated at the character level. Since the elements (blocks, frames, tables, etc.) are also encoded in the character stream, the document structure can itself be changed by the cursor.</p>
+<p>At the simplest level, text documents are made up of a string of characters, marked up in some way to represent the block structure of the text within the document. <a href="qtextcursor.html">QTextCursor</a> provides a cursor-based interface that allows the contents of a <a href="qtextdocument.html">QTextDocument</a> to be manipulated at the character level. Since the elements (blocks, frames, tables, etc.) are also encoded in the character stream, the document structure can itself be changed by the cursor.</p>
 <p>The cursor keeps track of its location within its parent document, and can report information about the surrounding structure, such as the enclosing text block, frame, table, or list. The formats of the enclosing structures can also be directly obtained through the cursor.</p>
 <a name="using-a-cursor"></a>
 <h3>Using a Cursor</h3>
@@ -62,10 +62,10 @@ body { background: #ffffff; color: black; }</style>
         cursor.movePosition(QTextCursor::StartOfWord);
         cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
         cursor.endEditBlock();</pre>
-<p>If editing operations are not grouped, the document automatically records the individual operations so that they can be undone later. Grouping operations into larger packages can make editing more efficient both for the user and for the application, but care has to be taken not to group too many useful operations together.</p>
+<p>If editing operations are not grouped, the document automatically records the individual operations so that they can be undone later. Grouping operations into larger packages can make editing more efficient both for the user and for the application, but care has to be taken not to group too many operations together as the user may want find-grained control over the undo process.</p>
 <a name="multiple-cursors"></a>
 <h3>Multiple Cursors</h3>
-<p>Multiple cursors can be used to simultaneously edit the same document, although only one will be visible to the user in a <tt>QTextEdit</tt> widget. The <tt>QTextDocument</tt> ensures that each cursor writes text correctly and does not interfere with any of the others.</p>
+<p>Multiple cursors can be used to simultaneously edit the same document, although only one will be visible to the user in a <a href="qtextedit.html">QTextEdit</a> widget. The <a href="qtextdocument.html">QTextDocument</a> ensures that each cursor writes text correctly and does not interfere with any of the others.</p>
 <a name="inserting-document-elements"></a>
 <h2>Inserting Document Elements</h2>
 <p><a href="qtextcursor.html">QTextCursor</a> provides several functions that can be used to change the structure of a rich text document. Generally, these functions allow document elements to be created with relevant formatting information, and they are inserted into the document at the cursor's position.</p>
@@ -87,22 +87,22 @@ body { background: #ffffff; color: black; }</style>
 <a name="text-and-text-fragments"></a>
 <h3>Text and Text Fragments</h3>
 <p>Text can be inserted into the current block in the current character format, or in a custom format that is specified with the text:</p>
-<pre>&nbsp;       cursor.insertText(QObject::tr(&quot;Character formats&quot;),
+<pre>&nbsp;       cursor.insertText(tr(&quot;Character formats&quot;),
                           headingFormat);
 
         cursor.insertBlock();
 
-        cursor.insertText(QObject::tr(&quot;Text can be displayed in a variety of &quot;
+        cursor.insertText(tr(&quot;Text can be displayed in a variety of &quot;
                                       &quot;different character formats. &quot;), plainFormat);
-        cursor.insertText(QObject::tr(&quot;We can emphasize text by &quot;));
-        cursor.insertText(QObject::tr(&quot;making it italic&quot;), emphasisFormat);</pre>
+        cursor.insertText(tr(&quot;We can emphasize text by &quot;));
+        cursor.insertText(tr(&quot;making it italic&quot;), emphasisFormat);</pre>
 <p>Once the character format has been used with a cursor, that format becomes the default format for any text inserted with that cursor until another character format is specified.</p>
 <p>If a cursor is used to insert text without specifying a character format, the text will be given the character format used at that position in the document.</p>
 <a name="blocks"></a>
 <h3>Blocks</h3>
 <p>Text blocks are inserted into the document with the <a href="qtextcursor.html#insertBlock">insertBlock()</a> function.</p>
 <pre>&nbsp;       QTextBlockFormat backgroundFormat = blockFormat;
-        backgroundFormat.setBackground(QColor(&quot;#dddddd&quot;));
+        backgroundFormat.setBackground(QColor(&quot;lightGray&quot;));
 
         cursor.setBlockFormat(backgroundFormat);</pre>
 <p>The cursor is positioned at the start of the new block.</p>
@@ -180,7 +180,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The above code first checks whether the cursor is within an existing list and, if so, gives the list format for the new list a suitable level of indentation. This allows nested lists to be created with increasing levels of indentation. A more sophisticated implementation would also use different kinds of symbol for the bullet points in each level of the list.</p>
 <a name="images"></a>
 <h3>Images</h3>
-<p>Inline images are added to documents through the cursor in the usual manner. Unlike many other elements, all of the image properties are specified by the image's format. This means that a <tt>QTextImageFormat</tt> object has to be created before an image can be inserted:</p>
+<p>Inline images are added to documents through the cursor in the usual manner. Unlike many other elements, all of the image properties are specified by the image's format. This means that a <a href="qtextimageformat.html">QTextImageFormat</a> object has to be created before an image can be inserted:</p>
 <pre>&nbsp;       QTextImageFormat imageFormat;
         imageFormat.setName(&quot;:/images/advert.png&quot;);
         cursor.insertImage(imageFormat);</pre>
@@ -194,6 +194,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

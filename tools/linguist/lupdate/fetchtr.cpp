@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the linguist application of the Qt Toolkit.
+** This file is part of the Qt Linguist of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -34,6 +34,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <QTextCodec>
 
 /* qmake ignore Q_OBJECT */
 
@@ -90,6 +92,8 @@ static int yyLineNo;
 static int yyCurLineNo;
 static int yyBraceLineNo;
 static int yyParenLineNo;
+static QTextCodec *yyCodecForTr = 0;
+static QTextCodec *yyCodecForSource = 0;
 
 // the file to read from (if reading from a file)
 static FILE *yyInFile;
@@ -99,6 +103,8 @@ static QString yyInStr;
 static int yyInPos;
 
 static int (*getChar)();
+
+static bool yyParsingUtf8;
 
 static int getCharFromFile()
 {
@@ -117,7 +123,7 @@ static int getCharFromString()
     }
 }
 
-static void startTokenizer( const char *fileName, int (*getCharFunc)() )
+static void startTokenizer( const char *fileName, int (*getCharFunc)(), QTextCodec *codecForTr, QTextCodec *codecForSource )
 {
     yyInPos = 0;
     getChar = getCharFunc;
@@ -131,6 +137,13 @@ static void startTokenizer( const char *fileName, int (*getCharFunc)() )
     yyCurLineNo = 1;
     yyBraceLineNo = 1;
     yyParenLineNo = 1;
+	yyCodecForTr = codecForTr;
+	if (!yyCodecForTr)
+		yyCodecForTr = QTextCodec::codecForName("ISO-8859-1");
+	Q_ASSERT(yyCodecForTr);
+	yyCodecForSource = codecForSource;
+
+	yyParsingUtf8 = false;
 }
 
 static int getToken()
@@ -138,6 +151,7 @@ static int getToken()
     const char tab[] = "abfnrtv";
     const char backTab[] = "\a\b\f\n\r\t\v";
     uint n;
+	bool quiet;
 
     yyIdentLen = 0;
     yyCommentLen = 0;
@@ -159,15 +173,19 @@ static int getToken()
                 if ( strcmp(yyIdent + 1, "_OBJECT") == 0 ) {
                     return Tok_Q_OBJECT;
                 } else if ( strcmp(yyIdent + 1, "T_TR_NOOP") == 0 ) {
+					yyParsingUtf8 = false;
                     return Tok_tr;
                 } else if ( strcmp(yyIdent + 1, "T_TRANSLATE_NOOP") == 0 ) {
+					yyParsingUtf8 = false;
                     return Tok_translate;
                 }
                 break;
             case 'T':
                 // TR() for when all else fails
-                if ( qstricmp(yyIdent + 1, "R") == 0 )
+				if ( qstricmp(yyIdent + 1, "R") == 0 ) {
+					yyParsingUtf8 = false;
                     return Tok_tr;
+				}
                 break;
             case 'c':
                 if ( strcmp(yyIdent + 1, "lass") == 0 )
@@ -195,10 +213,13 @@ static int getToken()
                 break;
             case 't':
                 if ( strcmp(yyIdent + 1, "r") == 0 ) {
+					yyParsingUtf8 = false;
                     return Tok_tr;
                 } else if ( qstrcmp(yyIdent + 1, "rUtf8") == 0 ) {
+					yyParsingUtf8 = true;
                     return Tok_trUtf8;
                 } else if ( qstrcmp(yyIdent + 1, "ranslate") == 0 ) {
+					yyParsingUtf8 = false;
                     return Tok_translate;
                 }
             }
@@ -296,6 +317,7 @@ static int getToken()
                 break;
             case '"':
                 yyCh = getChar();
+				quiet = false;
 
                 while ( yyCh != EOF && yyCh != '\n' && yyCh != '"' ) {
                     if ( yyCh == '\\' ) {
@@ -311,17 +333,27 @@ static int getToken()
                                 hex += (char) yyCh;
                                 yyCh = getChar();
                             }
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+							sscanf_s( hex, "%x", &n );
+#else
                             sscanf( hex, "%x", &n );
+#endif
                             if ( yyStringLen < sizeof(yyString) - 1 )
                                 yyString[yyStringLen++] = (char) n;
                         } else if ( yyCh >= '0' && yyCh < '8' ) {
                             QByteArray oct = "";
+                            int n = 0;
 
                             do {
                                 oct += (char) yyCh;
+                                ++n;
                                 yyCh = getChar();
-                            } while ( yyCh >= '0' && yyCh < '8' );
+                            } while ( yyCh >= '0' && yyCh < '8' && n < 3 );
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+							sscanf_s( oct, "%o", &n );
+#else
                             sscanf( oct, "%o", &n );
+#endif
                             if ( yyStringLen < sizeof(yyString) - 1 )
                                 yyString[yyStringLen++] = (char) n;
                         } else {
@@ -332,9 +364,43 @@ static int getToken()
                             yyCh = getChar();
                         }
                     } else {
-                        if ( yyStringLen < sizeof(yyString) - 1 )
-                            yyString[yyStringLen++] = (char) yyCh;
-                        yyCh = getChar();
+						if (!yyCodecForSource) {
+							if ( yyParsingUtf8 && yyCh >= 0x80 && !quiet) {
+								qWarning( "%s:%d: Non-ASCII character detected in trUtf8 string",
+										  (const char *) yyFileName, yyLineNo );
+								quiet = true;
+							}
+							// common case: optimized
+							if ( yyStringLen < sizeof(yyString) - 1 )
+								yyString[yyStringLen++] = (char) yyCh;
+							yyCh = getChar();
+						} else {
+							QByteArray originalBytes;
+							while ( yyCh != EOF && yyCh != '\n' && yyCh != '"' && yyCh != '\\' ) {
+								if ( yyParsingUtf8 && yyCh >= 0x80 && !quiet) {
+									qWarning( "%s:%d: Non-ASCII character detected in trUtf8 string",
+											(const char *) yyFileName, yyLineNo );
+									quiet = true;
+								}
+								originalBytes += (char)yyCh;
+								yyCh = getChar();
+							}
+
+							QString unicodeStr = yyCodecForSource->toUnicode(originalBytes);
+							QByteArray convertedBytes;
+
+							if (!yyCodecForTr->canEncode(unicodeStr) && !quiet) {
+								qWarning( "%s:%d: Cannot convert C++ string from %s to %s",
+										  (const char *) yyFileName, yyLineNo, yyCodecForSource->name().constData(),
+										  yyCodecForTr->name().constData() );
+								quiet = true;
+							}
+							convertedBytes = yyCodecForTr->fromUnicode(unicodeStr);
+
+							size_t len = qMin((size_t)convertedBytes.size(), sizeof(yyString) - yyStringLen - 1);
+							memcpy(yyString + yyStringLen, convertedBytes.constData(), len);
+							yyStringLen += len;
+						}
                     }
                 }
                 yyString[yyStringLen] = '\0';
@@ -459,8 +525,7 @@ static bool matchEncoding( bool *utf8 )
     }
 }
 
-static void parse( MetaTranslator *tor, const char *initialContext,
-                   const char *defaultContext )
+static void parse( MetaTranslator *tor, const char *initialContext, const char *defaultContext )
 {
     QMap<QByteArray, QByteArray> qualifiedContexts;
     QStringList namespaces;
@@ -659,18 +724,29 @@ static void parse( MetaTranslator *tor, const char *initialContext,
 }
 
 void fetchtr_cpp( const char *fileName, MetaTranslator *tor,
-                  const char *defaultContext, bool mustExist )
+                  const char *defaultContext, bool mustExist, const QByteArray &codecForSource )
 {
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+	if (fopen_s(&yyInFile, fileName, "r")) {
+		if ( mustExist ) {
+			char buf[100];
+			strerror_s(buf, sizeof(buf), errno);
+			fprintf( stderr,
+                     "lupdate error: Cannot open C++ source file '%s': %s\n",
+                     fileName, buf );
+		}
+#else
     yyInFile = fopen( fileName, "r" );
-    if ( yyInFile == 0 ) {
+	if ( yyInFile == 0 ) {
         if ( mustExist )
             fprintf( stderr,
                      "lupdate error: Cannot open C++ source file '%s': %s\n",
                      fileName, strerror(errno) );
+#endif
         return;
     }
 
-    startTokenizer( fileName, getCharFromFile );
+	startTokenizer( fileName, getCharFromFile, tor->codecForTr(), QTextCodec::codecForName(codecForSource) );
     parse( tor, 0, defaultContext );
     fclose( yyInFile );
 }
@@ -687,7 +763,7 @@ void fetchtr_inlined_cpp( const char *fileName, const QString& in,
                           MetaTranslator *tor, const char *context )
 {
     yyInStr = in;
-    startTokenizer( fileName, getCharFromString );
+    startTokenizer( fileName, getCharFromString, 0, 0 );
     parse( tor, context, 0 );
     yyInStr.clear();
 }
@@ -795,9 +871,17 @@ void fetchtr_ui( const char *fileName, MetaTranslator *tor,
 {
     QFile f( fileName );
     if ( !f.open(QIODevice::ReadOnly) ) {
-        if ( mustExist )
+		if ( mustExist ) {
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+			char buf[100];
+			strerror_s(buf, sizeof(buf), errno);
+			fprintf( stderr, "lupdate error: cannot open UI file '%s': %s\n",
+                     fileName, buf );
+#else
             fprintf( stderr, "lupdate error: cannot open UI file '%s': %s\n",
                      fileName, strerror(errno) );
+#endif
+		}
         return;
     }
 

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -37,11 +37,14 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef Q_OS_WIN
+#define QT_SHARED_EXTERN Q_DECL_EXPORT
+#define QT_SHARED_IMPORT Q_DECL_IMPORT
+
+#ifndef QT_NO_SHARED_EXPORT
 #  ifdef QT_SHARED_LIBRARY
-#    define QT_SHARED_EXPORT __declspec(dllexport)
+#    define QT_SHARED_EXPORT QT_SHARED_EXTERN
 #  else
-#    define QT_SHARED_EXPORT __declspec(dllimport)
+#    define QT_SHARED_EXPORT QT_SHARED_IMPORT
 #  endif
 #else
 #  define QT_SHARED_EXPORT

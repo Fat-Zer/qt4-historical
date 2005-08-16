@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,7 +23,6 @@
 
 #include "qboxlayout.h"
 
-#ifndef QT_NO_LAYOUT
 
 #include "qapplication.h"
 #include "qwidget.h"
@@ -289,10 +288,10 @@ void QBoxLayoutPrivate::calcHfw(int w)
     placed in a column, again with suitable sizes.
 
     The easiest way to create a QBoxLayout is to use one of the
-    convenience classes, e.g. QHBoxLayout (for Qt::Horizontal boxes) or
-    QVBoxLayout (for Qt::Vertical boxes). You can also use the
+    convenience classes, e.g. QHBoxLayout (for Qt::Horizontal boxes)
+    or QVBoxLayout (for Qt::Vertical boxes). You can also use the
     QBoxLayout constructor directly, specifying its direction as
-    \l LeftToRight, \l Down, \l RightToLeft, or \l Up.
+    LeftToRight, RightToLeft, TopToBottom, or BottomToTop.
 
     If the QBoxLayout is not the top-level layout (i.e. it is not
     managing all of the widget's area and children), you must add it
@@ -335,7 +334,7 @@ void QBoxLayoutPrivate::calcHfw(int w)
     margin width for a top-level layout, or to the same as the parent
     layout. Both are parameters to the constructor.
 
-    To remove a widget from a layout, call remove(). Calling
+    To remove a widget from a layout, call removeWidget(). Calling
     QWidget::hide() on a widget also effectively removes the widget
     from the layout until QWidget::show() is called.
 
@@ -354,8 +353,9 @@ void QBoxLayoutPrivate::calcHfw(int w)
     \value RightToLeft  Horizontal from right to left.
     \value TopToBottom  Vertical from top to bottom.
     \value BottomToTop  Vertical from bottom to top.
-    \value Down  Same as TopToBottom.
-    \value Up  Same as BottomToTop.
+
+    \omitvalue Down
+    \omitvalue Up
 */
 
 /*!
@@ -445,7 +445,7 @@ QBoxLayout::~QBoxLayout()
 }
 
 /*!
-    Returns the preferred size of this box layout.
+    \reimp
 */
 QSize QBoxLayout::sizeHint() const
 {
@@ -457,7 +457,7 @@ QSize QBoxLayout::sizeHint() const
 }
 
 /*!
-    Returns the minimum size needed by this box layout.
+    \reimp
 */
 QSize QBoxLayout::minimumSize() const
 {
@@ -469,7 +469,7 @@ QSize QBoxLayout::minimumSize() const
 }
 
 /*!
-    Returns the maximum size needed by this box layout.
+    \reimp
 */
 QSize QBoxLayout::maximumSize() const
 {
@@ -487,8 +487,7 @@ QSize QBoxLayout::maximumSize() const
 }
 
 /*!
-  Returns true if this layout's preferred height depends on its width;
-  otherwise returns false.
+    \reimp
 */
 bool QBoxLayout::hasHeightForWidth() const
 {
@@ -499,7 +498,7 @@ bool QBoxLayout::hasHeightForWidth() const
 }
 
 /*!
-    Returns the layout's preferred height when it is \a w pixels wide.
+    \reimp
 */
 int QBoxLayout::heightForWidth(int w) const
 {
@@ -514,7 +513,9 @@ int QBoxLayout::heightForWidth(int w) const
     return d->hfwHeight + 2 * m;
 }
 
-/*! \internal */
+/*!
+    \reimp
+*/
 int QBoxLayout::minimumHeightForWidth(int w) const
 {
     Q_D(const QBoxLayout);
@@ -567,10 +568,7 @@ QLayoutItem *QBoxLayout::takeAt(int index)
 
 
 /*!
-    Returns whether this layout can make use of more space than
-    sizeHint(). A value of Qt::Vertical or Qt::Horizontal means that
-    it wants to grow in only one dimension, whereas Qt::Horizontal |
-    Qt::Vertical means that it wants to grow in both dimensions.
+    \reimp
 */
 Qt::Orientations QBoxLayout::expandingDirections() const
 {
@@ -581,7 +579,7 @@ Qt::Orientations QBoxLayout::expandingDirections() const
 }
 
 /*!
-    Resizes managed widgets within the rectangle \a r.
+    \reimp
 */
 void QBoxLayout::setGeometry(const QRect &r)
 {
@@ -651,10 +649,7 @@ void QBoxLayout::setGeometry(const QRect &r)
 }
 
 /*!
-    Adds \a item to the end of this box layout.
-
-    \sa insertItem(), addWidget(), addLayout(), addStretch(), addSpacing(),
-        addStrut()
+    \reimp
 */
 void QBoxLayout::addItem(QLayoutItem *item)
 {
@@ -668,7 +663,7 @@ void QBoxLayout::addItem(QLayoutItem *item)
     Inserts \a item into this box layout at position \a index. If \a
     index is negative, the item is added at the end.
 
-    \warning Does not call QLayout::insertChildLayout() if \a item is
+    \warning Do not call QLayout::insertChildLayout() if \a item is
     a QLayout.
 
     \sa addItem(), insertWidget(), insertLayout(), insertStretch(),
@@ -1250,4 +1245,3 @@ QVBoxLayout::~QVBoxLayout()
     Use spacing() instead.
 */
 
-#endif // QT_NO_LAYOUT

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,7 +22,6 @@
 ****************************************************************************/
 
 #include "qvariant.h"
-#ifndef QT_NO_VARIANT
 #include "qbitarray.h"
 #include "qbytearray.h"
 #include "qdatastream.h"
@@ -63,14 +62,12 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::StringList:
         v_construct<QStringList>(x, copy);
         break;
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::Map:
         v_construct<QVariantMap>(x, copy);
         break;
     case QVariant::List:
         v_construct<QVariantList>(x, copy);
         break;
-#endif
     case QVariant::Date:
         v_construct<QDate>(x, copy);
         break;
@@ -160,14 +157,12 @@ static void clear(QVariant::Private *d)
     case QVariant::StringList:
         v_clear<QStringList>(d);
         break;
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::Map:
         v_clear<QVariantMap>(d);
         break;
     case QVariant::List:
         v_clear<QVariantList>(d);
         break;
-#endif
     case QVariant::Date:
         v_clear<QDate>(d);
         break;
@@ -274,10 +269,8 @@ static bool isNull(const QVariant::Private *d)
     case QVariant::Url:
     case QVariant::Locale:
     case QVariant::StringList:
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::Map:
     case QVariant::List:
-#endif
     case QVariant::Invalid:
     case QVariant::UserType:
     case QVariant::Int:
@@ -302,14 +295,12 @@ static void load(QVariant::Private *d, QDataStream &s)
         d->is_null = true;
         break;
     }
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::Map:
         s >> *v_cast<QVariantMap>(d);
         break;
     case QVariant::List:
         s >> *v_cast<QVariantList>(d);
         break;
-#endif
     case QVariant::String:
         s >> *v_cast<QString>(d);
         break;
@@ -401,14 +392,12 @@ static void load(QVariant::Private *d, QDataStream &s)
 static void save(const QVariant::Private *d, QDataStream &s)
 {
     switch (d->type) {
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::List:
         s << *v_cast<QVariantList>(d);
         break;
     case QVariant::Map:
         s << *v_cast<QVariantMap>(d);
         break;
-#endif
     case QVariant::String:
         s << *v_cast<QString>(d);
         break;
@@ -501,7 +490,6 @@ static void save(const QVariant::Private *d, QDataStream &s)
 static bool compare(const QVariant::Private *a, const QVariant::Private *b)
 {
     switch(a->type) {
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::List:
         return *v_cast<QVariantList>(a) == *v_cast<QVariantList>(b);
     case QVariant::Map: {
@@ -519,7 +507,6 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         }
         return true;
     }
-#endif
     case QVariant::String:
         return *v_cast<QString>(a) == *v_cast<QString>(b);
     case QVariant::Char:
@@ -605,7 +592,7 @@ static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, 
         case QVariant::Double:
             *str = QString::number(d->data.d, 'g', DBL_DIG);
             break;
-#if !defined(QT_NO_SPRINTF) && !defined(QT_NO_DATESTRING)
+#if !defined(QT_NO_DATESTRING)
         case QVariant::Date:
             *str = v_cast<QDate>(d)->toString(Qt::ISODate);
             break;
@@ -646,7 +633,6 @@ static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, 
         break;
     }
 
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::StringList:
         if (d->type == QVariant::List) {
             QStringList *slst = static_cast<QStringList *>(result);
@@ -659,7 +645,6 @@ static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, 
         } else {
             return false;
         }
-#endif
         break;
     case QVariant::Date: {
         QDate *dt = static_cast<QDate *>(result);
@@ -957,7 +942,7 @@ static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, 
 
 static bool canConvert(const QVariant::Private *d, QVariant::Type t)
 {
-    if (d->type == (uint)t)
+    if (d->type == uint(t))
         return true;
 
     switch (t) {
@@ -1002,11 +987,7 @@ static bool canConvert(const QVariant::Private *d, QVariant::Type t)
     case QVariant::Char:
         return d->type == QVariant::Int || d->type == QVariant::UInt;
     case QVariant::ByteArray:
-        return
-#ifdef QT3_SUPPORT
-            d->type == QVariant::CString ||
-#endif
-            d->type == QVariant::String;
+        return d->type == QVariant::String;
     case QVariant::Date:
         return d->type == QVariant::String || d->type == QVariant::DateTime;
     case QVariant::Time:
@@ -1015,7 +996,6 @@ static bool canConvert(const QVariant::Private *d, QVariant::Type t)
         return d->type == QVariant::String || d->type == QVariant::Date;
     case QVariant::List:
         return d->type == QVariant::StringList;
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::StringList:
         if (d->type == QVariant::List) {
             const QVariantList &varlist = *v_cast<QVariantList >(d);
@@ -1028,7 +1008,6 @@ static bool canConvert(const QVariant::Private *d, QVariant::Type t)
             return true;
         }
         return false;
-#endif
     case QVariant::RectF:
         return d->type == QVariant::Rect;
     case QVariant::PointF:
@@ -1069,14 +1048,12 @@ void streamDebug(QDebug dbg, const QVariant &v)
     case QVariant::StringList:
         dbg.nospace() << v.toStringList();
         break;
-#ifndef QT_NO_TEMPLATE_VARIANT
     case QVariant::Map:
         dbg.nospace() << v.toMap();
         break;
     case QVariant::List:
         dbg.nospace() << v.toList();
         break;
-#endif
     case QVariant::Date:
         dbg.nospace() << v.toDate();
         break;
@@ -1173,23 +1150,23 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
     toT() functions (e.g., toSize()) and check whether the type can
     be converted to a particular type using canConvert().
 
-    The methods named toT() (for any supported T, see the \l Type
-    documentation for a list) are const. If you ask for the stored
-    type, they return a copy of the stored object. If you ask for a
-    type that can be generated from the stored type, toT() copies and
-    converts and leaves the object itself unchanged. If you ask for a
-    type that cannot be generated from the stored type, the result
-    depends on the type; see the function documentation for details.
+    The methods named toT() (e.g., toInt(), toString()) are const. If
+    you ask for the stored type, they return a copy of the stored
+    object. If you ask for a type that can be generated from the
+    stored type, toT() copies and converts and leaves the object
+    itself unchanged. If you ask for a type that cannot be generated
+    from the stored type, the result depends on the type; see the
+    function documentation for details.
 
     Here is some example code to demonstrate the use of QVariant:
 
     \code
         QDataStream out(...);
-        QVariant v(123);            // The variant now contains an int
+        QVariant v(123);                // The variant now contains an int
         int x = v.toInt();              // x = 123
         out << v;                       // Writes a type tag and an int to out
-        v = QVariant("hello");      // The variant now contains a QByteArray
-        v = QVariant(tr("hello"));  // The variant now contains a QString
+        v = QVariant("hello");          // The variant now contains a QByteArray
+        v = QVariant(tr("hello"));      // The variant now contains a QString
         int y = v.toInt();              // y = 0 since v cannot be converted to an int
         QString s = v.toString();       // s = tr("hello")  (see QObject::tr())
         out << v;                       // Writes a type tag and a QString to out
@@ -1199,7 +1176,7 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
         int z = v.toInt();              // z = 123
         qDebug("Type is %s",            // prints "Type is int"
                 v.typeName());
-        v = v.toInt() + 100;            // The variant now hold the value 223.
+        v = v.toInt() + 100;            // The variant now hold the value 223
         v = QVariant(QStringList());
     \endcode
 
@@ -1223,6 +1200,33 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
     QVariant can be extended to support other types than those
     mentioned in the \l Type enum. See the \l QMetaType documentation
     for details.
+
+    \section1 A Note on GUI Types
+
+    Because QVariant is part of the QtCore library, it cannot provide
+    conversion functions to data types such as QColor, QImage, and
+    QPixmap, which are part of QtGui. In other words, there is no
+    \c toColor() function.
+
+    Instead, you can use the QVariant::value() or the qVariantValue()
+    template function. For example:
+
+    \code
+        QVariant variant;
+        ...
+        QColor color = variant.value<QColor>();
+    \endcode
+
+    The inverse conversion (e.g., from QColor to QVariant) is
+    automatic for all data types supported by QVariant, including
+    GUI-related types:
+
+    \code
+        QColor color = palette().background().color();
+        QVariant variant = color;
+    \endcode
+
+    \sa QMetaType
 */
 
 /*!
@@ -1294,8 +1298,15 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
 /*!
     \fn QVariant::QVariant(int typeOrUserType, const void *copy)
 
+    \internal
+
     Constructs variant of type \a typeOrUserType, and initializes with
     \a copy if \a copy is not 0.
+
+    Note that you have to pass the address of the variable you want stored.
+    That includes the usage of \c VoidStar, \c QObjectStar and \c QWidgetStar.
+
+    \sa qVariantFromValue(), Type
 */
 
 /*!
@@ -1586,12 +1597,10 @@ QVariant::QVariant(const QTime &val)
 { create(Time, &val); }
 QVariant::QVariant(const QDateTime &val)
 { create(DateTime, &val); }
-#ifndef QT_NO_TEMPLATE_VARIANT
 QVariant::QVariant(const QList<QVariant> &list)
 { create(List, &list); }
 QVariant::QVariant(const QMap<QString, QVariant> &map)
 { create(Map, &map); }
-#endif
 #ifndef QT_NO_GEOM_VARIANT
 QVariant::QVariant(const QPoint &pt) { create(Point, &pt); }
 QVariant::QVariant(const QPointF &pt) { create (PointF, &pt); }
@@ -1640,10 +1649,12 @@ QVariant& QVariant::operator=(const QVariant &variant)
     if (variant.d.is_shared) {
         variant.d.data.shared->ref.ref();
         d = variant.d;
-    } else {
+    } else if (variant.d.type > Char) {
         d.type = variant.d.type;
         handler->construct(&d, variant.constData());
         d.is_null = variant.d.is_null;
+    } else {
+        d = variant.d;
     }
 
     return *this;
@@ -2019,7 +2030,6 @@ QString QVariant::toString() const
     handler->convert(&d, String, &ret, 0);
     return ret;
 }
-#ifndef QT_NO_TEMPLATE_VARIANT
 /*!
     Returns the variant as a QMap<QString, QVariant> if the variant has
     type() Map; otherwise returns an empty map.
@@ -2042,7 +2052,6 @@ QVariantMap QVariant::toMap() const
 
     return *v_cast<QVariantMap>(&d);
 }
-#endif
 
 /*!
   \fn QDate QVariant::toDate() const
@@ -2151,14 +2160,14 @@ QVariantMap QVariant::toMap() const
   \fn QPointF QVariant::toPointF() const
 
   Returns the variant as a QPointF if the variant has type()
-  Point or PointF; otherwise returns an invalid QPointF.
+  Point or PointF; otherwise returns a null QPointF.
  */
 
 /*!
   \fn QChar QVariant::toChar() const
 
   Returns the variant as a QChar if the variant has type()
-  Char, String or contains a numeric value; otherwise returns
+  Char or contains a numeric value; otherwise returns
   an invalid QChar.
  */
 
@@ -2326,7 +2335,6 @@ double QVariant::toDouble(bool *ok) const
     return res;
 }
 
-#ifndef QT_NO_TEMPLATE_VARIANT
 /*!
   \fn QVariantList QVariant::toList() const
 
@@ -2352,7 +2360,6 @@ QVariantList QVariant::toList() const
     handler->convert(&d, List, &res, 0);
     return res;
 }
-#endif
 
 /*! \fn QVariant::canCast(Type t) const
     Use canConvert() instead.
@@ -2685,8 +2692,8 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
         QVariant v;
 
         v.setValue(5);
-        int i = v.toInt(); // i is now 5
-        QString s = v.toString() // s is now "5"
+        int i = v.toInt();         // i is now 5
+        QString s = v.toString()   // s is now "5"
 
         MyCustomStruct c;
         v.setValue(c);
@@ -2723,8 +2730,8 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
             c = v.value<MyCustomStruct>(v);
 
         v = 7;
-        int i = v.value<int>(); // same as v.toInt()
-        QString s = v.value<QString>(); // same as v.toString(), s is now "7"
+        int i = v.value<int>();                        // same as v.toInt()
+        QString s = v.value<QString>();                // same as v.toString(), s is now "7"
         MyCustomStruct c2 = v.value<MyCustomStruct>(); // conversion failed, c2 is empty
     \endcode
 
@@ -2745,14 +2752,14 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     \code
         QVariant v = 42;
 
-        v.canConvert<int>(); // returns true
-        v.canConvert<QString>(); // returns true
+        v.canConvert<int>();              // returns true
+        v.canConvert<QString>();          // returns true
 
         MyCustomStruct s;
         v.setValue(s);
 
-        v.canConvert<int>(); // returns false
-        v.canConvert<MyCustomStruct>(); // returns true
+        v.canConvert<int>();              // returns false
+        v.canConvert<MyCustomStruct>();   // returns true
     \endcode
 
     \warning This function is not available with MSVC 6. Use
@@ -2844,4 +2851,3 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     \sa QVariant::canConvert()
 */
 
-#endif //QT_NO_VARIANT

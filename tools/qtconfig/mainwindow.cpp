@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the qtconfig application of the Qt Toolkit.
+** This file is part of the tools applications of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -45,7 +45,6 @@
 #include <qdebug.h>
 
 #include <stdlib.h>
-
 
 // from qapplication.cpp and qapplication_x11.cpp - These are NOT for
 // external use ignore them
@@ -118,21 +117,6 @@ static const char *printer_text =
 "Qt should search for embeddable font files.  By default, the X "
 "server font path is used.";
 
-static const char *about_text =
-"<p><b><font size=+2>Qt Configuration</font></b></p>"
-"<p>A graphical configuration tool for programs using Qt</p>"
-"<p>Version 1.0</p>"
-"<p>Copyright (C) 2001-2005 Trolltech AS. All rights reserved.</p>"
-"<p></p>"
-"<p>This program is licensed to you under the terms of the GNU General "
-"Public License Version 2 as published by the Free Software Foundation. This "
-"gives you legal permission to copy, distribute and/or modify this software "
-"under certain conditions. For details, see the file 'LICENSE.GPL' that came with "
-"this software distribution. If you did not get the file, send email to "
-"info@trolltech.com.</p>\n\n<p>The program is provided AS IS with NO WARRANTY "
-"OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS "
-"FOR A PARTICULAR PURPOSE.</p>";
-
 
 static QColorGroup::ColorRole centralFromItem( int item )
 {
@@ -192,12 +176,12 @@ MainWindow::MainWindow()
 
     QString currentstyle = settings.value("style").toString();
     if (currentstyle.isNull())
-        currentstyle = QApplication::style()->className();
+        currentstyle = QApplication::style()->name();
     {
         int s = 0;
         QStringList::Iterator git = gstyles.begin();
         while (git != gstyles.end()) {
-            if (*git == currentstyle)
+            if ((*git).lower() == currentstyle.lower())
                 break;
             s++;
             git++;
@@ -330,13 +314,16 @@ MainWindow::MainWindow()
     stylecombo->setCurrentItem(i);
 
     i = 0;
-    while (i < psizecombo->count()) {
-        if (psizecombo->text(i) == QString::number(QApplication::font().pointSize())) {
+    for (int psize = QApplication::font().pointSize(); i < psizecombo->count(); ++i) {
+        const int sz = psizecombo->text(i).toInt();
+        if (sz == psize) {
+            psizecombo->setCurrentItem(i);
+            break;
+        } else if(sz > psize) {
+            psizecombo->insertItem(i, QString::number(psize));
             psizecombo->setCurrentItem(i);
             break;
         }
-
-        i++;
     }
 
     QStringList subs = QFont::substitutes(familysubcombo->currentText());
@@ -358,6 +345,8 @@ MainWindow::MainWindow()
 
     settings.endGroup(); // Qt
 
+    helpview->setText(tr(appearance_text));
+
     setModified(false);
 }
 
@@ -366,6 +355,9 @@ MainWindow::~MainWindow()
 {
 }
 
+#ifdef Q_WS_X11
+extern void qt_x11_apply_settings_in_all_apps();
+#endif
 
 void MainWindow::fileSave()
 {
@@ -465,8 +457,7 @@ void MainWindow::fileSave()
     }
 
 #if defined(Q_WS_X11)
-    // ###### use _QT_SETTINGS_TIMESTAMP_
-//    QApplication::x11_apply_settings();
+    qt_x11_apply_settings_in_all_apps();
 #endif // Q_WS_X11
 
     setModified(false);
@@ -891,8 +882,31 @@ void MainWindow::somethingModified()
 
 void MainWindow::helpAbout()
 {
-    QMessageBox::about(this, tr("Qt Configuration"),
-                       tr(about_text));
+    QMessageBox box(this);
+    box.setText(tr("<h3>%1</h3>"
+                   "<br/>Version %2"
+#if defined(QT_OPENSOURCE)
+                   " Open Source Edition</center><p>"
+                   "This version of Qt Configuration is part of the Qt Open Source Edition, for use "
+                   "in the development of Open Source applications. "
+                   "Qt is a comprehensive C++ framework for cross-platform application "
+                   "development.<br/><br/>"
+                   "You need a commercial Qt license for development of proprietary (closed "
+                   "source) applications. Please see <tt>http://www.trolltech.com/company/model"
+                   ".html</tt> for an overview of Qt licensing."
+#else
+                   "</center><p>This program is licensed to you under the terms of the "
+                   "Qt Commercial License Agreement. For details, see the file LICENSE "
+                   "that came with this software distribution."
+#endif
+                   "<br/><br/>Copyright 2000-2005 Trolltech AS. All rights reserved."
+                   "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
+                   " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
+                   " PARTICULAR PURPOSE.<br/> ")
+                   .arg(tr("Qt Configuration")).arg(QT_VERSION_STR));
+    box.setWindowTitle(tr("Qt Configuration"));
+    box.setIcon(QMessageBox::NoIcon);
+    box.exec();
 }
 
 

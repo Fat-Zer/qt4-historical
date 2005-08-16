@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,6 +22,8 @@
 ****************************************************************************/
 
 #include "qtoolbar.h"
+
+#ifndef QT_NO_TOOLBAR
 
 #include <qapplication.h>
 #include <qevent.h>
@@ -80,14 +82,14 @@ void QToolBarPrivate::init()
     layout->setSpacing(style->pixelMetric(QStyle::PM_ToolBarItemSpacing, &opt, q));
 
     handle = new QToolBarHandle(q);
-    QObject::connect(q, SIGNAL(orientationChanged(Orientation)),
-                     handle, SLOT(setOrientation(Orientation)));
+    QObject::connect(q, SIGNAL(orientationChanged(Qt::Orientation)),
+                     handle, SLOT(setOrientation(Qt::Orientation)));
     layout->addWidget(handle);
     handle->setVisible(movable && (qobject_cast<QMainWindow *>(q->parentWidget()) != 0));
 
     extension = new QToolBarExtension(q);
-    QObject::connect(q, SIGNAL(orientationChanged(Orientation)),
-                     extension, SLOT(setOrientation(Orientation)));
+    QObject::connect(q, SIGNAL(orientationChanged(Qt::Orientation)),
+                     extension, SLOT(setOrientation(Qt::Orientation)));
     extension->setFocusPolicy(Qt::NoFocus);
     extension->hide();
 
@@ -147,8 +149,8 @@ QToolBarItem QToolBarPrivate::createItem(QAction *action)
         item.widget = widgetAction->widget();
     } else if (action->isSeparator()) {
         item.widget = new QToolBarSeparator(q);
-        QObject::connect(q, SIGNAL(orientationChanged(Orientation)),
-                         item.widget, SLOT(setOrientation(Orientation)));
+        QObject::connect(q, SIGNAL(orientationChanged(Qt::Orientation)),
+                         item.widget, SLOT(setOrientation(Qt::Orientation)));
     } else {
         QToolButton *button = new QToolButton(q);
         button->setAutoRaise(true);
@@ -157,12 +159,14 @@ QToolBarItem QToolBarPrivate::createItem(QAction *action)
         button->setToolButtonStyle(toolButtonStyle);
         QObject::connect(q, SIGNAL(iconSizeChanged(QSize)),
                          button, SLOT(setIconSize(QSize)));
-        QObject::connect(q, SIGNAL(toolButtonStyleChanged(ToolButtonStyle)),
-                         button, SLOT(setToolButtonStyle(ToolButtonStyle)));
+        QObject::connect(q, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
+                         button, SLOT(setToolButtonStyle(Qt::ToolButtonStyle)));
         button->setDefaultAction(action);
         QObject::connect(button, SIGNAL(triggered(QAction*)), q, SIGNAL(actionTriggered(QAction*)));
+#ifndef QT_NO_MENU
         if (action->menu())
             button->setPopupMode(QToolButton::MenuButtonPopup);
+#endif
         item.widget = button;
     }
 
@@ -204,6 +208,16 @@ int QToolBarPrivate::indexOf(QAction *action) const
     A toolbar can be fixed in place in a particular area (e.g. at the
     top of the window), or it can be movable (isMovable()) between
     toolbar areas; see allowedAreas() and isAreaAllowed().
+
+    When a toolbar is resized in such a way that it is too small to
+    show all the items it contains, an extension button will appear as
+    the last item in the toolbar. Pressing the extension button will
+    pop up a menu containing the items that does not currently fit in
+    the toolbar. Note that only action based items will be shown in
+    the menu. If only non-action based items are to appear in the
+    extension menu (e.g. a QSpinBox), the extension button will appear
+    as usual, but it will be disabled to indicate that some items in
+    the toolbar are currently not visible.
 
     \sa QToolButton
 */
@@ -358,7 +372,7 @@ bool QToolBar::isMovable() const
     \property QToolBar::allowedAreas
     \brief areas where the toolbar may be placed
 
-    The default is \c Qt::AllToolBarAreas.
+    The default is Qt::AllToolBarAreas.
 
     This property only makes sense if the toolbar is in a
     QMainWindow.
@@ -382,7 +396,7 @@ Qt::ToolBarAreas QToolBar::allowedAreas() const
 /*! \property QToolBar::orientation
     \brief orientation of the toolbar
 
-    The default is \c Qt::Horizontal.
+    The default is Qt::Horizontal.
 
     The orientation is updated automatically when the toolbar is
     managed by QMainWindow.
@@ -451,6 +465,7 @@ void QToolBar::setIconSize(const QSize &iconSize)
     }
     if (d->iconSize != sz) {
         d->iconSize = sz;
+        setMinimumSize(0, 0);
         emit iconSizeChanged(d->iconSize);
     }
     d->explicitIconSize = iconSize.isValid();
@@ -862,6 +877,7 @@ void QToolBar::resizeEvent(QResizeEvent *event)
 				      d->extension->sizeHint().height());
         }
 
+#ifndef QT_NO_MENU
 	QMenu *pop = d->extension->menu();
 	if (!pop) {
 	    pop = new QMenu(this);
@@ -890,6 +906,7 @@ void QToolBar::resizeEvent(QResizeEvent *event)
             d->extension->show();
             d->extension->setEnabled(false);
         }
+#endif // QT_NO_MENU
     } else if (!d->extension->isHidden()) {
 	if (d->extension->menu())
 	    d->extension->menu()->clear();
@@ -948,3 +965,4 @@ QAction *QToolBar::toggleViewAction() const
 
 
 #include "moc_qtoolbar.cpp"
+#endif // QT_NO_TOOLBAR

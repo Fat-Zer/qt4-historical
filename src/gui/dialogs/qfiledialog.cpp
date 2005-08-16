@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,6 +22,9 @@
 ****************************************************************************/
 
 #include "qfiledialog.h"
+
+#ifndef QT_NO_FILEDIALOG
+
 #include <qcombobox.h>
 #include <qdirmodel.h>
 #include <qheaderview.h>
@@ -155,11 +158,11 @@ void QFileDialogLineEdit::keyPressEvent(QKeyEvent *e)
     fd->setMode(QFileDialog::AnyFile);
   \endcode
 
-  In the above example, the mode of the file dialog is set to \c
+  In the above example, the mode of the file dialog is set to
   AnyFile, meaning that the user can select any file, or even specify a
   file that doesn't exist. This mode is useful for creating a
-  "Save As" file dialog. Use \c ExistingFile if the user must select an
-  existing file, or \c Directory if only a directory may be selected.
+  "Save As" file dialog. Use ExistingFile if the user must select an
+  existing file, or \l Directory if only a directory may be selected.
   See the \l QFileDialog::FileMode enum for the complete list of modes.
 
   You can retrieve the dialog's mode with mode(). Use setFilter() to set
@@ -995,7 +998,15 @@ void QFileDialogPrivate::enterDirectory(const QModelIndex &index)
 
 void QFileDialogPrivate::enterDirectory(const QString &path)
 {
-    enterDirectory(model->index(path));
+    Q_Q(QFileDialog);
+    QModelIndex index = model->index(path);
+    if (index.isValid() || path.isEmpty() || path == QObject::tr("My Computer")) {
+        enterDirectory(index);
+    } else {
+        QString message = tr("\nDirectory not found.\nPlease verify the "
+                             "correct directory name was given");
+        QMessageBox::warning(q, q->windowTitle(), path + message);
+    }
 }
 
 /*!
@@ -1218,6 +1229,7 @@ void QFileDialogPrivate::autoCompleteDirectory(const QString &text)
 
 void QFileDialogPrivate::showContextMenu(const QPoint &pos)
 {
+#ifndef QT_NO_MENU
     Q_Q(QFileDialog);
     QAbstractItemView *view = 0;
     if (q->viewMode() == QFileDialog::Detail)
@@ -1250,6 +1262,7 @@ void QFileDialogPrivate::showContextMenu(const QPoint &pos)
     }
 
     menu.exec(view->mapToGlobal(pos));
+#endif
 }
 
 /*!
@@ -1378,8 +1391,6 @@ void QFileDialogPrivate::setup(const QString &directory, const QStringList &name
     Q_Q(QFileDialog);
     q->setSizeGripEnabled(true);
     QGridLayout *grid = new QGridLayout(q);
-    grid->setMargin(11);
-    grid->setSpacing(6);
 
     // QDirModel
     QDir::Filters filters = filterForMode(fileMode);
@@ -1502,18 +1513,21 @@ void QFileDialogPrivate::setupListView(const QModelIndex &current, QGridLayout *
     listView->setResizeMode(QListView::Adjust);
     listView->setEditTriggers(QAbstractItemView::EditKeyPressed);
     listView->setContextMenuPolicy(Qt::CustomContextMenu);
+#ifndef QT_NO_DRAGANDDROP
     listView->setDragEnabled(true);
-
+#endif
+    
     grid->addWidget(listView, 1, 0, 1, 6);
 
     QObject::connect(listView, SIGNAL(activated(QModelIndex)), q, SLOT(enterDirectory(QModelIndex)));
     QObject::connect(listView, SIGNAL(customContextMenuRequested(QPoint)),
                      q, SLOT(showContextMenu(QPoint)));
 
+#ifndef QT_NO_SHORTCUT
     QShortcut *shortcut = new QShortcut(listView);
     shortcut->setKey(QKeySequence("Delete"));
-
     QObject::connect(shortcut, SIGNAL(activated()), q, SLOT(deleteCurrent()));
+#endif
 }
 
 void QFileDialogPrivate::setupTreeView(const QModelIndex &current, QGridLayout *grid)
@@ -1544,10 +1558,11 @@ void QFileDialogPrivate::setupTreeView(const QModelIndex &current, QGridLayout *
     QObject::connect(treeView, SIGNAL(customContextMenuRequested(QPoint)),
                      q, SLOT(showContextMenu(QPoint)));
 
+#ifndef QT_NO_SHORTCUT
     QShortcut *shortcut = new QShortcut(treeView);
     shortcut->setKey(QKeySequence("Delete"));
-
     QObject::connect(shortcut, SIGNAL(activated()), q, SLOT(deleteCurrent()));
+#endif
 }
 
 void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayout *grid)
@@ -1560,7 +1575,9 @@ void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayou
 
     backButton = new QToolButton(q);
     backButton->setIcon(q->style()->standardPixmap(QStyle::SP_FileDialogBack));
+#ifndef QT_NO_TOOLTIP
     backButton->setToolTip(tr("Back"));
+#endif
     backButton->setAutoRaise(true);
     backButton->setEnabled(false);
     backButton->setFixedSize(tools);
@@ -1569,7 +1586,9 @@ void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayou
 
     toParentButton = new QToolButton(q);
     toParentButton->setIcon(q->style()->standardPixmap(QStyle::SP_FileDialogToParent));
+#ifndef QT_NO_TOOLTIP
     toParentButton->setToolTip(tr("Parent Directory"));
+#endif
     toParentButton->setAutoRaise(true);
     toParentButton->setEnabled(model->parent(current).isValid());
     toParentButton->setFixedSize(tools);
@@ -1578,7 +1597,9 @@ void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayou
 
     newFolderButton = new QToolButton(q);
     newFolderButton->setIcon(q->style()->standardPixmap(QStyle::SP_FileDialogNewFolder));
+#ifndef QT_NO_TOOLTIP
     newFolderButton->setToolTip(tr("Create New Folder"));
+#endif
     newFolderButton->setAutoRaise(true);
     newFolderButton->setFixedSize(tools);
     QObject::connect(newFolderButton, SIGNAL(clicked()), q, SLOT(createDirectory()));
@@ -1586,7 +1607,9 @@ void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayou
 
     listModeButton = new QToolButton(q);
     listModeButton->setIcon(q->style()->standardPixmap(QStyle::SP_FileDialogListView));
+#ifndef QT_NO_TOOLTIP
     listModeButton->setToolTip(tr("List View"));
+#endif
     listModeButton->setAutoRaise(true);
     listModeButton->setDown(true);
     listModeButton->setFixedSize(tools);
@@ -1595,7 +1618,9 @@ void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayou
 
     detailModeButton = new QToolButton(q);
     detailModeButton->setIcon(q->style()->standardPixmap(QStyle::SP_FileDialogDetailedView));
+#ifndef QT_NO_TOOLTIP
     detailModeButton->setToolTip(tr("Detail View"));
+#endif
     detailModeButton->setAutoRaise(true);
     detailModeButton->setFixedSize(tools);
     QObject::connect(detailModeButton, SIGNAL(clicked()), q, SLOT(showDetails()));
@@ -1604,6 +1629,8 @@ void QFileDialogPrivate::setupToolButtons(const QModelIndex &current, QGridLayou
 
     grid->addLayout(box, 0, 4, 1, 2);
 }
+
+#include <qsizegrip.h>
 
 void QFileDialogPrivate::setupWidgets(QGridLayout *grid)
 {
@@ -2305,3 +2332,5 @@ QString QFileDialog::selectedFile() const
 #endif
 
 #include "moc_qfiledialog.cpp"
+
+#endif // QT_NO_FILEDIALOG

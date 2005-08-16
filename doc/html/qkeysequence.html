@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/kernel/qkeysequence.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/kernel/qkeysequence.cpp -->
 <head>
     <title>Qt 4.0: QKeySequence Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QKeySequence Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QKeySequence Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QKeySequence class encapsulates a key sequence as used by shortcuts. <a href="#details">More...</a></p>
-<pre>#include &lt;QKeySequence&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QKeySequence&gt;</pre><ul>
 <li><a href="qkeysequence-members.html">List of all members, including inherited members</a></li>
 <li><a href="qkeysequence-obsolete.html">Obsolete members</a></li>
 </ul>
@@ -66,9 +65,8 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QKeySequence class encapsulates a key sequence as used by shortcuts.</p>
-<p>A key sequence consists of up to four keyboard codes, each optionally combined with modifiers, such as <tt>Qt::SHIFT</tt>, <tt>Qt::CTRL</tt>, <tt>Qt::ALT</tt> or <tt>Qt::META</tt>. For example, <tt>Qt::CTRL + Qt::Key_P</tt> might be a sequence used as a shortcut for printing a document. Valid codes for keys and modifiers are listed in <a href="qt.html#Key-enum">Qt::Key</a> and <a href="qt.html#Modifier-enum">Qt::Modifier</a>. As an alternative, use the unicode code point of the character; for example, <tt>'A'</tt> gives the same key sequence as <tt>Qt::Key_A</tt>.</p>
+<p>A key sequence consists of up to four keyboard codes, each optionally combined with modifiers, such as <a href="qt.html#Modifier-enum">Qt::SHIFT</a>, <a href="qt.html#Modifier-enum">Qt::CTRL</a>, <a href="qt.html#Modifier-enum">Qt::ALT</a> or <a href="qt.html#Modifier-enum">Qt::META</a>. For example, <a href="qt.html#Modifier-enum">Qt::CTRL</a> + <a href="qt.html#Key-enum">Qt::Key_P</a> might be a sequence used as a shortcut for printing a document. Valid codes for keys and modifiers are listed in <a href="qt.html#Key-enum">Qt::Key</a> and <a href="qt.html#Modifier-enum">Qt::Modifier</a>. As an alternative, use the unicode code point of the character; for example, 'A' gives the same key sequence as <a href="qt.html#Key-enum">Qt::Key_A</a>.</p>
 <p>Key sequences can be constructed either from an integer key code, or from a human readable translatable string such as &quot;Ctrl+X,Alt+Space&quot;. A key sequence can be cast to a <a href="qstring.html">QString</a> to obtain a human readable translated version of the sequence. Translations are done in the &quot;<a href="qshortcut.html">QShortcut</a>&quot; context.</p>
-<p>In code that does not inherit the Qt namespace class, you must include the namespace when writing keycodes; for example, instead of <a href="qt.html#Modifier-enum">Qt::ALT</a>+<a href="qt.html#Key-enum">Qt::Key_Q</a> you would write <a href="qt.html#Modifier-enum">Qt::ALT</a>+<a href="qt.html#Key-enum">Qt::Key_Q</a>.</p>
 <p>See also <a href="qshortcut.html">QShortcut</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -90,10 +88,10 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QMenu *file = new QMenu(this);
     file-&gt;addAction(tr(&quot;&amp;Open...&quot;), this, SLOT(open()),
                       QKeySequence(tr(&quot;Ctrl+O&quot;, &quot;File|Open&quot;)));</pre>
-<p>Note the <tt>&quot;File|Open&quot;</tt> translator comment. It is by no means necessary, but it provides some context for the human translator.</p>
+<p>Note the &quot;File|Open&quot; translator comment. It is by no means necessary, but it provides some context for the human translator.</p>
 <h3 class="fn"><a name="QKeySequence-3"></a>QKeySequence::QKeySequence ( int <i>k1</i>, int <i>k2</i> = 0, int <i>k3</i> = 0, int <i>k4</i> = 0 )</h3>
 <p>Constructs a key sequence with up to 4 keys <i>k1</i>, <i>k2</i>, <i>k3</i> and <i>k4</i>.</p>
-<p>The key codes are listed in <a href="qt.html#Key-enum">Qt::Key</a> and can be combined with modifiers (see <a href="qt.html#Modifier-enum">Qt::Modifier</a>) such as <tt>Qt::SHIFT</tt>, <tt>Qt::CTRL</tt>, <tt>Qt::ALT</tt> or <tt>Qt::META</tt>.</p>
+<p>The key codes are listed in <a href="qt.html#Key-enum">Qt::Key</a> and can be combined with modifiers (see <a href="qt.html#Modifier-enum">Qt::Modifier</a>) such as <a href="qt.html#Modifier-enum">Qt::SHIFT</a>, <a href="qt.html#Modifier-enum">Qt::CTRL</a>, <a href="qt.html#Modifier-enum">Qt::ALT</a>, or <a href="qt.html#Modifier-enum">Qt::META</a>.</p>
 <h3 class="fn"><a name="QKeySequence-4"></a>QKeySequence::QKeySequence ( const QKeySequence &amp; <i>keysequence</i> )</h3>
 <p>Copy constructor. Makes a copy of <i>keysequence</i>.</p>
 <h3 class="fn"><a name="dtor.QKeySequence"></a>QKeySequence::~QKeySequence ()</h3>
@@ -103,10 +101,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="isEmpty"></a>bool QKeySequence::isEmpty () const</h3>
 <p>Returns true if the key sequence is empty; otherwise returns false.</p>
 <h3 class="fn"><a name="matches"></a><a href="qkeysequence.html#SequenceMatch-enum">SequenceMatch</a> QKeySequence::matches ( const QKeySequence &amp; <i>seq</i> ) const</h3>
-<p>Matches the sequence with <i>seq</i>. Returns <tt>ExactMatch</tt> if successful, <tt>PartialMatch</tt> if <i>seq</i> matches incompletely, and <tt>NoMatch</tt> if the sequences have nothing in common. Returns <tt>NoMatch</tt> if <i>seq</i> is shorter.</p>
+<p>Matches the sequence with <i>seq</i>. Returns <a href="qkeysequence.html#SequenceMatch-enum">ExactMatch</a> if successful, <a href="qkeysequence.html#SequenceMatch-enum">PartialMatch</a> if <i>seq</i> matches incompletely, and <a href="qkeysequence.html#SequenceMatch-enum">NoMatch</a> if the sequences have nothing in common. Returns <a href="qkeysequence.html#SequenceMatch-enum">NoMatch</a> if <i>seq</i> is shorter.</p>
 <h3 class="fn"><a name="mnemonic"></a>QKeySequence QKeySequence::mnemonic ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the shortcut key sequence for the mnemonic in <i>text</i>, or an empty key sequence if no mnemonics are found.</p>
-<p>For example, mnemonic(&quot;E&amp;amp;xit&quot;) returns <a href="qt.html#Modifier-enum">Qt::ALT</a>+<a href="qt.html#Key-enum">Qt::Key_X</a>, mnemonic(&quot;&amp;amp;Quit&quot;) returns ALT+Key_Q, and mnemonic(&quot;Quit&quot;) returns an empty <a href="qkeysequence.html">QKeySequence</a>.</p>
+<p>For example, mnemonic(&quot;E&amp;xit&quot;) returns <tt>Qt::ALT+Qt::Key_X</tt>, mnemonic(&quot;&amp;Quit&quot;) returns <tt>ALT+Key_Q</tt>, and mnemonic(&quot;Quit&quot;) returns an empty <a href="qkeysequence.html">QKeySequence</a>.</p>
 <p>We provide a <a href="accelerators.html">list of common mnemonics</a> in English. At the time of writing, Microsoft and Open Group do not appear to have issued equivalent recommendations for other languages.</p>
 <h3 class="fn"><a name="operator-QString"></a>QKeySequence::operator QString () const</h3>
 <p>Creates a shortcut string for the key sequence.</p>
@@ -150,6 +148,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

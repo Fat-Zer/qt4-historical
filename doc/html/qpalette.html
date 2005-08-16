@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/kernel/qpalette.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/kernel/qpalette.cpp -->
 <head>
     <title>Qt 4.0: QPalette Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPalette Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPalette Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPalette class contains color groups for each widget state. <a href="#details">More...</a></p>
-<pre>#include &lt;QPalette&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherited by <a href="qcolorgroup.html">QColorGroup</a>.</p>
+<pre>#include &lt;QPalette&gt;</pre><p>Inherited by <a href="qcolorgroup.html">QColorGroup</a>.</p>
 <ul>
 <li><a href="qpalette-members.html">List of all members, including inherited members</a></li>
 <li><a href="qpalette-obsolete.html">Obsolete members</a></li>
@@ -136,23 +135,23 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPalette::Midlight</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Between <tt>Button</tt> and <tt>Light</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Dark</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Darker than <tt>Button</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Mid</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Between <tt>Button</tt> and <tt>Dark</tt>.</td></tr>
-<tr><td valign="top"><tt>QPalette::Shadow</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">A very dark color. By default, the shadow color is <tt>Qt::black</tt>.</td></tr>
+<tr><td valign="top"><tt>QPalette::Shadow</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">A very dark color. By default, the shadow color is <a href="qt.html#GlobalColor-enum">Qt::black</a>.</td></tr>
 </table>
 <p>Selected (marked) items have two roles:</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QPalette::Highlight</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">A color to indicate a selected item or the current item. By default, the highlight color is <tt>Qt::darkBlue</tt>.</td></tr>
-<tr><td valign="top"><tt>QPalette::HighlightedText</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">A text color that contrasts with <tt>Highlight</tt>. By default, the highlighted text color is <tt>Qt::white</tt>.</td></tr>
+<tr><td valign="top"><tt>QPalette::Highlight</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">A color to indicate a selected item or the current item. By default, the highlight color is <a href="qt.html#GlobalColor-enum">Qt::darkBlue</a>.</td></tr>
+<tr><td valign="top"><tt>QPalette::HighlightedText</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">A text color that contrasts with <tt>Highlight</tt>. By default, the highlighted text color is <a href="qt.html#GlobalColor-enum">Qt::white</a>.</td></tr>
 </table>
 <p>Finally, there is a special role for text that needs to be drawn where <tt>Text</tt> or <tt>Foreground</tt> would give poor contrast, such as on pressed push buttons. Note that text colors can be used for things other than just words; text colors are <i>usually</i> used for text, but it's quite common to use the text color roles for lines, icons, etc.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPalette::BrightText</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">A text color that is very different from <tt>Foreground</tt>, and contrasts well with e.g. <tt>Dark</tt>.</td></tr>
-<tr><td valign="top"><tt>QPalette::Link</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top">A text color used for unvisited hyperlinks. By default, the link color is <tt>Qt::blue</tt>.</td></tr>
-<tr><td valign="top"><tt>QPalette::LinkVisited</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top">A text color used for already visited hyperlinks. By default, the linkvisited color is <tt>Qt::magenta</tt>.</td></tr>
+<tr><td valign="top"><tt>QPalette::Link</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top">A text color used for unvisited hyperlinks. By default, the link color is <a href="qt.html#GlobalColor-enum">Qt::blue</a>.</td></tr>
+<tr><td valign="top"><tt>QPalette::LinkVisited</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top">A text color used for already visited hyperlinks. By default, the linkvisited color is <a href="qt.html#GlobalColor-enum">Qt::magenta</a>.</td></tr>
 </table>
-<p>This image shows most of the color roles in use: <center><img src="images/palette.png" alt="Color Roles" /></center></p>
-<hr />
+<p>This image shows most of the color roles in use:</p>
+<p align="center"><img src="images/palette.png" alt="Color Roles" /></p><hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPalette"></a>QPalette::QPalette ()</h3>
 <p>Constructs a palette object that uses the application's default palette.</p>
@@ -205,6 +204,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpalette.html#brush">brush</a>() and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="currentColorGroup"></a><a href="qpalette.html#ColorGroup-enum">ColorGroup</a> QPalette::currentColorGroup () const</h3>
 <p>Returns the palette's current color group.</p>
+<p>See also <a href="qpalette.html#setCurrentColorGroup">setCurrentColorGroup</a>().</p>
 <h3 class="fn"><a name="dark"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::dark () const</h3>
 <p>Returns the dark brush of the current color group.</p>
 <p>See also <a href="qpalette.html#ColorRole-enum">ColorRole</a> and <a href="qpalette.html#brush">brush</a>().</p>
@@ -262,6 +262,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qbrush.html">QBrush</a>.</p>
 <h3 class="fn"><a name="setCurrentColorGroup"></a>void QPalette::setCurrentColorGroup ( <a href="qpalette.html#ColorGroup-enum">ColorGroup</a> <i>cg</i> )</h3>
 <p>Set the palette's current color group to <i>cg</i>.</p>
+<p>See also <a href="qpalette.html#currentColorGroup">currentColorGroup</a>().</p>
 <h3 class="fn"><a name="shadow"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::shadow () const</h3>
 <p>Returns the shadow brush of the current color group.</p>
 <p>See also <a href="qpalette.html#ColorRole-enum">ColorRole</a> and <a href="qpalette.html#brush">brush</a>().</p>
@@ -291,6 +292,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

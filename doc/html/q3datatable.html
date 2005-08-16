@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/qt3support/sql/q3datatable.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/sql/q3datatable.cpp -->
 <head>
     <title>Qt 4.0: Q3DataTable Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DataTable Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DataTable Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3DataTable class provides a flexible SQL table widget that supports browsing and editing. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3DataTable&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3DataTable&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qdatatable">Porting to Qt 4</a> for more information.</p>
+<p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
 <p>Inherits <a href="q3table.html">Q3Table</a>.</p>
 <ul>
 <li><a href="q3datatable-members.html">List of all members, including inherited members</a></li>
@@ -114,7 +114,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -272,7 +272,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3datatable.html#confirmCancels-prop">confirmCancels</a>(), <a href="q3datatable.html#confirmEdits-prop">confirmEdits</a>(), <a href="q3datatable.html#confirmInsert-prop">confirmInsert</a>(), and <a href="q3datatable.html#confirmDelete-prop">confirmDelete</a>().</p>
 <h3 class="fn"><a name="dateFormat-prop"></a>dateFormat : <a href="qt.html#DateFormat-enum">Qt::DateFormat</a></h3>
 <p>This property holds the format used for displaying date/time values.</p>
-<p>The dateFormat property is used for displaying date/time values in the table. The default value is <tt>Qt::LocalDate</tt>.</p>
+<p>The dateFormat property is used for displaying date/time values in the table. The default value is <a href="qt.html#DateFormat-enum">Qt::LocalDate</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::DateFormat dateFormat () const</b></li>
@@ -364,6 +364,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="q3table.html#adjustColumn">Q3Table</a>.</p>
 <h3 class="fn"><a name="autoDelete"></a>bool Q3DataTable::autoDelete () const</h3>
 <p>Returns true if the table will automatically delete the cursor specified by <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>(); otherwise returns false.</p>
+<p>See also <a href="q3datatable.html#setAutoDelete">setAutoDelete</a>().</p>
 <h3 class="fn"><a name="beforeDelete"></a>void Q3DataTable::beforeDelete ( <a href="qsqlrecord.html">QSqlRecord</a> * <i>buf</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before the currently selected record is deleted from the database. The <i>buf</i> parameter points to the edit buffer being deleted. Connect to this signal to, for example, copy some of the fields for later use.</p>
 <h3 class="fn"><a name="beforeInsert"></a>void Q3DataTable::beforeInsert ( <a href="qsqlrecord.html">QSqlRecord</a> * <i>buf</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -436,6 +437,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>().</p>
 <h3 class="fn"><a name="setAutoDelete"></a>void Q3DataTable::setAutoDelete ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the cursor auto-delete flag to <i>enable</i>. If <i>enable</i> is true, the table will automatically delete the cursor specified by <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>(). If <i>enable</i> is false (the default), the cursor will not be deleted.</p>
+<p>See also <a href="q3datatable.html#autoDelete">autoDelete</a>().</p>
 <h3 class="fn"><a name="setColumn"></a>void Q3DataTable::setColumn ( <a href="qtglobal.html#uint-typedef">uint</a> <i>col</i>, const <a href="qstring.html">QString</a> &amp; <i>fieldName</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> = QString(), int <i>width</i> = -1, const QIconSet &amp; <i>iconset</i> = QIconSet() )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <i>col</i> column to display using the field <i>fieldName</i>, column label <i>label</i>, width <i>width</i> and iconset <i>iconset</i>.</p>
 <p>If <i>label</i> is specified, it is used as the column's header label, otherwise the field's display label is used when <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>() is called. The <i>iconset</i> is used to set the icon used by the column header; by default there is no icon.</p>
@@ -448,7 +450,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the cursor's <i>sql</i> driver supports query sizes, the number of rows in the table is set to the size of the query. Otherwise, the table dynamically resizes itself as it is scrolled. If <i>sql</i> is not active, it is made active by issuing a select() on the cursor using the <i>sql</i> cursor's current filter and current sort.</p>
 <h3 class="fn"><a name="setSqlCursor"></a>void Q3DataTable::setSqlCursor ( <a href="q3sqlcursor.html">Q3SqlCursor</a> * <i>cursor</i> = 0, bool <i>autoPopulate</i> = false, bool <i>autoDelete</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets <i>cursor</i> as the data source for the table. To force the display of the data from <i>cursor</i>, use <a href="q3datatable.html#refresh">refresh</a>(). If <i>autoPopulate</i> is true, columns are automatically created based upon the fields in the <i>cursor</i> record. If <i>autoDelete</i> is true (the default is false), the table will take ownership of the <i>cursor</i> and delete it when appropriate. If the <i>cursor</i> is read-only, the table becomes read-only. The table adopts the cursor's driver's definition for representing NULL values as strings.</p>
-<p>See also <a href="q3datatable.html#refresh">refresh</a>(), <a href="q3table.html#readOnly-prop">setReadOnly</a>(), <a href="q3datatable.html#setAutoDelete">setAutoDelete</a>(), and <a href="qsqldriver-qt3.html#nullText">QSqlDriver::nullText</a>().</p>
+<p>See also <a href="q3datatable.html#sqlCursor">sqlCursor</a>(), <a href="q3datatable.html#refresh">refresh</a>(), <a href="q3table.html#readOnly-prop">setReadOnly</a>(), <a href="q3datatable.html#setAutoDelete">setAutoDelete</a>(), and <a href="qsqldriver-qt3.html#nullText">QSqlDriver::nullText</a>().</p>
 <h3 class="fn"><a name="sortAscending"></a>void Q3DataTable::sortAscending ( int <i>col</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sorts column <i>col</i> in ascending order.</p>
 <p>See also <a href="q3table.html#sorting-prop">setSorting</a>().</p>
@@ -461,6 +463,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3table.html#sorting-prop">setSorting</a>().</p>
 <h3 class="fn"><a name="sqlCursor"></a><a href="q3sqlcursor.html">Q3SqlCursor</a> * Q3DataTable::sqlCursor () const</h3>
 <p>Returns the cursor used by the data table.</p>
+<p>See also <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>().</p>
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> Q3DataTable::text ( int <i>row</i>, int <i>col</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the text in cell <i>row</i>, <i>col</i>, or an empty string if the cell is empty. If the cell's value is NULL then <a href="q3datatable.html#nullText-prop">nullText</a>() will be returned. If the cell does not exist then an empty string is returned.</p>
 <p>Reimplemented from <a href="q3table.html#text">Q3Table</a>.</p>
@@ -473,6 +476,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

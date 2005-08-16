@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/qt4-scribe.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/qt4-scribe.qdoc -->
 <head>
     <title>Qt 4.0: The Scribe Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qt4-arthur.html">The Arthur Paint System</a>]
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-mainwindow.html">The Qt 4 Main Window Classes</a>]
 </p>
-<h1 align="center">The Scribe Classes</h1>
+<h1 align="center">The Scribe Classes<br /><small></small></h1>
 <p>Scribe introduces a set of text layout classes to Qt 4. These classes replace the old rich text engine found in Qt 3, and provide new features for processing and laying out both plain and rich text.</p>
 <ul><li><a href="#overview-of-scribe">Overview of Scribe</a></li>
 <ul><li><a href="#the-document-interface">The Document Interface</a></li>
@@ -152,7 +152,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="plain-text-layout"></a>
 <h3>Plain Text Layout</h3>
 <p>Sometimes it is important to be able to format plain text within an irregularly-shaped region, perhaps when rendering a custom widget, for example. Scribe provides generic features to help developers perform word-wrapping and layout tasks without the need to create a document first.</p>
-<center><img src="images/plaintext-layout.png" /></center><p>Formatting and drawing a paragraph of plain text is straightforward. The example below will lay out a paragraph of text, using a single font, around the right hand edge of a circle.</p>
+<p align="center"><img src="images/plaintext-layout.png" /></p><p>Formatting and drawing a paragraph of plain text is straightforward. The example below will lay out a paragraph of text, using a single font, around the right hand edge of a circle.</p>
 <pre>&nbsp;       QTextLayout textLayout(text, font);
         qreal margin = 10;
         qreal radius = qMin(width()/2.0, height()/2.0) - margin;
@@ -208,6 +208,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

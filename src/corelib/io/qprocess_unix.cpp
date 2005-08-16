@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,11 +22,13 @@
 ****************************************************************************/
 
 //#define QPROCESS_DEBUG
+#include <qdebug.h>
+
+#ifndef QT_NO_PROCESS
 
 #if defined QPROCESS_DEBUG
 #include <qstring.h>
 #include <ctype.h>
-#include <qdebug.h>
 
 /*
     Returns a human readable representation of the first \a len
@@ -87,6 +89,10 @@ static void (*qt_sa_old_sigchld_handler)(int) = 0;
 static void qt_sa_sigchld_handler(int signum)
 {
     ::write(qt_qprocess_deadChild_pipe[1], "", 1);
+#if defined (QPROCESS_DEBUG)
+    fprintf(stderr, "*** SIGCHLD\n");
+#endif
+
     if (qt_sa_old_sigchld_handler && qt_sa_old_sigchld_handler != SIG_IGN)
         qt_sa_old_sigchld_handler(signum);
 }
@@ -109,7 +115,7 @@ public:
     void run();
     void catchDeadChildren();
     void add(int pid, QProcess *process);
-    int takeExitResult(QProcess *process);
+    void remove(QProcess *process);
 
 private:
     QMutex mutex;
@@ -120,6 +126,9 @@ Q_GLOBAL_STATIC(QProcessManager, processManager)
 
 QProcessManager::QProcessManager()
 {
+#if defined (QPROCESS_DEBUG)
+    qDebug() << "QProcessManager::QProcessManager()";
+#endif
     // initialize the dead child pipe and make it non-blocking. in the
     // extremely unlikely event that the pipe fills up, we do not under any
     // circumstances want to block.
@@ -164,6 +173,10 @@ void QProcessManager::run()
         FD_ZERO(&readset);
         FD_SET(qt_qprocess_deadChild_pipe[0], &readset);
 
+#if defined (QPROCESS_DEBUG)
+        qDebug() << "QProcessManager::run() waiting for children to die";
+#endif
+
         // block forever, or until activity is detected on the dead child
         // pipe. the only other peers are the SIGCHLD signal handler, and the
         // QProcessManager destructor.
@@ -192,24 +205,16 @@ void QProcessManager::catchDeadChildren()
 
     // try to catch all children whose pid we have registered, and whose
     // deathPipe is still valid (i.e, we have not already notified it).
-    int result;
     QMap<int, QProcessInfo *>::Iterator it = children.begin();
     while (it != children.end()) {
+        // notify all children that they may have died. they need to run
+        // waitpid() in their own thread.
         QProcessInfo *info = it.value();
-        if (info->deathPipe != -1 && waitpid(info->pid, &result, WNOHANG) != 0) {
-            // store the exit result, and notify the QProcess through the
-            // death pipe. The assigned QProcess will later get the exit
-            // result by calling takeExitResult().
-#if defined QPROCESS_DEBUG
-            qDebug("QProcessManager(), caught child with pid %d, QProcess %p",
-                   it.key(), info->process);
+        ::write(info->deathPipe, "", 1);
+
+#if defined (QPROCESS_DEBUG)
+        qDebug() << "QProcessManager::run() sending death notice to" << info->process;
 #endif
-
-            info->exitResult = result;
-            ::write(info->deathPipe, "", 1);
-            info->deathPipe = -1;
-        }
-
         ++it;
     }
 }
@@ -230,6 +235,10 @@ void QProcessManager::add(int pid, QProcess *process)
 {
     QMutexLocker locker(&mutex);
 
+#if defined (QPROCESS_DEBUG)
+    qDebug() << "QProcessManager::add() adding pid" << pid << "process" << process;
+#endif
+
     // insert a new info structure for this process
     QProcessInfo *info = new QProcessInfo;
     info->process = process;
@@ -242,21 +251,21 @@ void QProcessManager::add(int pid, QProcess *process)
     children.insert(serial, info);
 }
 
-int QProcessManager::takeExitResult(QProcess *process)
+void QProcessManager::remove(QProcess *process)
 {
     QMutexLocker locker(&mutex);
 
-    // get the exit result from this pid and sequence number, then remove the
-    // entry from the manager's list and return the exit result.
     int serial = process->d_func()->serial;
     QProcessInfo *info = children.value(serial);
     if (!info)
-        return 0;
+        return;
+
+#if defined (QPROCESS_DEBUG)
+    qDebug() << "QProcessManager::remove() removing pid" << info->pid << "process" << info->process;
+#endif
     
-    int tmp = info->exitResult;
     children.remove(serial);
     delete info;
-    return tmp;
 }
 
 static void qt_create_pipe(int *pipe)
@@ -490,15 +499,24 @@ void QProcessPrivate::execChild(const QByteArray &programName)
                     if (!tmp.endsWith('/')) tmp += '/';
                     tmp += encodedProgramName;
                     argv[0] = tmp.data();
+#if defined (QPROCESS_DEBUG)
+                    fprintf(stderr, "QProcessPrivate::execChild() searching / starting %s\n", argv[0]);
+#endif
                     ::execve(argv[0], argv, envp);
                 }
             }
         } else {
+#if defined (QPROCESS_DEBUG)
+            fprintf(stderr, "QProcessPrivate::execChild() starting %s\n", argv[0]);
+#endif
             ::execve(argv[0], argv, envp);
         }
     }
 
     // notify failure
+#if defined (QPROCESS_DEBUG)
+    fprintf(stderr, "QProcessPrivate::execChild() failed, notifying parent process\n");
+#endif
     ::write(childStartedPipe[1], "", 1);
     ::close(childStartedPipe[1]);
     childStartedPipe[1] = -1;
@@ -732,8 +750,8 @@ bool QProcessPrivate::waitForReadyRead(int msecs)
 	    canWrite();
 
 	if (FD_ISSET(deathPipe[0], &fdread)) {
-            processDied();
-            return false;
+            if (processDied())
+                return false;
         }
     }
     return false;
@@ -797,8 +815,8 @@ bool QProcessPrivate::waitForBytesWritten(int msecs)
 	    canReadStandardError();
 
 	if (FD_ISSET(deathPipe[0], &fdread)) {
-            processDied();
-            return false;
+            if (processDied())
+                return false;
         }
     }
 
@@ -863,8 +881,8 @@ bool QProcessPrivate::waitForFinished(int msecs)
 	    canReadStandardError();
 
 	if (FD_ISSET(deathPipe[0], &fdread)) {
-            processDied();
-            return true;
+            if (processDied())
+                return true;
 	}
     }
     return false;
@@ -886,10 +904,34 @@ bool QProcessPrivate::waitForWrite(int msecs)
 void QProcessPrivate::findExitCode()
 {
     Q_Q(QProcess);
-    int result = processManager()->takeExitResult(q);
+    processManager()->remove(q);
+}
 
-    crashed = !WIFEXITED(result);
-    exitCode = WEXITSTATUS(result);
+bool QProcessPrivate::waitForDeadChild()
+{
+    Q_Q(QProcess);
+    
+    // read a byte from the death pipe
+    char c;
+    ::read(deathPipe[0], &c, 1);
+    
+    // check if our process is dead
+    int exitStatus;
+    pid_t waitResult = waitpid(pid, &exitStatus, WNOHANG);
+    if (waitResult > 0) {
+        processManager()->remove(q);
+        crashed = !WIFEXITED(exitStatus);
+        exitCode = WEXITSTATUS(exitStatus);
+#if defined QPROCESS_DEBUG
+        qDebug() << "QProcessPrivate::waitForDeadChild() dead with exitCode"
+                 << exitCode << ", crashed?" << crashed;
+#endif
+        return true;
+    }
+#if defined QPROCESS_DEBUG
+    qDebug() << "QProcessPrivate::waitForDeadChild() not dead!";
+#endif
+    return false;
 }
 
 void QProcessPrivate::notified()
@@ -946,3 +988,4 @@ void QProcessPrivate::initializeProcessManager()
 
 #include "qprocess_unix.moc"
 
+#endif // QT_NO_PROCESS

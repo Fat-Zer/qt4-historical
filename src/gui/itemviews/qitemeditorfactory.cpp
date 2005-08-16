@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,6 +23,9 @@
 
 #include <qplatformdefs.h>
 #include "qitemeditorfactory.h"
+
+#ifndef QT_NO_ITEMVIEWS
+
 #include <qcombobox.h>
 #include <qdatetimeedit.h>
 #include <qlabel.h>
@@ -101,12 +104,15 @@ public:
 QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *parent) const
 {
     switch (type) {
+#ifndef QT_NO_COMBOBOX
     case QVariant::Bool: {
         QComboBox *cb = new QComboBox(parent);
         cb->setFrame(false);
         cb->addItem("False");
         cb->addItem("True");
         return cb; }
+#endif
+#ifndef QT_NO_SPINBOX
     case QVariant::UInt: {
         QSpinBox *sb = new QSpinBox(parent);
         sb->setFrame(false);
@@ -118,6 +124,8 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
         sb->setMinimum(INT_MIN);
         sb->setMaximum(INT_MAX);
         return sb; }
+#endif
+#ifndef QT_NO_DATETIMEEDIT
     case QVariant::Date: {
         QDateTimeEdit *ed = new QDateEdit(parent);
         ed->setFrame(false);
@@ -130,23 +138,31 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
         QDateTimeEdit *ed = new QDateTimeEdit(parent);
         ed->setFrame(false);
         return ed; }
+#endif
     case QVariant::Pixmap:
         return new QLabel(parent);
+#ifndef QT_NO_SPINBOX
     case QVariant::Double: {
         QDoubleSpinBox *sb = new QDoubleSpinBox(parent);
         sb->setFrame(false);
         return sb; }
+#endif
+#ifndef QT_NO_COMBOBOX
     case QVariant::StringList: {
         QComboBox *cb = new QComboBox(parent);
         cb->setFrame(false);
         return cb; }
+#endif
+#ifndef QT_NO_LINEEDIT
     case QVariant::String:
     default: {
         // the default editor is a lineedit
         QLineEdit *le = new QLineEdit(parent);
         le->setFrame(false);
         return le; }
+#endif
     }
+    return 0;    
 }
 
 QByteArray QDefaultItemEditorFactory::valuePropertyName(QVariant::Type type) const
@@ -242,3 +258,4 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     must return corresponds to the type of value that your editor widgets
     are designed to edit.
 */
+#endif // QT_NO_ITEMVIEWS

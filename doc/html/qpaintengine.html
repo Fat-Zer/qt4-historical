@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/painting/qpaintengine.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/painting/qpaintengine.cpp -->
 <head>
     <title>Qt 4.0: QPaintEngine Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,16 +16,16 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPaintEngine Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPaintEngine Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPaintEngine class provides an abstract definition of how <a href="qpainter.html">QPainter</a> draws to a given device on a given platform. <a href="#details">More...</a></p>
-<pre>#include &lt;QPaintEngine&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<ul>
+<pre>#include &lt;QPaintEngine&gt;</pre><ul>
 <li><a href="qpaintengine-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
+<li><div class="fn"/>flags <b><a href="qpaintengine.html#DirtyFlag-enum">DirtyFlags</a></b></li>
 <li><div class="fn"/>enum <b><a href="qpaintengine.html#PaintEngineFeature-enum">PaintEngineFeature</a></b> { PrimitiveTransform, PatternTransform, PixmapTransform, PatternBrush, ..., AllFeatures }</li>
 <li><div class="fn"/>flags <b><a href="qpaintengine.html#PaintEngineFeature-enum">PaintEngineFeatures</a></b></li>
 <li><div class="fn"/>enum <b><a href="qpaintengine.html#PolygonDrawMode-enum">PolygonDrawMode</a></b> { OddEvenMode, WindingMode, ConvexMode, PolylineMode }</li>
@@ -64,8 +64,8 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QPaintEngine class provides an abstract definition of how <a href="qpainter.html">QPainter</a> draws to a given device on a given platform.</p>
-<p>Qt 4.0 provides several premade implementations of QPaintEngine for the different painter backends we support. We provide one paint engine for each window system and painting framework we support. This includes <a href="qpaintengine.html#Type-enum">X11</a> on Unix/Linux and <a href="qpaintengine.html#Type-enum">CoreGraphics</a> on Mac OS X. In addition we provide QPaintEngine implementations for <a href="qpaintengine.html#Type-enum">OpenGL</a> (accessible through <a href="qglwidget.html">QGLWidget</a>) and <a href="qpaintengine.html#Type-enum">PostScript</a> (accessible through QPSPrinter on <a href="qpaintengine.html#Type-enum">X11</a>). Additionally there is a raster-based paint engine that is a fallback for when an engine does not support a certain capability.</p>
-<p>If one wants to use <a href="qpainter.html">QPainter</a> to draw to a different backend, such as PDF, one must subclass QPaintEngine and reimplement all its virtual functions. The QPaintEngine implementation is then made available by subclassing <a href="qpaintdevice.html">QPaintDevice</a> and reimplementing the virtual function <tt>QPaintDevice::paintEngine()</tt>.</p>
+<p>Qt 4.0 provides several premade implementations of QPaintEngine for the different painter backends we support. We provide one paint engine for each window system and painting framework we support. This includes X11 on Unix/Linux and <a href="qpaintengine.html#Type-enum">CoreGraphics</a> on Mac OS X. In addition we provide QPaintEngine implementations for <a href="qpaintengine.html#Type-enum">OpenGL</a> (accessible through <a href="qglwidget.html">QGLWidget</a>) and <a href="qpaintengine.html#Type-enum">PostScript</a> (accessible through QPSPrinter on X11). Additionally there is a raster-based paint engine that is a fallback for when an engine does not support a certain capability.</p>
+<p>If one wants to use <a href="qpainter.html">QPainter</a> to draw to a different backend, such as PDF, one must subclass QPaintEngine and reimplement all its virtual functions. The QPaintEngine implementation is then made available by subclassing <a href="qpaintdevice.html">QPaintDevice</a> and reimplementing the virtual function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>().</p>
 <p>QPaintEngine is created and owned by the <a href="qpaintdevice.html">QPaintDevice</a> that created it.</p>
 <p>The big advantage of the QPaintEngine approach opposed to Qt 3's <a href="qpainter.html">QPainter</a>/QPaintDevice::cmd() approach is that it is now possible to adapt to multiple technologies on each platform and take advantage of each to the fullest.</p>
 <p>See also <a href="qpainter.html">QPainter</a> and <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>().</p>
@@ -160,7 +160,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="drawRects-2"></a>void QPaintEngine::drawRects ( const <a href="qrect.html">QRect</a> * <i>rects</i>, int <i>rectCount</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>The default implementation converts the first <i>rectCount</i> rectangles in the buffer <i>rects</i> to a <a href="qrectf.html">QRectF</a> and calls the floating point version of this function.</p>
-<h3 class="fn"><a name="drawTextItem"></a>void QPaintEngine::drawTextItem ( const <a href="qpointf.html">QPointF</a> &amp; <i>p</i>, const <a href="qtextitem.html">QTextItem</a> &amp; <i>textItem</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="drawTextItem"></a>void QPaintEngine::drawTextItem ( const <a href="qpointf.html">QPointF</a> &amp; <i>p</i>, const QTextItem &amp; <i>textItem</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This function draws the text item <i>textItem</i> at position <i>p</i>. The default implementation of this function converts the text to a <a href="qpainterpath.html">QPainterPath</a> and paints the resulting path.</p>
 <h3 class="fn"><a name="drawTiledPixmap"></a>void QPaintEngine::drawTiledPixmap ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i>, const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qpointf.html">QPointF</a> &amp; <i>p</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Reimplement this function to draw the <i>pixmap</i> in the given <i>rect</i>, starting at the given <i>p</i>. The pixmap will be drawn repeatedly until the <i>rect</i> is filled.</p>
@@ -185,6 +185,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

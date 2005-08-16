@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/eventsandfilters.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/eventsandfilters.qdoc -->
 <head>
     <title>Qt 4.0: Events and Event Filters</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Events and Event Filters</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Events and Event Filters<br /><small></small></h1>
 <p>In Qt, an event is an object that inherits <a href="qevent.html">QEvent</a>. Events are delivered to objects that inherit <a href="qobject.html">QObject</a> through calling <a href="qobject.html#event">QObject::event</a>(). Event delivery means that an event has occurred, the <a href="qevent.html">QEvent</a> indicates precisely what, and the <a href="qobject.html">QObject</a> needs to respond. Most events are specific to <a href="qwidget.html">QWidget</a> and its subclasses, but there are important events that aren't related to graphics (e.g., <a href="qtimer.html">timer events</a>).</p>
 <p>Some events come from the window system (e.g., <a href="qmouseevent.html">QMouseEvent</a>), some from other sources (e.g., <a href="qtimerevent.html">QTimerEvent</a>), and some come from the application program. Qt is symmetric, as usual, so you can send events in exactly the same ways as Qt's own event loop does using <a href="qcoreapplication.html#sendEvent">QCoreApplication::sendEvent</a>() and <a href="qcoreapplication.html#postEvent">QCoreApplication::postEvent</a>().</p>
 <p>Most events types have special classes, notably <a href="qresizeevent.html">QResizeEvent</a>, <a href="qpaintevent.html">QPaintEvent</a>, <a href="qmouseevent.html">QMouseEvent</a>, <a href="qkeyevent.html">QKeyEvent</a>, and <a href="qcloseevent.html">QCloseEvent</a>. Each class subclasses <a href="qevent.html">QEvent</a> and adds event-specific functions; see for example <a href="qresizeevent.html">QResizeEvent</a>, which adds <a href="qresizeevent.html#size">QResizeEvent::size</a>() and <a href="qresizeevent.html#oldSize">QResizeEvent::oldSize</a>().</p>
@@ -61,11 +61,11 @@ body { background: #ffffff; color: black; }</style>
 <p>sendEvent() processes the event immediately. When sendEvent() returns, the event filters and/or the object have already processed the event. For many event classes there is a function called isAccepted() that tells you whether the event was accepted or rejected by the last handler that was called.</p>
 <p>postEvent() posts the event on a queue for later dispatch. The next time Qt's main event loop runs, it dispatches all posted events, with some optimization. For example, if there are several resize events, they are are compacted into one. The same applies to paint events: <a href="qwidget.html#update">QWidget::update</a>() calls postEvent(), which eliminates flickering and increases speed by avoiding multiple repaints.</p>
 <p>postEvent() is also often used during object initialization, since the posted event will typically be dispatched very soon after the initialization of the object is complete.</p>
-<p>To create events of a custom type, you need to define an event number, which must be greater than <tt>QEvent::User</tt>, and probably you also need to subclass <a href="qevent.html">QEvent</a> in order to pass characteristics about your custom event. See the <a href="qevent.html">QEvent</a> documentation for details.</p>
+<p>To create events of a custom type, you need to define an event number, which must be greater than <a href="qevent.html#Type-enum">QEvent::User</a>, and probably you also need to subclass <a href="qevent.html">QEvent</a> in order to pass characteristics about your custom event. See the <a href="qevent.html">QEvent</a> documentation for details.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

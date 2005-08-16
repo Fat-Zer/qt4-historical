@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,12 +28,16 @@
 #include <QtGui/qtextdocument.h>
 #include <QtGui/qtextoption.h>
 
+#ifndef QT_NO_TEXTEDIT
+
 #ifdef QT3_SUPPORT
 #include <QtGui/qtextcursor.h>
 #include <QtGui/qtextformat.h>
 #include <QtGui/qtextobject.h>
 #include <QtGui/qtextlayout.h>
 #endif
+
+QT_MODULE(Gui)
 
 class QTextCharFormat;
 class QStyleSheet;
@@ -159,9 +163,10 @@ public:
     void ensureCursorVisible();
 
     virtual QVariant loadResource(int type, const QUrl &name);
-
+#ifndef QT_NO_MENU
     QMenu *createStandardContextMenu();
-
+#endif
+    
     QTextCursor cursorForPosition(const QPoint &pos) const;
     QRect cursorRect(const QTextCursor &cursor) const;
     QRect cursorRect() const;
@@ -181,10 +186,12 @@ public slots:
     void setPlainText(const QString &text);
     void setHtml(const QString &text);
 
+#ifndef QT_NO_CLIPBOARD
     void cut();
     void copy();
     void paste();
-
+#endif
+    
     void clear();
     void selectAll();
 
@@ -216,16 +223,20 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual bool focusNextPrevChild(bool next);
     virtual void contextMenuEvent(QContextMenuEvent *e);
+#ifndef QT_NO_DRAGANDDROP
     virtual void dragEnterEvent(QDragEnterEvent *e);
     virtual void dragLeaveEvent(QDragLeaveEvent *e);
     virtual void dragMoveEvent(QDragMoveEvent *e);
     virtual void dropEvent(QDropEvent *e);
+#endif
     virtual void focusInEvent(QFocusEvent *e);
     virtual void focusOutEvent(QFocusEvent *e);
     virtual void showEvent(QShowEvent *);
     virtual void changeEvent(QEvent *e);
+#ifndef QT_NO_WHEELEVENT
     virtual void wheelEvent(QWheelEvent *e);
-
+#endif
+    
     virtual QMimeData *createMimeDataFromSelection() const;
     virtual bool canInsertFromMimeData(const QMimeData *source) const;
     virtual void insertFromMimeData(const QMimeData *source);
@@ -324,4 +335,5 @@ private:
     Q_PRIVATE_SLOT(d_func(), void emitCursorPosChanged(const QTextCursor &))
 };
 
+#endif // QT_NO_TEXTEDIT
 #endif // QTEXTEDIT_H

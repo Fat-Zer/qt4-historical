@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -275,7 +275,7 @@ void QCursorData::update()
 
     switch(cshape) {                        // map Q cursor to MAC cursor
     case Qt::BitmapCursor: {
-        if(bm->width() == 16 && bm->height() == 16) {
+        if(bm->width() == 16 && bm->height() == 16 && pixmap.isNull()) {
             type = QCursorData::TYPE_CursPtr;
             curs.cp.my_cursor = true;
             curs.cp.hcurs = (CursPtr)malloc(sizeof(Cursor));
@@ -301,7 +301,7 @@ void QCursorData::update()
                 }
             }
 #ifdef QMAC_USE_BIG_CURSOR_API
-        } else if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_2 && bm->width() < 64
+        } else if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_2 && bm->width() < 64
                   && bm->height() < 64) {
             curs.big_cursor_name = (char *)malloc(128);
             static int big_cursor_cnt = 0;
@@ -311,10 +311,17 @@ void QCursorData::update()
                 hotspot.h = 0;
             if((hotspot.v = hy) < 0)
                 hotspot.v = 0;
-            OSStatus ret = QDRegisterNamedPixMapCursor(GetGWorldPixMap(qt_mac_qd_context(bm)),
-                                                       GetGWorldPixMap(qt_mac_qd_context(bmm)),
-                                                       hotspot, curs.big_cursor_name);
-            if(ret == noErr)
+            OSStatus ret;
+
+            if (pixmap.isNull()) {
+                ret = QDRegisterNamedPixMapCursor(GetGWorldPixMap(qt_mac_qd_context(bm)),
+                                                  GetGWorldPixMap(qt_mac_qd_context(bmm)),
+                                                  hotspot, curs.big_cursor_name);
+            } else {
+                ret = QDRegisterNamedPixMapCursor(GetGWorldPixMap(qt_mac_qd_context(&pixmap)),
+                                                  0, hotspot, curs.big_cursor_name);
+            }
+            if (ret == noErr)
                 type = QCursorData::TYPE_BigCursor;
             else
                 free(curs.big_cursor_name);
@@ -328,7 +335,7 @@ void QCursorData::update()
                 curs.fc.empty_curs = (CursPtr)malloc(sizeof(Cursor));
                 memset(curs.fc.empty_curs->data, 0x00, sizeof(curs.fc.empty_curs->data));
                 memset(curs.fc.empty_curs->mask, 0x00, sizeof(curs.fc.empty_curs->mask));
-                int hx = hx, hy = hy;
+                int hx = this->hx, hy = this->hy;
                 if(hx < 0)
                     hx = 8;
                 else if(hx > 15)

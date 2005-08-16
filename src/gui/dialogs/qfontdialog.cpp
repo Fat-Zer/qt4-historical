@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -82,6 +82,7 @@ QFontListView::QFontListView(QWidget *parent)
     : QListView(parent)
 {
     setModel(new QStringListModel(parent));
+    setEditTriggers(NoEditTriggers);
 }
 
 /*!
@@ -201,7 +202,9 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->familyEdit->setFocusProxy(d->familyList);
 
     d->familyAccel = new QLabel(tr("&Font"), this);
+#ifndef QT_NO_SHORTCUT
     d->familyAccel->setBuddy(d->familyList);
+#endif
     d->familyAccel->setIndent(2);
 
     d->styleEdit = new QLineEdit(this);
@@ -210,7 +213,9 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->styleEdit->setFocusProxy(d->styleList);
 
     d->styleAccel = new QLabel(tr("Font st&yle"), this);
+#ifndef QT_NO_SHORTCUT
     d->styleAccel->setBuddy(d->styleList);
+#endif
     d->styleAccel->setIndent(2);
 
     d->sizeEdit = new QLineEdit(this);
@@ -220,7 +225,9 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->sizeList = new QFontListView(this);
 
     d->sizeAccel = new QLabel(tr("&Size"), this);
+#ifndef QT_NO_SHORTCUT
     d->sizeAccel->setBuddy(d->sizeEdit);
+#endif
     d->sizeAccel->setIndent(2);
 
     // effects box
@@ -246,7 +253,9 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->writingSystemCombo = new QComboBox(this);
 
     d->writingSystemAccel = new QLabel(tr("Wr&iting System"), this);
+#ifndef QT_NO_SHORTCUT
     d->writingSystemAccel->setBuddy(d->writingSystemCombo);
+#endif
     d->writingSystemAccel->setIndent(2);
 
     d->size = 0;
@@ -282,7 +291,8 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
 
     // grid layout
     QGridLayout * mainGrid = new QGridLayout(this);
-    mainGrid->setMargin(12);
+    int margin = mainGrid->margin();
+    int spacing = mainGrid->spacing();
     mainGrid->setSpacing(0);
 
     mainGrid->addWidget(d->familyAccel, 0, 0);
@@ -301,11 +311,10 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     mainGrid->setColumnStretch(2, 24);
     mainGrid->setColumnStretch(4, 10);
 
-    mainGrid->setColumnMinimumWidth(1, 6);
-    mainGrid->setColumnMinimumWidth(3, 6);
-    mainGrid->setColumnMinimumWidth(5, 6);
+    mainGrid->setColumnMinimumWidth(1, spacing);
+    mainGrid->setColumnMinimumWidth(3, spacing);
 
-    mainGrid->setRowMinimumHeight(3, 12);
+    mainGrid->setRowMinimumHeight(3, margin);
 
     mainGrid->addWidget(d->effects, 4, 0);
 
@@ -315,24 +324,20 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     mainGrid->setRowMinimumHeight(6, 2);
     mainGrid->addWidget(d->writingSystemCombo, 7, 0);
 
-    mainGrid->setRowMinimumHeight(8, 12);
+    mainGrid->setRowMinimumHeight(8, margin);
 
     QHBoxLayout *buttonBox = new QHBoxLayout;
-    mainGrid->addItem(buttonBox, 9, 0, 1, 5);
+    mainGrid->addLayout(buttonBox, 9, 0, 1, 5);
 
     buttonBox->addStretch(1);
     QString okt = modal ? tr("OK") : tr("Apply");
     d->ok = new QPushButton(okt, this);
-    buttonBox->addWidget(d->ok);
     if (modal)
         connect(d->ok, SIGNAL(clicked()), SLOT(accept()));
     d->ok->setDefault(true);
 
-    buttonBox->addSpacing(12);
-
     QString cancelt = modal ? tr("Cancel") : tr("Close");
     d->cancel = new QPushButton(cancelt, this);
-    buttonBox->addWidget(d->cancel);
     connect(d->cancel, SIGNAL(clicked()), SLOT(reject()));
 
     resize(500, 360);
@@ -343,6 +348,15 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->sizeList->installEventFilter(this);
 
     d->familyList->setFocus();
+#ifdef Q_WS_MAC
+    buttonBox->addWidget(d->cancel);
+    buttonBox->addSpacing(spacing);
+    buttonBox->addWidget(d->ok);
+#else
+    buttonBox->addWidget(d->ok);
+    buttonBox->addSpacing(spacing);
+    buttonBox->addWidget(d->cancel);
+#endif
 }
 
 /*!
@@ -435,9 +449,7 @@ QFont QFontDialog::getFont(bool *ok, const QFont *def, QWidget *parent)
     QFontDialog *dlg = new QFontDialog(parent, true);
 
     dlg->setFont((def ? *def : QFont()));
-#ifndef QT_NO_WIDGET_TOPEXTRA
     dlg->setWindowTitle(tr("Select Font"));
-#endif
 
     bool res = (dlg->exec() == QDialog::Accepted);
     if (res)

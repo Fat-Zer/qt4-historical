@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -34,12 +34,18 @@
     \brief The QLine class provides a two-dimensional vector that
     uses integer point accuracy for coordinates.
 
-    A QLine describes a finite length line (or line segment) on a two-dimensional surface.
-    The start and end points of the line are specified using integer point
-    coordinates.
+    A QLine describes a finite length line (or line segment) on a
+    two-dimensional surface.  The start and end points of the line are
+    specified using integer point coordinates.
 
     Use isNull() to determine whether the QLine represents a valid line
     or a null line.
+
+    \table
+    \row
+        \o \inlineimage qline-point.png
+        \o \inlineimage qline-coordinates.png
+    \endtable
 
     The positions of the line's end points can be found with the p1(),
     x1(), y1(), p2(), x2(), and y2() functions. The horizontal and vertical
@@ -230,12 +236,19 @@ QDataStream &operator>>(QDataStream &stream, QLine &line)
     \brief The QLineF class provides a two-dimensional vector that
     uses floating point accuracy for coordinates.
 
-    A QLineF describes a finite length line (or line segment) on a two-dimensional surface.
-    The start and end points of the line are specified using floating point
-    coordinates.
+    A QLineF describes a finite length line (or line segment) on a
+    two-dimensional surface. QLineF provides a variant of the QLine
+    class that defines the start and end points of the line using
+    floating point coordinates.
 
     Use isNull() to determine whether the QLineF represents a valid line
     or a null line.
+
+    \table
+    \row
+        \o \inlineimage qline-point.png
+        \o \inlineimage qline-coordinates.png
+    \endtable
 
     The positions of the line's end points can be found with the p1(), x1(),
     y1(), p2(), x2(), and y2() functions. The horizontal and vertical
@@ -565,7 +578,10 @@ qreal QLineF::angle(const QLineF &l) const
 {
     if (isNull() || l.isNull())
         return 0;
-    qreal rad = acos( (dx()*l.dx() + dy()*l.dy()) / (length()*l.length()) );
+    qreal cos_line = (dx()*l.dx() + dy()*l.dy()) / (length()*l.length());
+    qreal rad = 0;
+    // only accept cos_line in the range [-1,1], if it is outside, use 0 (we return 0 rather than PI for those cases)
+    if (cos_line >= -1.0 && cos_line <= 1.0) rad = acos( cos_line );
     return rad * 360 / M_2PI;
 }
 

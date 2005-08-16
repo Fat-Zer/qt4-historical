@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/itemviews/qtreeview.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/itemviews/qtreeview.cpp -->
 <head>
     <title>Qt 4.0: QTreeView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTreeView Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTreeView Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTreeView class provides a default model/view implementation of a tree view. <a href="#details">More...</a></p>
-<pre>#include &lt;QTreeView&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qabstractitemview.html">QAbstractItemView</a>.</p>
+<pre>#include &lt;QTreeView&gt;</pre><p>Inherits <a href="qabstractitemview.html">QAbstractItemView</a>.</p>
 <p>Inherited by <a href="qtreewidget.html">QTreeWidget</a>.</p>
 <ul>
 <li><a href="qtreeview-members.html">List of all members, including inherited members</a></li>
@@ -74,7 +73,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>37 public functions inherited from <a href="qabstractitemview.html#public-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -196,7 +195,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTreeView"></a>QTreeView::QTreeView ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs a table view with a <i>parent</i> to represent a model's data. Use <a href="qtreeview.html#setModel">setModel</a>() to set the model.</p>
+<p>Constructs a table view with a <i>parent</i> to represent a model's data. Use <a href="qabstractitemview.html#setModel">setModel</a>() to set the model.</p>
 <p>See also <a href="qabstractitemmodel.html">QAbstractItemModel</a>.</p>
 <h3 class="fn"><a name="dtor.QTreeView"></a>QTreeView::~QTreeView ()</h3>
 <p>Destroys the tree view.</p>
@@ -219,7 +218,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtreeview.html#resizeColumnToContents">resizeColumnToContents</a>().</p>
 <h3 class="fn"><a name="doItemsLayout"></a>void QTreeView::doItemsLayout ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Lays out the items in the tree view.</p>
-<p>Reimplemented from <a href="qabstractitemview.html#doItemsLayout">QAbstractItemView</a>.</p>
+<p>Reimplemented from QAbstractItemView.</p>
 <h3 class="fn"><a name="drawBranches"></a>void QTreeView::drawBranches ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Draws the branches in the tree view on the same row as the model item <i>index</i>, using the <i>painter</i> given. The branches are drawn in the rectangle specified by <i>rect</i>.</p>
 <h3 class="fn"><a name="drawRow"></a>void QTreeView::drawRow ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a> &amp; <i>option</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -229,8 +228,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Expands the model item specified by the <i>index</i>.</p>
 <h3 class="fn"><a name="expanded"></a>void QTreeView::expanded ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the item specified by <i>index</i> is expanded.</p>
+<p>See also <a href="qtreeview.html#setExpanded">setExpanded</a>().</p>
 <h3 class="fn"><a name="header"></a><a href="qheaderview.html">QHeaderView</a> * QTreeView::header () const</h3>
 <p>Returns the header for the tree view.</p>
+<p>See also <a href="qtreeview.html#setHeader">setHeader</a>().</p>
 <h3 class="fn"><a name="hideColumn"></a>void QTreeView::hideColumn ( int <i>column</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Hides the <i>column</i> given.</p>
 <p>See also <a href="qtreeview.html#showColumn">showColumn</a>().</p>
@@ -274,11 +275,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qabstractitemview.html#selectAll">QAbstractItemView</a>.</p>
 <h3 class="fn"><a name="setColumnHidden"></a>void QTreeView::setColumnHidden ( int <i>column</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>column</i> is hidden, otherwise the <i>column</i> is shown.</p>
+<p>See also <a href="qtreeview.html#isColumnHidden">isColumnHidden</a>().</p>
 <h3 class="fn"><a name="setExpanded"></a>void QTreeView::setExpanded ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, bool <i>expanded</i> )</h3>
 <p>Sets the item referred to by <i>index</i> to either collapse or expanded, depending on the value of <i>expanded</i>.</p>
 <p>See also <a href="qtreeview.html#expanded">expanded</a>().</p>
 <h3 class="fn"><a name="setHeader"></a>void QTreeView::setHeader ( <a href="qheaderview.html">QHeaderView</a> * <i>header</i> )</h3>
 <p>Sets the <i>header</i> for the tree view.</p>
+<p>See also <a href="qtreeview.html#header">header</a>().</p>
 <h3 class="fn"><a name="setRowHidden"></a>void QTreeView::setRowHidden ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>row</i> with the given <i>parent</i> is hidden, otherwise the <i>row</i> is shown.</p>
 <p>See also <a href="qtreeview.html#isRowHidden">isRowHidden</a>().</p>
@@ -310,6 +313,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

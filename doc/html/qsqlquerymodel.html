@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/sql/models/qsqlquerymodel.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/sql/models/qsqlquerymodel.cpp -->
 <head>
     <title>Qt 4.0: QSqlQueryModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSqlQueryModel Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSqlQueryModel Class Reference<br /><sup><sup>[<a href="qtsql.html">QtSql</a> module]</sup></sup></h1>
 <p>The QSqlQueryModel class provides a read-only data model for SQL result sets. <a href="#details">More...</a></p>
-<pre>#include &lt;QSqlQueryModel&gt;</pre><p>Part of the <a href="qtsql.html">QtSql</a> module.</p>
-<p>Inherits <a href="qabstracttablemodel.html">QAbstractTableModel</a>.</p>
+<pre>#include &lt;QSqlQueryModel&gt;</pre><p>Inherits <a href="qabstracttablemodel.html">QAbstractTableModel</a>.</p>
 <p>Inherited by <a href="qsqltablemodel.html">QSqlTableModel</a>.</p>
 <ul>
 <li><a href="qsqlquerymodel-members.html">List of all members, including inherited members</a></li>
@@ -75,8 +74,8 @@ body { background: #ffffff; color: black; }</style>
 <p>QSqlQueryModel is a high-level interface for executing SQL statements and traversing the result set. It is built on top of the lower-level <a href="qsqlquery.html">QSqlQuery</a> and can be used to provide data to view classes such as <a href="qtableview.html">QTableView</a>. For example:</p>
 <pre>&nbsp;       QSqlQueryModel *model = new QSqlQueryModel;
         model-&gt;setQuery(&quot;SELECT name, salary FROM employee&quot;);
-        model-&gt;setHeaderData(0, Qt::Horizontal, QObject::tr(&quot;Name&quot;));
-        model-&gt;setHeaderData(1, Qt::Horizontal, QObject::tr(&quot;Salary&quot;));
+        model-&gt;setHeaderData(0, Qt::Horizontal, tr(&quot;Name&quot;));
+        model-&gt;setHeaderData(1, Qt::Horizontal, tr(&quot;Salary&quot;));
 
         QTableView *view = new QTableView;
         view-&gt;setModel(model);
@@ -108,6 +107,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="headerData"></a><a href="qvariant.html">QVariant</a> QSqlQueryModel::headerData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, int <i>role</i> = Qt::DisplayRole ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the header data for the given <i>role</i> in the <i>section</i> of the header with the specified <i>orientation</i>.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#headerData">QAbstractItemModel</a>.</p>
+<p>See also <a href="qsqlquerymodel.html#setHeaderData">setHeaderData</a>().</p>
 <h3 class="fn"><a name="indexInQuery"></a><a href="qmodelindex.html">QModelIndex</a> QSqlQueryModel::indexInQuery ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>item</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the index of the value in the database result set for the given <i>item</i> in the model.</p>
 <p>The return value is identical to <i>item</i> if no columns or rows have been inserted, removed, or moved around.</p>
@@ -128,6 +128,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qsqlquerymodel.html#removeColumns">removeColumns</a>().</p>
 <h3 class="fn"><a name="lastError"></a><a href="qsqlerror.html">QSqlError</a> QSqlQueryModel::lastError () const</h3>
 <p>Returns information about the last error that occurred on the database.</p>
+<p>See also <a href="qsqlquerymodel.html#setLastError">setLastError</a>().</p>
 <h3 class="fn"><a name="query"></a><a href="qsqlquery.html">QSqlQuery</a> QSqlQueryModel::query () const</h3>
 <p>Returns the <a href="qsqlquery.html">QSqlQuery</a> associated with this model.</p>
 <p>See also <a href="qsqlquerymodel.html#setQuery">setQuery</a>().</p>
@@ -151,10 +152,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qabstractitemmodel.html#removeColumns">QAbstractItemModel</a>.</p>
 <h3 class="fn"><a name="setHeaderData"></a>bool QSqlQueryModel::setHeaderData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the caption for the header with the given <i>orientation</i> to the specified <i>value</i>. This is useful if the model is used to display data in a view (e.g., <a href="qtableview.html">QTableView</a>).</p>
-<p>Returns true if <i>role</i> is <tt>Qt::DisplayRole</tt> and the <i>section</i> refers to a valid section; otherwise returns false.</p>
+<p>Returns true if <i>role</i> is <a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a> and the <i>section</i> refers to a valid section; otherwise returns false.</p>
 <p>Note that this function cannot be used to modify values in the database since the model is read-only.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#setHeaderData">QAbstractItemModel</a>.</p>
-<p>See also <a href="qsqlquerymodel.html#data">data</a>().</p>
+<p>See also <a href="qsqlquerymodel.html#headerData">headerData</a>() and <a href="qsqlquerymodel.html#data">data</a>().</p>
 <h3 class="fn"><a name="setLastError"></a>void QSqlQueryModel::setLastError ( const <a href="qsqlerror.html">QSqlError</a> &amp; <i>error</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Protected function which allows derived classes to set the value of the last error that occurred on the database to <i>error</i>.</p>
 <p>See also <a href="qsqlquerymodel.html#lastError">lastError</a>().</p>
@@ -169,6 +170,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

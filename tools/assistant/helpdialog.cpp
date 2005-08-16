@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the assistant application of the Qt Toolkit.
+** This file is part of the Qt Assistant of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -255,7 +255,7 @@ void HelpDialog::lastWinClosed()
     lwClosed = true;
 }
 
-void HelpDialog::removeOldCacheFiles()
+void HelpDialog::removeOldCacheFiles(bool onlyFulltextSearchIndex)
 {
     if (!verifyDirectory(cacheFilesPath)) {
         qWarning("Failed to created assistant directory");
@@ -264,10 +264,11 @@ void HelpDialog::removeOldCacheFiles()
     QString pname = QLatin1String(".") + Config::configuration()->profileName();
 
     QStringList fileList;
-    fileList << QLatin1String("indexdb40")
-        << QLatin1String("indexdb40.dict")
-        << QLatin1String("indexdb40.doc")
-        << QLatin1String("contentdb40");
+    fileList << QLatin1String("indexdb40.dict")
+        << QLatin1String("indexdb40.doc");
+
+    if (!onlyFulltextSearchIndex)
+        fileList << QLatin1String("indexdb40") << QLatin1String("contentdb40");
 
     QStringList::iterator it = fileList.begin();
     for (; it != fileList.end(); ++it) {
@@ -303,7 +304,7 @@ void HelpDialog::loadIndexFile()
     bar->setMaximum(100);
     bar->setValue(0);
 
-
+    keywordDocuments.clear();
     QList<IndexKeyword> lst;
     QFile indexFile(cacheFilesPath + QDir::separator() + QLatin1String("indexdb40.") +
                      Config::configuration()->profileName());
@@ -344,8 +345,9 @@ void HelpDialog::loadIndexFile()
 
     for (int i=0; i<lst.count(); ++i) {
         const IndexKeyword &idx = lst.at(i);
-
         indexModel->addLink(idx.keyword, idx.link);
+
+        keywordDocuments << HelpDialog::removeAnchorFromLink(idx.link);    
     }
 
     indexModel->publish();
@@ -442,14 +444,28 @@ void HelpDialog::setupTitleMap()
 {
     if (titleMapDone)
         return;
-    if (Config::configuration()->docRebuild()) {
+
+    bool needRebuild = false;
+    if (Config::configuration()->profileName() == QLatin1String("default")) {
+        const QStringList docuFiles = Config::configuration()->docFiles();
+        for(QStringList::ConstIterator it = docuFiles.begin(); it != docuFiles.end(); it++) {
+            if (!QFile::exists(*it)) {
+                Config::configuration()->saveProfile(Profile::createDefaultProfile());
+                Config::configuration()->loadDefaultProfile();
+                needRebuild = true;
+                break;
+            }
+        }
+    }
+
+    if (Config::configuration()->docRebuild() || needRebuild) {
         removeOldCacheFiles();
         Config::configuration()->setDocRebuild(false);
         Config::configuration()->saveProfile(Config::configuration()->profile());
     }
     if (contentList.isEmpty())
         getAllContents();
-
+    
     titleMapDone = true;
     titleMap.clear();
     for(QList<QPair<QString, ContentList> >::Iterator it = contentList.begin(); it != contentList.end(); ++it) {
@@ -476,6 +492,7 @@ void HelpDialog::getAllContents()
     ds >> fileAges;
     if (fileAges != getFileAges()) {
         contentFile.close();
+        removeOldCacheFiles(true);        
         buildContentDict();
         return;
     }
@@ -535,7 +552,7 @@ void HelpDialog::buildContentDict()
             s << *it;
         }
         contentOut.close();
-    }
+    }    
 }
 
 void HelpDialog::currentTabChanged(int index)
@@ -855,17 +872,8 @@ void HelpDialog::setupFullTextIndex()
     if (fullTextIndex)
         return;
 
-    QMap<QString, QString>::ConstIterator it = titleMap.begin();
-    QStringList documentList;
-    QString doc;
-    for (; it != titleMap.end(); ++it) {
-        doc = HelpDialog::removeAnchorFromLink(it.key());
-        if (documentList.filter(doc, Qt::CaseInsensitive).count() == 0)
-            documentList << doc;
-    }
-
     QString pname = Config::configuration()->profileName();
-    fullTextIndex = new Index(documentList, QDir::homePath()); // ### Is this correct ?
+    fullTextIndex = new Index(QStringList(), QDir::homePath()); // ### Is this correct ?
     if (!verifyDirectory(cacheFilesPath)) {
         QMessageBox::warning(help, tr("Qt Assistant"),
                              tr("Failed to save fulltext search index\n"
@@ -880,6 +888,21 @@ void HelpDialog::setupFullTextIndex()
              this, SLOT(setIndexingProgress(int)));
     QFile f(cacheFilesPath + QDir::separator() + QLatin1String("indexdb40.dict.") + pname);
     if (!f.exists()) {
+        QString doc;
+        QSet<QString> documentSet;
+        QMap<QString, QString>::ConstIterator it = titleMap.begin();
+        for (; it != titleMap.end(); ++it) {
+            doc = HelpDialog::removeAnchorFromLink(it.key());
+            if (!doc.isEmpty())
+                documentSet.insert(doc);            
+        }        
+        loadIndexFile();
+        for ( QStringList::Iterator it = keywordDocuments.begin(); it != keywordDocuments.end(); ++it ) {
+            if (!(*it).isEmpty())
+                documentSet.insert(*it);          
+        }
+        fullTextIndex->setDocList( documentSet.toList() );
+
         help->statusBar()->clearMessage();
         setCursor(Qt::WaitCursor);
         ui.labelPrepare->setText(tr("Indexing files..."));
@@ -894,7 +917,7 @@ void HelpDialog::setupFullTextIndex()
         ui.progressPrepare->setValue(100);
         ui.framePrepare->hide();
         setCursor(Qt::ArrowCursor);
-        showInitDoneMessage();
+        showInitDoneMessage();        
     } else {
         setCursor(Qt::WaitCursor);
         help->statusBar()->showMessage(tr("Reading dictionary..."));
@@ -903,6 +926,7 @@ void HelpDialog::setupFullTextIndex()
         help->statusBar()->showMessage(tr("Done"), 3000);
         setCursor(Qt::ArrowCursor);
     }
+    keywordDocuments.clear();
 }
 
 void HelpDialog::setIndexingProgress(int prog)

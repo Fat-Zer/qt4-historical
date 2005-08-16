@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -46,8 +46,10 @@ class QToolButtonPrivate : public QAbstractButtonPrivate
     Q_DECLARE_PUBLIC(QToolButton)
 public:
     void init();
+#ifndef QT_NO_MENU
     void buttonPressed();
     void popupTimerDone();
+#endif
     void actionTriggered();
     QStyleOptionToolButton getStyleOption() const;
     QPointer<QMenu> menu; //the menu set by the user (setMenu)
@@ -60,14 +62,18 @@ public:
     uint autoRaise             : 1;
     uint repeat                : 1;
     QAction *defaultAction;
+#ifndef QT_NO_MENU
     bool hasMenu() const;
+#endif
 };
 
+#ifndef QT_NO_MENU
 bool QToolButtonPrivate::hasMenu() const
 {
     Q_Q(const QToolButton);
     return (menu || q->actions().size() > (defaultAction ? 1 : 0));
 }
+#endif
 
 /*!
     \class QToolButton qtoolbutton.h
@@ -184,9 +190,9 @@ QToolButton::QToolButton(const QIcon& icon, const QString &textLabel,
 
 
 /*!
-    Constructs a tool button as an arrow button. The \c Qt::ArrowType \a
-    type defines the arrow direction. Possible values are \c
-    Qt::LeftArrow, \c Qt::RightArrow, \c Qt::UpArrow and \c Qt::DownArrow.
+    Constructs a tool button as an arrow button. The Qt::ArrowType \a
+    type defines the arrow direction. Possible values are
+    Qt::LeftArrow, Qt::RightArrow, Qt::UpArrow, and Qt::DownArrow.
 
     An arrow button has auto-repeat turned on by default.
 
@@ -212,7 +218,9 @@ void QToolButtonPrivate::init()
 {
     Q_Q(QToolButton);
     delay = q->style()->styleHint(QStyle::SH_ToolButton_PopupDelay, 0, q);
+#ifndef QT_NO_MENU
     menu = 0;
+#endif
     defaultAction = 0;
     autoRaise = false;
     arrowType = Qt::NoArrow;
@@ -445,8 +453,10 @@ void QToolButton::actionEvent(QActionEvent *event)
     case QEvent::ActionRemoved:
         if (d->defaultAction == action) {
             d->defaultAction = 0;
+#ifndef QT_NO_MENU
             if (action->menu() == d->menu)
                 d->menu = 0;
+#endif
         }
         action->disconnect(this);
         break;
@@ -494,11 +504,13 @@ void QToolButton::leaveEvent(QEvent * e)
  */
 void QToolButton::timerEvent(QTimerEvent *e)
 {
+#ifndef QT_NO_MENU
     Q_D(QToolButton);
     if (e->timerId() == d->popupTimer.timerId()) {
         d->popupTimerDone();
         return;
     }
+#endif
     QAbstractButton::timerEvent(e);
 }
 
@@ -508,11 +520,13 @@ void QToolButton::timerEvent(QTimerEvent *e)
 */
 void QToolButton::changeEvent(QEvent *e)
 {
+#ifndef QT_NO_TOOLBAR
     Q_D(QToolButton);
     if (e->type() == QEvent::ParentChange) {
         if (qobject_cast<QToolBar*>(parentWidget()))
             d->autoRaise = true;
     }
+#endif
     QAbstractButton::changeEvent(e);
 }
 
@@ -521,6 +535,7 @@ void QToolButton::changeEvent(QEvent *e)
 */
 void QToolButton::mousePressEvent(QMouseEvent *e)
 {
+#ifndef QT_NO_MENU
     Q_D(QToolButton);
     QStyleOptionToolButton opt = d->getStyleOption();
     if (e->button() == Qt::LeftButton && d->popupMode == MenuButtonPopup) {
@@ -531,7 +546,7 @@ void QToolButton::mousePressEvent(QMouseEvent *e)
             return;
         }
     }
-
+#endif
     QAbstractButton::mousePressEvent(e);
 }
 
@@ -621,11 +636,11 @@ QIcon QToolButton::iconSet(bool /* on */) const
 
 #endif
 
+#ifndef QT_NO_MENU
 /*!
     Associates the given \a menu with this tool button.
 
     The menu will be shown according to the button's \l popupMode.
-.
 
     Ownership of the menu is not transferred to the tool button.
 
@@ -760,6 +775,7 @@ void QToolButtonPrivate::popupTimerDone()
     else
         q->repaint();
 }
+#endif // QT_NO_MENU
 
 #ifdef QT3_SUPPORT
 /*!
@@ -785,6 +801,7 @@ int QToolButton::popupDelay() const
 }
 #endif
 
+#ifndef QT_NO_MENU
 /*! \enum QToolButton::ToolButtonPopupMode
 
     Describes how a menu should be popped up for tool buttons that has
@@ -824,7 +841,7 @@ QToolButton::ToolButtonPopupMode QToolButton::popupMode() const
     Q_D(const QToolButton);
     return d->popupMode;
 }
-
+#endif
 
 /*!
     \property QToolButton::autoRaise
@@ -855,8 +872,10 @@ bool QToolButton::autoRaise() const
 void QToolButton::setDefaultAction(QAction *action)
 {
     Q_D(QToolButton);
+#ifndef QT_NO_MENU
     if (d->defaultAction && d->menu == d->defaultAction->menu())
         d->menu = 0;
+#endif
     d->defaultAction = action;
     if (!action)
         return;
@@ -864,11 +883,15 @@ void QToolButton::setDefaultAction(QAction *action)
         addAction(action);
     setText(action->iconText());
     setIcon(action->icon());
+#ifndef QT_NO_TOOLTIP
     setToolTip(action->toolTip());
+#endif
     setStatusTip(action->statusTip());
     setWhatsThis(action->whatsThis());
+#ifndef QT_NO_MENU
     if (QMenu *menu = action->menu())
         setMenu(menu);
+#endif
     setCheckable(action->isCheckable());
     setChecked(action->isChecked());
     setEnabled(action->isEnabled());

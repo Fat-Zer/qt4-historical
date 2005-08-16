@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -796,6 +796,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
             break;
         }
 
+#ifndef QT_NO_TABBAR
     case CE_TabBarTabShape:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt)) {
             const int default_frame = pixelMetric(PM_DefaultFrameWidth, tab, widget);
@@ -882,6 +883,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                 QCommonStyle::drawControl(element, opt, p, widget);
             }
             break; }
+#endif // QT_NO_TABBAR
     case CE_ProgressBarGroove:
         qDrawShadePanel(p, opt->rect, opt->palette, true, 2);
         break;
@@ -1203,6 +1205,7 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
             drawControl(CE_ToolButtonLabel, &label, p, widget);
         }
         break;
+#ifndef QT_NO_SPINBOX
     case CC_SpinBox:
         if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(opt)) {
             QStyleOptionSpinBox copy = *spinbox;
@@ -1272,7 +1275,8 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
             }
         }
         break;
-
+#endif // QT_NO_SPINBOX
+#ifndef QT_NO_SLIDER
     case CC_Slider:
         if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
             QRect groove = subControlRect(CC_Slider, opt, SC_SliderGroove, widget),
@@ -1317,7 +1321,7 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
             }
         }
         break;
-
+#endif // QT_NO_SLIDER
     case CC_ComboBox:
         if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(opt)) {
             if (opt->subControls & SC_ComboBoxArrow) {
@@ -1525,7 +1529,7 @@ int QMotifStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt,
     case PM_SliderThickness:
         ret = 16 + 4 * pixelMetric(PM_DefaultFrameWidth);
         break;
-
+#ifndef QT_NO_SLIDER
     case PM_SliderControlThickness:
         if (const QStyleOptionSlider *sl = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
             int space = (sl->orientation == Qt::Horizontal) ? sl->rect.height() : sl->rect.width();
@@ -1558,7 +1562,7 @@ int QMotifStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt,
                 ret = sl->rect.height() - pixelMetric(PM_SliderLength, opt, widget) - 6;
         }
         break;
-
+#endif // QT_NO_SLIDER
     case PM_DockWidgetFrameWidth:
         ret = 2;
         break;
@@ -1596,6 +1600,7 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
                             SubControl sc, const QWidget *widget) const
 {
     switch (cc) {
+#ifndef QT_NO_SPINBOX
     case CC_SpinBox:
         if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(opt)) {
             int fw = spinbox->frame ? pixelMetric(PM_SpinBoxFrameWidth, spinbox, widget) : 0;
@@ -1626,7 +1631,8 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
                 break;
             }
             break; }
-
+#endif // QT_NO_SPINBOX
+#ifndef QT_NO_SLIDER
     case CC_Slider:
         if (const QStyleOptionSlider *slider = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
             if (sc == SC_SliderHandle) {
@@ -1649,7 +1655,8 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
             }
         }
         break;
-
+#endif // QT_NO_SLIDER
+#ifndef QT_NO_SCROLLBAR
     case CC_ScrollBar:
         if (const QStyleOptionSlider *scrollbar = qstyleoption_cast<const QStyleOptionSlider *>(opt)) {
             int dfw = pixelMetric(PM_DefaultFrameWidth);
@@ -1668,7 +1675,8 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
             return visualRect(scrollbar->direction, scrollbar->rect, rect);
         }
         break;
-
+#endif // QT_NO_SCROLLBAR
+#ifndef QT_NO_COMBOBOX
     case CC_ComboBox:
         if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(opt)) {
             switch (sc) {
@@ -1695,6 +1703,7 @@ QMotifStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt,
             }
         }
         break;
+#endif // QT_NO_SCROLLBAR
     default:
         break;
     }
@@ -1866,7 +1875,7 @@ QMotifStyle::subElementRect(SubElement sr, const QStyleOption *opt, const QWidge
     return rect;
 }
 
-#ifndef QT_NO_IMAGEIO_XPM
+#ifndef QT_NO_IMAGEFORMAT_XPM
 static const char * const qt_menu_xpm[] = {
 "16 16 11 1",
 "  c #000000",
@@ -2206,7 +2215,7 @@ QPixmap
 QMotifStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt,
                             const QWidget *widget) const
 {
-#ifndef QT_NO_IMAGEIO_XPM
+#ifndef QT_NO_IMAGEFORMAT_XPM
     switch (standardPixmap) {
     case SP_TitleBarMenuButton:
         return QPixmap((const char **)qt_menu_xpm);
@@ -2282,7 +2291,7 @@ QMotifStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *o
             default:
                 break;
             }
-            image = pm.toImage();
+            pm = QPixmap::fromImage(image);
         }
         return pm;
     }

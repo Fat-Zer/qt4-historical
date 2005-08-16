@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/widgets/qlineedit.cpp -->
 <head>
     <title>Qt 4.0: QLineEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QLineEdit Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QLineEdit Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QLineEdit widget is a one-line text editor. <a href="#details">More...</a></p>
-<pre>#include &lt;QLineEdit&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre>#include &lt;QLineEdit&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qlineedit-members.html">List of all members, including inherited members</a></li>
 <li><a href="qlineedit-qt3.html">Qt 3 support members</a></li>
@@ -109,7 +108,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>const QValidator * <b><a href="qlineedit.html#validator">validator</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -169,7 +168,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You can change the text with <a href="qlineedit.html#text-prop">setText</a>() or <a href="qlineedit.html#insert">insert</a>(). The text is retrieved with <a href="qlineedit.html#text-prop">text</a>(); the displayed text (which may be different, see <a href="qlineedit.html#EchoMode-enum">EchoMode</a>) is retrieved with <a href="qlineedit.html#displayText-prop">displayText</a>(). Text can be selected with <a href="qlineedit.html#setSelection">setSelection</a>() or <a href="qlineedit.html#selectAll">selectAll</a>(), and the selection can be <a href="qlineedit.html#cut">cut</a>(), <a href="qlineedit.html#copy">copy</a>()ied and <a href="qlineedit.html#paste">paste</a>()d. The text can be aligned with <a href="qlineedit.html#alignment-prop">setAlignment</a>().</p>
 <p>When the text changes the <a href="qlineedit.html#textChanged">textChanged</a>() signal is emitted; when the text changes other than by calling <a href="qlineedit.html#text-prop">setText</a>() the <a href="qlineedit.html#textEdited">textEdited</a>() signal is emitted; when the cursor is moved the <a href="qlineedit.html#cursorPositionChanged">cursorPositionChanged</a>() signal is emitted; and when the Return or Enter key is pressed the <a href="qlineedit.html#returnPressed">returnPressed</a>() signal is emitted.</p>
 <p>When editing is finished, either because the line edit lost focus or Return/Enter is pressed the <a href="qlineedit.html#editingFinished">editingFinished</a>() signal is emitted.</p>
-<p>Note that if there is a validator set on the line edit, the <a href="qlineedit.html#returnPressed">returnPressed</a>()/<a href="qlineedit.html#editingFinished">editingFinished</a>() signals will only be emitted if the validator returns <tt>Acceptable</tt>.</p>
+<p>Note that if there is a validator set on the line edit, the <a href="qlineedit.html#returnPressed">returnPressed</a>()/<a href="qlineedit.html#editingFinished">editingFinished</a>() signals will only be emitted if the validator returns <a href="qvalidator.html#State-enum">QValidator::Acceptable</a>.</p>
 <p>By default, QLineEdits have a frame as specified by the Windows and Motif style guides; you can turn it off by calling setFrame(false).</p>
 <p>The default key bindings are described below. The line edit also provides a context menu (usually invoked by a right mouse click) that presents some of these editing options. <a name="desc"></a></p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -242,7 +241,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="displayText-prop"></a>displayText : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the displayed text.</p>
-<p>If <tt>EchoMode</tt> is <tt>Normal</tt> this returns the same as <a href="qlineedit.html#text-prop">text</a>(); if <tt>EchoMode</tt> is <tt>Password</tt> it returns a string of asterisks <a href="qlineedit.html#text-prop">text</a>().length() characters long, e.g. &quot;******&quot;; if <tt>EchoMode</tt> is <tt>NoEcho</tt> returns an empty string, &quot;&quot;.</p>
+<p>If <a href="qlineedit.html#echoMode-prop">echoMode</a> is <a href="qlineedit.html#EchoMode-enum">Normal</a> this returns the same as <a href="qlineedit.html#text-prop">text</a>(); if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">Password</a> it returns a string of asterisks <a href="qlineedit.html#text-prop">text</a>().length() characters long, e.g. &quot;******&quot;; if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">NoEcho</a> returns an empty string, &quot;&quot;.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString displayText () const</b></li>
@@ -258,7 +257,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="echoMode-prop"></a>echoMode : <a href="qlineedit.html#EchoMode-enum">EchoMode</a></h3>
 <p>This property holds the line edit's echo mode.</p>
-<p>The initial setting is <tt>Normal</tt>, but <a href="qlineedit.html">QLineEdit</a> also supports <tt>NoEcho</tt> and <tt>Password</tt> modes.</p>
+<p>The initial setting is <a href="qlineedit.html#EchoMode-enum">Normal</a>, but <a href="qlineedit.html">QLineEdit</a> also supports <a href="qlineedit.html#EchoMode-enum">NoEcho</a> and <a href="qlineedit.html#EchoMode-enum">Password</a> modes.</p>
 <p>The widget's display and the ability to copy or drag the text is affected by this setting.</p>
 <p>Access functions:</p>
 <ul>
@@ -304,7 +303,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&gt;</tt></td><td>All following alphabetic characters are uppercased.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;</tt></td><td>All following alphabetic characters are lowercased.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>!</tt></td><td>Switch off case conversion.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>&lt;tt&gt;\&lt;/tt&gt;</td><td>Use &lt;tt&gt;\&lt;/tt&gt; to escape the special characters listed above to use them as separators.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>\</tt></td><td>Use <tt>\</tt> to escape the special characters listed above to use them as separators.</td></tr>
 </table>
 <p>The mask consists of a string of mask characters and separators, optionally followed by a semicolon and the character used for blanks: the blank characters are always removed from the text after editing. The default blank character is space.</p>
 <p>Examples:</p>
@@ -344,7 +343,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="readOnly-prop"></a>readOnly : bool</h3>
 <p>This property holds whether the line edit is read only.</p>
-<p>In read-only mode, the user can still copy the text to the clipboard, or drag and drop the text (if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <tt>Normal</tt>), but cannot edit it.</p>
+<p>In read-only mode, the user can still copy the text to the clipboard, or drag and drop the text (if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <a href="qlineedit.html#EchoMode-enum">Normal</a>), but cannot edit it.</p>
 <p><a href="qlineedit.html">QLineEdit</a> does not show a cursor in read-only mode.</p>
 <p>Access functions:</p>
 <ul>
@@ -368,7 +367,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlineedit.html#hasSelectedText-prop">hasSelectedText</a>().</p>
 <h3 class="fn"><a name="text-prop"></a>text : <a href="qstring.html">QString</a></h3>
 <p>This property holds the line edit's text.</p>
-<p>Setting this property clears the selection, clears the undo/redo history, moves the cursor to the end of the line and resets the <tt>modified</tt> property to false. The text is not validated when inserted with setText().</p>
+<p>Setting this property clears the selection, clears the undo/redo history, moves the cursor to the end of the line and resets the <a href="qlineedit.html#modified-prop">modified</a> property to false. The text is not validated when inserted with setText().</p>
 <p>The text is truncated to <a href="qlineedit.html#maxLength-prop">maxLength</a>() length.</p>
 <p>Access functions:</p>
 <ul>
@@ -417,7 +416,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qwidget.html#contextMenuEvent">QWidget</a>.</p>
 <p>See also <a href="qwidget.html#contextMenuPolicy-prop">setContextMenuPolicy</a>().</p>
 <h3 class="fn"><a name="copy"></a>void QLineEdit::copy () const&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Copies the selected text to the clipboard, if there is any, and if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <tt>Normal</tt>.</p>
+<p>Copies the selected text to the clipboard, if there is any, and if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <a href="qlineedit.html#EchoMode-enum">Normal</a>.</p>
 <p>See also <a href="qlineedit.html#cut">cut</a>() and <a href="qlineedit.html#paste">paste</a>().</p>
 <h3 class="fn"><a name="createStandardContextMenu"></a><a href="qmenu.html">QMenu</a> * QLineEdit::createStandardContextMenu ()</h3>
 <p>This function creates the standard context menu which is shown when the user clicks on the line edit with the right mouse button. It is called from the default <a href="qlineedit.html#contextMenuEvent">contextMenuEvent</a>() handler. The popup menu's ownership is transferred to the caller.</p>
@@ -428,7 +427,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Moves the cursor forward <i>steps</i> characters. If <i>mark</i> is true each character moved over is added to the selection; if <i>mark</i> is false the selection is cleared.</p>
 <p>See also <a href="qlineedit.html#cursorBackward">cursorBackward</a>().</p>
 <h3 class="fn"><a name="cursorPositionAt"></a>int QLineEdit::cursorPositionAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> )</h3>
-<p>Returns the <tt>cursorPostion</tt> under the point <i>pos</i>.</p>
+<p>Returns the cursor position under the point <i>pos</i>.</p>
 <h3 class="fn"><a name="cursorPositionChanged"></a>void QLineEdit::cursorPositionChanged ( int <i>old</i>, int <i>new</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the cursor moves. The previous position is given by <i>old</i>, and the new position by <i>new</i>.</p>
 <p>See also <a href="qlineedit.html#cursorPosition-prop">setCursorPosition</a>() and <a href="qlineedit.html#cursorPosition-prop">cursorPosition</a>().</p>
@@ -439,7 +438,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Moves the cursor one word forward. If <i>mark</i> is true, the word is also selected.</p>
 <p>See also <a href="qlineedit.html#cursorWordBackward">cursorWordBackward</a>().</p>
 <h3 class="fn"><a name="cut"></a>void QLineEdit::cut ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Copies the selected text to the clipboard and deletes it, if there is any, and if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <tt>Normal</tt>.</p>
+<p>Copies the selected text to the clipboard and deletes it, if there is any, and if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <a href="qlineedit.html#EchoMode-enum">Normal</a>.</p>
 <p>If the current validator disallows deleting the selected text, cut() will copy without deleting.</p>
 <p>See also <a href="qlineedit.html#copy">copy</a>(), <a href="qlineedit.html#paste">paste</a>(), and <a href="qlineedit.html#setValidator">setValidator</a>().</p>
 <h3 class="fn"><a name="del"></a>void QLineEdit::del ()</h3>
@@ -449,7 +448,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Deselects any selected text.</p>
 <p>See also <a href="qlineedit.html#setSelection">setSelection</a>() and <a href="qlineedit.html#selectAll">selectAll</a>().</p>
 <h3 class="fn"><a name="editingFinished"></a>void QLineEdit::editingFinished ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the Return or Enter key is pressed or the line edit looses focus. Note that if there is a <a href="qlineedit.html#validator">validator</a>() or <a href="qlineedit.html#inputMask-prop">inputMask</a>() set on the line edit and enter/return is pressed, the editingFinished() signal will only be emitted if the input follows the <a href="qlineedit.html#inputMask-prop">inputMask</a>() and the <a href="qlineedit.html#validator">validator</a>() returns <tt>Acceptable</tt>.</p>
+<p>This signal is emitted when the Return or Enter key is pressed or the line edit looses focus. Note that if there is a <a href="qlineedit.html#validator">validator</a>() or <a href="qlineedit.html#inputMask-prop">inputMask</a>() set on the line edit and enter/return is pressed, the editingFinished() signal will only be emitted if the input follows the <a href="qlineedit.html#inputMask-prop">inputMask</a>() and the <a href="qlineedit.html#validator">validator</a>() returns <a href="qvalidator.html#State-enum">QValidator::Acceptable</a>.</p>
 <h3 class="fn"><a name="end"></a>void QLineEdit::end ( bool <i>mark</i> )</h3>
 <p>Moves the text cursor to the end of the line unless it is already there. If <i>mark</i> is true, text is selected towards the last position; otherwise, any selected text is unselected if the cursor is moved.</p>
 <p>See also <a href="qlineedit.html#home">home</a>().</p>
@@ -475,7 +474,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="redo"></a>void QLineEdit::redo ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Redoes the last operation if redo is <a href="qlineedit.html#redoAvailable-prop">available</a>.</p>
 <h3 class="fn"><a name="returnPressed"></a>void QLineEdit::returnPressed ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the Return or Enter key is pressed. Note that if there is a <a href="qlineedit.html#validator">validator</a>() or <a href="qlineedit.html#inputMask-prop">inputMask</a>() set on the line edit, the returnPressed() signal will only be emitted if the input follows the <a href="qlineedit.html#inputMask-prop">inputMask</a>() and the <a href="qlineedit.html#validator">validator</a>() returns <tt>Acceptable</tt>.</p>
+<p>This signal is emitted when the Return or Enter key is pressed. Note that if there is a <a href="qlineedit.html#validator">validator</a>() or <a href="qlineedit.html#inputMask-prop">inputMask</a>() set on the line edit, the returnPressed() signal will only be emitted if the input follows the <a href="qlineedit.html#inputMask-prop">inputMask</a>() and the <a href="qlineedit.html#validator">validator</a>() returns <a href="qvalidator.html#State-enum">QValidator::Acceptable</a>.</p>
 <h3 class="fn"><a name="selectAll"></a>void QLineEdit::selectAll ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Selects all the text (i.e. highlights it) and moves the cursor to the end. This is useful when a default value has been inserted because if the user types before clicking on the widget, the selected text will be deleted.</p>
 <p>See also <a href="qlineedit.html#setSelection">setSelection</a>() and <a href="qlineedit.html#deselect">deselect</a>().</p>
@@ -511,6 +510,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

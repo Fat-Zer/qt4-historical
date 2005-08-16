@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/dnd.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/dnd.qdoc -->
 <head>
     <title>Qt 4.0: Drag and Drop</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Drag and Drop</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Drag and Drop<br /><small></small></h1>
 <p>Drag and drop provides a simple visual mechanism which users can use to transfer information between and within applications. (In the literature this is referred to as a &quot;direct manipulation model&quot;.) Drag and drop is similar in function to the clipboard's cut and paste mechanism.</p>
 <ul><li><a href="#configuration">Configuration</a></li>
 <li><a href="#dragging">Dragging</a></li>
@@ -185,7 +185,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>The Clipboard</h2>
 <p>Applications can also communicate with each other by putting data on the clipboard. To access this, you need to obtain a <a href="qclipboard.html">QClipboard</a> object from the <a href="qapplication.html">QApplication</a> object:</p>
 <pre>&nbsp;       clipboard = QApplication::clipboard();</pre>
-<p>The <a href="qmimedata.html">QMimeData</a> class is used to represent data that is transferred to and from the clipboard. To put data on the clipboard, you can use the setText(), setImage(), and setPixmap() convenience functions for common data types. These functions are similar to those found in the <a href="qmimedata.html">QMimeData</a> class, except that they also take an additional argument that controls where the data is stored: If <a href="qclipboard.html#Mode-enum">Clipboard</a> is specified, the data is placed on the clipboard; if <a href="qclipboard.html#Mode-enum">Selection</a> is specified, the data is placed in the mouse selection (on <a href="winsystem.html#x11">X11</a> only). By default, data is put on the clipboard.</p>
+<p>The <a href="qmimedata.html">QMimeData</a> class is used to represent data that is transferred to and from the clipboard. To put data on the clipboard, you can use the setText(), setImage(), and setPixmap() convenience functions for common data types. These functions are similar to those found in the <a href="qmimedata.html">QMimeData</a> class, except that they also take an additional argument that controls where the data is stored: If <a href="qclipboard.html#Mode-enum">Clipboard</a> is specified, the data is placed on the clipboard; if <a href="qclipboard.html#Mode-enum">Selection</a> is specified, the data is placed in the mouse selection (on X11 only). By default, data is put on the clipboard.</p>
 <p>For example, we can copy the contents of a <a href="qlineedit.html">QLineEdit</a> to the clipboard with the following code:</p>
 <pre>&nbsp;       clipboard-&gt;setText(lineEdit-&gt;text(), QClipboard::Clipboard);</pre>
 <p>Data with different MIME types can also be put on the clipboard. Construct a <a href="qmimedata.html">QMimeData</a> object and set data with setData() function in the way described in the previous section; this object can then be put on the clipboard with the <a href="qclipboard.html#setMimeData">setMimeData()</a> function.</p>
@@ -198,11 +198,11 @@ body { background: #ffffff; color: black; }</style>
         QByteArray data = clipboard-&gt;mimeData()-&gt;data(format);
         ...
     }</pre>
-<p>The <a href="qclipboard.html#selectionChanged">selectionChanged()</a> signal can be used on <a href="winsystem.html#x11">X11</a> to monitor the mouse selection.</p>
+<p>The <a href="qclipboard.html#selectionChanged">selectionChanged()</a> signal can be used on X11 to monitor the mouse selection.</p>
 <a name="interoperating-with-other-applications"></a>
 <h2>Interoperating with Other Applications</h2>
-<p>On <a href="winsystem.html#x11">X11</a>, the public <a href="http://www.newplanetsoftware.com/xdnd/">XDND protocol</a> is used, while on Windows Qt uses the OLE standard, and Qt/Mac uses the Carbon Drag Manager. On <a href="winsystem.html#x11">X11</a>, XDND uses MIME, so no translation is necessary. The Qt API is the same regardless of the platform. On Windows, MIME-aware applications can communicate by using clipboard format names that are MIME types. Already some Windows applications use MIME naming conventions for their clipboard formats. Internally, Qt has facilities for translating proprietary clipboard formats to and from MIME types. This interface will be made public at some time, but if you need to do such translations now, contact your Qt Technical Support service.</p>
-<p>On <a href="winsystem.html#x11">X11</a>, Qt also supports drops via the Motif Drag &amp; Drop Protocol. The implementation incorporates some code that was originally written by Daniel Dardailler, and adapted for Qt by Matt Koss &lt;<a href="mailto:koss@napri">koss@napri</a>.sk&gt; and Trolltech. Here is the original copyright notice:</p>
+<p>On X11, the public <a href="http://www.newplanetsoftware.com/xdnd/">XDND protocol</a> is used, while on Windows Qt uses the OLE standard, and Qt/Mac uses the Carbon Drag Manager. On X11, XDND uses MIME, so no translation is necessary. The Qt API is the same regardless of the platform. On Windows, MIME-aware applications can communicate by using clipboard format names that are MIME types. Already some Windows applications use MIME naming conventions for their clipboard formats. Internally, Qt has facilities for translating proprietary clipboard formats to and from MIME types. This interface will be made public at some time, but if you need to do such translations now, contact your Qt Technical Support service.</p>
+<p>On X11, Qt also supports drops via the Motif Drag &amp; Drop Protocol. The implementation incorporates some code that was originally written by Daniel Dardailler, and adapted for Qt by Matt Koss &lt;<a href="mailto:koss@napri">koss@napri</a>.sk&gt; and Trolltech. Here is the original copyright notice:</p>
 <pre>&nbsp;   Copyright 1996 Daniel Dardailler.
 
     Permission to use, copy, modify, distribute, and sell this software
@@ -221,6 +221,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

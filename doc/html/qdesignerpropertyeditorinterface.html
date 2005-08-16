@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/tools/designer/src/lib/sdk/abstractpropertyeditor.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/tools/designer/src/lib/sdk/abstractpropertyeditor.cpp -->
 <head>
     <title>Qt 4.0: QDesignerPropertyEditorInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,10 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerPropertyEditorInterface Class Reference</h1>
-<pre>#include &lt;QDesignerPropertyEditorInterface&gt;</pre><p>Part of the <a href="qtdesigner.html">QtDesigner</a> module.</p>
-<p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDesignerPropertyEditorInterface Class Reference<br /><sup><sup>[<a href="qtdesigner.html">QtDesigner</a> module]</sup></sup></h1>
+<p>The QDesignerPropertyEditorInterface class provides an interface that is used to control Qt Designer's property editor component. <a href="#details">More...</a></p>
+<pre>#include &lt;QDesignerPropertyEditorInterface&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qdesignerpropertyeditorinterface-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QObject * <b><a href="qdesignerpropertyeditorinterface.html#object">object</a></b> () const = 0</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -70,6 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
+<p>The QDesignerPropertyEditorInterface class provides an interface that is used to control Qt Designer's property editor component.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QDesignerPropertyEditorInterface"></a>QDesignerPropertyEditorInterface::QDesignerPropertyEditorInterface ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>flags</i> = 0 )</h3>
@@ -78,15 +79,18 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="currentPropertyName"></a><a href="qstring.html">QString</a> QDesignerPropertyEditorInterface::currentPropertyName () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <h3 class="fn"><a name="isReadOnly"></a>bool QDesignerPropertyEditorInterface::isReadOnly () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <h3 class="fn"><a name="object"></a><a href="qobject.html">QObject</a> * QDesignerPropertyEditorInterface::object () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>See also <a href="qdesignerpropertyeditorinterface.html#setObject">setObject</a>().</p>
 <h3 class="fn"><a name="propertyChanged"></a>void QDesignerPropertyEditorInterface::propertyChanged ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever a property changes in the editor. The property changed and its new value are specified by <i>name</i> and <i>value</i> respectively.</p>
 <h3 class="fn"><a name="setObject"></a>void QDesignerPropertyEditorInterface::setObject ( <a href="qobject.html">QObject</a> * <i>object</i> )&nbsp;&nbsp;<tt> [pure virtual slot]</tt></h3>
+<p>See also <a href="qdesignerpropertyeditorinterface.html#object">object</a>().</p>
 <h3 class="fn"><a name="setPropertyValue"></a>void QDesignerPropertyEditorInterface::setPropertyValue ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, bool <i>changed</i> = true )&nbsp;&nbsp;<tt> [pure virtual slot]</tt></h3>
 <h3 class="fn"><a name="setReadOnly"></a>void QDesignerPropertyEditorInterface::setReadOnly ( bool <i>readOnly</i> )&nbsp;&nbsp;<tt> [pure virtual slot]</tt></h3>
+<p>See also <a href="qdesignerpropertyeditorinterface.html#isReadOnly">isReadOnly</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -87,7 +87,7 @@ QFont QTextItem::font() const
   If one wants to use QPainter to draw to a different backend, such as
   PDF, one must subclass QPaintEngine and reimplement all its virtual
   functions. The QPaintEngine implementation is then made available by
-  subclassing QPaintDevice and reimplementing the virtual function \c
+  subclassing QPaintDevice and reimplementing the virtual function
   QPaintDevice::paintEngine().
 
   QPaintEngine is created and owned by the QPaintDevice that created it.
@@ -132,15 +132,6 @@ QFont QTextItem::font() const
 */
 
 /*!
-  \enum QPaintEngine::DirtyFlags
-
-  \internal
-
-  This enum is used by QPainter to trigger lazy updates of the various states
-  in the QPaintEngine
-*/
-
-/*!
     \enum QPaintEngine::PolygonDrawMode
 
     \value OddEvenMode The polygon should be drawn using OddEven fill
@@ -158,8 +149,12 @@ QFont QTextItem::font() const
 
 /*!
     \enum QPaintEngine::DirtyFlag
+    \typedef QPaintEngine::DirtyFlags
 
     \internal
+
+    These types are used by QPainter to trigger lazy updates of the
+    various states in the QPaintEngine.
 */
 
 /*!
@@ -575,6 +570,20 @@ void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     path.setFillRule(Qt::WindingFill);
     ti.fontEngine->addOutlineToPath(p.x(), p.y(), ti.glyphs, ti.num_glyphs, &path, ti.flags);
     if (!path.isEmpty()) {
+        const QFontEngine *fe = ti.fontEngine;
+        const qreal lw = fe->lineThickness();
+        if (ti.flags & QTextItem::Underline) {
+            qreal pos = fe->underlinePosition();
+            path.addRect(p.x(), p.y() + pos, ti.width, lw);
+        }
+        if (ti.flags & QTextItem::Overline) {
+            qreal pos = fe->ascent() + 1;
+            path.addRect(p.x(), p.y() - pos, ti.width, lw);
+        }
+        if (ti.flags & QTextItem::StrikeOut) {
+            qreal pos = fe->ascent() / 3;
+            path.addRect(p.x(), p.y() - pos, ti.width, lw);
+        }
         painter()->save();
         painter()->setBrush(state->pen().brush());
         painter()->setPen(Qt::NoPen);
@@ -714,7 +723,7 @@ void QPaintEngine::drawRects(const QRectF *rects, int rectCount)
             QPointF pts[4] = { QPointF(rf.x(), rf.y()),
                                QPointF(rf.x() + rf.width(), rf.y()),
                                QPointF(rf.x() + rf.width(), rf.y() + rf.height()),
-                               QPointF(rf.y(), rf.y() + rf.height()) };
+                               QPointF(rf.x(), rf.y() + rf.height()) };
             drawPolygon(pts, 4, ConvexMode);
         }
     }

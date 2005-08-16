@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the designer application of the Qt Toolkit.
+** This file is part of the Qt Designer of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -41,7 +41,7 @@ ButtonTaskMenu::ButtonTaskMenu(QAbstractButton *button, QObject *parent)
       m_button(button)
 {
     m_preferredEditAction = new QAction(this);
-    m_preferredEditAction->setText(tr("Change text"));
+    m_preferredEditAction->setText(tr("Change text..."));
     connect(m_preferredEditAction, SIGNAL(triggered()), this, SLOT(editText()));
     m_taskActions.append(m_preferredEditAction);
 
@@ -78,7 +78,7 @@ void ButtonTaskMenu::editText()
         m_editor->setText(m_button->text());
         m_editor->selectAll();
         m_editor->setBackgroundRole(m_button->backgroundRole());
-        connect(m_editor, SIGNAL(returnPressed()), m_editor, SLOT(deleteLater()));
+        connect(m_editor, SIGNAL(editingFinished()), m_editor, SLOT(close()));
         connect(m_editor, SIGNAL(textChanged(QString)), this, SLOT(updateText(QString)));
 
         QStyleOptionButton opt;

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.0: Using qmake</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qmake-manual.html">qmake Manual</a>]
 [<a href="qmake-manual.html">Contents</a>]
 [Next: <a href="qmake-project-files.html">qmake Project Files</a>]
 </p>
-<h1 align="center">Using qmake</h1>
+<h1 align="center">Using qmake<br /><small></small></h1>
 <p><tt>qmake</tt> provides a project-oriented system for managing the build process for applications, libraries, and other components. This approach gives developers control over the source files used, and allows each of the steps in the process to be described concisely, typically within a single file. <tt>qmake</tt> expands the information in each project file to a Makefile that executes the necessary commands for compiling and linking.</p>
 <p>In this document, we provide a basic introduction to project files, describe some of the main features of <tt>qmake</tt>, and show how to use <tt>qmake</tt> on the command line.</p>
 <a name="describing-a-project"></a>
@@ -37,6 +37,9 @@ body { background: #ffffff; color: black; }</style>
 <h2>Building a Project</h2>
 <p>For simple projects, you only need to run <tt>qmake</tt> in the top level directory of your project. By default, <tt>qmake</tt> generates a Makefile that you then use to build the project, and you can then run your platform's <tt>make</tt> tool to build the project.</p>
 <p><tt>qmake</tt> can also be used to generate project files. A full description of <tt>qmake</tt>'s command line options can be found in the <a href="qmake-running.html">Running qmake</a> chapter of this manual.</p>
+<a name="using-precompiled-headers"></a>
+<h2>Using Precompiled Headers</h2>
+<p>In large projects, it is possible to take advantage of precompiled header files to speed up the build process. This feature is described in detail in the <a href="qmake-precompiledheaders.html">Using Precompiled Headers</a> chapter.</p>
 <p>
 [Previous: <a href="qmake-manual.html">qmake Manual</a>]
 [<a href="qmake-manual.html">Contents</a>]
@@ -46,6 +49,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

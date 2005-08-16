@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the style module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -773,6 +773,14 @@ static void getSliderInfo(QStyle::ComplexControl cc, const QStyleOptionSlider *s
                 tdi->attributes &= ~kThemeTrackRightToLeft;
         }
     }
+
+    // Tiger broke reverse scrollbars so put them back and "fake it"
+    if (isScrollbar && (tdi->attributes & kThemeTrackRightToLeft)
+        && QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+        tdi->attributes &= ~kThemeTrackRightToLeft;
+        tdi->value = tdi->max - slider->sliderPosition;
+    }
+
     tdi->enableState = slider->state & QStyle::State_Enabled ? kThemeTrackActive
                                                              : kThemeTrackDisabled;
     if (!(slider->state & QStyle::State_Active))
@@ -846,6 +854,15 @@ static void getSliderInfo(QStyle::ComplexControl cc, const QStyleOptionSlider *s
                 tdi->attributes &= ~kThemeTrackRightToLeft;
         }
     }
+
+    // HIThemes (and indirectly appearance manager) broke reverse scrollbars so
+    // put them back and "fake it"
+    if (isScrollbar && (tdi->attributes & kThemeTrackRightToLeft)
+        && QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+        tdi->attributes &= ~kThemeTrackRightToLeft;
+        tdi->value = tdi->max - slider->sliderPosition;
+    }
+
     tdi->enableState = slider->state & QStyle::State_Enabled ? kThemeTrackActive
                                                              : kThemeTrackDisabled;
     if (!(slider->state & QStyle::State_Active))
@@ -999,9 +1016,11 @@ void QMacStylePrivate::drawPantherTab(const QStyleOptionTab *tabOpt, QPainter *p
             QPainter pixPainter(&tabPix);
             qt_mac_draw_tab(&pixPainter, 0, QRect(0, 0, 20, 20), kThemeTabFront, kThemeTabNorth);
             pixPainter.end();
-            const QRgb GraphiteColor = 0xffa7b1b9;
-            QImage img = tabPix.toImage();
-            if (img.pixel(10, 10) == GraphiteColor)
+            const QRgb GraphiteColor = 0xffa7b0ba;
+            QRgb pmColor = tabPix.toImage().pixel(10, 10);
+            if (qAbs(qRed(pmColor) - qRed(GraphiteColor)) < 3 &&
+                qAbs(qGreen(pmColor) - qGreen(GraphiteColor)) < 3
+                && qAbs(qBlue(pmColor) - qBlue(GraphiteColor)) < 3)
                 pantherTabStart = TabSelectedActiveGraphiteLeft;
             else
                 pantherTabStart = TabSelectedActiveLeft;
@@ -1131,6 +1150,10 @@ bool QMacStylePrivate::addWidget(QWidget *w)
             startAnimate(AquaProgressBar, w);
             return true;
         }
+    }
+    if (w->isWindow()) {
+        w->installEventFilter(this);
+        return true;
     }
     return false;
 }
@@ -1279,6 +1302,20 @@ bool QMacStylePrivate::eventFilter(QObject *o, QEvent *e)
             break; }
         }
     }
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
+    else if (e->type() == QEvent::Paint && o->isWidgetType()
+             && qt_mac_is_metal(static_cast<QWidget *>(o))
+             && QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
+        QWidget *widget = static_cast<QWidget *>(o);
+        HIThemeBackgroundDrawInfo bginfo;
+        bginfo.version = qt_mac_hitheme_version;
+        bginfo.state = kThemeStateActive;
+        bginfo.kind = kThemeBackgroundMetal;
+        HIRect rect = CGRectMake(0, 0, widget->width(), widget->height());
+        HIThemeApplyBackground(&rect, &bginfo, QCFType<CGContextRef>(qt_mac_cg_context(widget)),
+                               kHIThemeOrientationNormal);
+    }
+#endif
     return false;
 }
 
@@ -1305,14 +1342,12 @@ void QMacStylePrivate::HIThemePolish(QWidget *w)
     addWidget(w);
     QPixmap px;
     if (qt_mac_is_metal(w)) {
-        px = QPixmap(200, 200);
-        HIThemeBackgroundDrawInfo bginfo;
-        bginfo.version = qt_mac_hitheme_version;
-        bginfo.state = kThemeStateActive;
-        bginfo.kind = kThemeBackgroundMetal;
-        HIRect rect = CGRectMake(0, 0, px.width(), px.height());
-        HIThemeDrawBackground(&rect, &bginfo, QCFType<CGContextRef>(qt_mac_cg_context(&px)),
-                              kHIThemeOrientationNormal);
+        // Set a clear brush so that the metal shines through.
+        QPalette pal = w->palette();
+        QBrush background(Qt::transparent);
+        pal.setBrush(QPalette::Background, background);
+        pal.setBrush(QPalette::Button, background);
+        w->setPalette(pal);
     }
 
     if (::qobject_cast<QMenu*>(w)) {
@@ -1427,12 +1462,11 @@ void QMacStylePrivate::HIThemeDrawColorlessButton(const HIRect &macRect,
         extraHeight = 0,
         finalyoff = 0;
     if (const QStyleOptionComboBox *combo = qstyleoption_cast<const QStyleOptionComboBox *>(opt)) {
-        yoff = combo->editable ? 3 : 2;
+        if(combo->editable)
+            extraHeight = 3;
+        else
+            extraHeight = 1;
         extraWidth = 1;
-        extraHeight = yoff;
-    } else {
-        extraHeight = 1;
-        finalyoff = -1;
     }
 
     int width = int(macRect.size.width) + extraWidth;
@@ -1443,21 +1477,22 @@ void QMacStylePrivate::HIThemeDrawColorlessButton(const HIRect &macRect,
                   + QLatin1Char('_') + QString::number(height);
     QPixmap pm;
     if (!QPixmapCache::find(key, pm)) {
-        int bytesPerLine = width * 4;
-        int size = bytesPerLine * height;
-        void *data = calloc(1, size);
-        QCFType<CGColorSpaceRef> colorspace = CGColorSpaceCreateDeviceRGB();
-        QCFType<CGContextRef> cg2 = CGBitmapContextCreate(data, width, height, 8, bytesPerLine,
-                                                          colorspace, kCGImageAlphaPremultipliedFirst);
-        HIRect newRect = CGRectMake(xoff, yoff, macRect.size.width, macRect.size.height);
-        HIThemeDrawButton(&newRect, &bdi, cg2, kHIThemeOrientationInverted, 0);
-        QImage img(width, height, QImage::Format_ARGB32);
+        QPixmap pix(width, height);
+        pix.fill(Qt::transparent);
+        {
+            QMacCGContext cg(&pix);
+            HIRect newRect = CGRectMake(xoff, yoff, macRect.size.width, macRect.size.height);
+            HIThemeDrawButton(&newRect, &bdi, cg, kHIThemeOrientationNormal, 0);
+        }
+        QImage pix_img = pix.toImage();
+
         for (int y = 0; y < height; ++y) {
-            QRgb *scanline = reinterpret_cast<QRgb *>(static_cast<char *>(data) + y * bytesPerLine);
+            QRgb *scanline = (QRgb*)pix_img.scanLine(y);
             for (int x = 0; x < width; ++x) {
                 uint pixel = scanline[x];
-                int distance = qAbs(qRed(pixel) - qGreen(pixel)) + qAbs(qRed(pixel) - qBlue(pixel))
-                                    + qAbs(qGreen(pixel) - qBlue(pixel));
+                int distance = qAbs(qRed(pixel) - qGreen(pixel)) +
+                               qAbs(qRed(pixel) - qBlue(pixel)) +
+                               qAbs(qGreen(pixel) - qBlue(pixel));
                 if (distance > 20) {
                     int tmp;
                     if (qRed(pixel) > qGreen(pixel) && qRed(pixel) > qBlue(pixel))
@@ -1470,11 +1505,9 @@ void QMacStylePrivate::HIThemeDrawColorlessButton(const HIRect &macRect,
                     scanline[x] = pixel;
                 }
             }
-            memcpy(img.scanLine(y), scanline, bytesPerLine);
         }
-        free(data);
 
-        pm = QPixmap::fromImage(img);
+        pm = QPixmap::fromImage(pix_img);
         QPixmapCache::insert(key, pm);
     }
     p->drawPixmap(int(macRect.origin.x), int(macRect.origin.y) + finalyoff, width, height, pm);
@@ -2024,8 +2057,7 @@ void QMacStylePrivate::HIThemeDrawControl(QStyle::ControlElement ce, const QStyl
                 tdi.style = kThemeTabNonFrontUnavailable;
             } else if (!(tabOpt->state & QStyle::State_Enabled)) {
                 tdi.style = kThemeTabNonFrontInactive;
-            } else if ((tabOpt->state & (QStyle::State_Sunken | QStyle::State_MouseOver))
-                       == (QStyle::State_Sunken | QStyle::State_MouseOver)) {
+            } else if (tabOpt->state & QStyle::State_Sunken) {
                 tdi.style = kThemeTabNonFrontPressed;
             }
             tdi.direction = getTabDirection(tabOpt->shape);
@@ -2306,9 +2338,20 @@ void QMacStylePrivate::HIThemeDrawComplexControl(QStyle::ComplexControl cc,
                 } else {
                     if (slider->activeSubControls == QStyle::SC_ScrollBarSubLine
                         || slider->activeSubControls == QStyle::SC_ScrollBarAddLine) {
+                        // This test looks complex but it basically boils down
+                        // to the following: The "RTL look" on the mac also
+                        // changed the directions of the controls, that's not
+                        // what people expect (an arrow is an arrow), so we
+                        // kind of fake and say the opposite button is hit.
+                        // This works great, up until 10.4 which broke the
+                        // scrollbars, so I also have actually do something
+                        // similar when I have an upside down scroll bar
+                        // because on Tiger I only "fake" the reverse stuff.
                         bool reverseHorizontal = (slider->direction == Qt::RightToLeft
                                                   && slider->orientation == Qt::Horizontal
-                                                  && !slider->upsideDown);
+                                                  && (!slider->upsideDown
+                                                      || (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4
+                                                          && slider->upsideDown)));
                         if ((reverseHorizontal
                              && slider->activeSubControls == QStyle::SC_ScrollBarAddLine)
                             || (!reverseHorizontal
@@ -2665,9 +2708,11 @@ void QMacStylePrivate::HIThemeDrawComplexControl(QStyle::ComplexControl cc,
                     bdi.value = kThemeButtonOff;
                     if (tb->state & QStyle::State_HasFocus && QMacStyle::focusRectPolicy(widget)
                             != QMacStyle::FocusDisabled)
-                        bdi.adornment |= kThemeAdornmentFocus;
-                    if (tb->state & (QStyle::State_On | QStyle::State_Sunken))
-                        bdi.value |= kThemeStatePressed;
+                        bdi.adornment = kThemeAdornmentFocus;
+                    if (tb->state & QStyle::State_Sunken)
+                        bdi.state = kThemeStatePressed;
+                    if (tb->state & QStyle::State_On)
+                        bdi.value = kThemeButtonOn;
 
                     QRect off_rct(0, 0, 0, 0);
                     HIRect myRect, macRect;
@@ -2754,10 +2799,13 @@ QStyle::SubControl QMacStylePrivate::HIThemeHitTestComplexControl(QStyle::Comple
             HIPoint pos = CGPointMake(pt.x(), pt.y());
             HIRect macSBRect = qt_hirectForQRect(sb->rect);
             ControlPartCode part;
+            bool reverseHorizontal = (sb->direction == Qt::RightToLeft
+                                      && sb->orientation == Qt::Horizontal
+                                      && (!sb->upsideDown ||
+                                          (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4
+                                                      && sb->upsideDown)));
             if (HIThemeHitTestScrollBarArrows(&macSBRect, &sbi, sb->orientation == Qt::Horizontal,
                         &pos, 0, &part)) {
-                bool reverseHorizontal = (sb->direction == Qt::RightToLeft
-                                          && sb->orientation == Qt::Horizontal && !sb->upsideDown);
                 if (part == kControlUpButtonPart)
                     sc = reverseHorizontal ? QStyle::SC_ScrollBarAddLine : QStyle::SC_ScrollBarSubLine;
                 else if (part == kControlDownButtonPart)
@@ -2767,9 +2815,11 @@ QStyle::SubControl QMacStylePrivate::HIThemeHitTestComplexControl(QStyle::Comple
                 getSliderInfo(cc, sb, &tdi, widget);
                 if (HIThemeHitTestTrack(&tdi, &pos, &part)) {
                     if (part == kControlPageUpPart)
-                        sc = QStyle::SC_ScrollBarSubPage;
+                        sc = reverseHorizontal ? QStyle::SC_ScrollBarAddPage
+                                               : QStyle::SC_ScrollBarSubPage;
                     else if (part == kControlPageDownPart)
-                        sc = QStyle::SC_ScrollBarAddPage;
+                        sc = reverseHorizontal ? QStyle::SC_ScrollBarSubPage
+                                               : QStyle::SC_ScrollBarAddPage;
                     else
                         sc = QStyle::SC_ScrollBarSlider;
                 }
@@ -2862,8 +2912,12 @@ QRect QMacStylePrivate::HIThemeSubControlRect(QStyle::ComplexControl cc,
                 } else {
                     cpc = sc == QStyle::SC_ScrollBarSubLine ? kControlUpButtonPart
                                                             : kControlDownButtonPart;
-                    if (slider->direction == Qt::RightToLeft && !slider->upsideDown
-                        && slider->orientation == Qt::Horizontal) {
+                    if (slider->direction == Qt::RightToLeft
+                        && slider->orientation == Qt::Horizontal
+                        && (!slider->upsideDown
+                            || (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4
+                                && slider->upsideDown))
+                        ) {
                         if (cpc == kControlDownButtonPart)
                             cpc = kControlUpButtonPart;
                         else if (cpc == kControlUpButtonPart)
@@ -3042,6 +3096,7 @@ int QMacStylePrivate::HIThemePixelMetric(QStyle::PixelMetric metric, const QStyl
             HIRect rect;
             HIShapeGetBounds(region, &rect);
             ret = int(rect.size.height);
+            ret += 4;
         }
         break;
     default:
@@ -3732,8 +3787,7 @@ void QMacStylePrivate::AppManDrawControl(QStyle::ControlElement ce, const QStyle
                 tts = kThemeTabNonFrontUnavailable;
             } else if (!(tab->state & QStyle::State_Enabled)) {
                 tts = kThemeTabNonFrontInactive;
-            } else if ((tab->state & (QStyle::State_Sunken | QStyle::State_MouseOver))
-                       == (QStyle::State_Sunken | QStyle::State_MouseOver)) {
+            } else if (tab->state & QStyle::State_Sunken) {
                 tts = kThemeTabNonFrontPressed;
             }
             ThemeTabDirection ttd = getTabDirection(tab->shape);
@@ -3919,7 +3973,9 @@ void QMacStylePrivate::AppManDrawComplexControl(QStyle::ComplexControl cc,
                         || slider->activeSubControls == QStyle::SC_ScrollBarAddLine) {
                         bool reverseHorizontal = (slider->direction == Qt::RightToLeft
                                 && slider->orientation == Qt::Horizontal
-                                && !slider->upsideDown);
+                                && (!slider->upsideDown
+                                    || (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4
+                                        && slider->upsideDown)));
                         if ((reverseHorizontal
                              && slider->activeSubControls == QStyle::SC_ScrollBarAddLine)
                             || (!reverseHorizontal
@@ -4116,9 +4172,9 @@ void QMacStylePrivate::AppManDrawComplexControl(QStyle::ComplexControl cc,
                     ThemeButtonDrawInfo info = { tds, kThemeButtonOff, kThemeAdornmentNone };
                     if (tb->state & QStyle::State_HasFocus && QMacStyle::focusRectPolicy(widget)
                             != QMacStyle::FocusDisabled)
-                        info.adornment |= kThemeAdornmentFocus;
+                        info.adornment = kThemeAdornmentFocus;
                     if (tb->state & (QStyle::State_On | QStyle::State_Sunken))
-                        info.value |= kThemeStatePressed;
+                        info.value = kThemeStateActive;
 
                     QRect off_rct(0, 0, 0, 0);
                     { //The AppManager draws outside my rectangle, so account for that difference..
@@ -4329,21 +4385,27 @@ QStyle::SubControl QMacStylePrivate::AppManHitTestComplexControl(QStyle::Complex
             Rect mrect;
             GetThemeTrackBounds(&tdi, &mrect);
             ControlPartCode cpc;
+            bool reverseHorizontal = (scrollbar->direction == Qt::RightToLeft
+                                      && scrollbar->orientation == Qt::Horizontal
+                                      && (!scrollbar->upsideDown
+                                          || (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4
+                                              && scrollbar->upsideDown)));
             if (HitTestThemeScrollBarArrows(&tdi.bounds, tdi.enableState,
                                             0, scrollbar->orientation == Qt::Horizontal,
                                             pos, &mrect, &cpc)) {
-                bool reverseHorizontal = (scrollbar->direction == Qt::RightToLeft
-                                          && scrollbar->orientation == Qt::Horizontal
-                                          && !scrollbar->upsideDown);
                 if (cpc == kControlUpButtonPart)
-                    sc = reverseHorizontal ? QStyle::SC_ScrollBarAddLine : QStyle::SC_ScrollBarSubLine;
+                    sc = reverseHorizontal ? QStyle::SC_ScrollBarAddLine
+                                           : QStyle::SC_ScrollBarSubLine;
                 else if (cpc == kControlDownButtonPart)
-                    sc = reverseHorizontal ? QStyle::SC_ScrollBarSubLine : QStyle::SC_ScrollBarAddLine;
+                    sc = reverseHorizontal ? QStyle::SC_ScrollBarSubLine
+                                           : QStyle::SC_ScrollBarAddLine;
             } else if (HitTestThemeTrack(&tdi, pos, &cpc)) {
                 if (cpc == kControlPageUpPart)
-                    sc = QStyle::SC_ScrollBarSubPage;
+                    sc = reverseHorizontal ? QStyle::SC_ScrollBarAddPage
+                                           : QStyle::SC_ScrollBarSubPage;
                 else if (cpc == kControlPageDownPart)
-                    sc = QStyle::SC_ScrollBarAddPage;
+                    sc = reverseHorizontal ? QStyle::SC_ScrollBarSubPage
+                                           : QStyle::SC_ScrollBarAddPage;
                 else
                     sc = QStyle::SC_ScrollBarSlider;
             }
@@ -4594,6 +4656,7 @@ int QMacStylePrivate::AppManPixelMetric(QStyle::PixelMetric metric, const QStyle
             GetRegionBounds(rgn, &r);
             ret = (r.bottom - r.top);
             qt_mac_dispose_rgn(rgn);
+            ret += 4;
         }
         break;
     default:
@@ -4747,7 +4810,7 @@ void QMacStyle::polish(QWidget* w)
     if (QLineEdit *lined = qobject_cast<QLineEdit*>(w)) {
         if (qobject_cast<QComboBox*>(lined->parentWidget())
                 && !lined->testAttribute(Qt::WA_SetFont))
-            lined->setFont(*qt_app_fonts_hash()->find("QComboLineEdit"));
+            lined->setFont(qt_app_fonts_hash()->value("QComboLineEdit"));
     }
 
     if (d->useHITheme)
@@ -5553,8 +5616,10 @@ void QMacStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPainter
                 QPoint btl = br.isEmpty() ? QPoint(btn->rect.center().x() + pixw / 2 + 2, btn->rect.center().y())
                                           : QPoint(br.x(), br.y() + br.height() / 2);
                 QPoint pixTL(btl.x() - pixw - 2, btl.y() - pixh / 2);
-                p->drawPixmap(pixTL, pixmap);
-                p->drawText(br, btn->text);
+                int alignmentFlags = Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextShowMnemonic;
+                drawItemPixmap(p, QRect(pixTL, pixmap.size()), alignmentFlags, pixmap);
+                drawItemText(p, br, alignmentFlags, btn->palette,
+                             (btn->state & QStyle::State_Enabled), btn->text, QPalette::ButtonText);
             }
         }
         break;
@@ -5780,11 +5845,6 @@ QRect QMacStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *op
                 ret.setRect(fw, fw,
                             spin->rect.width() - spinner_w - fw * 2 - macSpinBoxSep + 1,
                             spin->rect.height() - fw * 2 + 1);
-                ret = visualRect(spin->direction, spin->rect, ret);
-                break;
-            case SC_SpinBoxFrame:
-                ret.setRect(1, 1, spin->rect.width() - spinner_w - macSpinBoxSep - 1,
-                            spin->rect.height() - 1);
                 ret = visualRect(spin->direction, spin->rect, ret);
                 break;
             default:

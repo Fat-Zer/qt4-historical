@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,7 +23,6 @@
 
 #include "qlayout.h"
 
-#ifndef QT_NO_LAYOUT
 #include "qapplication.h"
 #include "qlayoutengine_p.h"
 #include "qmenubar.h"
@@ -124,9 +123,7 @@ QLayout::QLayout(QLayoutPrivate &dd, QLayout *lay, QWidget *w)
 QLayoutPrivate::QLayoutPrivate()
     : QObjectPrivate(), insideSpacing(-1), outsideBorder(-1), topLevel(false), enabled(true),
       activated(true), autoNewChild(false), constraint(QLayout::SetDefaultConstraint)
-#ifndef QT_NO_MENUBAR
       , menubar(0)
-#endif
 {
 }
 
@@ -159,9 +156,9 @@ QLayout::QLayout(QWidget *parent, int margin, int spacing, const char *name)
         d->insideSpacing = spacing;
     if (parent) {
         if (parent->layout()) {
-            qWarning("QLayout \"%s\" added to %s \"%s\", which already has a"
-                      " layout", QObject::objectName().toLocal8Bit().data(), parent->metaObject()->className(),
-                      parent->objectName().toLocal8Bit().data());
+            qWarning("QLayout \"%s\" added to %s \"%s\", which already has a layout",
+                     QObject::objectName().toLocal8Bit().data(), parent->metaObject()->className(),
+                     parent->objectName().toLocal8Bit().data());
             parent->layout()->setParent(0);
         } else {
             d->topLevel = true;
@@ -370,8 +367,13 @@ void QLayout::setSpacing(int spacing)
 }
 
 /*!
-    Returns the parent widget of this layout, or 0 if
-    this layout is a sub-layout that is not yet inserted.
+    Returns the parent widget of this layout, or 0 if this layout is
+    not installed on any widget.
+
+    If the layout is a sub-layout, this function returns the parent
+    widget of the parent layout.
+
+    \sa parent()
 */
 QWidget *QLayout::parentWidget() const
 {
@@ -391,8 +393,7 @@ QWidget *QLayout::parentWidget() const
 }
 
 /*!
-    Returns true if this layout is empty. The default implementation
-    iterates over all items and returns true if all child items are empty.
+    \reimp
 */
 bool QLayout::isEmpty() const
 {
@@ -408,10 +409,7 @@ bool QLayout::isEmpty() const
 }
 
 /*!
-    This function is reimplemented in subclasses to perform layout.
-
-    The default implementation maintains the geometry() information
-    given by rect \a r. Reimplementors must call this function.
+    \reimp
 */
 void QLayout::setGeometry(const QRect &r)
 {
@@ -429,7 +427,7 @@ QRect QLayout::geometry() const
 }
 
 /*!
-    Invalidates cached information. Reimplementations must call this.
+    \reimp
 */
 void QLayout::invalidate()
 {
@@ -701,7 +699,8 @@ void QLayout::deleteAllItems()
 void QLayout::addChildLayout(QLayout *l)
 {
     if (l->parent()) {
-        qWarning("QLayout::addChildLayout: layout already has a parent");
+        qWarning("QLayout::addChildLayout: layout \"%s\" already has a parent",
+                 l->objectName().toLocal8Bit().data());
         return;
     }
     l->setParent(this);
@@ -728,7 +727,8 @@ void QLayoutPrivate::reparentChildWidgets(QWidget *mw)
             QWidget *pw = w->parentWidget();
 #ifdef QT_DEBUG
             if (pw && pw != mw) {
-                qWarning("QLayout::addChildLayout: widget %s in wrong parent; moved to correct parent", w->metaObject()->className());
+                qWarning("QLayout::addChildLayout: widget %s \"%s\" in wrong parent; moved to correct parent",
+                         w->metaObject()->className(), w->objectName().toLocal8Bit().data());
             }
 #endif
             if (pw != mw)
@@ -757,10 +757,12 @@ void QLayout::addChildWidget(QWidget *w)
     if (pw && w->testAttribute(Qt::WA_LaidOut)) {
         QLayout *l = pw->layout();
         if (l && removeWidgetRecursively(l, w))
-            qWarning("QLayout::addChildWidget: %s is already in a layout; moved to new layout", w->metaObject()->className());
+            qWarning("QLayout::addChildWidget: %s \"%s\" is already in a layout; moved to new layout",
+                     w->metaObject()->className(), w->objectName().toLocal8Bit().data());
     }
     if (pw && mw && pw != mw) {
-        qWarning("QLayout::addChildWidget: %s in wrong parent; moved to correct parent", w->metaObject()->className());
+        qWarning("QLayout::addChildWidget: %s \"%s\" in wrong parent; moved to correct parent",
+                 w->metaObject()->className(), w->objectName().toLocal8Bit().data());
         pw = 0;
     }
     bool needShow = mw && mw->isVisible() && !(w->isHidden() && w->testAttribute(Qt::WA_WState_ExplicitShowHide));
@@ -775,19 +777,21 @@ void QLayout::addChildWidget(QWidget *w)
 /*!
   \compat
 
-  Sets this layout's parent widget to a fixed size with width \a w and
-  height \a h, stopping the user form resizing it, and also prevents the
-  layout from resizing it, even if the layout's size hint should
-  change. Does nothing if this is not a toplevel layout (if parent()->isWidgetType()).
+    Sets this layout's parent widget to a fixed size with width \a w
+    and height \a h, stopping the user form resizing it, and also
+    prevents the layout from resizing it, even if the layout's size
+    hint should change. Does nothing if this is not a top-level
+    layout (i.e., if parent()->isWidgetType()).
 
-  As a special case, if both \a w and \a h are 0, then the layout's
-  current sizeHint() is used.
+    As a special case, if both \a w and \a h are 0, then the layout's
+    current sizeHint() is used.
 
-  Use \c setResizeMode(Fixed) to stop the widget from being resized by
-  the user, while still allowing the layout to resize it when the sizeHint() changes.
+    Use \c setResizeMode(Fixed) to stop the widget from being resized
+    by the user, while still allowing the layout to resize it when
+    the sizeHint() changes.
 
-  Use \c setResizeMode(FreeResize) to allow the user to resize the
-  widget, while preventing the layout from resizing it.
+    Use \c setResizeMode(FreeResize) to allow the user to resize the
+    widget, while preventing the layout from resizing it.
 
 */
 void QLayout::freeze(int w, int h)
@@ -840,10 +844,12 @@ QWidget *QLayout::menuBar() const
 
 
 /*!
-    Returns the minimum size of this layout. This is the smallest size
-    that the layout can have while still respecting the
-    specifications. Does not include what's needed by QWidget::setContentsMargins() or
-    menuBar().
+    Returns the minimum size of this layout. This is the smallest
+    size that the layout can have while still respecting the
+    specifications.
+
+    The returned value doesn't include the space required by
+    QWidget::setContentsMargins() or menuBar().
 
     The default implementation allows unlimited resizing.
 */
@@ -855,8 +861,10 @@ QSize QLayout::minimumSize() const
 /*!
     Returns the maximum size of this layout. This is the largest size
     that the layout can have while still respecting the
-    specifications. Does not include what's needed by QWidget::setContentsMargins() or
-    menuBar().
+    specifications.
+
+    The returned value doesn't include the space required by
+    QWidget::setContentsMargins() or menuBar().
 
     The default implementation allows unlimited resizing.
 */
@@ -871,7 +879,11 @@ QSize QLayout::maximumSize() const
     it wants to grow in only one dimension, whereas Qt::Vertical |
     Qt::Horizontal means that it wants to grow in both dimensions.
 
-    The default implementation returns Qt::Vertical | Qt::Horizontal.
+    The default implementation returns Qt::Horizontal | Qt::Vertical.
+    Subclasses reimplement it to return a meaningful value based on
+    their child widgets's \l{QSizePolicy}{size policies}.
+
+    \sa sizeHint()
 */
 Qt::Orientations QLayout::expandingDirections() const
 {
@@ -1315,4 +1327,3 @@ QSize QLayout::closestAcceptableSize(const QWidget *widget, const QSize &size)
     Use sizeConstraint() instead.
 */
 
-#endif // QT_NO_LAYOUT

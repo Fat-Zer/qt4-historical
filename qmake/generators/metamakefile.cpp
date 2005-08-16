@@ -4,17 +4,17 @@
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -357,11 +357,11 @@ SubdirsMetaMakefileGenerator::~SubdirsMetaMakefileGenerator()
 #include "unixmake.h"
 #include "mingw_make.h"
 #include "projectgenerator.h"
+#include "pbuilder_pbx.h"
 #ifndef QMAKE_OPENSOURCE_EDITION
 # include "msvc_nmake.h"
 # include "borland_bmake.h"
 # include "metrowerks_xml.h"
-# include "pbuilder_pbx.h"
 # include "msvc_dsp.h"
 # include "msvc_vcproj.h"
 #endif
@@ -385,6 +385,8 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
         mkfile = new UnixMakefileGenerator;
     } else if(gen == "MINGW") {
         mkfile = new MingwMakefileGenerator;
+    } else if(gen == "PROJECTBUILDER" || gen == "XCODE") {
+        mkfile = new ProjectBuilderMakefileGenerator;
 #ifndef QMAKE_OPENSOURCE_EDITION
     } else if(gen == "MSVC") {
         // Visual Studio =< v6.0
@@ -402,8 +404,6 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
         mkfile = new BorlandMakefileGenerator;
     } else if(gen == "METROWERKS") {
         mkfile = new MetrowerksMakefileGenerator;
-    } else if(gen == "PROJECTBUILDER" || gen == "XCODE") {
-        mkfile = new ProjectBuilderMakefileGenerator;
 #endif
     } else {
         fprintf(stderr, "Unknown generator specified: %s\n", gen.toLatin1().constData());

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -152,7 +152,6 @@ QDataStream &operator<<(QDataStream &s, const QCursor &c)
 {
     s << (qint16)c.shape();                        // write shape id to stream
     if (c.shape() == Qt::BitmapCursor) {                // bitmap cursor
-#if !defined(QT_NO_IMAGEIO)
         bool isPixmap = false;
         if (s.version() >= 7) {
             isPixmap = !c.pixmap().isNull();
@@ -163,9 +162,6 @@ QDataStream &operator<<(QDataStream &s, const QCursor &c)
         else
             s << *c.bitmap() << *c.mask();
         s << c.hotSpot();
-#else
-        qWarning("No Image Cursor I/O");
-#endif
     }
     return s;
 }
@@ -184,7 +180,6 @@ QDataStream &operator>>(QDataStream &s, QCursor &c)
     qint16 shape;
     s >> shape;                                        // read shape id from stream
     if (shape == Qt::BitmapCursor) {                // read bitmap cursor
-#if !defined(QT_NO_IMAGEIO)
         bool isPixmap = false;
         if (s.version() >= 7)
             s >> isPixmap;
@@ -199,9 +194,6 @@ QDataStream &operator>>(QDataStream &s, QCursor &c)
             s >> bm >> bmm >> hot;
             c = QCursor(bm, bmm, hot.x(), hot.y());
         }
-#else
-        qWarning("No Image Cursor I/O");
-#endif
     } else {
         c.setShape((Qt::CursorShape)shape);                // create cursor with shape
     }
@@ -272,7 +264,7 @@ QCursor::QCursor(const QPixmap &pixmap, int hotX, int hotY)
     \o B=1 and M=0 gives an undefined result.
     \endlist
 
-    Use the global Qt color \c Qt::color0 to draw 0-pixels and \c Qt::color1 to
+    Use the global Qt color Qt::color0 to draw 0-pixels and Qt::color1 to
     draw 1-pixels in the bitmaps.
 
     Valid cursor sizes depend on the display hardware (or the

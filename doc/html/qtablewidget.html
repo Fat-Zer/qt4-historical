@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/itemviews/qtablewidget.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/itemviews/qtablewidget.cpp -->
 <head>
     <title>Qt 4.0: QTableWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTableWidget Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTableWidget Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTableWidget class provides an item-based table view with a default model. <a href="#details">More...</a></p>
-<pre>#include &lt;QTableWidget&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qtableview.html">QTableView</a>.</p>
+<pre>#include &lt;QTableWidget&gt;</pre><p>Inherits <a href="qtableview.html">QTableView</a>.</p>
 <ul>
 <li><a href="qtablewidget-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -89,7 +88,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>37 public functions inherited from <a href="qabstractitemview.html#public-functions">QAbstractItemView</a></li>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -101,7 +100,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtablewidget.html#insertRow">insertRow</a></b> ( int <i>row</i> )</li>
 <li><div class="fn"/>void <b><a href="qtablewidget.html#removeColumn">removeColumn</a></b> ( int <i>column</i> )</li>
 <li><div class="fn"/>void <b><a href="qtablewidget.html#removeRow">removeRow</a></b> ( int <i>row</i> )</li>
-<li><div class="fn"/>void <b><a href="qtablewidget.html#scrollToItem">scrollToItem</a></b> ( const QTableWidgetItem * <i>item</i>, ScrollHint <i>hint</i> = EnsureVisible )</li>
+<li><div class="fn"/>void <b><a href="qtablewidget.html#scrollToItem">scrollToItem</a></b> ( const QTableWidgetItem * <i>item</i>, QAbstractItemView::ScrollHint <i>hint</i> = EnsureVisible )</li>
 </ul>
 <ul>
 <li><div class="fn"/>9 public slots inherited from <a href="qtableview.html#public-slots">QTableView</a></li>
@@ -216,6 +215,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the column of the current item.</p>
 <h3 class="fn"><a name="currentItem"></a><a href="qtablewidgetitem.html">QTableWidgetItem</a> * QTableWidget::currentItem () const</h3>
 <p>Returns the current item.</p>
+<p>See also <a href="qtablewidget.html#setCurrentItem">setCurrentItem</a>().</p>
 <h3 class="fn"><a name="currentItemChanged"></a>void QTableWidget::currentItemChanged ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>current</i>, <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>previous</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the current item changes. The <i>previous</i> item is the item that previously had the focus, <i>current</i> is the new current item.</p>
 <h3 class="fn"><a name="currentRow"></a>int QTableWidget::currentRow () const</h3>
@@ -229,6 +229,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Finds items that matches the <i>text</i> using the given <i>flags</i>.</p>
 <h3 class="fn"><a name="horizontalHeaderItem"></a><a href="qtablewidgetitem.html">QTableWidgetItem</a> * QTableWidget::horizontalHeaderItem ( int <i>column</i> ) const</h3>
 <p>Returns the horizontal header item for column <i>column</i>.</p>
+<p>See also <a href="qtablewidget.html#setHorizontalHeaderItem">setHorizontalHeaderItem</a>().</p>
 <h3 class="fn"><a name="indexFromItem"></a><a href="qmodelindex.html">QModelIndex</a> QTableWidget::indexFromItem ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the <a href="qmodelindex.html">QModelIndex</a> assocated with the given <i>item</i>.</p>
 <h3 class="fn"><a name="insertColumn"></a>void QTableWidget::insertColumn ( int <i>column</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
@@ -284,8 +285,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Removes the row <i>row</i> and all its items from the table.</p>
 <h3 class="fn"><a name="row"></a>int QTableWidget::row ( const <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> ) const</h3>
 <p>Returns the row for the <i>item</i>.</p>
-<h3 class="fn"><a name="scrollToItem"></a>void QTableWidget::scrollToItem ( const <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i>, <a href="qabstractitemview.html#ScrollHint-enum">ScrollHint</a> <i>hint</i> = EnsureVisible )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Scrolls the view if necessary to ensure that the <i>item</i> is visible. The <i>hint</i> parameter specifies more precisely where the <i>item</i> should be located after the operation.</p>
+<h3 class="fn"><a name="scrollToItem"></a>void QTableWidget::scrollToItem ( const <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i>, <a href="qabstractitemview.html#ScrollHint-enum">QAbstractItemView::ScrollHint</a> <i>hint</i> = EnsureVisible )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <h3 class="fn"><a name="selectedItems"></a><a href="qlist.html">QList</a>&lt;<a href="qtablewidgetitem.html">QTableWidgetItem</a> *&gt; QTableWidget::selectedItems ()</h3>
 <p>Returns a list of all selected items.</p>
 <h3 class="fn"><a name="selectedRanges"></a><a href="qlist.html">QList</a>&lt;<a href="qtablewidgetselectionrange.html">QTableWidgetSelectionRange</a>&gt; QTableWidget::selectedRanges () const</h3>
@@ -293,8 +293,10 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtablewidgetselectionrange.html">QTableWidgetSelectionRange</a>.</p>
 <h3 class="fn"><a name="setCurrentItem"></a>void QTableWidget::setCurrentItem ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
 <p>Sets the current item to <i>item</i>.</p>
+<p>See also <a href="qtablewidget.html#currentItem">currentItem</a>().</p>
 <h3 class="fn"><a name="setHorizontalHeaderItem"></a>void QTableWidget::setHorizontalHeaderItem ( int <i>column</i>, <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
 <p>Sets the horizontal header item for column <i>column</i> to <i>item</i>.</p>
+<p>See also <a href="qtablewidget.html#horizontalHeaderItem">horizontalHeaderItem</a>().</p>
 <h3 class="fn"><a name="setHorizontalHeaderLabels"></a>void QTableWidget::setHorizontalHeaderLabels ( const <a href="qstringlist.html">QStringList</a> &amp; <i>labels</i> )</h3>
 <p>Sets the horizontal header labels using <i>labels</i>.</p>
 <h3 class="fn"><a name="setItem"></a>void QTableWidget::setItem ( int <i>row</i>, int <i>column</i>, <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
@@ -305,10 +307,12 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtablewidget.html#itemPrototype">itemPrototype</a>().</p>
 <h3 class="fn"><a name="setItemSelected"></a>void QTableWidget::setItemSelected ( const <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i>, bool <i>select</i> )</h3>
 <p>Selects or deselects <i>item</i> depending on <i>select</i>.</p>
+<p>See also <a href="qtablewidget.html#isItemSelected">isItemSelected</a>().</p>
 <h3 class="fn"><a name="setRangeSelected"></a>void QTableWidget::setRangeSelected ( const <a href="qtablewidgetselectionrange.html">QTableWidgetSelectionRange</a> &amp; <i>range</i>, bool <i>select</i> )</h3>
 <p>Selects or deselects the <i>range</i> depending on <i>select</i>.</p>
 <h3 class="fn"><a name="setVerticalHeaderItem"></a>void QTableWidget::setVerticalHeaderItem ( int <i>row</i>, <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
 <p>Sets the vertical header item for row <i>row</i> to <i>item</i>.</p>
+<p>See also <a href="qtablewidget.html#verticalHeaderItem">verticalHeaderItem</a>().</p>
 <h3 class="fn"><a name="setVerticalHeaderLabels"></a>void QTableWidget::setVerticalHeaderLabels ( const <a href="qstringlist.html">QStringList</a> &amp; <i>labels</i> )</h3>
 <p>Sets the vertical header labels using <i>labels</i>.</p>
 <h3 class="fn"><a name="sortItems"></a>void QTableWidget::sortItems ( int <i>column</i>, <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> = Qt::AscendingOrder )</h3>
@@ -320,6 +324,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Removes the item at <i>row</i> and <i>column</i> from the table without deleting it.</p>
 <h3 class="fn"><a name="verticalHeaderItem"></a><a href="qtablewidgetitem.html">QTableWidgetItem</a> * QTableWidget::verticalHeaderItem ( int <i>row</i> ) const</h3>
 <p>Returns the vertical header item for row <i>row</i>.</p>
+<p>See also <a href="qtablewidget.html#setVerticalHeaderItem">setVerticalHeaderItem</a>().</p>
 <h3 class="fn"><a name="visualColumn"></a>int QTableWidget::visualColumn ( int <i>logicalColumn</i> ) const</h3>
 <p>Returns the visual column of the given <i>logicalColumn</i>.</p>
 <h3 class="fn"><a name="visualItemRect"></a><a href="qrect.html">QRect</a> QTableWidget::visualItemRect ( const <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> ) const</h3>
@@ -330,6 +335,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

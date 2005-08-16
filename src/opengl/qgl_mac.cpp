@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the opengl module of the Qt Toolkit.
+** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -87,7 +87,7 @@ bool QGLFormat::hasOpenGLOverlays()
 bool QGLContext::chooseContext(const QGLContext* shareContext)
 {
     Q_D(QGLContext);
-    d->cx = NULL;
+    d->cx = 0;
     d->vi = chooseMacVisual(GetMainDevice());
     if(!d->vi)
         return false;
@@ -136,15 +136,15 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
     // sharing between rgba and color-index will give wrong colors
     if(shareContext && (format().rgba() != shareContext->format().rgba()))
         shareContext = 0;
-    AGLContext ctx = aglCreateContext(fmt, (AGLContext) (shareContext ? shareContext->d_func()->cx : NULL));
+    AGLContext ctx = aglCreateContext(fmt, (AGLContext) (shareContext ? shareContext->d_func()->cx : 0));
     if(!ctx) {
         GLenum err = aglGetError();
         if(err == AGL_BAD_MATCH || err == AGL_BAD_CONTEXT) {
             if(shareContext && shareContext->d_func()->cx) {
                 qWarning("QOpenGL: context sharing mismatch!");
-                if(!(ctx = aglCreateContext(fmt, NULL)))
+                if(!(ctx = aglCreateContext(fmt, 0)))
                     return false;
-                shareContext = NULL;
+                shareContext = 0;
             }
         }
         if(!ctx) {
@@ -157,12 +157,14 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         d->sharing = true;
         const_cast<QGLContext *>(shareContext)->d_func()->sharing = true;
     }
+    if(deviceIsPixmap())
+        updatePaintDevice();
     return true;
 }
 
 
 /*!
-  <strong>Mac only</strong>: This virtual function tries to find a
+  \bold{Mac only:} This virtual function tries to find a
   visual that matches the format using the handle \a device, reducing
   the demands if the original request cannot be met.
 
@@ -173,7 +175,7 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
   \sa chooseContext()
 */
 
-void *QGLContext::chooseMacVisual(GDHandle device)
+void *QGLContext::chooseMacVisual(GDHandle /* device */)
 {
     Q_D(QGLContext);
     GLint attribs[40], cnt=0;
@@ -234,11 +236,7 @@ void *QGLContext::chooseMacVisual(GDHandle device)
 
     Q_ASSERT(cnt < 40); // resize buffer above if too small
 
-    AGLPixelFormat fmt;
-    if(deviceIsPixmap() || !device)
-        fmt = aglChoosePixelFormat(NULL, 0, attribs);
-    else
-        fmt = aglChoosePixelFormat(NULL, 0, attribs);
+    AGLPixelFormat fmt = aglChoosePixelFormat(0, 0, attribs);
     if(!fmt) {
         GLenum err = aglGetError();
         qWarning("got an error tex: %d", (int)err);
@@ -323,6 +321,8 @@ static QRegion qt_mac_get_widget_rgn(const QWidget *widget)
                 }
             }
         }
+        if(clip->isWindow())
+            break;
         clip_pos -= clip->pos();
     }
     qt_mac_dispose_rgn(macr);
@@ -380,9 +380,6 @@ void QGLContext::updatePaintDevice()
         PixMapHandle mac_pm = GetGWorldPixMap((GWorldPtr)pm->macQDHandle());
         aglSetOffScreen((AGLContext)d->cx, pm->width(), pm->height(),
                         GetPixRowBytes(mac_pm), GetPixBaseAddr(mac_pm));
-        GLint offs[4] = { 0, pm->height(), pm->width(), pm->height() };
-        aglSetInteger((AGLContext)d->cx, AGL_BUFFER_RECT, offs);
-        aglDisable((AGLContext)d->cx, AGL_CLIP_REGION);
     } else {
         qWarning("not sure how to render opengl on this device!!");
     }
@@ -395,7 +392,7 @@ void QGLContext::doneCurrent()
 
         return;
     currentCtx = 0;
-    aglSetCurrentContext(NULL);
+    aglSetCurrentContext(0);
 }
 
 
@@ -637,7 +634,7 @@ void QGLWidget::setContext(QGLContext *context, const QGLContext* shareContext, 
     QGLContext* oldcx = d->glcx;
     d->glcx = context;
     if(!d->glcx->isValid())
-        d->glcx->create(shareContext);
+        d->glcx->create(shareContext ? shareContext : oldcx);
     if(deleteOldContext)
         delete oldcx;
 }
@@ -701,18 +698,18 @@ void QGLExtensions::init()
     init_done = true;
 
     GLint attribs[] = { AGL_RGBA, AGL_NONE };
-    AGLPixelFormat fmt = aglChoosePixelFormat(NULL, 0, attribs);
+    AGLPixelFormat fmt = aglChoosePixelFormat(0, 0, attribs);
     if (!fmt) {
         qDebug("QGLExtensions: couldn't find any RGB visuals.");
         return;
     }
-    AGLContext ctx = aglCreateContext(fmt, NULL);
+    AGLContext ctx = aglCreateContext(fmt, 0);
     if (!ctx) {
         qDebug("QGLExtensions: unable to create context.");
     } else {
         aglSetCurrentContext(ctx);
         init_extensions();
-        aglSetCurrentContext(NULL);
+        aglSetCurrentContext(0);
         aglDestroyContext(ctx);
     }
     aglDestroyPixelFormat(fmt);

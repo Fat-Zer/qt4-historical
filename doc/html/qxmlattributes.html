@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/xml/qxml.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/xml/qxml.cpp -->
 <head>
     <title>Qt 4.0: QXmlAttributes Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QXmlAttributes Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QXmlAttributes Class Reference<br /><sup><sup>[<a href="qtxml.html">QtXml</a> module]</sup></sup></h1>
 <p>The QXmlAttributes class provides XML attributes. <a href="#details">More...</a></p>
-<pre>#include &lt;QXmlAttributes&gt;</pre><p>Part of the <a href="qtxml.html">QtXml</a> module.</p>
-<p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre>#include &lt;QXmlAttributes&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qxmlattributes-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -68,22 +67,22 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="index"></a>int QXmlAttributes::index ( const <a href="qstring.html">QString</a> &amp; <i>qName</i> ) const</h3>
 <p>Looks up the index of an attribute by the qualified name <i>qName</i>.</p>
 <p>Returns the index of the attribute or -1 if it wasn't found.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
 <h3 class="fn"><a name="index-2"></a>int QXmlAttributes::index ( const <a href="qstring.html">QString</a> &amp; <i>uri</i>, const <a href="qstring.html">QString</a> &amp; <i>localPart</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Looks up the index of an attribute by a namespace name.</p>
 <p><i>uri</i> specifies the namespace URI, or an empty string if the name has no namespace URI. <i>localPart</i> specifies the attribute's local name.</p>
 <p>Returns the index of the attribute, or -1 if it wasn't found.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
 <h3 class="fn"><a name="length"></a>int QXmlAttributes::length () const</h3>
 <p>Returns the number of attributes in the list.</p>
 <p>See also <a href="qxmlattributes.html#count">count</a>().</p>
 <h3 class="fn"><a name="localName"></a><a href="qstring.html">QString</a> QXmlAttributes::localName ( int <i>index</i> ) const</h3>
 <p>Looks up an attribute's local name for the attribute at position <i>index</i>. If no namespace processing is done, the local name is an empty string.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
 <h3 class="fn"><a name="qName"></a><a href="qstring.html">QString</a> QXmlAttributes::qName ( int <i>index</i> ) const</h3>
 <p>Looks up an attribute's XML 1.0 qualified name for the attribute at position <i>index</i>.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
 <h3 class="fn"><a name="type"></a><a href="qstring.html">QString</a> QXmlAttributes::type ( int <i>index</i> ) const</h3>
 <p>Looks up an attribute's type for the attribute at position <i>index</i>.</p>
 <p>Currently only &quot;CDATA&quot; is returned.</p>
@@ -98,22 +97,21 @@ body { background: #ffffff; color: black; }</style>
 <p>Currently only &quot;CDATA&quot; is returned.</p>
 <h3 class="fn"><a name="uri"></a><a href="qstring.html">QString</a> QXmlAttributes::uri ( int <i>index</i> ) const</h3>
 <p>Looks up an attribute's namespace URI for the attribute at position <i>index</i>. If no namespace processing is done or if the attribute has no namespace, the namespace URI is an empty string.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
 <h3 class="fn"><a name="value"></a><a href="qstring.html">QString</a> QXmlAttributes::value ( int <i>index</i> ) const</h3>
 <p>Returns an attribute's value for the attribute at position <i>index</i>. The index must be a valid position (i.e., 0 &lt;= <i>index</i> &lt; <a href="qxmlattributes.html#count">count</a>()).</p>
 <h3 class="fn"><a name="value-2"></a><a href="qstring.html">QString</a> QXmlAttributes::value ( const <a href="qstring.html">QString</a> &amp; <i>qName</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns an attribute's value for the qualified name <i>qName</i>, or an empty string if no attribute exists for the name given.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
+<p>See also <a href="qtxml.html#namespace-support-via-features">Namespace Support via Features</a>.</p>
 <h3 class="fn"><a name="value-3"></a><a href="qstring.html">QString</a> QXmlAttributes::value ( const <a href="qstring.html">QString</a> &amp; <i>uri</i>, const <a href="qstring.html">QString</a> &amp; <i>localName</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns an attribute's value by namespace name.</p>
 <p><i>uri</i> specifies the namespace URI, or an empty string if the name has no namespace URI. <i>localName</i> specifies the attribute's local name.</p>
-<p>See also the <a href="xml.html#sax2namespaces">namespace description</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

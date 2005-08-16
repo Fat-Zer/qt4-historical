@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -42,6 +42,8 @@
 #include <qtextformat.h>
 #include <qbasictimer.h>
 
+#ifndef QT_NO_TEXTEDIT
+
 class QMimeData;
 
 class QTextEditPrivate : public QAbstractScrollAreaPrivate
@@ -52,7 +54,10 @@ public:
         : doc(0), cursorOn(false),
 	  readOnly(false),
           autoFormatting(QTextEdit::AutoNone), tabChangesFocus(false),
-          mousePressed(false), mightStartDrag(false), lineWrap(QTextEdit::WidgetWidth), lineWrapColumnOrWidth(0),
+#ifndef QT_NO_DRAGANDDROP
+          mousePressed(false), mightStartDrag(false),
+#endif
+          lineWrap(QTextEdit::WidgetWidth), lineWrapColumnOrWidth(0),
           lastSelectionState(false), ignoreAutomaticScrollbarAdjustement(false), textFormat(Qt::AutoText),
           preferRichText(false)
     {}
@@ -71,8 +76,9 @@ public:
 
     void init(const QTextDocumentFragment &fragment = QTextDocumentFragment(),
               QTextDocument *document = 0);
-
+#ifndef QT_NO_DRAGANDDROP
     void startDrag();
+#endif
 
     void paste(const QMimeData *source);
     void paint(QPainter *p, QPaintEvent *e);
@@ -93,15 +99,15 @@ public:
     inline int contentsWidth() const { return hbar->maximum() + viewport->width(); }
     inline int contentsHeight() const { return vbar->maximum() + viewport->height(); }
 
-    bool pageUp(QTextCursor::MoveMode moveMode);
-    bool pageDown(QTextCursor::MoveMode moveMode);
+    void pageUp(QTextCursor::MoveMode moveMode);
+    void pageDown(QTextCursor::MoveMode moveMode);
 
     void updateCurrentCharFormatAndSelection();
 
     void adjustScrollbars();
-
+#ifndef QT_NO_CLIPBOARD
     void setClipboardSelection();
-
+#endif
     void ensureVisible(int documentPosition);
 
     void emitCursorPosChanged(const QTextCursor &someCursor);
@@ -110,6 +116,8 @@ public:
 
     void extendWordwiseSelection(int suggestedNewPosition, qreal mouseXPosition);
     void extendLinewiseSelection(int suggestedNewPosition);
+
+    void relayoutDocument();
 
     QTextDocument *doc;
     bool cursorOn;
@@ -130,10 +138,12 @@ public:
 
     bool mousePressed;
 
+#ifndef QT_NO_DRAGANDDROP
     bool mightStartDrag;
     QPoint dragStartPos;
     QBasicTimer dragStartTimer;
-
+#endif
+    
     QTextEdit::LineWrapMode lineWrap;
     int lineWrapColumnOrWidth;
 
@@ -155,4 +165,5 @@ public:
     QTextCursor focusIndicator;
 };
 
+#endif // QT_NO_TEXTEDIT
 #endif // QTEXTEDIT_P_H

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the text module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -90,7 +90,7 @@ bool QFontDef::exactMatch(const QFontDef &other) const
     QString this_family, this_foundry, other_family, other_foundry;
     QFontDatabase::parseFontName(family, this_foundry, this_family);
     QFontDatabase::parseFontName(other.family, other_foundry, other_family);
-
+    
     return (styleHint     == other.styleHint
             && styleStrategy == other.styleStrategy
             && weight        == other.weight
@@ -392,7 +392,7 @@ QFontEngineData::~QFontEngineData()
     \endcode
 
     For more general information on fonts, see the
-    \link http://www.nwalsh.com/comp.fonts/FAQ/ comp.fonts FAQ.\endlink
+    \link http://nwalsh.com/comp.fonts/FAQ/ comp.fonts FAQ.\endlink
     Information on encodings can be found from
     \link http://czyborra.com/ Roman Czyborra's\endlink page.
 
@@ -1326,8 +1326,6 @@ void QFont::setDefaultFont(const QFont &f)
 
 
 
-#ifndef QT_NO_STRINGLIST
-
 /*****************************************************************************
   QFont substitution management
  *****************************************************************************/
@@ -1490,8 +1488,6 @@ QStringList QFont::substitutions()
     ret.sort();
     return ret;
 }
-
-#endif // QT_NO_STRINGLIST
 
 
 /*  \internal
@@ -1935,7 +1931,7 @@ int QFontInfo::weight() const
 /*!
     \fn bool QFontInfo::bold() const
 
-    Returns true if weight() would return a value greater than \c
+    Returns true if weight() would return a value greater than
     QFont::Normal; otherwise returns false.
 
     \sa weight(), QFont::bold()

@@ -65,51 +65,35 @@ elif [ -f $relpath/src/gui/kernel/qapplication_qws.cpp ]; then
 fi
 
 #-------------------------------------------------------------------------------
-# package detection
+# check the license
 #-------------------------------------------------------------------------------
 
-if test -d $relpath/tools/designer; then
-    PACKAGE_TYPE=Desktop
-else
-    PACKAGE_TYPE=Console
-fi
-
-#-------------------------------------------------------------------------------
-# check commercial license
-#-------------------------------------------------------------------------------
-
-# Open Source edition - may only be used under the terms of the QPL or GPL.
 if [ -f $relpath/LICENSE.QPL -o -f $relpath/LICENSE.GPL ]; then
+    # Open Source edition - may only be used under the terms of the QPL or GPL.
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
     [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
     Licensee="Open Source"
-    LicenseType="Open Source"
-    ProductType="$PACKAGE_TYPE"
-# Internal Trolltech edition.
-elif [ -f $relpath/LICENSE.TROLL ]; then
-    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
-    Licensee="Trolltech"
-    LicenseType="Trolltech"
-    ProductType="$PACKAGE_TYPE"
-# Commercial or Evaluation - needs a license
-else
+    Edition="OpenSource"
+    QT_EDITION="QT_EDITION_OPENSOURCE"
+elif [ -f $relpath/LICENSE.PREVIEW ]; then
+    # tech preview
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
     [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
-    if [ -f $relpath/.LICENSE ]; then
-        if grep "Qt EVALUATION VERSION LICENSE AGREEMENT" .LICENSE 2>&1 >/dev/null; then
-            LicenseType="Evaluation"
-        else
-            LicenseType="Commercial"
-        fi
-    else
-	echo "The LICENSE, LICENSE.QPL, or LICENSE.GPL file shipped with"
-	echo "this software has disappeared."
-	echo
-	echo "Sorry, you are not licensed to use this software."
-	echo "Try re-installing."
-	echo
-	exit 1
-    fi
+    Licensee="Preview"
+    Edition="Preview"
+    QT_EDITION="QT_EDITION_OPENSOURCE"
+elif [ -f $relpath/LICENSE.TROLL ]; then
+    # internal Trolltech edition
+    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
+    Licensee="Trolltech"
+    Edition="Trolltech"
+    QT_EDITION="QT_EDITION_DESKTOP"
+else
+    # one of commercial editions
+    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
+    [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
+
+    # read in the license file
     if [ -f $HOME/.qt-license ]; then
         . $HOME/.qt-license >/dev/null 2>&1
         if [ -z "$LicenseKeyExt" ]; then
@@ -135,128 +119,175 @@ else
                 echo "Please enter your license key: \c"
             fi
             read LicenseKeyExt
+            Licensee="Unknown user"
         fi
     fi
-    if echo $LicenseKeyExt | grep ".....*-....*-....*-....*-.....*-.....*-...." >/dev/null 2>&1; then
-	# Key verification
-	productTest=`echo $LicenseKeyExt | cut -f 1 -d - | cut -b 1`
-	platformTest=`echo $LicenseKeyExt | cut -f 2 -d - | cut -b 1`
-        licenseTypeTest=`echo $LicenseKeyExt | cut -f 3 -d - | cut -b 1`
-	licenseFeatureTest=`echo $LicenseKeyExt | cut -f 4 -d - | cut -b 1`
-	packageTest=
-        case $productTest in
-	F)
-	    # Universal
-	    ProductType="Universal"
-	    packageTest=Desktop
-	    ;;
-	B)
-            # Desktop
-	    ProductType="Desktop"
-	    packageTest=Desktop
-            ;;
-	L)
-	    # Desktop Light
-            ProductType="Desktop Light"
-	    packageTest=Desktop
-	    ;;
-	R)
-	    # Console
-	    ProductType="Console"
-	    packageTest=Console
-	    ;;
-	*)
-	    echo
-	    echo "Invalid license key. Please check the license key."
-	    exit 1
-	    ;;
-        esac	
-        licenseTest=
-        case $licenseTypeTest in
+
+    # Key verification
+    echo $LicenseKeyExt | grep ".....*-....*-....*-....*-.....*-.....*-...." >/dev/null 2>&1 \
+        && LicenseValid="yes" \
+        || LicenseValid="no"
+    if [ "$LicenseValid" != "yes" ]; then
+        echo
+        echo "Invalid license key. Please check the license key."
+        exit 1
+    fi
+    ProductCode=`echo $LicenseKeyExt | cut -f 1 -d - | cut -b 1`
+    PlatformCode=`echo $LicenseKeyExt | cut -f 2 -d - | cut -b 1`
+    LicenseTypeCode=`echo $LicenseKeyExt | cut -f 3 -d -`
+    LicenseFeatureCode=`echo $LicenseKeyExt | cut -f 4 -d - | cut -b 1`
+
+    # determine which edition we are licensed to use
+    case $LicenseTypeCode in
+    F4M)
+        LicenseType="Commercial"
+        case $ProductCode in
         F)
-            licenseTest=Commercial
+            Edition="Universal"
+            QT_EDITION="QT_EDITION_UNIVERSAL"
             ;;
-        Z|R|Q)
-            licenseTest=Evaluation
+        B)
+            Edition="Desktop"
+            QT_EDITION="QT_EDITION_DESKTOP"
+            ;;
+        L)
+            Edition="DesktopLight"
+            QT_EDITION="QT_EDITION_DESKTOPLIGHT"
+            ;;
+        R)
+            Edition="Console"
+            QT_EDITION="QT_EDITION_CONSOLE"
+            ;;
+        esac	
+        ;;
+    Z4M|R4M|Q4M)
+        LicenseType="Evaluation"
+        case $ProductCode in
+         B)
+            Edition="Evaluation"
+            QT_EDITION="QT_EDITION_EVALUATION"
+            ;;
+        esac
+        ;;
+    34M)
+        LicenseType="Academic"
+        case $ProductCode in
+        B)
+            Edition="Academic"
+            QT_EDITION="QT_EDITION_ACADEMIC"
+            ;;
+        esac
+        ;;
+    TBM)
+        LicenseType="Educational"
+        case $ProductCode in
+        B)
+            Edition="Educational"
+            QT_EDITION="QT_EDITION_EDUCATIONAL"
+            ;;
+        esac
+        ;;
+    esac
+    if [ -z "$LicenseType" -o -z "$Edition" -o -z "$QT_EDITION" ]; then
+        echo
+        echo "Invalid license key. Please check the license key."
+        exit 1
+    fi
+
+    # verify that we are licensed to use Qt on this platform
+    if [ "$PLATFORM_QWS" = "yes" ]; then
+        case $PlatformCode in
+	4|8|V|P|G|Q|2|B)
+            # Qt/Embedded
             ;;
         *)
             echo
-            echo "Invalid license key. Please check the license key."
+            echo "You are not licensed for the Qt/Embedded platform."
+            echo
+            echo "Please contact sales@trolltech.com to upgrade your license"
+            echo "to include the Qt/Embedded platform, or install the"
+            echo "Qt Open Source Edition if you intend to develop free software."
             exit 1
             ;;
         esac
-        if [ "$PACKAGE_TYPE" != "$packageTest" -o "$licenseTest" != "$LicenseType" ]; then
-	    echo
-	    echo "You are not licensed for the $LicenseType $PACKAGE_TYPE edition."
-	    echo
-	    echo "Your license is for the $licenseTest $ProductType edition.  Please"
-	    echo "download the correct package."
-	    exit 1
-        fi
-        # this character should fit the platform
-        if [ "$PLATFORM_QWS" = "yes" ]; then
-            case $platformTest in
-	    4|8|V|P|G|Q|2|B)
-                # Qt/Embedded
-                ;;
-            *)
-                echo
-                echo "You are not licensed for the Qt/Embedded platform."
-                echo
-                echo "Please contact sales@trolltech.com to upgrade your license"
-                echo "to include the Qt/Embedded platform, or install the"
-                echo "Qt Open Source Edition if you intend to develop free software."
-                exit 1
-                ;;
-            esac
-        elif [ "$PLATFORM_MAC" = "yes" ]; then
-            case $platformTest in
-	    4|L|5|G|Y|2|F|B)
-                # Qt/Mac
-                ;;
-            *)
-                echo
-                echo "You are not licensed for the Qt/Mac platform."
-                echo
-                echo "Please contact sales@trolltech.com to upgrade your license"
-                echo "to include the Qt/Mac platform."
-                exit 1
-                ;;
-            esac
-        else
-            case $platformTest in
-	    4|Z|V|T|5|Q|2|F)
-                # Qt/X11
-                ;;
-            *)
-                echo
-                echo "You are not licensed for the Qt/X11 platform."
-                echo
-                echo "Please contact sales@trolltech.com to upgrade your license to"
-                echo "include the Qt/X11 platform, or install the Qt Open Source Edition"
-                echo "if you intend to develop free software."
-                exit 1
-                ;;
-            esac
-        fi
-        case $licenseFeatureTest in
-        G)
-            # US
+    elif [ "$PLATFORM_MAC" = "yes" ]; then
+        case $PlatformCode in
+        4|L|5|G|Y|2|F|B)
+            # Qt/Mac
+            ;;
+        *)
+            echo
+            echo "You are not licensed for the Qt/Mac platform."
+            echo
+            echo "Please contact sales@trolltech.com to upgrade your license"
+            echo "to include the Qt/Mac platform."
+            exit 1
+            ;;
+        esac
+     else
+         case $PlatformCode in
+         4|Z|V|T|5|Q|2|F)
+             # Qt/X11
+             ;;
+         *)
+             echo
+             echo "You are not licensed for the Qt/X11 platform."
+             echo
+             echo "Please contact sales@trolltech.com to upgrade your license to"
+             echo "include the Qt/X11 platform, or install the Qt Open Source Edition"
+             echo "if you intend to develop free software."
+             exit 1
+             ;;
+        esac
+    fi
+    case $LicenseFeatureCode in
+    G)
+        # US
+        case "$LicenseType" in
+        Commercial)
             cp -f $relpath/.LICENSE-US $outpath/LICENSE
             ;;
-        2)
-	    # non-US
+        Evaluation)
+            cp -f $relpath/.LICENSE-EVALUATION-US $outpath/LICENSE
+            ;;
+        Academic)
+            cp -f $relpath/.LICENSE-ACADEMIC-US $outpath/LICENSE
+            ;;
+        Educational)
+            cp -f $relpath/.LICENSE-EDUCATIONAL-US $outpath/LICENSE
+            ;;
+        esac
+        ;;        
+    2)
+        # non-US
+        case "$LicenseType" in
+        Commercial)
             cp -f $relpath/.LICENSE $outpath/LICENSE
             ;;
-	*)
-	    echo
-	    echo "Invalid license key. Please check the license key."
-	    exit 1
-	    ;;
+        Evaluation)
+            cp -f $relpath/.LICENSE-EVALUATION $outpath/LICENSE
+            ;;
+        Academic)
+            cp -f $relpath/.LICENSE-ACADEMIC $outpath/LICENSE
+            ;;
+        Educational)
+            cp -f $relpath/.LICENSE-EDUCATIONAL $outpath/LICENSE
+            ;;
         esac
-    else
+        ;;
+    *)
         echo
         echo "Invalid license key. Please check the license key."
+        exit 1
+        ;;
+    esac
+    if [ '!' -f $outpath/LICENSE ]; then
+        echo "The LICENSE, LICENSE.QPL, or LICENSE.GPL file shipped with"
+        echo "this software has disappeared."
+        echo
+        echo "Sorry, you are not licensed to use this software."
+        echo "Try re-installing."
+        echo
         exit 1
     fi
 fi
@@ -271,7 +302,7 @@ else
 fi
 
 echo
-echo "This is the $Platform $LicenseType $ProductType edition."
+echo "This is the $Platform $Edition Edition."
 echo
 
 #-------------------------------------------------------------------------------
@@ -293,6 +324,7 @@ CFG_INCREMENTAL=auto
 CFG_QCONFIG=full
 CFG_EMBEDDED=no
 CFG_DEBUG=auto
+CFG_BUILD_ALL=yes
 CFG_DEBUG_RELEASE=no
 CFG_SHARED=yes
 CFG_SM=auto
@@ -344,11 +376,7 @@ CFG_QT3SUPPORT=yes
 CFG_ENDIAN=auto
 CFG_GETADDRINFO=auto
 CFG_RPATH=yes
-if [ "$PLATFORM_MAC" = "yes" ]; then
-    CFG_FRAMEWORK=yes
-else
-    CFG_FRAMEWORK=no
-fi
+CFG_FRAMEWORK=auto
 D_FLAGS=
 I_FLAGS=
 L_FLAGS=
@@ -364,8 +392,6 @@ OPT_SHADOW=maybe
 OPT_FAST=auto
 OPT_VERBOSE=no
 OPT_HELP=
-
-QT_PRODUCT=`echo $LicenseType$ProductType | sed -e 's, ,,g'`
 
 # initalize variables used for installation
 QT_INSTALL_PREFIX=
@@ -436,7 +462,7 @@ while [ "$#" -gt 0 ]; do
         VAL=no
         ;;
     #Qt style yes options
-    -incremental|-qvfb|-profile|-shared|-static|-sm|-xinerama|-xshape|-tablet|-reduce-exports|-pch|-stl|-freetype|-xcursor|-xrandr|-xrender|-fontconfig|-xkb|-nis|-cups|-largefile|-h|-help|-v|-verbose|-debug|-release|-fast|-opengl|-accessibility|-confirm-license|-gnumake|-framework|-qt3support)
+    -incremental|-qvfb|-profile|-shared|-static|-sm|-xinerama|-xshape|-tablet|-reduce-exports|-pch|-stl|-freetype|-xcursor|-xrandr|-xrender|-fontconfig|-xkb|-nis|-cups|-largefile|-h|-help|-v|-verbose|-debug|-release|-fast|-opengl|-accessibility|-confirm-license|-gnumake|-framework|-qt3support|-debug-and-release|-exceptions)
         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
         VAL=yes
         ;;
@@ -604,6 +630,8 @@ while [ "$#" -gt 0 ]; do
         CFG_EMBEDDED="$VAL"
         if [ "$PLATFORM_QWS" != "no" ]; then
             if [ "$PLATFORM_QWS" = "maybe" ]; then
+                PLATFORM_X11=no
+                PLATFORM_MAC=no
                 PLATFORM_QWS=yes
             fi
         else
@@ -653,7 +681,7 @@ while [ "$#" -gt 0 ]; do
         QMAKE_PROJECTS=`echo $QMAKE_PROJECTS | sort | uniq`
         ;;
     x11)
-        if [ "$LicenseType" = "Trolltech" ] && [ "$VAL" = "yes" ]; then
+        if [ "$Edition" = "Trolltech" ] && [ "$VAL" = "yes" ]; then
             if [ "$PLATFORM_MAC" = "yes" ]; then
                 PLATFORM_MAC=no
             elif [ "$PLATFORM_QWS" = "yes" ]; then
@@ -741,7 +769,11 @@ while [ "$#" -gt 0 ]; do
         XPLATFORM="$VAL"
         ;;
     debug-and-release)
-        CFG_DEBUG="auto"
+        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+            CFG_DEBUG_RELEASE="$VAL"
+        else
+            UNKNOWN_OPT=yes
+        fi
         ;;
     release)
         if [ "$VAL" = "yes" ]; then
@@ -1093,7 +1125,7 @@ done
 
 #prefix
 if [ -z "$QT_INSTALL_PREFIX" ]; then
-    if [ "$LicenseType" = "Trolltech" ]; then
+    if [ "$Edition" = "Trolltech" ]; then
         # At Trolltech, we use sandboxed builds by default
 	QT_INSTALL_PREFIX=$outpath
     else
@@ -1151,70 +1183,10 @@ QT_INSTALL_EXAMPLES=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_EXAMPLES"`
 QT_INSTALL_DEMOS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DEMOS"`
 
 #-------------------------------------------------------------------------------
-# generate qconfig.cpp
-#-------------------------------------------------------------------------------
-[ -d $outpath/src/corelib/global ] || mkdir -p $outpath/src/corelib/global
-
-LICENSE_USER_STR=`$relpath/config.tests/unix/padstring 268 "qt_lcnsuser=$Licensee" "\\0"`
-LICENSE_PRODUCTS_STR=`$relpath/config.tests/unix/padstring 268 "qt_lcnsprod=$QT_PRODUCT" "\\0"`
-PREFIX_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_prfxpath=$QT_INSTALL_PREFIX" "\\0"`
-DOCUMENTATION_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_docspath=$QT_INSTALL_DOCS" "\\0"`
-HEADERS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_hdrspath=$QT_INSTALL_HEADERS" "\\0"`
-LIBRARIES_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_libspath=$QT_INSTALL_LIBS" "\\0"`
-BINARIES_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_binspath=$QT_INSTALL_BINS" "\\0"`
-PLUGINS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_plugpath=$QT_INSTALL_PLUGINS" "\\0"`
-DATA_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_datapath=$QT_INSTALL_DATA" "\\0"`
-TRANSLATIONS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_trnspath=$QT_INSTALL_TRANSLATIONS" "\\0"`
-SETTINGS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_stngpath=$QT_INSTALL_SETTINGS" "\\0"`
-EXAMPLES_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_xmplpath=$QT_INSTALL_EXAMPLES" "\\0"`
-DEMOS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_demopath=$QT_INSTALL_DEMOS" "\\0"`
-
-cat > $outpath/src/corelib/global/qconfig.cpp.new <<EOF
-/* License Info */
-static const char qt_configure_licensee_str          [256 + 12] = "$LICENSE_USER_STR";
-static const char qt_configure_licensed_products_str [256 + 12] = "$LICENSE_PRODUCTS_STR";
-/* Installation Info */
-static const char qt_configure_prefix_path_str       [256 + 12] = "$PREFIX_PATH_STR";
-static const char qt_configure_documentation_path_str[256 + 12] = "$DOCUMENTATION_PATH_STR";
-static const char qt_configure_headers_path_str      [256 + 12] = "$HEADERS_PATH_STR";
-static const char qt_configure_libraries_path_str    [256 + 12] = "$LIBRARIES_PATH_STR";
-static const char qt_configure_binaries_path_str     [256 + 12] = "$BINARIES_PATH_STR";
-static const char qt_configure_plugins_path_str      [256 + 12] = "$PLUGINS_PATH_STR";
-static const char qt_configure_data_path_str         [256 + 12] = "$DATA_PATH_STR";
-static const char qt_configure_translations_path_str [256 + 12] = "$TRANSLATIONS_PATH_STR";
-static const char qt_configure_settings_path_str     [256 + 12] = "$SETTINGS_PATH_STR";
-static const char qt_configure_examples_path_str     [256 + 12] = "$EXAMPLES_PATH_STR";
-static const char qt_configure_demos_path_str        [256 + 12] = "$DEMOS_PATH_STR";
-/* strlen( "qt_lcnsxxxx" ) == 12 */
-#define QT_CONFIGURE_LICENSEE qt_configure_licensee_str + 12;
-#define QT_CONFIGURE_LICENSED_PRODUCTS qt_configure_licensed_products_str + 12;
-#define QT_CONFIGURE_PREFIX_PATH qt_configure_prefix_path_str + 12;
-#define QT_CONFIGURE_DOCUMENTATION_PATH qt_configure_documentation_path_str + 12;
-#define QT_CONFIGURE_HEADERS_PATH qt_configure_headers_path_str + 12;
-#define QT_CONFIGURE_LIBRARIES_PATH qt_configure_libraries_path_str + 12;
-#define QT_CONFIGURE_BINARIES_PATH qt_configure_binaries_path_str + 12;
-#define QT_CONFIGURE_PLUGINS_PATH qt_configure_plugins_path_str + 12;
-#define QT_CONFIGURE_DATA_PATH qt_configure_data_path_str + 12;
-#define QT_CONFIGURE_TRANSLATIONS_PATH qt_configure_translations_path_str + 12;
-#define QT_CONFIGURE_SETTINGS_PATH qt_configure_settings_path_str + 12;
-#define QT_CONFIGURE_EXAMPLES_PATH qt_configure_examples_path_str + 12;
-#define QT_CONFIGURE_DEMOS_PATH qt_configure_demos_path_str + 12;
-EOF
-
-# avoid unecessary rebuilds by copying only if qconfig.cpp has changed
-if cmp -s $outpath/src/corelib/global/qconfig.cpp $outpath/src/corelib/global/qconfig.cpp.new; then
-    rm -f $outpath/src/corelib/global/qconfig.cpp.new
-else
-    [ -f $outpath/src/corelib/global/qconfig.cpp ] && chmod +w $outpath/src/corelib/global/qconfig.cpp
-    mv $outpath/src/corelib/global/qconfig.cpp.new $outpath/src/corelib/global/qconfig.cpp
-    chmod -w $outpath/src/corelib/global/qconfig.cpp
-fi
-
-#-------------------------------------------------------------------------------
 # build tree initialization
 #-------------------------------------------------------------------------------
 
-#where to find which..
+# where to find which..
 unixtests=$relpath/config.tests/unix
 WHICH=$unixtests/which.test
 
@@ -1232,27 +1204,37 @@ if [ "$OPT_SHADOW" = "maybe" ]; then
         fi
     fi
 fi
-if [ "$OPT_VERBOSE" = "yes" -a "$OPT_SHADOW" = "yes" ]; then
-    echo "Performing shadow build..."
+if [ "$OPT_SHADOW" = "yes" ]; then
+    if [ -e "$relpath/.qmake.cache" ]; then
+        echo "You cannot make a shadow build from a source tree containing a previous build."
+        echo "Cannot proceed."
+        exit 1
+    fi
+    [ "$OPT_VERBOSE" = "yes" ] && echo "Performing shadow build..."
 fi
 
-#detect build style
-if [ "$CFG_DEBUG" = "auto" ]; then
+# detect build style
+if [ "$CFG_DEBUG_RELEASE" = "yes" ]; then
+    QMAKE_CONFIG="$QMAKE_CONFIG build_all"
+elif [ "$CFG_DEBUG" = "auto" ]; then
     CFG_DEBUG_RELEASE=yes
     CFG_DEBUG=yes
     QMAKE_CONFIG="$QMAKE_CONFIG build_all"
+else
+    CFG_BUILD_ALL=no
 fi
 
-#detect zlib
+# detect zlib
+ZLIB_REQ="-lz zlib.h"
 if [ "$CFG_ZLIB" = "auto" ]; then
-    if $unixtests/checkavail "libzlib" $OPT_VERBOSE -lz zlib.h; then
+    if $unixtests/checkavail "zlib" $OPT_VERBOSE $ZLIB_REQ $L_FLAGS $I_FLAGS; then
        CFG_ZLIB=system
     else
        CFG_ZLIB=yes
     fi
 fi
 
-#detect how jpeg should be built
+# detect how jpeg should be built
 if [ "$CFG_JPEG" = "auto" ]; then
     if [ "$CFG_SHARED" = "yes" ]; then
         CFG_JPEG=plugin
@@ -1260,25 +1242,27 @@ if [ "$CFG_JPEG" = "auto" ]; then
         CFG_JPEG=yes
     fi
 fi
-#detect jpeg
+# detect jpeg
+LIBJPEG_REQ="-ljpeg jpeglib.h"
 if [ "$CFG_LIBJPEG" = "auto" ]; then
-    if $unixtests/checkavail "libjpeg" $OPT_VERBOSE -ljpeg jpeglib.h; then
+    if $unixtests/checkavail "libjpeg" $OPT_VERBOSE $LIBJPEG_REQ $L_FLAGS $I_FLAGS; then
        CFG_LIBJPEG=system
     else
        CFG_LIBJPEG=qt
     fi
 fi
 
-#detect png
+# detect png
+LIBPNG_REQ="-lpng png.h"
 if [ "$CFG_LIBPNG" = "auto" ]; then
-    if $unixtests/checkavail "libpng" $OPT_VERBOSE -lpng png.h; then
+    if $unixtests/checkavail "libpng" $OPT_VERBOSE $LIBPNG_REQ $L_FLAGS $I_FLAGS; then
        CFG_LIBPNG=system
     else
        CFG_LIBPNG=qt
     fi
 fi
 
-#detect accessibility
+# detect accessibility
 if [ "$CFG_ACCESSIBILITY" = "auto" ]; then
     CFG_ACCESSIBILITY=yes
 fi
@@ -1317,8 +1301,8 @@ if [ "$OPT_SHADOW" = "yes" ]; then
     if [ -x "/usr/bin/perl" ] && [ -x "$relpath/bin/syncqt" ]; then
         mkdir -p "$outpath/bin"
         echo "#!/bin/sh" >$outpath/bin/syncqt
-        echo "export QTDIR=$relpath" >>$outpath/bin/syncqt
-        [ "$LicenseType" = "Trolltech" ] && echo "perl $relpath/bin/syncqt -outdir $relpath" >>$outpath/bin/syncqt
+        echo "QTDIR=$relpath; export QTDIR" >>$outpath/bin/syncqt
+        [ "$Edition" = "Trolltech" ] && echo "perl $relpath/bin/syncqt -outdir $relpath" >>$outpath/bin/syncqt
         echo "perl $relpath/bin/syncqt -outdir $outpath" >>$outpath/bin/syncqt
         chmod 755 $outpath/bin/syncqt
     fi
@@ -1348,7 +1332,7 @@ for e in gawk nawk awk; do
     fi
 done
 if [ "$OPT_FAST" = "auto" ]; then
-   if [ '!' -z "$AWK" ] && [ "$LicenseType" = "Trolltech" ]; then
+   if [ '!' -z "$AWK" ] && [ "$Edition" = "Trolltech" ]; then
        OPT_FAST=yes
    else
        OPT_FAST=no
@@ -1611,7 +1595,7 @@ if [ "$PLATFORM_MAC" = "yes" ]; then
       echo "   built with 'macx-g++'" >&2
       echo >&2
       exit 2
-  fi
+    fi
 fi
 
 # check specified platforms are supported
@@ -1697,6 +1681,12 @@ else
         fi
         ARCH=powerpc
         ;;
+    Darwin:*:x86)
+        if [ "$OPT_VERBOSE" = "yes" ]; then
+            echo "    32-bit Apple Intel (x86)"
+        fi
+        ARCH=i386
+        ;;
     AIX:*:00????????00)
         if [ "$OPT_VERBOSE" = "yes" ]; then
         echo "    64-bit IBM PowerPC (powerpc)"
@@ -1758,23 +1748,6 @@ if [ "$OPT_VERBOSE" = "yes" ]; then
         echo "System architecture: '$ARCH'"
 fi
 
-# symlink the arch/$ARCH/arch/ include directory to include/QtCore/arch/
-if [ -d "$outpath/src/corelib/global/arch" ]; then
-    rm -f "$outpath/src/corelib/global/arch"
-else
-    mkdir -p "$outpath/src/corelib/global/"
-fi
-ln -s "$relpath/src/corelib/arch/$ARCH/arch" "$outpath/src/corelib/global/arch"
-for arch in "$outpath/include/QtCore/arch" "$outpath/include/Qt/arch"; do
-   if [ -d "$arch" ]; then
-       rm -f "$arch"
-   else
-       mkdir -p `dirname $arch`
-   fi
-   rm -f "$arch"
-   ln -s "$relpath/src/corelib/arch/$ARCH/arch" "$arch"
-done
-
 #-------------------------------------------------------------------------------
 # tests that don't need qmake (must be run before displaying help)
 #-------------------------------------------------------------------------------
@@ -1827,7 +1800,7 @@ for _SQLDR in $CFG_SQL_AVAILABLE; do
             $unixtests/checkavail "DB2" $OPT_VERBOSE $DB2_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED db2"
             ;;
         ibase)
-            $unixtests/checkavail "IBASE" $OPT_VERBOSE $IBASE_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED ibase"
+            $unixtests/checkavail "InterBase" $OPT_VERBOSE $IBASE_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED ibase"
             ;;
         sqlite2)
             $unixtests/checkavail "SQLite" $OPT_VERBOSE $SQLITE2_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED sqlite2"
@@ -2236,16 +2209,16 @@ Third Party Libraries:
  +  -system-zlib ....... Use zlib from the operating system.
                          See http://www.gzip.org/zlib
 
- *  -no-gif ............ Do not compile in GIF reading support.
-    -qt-gif ............ Compile in GIF reading support.
-                         See src/gui/image/qgif.h
+ *  -no-gif ............ Do not compile the plugin for GIF reading support.
+    -qt-gif ............ Compile the plugin for GIF reading support.
+                         See also src/plugins/imageformats/gif/qgifhandler.h
 
     -no-libpng ......... Do not compile in PNG support.
     -qt-libpng ......... Use the libpng bundled with Qt.
  +  -system-libpng ..... Use libpng from the operating system.
                          See http://www.libpng.org/pub/png
 
-    -no-libjpeg ........ Do not compile in JPEG support.
+    -no-libjpeg ........ Do not compile the plugin for JPEG support.
     -qt-libjpeg ........ Use the libjpeg bundled with Qt.
  +  -system-libjpeg .... Use jpeglib from the operating system.
                          See http://www.ijg.org
@@ -2472,8 +2445,7 @@ fi # Help
 # LICENSING, INTERACTIVE PART
 # -----------------------------------------------------------------------------
 
-# check for license confirmation
-if [ "$LicenseType" = "Open Source" ]; then
+if [ "$Edition" = "OpenSource" ]; then
     while true; do
         if [ "$PLATFORM_QWS" = "yes" ]; then
             echo "You are licensed to use this software under the terms of"
@@ -2513,7 +2485,7 @@ if [ "$LicenseType" = "Open Source" ]; then
         elif [ "$acceptance" = "no" ]; then
             echo "You are not licensed to use this software."
             echo
-            exit 0
+            exit 1
         elif [ "$acceptance" = "G" -o "$acceptance" = "g" ]; then
             more $relpath/LICENSE.GPL
         elif [ "$acceptance" = "Q" -o "$acceptance" = "q" ]; then
@@ -2522,16 +2494,16 @@ if [ "$LicenseType" = "Open Source" ]; then
             fi
         fi
     done
-elif [ "$LicenseType" = "Evaluation" ]; then
+elif [ "$Edition" = "Preview" ]; then
     while true; do
         if [ "$OPT_CONFIRM_LICENSE" = "yes" ]; then
-	    echo "You have already accepted the terms of the $LicenseType license."
+            echo "You have already accepted the terms of the $LicenseType license."
             acceptance=yes
         else
             echo "You are licensed to use this software under the terms of"
-            echo "the Qt EVALUATION VERSION LICENSE AGREEMENT"
+            echo "the Qt PREVIEW VERSION LICENSE AGREEMENT"
             echo
-            echo "Type '?' to view the Evaluation License."
+            echo "Type '?' to read the Preview License."
             echo "Type 'yes' to accept this license offer."
             echo "Type 'no' to decline this license offer."
             echo
@@ -2550,11 +2522,11 @@ elif [ "$LicenseType" = "Evaluation" ]; then
             echo
             exit 0
         elif [ "$acceptance" = "?" ]; then
-            more $relpath/LICENSE.EVAL
+            more $relpath/LICENSE.PREVIEW
         fi
     done
-elif [ "$LicenseType" != "Trolltech" ]; then
-    if [ -f $HOME/.qt-license ]; then
+elif [ "$Edition" != "Trolltech" ]; then
+    if [ -n "$ExpiryDate" ]; then
         ExpiryDate=`echo $ExpiryDate | sed -e "s,-,,g" | tr -d "\n\r"`
         [ -z "$ExpiryDate" ] && ExpiryDate="0"
         Today=`date +%Y%m%d`
@@ -2578,20 +2550,23 @@ elif [ "$LicenseType" != "Trolltech" ]; then
             sleep 3
         fi
     fi
+    TheLicense=`head -n 1 LICENSE`
     while true; do
         if [ "$OPT_CONFIRM_LICENSE" = "yes" ]; then
-	    echo "You have already accepted the terms of the $LicenseType license."
+	    echo "You have already accepted the terms of the $TheLicense."
             acceptance=yes
         else
+            echo "You are licensed to use this software under the terms of"
+            echo "the $TheLicense."
             echo
-            echo "Type '?' to view the $LicenseType License."
+            echo "Type '?' to view the $TheLicense."
             echo "Type 'yes' to accept this license offer."
             echo "Type 'no' to decline this license offer."
             echo
             if echo '\c' | grep '\c' >/dev/null; then
-                echo -n "Do you accept the terms of the $LicenseType License? "
+                echo -n "Do you accept the terms of the $TheLicense? "
             else
-                echo "Do you accept the terms of the $LicenseType License? \c"
+                echo "Do you accept the terms of the $TheLicense? \c"
             fi
             read acceptance
         fi
@@ -2601,13 +2576,14 @@ elif [ "$LicenseType" != "Trolltech" ]; then
         elif [ "$acceptance" = "no" ]; then
             echo "You are not licensed to use this software."
             echo
-            exit 0
+            exit 1
         else [ "$acceptance" = "?" ]
             more $relpath/LICENSE
         fi
     done
 fi
 
+# this should be moved somewhere else
 case "$PLATFORM" in
 aix-*)
     AIX_VERSION=`uname -v`
@@ -2619,6 +2595,83 @@ aix-*)
     ;;
 esac
 
+#-------------------------------------------------------------------------------
+# generate qconfig.cpp
+#-------------------------------------------------------------------------------
+[ -d $outpath/src/corelib/global ] || mkdir -p $outpath/src/corelib/global
+
+LICENSE_USER_STR=`$relpath/config.tests/unix/padstring 268 "qt_lcnsuser=$Licensee" "\\0"`
+LICENSE_PRODUCTS_STR=`$relpath/config.tests/unix/padstring 268 "qt_lcnsprod=$Edition" "\\0"`
+PREFIX_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_prfxpath=$QT_INSTALL_PREFIX" "\\0"`
+DOCUMENTATION_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_docspath=$QT_INSTALL_DOCS" "\\0"`
+HEADERS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_hdrspath=$QT_INSTALL_HEADERS" "\\0"`
+LIBRARIES_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_libspath=$QT_INSTALL_LIBS" "\\0"`
+BINARIES_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_binspath=$QT_INSTALL_BINS" "\\0"`
+PLUGINS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_plugpath=$QT_INSTALL_PLUGINS" "\\0"`
+DATA_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_datapath=$QT_INSTALL_DATA" "\\0"`
+TRANSLATIONS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_trnspath=$QT_INSTALL_TRANSLATIONS" "\\0"`
+SETTINGS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_stngpath=$QT_INSTALL_SETTINGS" "\\0"`
+EXAMPLES_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_xmplpath=$QT_INSTALL_EXAMPLES" "\\0"`
+DEMOS_PATH_STR=`$relpath/config.tests/unix/padstring 268 "qt_demopath=$QT_INSTALL_DEMOS" "\\0"`
+
+cat > $outpath/src/corelib/global/qconfig.cpp.new <<EOF
+/* License Info */
+static const char qt_configure_licensee_str          [256 + 12] = "$LICENSE_USER_STR";
+static const char qt_configure_licensed_products_str [256 + 12] = "$LICENSE_PRODUCTS_STR";
+/* Installation Info */
+static const char qt_configure_prefix_path_str       [256 + 12] = "$PREFIX_PATH_STR";
+static const char qt_configure_documentation_path_str[256 + 12] = "$DOCUMENTATION_PATH_STR";
+static const char qt_configure_headers_path_str      [256 + 12] = "$HEADERS_PATH_STR";
+static const char qt_configure_libraries_path_str    [256 + 12] = "$LIBRARIES_PATH_STR";
+static const char qt_configure_binaries_path_str     [256 + 12] = "$BINARIES_PATH_STR";
+static const char qt_configure_plugins_path_str      [256 + 12] = "$PLUGINS_PATH_STR";
+static const char qt_configure_data_path_str         [256 + 12] = "$DATA_PATH_STR";
+static const char qt_configure_translations_path_str [256 + 12] = "$TRANSLATIONS_PATH_STR";
+static const char qt_configure_settings_path_str     [256 + 12] = "$SETTINGS_PATH_STR";
+static const char qt_configure_examples_path_str     [256 + 12] = "$EXAMPLES_PATH_STR";
+static const char qt_configure_demos_path_str        [256 + 12] = "$DEMOS_PATH_STR";
+/* strlen( "qt_lcnsxxxx" ) == 12 */
+#define QT_CONFIGURE_LICENSEE qt_configure_licensee_str + 12;
+#define QT_CONFIGURE_LICENSED_PRODUCTS qt_configure_licensed_products_str + 12;
+#define QT_CONFIGURE_PREFIX_PATH qt_configure_prefix_path_str + 12;
+#define QT_CONFIGURE_DOCUMENTATION_PATH qt_configure_documentation_path_str + 12;
+#define QT_CONFIGURE_HEADERS_PATH qt_configure_headers_path_str + 12;
+#define QT_CONFIGURE_LIBRARIES_PATH qt_configure_libraries_path_str + 12;
+#define QT_CONFIGURE_BINARIES_PATH qt_configure_binaries_path_str + 12;
+#define QT_CONFIGURE_PLUGINS_PATH qt_configure_plugins_path_str + 12;
+#define QT_CONFIGURE_DATA_PATH qt_configure_data_path_str + 12;
+#define QT_CONFIGURE_TRANSLATIONS_PATH qt_configure_translations_path_str + 12;
+#define QT_CONFIGURE_SETTINGS_PATH qt_configure_settings_path_str + 12;
+#define QT_CONFIGURE_EXAMPLES_PATH qt_configure_examples_path_str + 12;
+#define QT_CONFIGURE_DEMOS_PATH qt_configure_demos_path_str + 12;
+EOF
+
+# avoid unecessary rebuilds by copying only if qconfig.cpp has changed
+if cmp -s $outpath/src/corelib/global/qconfig.cpp $outpath/src/corelib/global/qconfig.cpp.new; then
+    rm -f $outpath/src/corelib/global/qconfig.cpp.new
+else
+    [ -f $outpath/src/corelib/global/qconfig.cpp ] && chmod +w $outpath/src/corelib/global/qconfig.cpp
+    mv $outpath/src/corelib/global/qconfig.cpp.new $outpath/src/corelib/global/qconfig.cpp
+    chmod -w $outpath/src/corelib/global/qconfig.cpp
+fi
+
+# symlink the arch/$ARCH/arch/ include directory to include/QtCore/arch/
+if [ -d "$outpath/src/corelib/global/arch" ]; then
+    rm -f "$outpath/src/corelib/global/arch"
+else
+    mkdir -p "$outpath/src/corelib/global/"
+fi
+ln -s "$relpath/src/corelib/arch/$ARCH/arch" "$outpath/src/corelib/global/arch"
+for arch in "$outpath/include/QtCore/arch" "$outpath/include/Qt/arch"; do
+   if [ -d "$arch" ]; then
+       rm -f "$arch"
+   else
+       mkdir -p `dirname $arch`
+   fi
+   rm -f "$arch"
+   ln -s "$relpath/src/corelib/arch/$ARCH/arch" "$arch"
+done
+
 # -----------------------------------------------------------------------------
 # build qmake
 # -----------------------------------------------------------------------------
@@ -2626,10 +2679,10 @@ esac
 # symlink includes
 if [ -x "/usr/bin/perl" ] && [ -x "$relpath/bin/syncqt" ]; then
     SYNCQT_OPTS=
-    [ "$LicenseType" = "Trolltech" ] &&  SYNCQT_OPTS="$SYNCQT_OPTS -check-includes"
+    [ "$Edition" = "Trolltech" ] &&  SYNCQT_OPTS="$SYNCQT_OPTS -check-includes"
     if [ "$OPT_SHADOW" = "yes" ]; then
        $outpath/bin/syncqt $SYNCQT_OPTS
-    elif [ "$LicenseType" = "Trolltech" ]; then
+    elif [ "$Edition" = "Trolltech" ]; then
        QTDIR=$relpath perl $outpath/bin/syncqt $SYNCQT_OPTS
     fi
 fi
@@ -2685,7 +2738,7 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
         in_mkfile="$relpath/qmake/$in_mkfile"
         mkfile="$outpath/qmake/$mkfile"
         if [ -f "$mkfile" ]; then
-            [ "$LicenseType" = "Trolltech" ] && $WHICH chflags >/dev/null 2>&1 && chflags nouchg $mkfile
+            [ "$Edition" = "Trolltech" ] && $WHICH chflags >/dev/null 2>&1 && chflags nouchg $mkfile
             rm -f $mkfile
         fi
         [ -f "$in_mkfile" ] || continue
@@ -2701,7 +2754,7 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
         grep "^QMAKE_CFLAGS[^_A-Z0-9]" $QMAKESPEC/qmake.conf >>$mkfile
         grep "^QMAKE_CXXFLAGS[^_A-Z0-9]" $QMAKESPEC/qmake.conf | sed "s,\$\$QMAKE_CFLAGS,\$(QMAKE_CFLAGS)," >>$mkfile
         grep "^QMAKE_LFLAGS[^_A-Z0-9]" $QMAKESPEC/qmake.conf >>$mkfile
-        if [ "$LicenseType" = "Open Source" ]; then
+        if [ "$Edition" = "OpenSource" -o "$Edition" = "Preview" ]; then
             EXTRA_CFLAGS="$EXTRA_CFLAGS -DQMAKE_OPENSOURCE_EDITION"
             EXTRA_CXXFLAGS="$EXTRA_CXXFLAGS -DQMAKE_OPENSOURCE_EDITION"
         else
@@ -2738,7 +2791,7 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
             -e "s,@QT_INSTALL_DATA@,\$(INSTALL_ROOT)$QMAKE_DATA_DIR,g" \
             -e "s,@QMAKE_QTOBJS@,$EXTRA_SOURCES,g" -e "s,@QMAKESPEC@,$QMAKESPEC,g" $in_mkfile >>$mkfile
 
-        if [ "$LicenseType" = "Trolltech" ] &&
+        if [ "$Edition" = "Trolltech" ] &&
             $WHICH makedepend >/dev/null 2>&1 && grep 'depend:' "$mkfile" >/dev/null 2>&1; then
             (cd $outpath/qmake && $MAKE -f $mkfile depend) >/dev/null 2>&1
         fi
@@ -2785,6 +2838,21 @@ if [ "$CFG_STL" = "auto" ]; then
         CFG_STL=yes
     fi
 fi
+
+# find the default framework value
+if [ "$PLATFORM_MAC" = "yes" ]; then
+    if [ "$CFG_FRAMEWORK" = "auto" ]; then
+        CFG_FRAMEWORK="$CFG_SHARED"
+    elif [ "$CFG_FRAMEWORK" = "yes" ] && [ "$CFG_SHARED" = "no" ]; then
+	echo
+	echo "WARNING: Using static linking will disable the use of Mac frameworks."
+	echo
+        CFG_FRAMEWORK="no"
+    fi
+else
+    CFG_FRAMEWORK=no
+fi
+
 
 # find if the platform supports IPv6
 if [ "$CFG_IPV6" = "auto" ]; then
@@ -2854,31 +2922,15 @@ if [ "$CFG_QWS_DEPTHS" = "prompted" -a "$PLATFORM_QWS" = "yes" ]; then
     fi
 fi
 if [ -n "$CFG_QWS_DEPTHS" -a "$PLATFORM_QWS" = "yes" ]; then
-    D4=;D8=;D16=;D24=;D32=
     for D in `echo "$CFG_QWS_DEPTHS" | sed -e 's/,/ /g'`; do
-        case "$D" in
-            4) D4=y; D8=y
-        ;;  8) D8=y
-        ;; 16) D16=y
-        ;; 24) D24=y; D32=y
-        ;; 32) D32=y
-        esac
+	case $D in
+	    4)  QCONFIG_FLAGS="$QCONFIG_FLAGS QT_QWS_DEPTH_8";;
+	    24) QCONFIG_FLAGS="$QCONFIG_FLAGS QT_QWS_DEPTH_32";;
+	esac
+	case $D in
+	    4|8|16|24|32) QCONFIG_FLAGS="$QCONFIG_FLAGS QT_QWS_DEPTH_$D";;
+	esac
     done
-    if [ -z "$D4" ]; then
-        QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_QWS_DEPTH_4"
-    fi
-    if [ -z "$D8" ]; then
-        QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_QWS_DEPTH_8"
-    fi
-    if [ -z "$D16" ]; then
-        QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_QWS_DEPTH_16"
-    fi
-    if [ -z "$D24" ]; then
-        QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_QWS_DEPTH_24"
-    fi
-    if [ -z "$D32" ]; then
-        QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_QWS_DEPTH_32"
-    fi
 fi
 
 # enable Qt3 support functionality
@@ -2911,7 +2963,7 @@ minimal|small|medium|large|full)
     ;;
 *)
     # not known to be sufficient for anything
-    if [ '!' -f $relpath/src/tools/qconfig-$CFG_QCONFIG.h ]; then
+    if [ '!' -f $relpath/src/corelib/global/qconfig-$CFG_QCONFIG.h ]; then
         echo >&2 "No such configuration: $CFG_QCONFIG"
         OPT_HELP=yes
     fi
@@ -2935,6 +2987,7 @@ fi
 if [ "$PLATFORM_QWS" = "yes" ]; then
     QMAKE_OUTDIR="${QMAKE_OUTDIR}-emb-$CFG_EMBEDDED"
     QMAKE_CONFIG="$QMAKE_CONFIG embedded"
+    QT_CONFIG="$QT_CONFIG embedded"
     rm -f src/.moc/$QMAKE_OUTDIR/allmoc.cpp # needs remaking if config changes
 fi
 QMAKE_VARS="$QMAKE_VARS \"OBJECTS_DIR=.obj/$QMAKE_OUTDIR\""
@@ -3055,8 +3108,10 @@ fi
 [ '!' -z "$L_FLAGS" ] && QMAKE_VARS="$QMAKE_VARS \"QMAKE_LIBDIR_FLAGS+=$L_FLAGS\""
 [ '!' -z "$l_FLAGS" ] && QMAKE_VARS="$QMAKE_VARS \"LIBS+=$l_FLAGS\""
 
-if [ "$CFG_RPATH" = "yes" ] && [ "$PLATFORM_MAC" = "yes" ]; then  
-    QMAKE_CONFIG="$QMAKE_CONFIG absolute_library_soname"
+if [ "$PLATFORM_MAC" = "yes" ]; then  
+    if [ "$CFG_RPATH" = "yes" ]; then  
+       QMAKE_CONFIG="$QMAKE_CONFIG absolute_library_soname"
+    fi
 elif [ -z "`grep QMAKE_RPATH $XQMAKESPEC/qmake.conf | awk '{print $3;}'`" ]; then
     if [ -n "$RPATH_FLAGS" ]; then
         echo
@@ -3150,7 +3205,7 @@ esac
 #   Options:
 #     minimal-config small-config medium-config large-config full-config
 #
-#   Enterprise/Open Source edition modules:
+#   Different edition modules:
 #     network canvas table xml opengl sql
 #
 #   Options:
@@ -3166,7 +3221,6 @@ esac
 #
 #     internal
 #     nocrosscompiler
-#     enterprise
 #     GNUmake
 #     largefile
 #     nis
@@ -3264,12 +3318,18 @@ full)
     echo "/* Everything */" >$outpath/src/corelib/global/qconfig.h.new
     ;;
 *)
-    QCONFIGFILE=qconfig-$CFG_QCONFIG.h
-    echo "/* Copied from $QCONFIGFILE */" >$outpath/src/corelib/global/qconfig.h.new
-    cat $relpath/src/tools/$QCONFIGFILE >>$outpath/src/corelib/global/qconfig.h.new
+    tmpconfig=$outpath/src/corelib/global/qconfig.h.new
+    echo "#ifndef QT_BOOTSTRAPPED" >$tmpconfig
+    echo "#include <qconfig-$CFG_QCONFIG.h>" >>$tmpconfig
+    echo "#endif" >>$tmpconfig
     ;;
 esac
 cat >> $outpath/src/corelib/global/qconfig.h.new <<EOF
+
+/* Qt Edition */
+#ifndef QT_EDITION
+#  define QT_EDITION $QT_EDITION
+#endif
 
 #define QT_BUILD_KEY "$QT_BUILD_KEY"
 
@@ -3360,8 +3420,8 @@ done
 
 # Add other configuration options to the qconfig.h file
 [ "$CFG_GIF" = "yes" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_BUILTIN_GIF_READER=1"
-[ "$CFG_PNG" != "yes" ]      && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEIO_PNG"
-[ "$CFG_JPEG" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEIO_JPEG"
+[ "$CFG_PNG" != "yes" ]      && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_PNG"
+[ "$CFG_JPEG" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_JPEG"
 [ "$CFG_ZLIB" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_ZLIB"
 
 [ "$CFG_EXCEPTION_SUPPORT" = "no" ] && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_EXCEPTIONS"
@@ -3383,7 +3443,7 @@ done
 [ "$CFG_XSHAPE" = "no" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SHAPE"
 
 # sort QCONFIG_FLAGS for neatness if we can
-[ '!' -z "$AWK" ] && QCONFIG_FLAGS=`echo $QCONFIG_FLAGS | $AWK '{ gsub(" ", "\n"); print }' | sort`
+[ '!' -z "$AWK" ] && QCONFIG_FLAGS=`echo $QCONFIG_FLAGS | $AWK '{ gsub(" ", "\n"); print }' | sort | uniq`
 QCONFIG_FLAGS=`echo $QCONFIG_FLAGS`
 
 if [ -n "$QCONFIG_FLAGS" ]; then
@@ -3457,6 +3517,9 @@ if [ "$CFG_DEBUG" = "yes" ]; then
     QT_CONFIG="$QT_CONFIG debug"
 elif [ "$CFG_DEBUG" = "no" ]; then
     QTCONFIG_CONFIG="$QTCONFIG_CONFIG release"
+    if [ "$CFG_DEBUG_RELEASE" = "yes" ]; then
+        QT_CONFIG="$QT_CONFIG debug"
+    fi
     QT_CONFIG="$QT_CONFIG release"
 fi
 if [ "$CFG_STL" = "yes" ]; then
@@ -3469,7 +3532,7 @@ else
 fi
 cat >>$QTCONFIG.tmp <<EOF
 CONFIG += $QTCONFIG_CONFIG
-QT_PRODUCT = $QT_PRODUCT
+QT_EDITION = $Edition
 QT_CONFIG += $QT_CONFIG
 EOF
 if [ "$CFG_RPATH" = "yes" ]; then
@@ -3493,6 +3556,7 @@ ARCH = $ARCH
 CONFIG += $QMAKE_CONFIG dylib create_prl link_prl depend_includepath fix_output_dirs QTDIR_build
 QT_SOURCE_TREE = $relpath
 QT_BUILD_TREE = $outpath
+DEFINES *= QT_EDITION=QT_EDITION_DESKTOP
 QMAKE_ABSOLUTE_SOURCE_ROOT = \$\$QT_SOURCE_TREE
 QMAKE_MOC_SRC    = \$\$QT_BUILD_TREE/src/moc
 
@@ -3534,7 +3598,7 @@ for i in $QMAKE_VARS; do
 done
 # incrementals
 INCREMENTAL=""
-[ "$CFG_INCREMENTAL" = "auto" ] && $WHICH p4 >/dev/null 2>&1 && [ "$LicenseType" = "Trolltech" ] && CFG_INCREMENTAL="yes"
+[ "$CFG_INCREMENTAL" = "auto" ] && $WHICH p4 >/dev/null 2>&1 && [ "$Edition" = "Trolltech" ] && CFG_INCREMENTAL="yes"
 if [ "$CFG_INCREMENTAL" = "yes" ]; then
     openfiles=`find $relpath -perm u+w -mtime -3 | grep 'cpp$'`
     for f in $openfiles; do
@@ -3848,7 +3912,7 @@ for file in .projects .projects.3; do
         case $a in
         *winmain/winmain.pro) continue ;;
         */qmake/qmake.pro) continue ;;
-        *moc*|*rcc*) SPEC=$QMAKESPEC ;;
+        *moc*|*rcc*|*uic*) SPEC=$QMAKESPEC ;;
         *) SPEC=$XQMAKESPEC ;;
         esac
         dir=`dirname $a | sed -e "s;$sepath;.;g"`
@@ -3877,12 +3941,16 @@ for file in .projects .projects.3; do
                 echo " (fast)\c"
             fi
             echo
+	
             cat >${OUTDIR}/Makefile <<EOF
 # ${OUTDIR}/Makefile: generated by configure
 #
 # WARNING: This makefile will be replaced with a real makefile.
 # All changes made to this file will be lost.
-
+EOF
+            [ "$CFG_BUILD_ALL" = "no" ] && echo "first_target: first" >>${OUTDIR}/Makefile
+        
+            cat >>${OUTDIR}/Makefile <<EOF
 all clean install qmake first Makefile: FORCE
 	$QMAKE_EXEC
 	cd $OUTDIR

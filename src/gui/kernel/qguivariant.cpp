@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -77,7 +77,6 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::Color:
         v_construct<QColor>(x, copy);
         break;
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
         v_construct<QPalette>(x, copy);
         break;
@@ -85,7 +84,6 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::ColorGroup:
         v_construct<QColorGroup>(x, copy);
         break;
-#endif
 #endif
 #ifndef QT_NO_ICON
     case QVariant::Icon:
@@ -98,7 +96,7 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::TextLength:
         v_construct<QTextLength>(x, copy);
         break;
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
         v_construct<QKeySequence>(x, copy);
         break;
@@ -109,9 +107,11 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::SizePolicy:
         v_construct<QSizePolicy>(x, copy);
         break;
+#ifndef QT_NO_CURSOR
     case QVariant::Cursor:
         v_construct<QCursor>(x, copy);
         break;
+#endif
     default:
         qcoreVariantHandler()->construct(x, copy);
         return;
@@ -149,7 +149,6 @@ static void clear(QVariant::Private *d)
     case QVariant::Color:
         v_clear<QColor>(d);
         break;
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
         v_clear<QPalette>(d);
         break;
@@ -157,7 +156,6 @@ static void clear(QVariant::Private *d)
     case QVariant::ColorGroup:
         v_clear<QColorGroup>(d);
         break;
-#endif
 #endif
 #ifndef QT_NO_ICON
     case QVariant::Icon:
@@ -173,7 +171,7 @@ static void clear(QVariant::Private *d)
     case QVariant::SizePolicy:
         v_clear<QSizePolicy>(d);
         break;
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
         v_clear<QKeySequence>(d);
         break;
@@ -216,14 +214,12 @@ static bool isNull(const QVariant::Private *d)
     case QVariant::Font:
     case QVariant::Brush:
     case QVariant::Color:
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
 #ifdef QT3_SUPPORT
     case QVariant::ColorGroup:
 #endif
-#endif
     case QVariant::SizePolicy:
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
 #endif
     case QVariant::Pen:
@@ -243,11 +239,9 @@ static void load(QVariant::Private *d, QDataStream &s)
         s >> *v_cast<QCursor>(d);
         break;
 #endif
-#ifndef QT_NO_IMAGEIO
-    case QVariant::Bitmap: {
+    case QVariant::Bitmap: 
         s >> *v_cast<QBitmap>(d);
         break;
-#endif
     case QVariant::Region:
         s >> *v_cast<QRegion>(d);
         break;
@@ -257,21 +251,18 @@ static void load(QVariant::Private *d, QDataStream &s)
     case QVariant::Font:
         s >> *v_cast<QFont>(d);
         break;
-#ifndef QT_NO_IMAGEIO
     case QVariant::Pixmap:
         s >> *v_cast<QPixmap>(d);
         break;
     case QVariant::Image:
         s >> *v_cast<QImage>(d);
         break;
-#endif
     case QVariant::Brush:
         s >> *v_cast<QBrush>(d);
         break;
     case QVariant::Color:
         s >> *v_cast<QColor>(d);
         break;
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
         s >> *v_cast<QPalette>(d);
         break;
@@ -280,9 +271,8 @@ static void load(QVariant::Private *d, QDataStream &s)
         qt_stream_in_qcolorgroup(s, *v_cast<QColorGroup>(d));
         break;
 #endif
-#endif
 #ifndef QT_NO_ICON
-    case QVariant::Icon:
+    case QVariant::Icon: {
         QPixmap x;
         s >> x;
         *v_cast<QIcon>(d) = QIcon(x);
@@ -310,11 +300,11 @@ static void load(QVariant::Private *d, QDataStream &s)
         sp->setHeightForWidth(bool(hfw));
         break;
     }
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
         s >> *v_cast<QKeySequence>(d);
         break;
-#endif // QT_NO_ACCEL
+#endif // QT_NO_SHORTCUT
     case QVariant::Pen:
         s >> *v_cast<QPen>(d);
         break;
@@ -328,13 +318,13 @@ static void load(QVariant::Private *d, QDataStream &s)
 static void save(const QVariant::Private *d, QDataStream &s)
 {
     switch (d->type) {
+#ifndef QT_NO_CURSOR
     case QVariant::Cursor:
         s << *v_cast<QCursor>(d);
         break;
-    case QVariant::Bitmap:
-#ifndef QT_NO_IMAGEIO
-        s << *v_cast<QBitmap>(d);
 #endif
+    case QVariant::Bitmap:
+        s << *v_cast<QBitmap>(d);
         break;
     case QVariant::Polygon:
         s << *v_cast<QPolygon>(d);
@@ -346,14 +336,10 @@ static void save(const QVariant::Private *d, QDataStream &s)
         s << *v_cast<QFont>(d);
         break;
     case QVariant::Pixmap:
-#ifndef QT_NO_IMAGEIO
         s << *v_cast<QPixmap>(d);
-#endif
         break;
     case QVariant::Image:
-#ifndef QT_NO_IMAGEIO
         s << *v_cast<QImage>(d);
-#endif
         break;
     case QVariant::Brush:
         s << *v_cast<QBrush>(d);
@@ -361,7 +347,6 @@ static void save(const QVariant::Private *d, QDataStream &s)
     case QVariant::Color:
         s << *v_cast<QColor>(d);
         break;
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
         s << *v_cast<QPalette>(d);
         break;
@@ -369,7 +354,6 @@ static void save(const QVariant::Private *d, QDataStream &s)
     case QVariant::ColorGroup:
         qt_stream_out_qcolorgroup(s, *v_cast<QColorGroup>(d));
         break;
-#endif
 #endif
 #ifndef QT_NO_ICON
     case QVariant::Icon:
@@ -384,13 +368,13 @@ static void save(const QVariant::Private *d, QDataStream &s)
         s << *v_cast<QTextLength>(d);
         break;
     case QVariant::SizePolicy:
-        {
-            const QSizePolicy *p = v_cast<QSizePolicy>(d);
-            s << (int) p->horizontalPolicy() << (int) p->verticalPolicy()
-              << (qint8) p->hasHeightForWidth();
-        }
-        break;
-#ifndef QT_NO_ACCEL
+    {
+        const QSizePolicy *p = v_cast<QSizePolicy>(d);
+        s << (int) p->horizontalPolicy() << (int) p->verticalPolicy()
+          << (qint8) p->hasHeightForWidth();
+    }
+    break;
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
         s << *v_cast<QKeySequence>(d);
         break;
@@ -402,8 +386,7 @@ static void save(const QVariant::Private *d, QDataStream &s)
         qcoreVariantHandler()->save(d, s);
     }
 }
-#endif
-
+#endif // QT_NO_DATASTREAM
 
 static bool compare(const QVariant::Private *a, const QVariant::Private *b)
 {
@@ -430,13 +413,11 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         return *v_cast<QBrush>(a) == *v_cast<QBrush>(b);
     case QVariant::Color:
         return *v_cast<QColor>(a) == *v_cast<QColor>(b);
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
         return *v_cast<QPalette>(a) == *v_cast<QPalette>(b);
 #ifdef QT3_SUPPORT
     case QVariant::ColorGroup:
         return *v_cast<QColorGroup>(a) == *v_cast<QColorGroup>(b);
-#endif
 #endif
 #ifndef QT_NO_ICON
     case QVariant::Icon:
@@ -448,7 +429,7 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         return *v_cast<QTextLength>(a) == *v_cast<QTextLength>(b);
     case QVariant::SizePolicy:
         return *v_cast<QSizePolicy>(a) == *v_cast<QSizePolicy>(b);
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
         return *v_cast<QKeySequence>(a) == *v_cast<QKeySequence>(b);
 #endif
@@ -475,7 +456,7 @@ static bool convert(const QVariant::Private *d, QVariant::Type t,
     case QVariant::String: {
         QString *str = static_cast<QString *>(result);
         switch (d->type) {
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
         case QVariant::KeySequence:
             *str = QString(*v_cast<QKeySequence>(d));
             return true;
@@ -518,7 +499,7 @@ static bool convert(const QVariant::Private *d, QVariant::Type t,
             return true;
         }
         break;
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::Int:
         if (d->type == QVariant::KeySequence) {
             *static_cast<int *>(result) = (int)(*(v_cast<QKeySequence>(d)));
@@ -543,7 +524,7 @@ static bool convert(const QVariant::Private *d, QVariant::Type t,
             return true;
         }
         break;
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence: {
         QKeySequence *seq = static_cast<QKeySequence *>(result);
         switch (d->type) {
@@ -633,11 +614,9 @@ static void streamDebug(QDebug dbg, const QVariant &v)
     case QVariant::Color:
         dbg.nospace() << qvariant_cast<QColor>(v);
         break;
-#ifndef QT_NO_PALETTE
     case QVariant::Palette:
 //        dbg.nospace() << qvariant_cast<QPalette>(v); //FIXME
         break;
-#endif
 #ifndef QT_NO_ICON
     case QVariant::Icon:
 //        dbg.nospace() << qvariant_cast<QIcon>(v); // FIXME
@@ -646,7 +625,7 @@ static void streamDebug(QDebug dbg, const QVariant &v)
     case QVariant::SizePolicy:
 //        dbg.nospace() << qvariant_cast<QSizePolicy>(v); //FIXME
         break;
-#ifndef QT_NO_ACCEL
+#ifndef QT_NO_SHORTCUT
     case QVariant::KeySequence:
         dbg.nospace() << qvariant_cast<QKeySequence>(v);
         break;

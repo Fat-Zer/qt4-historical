@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the painting module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -43,38 +43,37 @@
     \mainclass
 
     A color is normally specified in terms of RGB (red, green, and blue)
-    components, but it is also possible to specify HSV (hue, saturation,
-    and value) or set a color name (the names are copied from from the
-    X11 color database).
+    components, but it is also possible to specify HSV (hue, saturation, and
+    value) or set a color name (the color name can be any of the SVG 1.0 color
+    names).
 
     QColor's validity (isValid()) indicates whether it is legal at
     all. For example, a RGB color with RGB values out of range is
     illegal. For performance reasons, QColor mostly disregards illegal
     colors. Therefore, the result of using an invalid color is undefined.
 
-    There are 20 predefined QColor objects: \c white, \c black, \c
-    red, \c darkRed, \c green, \c darkGreen, \c blue, \c darkBlue, \c
-    cyan, \c darkCyan, \c magenta, \c darkMagenta, \c yellow, \c
-    darkYellow, \c gray, \c darkGray, \c lightGray, \c color0, \c
-    color1, and \c transparent, accessible as members of the Qt
-    namespace (i.e. \c Qt::red).
+    There are 20 predefined QColor objects: Qt::white, Qt::black,
+    Qt::red, Qt::darkRed, Qt::green, Qt::darkGreen, Qt::blue,
+    Qt::darkBlue, Qt::cyan, Qt::darkCyan, Qt::magenta,
+    Qt::darkMagenta, Qt::yellow, Qt::darkYellow, Qt::gray,
+    Qt::darkGray, Qt::lightGray, Qt::color0, Qt::color1, and
+    Qt::transparent.
 
     \img qt-colors.png Qt Colors
 
-    The colors \c Qt::color0 (zero pixel value) and \c Qt::color1 (non-zero
-    pixel value) are special colors for drawing in QBitmaps. Painting with \c
+    The colors Qt::color0 (zero pixel value) and Qt::color1 (non-zero
+    pixel value) are special colors for drawing in QBitmaps. Painting with
     Qt::color0 sets the bitmap bits to 0 (transparent, i.e. background), and
-    painting with \c Qt::color1 sets the bits to 1 (opaque, i.e. foreground).
+    painting with Qt::color1 sets the bits to 1 (opaque, i.e. foreground).
 
     QColor is platform and device independent. The QColormap class maps the
     color to the hardware.
 
-    A color can be set by passing an RGB string to setNamedColor() (such
-    as "#112233"), or a color name (such as "blue"). The names are taken
-    from X11's rgb.txt database but can also be used on all platforms. To get
-    a lighter or darker color use light() and dark() respectively.
-    Colors can also be set using setRgb() and setHsv(). The color
-    components can be accessed in one go with rgb() and hsv(), or
+    A color can be set by passing an RGB string to setNamedColor() (such as
+    "#112233"), or a color name (such as "blue"). The names are taken from the
+    SVG 1.0 color names. To get a lighter or darker color use light() and
+    dark() respectively.  Colors can also be set using setRgb() and setHsv().
+    The color components can be accessed in one go with rgb() and hsv(), or
     individually with red(), green(), and blue().
 
     \section1 HSV Colors
@@ -291,15 +290,9 @@ QColor::QColor(QRgb color)
 
 QString QColor::name() const
 {
-#ifndef QT_NO_SPRINTF
     QString s;
     s.sprintf("#%02x%02x%02x", red(), green(), blue());
     return s;
-#else
-    char s[20];
-    sprintf(s, "#%02x%02x%02x", red(), green(), blue());
-    return QString(s);
-#endif
 }
 
 /*!
@@ -1093,7 +1086,7 @@ QColor QColor::toRgb() const
     }
 
     return color;
-};
+}
 
 
 #define Q_MAX_3(a, b, c) ( ( a > b && a > c) ? a : (b > c ? b : c) )

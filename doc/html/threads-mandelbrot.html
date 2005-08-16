@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/doc/src/examples/mandelbrot.qdoc -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/mandelbrot.qdoc -->
 <head>
     <title>Qt 4.0: Mandelbrot Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,8 +16,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Mandelbrot Example</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Mandelbrot Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="threads-mandelbrot-mandelbrotwidget-cpp.html">threads/mandelbrot/mandelbrotwidget.cpp</a></li>
@@ -27,8 +27,8 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="threads-mandelbrot-main-cpp.html">threads/mandelbrot/main.cpp</a></li>
 </ul>
 <p>The Mandelbrot example shows how to use a worker thread to perform heavy computations without blocking the main thread's event loop.</p>
-<p>The heavy computation here is the Mandelbrot set, probably the world's most famous fractal. These days, while sophisticated programs such as <a href="http://xaos.theory.org/">XaoS</a> that provide real-time zooming in the Mandelbrot set, the standard Mandelbrot algorithm is just slow enough for our purposes.</p>
-<center><img src="images/mandelbrot.png" alt="Screenshot of the Mandelbrot example" /></center><p>In real life, the approach described here is applicable to a large set of problems, including synchronous network I/O and database access, where the user interface must remain responsive while some heavy operation is taking place. The <a href="network-blockingfortuneclient.html">network/blockingfortuneclient</a> example shows the same principle at work in a TCP client.</p>
+<p>The heavy computation here is the Mandelbrot set, probably the world's most famous fractal. These days, while sophisticated programs such as <a href="http://xaos.sourceforge.net/">XaoS</a> that provide real-time zooming in the Mandelbrot set, the standard Mandelbrot algorithm is just slow enough for our purposes.</p>
+<p align="center"><img src="images/mandelbrot.png" alt="Screenshot of the Mandelbrot example" /></p><p>In real life, the approach described here is applicable to a large set of problems, including synchronous network I/O and database access, where the user interface must remain responsive while some heavy operation is taking place. The <a href="network-blockingfortuneclient.html">network/blockingfortuneclient</a> example shows the same principle at work in a TCP client.</p>
 <p>The Mandelbrot application supports zooming and scrolling using the mouse or the keyboard. To avoid freezing the main thread's event loop (and, as a consequence, the application's user interface), we put all the fractal computation in a separate worker thread. The thread emits a signal when it is done rendering the fractal.</p>
 <p>During the time where the worker thread is recomputing the fractal to reflect the new zoom factor position, the main thread simply scales the previously rendered pixmap to provide immediate feedback. The result doesn't look as good as what the worker thread eventually ends up providing, but at least it makes the application more responsive. The sequence of screenshots below shows the original image, the scaled image, and the rerendered image.</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -460,6 +460,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

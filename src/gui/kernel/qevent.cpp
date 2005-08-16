@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -114,7 +114,7 @@ QInputEvent::~QInputEvent()
     The \a position is the mouse cursor's position relative to the
     receiving widget.
     The \a button that caused the event is given as a value from
-    the \l Qt::ButtonState enum. If the event \a type is
+    the Qt::MouseButton enum. If the event \a type is
     \l MouseMove, the appropriate button for this event is Qt::NoButton.
     The mouse and keyboard states at the time of the event are specified by
     \a buttons and \a modifiers.
@@ -653,8 +653,8 @@ QKeyEvent::~QKeyEvent()
     after the event occurred.
 
     \warning This function cannot always be trusted. The user can
-    confuse it by pressing both \key{Shift} keys pressed
-    simulatenously and releasing one of them, for example.
+    confuse it by pressing both \key{Shift} keys simulatenously and
+    releasing one of them, for example.
 
     \sa QApplication::keyboardModifiers()
 */
@@ -1037,8 +1037,8 @@ QResizeEvent::~QResizeEvent()
     want the widget to be closed.
 
     \sa QWidget::close(), QWidget::hide(), QObject::destroyed(),
-    QApplication::setMainWidget(), QApplication::lastWindowClosed(),
-    QApplication::exec(), QApplication::quit()
+        QCoreApplication::exec(), QCoreApplication::quit(),
+        QApplication::lastWindowClosed()
 */
 
 /*!
@@ -1823,6 +1823,7 @@ QTabletEvent::~QTabletEvent()
     The high precision y position of the tablet device.
 */
 
+#ifndef QT_NO_DRAGANDDROP
 /*!
     Creates a QDragMoveEvent of the required \a type indicating
     that the mouse is at position \a pos given within a widget.
@@ -2154,7 +2155,7 @@ void QDropEvent::setDropAction(Qt::DropAction action)
 
     Sets the drop action to be the proposed action.
 
-    \sa setDropAction(), proposedAction(), accept()
+    \sa setDropAction(), proposedAction(), {QEvent::accept()}{accept()}
 */
 
 #ifdef QT3_SUPPORT
@@ -2306,6 +2307,7 @@ QDragLeaveEvent::QDragLeaveEvent()
 QDragLeaveEvent::~QDragLeaveEvent()
 {
 }
+#endif // QT_NO_DRAGANDDROP
 
 /*!
     \class QHelpEvent
@@ -2683,7 +2685,7 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
     // More useful event output could be added here
     if (!e)
         return dbg << "QEvent(this = 0x0)";
-    const char *n;
+    const char *n = 0;
     switch (e->type()) {
     case QEvent::Timer:
         n = "Timer";
@@ -2716,6 +2718,8 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
                       << ")";
     }
     return dbg.space();
+
+
     case QEvent::ToolTip:
         n = "ToolTip";
         break;
@@ -2752,11 +2756,11 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
             }
             dbg.nospace() << "QKeyEvent("  << n
                           << ", " << hex << ke->key()
-                        << ", " << hex << (int)ke->modifiers()
-                        << ", \"" << ke->text()
-                        << "\", " << ke->isAutoRepeat()
-                        << ", " << ke->count()
-                        << ")";
+                          << ", " << hex << (int)ke->modifiers()
+                          << ", \"" << ke->text()
+                          << "\", " << ke->isAutoRepeat()
+                          << ", " << ke->count()
+                          << ")";
         }
         return dbg.space();
     case QEvent::FocusIn:
@@ -2795,6 +2799,14 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
     case QEvent::FileOpen:
         n = "FileOpen";
         break;
+#ifdef QT3_SUPPORT
+    case QEvent::ChildInserted: n = "ChildInserted";
+#endif
+    case QEvent::ChildAdded: n = n ? n : "ChildAdded";
+    case QEvent::ChildPolished: n = n ? n : "ChildPolished";
+    case QEvent::ChildRemoved: n = n ? n : "ChildRemoved";
+        dbg.nospace() << "QChildEvent(" << n << ", " << (static_cast<const QChildEvent*>(e))->child();
+        return dbg.space();
     default:
         dbg.nospace() << "QEvent(" << (const void *)e << ", type = " << e->type() << ')';
         return dbg.space();
@@ -2809,6 +2821,7 @@ QDebug operator<<(QDebug dbg, const QEvent *e) {
 #endif
 }
 #endif
+
 
 /*!
     \internal

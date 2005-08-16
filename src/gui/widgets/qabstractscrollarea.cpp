@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,6 +22,9 @@
 ****************************************************************************/
 
 #include "qabstractscrollarea.h"
+
+#ifndef QT_NO_SCROLLAREA
+
 #include "qscrollbar.h"
 #include "qapplication.h"
 #include "qstyle.h"
@@ -30,6 +33,7 @@
 
 #include "qabstractscrollarea_p.h"
 #include <qwidget.h>
+#include <qdebug.h>
 
 /*!
     \class QAbstractScrollArea qabstractscrollarea.h
@@ -100,7 +104,7 @@ bool QAbstractScrollAreaHelper::event(QEvent *e) {
 QAbstractScrollAreaPrivate::QAbstractScrollAreaPrivate()
     :hbar(0), vbar(0), vbarpolicy(Qt::ScrollBarAsNeeded), hbarpolicy(Qt::ScrollBarAsNeeded),
      viewport(0), left(0), top(0), right(0), bottom(0),
-     xoffset(0), yoffset(0)
+     xoffset(0), yoffset(0), vend(false), hend(false)
 {
 }
 
@@ -116,12 +120,10 @@ void QAbstractScrollAreaPrivate::init()
     QObject::connect(hbar, SIGNAL(rangeChanged(int,int)), q, SLOT(showOrHideScrollBars()), Qt::QueuedConnection);
     vbar = new QScrollBar(Qt::Vertical, q);
     QObject::connect(vbar, SIGNAL(valueChanged(int)), q, SLOT(vslide(int)));
-    QObject::connect(hbar, SIGNAL(rangeChanged(int,int)), q, SLOT(showOrHideScrollBars()), Qt::QueuedConnection);
+    QObject::connect(vbar, SIGNAL(rangeChanged(int,int)), q, SLOT(showOrHideScrollBars()), Qt::QueuedConnection);
     viewport = new QAbstractScrollAreaHelper(q);
     viewport->setBackgroundRole(QPalette::Base);
     viewport->setFocusProxy(q);
-    QEvent userEvent(QEvent::User);
-    QApplication::sendEvent(viewport, &userEvent);
 }
 
 void QAbstractScrollAreaPrivate::layoutChildren()
@@ -236,7 +238,7 @@ QSize QAbstractScrollArea::maximumViewportSize() const
     \property QAbstractScrollArea::verticalScrollBarPolicy
     \brief the policy for the vertical scroll bar
 
-    The default policy is \c Qt::ScrollBarAsNeeded.
+    The default policy is Qt::ScrollBarAsNeeded.
 
     \sa horizontalScrollBarPolicy
 */
@@ -271,7 +273,7 @@ QScrollBar *QAbstractScrollArea::verticalScrollBar() const
     \property QAbstractScrollArea::horizontalScrollBarPolicy
     \brief the policy for the horizontal scroll bar
 
-    The default policy is \c Qt::ScrollBarAsNeeded.
+    The default policy is Qt::ScrollBarAsNeeded.
 
     \sa verticalScrollBarPolicy
 */
@@ -393,12 +395,14 @@ bool QAbstractScrollArea::viewportEvent(QEvent *e)
     case QEvent::DragLeave:
 #endif
         return QFrame::event(e);
+#ifndef QT_NO_WHEELEVENT
     case QEvent::Wheel:
         if (!QFrame::event(e) || !e->isAccepted()) {
             if (static_cast<QWheelEvent*>(e)->orientation() == Qt::Horizontal)
                 return QApplication::sendEvent(d->hbar, e);
             return QApplication::sendEvent(d->vbar, e);
         }
+#endif
     default:
         break;
     }
@@ -607,6 +611,15 @@ void QAbstractScrollArea::scrollContentsBy(int, int)
 void QAbstractScrollAreaPrivate::hslide(int x)
 {
     Q_Q(QAbstractScrollArea);
+
+    if (q->horizontalScrollBar()->maximum() == x) {
+        if (hend)
+            return;
+        else
+            hend = true;
+    } else
+        hend = false;
+
     int dx = xoffset - x;
     xoffset = x;
     q->scrollContentsBy(dx, 0);
@@ -615,6 +628,15 @@ void QAbstractScrollAreaPrivate::hslide(int x)
 void QAbstractScrollAreaPrivate::vslide(int y)
 {
     Q_Q(QAbstractScrollArea);
+
+    if (q->verticalScrollBar()->maximum() == y) {
+        if (vend)
+            return;
+        else
+            vend = true;
+    } else
+        vend = false;
+
     int dy = yoffset - y;
     yoffset = y;
     q->scrollContentsBy(0, dy);
@@ -653,3 +675,4 @@ QSize QAbstractScrollArea::sizeHint() const
 }
 
 #include "moc_qabstractscrollarea.cpp"
+#endif // QT_NO_SCROLLAREA

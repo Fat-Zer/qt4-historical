@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the accessibility module of the Qt Toolkit.
+** This file is part of the plugins of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,8 +36,11 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#ifndef QT_NO_ACCESSIBILITY
+
 QString Q_GUI_EXPORT qt_accStripAmp(const QString &text);
 
+#ifndef QT_NO_ITEMVIEWS
 /*!
   \class QAccessibleHeader qaccessiblewidget.h
   \brief The QAccessibleHeader class implements the QAccessibleInterface for header widgets.
@@ -131,7 +134,9 @@ QAccessible::State QAccessibleHeader::state(int child) const
         state |= Movable;
     return state;
 }
+#endif // QT_NO_ITEMVIEWS
 
+#ifndef QT_NO_TABBAR
 /*!
   \class QAccessibleTabBar qaccessiblewidget.h
   \brief The QAccessibleTabBar class implements the QAccessibleInterface for tab bars.
@@ -310,6 +315,9 @@ QVector<int> QAccessibleTabBar::selection() const
     return array;
 }
 
+#endif // QT_NO_TABBAR
+
+#ifndef QT_NO_COMBOBOX
 /*!
   \class QAccessibleComboBox qaccessiblewidget.h
   \brief The QAccessibleComboBox class implements the QAccessibleInterface for editable and read-only combo boxes.
@@ -445,9 +453,12 @@ QString QAccessibleComboBox::text(Text t, int child) const
         else
             str = QAccessibleWidget::text(t, 0);
         break;
+#ifndef QT_NO_SHORTCUT
     case Accelerator:
         if (child == OpenList)
             str = (QString)QKeySequence(Qt::Key_Down);
+        // missing break?
+#endif
     case Value:
         if (comboBox()->isEditable())
             str = comboBox()->lineEdit()->text();
@@ -493,4 +504,6 @@ bool QAccessibleComboBox::doAction(int, int child, const QVariantList &)
     comboBox()->showPopup();
     return true;
 }
+#endif // QT_NO_COMBOBOX
 
+#endif // QT_NO_ACCESSIBILITY

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -64,8 +64,7 @@
     to resolved(), which returns an absolute URL. isParentOf() is used
     for determining whether one URL is a parent of another.
 
-    isLocalFile() tells whether the URL represents the path to a local
-    file or not. fromLocalFile() constructs a QUrl by parsing a local
+    fromLocalFile() constructs a QUrl by parsing a local
     file path. toLocalFile() converts a URL to a local file path.
 
     The human readable representation of the URL is fetched with
@@ -1102,15 +1101,15 @@ QString QUrlPrivate::removeDotsFromPath(const QString &dottedPath)
     QString path;
     path.reserve(origPath.length());
 
-    const QString Dot = QLatin1String(".");
-    const QString Slash = QLatin1String("/");
-    const QString DotDot = QLatin1String("..");
-    const QString DotSlash = QLatin1String("./");
-    const QString SlashDot = QLatin1String("/.");
-    const QString DotDotSlash = QLatin1String("../");
-    const QString SlashDotSlash = QLatin1String("/./");
-    const QString SlashDotDotSlash = QLatin1String("/../");
-    const QString SlashDotDot = QLatin1String("/..");
+    const QLatin1String Dot(".");
+    const QLatin1Char Slash('/');
+    const QLatin1String DotDot("..");
+    const QLatin1String DotSlash("./");
+    const QLatin1String SlashDot("/.");
+    const QLatin1String DotDotSlash("../");
+    const QLatin1String SlashDotSlash("/./");
+    const QLatin1String SlashDotDotSlash("/../");
+    const QLatin1String SlashDotDot("/..");
 
     // While the input buffer is not empty, loop:
     while (!origPath.isEmpty()) {
@@ -2102,8 +2101,6 @@ QString QUrl::fragment() const
     with "../.." removes two levels from the path. If \a relative is
     "/", the path becomes "/".
 
-    The algorithm for this merge is described
-
     \sa isRelative()
 */
 QUrl QUrl::resolved(const QUrl &relative) const
@@ -2136,7 +2133,7 @@ QUrl QUrl::resolved(const QUrl &relative) const
                 else
                     t.setEncodedQuery(d->query);
             } else {
-                if (r.path().startsWith(QLatin1String("/"))) {
+                if (r.path().startsWith(QLatin1Char('/'))) {
                     t.setPath(r.path());
                     t.d->path = QUrlPrivate::removeDotsFromPath(t.d->path);
                 } else {
@@ -2688,8 +2685,8 @@ bool QUrl::isParentOf(const QUrl &childUrl) const
     return ((childUrl.scheme().isEmpty() || d->scheme == childUrl.scheme())
             && (childUrl.authority().isEmpty() || d->authority() == childUrl.authority())
             &&  childPath.startsWith(d->path)
-            && ((d->path.endsWith(QLatin1String("/")) && childPath.length() > d->path.length())
-                || (!d->path.endsWith(QLatin1String("/"))
+            && ((d->path.endsWith(QLatin1Char('/')) && childPath.length() > d->path.length())
+                || (!d->path.endsWith(QLatin1Char('/'))
                     && childPath.length() > d->path.length() && childPath.at(d->path.length()) == QLatin1Char('/'))));
 }
 

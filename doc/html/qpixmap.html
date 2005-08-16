@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/gui/image/qpixmap.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/image/qpixmap.cpp -->
 <head>
     <title>Qt 4.0: QPixmap Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPixmap Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPixmap Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPixmap class is an off-screen, pixel-based paint device. <a href="#details">More...</a></p>
-<pre>#include &lt;QPixmap&gt;</pre><p>Part of the <a href="qtgui.html">QtGui</a> module.</p>
-<p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
+<pre>#include &lt;QPixmap&gt;</pre><p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
 <p>Inherited by <a href="q3canvaspixmap.html">Q3CanvasPixmap</a> and <a href="qbitmap.html">QBitmap</a>.</p>
 <ul>
 <li><a href="qpixmap-members.html">List of all members, including inherited members</a></li>
@@ -88,7 +87,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Static Public Members</h3>
 <ul>
 <li><div class="fn"/>int <b><a href="qpixmap.html#defaultDepth">defaultDepth</a></b> ()</li>
-<li><div class="fn"/>QPixmap <b><a href="qpixmap.html#fromImage">fromImage</a></b> ( const QImage &amp; <i>img</i>, Qt::ImageConversionFlags <i>flags</i> = Qt::AutoColor )</li>
+<li><div class="fn"/>QPixmap <b><a href="qpixmap.html#fromImage">fromImage</a></b> ( const QImage &amp; <i>image</i>, Qt::ImageConversionFlags <i>flags</i> = Qt::AutoColor )</li>
 <li><div class="fn"/>QPixmap <b><a href="qpixmap.html#fromWinHBITMAP">fromWinHBITMAP</a></b> ( HBITMAP <i>bitmap</i>, HBitmapFormat <i>format</i> = NoAlpha )</li>
 <li><div class="fn"/>QPixmap <b><a href="qpixmap.html#grabWidget">grabWidget</a></b> ( QWidget * <i>widget</i>, int <i>x</i> = 0, int <i>y</i> = 0, int <i>w</i> = -1, int <i>h</i> = -1 )</li>
 <li><div class="fn"/>QPixmap <b><a href="qpixmap.html#grabWidget-2">grabWidget</a></b> ( QWidget * <i>widget</i>, const QRect &amp; <i>rect</i> )</li>
@@ -104,14 +103,14 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QPixmap class is an off-screen, pixel-based paint device.</p>
-<p>QPixmap is one of the three classes Qt provides for dealing with images, the others being <a href="qimage.html">QImage</a> and <a href="qpicture.html">QPicture</a>. QPixmap is designed and optimized for drawing on screen; <a href="qimage.html">QImage</a> is designed for I/O and for direct pixel access; <a href="qpicture.html">QPicture</a> provides a scalable, vectorial picture. There are (slow) functions to convert between <a href="qimage.html">QImage</a> and QPixmap: <a href="qpixmap.html#toImage">toImage</a>() and <a href="qpixmap.html#fromImage">fromImage</a>(). There's also a <a href="qicon.html">QIcon</a> class that stores various versions of an icon.</p>
+<p>QPixmap is one of the three classes Qt provides for dealing with images, the others being <a href="qimage.html">QImage</a> and <a href="qpicture.html">QPicture</a>. QPixmap is designed and optimized for drawing on screen; <a href="qimage.html">QImage</a> is designed for I/O and for direct pixel access; <a href="qpicture.html">QPicture</a> provides a scalable, vectorial picture. There are static functions in QPixmap to convert between <a href="qimage.html">QImage</a> and QPixmap: <a href="qpixmap.html#toImage">QPixmap::toImage</a>() and <a href="qpixmap.html#fromImage">QPixmap::fromImage</a>(). These function can be slow on some platforms. There's also a <a href="qicon.html">QIcon</a> class that stores various versions of an icon.</p>
 <p>A common way to create a pixmap is to use the constructor that takes a file name. For example:</p>
 <pre>&nbsp;   label-&gt;setPixmap(QPixmap(&quot;paste.png&quot;));</pre>
 <p>The file name can either refer to an actual file on disk or to one of the application's embedded resources. See the <a href="resources.html#resource-system">Resource System</a> overview for details on how to embed images and other resource files in the application's executable.</p>
 <p>Pixel data in a pixmap is internal and is managed by the underlying window system. Pixels can be accessed only through <a href="qpainter.html">QPainter</a> functions or by converting the QPixmap to a <a href="qimage.html">QImage</a>.</p>
 <p>You can easily display a QPixmap on the screen using <a href="qlabel.html">QLabel</a> or one of <a href="qabstractbutton.html">QAbstractButton</a>'s subclasses (such as <a href="qpushbutton.html">QPushButton</a> and <a href="qtoolbutton.html">QToolButton</a>). <a href="qlabel.html">QLabel</a> has a <a href="qlabel.html#pixmap-prop">pixmap</a> property, whereas <a href="qabstractbutton.html">QAbstractButton</a> has an <a href="qabstractbutton.html#icon-prop">icon</a> property.</p>
 <p>The QPixmap class uses <a href="shclass.html">implicit sharing</a>, so you can pass QPixmap objects around by value.</p>
-<p>You can retrieve the <a href="qpixmap.html#width">width</a>(), <a href="qpixmap.html#height">height</a>(), <a href="qpixmap.html#depth">depth</a>(), and <a href="qpixmap.html#size">size</a>() of a pixmap. The enclosing rectangle can be determined with <a href="qpixmap.html#rect">rect</a>(). Pixmaps can be filled with <a href="qpixmap.html#fill">fill</a>() and resized with <a href="qpixmap-qt3.html#resize">resize</a>(). You can create and set a mask with <a href="qpixmap.html#createHeuristicMask">createHeuristicMask</a>() and <a href="qpixmap.html#setMask">setMask</a>(). Use <a href="qpixmap-qt3.html#selfMask">selfMask</a>() to see if the pixmap is identical to its mask.</p>
+<p>You can retrieve the <a href="qpixmap.html#width">width</a>(), <a href="qpixmap.html#height">height</a>(), <a href="qpixmap.html#depth">depth</a>(), and <a href="qpixmap.html#size">size</a>() of a pixmap. The enclosing rectangle can be determined with <a href="qpixmap.html#rect">rect</a>(). Pixmaps can be filled with <a href="qpixmap.html#fill">fill</a>(). You can create and set a mask with <a href="qpixmap.html#createHeuristicMask">createHeuristicMask</a>() and <a href="qpixmap.html#setMask">setMask</a>(). Use <a href="qpixmap-qt3.html#selfMask">selfMask</a>() to see if the pixmap is identical to its mask.</p>
 <p>In addition to loading a pixmap from file using <a href="qpixmap.html#load">load</a>() you can also <a href="qpixmap.html#loadFromData">loadFromData</a>(). You can obtain a transformed version of the pixmap using transform().</p>
 <p>See also <a href="qbitmap.html">QBitmap</a>, <a href="qimage.html">QImage</a>, <a href="qimagereader.html">QImageReader</a>, and <a href="shclass.html">Shared Classes</a>.</p>
 <hr />
@@ -179,7 +178,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is slow because it involves transformation to a <a href="qimage.html">QImage</a> and a transformation back to a <a href="qbitmap.html">QBitmap</a>.</p>
 <p>See also <a href="qpixmap.html#createHeuristicMask">createHeuristicMask</a>().</p>
 <h3 class="fn"><a name="defaultDepth"></a>int QPixmap::defaultDepth ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the default pixmap depth, i.e. the depth a pixmap gets if -1 is specified.</p>
+<p>Returns the default pixmap depth.</p>
 <p>See also <a href="qpixmap.html#depth">depth</a>().</p>
 <h3 class="fn"><a name="depth"></a>int QPixmap::depth () const</h3>
 <p>Returns the depth of the pixmap.</p>
@@ -187,7 +186,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpixmap.html#defaultDepth">defaultDepth</a>(), <a href="qpixmap.html#isNull">isNull</a>(), and <a href="qimage-qt3.html#convertDepth">QImage::convertDepth</a>().</p>
 <h3 class="fn"><a name="detach"></a>void QPixmap::detach ()</h3>
 <p>This is a special-purpose function that detaches the pixmap from shared pixmap data.</p>
-<p>A pixmap is automatically detached by Qt whenever its contents are about to change. This is done in all <a href="qpixmap.html">QPixmap</a> member functions that modify the pixmap (<a href="qpixmap.html#fill">fill</a>(), <a href="qpixmap-qt3.html#resize">resize</a>(), <a href="qpixmap-qt3.html#convertFromImage">convertFromImage</a>(), <a href="qpixmap.html#load">load</a>(), etc.), and in <a href="qpainter.html#begin">QPainter::begin</a>() on a pixmap.</p>
+<p>A pixmap is automatically detached by Qt whenever its contents are about to change. This is done in all <a href="qpixmap.html">QPixmap</a> member functions that modify the pixmap (<a href="qpixmap.html#fill">fill</a>(), <a href="qpixmap-qt3.html#convertFromImage">convertFromImage</a>(), <a href="qpixmap.html#load">load</a>(), etc.), and in <a href="qpainter.html#begin">QPainter::begin</a>() on a pixmap.</p>
 <p>It is possible to modify a pixmap without letting Qt know. You can first obtain the system-dependent handle() and then call system-specific functions (for instance, BitBlt under Windows) that modify the pixmap contents. In such cases, you can call detach() to cut the pixmap loose from other pixmaps that share data with this one.</p>
 <p>detach() returns immediately if there is just a single reference or if the pixmap has not been initialized yet.</p>
 <h3 class="fn"><a name="fill"></a>void QPixmap::fill ( const <a href="qcolor.html">QColor</a> &amp; <i>fillColor</i> = Qt::white )</h3>
@@ -200,8 +199,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="fill-3"></a>void QPixmap::fill ( const <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>xoff</i>, int <i>yoff</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Fills the pixmap with the <i>widget</i>'s background color or pixmap. <i>xoff</i>, <i>yoff</i> is an offset in the widget.</p>
-<h3 class="fn"><a name="fromImage"></a>QPixmap QPixmap::fromImage ( const <a href="qimage.html">QImage</a> &amp; <i>img</i>, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Converts image <i>img</i> and sets this pixmap. Returns true if successful; otherwise returns false.</p>
+<h3 class="fn"><a name="fromImage"></a>QPixmap QPixmap::fromImage ( const <a href="qimage.html">QImage</a> &amp; <i>image</i>, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Converts the given <i>image</i> to a pixmap using the specified <i>flags</i> to control the conversion process.</p>
 <p>The <i>flags</i> argument is a bitwise-OR of the <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a>. Passing 0 for <i>flags</i> sets all the default options.</p>
 <p>If the image is a monochrome image, it is converted to a 32-bit pixmap and then filled with the colors in the color table. If this is too expensive an operation, you can use <a href="qbitmap.html#fromImage">QBitmap::fromImage</a>() instead.</p>
 <p>See also <a href="qpixmap.html#toImage">toImage</a>(), <a href="qpixmap.html#isQBitmap">isQBitmap</a>(), <a href="qimage-qt3.html#convertDepth">QImage::convertDepth</a>(), <a href="qpixmap.html#defaultDepth">defaultDepth</a>(), and <a href="qimage-qt3.html#hasAlphaBuffer">QImage::hasAlphaBuffer</a>().</p>
@@ -217,11 +216,13 @@ body { background: #ffffff; color: black; }</style>
 <p>This function actually asks <i>widget</i> to paint itself (and its children to paint themselves). <a href="qpixmap.html#grabWindow">QPixmap::grabWindow</a>() grabs pixels off the screen, which is a bit faster and picks up <i>exactly</i> what's on-screen. This function works by calling paintEvent() with painter redirection turned on. If there are overlaying windows, <a href="qpixmap.html#grabWindow">grabWindow</a>() will see them, but not this function.</p>
 <p>If there is overlap, it returns a pixmap of the size you want, containing a rendering of <i>widget</i>. If the rectangle you ask for is a superset of <i>widget</i>, the areas outside <i>widget</i> are covered with the widget's background.</p>
 <p>If an error occurs when trying to grab the widget, such as the size of the widget being too large to fit in memory, an <a href="qpixmap.html#isNull">isNull</a>() pixmap is returned.</p>
+<p><b>Warning:</b> Do not call this function from with a <a href="qwidget.html#paintEvent">paintEvent()</a>.</p>
 <p>See also <a href="qpixmap.html#grabWindow">grabWindow</a>() and <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>().</p>
 <h3 class="fn"><a name="grabWidget-2"></a>QPixmap QPixmap::grabWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Creates a pixmap and paints <i>widget</i> in it. If the <i>widget</i> has any children, then they are also painted in the appropriate positions.</p>
 <p>If <i>rect</i> is a valid rectangle, only the rectangle you specify is painted.</p>
+<p><b>Warning:</b> Do not call this function from with a <a href="qwidget.html#paintEvent">paintEvent()</a>.</p>
 <p><a href="qpixmap.html#grabWidget">grabWidget</a>(), <a href="qrect.html#isValid">QRect::isValid</a>()</p>
 <h3 class="fn"><a name="grabWindow"></a>QPixmap QPixmap::grabWindow ( WId <i>window</i>, int <i>x</i> = 0, int <i>y</i> = 0, int <i>w</i> = -1, int <i>h</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Grabs the contents of the window <i>window</i> and makes a pixmap out of it. Returns the pixmap.</p>
@@ -231,10 +232,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Note also that the mouse cursor is generally not grabbed.</p>
 <p>The reason we use a window identifier and not a <a href="qwidget.html">QWidget</a> is to enable grabbing of windows that are not part of the application, window system frames, and so on.</p>
 <p><b>Warning:</b> Grabbing an area outside the screen is not safe in general. This depends on the underlying window system.</p>
-<p><b>Warning:</b> <a href="winsystem.html#x11">X11</a> only: If <i>window</i> is not the same depth as the root window and another window partially or entirely obscures the one you grab, you will <i>not</i> get pixels from the overlying window. The contests of the obscured areas in the pixmap are undefined and uninitialized.</p>
+<p><b>Warning:</b> X11 only: If <i>window</i> is not the same depth as the root window and another window partially or entirely obscures the one you grab, you will <i>not</i> get pixels from the overlying window. The contests of the obscured areas in the pixmap are undefined and uninitialized.</p>
 <p>See also <a href="qpixmap.html#grabWidget">grabWidget</a>().</p>
 <h3 class="fn"><a name="hasAlpha"></a>bool QPixmap::hasAlpha () const</h3>
-<p>Returns true this pixmap has an alpha channel or a mask.</p>
+<p>Returns true if this pixmap has an alpha channel or a mask.</p>
 <p>See also <a href="qpixmap.html#hasAlphaChannel">hasAlphaChannel</a>() and <a href="qpixmap.html#mask">mask</a>().</p>
 <h3 class="fn"><a name="hasAlphaChannel"></a>bool QPixmap::hasAlphaChannel () const</h3>
 <p>Returns true if the pixmap has an alpha channel; otherwise it returns false.</p>
@@ -246,7 +247,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this is a null pixmap; otherwise returns false.</p>
 <p>A null pixmap has zero width, zero height and no contents. You cannot draw in a null pixmap.</p>
 <p>Resizing an existing pixmap to (0, 0) makes a pixmap into a null pixmap.</p>
-<p>See also <a href="qpixmap-qt3.html#resize">resize</a>().</p>
 <h3 class="fn"><a name="isQBitmap"></a>bool QPixmap::isQBitmap () const</h3>
 <p>Returns true if this is a <a href="qbitmap.html">QBitmap</a>; otherwise returns false.</p>
 <h3 class="fn"><a name="load"></a>bool QPixmap::load ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>format</i> = 0, <a href="qt.html#ImageConversionFlag-enum">Qt::ImageConversionFlags</a> <i>flags</i> = Qt::AutoColor )</h3>
@@ -289,9 +289,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="scaled"></a>QPixmap QPixmap::scaled ( int <i>w</i>, int <i>h</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>aspectRatioMode</i> = Qt::IgnoreAspectRatio, <a href="qt.html#TransformationMode-enum">Qt::TransformationMode</a> <i>transformMode</i> = Qt::FastTransformation ) const</h3>
 <p>Returns a copy of the pixmap scaled to a rectangle of width <i>w</i> and height <i>h</i> according to <i>aspectRatioMode</i> and <i>transformMode</i>.</p>
 <ul>
-<li>If <i>aspectRatioMode</i> is <tt>Qt::IgnoreAspectRatio</tt>, the pixmap is scaled to (<i>w</i>, <i>h</i>).</li>
-<li>If <i>aspectRatioMode</i> is <tt>Qt::KeepAspectRatio</tt>, the pixmap is scaled to a rectangle as large as possible inside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
-<li>If <i>aspectRatioMode</i> is <tt>Qt::KeepAspectRatioByExpanding</tt>, the pixmap is scaled to a rectangle as small as possible outside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
+<li>If <i>aspectRatioMode</i> is <a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a>, the pixmap is scaled to (<i>w</i>, <i>h</i>).</li>
+<li>If <i>aspectRatioMode</i> is <a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a>, the pixmap is scaled to a rectangle as large as possible inside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
+<li>If <i>aspectRatioMode</i> is <a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a>, the pixmap is scaled to a rectangle as small as possible outside (<i>w</i>, <i>h</i>), preserving the aspect ratio.</li>
 </ul>
 <p>If either the width <i>w</i> or the height <i>h</i> is zero or negative, this function returns a <a href="qpixmap.html#isNull">null</a> pixmap.</p>
 <p>See also <a href="qpixmap.html#scaledToWidth">scaledToWidth</a>(), <a href="qpixmap.html#scaledToHeight">scaledToHeight</a>(), and <a href="qpixmap.html#transformed">transformed</a>().</p>
@@ -313,6 +313,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpixmapcache.html">QPixmapCache</a>.</p>
 <h3 class="fn"><a name="setAlphaChannel"></a>void QPixmap::setAlphaChannel ( const QPixmap &amp; <i>alpha</i> )</h3>
 <p>Sets the alpha channel of this pixmap to <i>alpha</i>. If the pixmap already contains an alpha channel, it is merged with <i>alpha</i>.</p>
+<p>See also <a href="qpixmap.html#alphaChannel">alphaChannel</a>().</p>
 <h3 class="fn"><a name="setMask"></a>void QPixmap::setMask ( const <a href="qbitmap.html">QBitmap</a> &amp; <i>newmask</i> )</h3>
 <p>Sets a mask bitmap.</p>
 <p>The <i>newmask</i> bitmap defines the clip mask for this pixmap. Every pixel in <i>newmask</i> corresponds to a pixel in this pixmap. Pixel value 1 means opaque and pixel value 0 means transparent. The mask must have the same size as this pixmap.</p>
@@ -353,7 +354,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="x11Info"></a>const <a href="qx11info.html">QX11Info</a> &amp; QPixmap::x11Info () const</h3>
 <p>Returns a pointer to a <a href="qx11info.html">QX11Info</a> object. This pointer is owned by <a href="qpixmap.html">QPixmap</a> and should not be deleted.</p>
 <h3 class="fn"><a name="x11PictureHandle"></a><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QPixmap::x11PictureHandle () const</h3>
-<p>Returns the <a href="winsystem.html#x11">X11</a> Picture handle of the pixmap for XRender support. Use of this function is not portable. This function will return 0 if XRender support is not compiled into Qt, if the XRender extension is not supported on the <a href="winsystem.html#x11">X11</a> display, or if the handle could not be created.</p>
+<p>Returns the X11 Picture handle of the pixmap for XRender support. Use of this function is not portable. This function will return 0 if XRender support is not compiled into Qt, if the XRender extension is not supported on the X11 display, or if the handle could not be created.</p>
 <h3 class="fn"><a name="operator-QVariant"></a>QPixmap::operator QVariant () const</h3>
 <p>Returns the pixmap as a <a href="qvariant.html">QVariant</a></p>
 <h3 class="fn"><a name="operator-not"></a>bool QPixmap::operator! () const</h3>
@@ -372,6 +373,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

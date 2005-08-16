@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the gui module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -82,7 +82,7 @@ extern void qt_event_request_window_change(); //qapplication_mac.cpp
 extern IconRef qt_mac_create_iconref(const QPixmap &); //qpixmap_mac.cpp
 extern void qt_mac_set_cursor(const QCursor *, const QPoint &); //qcursor_mac.cpp
 extern bool qt_nograb();
-CGImageRef qt_mac_create_cgimage(const QPixmap &, bool); //qpixmap_mac.cpp
+extern CGImageRef qt_mac_create_cgimage(const QPixmap &, bool); //qpixmap_mac.cpp
 extern RgnHandle qt_mac_get_rgn(); //qregion_mac.cpp
 extern void qt_mac_dispose_rgn(RgnHandle r); //qregion_mac.cpp
 extern QRegion qt_mac_convert_mac_region(RgnHandle rgn); //qregion_mac.cpp
@@ -94,14 +94,12 @@ extern QRegion qt_mac_convert_mac_region(RgnHandle rgn); //qregion_mac.cpp
 static QSize qt_initial_size(QWidget *w) {
     QSize s = w->sizeHint();
     Qt::Orientations exp;
-#ifndef QT_NO_LAYOUT
     QLayout *layout = w->layout();
     if (layout) {
         if (layout->hasHeightForWidth())
             s.setHeight(layout->totalHeightForWidth(s.width()));
         exp = layout->expandingDirections();
     } else
-#endif
     {
         if (w->sizePolicy().hasHeightForWidth())
             s.setHeight(w->heightForWidth(s.width()));
@@ -356,6 +354,7 @@ static EventTypeSpec widget_events[] = {
     { kEventClassControl, kEventControlInitialize },
     { kEventClassControl, kEventControlGetPartRegion },
     { kEventClassControl, kEventControlGetClickActivation },
+    { kEventClassControl, kEventControlSetFocusPart },
     { kEventClassControl, kEventControlDragEnter },
     { kEventClassControl, kEventControlDragWithin },
     { kEventClassControl, kEventControlDragLeave },
@@ -421,8 +420,9 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
 
                 //update qd port
                 GrafPtr old_qdref = 0;
+                GDHandle old_device = 0;
                 if(GetEventParameter(event, kEventParamGrafPort, typeGrafPtr, NULL, sizeof(old_qdref), NULL, &old_qdref) != noErr)
-                    GetGWorld(&old_qdref, 0); //just use the global port..
+                    GetGWorld(&old_qdref, &old_device); //just use the global port..
                 if(old_qdref)
                     widget->d_func()->hd = old_qdref;
 
@@ -505,7 +505,7 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                     if(!widget->testAttribute(Qt::WA_PaintOutsidePaintEvent) && widget->paintingActive())
                         qWarning("It is dangerous to leave painters active on a widget outside of the PaintEvent");
                 }
-                SetPort(old_qdref); //restore the state..
+                SetGWorld(old_qdref, old_device); //restore the state..
 
                 //remove the old pointers, not necessary long-term, but short term it simplifies things --Sam
                 widget->d_func()->clp_serial++;
@@ -513,10 +513,11 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                 widget->d_func()->hd = 0;
             }
         } else if(ekind == kEventControlInitialize) {
-            UInt32 features = kControlSupportsDragAndDrop | kControlSupportsClickActivation;
+            UInt32 features = kControlSupportsDragAndDrop | kControlSupportsClickActivation | kControlSupportsFocus;
             if(QSysInfo::MacintoshVersion < QSysInfo::MV_10_3)
                 features |= (kControlSupportsEmbedding|kControlSupportsGetRegion);
             SetEventParameter(event, kEventParamControlFeatures, typeUInt32, sizeof(features), &features);
+        } else if(ekind == kEventControlSetFocusPart) {
         } else if(ekind == kEventControlGetClickActivation) {
             ClickActivationResult clickT = kActivateAndIgnoreClick;
             SetEventParameter(event, kEventParamClickActivation, typeClickActivationResult,
@@ -921,11 +922,8 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
             wclass = kMovableModalWindowClass;
         else if(type == Qt::ToolTip)
             wclass = kHelpWindowClass;
-        else if(tool
-                || (dialog && parentWidget && !parentWidget->window()->windowType() == Qt::Desktop))
+        else if(tool)
             wclass = kFloatingWindowClass;
-        else if(dialog)
-            wclass = kToolbarWindowClass;
         else
             wclass = kDocumentWindowClass;
 
@@ -939,23 +937,18 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
             // Shift things around a bit to get the correct window class based on the presence
             // (or lack) of the border.
             if(flags & Qt::FramelessWindowHint) {
-                if(wclass == kDocumentWindowClass)
+                if(wclass == kDocumentWindowClass) {
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
                     wclass = kSimpleWindowClass;
 #else
                     wclass = kPlainWindowClass;
 #endif
-                else if(wclass == kFloatingWindowClass)
+                } else if(wclass == kFloatingWindowClass) {
                     wclass = kToolbarWindowClass;
+                }
             } else {
                 if(wclass != kModalWindowClass)
                     wattr |= kWindowResizableAttribute;
-                if(wclass == kToolbarWindowClass) {
-                    if(!parentWidget || parentWidget->window()->windowType() == Qt::Desktop)
-                        wclass = kDocumentWindowClass;
-                    else
-                        wclass = kFloatingWindowClass;
-                }
             }
             // Only add extra decorations (well, buttons) for widgets that can have them
             // and have an actual border we can put them on.
@@ -1067,9 +1060,11 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
             SetDrawerParent(window, qt_mac_window_for(parentWidget));
         if(dialog && !parentWidget && !q->testAttribute(Qt::WA_ShowModal))
             grp = GetWindowGroupOfClass(kDocumentWindowClass);
+        if(topData()->group) {
+            qt_mac_release_window_group(topData()->group);
+            topData()->group = 0;
+        }
         if(flags & Qt::WindowStaysOnTopHint) {
-            if(topData()->group)
-                qt_mac_release_window_group(topData()->group);
             topData()->group = qt_mac_get_stays_on_top_group();
             SetWindowGroup(window, topData()->group);
         } else if(grp) {
@@ -1165,7 +1160,7 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
                 WindowPtr window = isWindow() ? qt_mac_window_for(hiview) : 0;
                 CFRelease(hiview);
                 if(window) {
-                    RemoveWindowProperty(qt_mac_window_for(this), kWidgetCreatorQt, kWidgetPropertyQWidget);
+                    RemoveWindowProperty(window, kWidgetCreatorQt, kWidgetPropertyQWidget);
                     ReleaseWindow(window);
                 }
             }
@@ -1192,8 +1187,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     }
     QWidget* oldtlw = q->window();
 
-    //recreate and seutp flags
-    setWinId(0);
+    //recreate and setup flags
     QObjectPrivate::setParent_helper(parent);
     bool     dropable = q->acceptDrops();
     bool     enable = q->isEnabled();
@@ -1201,6 +1195,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     QPoint   pt = q->pos();
     QSize    s = q->size();
     bool explicitlyHidden = q->testAttribute(Qt::WA_WState_Hidden) && q->testAttribute(Qt::WA_WState_ExplicitShowHide);
+    setWinId(0); //do after the above because they may want the id
 
     data.window_flags = f;
     q->setAttribute(Qt::WA_WState_Created, false);
@@ -1470,8 +1465,11 @@ void QWidget::update(const QRegion &rgn)
 
 void QWidget::repaint(const QRegion &rgn)
 {
+    if(rgn.isEmpty())
+        return;
+
     HIViewSetNeedsDisplayInRegion((HIViewRef)winId(), rgn.handle(true), true);
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
+#if 0 && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
     OSStatus (*HIViewRender_ptr)(HIViewRef) = HIViewRender; // workaround for gcc warning
     if(HIViewRender_ptr)
         (*HIViewRender_ptr)((HIViewRef)window()->winId()); //yes the top level!!
@@ -1486,6 +1484,7 @@ void QWidgetPrivate::show_sys()
 
     if (q->testAttribute(Qt::WA_OutsideWSRange))
         return;
+    q->setAttribute(Qt::WA_Mapped);
 
     if(q->isWindow()) {
         QDesktopWidget *dsk = QApplication::desktop();
@@ -2039,8 +2038,10 @@ void QWidgetPrivate::createTLSysExtra()
 
 void QWidgetPrivate::deleteTLSysExtra()
 {
-    if(extra->topextra->group)
+    if(extra->topextra->group) {
         qt_mac_release_window_group(extra->topextra->group);
+        extra->topextra->group = 0;
+    }
 }
 
 void QWidgetPrivate::updateFrameStrut() const

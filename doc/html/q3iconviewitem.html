@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/qt3support/itemviews/q3iconview.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/itemviews/q3iconview.cpp -->
 <head>
     <title>Qt 4.0: Q3IconViewItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3IconViewItem Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3IconViewItem Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3IconViewItem class provides a single item in a <a href="q3iconview.html">Q3IconView</a>. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3IconViewItem&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3IconViewItem&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
+<p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
 <ul>
 <li><a href="q3iconviewitem-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -218,6 +218,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="pixmapRect"></a><a href="qrect.html">QRect</a> Q3IconViewItem::pixmapRect ( bool <i>relative</i> = true ) const</h3>
 <p>Returns the bounding rectangle of the item's icon.</p>
 <p>If <i>relative</i> is true, (the default), the rectangle is relative to the origin of the item's rectangle. If <i>relative</i> is false, the returned rectangle is relative to the origin of the icon view's contents coordinate system.</p>
+<p>See also <a href="q3iconviewitem.html#setPixmapRect">setPixmapRect</a>().</p>
 <h3 class="fn"><a name="pos"></a><a href="qpoint.html">QPoint</a> Q3IconViewItem::pos () const</h3>
 <p>Returns the position of the item (in contents coordinates).</p>
 <h3 class="fn"><a name="prevItem"></a>Q3IconViewItem * Q3IconViewItem::prevItem () const</h3>
@@ -241,14 +242,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Make your derived classes return their own values for rtti(), so that you can distinguish between icon view item types. You should use values greater than 1000, preferably a large random number, to allow for extensions to this class.</p>
 <h3 class="fn"><a name="setDragEnabled"></a>void Q3IconViewItem::setDragEnabled ( bool <i>allow</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>allow</i> is true, the icon view permits the user to drag the icon view item either to another position within the icon view or to somewhere outside of it. If <i>allow</i> is false, the item cannot be dragged.</p>
+<p>See also <a href="q3iconviewitem.html#dragEnabled">dragEnabled</a>().</p>
 <h3 class="fn"><a name="setDropEnabled"></a>void Q3IconViewItem::setDropEnabled ( bool <i>allow</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>allow</i> is true, the icon view lets the user drop something on this icon view item.</p>
+<p>See also <a href="q3iconviewitem.html#dropEnabled">dropEnabled</a>().</p>
 <h3 class="fn"><a name="setItemRect"></a>void Q3IconViewItem::setItemRect ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the bounding rectangle of the whole item to <i>r</i>. This function is provided for subclasses which reimplement <a href="q3iconviewitem.html#calcRect">calcRect</a>(), so that they can set the calculated rectangle. <i>Any other use is discouraged.</i></p>
 <p>See also <a href="q3iconviewitem.html#calcRect">calcRect</a>(), <a href="q3iconviewitem.html#textRect">textRect</a>(), <a href="q3iconviewitem.html#setTextRect">setTextRect</a>(), <a href="q3iconviewitem.html#pixmapRect">pixmapRect</a>(), and <a href="q3iconviewitem.html#setPixmapRect">setPixmapRect</a>().</p>
 <h3 class="fn"><a name="setKey"></a>void Q3IconViewItem::setKey ( const <a href="qstring.html">QString</a> &amp; <i>k</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets <i>k</i> as the sort key of the icon view item. By default <a href="q3iconviewitem.html#text">text</a>() is used for sorting.</p>
-<p>See also <a href="q3iconviewitem.html#compare">compare</a>().</p>
+<p>See also <a href="q3iconviewitem.html#key">key</a>() and <a href="q3iconviewitem.html#compare">compare</a>().</p>
 <h3 class="fn"><a name="setPicture"></a>void Q3IconViewItem::setPicture ( const <a href="qpicture.html">QPicture</a> &amp; <i>icon</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets <i>icon</i> as the item's icon in the icon view. This function might be a no-op if you reimplement <a href="q3iconviewitem.html#picture">picture</a>().</p>
 <p>See also <a href="q3iconviewitem.html#picture">picture</a>().</p>
@@ -264,6 +267,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3iconviewitem.html#calcRect">calcRect</a>(), <a href="q3iconviewitem.html#pixmapRect">pixmapRect</a>(), <a href="q3iconviewitem.html#setItemRect">setItemRect</a>(), and <a href="q3iconviewitem.html#setTextRect">setTextRect</a>().</p>
 <h3 class="fn"><a name="setRenameEnabled"></a>void Q3IconViewItem::setRenameEnabled ( bool <i>allow</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>allow</i> is true, the user can rename the icon view item by clicking on the text (or pressing F2) while the item is selected (in-place renaming). If <i>allow</i> is false, in-place renaming is not possible.</p>
+<p>See also <a href="q3iconviewitem.html#renameEnabled">renameEnabled</a>().</p>
 <h3 class="fn"><a name="setSelectable"></a>void Q3IconViewItem::setSelectable ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets this item to be selectable if <i>enable</i> is true (the default) or unselectable if <i>enable</i> is false.</p>
 <p>The user is unable to select a non-selectable item using either the keyboard or the mouse. (The application programmer can select an item in code regardless of this setting.)</p>
@@ -271,11 +275,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setSelected"></a>void Q3IconViewItem::setSelected ( bool <i>s</i>, bool <i>cb</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Selects or unselects the item, depending on <i>s</i>; it may also unselect other items, depending on <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() and <i>cb</i>.</p>
 <p>If <i>s</i> is false, the item is unselected.</p>
-<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <tt>Single</tt>, the item is selected and the item previously selected is unselected.</p>
-<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <tt>Extended</tt>, the item is selected. If <i>cb</i> is true, the selection state of the other items is left unchanged. If <i>cb</i> is false (the default) all other items are unselected.</p>
-<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <tt>Multi</tt>, the item is selected.</p>
-<p>Note that <i>cb</i> is used only if <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is <tt>Extended</tt>; cb defaults to false.</p>
+<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Single, the item is selected and the item previously selected is unselected.</p>
+<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Extended, the item is selected. If <i>cb</i> is true, the selection state of the other items is left unchanged. If <i>cb</i> is false (the default) all other items are unselected.</p>
+<p>If <i>s</i> is true and <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Multi, the item is selected.</p>
+<p>Note that <i>cb</i> is used only if <a href="q3iconview.html#selectionMode-prop">Q3IconView::selectionMode</a>() is Extended; cb defaults to false.</p>
 <p>All items whose selection status changes repaint themselves.</p>
+<p>See also <a href="q3iconviewitem.html#isSelected">isSelected</a>().</p>
 <h3 class="fn"><a name="setSelected-2"></a>void Q3IconViewItem::setSelected ( bool <i>s</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>This variant is equivalent to calling the other variant with <i>cb</i> set to false.</p>
@@ -297,6 +302,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="textRect"></a><a href="qrect.html">QRect</a> Q3IconViewItem::textRect ( bool <i>relative</i> = true ) const</h3>
 <p>Returns the bounding rectangle of the item's text.</p>
 <p>If <i>relative</i> is true, (the default), the returned rectangle is relative to the origin of the item's rectangle. If <i>relative</i> is false, the returned rectangle is relative to the origin of the icon view's contents coordinate system.</p>
+<p>See also <a href="q3iconviewitem.html#setTextRect">setTextRect</a>().</p>
 <h3 class="fn"><a name="width"></a>int Q3IconViewItem::width () const</h3>
 <p>Returns the width of the item.</p>
 <h3 class="fn"><a name="x"></a>int Q3IconViewItem::x () const</h3>
@@ -307,6 +313,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

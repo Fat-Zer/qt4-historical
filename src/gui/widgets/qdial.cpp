@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -270,7 +270,11 @@ void QDial::mousePressEvent(QMouseEvent *e)
     }
     e->accept();
     setSliderPosition(d->valueFromPoint(e->pos()));
-    emit sliderPressed();
+    // ### This isn't quite right,
+    // we should be doing a hittest and only setting this if it's
+    // the actuall dial thingie (similar to what QSlider does), but we have no
+    // subControls for QDial.
+    setSliderDown(true);
 }
 
 
@@ -281,13 +285,13 @@ void QDial::mousePressEvent(QMouseEvent *e)
 void QDial::mouseReleaseEvent(QMouseEvent * e)
 {
     Q_D(QDial);
-    if (e->buttons() ^ e->button()) {
+    if (e->buttons() & (~e->button())) {
         e->ignore();
         return;
     }
     e->accept();
     setValue(d->valueFromPoint(e->pos()));
-    emit sliderReleased();
+    setSliderDown(false);
 }
 
 
@@ -312,25 +316,11 @@ void QDial::mouseMoveEvent(QMouseEvent * e)
 
 /*!
     \reimp
-
-    Reimplemented to ensure the display is correct and to emit the
-    valueChanged(int) signal when appropriate and to ensure
-    tickmarks are consistent with the new range. The \a change
-    parameter indicates what type of change that has taken place.
 */
 
 void QDial::sliderChange(SliderChange change)
 {
-    Q_D(QDial);
-    if (change == SliderRangeChange || change == SliderValueChange) {
-        update();
-        if (change == SliderValueChange && (d->tracking || !d->doNotEmit)) {
-            emit valueChanged(d->value);
-#ifndef QT_NO_ACCESSIBILITY
-            QAccessible::updateAccessibility(this, 0, QAccessible::ValueChanged);
-#endif
-        }
-    }
+    QAbstractSlider::sliderChange(change);
 }
 
 void QDial::setWrapping(bool enable)
@@ -348,7 +338,7 @@ void QDial::setWrapping(bool enable)
     \brief whether wrapping is enabled
 
     If true, wrapping is enabled. This means that the arrow can be
-    turned around 360°. Otherwise there is some space at the bottom of
+    turned around 360 degrees. Otherwise there is some space at the bottom of
     the dial which is skipped by the arrow.
 
     This property's default is false.

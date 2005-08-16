@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/qt3support/sql/q3databrowser.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/sql/q3databrowser.cpp -->
 <head>
     <title>Qt 4.0: Q3DataBrowser Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,11 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DataBrowser Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3DataBrowser Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3DataBrowser class provides data manipulation and navigation for data entry forms. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3DataBrowser&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See the <a href="porting4.html">Porting Guide</a> for more information.</p>
-<p>Part of the <a href="qt3support.html">Qt3Support</a> module.</p>
+<pre>#include &lt;Q3DataBrowser&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qdatabrowser">Porting to Qt 4</a> for more information.</p>
+<p><b>Note to Qt Desktop Light Edition users:</b> This class is only available in the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a>.</p>
 <p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="q3databrowser-members.html">List of all members, including inherited members</a></li>
@@ -86,7 +86,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Q3SqlCursor * <b><a href="q3databrowser.html#sqlCursor">sqlCursor</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>183 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -327,6 +327,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted whenever the position of the cursor changes. The <i>available</i> parameter indicates whether or not the first record in the default cursor is available.</p>
 <h3 class="fn"><a name="form"></a><a href="q3sqlform.html">Q3SqlForm</a> * Q3DataBrowser::form ()</h3>
 <p>Returns the data browser's default form or 0 if no form has been set.</p>
+<p>See also <a href="q3databrowser.html#setForm">setForm</a>().</p>
 <h3 class="fn"><a name="handleError"></a>void Q3DataBrowser::handleError ( const <a href="qsqlerror.html">QSqlError</a> &amp; <i>error</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Virtual function which handles the error <i>error</i>. The default implementation warns the user with a message box.</p>
 <h3 class="fn"><a name="insert"></a>void Q3DataBrowser::insert ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
@@ -380,6 +381,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the browser is already positioned on the desired record nothing happens.</p>
 <h3 class="fn"><a name="setForm"></a>void Q3DataBrowser::setForm ( <a href="q3sqlform.html">Q3SqlForm</a> * <i>form</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the browser's default form to <i>form</i>. The cursor and all navigation and data manipulation functions that the browser provides become available to the <i>form</i>.</p>
+<p>See also <a href="q3databrowser.html#form">form</a>().</p>
 <h3 class="fn"><a name="setSqlCursor"></a>void Q3DataBrowser::setSqlCursor ( <a href="q3sqlcursor.html">Q3SqlCursor</a> * <i>cursor</i>, bool <i>autoDelete</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the default cursor used by the data browser to <i>cursor</i>. If <i>autoDelete</i> is true (the default is false), the data browser takes ownership of the <i>cursor</i> pointer, which will be deleted when the browser is destroyed, or when setSqlCursor() is called again. To activate the <i>cursor</i> use <a href="q3databrowser.html#refresh">refresh</a>(). The cursor's edit buffer is used in the default form to browse and edit records.</p>
 <p>See also <a href="q3databrowser.html#sqlCursor">sqlCursor</a>(), <a href="q3databrowser.html#form">form</a>(), and <a href="q3databrowser.html#setForm">setForm</a>().</p>
@@ -401,6 +403,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

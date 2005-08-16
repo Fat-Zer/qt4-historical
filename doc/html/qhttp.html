@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.0-espenr-1119621036935/qt-mac-opensource-desktop-4.0.0/src/network/qhttp.cpp -->
+<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/network/qhttp.cpp -->
 <head>
     <title>Qt 4.0: QHttp Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -16,11 +16,10 @@ body { background: #ffffff; color: black; }</style>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="annotated.html"><font color="#004faf">Annotated</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QHttp Class Reference</h1>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QHttp Class Reference<br /><sup><sup>[<a href="qtnetwork.html">QtNetwork</a> module]</sup></sup></h1>
 <p>The QHttp class provides an implementation of the HTTP protocol. <a href="#details">More...</a></p>
-<pre>#include &lt;QHttp&gt;</pre><p>Part of the <a href="qtnetwork.html">QtNetwork</a> module.</p>
-<p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre>#include &lt;QHttp&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qhttp-members.html">List of all members, including inherited members</a></li>
@@ -156,7 +155,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The functions <a href="qhttp.html#currentId">currentId</a>() and <a href="qhttp.html#currentRequest">currentRequest</a>() provide more information about the currently executing request.</p>
 <p>The functions <a href="qhttp.html#hasPendingRequests">hasPendingRequests</a>() and <a href="qhttp.html#clearPendingRequests">clearPendingRequests</a>() allow you to query and clear the list of pending requests.</p>
 <p>The <a href="network-http.html">HTTP</a> example illustrates how to write HTTP clients using QHttp.</p>
-<p>See also <a href="networking.html">Network Module</a> and <a href="qftp.html">QFtp</a>.</p>
+<p>See also <a href="qftp.html">QFtp</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Error-enum"></a>enum QHttp::Error</h3>
@@ -320,9 +319,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setProxy"></a>int QHttp::setProxy ( const <a href="qstring.html">QString</a> &amp; <i>host</i>, int <i>port</i>, const <a href="qstring.html">QString</a> &amp; <i>username</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>password</i> = QString() )</h3>
 <p>Enables proxy support, using the proxy server <i>host</i> on port <i>port</i>. <i>username</i> and <i>password</i> can be provided if the proxy server requires authentication.</p>
 <h3 class="fn"><a name="setSocket"></a>int QHttp::setSocket ( <a href="qtcpsocket.html">QTcpSocket</a> * <i>socket</i> )</h3>
-<p>Replaces the internal QSocket that <a href="qhttp.html">QHttp</a> uses with the given <i>socket</i>. This is useful if you want to use your own custom QSocket subclass instead of the plain QSocket that <a href="qhttp.html">QHttp</a> uses by default.</p>
+<p>Replaces the internal <a href="qtcpsocket.html">QTcpSocket</a> that <a href="qhttp.html">QHttp</a> uses with <i>socket</i>. This is useful if you want to use your own custom <a href="qtcpsocket.html">QTcpSocket</a> subclass instead of the plain <a href="qtcpsocket.html">QTcpSocket</a> that <a href="qhttp.html">QHttp</a> uses by default. <a href="qhttp.html">QHttp</a> does not take ownership of the socket, and will not delete <i>socket</i> when destroyed.</p>
 <p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
+<p>Note: If <a href="qhttp.html">QHttp</a> is used in a non-GUI thread that runs its own event loop, you must move <i>socket</i> to that thread before calling setSocket().</p>
+<p>See also <a href="qobject.html#moveToThread">QObject::moveToThread</a>() and <a href="threads.html">Thread Support in Qt</a>.</p>
 <h3 class="fn"><a name="setUser"></a>int QHttp::setUser ( const <a href="qstring.html">QString</a> &amp; <i>userName</i>, const <a href="qstring.html">QString</a> &amp; <i>password</i> = QString() )</h3>
 <p>This function sets the user name <i>userName</i> and password <i>password</i> for web pages that require authentication.</p>
 <p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
@@ -338,6 +339,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
 </tr></table></div></address></body>
 </html>

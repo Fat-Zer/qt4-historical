@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the opengl module of the Qt Toolkit.
+** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -57,8 +57,6 @@
 
 //#define QT_GL_NO_CONCAVE_POLYGONS
 
-#define qToDouble(x) x
-
 class QOpenGLPaintEnginePrivate : public QPaintEnginePrivate {
     Q_DECLARE_PUBLIC(QOpenGLPaintEngine)
 public:
@@ -66,13 +64,33 @@ public:
         : bgmode(Qt::TransparentMode)
         , txop(QPainterPrivate::TxNone) {}
 
+    void setGLPen(const QColor &c) {
+        pen_color[0] = c.red();
+        pen_color[1] = c.green();
+        pen_color[2] = c.blue();
+        pen_color[3] = c.alpha();
+    }
+
+    void setGLBrush(const QColor &c) {
+        brush_color[0] = c.red();
+        brush_color[1] = c.green();
+        brush_color[2] = c.blue();
+        brush_color[3] = c.alpha();
+    }
+
     QPen cpen;
     QBrush cbrush;
     QBrush bgbrush;
     Qt::BGMode bgmode;
     QRegion crgn;
-    bool has_clipping : 1;
+    uint has_clipping : 1;
+    uint has_pen : 1;
+    uint has_brush : 1;
+    uint has_autoswap : 1;
+
     QMatrix matrix;
+    GLubyte pen_color[4];
+    GLubyte brush_color[4];
     QPainterPrivate::TransformationCodes txop;
 };
 
@@ -98,11 +116,13 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
     Q_ASSERT(static_cast<const QGLWidget *>(pdev));
     d->pdev = pdev;
     d->has_clipping = false;
+    d->has_autoswap = dgl->autoBufferSwap();
     dgl->setAutoBufferSwap(false);
     setActive(true);
     dgl->makeCurrent();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    dgl->qglClearColor(dgl->palette().brush(QPalette::Background).color());
+    const QColor &c = dgl->palette().brush(QPalette::Background).color();
+    glClearColor(c.redF(), c.greenF(), c.blueF(), 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glShadeModel(GL_FLAT);
     glViewport(0, 0, dgl->width(), dgl->height());
@@ -123,6 +143,7 @@ bool QOpenGLPaintEngine::end()
     glPopAttrib();
     glFlush();
     dgl->swapBuffers();
+    dgl->setAutoBufferSwap(d_func()->has_autoswap);
     setActive(false);
     return true;
 }
@@ -148,16 +169,14 @@ void QOpenGLPaintEngine::updatePen(const QPen &pen)
 {
     Q_D(QOpenGLPaintEngine);
     dgl->makeCurrent();
-    dgl->qglColor(pen.color());
     d->cpen = pen;
+    d->has_pen = (pen.style() != Qt::NoPen);
+    d->setGLPen(pen.color());
+    glColor4ubv(d->pen_color);
     if (pen.color().alpha() != 255) {
  	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
     }
-    if (pen.widthF() < 0.000001)
-        glLineWidth(1);
-    else
-        glLineWidth(pen.widthF());
 }
 
 void QOpenGLPaintEngine::updateBrush(const QBrush &brush, const QPointF &)
@@ -165,6 +184,9 @@ void QOpenGLPaintEngine::updateBrush(const QBrush &brush, const QPointF &)
     Q_D(QOpenGLPaintEngine);
     dgl->makeCurrent();
     d->cbrush = brush;
+    d->has_brush = (brush.style() != Qt::NoBrush);
+    d->setGLBrush(brush.color());
+    glColor4ubv(d->brush_color);
     if (!brush.isOpaque()) {
  	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
@@ -431,7 +453,8 @@ void QOpenGLPaintEngine::updateBackground(Qt::BGMode bgMode, const QBrush &bgBru
 {
     Q_D(QOpenGLPaintEngine);
     dgl->makeCurrent();
-    dgl->qglClearColor(bgBrush.color());
+    const QColor &c = bgBrush.color();
+    glClearColor(c.redF(), c.greenF(), c.blueF(), 1.0);
     d->bgmode = bgMode;
     d->bgbrush = bgBrush;
 }
@@ -443,13 +466,13 @@ void QOpenGLPaintEngine::updateMatrix(const QMatrix &mtx)
     d->matrix = mtx;
     GLdouble mat[4][4];
 
-    mat[0][0] = qToDouble(mtx.m11());
-    mat[0][1] = qToDouble(mtx.m12());
+    mat[0][0] = mtx.m11();
+    mat[0][1] = mtx.m12();
     mat[0][2] = 0;
     mat[0][3] = 0;
 
-    mat[1][0] = qToDouble(mtx.m21());
-    mat[1][1] = qToDouble(mtx.m22());
+    mat[1][0] = mtx.m21();
+    mat[1][1] = mtx.m22();
     mat[1][2] = 0;
     mat[1][3] = 0;
 
@@ -458,8 +481,8 @@ void QOpenGLPaintEngine::updateMatrix(const QMatrix &mtx)
     mat[2][2] = 1;
     mat[2][3] = 0;
 
-    mat[3][0] = qToDouble(mtx.dx());
-    mat[3][1] = qToDouble(mtx.dy());
+    mat[3][0] = mtx.dx();
+    mat[3][1] = mtx.dy();
     mat[3][2] = 0;
     mat[3][3] = 1;
 
@@ -563,21 +586,21 @@ void QOpenGLPaintEngine::drawRects(const QRectF *rects, int rectCount)
     // ### this could be done faster I'm sure...
     for (int i=0; i<rectCount; ++i) {
         QRectF r = rects[i];
-        double x = qToDouble(r.x());
-        double y = qToDouble(r.y());
-        double w = qToDouble(r.width());
-        double h = qToDouble(r.height());
-        if (d->cbrush.style() != Qt::NoBrush) {
-            dgl->qglColor(d->cbrush.color());
-            glRectf(x, y, x+w, y+h);
-            if (d->cpen.style() == Qt::NoPen)
+        double x = r.x();
+        double y = r.y();
+        double w = r.width();
+        double h = r.height();
+        if (d->has_brush) {
+            glColor4ubv(d->brush_color);
+            glRectd(x, y, x+w, y+h);
+            if (!d->has_pen)
                 return;
         }
 
-        if (d->cpen.style() != Qt::NoPen) {
+        if (d->has_pen) {
             // Specify the outline as 4 separate lines since a quad or a
             // polygon won't give us exactly what we want
-            dgl->qglColor(d->cpen.color());
+            glColor4ubv(d->pen_color);
             glBegin(GL_LINES);
             {
                 glVertex2d(x, y);
@@ -594,25 +617,51 @@ void QOpenGLPaintEngine::drawRects(const QRectF *rects, int rectCount)
     }
 }
 
-void QOpenGLPaintEngine::drawPoints(const QPointF *p, int pointCount)
+void QOpenGLPaintEngine::drawPoints(const QPointF *points, int pointCount)
 {
+    Q_D(QOpenGLPaintEngine);
     dgl->makeCurrent();
+    GLfloat pen_width = d->cpen.widthF();
+    if (pen_width > 1 || (pen_width > 0 && d->txop > QPainterPrivate::TxTranslate)) {
+        const QPointF *end = points + pointCount;
+        while (points < end) {
+            QPainterPath path;
+            path.moveTo(*points);
+            path.lineTo(points->x() + 0.001, points->y());
+            drawPath(path);
+            ++points;
+        }
+        return;
+    }
     glBegin(GL_POINTS);
     {
         for (int i=0; i<pointCount; ++i)
-            glVertex2d(qToDouble(p[i].x()), qToDouble(p[i].y()));
+            glVertex2d(points[i].x(), points[i].y());
     }
     glEnd();
 }
 
 void QOpenGLPaintEngine::drawLines(const QLineF *lines, int lineCount)
 {
+    Q_D(QOpenGLPaintEngine);
     dgl->makeCurrent();
+    GLfloat pen_width = d->cpen.widthF();
+    if (pen_width > 1 || (pen_width > 0 && d->txop > QPainterPrivate::TxTranslate)) {
+        QPainterPath path(lines[0].p1());
+        path.lineTo(lines[0].p2());
+        for (int i = 1; i < lineCount; ++lines) {
+            path.lineTo(lines[i].p1());
+            path.lineTo(lines[i].p2());
+        }
+        drawPath(path);
+        return;
+    }
+    glColor4ubv(d->pen_color);
     glBegin(GL_LINES);
     {
         for (int i = 0; i < lineCount; ++i) {
-            glVertex2d(qToDouble(lines[i].x1()), qToDouble(lines[i].y1()));
-            glVertex2d(qToDouble(lines[i].x2()), qToDouble(lines[i].y2()));
+            glVertex2d(lines[i].x1(), lines[i].y1());
+            glVertex2d(lines[i].x2(), lines[i].y2());
         }
     }
     glEnd();
@@ -679,8 +728,8 @@ static void qgl_draw_poly(const QPointF *points, int pointCount, bool winding = 
 	gluTessBeginContour(qgl_tess);
 	{
 	    for (int i = 0; i < pointCount; ++i) {
-		v[i*3] = qToDouble(points[i].x());
-		v[i*3+1] = qToDouble(points[i].y());
+		v[i*3] = points[i].x();
+		v[i*3+1] = points[i].y();
 		v[i*3+2] = 0.0;
 		gluTessVertex(qgl_tess, &v[i*3], &v[i*3]);
 	    }
@@ -708,20 +757,20 @@ void QOpenGLPaintEngine::drawPolygon(const QPointF *points, int pointCount, Poly
     if(!pointCount)
         return;
     dgl->makeCurrent();
-    dgl->qglColor(d->cbrush.color());
-    if (d->cbrush.style() != Qt::NoBrush && mode != PolylineMode)
+    glColor4ubv(d->brush_color);
+    if (d->has_brush && mode != PolylineMode)
         qgl_draw_poly(points, pointCount, mode == QPaintEngine::WindingMode);
-    if (d->cpen.style() != Qt::NoPen) {
-        dgl->qglColor(d->cpen.color());
-        double x1 = qToDouble(points[0].x());
-        double y1 = qToDouble(points[0].y());
-        double x2 = qToDouble(points[pointCount - 1].x());
-        double y2 = qToDouble(points[pointCount - 1].y());
+    if (d->has_pen) {
+        glColor4ubv(d->pen_color);
+        double x1 = points[0].x();
+        double y1 = points[0].y();
+        double x2 = points[pointCount - 1].x();
+        double y2 = points[pointCount - 1].y();
 
         glBegin(GL_LINE_STRIP);
         {
             for (int i = 0; i < pointCount; ++i)
-                glVertex2d(qToDouble(points[i].x()), qToDouble(points[i].y()));
+                glVertex2d(points[i].x(), points[i].y());
             if (mode != PolylineMode && !(x1 == x2 && y1 == y2))
                 glVertex2d(x1, y1);
         }
@@ -735,16 +784,19 @@ void QOpenGLPaintEngine::drawPath(const QPainterPath &path)
     if (path.isEmpty())
         return;
 
-    if (d->cbrush.style() != Qt::NoBrush) {
+    if (d->has_brush) {
         QPolygonF poly = path.toFillPolygon();
-        QPen oldPen = d->cpen;
+        bool had_pen = d->has_pen;
+        QPen old_pen = d->cpen;
+        d->has_pen = false;
         d->cpen.setStyle(Qt::NoPen);
         drawPolygon(poly.data(), poly.size(),
                     path.fillRule() == Qt::OddEvenFill ? OddEvenMode : WindingMode);
-        d->cpen = oldPen;
+        d->has_pen = had_pen;
+        d->cpen = old_pen;
     }
 
-    if (d->cpen.style() != Qt::NoPen) {
+    if (d->has_pen) {
         QPainterPathStroker stroker;
         stroker.setDashPattern(d->cpen.style());
         stroker.setCapStyle(d->cpen.capStyle());
@@ -766,10 +818,13 @@ void QOpenGLPaintEngine::drawPath(const QPainterPath &path)
                 return;
             poly = stroke.toFillPolygon(d->matrix);
         }
-        QPen oldPen = d->cpen;
-        QBrush oldBrush = d->cbrush;
-        d->cpen.setStyle(Qt::NoPen);
-        d->cbrush = d->cpen.brush();
+
+        bool had_pen = d->has_pen;
+        bool had_brush = d->has_brush;
+        QBrush old_brush = d->cbrush;
+        d->has_pen = false;
+        d->has_brush = true;
+        d->setGLBrush(d->cpen.brush().color());
 
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -777,8 +832,10 @@ void QOpenGLPaintEngine::drawPath(const QPainterPath &path)
         drawPolygon(poly.data(), poly.size(), WindingMode);
         glPopMatrix();
 
-        d->cpen = oldPen;
-        d->cbrush = oldBrush;
+        d->has_pen = had_pen;
+        d->has_brush = had_brush;
+        d->cbrush = old_brush;
+        d->setGLBrush(d->cbrush.color());
     }
 }
 
@@ -820,8 +877,8 @@ void QOpenGLPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pm, con
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
 
-    GLdouble tc_w = qToDouble(qreal(r.width())/pm.width());
-    GLdouble tc_h = qToDouble(qreal(r.height())/pm.height());
+    GLdouble tc_w = r.width()/pm.width();
+    GLdouble tc_h = r.height()/pm.height();
 
     // Rotate the texture so that it is aligned correctly and the
     // wrapping is done correctly
@@ -832,16 +889,16 @@ void QOpenGLPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pm, con
     glBegin(GL_QUADS);
     {
 	glTexCoord2d(0.0, 0.0);
-	glVertex2d(qToDouble(r.x()), qToDouble(r.y()));
+	glVertex2d(r.x(), r.y());
 
 	glTexCoord2d(tc_w, 0.0);
-	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()));
+	glVertex2d(r.x()+r.width(), r.y());
 
 	glTexCoord2d(tc_w, tc_h);
-	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()+r.height()));
+	glVertex2d(r.x()+r.width(), r.y()+r.height());
 
 	glTexCoord2d(0.0, tc_h);
-	glVertex2d(qToDouble(r.x()), qToDouble(r.y()+r.height()));
+	glVertex2d(r.x(), r.y()+r.height());
     }
     glEnd();
     glPopMatrix();
@@ -888,17 +945,17 @@ void QOpenGLPaintEngine::drawTextureRect(int tx_width, int tx_height, const QRec
 	    y2 = sr.height();
 	}
 
-        glTexCoord2d(qToDouble(x1), qToDouble(y2));
-	glVertex2d(qToDouble(r.x()), qToDouble(r.y()));
+        glTexCoord2d(x1, y2);
+	glVertex2d(r.x(), r.y());
 
-        glTexCoord2d(qToDouble(x2), qToDouble(y2));
-	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()));
+        glTexCoord2d(x2, y2);
+	glVertex2d(r.x()+r.width(), r.y());
 
-        glTexCoord2d(qToDouble(x2), qToDouble(y1));
-	glVertex2d(qToDouble(r.x()+r.width()), qToDouble(r.y()+r.height()));
+        glTexCoord2d(x2, y1);
+	glVertex2d(r.x()+r.width(), r.y()+r.height());
 
-        glTexCoord2d(qToDouble(x1), qToDouble(y1));
-	glVertex2d(qToDouble(r.x()), qToDouble(r.y()+r.height()));
+        glTexCoord2d(x1, y1);
+	glVertex2d(r.x(), r.y()+r.height());
     }
     glEnd();
 

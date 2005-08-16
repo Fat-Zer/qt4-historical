@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -338,8 +338,10 @@ void QWellArray::setSelected(int row, int col)
     if (row >= 0)
         emit selected(row, col);
 
+#ifndef QT_NO_MENU
     if (isVisible() && qobject_cast<QMenu*>(parentWidget()))
         parentWidget()->close();
+#endif
 }
 
 
@@ -367,7 +369,7 @@ void QWellArray::setCellBrush(int row, int col, const QBrush &b)
 
 /*
   Returns the brush set for the cell at \a row, \a column. If no brush is
-  set, \c Qt::NoBrush is returned.
+  set, Qt::NoBrush is returned.
 */
 
 QBrush QWellArray::cellBrush(int row, int col)
@@ -408,9 +410,15 @@ void QWellArray::keyPressEvent(QKeyEvent* e)
         if(curRow < numRows()-1)
             setCurrent(curRow + 1, curCol);
         break;
-    case Qt::Key_Space:
     case Qt::Key_Return:
     case Qt::Key_Enter:
+        /*
+          ignore the key, so that the dialog get it, but still select
+          the current row/col
+        */
+        e->ignore();
+        // fallthrough intended
+    case Qt::Key_Space:
         setSelected(curRow, curCol);
         break;
     default:                                // If not an interesting key,
@@ -1027,7 +1035,7 @@ QColorShower::QColorShower(QWidget *parent)
     curCol = qRgb(-1, -1, -1);
 
     QGridLayout *gl = new QGridLayout(this);
-    gl->setMargin(6);
+    gl->setMargin(gl->spacing());
     lab = new QColorShowLabel(this);
     lab->setMinimumWidth(60);
     gl->addWidget(lab, 0, 0, -1, 1);
@@ -1039,49 +1047,63 @@ QColorShower::QColorShower(QWidget *parent)
     hEd = new QColSpinBox(this);
     hEd->setRange(0, 359);
     QLabel *l = new QLabel(QColorDialog::tr("Hu&e:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(hEd);
+#endif
     l->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(l, 0, 1);
     gl->addWidget(hEd, 0, 2);
 
     sEd = new QColSpinBox(this);
     l = new QLabel(QColorDialog::tr("&Sat:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(sEd);
+#endif
     l->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(l, 1, 1);
     gl->addWidget(sEd, 1, 2);
 
     vEd = new QColSpinBox(this);
     l = new QLabel(QColorDialog::tr("&Val:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(vEd);
+#endif
     l->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(l, 2, 1);
     gl->addWidget(vEd, 2, 2);
 
     rEd = new QColSpinBox(this);
     l = new QLabel(QColorDialog::tr("&Red:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(rEd);
+#endif
     l->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(l, 0, 3);
     gl->addWidget(rEd, 0, 4);
 
     gEd = new QColSpinBox(this);
     l = new QLabel(QColorDialog::tr("&Green:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(gEd);
+#endif
     l->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(l, 1, 3);
     gl->addWidget(gEd, 1, 4);
 
     bEd = new QColSpinBox(this);
     l = new QLabel(QColorDialog::tr("Bl&ue:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(bEd);
+#endif
     l->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(l, 2, 3);
     gl->addWidget(bEd, 2, 4);
 
     alphaEd = new QColSpinBox(this);
     alphaLab = new QLabel(QColorDialog::tr("A&lpha channel:"), this);
+#ifndef QT_NO_SHORTCUT
     l->setBuddy(alphaEd);
+#endif
     alphaLab->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     gl->addWidget(alphaLab, 3, 1, 1, 3);
     gl->addWidget(alphaEd, 3, 4);
@@ -1260,13 +1282,8 @@ void QColorDialogPrivate::init()
         compact = true;
 
     nextCust = 0;
-    const int lumSpace = 3;
-    int border = 12;
-    if (compact)
-        border = 6;
     QHBoxLayout *topLay = new QHBoxLayout(q);
-    topLay->setMargin(border);
-    topLay->setSpacing(6);
+    const int lumSpace = topLay->spacing() / 2;
     QVBoxLayout *leftLay = 0;
 
     if (!compact) {
@@ -1279,7 +1296,9 @@ void QColorDialogPrivate::init()
     if (!compact) {
         standard = new QColorWell(q, 6, 8, stdrgb);
         QLabel *lab = new QLabel(QColorDialog::tr("&Basic colors"), q);
+#ifndef QT_NO_SHORTCUT
         lab->setBuddy(standard);
+#endif
         q->connect(standard, SIGNAL(selected(int,int)), SLOT(newStandard(int,int)));
         leftLay->addWidget(lab);
         leftLay->addWidget(standard);
@@ -1292,7 +1311,9 @@ void QColorDialogPrivate::init()
 
         q->connect(custom, SIGNAL(selected(int,int)), SLOT(newCustom(int,int)));
         lab = new QLabel(QColorDialog::tr("&Custom colors") , q);
+#ifndef QT_NO_SHORTCUT
         lab->setBuddy(custom);
+#endif
         leftLay->addWidget(lab);
         leftLay->addWidget(custom);
 

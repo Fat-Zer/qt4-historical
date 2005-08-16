@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the item views module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,13 +22,15 @@
 ****************************************************************************/
 
 #include "qlistwidget.h"
+
+#ifndef QT_NO_LISTWIDGET
 #include <qitemdelegate.h>
 #include <qpainter.h>
 #include <private/qlistview_p.h>
 #include <private/qwidgetitemdata_p.h>
 
 // workaround for VC++ 6.0 linker bug (?)
-typedef bool(*LessThan)(const QListWidgetItem *left, const QListWidgetItem *right);
+typedef bool(*LessThan)(const QPair<QListWidgetItem*,int>&,const QPair<QListWidgetItem*,int>&);
 
 class QListWidgetMimeData : public QMimeData
 {
@@ -64,8 +66,10 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     void sort(int column, Qt::SortOrder order);
-    static bool itemLessThan(const QListWidgetItem *left, const QListWidgetItem *right);
-    static bool itemGreaterThan(const QListWidgetItem *left, const QListWidgetItem *right);
+    static bool itemLessThan(const QPair<QListWidgetItem*,int> &left,
+                             const QPair<QListWidgetItem*,int> &right);
+    static bool itemGreaterThan(const QPair<QListWidgetItem*,int> &left,
+                                const QPair<QListWidgetItem*,int> &right);
 
     void itemChanged(QListWidgetItem *item);
 
@@ -161,7 +165,7 @@ int QListModel::rowCount(const QModelIndex &) const
 QModelIndex QListModel::index(QListWidgetItem *item) const
 {
     Q_ASSERT(item);
-    int row = lst.indexOf(item);
+    int row = lst.lastIndexOf(item);
     Q_ASSERT(row != -1);
     return createIndex(row, 0, item);
 }
@@ -241,19 +245,36 @@ void QListModel::sort(int column, Qt::SortOrder order)
 {
     if (column != 0)
         return;
+    QVector < QPair<QListWidgetItem*,int> > sorting(lst.count());
+    for (int i = 0; i < lst.count(); ++i) {
+        sorting[i].first = lst.at(i);
+        sorting[i].second = i;
+    }
+
     LessThan compare = (order == Qt::AscendingOrder ? &itemLessThan : &itemGreaterThan);
-    qSort(lst.begin(), lst.end(), compare);
-    emit dataChanged(index(0, 0), index(lst.count() - 1, 0));
+    qSort(sorting.begin(), sorting.end(), compare);
+
+    for (int r = 0; r < sorting.count(); ++r) {
+        QListWidgetItem *item = sorting.at(r).first;
+        lst[r] = item;
+        QModelIndex from = createIndex(sorting.at(r).second, 0, item);
+        QModelIndex to = createIndex(r, 0, item);
+        changePersistentIndex(from, to);
+    }
+
+    emit layoutChanged();
 }
 
-bool QListModel::itemLessThan(const QListWidgetItem *left, const QListWidgetItem *right)
+bool QListModel::itemLessThan(const QPair<QListWidgetItem*,int> &left,
+                              const QPair<QListWidgetItem*,int> &right)
 {
-    return *left < *right;
+    return (*left.first) < (*right.first);
 }
 
-bool QListModel::itemGreaterThan(const QListWidgetItem *left, const QListWidgetItem *right)
+bool QListModel::itemGreaterThan(const QPair<QListWidgetItem*,int> &left,
+                                 const QPair<QListWidgetItem*,int> &right)
 {
-    return !(*left < *right);
+    return !((*left.first) < (*right.first));
 }
 
 void QListModel::itemChanged(QListWidgetItem *item)
@@ -280,7 +301,6 @@ QMimeData *QListModel::mimeData(const QModelIndexList &indexes) const
         items << at(indexes.at(i).row());
     const QListWidget *view = ::qobject_cast<const QListWidget*>(QObject::parent());
 
-    // cachedIndexes is a little hack to avoid copying from QModelIndexList to QList<QTreeWidgetItem*> and back again in the view
     cachedIndexes = indexes;
     QMimeData *mimeData = view->mimeData(items);
     cachedIndexes.clear();
@@ -446,14 +466,17 @@ QListWidgetItem *QListWidgetItem::clone() const
 */
 void QListWidgetItem::setData(int role, const QVariant &value)
 {
+    bool found = false;
     role = (role == Qt::EditRole ? Qt::DisplayRole : role);
     for (int i = 0; i < values.count(); ++i) {
         if (values.at(i).role == role) {
             values[i].value = value;
+            found = true;
             break;
         }
     }
-    values.append(QWidgetItemData(role, value));
+    if (!found)
+        values.append(QWidgetItemData(role, value));
     if (model)
         model->itemChanged(this);
 }
@@ -504,13 +527,16 @@ void QListWidgetItem::write(QDataStream &out) const
 }
 
 /*!
-    Assigns \a other to this list widget item.
+    Assigns \a other's data and flags to this item. Note that type()
+    and listWidget() are not copied.
+
+    This function is useful when reimplementing clone().
+
+    \sa data(), flags()
 */
 QListWidgetItem &QListWidgetItem::operator=(const QListWidgetItem &other)
 {
     values = other.values;
-    view = other.view;
-    model = other.model;
     itemFlags = other.itemFlags;
     return *this;
 }
@@ -845,7 +871,7 @@ void QListWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
 
     For multiple items, insertItems() can be used instead. The number of
     items in the list is found with the count() function.
-    To remove items from the list, use removeItem().
+    To remove items from the list, use takeItem().
 
     The current item in the list can be found with currentItem(), and changed
     with setCurrentItem(). The user can also change the current item by
@@ -1044,10 +1070,13 @@ void QListWidget::insertItems(int row, const QStringList &labels)
 }
 
 /*!
-    Removes and returns the item from the given \a row in the list
-    widget, otherwise return 0;
+    Removes and returns the item from the given \a row in the list widget; otherwise
+    returns 0.
 
-    \sa insertItem() addItem()
+    Items removed from a list widget will not be managed by Qt, and will need to be
+    deleted manually.
+
+    \sa insertItem(), addItem()
 */
 
 QListWidgetItem *QListWidget::takeItem(int row)
@@ -1328,7 +1357,7 @@ Qt::DropActions QListWidget::supportedDropActions() const
 
 /*!
   Returns a list of pointers to the items contained in the \a data object.
-  If the object was not created by a QTreeWidget in the same process, the list
+  If the object was not created by a QListWidget in the same process, the list
   is empty.
 
 */
@@ -1371,3 +1400,4 @@ void QListWidget::setModel(QAbstractItemModel *model)
 }
 
 #include "moc_qlistwidget.cpp"
+#endif // QT_NO_LISTWIDGET

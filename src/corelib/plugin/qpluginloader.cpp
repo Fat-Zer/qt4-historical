@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the core module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -29,6 +29,8 @@
 #include "qlibrary_p.h"
 #include "qdebug.h"
 
+#ifndef QT_NO_LIBRARY
+
 /*!
     \class QPluginLoader
     \reentrant
@@ -37,25 +39,22 @@
     \mainclass
     \ingroup plugins
 
-    QPlugingLoader provides a means for accessing a \l{How to Create
-    Qt Plugins}{Qt plugin}. Qt plugins are stored in a shared library
-    (a "DLL") and follow offer a few benefits over plain shared
-    libraries accessed using QLibrary:
+    QPluginLoader provides access to a \l{How to Create Qt
+    Plugins}{Qt plugin}. A Qt plugin is stored in a shared library (a
+    DLL) and offers these benefits over shared libraries accessed
+    using QLibrary:
 
     \list
-    \o Plugins offer safety in cases where a plugin is linked against
-       different versions of Qt. (This typically would result in the
-       application crashing when opening such a library with
-       QLibrary.)
-    \o Plugin offers direct access to a root component object
-       (instance()), instead of forcing you to resolve a C function
-       manually.
+    \o QPluginLoader checks that a plugin is linked against the same
+       version of Qt as the application.
+    \o QPluginLoader provides direct access to a root component object
+       (instance()), instead of forcing you to resolve a C function manually.
     \endlist
 
     An instance of a QPluginLoader object operates on a single shared
     library file, which we call a plugin. It provides access to the
     functionality in the plugin in a platform-independent way. To
-    specify which plugin to load, you can either pass a file name in
+    specify which plugin to load, either pass a file name in
     the constructor or set it with setFileName().
 
     The most important functions are load() to dynamically load the
@@ -94,7 +93,7 @@
     \a ClassName, in a header file. See the
     \l{tools/plugandpaint}{Plug & Paint} example for details.
 
-    \sa Q_INTERFACE(), Q_EXPORT_PLUGIN(), {How to Create Qt Plugins}
+    \sa Q_INTERFACES(), Q_EXPORT_PLUGIN(), {How to Create Qt Plugins}
 */
 
 /*!
@@ -319,3 +318,4 @@ QObjectList QPluginLoader::staticInstances()
         instances.append((*functions)[i]());
     return instances;
 }
+#endif // QT_NO_LIBRARY

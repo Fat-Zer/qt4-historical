@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the widgets module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -22,6 +22,9 @@
 ****************************************************************************/
 
 #include "qmainwindowlayout_p.h"
+
+#ifndef QT_NO_MAINWINDOW
+
 #include "qdockseparator_p.h"
 #include "qdockwidgetlayout_p.h"
 
@@ -71,10 +74,36 @@ enum POSITION {
     NPOSITIONS
 };
 
+static inline void validateToolBarArea(Qt::ToolBarArea &area)
+{
+    switch (area) {
+    case Qt::LeftToolBarArea:   
+    case Qt::RightToolBarArea:  
+    case Qt::TopToolBarArea:    
+    case Qt::BottomToolBarArea:
+        break;
+    default:
+        area = Qt::TopToolBarArea;
+    }
+}
+
+static inline void validateDockWidgetArea(Qt::DockWidgetArea &area)
+{
+    switch (area) {
+    case Qt::LeftDockWidgetArea: 
+    case Qt::RightDockWidgetArea:
+    case Qt::TopDockWidgetArea:  
+    case Qt::BottomDockWidgetArea:
+        break;
+    default:
+        area = Qt::LeftDockWidgetArea;
+    }
+}
+
 static inline uint areaForPosition(int pos)
 { return ((1u << pos) & 0xf); }
 
-static inline POSITION positionForArea(uint area)
+static inline POSITION positionForArea(Qt::DockWidgetArea area)
 {
     switch (area) {
     case Qt::LeftDockWidgetArea:   return LEFT;
@@ -86,6 +115,7 @@ static inline POSITION positionForArea(uint area)
     return CENTER;
 }
 
+#ifndef QT_NO_TOOLBAR
 static inline POSITION positionForArea(Qt::ToolBarArea area)
 {
     switch (area) {
@@ -97,6 +127,7 @@ static inline POSITION positionForArea(Qt::ToolBarArea area)
     }
     return CENTER;
 }
+#endif
 
 static inline int pick(POSITION p, const QSize &s)
 { return p == TOP || p == BOTTOM ? s.height() : s.width(); }
@@ -141,8 +172,10 @@ public:
 
 
 QMainWindowLayout::QMainWindowLayout(QMainWindow *mainwindow)
-    : QLayout(mainwindow), statusbar(0), relayout_type(QInternal::RelayoutNormal), save_layout_info(0),
-      save_tb_layout_info(0)
+    : QLayout(mainwindow), statusbar(0), relayout_type(QInternal::RelayoutNormal), save_layout_info(0)
+#ifndef QT_NO_TOOLBAR
+      , save_tb_layout_info(0)
+#endif
 {
     setObjectName(mainwindow->objectName() + "_layout");
 
@@ -162,12 +195,14 @@ QMainWindowLayout::QMainWindowLayout(QMainWindow *mainwindow)
 
 QMainWindowLayout::~QMainWindowLayout()
 {
+#ifndef QT_NO_TOOLBAR
     for (int line = 0; line < tb_layout_info.size(); ++line) {
         const ToolBarLineInfo &lineInfo = tb_layout_info.at(line);
         for (int i = 0; i < lineInfo.list.size(); ++i)
             delete lineInfo.list.at(i).item;
     }
     tb_layout_info.clear();
+#endif
     for (int i = 0; i < NPOSITIONS; ++i) {
         delete layout_info[i].item;
         if (layout_info[i].sep)
@@ -179,6 +214,7 @@ QMainWindowLayout::~QMainWindowLayout()
     delete statusbar;
 }
 
+#ifndef QT_NO_STATUSBAR
 QStatusBar *QMainWindowLayout::statusBar() const
 { return statusbar ? qobject_cast<QStatusBar *>(statusbar->widget()) : 0; }
 
@@ -189,6 +225,7 @@ void QMainWindowLayout::setStatusBar(QStatusBar *sb)
     delete statusbar;
     statusbar = sb ? new QWidgetItem(sb) : 0;
 }
+#endif // QT_NO_STATUSBAR
 
 QWidget *QMainWindowLayout::centralWidget() const
 { return layout_info[CENTER].item ? layout_info[CENTER].item->widget() : 0; }
@@ -206,9 +243,11 @@ void QMainWindowLayout::setCentralWidget(QWidget *cw)
     invalidate();
 }
 
+#ifndef QT_NO_TOOLBAR
 void QMainWindowLayout::addToolBarBreak(Qt::ToolBarArea area)
 {
     ToolBarLineInfo newLine;
+    validateToolBarArea(area);
     newLine.pos = positionForArea(area);
     switch (newLine.pos) {
     case TOP:
@@ -260,6 +299,7 @@ void QMainWindowLayout::addToolBar(Qt::ToolBarArea area,
     else
         removeToolBarInfo(toolbar);
 
+    validateToolBarArea(area);
     POSITION pos = positionForArea(area);
     // see if we have an existing line in the tb - append it in the last in line
     for (int line = 0; line < tb_layout_info.size(); ++line) {
@@ -328,9 +368,12 @@ Qt::ToolBarArea QMainWindowLayout::toolBarArea(QToolBar *toolbar) const
     Q_ASSERT_X(false, "QMainWindow::toolBarArea", "'toolbar' is not managed by this main window.");
     return Qt::TopToolBarArea;
 }
+#endif // QT_NO_TOOLBAR
 
+#ifndef QT_NO_DOCKWIDGET
 QDockWidgetLayout *QMainWindowLayout::layoutForArea(Qt::DockWidgetArea area)
 {
+    validateDockWidgetArea(area);
     POSITION pos = positionForArea(area);
     QMainWindowLayoutInfo &info = layout_info[pos];
     QDockWidgetLayout *l = 0;
@@ -380,6 +423,7 @@ void QMainWindowLayout::splitDockWidget(QDockWidget *after, QDockWidget *dockwid
                                       ? Qt::RightDockWidgetArea
                                       : Qt::BottomDockWidgetArea));
 }
+#endif // QT_NO_DOCKWIDGET
 
 static bool findWidgetRecursively(QLayoutItem *li, QWidget *w)
 {
@@ -400,6 +444,7 @@ static bool findWidgetRecursively(QLayoutItem *li, QWidget *w)
     return false;
 }
 
+#ifndef QT_NO_DOCKWIDGET
 Qt::DockWidgetArea QMainWindowLayout::dockWidgetArea(QDockWidget *dockwidget) const
 {
     for (int pos = 0; pos < NPOSITIONS - 1; ++pos) {
@@ -413,9 +458,11 @@ Qt::DockWidgetArea QMainWindowLayout::dockWidgetArea(QDockWidget *dockwidget) co
     return Qt::TopDockWidgetArea;
 
 }
+#endif // QT_NO_DOCKWIDGET
 
 void QMainWindowLayout::saveState(QDataStream &stream) const
 {
+#ifndef QT_NO_TOOLBAR
     // save toolbar state
     stream << (uchar) ToolBarStateMarker;
     stream << tb_layout_info.size(); // number of toolbar lines
@@ -442,7 +489,9 @@ void QMainWindowLayout::saveState(QDataStream &stream) const
             }
         }
     }
+#endif // QT_NO_TOOLBAR
 
+#ifndef QT_NO_DOCKWIDGET
     // save dockwidget state
     stream << (uchar) DockWidgetStateMarker;
     int x = 0;
@@ -463,6 +512,7 @@ void QMainWindowLayout::saveState(QDataStream &stream) const
         Q_ASSERT(layout != 0);
         layout->saveState(stream);
     }
+#endif // QT_NO_DOCKWIDGET
 
     // save center widget state
     stream << layout_info[CENTER].size;
@@ -470,6 +520,7 @@ void QMainWindowLayout::saveState(QDataStream &stream) const
 
 bool QMainWindowLayout::restoreState(QDataStream &stream)
 {
+#ifndef QT_NO_TOOLBAR
     // restore toolbar layout
     uchar tmarker;
     stream >> tmarker;
@@ -538,20 +589,66 @@ bool QMainWindowLayout::restoreState(QDataStream &stream)
     if (stream.status() != QDataStream::Ok)
         return false;
 
-    // replace existing toolbar layout
-    for (int line = 0; line < tb_layout_info.size(); ++line) {
-        const ToolBarLineInfo &lineInfo = tb_layout_info.at(line);
-        for (int i = 0; i < lineInfo.list.size(); ++i)
-            delete lineInfo.list.at(i).item;
-    }
-    tb_layout_info = toolBarState;
+    // remove restored toolbars from the existing toolbar layout
+    for (int line = 0; line < toolBarState.size(); ++line) {
+        const ToolBarLineInfo &lineInfo = toolBarState.at(line);
+        for (int i = 0; i < lineInfo.list.size(); ++i) {
+            const ToolBarLayoutInfo &info = lineInfo.list.at(i);
 
+            bool found = false;
+            for (int eline = 0; !found && eline < tb_layout_info.size(); ++eline) {
+                ToolBarLineInfo &elineInfo = tb_layout_info[eline];
+                for (int e = 0; !found && e < elineInfo.list.size(); ++e) {
+                    ToolBarLayoutInfo &einfo = elineInfo.list[e];
+                    if (info.item->widget() == einfo.item->widget()) {
+                        // found it
+                        found = true;
+                        delete einfo.item;
+                        elineInfo.list.removeAt(e);
+                        if (elineInfo.list.isEmpty())
+                            tb_layout_info.removeAt(eline);
+                    }
+                }
+            }
+        }
+    }
+    if (!tb_layout_info.isEmpty()) {
+        // merge toolbars that have not been restored into the restored layout
+        int lineCount[NPOSITIONS - 1] = { 0, 0, 0, 0 };
+        while (!tb_layout_info.isEmpty()) {
+            ToolBarLineInfo lineInfo = tb_layout_info.takeFirst();
+            ++lineCount[lineInfo.pos];
+
+            bool merged = false;
+            int targetLine = 0;
+            for (int line = 0; line < toolBarState.size(); ++line) {
+                ToolBarLineInfo &restoredLineInfo = toolBarState[line];
+                if (lineInfo.pos != restoredLineInfo.pos)
+                    continue;
+                if (++targetLine == lineCount[lineInfo.pos]) {
+                    // merge!
+                    restoredLineInfo.list << lineInfo.list;
+                    merged = true;
+                }
+            }
+            if (!merged) {
+                // couldn't merge this toolbar line, append it to the new layout
+                toolBarState << lineInfo;
+            }
+        }
+    }
+    // replace existing toolbar layout
+    tb_layout_info = toolBarState;
+#endif // QT_NO_TOOLBAR
+
+#ifndef QT_NO_DOCKWIDGET
     // restore dockwidget layout
     uchar dmarker;
     stream >> dmarker;
     if (dmarker != DockWidgetStateMarker)
         return false;
 
+    QList<QDockWidget *> dockwidgets = qFindChildren<QDockWidget *>(parentWidget());
     save_layout_info = new QVector<QMainWindowLayoutInfo>(layout_info);
 
     // clear out our working copy
@@ -575,6 +672,7 @@ bool QMainWindowLayout::restoreState(QDataStream &stream)
             break;
         }
     }
+#endif // QT_NO_DOCKWIDGET
 
     // restore center widget size
     stream >> layout_info[CENTER].size;
@@ -596,6 +694,44 @@ bool QMainWindowLayout::restoreState(QDataStream &stream)
         return false;
     }
 
+#ifndef QT_NO_DOCKWIDGET
+    // if any of the dockwidgets have not been restored, append them
+    // to the end of their current area
+    for (int i = 0; i < dockwidgets.size(); ++i) {
+        QDockWidget *dockWidget = dockwidgets.at(i);
+        bool found = false;
+        for (int x = 0; !found && x < NPOSITIONS - 1; ++x) {
+            if (layout_info[x].item)
+                found = findWidgetRecursively(layout_info[x].item, dockWidget);
+        }
+        if (!found) {
+            // append to the dock widget's current area
+            found = false;
+            int x = 0;
+            for (; !found && x < NPOSITIONS - 1; ++x) {
+                if ((*save_layout_info)[x].item)
+                    found = findWidgetRecursively((*save_layout_info)[x].item, dockWidget);
+            }
+            if (!found) {
+                // the dock widget hasn't been added to this layout
+                continue;
+            }
+            --x;
+            Qt::Orientation orientation = Qt::Horizontal;
+            switch (areaForPosition(x)) {
+            case Qt::LeftDockWidgetArea:
+            case Qt::RightDockWidgetArea:
+                orientation = Qt::Vertical;
+                break;
+            default:
+                break;
+            }
+            addDockWidget(static_cast<Qt::DockWidgetArea>(areaForPosition(x)),
+                          dockWidget,
+                          orientation);
+        }
+    }
+
     // replace existing dockwidget layout
     for (int i = 0; i < NPOSITIONS - 1; ++i) {
         if ((*save_layout_info)[i].sep)
@@ -603,6 +739,7 @@ bool QMainWindowLayout::restoreState(QDataStream &stream)
         delete (*save_layout_info)[i].sep;
         delete (*save_layout_info)[i].item;
     }
+#endif // QT_NO_DOCKWIDGET
 
     delete save_layout_info;
     save_layout_info = 0;
@@ -621,6 +758,7 @@ int QMainWindowLayout::count() const
 QLayoutItem *QMainWindowLayout::itemAt(int index) const
 {
     int x = 0;
+#ifndef QT_NO_TOOLBAR
     for (int line = 0; line < tb_layout_info.size(); ++line) {
         const ToolBarLineInfo &lineInfo = tb_layout_info.at(line);
 	for (int i = 0; i < lineInfo.list.size(); ++i) {
@@ -630,6 +768,7 @@ QLayoutItem *QMainWindowLayout::itemAt(int index) const
             }
         }
     }
+#endif
     for (int i = 0; i < NPOSITIONS; ++i) {
         if (!layout_info[i].item)
             continue;
@@ -644,6 +783,7 @@ QLayoutItem *QMainWindowLayout::takeAt(int index)
     DEBUG("QMainWindowLayout::takeAt: index %d", index);
 
     int x = 0;
+#ifndef QT_NO_TOOLBAR
     for (int line = 0; line < tb_layout_info.size(); ++line) {
         ToolBarLineInfo &lineInfo = tb_layout_info[line];
 	for (int i = 0; i < lineInfo.list.size(); ++i) {
@@ -656,7 +796,7 @@ QLayoutItem *QMainWindowLayout::takeAt(int index)
             }
 	}
     }
-
+#endif
     for (int i = 0; i < NPOSITIONS; ++i) {
         if (!layout_info[i].item) continue;
         if (x++ == index) {
@@ -692,6 +832,7 @@ void fix_minmax(QVector<QLayoutStruct> &ls,
                 const QMainWindowLayout * const layout,
                 POSITION pos)
 {
+#ifndef QT_NO_DOCKWIDGET
     const Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(areaForPosition(pos));
 
     const struct
@@ -757,6 +898,7 @@ void fix_minmax(QVector<QLayoutStruct> &ls,
             ls[1].minimumSize = qMax(ls[1].minimumSize, min - ls[2].minimumSize);
         }
     }
+#endif // QT_NO_DOCKWIDGET
 }
 
 /*
@@ -826,6 +968,7 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
         r.setBottom(sbr.top() - 1);
     }
 
+#ifndef QT_NO_TOOLBAR
     // layout toolbars
 
     // calculate the respective tool bar rectangles and store the
@@ -916,7 +1059,7 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
     // at this point the space for the tool bars have been shaved off
     // the main rect, continue laying out each tool bar line
     int tb_fill = 0;
-    if (tb_layout_info.size() != 0) {
+    if (!tb_layout_info.isEmpty() && !tb_layout_info.at(0).list.isEmpty()) {
 	tb_fill = tb_layout_info.at(0).list.at(0).item->widget()->layout()->margin() * 2
                   + QApplication::style()->pixelMetric(QStyle::PM_ToolBarHandleExtent)
 		  + QApplication::style()->pixelMetric(QStyle::PM_ToolBarItemSpacing) * 2
@@ -1127,6 +1270,7 @@ void QMainWindowLayout::setGeometry(const QRect &_r)
 		info.item->setGeometry(tb);
 	}
     }
+#endif // QT_NO_TOOLBAR
 
     // layout dockwidgets and center widget
     const int ext = QApplication::style()->pixelMetric(QStyle::PM_DockWidgetSeparatorExtent);
@@ -1359,6 +1503,7 @@ QSize QMainWindowLayout::sizeHint() const
     if (!szHint.isValid()) {
         int left = 0, right = 0, top = 0, bottom = 0;
 
+#ifndef QT_NO_TOOLBAR
         // layout toolbars
         for (int line = 0; line < tb_layout_info.size(); ++line) {
             const ToolBarLineInfo &lineInfo = tb_layout_info.at(line);
@@ -1393,6 +1538,7 @@ QSize QMainWindowLayout::sizeHint() const
                 Q_ASSERT_X(false, "QMainWindowLayout", "internal error");
             }
         }
+#endif // QT_NO_TOOLBAR
 
         const QSize szC = layout_info[CENTER].item
                           ? layout_info[CENTER].item->sizeHint()
@@ -1454,6 +1600,7 @@ QSize QMainWindowLayout::minimumSize() const
     if (!minSize.isValid()) {
         int left = 0, right = 0, top = 0, bottom = 0;
 
+#ifndef QT_NO_TOOLBAR
         // layout toolbars
         for (int line = 0; line < tb_layout_info.size(); ++line) {
             const ToolBarLineInfo &lineInfo = tb_layout_info.at(line);
@@ -1488,6 +1635,7 @@ QSize QMainWindowLayout::minimumSize() const
                 Q_ASSERT_X(false, "QMainWindowLayout", "internal error");
             }
         }
+#endif // QT_NO_TOOLBAR
 
         const QSize szC = layout_info[CENTER].item
                           ? layout_info[CENTER].item->minimumSize()
@@ -1571,6 +1719,7 @@ void QMainWindowLayout::saveLayoutInfo()
     save_layout_info = new QVector<QMainWindowLayoutInfo>(layout_info);
     relayout_type = QInternal::RelayoutDragging;
 
+#ifndef QT_NO_DOCKWIDGET
     for (int i = 0; i < 4; ++i) {
         if (!layout_info[i].item) continue;
 
@@ -1579,6 +1728,7 @@ void QMainWindowLayout::saveLayoutInfo()
         Q_ASSERT(layout != 0);
         layout->saveLayoutInfo();
     }
+#endif
 }
 
 void QMainWindowLayout::resetLayoutInfo()
@@ -1586,6 +1736,7 @@ void QMainWindowLayout::resetLayoutInfo()
     Q_ASSERT(save_layout_info != 0);
     layout_info = *save_layout_info;
 
+#ifndef QT_NO_DOCKWIDGET
     for (int i = 0; i < 4; ++i) {
         if (!layout_info[i].item) continue;
 
@@ -1594,6 +1745,7 @@ void QMainWindowLayout::resetLayoutInfo()
         Q_ASSERT(layout != 0);
         layout->resetLayoutInfo();
     }
+#endif
 }
 
 void QMainWindowLayout::discardLayoutInfo()
@@ -1604,6 +1756,7 @@ void QMainWindowLayout::discardLayoutInfo()
 
     relayout_type = QInternal::RelayoutNormal;
 
+#ifndef QT_NO_DOCKWIDGET
     for (int i = 0; i < 4; ++i) {
         if (!layout_info[i].item) continue;
 
@@ -1612,19 +1765,25 @@ void QMainWindowLayout::discardLayoutInfo()
         Q_ASSERT(layout != 0);
         layout->discardLayoutInfo();
     }
+#endif
 }
 
 void QMainWindowLayout::beginConstrain()
 {
+#ifndef QT_NO_TOOLBAR
     save_tb_layout_info = new QList<ToolBarLineInfo>(tb_layout_info);
+#endif
 }
 
 void QMainWindowLayout:: endConstrain()
 {
+#ifndef QT_NO_TOOLBAR
     delete save_tb_layout_info;
     save_tb_layout_info = 0;
+#endif
 }
 
+#ifndef QT_NO_DOCKWIDGET
 int QMainWindowLayout::constrain(QDockWidgetLayout *dock, int delta)
 {
     QVector<QMainWindowLayoutInfo> info = save_layout_info ? *save_layout_info : layout_info;
@@ -1672,8 +1831,14 @@ int QMainWindowLayout::constrain(QDockWidgetLayout *dock, int delta)
     // remove delta from the center widget
     int from_center = delta;
     if (from_center) {
-        const QSize cmin = info[CENTER].item->minimumSize(),
-                    cmax = info[CENTER].item->maximumSize();
+        QSize cmin, cmax;
+        if (info[CENTER].item) {
+            cmin = info[CENTER].item->minimumSize();
+            cmax = info[CENTER].item->maximumSize();
+        } else {
+            cmin = QSize(0, 0);
+            cmax = QSize(INT_MAX, INT_MAX);
+        }
         if (pick(pos, info[CENTER].size) - from_center < pick(pos, cmin))
             from_center = pick(pos, info[CENTER].size) - pick(pos, cmin);
         if (pick(pos, info[CENTER].size) - from_center > pick(pos, cmax))
@@ -1713,6 +1878,7 @@ int QMainWindowLayout::constrain(QDockWidgetLayout *dock, int delta)
 
     return delta;
 }
+#endif // QT_NO_DOCKWIDGET
 
 static
 Qt::DockWidgetAreas areasForMousePosition(const QRect &r, const QPoint &p, bool floatable = false)
@@ -1766,6 +1932,7 @@ Qt::DockWidgetAreas areasForMousePosition(const QRect &r, const QPoint &p, bool 
     return areas;
 }
 
+#ifndef QT_NO_DOCKWIDGET
 Qt::DockWidgetArea QMainWindowLayout::locateDockWidget(QDockWidget *dockwidget,
                                                        const QPoint &mouse) const
 {
@@ -1792,7 +1959,10 @@ Qt::DockWidgetArea QMainWindowLayout::locateDockWidget(QDockWidget *dockwidget,
     }
 
     Qt::DockWidgetAreas areas =
-        areasForMousePosition(layout_info[4].item->geometry(), p,
+        areasForMousePosition((layout_info[CENTER].item
+                               ? layout_info[CENTER].item->geometry()
+                               : QRect(QPoint(0, 0), parentWidget()->size())),
+                              p,
                               (dockwidget->features() & QDockWidget::DockWidgetFloatable));
     Qt::DockWidgetArea area;
 
@@ -1850,8 +2020,13 @@ QRect QMainWindowLayout::placeDockWidget(QDockWidget *dockwidget,
 
     relayout(QInternal::RelayoutDragging);
 
+    QSize currentMinSize = minSize;
+    // save minSize, force minimumSize() to recalculate, and restore
+    // the saved value
+    minSize = QSize();
     const QSize new_min = minimumSize();
     const bool forbid = cur.width() < new_min.width() || cur.height() < new_min.height();
+    minSize = currentMinSize;
 
     if (!forbid) {
         DEBUG() << "  placed at " << layoutitem.geometry();
@@ -1881,7 +2056,7 @@ void QMainWindowLayout::dropDockWidget(QDockWidget *dockwidget,
 
     // if there is a window dock layout already here, forward the drop
     const int pos = positionForArea(area);
-    if (layout_info[pos].item) {
+    if (layout_info[pos].item && !layout_info[pos].item->isEmpty()) {
         DEBUG() << "  forwarding...";
         QDockWidgetLayout *l = qobject_cast<QDockWidgetLayout *>(layout_info[pos].item->layout());
         Q_ASSERT(l);
@@ -1894,20 +2069,21 @@ void QMainWindowLayout::dropDockWidget(QDockWidget *dockwidget,
     // remove dockwidget from current position in the layout
     removeRecursive(dockwidget);
 
-    QWidget *parent = qobject_cast<QMainWindow *>(parentWidget());
-    dockwidget->setParent(parent);
     QDockWidgetLayout *dwl = layoutForArea(static_cast<Qt::DockWidgetArea>(areaForPosition(pos)));
     dwl->addWidget(dockwidget);
-
     layout_info[pos].size = r.size();
-
     relayout();
 
-    dockwidget->show();
+    if (dockwidget->isFloating()) {
+        // reparent the dock window into the main window
+        dockwidget->setFloating(false);
+        dockwidget->show();
+    }
     layout_info[pos].sep->widget()->show();
 
     DEBUG() << "END of QMainWindowLayout::dropDockWidget";
 }
+#endif // QT_NO_DOCKWIDGET
 
 static bool removeWidgetRecursively(QLayoutItem *li, QWidget *w, bool dummy)
 {
@@ -1931,11 +2107,14 @@ static bool removeWidgetRecursively(QLayoutItem *li, QWidget *w, bool dummy)
     return false;
 }
 
+#ifndef QT_NO_DOCKWIDGET
 void QMainWindowLayout::removeRecursive(QDockWidget *dockwidget)
 {
     removeWidgetRecursively(this, dockwidget, save_layout_info != 0);
 }
+#endif // QT_NO_DOCKWIDGET
 
+#ifndef QT_NO_TOOLBAR
 int QMainWindowLayout::locateToolBar(QToolBar *toolbar, const QPoint &mouse) const
 {
     const int width = parentWidget()->width(),
@@ -1973,6 +2152,8 @@ int QMainWindowLayout::locateToolBar(QToolBar *toolbar, const QPoint &mouse) con
 
     for (int line = 0; line < tb_layout_info.size(); ++line) {
         const ToolBarLineInfo &lineInfo = tb_layout_info.at(line);
+        if (!toolbar->isAreaAllowed(static_cast<Qt::ToolBarArea>(areaForPosition(lineInfo.pos))))
+            continue;
 	bool break_it = false;
         for (int i = 0; i < lineInfo.list.size(); ++i) {
 	    const ToolBarLayoutInfo &info = lineInfo.list.at(i);
@@ -2142,3 +2323,6 @@ int QMainWindowLayout::prevVisible(int index, const ToolBarLineInfo &lineInfo)
     }
     return (index >= 0 && index < lineInfo.list.size()) ? index : -1;
 }
+#endif // QT_NO_TOOLBAR
+
+#endif // QT_NO_MAINWINDOW

@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the dialog module of the Qt Toolkit.
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -23,7 +23,6 @@
 
 #include "qdialog.h"
 
-#ifndef QT_NO_DIALOG
 
 #include "qevent.h"
 #include "qdesktopwidget.h"
@@ -129,9 +128,9 @@
     dialog will initially appear as a partial dialog, but with a
     "More" toggle button. If the user presses the "More" button down,
     the full dialog will appear. The extension widget will be resized
-    to its sizeHint(). If orientation is \c Qt::Horizontal the extension
+    to its sizeHint(). If orientation is Qt::Horizontal the extension
     widget's height() will be expanded to the height() of the dialog.
-    If the orientation is \c Qt::Vertical the extension widget's width()
+    If the orientation is Qt::Vertical the extension widget's width()
     will be expanded to the width() of the dialog. Extensibility is
     controlled with setExtension(), setOrientation() and
     showExtension().
@@ -188,8 +187,7 @@
 
   The widget flags \a f are passed on to the QWidget constructor.
   If, for example, you don't want a What's This button in the title bar
-  of the dialog, pass Qt::WStyle_Customize | Qt::WStyle_NormalBorder |
-  Qt::WStyle_Title | Qt::WStyle_SysMenu in \a f.
+  of the dialog, pass Qt::WindowTitleHint | Qt::WindowSystemMenuHint in \a f.
 
   \sa QWidget::setWindowFlags()
 */
@@ -335,7 +333,7 @@ void QDialog::hideSpecial()
 /*!
   Returns the modal dialog's result code, \c Accepted or \c Rejected.
 
-  Do not call this function if the dialog was constructed with the \c
+  Do not call this function if the dialog was constructed with the
   Qt::WA_DeleteOnClose attribute.
 */
 int QDialog::result() const
@@ -402,7 +400,7 @@ int QDialog::exec()
   is shown with exec(), done() causes the local event loop to finish,
   and exec() to return \a r.
 
-  As with QWidget::close(), done() deletes the dialog if the \c
+  As with QWidget::close(), done() deletes the dialog if the
   Qt::WA_DeleteOnClose flag is set. If the dialog is the application's
   main widget, the application terminates. If the dialog is the
   last window closed, the QApplication::lastWindowClosed() signal is
@@ -743,8 +741,8 @@ void QDialog::adjustPosition(QWidget* w)
 
 
 /*!
-    If \a orientation is \c Qt::Horizontal, the extension will be displayed
-    to the right of the dialog's main area. If \a orientation is \c
+    If \a orientation is Qt::Horizontal, the extension will be displayed
+    to the right of the dialog's main area. If \a orientation is
     Qt::Vertical, the extension will be displayed below the dialog's main
     area.
 
@@ -830,10 +828,8 @@ void QDialog::showExtension(bool showIt)
         d->size = size();
         d->min = minimumSize();
         d->max = maximumSize();
-#ifndef QT_NO_LAYOUT
         if (layout())
             layout()->setEnabled(false);
-#endif
         QSize s(d->extension->sizeHint()
                  .expandedTo(d->extension->minimumSize())
                  .boundedTo(d->extension->maximumSize()));
@@ -853,10 +849,8 @@ void QDialog::showExtension(bool showIt)
         setMinimumSize(d->min.expandedTo(QSize(1, 1)));
         setMaximumSize(d->max);
         resize(d->size);
-#ifndef QT_NO_LAYOUT
         if (layout())
             layout()->setEnabled(true);
-#endif
     }
 }
 
@@ -935,7 +929,7 @@ void QDialog::setSizeGripEnabled(bool enabled)
                 d->resizer->move(rect().bottomLeft() -d->resizer->rect().bottomLeft());
             else
                 d->resizer->move(rect().bottomRight() -d->resizer->rect().bottomRight());
-            d->resizer->raise();
+            d->resizer->lower();
             d->resizer->show();
         } else {
             delete d->resizer;
@@ -957,9 +951,8 @@ void QDialog::resizeEvent(QResizeEvent *)
             d->resizer->move(rect().bottomLeft() -d->resizer->rect().bottomLeft());
         else
             d->resizer->move(rect().bottomRight() -d->resizer->rect().bottomRight());
-        d->resizer->raise();
+        d->resizer->lower();
     }
 #endif
 }
 
-#endif // QT_NO_DIALOG

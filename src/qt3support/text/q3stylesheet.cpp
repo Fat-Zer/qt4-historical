@@ -2,19 +2,19 @@
 **
 ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** This file is part of the Qt 3 compatibility classes of the Qt Toolkit.
+** This file is part of the Qt3Support module of the Qt Toolkit.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
 **
-** See http://www.trolltech.com/pricing.html or email sales@trolltech.com for
-** information about Qt Commercial License Agreements.
-** See http://www.trolltech.com/gpl/ for GPL licensing information.
-**
-** Contact info@trolltech.com if any conditions of this licensing are
-** not clear to you.
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -275,8 +275,8 @@ void Q3StyleSheetItem::setDisplayMode(DisplayMode m)
 
 
 /*!
-    Returns the alignment of this style. Possible values are \c
-    Qt::AlignAuto, \c Qt::AlignLeft, \c Qt::AlignRight, \c Qt::AlignCenter or \c
+    Returns the alignment of this style. Possible values are
+    Qt::AlignAuto, Qt::AlignLeft, Qt::AlignRight, Qt::AlignCenter or
     Qt::AlignJustify.
 
     \sa setAlignment(), Qt::Alignment
@@ -289,8 +289,8 @@ int Q3StyleSheetItem::alignment() const
 /*!
     Sets the alignment to \a f. This only makes sense for styles with
     a \link Q3StyleSheetItem::DisplayMode display mode\endlink of
-    DisplayBlock. Possible values are \c Qt::AlignAuto, \c Qt::AlignLeft,
-    \c Qt::AlignRight, \c Qt::AlignCenter or \c Qt::AlignJustify.
+    DisplayBlock. Possible values are Qt::AlignAuto, Qt::AlignLeft,
+    Qt::AlignRight, Qt::AlignCenter or Qt::AlignJustify.
 
     \sa alignment(), displayMode(), Qt::Alignment
 */
@@ -302,7 +302,7 @@ void Q3StyleSheetItem::setAlignment(int f)
 
 /*!
     Returns the vertical alignment of the style. Possible values are
-    \c VAlignBaseline, \c VAlignSub or \c VAlignSuper.
+    VAlignBaseline, VAlignSub or VAlignSuper.
 
     \sa setVerticalAlignment()
 */
@@ -330,7 +330,7 @@ Q3StyleSheetItem::VerticalAlignment Q3StyleSheetItem::verticalAlignment() const
 
 /*!
     Sets the vertical alignment to \a valign. Possible values are
-    \c VAlignBaseline, \c VAlignSub or \c VAlignSuper.
+    VAlignBaseline, VAlignSub or VAlignSuper.
 
     The vertical alignment property is not inherited.
 
@@ -448,7 +448,7 @@ bool Q3StyleSheetItem::definesFontStrikeOut() const
 
 /*!
     Returns the font weight setting of the style. This is either a
-    valid \c QFont::Weight or the value \c Q3StyleSheetItem::Undefined.
+    valid QFont::Weight or the value Q3StyleSheetItem::Undefined.
 
     \sa setFontWeight(), QFont
 */
@@ -459,7 +459,7 @@ int Q3StyleSheetItem::fontWeight() const
 
 /*!
     Sets the font weight setting of the style to \a w. Valid values
-    are those defined by \c QFont::Weight.
+    are those defined by QFont::Weight.
 
     \sa QFont, fontWeight()
 */
@@ -470,7 +470,7 @@ void Q3StyleSheetItem::setFontWeight(int w)
 
 /*!
     Returns the logical font size setting of the style. This is either
-    a valid size between 1 and 7 or \c Q3StyleSheetItem::Undefined.
+    a valid size between 1 and 7 or Q3StyleSheetItem::Undefined.
 
     \sa setLogicalFontSize(), setLogicalFontSizeStep(), QFont::pointSize(), QFont::setPointSize()
 */
@@ -528,7 +528,7 @@ void Q3StyleSheetItem::setFontSize(int s)
 
 /*!
     Returns the font size setting of the style. This is either a valid
-    point size or \c Q3StyleSheetItem::Undefined.
+    point size or Q3StyleSheetItem::Undefined.
 
     \sa setFontSize(), QFont::pointSize(), QFont::setPointSize()
 */
@@ -656,8 +656,8 @@ void Q3StyleSheetItem::setWhiteSpaceMode(WhiteSpaceMode m)
 /*!
     Returns the width of margin \a m in pixels.
 
-    The margin, \a m, can be \c MarginLeft, \c MarginRight, \c
-    MarginTop, \c MarginBottom, \c MarginAll, \c MarginVertical or \c
+    The margin, \a m, can be MarginLeft, MarginRight,
+    MarginTop, MarginBottom, MarginAll, MarginVertical, or
     MarginHorizontal.
 
     \sa setMargin() Margin
@@ -1330,7 +1330,7 @@ const Q3StyleSheetItem* Q3StyleSheet::item(const QString& name) const
 
     \a mode defines the whitespace mode. Possible values are \c
     Q3StyleSheetItem::WhiteSpacePre (no wrapping, all whitespaces
-    preserved) and \c Q3StyleSheetItem::WhiteSpaceNormal (wrapping,
+    preserved) and Q3StyleSheetItem::WhiteSpaceNormal (wrapping,
     simplified whitespaces).
 
     \sa escape()
