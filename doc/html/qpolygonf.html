@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/painting/qpolygon.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-win-opensource-src-4.3.2/src/gui/painting/qpolygon.cpp -->
 <head>
   <title>Qt 4.3: QPolygonF Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QPolygonF" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -66,7 +65,6 @@
 <p>See also <a href="qvector.html">QVector</a>, <a href="qpolygon.html">QPolygon</a>, and <a href="qlinef.html">QLineF</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QPolygonF/QPolygonF" />
 <h3 class="fn"><a name="QPolygonF"></a>QPolygonF::QPolygonF ()</h3>
 <p>Constructs a polygon with no points.</p>
 <p>See also <a href="qvector.html#isEmpty">QVector::isEmpty</a>().</p>
@@ -84,41 +82,32 @@
 <h3 class="fn"><a name="QPolygonF-6"></a>QPolygonF::QPolygonF ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>polygon</i> )</h3>
 <p>Constructs a float based polygon from the specified integer based <i>polygon</i>.</p>
 <p>See also <a href="qpolygonf.html#toPolygon">toPolygon</a>().</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/~QPolygonF" />
 <h3 class="fn"><a name="dtor.QPolygonF"></a>QPolygonF::~QPolygonF ()</h3>
 <p>Destroys the polygon.</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/boundingRect" />
 <h3 class="fn"><a name="boundingRect"></a><a href="qrectf.html">QRectF</a> QPolygonF::boundingRect () const</h3>
 <p>Returns the bounding rectangle of the polygon, or <a href="qrectf.html">QRectF</a>(0,0,0,0) if the polygon is empty.</p>
 <p>See also <a href="qvector.html#isEmpty">QVector::isEmpty</a>().</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/containsPoint" />
 <h3 class="fn"><a name="containsPoint"></a>bool QPolygonF::containsPoint ( const <a href="qpointf.html">QPointF</a> &amp; <i>point</i>, <a href="qt.html#FillRule-enum">Qt::FillRule</a> <i>fillRule</i> ) const</h3>
 <p>Returns true if the given <i>point</i> is inside the polygon according to the specified <i>fillRule</i>; otherwise returns false.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/intersected" />
 <h3 class="fn"><a name="intersected"></a>QPolygonF QPolygonF::intersected ( const QPolygonF &amp; <i>r</i> ) const</h3>
 <p>Returns a polygon which is the intersection of this polygon and <i>r</i>.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/isClosed" />
 <h3 class="fn"><a name="isClosed"></a>bool QPolygonF::isClosed () const</h3>
 <p>Returns true if the polygon is closed; otherwise returns false.</p>
 <p>A polygon is said to be closed if its start point and end point are equal.</p>
 <p>See also <a href="qvector.html#first">QVector::first</a>() and <a href="qvector.html#last">QVector::last</a>().</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/subtracted" />
 <h3 class="fn"><a name="subtracted"></a>QPolygonF QPolygonF::subtracted ( const QPolygonF &amp; <i>r</i> ) const</h3>
 <p>Returns a polygon which is <i>r</i> subtracted from this polygon.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/toPolygon" />
 <h3 class="fn"><a name="toPolygon"></a><a href="qpolygon.html">QPolygon</a> QPolygonF::toPolygon () const</h3>
 <p>Creates and returns a <a href="qpolygon.html">QPolygon</a> by converting each <a href="qpointf.html">QPointF</a> to a <a href="qpoint.html">QPoint</a>.</p>
 <p>See also <a href="qpointf.html#toPoint">QPointF::toPoint</a>().</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/translate" />
 <h3 class="fn"><a name="translate"></a>void QPolygonF::translate ( const <a href="qpointf.html">QPointF</a> &amp; <i>offset</i> )</h3>
 <p>Translate all points in the polygon by the given <i>offset</i>.</p>
 <h3 class="fn"><a name="translate-2"></a>void QPolygonF::translate ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>dx</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>dy</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Translates all points in the polygon by (<i>dx</i>, <i>dy</i>).</p>
-<a name="//apple_ref/cpp/instm/QPolygonF/united" />
 <h3 class="fn"><a name="united"></a>QPolygonF QPolygonF::united ( const QPolygonF &amp; <i>r</i> ) const</h3>
 <p>Returns a polygon which is the union of this polygon and <i>r</i>.</p>
 <p>This function was introduced in Qt 4.3.</p>
