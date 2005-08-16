@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/doc/src/wince-opengl.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-embedded-wince-opensource-src-4.4.3/doc/src/wince-opengl.qdoc -->
 <head>
   <title>Qt 4.4: Windows CE OpenGL ES</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -23,7 +23,7 @@
 <p>OpenGL ES includes profiles for floating-point and fixed-point arithmetic. The floating point profile is called OpenGL ES CM (Common) and the fixed-point profile is called OpenGL ES CL (Common Lite).</p>
 <p>You can run <tt>configure</tt> with the <tt>-opengl-es-cm</tt> option for the Common profile or <tt>-opengl-es-cl</tt> for the Common Lite profile. In both cases, ensure that the <tt>lib</tt> and <tt>includes</tt> paths include the OpenGL ES headers and libararies from your SDK. The OpenGL ES lib should be called either <tt>libGLES_CM.lib</tt> for the Common profile or <tt>libGLES_CL.lib</tt> for the Common Lite profile.</p>
 <p>To configure Qt for Windows Mobile 5.0 and OpenGL ES Common Lite support you can run <tt>configure</tt> like this:</p>
-<pre></pre>
+<pre> configure -platform win32-msvc2005 -xplatform wincewm50pocket-msvc2005 -opengl-es-cl</pre>
 <p>The distinction between the Common and Common Lite profiles is important, because the Common Lite profile has less functionality and only supports a fixed-point vertex format.</p>
 <p>To start programming with Qt and OpenGL ES on Windows CE, you can start with the <a href="opengl-hellogl-es.html">Hello GL ES Example</a>. This example shows how to use <a href="qglwidget.html">QGLWidget</a> and QGLPainter with OpenGL ES. It also provides some hints on how to port OpenGL code to OpenGL ES.</p>
 <a name="using-opengl-to-accelerate-normal-2d-painting"></a>

@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/xmlpatterns/api/qxmlquery.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-embedded-wince-opensource-src-4.4.3/src/xmlpatterns/api/qxmlquery.cpp -->
 <head>
   <title>Qt 4.4: QXmlQuery Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QXmlQuery" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -94,17 +93,14 @@
 <p>An instance of <a href="qcoreapplication.html">QCoreApplication</a> must exist before QXmlQuery can be used.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QXmlQuery/QXmlQuery" />
 <h3 class="fn"><a name="QXmlQuery"></a>QXmlQuery::QXmlQuery ()</h3>
 <p>Constructs an empty query. A default constructed query cannot be evaluated until <a href="qxmlquery.html#setQuery">setQuery</a>() has been called.</p>
 <h3 class="fn"><a name="QXmlQuery-2"></a>QXmlQuery::QXmlQuery ( const QXmlQuery &amp; <i>other</i> )</h3>
 <p>Constructs a <a href="qxmlquery.html">QXmlQuery</a> that is a copy of <i>other</i>. The new instance will share resources with the existing query to the extent possible.</p>
 <h3 class="fn"><a name="QXmlQuery-3"></a>QXmlQuery::QXmlQuery ( const <a href="qxmlnamepool.html">QXmlNamePool</a> &amp; <i>np</i> )</h3>
 <p>Constructs a query that will use <i>np</i> as its name pool. The query cannot be evaluated until <a href="qxmlquery.html#setQuery">setQuery</a>() has been called.</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/~QXmlQuery" />
 <h3 class="fn"><a name="dtor.QXmlQuery"></a>QXmlQuery::~QXmlQuery ()</h3>
 <p>Destroys this <a href="qxmlquery.html">QXmlQuery</a>.</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/bindVariable" />
 <h3 class="fn"><a name="bindVariable"></a>void QXmlQuery::bindVariable ( const <a href="qxmlname.html">QXmlName</a> &amp; <i>name</i>, const <a href="qxmlitem.html">QXmlItem</a> &amp; <i>value</i> )</h3>
 <p>Binds the variable <i>name</i> to the <i>value</i> so that $<i>name</i> can be used from within the query to refer to the <i>value</i>.</p>
 <p><i>name</i> must not be <i>null</i>. <i>name</i>.isNull() must return false. If <i>name</i> has already been bound by a previous bindVariable() call, its previous binding will be overriden.</p>
@@ -146,7 +142,6 @@
      query.bindVariable(QXmlName(namePool, localName), device);</pre>
 <p>A <a href="qxmlname.html">QXmlName</a> is constructed from <i>localName</i>, and is passed to the appropriate overload along with <i>device</i>.</p>
 <p>See also <a href="qxmlname.html#isNCName">QXmlName::isNCName</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/evaluateTo" />
 <h3 class="fn"><a name="evaluateTo"></a>void QXmlQuery::evaluateTo ( <a href="qxmlresultitems.html">QXmlResultItems</a> * <i>result</i> ) const</h3>
 <p>Starts the evaluation and makes it available in <i>result</i>. If <i>result</i> is null, the behavior is undefined. The evaluation takes place incrementally (lazy evaluation), as the caller uses <a href="qxmlresultitems.html#next">QXmlResultItems::next</a>() to get the enxt result.</p>
 <p>See also <a href="qxmlresultitems.html#next">QXmlResultItems::next</a>().</p>
@@ -162,22 +157,17 @@
 <p>If the query <a href="qxmlquery.html#isValid">is valid</a> and the evaluation succeeds, true is returned. Otherwise, false is returned and the contents of <i>target</i> are undefined.</p>
 <p>The query must evaluate to a sequence of <tt>xs:string</tt> values. If the query does not evaluate to a sequence of strings, the values can often be converted by adding a call to <tt>string()</tt> at the end of the XQuery.</p>
 <p>If <i>target</i> is null, the behavior is undefined.</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool QXmlQuery::isValid () const</h3>
 <p>Returns true if this query is valid. Examples of invalid queries are ones that contain syntax errors or that have not had <a href="qxmlquery.html#setQuery">setQuery</a>() called for them yet.</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/messageHandler" />
 <h3 class="fn"><a name="messageHandler"></a><a href="qabstractmessagehandler.html">QAbstractMessageHandler</a> * QXmlQuery::messageHandler () const</h3>
 <p>Returns the message handler that handles compile and runtime messages for this <a href="qxmlquery.html">QXmlQuery</a>.</p>
 <p>See also <a href="qxmlquery.html#setMessageHandler">setMessageHandler</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/namePool" />
 <h3 class="fn"><a name="namePool"></a><a href="qxmlnamepool.html">QXmlNamePool</a> QXmlQuery::namePool () const</h3>
 <p>Returns the name pool used by this <a href="qxmlquery.html">QXmlQuery</a> for constructing <a href="qxmlname.html">names</a>. There is no setter for the name pool, because mixing name pools causes errors due to name confusion.</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/setFocus" />
 <h3 class="fn"><a name="setFocus"></a>void QXmlQuery::setFocus ( const <a href="qxmlitem.html">QXmlItem</a> &amp; <i>item</i> )</h3>
 <p>Sets the focus to <i>item</i>. The focus is the set of items that the context item expression and path expressions navigate from. For example, in the expression <i>p/span</i>, the element that <i>p</i> evaluates to is the focus for the following expression, <i>span</i>.</p>
 <p>The focus can be accessed using the context item expression, i.e&#x2e;, dot (&quot;.&quot;).</p>
 <p>By default, the focus is not set but is undefined. It will therefore result in a dynamic error, <tt>XPDY0002</tt>, if the query is evaluated without a focus. In fact, the focus must be set before the query is set with <a href="qxmlquery.html#setQuery">setQuery</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/setMessageHandler" />
 <h3 class="fn"><a name="setMessageHandler"></a>void QXmlQuery::setMessageHandler ( <a href="qabstractmessagehandler.html">QAbstractMessageHandler</a> * <i>aMessageHandler</i> )</h3>
 <p>Changes the <a href="qabstractmessagehandler.html">message handler</a> for this <a href="qxmlquery.html">QXmlQuery</a> to <i>aMessageHandler</i>. The query sends all compile and runtime messages to this message handler. <a href="qxmlquery.html">QXmlQuery</a> does not take ownership of <i>aMessageHandler</i>.</p>
 <p>Normally, the default message handler is sufficient. It writes compile and runtime messages to <i>stderr</i>. The default message handler includes color codes if <i>stderr</i> can render colors.</p>
@@ -191,7 +181,6 @@
 <tr valign="top" class="even"><td>const <a href="qsourcelocation.html">QSourceLocation</a> &amp; sourceLocation</td><td>Identifies where the error occurred.</td></tr>
 </table></p>
 <p>See also <a href="qxmlquery.html#messageHandler">messageHandler</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/setQuery" />
 <h3 class="fn"><a name="setQuery"></a>void QXmlQuery::setQuery ( <a href="qiodevice.html">QIODevice</a> * <i>sourceCode</i>, const <a href="qurl.html">QUrl</a> &amp; <i>documentURI</i> = QUrl() )</h3>
 <p>Sets this <a href="qxmlquery.html">QXmlQuery</a> to an XQuery read from the <i>sourceCode</i> device. The device must have been opened with at least <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::ReadOnly</a>.</p>
 <p><i>documentURI</i> represents the query obtained from the <i>sourceCode</i> device. It is the base URI of the static context, as defined in the <a href="http://www.w3.org/TR/xquery/">XQuery language</a>. It is used internally to resolve relative URIs that appear in the query, and for message reporting. <i>documentURI</i> can be empty. If it is empty, the <a href="qcoreapplication.html#applicationFilePath">application file path</a> is used. If it is not empty, it may be either relative or absolute. If it is relative, it is resolved itself against the <a href="qcoreapplication.html#applicationFilePath">application file path</a> before it is used. If <i>documentURI</i> is neither a valid URI nor empty, the result is undefined.</p>
@@ -208,11 +197,9 @@
 <h3 class="fn"><a name="setQuery-3"></a>void QXmlQuery::setQuery ( const <a href="qstring.html">QString</a> &amp; <i>sourceCode</i>, const <a href="qurl.html">QUrl</a> &amp; <i>documentURI</i> = QUrl() )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>The behavior and requirements of this function are the same as for setQuery(<a href="qiodevice.html">QIODevice</a>*, const <a href="qurl.html">QUrl</a>&amp;), after the XQuery has been read from the IO device into a string. Because <i>sourceCode</i> is already a Unicode string, detection of its encoding is unnecessary.</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/setUriResolver" />
 <h3 class="fn"><a name="setUriResolver"></a>void QXmlQuery::setUriResolver ( const <a href="qabstracturiresolver.html">QAbstractUriResolver</a> * <i>resolver</i> )</h3>
 <p>Sets the URI resolver to <i>resolver</i>. <a href="qxmlquery.html">QXmlQuery</a> does not take ownership of <i>resolver</i>.</p>
 <p>See also <a href="qxmlquery.html#uriResolver">uriResolver</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/uriResolver" />
 <h3 class="fn"><a name="uriResolver"></a>const <a href="qabstracturiresolver.html">QAbstractUriResolver</a> * QXmlQuery::uriResolver () const</h3>
 <p>Returns the query's URI resolver. If no URI resolver has been set, <a href="qtxmlpatterns.html">QtXmlPatterns</a> will use the URIs in queries as they are.</p>
 <p>The URI resolver provides a level of abstraction, or <i>polymorphic URIs</i>. A resolver can rewrite <i>logical</i> URIs to physical ones, or it can translate obsolete or invalid URIs to valid ones.</p>
@@ -220,7 +207,6 @@
 <p>In the case of <tt>fn:doc()</tt>, the absolute URI is the base URI in the static context (which most likely is the location of the query). Rather than use the URI the user specified, the return value of <a href="qabstracturiresolver.html#resolve">QAbstractUriResolver::resolve</a>() will be used.</p>
 <p>When <a href="qtxmlpatterns.html">QtXmlPatterns</a> calls <a href="qabstracturiresolver.html#resolve">QAbstractUriResolver::resolve</a>() the absolute URI is the URI mandated by the XQuery language, and the relative URI is the URI specified by the user.</p>
 <p>See also <a href="qxmlquery.html#setUriResolver">setUriResolver</a>().</p>
-<a name="//apple_ref/cpp/instm/QXmlQuery/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QXmlQuery &amp; QXmlQuery::operator= ( const QXmlQuery &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this <a href="qxmlquery.html">QXmlQuery</a> instance.</p>
 <p /><address><hr /><div align="center">

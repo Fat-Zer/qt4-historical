@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/corelib/io/qiodevice.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-embedded-wince-opensource-src-4.4.3/src/corelib/io/qiodevice.cpp -->
 <head>
   <title>Qt 4.4: Qt 3 Support Members for QIODevice</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -50,77 +50,55 @@
 </ul>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QIODevice/Offset" />
 <h3 class="fn"><a name="Offset-typedef"></a>typedef QIODevice::Offset</h3>
 <p>Use <tt>qint64</tt> instead.</p>
-<a name="//apple_ref/cpp/tdef/QIODevice/Status" />
 <h3 class="fn"><a name="Status-typedef"></a>typedef QIODevice::Status</h3>
 <p>Use <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::OpenMode</a> instead, or see the documentation for specific devices.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QIODevice/at" />
 <h3 class="fn"><a name="at"></a><a href="qiodevice-qt3.html#Offset-typedef">Offset</a> QIODevice::at () const</h3>
 <p>Use <a href="qiodevice.html#pos">pos</a>() instead.</p>
 <h3 class="fn"><a name="at-2"></a>bool QIODevice::at ( <a href="qiodevice-qt3.html#Offset-typedef">Offset</a> <i>offset</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use seek(<i>offset</i>) instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/flags" />
 <h3 class="fn"><a name="flags"></a>int QIODevice::flags () const</h3>
 <p>Use <a href="qiodevice.html#openMode">openMode</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/getch" />
 <h3 class="fn"><a name="getch"></a>int QIODevice::getch ()</h3>
 <p>Use <a href="qiodevice.html#getChar">getChar</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isAsynchronous" />
 <h3 class="fn"><a name="isAsynchronous"></a>bool QIODevice::isAsynchronous () const</h3>
 <p>This functionality is no longer available. This function always returns true.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isBuffered" />
 <h3 class="fn"><a name="isBuffered"></a>bool QIODevice::isBuffered () const</h3>
 <p>Use !(<a href="qiodevice.html#openMode">openMode</a>() &amp; <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Unbuffered</a>) instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isCombinedAccess" />
 <h3 class="fn"><a name="isCombinedAccess"></a>bool QIODevice::isCombinedAccess () const</h3>
 <p>Use <a href="qiodevice.html#openMode">openMode</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isDirectAccess" />
 <h3 class="fn"><a name="isDirectAccess"></a>bool QIODevice::isDirectAccess () const</h3>
 <p>Use !<a href="qiodevice.html#isSequential">isSequential</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isInactive" />
 <h3 class="fn"><a name="isInactive"></a>bool QIODevice::isInactive () const</h3>
 <p>Use <a href="qiodevice.html#isOpen">isOpen</a>(), <a href="qiodevice.html#isReadable">isReadable</a>(), or <a href="qiodevice.html#isWritable">isWritable</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isRaw" />
 <h3 class="fn"><a name="isRaw"></a>bool QIODevice::isRaw () const</h3>
 <p>Use <a href="qiodevice.html#openMode">openMode</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isSequentialAccess" />
 <h3 class="fn"><a name="isSequentialAccess"></a>bool QIODevice::isSequentialAccess () const</h3>
 <p>Use <a href="qiodevice.html#isSequential">isSequential</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isSynchronous" />
 <h3 class="fn"><a name="isSynchronous"></a>bool QIODevice::isSynchronous () const</h3>
 <p>This functionality is no longer available. This function always returns false.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/isTranslated" />
 <h3 class="fn"><a name="isTranslated"></a>bool QIODevice::isTranslated () const</h3>
 <p>Use <a href="qiodevice.html#openMode">openMode</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/mode" />
 <h3 class="fn"><a name="mode"></a>int QIODevice::mode () const</h3>
 <p>Use <a href="qiodevice.html#openMode">openMode</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/putch" />
 <h3 class="fn"><a name="putch"></a>int QIODevice::putch ( int <i>ch</i> )</h3>
 <p>Use putChar(<i>ch</i>) instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/readBlock" />
 <h3 class="fn"><a name="readBlock"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::readBlock ( char * <i>data</i>, <a href="qtglobal.html#quint64-typedef">quint64</a> <i>size</i> )</h3>
 <p>Use read(<i>data</i>, <i>size</i>) instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/resetStatus" />
 <h3 class="fn"><a name="resetStatus"></a>void QIODevice::resetStatus ()</h3>
 <p>For device specific error handling, please refer to the individual device documentation.</p>
 <p>See also <a href="qobject.html#qobject_cast">qobject_cast</a>().</p>
-<a name="//apple_ref/cpp/instm/QIODevice/state" />
 <h3 class="fn"><a name="state"></a>int QIODevice::state () const</h3>
 <p>Use <a href="qiodevice.html#isOpen">isOpen</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/status" />
 <h3 class="fn"><a name="status"></a><a href="qiodevice-qt3.html#Status-typedef">Status</a> QIODevice::status () const</h3>
 <p>For device specific error handling, please refer to the individual device documentation.</p>
 <p>See also <a href="qobject.html#qobject_cast">qobject_cast</a>().</p>
-<a name="//apple_ref/cpp/instm/QIODevice/ungetch" />
 <h3 class="fn"><a name="ungetch"></a>int QIODevice::ungetch ( int <i>ch</i> )</h3>
 <p>Use ungetChar(<i>ch</i>) instead.</p>
-<a name="//apple_ref/cpp/instm/QIODevice/writeBlock" />
 <h3 class="fn"><a name="writeBlock"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::writeBlock ( const char * <i>data</i>, <a href="qtglobal.html#quint64-typedef">quint64</a> <i>size</i> )</h3>
 <p>Use write(<i>data</i>, <i>size</i>) instead.</p>
 <h3 class="fn"><a name="writeBlock-2"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QIODevice::writeBlock ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i> )</h3>

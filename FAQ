@@ -1,0 +1,25 @@
+             Frequently Asked Questions (FAQ) for Qt/CE
+
+Q: Do you support Windows CE 6.0?
+A: Yes. Although there will not be a public SDK available by Microsoft
+   we do have support for custom SDK created by hardware vendors.
+
+Q: What tools do I need to develop an application with Qt/CE?
+A: You need Visual Studio 2005 Standard Edition (or better) and a
+   Windows CE 5.0 or Windows Mobile 5.0 SDK (available free from
+   Microsoft) or later.
+
+Q: What platforms does Qt/CE support?
+A: At the moment we support:
+   Windows Mobile 5.0 Pocket PC Edition (ARM)
+   Windows Mobile 5.0 Smartphone Edition (ARM)
+   Windows CE 5.0 Standard SDK (ARM)
+   Windows CE 5.0 Standard SDK (X86)
+   Windows CE 5.0 Standard SDK (MIPS)
+   Windows CE 5.0 Standard SDK (SH4)
+   Windows Mobile 6 Classic (ARM)
+   Windows Mobile 6 Standard (ARM)
+   Windows Mobile 6 Professional(ARM)
+
+Q: What version of Qt does Qt/CE rely on?
+A: On a preview version of the upcoming 4.4.0 release.
