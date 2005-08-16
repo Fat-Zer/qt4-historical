@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/sql/models/qsqlrelationaltablemodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-win-opensource-src-4.4.3/src/sql/models/qsqlrelationaltablemodel.cpp -->
 <head>
   <title>Qt 4.4: QSqlRelationalTableModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QSqlRelationalTableModel" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -82,29 +81,23 @@
 <p>See also <a href="qsqlrelation.html">QSqlRelation</a>, <a href="qsqlrelationaldelegate.html">QSqlRelationalDelegate</a>, and <a href="sql-relationaltablemodel.html">Relational Table Model Example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSqlRelationalTableModel/QSqlRelationalTableModel" />
 <h3 class="fn"><a name="QSqlRelationalTableModel"></a>QSqlRelationalTableModel::QSqlRelationalTableModel ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0, <a href="qsqldatabase.html">QSqlDatabase</a> <i>db</i> = QSqlDatabase() )</h3>
 <p>Creates an empty <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a> and sets the parent to <i>parent</i> and the database connection to <i>db</i>. If <i>db</i> is not valid, the default database connection will be used.</p>
-<a name="//apple_ref/cpp/instm/QSqlRelationalTableModel/~QSqlRelationalTableModel" />
 <h3 class="fn"><a name="dtor.QSqlRelationalTableModel"></a>QSqlRelationalTableModel::~QSqlRelationalTableModel ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the object and frees any allocated resources.</p>
-<a name="//apple_ref/cpp/instm/QSqlRelationalTableModel/relation" />
 <h3 class="fn"><a name="relation"></a><a href="qsqlrelation.html">QSqlRelation</a> QSqlRelationalTableModel::relation ( int <i>column</i> ) const</h3>
 <p>Returns the relation for the column <i>column</i>, or an invalid relation if no relation is set.</p>
 <p>See also <a href="qsqlrelationaltablemodel.html#setRelation">setRelation</a>() and <a href="qsqlrelation.html#isValid">QSqlRelation::isValid</a>().</p>
-<a name="//apple_ref/cpp/instm/QSqlRelationalTableModel/relationModel" />
 <h3 class="fn"><a name="relationModel"></a><a href="qsqltablemodel.html">QSqlTableModel</a> * QSqlRelationalTableModel::relationModel ( int <i>column</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a <a href="qsqltablemodel.html">QSqlTableModel</a> object for accessing the table for which <i>column</i> is a foreign key, or 0 if there is no relation for the given <i>column</i>.</p>
 <p>The returned object is owned by the <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>.</p>
 <p>See also <a href="qsqlrelationaltablemodel.html#setRelation">setRelation</a>() and <a href="qsqlrelationaltablemodel.html#relation">relation</a>().</p>
-<a name="//apple_ref/cpp/instm/QSqlRelationalTableModel/setData" />
 <h3 class="fn"><a name="setData"></a>bool QSqlRelationalTableModel::setData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the data for the <i>role</i> in the item with the specified <i>index</i> to the <i>value</i> given. Depending on the edit strategy, the value might be applied to the database at once, or it may be cached in the model.</p>
 <p>Returns true if the value could be set, or false on error (for example, if <i>index</i> is out of bounds).</p>
 <p>For relational columns, <i>value</i> must be the index, not the display value.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#setData">QAbstractItemModel</a>.</p>
 <p>See also <a href="qsqltablemodel.html#editStrategy">editStrategy</a>(), <a href="qabstractitemmodel.html#data">data</a>(), <a href="qsqltablemodel.html#submit">submit</a>(), and <a href="qsqltablemodel.html#revertRow">revertRow</a>().</p>
-<a name="//apple_ref/cpp/instm/QSqlRelationalTableModel/setRelation" />
 <h3 class="fn"><a name="setRelation"></a>void QSqlRelationalTableModel::setRelation ( int <i>column</i>, const <a href="qsqlrelation.html">QSqlRelation</a> &amp; <i>relation</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Lets the specified <i>column</i> be a foreign index specified by <i>relation</i>.</p>
 <p>Example:</p>
