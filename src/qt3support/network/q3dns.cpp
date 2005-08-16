@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -811,7 +811,7 @@ void Q3DnsAnswer::notify()
 		((Q3DnsUgleHack*)dns)->ugle( true );
 	    } else {
 		QStringList n = dns->qualifiedNames();
-		if ( n.contains(query->l) )
+		if ( query && n.contains(query->l) )
 		    ((Q3DnsUgleHack*)dns)->ugle();
 #if defined(Q3DNS_DEBUG)
 		else

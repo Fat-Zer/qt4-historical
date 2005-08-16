@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/corelib/tools/qdatetime.cpp -->
 <head>
   <title>Qt 4.2: QDate Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -53,7 +53,7 @@
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
 <ul>
-<li><div class="fn"/>QDate <b><a href="qdate.html#currentDate-2">currentDate</a></b> ()</li>
+<li><div class="fn"/>QDate <b><a href="qdate.html#currentDate">currentDate</a></b> ()</li>
 <li><div class="fn"/>QDate <b><a href="qdate.html#fromJulianDay">fromJulianDay</a></b> ( int <i>jd</i> )</li>
 <li><div class="fn"/>QDate <b><a href="qdate.html#fromString">fromString</a></b> ( const QString &amp; <i>string</i>, Qt::DateFormat <i>format</i> = Qt::TextDate )</li>
 <li><div class="fn"/>QDate <b><a href="qdate.html#fromString-2">fromString</a></b> ( const QString &amp; <i>string</i>, const QString &amp; <i>format</i> )</li>
@@ -75,7 +75,7 @@
 <h2>Detailed Description</h2>
 <p>The QDate class provides date functions.</p>
 <p>A QDate object contains a calendar date, i.e. year, month, and day numbers, in the Gregorian calendar (Julian calendar for dates before 15 October 1582). It can read the current date from the system clock. It provides functions for comparing dates, and for manipulating dates. For example, it is possible to add and subtract days, months, and years to dates.</p>
-<p>A QDate object is typically created either by giving the year, month, and day numbers explicitly, or by using the static function <a href="qdate-qt3.html#currentDate">currentDate</a>() that creates a QDate object containing the system clock's date. An explicit date can also be set using <a href="qdate.html#setDate">setDate</a>(). The <a href="qdate.html#fromString">fromString</a>() function returns a QDate given a string and a date format which is used to interpret the date within the string.</p>
+<p>A QDate object is typically created either by giving the year, month, and day numbers explicitly, or by using the static function <a href="qdate.html#currentDate">currentDate</a>() that creates a QDate object containing the system clock's date. An explicit date can also be set using <a href="qdate.html#setDate">setDate</a>(). The <a href="qdate.html#fromString">fromString</a>() function returns a QDate given a string and a date format which is used to interpret the date within the string.</p>
 <p>The <a href="qdate.html#year">year</a>(), <a href="qdate.html#month">month</a>(), and <a href="qdate.html#day">day</a>() functions provide access to the year, month, and day numbers. Also, <a href="qdate.html#dayOfWeek">dayOfWeek</a>() and <a href="qdate.html#dayOfYear">dayOfYear</a>() functions are provided. The same information is provided in textual format by the <a href="qdate.html#toString">toString</a>(), <a href="qdate.html#shortDayName">shortDayName</a>(), <a href="qdate.html#longDayName">longDayName</a>(), <a href="qdate.html#shortMonthName">shortMonthName</a>(), and <a href="qdate.html#longMonthName">longMonthName</a>() functions.</p>
 <p>QDate provides a full set of operators to compare two QDate objects where smaller means earlier, and larger means later.</p>
 <p>You can increment (or decrement) a date by a given number of days using <a href="qdate.html#addDays">addDays</a>(). Similarly you can use <a href="qdate.html#addMonths">addMonths</a>() and <a href="qdate.html#addYears">addYears</a>(). The <a href="qdate.html#daysTo">daysTo</a>() function returns the number of days between two dates.</p>
@@ -101,10 +101,9 @@
 <h3 class="fn"><a name="addYears"></a>QDate QDate::addYears ( int <i>nyears</i> ) const</h3>
 <p>Returns a <a href="qdate.html">QDate</a> object containing a date <i>nyears</i> later than the date of this object (or earlier if <i>nyears</i> is negative).</p>
 <p>See also <a href="qdate.html#addDays">addDays</a>() and <a href="qdate.html#addMonths">addMonths</a>().</p>
-<h3 class="fn"><a name="currentDate-2"></a>QDate QDate::currentDate ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="currentDate"></a>QDate QDate::currentDate ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the current date, as reported by the system clock.</p>
-<p>See also <a href="qtime-qt3.html#currentTime">QTime::currentTime</a>() and <a href="qdatetime.html#currentDateTime">QDateTime::currentDateTime</a>().</p>
+<p>See also <a href="qtime.html#currentTime">QTime::currentTime</a>() and <a href="qdatetime.html#currentDateTime">QDateTime::currentDateTime</a>().</p>
 <h3 class="fn"><a name="day"></a>int QDate::day () const</h3>
 <p>Returns the day of the month (1 to 31) of this date.</p>
 <p>See also <a href="qdate.html#year">year</a>(), <a href="qdate.html#month">month</a>(), and <a href="qdate.html#dayOfWeek">dayOfWeek</a>().</p>
@@ -322,7 +321,7 @@
 <p>Redistribution and use in source and binary forms are permitted provided that the above copyright notice and this paragraph are duplicated in all such forms and that any documentation, advertising materials, and other materials related to such distribution and use acknowledge that the software was developed by the University of California, Berkeley. The name of the University may not be used to endorse or promote products derived from this software without specific prior written permission. THIS SOFTWARE IS PROVIDED &quot;AS IS&quot; AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</p>
 </div><p>See also <a href="qdate.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="year"></a>int QDate::year () const</h3>
-<p>Returns the year of this date. Zero and negative numbers indicate years before 1 A.D. = 1 C.E., such that year 0 is 1 B.C.E., -1 is 2 B.C.E. and so forth.</p>
+<p>Returns the year of this date. Negative numbers indicate years before 1 A.D. = 1 C.E., such that year -44 is 44 B.C.</p>
 <p>See also <a href="qdate.html#month">month</a>() and <a href="qdate.html#day">day</a>().</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QDate::operator!= ( const QDate &amp; <i>d</i> ) const</h3>
 <p>Returns true if this date is different from <i>d</i>; otherwise returns false.</p>
@@ -348,8 +347,9 @@
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="currentDate"></a>QDate QDate::currentDate ( <a href="qt.html#TimeSpec-enum">Qt::TimeSpec</a> <i>spec</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>If <i>spec</i> is <a href="qt.html#TimeSpec-enum">Qt::LocalTime</a>, use the currentDate() overload that takes no parameters instead; otherwise, use <a href="qdatetime.html#currentDateTime">QDateTime::currentDateTime</a>().</p>
+<h3 class="fn"><a name="currentDate-2"></a>QDate QDate::currentDate ( <a href="qt.html#TimeSpec-enum">Qt::TimeSpec</a> <i>spec</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>If <i>spec</i> is <a href="qt.html#TimeSpec-enum">Qt::LocalTime</a>, use the <a href="qdate.html#currentDate">currentDate</a>() overload that takes no parameters instead; otherwise, use <a href="qdatetime.html#currentDateTime">QDateTime::currentDateTime</a>().</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040"> QDate localDate = QDate::currentDate(Qt::LocalTime);
  QDate utcDate = QDate::currentDate(Qt::UTC);</font></pre>
@@ -365,8 +365,8 @@
 <p>Use <a href="qdate.html#shortMonthName">shortMonthName</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

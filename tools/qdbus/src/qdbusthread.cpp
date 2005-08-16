@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -95,7 +95,16 @@ struct DBusCondVar: public QWaitCondition
 bool qDBusInitThreads()
 {
     static DBusThreadFunctions fcn = {
-        DBUS_THREAD_FUNCTIONS_ALL_MASK,
+        DBUS_THREAD_FUNCTIONS_MUTEX_NEW_MASK |
+        DBUS_THREAD_FUNCTIONS_MUTEX_FREE_MASK |
+        DBUS_THREAD_FUNCTIONS_MUTEX_LOCK_MASK |
+        DBUS_THREAD_FUNCTIONS_MUTEX_UNLOCK_MASK |
+        DBUS_THREAD_FUNCTIONS_CONDVAR_NEW_MASK |
+        DBUS_THREAD_FUNCTIONS_CONDVAR_FREE_MASK |
+        DBUS_THREAD_FUNCTIONS_CONDVAR_WAIT_MASK |
+        DBUS_THREAD_FUNCTIONS_CONDVAR_WAIT_TIMEOUT_MASK |
+        DBUS_THREAD_FUNCTIONS_CONDVAR_WAKE_ONE_MASK |
+        DBUS_THREAD_FUNCTIONS_CONDVAR_WAKE_ALL_MASK,
         DBusMutex::mutex_new,
         DBusMutex::mutex_free,
         DBusMutex::mutex_lock,

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -159,6 +159,8 @@ private:
     void updateRecentFileActions();
     void addRecentFile(const QString &fileName);
     void showHelp(const QString &help);
+    void updateCloseAction();
+    void closePreview();
 
 private:
     enum { MaxRecentFiles = 10 };
@@ -220,6 +222,8 @@ private:
     QAction *m_aboutDesignerAction;
     QAction *m_sdiAction;
     QAction *m_dockedMdiAction;
+    
+    QPointer<QWidget> m_previewWidget;
 };
 
 #endif // QDESIGNER_ACTIONS_H

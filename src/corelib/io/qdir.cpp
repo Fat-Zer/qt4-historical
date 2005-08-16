@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -872,10 +872,8 @@ QString QDir::toNativeSeparators(const QString &pathName)
 /*!
     \since 4.2
 
-    Returns \a pathName with the native '\\' separators converted to
-    '/' separators.
-
-    On Windows, fromNativeSeparators("c:\\winnt\\system32") returns
+    Returns \a pathName using '/' as file separator. On Windows,
+    for instance, fromNativeSeparators("c:\\winnt\\system32") returns
     "c:/winnt/system32".
 
     The returned string may be the same as the argument on some
@@ -1713,7 +1711,7 @@ bool QDir::rename(const QString &oldName, const QString &newName)
 }
 
 /*!
-    Returns true if the file called \a name exists; otherwise returns
+    Returns true if the directory called \a name exists; otherwise returns
     false.
 
     \sa QFileInfo::exists(), QFile::exists()
@@ -1823,8 +1821,11 @@ QString QDir::currentPath()
     current user's profile. Typically, this is:
 
     \code
-        C:\Documents and Settings\Username
+        C:/Documents and Settings/Username
     \endcode
+
+    Use the toNativeSeparators() function to convert the separators to
+    the ones that are appropriate for the underlying operating system.
 
     If the directory of the current user's profile does not exist or
     cannot be retrieved, the following alternatives will be checked (in
@@ -1837,7 +1838,7 @@ QString QDir::currentPath()
     \o The path specified by the \c HOME environment variable.
     \o The path returned by the rootPath() function (which uses the \c SystemDrive
     environment variable)
-    \o  The \c{C:\} directory.
+    \o  The \c{C:/} directory.
     \endlist
 
     Under non-Windows operating systems the \c HOME environment

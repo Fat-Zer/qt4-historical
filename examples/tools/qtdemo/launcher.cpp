@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -544,7 +544,7 @@ void Launcher::addVersionAndCopyright(const QRectF &rect)
     display->appendShape(versionCaption);
 
     DisplayShape *copyrightCaption = new TitleShape(
-        QString("Copyright \xa9 2005-2006 Trolltech ASA"), font(),
+        QString("Copyright \xa9 2005-2007 Trolltech ASA"), font(),
         QPen(QColor(0,0,0,0)),
         rect.topLeft(), QSizeF(0.5*rect.width(), rect.height()),
         Qt::AlignLeft | Qt::AlignVCenter);

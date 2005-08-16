@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -61,7 +61,13 @@
 
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
+
+#if WINVER >= 0x0600
+#include <winuser.h>
+#else
 #include <winable.h>
+#endif
+
 #include <oleacc.h>
 #ifndef WM_GETOBJECT
 #define WM_GETOBJECT                    0x003D
@@ -1925,8 +1931,7 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         case WT_PACKET:
             if (ptrWTPacketsGet) {
                 if ((nPackets = ptrWTPacketsGet(qt_tablet_context, QT_TABLET_NPACKETQSIZE, &localPacketBuf))) {
-                    if (!qt_button_down) // flush the queue but don't send the events if the mouse is down
-                        result = widget->translateTabletEvent(msg, localPacketBuf, nPackets);
+                    result = widget->translateTabletEvent(msg, localPacketBuf, nPackets);
                 }
             }
             break;
@@ -2865,6 +2870,9 @@ bool QETWidget::translateTabletEvent(const MSG &msg, PACKET *localPacketBuf,
 
         // make sure the tablet event get's sent to the proper widget...
         QWidget *w = QApplication::widgetAt(globalPos);
+        if (qt_button_down)
+            w = qt_button_down; // Pass it to the thing that's grabbed it.
+
         if (!w)
             w = this;
         QPoint localPos = w->mapFromGlobal(globalPos);

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -83,7 +83,9 @@ void QGraphicsSceneBspTree::initialize(const QRectF &rect, int depth)
     this->rect = rect;
     leafCnt = 0;
     nodes.resize((1 << (depth + 1)) - 1);
+    nodes.fill(Node());
     leaves.resize(1 << depth);
+    leaves.fill(QList<QGraphicsItem *>());
 
     initialize(rect, depth, 0);
 }

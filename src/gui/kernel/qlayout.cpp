@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -700,8 +700,13 @@ void QLayout::deleteAllItems()
 #endif
 
 /*!
-    This function is called from \c addLayout() functions in
+    This function is called from \c addLayout() or \c insertLayout() functions in
     subclasses to add layout \a l as a sub-layout.
+
+    The only scenario in which you need to call it directly is if you
+    implement a custom layout that supports nested layouts.
+
+    \sa QBoxLayout::addLayout(), QBoxLayout::insertLayout(), QGridLayout::addLayout()
 */
 void QLayout::addChildLayout(QLayout *l)
 {
@@ -803,7 +808,7 @@ void QLayout::addChildWidget(QWidget *w)
   \compat
 
     Sets this layout's parent widget to a fixed size with width \a w
-    and height \a h, stopping the user form resizing it, and also
+    and height \a h, stopping the user from resizing it, and also
     prevents the layout from resizing it, even if the layout's size
     hint should change. Does nothing if this is not a top-level
     layout (i.e., if parent()->isWidgetType()).
@@ -1056,7 +1061,7 @@ bool QLayout::activate()
                 for (int i = 0; i < layout->count(); ++i)
                     paintLayout(painter, layout->itemAt(i));
             }
-            painter->drawRect(lay->geometry());
+            painter->drawRect(layout->geometry());
         }
 
         void MyWidget::paintEvent(QPaintEvent *)

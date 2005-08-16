@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -100,7 +100,7 @@ static QByteArray qt_prettyDebug(const char *data, int len, int maxLength)
     QByteArray out;
     for (int i = 0; i < len; ++i) {
         char c = data[i];
-        if (isprint(c)) {
+        if (isprint(int(uchar(c)))) {
             out += c;
         } else switch (c) {
         case '\n': out += "\\n"; break;
@@ -551,7 +551,6 @@ bool QNativeSocketEnginePrivate::nativeConnect(const QHostAddress &address, quin
 
     qt_socket_setPortAndAddress(socketDescriptor, &sockAddrIPv4, &sockAddrIPv6, port, address, &sockAddrPtr, &sockAddrSize);
 
-    bool firstChanceWSAEINVAL = false;
     forever {
         int connectResult = ::WSAConnect(socketDescriptor, sockAddrPtr, sockAddrSize, 0,0,0,0);
         if (connectResult == SOCKET_ERROR) {
@@ -565,7 +564,6 @@ bool QNativeSocketEnginePrivate::nativeConnect(const QHostAddress &address, quin
                 socketState = QAbstractSocket::ConnectedState;
                 break;
             case WSAEINPROGRESS:
-            case WSAEALREADY:
             case WSAEWOULDBLOCK:
                 socketState = QAbstractSocket::ConnectingState;
                 break;
@@ -588,14 +586,8 @@ bool QNativeSocketEnginePrivate::nativeConnect(const QHostAddress &address, quin
                 setError(QAbstractSocket::NetworkError, NetworkUnreachableErrorString);
                 break;
             case WSAEINVAL:
-                if (!firstChanceWSAEINVAL) {
-#if defined (QNATIVESOCKETENGINE_DEBUG)
-                    qDebug("QNativeSocketEnginePrivate::nativeConnect got WSAEINVAL trying again.");
-#endif
-                    firstChanceWSAEINVAL = true;
-                    continue;
-                }
-                setError(QAbstractSocket::NetworkError, InvalidSocketErrorString);
+            case WSAEALREADY:
+                setError(QAbstractSocket::SocketError(11), InvalidSocketErrorString);
                 break;
             default:
                 break;
@@ -782,7 +774,15 @@ bool QNativeSocketEnginePrivate::nativeHasPendingDatagrams() const
     int ret = ::WSARecvFrom(socketDescriptor, &buf, 1, &available, &flags, storagePtr, &storageSize,0,0);
     int err = WSAGetLastError();
     if (ret == SOCKET_ERROR && err !=  WSAEMSGSIZE) {
-	    WS_ERROR_DEBUG(err);
+        WS_ERROR_DEBUG(err);
+        if (err == WSAECONNRESET) {
+            // Discard error message to prevent QAbstractSocket from
+            // getting this message repeatedly after reenabling the
+            // notifiers.
+            flags = 0;
+            ::WSARecvFrom(socketDescriptor, &buf, 1, &available, &flags,
+                          storagePtr, &storageSize, 0, 0);
+        }
     } else {
     // If the port was set in the sockaddr structure, then a new message is available.
 #if !defined(QT_NO_IPV6)
@@ -1016,12 +1016,20 @@ qint64 QNativeSocketEnginePrivate::nativeRead(char *data, qint64 maxLength)
             break;
         }
     } else {
-	ret = qint64(bytesRead);
+        if (WSAGetLastError() == WSAEWOULDBLOCK)
+            ret = -2;
+        else
+            ret = qint64(bytesRead);
     }
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)
-    qDebug("QNativeSocketEnginePrivate::nativeRead(%p \"%s\", %l) == %li",
-           data, qt_prettyDebug(data, qMin((int)bytesRead, 16), (int)bytesRead).data(), (int)maxLength, (int)ret);
+    if (ret != -2) {
+        qDebug("QNativeSocketEnginePrivate::nativeRead(%p \"%s\", %l) == %li",
+               data, qt_prettyDebug(data, qMin((int)bytesRead, 16), (int)bytesRead).data(), (int)maxLength, (int)ret);
+    } else {
+        qDebug("QNativeSocketEnginePrivate::nativeRead(%p, %l) == -2 (WOULD BLOCK)",
+               data, int(maxLength));
+    }
 #endif
 
     return ret;
@@ -1069,34 +1077,24 @@ int QNativeSocketEnginePrivate::nativeSelect(int timeout,
 
     int ret = 0;
 
-    QTime stopWatch;
-    stopWatch.start();
+    memset(&fdread, 0, sizeof(fd_set));
+    if (checkRead) {
+        fdread.fd_count = 1;
+        fdread.fd_array[0] = socketDescriptor;
+    }
+    memset(&fdwrite, 0, sizeof(fd_set));
+    if (checkWrite) {
+        fdwrite.fd_count = 1;
+        fdwrite.fd_array[0] = socketDescriptor;
+    }
 
-    for (;;) {
+    struct timeval tv;
+    tv.tv_sec = timeout / 1000;
+    tv.tv_usec = (timeout % 1000) * 1000;
 
-        int nextTimeOut = timeout - stopWatch.elapsed();
-
-        memset(&fdread, 0, sizeof(fd_set));
-        if (checkRead) {
-            fdread.fd_count = 1;
-            fdread.fd_array[0] = socketDescriptor;
-        }
-        memset(&fdwrite, 0, sizeof(fd_set));
-        if (checkWrite) {
-            fdwrite.fd_count = 1;
-            fdwrite.fd_array[0] = socketDescriptor;
-        }
-
-        struct timeval tv;
-        tv.tv_sec = nextTimeOut / 1000;
-        tv.tv_usec = (nextTimeOut % 1000) * 1000;
-
-        ret = select(socketDescriptor + 1, &fdread, &fdwrite, 0, nextTimeOut < 0 ? 0 : &tv);
-        if (ret <= 0)
-            return ret;
-
-        break;
-    };
+    ret = select(socketDescriptor + 1, &fdread, &fdwrite, 0, timeout < 0 ? 0 : &tv);
+    if (ret <= 0)
+        return ret;
 
     *selectForRead = FD_ISSET(socketDescriptor, &fdread);
     *selectForWrite = FD_ISSET(socketDescriptor, &fdwrite);

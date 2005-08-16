@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -279,6 +279,7 @@ public:
     enum Endian { BigEndian, LittleEndian, IgnoreEndian };
 private:
     QImage(uchar *data, int w, int h, int depth, int pbl, const QRgb *colortable, int numColors, Endian bitOrder);
+    friend class QWSOnScreenSurface;
 #endif
 
     QImageData *d;

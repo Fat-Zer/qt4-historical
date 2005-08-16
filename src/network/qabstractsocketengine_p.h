@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -145,6 +145,7 @@ public:
     QAbstractSocketEnginePrivate();
 
     mutable QAbstractSocket::SocketError socketError;
+    mutable bool hasSetSocketError;
     mutable QString socketErrorString;
     QAbstractSocket::SocketState socketState;
     QAbstractSocket::SocketType socketType;

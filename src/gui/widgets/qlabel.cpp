@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -322,7 +322,6 @@ void QLabel::setText(const QString &text)
     if (d->isRichText()) {
         d->doc->setHtml(text);
         setMouseTracking(true);
-        d->ensureTextControl();
     } else {
         d->doc->setPlainText(text);
         setMouseTracking(false);
@@ -332,6 +331,7 @@ void QLabel::setText(const QString &text)
 #endif
     }
 
+    d->textInteractionFlagsChanged();
     d->updateLabel();
 }
 
@@ -672,6 +672,22 @@ void QLabel::setOpenExternalLinks(bool open)
         d->control->setOpenExternalLinks(open);
 }
 
+void QLabelPrivate::textInteractionFlagsChanged()
+{    
+    if (!doc)
+        return;
+
+    bool richText = isRichText();
+    if ((richText && textInteractionFlags != Qt::NoTextInteraction)
+        || (!richText && (textInteractionFlags & (Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard)))) {
+        ensureTextControl();
+        control->setTextInteractionFlags(textInteractionFlags);
+    } else {
+        delete control;
+        control = 0;
+    }
+}
+
 /*!
     \property QLabel::textInteractionFlags
     \since 4.2
@@ -687,15 +703,19 @@ void QLabel::setOpenExternalLinks(bool open)
 void QLabel::setTextInteractionFlags(Qt::TextInteractionFlags flags)
 {
     Q_D(QLabel);
+
+    if (d->textInteractionFlags == flags)
+        return;
     d->textInteractionFlags = flags;
+
     if (flags & Qt::LinksAccessibleByKeyboard)
         setFocusPolicy(Qt::StrongFocus);
     else if (flags & Qt::TextSelectableByKeyboard)
         setFocusPolicy(Qt::ClickFocus);
     else
         setFocusPolicy(Qt::NoFocus);
-    if (d->control)
-        d->control->setTextInteractionFlags(flags);
+
+    d->textInteractionFlagsChanged();
 }
 
 Qt::TextInteractionFlags QLabel::textInteractionFlags() const

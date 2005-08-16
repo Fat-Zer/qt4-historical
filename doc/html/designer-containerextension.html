@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/containerextension.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/doc/src/examples/containerextension.qdoc -->
 <head>
   <title>Qt 4.2: Container Extension Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -119,7 +119,7 @@
 
  #endif</pre>
 <p>The plugin class provides <i>Qt Designer</i> with basic information about our plugin, such as its class name and its include file. Furthermore it knows how to create instances of the <tt>MultiPageWidget</tt> widget. <tt>MultiPageWidgetPlugin</tt> also defines the <a href="qdesignercustomwidgetinterface.html#initialize">initialize()</a> function which is called after the plugin is loaded into <i>Qt Designer</i>. The function's <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> parameter provides the plugin with a gateway to all of <i>Qt Designer</i>'s API's.</p>
-<p>In case of a multipage widget such as ours, we must also implement two private slots: currentIndexChanged() and pageTitleChanged(). These are required to update <i>Qt Designer</i>'s property editor whenever the user views another page or changes one of the page titles.</p>
+<p>In case of a multipage widget such as ours, we must also implement two private slots, currentIndexChanged() and pageTitleChanged(), to be able to update <i>Qt Designer</i>'s property editor whenever the user views another page or changes one of the page titles. To be able to give each page their own title, we have chosen to use the <a href="qwidget.html#windowTitle-prop">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class <a href="designer-containerextension-multipagewidget-cpp.html">implementation</a>). Note that currently there is no way of adding a custom property (e.g., a page title) to the pages without using a predefined property as placeholder.</p>
 <p>The <tt>MultiPageWidgetPlugin</tt> class inherits from both <a href="qobject.html">QObject</a> and <a href="qdesignercustomwidgetinterface.html">QDesignerCustomWidgetInterface</a>. It is important to remember, when using multiple inheritance, to ensure that all the interfaces (i.e. the classes that doesn't inherit <a href="qobject.html#Q_OBJECT">Q_OBJECT</a>) are made known to the meta object system using the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use <a href="qobject.html#qobject_cast">qobject_cast</a>() to query for supported interfaces using nothing but a <a href="qobject.html">QObject</a> pointer.</p>
 <a name="multipagewidgetplugin-class-implementation"></a>
 <h2>MultiPageWidgetPlugin Class Implementation</h2>
@@ -213,7 +213,7 @@
          }
      }
  }</pre>
-<p>Once we have the extension manager we can update the extension sheet: First we retrieve the property extension for the page which title we want to change, using the <a href="qextensionmanager.html#qt_extension">qt_extension</a>() function. Then we retrieve the index for the page title using the <a href="qdesignerpropertysheetextension.html#indexOf">QDesignerPropertySheetExtension::indexOf</a>() function. Note that to be able to give each page their own title, we have chosen to use the <a href="qwidget.html#windowTitle-prop">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class <a href="designer-containerextension-multipagewidget-cpp.html">implementation</a>). Finally, we implicitly force an update of the page's property sheet by calling the the <a href="qdesignerpropertysheetextension.html#setChanged">QDesignerPropertySheetExtension::setChanged</a>() function.</p>
+<p>Once we have the extension manager we can update the extension sheet: First we retrieve the property extension for the page which title we want to change, using the <a href="qextensionmanager.html#qt_extension">qt_extension</a>() function. Then we retrieve the index for the page title using the <a href="qdesignerpropertysheetextension.html#indexOf">QDesignerPropertySheetExtension::indexOf</a>() function. As previously mentioned, we have chosen to use the <a href="qwidget.html#windowTitle-prop">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class <a href="designer-containerextension-multipagewidget-cpp.html">implementation</a>). Finally, we implicitly force an update of the page's property sheet by calling the the <a href="qdesignerpropertysheetextension.html#setChanged">QDesignerPropertySheetExtension::setChanged</a>() function.</p>
 <pre> void MultiPageWidgetPlugin::initialize(QDesignerFormEditorInterface *formEditor)
  {
      if (initialized)
@@ -393,8 +393,8 @@
 <p>See the MultiPageWidget class <a href="designer-containerextension-multipagewidget-cpp.html">implementation</a> for more details.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the plugins of the Qt Toolkit.
 **
@@ -113,7 +113,7 @@ QImageSmoothScaler::QImageSmoothScaler(const int srcWidth, const int srcHeight,
 
     d = new QImageSmoothScalerPrivate;
 #if defined(Q_OS_WIN) && defined(_MSC_VER) && _MSC_VER >= 1400
-    sscanf_s(parameters, "Scale( %i, %i, %s )", &dstWidth, &dstHeight, sModeStr);
+    sscanf_s(parameters, "Scale( %i, %i, %1023s )", &dstWidth, &dstHeight, sModeStr, sizeof(sModeStr));
 #else
     sscanf(parameters, "Scale( %i, %i, %s )", &dstWidth, &dstHeight, sModeStr);
 #endif

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -702,8 +702,10 @@ qint64 Q3SocketDevice::readData( char *data, qint64 maxlen )
 	r = ::recv( fd, data, maxlen, 0 );
     }
     if ( r == 0 && t == Stream && maxlen > 0 ) {
-        // connection closed
-        close();
+        if ( WSAGetLastError() != WSAEWOULDBLOCK ) {
+            // connection closed
+            close();
+        }
     } else if ( r == SOCKET_ERROR && e == NoError ) {
 	switch( WSAGetLastError() ) {
 	    case WSANOTINITIALISED:

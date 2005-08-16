@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -192,7 +192,8 @@ Configure::Configure( int& argc, char** argv )
     dictionary[ "SQL_PSQL" ]	    = "no";
     dictionary[ "SQL_TDS" ]	    = "no";
     dictionary[ "SQL_DB2" ]	    = "no";
-    dictionary[ "SQL_SQLITE" ]	    = "yes";
+    dictionary[ "SQL_SQLITE" ]	    = "auto";
+    dictionary[ "SQL_SQLITE_LIB" ]  = "qt";
     dictionary[ "SQL_SQLITE2" ]	    = "no";
     dictionary[ "SQL_IBASE" ]	    = "no";
 
@@ -452,6 +453,8 @@ void Configure::parseCmdLine()
             dictionary[ "SQL_SQLITE" ] = "plugin";
         else if( configCmdLine.at(i) == "-no-sql-sqlite" )
             dictionary[ "SQL_SQLITE" ] = "no";
+        else if( configCmdLine.at(i) == "-system-sqlite" )
+            dictionary[ "SQL_SQLITE_LIB" ] = "system";
 
         else if( configCmdLine.at(i) == "-qt-sql-sqlite2" )
             dictionary[ "SQL_SQLITE2" ] = "yes";
@@ -868,7 +871,7 @@ bool Configure::displayHelp()
 	            "[-no-fast] [-fast] [-no-exceptions] [-exceptions]\n"
 	            "[-no-accessibility] [-accessibility] [-no-rtti] [-rtti]\n"
 	            "[-no-stl] [-stl] [-no-sql-<driver>] [-qt-sql-<driver>]\n"
-	            "[-plugin-sql-<driver>] [-arch <arch>] [-platform <spec>]\n"
+	            "[-plugin-sql-<driver>] [-system-sqlite] [-arch <arch>]\n"
 	            "[-D <define>] [-I <includepath>] [-L <librarypath>]\n"
                     "[-help] [-no-dsp] [-dsp] [-no-vcproj] [-vcproj]\n"
                     "[-no-qmake] [-qmake] [-dont-process] [-process]\n"
@@ -877,7 +880,7 @@ bool Configure::displayHelp()
                     "[-qt-zlib] [-system-zlib] [-no-gif] [-qt-gif] [-no-libpng]\n"
                     "[-qt-libpng] [-system-libpng] [-no-libjpeg] [-qt-libjpeg]\n"
                     "[-system-libjpeg] [-no-libmng] [-qt-libmng] [-system-libmng]\n"
-                    "[-no-qt3support]\n\n", 0, 7);
+                    "[-no-qt3support] [-platform <spec>]\n\n", 0, 7);
 
         desc("Installation options:\n\n");
 #if !defined(EVAL)
@@ -924,8 +927,8 @@ bool Configure::displayHelp()
         desc("EXCEPTIONS", "no", "-no-exceptions",      "Disable exceptions on platforms that support it.");
         desc("EXCEPTIONS", "yes","-exceptions",         "Enable exceptions on platforms that support it.\n");
 
-        desc("ACCESSIBILITY", "no",  "-no-accessibility", "Do not compile Windows Active Accessibilit support.");
-        desc("ACCESSIBILITY", "yes", "-accessibility",    "Compile Windows Active Accessibilit support.\n");
+        desc("ACCESSIBILITY", "no",  "-no-accessibility", "Do not compile Windows Active Accessibility support.");
+        desc("ACCESSIBILITY", "yes", "-accessibility",    "Compile Windows Active Accessibility support.\n");
 
         desc("STL", "no",       "-no-stl",              "Do not compile STL support.");
         desc("STL", "yes",      "-stl",                 "Compile STL support.\n");
@@ -944,6 +947,8 @@ bool Configure::displayHelp()
         desc("SQL_SQLITE2", "auto", "",                 "  sqlite2", ' ');
         desc("SQL_IBASE", "auto", "",                   "  ibase", ' ');
         desc(                   "",                     "(drivers marked with a '+' have been detected as available on this system)\n", false, ' ');
+
+        desc(                   "-system-sqlite",       "Use sqlite from the operating system.\n");
 
         desc("QT3SUPPORT", "no","-no-qt3support",       "Disables the Qt 3 support functionality.\n");
 
@@ -1151,8 +1156,15 @@ bool Configure::checkAvailability(const QString &part)
     else if (part == "SQL_DB2")
         available = findFile("sqlcli.h") && findFile("sqlcli1.h") && findFile("db2cli.lib");
     else if (part == "SQL_SQLITE")
-        available = true; // Built in, we have a fork
-    else if (part == "SQL_SQLITE2")
+            available = true; // Built in, we have a fork
+    else if (part == "SQL_SQLITE_LIB") {
+        if (dictionary[ "SQL_SQLITE_LIB" ] == "system") {
+            available = findFile("sqlite3.h") && findFile("sqlite3.lib");
+            if (available)
+                dictionary[ "QT_LFLAGS_SQLITE" ] += "sqlite3.lib";
+        } else
+            available = true;
+    } else if (part == "SQL_SQLITE2")
         available = findFile("sqlite.h") && findFile("sqlite.lib");
     else if (part == "SQL_IBASE")
         available = findFile("ibase.h") && (findFile("gds32_ms.lib") || findFile("gds32.lib"));
@@ -1205,6 +1217,9 @@ void Configure::autoDetection()
         dictionary["SQL_DB2"] = checkAvailability("SQL_DB2") ? defaultTo("SQL_DB2") : "no";
     if (dictionary["SQL_SQLITE"] == "auto")
         dictionary["SQL_SQLITE"] = checkAvailability("SQL_SQLITE") ? defaultTo("SQL_SQLITE") : "no";
+    if (dictionary["SQL_SQLITE_LIB"] == "system")
+        if (!checkAvailability("SQL_SQLITE_LIB"))
+            dictionary["SQL_SQLITE_LIB"] = "no";
     if (dictionary["SQL_SQLITE2"] == "auto")
         dictionary["SQL_SQLITE2"] = checkAvailability("SQL_SQLITE2") ? defaultTo("SQL_SQLITE2") : "no";
     if (dictionary["SQL_IBASE"] == "auto")
@@ -1218,6 +1233,15 @@ void Configure::autoDetection()
 
 bool Configure::verifyConfiguration()
 {
+    if (dictionary["SQL_SQLITE_LIB"] == "no" && dictionary["SQL_SQLITE"] != "no") {
+        cout << "WARNING: Configure could not detect the presence of a system SQLite3 lib." << endl
+             << "Configure will therefore continue with the SQLite3 lib bundled with Qt." << endl
+             << "(Press any key to continue..)";
+        if(_getch() == 3) // _Any_ keypress w/no echo(eat <Enter> for stdout)
+            exit(0);      // Exit cleanly for Ctrl+C
+
+        dictionary["SQL_SQLITE_LIB"] = "qt"; // Set to Qt's bundled lib an continue
+    }
     if (dictionary["QMAKESPEC"].endsWith("-g++")
         && dictionary["SQL_OCI"] != "no") {
         cout << "WARNING: Qt does not support compiling the Oracle database driver with" << endl
@@ -1429,6 +1453,9 @@ void Configure::generateOutputVars()
     else if ( dictionary[ "SQL_SQLITE" ] == "plugin" )
         qmakeSqlPlugins += "sqlite";
 
+    if ( dictionary[ "SQL_SQLITE_LIB" ] == "system" )
+        qmakeConfig += "system-sqlite";
+
     if ( dictionary[ "SQL_SQLITE2" ] == "yes" )
         qmakeSql += "sqlite2";
     else if ( dictionary[ "SQL_SQLITE2" ] == "plugin" )
@@ -1462,6 +1489,9 @@ void Configure::generateOutputVars()
 
     if( !qmakeLibs.isEmpty() )
         qmakeVars += "LIBS           += " + qmakeLibs.join( " " );
+
+    if( !dictionary["QT_LFLAGS_SQLITE"].isEmpty() )
+        qmakeVars += "QT_LFLAGS_SQLITE += " + dictionary["QT_LFLAGS_SQLITE"];
 
     if (dictionary[ "QT3SUPPORT" ] == "yes")
         qtConfig += "qt3support";
@@ -1559,11 +1589,11 @@ void Configure::generateCachefile()
             cacheStream << "DEFINES        *= QT_EDITION=QT_EDITION_DESKTOP" << endl;
 
 	//so that we can build without an install first (which would be impossible)
-	cacheStream << "QMAKE_MOC       = $$QT_BUILD_TREE/bin/moc.exe" << endl;
-	cacheStream << "QMAKE_UIC       = $$QT_BUILD_TREE/bin/uic.exe" << endl;
-	cacheStream << "QMAKE_UIC3      = $$QT_BUILD_TREE/bin/uic3.exe" << endl;
-	cacheStream << "QMAKE_RCC       = $$QT_BUILD_TREE/bin/rcc.exe" << endl;
-	cacheStream << "QMAKE_DUMPCPP   = $$QT_BUILD_TREE/bin/dumpcpp.exe" << endl;
+	cacheStream << "QMAKE_MOC       = $$QT_BUILD_TREE\\bin\\moc.exe" << endl;
+	cacheStream << "QMAKE_UIC       = $$QT_BUILD_TREE\\bin\\uic.exe" << endl;
+	cacheStream << "QMAKE_UIC3      = $$QT_BUILD_TREE\\bin\\uic3.exe" << endl;
+	cacheStream << "QMAKE_RCC       = $$QT_BUILD_TREE\\bin\\rcc.exe" << endl;
+	cacheStream << "QMAKE_DUMPCPP   = $$QT_BUILD_TREE\\bin\\dumpcpp.exe" << endl;
 	cacheStream << "QMAKE_INCDIR_QT = $$QT_BUILD_TREE/include" << endl;
 	cacheStream << "QMAKE_LIBDIR_QT = $$QT_BUILD_TREE/lib" << endl;
         cacheStream.flush();
@@ -1909,7 +1939,7 @@ void Configure::displayConfig()
     cout << "    PostgreSQL.............." << dictionary[ "SQL_PSQL" ] << endl;
     cout << "    TDS....................." << dictionary[ "SQL_TDS" ] << endl;
     cout << "    DB2....................." << dictionary[ "SQL_DB2" ] << endl;
-    cout << "    SQLite.................." << dictionary[ "SQL_SQLITE" ] << endl;
+    cout << "    SQLite.................." << dictionary[ "SQL_SQLITE" ] << " (" << dictionary[ "SQL_SQLITE_LIB" ] << ")" << endl;
     cout << "    SQLite2................." << dictionary[ "SQL_SQLITE2" ] << endl;
     cout << "    InterBase..............." << dictionary[ "SQL_IBASE" ] << endl << endl;
 

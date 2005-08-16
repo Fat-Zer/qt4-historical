@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -125,10 +125,13 @@ static QString qt_win_filter(const QString &filter)
     QStringList::Iterator it = filterLst.begin();
     QString winfilters;
     for (; it != filterLst.end(); ++it) {
-        winfilters += *it;
-        winfilters += QChar();
-        winfilters += qt_win_extract_filter(*it);
-        winfilters += QChar();
+        QString subfilter = *it;
+        if (!subfilter.isEmpty()) {
+            winfilters += subfilter;
+            winfilters += QChar();
+            winfilters += qt_win_extract_filter(subfilter);
+            winfilters += QChar();
+        }
     }
     winfilters += QChar();
     return winfilters;
@@ -414,7 +417,7 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
     modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
     modal_widget.setParent(args.parent, Qt::Window);
     QApplicationPrivate::enterModal(&modal_widget);
-    
+
     // This block is used below for the lpstrDefExt member.
     // Note that the current MSDN docs document this member wrong.
     // It should rather be documented as "the default extension if no extension was given and if the
@@ -441,7 +444,7 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
 					    args.options);
 
         ofn->lpstrDefExt = (TCHAR *)defaultSaveExt.utf16();
-        
+
         if (idx)
             ofn->nFilterIndex = idx + 1;
         if (GetSaveFileName(ofn)) {
@@ -458,7 +461,7 @@ QString qt_win_get_save_file_name(const QFileDialogArgs &args,
 					      args.options);
         QByteArray asciiExt = defaultSaveExt.toAscii();
         ofn->lpstrDefExt = asciiExt.data();
-        
+
         if (idx)
             ofn->nFilterIndex = idx + 1;
         if (GetSaveFileNameA(ofn)) {
@@ -656,6 +659,8 @@ QString qt_win_get_existing_directory(const QFileDialogArgs &args)
         parent = parent->window();
     else
         parent = qApp->activeWindow();
+    if (parent)
+        parent->createWinId();
     QString title = args.caption;
     if (title.isNull())
         title = QFileDialog::tr("Select a Directory");

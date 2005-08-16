@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -1168,7 +1168,7 @@ QSqlRecord QIBaseResult::record() const
 
 QVariant QIBaseResult::handle() const
 {
-    return QVariant(qRegisterMetaType<isc_stmt_handle>("isc_stmt_handle"), d->stmt);
+    return QVariant(qRegisterMetaType<isc_stmt_handle>("isc_stmt_handle"), &d->stmt);
 }
 
 /*********************************/
@@ -1448,5 +1448,5 @@ QString QIBaseDriver::formatValue(const QSqlField &field, bool trimStrings) cons
 
 QVariant QIBaseDriver::handle() const
 {
-    return QVariant(qRegisterMetaType<isc_db_handle>("isc_db_handle"), d->ibase);
+    return QVariant(qRegisterMetaType<isc_db_handle>("isc_db_handle"), &d->ibase);
 }

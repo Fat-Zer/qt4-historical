@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2006-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2006-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -59,8 +59,8 @@ Window::Window()
 void Window::setVisible(bool visible)
 {
     minimizeAction->setEnabled(visible);
-    maximizeAction->setEnabled(!visible);
-    restoreAction->setEnabled(!visible);
+    maximizeAction->setEnabled(!isMaximized());
+    restoreAction->setEnabled(isMaximized() || !visible);
     QWidget::setVisible(visible);
 }
 
@@ -208,7 +208,7 @@ void Window::createActions()
     connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
 
     restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, SIGNAL(triggered()), this, SLOT(show()));
+    connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));

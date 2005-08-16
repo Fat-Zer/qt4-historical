@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/gui/kernel/qwidget.cpp -->
 <head>
   <title>Qt 4.2: QWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -619,8 +619,12 @@
 <p>The <a href="qwidget.html#fontInfo">fontInfo</a>() function reports the actual font that is being used by the widget.</p>
 <p>As long as no special font has been set, or after setFont(<a href="porting4.html#qfont">QFont</a>()) is called, this is either a special font for the widget class, the parent's font or (if this widget is a top level widget), the default application font.</p>
 <p>This code fragment sets a 12 point helvetica bold font:</p>
-<pre> QFont f(&quot;Helvetica&quot;, 12, QFont::Bold);
- setFont(f);</pre>
+<pre> QFont font(&quot;Helvetica&quot;, 12, QFont::Bold);
+ setFont(font);</pre>
+<p>Note that when a child widget is given a different font to that of its parent widget, it will still inherit the parent's font <i>properties</i> unless these have been set explicitly on the child's font. For example, if the parent's font is bold, the child widget's font will be bold as well if not specified otherwise like this:</p>
+<pre> QFont font;
+ font.setBold(false);
+ setFont(font);</pre>
 <p>In addition to setting the font, setFont() informs all children about the change.</p>
 <p>Access functions:</p>
 <ul>
@@ -1123,6 +1127,7 @@
 <p>This function is usually called from the <a href="qwidget.html">QWidget</a> destructor.</p>
 <h3 class="fn"><a name="dragEnterEvent"></a>void QWidget::dragEnterEvent ( <a href="qdragenterevent.html">QDragEnterEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler is called when a drag is in progress and the mouse enters this widget. The event is passed in the <i>event</i> parameter.</p>
+<p>If the event is ignored, the widget won't receive any <a href="qwidget.html#dragMoveEvent">drag move events</a>.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
 <p>See also <a href="porting4.html#qtextdrag">QTextDrag</a>, <a href="porting4.html#qimagedrag">QImageDrag</a>, and <a href="qdragenterevent.html">QDragEnterEvent</a>.</p>
 <h3 class="fn"><a name="dragLeaveEvent"></a>void QWidget::dragLeaveEvent ( <a href="qdragleaveevent.html">QDragLeaveEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -1971,8 +1976,8 @@
 <p>The widget mapper is no longer part of the public API.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

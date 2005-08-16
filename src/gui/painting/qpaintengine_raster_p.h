@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -167,6 +167,7 @@ public:
 #ifdef QT_EXPERIMENTAL_REGIONS
     void setSimpleClip(const QRect &rect);
 #endif
+    void updateMatrixData(QSpanData *spanData, const QBrush &brush, const QMatrix &brushMatrix);
 
     QMatrix brushMatrix() const {
         QMatrix m(matrix);
@@ -211,6 +212,8 @@ public:
     QDataBuffer<QLineF> cachedLines;
 
     int deviceDepth;
+
+    qreal txscale;
 
     uint txop;
 

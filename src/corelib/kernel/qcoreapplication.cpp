@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -402,6 +402,9 @@ void QCoreApplication::flush()
     The \a argc and \a argv arguments are processed by the application,
     and made available in a more convenient form by the arguments()
     function.
+
+    \warning The data pointed to by \a argc and \a argv must stay
+    valid for the entire lifetime of the QCoreApplication object.
 */
 QCoreApplication::QCoreApplication(int &argc, char **argv)
     : QObject(*new QCoreApplicationPrivate(argc, argv))

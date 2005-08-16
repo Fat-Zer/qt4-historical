@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/corelib/kernel/qobject.cpp -->
 <head>
   <title>Qt 4.2: QObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -94,8 +94,8 @@
 <h3>Related Non-Members</h3>
 <ul>
 <li><div class="fn"/>typedef <b><a href="qobject.html#QObjectList-typedef">QObjectList</a></b></li>
-<li><div class="fn"/>T <b><a href="qobject.html#qFindChild-2">qFindChild</a></b> ( const QObject * <i>obj</i>, const QString &amp; <i>name</i> )</li>
-<li><div class="fn"/>QList&lt;T&gt; <b><a href="qobject.html#qFindChildren-3">qFindChildren</a></b> ( const QObject * <i>obj</i>, const QString &amp; <i>name</i> )</li>
+<li><div class="fn"/>T <b><a href="qobject.html#qFindChild">qFindChild</a></b> ( const QObject * <i>obj</i>, const QString &amp; <i>name</i> )</li>
+<li><div class="fn"/>QList&lt;T&gt; <b><a href="qobject.html#qFindChildren">qFindChildren</a></b> ( const QObject * <i>obj</i>, const QString &amp; <i>name</i> )</li>
 <li><div class="fn"/>QList&lt;T&gt; <b><a href="qobject.html#qFindChildren-6">qFindChildren</a></b> ( const QObject * <i>obj</i>, const QRegExp &amp; <i>regExp</i> )</li>
 <li><div class="fn"/>T <b><a href="qobject.html#qobject_cast">qobject_cast</a></b> ( QObject * <i>object</i> )</li>
 </ul>
@@ -156,7 +156,7 @@
 <p><b>Warning:</b> Deleting a <a href="qobject.html">QObject</a> while pending events are waiting to be delivered can cause a crash. You must not delete the <a href="qobject.html">QObject</a> directly if it exists in a different thread than the one currently executing. Use <a href="qobject.html#deleteLater">deleteLater</a>() instead, which will cause the event loop to delete the object after all pending events have been delivered to it.</p>
 <p>See also <a href="qobject.html#deleteLater">deleteLater</a>().</p>
 <h3 class="fn"><a name="blockSignals"></a>bool QObject::blockSignals ( bool <i>block</i> )</h3>
-<p>If <i>block</i> is true, signals emitted by this object is blocked (i.e., emitted signals disappear into hyperspace). If <i>block</i> is false, no such blocking will occur.</p>
+<p>If <i>block</i> is true, signals emitted by this object are blocked (i.e., emitted signals disappear into hyperspace). If <i>block</i> is false, no such blocking will occur.</p>
 <p>The return value is the previous value of <a href="qobject.html#signalsBlocked">signalsBlocked</a>().</p>
 <p>Note that the <a href="qobject.html#destroyed">destroyed</a>() signal will be emitted even if the signals for this object have been blocked.</p>
 <p>See also <a href="qobject.html#signalsBlocked">signalsBlocked</a>().</p>
@@ -341,26 +341,26 @@
 <p><b>Warning:</b> If you delete the receiver object in this function, be sure to return true. Otherwise, Qt will forward the event to the deleted object and the program might crash.</p>
 <p>See also <a href="qobject.html#installEventFilter">installEventFilter</a>().</p>
 <h3 class="fn"><a name="findChild"></a>T QObject::findChild ( const <a href="qstring.html">QString</a> &amp; <i>name</i> = QString() ) const</h3>
-<p>Returns the child of this object that can be casted into type T and that is called <i>name</i>, or 0 if there is no such object. An empty string matches all object names. The search is performed recursively.</p>
+<p>Returns the child of this object that can be casted into type T and that is called <i>name</i>, or 0 if there is no such object. Omitting the <i>name</i> argument causes all object names to be matched. The search is performed recursively.</p>
 <p>If there is more than one child matching the search, the most direct ancestor is returned. If there are several direct ancestors, it is undefined which one will be returned. In that case, <a href="qobject.html#findChildren">findChildren</a>() should be used.</p>
 <p>This example returns a child <a href="qpushbutton.html">QPushButton</a> of <tt>parentWidget</tt> named <tt>&quot;button1&quot;</tt>:</p>
 <pre> QPushButton *button = parentWidget-&gt;findChild&lt;QPushButton *&gt;(&quot;button1&quot;);</pre>
 <p>This example returns a <a href="qlistwidget.html">QListWidget</a> child of <tt>parentWidget</tt>:</p>
 <pre> QListWidget *list = parentWidget-&gt;findChild&lt;QListWidget *&gt;();</pre>
-<p><b>Warning:</b> This function is not available with MSVC 6. Use qFindChild() instead if you need to support that version of the compiler.</p>
-<p>See also <a href="qobject.html#findChildren">findChildren</a>() and qFindChild().</p>
+<p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qobject.html#qFindChild">qFindChild</a>() instead if you need to support that version of the compiler.</p>
+<p>See also <a href="qobject.html#findChildren">findChildren</a>() and <a href="qobject.html#qFindChild">qFindChild</a>().</p>
 <h3 class="fn"><a name="findChildren"></a><a href="qlist.html">QList</a>&lt;T&gt; QObject::findChildren ( const <a href="qstring.html">QString</a> &amp; <i>name</i> = QString() ) const</h3>
-<p>Returns all children of this object with the given <i>name</i> that can be cast to type T, or an empty list if there are no such objects. An empty string matches all object names. The search is performed recursively.</p>
+<p>Returns all children of this object with the given <i>name</i> that can be cast to type T, or an empty list if there are no such objects. Omitting the <i>name</i> argument causes all object names to be matched. The search is performed recursively.</p>
 <p>The following example shows how to find a list of child <a href="qwidget.html">QWidget</a>s of the specified <tt>parentWidget</tt> named <tt>widgetname</tt>:</p>
 <pre> QList&lt;QWidget *&gt; widgets = parentWidget.findChildren&lt;QWidget *&gt;(&quot;widgetname&quot;);</pre>
 <p>This example returns all <tt>QPushButton</tt>s that are children of <tt>parentWidget</tt>:</p>
 <pre> QList&lt;QPushButton *&gt; allPButtons = parentWidget.findChildren&lt;QPushButton *&gt;();</pre>
-<p><b>Warning:</b> This function is not available with MSVC 6. Use qFindChildren() instead if you need to support that version of the compiler.</p>
-<p>See also <a href="qobject.html#findChild">findChild</a>() and qFindChildren().</p>
+<p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qobject.html#qFindChildren">qFindChildren</a>() instead if you need to support that version of the compiler.</p>
+<p>See also <a href="qobject.html#findChild">findChild</a>() and <a href="qobject.html#qFindChildren">qFindChildren</a>().</p>
 <h3 class="fn"><a name="findChildren-2"></a><a href="qlist.html">QList</a>&lt;T&gt; QObject::findChildren ( const <a href="qregexp.html">QRegExp</a> &amp; <i>regExp</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the children of this object that can be casted to type T and that have names matching the regular expression <i>regExp</i>, or an empty list if there are no such objects. The search is performed recursively.</p>
-<p><b>Warning:</b> This function is not available with MSVC 6. Use qFindChildren() instead if you need to support that version of the compiler.</p>
+<p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qobject.html#qFindChildren">qFindChildren</a>() instead if you need to support that version of the compiler.</p>
 <h3 class="fn"><a name="inherits"></a>bool QObject::inherits ( const char * <i>className</i> ) const</h3>
 <p>Returns true if this object is an instance of a class that inherits <i>className</i> or a <a href="qobject.html">QObject</a> subclass that inherits <i>className</i>; otherwise returns false.</p>
 <p>A class is considered to inherit itself.</p>
@@ -574,12 +574,10 @@
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="QObjectList-typedef"></a>typedef QObjectList</h3>
 <p>Synonym for <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a> *&gt;.</p>
-<h3 class="fn"><a name="qFindChild-2"></a>T qFindChild ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="qFindChild"></a>T qFindChild ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChild">findChild</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>See also <a href="qobject.html#findChild">QObject::findChild</a>().</p>
-<h3 class="fn"><a name="qFindChildren-3"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="qFindChildren"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChildren">findChildren</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>See also <a href="qobject.html#findChildren">QObject::findChildren</a>().</p>
 <h3 class="fn"><a name="qFindChildren-6"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qregexp.html">QRegExp</a> &amp; <i>regExp</i> )</h3>
@@ -723,8 +721,8 @@
 <p>See also <a href="qobject-qt3.html#name">name</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

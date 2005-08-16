@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/graphicsview.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/doc/src/graphicsview.qdoc -->
 <head>
   <title>Qt 4.2: The Graphics View Framework</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -153,16 +153,16 @@
 <p>When the source and target areas' sizes do not match, the source contents are stretched to fit into the target area. By passing a <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> to the rendering function you are using, you can choose to maintain or ignore the aspect ratio of the scene when the contents are stretched.</p>
 <a name="drag-and-drop"></a>
 <h3>Drag and Drop</h3>
-<p>Because <a href="qgraphicsview.html">QGraphicsView</a> inherits <a href="qwidget.html">QWidget</a> indirectly, it already provides the same drag and drop functionality that <a href="qwidget.html">QWidget</a> provides. In addition, as a convenience, the Graphics View framework provides drag and drop support for the scene, and for each and every item. As the view receives a drag, it translates the drag and drop events into a QGraphicsSceneDragDropEvent, which is then forwarded to the scene. The scene takes over scheduling of this event, and sends it to the first item under the mouse cursor that accepts drops.</p>
+<p>Because <a href="qgraphicsview.html">QGraphicsView</a> inherits <a href="qwidget.html">QWidget</a> indirectly, it already provides the same drag and drop functionality that <a href="qwidget.html">QWidget</a> provides. In addition, as a convenience, the Graphics View framework provides drag and drop support for the scene, and for each and every item. As the view receives a drag, it translates the drag and drop events into a <a href="qgraphicsscenedragdropevent.html">QGraphicsSceneDragDropEvent</a>, which is then forwarded to the scene. The scene takes over scheduling of this event, and sends it to the first item under the mouse cursor that accepts drops.</p>
 <p>To start a drag from an item, create a <a href="qdrag.html">QDrag</a> object, passing a pointer to the widget that starts the drag. Items can be observed by many views at the same time, but only one view can start the drag. Drags are in most cases started as a result of pressing or moving the mouse, so in mousePressEvent() or mouseMoveEvent(), you can get the originating widget pointer from the event. For example:</p>
 <pre> void CustomItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
  {
      QMimeData *data = new QMimeData;
      data-&gt;setColor(Qt::green);
 
-     QDrag drag(event-&gt;widget());
-     drag.setMimeData(data);
-     drag.start();
+     QDrag *drag = new QDrag(event-&gt;widget());
+     drag-&gt;setMimeData(data);
+     drag-&gt;start();
  }</pre>
 <p>To intercept drag and drop events for the scene, you reimplement <a href="qgraphicsscene.html#dragEnterEvent">QGraphicsScene::dragEnterEvent</a>() and whichever event handlers your particular scene needs, in a <a href="qgraphicsitem.html">QGraphicsItem</a> subclass. You can read more about drag and drop in Graphics View in the documentation for each of <a href="qgraphicsscene.html">QGraphicsScene</a>'s event handlers.</p>
 <p>Items can enable drag and drop support by calling <a href="qgraphicsitem.html#setAcceptDrops">QGraphicsItem::setAcceptDrops</a>(). To handle the incoming drag, reimplement <a href="qgraphicsitem.html#dragEnterEvent">QGraphicsItem::dragEnterEvent</a>(), <a href="qgraphicsitem.html#dragMoveEvent">QGraphicsItem::dragMoveEvent</a>(), <a href="qgraphicsitem.html#dragLeaveEvent">QGraphicsItem::dragLeaveEvent</a>(), and <a href="qgraphicsitem.html#dropEvent">QGraphicsItem::dropEvent</a>().</p>
@@ -190,8 +190,8 @@
 <p>In addition, <a href="qgraphicsitemgroup.html">QGraphicsItemGroup</a> is a special item that combines child event handling with a useful interface for adding and removing items to and from a group. Adding an item to a <a href="qgraphicsitemgroup.html">QGraphicsItemGroup</a> will keep the item's original position and transformation, whereas reparenting items in general will cause the child to reposition itself relative to its new parent. For convenience, you can create <a href="qgraphicsitemgroup.html">QGraphicsItemGroup</a>s through the scene by calling <a href="qgraphicsscene.html#createItemGroup">QGraphicsScene::createItemGroup</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -26,13 +26,13 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.2.2"
+#define QT_VERSION_STR   "4.2.3"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040202
+#define QT_VERSION 0x040203
 
-#define QT_PACKAGEDATE_STR "2006-11-27"
+#define QT_PACKAGEDATE_STR "2007-02-21"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>

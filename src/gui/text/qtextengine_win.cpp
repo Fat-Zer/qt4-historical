@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -252,13 +252,13 @@ static unsigned char script_for_win_language[0x80] = {
     QUnicodeTables::Common,
 
     //0x20 LANG_URDU Urdu
-    QUnicodeTables::Common,
+    QUnicodeTables::Arabic,
     //0x21 LANG_INDONESIAN Indonesian
     QUnicodeTables::Common,
     //0x22 LANG_UKRAINIAN Ukrainian
     QUnicodeTables::Common,
     //0x23 LANG_BELARUSIAN Belarusian
-    QUnicodeTables::Common,
+    QUnicodeTables::Cyrillic,
     //0x24 LANG_SLOVENIAN Slovenian
     QUnicodeTables::Common,
     //0x25 LANG_ESTONIAN Estonian
@@ -269,7 +269,7 @@ static unsigned char script_for_win_language[0x80] = {
     QUnicodeTables::Common,
     QUnicodeTables::Common,
     //0x29 LANG_FARSI Farsi
-    QUnicodeTables::Common,
+    QUnicodeTables::Arabic,
     //0x2a LANG_VIETNAMESE Vietnamese
     QUnicodeTables::Latin, // ##### maybe use QUnicodeTables::CombiningMarks instead?
     //0x2b LANG_ARMENIAN Armenian
@@ -341,8 +341,10 @@ static unsigned char script_for_win_language[0x80] = {
     QUnicodeTables::Mongolian,
     QUnicodeTables::Common,
     QUnicodeTables::Common,
-    QUnicodeTables::Common,
-    QUnicodeTables::Common,
+    //0x53 LANG_KHMER Khmer
+    QUnicodeTables::Khmer,
+    //0x54 LANG_LAO Lao
+    QUnicodeTables::Lao,
     QUnicodeTables::Common,
     //0x56 LANG_GALICIAN Galician
     QUnicodeTables::Common,
@@ -584,11 +586,12 @@ void QTextEngine::shapeText(int item) const
             ensureSpace(si.num_glyphs);
             si.glyph_data_offset = layoutData->used;
             QGlyphLayout *g = this->glyphs(&si);
+            const int direction = (si.analysis.bidiLevel % 2) ? -1 : 1;
             for(int i = 0; i < si.num_glyphs; ++i) {
                 g[i].glyph = glyphs[i];
                 g[i].advance.x = advances[i];
                 g[i].advance.y = 0;
-                g[i].offset.x = offsets[i].du;
+                g[i].offset.x = offsets[i].du * direction;
                 g[i].offset.y = offsets[i].dv;
                 g[i].attributes = glyphAttributes[i];
             }

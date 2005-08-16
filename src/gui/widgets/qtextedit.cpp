@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -222,16 +222,11 @@ void QTextEditPrivate::pageUpDown(QTextCursor::MoveOperation op, QTextCursor::Mo
 }
 
 #ifndef QT_NO_SCROLLBAR
-void QTextEditPrivate::_q_adjustScrollbars()
+static QSize documentSize(QTextControl *control)
 {
-    if (ignoreAutomaticScrollbarAdjustment)
-        return;
-    ignoreAutomaticScrollbarAdjustment = true; // avoid recursion, #106108
-
     QTextDocument *doc = control->document();
     QAbstractTextDocumentLayout *layout = doc->documentLayout();
 
-    const QSize viewportSize = viewport->size();
     QSize docSize;
 
     if (QTextDocumentLayout *tlayout = qobject_cast<QTextDocumentLayout *>(layout)) {
@@ -243,6 +238,18 @@ void QTextEditPrivate::_q_adjustScrollbars()
     } else {
         docSize = layout->documentSize().toSize();
     }
+
+    return docSize;
+}
+
+void QTextEditPrivate::_q_adjustScrollbars()
+{
+    if (ignoreAutomaticScrollbarAdjustment)
+        return;
+    ignoreAutomaticScrollbarAdjustment = true; // avoid recursion, #106108
+
+    const QSize viewportSize = viewport->size();
+    QSize docSize = documentSize(control);
 
     hbar->setRange(0, docSize.width() - viewportSize.width());
     hbar->setPageStep(viewportSize.width());
@@ -260,6 +267,20 @@ void QTextEditPrivate::_q_adjustScrollbars()
         viewport->update();
 
     _q_showOrHideScrollBars();
+
+    // has the document/viewport size been changed due to adding/removing scroll bars?
+    // due to the recursion guard we have to adjust the scroll bars here
+    const QSize newSize = documentSize(control);
+    const QSize newViewportSize = viewport->size();
+    if (newSize != docSize || viewportSize != newViewportSize) {
+        hbar->setRange(0, newSize.width() - newViewportSize.width());
+        hbar->setPageStep(newViewportSize.width());
+
+        vbar->setRange(0, newSize.height() - newViewportSize.height());
+        vbar->setPageStep(newViewportSize.height());
+
+        _q_showOrHideScrollBars();
+    }
     ignoreAutomaticScrollbarAdjustment = false;
 }
 #endif
@@ -465,7 +486,8 @@ void QTextEditPrivate::ensureViewportLayouted()
     will select the character to the right, and \e{Shift+Ctrl+Right
     Arrow} will select the word to the right, etc.
 
-    \sa QTextDocument, QTextCursor, {Application Example}, {Syntax Highlighter Example}
+    \sa QTextDocument, QTextCursor, {Application Example},
+	{Syntax Highlighter Example}, {Rich Text Processing}
 */
 
 /*!
@@ -953,6 +975,12 @@ bool QTextEdit::event(QEvent *e)
     } else if (e->type() == QEvent::ShortcutOverride) {
         d->sendControlEvent(e);
     }
+#ifdef QT_KEYPAD_NAVIGATION
+    else if (e->type() == QEvent::EnterEditFocus || e->type() == QEvent::LeaveEditFocus) {
+        if (QApplication::keypadNavigationEnabled())
+            d->sendControlEvent(e);
+    }
+#endif
     return QAbstractScrollArea::event(e);
 }
 
@@ -1034,8 +1062,21 @@ void QTextEdit::keyPressEvent(QKeyEvent *e)
 #ifdef QT_KEYPAD_NAVIGATION
     switch (e->key()) {
         case Qt::Key_Select:
-            if (QApplication::keypadNavigationEnabled())
-                setEditFocus(!hasEditFocus());
+            if (QApplication::keypadNavigationEnabled()) {
+                if (!(d->control->textInteractionFlags() & Qt::LinksAccessibleByKeyboard))
+                    setEditFocus(!hasEditFocus());
+                else {
+                    if (!hasEditFocus())
+                        setEditFocus(true);
+                    else {
+                        QTextCursor cursor = d->control->textCursor();
+                        QTextCharFormat charFmt = cursor.charFormat();
+                        if (!cursor.hasSelection() || charFmt.anchorHref().isEmpty()) {
+                            setEditFocus(false);
+                        }
+                    }
+                }
+            }
             break;
         case Qt::Key_Back:
         case Qt::Key_No:
@@ -1141,6 +1182,7 @@ void QTextEdit::keyPressEvent(QKeyEvent *e)
                     if (QApplication::keypadNavigationEnabled()) {
                         if (document()->isEmpty()) {
                             setEditFocus(false);
+                            e->accept();
                         } else if (!d->deleteAllTimer.isActive()) {
                             e->accept();
                             d->deleteAllTimer.start(750, this);
@@ -1451,8 +1493,10 @@ void QTextEdit::inputMethodEvent(QInputMethodEvent *e)
 #ifdef QT_KEYPAD_NAVIGATION
     if (d->control->textInteractionFlags() & Qt::TextEditable
         && QApplication::keypadNavigationEnabled()
-        && !hasEditFocus())
+        && !hasEditFocus()) {
         setEditFocus(true);
+        selectAll();    // so text is replaced rather than appended to
+    }
 #endif
     d->sendControlEvent(e);
 }
@@ -1953,7 +1997,7 @@ void QTextEdit::scrollToAnchor(const QString &name)
 /*!
     \fn QTextEdit::zoomIn(int range)
 
-    Zooms in on the text by by making the base font size \a range
+    Zooms in on the text by making the base font size \a range
     points larger and recalculating all font sizes to be the new size.
     This does not change the size of any images.
 

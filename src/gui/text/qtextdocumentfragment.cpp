@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -890,8 +890,14 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
         QTextTable *textTable = cursor.insertTable(table.rows, table.columns, fmt.toTableFormat());
         table.frame = textTable;
 
+        int effectiveRow = 0;
+
         TableCellIterator it(textTable);
-        foreach (int row, rowNodes)
+        foreach (int row, rowNodes) {
+            // skip missing cells from the previous row
+            while (it.row < effectiveRow && !it.atEnd())
+                ++it;
+
             foreach (int cell, at(row).children)
             if (at(cell).isTableCell) {
                 const QTextHtmlParserNode &c = at(cell);
@@ -901,6 +907,9 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
 
                 ++it;
             }
+
+            ++effectiveRow;
+        }
 
         table.currentCell = TableCellIterator(textTable);
     }

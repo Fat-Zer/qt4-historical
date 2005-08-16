@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -240,6 +240,8 @@ static bool write_pbm_image(QIODevice *out, const QImage &sourceImage, const QBy
         image = image.convertToFormat(QImage::Format_MonoLSB);
     } else if (image.depth() == 1) {
         image = image.convertToFormat(QImage::Format_Indexed8);
+    } else if (image.depth() == 16) {
+        image = image.convertToFormat(QImage::Format_RGB32);
     }
 
     if (image.depth() == 1 && image.numColors() == 2) {
@@ -339,6 +341,10 @@ static bool write_pbm_image(QIODevice *out, const QImage &sourceImage, const QBy
             }
             delete [] buf;
             }
+            break;
+
+    default:
+        return false;
     }
 
     return true;
@@ -402,7 +408,7 @@ bool QPpmHandler::read(QImage *image)
 {
     if (state == Error)
         return false;
-    
+
     if (state == Ready && !readHeader()) {
         state = Error;
         return false;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -104,7 +104,6 @@
     \o Write as much data as you can (before \c EWOULDBLOCK is returned).
     \o Re-enable notifier if you have more data to write.
     \endlist
-    \endomit
 
     \bold{Further information:}
     On Windows, Qt always disables the notifier after getting a notification,

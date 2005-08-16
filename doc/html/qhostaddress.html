@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/network/qhostaddress.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/network/qhostaddress.cpp -->
 <head>
   <title>Qt 4.2: QHostAddress Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -77,7 +77,7 @@
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QHostAddress::Null</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The null address object. Equivalent to <a href="qhostaddress.html#QHostAddress">QHostAddress</a>().</td></tr>
 <tr><td valign="top"><tt>QHostAddress::LocalHost</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The IPv4 localhost address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;127.0.0.1&quot;).</td></tr>
-<tr><td valign="top"><tt>QHostAddress::LocalHostIPv6</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The IPv6 localhost address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;::1&quot;).</td></tr>
+<tr><td valign="top"><tt>QHostAddress::LocalHostIPv6</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The IPv6 localhost address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;<a href="atomic-operations.html#1">::1</a>&quot;).</td></tr>
 <tr><td valign="top"><tt>QHostAddress::Broadcast</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The IPv4 broadcast address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;255.255.255.255&quot;).</td></tr>
 <tr><td valign="top"><tt>QHostAddress::Any</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The IPv4 any-address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;0.0.0.0&quot;).</td></tr>
 <tr><td valign="top"><tt>QHostAddress::AnyIPv6</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The IPv6 any-address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;::&quot;).</td></tr>
@@ -117,7 +117,7 @@
 <p>The IPv6 scope ID specifies the scope of <i>reachability</i> for non-global IPv6 addresses, limiting the area in which the address can be used. All IPv6 addresses are associated with such a reachability scope. The scope ID is used to disambiguate addresses that are not guaranteed to be globally unique.</p>
 <p>IPv6 specifies the following four levels of reachability:</p>
 <ul>
-<li>Node-local: Addresses that are only used for communicating with services on the same interface (e.g., the loopback interface &quot;::1&quot;).</li>
+<li>Node-local: Addresses that are only used for communicating with services on the same interface (e.g., the loopback interface &quot;<a href="atomic-operations.html#1">::1</a>&quot;).</li>
 <li>Link-local: Addresses that are local to the network interface (<i>link</i>). There is always one link-local address for each IPv6 interface on your host. Link-local addresses (&quot;fe80...&quot;) are generated from the MAC address of the local network adaptor, and are not guaranteed to be unique.</li>
 <li>Site-local: Addresses that are local to the site / private network (e.g., the company intranet). Site-local addresses (&quot;fec0...&quot;) are usually distributed by the site router, and are not guaranteed to be unique outside of the local site.</li>
 <li>Global: For globally routable addresses, such as public servers on the Internet.</li>
@@ -202,8 +202,8 @@
 <p>Use <a href="qhostaddress.html#protocol">protocol</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

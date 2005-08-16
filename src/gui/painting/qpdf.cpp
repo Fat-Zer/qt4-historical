@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1246,7 +1246,12 @@ QVariant QPdfBaseEngine::property(PrintEnginePropertyKey key) const
         ret = d->fullPage;
         break;
     case PPK_NumberOfCopies:
-        ret = d->copies;
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+        if (QCUPSSupport::isAvailable())
+            ret = 1;
+        else
+#endif
+            ret = d->copies;
         break;
     case PPK_Orientation:
         ret = d->orientation;

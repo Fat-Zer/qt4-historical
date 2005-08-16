@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -218,6 +218,7 @@ void TreeWidgetEditor::on_deleteItemButton_clicked()
         if (idx >= 0)
             nextCurrent = ui.treeWidget->topLevelItem(idx);
     }
+    closeEditors();
     delete curItem;
 
     if (nextCurrent)
@@ -671,6 +672,7 @@ void TreeWidgetEditor::on_deleteColumnButton_clicked()
     moveColumnsRight(idx, columnCount - 1);
     ui.treeWidget->setColumnCount(columnCount - 1);
 
+    closeEditors();
     delete currentColumn;
     if (idx == columnCount - 1)
         idx--;
@@ -778,4 +780,11 @@ void TreeWidgetEditor::on_deletePixmapColumnButton_clicked()
 }
 
 
-
+void TreeWidgetEditor::closeEditors()
+{
+    if (QTreeWidgetItem *cur = ui.treeWidget->currentItem() ) {
+        const int numCols = cur->columnCount ();
+        for (int i = 0; i < numCols; i++) 
+            ui.treeWidget->closePersistentEditor (cur, i);
+    }
+}

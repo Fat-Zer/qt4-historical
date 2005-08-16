@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -128,6 +128,7 @@ public:
     void updateKeyMap(const MSG &msg);
     bool translateKeyEvent(QWidget *receiver, const MSG &msg, bool grab);
     void updatePossibleKeyCodes(unsigned char *kbdBuffer, quint32 scancode, quint32 vk_key);
+    bool isADeadKey(unsigned int vk_key, unsigned int modifiers);
 
     KeyboardLayoutItem *keyLayout[256];
 

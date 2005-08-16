@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -115,7 +115,7 @@
     QColor supports floating point precision and provides floating
     point versions of all the color components functions,
     e.g. getRgbF(), hueF() and fromCmykF(). Note that since the
-    components is stored using 16-bit integers, there might be minor
+    components are stored using 16-bit integers, there might be minor
     deviations between the values set using, for example, setRgbF()
     and the values returned by the getRgbF() function due to rounding.
 

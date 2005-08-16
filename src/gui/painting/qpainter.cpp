@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -399,7 +399,8 @@ void QPainterPrivate::updateEmulationSpecifier(QPainterState *s)
         skip = false;
 
         QBrush penBrush = s->pen.brush();
-        alpha = (!penBrush.isOpaque() || !s->brush.isOpaque());
+        alpha = (penBrush.style() != Qt::NoBrush && !penBrush.isOpaque())
+                || (s->brush.style() != Qt::NoBrush && !s->brush.isOpaque());
         linearGradient = ((penBrush.style() == Qt::LinearGradientPattern) ||
                            (s->brush.style() == Qt::LinearGradientPattern));
         radialGradient = ((penBrush.style() == Qt::RadialGradientPattern) ||

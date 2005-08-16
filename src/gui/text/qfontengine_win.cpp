@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -493,7 +493,7 @@ static inline QFixed kerning(int left, int right, const QFontEngineWin::KernPair
     while (left <= right) {
         int middle = left + ( ( right - left ) >> 1 );
 
-	if(pairs[middle].left_right == left_right)
+        if(pairs[middle].left_right == left_right)
             return pairs[middle].adjust;
 
         if (pairs[middle].left_right < left_right)
@@ -739,10 +739,10 @@ static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
     mat.eM21.value = mat.eM12.value = 0;
     mat.eM21.fract = mat.eM12.fract = 0;
     uint glyphFormat = GGO_NATIVE;
-	if ((QSysInfo::WindowsVersion & QSysInfo::WV_NT_based)
+        if ((QSysInfo::WindowsVersion & QSysInfo::WV_NT_based)
         && QSysInfo::WindowsVersion != QSysInfo::WV_NT) {
-		glyphFormat |= GGO_UNHINTED;
-	}
+                glyphFormat |= GGO_UNHINTED;
+        }
 
     if (ttf)
         glyphFormat |= GGO_GLYPH_INDEX;
@@ -763,8 +763,8 @@ static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
     void *dataBuffer = new char[bufferSize];
     DWORD ret;
     QT_WA( {
-	ret = GetGlyphOutlineW(hdc, glyph, glyphFormat, &gMetric, bufferSize,
-			    dataBuffer, &mat);
+        ret = GetGlyphOutlineW(hdc, glyph, glyphFormat, &gMetric, bufferSize,
+                            dataBuffer, &mat);
     }, {
         ret = GetGlyphOutlineA(hdc, glyph, glyphFormat, &gMetric, bufferSize,
                                 dataBuffer, &mat);
@@ -843,7 +843,7 @@ static void addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
 }
 
 void QFontEngineWin::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
-				     QPainterPath *path, QTextItem::RenderFlags)
+                                     QPainterPath *path, QTextItem::RenderFlags)
 {
     HDC hdc = shared_dc;
     SelectObject(hdc, hfont);
@@ -857,7 +857,7 @@ void QFontEngineWin::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyp
                                       QPainterPath *path, QTextItem::RenderFlags flags)
 {
     if(tm.w.tmPitchAndFamily & (TMPF_TRUETYPE)) {
-	QFontEngine::addOutlineToPath(x, y, glyphs, numGlyphs, path, flags);
+        QFontEngine::addOutlineToPath(x, y, glyphs, numGlyphs, path, flags);
         return;
     }
     QFontEngine::addBitmapFontToPath(x, y, glyphs, numGlyphs, path, flags);
@@ -980,16 +980,17 @@ QImage QFontEngineWin::alphaMapForGlyph(glyph_t glyph)
     if (glyph_width <= 0 || glyph_height <= 0)
         return QImage();
     QImage im(glyph_width + glyph_x, glyph_height, QImage::Format_ARGB32_Premultiplied);
-    im.fill(Qt::transparent);
+    im.fill(0);
     QPainter p(&im);
 
-    // try hard to disable cleartype rendering
-    static_cast<QRasterPaintEngine *>(p.paintEngine())->disableClearType();
     HFONT oldHFont = hfont;
-    LOGFONT nonCleartypeFont = logfont;
-    nonCleartypeFont.lfQuality = ANTIALIASED_QUALITY;
-    hfont = CreateFontIndirect(&nonCleartypeFont);
-
+    if (QSysInfo::WindowsVersion >= QSysInfo::WV_XP) {
+        // try hard to disable cleartype rendering
+        static_cast<QRasterPaintEngine *>(p.paintEngine())->disableClearType();
+        LOGFONT nonCleartypeFont = logfont;
+        nonCleartypeFont.lfQuality = ANTIALIASED_QUALITY;
+        hfont = CreateFontIndirect(&nonCleartypeFont);
+    }
     p.setPen(Qt::black);
     p.setBrush(Qt::NoBrush);
 
@@ -1008,8 +1009,10 @@ QImage QFontEngineWin::alphaMapForGlyph(glyph_t glyph)
 
     p.drawTextItem(QPointF(-glyph_x, -glyph_y), ti);
 
-    DeleteObject(hfont);
-    hfont = oldHFont;
+    if (QSysInfo::WindowsVersion >= QSysInfo::WV_XP) {
+        DeleteObject(hfont);
+        hfont = oldHFont;
+    }
 
     p.end();
 

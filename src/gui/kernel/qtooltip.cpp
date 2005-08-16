@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -122,7 +122,14 @@ QTipLabel::QTipLabel(const QString& text, QWidget* parent)
     if (fm.descent() == 2 && fm.ascent() >= 11)
         ++extra.rheight();
 
-    resize(sizeHint() + extra);
+    //###Fix for 4.2 only (task 140996)
+    QTextDocument *document = qFindChild<QTextDocument *>(this, "");
+    if (document) {
+        int idealWidth = int(document->idealWidth()) + extra.width() + margin()*2 + indent();
+        resize(idealWidth, heightForWidth(idealWidth));
+    } else {
+        resize(sizeHint() + extra);
+    }
     qApp->installEventFilter(this);
 
     int time = 10000 + 40 * qMax(0, text.length()-100);

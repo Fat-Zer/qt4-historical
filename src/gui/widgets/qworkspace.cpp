@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1183,7 +1183,7 @@ void QWorkspacePrivate::activateWindow(QWidget* w, bool change_focus)
     active->internalRaise();
 
     if (change_focus) {
-	int from = focus.indexOf(active);
+        int from = focus.indexOf(active);
         if (from >= 0)
             focus.move(from, focus.size() - 1);
     }
@@ -1425,7 +1425,7 @@ void QWorkspace::showEvent(QShowEvent *e)
 //     // introduced when changing the QWidget::show() implementation. Might be
 //     // a windows bug as well though.
 //     for (int i = 0; i < d->windows.count(); ++i) {
-// 	QWorkspaceChild* c = d->windows.at(i);
+//      QWorkspaceChild* c = d->windows.at(i);
 //         c->update(c->rect());
 //     }
 
@@ -1890,8 +1890,10 @@ void QWorkspacePrivate::hideMaximizeControls()
             maxmenubar->setCornerWidget(0, Qt::TopLeftCorner);
             maxmenubar->setCornerWidget(0, Qt::TopRightCorner);
         }
-        maxcontrols->deleteLater();
-        maxtools->deleteLater();
+        if (maxcontrols)
+            maxcontrols->deleteLater();
+        if (maxtools)
+            maxtools->deleteLater();
     }
 
     //unmerge the titlebar/modification state
@@ -2309,12 +2311,12 @@ void QWorkspace::tile()
             sz = sz.expandedTo(c->windowWidget()->minimumSize()).boundedTo(c->windowWidget()->maximumSize());
             sz += bsize;
 
-	    if ( add ) {
+            if ( add ) {
                 if (sz.height() == h + bsize.height()) // no relevant constrains
                     sz.rheight() *= 2;
-		used[(row+1)*cols+col] = true;
-		add--;
-	    }
+                used[(row+1)*cols+col] = true;
+                add--;
+            }
 
             c->setGeometry(col*w + col*bsize.width(), row*h + row*bsize.height(), sz.width(), sz.height());
 
@@ -2379,6 +2381,7 @@ QWorkspaceChild::QWorkspaceChild(QWidget* window, QWorkspace *parent, Qt::Window
 
     setBackgroundRole(QPalette::Window);
     if (window) {
+        flags |= (window->windowFlags() & Qt::MSWindowsOwnDC);
         if (flags)
             window->setParent(this, flags & ~Qt::WindowType_Mask);
         else
@@ -2386,10 +2389,10 @@ QWorkspaceChild::QWorkspaceChild(QWidget* window, QWorkspace *parent, Qt::Window
     }
 
     if (window && (flags & (Qt::WindowTitleHint
-			    | Qt::WindowSystemMenuHint
-			    | Qt::WindowMinimizeButtonHint
-			    | Qt::WindowMaximizeButtonHint
-			    | Qt::WindowContextHelpButtonHint))) {
+                            | Qt::WindowSystemMenuHint
+                            | Qt::WindowMinimizeButtonHint
+                            | Qt::WindowMaximizeButtonHint
+                            | Qt::WindowContextHelpButtonHint))) {
         titlebar = new QWorkspaceTitleBar(window, this, flags);
         connect(titlebar, SIGNAL(doActivate()),
                  this, SLOT(activate()));

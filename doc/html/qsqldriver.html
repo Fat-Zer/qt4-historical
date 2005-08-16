@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/sql/kernel/qsqldriver.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/sql/kernel/qsqldriver.cpp -->
 <head>
   <title>Qt 4.2: QSqlDriver Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -36,7 +36,7 @@
 <li><div class="fn"/>virtual bool <b><a href="qsqldriver.html#commitTransaction">commitTransaction</a></b> ()</li>
 <li><div class="fn"/>virtual QSqlResult * <b><a href="qsqldriver.html#createResult">createResult</a></b> () const = 0</li>
 <li><div class="fn"/>virtual QString <b><a href="qsqldriver.html#escapeIdentifier">escapeIdentifier</a></b> ( const QString &amp; <i>identifier</i>, IdentifierType <i>type</i> ) const</li>
-<li><div class="fn"/>virtual QString <b><a href="qsqldriver.html#formatValue-2">formatValue</a></b> ( const QSqlField &amp; <i>field</i>, bool <i>trimStrings</i> = false ) const</li>
+<li><div class="fn"/>virtual QString <b><a href="qsqldriver.html#formatValue">formatValue</a></b> ( const QSqlField &amp; <i>field</i>, bool <i>trimStrings</i> = false ) const</li>
 <li><div class="fn"/>virtual QVariant <b><a href="qsqldriver.html#handle">handle</a></b> () const</li>
 <li><div class="fn"/>virtual bool <b><a href="qsqldriver.html#hasFeature">hasFeature</a></b> ( DriverFeature <i>feature</i> ) const = 0</li>
 <li><div class="fn"/>virtual bool <b><a href="qsqldriver.html#isOpen">isOpen</a></b> () const</li>
@@ -132,8 +132,7 @@
 <h3 class="fn"><a name="escapeIdentifier"></a><a href="qstring.html">QString</a> QSqlDriver::escapeIdentifier ( const <a href="qstring.html">QString</a> &amp; <i>identifier</i>, <a href="qsqldriver.html#IdentifierType-enum">IdentifierType</a> <i>type</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the <i>identifier</i> escaped according to the database rules. <i>identifier</i> can either be a table name or field name, dependent on <i>type</i>.</p>
 <p>The default implementation does nothing.</p>
-<h3 class="fn"><a name="formatValue-2"></a><a href="qstring.html">QString</a> QSqlDriver::formatValue ( const <a href="qsqlfield.html">QSqlField</a> &amp; <i>field</i>, bool <i>trimStrings</i> = false ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="formatValue"></a><a href="qstring.html">QString</a> QSqlDriver::formatValue ( const <a href="qsqlfield.html">QSqlField</a> &amp; <i>field</i>, bool <i>trimStrings</i> = false ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a string representation of the <i>field</i> value for the database. This is used, for example, when constructing INSERT and UPDATE statements.</p>
 <p>The default implementation returns the value formatted as a string according to the following rules:</p>
 <ul>
@@ -209,8 +208,9 @@
 <p>The <i>tableType</i> argument describes what types of tables should be returned. Due to binary compatibility, the string contains the value of the enum QSql::TableTypes as text. An empty string should be treated as <a href="qsql.html#TableType-enum">QSql::Tables</a> for backward compatibility.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="formatValue"></a><a href="qstring.html">QString</a> QSqlDriver::formatValue ( const <a href="qsqlfield.html">QSqlField</a> * <i>field</i>, bool <i>trimStrings</i> = false ) const</h3>
-<p>Use the other formatValue() overload instead.</p>
+<h3 class="fn"><a name="formatValue-2"></a><a href="qstring.html">QString</a> QSqlDriver::formatValue ( const <a href="qsqlfield.html">QSqlField</a> * <i>field</i>, bool <i>trimStrings</i> = false ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Use the other <a href="qsqldriver.html#formatValue">formatValue</a>() overload instead.</p>
 <h3 class="fn"><a name="nullText"></a><a href="qstring.html">QString</a> QSqlDriver::nullText () const</h3>
 <p><a href="qsqldriver.html#sqlStatement">sqlStatement</a>() is now used to generate SQL. Use tr(&quot;NULL&quot;) for example, instead.</p>
 <h3 class="fn"><a name="record-2"></a><a href="qsqlrecord.html">QSqlRecord</a> QSqlDriver::record ( const <a href="qsqlquery.html">QSqlQuery</a> &amp; <i>query</i> ) const</h3>
@@ -223,8 +223,8 @@
 <p>Use query.<a href="qsqldriver.html#record">record</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

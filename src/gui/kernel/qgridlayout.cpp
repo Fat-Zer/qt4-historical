@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -492,7 +492,7 @@ static void distributeMultiBox(QVector<QLayoutStruct> &chain, int spacing, int s
     for (i = start; i <= end; i++) {
         w += chain[i].minimumSize;
         wh += chain[i].sizeHint;
-        if (chain[i].empty)
+        if (chain[i].empty && chain[i].maximumSize == 0) //truly empty box
             chain[i].maximumSize = QWIDGETSIZE_MAX;
         max += chain[i].maximumSize;
         chain[i].empty = false;

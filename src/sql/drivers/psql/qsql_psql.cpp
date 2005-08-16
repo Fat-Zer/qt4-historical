@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -841,8 +841,7 @@ QSqlRecord QPSQLDriver::record(const QString& tablename) const
     return info;
 }
 
-QString QPSQLDriver::formatValue(const QSqlField &field,
-                                  bool) const
+QString QPSQLDriver::formatValue(const QSqlField &field, bool trimStrings) const
 {
     QString r;
     if (field.isNull()) {
@@ -881,7 +880,7 @@ QString QPSQLDriver::formatValue(const QSqlField &field,
         case QVariant::String:
         {
             // Escape '\' characters
-            r = QSqlDriver::formatValue(field);
+            r = QSqlDriver::formatValue(field, trimStrings);
             r.replace(QLatin1String("\\"), QLatin1String("\\\\"));
             break;
         }
@@ -902,7 +901,7 @@ QString QPSQLDriver::formatValue(const QSqlField &field,
             break;
         }
         default:
-            r = QSqlDriver::formatValue(field);
+            r = QSqlDriver::formatValue(field, trimStrings);
             break;
         }
     }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -396,6 +396,19 @@ bool QTableModel::setData(const QModelIndex &index, const QVariant &value, int r
     itm->setData(role, value);
     view->setItem(index.row(), index.column(), itm);
     return true;
+}
+
+QMap<int, QVariant> QTableModel::itemData(const QModelIndex &index) const
+{
+    QMap<int, QVariant> roles;
+    QTableWidgetItem *itm = item(index);
+    if (itm) {
+        for (int i = 0; i < itm->values.count(); ++i) {
+            roles.insert(itm->values.at(i).role,
+                         itm->values.at(i).value);
+        }
+    }
+    return roles;
 }
 
 Qt::ItemFlags QTableModel::flags(const QModelIndex &index) const

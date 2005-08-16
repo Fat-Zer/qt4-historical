@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtXML module of the Qt Toolkit.
 **
@@ -2800,7 +2800,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
 */
 
 /*!
-  \fn bool QXmlReader::parse(const QXmlInputSource& input)
+  \fn bool QXmlReader::parse(const QXmlInputSource &input)
 
   \obsolete
 
@@ -2808,7 +2808,7 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
 */
 
 /*!
-    \fn bool QXmlReader::parse(const QXmlInputSource* input)
+    \fn bool QXmlReader::parse(const QXmlInputSource *input)
 
     Reads an XML document from \a input and parses it. Returns true if
     the parsing was successful; otherwise returns false.

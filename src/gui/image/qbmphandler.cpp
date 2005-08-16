@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -728,8 +728,12 @@ bool QBmpHandler::read(QImage *image)
     return true;
 }
 
-bool QBmpHandler::write(const QImage &image)
+bool QBmpHandler::write(const QImage &img)
 {
+    QImage image = img;
+    if (image.format() == QImage::Format_RGB16)
+        image = image.convertToFormat(QImage::Format_RGB32);
+
     QIODevice *d = device();
     QDataStream s(d);
     BMP_FILEHDR bf;

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/tools/qdbus/src/qdbusinterface.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/tools/qdbus/src/qdbusinterface.cpp -->
 <head>
   <title>Qt 4.2: QDBusInterface Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -22,7 +22,7 @@
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qdbusinterface.html#QDBusInterface-2">QDBusInterface</a></b> ( const QString &amp; <i>service</i>, const QString &amp; <i>path</i>, const QString &amp; <i>interface</i> = QString(), const QDBusConnection &amp; <i>connection</i> = QDBusConnection::sessionBus(), QObject * <i>parent</i> = 0 )</li>
+<li><div class="fn"/><b><a href="qdbusinterface.html#QDBusInterface">QDBusInterface</a></b> ( const QString &amp; <i>service</i>, const QString &amp; <i>path</i>, const QString &amp; <i>interface</i> = QString(), const QDBusConnection &amp; <i>connection</i> = QDBusConnection::sessionBus(), QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qdbusinterface.html#dtor.QDBusInterface">~QDBusInterface</a></b> ()</li>
 </ul>
 <ul>
@@ -53,10 +53,10 @@
 
  if ( reply.isValid() )
      printf( &quot;%d&quot;, reply.value() );          <span class="comment">// prints 4</span></pre>
-<p>See also The dbusxml2cpp compiler.</p>
+<p>See also <a href="qdbusxml2cpp.html">QtDBus XML compiler (qdbusxml2cpp)</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QDBusInterface-2"></a>QDBusInterface::QDBusInterface ( const <a href="qstring.html">QString</a> &amp; <i>service</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i>, const <a href="qstring.html">QString</a> &amp; <i>interface</i> = QString(), const <a href="qdbusconnection.html">QDBusConnection</a> &amp; <i>connection</i> = QDBusConnection::sessionBus(), <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
+<h3 class="fn"><a name="QDBusInterface"></a>QDBusInterface::QDBusInterface ( const <a href="qstring.html">QString</a> &amp; <i>service</i>, const <a href="qstring.html">QString</a> &amp; <i>path</i>, const <a href="qstring.html">QString</a> &amp; <i>interface</i> = QString(), const <a href="qdbusconnection.html">QDBusConnection</a> &amp; <i>connection</i> = QDBusConnection::sessionBus(), <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
 <p>Creates a dynamic <a href="qdbusinterface.html">QDBusInterface</a> object associated with the interface <i>interface</i> on object at path <i>path</i> on service <i>service</i>, using the given <i>connection</i>. If <i>interface</i> is an empty string, the object created will refer to the merging of all interfaces found in that object.</p>
 <p><i>parent</i> is passed to the base class constructor.</p>
 <p>If the remote service <i>service</i> is not present or if an error occurs trying to obtain the description of the remote interface <i>interface</i>, the object created will not be valid (see <a href="qdbusabstractinterface.html#isValid">isValid</a>()).</p>
@@ -64,8 +64,8 @@
 <p>Destroy the object interface and frees up any resource used.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

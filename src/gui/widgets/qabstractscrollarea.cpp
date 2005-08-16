@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -180,7 +180,7 @@ void QAbstractScrollAreaPrivate::replaceScrollBar(QScrollBar *scrollBar,
     container->scrollBar = scrollBar;
     container->layout->removeWidget(oldBar);
     container->layout->insertWidget(0, scrollBar);
-    scrollBar->setVisible(oldBar->isVisible());
+    scrollBar->setVisible(oldBar->isVisibleTo(oldBar->window()));
     scrollBar->setInvertedAppearance(oldBar->invertedAppearance());
     scrollBar->setInvertedControls(oldBar->invertedControls());
     scrollBar->setRange(oldBar->minimum(), oldBar->maximum());

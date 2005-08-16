@@ -14,7 +14,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">draglabel.cpp Example File<br /><sup><sup>draganddrop/fridgemagnets/draglabel.cpp</sup></sup></h1>
 <pre><span class="comment"> /****************************************************************************
  **
- ** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+ ** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
  **
  ** This file is part of the example classes of the Qt Toolkit.
  **
@@ -42,10 +42,11 @@
  DragLabel::DragLabel(const QString &amp;text, QWidget *parent)
      : QLabel(parent)
  {
-     QFontMetrics fm(font());
-     QSize size = fm.size(Qt::TextSingleLine, text);
+     QFontMetrics metric(font());
+     QSize size = metric.size(Qt::TextSingleLine, text);
 
-     QImage image(size.width() + 12, size.height() + 12, QImage::Format_ARGB32_Premultiplied);
+     QImage image(size.width() + 12, size.height() + 12,
+                  QImage::Format_ARGB32_Premultiplied);
      image.fill(qRgba(0, 0, 0, 0));
 
      QFont font;
@@ -55,7 +56,8 @@
      painter.begin(&amp;image);
      painter.setRenderHint(QPainter::Antialiasing);
      painter.setBrush(Qt::white);
-     painter.drawRoundRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1), 25, 25);
+     painter.drawRoundRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1),
+                           25, 25);
 
      painter.setFont(font);
      painter.setBrush(Qt::black);
@@ -90,8 +92,8 @@
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

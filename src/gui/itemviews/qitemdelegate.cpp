@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -87,6 +87,13 @@ public:
     QSizeF doTextLayout(int lineWidth) const;
     mutable QTextLayout textLayout;
     mutable QTextOption textOption;
+
+    // ### temporary hack until we have QStandardItemDelegate
+    mutable struct Icon {
+        QIcon icon;
+        QIcon::Mode mode;
+        QIcon::State state;
+    } tmp;
 };
 
 void QItemDelegatePrivate::_q_commitDataAndCloseEditor(QWidget *editor)
@@ -116,8 +123,6 @@ QRect QItemDelegatePrivate::textLayoutBounds(const QStyleOptionViewItemV2 &optio
 
 QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
 {
-    QFontMetrics fontMetrics(textLayout.font());
-    int leading = fontMetrics.leading();
     qreal height = 0;
     qreal widthUsed = 0;
     textLayout.beginLayout();
@@ -126,7 +131,6 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
         if (!line.isValid())
             break;
         line.setLineWidth(lineWidth);
-        height += leading;
         line.setPosition(QPointF(0, height));
         height += line.height();
         widthUsed = qMax(widthUsed, line.naturalTextWidth());
@@ -322,20 +326,21 @@ void QItemDelegate::paint(QPainter *painter,
 
     QVariant value;
 
-    QIcon icon;
-    QIcon::Mode iconMode = d->iconMode(option.state);
-    QIcon::State iconState = d->iconState(option.state);
-
     QPixmap pixmap;
     QRect decorationRect;
     value = index.data(Qt::DecorationRole);
     if (value.isValid()) {
+        // ### we need the pixmap to call the virtual function
+        pixmap = decoration(opt, value);
         if (value.type() == QVariant::Icon) {
-            icon = qvariant_cast<QIcon>(value);
-            decorationRect = QRect(QPoint(0, 0),
-                                   icon.actualSize(option.decorationSize, iconMode, iconState));
+            d->tmp.icon = qvariant_cast<QIcon>(value);
+            d->tmp.mode = d->iconMode(option.state);
+            d->tmp.state = d->iconState(option.state);
+            const QSize size = d->tmp.icon.actualSize(option.decorationSize,
+                                                      d->tmp.mode, d->tmp.state);
+            decorationRect = QRect(QPoint(0, 0), size);
         } else {
-            pixmap = decoration(opt, value);
+            d->tmp.icon = QIcon();
             decorationRect = QRect(QPoint(0, 0), pixmap.size());
         }
     }
@@ -368,10 +373,7 @@ void QItemDelegate::paint(QPainter *painter,
 
     drawBackground(painter, opt, index);
     drawCheck(painter, opt, checkRect, checkState);
-    if (!icon.isNull())
-        icon.paint(painter, decorationRect, option.decorationAlignment, iconMode, iconState);
-    else
-        drawDecoration(painter, opt, decorationRect, pixmap);
+    drawDecoration(painter, opt, decorationRect, pixmap);
     drawDisplay(painter, opt, displayRect, text);
     drawFocus(painter, opt, text.isEmpty() ? QRect() : displayRect);
 
@@ -593,11 +595,17 @@ void QItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &o
         int end = text.indexOf(QChar::LineSeparator, start);
         if (end == -1) {
             elided += option.fontMetrics.elidedText(text, option.textElideMode, textRect.width());
-        } else while (end != -1) {
-            elided += option.fontMetrics.elidedText(text.mid(start, end - start),
+        } else {
+            while (end != -1) {
+                elided += option.fontMetrics.elidedText(text.mid(start, end - start),
+                                                        option.textElideMode, textRect.width());
+                elided += QChar::LineSeparator;
+                start = end + 1;
+                end = text.indexOf(QChar::LineSeparator, start);
+            }
+            //let's add the last line (after the last QChar::LineSeparator)
+            elided += option.fontMetrics.elidedText(text.mid(start),
                                                     option.textElideMode, textRect.width());
-            start = end + 1;
-            end = text.indexOf(QChar::LineSeparator, start);
         }
         d->textLayout.setText(elided);
         textLayoutSize = d->doTextLayout(textRect.width());
@@ -616,6 +624,14 @@ void QItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &o
 void QItemDelegate::drawDecoration(QPainter *painter, const QStyleOptionViewItem &option,
                                    const QRect &rect, const QPixmap &pixmap) const
 {
+    Q_D(const QItemDelegate);
+    // if we have an icon, we ignore the pixmap
+    if (!d->tmp.icon.isNull()) {
+        d->tmp.icon.paint(painter, rect, option.decorationAlignment,
+                          d->tmp.mode, d->tmp.state);
+        return;
+    }
+
     if (pixmap.isNull() || !rect.isValid())
         return;
     QPoint p = QStyle::alignedRect(option.direction, option.decorationAlignment,
@@ -728,7 +744,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
 
     textRect->adjust(-textMargin, 0, textMargin, 0); // add width padding
     if (textRect->height() == 0)
-        textRect->setHeight(option.fontMetrics.lineSpacing());
+        textRect->setHeight(option.fontMetrics.height());
 
     QSize pm(0, 0);
     if (pixmapRect->isValid()) {

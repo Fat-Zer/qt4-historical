@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -494,11 +494,15 @@ Q_OUTOFLINE_TEMPLATE T QList<T>::value(int i, const T& defaultValue) const
 template <typename T>
 Q_OUTOFLINE_TEMPLATE void QList<T>::detach_helper()
 {
+    QListData::Data *x = p.d;
+    // keep an extra reference to original data, we need it during node_copy()
     Node *n = reinterpret_cast<Node *>(p.begin());
-    QListData::Data *x = p.detach();
-    if (x)
-        free(x);
+    x->ref.ref();
+    (void) p.detach();
     node_copy(reinterpret_cast<Node *>(p.begin()), reinterpret_cast<Node *>(p.end()), n);
+    // drop the extra ref
+    if (!x->ref.deref())
+        free(x);
 }
 
 template <typename T>

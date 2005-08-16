@@ -1600,6 +1600,7 @@
         <keyword ref="qbytearray.html#qstrnicmp">qstrnicmp</keyword>
         <keyword ref="qbytearray.html#qstrnlen">qstrnlen</keyword>
         <keyword ref="qbytearray.html#qvsnprintf">qvsnprintf</keyword>
+        <keyword ref="qbytearray.html#operator-2b">operator+</keyword>
         <keyword ref="qbytearray-qt3.html#duplicate">duplicate</keyword>
         <keyword ref="qbytearray-qt3.html#find">find</keyword>
         <keyword ref="qbytearray-qt3.html#findRev">findRev</keyword>
@@ -1828,6 +1829,7 @@
         <keyword ref="qchar.html#toUpper">toUpper</keyword>
         <keyword ref="qchar.html#unicode">unicode</keyword>
         <keyword ref="qchar.html#unicodeVersion">unicodeVersion</keyword>
+        <keyword ref="qchar.html#operator-lt">operator&lt;</keyword>
         <keyword ref="qchar.html#operator-lt-eq">operator&lt;=</keyword>
         <keyword ref="qchar.html#operator-gt">operator&gt;</keyword>
         <keyword ref="qchar.html#operator-gt-eq">operator&gt;=</keyword>
@@ -2395,6 +2397,7 @@
         <keyword ref="qdate.html#addDays">addDays</keyword>
         <keyword ref="qdate.html#addMonths">addMonths</keyword>
         <keyword ref="qdate.html#addYears">addYears</keyword>
+        <keyword ref="qdate.html#currentDate">currentDate</keyword>
         <keyword ref="qdate.html#day">day</keyword>
         <keyword ref="qdate.html#dayOfWeek">dayOfWeek</keyword>
         <keyword ref="qdate.html#dayOfYear">dayOfYear</keyword>
@@ -2422,7 +2425,6 @@
         <keyword ref="qdate.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qdate.html#operator-gt">operator&gt;</keyword>
         <keyword ref="qdate.html#operator-gt-eq">operator&gt;=</keyword>
-        <keyword ref="qdate-qt3.html#currentDate">currentDate</keyword>
         <keyword ref="qdate-qt3.html#dayName">dayName</keyword>
         <keyword ref="qdate-qt3.html#leapYear">leapYear</keyword>
         <keyword ref="qdate-qt3.html#monthName">monthName</keyword>
@@ -2531,7 +2533,7 @@
         <keyword ref="qdbusabstractadaptor.html">QDBusAbstractAdaptor</keyword>
         <keyword ref="qdbusabstractadaptor.html#autoRelaySignals">autoRelaySignals</keyword>
         <keyword ref="qdbusabstractadaptor.html#setAutoRelaySignals">setAutoRelaySignals</keyword>
-        <keyword ref="qdbusabstractadaptor.html#Q_ASYNC">Q_ASYNC</keyword>
+        <keyword ref="qdbusabstractadaptor.html#Q_NOREPLY">Q_NOREPLY</keyword>
         <section ref="qdbusabstractadaptor-members.html" title="List of all members"/>
     </section>
     <section ref="qdbusabstractinterface.html" title="QDBusAbstractInterface Class Reference">
@@ -3900,6 +3902,7 @@
         <keyword ref="qextensionmanager.html#registerExtensions">registerExtensions</keyword>
         <keyword ref="qextensionmanager.html#unregisterExtensions">unregisterExtensions</keyword>
         <keyword ref="qextensionmanager.html#qt_extension">qt_extension</keyword>
+        <keyword ref="qextensionmanager.html#Q_DECLARE_EXTENSION_INTERFACE">Q_DECLARE_EXTENSION_INTERFACE</keyword>
         <section ref="qextensionmanager-members.html" title="List of all members"/>
     </section>
     <section ref="qfile.html" title="QFile Class Reference">
@@ -4165,6 +4168,7 @@
         <keyword ref="qfocusevent.html">QFocusEvent</keyword>
         <keyword ref="qfocusevent.html#gotFocus">gotFocus</keyword>
         <keyword ref="qfocusevent.html#lostFocus">lostFocus</keyword>
+        <keyword ref="qfocusevent.html#reason">reason</keyword>
         <keyword ref="qfocusevent-qt3.html#Reason-enum">Reason</keyword>
         <keyword ref="qfocusevent-qt3.html#Reason-enum">QFocusEvent::Tab</keyword>
         <keyword ref="qfocusevent-qt3.html#Reason-enum">QFocusEvent::Mouse</keyword>
@@ -4499,6 +4503,7 @@
         <keyword ref="qfsfileengine.html#currentPath">currentPath</keyword>
         <keyword ref="qfsfileengine.html#drives">drives</keyword>
         <keyword ref="qfsfileengine.html#homePath">homePath</keyword>
+        <keyword ref="qfsfileengine.html#open">open</keyword>
         <keyword ref="qfsfileengine.html#rootPath">rootPath</keyword>
         <keyword ref="qfsfileengine.html#setCurrentPath">setCurrentPath</keyword>
         <keyword ref="qfsfileengine.html#tempPath">tempPath</keyword>
@@ -5111,14 +5116,34 @@
         <keyword ref="qgraphicsscenecontextmenuevent.html#reason">reason</keyword>
         <keyword ref="qgraphicsscenecontextmenuevent.html#scenePos">scenePos</keyword>
         <keyword ref="qgraphicsscenecontextmenuevent.html#screenPos">screenPos</keyword>
-        <keyword ref="qgraphicsscenecontextmenuevent.html#setReason">setReason</keyword>
         <section ref="qgraphicsscenecontextmenuevent-members.html" title="List of all members"/>
+    </section>
+    <section ref="qgraphicsscenedragdropevent.html" title="QGraphicsSceneDragDropEvent Class Reference">
+        <keyword ref="qgraphicsscenedragdropevent.html">QGraphicsSceneDragDropEvent</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#acceptProposedAction">acceptProposedAction</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#buttons">buttons</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#dropAction">dropAction</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#mimeData">mimeData</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#modifiers">modifiers</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#pos">pos</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#possibleActions">possibleActions</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#proposedAction">proposedAction</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#scenePos">scenePos</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#screenPos">screenPos</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#setDropAction">setDropAction</keyword>
+        <keyword ref="qgraphicsscenedragdropevent.html#source">source</keyword>
+        <section ref="qgraphicsscenedragdropevent-members.html" title="List of all members"/>
     </section>
     <section ref="qgraphicssceneevent.html" title="QGraphicsSceneEvent Class Reference">
         <keyword ref="qgraphicssceneevent.html">QGraphicsSceneEvent</keyword>
-        <keyword ref="qgraphicssceneevent.html#setWidget">setWidget</keyword>
         <keyword ref="qgraphicssceneevent.html#widget">widget</keyword>
         <section ref="qgraphicssceneevent-members.html" title="List of all members"/>
+    </section>
+    <section ref="qgraphicsscenehelpevent.html" title="QGraphicsSceneHelpEvent Class Reference">
+        <keyword ref="qgraphicsscenehelpevent.html">QGraphicsSceneHelpEvent</keyword>
+        <keyword ref="qgraphicsscenehelpevent.html#scenePos">scenePos</keyword>
+        <keyword ref="qgraphicsscenehelpevent.html#screenPos">screenPos</keyword>
+        <section ref="qgraphicsscenehelpevent-members.html" title="List of all members"/>
     </section>
     <section ref="qgraphicsscenehoverevent.html" title="QGraphicsSceneHoverEvent Class Reference">
         <keyword ref="qgraphicsscenehoverevent.html">QGraphicsSceneHoverEvent</keyword>
@@ -5151,12 +5176,6 @@
         <keyword ref="qgraphicsscenewheelevent.html#pos">pos</keyword>
         <keyword ref="qgraphicsscenewheelevent.html#scenePos">scenePos</keyword>
         <keyword ref="qgraphicsscenewheelevent.html#screenPos">screenPos</keyword>
-        <keyword ref="qgraphicsscenewheelevent.html#setButtons">setButtons</keyword>
-        <keyword ref="qgraphicsscenewheelevent.html#setDelta">setDelta</keyword>
-        <keyword ref="qgraphicsscenewheelevent.html#setModifiers">setModifiers</keyword>
-        <keyword ref="qgraphicsscenewheelevent.html#setPos">setPos</keyword>
-        <keyword ref="qgraphicsscenewheelevent.html#setScenePos">setScenePos</keyword>
-        <keyword ref="qgraphicsscenewheelevent.html#setScreenPos">setScreenPos</keyword>
         <section ref="qgraphicsscenewheelevent-members.html" title="List of all members"/>
     </section>
     <section ref="qgraphicssimpletextitem.html" title="QGraphicsSimpleTextItem Class Reference">
@@ -5365,6 +5384,7 @@
         <keyword ref="qhash.html#operator-eq">operator=</keyword>
         <keyword ref="qhash.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qhash.html#operator-5b-5d">operator[]</keyword>
+        <keyword ref="qhash.html#qHashx">qHash</keyword>
         <section ref="qhash-members.html" title="List of all members"/>
     </section>
     <section ref="qhash-const-iterator.html" title="QHash::const_iterator Class Reference">
@@ -6821,6 +6841,8 @@
         <keyword ref="qlist.html#operator-eq">operator=</keyword>
         <keyword ref="qlist.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qlist.html#operator-5b-5d">operator[]</keyword>
+        <keyword ref="qlist.html#operator-lt-lt">operator&lt;&lt;</keyword>
+        <keyword ref="qlist.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <keyword ref="qlist-qt3.html#find">find</keyword>
         <keyword ref="qlist-qt3.html#findIndex">findIndex</keyword>
         <keyword ref="qlist-qt3.html#remove">remove</keyword>
@@ -8440,6 +8462,8 @@
         <keyword ref="qobject.html#trUtf8">trUtf8</keyword>
         <keyword ref="qobject.html#staticMetaObject-var">staticMetaObject</keyword>
         <keyword ref="qobject.html#QObjectList-typedef">QObjectList</keyword>
+        <keyword ref="qobject.html#qFindChild">qFindChild</keyword>
+        <keyword ref="qobject.html#qFindChildren">qFindChildren</keyword>
         <keyword ref="qobject.html#qobject_cast">qobject_cast</keyword>
         <keyword ref="qobject.html#Q_CLASSINFO">Q_CLASSINFO</keyword>
         <keyword ref="qobject.html#Q_ENUMS">Q_ENUMS</keyword>
@@ -9108,6 +9132,7 @@
         <keyword ref="qpoint.html#operator--eq">operator-=</keyword>
         <keyword ref="qpoint.html#operator-2f-eq">operator/=</keyword>
         <keyword ref="qpoint.html#operator-2a">operator*</keyword>
+        <keyword ref="qpoint.html#operator-">operator-</keyword>
         <keyword ref="qpoint.html#operator-2f">operator/</keyword>
         <section ref="qpoint-members.html" title="List of all members"/>
     </section>
@@ -10138,6 +10163,8 @@
     </section>
     <section ref="qshortcutevent.html" title="QShortcutEvent Class Reference">
         <keyword ref="qshortcutevent.html">QShortcutEvent</keyword>
+        <keyword ref="qshortcutevent.html#isAmbiguous">isAmbiguous</keyword>
+        <keyword ref="qshortcutevent.html#key">key</keyword>
         <keyword ref="qshortcutevent.html#shortcutId">shortcutId</keyword>
         <section ref="qshortcutevent-members.html" title="List of all members"/>
     </section>
@@ -10538,6 +10565,7 @@
         <keyword ref="qsqldriver.html#commitTransaction">commitTransaction</keyword>
         <keyword ref="qsqldriver.html#createResult">createResult</keyword>
         <keyword ref="qsqldriver.html#escapeIdentifier">escapeIdentifier</keyword>
+        <keyword ref="qsqldriver.html#formatValue">formatValue</keyword>
         <keyword ref="qsqldriver.html#handle">handle</keyword>
         <keyword ref="qsqldriver.html#hasFeature">hasFeature</keyword>
         <keyword ref="qsqldriver.html#isOpen">isOpen</keyword>
@@ -10552,7 +10580,6 @@
         <keyword ref="qsqldriver.html#setOpenError">setOpenError</keyword>
         <keyword ref="qsqldriver.html#sqlStatement">sqlStatement</keyword>
         <keyword ref="qsqldriver.html#tables">tables</keyword>
-        <keyword ref="qsqldriver-qt3.html#formatValue">formatValue</keyword>
         <keyword ref="qsqldriver-qt3.html#nullText">nullText</keyword>
         <keyword ref="qsqldriver-qt3.html#recordInfo">recordInfo</keyword>
         <section ref="qsqldriver-members.html" title="List of all members"/>
@@ -11875,6 +11902,7 @@
         <keyword ref="qstyleoptiongroupbox.html#StyleOptionType-enum">QStyleOptionGroupBox::Type</keyword>
         <keyword ref="qstyleoptiongroupbox.html#StyleOptionVersion-enum">StyleOptionVersion</keyword>
         <keyword ref="qstyleoptiongroupbox.html#StyleOptionVersion-enum">QStyleOptionGroupBox::Version</keyword>
+        <keyword ref="qstyleoptiongroupbox.html#features-var">features</keyword>
         <keyword ref="qstyleoptiongroupbox.html#lineWidth-var">lineWidth</keyword>
         <keyword ref="qstyleoptiongroupbox.html#midLineWidth-var">midLineWidth</keyword>
         <keyword ref="qstyleoptiongroupbox.html#text-var">text</keyword>
@@ -12522,7 +12550,6 @@
         <keyword ref="qt.html#DropAction-enum">Qt::MoveAction</keyword>
         <keyword ref="qt.html#DropAction-enum">Qt::IgnoreAction</keyword>
         <keyword ref="qt.html#DropAction-enum">Qt::LinkAction</keyword>
-        <keyword ref="qt.html#DropAction-enum">Qt::TargetMoveAction</keyword>
         <keyword ref="qt.html#FillRule-enum">FillRule</keyword>
         <keyword ref="qt.html#FillRule-enum">Qt::OddEvenFill</keyword>
         <keyword ref="qt.html#FillRule-enum">Qt::WindingFill</keyword>
@@ -14856,6 +14883,7 @@
         <keyword ref="qtime.html">QTime</keyword>
         <keyword ref="qtime.html#addMSecs">addMSecs</keyword>
         <keyword ref="qtime.html#addSecs">addSecs</keyword>
+        <keyword ref="qtime.html#currentTime">currentTime</keyword>
         <keyword ref="qtime.html#elapsed">elapsed</keyword>
         <keyword ref="qtime.html#fromString">fromString</keyword>
         <keyword ref="qtime.html#hour">hour</keyword>
@@ -14876,7 +14904,6 @@
         <keyword ref="qtime.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qtime.html#operator-gt">operator&gt;</keyword>
         <keyword ref="qtime.html#operator-gt-eq">operator&gt;=</keyword>
-        <keyword ref="qtime-qt3.html#currentTime">currentTime</keyword>
         <section ref="qtime-members.html" title="List of all members"/>
         <section ref="qtime-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -15175,6 +15202,7 @@
         <keyword ref="qtreewidget.html#findItems">findItems</keyword>
         <keyword ref="qtreewidget.html#headerItem">headerItem</keyword>
         <keyword ref="qtreewidget.html#indexFromItem">indexFromItem</keyword>
+        <keyword ref="qtreewidget.html#indexOfTopLevelItem">indexOfTopLevelItem</keyword>
         <keyword ref="qtreewidget.html#insertTopLevelItem">insertTopLevelItem</keyword>
         <keyword ref="qtreewidget.html#insertTopLevelItems">insertTopLevelItems</keyword>
         <keyword ref="qtreewidget.html#invisibleRootItem">invisibleRootItem</keyword>
@@ -16635,6 +16663,7 @@
         <keyword ref="qxmlreader.html#hasFeature">hasFeature</keyword>
         <keyword ref="qxmlreader.html#hasProperty">hasProperty</keyword>
         <keyword ref="qxmlreader.html#lexicalHandler">lexicalHandler</keyword>
+        <keyword ref="qxmlreader.html#parse">parse</keyword>
         <keyword ref="qxmlreader.html#property">property</keyword>
         <keyword ref="qxmlreader.html#setContentHandler">setContentHandler</keyword>
         <keyword ref="qxmlreader.html#setDTDHandler">setDTDHandler</keyword>
@@ -16649,6 +16678,7 @@
     </section>
     <section ref="qxmlsimplereader.html" title="QXmlSimpleReader Class Reference">
         <keyword ref="qxmlsimplereader.html">QXmlSimpleReader</keyword>
+        <keyword ref="qxmlsimplereader.html#parse">parse</keyword>
         <keyword ref="qxmlsimplereader.html#parseContinue">parseContinue</keyword>
         <keyword ref="qxmlsimplereader.html#setFeature">setFeature</keyword>
         <section ref="qxmlsimplereader-members.html" title="List of all members"/>
@@ -18697,6 +18727,7 @@
         <keyword ref="q3multilineedit.html#hasMarkedText">hasMarkedText</keyword>
         <keyword ref="q3multilineedit.html#home">home</keyword>
         <keyword ref="q3multilineedit.html#insertAndMark">insertAndMark</keyword>
+        <keyword ref="q3multilineedit.html#insertAt">insertAt</keyword>
         <keyword ref="q3multilineedit.html#insertLine">insertLine</keyword>
         <keyword ref="q3multilineedit.html#killLine">killLine</keyword>
         <keyword ref="q3multilineedit.html#lineLength">lineLength</keyword>
@@ -18706,6 +18737,7 @@
         <keyword ref="q3multilineedit.html#pageDown">pageDown</keyword>
         <keyword ref="q3multilineedit.html#pageUp">pageUp</keyword>
         <keyword ref="q3multilineedit.html#removeLine">removeLine</keyword>
+        <keyword ref="q3multilineedit.html#setCursorPosition">setCursorPosition</keyword>
         <keyword ref="q3multilineedit.html#setMaxLines">setMaxLines</keyword>
         <keyword ref="q3multilineedit.html#textLine">textLine</keyword>
         <keyword ref="q3multilineedit.html#totalHeight">totalHeight</keyword>
@@ -19394,7 +19426,9 @@
         <keyword ref="q3sqlcursor.html#setPrimaryIndex">setPrimaryIndex</keyword>
         <keyword ref="q3sqlcursor.html#setSort">setSort</keyword>
         <keyword ref="q3sqlcursor.html#setTrimmed">setTrimmed</keyword>
+        <keyword ref="q3sqlcursor.html#setValue">setValue</keyword>
         <keyword ref="q3sqlcursor.html#sort">sort</keyword>
+        <keyword ref="q3sqlcursor.html#toString">toString</keyword>
         <keyword ref="q3sqlcursor.html#update">update</keyword>
         <keyword ref="q3sqlcursor.html#value">value</keyword>
         <keyword ref="q3sqlcursor.html#operator-eq">operator=</keyword>
@@ -19834,6 +19868,7 @@
         <keyword ref="q3textbrowser.html#keyPressEvent">keyPressEvent</keyword>
         <keyword ref="q3textbrowser.html#linkClicked">linkClicked</keyword>
         <keyword ref="q3textbrowser.html#reload">reload</keyword>
+        <keyword ref="q3textbrowser.html#setText">setText</keyword>
         <keyword ref="q3textbrowser.html#sourceChanged">sourceChanged</keyword>
         <section ref="q3textbrowser-members.html" title="List of all members"/>
     </section>
@@ -19942,6 +19977,7 @@
         <keyword ref="q3textedit.html#currentFont">currentFont</keyword>
         <keyword ref="q3textedit.html#currentFontChanged">currentFontChanged</keyword>
         <keyword ref="q3textedit.html#currentVerticalAlignmentChanged">currentVerticalAlignmentChanged</keyword>
+        <keyword ref="q3textedit.html#cursorPositionChanged">cursorPositionChanged</keyword>
         <keyword ref="q3textedit.html#cut">cut</keyword>
         <keyword ref="q3textedit.html#del">del</keyword>
         <keyword ref="q3textedit.html#doKeyboardAction">doKeyboardAction</keyword>
@@ -20099,6 +20135,7 @@
         <keyword ref="q3uridrag.html#decodeToUnicodeUris">decodeToUnicodeUris</keyword>
         <keyword ref="q3uridrag.html#localFileToUri">localFileToUri</keyword>
         <keyword ref="q3uridrag.html#setFileNames">setFileNames</keyword>
+        <keyword ref="q3uridrag.html#setFilenamesx">setFilenames</keyword>
         <keyword ref="q3uridrag.html#setUnicodeUris">setUnicodeUris</keyword>
         <keyword ref="q3uridrag.html#setUris">setUris</keyword>
         <keyword ref="q3uridrag.html#unicodeUriToUri">unicodeUriToUri</keyword>
@@ -20373,6 +20410,8 @@
         <keyword ref="qtglobal.html#qRound">qRound</keyword>
         <keyword ref="qtglobal.html#qVersion">qVersion</keyword>
         <keyword ref="qtglobal.html#qWarning">qWarning</keyword>
+        <keyword ref="qtglobal.html#qrand">qrand</keyword>
+        <keyword ref="qtglobal.html#qsrand">qsrand</keyword>
         <keyword ref="qtglobal.html#qt_set_sequence_auto_mnemonic">qt_set_sequence_auto_mnemonic</keyword>
         <keyword ref="qtglobal.html#QT_POINTER_SIZE">QT_POINTER_SIZE</keyword>
         <keyword ref="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</keyword>
@@ -20470,6 +20509,9 @@
     </section>
     <section ref="qtopiacore-accel.html" title="Adding an Accelerated Graphics Driver in Qtopia Core">
         <keyword ref="qtopiacore-accel.html">Adding an Accelerated Graphics Driver in Qtopia Core</keyword>
+    </section>
+    <section ref="richtext-advanced-processing.html" title="Advanced Rich Text Processing">
+        <keyword ref="richtext-advanced-processing.html">Advanced Rich Text Processing</keyword>
     </section>
     <section ref="advanced.html" title="Advanced Widgets">
         <keyword ref="advanced.html">Advanced Widgets</keyword>
@@ -20636,6 +20678,9 @@
     <section ref="activeqt-idc.html" title="IDC - The Interface Description Compiler (ActiveQt)">
         <keyword ref="activeqt-idc.html">IDC - The Interface Description Compiler (ActiveQt)</keyword>
     </section>
+    <section ref="atomic-operations.html" title="Implementing Atomic Operations">
+        <keyword ref="atomic-operations.html">Implementing Atomic Operations</keyword>
+    </section>
     <section ref="shared.html" title="Implicitly Shared Classes">
         <keyword ref="shared.html">Implicitly Shared Classes</keyword>
     </section>
@@ -20672,8 +20717,8 @@
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.2.2">
-        <keyword ref="known-issues.html">Known Issues in 4.2.2</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.2.3">
+        <keyword ref="known-issues.html">Known Issues in 4.2.3</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>

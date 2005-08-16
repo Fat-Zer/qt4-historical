@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -32,7 +32,12 @@
 #include "qwidget.h"
 #include "qsettings.h"
 
+#if WINVER >= 0x0600
+#include <winuser.h>
+#else
 #include <winable.h>
+#endif
+
 #include <oleacc.h>
 #if !defined(Q_CC_BOR) && !defined (Q_CC_GNU)
 #include <comdef.h>

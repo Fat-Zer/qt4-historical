@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/doc/src/examples/tutorial.qdoc -->
 <head>
   <title>Qt 4.2: Qt Tutorial 1 - Hello World!</title>
   <link rel="prev" href="tutorial.html" />
@@ -42,25 +42,27 @@
  }</pre>
 <a name="line-by-line-walkthrough"></a>
 <h2>Line by Line Walkthrough</h2>
-<pre></pre>
+<pre> #include &lt;QApplication&gt;</pre>
 <p>This line includes the <a href="qapplication.html">QApplication</a> class definition. There has to be exactly one <a href="qapplication.html">QApplication</a> object in every GUI application that uses Qt. <a href="qapplication.html">QApplication</a> manages various application-wide resources, such as the default font and cursor.</p>
-<pre></pre>
+<pre> #include &lt;QPushButton&gt;</pre>
 <p>This line includes the <a href="qpushbutton.html">QPushButton</a> class definition. For each class that's part of the public Qt API, there exists a header file of the same name that contains its definition.</p>
 <p><a href="qpushbutton.html">QPushButton</a> is a GUI push button that the user can press and release. It manages its own look and feel, like every other <a href="qwidget.html">QWidget</a>. A widget is a user interface object that can process user input and draw graphics. The programmer can change both the overall look and feel and many minor properties of it (such as color), as well as the widget's content. A <a href="qpushbutton.html">QPushButton</a> can show either a text or a <a href="qicon.html">QIcon</a>.</p>
-<pre></pre>
+<pre> int main(int argc, char *argv[])
+ {</pre>
 <p>The <tt>main()</tt> function is the entry point to the program. Almost always when using Qt, <tt>main()</tt> only needs to perform some kind of initialization before passing the control to the Qt library, which then tells the program about the user's actions via events.</p>
 <p>The <tt>argc</tt> parameter is the number of command-line arguments and <tt>argv</tt> is the array of command-line arguments. This is a standard C++ feature.</p>
-<pre></pre>
+<pre>     QApplication app(argc, argv);</pre>
 <p>The <tt>app</tt> object is this program's <a href="qapplication.html">QApplication</a> instance. Here it is created. We pass <tt>argc</tt> and <tt>argv</tt> to the <a href="qapplication.html">QApplication</a> constructor so that it can process certain standard command-line arguments (such as <tt>-display</tt> under X11). All command-line arguments recognized by Qt are removed from <tt>argv</tt>, and <tt>argc</tt> is decremented accordingly. See the QApplication::argv() documentation for details.</p>
 <p>The <a href="qapplication.html">QApplication</a> object must be created before any GUI-related features of Qt are used.</p>
-<pre></pre>
+<pre>     QPushButton hello(&quot;Hello world!&quot;);</pre>
 <p>Here, after the <a href="qapplication.html">QApplication</a>, comes the first GUI-related code: A push button is created.</p>
 <p>The button is set up to display the text &quot;Hello world!&quot;. Because we don't specify a parent window (as second argument to the <a href="qpushbutton.html">QPushButton</a> constructor), the button will be a window of its own, with its own window frame and title bar.</p>
-<pre></pre>
+<pre>     hello.resize(100, 30);</pre>
 <p>The button is set up to be 100 pixels wide and 30 pixels high (excluding the window frame, which is provided by the windowing system). We could call <a href="qwidget.html#pos-prop">QWidget::move</a>() to assign a specific screen position to the widget, but instead we let the windowing system choose a position.</p>
-<pre></pre>
+<pre>     hello.show();</pre>
 <p>A widget is never visible when you create it. You must call <a href="qwidget.html#show">QWidget::show</a>() to make it visible.</p>
-<pre></pre>
+<pre>     return app.exec();
+ }</pre>
 <p>This is where <tt>main()</tt> passes control to Qt. <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>() will return when the application exits. (<a href="qcoreapplication.html">QCoreApplication</a> is <a href="qapplication.html">QApplication</a>'s base class. It implements <a href="qapplication.html">QApplication</a>'s core, non-GUI functionality and can be used when developing non-GUI applications.)</p>
 <p>In <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>(), Qt receives and processes user and system events and passes these on to the appropriate widgets.</p>
 <p>You should now try to compile and run this program.</p>
@@ -82,8 +84,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

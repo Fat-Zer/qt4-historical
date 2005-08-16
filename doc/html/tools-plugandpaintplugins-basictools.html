@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/doc/src/examples/plugandpaint.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/doc/src/examples/plugandpaint.qdoc -->
 <head>
   <title>Qt 4.2: Plug &amp; Paint Basic Tools Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -22,7 +22,7 @@
 <ol type="1">
 <li>Declare a plugin class.</li>
 <li>Implement the interfaces provided by the plugin.</li>
-<li>Export the plugin using the <tt>Q_EXPORT_PLUGIN2()</tt> macro.</li>
+<li>Export the plugin using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</li>
 <li>Build the plugin using an adequate <tt>.pro</tt> file.</li>
 </ol>
 <a name="declaration-of-the-plugin-class"></a>
@@ -200,7 +200,7 @@
 <p>The <tt>filterImage()</tt> function takes a filter name and a <a href="qimage.html">QImage</a> as parameters and returns an altered <a href="qimage.html">QImage</a>. The first thing we do is to convert the image to a 32-bit RGB format, to ensure that the algorithms will work as expected. For example, <a href="qimage.html#invertPixels">QImage::invertPixels</a>(), which is used to implement the <b>Invert Pixels</b> filter, gives counterintuitive results for 8-bit images, because they invert the indices into the color table instead of inverting the color table's entries.</p>
 <a name="exporting-the-plugin"></a>
 <h2>Exporting the Plugin</h2>
-<p>Whereas applications have a <tt>main()</tt> function as their entry point, plugins need to contain exactly one occurrence of the <tt>Q_EXPORT_PLUGIN2()</tt> macro to specify which class provides the plugin:</p>
+<p>Whereas applications have a <tt>main()</tt> function as their entry point, plugins need to contain exactly one occurrence of the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to specify which class provides the plugin:</p>
 <pre> Q_EXPORT_PLUGIN2(pnp_basictools, BasicToolsPlugin)</pre>
 <p>This line may appear in any <tt>.cpp</tt> file that is part of the plugin's source code.</p>
 <a name="the-pro-file"></a>
@@ -225,8 +225,8 @@
 <p>The <tt>CONFIG()</tt> code at the end is necessary for this example because the example is part of the Qt distribution and Qt can be configured to be built simultaneously in debug and in release modes. You don't need to for your own plugins.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

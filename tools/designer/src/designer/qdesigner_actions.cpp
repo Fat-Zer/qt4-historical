@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -55,6 +55,10 @@
 #include <QtCore/QBuffer>
 #include <QtCore/QPluginLoader>
 #include <QtCore/qdebug.h>
+
+#ifdef Q_WS_MAC
+#  define NONMODAL_PREVIEW
+#endif
 
 QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     : QObject(workbench),
@@ -144,10 +148,11 @@ QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     sep->setSeparator(true);
     m_fileActions->addAction(sep);
 
-    m_closeFormAction = new QAction(tr("&Close Form"), this);
+    m_closeFormAction = new QAction(this);
     m_closeFormAction->setShortcut(tr("CTRL+W"));
     connect(m_closeFormAction, SIGNAL(triggered()), this, SLOT(closeForm()));
     m_fileActions->addAction(m_closeFormAction);
+    updateCloseAction();
 
     sep = new QAction(this);
     sep->setSeparator(true);
@@ -583,6 +588,13 @@ bool QDesignerActions::saveForm(QDesignerFormWindowInterface *fw)
 
 void QDesignerActions::closeForm()
 {
+#ifdef NONMODAL_PREVIEW
+    if (m_previewWidget) {
+        m_previewWidget->close();
+        return;
+    }
+#endif
+
     if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow())
         fw->parentWidget()->close();
 }
@@ -625,8 +637,18 @@ void QDesignerActions::previewFormLater(QAction *action)
                                 Q_ARG(QAction*, action));
 }
 
+void QDesignerActions::closePreview()
+{
+    if (m_previewWidget)
+        m_previewWidget->close();
+}
+
 void QDesignerActions::previewForm(QAction *action)
 {
+#ifdef NONMODAL_PREVIEW
+    closePreview();
+#endif
+
     if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow()) {
         qdesigner_internal::QDesignerFormBuilder builder(core());
         builder.setWorkingDirectory(fw->absoluteDir());
@@ -637,8 +659,11 @@ void QDesignerActions::previewForm(QAction *action)
         QWidget *widget = builder.load(&buffer, 0);
         Q_ASSERT(widget);
 
-        widget->setParent(fw->window(), Qt::Dialog);
-#ifndef Q_WS_MAC
+        widget->setParent(fw->window(), Qt::Dialog|Qt::WindowStaysOnTopHint);
+#ifdef NONMODAL_PREVIEW
+        connect(fw, SIGNAL(changed()), widget, SLOT(close()));
+#else
+        // Cannot do this on Mac as the dialog will not have a close button
         widget->setWindowModality(Qt::ApplicationModal);
 #endif
         widget->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -670,6 +695,11 @@ void QDesignerActions::previewForm(QAction *action)
         widget->installEventFilter(this);
 
         widget->show();
+
+        m_previewWidget = widget;
+#ifdef NONMODAL_PREVIEW
+        updateCloseAction();
+#endif
     }
 }
 
@@ -864,11 +894,15 @@ void QDesignerActions::shutdown()
 
 void QDesignerActions::activeFormWindowChanged(QDesignerFormWindowInterface *formWindow)
 {
-    bool enable = formWindow != 0;
+    const bool enable = formWindow != 0;
+#ifdef NONMODAL_PREVIEW
+    closePreview();
+#endif
 
     m_saveFormAction->setEnabled(enable);
     m_saveFormAsAction->setEnabled(enable);
     m_saveFormAsTemplateAction->setEnabled(enable);
+    m_closeFormAction->setEnabled(enable);
     m_closeFormAction->setEnabled(enable);
 
     m_editWidgetsAction->setEnabled(enable);
@@ -1116,7 +1150,11 @@ void QDesignerActions::showFormSettings()
 bool QDesignerActions::eventFilter(QObject *watched, QEvent *event)
 {
     QWidget *w = qobject_cast<QWidget *>(watched);
-    if (w && w->isWindow() && event->type() == QEvent::KeyPress) {
+    if (!w || !w->isWindow())
+        return QObject::eventFilter(watched, event);
+
+    switch (event->type()) {
+    case QEvent::KeyPress: {
         QKeyEvent *keyEvent = (QKeyEvent *)event;
         if (keyEvent && (keyEvent->key() == Qt::Key_Escape
 #ifdef Q_WS_MAC
@@ -1127,5 +1165,23 @@ bool QDesignerActions::eventFilter(QObject *watched, QEvent *event)
             return true;
         }
     }
+        break;
+#ifdef NONMODAL_PREVIEW
+    case QEvent::Destroy:
+        updateCloseAction();
+        break;
+#endif
+    default:
+        break;
+    }
     return QObject::eventFilter(watched, event);
+}
+
+void QDesignerActions::updateCloseAction()
+{
+    if (m_previewWidget) {
+        m_closeFormAction->setText(tr("&Close Preview"));
+    } else {
+        m_closeFormAction->setText(tr("&Close Form"));
+    }
 }

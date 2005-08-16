@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2001-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2001-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **

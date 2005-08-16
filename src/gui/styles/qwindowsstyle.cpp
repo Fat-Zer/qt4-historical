@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -291,8 +291,11 @@ void QWindowsStyle::unpolish(QWidget *widget)
 {
     QCommonStyle::unpolish(widget);
 #ifndef QT_NO_PROGRESSBAR
-    if (qobject_cast<QProgressBar *>(widget))
+    if (QProgressBar *bar=qobject_cast<QProgressBar *>(widget)) {
+        Q_D(QWindowsStyle);
         widget->removeEventFilter(this);
+        d->bars.removeAll(bar);
+    }
 #endif
 }
 

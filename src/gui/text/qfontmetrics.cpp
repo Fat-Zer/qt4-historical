@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -28,6 +28,8 @@
 #include "qfont_p.h"
 #include "qfontengine_p.h"
 #include <private/qunicodetables_p.h>
+
+#include <math.h>
 
 #ifdef Q_WS_X11
 #include "qx11info_x11.h"
@@ -717,7 +719,12 @@ QRect QFontMetrics::boundingRect(const QRect &rect, int flags, const QString &te
     QRectF rr(rect);
     qt_format_text(QFont(d), rr, flags | Qt::TextDontPrint, text, &rb, tabStops, tabArray,
                    tabArrayLen, 0);
-    return rb.toRect();
+
+    int xmin = floor(rb.x());
+    int xmax = ceil(rb.x() + rb.width());
+    int ymin = floor(rb.y());
+    int ymax = ceil(rb.y() + rb.height());
+    return QRect(xmin, ymin, xmax - xmin, ymax - ymin);
 }
 
 /*!

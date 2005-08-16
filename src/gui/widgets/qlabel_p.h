@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -100,6 +100,7 @@ public:
     void ensureTextLayouted() const;
     void ensureTextControl();
     void sendControlEvent(QEvent *e);
+    void textInteractionFlagsChanged();
 
     void _q_linkHovered(const QString &link);
 

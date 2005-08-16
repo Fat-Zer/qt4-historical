@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -508,13 +508,11 @@ QStringList QFileDialog::selectedFiles() const
   Sets the filter used in the file dialog to the given \a filter.
 
   If \a filter contains a pair of parentheses containing one or more
-  of \bold{anything*something}, separated by spaces or by
-  semicolons then only the text contained in the parentheses is used as
-  the filter. This means that these calls are all equivalent:
+  of \bold{anything*something}, separated by semicolons, then only the
+  text contained in the parentheses is used as the filter. This means
+  that these calls are all equivalent:
 
   \code
-     dialog.setFilter("All C++ files (*.cpp *.cc *.C *.cxx *.c++)");
-     dialog.setFilter("*.cpp *.cc *.C *.cxx *.c++");
      dialog.setFilter("All C++ files (*.cpp;*.cc;*.C;*.cxx;*.c++)");
      dialog.setFilter("*.cpp;*.cc;*.C;*.cxx;*.c++");
   \endcode
@@ -549,6 +547,8 @@ void QFileDialog::setFilters(const QStringList &filters)
 {
     Q_D(QFileDialog);
     d->fileTypeCombo->clear();
+    if (filters.isEmpty())
+        return;
     d->fileTypeCombo->addItems(filters);
     d->_q_useFilter(filters.first());
 }

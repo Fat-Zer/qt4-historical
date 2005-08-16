@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -336,13 +336,7 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
     } else {
         newBottom = createIndex(-1, d->rec.count() - 1);
     }
-    if (columnsChanged) {
-        beginInsertColumns(QModelIndex(), 0, newBottom.column());
-        d->bottom = newBottom;
-        endInsertColumns();
-    } else {
-        d->bottom = newBottom;
-    }
+    d->bottom = newBottom;
 
     queryChange();
 

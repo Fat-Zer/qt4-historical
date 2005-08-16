@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -85,7 +85,7 @@
     convenience functions to extract and set the color of the pen's
     brush, respectively. Pens may also be compared and streamed.
 
-    For more information about painting in general, see {The Paint
+    For more information about painting in general, see \l{The Paint
     System} documentation.
 
     \tableofcontents
@@ -328,7 +328,7 @@ QPen::QPen(Qt::PenStyle style)
 
 
 /*!
-    Constructs a pen with 0 width and the given \a color.
+    Constructs a solid line pen with 0 width and the given \a color.
 
     \sa setBrush(), setColor()
 */

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -867,7 +867,7 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
     t << endl << endl;
 
     if(doPrecompiledHeaders() && !project->isEmpty("PRECOMPILED_HEADER")) {
-        QString precomph = fileFixify(project->first("PRECOMPILED_HEADER"));
+        QString precomph = project->first("PRECOMPILED_HEADER");
         t << "###### Prefix headers" << endl;
         QString comps[] = { "C", "CXX", "OBJC", "OBJCXX", QString() };
         for(int i = 0; !comps[i].isNull(); i++) {

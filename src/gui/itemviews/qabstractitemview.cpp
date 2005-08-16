@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -833,16 +833,7 @@ QModelIndex QAbstractItemView::rootIndex() const
 void QAbstractItemView::selectAll()
 {
     Q_D(QAbstractItemView);
-    if (!d->selectionModel)
-        return;
-
-    QItemSelection selection;
-    QModelIndex tl = d->model->index(0, 0, d->root);
-    QModelIndex br = d->model->index(d->model->rowCount(d->root) - 1,
-                                    d->model->columnCount(d->root) - 1,
-                                    d->root);
-    selection.append(QItemSelectionRange(tl, br));
-    d->selectionModel->select(selection, selectionCommand(tl));
+    d->selectAll(selectionCommand(d->model->index(0, 0, d->root)));
 }
 
 /*!
@@ -1081,7 +1072,9 @@ bool QAbstractItemView::dragEnabled() const
     \value DragDrop The view supports both dragging and dropping
     \value InternalMove only accepts move operations only from itself.
 
-    \sa setDragDropMode()
+    Note that the model used needs to provide support for drag and drop operations.
+
+    \sa setDragDropMode() {Using Drag and Drop with Item Views}
 */
 
 /*!
@@ -1700,16 +1693,19 @@ void QAbstractItemView::focusInEvent(QFocusEvent *event)
     Q_D(QAbstractItemView);
     QAbstractScrollArea::focusInEvent(event);
     if (!currentIndex().isValid() && selectionModel()) {
+        bool autoScroll = d->autoScroll;
+        d->autoScroll = false;
         selectionModel()->setCurrentIndex(
             moveCursor(MoveNext, Qt::NoModifier), // first visible index
             QItemSelectionModel::NoUpdate);
+        d->autoScroll = autoScroll;
     }
     d->viewport->update();
 }
 
 /*!
-    This function is called with the given \a event when the widget obtains the focus.
-    By default, the event is ignored.
+    This function is called with the given \a event when the widget
+    looses the focus. By default, the event is ignored.
 
     \sa clearFocus(), focusInEvent()
 */
@@ -1888,7 +1884,8 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
         if (event->modifiers() & Qt::ControlModifier) {
             SelectionMode mode = d->selectionMode;
             if (mode == MultiSelection || mode == ExtendedSelection)
-                selectAll();
+                d->selectAll(QItemSelectionModel::ClearAndSelect
+                             |d->selectionBehaviorFlags());
             break;
         }
     default: {
@@ -2010,6 +2007,8 @@ bool QAbstractItemView::edit(const QModelIndex &index, EditTrigger trigger, QEve
         return false;
 
     if (QWidget *w = (d->persistent.isEmpty() ? 0 : d->editorForIndex(index))) {
+        if (w->focusPolicy() == Qt::NoFocus)
+            return false;
         w->setFocus();
         return true;
     }
@@ -2682,8 +2681,10 @@ void QAbstractItemView::selectionChanged(const QItemSelection &selected,
                                          const QItemSelection &deselected)
 {
     Q_D(QAbstractItemView);
-    d->setDirtyRegion(visualRegionForSelection(deselected));
-    d->setDirtyRegion(visualRegionForSelection(selected));
+    if (isVisible()) {
+        d->setDirtyRegion(visualRegionForSelection(deselected));
+        d->setDirtyRegion(visualRegionForSelection(selected));
+    }
 }
 
 /*!
@@ -2709,11 +2710,14 @@ void QAbstractItemView::currentChanged(const QModelIndex &current, const QModelI
             else
                 closeEditor(editor, QAbstractItemDelegate::NoHint);
         }
-        d->setDirtyRegion(visualRect(previous));
-        d->updateDirtyRegion();
+        if (isVisible()) {
+            d->setDirtyRegion(visualRect(previous));
+            d->updateDirtyRegion();
+        }
     }
     if (current.isValid() && !d->autoScrollTimer.isActive()) {
-        scrollTo(current);
+        if (d->autoScroll)
+            scrollTo(current);
         edit(current, CurrentChanged, 0);
         if (current.row() == (d->model->rowCount(d->root) - 1))
             d->fetchMore();
@@ -3092,7 +3096,9 @@ QAbstractItemViewPrivate::contiguousSelectionCommand(const QModelIndex &index,
     case QItemSelectionModel::SelectCurrent:
         return flags;
     case QItemSelectionModel::NoUpdate:
-        if (event && event->type() == QEvent::MouseButtonRelease)
+        if (event &&
+            (event->type() == QEvent::MouseButtonPress
+             || event->type() == QEvent::MouseButtonRelease))
             return flags;
         return QItemSelectionModel::ClearAndSelect|selectionBehaviorFlags();
     default:
@@ -3336,6 +3342,20 @@ QPixmap QAbstractItemViewPrivate::renderToPixmap(const QModelIndexList &indexes,
     painter.end();
     if (r) *r = rect;
     return pixmap;
+}
+
+void QAbstractItemViewPrivate::selectAll(QItemSelectionModel::SelectionFlags command)
+{
+    if (!selectionModel)
+        return;
+
+    QItemSelection selection;
+    QModelIndex tl = model->index(0, 0, root);
+    QModelIndex br = model->index(model->rowCount(root) - 1,
+                                  model->columnCount(root) - 1,
+                                  root);
+    selection.append(QItemSelectionRange(tl, br));
+    selectionModel->select(selection, command);
 }
 
 #include "moc_qabstractitemview.cpp"

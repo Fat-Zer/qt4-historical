@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/gui/widgets/qlineedit.cpp -->
 <head>
   <title>Qt 4.2: QLineEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -511,10 +511,10 @@
 <p>Reimplemented from <a href="qwidget.html#sizeHint-prop">QWidget</a>.</p>
 <h3 class="fn"><a name="textChanged"></a>void QLineEdit::textChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the text changes. The <i>text</i> argument is the new text.</p>
-<p>Unlike <a href="qlineedit.html#textEdited">textEdited</a>(), this signal is also emitted when programmatically setting the text via <a href="qlineedit.html#text-prop">setText</a>().</p>
+<p>Unlike <a href="qlineedit.html#textEdited">textEdited</a>(), this signal is also emitted when the text is changed programmatically, for example, by calling <a href="qlineedit.html#text-prop">setText</a>().</p>
 <h3 class="fn"><a name="textEdited"></a>void QLineEdit::textEdited ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the text is edited. The <i>text</i> argument is the next text.</p>
-<p>Unlike <a href="qlineedit.html#textChanged">textChanged</a>(), this signal is <i>not</i> emitted when programmatically setting the text via <a href="qlineedit.html#text-prop">setText</a>().</p>
+<p>Unlike <a href="qlineedit.html#textChanged">textChanged</a>(), this signal is not emitted when the text is changed programmatically, for example, by calling <a href="qlineedit.html#text-prop">setText</a>().</p>
 <h3 class="fn"><a name="undo"></a>void QLineEdit::undo ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Undoes the last operation if undo is <a href="qlineedit.html#undoAvailable-prop">available</a>. Deselects any current selection, and updates the selection start to the current cursor position.</p>
 <h3 class="fn"><a name="validator"></a>const <a href="qvalidator.html">QValidator</a> * QLineEdit::validator () const</h3>
@@ -581,8 +581,8 @@
 <p>Use <a href="qlineedit.html#text-prop">setText</a>(), <a href="qlineedit.html#cursorPosition-prop">setCursorPosition</a>() and <a href="qlineedit.html#setSelection">setSelection</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -398,7 +398,8 @@ void QDirModelPrivate::invalidate()
   directories. In the simplest case, it can be used with a suitable display
   widget as part of a browser or filer.
 
-  QDirModel does not store file information internally or cache file data.
+  QDirModel keeps a cache with file information. The cache needs to be
+  updated with refresh().
 
   A directory model that displays the contents of a default directory
   is usually constructed with a parent object:
@@ -1017,7 +1018,10 @@ bool QDirModel::lazyChildCount() const
 }
 
 /*!
-  Refreshes (rereads) the children of \a parent.
+  QDirModel caches file information. This function updates the
+  cache. The \a parent parameter is the directory from which the
+  model is updated; the default value will update the model from
+  root directory of the file system (the entire model).
 */
 
 void QDirModel::refresh(const QModelIndex &parent)
@@ -1311,8 +1315,14 @@ QIcon QDirModel::fileIcon(const QModelIndex &index) const
 }
 
 /*!
-  Returns the file information for the model item \a index.
+  Returns the file information for the specified model \a index.
 
+  \bold{Note:} If the model index represents a symbolic link in the
+  underlying filing system, the file information returned will contain
+  information about the symbolic link itself, regardless of whether
+  resolveSymlinks is enabled or not.
+
+  \sa QFileInfo::symLinkTarget()
 */
 
 QFileInfo QDirModel::fileInfo(const QModelIndex &index) const

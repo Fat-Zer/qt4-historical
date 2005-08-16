@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-win-opensource-src-4.2.2/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-win-opensource-src-4.2.3/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
   <title>Qt 4.2: QCoreApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -182,6 +182,7 @@
 <h3 class="fn"><a name="QCoreApplication"></a>QCoreApplication::QCoreApplication ( int &amp; <i>argc</i>, char ** <i>argv</i> )</h3>
 <p>Constructs a Qt kernel application. Kernel applications are applications without a graphical user interface. These type of applications are used at the console or as server processes.</p>
 <p>The <i>argc</i> and <i>argv</i> arguments are processed by the application, and made available in a more convenient form by the <a href="qcoreapplication.html#arguments">arguments</a>() function.</p>
+<p><b>Warning:</b> The data pointed to by <i>argc</i> and <i>argv</i> must stay valid for the entire lifetime of the <a href="qcoreapplication.html">QCoreApplication</a> object.</p>
 <h3 class="fn"><a name="dtor.QCoreApplication"></a>QCoreApplication::~QCoreApplication ()</h3>
 <p>Destroys the <a href="qcoreapplication.html">QCoreApplication</a> object.</p>
 <h3 class="fn"><a name="aboutToQuit"></a>void QCoreApplication::aboutToQuit ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -431,8 +432,8 @@
 <p>In Qt 4, this is no longer supported, since painting is only supported from within a paint event handler. This function does nothing.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -101,6 +101,7 @@ public:
                                                                  const QEvent *event) const;
     QItemSelectionModel::SelectionFlags contiguousSelectionCommand(const QModelIndex &index,
                                                                    const QEvent *event) const;
+    void selectAll(QItemSelectionModel::SelectionFlags command);
 
     inline QItemSelectionModel::SelectionFlags selectionBehaviorFlags() const
     {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1865,8 +1865,6 @@ QSet<QTabBar*> QDockAreaLayoutInfo::usedTabBars() const
 
     for (int i = 0; i < item_list.count(); ++i) {
         const QDockAreaLayoutItem &item = item_list.at(i);
-        if (item.skip())
-            continue;
         if (item.subinfo != 0)
             result += item.subinfo->usedTabBars();
     }
@@ -2762,8 +2760,6 @@ QSet<QTabBar*> QDockWidgetLayout::usedTabBars() const
     QSet<QTabBar*> result;
     for (int i = 0; i < PosCount; ++i) {
         const QDockAreaLayoutInfo &dock = docks[i];
-        if (dock.isEmpty())
-            continue;
         result += dock.usedTabBars();
     }
     return result;
@@ -2824,7 +2820,8 @@ void QDockWidgetLayout::keepSize(QDockWidget *w)
     if (path.isEmpty())
         return;
     QDockAreaLayoutItem &item = this->item(path);
-    item.keep_size = true;
+    if (item.size != -1)
+        item.keep_size = true;
 }
 
 #endif // QT_NO_DOCKWIDGET
