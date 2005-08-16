@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -280,7 +280,7 @@ void QDesktopWidgetPrivate::cleanup()
     Instead of using QDesktopWidget directly, use QApplication::desktop().
 */
 QDesktopWidget::QDesktopWidget()
-    : QWidget(*new QDesktopWidgetPrivate, 0, Qt::WType_Desktop)
+    : QWidget(*new QDesktopWidgetPrivate, 0, Qt::Desktop)
 {
     setObjectName(QLatin1String("desktop"));
     QDesktopWidgetPrivate::init(this);

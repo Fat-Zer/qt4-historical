@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1335,7 +1335,7 @@ QRegion QTreeView::visualRegionForSelection(const QItemSelection &selection) con
         int top = visualRect(leftIndex).top();
         QModelIndex rightIndex = range.bottomRight();
         while (rightIndex.isValid() && isIndexHidden(rightIndex)) {
-            if (leftIndex.column() - 1 >= 0)
+            if (rightIndex.column() - 1 >= 0)
                 rightIndex = model()->index(rightIndex.row(), rightIndex.column() - 1, parent);
             else
                 rightIndex = QModelIndex();
@@ -1883,31 +1883,33 @@ int QTreeViewPrivate::coordinate(int item) const
             ++viewItemIndex;
         }
         // the item is below the viewport
-        if (editors.isEmpty()) { // optimized; estimate the coordinate
+        if (editors.isEmpty()) // optimized; estimate the coordinate
             return viewItemCoordinate + (itemHeight * (item - viewItemIndex));
-        } else { // non-optimized
-            for (;viewItemIndex < viewItems.count(); ++viewItemIndex) {
-                if (viewItemIndex == item)
-                    return viewItemCoordinate;
-                viewItemCoordinate += height(viewItemIndex);
-            }
+        // non-optimized
+        for (;viewItemIndex < viewItems.count(); ++viewItemIndex) {
+            if (viewItemIndex == item)
+                return viewItemCoordinate;
+            viewItemCoordinate += height(viewItemIndex);
         }
+        // below the last item in the view
+        // Q_ASSERT(false);
+        return viewItemCoordinate;
     }
 
     // the item is above the viewport
-    if (editors.isEmpty()) { // optimized; estimate the coordinate
+    if (editors.isEmpty()) // optimized; estimate the coordinate
         return viewItemCoordinate - (itemHeight * (viewItemIndex - item));
-    } else { // non-optimized
-        viewItemCoordinate = topItemCoordinate;
-        viewItemIndex = topViewItemIndex;
-        for (; viewItemIndex >= 0; --viewItemIndex) {
-            if (viewItemIndex == item)
-                return viewItemCoordinate;
-            viewItemCoordinate -= height(viewItemIndex);
-        }
+    // non-optimized
+    viewItemCoordinate = topItemCoordinate;
+    viewItemIndex = topViewItemIndex;
+    for (; viewItemIndex >= 0; --viewItemIndex) {
+        if (viewItemIndex == item)
+            return viewItemCoordinate;
+        viewItemCoordinate -= height(viewItemIndex);
     }
-    Q_ASSERT(false);
-    return 0xDEADBEAF; // the item was not found
+    // above the first item in the view
+    // Q_ASSERT(false);
+    return viewItemCoordinate;
 }
 
 /*!

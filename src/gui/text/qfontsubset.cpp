@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1583,23 +1583,30 @@ static QByteArray charString(const QPainterPath &path, qreal advance, qreal lsb,
     if (openpath)
         charstring += closepath;
     charstring += endchar;
+    if (charstring.length() > 240) {
+        int pos = 240;
+        while (pos < charstring.length()) {
+            charstring.insert(pos, '\n');
+            pos += 241;
+        }
+    }
     return charstring;
 }
 
 #ifndef QT_NO_FREETYPE
-const char *helvetica_styles[4] = {
+static const char *helvetica_styles[4] = {
     "Helvetica",
     "Helvetica-Bold",
     "Helvetica-Oblique",
     "Helvetica-BoldOblique"
 };
-const char *times_styles[4] = {
+static const char *times_styles[4] = {
     "Times-Regular",
     "Times-Bold",
     "Times-Italic",
     "Times-BoldItalic"
 };
-const char *courier_styles[4] = {
+static const char *courier_styles[4] = {
     "Courier",
     "Courier-Bold",
     "Courier-Oblique",
@@ -1668,7 +1675,7 @@ QByteArray QFontSubset::toType1() const
             QByteArray charstring = ::charString(path, metric.xoff.toReal(), metric.x.toReal(),
                                                  properties.emSquare.toReal());
             s << glyphName(i, reverseMap)
-              << " <" << charstring << ">\n";
+              << "\n<" << charstring << ">\n";
         }
         s << ">>\n"
             ">> def\n";

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1344,6 +1344,9 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
     case PE_PanelButtonCommand:
         if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
             bool down = (button->state & State_Sunken) || (button->state & State_On);
+            if ((button->features & QStyleOptionButton::Flat) && !down)
+                break;
+
             bool hover = (button->state & State_Enabled) && (button->state & State_MouseOver);
             bool isDefault = (button->features & QStyleOptionButton::DefaultButton);
             bool isEnabled = (button->state & State_Enabled);
@@ -5237,7 +5240,8 @@ int QPlastiqueStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
             ret = qMax(widget->fontMetrics().lineSpacing(), 16);
         } else
 #endif
-            ret = qMax(widget ? widget->fontMetrics().lineSpacing() : option->fontMetrics.lineSpacing(), 30);
+            ret = qMax(widget ? widget->fontMetrics().lineSpacing()
+                       : (option ? option->fontMetrics.lineSpacing() : 30), 30);
         break;
     case PM_MaximumDragDistance:
         return -1;

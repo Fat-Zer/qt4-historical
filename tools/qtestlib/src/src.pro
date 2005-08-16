@@ -25,14 +25,14 @@ MOC_DIR         = tmp
 DESTDIR = ../../../lib
 DLLDESTDIR = ../../../bin
 isEmpty(QT_MAJOR_VERSION) {
-   VERSION=4.1.3
+   VERSION=4.1.4
 } else {
    VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
 }
-QMAKE_TARGET_COMPANY = Trolltech AS
+QMAKE_TARGET_COMPANY = Trolltech ASA
 QMAKE_TARGET_PRODUCT = QTestLib
 QMAKE_TARGET_DESCRIPTION = Qt Unit Testing Library
-QMAKE_TARGET_COPYRIGHT = Copyright (C) 2003-2006 Trolltech AS
+QMAKE_TARGET_COPYRIGHT = Copyright (C) 2003-2006 Trolltech ASA
 
 unix {
    CONFIG     += create_libtool create_pc explicitlib

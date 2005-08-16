@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -26,7 +26,7 @@
 
 #if (defined(QT_HAVE_SSE) && (!defined(__APPLE__) || defined(__i386__))) || defined(QT_HAVE_IWMMXT)
 
-#ifdef Q_CC_GNU
+#if defined(Q_CC_GNU) && !defined(Q_CC_INTEL)
 #  include <mmintrin.h>
 #  if !defined(__IWMMXT__)
 #    include <xmmintrin.h>
@@ -43,13 +43,15 @@
 #    define C_80 const m64 mmx_0x0080 = (__m64)0x0080008000800080ULL
 #  endif
 #  define C_00 const m64 mmx_0x0000 = _mm_setzero_si64()
-#elif defined (Q_OS_WIN)
+#elif defined(Q_CC_INTEL) || defined(Q_OS_WIN)
 #  include <mmintrin.h>
 #  include <xmmintrin.h>
 #  define C_FF const m64 mmx_0x00ff = _mm_set1_pi16(0xff)
 #  define C_80 const m64 mmx_0x0080 = _mm_set1_pi16(0x80)
 #  define C_00 const m64 mmx_0x0000 = _mm_setzero_si64()
-#  pragma warning(disable: 4799) // No EMMS at end of function
+#  if defined(Q_OS_WIN)
+#    pragma warning(disable: 4799) // No EMMS at end of function
+#  endif
 #endif
 
 typedef __m64 m64;

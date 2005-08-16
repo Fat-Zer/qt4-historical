@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -858,6 +858,12 @@ void QListView::paintEvent(QPaintEvent *e)
     QStyleOptionViewItem option = viewOptions();
     QPainter painter(d->viewport);
     QRect area = e->rect();
+
+    // if there's nothing to do, clear the area and return
+    if (!model()) {
+        painter.fillRect(area, option.palette.brush(QPalette::Base));
+        return;
+    }
 
     QVector<QModelIndex> toBeRendered;
 //     QVector<QRect> rects = e->region().rects();

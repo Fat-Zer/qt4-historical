@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -2562,9 +2562,9 @@ void QTextEdit::dropEvent(QDropEvent *e)
         return;
 
     e->acceptProposedAction();
-    
+
     d->repaintSelection();
-    
+
     QTextCursor insertionCursor = cursorForPosition(e->pos());
     insertionCursor.beginEditBlock();
 
@@ -2575,6 +2575,7 @@ void QTextEdit::dropEvent(QDropEvent *e)
     d->cursor = insertionCursor;
     insertFromMimeData(e->mimeData());
     insertionCursor.endEditBlock();
+    ensureCursorVisible();
 }
 
 #endif // QT_NO_DRAGANDDROP

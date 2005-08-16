@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -86,6 +86,9 @@
 #endif
 #ifndef TMT_CAPTIONMARGINS
 #  define TMT_CAPTIONMARGINS 3603
+#endif
+#ifndef TMT_CONTENTMARGINS
+#  define TMT_CONTENTMARGINS 3602
 #endif
 #ifndef TMT_SIZINGMARGINS
 #  define TMT_SIZINGMARGINS 3601
@@ -1379,6 +1382,44 @@ QRect QWindowsXPStyle::subElementRect(SubElement sr, const QStyleOption *option,
         }
         break;}
 
+    case SE_PushButtonContents:
+        if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            MARGINS borderSize;
+            if (widget) {
+                HTHEME theme = pOpenThemeData(QWindowsXPStylePrivate::winId(widget), L"Button");
+                if (theme) {
+                    int stateId;
+                    if (!(option->state & State_Enabled))
+                        stateId = PBS_DISABLED;
+                    else if (option->state & State_Sunken)
+                        stateId = PBS_PRESSED;
+                    else if (option->state & State_MouseOver)
+                        stateId = PBS_HOT;
+                    else if (btn->features & QStyleOptionButton::DefaultButton)
+                        stateId = PBS_DEFAULTED;
+                    else
+                        stateId = PBS_NORMAL;
+                    
+                    int border = pixelMetric(PM_DefaultFrameWidth, btn, widget);
+                    rect = option->rect.adjusted(border, border, -border, -border);
+        
+                    int result = pGetThemeMargins(theme,
+                                                  NULL,
+                                                  BP_PUSHBUTTON,
+                                                  stateId,
+                                                  TMT_CONTENTMARGINS,
+                                                  NULL,
+                                                  &borderSize);
+                    
+                    if (result == S_OK) {
+                        rect.adjust(borderSize.cxLeftWidth, borderSize.cyTopHeight, 
+                                    -borderSize.cxRightWidth, -borderSize.cyBottomHeight);
+                        rect = visualRect(option->direction, option->rect, rect);
+                    }
+                }
+            }
+        }
+        break;
     default:
         rect = QWindowsStyle::subElementRect(sr, option, widget);
     }
@@ -1894,7 +1935,7 @@ void QWindowsXPStyle::drawControl(ControlElement element, const QStyleOption *op
             XPThemeData theme(0, p, name, partId, 0);
             pGetThemePartSize(theme.handle(), 0, partId, 0, 0, TS_TRUE, &sz);
             --sz.cy;
-            if ((hMirrored = qApp->reverseLayout()))
+            if ((hMirrored = (QApplication::layoutDirection() == Qt::RightToLeft)))
                 rect = QRect(rect.left() + 1, rect.bottom() - sz.cy, sz.cx, sz.cy);
             else
                 rect = QRect(rect.right() - sz.cx, rect.bottom() - sz.cy, sz.cx, sz.cy);
@@ -2292,7 +2333,7 @@ case CE_DockWidgetTitle:
             int indent = fw;
             if (hasIcon) {
                 QPixmap pxIco = ico.pixmap(titleHeight);
-                if(qApp->reverseLayout())
+                if (QApplication::layoutDirection() == Qt::RightToLeft)
                     p->drawPixmap(rect.width() - indent - pxIco.width(), rect.bottom() - titleHeight - 2, pxIco);
                 else
                     p->drawPixmap(indent, rect.bottom() - titleHeight - 2, pxIco);

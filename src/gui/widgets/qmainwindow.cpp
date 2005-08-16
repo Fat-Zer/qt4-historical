@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -416,16 +416,18 @@ QWidget *QMainWindow::centralWidget() const
 /*!
     Sets the given \a widget to be the main window's central widget.
 
-    \warning This function should be called at most once for each main
-    window instance
-
     Note: QMainWindow takes ownership of the \a widget pointer and
     deletes it at the appropriate time.
 
     \sa centralWidget()
 */
 void QMainWindow::setCentralWidget(QWidget *widget)
-{ d_func()->layout->setCentralWidget(widget); }
+{
+    Q_D(QMainWindow);
+    if (d->layout->centralWidget() && d->layout->centralWidget() != widget)
+        delete d->layout->centralWidget();
+    d->layout->setCentralWidget(widget);
+}
 
 /*!
     Sets the given dock widget \a area to occupy the specified \a

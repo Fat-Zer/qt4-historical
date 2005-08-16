@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -62,8 +62,8 @@ public:
         return supported_scripts[script];
     }
     void selectScript(unsigned int script, const Features *features = 0);
-    
-    void shape(QShaperItem *item, const unsigned int *properties = 0);
+
+    bool shape(QShaperItem *item, const unsigned int *properties = 0);
     bool positionAndAdd(QShaperItem *item, int availableGlyphs, bool doLogClusters = true);
 
     OTL_GlyphItem glyphs() const { return otl_buffer->in_string; }
@@ -71,7 +71,7 @@ public:
     void setProperty(int index, uint property) { otl_buffer->in_string[index].properties = property; }
 
 
-private: 
+private:
     bool checkScript(unsigned int script);
     QFontEngine *fontEngine;
     FT_Face face;

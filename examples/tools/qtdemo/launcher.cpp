@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -299,17 +299,20 @@ QString Launcher::findExecutable(const QDir &dir) const
             return path;
     }
 
-    foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs | QDir::Files)) {
-        if (info.isFile() && info.isExecutable())
+    foreach (QFileInfo info, dir.entryInfoList(QDir::Dirs)) {
+        if (info.fileName().endsWith(".app"))
             return info.absoluteFilePath();
-        else if (info.isDir()) {
-            QDir currentDir(info.absoluteFilePath());
-            if (currentDir != dir && currentDir != parentDir) {
-                QString path = findExecutable(currentDir);
-                if (!path.isNull())
-                    return path;
-            }
+        QDir currentDir(info.absoluteFilePath());
+        if (currentDir != dir && currentDir != parentDir) {
+            QString path = findExecutable(currentDir);
+            if (!path.isNull())
+                return path;
         }
+    }
+        
+    foreach (QFileInfo info, dir.entryInfoList(QDir::Files)) {
+        if (info.isExecutable())
+            return info.absoluteFilePath();
     }
     return QString();
 }
@@ -539,7 +542,7 @@ void Launcher::addVersionAndCopyright(const QRectF &rect)
     display->appendShape(versionCaption);
 
     DisplayShape *copyrightCaption = new TitleShape(
-        QString("Copyright \xa9 2005-2006 Trolltech AS"), font(),
+        QString("Copyright \xa9 2005-2006 Trolltech ASA"), font(),
         QPen(QColor(0,0,0,0)),
         rect.topLeft(), QSizeF(0.5*rect.width(), rect.height()),
         Qt::AlignLeft | Qt::AlignVCenter);

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -3298,7 +3298,7 @@ int QCommonStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const QWid
                    || tb->shape == QTabBar::RoundedWest || tb->shape == QTabBar::RoundedEast))
             ret = 8;
         else
-            if(tb->shape == QTabBar::TriangularWest || tb->shape == QTabBar::TriangularEast)
+            if(tb && (tb->shape == QTabBar::TriangularWest || tb->shape == QTabBar::TriangularEast))
                 ret = 3;
             else
                 ret = 2;
@@ -3647,7 +3647,7 @@ int QCommonStyle::styleHint(StyleHint sh, const QStyleOption *opt, const QWidget
         break;
 
     case SH_ComboBox_LayoutDirection:
-        ret = opt->direction;
+        ret = opt ? opt->direction : Qt::LeftToRight;
         break;
 
     case SH_ItemView_EllipsisLocation:

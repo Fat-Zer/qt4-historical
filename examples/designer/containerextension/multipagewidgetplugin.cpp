@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -120,7 +120,8 @@ void MultiPageWidgetPlugin::currentIndexChanged(int index)
     if (widget) {
         QDesignerFormWindowInterface *form;
         form = QDesignerFormWindowInterface::findFormWindow(widget);
-        form->emitSelectionChanged();
+        if (form)
+            form->emitSelectionChanged();
     }
 }
 
@@ -131,12 +132,14 @@ void MultiPageWidgetPlugin::pageTitleChanged(const QString &title)
         QWidget *page = widget->widget(widget->currentIndex());
         QDesignerFormWindowInterface *form;
         form = QDesignerFormWindowInterface::findFormWindow(widget);
-        QDesignerFormEditorInterface *editor = form->core();
-        QExtensionManager *manager = editor->extensionManager();
-        QDesignerPropertySheetExtension *sheet;
-        sheet = qt_extension<QDesignerPropertySheetExtension*>(manager, page);
-        int propertyIndex = sheet->indexOf(QLatin1String("windowTitle"));
-        sheet->setChanged(propertyIndex, true);
+        if (form) {
+            QDesignerFormEditorInterface *editor = form->core();
+            QExtensionManager *manager = editor->extensionManager();
+            QDesignerPropertySheetExtension *sheet;
+            sheet = qt_extension<QDesignerPropertySheetExtension*>(manager, page);
+            int propertyIndex = sheet->indexOf(QLatin1String("windowTitle"));
+            sheet->setChanged(propertyIndex, true);
+        }
     }
 }
 

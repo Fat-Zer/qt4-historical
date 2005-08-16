@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -154,7 +154,7 @@ QEventDispatcherWin32Private::~QEventDispatcherWin32Private()
     CloseHandle(wakeUpNotifier.handle());
     if (m_internalHwnd)
         DestroyWindow(m_internalHwnd);
-    QByteArray className = "QEventDispatcherWin32_Internal_Widget" + QByteArray::number((Q_LLONG)qt_internal_proc);
+    QByteArray className = "QEventDispatcherWin32_Internal_Widget" + QByteArray::number(quint64(qt_internal_proc));
     UnregisterClassA(className.constData(), qWinAppInst());
     DeleteCriticalSection(&fastTimerCriticalSection);
 }
@@ -320,7 +320,7 @@ static HWND qt_create_internal_window(const QEventDispatcherWin32 *eventDispatch
     wc.lpszMenuName = NULL;
 
     // make sure that multiple Qt's can coexist in the same process
-    QByteArray className = "QEventDispatcherWin32_Internal_Widget" + QByteArray::number((Q_LLONG)qt_internal_proc);
+    QByteArray className = "QEventDispatcherWin32_Internal_Widget" + QByteArray::number(quint64(qt_internal_proc));
     wc.lpszClassName = className.constData();
     RegisterClassA(&wc);
 
@@ -360,19 +360,6 @@ QEventDispatcherWin32::QEventDispatcherWin32(QObject *parent)
 
 QEventDispatcherWin32::~QEventDispatcherWin32()
 {
-    Q_D(QEventDispatcherWin32);
-
-    // clean up any socketnotifiers
-    while (!d->sn_read.isEmpty())
-        unregisterSocketNotifier((*(d->sn_read.begin()))->obj);
-    while (!d->sn_write.isEmpty())
-        unregisterSocketNotifier((*(d->sn_write.begin()))->obj);
-    while (!d->sn_except.isEmpty())
-        unregisterSocketNotifier((*(d->sn_except.begin()))->obj);
-
-    // clean up any timers
-    while (!d->timerDict.isEmpty())
-        unregisterTimer((*(d->timerDict.begin()))->timerId);
 }
 
 bool QEventDispatcherWin32::processEvents(QEventLoop::ProcessEventsFlags flags)
@@ -820,6 +807,23 @@ void QEventDispatcherWin32::startingUp()
     Q_D(QEventDispatcherWin32);
 
     if (d->wakeUpNotifier.handle()) d->wakeUpNotifier.setEnabled(true);
+}
+
+void QEventDispatcherWin32::closingDown()
+{
+    Q_D(QEventDispatcherWin32);
+
+    // clean up any socketnotifiers
+    while (!d->sn_read.isEmpty())
+        unregisterSocketNotifier((*(d->sn_read.begin()))->obj);
+    while (!d->sn_write.isEmpty())
+        unregisterSocketNotifier((*(d->sn_write.begin()))->obj);
+    while (!d->sn_except.isEmpty())
+        unregisterSocketNotifier((*(d->sn_except.begin()))->obj);
+
+    // clean up any timers
+    while (!d->timerDict.isEmpty())
+        unregisterTimer((*(d->timerDict.begin()))->timerId);
 }
 
 bool QEventDispatcherWin32::event(QEvent *e)

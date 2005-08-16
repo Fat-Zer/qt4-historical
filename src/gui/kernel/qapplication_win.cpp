@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -451,10 +451,10 @@ static void qt_set_windows_resources()
     pal.setColor(QPalette::Link, Qt::blue);
     pal.setColor(QPalette::LinkVisited, Qt::magenta);
 
-    pal.setColor(QPalette::Inactive, QPalette::Button, pal.button());
-    pal.setColor(QPalette::Inactive, QPalette::Background, pal.background());
-    pal.setColor(QPalette::Inactive, QPalette::Light, pal.light());
-    pal.setColor(QPalette::Inactive, QPalette::Dark, pal.dark());
+    pal.setColor(QPalette::Inactive, QPalette::Button, pal.button().color());
+    pal.setColor(QPalette::Inactive, QPalette::Background, pal.background().color());
+    pal.setColor(QPalette::Inactive, QPalette::Light, pal.light().color());
+    pal.setColor(QPalette::Inactive, QPalette::Dark, pal.dark().color());
 
     if (QSysInfo::WindowsVersion != QSysInfo::WV_NT && QSysInfo::WindowsVersion != QSysInfo::WV_95) {
         if (pal.midlight() == pal.button())

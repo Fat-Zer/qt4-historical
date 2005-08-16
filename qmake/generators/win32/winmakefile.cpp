@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -536,7 +536,8 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
     QString destDir = Option::fixPathToTargetOS(orgDestDir, false);
     if (orgDestDir.endsWith('/') || orgDestDir.endsWith(Option::dir_sep))
         destDir += Option::dir_sep;
-    QString target = QString(project->first("TARGET")+project->first("TARGET_EXT")).remove('"');
+    QString x = QString(project->first("TARGET")+project->first("TARGET_EXT"));
+    QString target = x.remove('"');
     project->variables()["DEST_TARGET"].prepend(destDir + target);
 
     writeObjectsPart(t);

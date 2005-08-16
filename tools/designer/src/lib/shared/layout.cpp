@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -244,6 +244,10 @@ bool Layout::prepareLayout(bool &needMove, bool &needReparent)
             baseWidgetClassName = QLatin1String("QSplitter");
 
         layoutBase = widgetFactory->createWidget(baseWidgetClassName, widgetFactory->containerOfWidget(m_parentWidget));
+        if (useSplitter) {
+            layoutBase->setObjectName("splitter");
+            formWindow->ensureUniqueObjectName(layoutBase);
+        }
     } else {
         LayoutInfo::deleteLayout(formWindow->core(), layoutBase);
     }

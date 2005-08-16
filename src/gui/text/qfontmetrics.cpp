@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -594,7 +594,7 @@ QRect QFontMetrics::boundingRect(const QString &str) const
 
 /*!
     Returns the rectangle that is covered by ink if the character where
-    to be drawn at the origin of the coordinate system. 
+    to be drawn at the origin of the coordinate system.
 
     Note that the bounding rectangle may extend to the left of (0, 0),
     e.g. for italicized fonts, and that the text output may cover \e
@@ -603,11 +603,11 @@ QRect QFontMetrics::boundingRect(const QString &str) const
 
     Note that the rectangle usually extends both above and below the
     base line.
-    
+
     \warning The width of the returned rectangle is not the advance width
     of the character. Use boundingRect(const QString &) or width() instead.
-    
-    \sa width() 
+
+    \sa width()
 */
 QRect QFontMetrics::boundingRect(QChar ch) const
 {
@@ -898,7 +898,7 @@ QFontMetricsF::QFontMetricsF(const QFont &font, QPaintDevice *paintdevice)
 {
     int dpi = paintdevice ? paintdevice->logicalDpiY() : qt_defaultDpi();
 #ifdef Q_WS_X11
-    int screen = paintdevice ? qt_x11Info(paintdevice)->screen() : 0;
+    int screen = qt_x11Info(paintdevice) ? qt_x11Info(paintdevice)->screen() : 0;
 #else
     const int screen = 0;
 #endif
