@@ -24,8 +24,13 @@
 #ifndef QLINKEDLIST_H
 #define QLINKEDLIST_H
 
-#include "QtCore/qiterator.h"
-#include "QtCore/qatomic.h"
+#include <QtCore/qiterator.h>
+#include <QtCore/qatomic.h>
+
+#ifndef QT_NO_STL
+#include <iterator>
+#include <list>
+#endif
 
 QT_MODULE(Core)
 
@@ -120,8 +125,8 @@ public:
         typedef std::bidirectional_iterator_tag  iterator_category;
         typedef ptrdiff_t  difference_type;
         typedef T value_type;
-        typedef T *pointer;
-        typedef T &reference;
+        typedef const T *pointer;
+        typedef const T &reference;
         Node *i;
         inline const_iterator() : i(0) {}
         inline const_iterator(Node *n) : i(n) {}
@@ -182,6 +187,13 @@ public:
     typedef const value_type *const_pointer;
     typedef value_type &reference;
     typedef const value_type &const_reference;
+
+#ifndef QT_NO_STL
+    static inline QLinkedList<T> fromStdList(const std::list<T> &list)
+    { QLinkedList<T> tmp; qCopy(list.begin(), list.end(), std::back_inserter(tmp)); return tmp; }
+    inline std::list<T> toStdList() const
+    { std::list<T> tmp; qCopy(constBegin(), constEnd(), std::back_inserter(tmp)); return tmp; }
+#endif
 
 #ifdef QT3_SUPPORT
     // compatibility

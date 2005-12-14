@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -35,8 +35,11 @@ ConnectionWidget::ConnectionWidget(QWidget *parent)
     tree->setHeaderLabels(QStringList(tr("database")));
     tree->header()->setResizeMode(QHeaderView::Stretch);
     QAction *refreshAction = new QAction(tr("Refresh"), tree);
+    metaDataAction = new QAction(tr("Show Schema"), tree);
     connect(refreshAction, SIGNAL(triggered()), SLOT(refresh()));
+    connect(metaDataAction, SIGNAL(triggered()), SLOT(showMetaData()));
     tree->addAction(refreshAction);
+    tree->addAction(metaDataAction);
     tree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     layout->addWidget(tree);
@@ -127,3 +130,18 @@ void ConnectionWidget::on_tree_itemActivated(QTreeWidgetItem *item, int /* colum
         emit tableActivated(item->text(0));
     }
 }
+
+void ConnectionWidget::showMetaData()
+{
+    QTreeWidgetItem *cItem = tree->currentItem();
+    if (!cItem || !cItem->parent())
+        return;
+    setActive(cItem->parent());
+    emit metaDataRequested(cItem->text(0));
+}
+
+void ConnectionWidget::on_tree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
+{
+    metaDataAction->setEnabled(current && current->parent());
+}
+

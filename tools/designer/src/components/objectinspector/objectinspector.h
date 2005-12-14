@@ -30,10 +30,10 @@
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
-class TreeWidget;
 
 namespace qdesigner_internal {
 
+class TreeWidget;
 class ObjectItem;
 
 class QT_OBJECTINSPECTOR_EXPORT ObjectInspector: public QDesignerObjectInspectorInterface
@@ -49,6 +49,7 @@ public:
 
 private slots:
     void slotSelectionChanged();
+    void slotPopupContextMenu(const QPoint &pos);
 
 protected:
     virtual void showEvent(QShowEvent *enent);

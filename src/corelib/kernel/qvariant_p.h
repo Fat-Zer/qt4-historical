@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QCOREVARIANT_P_H
-#define QCOREVARIANT_P_H
+#ifndef QVARIANT_P_H
+#define QVARIANT_P_H
 
 //
 //  W A R N I N G
@@ -35,11 +35,10 @@
 // We mean it.
 //
 
-
 // takes a type, returns the internal void* pointer casted
 // to a pointer of the input type
 
-#ifdef Q_CC_SUN // Sun CC piks the wrong overload, so introduce awful hack
+#ifdef Q_CC_SUN // Sun CC picks the wrong overload, so introduce awful hack
 
 template <typename T>
 inline T *v_cast(const QVariant::Private *nd, T * = 0)
@@ -101,5 +100,4 @@ inline void v_clear(QVariant::Private *d, T* = 0)
     }
 }
 
-#endif
-
+#endif // QVARIANT_P_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/itemviews/q3listview.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/itemviews/q3listview.cpp -->
 <head>
-    <title>Qt 4.0: Q3ListView Class Reference</title>
+    <title>Qt 4.1: Q3ListView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -58,7 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -135,7 +135,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -352,7 +352,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>int itemMargin () const</b></li>
 <li><div class="fn"/><b>virtual void setItemMargin ( int )</b></li>
 </ul>
-<p>See also Q3ListViewItem::paintCell().</p>
+<p>See also <a href="q3listviewitem.html#paintCell">Q3ListViewItem::paintCell</a>().</p>
 <h3 class="fn"><a name="multiSelection-prop"></a>multiSelection : bool</h3>
 <p>This property holds whether the list view is in multi-selection or extended-selection mode.</p>
 <p>If you enable multi-selection, <tt>Multi</tt>, mode, it is possible to specify whether or not this mode should be extended. <tt>Extended</tt> means that the user can select multiple items only when pressing the Shift or Ctrl key at the same time.</p>
@@ -500,7 +500,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the user presses the mouse on an item and starts moving the mouse, and the item allow dragging (see <a href="q3listviewitem.html#setDragEnabled">Q3ListViewItem::setDragEnabled</a>()), this function is called to get a drag object and a drag is started unless dragObject() returns 0.</p>
 <p>By default this function returns 0. You should reimplement it and create a <a href="q3dragobject.html">Q3DragObject</a> depending on the selected items.</p>
 <h3 class="fn"><a name="drawContentsOffset"></a>void Q3ListView::drawContentsOffset ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>ox</i>, int <i>oy</i>, int <i>cx</i>, int <i>cy</i>, int <i>cw</i>, int <i>ch</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Calls Q3ListViewItem::paintCell() and <a href="q3listviewitem.html#paintBranches">Q3ListViewItem::paintBranches</a>() as necessary for all list view items that require repainting in the <i>cw</i> pixels wide and <i>ch</i> pixels high bounding rectangle starting at position <i>cx</i>, <i>cy</i> with offset <i>ox</i>, <i>oy</i>. Uses the painter <i>p</i>.</p>
+<p>Calls <a href="q3listviewitem.html#paintCell">Q3ListViewItem::paintCell</a>() and <a href="q3listviewitem.html#paintBranches">Q3ListViewItem::paintBranches</a>() as necessary for all list view items that require repainting in the <i>cw</i> pixels wide and <i>ch</i> pixels high bounding rectangle starting at position <i>cx</i>, <i>cy</i> with offset <i>ox</i>, <i>oy</i>. Uses the painter <i>p</i>.</p>
 <p>Reimplemented from <a href="q3scrollview.html#drawContentsOffset">Q3ScrollView</a>.</p>
 <h3 class="fn"><a name="dropped"></a>void Q3ListView::dropped ( <a href="qdropevent.html">QDropEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted, when a drop event occurred on the viewport (not onto an item).</p>
@@ -525,6 +525,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You may safely call <a href="q3header.html#setClickEnabled">Q3Header::setClickEnabled</a>(), <a href="q3header.html#setResizeEnabled">Q3Header::setResizeEnabled</a>(), <a href="q3header.html#moving-prop">Q3Header::setMovingEnabled</a>(), <a href="qwidget.html#hide">Q3Header::hide</a>() and all the const <a href="q3header.html">Q3Header</a> functions.</p>
 <h3 class="fn"><a name="hideColumn"></a>void Q3ListView::hideColumn ( int <i>column</i> )</h3>
 <p>Hides the column specified at <i>column</i>. This is a convenience function that calls setColumnWidth(column, 0).</p>
+<p>Note: The user may still be able to resize the hidden column using the header handles. To prevent this, call setResizeEnabled(false, <i>column</i>) on the list views header.</p>
 <p>See also <a href="q3listview.html#setColumnWidth">setColumnWidth</a>().</p>
 <h3 class="fn"><a name="insertItem"></a>void Q3ListView::insertItem ( <a href="q3listviewitem.html">Q3ListViewItem</a> * <i>i</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Inserts item <i>i</i> into the list view as a top-level item. You do not need to call this unless you've called takeItem(<i>i</i>) or Q3ListViewItem::takeItem(<i>i</i>) and need to reinsert <i>i</i> elsewhere.</p>
@@ -628,7 +629,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> Do not delete any <a href="q3listviewitem.html">Q3ListViewItem</a> objects in slots connected to this signal.</p>
 <p>See also <a href="q3listview.html#setSelected">setSelected</a>(), <a href="q3listviewitem.html#setSelected">Q3ListViewItem::setSelected</a>(), and <a href="q3listview.html#currentChanged">currentChanged</a>().</p>
 <h3 class="fn"><a name="setColumnAlignment"></a>void Q3ListView::setColumnAlignment ( int <i>column</i>, int <i>align</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Sets column <i>column</i>'s alignment to <i>align</i>. The alignment is ultimately passed to Q3ListViewItem::paintCell() for each item in the list view. For horizontally aligned text with <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> the ellipsis (...) will be to the right, for <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a> the ellipsis will be to the left.</p>
+<p>Sets column <i>column</i>'s alignment to <i>align</i>. The alignment is ultimately passed to <a href="q3listviewitem.html#paintCell">Q3ListViewItem::paintCell</a>() for each item in the list view. For horizontally aligned text with <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> or <a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a> the ellipsis (...) will be to the right, for <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a> the ellipsis will be to the left.</p>
 <p>See also <a href="q3listview.html#columnAlignment">columnAlignment</a>() and <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="setColumnText"></a>void Q3ListView::setColumnText ( int <i>column</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the heading of column <i>column</i> to <i>label</i>.</p>
@@ -692,6 +693,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

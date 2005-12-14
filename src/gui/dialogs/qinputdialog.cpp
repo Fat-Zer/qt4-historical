@@ -368,6 +368,7 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
     bool accepted = (dlg.exec() == QDialog::Accepted);
     if (ok)
         *ok = accepted;
+
     return combo->currentText();
 }
 

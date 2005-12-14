@@ -35,12 +35,12 @@
 // We mean it.
 //
 
-#include <private/qabstractitemview_p.h>
+#include "private/qabstractitemview_p.h"
 
 #ifndef QT_NO_ITEMVIEWS
-#include <qbitarray.h>
-#include <qapplication.h>
-#include <qlabel.h>
+#include "QtCore/qbitarray.h"
+#include "QtGui/qapplication.h"
+#include "QtGui/qlabel.h"
 
 class QHeaderViewPrivate: public QAbstractItemViewPrivate
 {
@@ -70,6 +70,8 @@ public:
     int sectionHandleAt(int position);
     void setupSectionIndicator(int section, int position);
     void updateSectionIndicator(int section, int position);
+    void resizeSections(QHeaderView::ResizeMode globalMode, bool useGlobalMode = false);
+    void sectionsRemoved(const QModelIndex &,int,int);
 
     bool isSectionSelected(int section) const;
     inline void prepareSectionSelected()
@@ -77,11 +79,11 @@ public:
             sectionSelection.fill(false, sections.count() * 2);
           else sectionSelection.fill(false); }
 
-    inline int defaultSectionSize() const
-        { return (orientation == Qt::Horizontal ? 100 : 30); }
-
     inline bool reverse() const
         { return q_func()->isRightToLeft() && orientation == Qt::Horizontal; }
+
+    inline int logicalIndex(int visualIndex) const
+        { return logicalIndices.isEmpty() ? visualIndex : logicalIndices.at(visualIndex); }
 
     enum State { NoState, ResizeSection, MoveSection } state;
 
@@ -93,16 +95,22 @@ public:
 
     struct HeaderSection {
         int position;
-        int logical;
         uint hidden : 1;
         QHeaderView::ResizeMode mode;
-        inline bool operator>(int position) const
-            { return (*this).position > position; }
     };
+
+    void clear() {
+        sections.clear();
+        visualIndices.clear();
+        logicalIndices.clear();
+        sectionSelection.clear();
+        hiddenSectionSize.clear();
+    }
     mutable QVector<HeaderSection> sections; // HeaderSection = sections.at(visualIndex)
     mutable QVector<int> visualIndices; // visualIndex = visualIndices.at(logicalIndex)
+    mutable QVector<int> logicalIndices; // logicalIndex = row or column in the model
     mutable QBitArray sectionSelection;
-    mutable QMap<int, int> hiddenSectionSize; // from logical index to section size
+    mutable QHash<int, int> hiddenSectionSize; // from logical index to section size
 
     int lastPos;
     int section; // used for resizing and moving sections
@@ -115,10 +123,13 @@ public:
     bool stretchLastSection;
     int stretchSections;
     int sectionIndicatorOffset;
+    int defaultSectionSize;
+    Qt::Alignment defaultAlignment;
     QLabel *sectionIndicator;
     QStyleOptionHeader getStyleOption() const;
     QHeaderView::ResizeMode globalResizeMode;
 };
 
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QHEADERVIEW_P_H

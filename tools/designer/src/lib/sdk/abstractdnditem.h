@@ -30,7 +30,7 @@ class DomUI;
 class QWidget;
 class QPoint;
 
-class QT_SDK_EXPORT QDesignerDnDItemInterface
+class QDESIGNER_SDK_EXPORT QDesignerDnDItemInterface
 {
 public:
     enum DropType { MoveDrop, CopyDrop };

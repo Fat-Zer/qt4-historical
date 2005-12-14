@@ -46,8 +46,8 @@ class Q_GUI_EXPORT QAbstractItemView : public QAbstractScrollArea
     Q_PROPERTY(bool autoScroll READ hasAutoScroll WRITE setAutoScroll)
     Q_PROPERTY(EditTriggers editTriggers READ editTriggers WRITE setEditTriggers)
     Q_PROPERTY(bool tabKeyNavigation READ tabKeyNavigation WRITE setTabKeyNavigation)
-    Q_PROPERTY(bool showDropIndicator READ showDropIndicator WRITE setDropIndicatorShown)
 #ifndef QT_NO_DRAGANDDROP
+    Q_PROPERTY(bool showDropIndicator READ showDropIndicator WRITE setDropIndicatorShown)
     Q_PROPERTY(bool dragEnabled READ dragEnabled WRITE setDragEnabled)
 #endif
     Q_PROPERTY(bool alternatingRowColors READ alternatingRowColors WRITE setAlternatingRowColors)
@@ -61,7 +61,8 @@ public:
         NoSelection,
         SingleSelection,
         MultiSelection,
-        ExtendedSelection
+        ExtendedSelection,
+        ContiguousSelection
     };
 
     enum SelectionBehavior {
@@ -118,16 +119,16 @@ public:
     void setTabKeyNavigation(bool enable);
     bool tabKeyNavigation() const;
 
+#ifndef QT_NO_DRAGANDDROP
     void setDropIndicatorShown(bool enable);
     bool showDropIndicator() const;
 
-#ifndef QT_NO_DRAGANDDROP
     void setDragEnabled(bool enable);
     bool dragEnabled() const;
 #endif
     void setAlternatingRowColors(bool enable);
     bool alternatingRowColors() const;
-    
+
     void setIconSize(const QSize &size);
     QSize iconSize() const;
 
@@ -138,7 +139,7 @@ public:
 
     virtual QRect visualRect(const QModelIndex &index) const = 0;
     virtual void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible) = 0;
-    virtual QModelIndex indexAt(const QPoint &p) const = 0;
+    virtual QModelIndex indexAt(const QPoint &point) const = 0;
 
     QSize sizeHintForIndex(const QModelIndex &index) const;
     virtual int sizeHintForRow(int row) const;
@@ -147,7 +148,10 @@ public:
     void openPersistentEditor(const QModelIndex &index);
     void closePersistentEditor(const QModelIndex &index);
 
-public slots:
+    void setIndexWidget(const QModelIndex &index, QWidget *widget);
+    QWidget *indexWidget(const QModelIndex &index) const;
+
+public Q_SLOTS:
     virtual void reset();
     virtual void setRootIndex(const QModelIndex &index);
     virtual void doItemsLayout();
@@ -155,8 +159,10 @@ public slots:
     void edit(const QModelIndex &index);
     void clearSelection();
     void setCurrentIndex(const QModelIndex &index);
+    void scrollToTop();
+    void scrollToBottom();
 
-protected slots:
+protected Q_SLOTS:
     virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     virtual void rowsInserted(const QModelIndex &parent, int start, int end);
     virtual void rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
@@ -173,11 +179,11 @@ protected slots:
     virtual void commitData(QWidget *editor);
     virtual void editorDestroyed(QObject *editor);
 
-signals:
+Q_SIGNALS:
     void pressed(const QModelIndex &index);
     void clicked(const QModelIndex &index);
     void doubleClicked(const QModelIndex &index);
-    
+
     void activated(const QModelIndex &index);
     void entered(const QModelIndex &index);
     void viewportEntered();
@@ -213,7 +219,7 @@ protected:
 #ifndef QT_NO_DRAGANDDROP
     virtual void startDrag(Qt::DropActions supportedActions);
 #endif
-    
+
     virtual QStyleOptionViewItem viewOptions() const;
 
     enum State {
@@ -231,19 +237,21 @@ protected:
     void scheduleDelayedItemsLayout();
     void executeDelayedItemsLayout();
 
+    void setDirtyRegion(const QRegion &region);
     void scrollDirtyRegion(int dx, int dy);
     QPoint dirtyRegionOffset() const;
-    
+
     void startAutoScroll();
     void stopAutoScroll();
     void doAutoScroll();
 
+    bool event(QEvent *event);
     bool viewportEvent(QEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
-#ifndef QT_NO_DRAGANDDROP  
+#ifndef QT_NO_DRAGANDDROP
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
@@ -255,11 +263,18 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void timerEvent(QTimerEvent *event);
 
+#ifndef QT_NO_DRAGANDDROP
+    enum DropIndicatorPosition { OnItem, AboveItem, BelowItem, OnViewport };
+    DropIndicatorPosition dropIndicatorPosition() const;
+#endif
+
 private:
     Q_DECLARE_PRIVATE(QAbstractItemView)
     Q_DISABLE_COPY(QAbstractItemView)
+    Q_PRIVATE_SLOT(d_func(), void columnsAboutToBeRemoved(const QModelIndex&, int, int))
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractItemView::EditTriggers)
 
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QABSTRACTITEMVIEW_H

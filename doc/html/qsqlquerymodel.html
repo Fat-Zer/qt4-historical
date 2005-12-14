@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/sql/models/qsqlquerymodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/sql/models/qsqlquerymodel.cpp -->
 <head>
-    <title>Qt 4.0: QSqlQueryModel Class Reference</title>
+    <title>Qt 4.1: QSqlQueryModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -29,8 +29,10 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qsqlquerymodel.html#QSqlQueryModel">QSqlQueryModel</a></b> ( QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/>virtual <b><a href="qsqlquerymodel.html#dtor.QSqlQueryModel">~QSqlQueryModel</a></b> ()</li>
+<li><div class="fn"/>virtual bool <b><a href="qsqlquerymodel.html#canFetchMore">canFetchMore</a></b> ( const QModelIndex &amp; <i>parent</i> = QModelIndex() ) const</li>
 <li><div class="fn"/>virtual void <b><a href="qsqlquerymodel.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>virtual QVariant <b><a href="qsqlquerymodel.html#data">data</a></b> ( const QModelIndex &amp; <i>item</i>, int <i>role</i> = Qt::DisplayRole ) const</li>
+<li><div class="fn"/>virtual void <b><a href="qsqlquerymodel.html#fetchMore">fetchMore</a></b> ( const QModelIndex &amp; <i>parent</i> = QModelIndex() )</li>
 <li><div class="fn"/>virtual QVariant <b><a href="qsqlquerymodel.html#headerData">headerData</a></b> ( int <i>section</i>, Qt::Orientation <i>orientation</i>, int <i>role</i> = Qt::DisplayRole ) const</li>
 <li><div class="fn"/>virtual bool <b><a href="qsqlquerymodel.html#insertColumns">insertColumns</a></b> ( int <i>column</i>, int <i>count</i>, const QModelIndex &amp; <i>parent</i> = QModelIndex() )</li>
 <li><div class="fn"/>QSqlError <b><a href="qsqlquerymodel.html#lastError">lastError</a></b> () const</li>
@@ -38,6 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QSqlRecord <b><a href="qsqlquerymodel.html#record">record</a></b> ( int <i>row</i> ) const</li>
 <li><div class="fn"/>QSqlRecord <b><a href="qsqlquerymodel.html#record-2">record</a></b> () const</li>
 <li><div class="fn"/>virtual bool <b><a href="qsqlquerymodel.html#removeColumns">removeColumns</a></b> ( int <i>column</i>, int <i>count</i>, const QModelIndex &amp; <i>parent</i> = QModelIndex() )</li>
+<li><div class="fn"/>virtual int <b><a href="qsqlquerymodel.html#rowCount">rowCount</a></b> ( const QModelIndex &amp; <i>parent</i> = QModelIndex() ) const</li>
 <li><div class="fn"/>virtual bool <b><a href="qsqlquerymodel.html#setHeaderData">setHeaderData</a></b> ( int <i>section</i>, Qt::Orientation <i>orientation</i>, const QVariant &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )</li>
 <li><div class="fn"/>void <b><a href="qsqlquerymodel.html#setQuery">setQuery</a></b> ( const QSqlQuery &amp; <i>query</i> )</li>
 <li><div class="fn"/>void <b><a href="qsqlquerymodel.html#setQuery-2">setQuery</a></b> ( const QString &amp; <i>query</i>, const QSqlDatabase &amp; <i>db</i> = QSqlDatabase() )</li>
@@ -55,7 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qsqlquerymodel.html#setLastError">setLastError</a></b> ( const QSqlError &amp; <i>error</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>12 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
+<li><div class="fn"/>13 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
@@ -63,7 +66,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>2 public slots inherited from <a href="qabstractitemmodel.html#public-slots">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
-<li><div class="fn"/>3 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
+<li><div class="fn"/>12 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
@@ -89,6 +92,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       int salary = model.data(model.index(4, 2)).toInt();</pre>
 <p>The model is read-only by default. To make it read-write, you must subclass it and reimplement <a href="qabstractitemmodel.html#setData">setData</a>() and <a href="qabstractitemmodel.html#flags">flags</a>(). Another option is to use <a href="qsqltablemodel.html">QSqlTableModel</a>, which provides a read-write model based on a single database table.</p>
 <p>The <a href="sql-querymodel.html">sql/querymodel</a> example illustrates how to use QSqlQueryModel to display the result of a query. It also shows how to subclass QSqlQueryModel to customize the contents of the data before showing it to the user, and how to create a read-write model based on QSqlQueryModel.</p>
+<p>If the database doesn't return the amount of selected rows in a query, the model will fetch rows incrementally. See <a href="qsqlquerymodel.html#fetchMore">fetchMore</a>() for more information.</p>
 <p>See also <a href="qsqltablemodel.html">QSqlTableModel</a>, <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>, <a href="qsqlquery.html">QSqlQuery</a>, and <a href="model-view-programming.html">Model/View Programming</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -97,6 +101,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.QSqlQueryModel"></a>QSqlQueryModel::~QSqlQueryModel ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the object and frees any allocated resources.</p>
 <p>See also <a href="qsqlquerymodel.html#clear">clear</a>().</p>
+<h3 class="fn"><a name="canFetchMore"></a>bool QSqlQueryModel::canFetchMore ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns true if it is possible to read more rows from the database. This only affects databases that don't report back the size of a query (see <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>()).</p>
+<p><i>parent</i> should always be an invalid <a href="qmodelindex.html">QModelIndex</a>.</p>
+<p>Reimplemented from <a href="qabstractitemmodel.html#canFetchMore">QAbstractItemModel</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qsqlquerymodel.html#fetchMore">fetchMore</a>().</p>
 <h3 class="fn"><a name="clear"></a>void QSqlQueryModel::clear ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Clears the model and releases any aquired resource.</p>
 <h3 class="fn"><a name="data"></a><a href="qvariant.html">QVariant</a> QSqlQueryModel::data ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>item</i>, int <i>role</i> = Qt::DisplayRole ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -104,6 +114,15 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>item</i> is out of bounds or if an error occurred, an invalid <a href="qvariant.html">QVariant</a> is returned.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#data">QAbstractItemModel</a>.</p>
 <p>See also <a href="qsqlquerymodel.html#lastError">lastError</a>().</p>
+<h3 class="fn"><a name="fetchMore"></a>void QSqlQueryModel::fetchMore ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Fetches more rows from a database. This only affects databases that don't report back the size of a query (see <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>()).</p>
+<p>To force fetching of the entire database, you can use the following:</p>
+<pre>&nbsp;   while (myModel-&gt;canFetchMore())
+        myModel-&gt;fetchMore();</pre>
+<p><i>parent</i> should always be an invalid <a href="qmodelindex.html">QModelIndex</a>.</p>
+<p>Reimplemented from <a href="qabstractitemmodel.html#fetchMore">QAbstractItemModel</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qsqlquerymodel.html#canFetchMore">canFetchMore</a>().</p>
 <h3 class="fn"><a name="headerData"></a><a href="qvariant.html">QVariant</a> QSqlQueryModel::headerData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, int <i>role</i> = Qt::DisplayRole ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the header data for the given <i>role</i> in the <i>section</i> of the header with the specified <i>orientation</i>.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#headerData">QAbstractItemModel</a>.</p>
@@ -150,9 +169,15 @@ body { background: #ffffff; color: black; }</style>
 <p>Removing columns effectively hides them. It does not affect the underlying <a href="qsqlquery.html">QSqlQuery</a>.</p>
 <p>Returns true if the columns were removed; otherwise returns false.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#removeColumns">QAbstractItemModel</a>.</p>
+<h3 class="fn"><a name="rowCount"></a>int QSqlQueryModel::rowCount ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>If the database supports returning the size of a query (see <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>()), the amount of rows of the current query is returned. Otherwise, returns the amount of rows currently cached on the client.</p>
+<p><i>parent</i> should always be an invalid <a href="qmodelindex.html">QModelIndex</a>.</p>
+<p>Reimplemented from <a href="qabstractitemmodel.html#rowCount">QAbstractItemModel</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qsqlquerymodel.html#canFetchMore">canFetchMore</a>() and <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>().</p>
 <h3 class="fn"><a name="setHeaderData"></a>bool QSqlQueryModel::setHeaderData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Sets the caption for the header with the given <i>orientation</i> to the specified <i>value</i>. This is useful if the model is used to display data in a view (e.g., <a href="qtableview.html">QTableView</a>).</p>
-<p>Returns true if <i>role</i> is <a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a> and the <i>section</i> refers to a valid section; otherwise returns false.</p>
+<p>Sets the caption for a horizontal header for the specified <i>role</i> to <i>value</i>. This is useful if the model is used to display data in a view (e.g., <a href="qtableview.html">QTableView</a>).</p>
+<p>Returns true if <i>orientation</i> is <a href="qt.html#Orientation-enum">Qt::Horizontal</a> and the <i>section</i> refers to a valid section; otherwise returns false.</p>
 <p>Note that this function cannot be used to modify values in the database since the model is read-only.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#setHeaderData">QAbstractItemModel</a>.</p>
 <p>See also <a href="qsqlquerymodel.html#headerData">headerData</a>() and <a href="qsqlquerymodel.html#data">data</a>().</p>
@@ -161,15 +186,22 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qsqlquerymodel.html#lastError">lastError</a>().</p>
 <h3 class="fn"><a name="setQuery"></a>void QSqlQueryModel::setQuery ( const <a href="qsqlquery.html">QSqlQuery</a> &amp; <i>query</i> )</h3>
 <p>Resets the model and sets the data provider to be the given <i>query</i>. Note that the query must be active and must not be isForwardOnly().</p>
-<p>See also <a href="qsqlquerymodel.html#query">query</a>(), <a href="qsqlquery.html#isActive">QSqlQuery::isActive</a>(), and <a href="qsqlquery.html#setForwardOnly">QSqlQuery::setForwardOnly</a>().</p>
+<p><a href="qsqlquerymodel.html#lastError">lastError</a>() can be used to retrieve verbose information if there was an error setting the query.</p>
+<p>See also <a href="qsqlquerymodel.html#query">query</a>(), <a href="qsqlquery.html#isActive">QSqlQuery::isActive</a>(), <a href="qsqlquery.html#setForwardOnly">QSqlQuery::setForwardOnly</a>(), and <a href="qsqlquerymodel.html#lastError">lastError</a>().</p>
 <h3 class="fn"><a name="setQuery-2"></a>void QSqlQueryModel::setQuery ( const <a href="qstring.html">QString</a> &amp; <i>query</i>, const <a href="qsqldatabase.html">QSqlDatabase</a> &amp; <i>db</i> = QSqlDatabase() )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Executes the query <i>query</i> for the given database connection <i>db</i>. If no database is specified, the default connection is used.</p>
-<p>See also <a href="qsqlquerymodel.html#query">query</a>() and <a href="qsqlquerymodel.html#queryChange">queryChange</a>().</p>
+<p><a href="qsqlquerymodel.html#lastError">lastError</a>() can be used to retrieve verbose information if there was an error setting the query.</p>
+<p>Example:</p>
+<pre>&nbsp;   QSqlQueryModel model;
+    model.setQuery(&quot;select * from MyTable&quot;);
+    if (model.lastError().isValid())
+        qDebug() &lt;&lt; model.lastError();</pre>
+<p>See also <a href="qsqlquerymodel.html#query">query</a>(), <a href="qsqlquerymodel.html#queryChange">queryChange</a>(), and <a href="qsqlquerymodel.html#lastError">lastError</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

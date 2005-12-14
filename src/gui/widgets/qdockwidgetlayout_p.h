@@ -35,8 +35,8 @@
 // We mean it.
 //
 
-#include <qlayout.h>
-#include <qlist.h>
+#include "QtGui/qlayout.h"
+#include "QtCore/qlist.h"
 
 #ifndef QT_NO_DOCKWIDGET
 
@@ -120,10 +120,10 @@ public:
     void extend(QDockWidget *dockwidget, Qt::Orientation direction);
     void split(QDockWidget *existing, QDockWidget *with, Qt::DockWidgetArea area);
 
-signals:
+Q_SIGNALS:
     void emptied();
 
-private slots:
+private Q_SLOTS:
     void maybeDelete();
 };
 
@@ -137,4 +137,5 @@ static inline int pick_perp(Qt::Orientation o, const QSize &s)
 { return o == Qt::Vertical ? s.width() : s.height(); }
 
 #endif // QT_NO_MAINWINDOW
+
 #endif // QDOCKWIDGETLAYOUT_P_H

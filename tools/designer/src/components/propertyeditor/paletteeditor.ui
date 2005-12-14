@@ -1,6 +1,27 @@
 <ui version="4.0" >
  <author></author>
- <comment></comment>
+ <comment>*********************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the Qt Designer of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+*********************************************************************</comment>
  <exportmacro></exportmacro>
  <class>PaletteEditor</class>
  <widget class="QDialog" name="PaletteEditor" >
@@ -8,8 +29,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>445</width>
-    <height>452</height>
+    <width>337</width>
+    <height>433</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -25,90 +46,44 @@
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>8</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="groupAutoPalette" >
-     <property name="geometry" >
-      <rect>
-       <x>11</x>
-       <y>11</y>
-       <width>423</width>
-       <height>62</height>
-      </rect>
+    <widget class="QGroupBox" name="advancedBox" >
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>4</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
      </property>
      <property name="title" >
-      <string>Build Palette</string>
+      <string>Tune Palette</string>
      </property>
-     <layout class="QHBoxLayout" >
+     <layout class="QGridLayout" >
       <property name="margin" >
-       <number>11</number>
+       <number>8</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item>
-       <widget class="QLabel" name="labelMainColor" >
-        <property name="geometry" >
-         <rect>
-          <x>13</x>
-          <y>23</y>
-          <width>70</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>1</hsizetype>
-          <vsizetype>1</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="lineWidth" >
-         <number>1</number>
-        </property>
-        <property name="midLineWidth" >
-         <number>0</number>
-        </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
         <property name="text" >
-         <string>&amp;3-D Effects:</string>
-        </property>
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="buddy" >
-         <cstring>buttonMainColor</cstring>
+         <string>Quick</string>
         </property>
        </widget>
       </item>
-      <item>
-        <widget class="qdesigner_internal::StyledButton" name="buttonMainColor" >
-        <property name="geometry" >
-         <rect>
-          <x>89</x>
-          <y>23</y>
-          <width>800</width>
-          <height>480</height>
-         </rect>
-        </property>
+      <item row="0" column="1" >
+       <widget class="qdesigner_internal::StyledButton" name="buildButton" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>0</hsizetype>
@@ -128,112 +103,30 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLabel" name="labelMainColor2" >
-        <property name="geometry" >
-         <rect>
-          <x>95</x>
-          <y>23</y>
-          <width>77</width>
-          <height>26</height>
-         </rect>
+      <item row="0" column="2" >
+       <widget class="QRadioButton" name="computeRadio" >
+        <property name="text" >
+         <string>Compute Details</string>
         </property>
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>1</hsizetype>
-          <vsizetype>1</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="checked" >
+         <bool>true</bool>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QRadioButton" name="detailsRadio" >
+        <property name="text" >
+         <string>Show Details</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4" >
+       <widget class="QTreeView" name="paletteView" >
         <property name="minimumSize" >
          <size>
-          <width>50</width>
-          <height>0</height>
+          <width>0</width>
+          <height>200</height>
          </size>
-        </property>
-        <property name="lineWidth" >
-         <number>1</number>
-        </property>
-        <property name="midLineWidth" >
-         <number>0</number>
-        </property>
-        <property name="text" >
-         <string>Back&amp;ground:</string>
-        </property>
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="buddy" >
-         <cstring>buttonMainColor2</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-        <widget class="qdesigner_internal::StyledButton" name="buttonMainColor2" >
-        <property name="geometry" >
-         <rect>
-          <x>178</x>
-          <y>23</y>
-          <width>800</width>
-          <height>480</height>
-         </rect>
-        </property>
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>0</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="focusPolicy" >
-         <enum>Qt::StrongFocus</enum>
-        </property>
-        <property name="toolTip" >
-         <string>Choose a color</string>
-        </property>
-        <property name="whatsThis" >
-         <string>Choose the background color for the generated palette.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="geometry" >
-         <rect>
-          <x>184</x>
-          <y>23</y>
-          <width>132</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnAdvanced" >
-        <property name="geometry" >
-         <rect>
-          <x>322</x>
-          <y>23</y>
-          <width>88</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>&amp;Tune Palette...</string>
         </property>
        </widget>
       </item>
@@ -242,14 +135,6 @@
    </item>
    <item>
     <widget class="QGroupBox" name="GroupBox126" >
-     <property name="geometry" >
-      <rect>
-       <x>11</x>
-       <y>79</y>
-       <width>423</width>
-       <height>328</height>
-      </rect>
-     </property>
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>5</hsizetype>
@@ -261,78 +146,39 @@
      <property name="title" >
       <string>Preview</string>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QGridLayout" >
       <property name="margin" >
-       <number>11</number>
+       <number>8</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
+      <item row="0" column="2" >
+       <widget class="QRadioButton" name="disabledRadio" >
+        <property name="text" >
+         <string>Disabled</string>
         </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="TextLabel1" >
-          <property name="geometry" >
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>196</width>
-            <height>143</height>
-           </rect>
-          </property>
-          <property name="text" >
-           <string>Select &amp;Palette:</string>
-          </property>
-          <property name="buddy" >
-           <cstring>paletteCombo</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="paletteCombo" >
-          <property name="geometry" >
-           <rect>
-            <x>202</x>
-            <y>59</y>
-            <width>195</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <item>
-           <property name="text" >
-            <string>Active Palette</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Inactive Palette</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Disabled Palette</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
+       </widget>
       </item>
-      <item>
-        <widget class="qdesigner_internal::PreviewFrame" name="previewFrame" >
-        <property name="geometry" >
-         <rect>
-          <x>13</x>
-          <y>172</y>
-          <width>800</width>
-          <height>480</height>
-         </rect>
+      <item row="0" column="1" >
+       <widget class="QRadioButton" name="inactiveRadio" >
+        <property name="text" >
+         <string>Inactive</string>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QRadioButton" name="activeRadio" >
+        <property name="text" >
+         <string>Active</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3" >
+       <widget class="qdesigner_internal::PreviewFrame" name="previewFrame" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -356,14 +202,6 @@
      </property>
      <item>
       <widget class="QPushButton" name="buttonHelp" >
-       <property name="geometry" >
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>77</width>
-         <height>28</height>
-        </rect>
-       </property>
        <property name="text" >
         <string>&amp;Help</string>
        </property>
@@ -374,14 +212,6 @@
      </item>
      <item>
       <spacer>
-       <property name="geometry" >
-        <rect>
-         <x>83</x>
-         <y>0</y>
-         <width>174</width>
-         <height>28</height>
-        </rect>
-       </property>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
@@ -398,14 +228,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="buttonOk" >
-       <property name="geometry" >
-        <rect>
-         <x>263</x>
-         <y>0</y>
-         <width>77</width>
-         <height>28</height>
-        </rect>
-       </property>
        <property name="whatsThis" >
         <string>Close the dialog and apply all the changes.</string>
        </property>
@@ -422,14 +244,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="buttonCancel" >
-       <property name="geometry" >
-        <rect>
-         <x>346</x>
-         <y>0</y>
-         <width>77</width>
-         <height>28</height>
-        </rect>
-       </property>
        <property name="whatsThis" >
         <string>Close the dialog and discard any changes.</string>
        </property>
@@ -463,11 +277,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>buildButton</tabstop>
+  <tabstop>buttonHelp</tabstop>
   <tabstop>buttonOk</tabstop>
   <tabstop>buttonCancel</tabstop>
-  <tabstop>btnAdvanced</tabstop>
-  <tabstop>paletteCombo</tabstop>
-  <tabstop>buttonHelp</tabstop>
  </tabstops>
  <resources/>
  <connections>

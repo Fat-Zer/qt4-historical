@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/layout.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/layout.qdoc -->
 <head>
-    <title>Qt 4.0: Layout Classes</title>
+    <title>Qt 4.1: Layout Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -111,11 +111,11 @@ body { background: #ffffff; color: black; }</style>
 <p align="center"><img src="images/layout1.png" alt="Three widgets in a row" /></p><p>If we apply stretch factors to each widget, they will be laid out in proportion (but never less than their minimum size hint), e.g.</p>
 <p align="center"><img src="images/layout2.png" alt="Three widgets with different stretch factors in a row" /></p><a name="custom-widgets-in-layouts"></a>
 <h2>Custom Widgets in Layouts</h2>
-<p>When you make your own widget class, you should also communicate its layout properties. If the widget has a <a href="qlayout.html">QLayout</a>, this is already taken care of. If the widget does not have any child widgets, or uses manual layout, you should reimplement the following <a href="qwidget.html">QWidget</a> member functions:</p>
+<p>When you make your own widget class, you should also communicate its layout properties. If the widget has a <a href="qlayout.html">QLayout</a>, this is already taken care of. If the widget does not have any child widgets, or uses manual layout, you can change the behavior of the widget using any or all of the following mechanisms:</p>
 <ul>
-<li><a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>() returns the preferred size of the widget.</li>
-<li><a href="qwidget.html#minimumSizeHint-prop">QWidget::minimumSizeHint</a>() returns the smallest size the widget can have.</li>
-<li><a href="qwidget.html#sizePolicy-prop">QWidget::sizePolicy</a>() returns a <a href="qsizepolicy.html">QSizePolicy</a> (a value describing the space requirements of the widget).</li>
+<li>Reimplement <a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>() to return the preferred size of the widget.</li>
+<li>Reimplement <a href="qwidget.html#minimumSizeHint-prop">QWidget::minimumSizeHint</a>() to return the smallest size the widget can have.</li>
+<li>Call <a href="qwidget.html#sizePolicy-prop">QWidget::setSizePolicy</a>() to specify the space requirements of the widget.</li>
 </ul>
 <p>Call <a href="qwidget.html#updateGeometry">QWidget::updateGeometry</a>() whenever the size hint, minimum size hint or size policy changes. This will cause a layout recalculation. Multiple consecutive calls to <a href="qwidget.html#updateGeometry">QWidget::updateGeometry</a>() will only cause one recalculation.</p>
 <p>If the preferred height of your widget depends on its actual width (e.g., a label with automatic word-breaking), set the <a href="qsizepolicy.html#hasHeightForWidth">height-for-width</a> flag in the widget's <a href="qwidget.html#sizePolicy-prop">size policy</a> and reimplement <a href="qwidget.html#heightForWidth">QWidget::heightForWidth</a>().</p>
@@ -257,6 +257,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -31,6 +31,8 @@
 #include <qdesigner_promotedwidget_p.h>
 
 // Qt
+#include <QtGui/QAction>
+#include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QHeaderView>
 #include <QtGui/QScrollBar>
@@ -46,8 +48,7 @@ using namespace qdesigner_internal;
 
 ObjectInspector::ObjectInspector(QDesignerFormEditorInterface *core, QWidget *parent)
     : QDesignerObjectInspectorInterface(parent),
-      m_core(core),
-      m_ignoreNextUpdate(false)
+      m_core(core)
 {
     QVBoxLayout *vbox = new QVBoxLayout(this);
     vbox->setMargin(0);
@@ -62,7 +63,15 @@ ObjectInspector::ObjectInspector(QDesignerFormEditorInterface *core, QWidget *pa
     m_treeWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     m_treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);
 
+    m_treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(m_treeWidget, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(slotPopupContextMenu(QPoint)));
+
     connect(m_treeWidget, SIGNAL(itemPressed(QTreeWidgetItem*,int)),
+            this, SLOT(slotSelectionChanged()));
+
+    connect(m_treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)),
             this, SLOT(slotSelectionChanged()));
 }
 
@@ -75,6 +84,32 @@ QDesignerFormEditorInterface *ObjectInspector::core() const
     return m_core;
 }
 
+void ObjectInspector::slotPopupContextMenu(const QPoint &pos)
+{
+    QTreeWidgetItem *item = m_treeWidget->itemAt(pos);
+    if (!item)
+        return;
+
+    QObject *object = qvariant_cast<QObject *>(item->data(0, 1000));
+    if (!object)
+        return;
+
+#if defined(TASKMENU_INTEGRATION)
+    QDesignerTaskMenuExtension *task;
+
+    if (0 != (task = qt_extension<QDesignerTaskMenuExtension*>(core()->extensionManager(), object))) {
+        QList<QAction*> actions = task->taskActions();
+
+        if (!actions.isEmpty()) {
+            QMenu menu(this);
+
+            menu.addActions(actions);
+            menu.exec(m_treeWidget->viewport()->mapToGlobal(pos));
+        }
+    }
+#endif
+}
+
 bool ObjectInspector::sortEntry(const QObject *a, const QObject *b)
 {
     return a->objectName() < b->objectName();
@@ -82,12 +117,10 @@ bool ObjectInspector::sortEntry(const QObject *a, const QObject *b)
 
 void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
 {
-    if (m_ignoreNextUpdate) {
-        m_ignoreNextUpdate = false;
-        return;
-    }
-
     m_formWindow = fw;
+
+    if (fw && fw->cursor())
+        m_selected = fw->cursor()->selectedWidget(0);
 
     int xoffset = m_treeWidget->horizontalScrollBar()->value();
     int yoffset = m_treeWidget->verticalScrollBar()->value();
@@ -99,7 +132,7 @@ void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
 
     QDesignerWidgetDataBaseInterface *db = fw->core()->widgetDataBase();
 
-    m_treeWidget->viewport()->setUpdatesEnabled(false);
+    m_treeWidget->setUpdatesEnabled(false);
 
     QStack< QPair<QTreeWidgetItem*, QObject*> > workingList;
     QObject *rootObject = fw->mainContainer();
@@ -114,18 +147,7 @@ void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
         if (m_selected == object)
             theSelectedItem = item;
 
-        QString objectName;
-        if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(object))
-            objectName = promoted->child()->objectName();
-        else
-            objectName = object->objectName();
-
-        if (objectName.isEmpty())
-            objectName = tr("<noname>");
-
-        item->setText(0, objectName);
-
-        QString className;
+        QString className = object->metaObject()->className();
         if (QDesignerWidgetDataBaseItemInterface *widgetItem = db->item(db->indexOfObject(object, true))) {
             className = widgetItem->name();
 
@@ -134,11 +156,31 @@ void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
                 className = QLatin1String(static_cast<QWidget*>(object)->layout()->metaObject()->className());
             }
 
-            item->setText(1, className);
             item->setIcon(0, widgetItem->icon());
         }
 
+        if (className.startsWith("QDesigner"))
+            className.remove(1, 8);
+
+        item->setText(1, className);
+
         item->setData(0, 1000, qVariantFromValue(object));
+
+        if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(object))
+            object = promoted->child();
+
+        QString objectName = object->objectName();
+        if (objectName.isEmpty())
+            objectName = tr("<noname>");
+
+        if (QAction *act = qobject_cast<QAction*>(object)) { // separator is reserved
+            if (act->isSeparator()) {
+                objectName = tr("separator");
+            }
+            item->setIcon(0, act->icon());
+        }
+
+        item->setText(0, objectName);
 
         if (QDesignerContainerExtension *c = qt_extension<QDesignerContainerExtension*>(fw->core()->extensionManager(), object)) {
             for (int i=0; i<c->count(); ++i) {
@@ -154,13 +196,31 @@ void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
                 children = promoted->child()->children();
             else
                 children = object->children();
+
             qSort(children.begin(), children.end(), ObjectInspector::sortEntry);
+
             foreach (QObject *child, children) {
-                if (!child->isWidgetType() || !fw->isManaged(static_cast<QWidget*>(child)))
+                QWidget *widget = qobject_cast<QWidget*>(child);
+                if (!widget || !fw->isManaged(widget))
                     continue;
 
                 QTreeWidgetItem *childItem = new QTreeWidgetItem(item);
                 workingList.append(qMakePair(childItem, child));
+            }
+
+            if (QWidget *widget = qobject_cast<QWidget*>(object)) {
+                QList<QAction*> actions = widget->actions();
+                foreach (QAction *action, actions) {
+                    if (!fw->core()->metaDataBase()->item(action))
+                        continue;
+
+                    QObject *obj = action;
+                    if (action->menu())
+                        obj = action->menu();
+
+                    QTreeWidgetItem *childItem = new QTreeWidgetItem(item);
+                    workingList.append(qMakePair(childItem, obj));
+                }
             }
         }
 
@@ -170,13 +230,15 @@ void ObjectInspector::setFormWindow(QDesignerFormWindowInterface *fw)
     m_treeWidget->horizontalScrollBar()->setValue(xoffset);
     m_treeWidget->verticalScrollBar()->setValue(yoffset);
 
-    m_treeWidget->viewport()->setUpdatesEnabled(true);
-    m_treeWidget->viewport()->update();
+    if (theSelectedItem) {
+        m_treeWidget->setCurrentItem(theSelectedItem);
+        m_treeWidget->scrollToItem(theSelectedItem);
+    }
+
+    m_treeWidget->setUpdatesEnabled(true);
+    m_treeWidget->update();
 
     m_treeWidget->resizeColumnToContents(0);
-
-    if (theSelectedItem)
-        m_treeWidget->setCurrentItem(theSelectedItem);
 }
 
 void ObjectInspector::slotSelectionChanged()
@@ -187,13 +249,19 @@ void ObjectInspector::slotSelectionChanged()
     m_formWindow->clearSelection(false);
 
     QList<QTreeWidgetItem*> items = m_treeWidget->selectedItems();
-    m_ignoreNextUpdate = !items.isEmpty();
 
     foreach (QTreeWidgetItem *item, items) {
         QObject *object = qvariant_cast<QObject *>(item->data(0, 1000));
         m_selected = object;
-        if (QWidget *widget = qobject_cast<QWidget*>(object))
+
+        QWidget *widget = qobject_cast<QWidget*>(object);
+
+        if (widget && m_formWindow->isManaged(widget)) {
             m_formWindow->selectWidget(widget);
+        } else if (core()->metaDataBase()->item(object)) {
+            // refresh at least the property editor
+            core()->propertyEditor()->setObject(object);
+        }
     }
 }
 

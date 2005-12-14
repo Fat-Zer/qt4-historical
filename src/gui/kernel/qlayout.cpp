@@ -109,9 +109,9 @@ QLayout::QLayout(QLayoutPrivate &dd, QLayout *lay, QWidget *w)
     } else if (w) {
         if (w->layout()) {
             qWarning("QLayout \"%s\" added to %s \"%s\", which already has a"
-                     " layout", QObject::objectName().toLocal8Bit().data(), w->metaObject()->className(),
+                     " layout. This may cause memory leaks.",
+                     qPrintable(QObject::objectName()), w->metaObject()->className(),
                      w->objectName().toLocal8Bit().data());
-            w->layout()->setParent(0);
         } else {
             d->topLevel = true;
             w->d_func()->layout = this;
@@ -148,7 +148,7 @@ QLayout::QLayout(QWidget *parent, int margin, int spacing, const char *name)
     : QObject(*new QLayoutPrivate,parent)
 {
     Q_D(QLayout);
-     setObjectName(name);
+     setObjectName(QString::fromAscii(name));
     d->outsideBorder = margin;
     if (spacing < 0)
         d->insideSpacing = margin;
@@ -181,7 +181,7 @@ QLayout::QLayout(QLayout *parentLayout, int spacing, const char *name)
 
 {
     Q_D(QLayout);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->insideSpacing = spacing;
     parentLayout->addItem(this);
 }
@@ -198,7 +198,7 @@ QLayout::QLayout(int spacing, const char *name)
     : QObject(*new QLayoutPrivate, 0)
 {
     Q_D(QLayout);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->insideSpacing = spacing;
 }
 

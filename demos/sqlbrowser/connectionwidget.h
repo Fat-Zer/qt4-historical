@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -24,7 +24,7 @@
 #ifndef CONNECTIONWIDGET_H
 #define CONNECTIONWIDGET_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -42,15 +42,19 @@ public:
 
 signals:
     void tableActivated(const QString &table);
+    void metaDataRequested(const QString &tableName);
 
 public slots:
     void refresh();
+    void showMetaData();
     void on_tree_itemActivated(QTreeWidgetItem *item, int column);
+    void on_tree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 private:
     void setActive(QTreeWidgetItem *);
 
     QTreeWidget *tree;
+    QAction *metaDataAction;
     QString activeDb;
 };
 

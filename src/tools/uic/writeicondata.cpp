@@ -21,12 +21,12 @@
 **
 ****************************************************************************/
 
-#include <qtextstream.h>
-
 #include "writeicondata.h"
 #include "driver.h"
 #include "ui4.h"
 #include "uic.h"
+
+#include <QTextStream>
 
 static QByteArray unzipXPM(QString data, ulong& length)
 {
@@ -128,4 +128,3 @@ void WriteIconData::acceptImage(DomImage *image)
         output << "};\n\n";
     }
 }
-

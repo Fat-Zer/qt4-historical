@@ -132,12 +132,36 @@ struct QGradientBrushData : public QBrushData
     \sa QPainter, QPainter::setBrush(), QPainter::setBrushOrigin()
 */
 
-struct QNullBrushData: public QBrushData
+class QBrushStatic
 {
-    inline QNullBrushData()
-    { ref = 1; style = Qt::BrushStyle(0); color = Qt::black; }
-    Q_GLOBAL_STATIC(QNullBrushData, instance)
+public:
+    QBrushData *pointer;
+    bool destroyed;
+
+    inline QBrushStatic()
+        : pointer(0), destroyed(false)
+    { }
+
+    inline ~QBrushStatic()
+    {
+        if (!pointer->ref.deref())
+            delete pointer;
+        pointer = 0;
+        destroyed = true;
+    }
 };
+
+static QBrushData *nullBrushInstance()
+{
+    static QBrushStatic defaultBrush;
+    if (!defaultBrush.pointer && !defaultBrush.destroyed) {
+        QBrushData *x = new QBrushData;
+        x->ref = 1; x->style = Qt::BrushStyle(0); x->color = Qt::black;
+        if (!q_atomic_test_and_set_ptr(&defaultBrush.pointer, 0, x))
+            delete x;
+    }
+    return defaultBrush.pointer;
+}
 
 /*!
   \internal
@@ -147,6 +171,10 @@ struct QNullBrushData: public QBrushData
 void QBrush::init(const QColor &color, Qt::BrushStyle style)
 {
     switch(style) {
+    case Qt::NoBrush:
+        d = nullBrushInstance();
+        d->ref.ref();
+        return;
     case Qt::TexturePattern:
         d = new QTexturedBrushData;
         static_cast<QTexturedBrushData *>(d)->pixmap = QPixmap();
@@ -172,7 +200,7 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
 
 QBrush::QBrush()
 {
-    d = QNullBrushData::instance();
+    d = nullBrushInstance();
     Q_ASSERT(d);
     d->ref.ref();
 }
@@ -265,6 +293,10 @@ QBrush::QBrush(const QBrush &other)
 */
 QBrush::QBrush(const QGradient &gradient)
 {
+    Q_ASSERT_X(gradient.type() != QGradient::NoGradient, "QBrush::QBrush",
+               "QGradient should not be used directly, use the linear, radial\n"
+               "or conical gradients instead");
+
     const Qt::BrushStyle enum_table[] = {
         Qt::LinearGradientPattern,
         Qt::RadialGradientPattern,
@@ -624,7 +656,7 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
                || b.style() == Qt::ConicalGradientPattern) {
         const QGradient *gradient = b.gradient();
         s << gradient->type();
-        s << gradient->m_stops;
+        s << gradient->stops();
 
         if (gradient->type() == QGradient::LinearGradient) {
             s << static_cast<const QLinearGradient *>(gradient)->start();
@@ -836,7 +868,7 @@ void QGradient::setStops(const QGradientStops &stops)
 /*!
     Returns the stops for this gradient.
 
-    If no stops have been spesified a gradient of black at 0 to white
+    If no stops have been specified a gradient of black at 0 to white
     at 1 is used.
 */
 QGradientStops QGradient::stops() const
@@ -853,7 +885,7 @@ QGradientStops QGradient::stops() const
 /*!
     \internal
 */
-bool QGradient::operator==(const QGradient &gradient)
+bool QGradient::operator==(const QGradient &gradient) const
 {
     if (gradient.m_type != m_type || gradient.m_spread != m_spread) return false;
 
@@ -877,7 +909,12 @@ bool QGradient::operator==(const QGradient &gradient)
             return false;
     }
 
-    return m_stops == gradient.m_stops;
+    return stops() == gradient.stops();
+}
+
+bool QGradient::operator==(const QGradient &gradient)
+{
+    return const_cast<const QGradient *>(this)->operator==(gradient);
 }
 
 

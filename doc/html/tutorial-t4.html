@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 4 - Let There Be Widgets</title>
+    <title>Qt 4.1: Qt Tutorial 4 - Let There Be Widgets</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,16 +30,11 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="tutorial-t4-main-cpp.html">tutorial/t4/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t4.png" alt="Screenshot of tutorial four" /></p><p>This example shows how to create your own widget, and describes how to control the minimum and maximum sizes of a widget.</p>
-<pre>&nbsp;   /****************************************************************
-    **
-    ** Qt tutorial 4
-    **
-    ****************************************************************/
-
-    #include &lt;QApplication&gt;
+<p align="center"><img src="images/t4.png" alt="Screenshot of Chapter 4" /></p><p>This example shows how to create your own widget, and describes how to control the minimum and maximum sizes of a widget.</p>
+<pre>&nbsp;   #include &lt;QApplication&gt;
     #include &lt;QFont&gt;
     #include &lt;QPushButton&gt;
+    #include &lt;QWidget&gt;
 
     class MyWidget : public QWidget
     {
@@ -52,7 +47,7 @@ body { background: #ffffff; color: black; }</style>
     {
         setFixedSize(200, 120);
 
-        QPushButton *quit = new QPushButton(&quot;Quit&quot;, this);
+        QPushButton *quit = new QPushButton(tr(&quot;Quit&quot;), this);
         quit-&gt;setGeometry(62, 40, 75, 30);
         quit-&gt;setFont(QFont(&quot;Times&quot;, 18, QFont::Bold));
 
@@ -82,10 +77,11 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   {
         setFixedSize(200, 120);</pre>
 <p>Because this widget doesn't know how to handle resizing, we fix its size. In the next chapter, we will show how a widget can respond to resize event from the user.</p>
-<pre>&nbsp;       QPushButton *quit = new QPushButton(&quot;Quit&quot;, this);
+<pre>&nbsp;       QPushButton *quit = new QPushButton(tr(&quot;Quit&quot;), this);
         quit-&gt;setGeometry(62, 40, 75, 30);
         quit-&gt;setFont(QFont(&quot;Times&quot;, 18, QFont::Bold));</pre>
 <p>Here we create and set up a child widget of this widget (the new widget's parent is <tt>this</tt>, i.e. the <tt>MyWidget</tt> instance).</p>
+<p>The <a href="qobject.html#tr">tr()</a> function call around the string literal &quot;Quit&quot; marks the string for translation, making it possible to change it at run-time based on the contents of a translation file. It is a good habit to use <a href="qobject.html#tr">tr()</a> around all user-visible strings, in case you decide later to translate your application to other languages.</p>
 <p>Note that <tt>quit</tt> is a local variable in the constructor. <tt>MyWidget</tt> does not keep track of it; Qt does, and will automatically delete it when the <tt>MyWidget</tt> object is deleted. This is why <tt>MyWidget</tt> doesn't need a destructor. (On the other hand, there is no harm in deleting a child when you choose to. The child will automatically tell Qt about its imminent death.)</p>
 <p>The <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>() call sets both the widget's screen position and the size. It is equivalent to calling <a href="qwidget.html#pos-prop">QWidget::move</a>() followed by <a href="qwidget.html#size-prop">QWidget::resize</a>().</p>
 <pre>&nbsp;       connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
@@ -115,6 +111,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -38,6 +38,8 @@
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
 
+namespace qdesigner_internal {
+
 class EnumType
 {
 public:
@@ -45,7 +47,6 @@ public:
     QMap<QString, QVariant> items;
 };
 
-Q_DECLARE_METATYPE(EnumType)
 
 class FlagType
 {
@@ -54,10 +55,12 @@ public:
     QMap<QString, QVariant> items;
 };
 
-Q_DECLARE_METATYPE(FlagType)
+} // namespace qdesigner_internal
 
-namespace Utils
-{
+Q_DECLARE_METATYPE(qdesigner_internal::EnumType)
+Q_DECLARE_METATYPE(qdesigner_internal::FlagType)
+
+namespace qdesigner_internal { namespace Utils {
 
 inline int valueOf(const QVariant &value, bool *ok = 0)
 {
@@ -69,6 +72,19 @@ inline int valueOf(const QVariant &value, bool *ok = 0)
     return value.toInt(ok);
 }
 
+inline bool isObjectAncestorOf(QObject *ancestor, QObject *child)
+{
+    QObject *obj = child;
+    while (obj != 0) {
+        if (obj == ancestor)
+            return true;
+        obj = obj->parent();
+    }
+    return false;
+}
+
 } // namespace Utils
+
+} // namespace qdesigner_internal
 
 #endif // QDESIGNER_UTILS_H

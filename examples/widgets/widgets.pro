@@ -7,8 +7,10 @@ SUBDIRS       = analogclock \
                 icons \
                 imageviewer \
                 lineedits \
+                movie \
                 screenshot \
                 scribble \
+                shapedclock \
                 sliders \
                 spinboxes \
                 styles \

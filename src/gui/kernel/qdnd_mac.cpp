@@ -150,11 +150,18 @@ static const char* default_pm[] = {
 };
 
 //action management
-#define MAP_MAC_ENUM(x) x
+#ifdef DEBUG_DRAG_EVENTS
+# define MAP_MAC_ENUM(x) x, #x
+#else
+# define MAP_MAC_ENUM(x) x
+#endif
 struct mac_enum_mapper
 {
     int mac_code;
     int qt_code;
+#ifdef DEBUG_DRAG_EVENTS
+    char *qt_desc;
+#endif
 };
 static mac_enum_mapper dnd_action_symbols[] = {
     { kDragActionAlias, MAP_MAC_ENUM(Qt::LinkAction) },
@@ -173,8 +180,15 @@ static DragActions qt_mac_dnd_map_qt_actions(Qt::DropActions qActions)
 }
 static Qt::DropActions qt_mac_dnd_map_mac_actions(DragActions macActions)
 {
+#ifdef DEBUG_DRAG_EVENTS
+    qDebug("Converting DND ActionList: 0x%lx", macActions);
+#endif
     Qt::DropActions ret = Qt::IgnoreAction;
     for(int i = 0; dnd_action_symbols[i].qt_code; ++i) {
+#ifdef DEBUG_DRAG_EVENTS
+        qDebug(" %d) [%s] : %s", i, dnd_action_symbols[i].qt_desc,
+               (macActions & dnd_action_symbols[i].mac_code) ? "true" : "false");
+#endif
         if(macActions & dnd_action_symbols[i].mac_code)
             ret |= Qt::DropAction(dnd_action_symbols[i].qt_code);
     }
@@ -184,12 +198,23 @@ static Qt::DropAction qt_mac_dnd_map_mac_default_action(DragActions macActions)
 {
     static Qt::DropAction preferred_actions[] = { Qt::CopyAction, Qt::LinkAction, //in order
                                                      Qt::MoveAction, Qt::IgnoreAction };
+    Qt::DropAction ret = Qt::IgnoreAction;
     const Qt::DropActions qtActions = qt_mac_dnd_map_mac_actions(macActions);
     for(int i = 0; preferred_actions[i] != Qt::IgnoreAction; ++i) {
-        if(qtActions & preferred_actions[i])
-            return preferred_actions[i];
+        if(qtActions & preferred_actions[i]) {
+            ret = preferred_actions[i];
+            break;
+        }
     }
-    return Qt::IgnoreAction;
+#ifdef DEBUG_DRAG_EVENTS
+    for(int i = 0; dnd_action_symbols[i].qt_code; ++i) {
+        if(dnd_action_symbols[i].qt_code == ret) {
+            qDebug("Got default action: %s [0x%lx]", dnd_action_symbols[i].qt_desc, macActions);
+            break;
+        }
+    }
+#endif
+    return ret;
 }
 static void qt_mac_dnd_update_action(DragReference dragRef) {
     SInt16 modifiers;
@@ -387,15 +412,12 @@ bool QWidgetPrivate::qt_mac_dnd_event(uint kind, DragRef dragRef)
     if(kind == kEventControlDragWithin) {
         QDragMoveEvent de(q->mapFromGlobal(QPoint(mouse.h, mouse.v)), qtAllowed, dropdata,
                           QApplication::mouseButtons(), QApplication::keyboardModifiers());
-        de.accept();
         QApplication::sendEvent(q, &de);
     } else if(kind == kEventControlDragEnter) {
-        QDragManager::self()->emitTargetChanged(q);
         QDragEnterEvent de(q->mapFromGlobal(QPoint(mouse.h, mouse.v)), qtAllowed, dropdata,
                            QApplication::mouseButtons(), QApplication::keyboardModifiers());
         QApplication::sendEvent(q, &de);
-        de.accept();
-        if(!de.isAccepted())
+        if(!de.isAccepted() || de.dropAction() == Qt::IgnoreAction)
             ret = false;
     } else if(kind == kEventControlDragLeave) {
         QDragLeaveEvent de;
@@ -403,7 +425,6 @@ bool QWidgetPrivate::qt_mac_dnd_event(uint kind, DragRef dragRef)
     } else if(kind == kEventControlDragReceive) {
         QDropEvent de(q->mapFromGlobal(QPoint(mouse.h, mouse.v)), qtAllowed, dropdata,
                       QApplication::mouseButtons(), QApplication::keyboardModifiers());
-        de.accept();
         if(QDragManager::self()->object)
             QDragManager::self()->dragPrivate()->target = q;
         QApplication::sendEvent(q, &de);
@@ -430,8 +451,8 @@ bool QWidgetPrivate::qt_mac_dnd_event(uint kind, DragRef dragRef)
         }
         if(desc) {
             QPoint pos(q->mapFromGlobal(QPoint(mouse.h, mouse.v)));
-            qDebug("Sending <%s>(%d, %d) event to %s %s [%d] (%p)",
-                   desc, pos.x(), pos.y(), q->metaObject()->className(),
+            qDebug("Sending <%s>(%d, %d) event to %p(%s::%s) [%d] (%p)",
+                   desc, pos.x(), pos.y(), q, q->metaObject()->className(),
                    q->objectName().toLocal8Bit().constData(), ret, dragRef);
         }
     }
@@ -441,24 +462,28 @@ bool QWidgetPrivate::qt_mac_dnd_event(uint kind, DragRef dragRef)
     bool found_cursor = false;
     if(kind == kEventControlDragWithin || kind == kEventControlDragEnter) {
         found_cursor = true;
-        DragActions action = kDragActionNothing;
-        GetDragDropAction(dragRef, &action);
-        switch(qt_mac_dnd_map_mac_default_action(action)) {
-        case Qt::IgnoreAction:
-            found_cursor = false;
-            break;
-        case Qt::MoveAction:
-            SetThemeCursor(kThemeArrowCursor);
-            break;
-        case Qt::CopyAction:
-            SetThemeCursor(kThemeCopyArrowCursor);
-            break;
-        case Qt::LinkAction:
-            SetThemeCursor(kThemeAliasArrowCursor);
-            break;
-        default:
+        if(!ret) {
             SetThemeCursor(kThemeNotAllowedCursor);
-            break;
+        } else {
+            DragActions action = kDragActionNothing;
+            GetDragDropAction(dragRef, &action);
+            switch(qt_mac_dnd_map_mac_default_action(action)) {
+            case Qt::IgnoreAction:
+                found_cursor = false;
+                break;
+            case Qt::MoveAction:
+                SetThemeCursor(kThemeArrowCursor);
+                break;
+            case Qt::CopyAction:
+                SetThemeCursor(kThemeCopyArrowCursor);
+                break;
+            case Qt::LinkAction:
+                SetThemeCursor(kThemeAliasArrowCursor);
+                break;
+            default:
+                SetThemeCursor(kThemeNotAllowedCursor);
+                break;
+            }
         }
     }
     if(found_cursor) {

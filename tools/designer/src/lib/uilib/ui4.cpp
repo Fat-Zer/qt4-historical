@@ -20,8 +20,12 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#include <QtDesigner/ui4.h>
-#include <QtXml/QDomDocument>
+#include "ui4.h"
+#include <QDomDocument>
+
+#ifdef QFORMINTERNAL_NAMESPACE
+using namespace QFormInternal;
+#endif
 
 /*******************************************************************************
 ** Implementations
@@ -2186,12 +2190,20 @@ void DomItem::clear(bool clear_all)
 
     if (clear_all) {
     m_text = QString();
+    m_has_attr_row = false;
+    m_attr_row = 0;
+    m_has_attr_column = false;
+    m_attr_column = 0;
     }
 
 }
 
 DomItem::DomItem()
 {
+    m_has_attr_row = false;
+    m_attr_row = 0;
+    m_has_attr_column = false;
+    m_attr_column = 0;
 }
 
 DomItem::~DomItem()
@@ -2206,6 +2218,10 @@ DomItem::~DomItem()
 
 void DomItem::read(const QDomElement &node)
 {
+    if (node.hasAttribute(QLatin1String("row")))
+        setAttributeRow(node.attribute(QLatin1String("row")).toInt());
+    if (node.hasAttribute(QLatin1String("column")))
+        setAttributeColumn(node.attribute(QLatin1String("column")).toInt());
 
     for (QDomNode n = node.firstChild(); !n.isNull(); n = n.nextSibling()) {
         if (!n.isElement())
@@ -2238,6 +2254,12 @@ QDomElement DomItem::write(QDomDocument &doc, const QString &tagName)
     QDomElement e = doc.createElement(tagName.isEmpty() ? QString::fromUtf8("item") : tagName.toLower());
 
     QDomElement child;
+
+    if (hasAttributeRow())
+        e.setAttribute(QLatin1String("row"), attributeRow());
+
+    if (hasAttributeColumn())
+        e.setAttribute(QLatin1String("column"), attributeColumn());
 
     for (int i = 0; i < m_property.size(); ++i) {
         DomProperty* v = m_property[i];
@@ -3799,6 +3821,7 @@ void DomResourcePixmap::clear(bool clear_all)
     if (clear_all) {
     m_text = QString();
     m_has_attr_resource = false;
+    m_has_attr_alias = false;
     }
 
 }
@@ -3806,6 +3829,7 @@ void DomResourcePixmap::clear(bool clear_all)
 DomResourcePixmap::DomResourcePixmap()
 {
     m_has_attr_resource = false;
+    m_has_attr_alias = false;
 }
 
 DomResourcePixmap::~DomResourcePixmap()
@@ -3816,6 +3840,8 @@ void DomResourcePixmap::read(const QDomElement &node)
 {
     if (node.hasAttribute(QLatin1String("resource")))
         setAttributeResource(node.attribute(QLatin1String("resource")));
+    if (node.hasAttribute(QLatin1String("alias")))
+        setAttributeAlias(node.attribute(QLatin1String("alias")));
 
     for (QDomNode n = node.firstChild(); !n.isNull(); n = n.nextSibling()) {
         if (!n.isElement())
@@ -3840,6 +3866,9 @@ QDomElement DomResourcePixmap::write(QDomDocument &doc, const QString &tagName)
     if (hasAttributeResource())
         e.setAttribute(QLatin1String("resource"), attributeResource());
 
+    if (hasAttributeAlias())
+        e.setAttribute(QLatin1String("alias"), attributeAlias());
+
     if (!m_text.isEmpty())
         e.appendChild(doc.createTextNode(m_text));
 
@@ -3852,6 +3881,7 @@ void DomString::clear(bool clear_all)
     if (clear_all) {
     m_text = QString();
     m_has_attr_notr = false;
+    m_has_attr_comment = false;
     }
 
 }
@@ -3859,6 +3889,7 @@ void DomString::clear(bool clear_all)
 DomString::DomString()
 {
     m_has_attr_notr = false;
+    m_has_attr_comment = false;
 }
 
 DomString::~DomString()
@@ -3869,6 +3900,8 @@ void DomString::read(const QDomElement &node)
 {
     if (node.hasAttribute(QLatin1String("notr")))
         setAttributeNotr(node.attribute(QLatin1String("notr")));
+    if (node.hasAttribute(QLatin1String("comment")))
+        setAttributeComment(node.attribute(QLatin1String("comment")));
 
     for (QDomNode n = node.firstChild(); !n.isNull(); n = n.nextSibling()) {
         if (!n.isElement())
@@ -3892,6 +3925,9 @@ QDomElement DomString::write(QDomDocument &doc, const QString &tagName)
 
     if (hasAttributeNotr())
         e.setAttribute(QLatin1String("notr"), attributeNotr());
+
+    if (hasAttributeComment())
+        e.setAttribute(QLatin1String("comment"), attributeComment());
 
     if (!m_text.isEmpty())
         e.appendChild(doc.createTextNode(m_text));

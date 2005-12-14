@@ -36,6 +36,7 @@
 #include "qcheckbox.h"
 #include "q3cleanuphandler.h"
 #include "qcombobox.h"
+#include "q3combobox.h"
 #include "q3cstring.h"
 #include "qcursor.h"
 #include "qdesktopwidget.h"
@@ -66,27 +67,28 @@
 #include "q3widgetstack.h"
 #include "q3urloperator.h"
 #include "q3vbox.h"
+#include "qurlinfo.h"
 
 #ifdef Q_WS_WIN
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
 #  include "qwindowsstyle.h"
-#  include <private/qmutexpool_p.h>
-#endif // QT_THREAD_SUPPORT
+#  include "private/qmutexpool_p.h"
+#endif
 #endif // Q_WS_WIN
 
-#if !defined(Q_OS_TEMP)
+#ifndef Q_OS_TEMP
 #include <time.h>
 #else
 #include <shellapi.h>
-#endif
+#endif // Q_OS_TEMP
 #include <stdlib.h>
 #include <limits.h>
 #include <ctype.h>
 
 #ifdef Q_WS_MAC
-#include <qmacstyle_mac.h>
-#include <private/qt_mac_p.h>
-#include <private/qunicodetables_p.h>
+#include "qmacstyle_mac.h"
+#include "private/qt_mac_p.h"
+#include "private/qunicodetables_p.h"
 #undef check
 #endif
 
@@ -497,7 +499,7 @@ static void resolveLibs()
     static bool triedResolve = false;
 
     if (!triedResolve) {
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
         // protect initialization
         QMutexLocker locker(qt_global_mutexpool ?
                              qt_global_mutexpool->get(&triedResolve) : 0);
@@ -896,7 +898,7 @@ public:
     QStringList history;
 
     bool geometryDirty;
-    QComboBox * paths;
+    Q3ComboBox * paths;
     QComboBox * types;
     QLabel * pathL;
     QLabel * fileL;
@@ -977,13 +979,17 @@ public:
             if (i2->name() == "..")
                 return 1;
 
-#if defined(Q_OS_WIN32)
             if (sortFilesBy == QDir::Name) {
-                QString name1 = i1->name().lower();
-                QString name2 = i2->name().lower();
-                return name1.compare(name2);
-            }
+#if defined(Q_OS_WIN32)
+		QString name1 = i1->name().lower();
+		QString name2 = i2->name().lower();
+		return name1.localeAwareCompare( name2 );
+#else
+		QString name1 = i1->name();
+		QString name2 = i2->name();
+		return name1.localeAwareCompare( name2 );
 #endif
+            }
             if (QUrlInfo::equal(*i1, *i2, sortFilesBy))
                 return 0;
             else if (QUrlInfo::greaterThan(*i1, *i2, sortFilesBy))
@@ -1114,10 +1120,10 @@ void QRenameEdit::keyPressEvent(QKeyEvent *e)
 
 void QRenameEdit::focusOutEvent(QFocusEvent *)
 {
-    if (!doRenameAlreadyEmitted)
+    if (!doRenameAlreadyEmitted) {
+        doRenameAlreadyEmitted = true;
         emit doRename();
-    else
-        doRenameAlreadyEmitted = false;
+    }
 }
 
 void QRenameEdit::slotReturnPressed()
@@ -1938,7 +1944,14 @@ QString Q3FileDialogPrivate::File::text(int column) const
 
     switch(column) {
     case 0:
-        return info.name();
+        {
+            QString name = info.name();
+#ifdef Q_OS_WIN
+            if (info.isSymLink() && name.endsWith(".lnk"))
+                name = name.left(name.length() - 4);
+#endif
+            return name;
+        }
     case 1:
         if (info.isFile()) {
             QIODevice::Offset size = info.size();
@@ -2471,9 +2484,9 @@ void Q3FileDialog::init()
     cancelB = new QPushButton(tr("Cancel") , this, "Cancel");
     connect(cancelB, SIGNAL(clicked()), this, SLOT(cancelClicked()));
 
-    d->paths = new QComboBox(true, this, "directory history/editor");
+    d->paths = new Q3ComboBox(true, this, "directory history/editor");
     d->paths->setDuplicatesEnabled(false);
-    d->paths->setInsertionPolicy(QComboBox::NoInsertion);
+    d->paths->setInsertionPolicy(Q3ComboBox::NoInsertion);
     makeVariables();
 
     QFileInfoList rootDrives = QDir::drives();
@@ -2483,7 +2496,7 @@ void Q3FileDialog::init()
     }
 
     if (QDir::homeDirPath().size()) {
-        if (d->paths->findText(QDir::homeDirPath()) != -1)
+        if (!d->paths->listBox()->findItem(QDir::homeDirPath()))
             d->paths->insertItem(*openFolderIcon, QDir::homeDirPath());
     }
 
@@ -3101,7 +3114,7 @@ void Q3FileDialog::setDir(const QString & pathstr)
             i++;
         Q3CString user;
         if (i == 1) {
-#if defined(QT_THREAD_SUPPORT) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+#if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
 
 #  ifndef _POSIX_LOGIN_NAME_MAX
 #    define _POSIX_LOGIN_NAME_MAX 9
@@ -3120,7 +3133,7 @@ void Q3FileDialog::setDir(const QString & pathstr)
             user = dr.mid(1, i-1).local8Bit();
         dr = dr.mid(i, dr.length());
         struct passwd *pw;
-#if defined(QT_THREAD_SUPPORT) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_FREEBSD) && !defined(Q_OS_OPENBSD)
+#if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_FREEBSD) && !defined(Q_OS_OPENBSD)
         struct passwd mt_pw;
         char buffer[2048];
         if (::getpwnam_r(user, &mt_pw, buffer, 2048, &pw) == 0 && pw == &mt_pw)
@@ -3397,7 +3410,8 @@ QString Q3FileDialog::getOpenFileName(const QString & startWith,
                                    parent, name, caption, selectedFilter);
 #elif defined(Q_WS_MAC)
     if(qt_use_native_dialogs && qobject_cast<QMacStyle *>(qApp->style())) {
-        QStringList files = macGetOpenFileNames(filter, workingDirectory, parent, name, caption, selectedFilter, false);
+        QStringList files = macGetOpenFileNames(filter, startWith.isEmpty() ? 0 : workingDirectory,
+                                                parent, name, caption, selectedFilter, false);
         return files.isEmpty() ? QString() : QUnicodeTables::normalize(files.first(),
                                                                        QString::NormalizationForm_C);
     }
@@ -3517,7 +3531,8 @@ QString Q3FileDialog::getSaveFileName(const QString & startWith,
     if(qt_use_native_dialogs && qobject_cast<QMacStyle *>(qApp->style()))
         return QUnicodeTables::normalize(macGetSaveFileName(initialSelection.isNull() ? startWith
                                                                                      : initialSelection,
-                                                            filter, workingDirectory, parent, name,
+                                                            filter, startWith.isEmpty() ? 0 : workingDirectory,
+                                                            parent, name,
                                                             caption, selectedFilter),
                                          QString::NormalizationForm_C);
 #endif
@@ -4958,6 +4973,14 @@ static void initPixmap(QPixmap &pm)
     pm.fill(Qt::white);
 }
 
+QPixmap fromHICON(HICON hIcon)
+{
+    ICONINFO icoInfo;
+    if (GetIconInfo(hIcon, &icoInfo) && icoInfo.hbmColor) {
+        return QPixmap::fromWinHBITMAP(icoInfo.hbmColor);
+    }
+    return QPixmap();
+}
 
 QWindowsIconProvider::QWindowsIconProvider(QObject *parent, const char *name)
     : Q3FileIconProvider(parent, name)
@@ -4969,7 +4992,7 @@ QWindowsIconProvider::QWindowsIconProvider(QObject *parent, const char *name)
     HICON si;
     int r;
     QString s;
-    UINT res;
+    UINT res = 0;
 
     // ---------- get default folder pixmap
     const wchar_t iconFolder[] = L"folder\\DefaultIcon"; // workaround for Borland
@@ -4989,28 +5012,26 @@ QWindowsIconProvider::QWindowsIconProvider(QObject *parent, const char *name)
 
         QStringList lst = QStringList::split(",", s);
 
+        if (lst.count() >= 2) { // don't just assume that lst has two entries
 #ifndef Q_OS_TEMP
-        QT_WA({
-            res = ptrExtractIconEx((TCHAR*)lst[0].simplifyWhiteSpace().ucs2(),
-                                  lst[1].simplifyWhiteSpace().toInt(),
-                                  0, &si, 1);
-        } , {
-            res = ExtractIconExA(lst[0].simplifyWhiteSpace().local8Bit(),
-                                  lst[1].simplifyWhiteSpace().toInt(),
-                                  0, &si, 1);
-        });
+            QT_WA({
+                res = ptrExtractIconEx((TCHAR*)lst[0].simplifyWhiteSpace().ucs2(),
+                                       lst[1].simplifyWhiteSpace().toInt(),
+                                       0, &si, 1);
+            } , {
+                res = ExtractIconExA(lst[0].simplifyWhiteSpace().local8Bit(),
+                                     lst[1].simplifyWhiteSpace().toInt(),
+                                     0, &si, 1);
+            });
 #else
             res = (UINT)ExtractIconEx((TCHAR*)lst[0].simplifyWhiteSpace().ucs2(),
                                         lst[1].simplifyWhiteSpace().toInt(),
                                         0, &si, 1);
 #endif
+        }
 
         if (res) {
-            defaultFolder.resize(pixw, pixh);
-            initPixmap(defaultFolder);
-            HDC dc = defaultFolder.getDC();
-            DrawIconEx(dc, 0, 0, si, pixw, pixh, 0, 0, DI_NORMAL);
-            defaultFolder.releaseDC(dc);
+            defaultFolder = fromHICON(si);
             defaultFolder.setMask(defaultFolder.createHeuristicMask());
             *closedFolderIcon = defaultFolder;
             DestroyIcon(si);
@@ -5036,11 +5057,7 @@ QWindowsIconProvider::QWindowsIconProvider(QObject *parent, const char *name)
 #endif
 
     if (res) {
-        defaultFile.resize(pixw, pixh);
-        initPixmap(defaultFile);
-        HDC dc = defaultFile.getDC();
-        DrawIconEx(dc, 0, 0, si, pixw, pixh, 0, 0, DI_NORMAL);
-        defaultFile.releaseDC(dc);
+        defaultFile  = fromHICON(si);
         defaultFile.setMask(defaultFile.createHeuristicMask());
         *fileIcon = defaultFile;
         DestroyIcon(si);
@@ -5063,11 +5080,7 @@ QWindowsIconProvider::QWindowsIconProvider(QObject *parent, const char *name)
 #endif
 
     if (res) {
-        defaultExe.resize(pixw, pixh);
-        initPixmap(defaultExe);
-        HDC dc = defaultExe.getDC();
-        DrawIconEx(dc, 0, 0, si, pixw, pixh, 0, 0, DI_NORMAL);
-        defaultExe.releaseDC(dc);
+        defaultExe = fromHICON(si);
         defaultExe.setMask(defaultExe.createHeuristicMask());
         DestroyIcon(si);
     } else {
@@ -5083,6 +5096,12 @@ QWindowsIconProvider::~QWindowsIconProvider()
 
 const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
 {
+    if (fi.isSymLink()) {
+        QString real = fi.readLink();
+        if (!real.isEmpty())
+            return pixmap(QFileInfo(real));
+    }
+
     QString ext = fi.extension(false).upper();
     QString key = ext;
     ext.prepend(".");
@@ -5162,11 +5181,7 @@ const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
         }
 
         if (res) {
-            pix.resize(pixw, pixh);
-            initPixmap(pix);
-            HDC dc = pix.getDC();
-            DrawIconEx(dc, 0, 0, si, pixw, pixh, 0, 0, DI_NORMAL);
-            pix.releaseDC(dc);
+            pix = fromHICON(si);
             pix.setMask(pix.createHeuristicMask());
             DestroyIcon(si);
         } else {
@@ -5208,11 +5223,7 @@ const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
         }
 
         if (res) {
-            pix.resize(pixw, pixh);
-            initPixmap(pix);
-            HDC dc = pix.getDC();
-            DrawIconEx(dc, 0, 0, si, pixw, pixh, 0, 0, DI_NORMAL);
-            pix.releaseDC(dc);
+            pix = fromHICON(si);
             pix.setMask(pix.createHeuristicMask());
             DestroyIcon(si);
         } else {
@@ -5546,8 +5557,8 @@ QStringList Q3FileDialog::getOpenFileNames(const QString & filter,
         return winGetOpenFileNames(filter, workingDirectory, parent, name, caption, selectedFilter);
 #elif defined(Q_WS_MAC)
     if (qt_use_native_dialogs && qobject_cast<QMacStyle *>(qApp->style())) {
-        QStringList sl = macGetOpenFileNames(filter, workingDirectory, parent, name, caption,
-                                             selectedFilter);
+        QStringList sl = macGetOpenFileNames(filter, dir.isEmpty() ? 0 : workingDirectory,
+                                             parent, name, caption, selectedFilter);
         for (int i = 0; i < sl.count(); ++i)
             sl.replace(i, QUnicodeTables::normalize(sl.at(i), QString::NormalizationForm_C));
         return sl;
@@ -5715,9 +5726,9 @@ void Q3FileDialog::urlFinished(Q3NetworkOperation *op)
             d->progressDia = 0;
         }
 
+        int ecode = op->errorCode();
         QMessageBox::critical(this, tr("Error"), op->protocolDetail());
 
-        int ecode = op->errorCode();
         if (ecode == Q3NetworkProtocol::ErrListChildren || ecode == Q3NetworkProtocol::ErrParse ||
              ecode == Q3NetworkProtocol::ErrUnknownProtocol || ecode == Q3NetworkProtocol::ErrLoginIncorrect ||
              ecode == Q3NetworkProtocol::ErrValid || ecode == Q3NetworkProtocol::ErrHostNotFound ||
@@ -6334,6 +6345,7 @@ Q3FilePreview::Q3FilePreview()
 */
 
 
+#include "moc_q3filedialog.cpp"
 #include "q3filedialog.moc"
 
 #endif

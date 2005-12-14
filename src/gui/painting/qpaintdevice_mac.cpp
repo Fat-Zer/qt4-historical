@@ -68,7 +68,7 @@ int QPaintDevice::metric(PaintDeviceMetric) const
     as it can be relocated.
 */
 
-GrafPtr qt_mac_qd_context(const QPaintDevice *device)
+Q_GUI_EXPORT GrafPtr qt_mac_qd_context(const QPaintDevice *device)
 {
     if (device->devType() == QInternal::Widget) {
         return static_cast<GrafPtr>(static_cast<const QWidget *>(device)->handle());
@@ -89,17 +89,19 @@ GrafPtr qt_mac_qd_context(const QPaintDevice *device)
     it.
 */
 
-CGContextRef qt_mac_cg_context(const QPaintDevice *pdev)
+Q_GUI_EXPORT CGContextRef qt_mac_cg_context(const QPaintDevice *pdev)
 {
     if(pdev->devType() == QInternal::Pixmap) {
         const QPixmap *pm = static_cast<const QPixmap*>(pdev);
         CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
         CGImageRef img = (CGImageRef)pm->macCGHandle();
-        uint flags = CGImageGetAlphaInfo(img);
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+        uint flags = CGImageGetAlphaInfo(img);
         CGBitmapInfo (*CGImageGetBitmapInfo_ptr)(CGImageRef) = CGImageGetBitmapInfo;
         if(CGImageGetBitmapInfo_ptr)
             flags |= (*CGImageGetBitmapInfo_ptr)(img);
+#else
+        CGImageAlphaInfo flags = CGImageGetAlphaInfo(img);
 #endif
         CGContextRef ret = CGBitmapContextCreate(pm->data->pixels, pm->data->w, pm->data->h,
                                                  8, pm->data->nbytes / pm->data->h, colorspace,

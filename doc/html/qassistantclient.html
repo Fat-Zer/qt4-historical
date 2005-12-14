@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/tools/assistant/lib/qassistantclient.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/tools/assistant/lib/qassistantclient.cpp -->
 <head>
-    <title>Qt 4.0: QAssistantClient Class Reference</title>
+    <title>Qt 4.1: QAssistantClient Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -76,7 +76,7 @@ body { background: #ffffff; color: black; }</style>
 <p>One QAssistantClient instance interacts with one Qt Assistant instance, so every time you call <a href="qassistantclient.html#openAssistant">openAssistant</a>(), <a href="qassistantclient.html#showPage">showPage</a>() or <a href="qassistantclient.html#closeAssistant">closeAssistant</a>() they are applied to the particular Qt Assistant instance associated with the QAssistantClient.</p>
 <p>When you call <a href="qassistantclient.html#openAssistant">openAssistant</a>() the <a href="qassistantclient.html#assistantOpened">assistantOpened</a>() signal is emitted. Similarly when <a href="qassistantclient.html#closeAssistant">closeAssistant</a>() is called, <a href="qassistantclient.html#assistantClosed">assistantClosed</a>() is emitted. In either case, if an error occurs, <a href="qassistantclient.html#error">error</a>() is emitted.</p>
 <p>This class is not included in the Qt library itself. To use it you must link against <tt>libqassistantclient.a</tt> (Unix) or <tt>qassistantclient.lib</tt> (Windows), which is built into <tt>INSTALL/lib</tt> if you built the Qt tools (<tt>INSTALL</tt> is the directory where Qt is installed). If you use qmake, then you can simply add the following line to your pro file:</p>
-<pre>&nbsp;   LIBS += -lqassistantclient</pre>
+<pre>&nbsp;   CONFIG += assistant</pre>
 <p>See also <a href="assistant-manual.html#modifying-the-default-documentation-set">Modifying The Default Documentation Set</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -114,6 +114,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

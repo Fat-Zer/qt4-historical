@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/text/qfontmetrics.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/text/qfontmetrics.cpp -->
 <head>
-    <title>Qt 4.0: QFontMetricsF Class Reference</title>
+    <title>Qt 4.1: QFontMetricsF Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -51,10 +51,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>qreal <b><a href="qfontmetricsf.html#underlinePos">underlinePos</a></b> () const</li>
 <li><div class="fn"/>qreal <b><a href="qfontmetricsf.html#width">width</a></b> ( const QString &amp; <i>text</i> ) const</li>
 <li><div class="fn"/>qreal <b><a href="qfontmetricsf.html#width-2">width</a></b> ( QChar <i>ch</i> ) const</li>
+<li><div class="fn"/>qreal <b><a href="qfontmetricsf.html#xHeight">xHeight</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-not-eq">operator!=</a></b> ( const QFontMetricsF &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-not-eq-2">operator!=</a></b> ( const QFontMetricsF &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>QFontMetricsF &amp; <b><a href="qfontmetricsf.html#operator-eq">operator=</a></b> ( const QFontMetricsF &amp; <i>fm</i> )</li>
 <li><div class="fn"/>QFontMetricsF &amp; <b><a href="qfontmetricsf.html#operator-eq-2">operator=</a></b> ( const QFontMetrics &amp; <i>fontMetrics</i> )</li>
 <li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-eq-eq">operator==</a></b> ( const QFontMetricsF &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-eq-eq-2">operator==</a></b> ( const QFontMetricsF &amp; <i>other</i> ) const</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -222,21 +225,27 @@ body { background: #ffffff; color: black; }</style>
 <p>Some of the metrics are described in the image to the right. The central dark rectangles cover the logical <a href="qfontmetricsf.html#width">width</a>() of each character. The outer pale rectangles cover the <a href="qfontmetricsf.html#leftBearing">leftBearing</a>() and <a href="qfontmetricsf.html#rightBearing">rightBearing</a>() of each character. Notice that the bearings of &quot;f&quot; in this particular font are both negative, while the bearings of &quot;o&quot; are both positive.</p>
 <p><b>Warning:</b> This function will produce incorrect results for Arabic characters or non-spacing marks in the middle of a string, as the glyph shaping and positioning of marks that happens when processing strings cannot be taken into account. Use charWidth() instead if you aren't looking for the width of isolated characters.</p>
 <p>See also <a href="qfontmetricsf.html#boundingRect">boundingRect</a>().</p>
+<h3 class="fn"><a name="xHeight"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QFontMetricsF::xHeight () const</h3>
+<p>Returns the 'x' height of the font. This is often but not always the same as the height of the character 'x'.</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QFontMetricsF::operator!= ( const QFontMetricsF &amp; <i>other</i> )</h3>
 <p>Returns true if the font metrics are not equal to the <i>other</i> font metrics; otherwise returns false.</p>
 <p>See also <a href="qfontmetricsf.html#operator-eq-eq">operator==</a>().</p>
+<h3 class="fn"><a name="operator-not-eq-2"></a>bool QFontMetricsF::operator!= ( const QFontMetricsF &amp; <i>other</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <h3 class="fn"><a name="operator-eq"></a>QFontMetricsF &amp; QFontMetricsF::operator= ( const QFontMetricsF &amp; <i>fm</i> )</h3>
 <p>Assigns the font metrics <i>fm</i> to this font metrics object.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>QFontMetricsF &amp; QFontMetricsF::operator= ( const <a href="qfontmetrics.html">QFontMetrics</a> &amp; <i>fontMetrics</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Assigns <i>fontMetrics</i> to this font metrics object.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QFontMetricsF::operator== ( const QFontMetricsF &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-eq-eq-2"></a>bool QFontMetricsF::operator== ( const QFontMetricsF &amp; <i>other</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Returns true if the font metrics are equal to the <i>other</i> font metrics; otherwise returns false.</p>
 <p>Two font metrics are considered equal if they were constructed from the same <a href="qfont.html">QFont</a> and the paint devices they were constructed for are considered to be compatible.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -35,8 +35,8 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
-#include <qhash.h>
+#include "private/qobject_p.h"
+#include "QtCore/qhash.h"
 
 struct QTextObjectHandler
 {
@@ -53,6 +53,11 @@ public:
 
     inline QAbstractTextDocumentLayoutPrivate()
         : paintDevice(0) {}
+
+    inline int dynamicPageCountSlot() const
+    { return q_func()->pageCount(); }
+    inline QSizeF dynamicDocumentSizeSlot() const
+    { return q_func()->documentSize(); }
 
     HandlerHash handlers;
 

@@ -21,16 +21,16 @@
 **
 ****************************************************************************/
 
-#include <qplatformdefs.h>
-
+#include "qplatformdefs.h"
 #include "qdir.h"
-#include <qfileengine.h>
-#include <private/qfsfileengine_p.h>
-#include <qdatetime.h>
-#include <qstring.h>
-#include <qregexp.h>
-#include <qvector.h>
-#include <qdebug.h>
+#include "qabstractfileengine.h"
+#include "qfsfileengine.h"
+#include "qdatetime.h"
+#include "qstring.h"
+#include "qregexp.h"
+#include "qvector.h"
+#include "qdebug.h"
+
 #include <stdlib.h>
 
 static QString driveSpec(const QString &path)
@@ -68,6 +68,7 @@ protected:
 private:
 #ifdef QT3_SUPPORT
     QChar filterSepChar;
+    bool matchAllDirs;
 #endif
     static inline QChar getFilterSepChar(const QString &nameFilter)
     {
@@ -107,7 +108,7 @@ private:
         QDir::SortFlags sort;
         QDir::Filters filters;
 
-        mutable QFileEngine *fileEngine;
+        mutable QAbstractFileEngine *fileEngine;
 
         mutable uint listsDirty : 1;
         mutable QStringList files;
@@ -127,7 +128,8 @@ private:
         if(!data->fileEngine || !QDir::isRelativePath(path))
             initFileEngine(path);
         data->fileEngine->setFileName(path);
-        data->path = p;
+        // set the path to be the qt friendly version so then we can operate on it using just /
+        data->path = data->fileEngine->fileName(QAbstractFileEngine::DefaultName);
         data->clear();
     }
     inline void reset() {
@@ -140,6 +142,7 @@ private:
 QDirPrivate::QDirPrivate(QDir *qq, const QDir *copy) : q_ptr(qq)
 #ifdef QT3_SUPPORT
                                                      , filterSepChar(0)
+                                                     , matchAllDirs(false)
 #endif
 {
     if(copy) {
@@ -212,7 +215,9 @@ static int qt_cmp_si(const void *n1, const void *n2)
             f2->suffix_cache = ic ? f2->item.suffix().toLower()
                                : f2->item.suffix();
 
-        r = f1->suffix_cache.compare(f2->suffix_cache);
+	r = qt_cmp_si_sort_flags & QDir::LocaleAware
+            ? f1->suffix_cache.localeAwareCompare(f2->filename_cache)
+            : f1->suffix_cache.compare(f2->filename_cache);
       }
         break;
       default:
@@ -230,7 +235,9 @@ static int qt_cmp_si(const void *n1, const void *n2)
             f2->filename_cache = ic ? f2->item.fileName().toLower()
                                     : f2->item.fileName();
 
-        r = f1->filename_cache.compare(f2->filename_cache);
+	r = qt_cmp_si_sort_flags & QDir::LocaleAware
+            ? f1->filename_cache.localeAwareCompare(f2->filename_cache)
+            : f1->filename_cache.compare(f2->filename_cache);
     }
 
     if (r == 0) // Enforce an order - the order the items appear in the array
@@ -289,7 +296,7 @@ void QDirPrivate::initFileEngine(const QString &path)
     delete data->fileEngine;
     data->fileEngine = 0;
     data->clear();
-    data->fileEngine = QFileEngine::createFileEngine(path);
+    data->fileEngine = QAbstractFileEngine::create(path);
 }
 
 void QDirPrivate::detach(bool createFileEngine)
@@ -297,7 +304,7 @@ void QDirPrivate::detach(bool createFileEngine)
     qAtomicDetach(data);
     if (createFileEngine) {
         delete data->fileEngine;
-        data->fileEngine = QFileEngine::createFileEngine(data->path);
+        data->fileEngine = QAbstractFileEngine::create(data->path);
     }
 }
 
@@ -439,7 +446,7 @@ QDir::QDir(const QString &path) : d_ptr(new QDirPrivate(this))
     Q_D(QDir);
     d->setPath(path.isEmpty() ? QString::fromLatin1(".") : path);
     d->data->nameFilters = QStringList(QString::fromLatin1("*"));
-    d->data->filters = TypeMask;
+    d->data->filters = AllEntries;
     d->data->sort = SortFlags(Name | IgnoreCase);
 }
 
@@ -449,7 +456,7 @@ QDir::QDir(const QString &path) : d_ptr(new QDirPrivate(this))
     also sorts the names using \a sort.
 
     The default \a nameFilter is an empty string, which excludes
-    nothing; the default \a filters is \l TypeMask, which also means
+    nothing; the default \a filters is \l AllEntries, which also means
     exclude nothing. The default \a sort is \l Name | \l IgnoreCase,
     i.e. sort by name case-insensitively.
 
@@ -598,7 +605,7 @@ QString QDir::canonicalPath() const
 
     if(!d->data->fileEngine)
         return QLatin1String("");
-    return cleanPath(d->data->fileEngine->fileName(QFileEngine::CanonicalName));
+    return cleanPath(d->data->fileEngine->fileName(QAbstractFileEngine::CanonicalName));
 }
 
 /*!
@@ -917,9 +924,9 @@ QDir::Filters QDir::filter() const
     \value Drives  List disk drives (ignored under Unix).
     \value NoSymLinks  Do not list symbolic links (ignored by operating
                        systems that don't support symbolic links).
-    \value All  List directories, files, drives and symlinks (this does not list
+    \value NoDotAndDotDot Do not list the special entries "." and "..".
+    \value AllEntries  List directories, files, drives and symlinks (this does not list
                 broken symlinks unless you specify System).
-                NoSymLinks flags.
     \value Readable  List files for which the application has read access.
     \value Writable  List files for which the application has write access.
     \value Executable  List files for which the application has
@@ -935,6 +942,7 @@ QDir::Filters QDir::filter() const
 
     \omitvalue DefaultFilter
     \omitvalue TypeMask
+    \omitvalue All
     \omitvalue RWEMask
     \omitvalue AccessMask
     \omitvalue PermissionMask
@@ -1136,6 +1144,10 @@ QStringList QDir::entryList(const QStringList &nameFilters, Filters filters,
 
     if (filters == NoFilter)
         filters = d->data->filters;
+#ifdef QT3_SUPPORT
+    if (d->matchAllDirs)
+        filters |= AllDirs;
+#endif
     if (sort == NoSort)
         sort = d->data->sort;
     if (filters == NoFilter && sort == NoSort && nameFilters == d->data->nameFilters) {
@@ -1172,6 +1184,10 @@ QFileInfoList QDir::entryInfoList(const QStringList &nameFilters, Filters filter
 
     if (filters == NoFilter)
         filters = d->data->filters;
+#ifdef QT3_SUPPORT
+    if (d->matchAllDirs)
+        filters |= AllDirs;
+#endif
     if (sort == NoSort)
         sort = d->data->sort;
     if (filters == NoFilter && sort == NoSort && nameFilters == d->data->nameFilters) {
@@ -1301,11 +1317,11 @@ bool QDir::isReadable() const
 
     if(!d->data->fileEngine)
         return false;
-    const QFileEngine::FileFlags info = d->data->fileEngine->fileFlags(QFileEngine::DirectoryType
-                                                                       |QFileEngine::PermsMask);
-    if(!(info & QFileEngine::DirectoryType))
+    const QAbstractFileEngine::FileFlags info = d->data->fileEngine->fileFlags(QAbstractFileEngine::DirectoryType
+                                                                       |QAbstractFileEngine::PermsMask);
+    if(!(info & QAbstractFileEngine::DirectoryType))
         return false;
-    return info & QFileEngine::ReadUserPerm;
+    return info & QAbstractFileEngine::ReadUserPerm;
 }
 
 /*!
@@ -1324,11 +1340,11 @@ bool QDir::exists() const
 
     if(!d->data->fileEngine)
         return false;
-    const QFileEngine::FileFlags info = d->data->fileEngine->fileFlags(QFileEngine::DirectoryType
-                                                                       |QFileEngine::ExistsFlag);
-    if(!(info & QFileEngine::DirectoryType))
+    const QAbstractFileEngine::FileFlags info = d->data->fileEngine->fileFlags(QAbstractFileEngine::DirectoryType
+                                                                       |QAbstractFileEngine::ExistsFlag);
+    if(!(info & QAbstractFileEngine::DirectoryType))
         return false;
-    return info & QFileEngine::ExistsFlag;
+    return info & QAbstractFileEngine::ExistsFlag;
 }
 
 /*!
@@ -1355,7 +1371,7 @@ bool QDir::isRoot() const
 
     if(!d->data->fileEngine)
         return true;
-    return d->data->fileEngine->fileFlags(QFileEngine::FlagsMask) & QFileEngine::RootFlag;
+    return d->data->fileEngine->fileFlags(QAbstractFileEngine::FlagsMask) & QAbstractFileEngine::RootFlag;
 }
 
 /*!
@@ -1408,13 +1424,13 @@ bool QDir::makeAbsolute() // ### What do the return values signify?
 
     if(!d->data->fileEngine)
         return false;
-    QString absolutePath = d->data->fileEngine->fileName(QFileEngine::AbsoluteName);
+    QString absolutePath = d->data->fileEngine->fileName(QAbstractFileEngine::AbsoluteName);
     if(QDir::isRelativePath(absolutePath))
         return false;
     d->detach();
     d->data->path = absolutePath;
     d->data->fileEngine->setFileName(absolutePath);
-    if(!(d->data->fileEngine->fileFlags(QFileEngine::TypesMask) & QFileEngine::DirectoryType))
+    if(!(d->data->fileEngine->fileFlags(QAbstractFileEngine::TypesMask) & QAbstractFileEngine::DirectoryType))
         return false;
     return true;
 }
@@ -1443,8 +1459,7 @@ bool QDir::operator==(const QDir &dir) const
     if(d->data == other->data)
         return true;
     Q_ASSERT(d->data->fileEngine && other->data->fileEngine);
-    if(d->data->fileEngine->type() != other->data->fileEngine->type() ||
-       d->data->fileEngine->caseSensitive() != other->data->fileEngine->caseSensitive())
+    if(d->data->fileEngine->caseSensitive() != other->data->fileEngine->caseSensitive())
         return false;
     if(d->data->filters == other->data->filters
        && d->data->sort == other->data->sort
@@ -1532,9 +1547,9 @@ bool QDir::remove(const QString &fileName)
     true if successful; otherwise returns false.
 
     On most file systems, rename() fails only if \a oldName does not
-    exist or if \a newName and \a oldName are not on the same
-    partition. On Windows, rename() will fail if \a newName already
-    exists. However, there are also other reasons why rename() can
+    exist, if \a newName and \a oldName are not on the same
+    partition or if a file with the new name already exists.
+    However, there are also other reasons why rename() can
     fail. For example, on at least one file system rename() fails if
     \a newName points to an open file.
 */
@@ -1920,7 +1935,7 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
     \relates QDir
 
     Initializes the resources specified by the \c .qrc file with the
-    base name \a name. Normally, Qt resources are loaded
+    specified base \a name. Normally, Qt resources are loaded
     automatically at startup. The Q_INIT_RESOURCE() macro is
     necessary on some platforms for resources stored in a static
     library.
@@ -1934,10 +1949,56 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
         Q_INIT_RESOURCE(myapp);
     \endcode
 
-    \sa {The Qt Resource System}
+    \sa Q_CLEANUP_RESOURCE(), {The Qt Resource System}
+*/
+
+/*!
+    \since 4.1
+    \macro void Q_CLEANUP_RESOURCE(name)
+    \relates QDir
+
+    Unloads the resources specified by the \c .qrc file with the base
+    name \a name.
+
+    Normally, Qt resources are unloaded automatically when the
+    application terminates, but if the resources are located in a
+    plugin that is being unloaded, call Q_CLEANUP_RESOURCE() to force
+    removal of your resources.
+
+    Example:
+
+    \code
+        Q_CLEANUP_RESOURCE(myapp);
+    \endcode
+
+    \sa Q_INIT_RESOURCE(), {The Qt Resource System}
 */
 
 #ifdef QT3_SUPPORT
+
+/*!
+    \fn bool QDir::matchAllDirs() const
+
+    Use filter() & AllDirs instead.
+*/
+bool QDir::matchAllDirs() const
+{
+    Q_D(const QDir);
+    return d->matchAllDirs;
+}
+
+
+/*!
+    \fn void QDir::setMatchAllDirs(bool on)
+
+    Use setFilter() instead.
+*/
+void QDir::setMatchAllDirs(bool on)
+{
+    Q_D(QDir);
+    d->matchAllDirs = on;
+}
+
 /*!
     Use nameFilters() instead.
 */
@@ -2004,18 +2065,6 @@ void QDir::setNameFilter(const QString &nameFilter)
     Use rmdir(\a dirName) instead.
 
     The \a acceptAbsPath parameter is ignored.
-*/
-
-/*!
-    \fn bool QDir::matchAllDirs() const
-
-    Use filter() & AllDirs instead.
-*/
-
-/*!
-    \fn void QDir::setMatchAllDirs(bool on)
-
-    Use setFilter() instead.
 */
 
 /*!

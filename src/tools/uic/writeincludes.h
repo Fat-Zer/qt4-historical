@@ -25,8 +25,8 @@
 #define WRITEINCLUDES_H
 
 #include "treewalker.h"
-#include <qmap.h>
-#include <qstring.h>
+#include <QMap>
+#include <QString>
 
 class QTextStream;
 class Driver;

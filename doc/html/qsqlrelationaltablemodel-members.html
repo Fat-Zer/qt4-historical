@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/sql/models/qsqlrelationaltablemodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/sql/models/qsqlrelationaltablemodel.cpp -->
 <head>
-    <title>Qt 4.0: List of All Members for QSqlRelationalTableModel</title>
+    <title>Qt 4.1: List of All Members for QSqlRelationalTableModel</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -33,19 +33,23 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows</a> ( const QModelIndex &amp;, int, int )</li>
 <li><div class="fn"/><a href="qobject.html#blockSignals">blockSignals</a> ( bool ) : bool</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#buddy">buddy</a> ( const QModelIndex &amp; ) const : QModelIndex</li>
-<li><div class="fn"/><a href="qabstractitemmodel.html#canFetchMore">canFetchMore</a> ( const QModelIndex &amp; ) const : bool</li>
+<li><div class="fn"/><a href="qsqlquerymodel.html#canFetchMore">canFetchMore</a> ( const QModelIndex &amp; ) const : bool</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#changePersistentIndex">changePersistentIndex</a> ( const QModelIndex &amp;, const QModelIndex &amp; )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#changePersistentIndexList">changePersistentIndexList</a> ( const QModelIndexList &amp;, const QModelIndexList &amp; )</li>
 <li><div class="fn"/><a href="qobject.html#childEvent">childEvent</a> ( QChildEvent * )</li>
 <li><div class="fn"/><a href="qobject.html#children">children</a> () const : const QObjectList &amp;</li>
 <li><div class="fn"/><a href="qsqlquerymodel.html#clear">clear</a> ()</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#columnCount">columnCount</a> ( const QModelIndex &amp; ) const : int</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#columnsAboutToBeInserted">columnsAboutToBeInserted</a> ( const QModelIndex &amp;, int, int )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#columnsAboutToBeRemoved">columnsAboutToBeRemoved</a> ( const QModelIndex &amp;, int, int )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#columnsInserted">columnsInserted</a> ( const QModelIndex &amp;, int, int )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#columnsRemoved">columnsRemoved</a> ( const QModelIndex &amp;, int, int )</li>
 <li><div class="fn"/><a href="qobject.html#connect">connect</a> ( const QObject *, const char *, const QObject *, const char *, Qt::ConnectionType ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#connect-2">connect</a> ( const QObject *, const char *, const char *, Qt::ConnectionType ) const : bool</li>
 <li><div class="fn"/><a href="qobject.html#connectNotify">connectNotify</a> ( const char * )</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#createIndex">createIndex</a> ( int, int, void * ) const : QModelIndex</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#createIndex-2">createIndex</a> ( int, int, int ) const : QModelIndex</li>
 <li><div class="fn"/><a href="qobject.html#customEvent">customEvent</a> ( QEvent * )</li>
-<li><div class="fn"/><a href="qobject.html#d_ptr-var">d_ptr</a> : QObjectData *</li>
 <li><div class="fn"/><a href="qsqlquerymodel.html#data">data</a> ( const QModelIndex &amp;, int ) const : QVariant</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#dataChanged">dataChanged</a> ( const QModelIndex &amp;, const QModelIndex &amp; )</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#database">database</a> () const : QSqlDatabase</li>
@@ -66,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractitemmodel.html#endRemoveRows">endRemoveRows</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#event">event</a> ( QEvent * ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#eventFilter">eventFilter</a> ( QObject *, QEvent * ) : bool</li>
-<li><div class="fn"/><a href="qabstractitemmodel.html#fetchMore">fetchMore</a> ( const QModelIndex &amp; )</li>
+<li><div class="fn"/><a href="qsqlquerymodel.html#fetchMore">fetchMore</a> ( const QModelIndex &amp; )</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#fieldIndex">fieldIndex</a> ( const QString &amp; ) const : int</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#filter">filter</a> () const : QString</li>
 <li><div class="fn"/><a href="qobject.html#findChild">findChild</a> ( const QString &amp; ) const : T</li>
@@ -88,9 +92,9 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qsqltablemodel.html#insertRows">insertRows</a> ( int, int, const QModelIndex &amp; ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#installEventFilter">installEventFilter</a> ( QObject * )</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#isDirty">isDirty</a> ( const QModelIndex &amp; ) const : bool</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qobject.html#isWidgetType">isWidgetType</a> () const : bool</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#itemData">itemData</a> ( const QModelIndex &amp; ) const : QMap&lt;int, QVariant&gt;</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qobject.html#killTimer">killTimer</a> ( int )</li>
 <li><div class="fn"/><a href="qsqlquerymodel.html#lastError">lastError</a> () const : QSqlError</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#layoutChanged">layoutChanged</a> ()</li>
@@ -98,9 +102,11 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#metaObject">metaObject</a> () const : const QMetaObject *</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#mimeData">mimeData</a> ( const QModelIndexList &amp; ) const : QMimeData *</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#mimeTypes">mimeTypes</a> () const : QStringList</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#modelReset">modelReset</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#moveToThread">moveToThread</a> ( QThread * )</li>
 <li><div class="fn"/><a href="qobject.html#objectName-prop">objectName</a> () const : QString</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#orderByClause">orderByClause</a> () const : QString</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#parent-var">parent</a> : using</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#parent">parent</a> ( const QModelIndex &amp; ) const : QModelIndex</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#primaryKey">primaryKey</a> () const : QSqlIndex</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#primeInsert">primeInsert</a> ( int, QSqlRecord &amp; )</li>
@@ -121,7 +127,11 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qsqltablemodel.html#revert">revert</a> ()</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#revertAll">revertAll</a> ()</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#revertRow">revertRow</a> ( int )</li>
-<li><div class="fn"/><a href="qabstractitemmodel.html#rowCount">rowCount</a> ( const QModelIndex &amp; ) const : int</li>
+<li><div class="fn"/><a href="qsqlquerymodel.html#rowCount">rowCount</a> ( const QModelIndex &amp; ) const : int</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#rowsAboutToBeInserted">rowsAboutToBeInserted</a> ( const QModelIndex &amp;, int, int )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#rowsAboutToBeRemoved">rowsAboutToBeRemoved</a> ( const QModelIndex &amp;, int, int )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#rowsInserted">rowsInserted</a> ( const QModelIndex &amp;, int, int )</li>
+<li><div class="fn"/><a href="qabstractitemmodel.html#rowsRemoved">rowsRemoved</a> ( const QModelIndex &amp;, int, int )</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#select">select</a> () : bool</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#selectStatement">selectStatement</a> () const : QString</li>
 <li><div class="fn"/><a href="qobject.html#sender">sender</a> () const : QObject *</li>
@@ -146,7 +156,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qsqltablemodel.html#sort">sort</a> ( int, Qt::SortOrder )</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#span">span</a> ( const QModelIndex &amp; ) const : QSize</li>
 <li><div class="fn"/><a href="qobject.html#startTimer">startTimer</a> ( int ) : int</li>
-<li><div class="fn"/><a href="qobject.html#staticQtMetaObject-var">staticQtMetaObject</a> : const QMetaObject</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#submit">submit</a> () : bool</li>
 <li><div class="fn"/><a href="qsqltablemodel.html#submitAll">submitAll</a> () : bool</li>
 <li><div class="fn"/><a href="qabstractitemmodel.html#supportedDropActions">supportedDropActions</a> () const : Qt::DropActions</li>
@@ -163,6 +172,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

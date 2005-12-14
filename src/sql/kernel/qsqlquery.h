@@ -24,9 +24,9 @@
 #ifndef QSQLQUERY_H
 #define QSQLQUERY_H
 
-#include "QtSql/qsql.h"
-#include "QtSql/qsqldatabase.h"
-#include "QtCore/qstring.h"
+#include <QtSql/qsql.h>
+#include <QtSql/qsqldatabase.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Sql)
 
@@ -36,7 +36,6 @@ class QSqlError;
 class QSqlResult;
 class QSqlRecord;
 template <class Key, class T> class QMap;
-
 class QSqlQueryPrivate;
 
 class Q_SQL_EXPORT QSqlQuery

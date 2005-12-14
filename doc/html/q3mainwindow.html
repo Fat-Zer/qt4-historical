@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/widgets/q3mainwindow.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/widgets/q3mainwindow.cpp -->
 <head>
-    <title>Qt 4.0: Q3MainWindow Class Reference</title>
+    <title>Qt 4.1: Q3MainWindow Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -43,7 +43,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -94,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="q3mainwindow.html#usesTextLabel-prop">usesTextLabel</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -140,14 +140,15 @@ body { background: #ffffff; color: black; }</style>
 <a name="protected-slots"></a>
 <h3>Protected Slots</h3>
 <ul>
+<li><div class="fn"/>void <b><a href="q3mainwindow.html#menuAboutToShow">menuAboutToShow</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="q3mainwindow.html#setUpLayout">setUpLayout</a></b> ()</li>
 <li><div class="fn"/>virtual bool <b><a href="q3mainwindow.html#showDockMenu">showDockMenu</a></b> ( const QPoint &amp; <i>globalPos</i> )</li>
 </ul>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QTextStream &amp; <b><a href="q3mainwindow.html#operator-lt-lt-89">operator&lt;&lt;</a></b> ( QTextStream &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</li>
-<li><div class="fn"/>QTextStream &amp; <b><a href="q3mainwindow.html#operator-gt-gt-62">operator&gt;&gt;</a></b> ( QTextStream &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="q3mainwindow.html#operator-lt-lt-98">operator&lt;&lt;</a></b> ( QTextStream &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="q3mainwindow.html#operator-gt-gt-64">operator&gt;&gt;</a></b> ( QTextStream &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -168,7 +169,7 @@ body { background: #ffffff; color: black; }</style>
     mw-&gt;show();</pre>
 <p>Q3MainWindows may be created in their own right as shown above. The central widget is set with <a href="q3mainwindow.html#setCentralWidget">setCentralWidget</a>(). Popup menus can be added to the default menu bar, widgets can be added to the status bar, toolbars and dock windows can be added to any of the dock areas.</p>
 <p>The main window will take care of the dock areas, and the geometry of the central widget, but all other aspects of the central widget are left to you. Q3MainWindow automatically detects the creation of a menu bar or status bar if you specify the Q3MainWindow as parent, or you can use the provided <a href="q3mainwindow.html#menuBar">menuBar</a>() and <a href="q3mainwindow.html#statusBar">statusBar</a>() functions. The functions <a href="q3mainwindow.html#menuBar">menuBar</a>() and <a href="q3mainwindow.html#statusBar">statusBar</a>() create a suitable widget if one doesn't exist, and update the window's layout to make space.</p>
-<p>New dock windows and toolbars can be added to a Q3MainWindow using <a href="q3mainwindow.html#addDockWindow">addDockWindow</a>(). <a href="qt.html#Dock-enum">Qt::Dock</a> windows can be moved using <a href="q3mainwindow.html#moveDockWindow">moveDockWindow</a>() and removed with <a href="q3mainwindow.html#removeDockWindow">removeDockWindow</a>(). Q3MainWindow allows default dock window (toolbar) docking in all its dock areas (<tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>). You can use <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>() to enable and disable docking areas for dock windows. When adding or moving dock windows you can specify their 'edge' (dock area). The currently available edges are: <tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>, <tt>Minimized</tt> (effectively a 'hidden' dock area) and <tt>TornOff</tt> (floating). See <a href="qt.html#Dock-enum">Qt::Dock</a> for an explanation of these areas. Note that the *ToolBar functions are included for backward compatibility; all new code should use the *DockWindow functions. <a href="porting4.html#qtoolbar">QToolbar</a> is a subclass of <a href="q3dockwindow.html">Q3DockWindow</a> so all functions that work with dock windows work on toolbars in the same way.</p>
+<p>New dock windows and toolbars can be added to a Q3MainWindow using <a href="q3mainwindow.html#addDockWindow">addDockWindow</a>(). <a href="qt.html#Dock-enum">Qt::Dock</a> windows can be moved using <a href="q3mainwindow.html#moveDockWindow">moveDockWindow</a>() and removed with <a href="q3mainwindow.html#removeDockWindow">removeDockWindow</a>(). Q3MainWindow allows default dock window (toolbar) docking in all its dock areas (<tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>). You can use <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>() to enable and disable docking areas for dock windows. When adding or moving dock windows you can specify their 'edge' (dock area). The currently available edges are: <tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>, <tt>Minimized</tt> (effectively a 'hidden' dock area) and <tt>TornOff</tt> (floating). See <a href="qt.html#Dock-enum">Qt::Dock</a> for an explanation of these areas. Note that the *<a href="designer-creating-mainwindows.html#toolbars">ToolBar</a> functions are included for backward compatibility; all new code should use the *DockWindow functions. <a href="porting4.html#qtoolbar">QToolbar</a> is a subclass of <a href="q3dockwindow.html">Q3DockWindow</a> so all functions that work with dock windows work on toolbars in the same way.</p>
 <a name="dwm"></a><p>If the user clicks the close button, then the dock window is hidden. A dock window can be hidden or unhidden by the user by right clicking a dock area and clicking the name of the relevant dock window on the pop up dock window menu. This menu lists the names of every dock window; visible dock windows have a tick beside their names. The dock window menu is created automatically as required by <a href="q3mainwindow.html#createDockWindowMenu">createDockWindowMenu</a>(). Since it may not always be appropriate for a dock window to appear on this menu the <a href="q3mainwindow.html#setAppropriate">setAppropriate</a>() function is used to inform the main window whether or not the dock window menu should include a particular dock window. Double clicking a dock window handle (usually on the left-hand side of the dock window) undocks (floats) the dock window. Double clicking a floating dock window's title bar will dock the floating dock window. (See also <a href="q3mainwindow.html#DockWindows-enum">Q3MainWindow::DockWindows</a>.)</p>
 <p>Some functions change the appearance of a Q3MainWindow globally:</p>
 <ul>
@@ -366,6 +367,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The method only works if <a href="q3mainwindow.html#dockWindowsMovable-prop">dockWindowsMovable</a>() returns true.</p>
 <h3 class="fn"><a name="lineUpToolBars"></a>void Q3MainWindow::lineUpToolBars ( bool <i>keepNewLines</i> = false )</h3>
 <p>Lines up the toolbars. Line breaks are preserved if <i>keepNewLines</i> is true.</p>
+<h3 class="fn"><a name="menuAboutToShow"></a>void Q3MainWindow::menuAboutToShow ()&nbsp;&nbsp;<tt> [protected slot]</tt></h3>
+<p>This slot is called from the aboutToShow() signal of the default dock menu of the mainwindow. The default implementation initializes the menu with all dock windows and toolbars in this slot.</p>
 <h3 class="fn"><a name="menuBar"></a><a href="qmenubar.html">QMenuBar</a> * Q3MainWindow::menuBar () const</h3>
 <p>Returns the menu bar for this window.</p>
 <p>If there isn't one, then menuBar() creates an empty menu bar.</p>
@@ -448,12 +451,12 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3whatsthis.html#enterWhatsThisMode">Q3WhatsThis::enterWhatsThisMode</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-89"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-98"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the layout (sizes and positions) of the dock windows in the dock areas of the <a href="q3mainwindow.html">Q3MainWindow</a> <i>mainWindow</i>, including <tt>Minimized</tt> and <tt>TornOff</tt> dock windows, to the text stream <i>ts</i>.</p>
 <p>This can be used, for example, in conjunction with <a href="qsettings.html">QSettings</a> to save the user's layout when the <i>mainWindow</i> receives a close event.</p>
 <p>See also <a href="qwidget.html#closeEvent">QWidget::closeEvent</a>().</p>
-<h3 class="fn"><a name="operator-gt-gt-62"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&gt;&gt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-64"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&gt;&gt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads the layout (sizes and positions) of the dock windows in the dock areas of the <a href="q3mainwindow.html">Q3MainWindow</a> <i>mainWindow</i> from the text stream, <i>ts</i>, including <tt>Minimized</tt> and <tt>TornOff</tt> dock windows. Restores the dock windows and dock areas to these sizes and positions. The layout information must be in the format produced by operator&lt;&lt;().</p>
 <p>This can be used, for example, in conjunction with <a href="qsettings.html">QSettings</a> to restore the user's layout.</p>
@@ -461,6 +464,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

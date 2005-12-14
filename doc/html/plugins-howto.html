@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/plugins-howto.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/plugins-howto.qdoc -->
 <head>
-    <title>Qt 4.0: How to Create Qt Plugins</title>
+    <title>Qt 4.1: How to Create Qt Plugins</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -23,8 +23,9 @@ body { background: #ffffff; color: black; }</style>
 <li>A higher-level API for writing extensions to Qt itself: custom database drivers, image formats, text codecs, custom styles, etc.</li>
 <li>A lower-lever API for extending Qt applications.</li>
 </ul>
-<p>For example, if you want to write a custom <a href="qstyle.html">QStyle</a> subclass and have Qt applications load it dynamically, you would use the higher-level API; whereas if you want to extend <i>Qt Designer</i>, you would use the lower-level API.</p>
+<p>For example, if you want to write a custom <a href="qstyle.html">QStyle</a> subclass and have Qt applications load it dynamically, you would use the higher-level API.</p>
 <p>Since the higher-level API is built on top of the lower-level API, some issues are common to both.</p>
+<p>If you want to provide plugins for use with <i>Qt Designer</i>, see the <a href="qtdesigner.html">QtDesigner</a> module documentation.</p>
 <p>Topics:</p>
 <ul><li><a href="#the-higher-level-api-writing-qt-extensions">The Higher-Level API: Writing Qt Extensions</a></li>
 <li><a href="#the-lower-level-api-extending-qt-applications">The Lower-Level API: Extending Qt Applications</a></li>
@@ -51,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyleplugin.html">QStylePlugin</a></td><td><tt>plugins/styles</tt></td><td>Case Insensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodecplugin.html">QTextCodecPlugin</a></td><td><tt>plugins/codecs</tt></td><td>Case Sensitive</td></tr>
 </table>
-<p>But where is the <tt>plugins</tt> directory? When the application is run, Qt will first treat the application's executable directory as the <tt>pluginsbase</tt>. For example if the application is in <tt>C:\Program Files\MyApp</tt> and has a style plugin, Qt will look in <tt>C:\Program Files\MyApp\styles</tt>. (See <a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>() for how to find out where the application's executable is.) Qt will also look in the directory specified by QLibraryInfo::location(<a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::PluginsPath</a>), which typically is located in <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed). If you want Qt to look in additional places you can add as many paths as you need with calls to <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>(). And if you want to set your own path or paths you can use <a href="qcoreapplication.html#setLibraryPaths">QCoreApplication::setLibraryPaths</a>().</p>
+<p>But where is the <tt>plugins</tt> directory? When the application is run, Qt will first treat the application's executable directory as the <tt>pluginsbase</tt>. For example if the application is in <tt>C:\Program Files\MyApp</tt> and has a style plugin, Qt will look in <tt>C:\Program Files\MyApp\styles</tt>. (See <a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>() for how to find out where the application's executable is.) Qt will also look in the directory specified by QLibraryInfo::location(<a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::PluginsPath</a>), which typically is located in <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed). If you want Qt to look in additional places you can add as many paths as you need with calls to <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>(). And if you want to set your own path or paths you can use <a href="qcoreapplication.html#setLibraryPaths">QCoreApplication::setLibraryPaths</a>(). You can also use a <tt>qt.conf</tt> file to override the hard-coded paths that are compiled into the Qt library. For more information, see the <a href="qt-conf.html">Using qt.conf</a> documentation.</p>
 <p>Suppose that you have a new style class called <tt>MyStyle</tt> that you want to make available as a plugin. The required code is straightforward:</p>
 <pre>&nbsp;   class MyStylePlugin : public QStylePlugin
     {
@@ -74,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Some plugin classes require additional functions to be implemented. See the class documentation for details of the virtual functions that must be reimplemented for each type of plugin.</p>
 <p>Qt applications automatically know which plugins are available, because plugins are stored in the standard plugin subdirectories. Because of this applications don't require any code to find and load plugins, since Qt handles them automatically.</p>
 <p>The default directory for plugins is <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed), with each type of plugin in a subdirectory for that type, e.g. <tt>styles</tt>. If you want your applications to use plugins and you don't want to use the standard plugins path, have your installation process determine the path you want to use for the plugins, and save the path, e.g. using <a href="qsettings.html">QSettings</a>, for the application to read when it runs. The application can then call <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>() with this path and your plugins will be available to the application. Note that the final part of the path (e.g., <tt>styles</tt>) cannot be changed.</p>
-<p>The normal way to include a plugin with an application is either to compile it in with the application or to compile it into a dynamic library and use it like any other library. If you want the plugin to be loadable then one approach is to create a subdirectory under the application and place the plugin in that directory.</p>
+<p>The normal way to include a plugin with an application is either to compile it in with the application or to compile it into a dynamic library and use it like any other library. If you want the plugin to be loadable then one approach is to create a subdirectory under the application and place the plugin in that directory. For more information about deployment, see the <a href="deployment.html">Deploying Qt Applications</a> documentation.</p>
 <a name="the-lower-level-api-extending-qt-applications"></a>
 <h2>The Lower-Level API: Extending Qt Applications</h2>
 <p>Not only Qt itself but also Qt application can be extended through plugins. This requires the application to detect and load plugins using <a href="qpluginloader.html">QPluginLoader</a>. In that context, plugins may provide arbitrary functionality and are not limited to database drivers, image formats, text codecs, styles, and the other types of plugin that extend Qt's functionality.</p>
@@ -89,7 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <ol type="1">
 <li>Declare a plugin class that inherits from <a href="qobject.html">QObject</a> and from the interfaces that the plugin wants to provide.</li>
 <li>Use the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interfaces.</li>
-<li>Export the plugin using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</li>
+<li>Export the plugin using the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</li>
 <li>Build the plugin using an suitable <tt>.pro</tt> file.</li>
 </ol>
 <p>For example, here's the definition of an interface class:</p>
@@ -154,6 +155,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

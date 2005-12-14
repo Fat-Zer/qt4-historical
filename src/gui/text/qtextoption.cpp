@@ -23,7 +23,7 @@
 
 #include "qtextoption.h"
 #include "qapplication.h"
-#include <QtCore/qlist.h>
+#include "qlist.h"
 
 struct QTextOptionPrivate
 {
@@ -139,6 +139,8 @@ QList<qreal> QTextOption::tabArray() const
     \class QTextOption
     \brief The QTextOption class provides a description of general rich text
     properties.
+
+    \ingroup text
 
     QTextOption is used to encapsulate common rich text properties in a single
     object. It contains information about text alignment, layout direction,

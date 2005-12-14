@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/kernel/qwidget.cpp -->
 <head>
-    <title>Qt 4.0: QWidget Class Reference</title>
+    <title>Qt 4.1: QWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -20,7 +20,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWidget Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QWidget class is the base class of all user interface objects. <a href="#details">More...</a></p>
 <pre>#include &lt;QWidget&gt;</pre><p>Inherits <a href="qobject.html">QObject</a> and <a href="qpaintdevice.html">QPaintDevice</a>.</p>
-<p>Inherited by <a href="q3databrowser.html">Q3DataBrowser</a>, <a href="q3dataview.html">Q3DataView</a>, <a href="q3datetimeedit.html">Q3DateTimeEdit</a>, <a href="q3datetimeeditbase.html">Q3DateTimeEditBase</a>, <a href="q3dockarea.html">Q3DockArea</a>, <a href="q3header.html">Q3Header</a>, <a href="q3mainwindow.html">Q3MainWindow</a>, <a href="qabstractbutton.html">QAbstractButton</a>, <a href="qabstractslider.html">QAbstractSlider</a>, <a href="qabstractspinbox.html">QAbstractSpinBox</a>, <a href="qaxwidget.html">QAxWidget</a>, <a href="qcombobox.html">QComboBox</a>, <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a>, <a href="qdesignerobjectinspectorinterface.html">QDesignerObjectInspectorInterface</a>, <a href="qdesignerpropertyeditorinterface.html">QDesignerPropertyEditorInterface</a>, <a href="qdesignerwidgetboxinterface.html">QDesignerWidgetBoxInterface</a>, <a href="qdesktopwidget.html">QDesktopWidget</a>, <a href="qdialog.html">QDialog</a>, <a href="qdockwidget.html">QDockWidget</a>, <a href="qfocusframe.html">QFocusFrame</a>, <a href="qframe.html">QFrame</a>, <a href="qglwidget.html">QGLWidget</a>, <a href="qgroupbox.html">QGroupBox</a>, <a href="qlineedit.html">QLineEdit</a>, <a href="qmainwindow.html">QMainWindow</a>, <a href="qmenu.html">QMenu</a>, <a href="qmenubar.html">QMenuBar</a>, <a href="qprogressbar.html">QProgressBar</a>, <a href="qrubberband.html">QRubberBand</a>, <a href="qsizegrip.html">QSizeGrip</a>, <a href="qsplashscreen.html">QSplashScreen</a>, <a href="qsplitterhandle.html">QSplitterHandle</a>, <a href="qstatusbar.html">QStatusBar</a>, <a href="qtabbar.html">QTabBar</a>, <a href="qtabwidget.html">QTabWidget</a>, <a href="qtoolbar.html">QToolBar</a>, <a href="qworkspace.html">QWorkspace</a>, <a href="qx11embedcontainer.html">QX11EmbedContainer</a>, and <a href="qx11embedwidget.html">QX11EmbedWidget</a>.</p>
+<p>Inherited by <a href="q3combobox.html">Q3ComboBox</a>, <a href="q3databrowser.html">Q3DataBrowser</a>, <a href="q3dataview.html">Q3DataView</a>, <a href="q3datetimeedit.html">Q3DateTimeEdit</a>, <a href="q3datetimeeditbase.html">Q3DateTimeEditBase</a>, <a href="q3dockarea.html">Q3DockArea</a>, <a href="q3header.html">Q3Header</a>, <a href="q3mainwindow.html">Q3MainWindow</a>, <a href="qabstractbutton.html">QAbstractButton</a>, <a href="qabstractslider.html">QAbstractSlider</a>, <a href="qabstractspinbox.html">QAbstractSpinBox</a>, <a href="qaxwidget.html">QAxWidget</a>, <a href="qcombobox.html">QComboBox</a>, <a href="qdesigneractioneditorinterface.html">QDesignerActionEditorInterface</a>, <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a>, <a href="qdesignerobjectinspectorinterface.html">QDesignerObjectInspectorInterface</a>, <a href="qdesignerpropertyeditorinterface.html">QDesignerPropertyEditorInterface</a>, <a href="qdesignerwidgetboxinterface.html">QDesignerWidgetBoxInterface</a>, <a href="qdesktopwidget.html">QDesktopWidget</a>, <a href="qdialog.html">QDialog</a>, <a href="qdockwidget.html">QDockWidget</a>, <a href="qfocusframe.html">QFocusFrame</a>, <a href="qframe.html">QFrame</a>, <a href="qglwidget.html">QGLWidget</a>, <a href="qgroupbox.html">QGroupBox</a>, <a href="qlineedit.html">QLineEdit</a>, <a href="qmainwindow.html">QMainWindow</a>, <a href="qmenu.html">QMenu</a>, <a href="qmenubar.html">QMenuBar</a>, <a href="qprogressbar.html">QProgressBar</a>, <a href="qrubberband.html">QRubberBand</a>, <a href="qsizegrip.html">QSizeGrip</a>, <a href="qsplashscreen.html">QSplashScreen</a>, <a href="qsplitterhandle.html">QSplitterHandle</a>, <a href="qstatusbar.html">QStatusBar</a>, <a href="qsvgwidget.html">QSvgWidget</a>, <a href="qtabbar.html">QTabBar</a>, <a href="qtabwidget.html">QTabWidget</a>, <a href="qtoolbar.html">QToolBar</a>, <a href="qworkspace.html">QWorkspace</a>, <a href="qx11embedcontainer.html">QX11EmbedContainer</a>, and <a href="qx11embedwidget.html">QX11EmbedWidget</a>.</p>
 <ul>
 <li><a href="qwidget-members.html">List of all members, including inherited members</a></li>
 <li><a href="qwidget-obsolete.html">Obsolete members</a></li>
@@ -33,6 +33,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qwidget.html#acceptDrops-prop">acceptDrops</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qwidget.html#accessibleDescription-prop">accessibleDescription</a></b> : QString</li>
 <li><div class="fn"/><b><a href="qwidget.html#accessibleName-prop">accessibleName</a></b> : QString</li>
+<li><div class="fn"/><b><a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qwidget.html#baseSize-prop">baseSize</a></b> : QSize</li>
 <li><div class="fn"/><b><a href="qwidget.html#childrenRect-prop">childrenRect</a></b> : const QRect</li>
 <li><div class="fn"/><b><a href="qwidget.html#childrenRegion-prop">childrenRegion</a></b> : const QRegion</li>
@@ -78,6 +79,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qwidget.html#windowFlags-prop">windowFlags</a></b> : Qt::WindowFlags</li>
 <li><div class="fn"/><b><a href="qwidget.html#windowIcon-prop">windowIcon</a></b> : QIcon</li>
 <li><div class="fn"/><b><a href="qwidget.html#windowIconText-prop">windowIconText</a></b> : QString</li>
+<li><div class="fn"/><b><a href="qwidget.html#windowModality-prop">windowModality</a></b> : Qt::WindowModality</li>
 <li><div class="fn"/><b><a href="qwidget.html#windowModified-prop">windowModified</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qwidget.html#windowOpacity-prop">windowOpacity</a></b> : double</li>
 <li><div class="fn"/><b><a href="qwidget.html#windowTitle-prop">windowTitle</a></b> : QString</li>
@@ -102,6 +104,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qwidget.html#addAction">addAction</a></b> ( QAction * <i>action</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#addActions">addActions</a></b> ( QList&lt;QAction *&gt; <i>actions</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#adjustSize">adjustSize</a></b> ()</li>
+<li><div class="fn"/>bool <b><a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a></b> () const</li>
 <li><div class="fn"/>QPalette::ColorRole <b><a href="qwidget.html#backgroundRole">backgroundRole</a></b> () const</li>
 <li><div class="fn"/>QSize <b><a href="qwidget.html#baseSize-prop">baseSize</a></b> () const</li>
 <li><div class="fn"/>QWidget * <b><a href="qwidget.html#childAt">childAt</a></b> ( int <i>x</i>, int <i>y</i> ) const</li>
@@ -193,6 +196,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qwidget.html#accessibleDescription-prop">setAccessibleDescription</a></b> ( const QString &amp; <i>description</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#accessibleName-prop">setAccessibleName</a></b> ( const QString &amp; <i>name</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setAttribute">setAttribute</a></b> ( Qt::WidgetAttribute <i>attribute</i>, bool <i>on</i> = true )</li>
+<li><div class="fn"/>void <b><a href="qwidget.html#autoFillBackground-prop">setAutoFillBackground</a></b> ( bool <i>enabled</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setBackgroundRole">setBackgroundRole</a></b> ( QPalette::ColorRole <i>role</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#baseSize-prop">setBaseSize</a></b> ( const QSize &amp; )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#baseSize-prop">setBaseSize</a></b> ( int <i>basew</i>, int <i>baseh</i> )</li>
@@ -240,6 +244,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qwidget.html#windowFlags-prop">setWindowFlags</a></b> ( Qt::WindowFlags <i>type</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#windowIcon-prop">setWindowIcon</a></b> ( const QIcon &amp; <i>icon</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#windowIconText-prop">setWindowIconText</a></b> ( const QString &amp; )</li>
+<li><div class="fn"/>void <b><a href="qwidget.html#windowModality-prop">setWindowModality</a></b> ( Qt::WindowModality <i>windowModality</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#windowOpacity-prop">setWindowOpacity</a></b> ( qreal <i>level</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setWindowRole">setWindowRole</a></b> ( const QString &amp; <i>role</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setWindowState">setWindowState</a></b> ( Qt::WindowStates <i>windowState</i> )</li>
@@ -269,6 +274,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Qt::WindowFlags <b><a href="qwidget.html#windowFlags-prop">windowFlags</a></b> () const</li>
 <li><div class="fn"/>QIcon <b><a href="qwidget.html#windowIcon-prop">windowIcon</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qwidget.html#windowIconText-prop">windowIconText</a></b> () const</li>
+<li><div class="fn"/>Qt::WindowModality <b><a href="qwidget.html#windowModality-prop">windowModality</a></b> () const</li>
 <li><div class="fn"/>qreal <b><a href="qwidget.html#windowOpacity-prop">windowOpacity</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qwidget.html#windowRole">windowRole</a></b> () const</li>
 <li><div class="fn"/>Qt::WindowStates <b><a href="qwidget.html#windowState">windowState</a></b> () const</li>
@@ -467,6 +473,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setAccessibleName ( const QString &amp; <i>name</i> )</b></li>
 </ul>
 <p>See also <a href="qaccessibleinterface.html#text">QAccessibleInterface::text</a>().</p>
+<h3 class="fn"><a name="autoFillBackground-prop"></a>autoFillBackground : bool</h3>
+<p>This property holds whether the widget background is filled automatically.</p>
+<p>If enabled, this will cause Qt to fill the background using the widget's background role before invoking the paint event.</p>
+<p>In addition, Windows are always filled with <a href="qpalette.html#ColorRole-enum">QPalette::Window</a>, unless the WA_OpaquePaintEvent or WA_NoSystemBackground attributes are set.</p>
+<p>This property was introduced in Qt 4.1.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>bool autoFillBackground () const</b></li>
+<li><div class="fn"/><b>void setAutoFillBackground ( bool <i>enabled</i> )</b></li>
+</ul>
+<p>See also <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a> and <a href="qt.html#WidgetAttribute-enum">Qt::WA_NoSystemBackground</a>.</p>
 <h3 class="fn"><a name="baseSize-prop"></a>baseSize : <a href="qsize.html">QSize</a></h3>
 <p>This property holds the base size of the widget.</p>
 <p>The base size is used to calculate a proper widget size if the widget defines <a href="qwidget.html#sizeIncrement-prop">sizeIncrement</a>().</p>
@@ -709,7 +726,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b>bool isModal () const</b></li>
 </ul>
-<p>See also <a href="qwidget.html#isWindow">isWindow</a>() and <a href="qdialog.html">QDialog</a>.</p>
+<p>See also <a href="qwidget.html#isWindow">isWindow</a>(), <a href="qwidget.html#windowModality-prop">windowModality</a>, and <a href="qdialog.html">QDialog</a>.</p>
 <h3 class="fn"><a name="mouseTracking-prop"></a>mouseTracking : bool</h3>
 <p>This property holds whether mouse tracking is enabled for the widget.</p>
 <p>If mouse tracking is disabled (the default), the widget only receives mouse move events when at least one mouse button is pressed while the mouse is being moved.</p>
@@ -893,6 +910,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setWindowIconText ( const QString &amp; )</b></li>
 </ul>
 <p>See also <a href="qwidget.html#windowIcon-prop">windowIcon</a> and <a href="qwidget.html#windowTitle-prop">windowTitle</a>.</p>
+<h3 class="fn"><a name="windowModality-prop"></a>windowModality : <a href="qt.html#WindowModality-enum">Qt::WindowModality</a></h3>
+<p>This property holds which windows are blocked by the modal widget.</p>
+<p>This property only makes sense for windows. A modal widget prevents widgets in other windows from getting input. The value of this property controls which windows are blocked when the widget is visible. Changing this property while the window is visible has no effect; you must <a href="qwidget.html#hide">hide</a>() the wiget first, then <a href="qwidget.html#show">show</a>() it again.</p>
+<p>By default, this property is <a href="qt.html#WindowModality-enum">Qt::NonModal</a>.</p>
+<p>This property was introduced in Qt 4.1.</p>
+<p>Access functions:</p>
+<ul>
+<li><div class="fn"/><b>Qt::WindowModality windowModality () const</b></li>
+<li><div class="fn"/><b>void setWindowModality ( Qt::WindowModality <i>windowModality</i> )</b></li>
+</ul>
+<p>See also <a href="qwidget.html#isWindow">isWindow</a>(), <a href="qwidget.html#modal-prop">QWidget::modal</a>, and <a href="qdialog.html">QDialog</a>.</p>
 <h3 class="fn"><a name="windowModified-prop"></a>windowModified : bool</h3>
 <p>This property holds whether the document shown in the window has unsaved changes.</p>
 <p>A modified window is a window whose content has changed but has not been saved to disk. This flag will have different effects varied by the platform. On Mac OS X the close button will have a modified look; on other platforms, the window title will have an '*' (asterisk).</p>
@@ -907,13 +935,15 @@ body { background: #ffffff; color: black; }</style>
 <p>This property holds the level of opacity for the window.</p>
 <p>The valid range of opacity is from 1.0 (completely opaque) to 0.0 (completely transparent).</p>
 <p>By default the value of this property is 1.0.</p>
-<p>This feature is only present on Mac OS X and Windows 2000 and up.</p>
+<p>This feature is available on Mac OS X, X11 platforms that support the Composite extension, and Windows 2000 and later.</p>
+<p>Note that under X11 you need to have a composite manager running, and the X11 specific _NET_WM_WINDOW_OPACITY atom needs to be supported by the window manager you are using.</p>
 <p><b>Warning:</b> Changing this property from opaque to transparent might issue a paint event that needs to be processed before the window is displayed correctly. This affects mainly the use of <a href="qpixmap.html#grabWindow">QPixmap::grabWindow</a>(). Also note that semi-transparent windows update and resize significantly slower than opaque windows.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>qreal windowOpacity () const</b></li>
 <li><div class="fn"/><b>void setWindowOpacity ( qreal <i>level</i> )</b></li>
 </ul>
+<p>See also <a href="qwidget.html#setMask">setMask</a>().</p>
 <h3 class="fn"><a name="windowTitle-prop"></a>windowTitle : <a href="qstring.html">QString</a></h3>
 <p>This property holds the window title (caption).</p>
 <p>This property only makes sense for windows. If no caption has been set, the title is an empty string.</p>
@@ -965,6 +995,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addAction"></a>void QWidget::addAction ( <a href="qaction.html">QAction</a> * <i>action</i> )</h3>
 <p>Appends the action <i>action</i> to this widget's list of actions.</p>
 <p>All QWidgets have a list of <a href="qaction.html">QAction</a>s, however they can be represented graphically in many different ways. The default use of the <a href="qaction.html">QAction</a> list (as returned by <a href="qwidget.html#actions">actions</a>()) is to create a context <a href="qmenu.html">QMenu</a>.</p>
+<p>A <a href="qwidget.html">QWidget</a> should only have one of each action.</p>
 <p>See also <a href="qwidget.html#removeAction">removeAction</a>() and <a href="qmenu.html">QMenu</a>.</p>
 <h3 class="fn"><a name="addActions"></a>void QWidget::addActions ( <a href="qlist.html">QList</a>&lt;<a href="qaction.html">QAction</a> *&gt; <i>actions</i> )</h3>
 <p>Appends the actions <i>actions</i> to this widget's list of actions.</p>
@@ -1070,7 +1101,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#focusPreviousChild">focusPreviousChild</a>().</p>
 <h3 class="fn"><a name="focusNextPrevChild"></a>bool QWidget::focusNextPrevChild ( bool <i>next</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Finds a new widget to give the keyboard focus to, as appropriate for Tab and Shift+Tab, and returns true if it can find a new widget, or false if it can't.</p>
-<p>If <i>next</i> is true, this function searches &quot;forwards&quot;, if <i>next</i> is false, it searches &quot;backwards&quot;.</p>
+<p>If <i>next</i> is true, this function searches forward, if <i>next</i> is false, it searches backward.</p>
 <p>Sometimes, you will want to reimplement this function. For example, a web browser might reimplement it to move its &quot;current active link&quot; forward or backward, and call focusNextPrevChild() only when it reaches the last or first link on the &quot;page&quot;.</p>
 <p>Child widgets call focusNextPrevChild() on their parent widgets, but only the window that contains the child widgets decides where to redirect focus. By reimplementing this function for an object, you thus gain control of focus traversal for all child widgets.</p>
 <p>See also <a href="qwidget.html#focusNextChild">focusNextChild</a>() and <a href="qwidget.html#focusPreviousChild">focusPreviousChild</a>().</p>
@@ -1107,7 +1138,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the window system handle of the widget, for low-level access. Using this function is not portable.</p>
 <p>An HDC aquired with getDC() has to be released with <a href="qwidget.html#releaseDC">releaseDC</a>().</p>
 <p><b>Warning:</b> Using this function is not portable.</p>
-<p>Reimplemented from QPaintDevice.</p>
 <h3 class="fn"><a name="grabKeyboard"></a>void QWidget::grabKeyboard ()</h3>
 <p>Grabs the keyboard input.</p>
 <p>This widget receives all keyboard events until <a href="qwidget.html#releaseKeyboard">releaseKeyboard</a>() is called; other widgets get no keyboard events at all. Mouse events are not affected. Use <a href="qwidget.html#grabMouse">grabMouse</a>() if you want to grab that.</p>
@@ -1158,9 +1188,11 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#inputMethodEvent">inputMethodEvent</a>(), <a href="qinputmethodevent.html">QInputMethodEvent</a>, and <a href="qinputcontext.html">QInputContext</a>.</p>
 <h3 class="fn"><a name="insertAction"></a>void QWidget::insertAction ( <a href="qaction.html">QAction</a> * <i>before</i>, <a href="qaction.html">QAction</a> * <i>action</i> )</h3>
 <p>Inserts the action <i>action</i> to this widget's list of actions, before the action <i>before</i>. It appends the action if <i>before</i> is 0 or <i>before</i> is not a valid action for this widget.</p>
+<p>A <a href="qwidget.html">QWidget</a> should only have one of each action.</p>
 <p>See also <a href="qwidget.html#addAction">addAction</a>().</p>
 <h3 class="fn"><a name="insertActions"></a>void QWidget::insertActions ( <a href="qaction.html">QAction</a> * <i>before</i>, <a href="qlist.html">QList</a>&lt;<a href="qaction.html">QAction</a> *&gt; <i>actions</i> )</h3>
 <p>Inserts the actions <i>actions</i> to this widget's list of actions, before the action <i>before</i>. It appends the action if <i>before</i> is 0 or <i>before</i> is not a valid action for this widget.</p>
+<p>A <a href="qwidget.html">QWidget</a> should only have one of each action.</p>
 <p>See also <a href="qwidget.html#removeAction">removeAction</a>(), <a href="qmenu.html">QMenu</a>, and <a href="qwidget.html#insertAction">insertAction</a>().</p>
 <h3 class="fn"><a name="isAncestorOf"></a>bool QWidget::isAncestorOf ( const QWidget * <i>child</i> ) const</h3>
 <p>Returns true if this widget is a parent, (or grandparent and so on to any level), of the given <i>child</i>, and both widgets are within the same window; otherwise returns false.</p>
@@ -1246,7 +1278,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="metric"></a>int QWidget::metric ( PaintDeviceMetric <i>m</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Internal implementation of the virtual QPaintDevice::metric() function.</p>
 <p><i>m</i> is the metric to get.</p>
-<p>Reimplemented from QPaintDevice.</p>
 <h3 class="fn"><a name="mouseDoubleClickEvent"></a>void QWidget::mouseDoubleClickEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler, for event <i>e</i>, can be reimplemented in a subclass to receive mouse double click events for the widget.</p>
 <p>The default implementation generates a normal mouse press event.</p>
@@ -1299,7 +1330,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="parentWidget"></a>QWidget * QWidget::parentWidget () const</h3>
 <p>Returns the parent of this widget, or 0 if it does not have any parent widget.</p>
 <h3 class="fn"><a name="qwsEvent"></a>bool QWidget::qwsEvent ( QWSEvent * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This special event handler can be reimplemented in a subclass to receive native Qt/Embedded events which are passed in the <i>event</i> parameter.</p>
+<p>This special event handler can be reimplemented in a subclass to receive native Qtopia Core events which are passed in the <i>event</i> parameter.</p>
 <p>In your reimplementation of this function, if you want to stop the event being handled by Qt, return true. If you return false, this native event is passed back to Qt, which translates the event into a Qt event and sends it to the widget.</p>
 <p><b>Warning:</b> This function is not portable.</p>
 <p>See also <a href="qapplication.html#qwsEventFilter">QApplication::qwsEventFilter</a>().</p>
@@ -1310,7 +1341,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="releaseDC"></a>void QWidget::releaseDC ( HDC <i>hdc</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Releases the HDC <i>hdc</i> aquired by a previous call to <a href="qwidget.html#getDC">getDC</a>().</p>
 <p><b>Warning:</b> Using this function is not portable.</p>
-<p>Reimplemented from QPaintDevice.</p>
 <h3 class="fn"><a name="releaseKeyboard"></a>void QWidget::releaseKeyboard ()</h3>
 <p>Releases the keyboard grab.</p>
 <p>See also <a href="qwidget.html#grabKeyboard">grabKeyboard</a>(), <a href="qwidget.html#grabMouse">grabMouse</a>(), and <a href="qwidget.html#releaseMouse">releaseMouse</a>().</p>
@@ -1431,11 +1461,12 @@ body { background: #ffffff; color: black; }</style>
         topLevelLabel.setPixmap(pixmap);
         topLevelLabel.setMask(pixmap.mask());</pre>
 <p>The label shown by this code is masked using the image it contains, giving the appearance that an irregularly-shaped image is being drawn directly onto the screen.</p>
-<p>See also <a href="qwidget.html#mask">mask</a>() and <a href="qwidget.html#clearMask">clearMask</a>().</p>
+<p>See also <a href="qwidget.html#mask">mask</a>(), <a href="qwidget.html#clearMask">clearMask</a>(), and <a href="qwidget.html#windowOpacity-prop">windowOpacity</a>().</p>
 <h3 class="fn"><a name="setMask-2"></a>void QWidget::setMask ( const <a href="qregion.html">QRegion</a> &amp; <i>region</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Causes only the parts of the widget which overlap <i>region</i> to be visible. If the region includes pixels outside the <a href="qwidget.html#rect-prop">rect</a>() of the widget, window system controls in that area may or may not be visible, depending on the platform.</p>
 <p>Note that this effect can be slow if the region is particularly complex.</p>
+<p>See also <a href="qwidget.html#windowOpacity-prop">windowOpacity</a>.</p>
 <h3 class="fn"><a name="setParent"></a>void QWidget::setParent ( QWidget * <i>parent</i> )</h3>
 <p>Sets the parent of the widget to <i>parent</i>. The widget is moved to position (0, 0) in its new parent.</p>
 <p>If the new parent widget is in a different window, the reparented widget and its children are appended to the end of the <a href="qwidget.html#focusPolicy-prop">tab chain</a> of the new parent widget, in the same internal order as before. If one of the moved widgets had keyboard focus, setParent() calls <a href="qwidget.html#clearFocus">clearFocus</a>() for that widget.</p>
@@ -1490,7 +1521,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#visible-prop">visible</a>, <a href="qwidget.html#event">event</a>(), and <a href="qshowevent.html">QShowEvent</a>.</p>
 <h3 class="fn"><a name="showFullScreen"></a>void QWidget::showFullScreen ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Shows the widget in full-screen mode.</p>
-<p>Calling this function only affects windows.</p>
+<p>Calling this function only affects <a href="qwidget.html#isWindow">windows</a>.</p>
 <p>To return from full-screen mode, call <a href="qwidget.html#showNormal">showNormal</a>().</p>
 <p>Full-screen mode works fine under Windows, but has certain problems under X. These problems are due to limitations of the ICCCM protocol that specifies the communication between X11 clients and the window manager. ICCCM simply does not understand the concept of non-decorated full-screen windows. Therefore, the best we can do is to request a borderless window and place and resize it to fill the entire screen. Depending on the window manager, this may or may not work. The borderless window is requested using MOTIF hints, which are at least partially supported by virtually all modern window managers.</p>
 <p>An alternative would be to bypass the window manager entirely and create a window with the <a href="qt.html#WindowType-enum">Qt::WX11BypassWM</a> flag. This has other severe problems though, like totally broken keyboard focus and very strange effects on desktop changes or when the user raises other windows.</p>
@@ -1532,7 +1563,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Updates the widget unless updates are disabled or the widget is hidden.</p>
 <p>This function does not cause an immediate repaint; instead it schedules a paint event for processing when Qt returns to the main event loop. This permits Qt to optimize for more speed and less flicker than a call to <a href="qwidget.html#repaint">repaint</a>() does.</p>
 <p>Calling update() several times normally results in just one <a href="qwidget.html#paintEvent">paintEvent</a>() call.</p>
-<p>Qt normally erases the widget's area before the <a href="qwidget.html#paintEvent">paintEvent</a>() call. If the <a href="qt.html#WindowType-enum">Qt::WRepaintNoErase</a> widget flag is set, the widget is responsible for painting all its pixels itself.</p>
+<p>Qt normally erases the widget's area before the <a href="qwidget.html#paintEvent">paintEvent</a>() call. If the <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a> widget attribute is set, the widget is responsible for painting all its pixels with an opaque color.</p>
 <p>See also <a href="qwidget.html#repaint">repaint</a>(), <a href="qwidget.html#paintEvent">paintEvent</a>(), and <a href="qwidget.html#updatesEnabled-prop">setUpdatesEnabled</a>().</p>
 <h3 class="fn"><a name="update-2"></a>void QWidget::update ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
@@ -1597,6 +1628,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

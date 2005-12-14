@@ -24,7 +24,7 @@
 #ifndef QSQLERROR_H
 #define QSQLERROR_H
 
-#include "QtCore/qstring.h"
+#include <QtCore/qstring.h>
 
 QT_MODULE(Sql)
 
@@ -62,6 +62,7 @@ public:
     int number() const;
     void setNumber(int number);
     QString text() const;
+    bool isValid() const;
 
 private:
     QString driverError;

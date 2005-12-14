@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/thread/qthread.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/thread/qthread.cpp -->
 <head>
-    <title>Qt 4.0: QThread Class Reference</title>
+    <title>Qt 4.1: QThread Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -37,6 +37,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qthread.html#exit">exit</a></b> ( int <i>returnCode</i> = 0 )</li>
 <li><div class="fn"/>bool <b><a href="qthread.html#isFinished">isFinished</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qthread.html#isRunning">isRunning</a></b> () const</li>
+<li><div class="fn"/>Priority <b><a href="qthread.html#priority">priority</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qthread.html#setPriority">setPriority</a></b> ( Priority <i>priority</i> )</li>
 <li><div class="fn"/>void <b><a href="qthread.html#setStackSize">setStackSize</a></b> ( uint <i>stackSize</i> )</li>
 <li><div class="fn"/>uint <b><a href="qthread.html#stackSize">stackSize</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qthread.html#wait">wait</a></b> ( unsigned long <i>time</i> = ULONG_MAX )</li>
@@ -144,7 +146,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the thread.</p>
 <p>Note that deleting a <a href="qthread.html">QThread</a> object will not stop the execution of the thread it represents. Deleting a running <a href="qthread.html">QThread</a> (i.e. <a href="qthread.html#isFinished">isFinished</a>() returns false) will probably result in a program crash. You can <a href="qthread.html#wait">wait</a>() on a thread to make sure that it has finished.</p>
 <h3 class="fn"><a name="currentThread"></a>QThread * QThread::currentThread ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns a pointer to the currently executing <a href="qthread.html">QThread</a>. If the current thread was not started using the <a href="qthread.html">QThread</a> API (e.g., the GUI thread), this function returns zero.</p>
+<p>Returns a pointer to the currently executing <a href="qthread.html">QThread</a>. If the current thread was not started using the <a href="qthread.html">QThread</a> API, this function returns zero.</p>
+<p>Note that <a href="qapplication.html">QApplication</a> creates a <a href="qthread.html">QThread</a> object to represent the main thread; calling this function from main() after creating <a href="qapplication.html">QApplication</a> will return a valid pointer.</p>
 <h3 class="fn"><a name="currentThreadId"></a><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QThread::currentThreadId ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the thread handle of the currently executing thread.</p>
 <p><b>Warning:</b> The handle returned by this function is used for internal purposes and should not be used in any application code. On Windows, the returned value is a pseudo-handle for the current thread that cannot be used for numerical comparison.</p>
@@ -171,6 +174,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="msleep"></a>void QThread::msleep ( unsigned long <i>msecs</i> )&nbsp;&nbsp;<tt> [static protected]</tt></h3>
 <p>Causes the current thread to sleep for <i>msecs</i> milliseconds.</p>
 <p>See also <a href="qthread.html#sleep">sleep</a>() and <a href="qthread.html#usleep">usleep</a>().</p>
+<h3 class="fn"><a name="priority"></a><a href="qthread.html#Priority-enum">Priority</a> QThread::priority () const</h3>
+<p>Returns the priority for a running thread. If the thread is not running, this function returns <tt>InheritPriority</tt>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qthread.html#Priority-enum">Priority</a>, <a href="qthread.html#setPriority">setPriority</a>(), and <a href="qthread.html#start">start</a>().</p>
 <h3 class="fn"><a name="quit"></a>void QThread::quit ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Tells the thread's event loop to exit with return code 0 (success). Equivalent to calling QThread::exit(0).</p>
 <p>This function does nothing if the thread does not have an event loop.</p>
@@ -178,6 +185,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="run"></a>void QThread::run ()&nbsp;&nbsp;<tt> [pure virtual protected]</tt></h3>
 <p>This method is pure virtual and must be implemented in derived classes in order to do useful work. Returning from this method will end the execution of the thread.</p>
 <p>See also <a href="qthread.html#wait">wait</a>().</p>
+<h3 class="fn"><a name="setPriority"></a>void QThread::setPriority ( <a href="qthread.html#Priority-enum">Priority</a> <i>priority</i> )</h3>
+<p>This function sets the <i>priority</i> for a running thread. If the thread is not running, this function does nothing and returns immediately. Use <a href="qthread.html#start">start</a>() to start a thread with a specific priority.</p>
+<p>The <i>priority</i> argument can be any value in the <tt>QThread::Priority</tt> enum except for <tt>InheritPriorty</tt>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qthread.html#Priority-enum">Priority</a>, <a href="qthread.html#priority">priority</a>(), and <a href="qthread.html#start">start</a>().</p>
 <h3 class="fn"><a name="setStackSize"></a>void QThread::setStackSize ( <a href="qtglobal.html#uint-typedef">uint</a> <i>stackSize</i> )</h3>
 <p>Sets the maximum stack size for the thread to <i>stackSize</i>. If <i>stackSize</i> is greater than zero, the maximum stack size is set to <i>stackSize</i> bytes, otherwise the maximum stack size is automatically determined by the operating system.</p>
 <p><b>Warning:</b> Most operating systems place minimum and maximum limits on thread stack sizes. The thread will fail to start if the stack size is outside these limits.</p>
@@ -221,6 +233,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

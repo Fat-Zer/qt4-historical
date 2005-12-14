@@ -37,10 +37,10 @@
 
 #ifndef QT_NO_PRINTER
 
-#include "qprinter.h"
-#include "qprintengine.h"
-#include <private/qpaintengine_mac_p.h>
-#include <private/qpainter_p.h>
+#include "QtGui/qprinter.h"
+#include "QtGui/qprintengine.h"
+#include "private/qpaintengine_mac_p.h"
+#include "private/qpainter_p.h"
 
 class QPrinterPrivate;
 class QMacPrintEnginePrivate;
@@ -101,6 +101,7 @@ public:
     bool fullPage;
     GWorldPtr qdHandle;
     QPaintEngine *paintEngine;
+    bool suppressStatus;
     QMacPrintEnginePrivate() : mode(QPrinter::ScreenResolution), state(QPrinter::Idle),
                                orient(QPrinter::Portrait), format(0), settings(0), session(0),
                                qdHandle(0), paintEngine(0) {}

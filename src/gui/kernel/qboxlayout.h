@@ -24,9 +24,9 @@
 #ifndef QBOXLAYOUT_H
 #define QBOXLAYOUT_H
 
-#include "QtGui/qlayout.h"
+#include <QtGui/qlayout.h>
 #ifdef QT_INCLUDE_COMPAT
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 #endif
 
 #include <limits.h>
@@ -135,6 +135,5 @@ public:
 private:
     Q_DISABLE_COPY(QVBoxLayout)
 };
-
 
 #endif // QBOXLAYOUT_H

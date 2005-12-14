@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include "qtextcodec.h"
+#include "QtCore/qtextcodec.h"
 
 #ifndef QT_NO_TEXTCODEC
 
@@ -68,4 +68,5 @@ public:
 };
 
 #endif // QT_NO_TEXTCODEC
+
 #endif // QLATINCODEC_P_H

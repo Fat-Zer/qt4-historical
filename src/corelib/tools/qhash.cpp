@@ -912,6 +912,18 @@ void QHashData::destroyAndFree()
     \overload
 */
 
+/*! \fn QHash::iterator QHash::constFind(const Key &key) const
+    \since 4.1
+
+    Returns an iterator pointing to the item with key \a key in the
+    hash.
+
+    If the hash contains no item with key \a key, the function
+    returns constEnd().
+
+    \sa find()
+*/
+
 /*! \fn QHash::iterator QHash::insert(const Key &key, const T &value)
 
     Inserts a new item with the key \a key and a value of \a value.

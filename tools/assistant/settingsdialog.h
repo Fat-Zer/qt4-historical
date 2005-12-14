@@ -21,13 +21,13 @@
 **
 ****************************************************************************/
 
-#ifndef SETTINGSDIALOGIMPL_H
-#define SETTINGSDIALOGIMPL_H
+#ifndef SETTINGSDIALOG_H
+#define SETTINGSDIALOG_H
 
 #include "ui_settingsdialog.h"
 
-#include <qdialog.h>
-#include <qstringlist.h>
+#include <QDialog>
+#include <QStringList>
 
 class SettingsDialog : public QDialog
 {
@@ -47,9 +47,7 @@ private slots:
     void on_buttonPDF_clicked();
 
     void init();
-    void accept();
-    void reject();
-
+    
 private:
     void setFile(QLineEdit *le, const QString &caption);
 
@@ -57,4 +55,4 @@ private:
     Ui::SettingsDialog ui;
 };
 
-#endif
+#endif // SETTINGSDIALOG_H

@@ -34,6 +34,7 @@
 #include <iconloader_p.h>
 #include <qdesigner_promotedwidget_p.h>
 #include <qdesigner_utils_p.h>
+#include <metadatabase_p.h>
 
 #include <QtGui/QtGui>
 
@@ -282,10 +283,16 @@ void GraphicsPropertyEditor::showDialog()
         file_path = dialog.filePath();
         qrc_path = dialog.qrcPath();
         if (!file_path.isEmpty()) {
-            if (m_mode == Icon)
-                setIcon(m_core->iconCache()->nameToIcon(file_path, qrc_path));
-            else
-                setPixmap(m_core->iconCache()->nameToPixmap(file_path, qrc_path));
+            populateCombo();
+            if (m_mode == Icon) {
+                QIcon icon = m_core->iconCache()->nameToIcon(file_path, qrc_path);
+                populateCombo();
+                setIcon(icon);
+            } else {
+                QPixmap pixmap = m_core->iconCache()->nameToPixmap(file_path, qrc_path);
+                populateCombo();
+                setPixmap(pixmap);
+            }
         }
     }
 }
@@ -461,6 +468,14 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
     QList<Group> groups;
 
     QExtensionManager *m = m_core->extensionManager();
+
+    bool isMainContainer = false;
+    if (QWidget *widget = qobject_cast<QWidget*>(object)) {
+        if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(widget)) {
+            isMainContainer = (fw->mainContainer() == widget);
+        }
+    }
+
     m_prop_sheet = qobject_cast<QDesignerPropertySheetExtension*>(m->extension(object, Q_TYPEID(QDesignerPropertySheetExtension)));
     for (int i=0; i<m_prop_sheet->count(); ++i) {
         if (!m_prop_sheet->isVisible(i))
@@ -501,9 +516,21 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
             case QVariant::ByteArray:
                 p = new StringProperty(QString::fromUtf8(value.toByteArray()), pname);
                 break;
-            case QVariant::String:
-                p = new StringProperty(value.toString(), pname);
-                break;
+            case QVariant::String: {
+                if (pname != QLatin1String("objectName")
+                        && qobject_cast<MetaDataBase*>(core()->metaDataBase()) && core()->metaDataBase()->item(object)) {
+                    MetaDataBaseItem *item = static_cast<MetaDataBaseItem*>(core()->metaDataBase()->item(object));
+                    p = new StringProperty(value.toString(), pname, true, item->propertyComment(pname));
+                } else {
+                    StringProperty *sprop = new StringProperty(value.toString(), pname);
+                    p = sprop;
+
+                    if (pname == QLatin1String("objectName")) {
+                        sprop->setCheckValidObjectName(true);
+                        sprop->setAllowScope(isMainContainer);
+                    }
+                }
+            } break;
             case QVariant::Size:
                 p = new SizeProperty(value.toSize(), pname);
                 break;
@@ -544,7 +571,8 @@ void PropertyEditor::createPropertySheet(PropertyCollection *root, QObject *obje
                 p = new StringProperty(qvariant_cast<QKeySequence>(value), pname);
                 break;
             case QVariant::Palette:
-                p = new PaletteProperty(qvariant_cast<QPalette>(value), pname);
+                p = new PaletteProperty(qvariant_cast<QPalette>(value),
+                                qobject_cast<QWidget *>(object), pname);
                 break;
             default:
                 // ### qWarning() << "property" << pname << "with type" << value.type() << "not supported yet!";
@@ -647,6 +675,18 @@ void PropertyEditor::firePropertyChanged(IProperty *p)
     if (isReadOnly())
         return;
 
+    if (object() && p->parent() && p->propertyName() == QLatin1String("comment")) {
+        QString parentProperty = p->parent()->propertyName();
+        MetaDataBase *db = qobject_cast<MetaDataBase*>(core()->metaDataBase());
+
+        if (db && db->item(object())) {
+            MetaDataBaseItem *item = static_cast<MetaDataBaseItem*>(db->item(object()));
+            item->setPropertyComment(parentProperty, p->value().toString());
+            emit propertyChanged(parentProperty, p->parent()->value());
+        }
+        return;
+    }
+
     emit propertyChanged(p->propertyName(), p->value());
 }
 
@@ -668,8 +708,12 @@ void PropertyEditor::setObject(QObject *object)
         clearDirty(m_editor->initialInput());
 
     m_object = object;
+    if (QAction *action = qobject_cast<QAction*>(m_object)) {
+        if (action->menu())
+            m_object = action->menu();
+    }
 
-    delete m_properties;
+    IPropertyGroup *old_properties = m_properties;
     m_properties = 0;
     m_prop_sheet = 0;
 
@@ -680,6 +724,8 @@ void PropertyEditor::setObject(QObject *object)
     }
 
     m_editor->setInitialInput(m_properties);
+
+    delete old_properties;
 }
 
 void PropertyEditor::resetProperty(const QString &prop_name)

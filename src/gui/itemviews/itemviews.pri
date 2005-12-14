@@ -6,6 +6,7 @@ HEADERS += \
 	itemviews/qheaderview.h \
 	itemviews/qlistview.h \
 	itemviews/qlistview_p.h \
+	itemviews/qbsptree_p.h \
 	itemviews/qtableview.h \
 	itemviews/qtableview_p.h \
 	itemviews/qtreeview.h \
@@ -18,18 +19,24 @@ HEADERS += \
 	itemviews/qlistwidget.h \
 	itemviews/qtablewidget.h \
 	itemviews/qtreewidget.h \
+	itemviews/qtreewidget_p.h \
 	itemviews/qwidgetitemdata_p.h \
 	itemviews/qproxymodel.h \
 	itemviews/qproxymodel_p.h \
+	itemviews/qabstractproxymodel.h \
+	itemviews/qabstractproxymodel_p.h \
+	itemviews/qsortfilterproxymodel.h \
 	itemviews/qitemeditorfactory.h \
 	itemviews/qstandarditemmodel.h \
 	itemviews/qstandarditemmodel_p.h \
-	itemviews/qstringlistmodel.h
+	itemviews/qstringlistmodel.h \
+	itemviews/qtreewidgetitemiterator.h
 
 SOURCES += \
 	itemviews/qabstractitemview.cpp \
 	itemviews/qheaderview.cpp \
 	itemviews/qlistview.cpp \
+	itemviews/qbsptree.cpp \
 	itemviews/qtableview.cpp \
 	itemviews/qtreeview.cpp \
 	itemviews/qabstractitemdelegate.cpp \
@@ -40,7 +47,10 @@ SOURCES += \
 	itemviews/qtablewidget.cpp \
 	itemviews/qtreewidget.cpp \
 	itemviews/qproxymodel.cpp \
+	itemviews/qabstractproxymodel.cpp \
+	itemviews/qsortfilterproxymodel.cpp \
 	itemviews/qitemeditorfactory.cpp \
 	itemviews/qstandarditemmodel.cpp \
-	itemviews/qstringlistmodel.cpp
+	itemviews/qstringlistmodel.cpp \
+	itemviews/qtreewidgetitemiterator.cpp
 

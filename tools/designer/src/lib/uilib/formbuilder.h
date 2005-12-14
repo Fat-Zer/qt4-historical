@@ -30,12 +30,23 @@
 #include <QtCore/QStringList>
 #include <QtCore/QMap>
 
+#if 0
+// pragma for syncqt, don't remove.
+#pragma qt_class(QFormBuilder)
+#endif
+
 class QDesignerCustomWidgetInterface;
 
-class QT_UILIB_EXPORT QFormBuilder: public QAbstractFormBuilder
+#ifdef QFORMINTERNAL_NAMESPACE
+namespace QFormInternal
+{
+#endif
+
+class QDESIGNER_UILIB_EXPORT QFormBuilder: public QAbstractFormBuilder
 {
 public:
     QFormBuilder();
+    virtual ~QFormBuilder();
 
     QStringList pluginPaths() const;
 
@@ -62,6 +73,7 @@ protected:
     virtual bool addItem(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);
 
     virtual void updateCustomWidgets();
+    virtual void applyProperties(QObject *o, const QList<DomProperty*> &properties);
 
     static QWidget *widgetByName(QWidget *topLevel, const QString &name);
 
@@ -69,5 +81,9 @@ private:
     QStringList m_pluginPaths;
     QMap<QString, QDesignerCustomWidgetInterface*> m_customWidgets;
 };
+
+#ifdef QFORMINTERNAL_NAMESPACE
+}
+#endif
 
 #endif // FORMBUILDER_H

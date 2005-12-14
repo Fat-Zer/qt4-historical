@@ -24,9 +24,9 @@
 #ifndef DOCUPARSER_H
 #define DOCUPARSER_H
 
-#include <qxml.h>
-#include <qlist.h>
-#include <qmap.h>
+#include <QtXml>
+#include <QList>
+#include <QMap>
 
 class Profile;
 
@@ -139,4 +139,4 @@ private:
     Profile *prof;
 };
 
-#endif //DOCUPARSER_H
+#endif // DOCUPARSER_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 9 - With Cannon You Can</title>
+    <title>Qt 4.1: Qt Tutorial 9 - With Cannon You Can</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="tutorial-t9-lcdrange-h.html">tutorial/t9/lcdrange.h</a></li>
 <li><a href="tutorial-t9-main-cpp.html">tutorial/t9/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t9.png" alt="Screenshot of tutorial nine" /></p><p>In this example we become graphic by drawing a cute little blue cannon. Only <tt>cannonfield.cpp</tt> differs from the previous chapter.</p>
+<p align="center"><img src="images/t9.png" alt="Screenshot of Chapter 9" /></p><p>In this example we become graphic by drawing a cute little blue cannon. Only <tt>cannonfield.cpp</tt> differs from the previous chapter.</p>
 <a name="line-by-line-walkthrough"></a>
 <h2>Line by Line Walkthrough</h2>
 <a name="t9-cannonfield-cpp"></a>
@@ -53,10 +53,10 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qpainter.html#drawPie">QPainter::drawPie</a>() function draws a pie shape inside the specified rectangle using a start angle and an arc length. The angles are specified in sixteenths of a degree. Zero degrees is at the 3 o'clock position. The drawing direction is counter-clockwise. Here we draw a quarter of a circle in the bottom-left corner of the widget. The pie is filled with blue and has no outline.</p>
 <pre>&nbsp;       painter.rotate(-currentAngle);</pre>
 <p>The <a href="qpainter.html#rotate">QPainter::rotate</a>() function rotates the coordinate system of the <a href="qpainter.html">QPainter</a> around the origin. The rotation argument is a <tt>float</tt> given in degrees (not given in sixteenths of a degree as above) and clockwise. Here we rotate the coordinate system <tt>currentAngle</tt> degrees counter-clockwise.</p>
-<pre>&nbsp;       painter.drawRect(QRect(33, -4, 15, 8));</pre>
+<pre>&nbsp;       painter.drawRect(QRect(30, -5, 20, 10));</pre>
 <p>The <a href="qpainter.html#drawRect">QPainter::drawRect</a>() function draws the specified rectangle. Here we draw the barrel of the cannon.</p>
 <p>It can often be difficult to envision the resulting drawing when the coordinate system has been transformed (translated, rotated, scaled, or sheared) as above.</p>
-<p>In this case the coordinate system is first translated and then rotated. If the rectangle <a href="qrect.html">QRect</a>(33, -4, 15, 8) had been drawn in the translated coordinate system, it would have looked like this:</p>
+<p>In this case the coordinate system is first translated and then rotated. If the rectangle <a href="qrect.html">QRect</a>(30, -5, 20, 10) had been drawn in the translated coordinate system, it would have looked like this:</p>
 <p align="center"><img src="images/t9_1.png" alt="The cannon translated but not rotated" /></p><p>Note that the rectangle is clipped by the border of the <tt>CannonField</tt> widget. When we rotate the coordinate system, for instance 60 degrees, the rectangle will be rotated around (0, 0), which is the bottom-left corner because we have translated the coordinate system. The result looks like this:</p>
 <p align="center"><img src="images/t9_2.png" alt="The cannon translated and rotated" /></p><a name="running-the-application"></a>
 <h2>Running the Application</h2>
@@ -75,6 +75,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

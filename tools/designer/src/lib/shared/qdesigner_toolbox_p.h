@@ -41,7 +41,7 @@
 
 class QAction;
 
-class QT_SHARED_EXPORT QDesignerToolBox : public QToolBox
+class QDESIGNER_SHARED_EXPORT QDesignerToolBox : public QToolBox
 {
     Q_OBJECT
     Q_PROPERTY(QString currentItemText READ currentItemText WRITE setCurrentItemText STORED false DESIGNABLE true)
@@ -72,9 +72,18 @@ public:
     inline QAction *actionInsertPage() const
     { return m_actionInsertPage; }
 
+    inline QAction *actionInsertPageAfter() const
+    { return m_actionInsertPageAfter; }
+
+    inline QAction *actionChangePageOrder() const
+    { return m_actionChangePageOrder; }
+
 private slots:
     void removeCurrentPage();
     void addPage();
+    void addPageAfter();
+    void changeOrder();
+    void slotCurrentChanged(int index);
 
 protected:
     void itemInserted(int index);
@@ -82,7 +91,8 @@ protected:
 private:
     QAction *m_actionDeletePage;
     QAction *m_actionInsertPage;
+    QAction *m_actionInsertPageAfter;
+    QAction *m_actionChangePageOrder;
 };
-
 
 #endif // QDESIGNER_TOOLBOX_H

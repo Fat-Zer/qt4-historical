@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -24,8 +24,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <qabstractitemmodel.h>
-#include <qvector.h>
+#include <QAbstractItemModel>
+#include <QVector>
 
 class Model : public QAbstractItemModel
 {

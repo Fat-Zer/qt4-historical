@@ -27,17 +27,26 @@
 #include "mainwindow.h"
 #include "pixeldelegate.h"
 
-MainWindow::MainWindow()
+MainWindow::MainWindow() : QMainWindow()
 {
     currentPath = QDir::home().absolutePath();
-    model = 0;
+    model = new ImageModel(QImage(), this);
+
+    QWidget *centralWidget = new QWidget;
 
     view = new QTableView;
-    view->setItemDelegate(new PixelDelegate(this));
     view->setShowGrid(false);
     view->horizontalHeader()->hide();
     view->verticalHeader()->hide();
-    setCentralWidget(view);
+
+    PixelDelegate *delegate = new PixelDelegate(this);
+    view->setItemDelegate(delegate);
+
+    QLabel *pixelSizeLabel = new QLabel(tr("Pixel size:"));
+    QSpinBox *pixelSizeSpinBox = new QSpinBox;
+    pixelSizeSpinBox->setMinimum(1);
+    pixelSizeSpinBox->setMaximum(32);
+    pixelSizeSpinBox->setValue(12);
 
     QMenu *fileMenu = new QMenu(tr("&File"), this);
     QAction *openAction = fileMenu->addAction(tr("&Open..."));
@@ -61,6 +70,22 @@ MainWindow::MainWindow()
     connect(printAction, SIGNAL(triggered()), this, SLOT(printImage()));
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(showAboutBox()));
+    connect(pixelSizeSpinBox, SIGNAL(valueChanged(int)),
+            delegate, SLOT(setPixelSize(int)));
+    connect(pixelSizeSpinBox, SIGNAL(valueChanged(int)),
+            this, SLOT(updateView()));
+
+    QHBoxLayout *controlsLayout = new QHBoxLayout;
+    controlsLayout->addWidget(pixelSizeLabel);
+    controlsLayout->addWidget(pixelSizeSpinBox);
+    controlsLayout->addStretch(1);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(view);
+    mainLayout->addLayout(controlsLayout);
+    centralWidget->setLayout(mainLayout);
+
+    setCentralWidget(centralWidget);
 
     setWindowTitle(tr("Pixelator"));
     resize(640, 480);
@@ -71,35 +96,28 @@ void MainWindow::chooseImage()
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Choose an image"), currentPath, "*");
 
-    if (!fileName.isEmpty()) {
-        if (openImage(fileName))
-            currentPath = fileName;
-    }
+    if (!fileName.isEmpty())
+        openImage(fileName);
 }
 
-bool MainWindow::openImage(const QString &fileName)
+void MainWindow::openImage(const QString &fileName)
 {
     QImage image;
 
     if (image.load(fileName)) {
-        ImageModel *newModel = new ImageModel(image);
+        ImageModel *newModel = new ImageModel(image, this);
         view->setModel(newModel);
         delete model;
         model = newModel;
-        setWindowTitle(tr("%1 - %2").arg(fileName).arg(tr("Pixelator")));
+
+        if (!fileName.startsWith(":/")) {
+            currentPath = fileName;
+            setWindowTitle(tr("%1 - Pixelator").arg(currentPath));
+        }
 
         printAction->setEnabled(true);
-
-        int rows = model->rowCount(QModelIndex());
-        int columns = model->columnCount(QModelIndex());
-        for (int row = 0; row < rows; ++row)
-            view->resizeRowToContents(row);
-        for (int column = 0; column < columns; ++column)
-            view->resizeColumnToContents(column);
-
-        return true;
+        updateView();
     }
-    return false;
 }
 
 void MainWindow::printImage()
@@ -178,6 +196,14 @@ void MainWindow::showAboutBox()
 {
     QMessageBox::about(this, tr("About the Pixelator example"),
         tr("This example demonstrates how a standard view and a custom\n"
-           "delegate can be used to produce a specialized representation\n "
+           "delegate can be used to produce a specialized representation\n"
            "of data in a simple custom model."));
+}
+
+void MainWindow::updateView()
+{
+    for (int row = 0; row < model->rowCount(QModelIndex()); ++row)
+        view->resizeRowToContents(row);
+    for (int column = 0; column < model->columnCount(QModelIndex()); ++column)
+        view->resizeColumnToContents(column);
 }

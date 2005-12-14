@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/resources.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/resources.qdoc -->
 <head>
-    <title>Qt 4.0: The Qt Resource System</title>
+    <title>Qt 4.1: The Qt Resource System</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -46,7 +46,7 @@ body { background: #ffffff; color: black; }</style>
         &lt;file alias=&quot;cut-img.png&quot;&gt;images/cut.png&lt;/file&gt;
     &lt;/qresource&gt;</pre>
 <p>In this case, the file is accessible as <tt>:/myresources/cut-img.png</tt>.</p>
-<p>Some resources, such as translation files and icons, many need to change based on the user's locale. This is possible using the <tt>lang</tt> attribute. For example:</p>
+<p>Some resources, such as translation files and icons, many need to change based on the user's locale. This is done by adding a <tt>lang</tt> attribute to the <tt>qresource</tt> tag, specifying a suitable locale string. For example:</p>
 <pre>&nbsp;   &lt;qresource&gt;
         &lt;file&gt;cut.jpg&lt;/file&gt;
     &lt;/qresource&gt;
@@ -54,6 +54,7 @@ body { background: #ffffff; color: black; }</style>
         &lt;file alias=&quot;cut.jpg&quot;&gt;cut_fr.jpg&lt;/file&gt;
     &lt;/qresource&gt;</pre>
 <p>If the user's locale is French (i.e., <a href="qlocale.html#system">QLocale::system</a>().name() returns &quot;fr_FR&quot;), <tt>:/cut.jpg</tt> becomes a reference to the <tt>cut_fr.jpg</tt> image. For other locales, <tt>cut.jpg</tt> is used.</p>
+<p>See the <a href="qlocale.html">QLocale</a> documentation for a description of the format to use for locale strings.</p>
 <a name="using-resources-in-the-application"></a>
 <h2>Using Resources in the Application</h2>
 <p>In the application, resource paths can be used in most places instead of ordinary file system paths. In particular, you can pass a resource path instead of a file name to the <a href="qicon.html">QIcon</a>, <a href="qimage.html">QImage</a>, or <a href="qpixmap.html">QPixmap</a> constructor:</p>
@@ -69,11 +70,11 @@ body { background: #ffffff; color: black; }</style>
         ...
         return app.exec();
     }</pre>
-<p>Note: Once a QResource has been loaded into the Qt resource tree (either implicitly or via Q_INIT_RESOURCE) it will only be unloaded upon application termination. This means using resources in a plugin can cause some known errors, this restriction will be removed with Qt 4.1 QResource system.</p>
+<p>Similarly, if you must unload a set of resources explicitly (because a plugin is being unloaded or the resources are not valid any longer), you can force removal of your resources by calling <a href="qdir.html#Q_CLEANUP_RESOURCE">Q_CLEANUP_RESOURCE</a>() with the same base name as above.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

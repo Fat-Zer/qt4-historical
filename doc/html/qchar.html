@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/tools/qchar.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/tools/qchar.cpp -->
 <head>
-    <title>Qt 4.0: QChar Class Reference</title>
+    <title>Qt 4.1: QChar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -89,12 +89,12 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-not-eq-10">operator!=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-lt">operator&lt;</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-lt-lt-27">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-lt-lt-32">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-lt-eq">operator&lt;=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-eq-eq-10">operator==</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-gt">operator&gt;</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-gt-eq">operator&gt;=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-gt-gt-18">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QChar &amp; <i>chr</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-gt-gt-19">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QChar &amp; <i>chr</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -327,7 +327,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the row (most significant byte) of the Unicode character.</p>
 <p>See also <a href="qchar.html#cell">cell</a>().</p>
 <h3 class="fn"><a name="toAscii"></a>const char QChar::toAscii () const</h3>
-<p>Returns the ASCII character value of the <a href="qchar.html">QChar</a>, or 0 if the character is not representable as ASCII (i.e., if <a href="qchar.html#unicode">unicode</a>() &gt;= 128). This is mainly useful for non-internationalized software.</p>
+<p>Returns the character value of the <a href="qchar.html">QChar</a> obtained using the current codec used to read C strings, or 0 if the character is not representable using this codec. The default codec handles Latin-1 encoded text, but this can be changed to assist developers writing source code using other encodings.</p>
+<p>The main purpose of this function is to preserve ASCII characters used in C strings. This is mainly useful for developers of non-internationalized software.</p>
 <p>See also <a href="qchar.html#toLatin1">toLatin1</a>(), <a href="qchar.html#unicode">unicode</a>(), and <a href="qtextcodec.html#codecForCStrings">QTextCodec::codecForCStrings</a>().</p>
 <h3 class="fn"><a name="toLatin1"></a>const char QChar::toLatin1 () const</h3>
 <p>Returns the Latin-1 character equivalent to the <a href="qchar.html">QChar</a>, or 0. This is mainly useful for non-internationalized software.</p>
@@ -349,7 +350,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if <i>c1</i> and <i>c2</i> are not the same Unicode character; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-lt"></a>bool operator&lt; ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>Returns true if the numeric Unicode value of <i>c1</i> is less than that of <i>c2</i>; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-lt-lt-27"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-32"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the char <i>chr</i> to the stream <i>out</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -362,7 +363,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the numeric Unicode value of <i>c1</i> is greater than that of <i>c2</i>; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-gt-eq"></a>bool operator&gt;= ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>Returns true if the numeric Unicode value of <i>c1</i> is greater than or equal to that of <i>c2</i>; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-gt-gt-18"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QChar &amp; <i>chr</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-19"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QChar &amp; <i>chr</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a char from the stream <i>in</i> into char <i>chr</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -370,6 +371,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

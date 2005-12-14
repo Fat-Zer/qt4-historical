@@ -24,13 +24,13 @@
 #ifndef Q3CANVAS_H
 #define Q3CANVAS_H
 
-#include "Qt3Support/q3scrollview.h"
-#include "QtGui/qpixmap.h"
-#include "Qt3Support/q3ptrlist.h"
-#include "QtGui/qbrush.h"
-#include "QtGui/qpen.h"
-#include "Qt3Support/q3valuelist.h"
-#include "Qt3Support/q3pointarray.h"
+#include <Qt3Support/q3scrollview.h>
+#include <QtGui/qpixmap.h>
+#include <Qt3Support/q3ptrlist.h>
+#include <QtGui/qbrush.h>
+#include <QtGui/qpen.h>
+#include <Qt3Support/q3valuelist.h>
+#include <Qt3Support/q3pointarray.h>
 
 QT_MODULE(Qt3Support)
 
@@ -272,10 +272,10 @@ public:
 
     virtual void setDoubleBuffering(bool y);
 
-signals:
+Q_SIGNALS:
     void resized();
 
-public slots:
+public Q_SLOTS:
     virtual void advance();
     virtual void update();
 
@@ -349,7 +349,7 @@ private:
     Q3CanvasViewData* d;
     friend void qt_unview(Q3Canvas* c);
 
-private slots:
+private Q_SLOTS:
     void updateContentsSize();
 
 private:

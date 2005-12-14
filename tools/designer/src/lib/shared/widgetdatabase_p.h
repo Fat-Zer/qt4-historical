@@ -47,7 +47,9 @@
 class QObject;
 class QDesignerCustomWidgetInterface;
 
-class QT_SHARED_EXPORT WidgetDataBaseItem: public QDesignerWidgetDataBaseItemInterface
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT WidgetDataBaseItem: public QDesignerWidgetDataBaseItemInterface
 {
 public:
     WidgetDataBaseItem(const QString &name = QString(),
@@ -109,7 +111,7 @@ private:
     QList<QVariant> m_defaultPropertyValues;
 };
 
-class QT_SHARED_EXPORT WidgetDataBase: public QDesignerWidgetDataBaseInterface
+class QDESIGNER_SHARED_EXPORT WidgetDataBase: public QDesignerWidgetDataBaseInterface
 {
     Q_OBJECT
 public:
@@ -132,5 +134,7 @@ private:
 
     QDesignerFormEditorInterface *m_core;
 };
+
+} // namespace qdesigner_internal
 
 #endif // WIDGETDATABASE_H

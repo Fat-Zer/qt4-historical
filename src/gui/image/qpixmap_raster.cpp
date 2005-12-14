@@ -32,6 +32,7 @@
 #include "qbuffer.h"
 #include "qapplication.h"
 #include <private/qinternal_p.h>
+#include <private/qwidget_p.h>
 #include "qevent.h"
 #include "qfile.h"
 #include "qfileinfo.h"
@@ -40,6 +41,9 @@
 #include "qimagereader.h"
 #include "qimagewriter.h"
 #include "qdebug.h"
+
+typedef void (*_qt_pixmap_cleanup_hook)(int);
+Q_GUI_EXPORT _qt_pixmap_cleanup_hook qt_pixmap_cleanup_hook = 0;
 
 QPixmap::QPixmap()
     : QPaintDevice()
@@ -249,12 +253,13 @@ QBitmap QPixmap::mask() const
     int w = data->image.width();
     int h = data->image.height();
     QImage mask = data->createBitmapImage(w, h);
+    int bpl = mask.bytesPerLine();
 
     // copy over the data
     for (int y=0; y<h; ++y) {
         QRgb *src = (QRgb *) data->image.scanLine(y);
         uchar *dest = mask.scanLine(y);
-        memset(dest, 0, w / 8);
+        memset(dest, 0, bpl);
         for (int x=0; x<w; ++x) {
             if (qAlpha(*src) > 0)
                 dest[x>>3] |= qt_pixmap_bit_mask[x&7];
@@ -344,35 +349,6 @@ QBitmap QPixmap::createMaskFromColor(const QColor &maskColor) const
     return m;
 }
 
-/*
-  fills \a buf with \a r in \a widget. Then blits \a buf on \a res at
-  position \a offset
- */
-static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf,
-                              const QRect &r, const QPoint &offset)
-{
-    buf.fill(widget, r.topLeft());
-    QPainter::setRedirected(widget, &buf, r.topLeft());
-    QPaintEvent e(r & widget->rect());
-    QApplication::sendEvent(widget, &e);
-    QPainter::restoreRedirected(widget);
-    {
-        QPainter pt(&res);
-        pt.drawPixmap(offset.x(), offset.y(), buf, 0, 0, r.width(), r.height());
-    }
-
-    const QObjectList children = widget->children();
-    for (int i = 0; i < children.size(); ++i) {
-        QWidget *child = static_cast<QWidget*>(children.at(i));
-        if (!child->isWidgetType() || child->isWindow()
-            || child->isHidden() || !child->geometry().intersects(r))
-            continue;
-        QRect cr = r & child->geometry();
-        cr.translate(-child->pos());
-        grabWidget_helper(child, res, buf, cr, offset + child->pos());
-    }
-}
-
 
 QPixmap QPixmap::grabWidget(QWidget *widget, const QRect &rect)
 {
@@ -388,13 +364,9 @@ QPixmap QPixmap::grabWidget(QWidget *widget, const QRect &rect)
     if (!r.intersects(widget->rect()))
         return QPixmap();
 
-    QPixmap res = QPixmap(r.size());
-    QPixmap buf = QPixmap(r.size());
+     QPixmap res(r.size());
 
-    if(!res || !buf)
-        return res;
-
-    grabWidget_helper(widget, res, buf, r, QPoint());
+    widget->d_func()->drawWidget(&res, r, -r.topLeft(), QWidgetPrivate::DrawRecursive | QWidgetPrivate::DrawAsRoot | QWidgetPrivate::DrawPaintOnScreen | QWidgetPrivate::DrawInvisible);
     return res;
 }
 
@@ -460,9 +432,10 @@ bool QPixmap::load(const QString& fileName, const char *format, Qt::ImageConvers
         return false;
 
     QFileInfo info(fileName);
-    QString key = QLatin1String("qt_pixmap_") + info.absoluteFilePath()
-                  + QLatin1Char('_') + info.lastModified().toTime_t()
-                  + QLatin1Char('_') + QString::number(data->type);
+    QString key;
+    key.append(QLatin1String("qt_pixmap_")).append(info.absoluteFilePath()).append(
+               QLatin1Char('_')).append(QString::number(info.lastModified().toTime_t())).append(
+               QLatin1Char('_')).append(QString::number(data->type));
 
     detach();
     if (QPixmapCache::find(key, *this))

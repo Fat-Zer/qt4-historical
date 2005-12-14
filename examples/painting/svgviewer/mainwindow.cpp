@@ -1,0 +1,98 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include <QtGui>
+
+#include "mainwindow.h"
+
+MainWindow::MainWindow()
+    : QMainWindow()
+{
+    area = new SvgWindow;
+
+    QMenu *fileMenu = new QMenu(tr("&File"), this);
+    QAction *openAction = fileMenu->addAction(tr("&Open..."));
+    openAction->setShortcut(QKeySequence(tr("Ctrl+O")));
+    QAction *quitAction = fileMenu->addAction(tr("E&xit"));
+    quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
+
+    menuBar()->addMenu(fileMenu);
+
+    QMenu *rendererMenu = new QMenu(tr("&Renderer"), this);
+    nativeAction = rendererMenu->addAction(tr("&Native"));
+    nativeAction->setCheckable(true);
+    #ifndef QT_NO_OPENGL
+    glAction = rendererMenu->addAction(tr("&OpenGL"));
+    glAction->setCheckable(true);
+    #endif
+    imageAction = rendererMenu->addAction(tr("&Image"));
+    imageAction->setCheckable(true);
+    imageAction->setChecked(true);
+
+    QActionGroup *rendererGroup = new QActionGroup(this);
+    rendererGroup->addAction(nativeAction);
+    #ifndef QT_NO_OPENGL
+    rendererGroup->addAction(glAction);
+    #endif
+    rendererGroup->addAction(imageAction);
+
+    menuBar()->addMenu(rendererMenu);
+
+    connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(rendererGroup, SIGNAL(triggered(QAction *)),
+            this, SLOT(setRenderer(QAction *)));
+
+    setCentralWidget(area);
+    setWindowTitle(tr("SVG Viewer"));
+}
+
+void MainWindow::openFile(const QString &path)
+{
+    QString fileName;
+    if (path.isNull())
+        fileName = QFileDialog::getOpenFileName(this, tr("Open SVG File"),
+                                                currentPath, "*.svg");
+    else
+        fileName = path;
+
+    if (!fileName.isEmpty()) {
+        area->openFile(fileName);
+        if (!fileName.startsWith(":/")) {
+            currentPath = fileName;
+            setWindowTitle(tr("%1 - SVGViewer").arg(currentPath));
+        }
+    }
+}
+
+void MainWindow::setRenderer(QAction *action)
+{
+    if (action == nativeAction)
+        area->setRenderer(SvgWindow::Native);
+    #ifndef QT_NO_OPENGL
+    else if (action == glAction)
+        area->setRenderer(SvgWindow::OpenGL);
+    #endif
+    else if (action == imageAction)
+        area->setRenderer(SvgWindow::Image);
+}

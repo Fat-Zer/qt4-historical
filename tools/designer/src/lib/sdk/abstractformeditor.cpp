@@ -25,59 +25,119 @@
 
 #include <QtDesigner/QtDesigner>
 
-class PluginManager;
-
 /*!
     \class QDesignerFormEditorInterface
-    \brief The QDesignerFormEditorInterface class provides an interface that is used to
-    control Qt Designer's form editor component.
+
+    \brief The QDesignerFormEditorInterface class allows you to access
+    Qt Designer's various components.
+
     \inmodule QtDesigner
+
+    \QD's current QDesignerFormEditorInterface object holds
+    information about all \QD's components: The action editor, the
+    object inspector, the property editor, the widget box, and the
+    extension and form window managers. QDesignerFormEditorInterface
+    contains a collection of functions that provides interfaces to all
+    these components. They are typically used to query (and
+    manipulate) the respective component. For example:
+
+    \code
+        QDesignerObjectInspectorInterface *objectInspector = 0;
+        objectInspector = formEditor->objectInspector();
+
+        QDesignerFormWindowManagerInterface *manager = 0;
+        manager = formEditor->formWindowManager();
+
+        objectInspector->setFormWindow(manager->formWindow(0));
+    \endcode
+
+    QDesignerFormEditorInterface is not intended to be instantiated
+    directly. A pointer to \QD's current QDesignerFormEditorInterface
+    object (\c formEditor in the example above) is provided by the
+    QDesignerCustomWidgetInterface::initialize() function's
+    parameter. When implementing a custom widget plugin, you must
+    subclass the QDesignerCustomWidgetInterface to expose your plugin
+    to \QD.
+
+    QDesignerFormEditorInterface also provides functions that can set
+    the action editor, property editor, object inspector and widget
+    box. These are only useful if you want to provide your own custom
+    components.
+
+    Finally, QDesignerFormEditorInterface provides the topLevel()
+    function that returns \QD's top-level widget.
+
+    \sa QDesignerCustomWidgetInterface
 */
 
 /*!
-    Constructs a form editor interface with the given \a parent.*/
+    Constructs a QDesignerFormEditorInterface object with the given \a
+    parent.
+*/
 QDesignerFormEditorInterface::QDesignerFormEditorInterface(QObject *parent)
     : QObject(parent),
-      m_topLevel(0),
-      m_widgetBox(0),
-      m_propertyEditor(0),
-      m_formWindowManager(0),
-      m_extensionManager(0),
-      m_metaDataBase(0),
-      m_widgetDataBase(0),
-      m_widgetFactory(0),
-      m_objectInspector(0)
+      m_pluginManager(0)
 {
 }
 
 /*!
-    Destroys the interface to the form editor.*/
+    Destroys the QDesignerFormEditorInterface object.
+*/
 QDesignerFormEditorInterface::~QDesignerFormEditorInterface()
 {
 }
 
 /*!
-    Returns an interface to \QD's widget box.*/
+    Returns an interface to \QD's widget box.
+
+    \sa setWidgetBox()
+*/
 QDesignerWidgetBoxInterface *QDesignerFormEditorInterface::widgetBox() const
 { return m_widgetBox; }
 
 /*!
-    Sets the widget box used by the form editor to the specified \a widgetBox.*/
+    Sets \QD's widget box to be the specified \a widgetBox.
+
+    \sa widgetBox()
+*/
 void QDesignerFormEditorInterface::setWidgetBox(QDesignerWidgetBoxInterface *widgetBox)
 { m_widgetBox = widgetBox; }
 
 /*!
-    Returns an interface to the property editor used by the form editor.*/
+    Returns an interface to \QD's property editor.
+
+    \sa setPropertyEditor()
+*/
 QDesignerPropertyEditorInterface *QDesignerFormEditorInterface::propertyEditor() const
 { return m_propertyEditor; }
 
 /*!
-Sets the property editor used by the form editor to the specified \a propertyEditor.*/
+    Sets \QD's property editor to be the specified \a propertyEditor.
+
+    \sa propertyEditor()
+*/
 void QDesignerFormEditorInterface::setPropertyEditor(QDesignerPropertyEditorInterface *propertyEditor)
 { m_propertyEditor = propertyEditor; }
 
 /*!
-    Returns the top-level widget used by the form editor.*/
+    Returns an interface to \QD's action editor.
+
+    \sa setActionEditor()
+*/
+QDesignerActionEditorInterface *QDesignerFormEditorInterface::actionEditor() const
+{ return m_actionEditor; }
+
+/*!
+    Sets \QD's action editor to be the specified \a actionEditor.
+
+    \sa actionEditor()
+*/
+void QDesignerFormEditorInterface::setActionEditor(QDesignerActionEditorInterface *actionEditor)
+{ m_actionEditor = actionEditor; }
+
+/*!
+    Returns \QD's top-level widget.
+*/
 QWidget *QDesignerFormEditorInterface::topLevel() const
 { return m_topLevel; }
 
@@ -88,7 +148,8 @@ void QDesignerFormEditorInterface::setTopLevel(QWidget *topLevel)
 { m_topLevel = topLevel; }
 
 /*!
-    Returns the interface used to control the form window manager.*/
+    Returns an interface to \QD's form window manager.
+*/
 QDesignerFormWindowManagerInterface *QDesignerFormEditorInterface::formWindowManager() const
 { return m_formWindowManager; }
 
@@ -99,7 +160,8 @@ void QDesignerFormEditorInterface::setFormManager(QDesignerFormWindowManagerInte
 { m_formWindowManager = formWindowManager; }
 
 /*!
-    Returns the extension manager used by the form editor.*/
+    Returns an interface to \QD's extension manager.
+*/
 QExtensionManager *QDesignerFormEditorInterface::extensionManager() const
 { return m_extensionManager; }
 
@@ -110,8 +172,9 @@ void QDesignerFormEditorInterface::setExtensionManager(QExtensionManager *extens
 { m_extensionManager = extensionManager; }
 
 /*!
-    Returns an interface to the meta database used by the form editor.
     \internal
+
+    Returns an interface to the meta database used by the form editor.
 */
 QDesignerMetaDataBaseInterface *QDesignerFormEditorInterface::metaDataBase() const
 { return m_metaDataBase; }
@@ -123,8 +186,9 @@ void QDesignerFormEditorInterface::setMetaDataBase(QDesignerMetaDataBaseInterfac
 { m_metaDataBase = metaDataBase; }
 
 /*!
-    Returns an interface to the widget database used by the form editor.
     \internal
+
+    Returns an interface to the widget database used by the form editor.
 */
 QDesignerWidgetDataBaseInterface *QDesignerFormEditorInterface::widgetDataBase() const
 { return m_widgetDataBase; }
@@ -136,9 +200,10 @@ void QDesignerFormEditorInterface::setWidgetDataBase(QDesignerWidgetDataBaseInte
 { m_widgetDataBase = widgetDataBase; }
 
 /*!
-    Returns an interface to the widget factory used by the form editor to create widgets
-    for the form.
     \internal
+
+    Returns an interface to the widget factory used by the form editor
+    to create widgets for the form.
 */
 QDesignerWidgetFactoryInterface *QDesignerFormEditorInterface::widgetFactory() const
 { return m_widgetFactory; }
@@ -150,18 +215,25 @@ void QDesignerFormEditorInterface::setWidgetFactory(QDesignerWidgetFactoryInterf
 { m_widgetFactory = widgetFactory; }
 
 /*!
-    Returns an interface to the object inspector used by the form editor.*/
+    Returns an interface to \QD's object inspector.
+*/
 QDesignerObjectInspectorInterface *QDesignerFormEditorInterface::objectInspector() const
 { return m_objectInspector; }
 
 /*!
-    Sets the object inspector used by the form editor to the specified \a objectInspector.*/
+    Sets \QD's object inspector to be the specified \a
+    objectInspector.
+
+    \sa objectInspector()
+*/
 void QDesignerFormEditorInterface::setObjectInspector(QDesignerObjectInspectorInterface *objectInspector)
 { m_objectInspector = objectInspector; }
 
 /*!
-    Returns an interface to the icon cache used by the form editor to manage icons.
     \internal
+
+    Returns an interface to the icon cache used by the form editor to
+    manage icons.
 */
 QDesignerIconCacheInterface *QDesignerFormEditorInterface::iconCache() const
 { return m_iconCache; }
@@ -173,23 +245,26 @@ void QDesignerFormEditorInterface::setIconCache(QDesignerIconCacheInterface *cac
 { m_iconCache = cache; }
 
 /*!
-    Returns the plugin manager used by the form editor.
     \internal
+
+    Returns the plugin manager used by the form editor.
 */
-PluginManager *QDesignerFormEditorInterface::pluginManager() const
+QDesignerPluginManager *QDesignerFormEditorInterface::pluginManager() const
 { return m_pluginManager; }
 
 /*!
-Sets the plugin manager used by the form editor to the specified \a pluginManager.
+    \internal
 
-\internal
+    Sets the plugin manager used by the form editor to the specified
+    \a pluginManager.
 */
-void QDesignerFormEditorInterface::setPluginManager(PluginManager *pluginManager)
+void QDesignerFormEditorInterface::setPluginManager(QDesignerPluginManager *pluginManager)
 { m_pluginManager = pluginManager; }
 
 /*!
-    Returns the path to the resources used by the form editor.
     \internal
+
+    Returns the path to the resources used by the form editor.
 */
 QString QDesignerFormEditorInterface::resourceLocation() const
 {

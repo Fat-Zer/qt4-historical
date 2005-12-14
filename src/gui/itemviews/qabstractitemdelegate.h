@@ -83,7 +83,7 @@ public:
 
     static QString elidedText(const QFontMetrics &fontMetrics, int width,
                               Qt::TextElideMode mode, const QString &text);
-signals:
+Q_SIGNALS:
     void commitData(QWidget *editor);
     void closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint = NoHint);
 
@@ -93,4 +93,5 @@ protected:
 };
 
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QABSTRACTITEMDELEGATE_H

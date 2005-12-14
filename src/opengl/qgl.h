@@ -24,9 +24,9 @@
 #ifndef QGL_H
 #define QGL_H
 
-#include "QtGui/qwidget.h"
-#include "QtOpenGL/qglcolormap.h"
-#include "QtCore/qmap.h"
+#include <QtGui/qwidget.h>
+#include <QtOpenGL/qglcolormap.h>
+#include <QtCore/qmap.h>
 
 QT_MODULE(OpenGL)
 
@@ -39,7 +39,7 @@ Q_OPENGL_EXPORT inline QT3_SUPPORT const char *qGLVersion() {
 #endif
 
 #if defined(Q_WS_WIN)
-# include "QtCore/qt_windows.h"
+# include <QtCore/qt_windows.h>
 #endif
 
 #if defined(Q_WS_MAC)
@@ -182,8 +182,10 @@ public:
     QGLFormat requestedFormat() const;
     void setFormat(const QGLFormat& format);
 
+    // ### Qt 5: return bools + maybe remove virtuals
     virtual void makeCurrent();
     virtual void doneCurrent();
+
     virtual void swapBuffers() const;
 
     GLuint bindTexture(const QImage &image, GLenum target = GL_TEXTURE_2D,
@@ -234,9 +236,12 @@ protected:
 private:
     QGLContextPrivate* d_ptr;
 
+    friend class QGLPixelBuffer;
     friend class QGLWidget;
+    friend class QGLDrawable;
     friend class QGLWidgetPrivate;
 #ifdef Q_WS_MAC
+    friend class QMacGLWindowChangeEvent;
     void updatePaintDevice();
 #endif
 
@@ -271,6 +276,8 @@ public:
 
     bool isValid() const;
     bool isSharing() const;
+
+    // ### Qt 5.0: return bools
     void makeCurrent();
     void doneCurrent();
 
@@ -310,7 +317,7 @@ public:
     GLuint bindTexture(const QString &fileName);
     void deleteTexture(GLuint tx_id);
 
-public slots:
+public Q_SLOTS:
     virtual void updateGL();
     virtual void updateOverlayGL();
 
@@ -340,6 +347,8 @@ private:
 #ifdef Q_WS_MAC
     friend class QMacGLWindowChangeEvent;
 #endif
+    friend class QGLDrawable;
+    friend class QGLPixelBuffer;
     friend class QGLContext;
     friend class QGLOverlayWidget;
     friend class QOpenGLPaintEngine;
@@ -399,4 +408,5 @@ inline bool QGLFormat::sampleBuffers() const
 {
     return testOption(QGL::SampleBuffers);
 }
+
 #endif // QGL_H

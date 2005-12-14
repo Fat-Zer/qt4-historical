@@ -1,13 +1,35 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the demonstration applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
 
-#include "arthurstyle.h"
 #include "pathstroke.h"
+#include "arthurstyle.h"
 #include "arthurwidgets.h"
 
 extern void draw_round_rect(QPainter *p, const QRect &bounds, int radius);
 
 PathStrokeWidget::PathStrokeWidget()
 {
-    setWindowTitle("Primitive Stroking");
+    setWindowTitle(tr("Path Stroking"));
 
     // Setting up palette.
     QPalette pal = palette();
@@ -19,12 +41,12 @@ PathStrokeWidget::PathStrokeWidget()
     // Widget construction and property setting
     m_renderer = new PathStrokeRenderer(this);
 
-    QGroupBox *mainGroup = new ArthurGroupBox(this);
+    QGroupBox *mainGroup = new QGroupBox(this);
 //     QWidget *mainGroup = new QWidget(this);
     mainGroup->setFixedWidth(180);
     mainGroup->setTitle("Path Stroking");
 
-    QGroupBox *capGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *capGroup = new QGroupBox(mainGroup);
     capGroup->setAttribute(Qt::WA_ContentsPropagated);
     QRadioButton *flatCap = new QRadioButton(capGroup);
     QRadioButton *squareCap = new QRadioButton(capGroup);
@@ -34,7 +56,7 @@ PathStrokeWidget::PathStrokeWidget()
     squareCap->setText("Square Cap");
     roundCap->setText("Round Cap");
 
-    QGroupBox *joinGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *joinGroup = new QGroupBox(mainGroup);
     joinGroup->setAttribute(Qt::WA_ContentsPropagated);
     QRadioButton *bevelJoin = new QRadioButton(joinGroup);
     QRadioButton *miterJoin = new QRadioButton(joinGroup);
@@ -44,7 +66,7 @@ PathStrokeWidget::PathStrokeWidget()
     miterJoin->setText("Miter Join");
     roundJoin->setText("Round Join");
 
-    QGroupBox *styleGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *styleGroup = new QGroupBox(mainGroup);
     styleGroup->setAttribute(Qt::WA_ContentsPropagated);
     QRadioButton *solidLine = new QRadioButton(styleGroup);
     QRadioButton *dashLine = new QRadioButton(styleGroup);
@@ -75,7 +97,7 @@ PathStrokeWidget::PathStrokeWidget()
     dashDotDotLine->setFixedHeight(fixedHeight);
 #endif
 
-    QGroupBox *pathModeGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *pathModeGroup = new QGroupBox(mainGroup);
     pathModeGroup->setAttribute(Qt::WA_ContentsPropagated);
     QRadioButton *curveMode = new QRadioButton(pathModeGroup);
     QRadioButton *lineMode = new QRadioButton(pathModeGroup);
@@ -83,7 +105,7 @@ PathStrokeWidget::PathStrokeWidget()
     curveMode->setText("Curves");
     lineMode->setText("Lines");
 
-    QGroupBox *penWidthGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *penWidthGroup = new QGroupBox(mainGroup);
     penWidthGroup->setAttribute(Qt::WA_ContentsPropagated);
     QSlider *penWidth = new QSlider(Qt::Horizontal, penWidthGroup);
     penWidth->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -387,5 +409,3 @@ void PathStrokeRenderer::setAnimation(bool animation)
 //         m_frameCount = 0;
     }
 }
-
-

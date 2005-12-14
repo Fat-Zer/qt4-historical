@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/kernel/qcursor.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/kernel/qcursor.cpp -->
 <head>
-    <title>Qt 4.0: QCursor Class Reference</title>
+    <title>Qt 4.1: QCursor Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -56,8 +56,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-lt-lt-61">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-gt-gt-42">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QCursor &amp; <i>cursor</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-lt-lt-68">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcursor.html#operator-gt-gt-44">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QCursor &amp; <i>cursor</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -109,7 +109,7 @@ body { background: #ffffff; color: black; }</style>
 <li>B=1 and M=1 gives black.</li>
 <li>B=0 and M=1 gives white.</li>
 <li>B=0 and M=0 gives transparent.</li>
-<li>B=1 and M=0 gives an undefined result.</li>
+<li>B=1 and M=0 gives an XOR'd result.</li>
 </ul>
 <p>Use the global Qt color <a href="qt.html#GlobalColor-enum">Qt::color0</a> to draw 0-pixels and <a href="qt.html#GlobalColor-enum">Qt::color1</a> to draw 1-pixels in the bitmaps.</p>
 <p>Valid cursor sizes depend on the display hardware (or the underlying window system). We recommend using 32 x 32 cursors, because this size is supported on all platforms. Some platforms also support 16 x 16, 48 x 48, and 64 x 64 cursors.</p>
@@ -173,11 +173,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Assigns <i>c</i> to this cursor and returns a reference to this cursor.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-61"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-68"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QCursor &amp; <i>cursor</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the <i>cursor</i> to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-42"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QCursor &amp; <i>cursor</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-44"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QCursor &amp; <i>cursor</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads the <i>cursor</i> from the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -185,6 +185,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

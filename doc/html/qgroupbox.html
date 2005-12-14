@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/widgets/qgroupbox.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qgroupbox.cpp -->
 <head>
-    <title>Qt 4.0: QGroupBox Class Reference</title>
+    <title>Qt 4.1: QGroupBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -39,7 +39,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -52,21 +52,21 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qgroupbox.html#checkable-prop">isCheckable</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qgroupbox.html#checked-prop">isChecked</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qgroupbox.html#flat-prop">isFlat</a></b> () const</li>
-<li><div class="fn"/>void <b><a href="qgroupbox.html#alignment-prop">setAlignment</a></b> ( int )</li>
-<li><div class="fn"/>void <b><a href="qgroupbox.html#checkable-prop">setCheckable</a></b> ( bool <i>b</i> )</li>
-<li><div class="fn"/>void <b><a href="qgroupbox.html#flat-prop">setFlat</a></b> ( bool <i>b</i> )</li>
-<li><div class="fn"/>void <b><a href="qgroupbox.html#title-prop">setTitle</a></b> ( const QString &amp; )</li>
+<li><div class="fn"/>void <b><a href="qgroupbox.html#alignment-prop">setAlignment</a></b> ( int <i>alignment</i> )</li>
+<li><div class="fn"/>void <b><a href="qgroupbox.html#checkable-prop">setCheckable</a></b> ( bool <i>checkable</i> )</li>
+<li><div class="fn"/>void <b><a href="qgroupbox.html#flat-prop">setFlat</a></b> ( bool <i>flat</i> )</li>
+<li><div class="fn"/>void <b><a href="qgroupbox.html#title-prop">setTitle</a></b> ( const QString &amp; <i>title</i> )</li>
 <li><div class="fn"/>QString <b><a href="qgroupbox.html#title-prop">title</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qgroupbox.html#checked-prop">setChecked</a></b> ( bool <i>b</i> )</li>
+<li><div class="fn"/>void <b><a href="qgroupbox.html#checked-prop">setChecked</a></b> ( bool <i>checked</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
@@ -112,7 +112,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::Alignment alignment () const</b></li>
-<li><div class="fn"/><b>void setAlignment ( int )</b></li>
+<li><div class="fn"/><b>void setAlignment ( int <i>alignment</i> )</b></li>
 </ul>
 <p>See also <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="checkable-prop"></a>checkable : bool</h3>
@@ -122,7 +122,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isCheckable () const</b></li>
-<li><div class="fn"/><b>void setCheckable ( bool <i>b</i> )</b></li>
+<li><div class="fn"/><b>void setCheckable ( bool <i>checkable</i> )</b></li>
 </ul>
 <h3 class="fn"><a name="checked-prop"></a>checked : bool</h3>
 <p>This property holds whether the group box's checkbox is checked.</p>
@@ -130,7 +130,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isChecked () const</b></li>
-<li><div class="fn"/><b>void setChecked ( bool <i>b</i> )</b></li>
+<li><div class="fn"/><b>void setChecked ( bool <i>checked</i> )</b></li>
 </ul>
 <h3 class="fn"><a name="flat-prop"></a>flat : bool</h3>
 <p>This property holds whether the group box is painted flat or has a frame.</p>
@@ -138,7 +138,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isFlat () const</b></li>
-<li><div class="fn"/><b>void setFlat ( bool <i>b</i> )</b></li>
+<li><div class="fn"/><b>void setFlat ( bool <i>flat</i> )</b></li>
 </ul>
 <p>See also <a href="qgroupbox.html#title-prop">title</a>.</p>
 <h3 class="fn"><a name="title-prop"></a>title : <a href="qstring.html">QString</a></h3>
@@ -150,7 +150,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString title () const</b></li>
-<li><div class="fn"/><b>void setTitle ( const QString &amp; )</b></li>
+<li><div class="fn"/><b>void setTitle ( const QString &amp; <i>title</i> )</b></li>
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -166,6 +166,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

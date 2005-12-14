@@ -24,7 +24,6 @@
 #include "logger.h"
 #include <QFile>
 
-
 LogEntry::LogEntry(QString type, QString location)
 :type(type), location(location)
 {}

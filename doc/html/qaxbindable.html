@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/extensions/activeqt/control/qaxbindable.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/activeqt/control/qaxbindable.cpp -->
 <head>
-    <title>Qt 4.0: QAxBindable Class Reference</title>
+    <title>Qt 4.1: QAxBindable Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -28,7 +28,9 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qaxbindable.html#QAxBindable">QAxBindable</a></b> ()</li>
 <li><div class="fn"/>virtual <b><a href="qaxbindable.html#dtor.QAxBindable">~QAxBindable</a></b> ()</li>
 <li><div class="fn"/>virtual QAxAggregated * <b><a href="qaxbindable.html#createAggregate">createAggregate</a></b> ()</li>
+<li><div class="fn"/>virtual bool <b><a href="qaxbindable.html#readData">readData</a></b> ( QIODevice * <i>source</i>, const QString &amp; <i>format</i> )</li>
 <li><div class="fn"/>void <b><a href="qaxbindable.html#reportError">reportError</a></b> ( int <i>code</i>, const QString &amp; <i>src</i>, const QString &amp; <i>desc</i>, const QString &amp; <i>context</i> = QString() )</li>
+<li><div class="fn"/>virtual bool <b><a href="qaxbindable.html#writeData">writeData</a></b> ( QIODevice * <i>sink</i> )</li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
@@ -74,6 +76,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Call this function to notify the client that is hosting this ActiveX control that the property <i>property</i> has been changed.</p>
 <p>This function is usually called at the end of the property's write function.</p>
 <p>See also <a href="qaxbindable.html#requestPropertyChange">requestPropertyChange</a>().</p>
+<h3 class="fn"><a name="readData"></a>bool QAxBindable::readData ( <a href="qiodevice.html">QIODevice</a> * <i>source</i>, const <a href="qstring.html">QString</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>If the COM object supports a MIME type then this function is called to initialize the COM object from the data <i>source</i> in <i>format</i>. You have to open <i>source</i> for reading before you can read from it.</p>
+<p>Returns true to indicate success. If the function returns false, then <a href="activeqt.html#activeqt">ActiveQt</a> will process the data by setting the properties through the meta object system.</p>
+<p>If you reimplement this function you also have to implement <a href="qaxbindable.html#writeData">writeData</a>(). The default implementation does nothing and returns false.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qaxbindable.html#writeData">writeData</a>().</p>
 <h3 class="fn"><a name="reportError"></a>void QAxBindable::reportError ( int <i>code</i>, const <a href="qstring.html">QString</a> &amp; <i>src</i>, const <a href="qstring.html">QString</a> &amp; <i>desc</i>, const <a href="qstring.html">QString</a> &amp; <i>context</i> = QString() )</h3>
 <p>Reports an error to the client application. <i>code</i> is a control-defined error code. <i>desc</i> is a human-readable description of the error intended for the application user. <i>src</i> is the name of the source for the error, typically the ActiveX server name. <i>context</i> can be the location of a help file with more information about the error. If <i>context</i> ends with a number in brackets, e.g. [12], this number will be interpreted as the context ID in the help file.</p>
 <h3 class="fn"><a name="requestPropertyChange"></a>bool QAxBindable::requestPropertyChange ( const char * <i>property</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -89,10 +97,16 @@ body { background: #ffffff; color: black; }</style>
         propertyChanged(&quot;text&quot;);
     }</pre>
 <p>See also <a href="qaxbindable.html#propertyChanged">propertyChanged</a>().</p>
+<h3 class="fn"><a name="writeData"></a>bool QAxBindable::writeData ( <a href="qiodevice.html">QIODevice</a> * <i>sink</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>If the COM object supports a MIME type then this function is called to store the COM object into <i>sink</i>. You have to open <i>sink</i> for writing before you can write to it.</p>
+<p>Returns true to indicate success. If the function returns false, then <a href="activeqt.html#activeqt">ActiveQt</a> will serialize the object by storing the property values.</p>
+<p>If you reimplement this function you also have to implement <a href="qaxbindable.html#readData">readData</a>(). The default implementation does nothing and returns false.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qaxbindable.html#readData">readData</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

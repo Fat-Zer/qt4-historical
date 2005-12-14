@@ -21,15 +21,30 @@
 **
 ****************************************************************************/
 
-#ifndef QPNGHANDLER_H
-#define QPNGHANDLER_H
+#ifndef QPNGHANDLER_P_H
+#define QPNGHANDLER_P_H
 
-#include "qimageiohandler.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
 
+#include "QtGui/qimageiohandler.h"
+
+#ifndef QT_NO_IMAGEFORMAT_PNG
+
+class QPngHandlerPrivate;
 class Q_GUI_EXPORT QPngHandler : public QImageIOHandler
 {
 public:
     QPngHandler();
+    ~QPngHandler();
 
     bool canRead() const;
     bool read(QImage *image);
@@ -44,8 +59,8 @@ public:
     static bool canRead(QIODevice *device);
 
 private:
-    float gamma;
-    int quality;
+    QPngHandlerPrivate *d;
 };
 
-#endif
+#endif // QT_NO_IMAGEFORMAT_PNG
+#endif // QPNGHANDLER_P_H

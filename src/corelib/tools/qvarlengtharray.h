@@ -25,6 +25,7 @@
 #define QVARLENGTHARRAY_H
 
 #include <QtCore/qglobal.h>
+#include <new>
 
 QT_MODULE(Core)
 

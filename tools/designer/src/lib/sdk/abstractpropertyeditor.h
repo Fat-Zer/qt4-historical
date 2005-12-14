@@ -32,7 +32,7 @@ class QDesignerFormEditorInterface;
 class QString;
 class QVariant;
 
-class QT_SDK_EXPORT QDesignerPropertyEditorInterface: public QWidget
+class QDESIGNER_SDK_EXPORT QDesignerPropertyEditorInterface: public QWidget
 {
     Q_OBJECT
 public:
@@ -46,10 +46,10 @@ public:
 
     virtual QString currentPropertyName() const = 0;
 
-signals:
+Q_SIGNALS:
     void propertyChanged(const QString &name, const QVariant &value);
 
-public slots:
+public Q_SLOTS:
     virtual void setObject(QObject *object) = 0;
     virtual void setPropertyValue(const QString &name, const QVariant &value, bool changed = true) = 0;
     virtual void setReadOnly(bool readOnly) = 0;

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
 <head>
-    <title>Qt 4.0: Model/View Programming</title>
+    <title>Qt 4.1: Model/View Programming</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -57,7 +57,10 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="models"></a>
 <h3>Models</h3>
-<p>All item models are based on the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class. This class defines an interface that is used by views and delegates to access data. The data itself does not have to be stored in the model; it can be held in a data structure or repository provided by a seperate class, a file, a database, or some other application component. <a href="qabstractitemmodel.html">QAbstractItemModel</a> provides an interface to data that is flexible enough to handle views that represent data in the form of tables, lists, and trees. However, when implementing new models for list and table-like data structures, the <a href="qabstractlistmodel.html">QAbstractListModel</a> and <a href="qabstracttablemodel.html">QAbstractTableModel</a> classes are better starting points because they provide appropriate default implementations of common functions. Each of these classes can be subclassed to provide models that support specialized kinds of lists and tables.</p>
+<p>All item models are based on the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class. This class defines an interface that is used by views and delegates to access data. The data itself does not have to be stored in the model; it can be held in a data structure or repository provided by a seperate class, a file, a database, or some other application component.</p>
+<p>The basic concepts surrounding models are presented in the section on <a href="model-view-model.html">Model Classes</a>.</p>
+<p><a href="qabstractitemmodel.html">QAbstractItemModel</a> provides an interface to data that is flexible enough to handle views that represent data in the form of tables, lists, and trees. However, when implementing new models for list and table-like data structures, the <a href="qabstractlistmodel.html">QAbstractListModel</a> and <a href="qabstracttablemodel.html">QAbstractTableModel</a> classes are better starting points because they provide appropriate default implementations of common functions. Each of these classes can be subclassed to provide models that support specialized kinds of lists and tables.</p>
+<p>The process of subclassing models is discussed in the section on <a href="model-view-creating-models.html">Creating New Models</a>.</p>
 <p>Qt provides some ready-made models that can be used to handle items of data:</p>
 <ul>
 <li><a href="qstringlistmodel.html">QStringListModel</a> is used to store a simple list of <a href="qstring.html">QString</a> items.</li>
@@ -69,9 +72,11 @@ body { background: #ffffff; color: black; }</style>
 <a name="views"></a>
 <h3>Views</h3>
 <p>Complete implementations are provided for different kinds of views: <a href="qlistview.html">QListView</a> displays a list of items, <a href="qtableview.html">QTableView</a> displays data from a model in a table, and <a href="qtreeview.html">QTreeView</a> shows model items of data in a hierarchical list. Each of these classes is based on the <a href="qabstractitemview.html">QAbstractItemView</a> abstract base class. Although these classes are ready-to-use implementations, they can also be subclassed to provide customized views.</p>
+<p>The available views are examined in the section on <a href="model-view-view.html">View Classes</a>.</p>
 <a name="delegates"></a>
 <h3>Delegates</h3>
 <p><a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> is the abstract base class for delegates in the model/view framework. A default delegate implementation is provided by the <a href="qitemdelegate.html">QItemDelegate</a> class, and this is used as the default delegate by Qt's standard views.</p>
+<p>Delegates are described in the section on <a href="model-view-delegate.html">Delegate Classes</a>.</p>
 <a name="convenience-classes"></a>
 <h3>Convenience Classes</h3>
 <p>A number of <i>convenience</i> classes are derived from the standard view classes for the benefit of applications that rely on Qt's item-based item view and table classes. They are not intended to be subclassed, but simply exist to provide a familiar interface to the equivalent classes in Qt 3. Examples of such classes include <a href="qlistwidget.html">QListWidget</a>, <a href="qtreewidget.html">QTreeWidget</a>, and <a href="qtablewidget.html">QTableWidget</a>; these provide similar behavior to the <tt>QListBox</tt>, <tt>QListView</tt>, and <tt>QTable</tt> classes in Qt 3.</p>
@@ -148,6 +153,24 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 </ul>
 </li>
+<li><a href="model-view-dnd.html">Using Drag and Drop with Item Views</a> <ul><li><a href="model-view-dnd.html#overview">Overview</a></li>
+<li><a href="model-view-dnd.html#using-convenience-views">Using Convenience Views</a></li>
+<li><a href="model-view-dnd.html#using-model-view-classes">Using Model/View Classes</a></li>
+<ul><li><a href="model-view-dnd.html#enabling-drag-and-drop-for-items">Enabling Drag and Drop for Items</a></li>
+<li><a href="model-view-dnd.html#encoding-exported-data">Encoding Exported Data</a></li>
+<li><a href="model-view-dnd.html#inserting-dropped-data-into-a-model">Inserting Dropped Data into a Model</a></li>
+<li><a href="model-view-dnd.html#decoding-imported-data">Decoding Imported Data</a></li>
+</ul>
+</ul>
+</li>
+<li><a href="model-view-proxy-models.html">Proxy Models</a> <ul><li><a href="model-view-proxy-models.html#overview">Overview</a></li>
+<li><a href="model-view-proxy-models.html#using-proxy-models">Using Proxy Models</a></li>
+<li><a href="model-view-proxy-models.html#customizing-proxy-models">Customizing Proxy Models</a></li>
+<ul><li><a href="model-view-proxy-models.html#custom-filtering-models">Custom Filtering Models</a></li>
+<li><a href="model-view-proxy-models.html#custom-sorting-models">Custom Sorting Models</a></li>
+</ul>
+</ul>
+</li>
 </ul>
 <p>See also the list of <a href="model-view.html">Model/View Classes</a>.</p>
 <a name="related-examples"></a>
@@ -166,6 +189,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

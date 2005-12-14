@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/io/qtextstream.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/io/qtextstream.cpp -->
 <head>
-    <title>Qt 4.0: Qt 3 Support Members for QTextStream</title>
+    <title>Qt 4.1: Qt 3 Support Members for QTextStream</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -18,7 +18,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QTextStream</h1>
-<p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
+<p><b>The following class members are part of the <a href="qt3support.html">Qt 3 support layer</a>.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qtextstream.html">QTextStream class reference</a></li></ul></p>
 <h3>Public Types</h3>
 <ul>
@@ -30,7 +30,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qtextstream-qt3.html#flags">flags</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtextstream-qt3.html#flags-2">flags</a></b> ( int <i>f</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextstream-qt3.html#precision">precision</a></b> ( int <i>p</i> )</li>
-<li><div class="fn"/>QString <b><a href="qtextstream-qt3.html#read">read</a></b> ()</li>
+<li><div class="fn"/>QString <b><a href="qtextstream-qt3.html#read-2">read</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qtextstream-qt3.html#setEncoding">setEncoding</a></b> ( Encoding <i>encoding</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextstream-qt3.html#setf">setf</a></b> ( int <i>bits</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextstream-qt3.html#setf-2">setf</a></b> ( int <i>bits</i>, int <i>mask</i> )</li>
@@ -84,7 +84,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qtextstream.html#setFieldAlignment">setFieldAlignment</a>(), <a href="qtextstream.html#setPadChar">setPadChar</a>(), <a href="qtextstream.html#setFieldWidth">setFieldWidth</a>(), <a href="qtextstream.html#setNumberFlags">setNumberFlags</a>(), <a href="qtextstream.html#setIntegerBase">setIntegerBase</a>(), <a href="qtextstream.html#setRealNumberNotation">setRealNumberNotation</a>(), and setRealNumberNotation instead.</p>
 <h3 class="fn"><a name="precision"></a>int QTextStream::precision ( int <i>p</i> )</h3>
 <p>Use <a href="qtextstream.html#setRealNumberPrecision">setRealNumberPrecision</a>() instead.</p>
-<h3 class="fn"><a name="read"></a><a href="qstring.html">QString</a> QTextStream::read ()</h3>
+<h3 class="fn"><a name="read-2"></a><a href="qstring.html">QString</a> QTextStream::read ()</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Use <a href="qtextstream.html#readAll">readAll</a>() or <a href="qtextstream.html#readLine">readLine</a>() instead.</p>
 <h3 class="fn"><a name="setEncoding"></a>void QTextStream::setEncoding ( <a href="qtextstream-qt3.html#Encoding-enum">Encoding</a> <i>encoding</i> )</h3>
 <p>Use <a href="qtextstream.html#setCodec">setCodec</a>() and <a href="qtextstream.html#setAutoDetectUnicode">setAutoDetectUnicode</a>() instead.</p>
@@ -139,6 +140,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

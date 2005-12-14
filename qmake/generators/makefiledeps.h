@@ -21,11 +21,11 @@
 **
 ****************************************************************************/
 
-#ifndef __MAKEFILEDEPS_H__
-#define __MAKEFILEDEPS_H__
+#ifndef MAKEFILEDEPS_H
+#define MAKEFILEDEPS_H
 
-#include "qstringlist.h"
-#include "qfileinfo.h"
+#include <qstringlist.h>
+#include <qfileinfo.h>
 
 struct SourceFile;
 struct SourceDependChildren;
@@ -100,4 +100,4 @@ private:
     DependencyMode dep_mode;
 };
 
-#endif /* __MAKEFILEDEPS_H__ */
+#endif // MAKEFILEDEPS_H

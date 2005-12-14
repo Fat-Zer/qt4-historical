@@ -46,7 +46,7 @@
 
 class QDesignerFormWindowInterface;
 
-class QT_SHARED_EXPORT QLayoutSupport: public QObject
+class QDESIGNER_SHARED_EXPORT QLayoutSupport: public QObject
 {
     Q_OBJECT
 public:
@@ -129,11 +129,11 @@ private:
     QPair<int, int> m_currentCell;
 };
 
-class QT_SHARED_EXPORT QLayoutWidget: public QWidget
+class QDESIGNER_SHARED_EXPORT QLayoutWidget: public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(int margin READ layoutMargin WRITE setLayoutMargin DESIGNABLE true)
-    Q_PROPERTY(int spacing READ layoutSpacing WRITE setLayoutSpacing DESIGNABLE true)
+    Q_PROPERTY(int margin READ layoutMargin WRITE setLayoutMargin STORED false DESIGNABLE true)
+    Q_PROPERTY(int spacing READ layoutSpacing WRITE setLayoutSpacing STORED false DESIGNABLE true)
 public:
     QLayoutWidget(QDesignerFormWindowInterface *formWindow, QWidget *parent = 0);
 
@@ -214,6 +214,5 @@ protected:
     inline QLayout *theLayout() const
     { Q_ASSERT(me()->widget()); return me()->widget()->layout(); }
 };
-
 
 #endif // QDESIGNER_WIDGET_H

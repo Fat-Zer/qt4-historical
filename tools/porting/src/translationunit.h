@@ -20,10 +20,10 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #ifndef TRANSLATIONUNIT_H
 #define TRANSLATIONUNIT_H
 
-#include <QSharedData>
 #include "tokenengine.h"
 #include "tokenstreamadapter.h"
 #include "ast.h"
@@ -32,6 +32,7 @@
 #include "cpplexer.h"
 #include "parser.h"
 #include "semantic.h"
+#include <QSharedData>
 
 class TranslationUnitData : public QSharedData
 {

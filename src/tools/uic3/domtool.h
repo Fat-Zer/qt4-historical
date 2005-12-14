@@ -24,8 +24,7 @@
 #ifndef DOMTOOL_H
 #define DOMTOOL_H
 
-#include <qvariant.h>
-#include <qnamespace.h>
+#include <QVariant>
 
 class QDomElement;
 class QDomDocument;

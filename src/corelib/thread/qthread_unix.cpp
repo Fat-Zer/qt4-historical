@@ -93,6 +93,7 @@ void QThreadPrivate::finish(void *arg)
     QThreadData *data = &d->data;
     QMutexLocker locker(&d->mutex);
 
+    d->priority = QThread::InheritPriority;
     d->running = false;
     d->finished = true;
     if (d->terminated)
@@ -134,9 +135,13 @@ Qt::HANDLE QThread::currentThreadId()
 }
 
 /*!
-    Returns a pointer to the currently executing QThread. If the
-    current thread was not started using the QThread API (e.g., the
-    GUI thread), this function returns zero.
+    Returns a pointer to the currently executing QThread.  If the
+    current thread was not started using the QThread API, this
+    function returns zero.
+
+    Note that QApplication creates a QThread object to represent the
+    main thread; calling this function from main() after creating
+    QApplication will return a valid pointer.
 */
 QThread *QThread::currentThread()
 {
@@ -237,7 +242,9 @@ void QThread::start(Priority priority)
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-#if !defined(Q_OS_OPENBSD) && defined(_POSIX_THREAD_PRIORITY_SCHEDULING) && (_POSIX_THREAD_PRIORITY_SCHEDULING-0 >= 0)
+    d->priority = priority;
+
+#if defined(Q_OS_DARWIN) || !defined(Q_OS_OPENBSD) && defined(_POSIX_THREAD_PRIORITY_SCHEDULING) && (_POSIX_THREAD_PRIORITY_SCHEDULING-0 >= 0)
     switch (priority) {
     case InheritPriority:
         {
@@ -270,7 +277,7 @@ void QThread::start(Priority priority)
                 prio = prio_min;
                 break;
 
-            case HighestPriority:
+            case TimeCriticalPriority:
                 prio = prio_max;
                 break;
 
@@ -289,8 +296,6 @@ void QThread::start(Priority priority)
             break;
         }
     }
-#else
-    Q_UNUSED(priority);
 #endif // _POSIX_THREAD_PRIORITY_SCHEDULING
 
     if (d->stackSize > 0) {
@@ -436,6 +441,65 @@ void QThread::setTerminationEnabled(bool enabled)
     pthread_setcancelstate(enabled ? PTHREAD_CANCEL_ENABLE : PTHREAD_CANCEL_DISABLE, NULL);
     if (enabled)
         pthread_testcancel();
+}
+
+void QThread::setPriority(Priority priority)
+{
+    Q_D(QThread);
+    QMutexLocker locker(&d->mutex);
+    if (!d->running) {
+        qWarning("QThread::setPriority(): cannot set priority, thread is not running");
+        return;
+    }
+
+    d->priority = priority;
+
+    // copied from start() with a few modifications:
+
+#if defined(Q_OS_DARWIN) || !defined(Q_OS_OPENBSD) && defined(_POSIX_THREAD_PRIORITY_SCHEDULING) && (_POSIX_THREAD_PRIORITY_SCHEDULING-0 >= 0)
+    int sched_policy;
+    sched_param param;
+
+    if (pthread_getschedparam(d->thread_id, &sched_policy, &param) != 0) {
+        // failed to get the scheduling policy, don't bother setting
+        // the priority
+        qWarning("QThread::setPriority(): cannot get scheduler parameters");
+        return;
+    }
+
+    int prio_min = sched_get_priority_min(sched_policy);
+    int prio_max = sched_get_priority_max(sched_policy);
+    if (prio_min == -1 || prio_max == -1) {
+        // failed to get the scheduling parameters, don't
+        // bother setting the priority
+        qWarning("QThread: cannot determine scheduler priority range");
+        return;
+    }
+
+    int prio;
+    switch (priority) {
+    case InheritPriority:
+        qWarning("QThread::setPriority(): argument cannot be InheritPriority");
+        return;
+
+    case IdlePriority:
+        prio = prio_min;
+        break;
+
+    case TimeCriticalPriority:
+        prio = prio_max;
+        break;
+
+    default:
+        // crudely scale our priority enum values to the prio_min/prio_max
+        prio = (((prio_max - prio_min) / TimeCriticalPriority) * priority) + prio_min;
+        prio = qMax(prio_min, qMin(prio_max, prio));
+        break;
+    }
+
+    param.sched_priority = prio;
+    pthread_setschedparam(d->thread_id, sched_policy, &param);
+#endif
 }
 
 #endif // QT_NO_THREAD

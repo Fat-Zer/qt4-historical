@@ -50,19 +50,33 @@ class QDesignerFormEditorInterface;
 class QDesignerFormWindowManagerInterface;
 class QDesignerFormWindowInterface;
 class QDesignerWidgetDataBaseItemInterface;
-class Layout;
 
+class QDesignerContainerExtension;
 class QDesignerPropertySheetExtension;
 class QDesignerMetaDataBaseItemInterface;
-class QDesignerPromotedWidget;
 
+class QDesignerMenu;
+
+class QMenuBar;
+class QStatusBar;
+class QToolBar;
 class QToolBox;
 class QTabWidget;
+class QTableWidget;
+class QTreeWidget;
+class QTreeWidgetItem;
+class QListWidget;
+class QComboBox;
 class QStackedWidget;
 class QDockWidget;
 class QMainWindow;
 
-class QT_SHARED_EXPORT QDesignerFormEditorCommand: public QtCommand
+namespace qdesigner_internal {
+
+class QDesignerPromotedWidget;
+class Layout;
+
+class QDESIGNER_SHARED_EXPORT QDesignerFormEditorCommand: public QtCommand
 {
     Q_OBJECT
 public:
@@ -74,7 +88,7 @@ private:
     QPointer<QDesignerFormEditorInterface> m_core;
 };
 
-class QT_SHARED_EXPORT QDesignerFormWindowManagerCommand: public QtCommand
+class QDESIGNER_SHARED_EXPORT QDesignerFormWindowManagerCommand: public QtCommand
 {
     Q_OBJECT
 public:
@@ -86,32 +100,40 @@ private:
     QPointer<QDesignerFormWindowManagerInterface> m_formWindowManager;
 };
 
-class QT_SHARED_EXPORT QDesignerFormWindowCommand: public QtCommand
+class QDESIGNER_SHARED_EXPORT QDesignerFormWindowCommand: public QtCommand
 {
     Q_OBJECT
 public:
     QDesignerFormWindowCommand(const QString &description, QDesignerFormWindowInterface *formWindow);
 
     QDesignerFormWindowInterface *formWindow() const;
+    QDesignerFormEditorInterface *core() const;
+
+    virtual void undo();
+    virtual void redo();
 
 protected:
-    void checkObjectName(QWidget *widget);
+    void checkObjectName(QObject *object);
     void updateBuddies(const QString &old_name, const QString &new_name);
     void checkSelection(QWidget *widget);
     void checkParent(QWidget *widget, QWidget *parentWidget);
     bool hasLayout(QWidget *widget) const;
 
+    void cheapUpdate();
+
 private:
     QPointer<QDesignerFormWindowInterface> m_formWindow;
 };
 
-class QT_SHARED_EXPORT SetPropertyCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT SetPropertyCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
     SetPropertyCommand(QDesignerFormWindowInterface *formWindow);
 
-    void init(QWidget *widget, const QString &propertyName, const QVariant &newValue);
+    void init(QObject *object, const QString &propertyName, const QVariant &newValue);
+
+    QObject *object() const;
 
     QWidget *widget() const;
     QWidget *parentWidget() const;
@@ -140,7 +162,7 @@ protected:
 private:
     QString m_propertyName;
     int m_index;
-    QPointer<QWidget> m_widget;
+    QPointer<QObject> m_object;
     QPointer<QWidget> m_parentWidget;
     QDesignerPropertySheetExtension *m_propertySheet;
     QVariant m_oldValue;
@@ -148,7 +170,7 @@ private:
     bool m_changed;
 };
 
-class QT_SHARED_EXPORT ResetPropertyCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT ResetPropertyCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -184,7 +206,7 @@ private:
     bool m_changed;
 };
 
-class QT_SHARED_EXPORT InsertWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT InsertWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -201,7 +223,7 @@ private:
     QPair<int, int> m_cell;
 };
 
-class QT_SHARED_EXPORT RaiseWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT RaiseWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -216,7 +238,7 @@ private:
     QPointer<QWidget> m_widget;
 };
 
-class QT_SHARED_EXPORT LowerWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT LowerWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -231,7 +253,7 @@ private:
     QPointer<QWidget> m_widget;
 };
 
-class QT_SHARED_EXPORT AdjustWidgetSizeCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT AdjustWidgetSizeCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -244,9 +266,10 @@ public:
 
 private:
     QPointer<QWidget> m_widget;
+    QRect m_geometry;
 };
 
-class QT_SHARED_EXPORT DeleteWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT DeleteWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -267,9 +290,10 @@ private:
     int m_rowspan, m_colspan;
     QDesignerMetaDataBaseItemInterface *m_formItem;
     int m_tabOrderIndex;
+    QList<QPointer<QWidget> > m_managedChildren;
 };
 
-class QT_SHARED_EXPORT ReparentWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT ReparentWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -288,7 +312,7 @@ private:
     QPointer<QWidget> m_newParentWidget;
 };
 
-class QT_SHARED_EXPORT ChangeLayoutItemGeometry: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT ChangeLayoutItemGeometry: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -308,7 +332,7 @@ private:
     QRect m_newInfo;
 };
 
-class QT_SHARED_EXPORT InsertRowCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT InsertRowCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -325,7 +349,7 @@ private:
 };
 
 
-class QT_SHARED_EXPORT TabOrderCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT TabOrderCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -348,7 +372,7 @@ private:
     QList<QWidget*> m_newTabOrder;
 };
 
-class QT_SHARED_EXPORT PromoteToCustomWidgetCommand : public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT PromoteToCustomWidgetCommand : public QDesignerFormWindowCommand
 {
 public:
     PromoteToCustomWidgetCommand(QDesignerFormWindowInterface *formWindow);
@@ -361,7 +385,7 @@ private:
     friend class DemoteFromCustomWidgetCommand;
 };
 
-class QT_SHARED_EXPORT DemoteFromCustomWidgetCommand : public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT DemoteFromCustomWidgetCommand : public QDesignerFormWindowCommand
 {
 public:
     DemoteFromCustomWidgetCommand(QDesignerFormWindowInterface *formWindow);
@@ -372,7 +396,7 @@ private:
     PromoteToCustomWidgetCommand *m_promote_cmd;
 };
 
-class QT_SHARED_EXPORT LayoutCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT LayoutCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -395,7 +419,7 @@ private:
     QPointer<Layout> m_layout;
 };
 
-class QT_SHARED_EXPORT BreakLayoutCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT BreakLayoutCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -418,7 +442,7 @@ private:
     int m_spacing;
 };
 
-class QT_SHARED_EXPORT ToolBoxCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT ToolBoxCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -438,7 +462,24 @@ protected:
     QIcon m_itemIcon;
 };
 
-class QT_SHARED_EXPORT DeleteToolBoxPageCommand: public ToolBoxCommand
+class QDESIGNER_SHARED_EXPORT MoveToolBoxPageCommand: public ToolBoxCommand
+{
+    Q_OBJECT
+public:
+    MoveToolBoxPageCommand(QDesignerFormWindowInterface *formWindow);
+    virtual ~MoveToolBoxPageCommand();
+
+    void init(QToolBox *toolBox, QWidget *page, int newIndex);
+
+    virtual void redo();
+    virtual void undo();
+
+private:
+    int m_newIndex;
+    int m_oldIndex;
+};
+
+class QDESIGNER_SHARED_EXPORT DeleteToolBoxPageCommand: public ToolBoxCommand
 {
     Q_OBJECT
 public:
@@ -451,20 +492,25 @@ public:
     virtual void undo();
 };
 
-class QT_SHARED_EXPORT AddToolBoxPageCommand: public ToolBoxCommand
+class QDESIGNER_SHARED_EXPORT AddToolBoxPageCommand: public ToolBoxCommand
 {
     Q_OBJECT
 public:
+    enum InsertionMode {
+        InsertBefore,
+        InsertAfter
+    };
     AddToolBoxPageCommand(QDesignerFormWindowInterface *formWindow);
     virtual ~AddToolBoxPageCommand();
 
     void init(QToolBox *toolBox);
+    void init(QToolBox *toolBox, InsertionMode mode);
 
     virtual void redo();
     virtual void undo();
 };
 
-class QT_SHARED_EXPORT TabWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT TabWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -484,7 +530,7 @@ protected:
     QIcon m_itemIcon;
 };
 
-class QT_SHARED_EXPORT DeleteTabPageCommand: public TabWidgetCommand
+class QDESIGNER_SHARED_EXPORT DeleteTabPageCommand: public TabWidgetCommand
 {
     Q_OBJECT
 public:
@@ -497,20 +543,25 @@ public:
     virtual void undo();
 };
 
-class QT_SHARED_EXPORT AddTabPageCommand: public TabWidgetCommand
+class QDESIGNER_SHARED_EXPORT AddTabPageCommand: public TabWidgetCommand
 {
     Q_OBJECT
 public:
+    enum InsertionMode {
+        InsertBefore,
+        InsertAfter
+    };
     AddTabPageCommand(QDesignerFormWindowInterface *formWindow);
     virtual ~AddTabPageCommand();
 
     void init(QTabWidget *tabWidget);
+    void init(QTabWidget *tabWidget, InsertionMode mode);
 
     virtual void redo();
     virtual void undo();
 };
 
-class QT_SHARED_EXPORT MoveTabPageCommand: public TabWidgetCommand
+class QDESIGNER_SHARED_EXPORT MoveTabPageCommand: public TabWidgetCommand
 {
     Q_OBJECT
 public:
@@ -532,7 +583,7 @@ private:
     QIcon m_icon;
 };
 
-class QT_SHARED_EXPORT StackedWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT StackedWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -550,7 +601,24 @@ protected:
     int m_index;
 };
 
-class QT_SHARED_EXPORT DeleteStackedWidgetPageCommand: public StackedWidgetCommand
+class QDESIGNER_SHARED_EXPORT MoveStackedWidgetCommand: public StackedWidgetCommand
+{
+    Q_OBJECT
+public:
+    MoveStackedWidgetCommand(QDesignerFormWindowInterface *formWindow);
+    virtual ~MoveStackedWidgetCommand();
+
+    void init(QStackedWidget *stackedWidget, QWidget *page, int newIndex);
+
+    virtual void redo();
+    virtual void undo();
+
+private:
+    int m_newIndex;
+    int m_oldIndex;
+};
+
+class QDESIGNER_SHARED_EXPORT DeleteStackedWidgetPageCommand: public StackedWidgetCommand
 {
     Q_OBJECT
 public:
@@ -563,20 +631,105 @@ public:
     virtual void undo();
 };
 
-class QT_SHARED_EXPORT AddStackedWidgetPageCommand: public StackedWidgetCommand
+class QDESIGNER_SHARED_EXPORT AddStackedWidgetPageCommand: public StackedWidgetCommand
 {
     Q_OBJECT
 public:
+    enum InsertionMode {
+        InsertBefore,
+        InsertAfter
+    };
     AddStackedWidgetPageCommand(QDesignerFormWindowInterface *formWindow);
     virtual ~AddStackedWidgetPageCommand();
 
     void init(QStackedWidget *stackedWidget);
+    void init(QStackedWidget *stackedWidget, InsertionMode mode);
 
     virtual void redo();
     virtual void undo();
 };
 
-class QT_SHARED_EXPORT DockWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT CreateMenuBarCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    CreateMenuBarCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QMainWindow *mainWindow);
+
+    virtual void undo();
+    virtual void redo();
+
+private:
+    QPointer<QMainWindow> m_mainWindow;
+    QPointer<QMenuBar> m_menuBar;
+};
+
+class QDESIGNER_SHARED_EXPORT DeleteMenuBarCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    DeleteMenuBarCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QMenuBar *menuBar);
+
+    virtual void undo();
+    virtual void redo();
+
+private:
+    QPointer<QMainWindow> m_mainWindow;
+    QPointer<QMenuBar> m_menuBar;
+};
+
+class QDESIGNER_SHARED_EXPORT CreateStatusBarCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    CreateStatusBarCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QMainWindow *mainWindow);
+
+    virtual void undo();
+    virtual void redo();
+
+private:
+    QPointer<QMainWindow> m_mainWindow;
+    QPointer<QStatusBar> m_statusBar;
+};
+
+class QDESIGNER_SHARED_EXPORT AddToolBarCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    AddToolBarCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QMainWindow *mainWindow);
+
+    virtual void undo();
+    virtual void redo();
+
+private:
+    QPointer<QMainWindow> m_mainWindow;
+    QPointer<QToolBar> m_toolBar;
+};
+
+class QDESIGNER_SHARED_EXPORT DeleteToolBarCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    DeleteToolBarCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QToolBar *toolBar);
+
+    virtual void undo();
+    virtual void redo();
+
+private:
+    QPointer<QMainWindow> m_mainWindow;
+    QPointer<QToolBar> m_toolBar;
+};
+
+class QDESIGNER_SHARED_EXPORT DockWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
@@ -589,7 +742,7 @@ protected:
     QPointer<QDockWidget> m_dockWidget;
 };
 
-class QT_SHARED_EXPORT SetDockWidgetCommand: public DockWidgetCommand
+class QDESIGNER_SHARED_EXPORT SetDockWidgetCommand: public DockWidgetCommand
 {
     Q_OBJECT
 public:
@@ -605,13 +758,14 @@ private:
     QPointer<QWidget> m_oldWidget;
 };
 
-class QT_SHARED_EXPORT AddDockWidgetCommand: public QDesignerFormWindowCommand
+class QDESIGNER_SHARED_EXPORT AddDockWidgetCommand: public QDesignerFormWindowCommand
 {
     Q_OBJECT
 public:
     AddDockWidgetCommand(QDesignerFormWindowInterface *formWindow);
 
     void init(QMainWindow *mainWindow, QDockWidget *dockWidget);
+    void init(QMainWindow *mainWindow);
 
     virtual void undo();
     virtual void redo();
@@ -620,5 +774,245 @@ private:
     QPointer<QMainWindow> m_mainWindow;
     QPointer<QDockWidget> m_dockWidget;
 };
+
+class QDESIGNER_SHARED_EXPORT ContainerWidgetCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    ContainerWidgetCommand(QDesignerFormWindowInterface *formWindow);
+    virtual ~ContainerWidgetCommand();
+
+    QDesignerContainerExtension *containerExtension() const;
+
+    void init(QWidget *containerWidget);
+
+    virtual void removePage();
+    virtual void addPage();
+
+protected:
+    QPointer<QWidget> m_containerWidget;
+    QPointer<QWidget> m_widget;
+    int m_index;
+};
+
+class QDESIGNER_SHARED_EXPORT DeleteContainerWidgetPageCommand: public ContainerWidgetCommand
+{
+    Q_OBJECT
+public:
+    DeleteContainerWidgetPageCommand(QDesignerFormWindowInterface *formWindow);
+    virtual ~DeleteContainerWidgetPageCommand();
+
+    void init(QWidget *containerWidget);
+
+    virtual void redo();
+    virtual void undo();
+};
+
+class QDESIGNER_SHARED_EXPORT AddContainerWidgetPageCommand: public ContainerWidgetCommand
+{
+    Q_OBJECT
+public:
+    enum InsertionMode {
+        InsertBefore,
+        InsertAfter
+    };
+    AddContainerWidgetPageCommand(QDesignerFormWindowInterface *formWindow);
+    virtual ~AddContainerWidgetPageCommand();
+
+    void init(QWidget *containerWidget);
+    void init(QWidget *containerWidget, InsertionMode mode);
+
+    virtual void redo();
+    virtual void undo();
+};
+
+class QDESIGNER_SHARED_EXPORT ChangeTableContentsCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    ChangeTableContentsCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QTableWidget *tableWidget, QTableWidget *fromTableWidget);
+    virtual void redo();
+    virtual void undo();
+private:
+    void changeContents(QTableWidget *tableWidget,
+        int rowCount, int columnCount,
+        const QMap<int, QPair<QString, QIcon> > &horizontalHeaderState,
+        const QMap<int, QPair<QString, QIcon> > &verticalHeaderState,
+        const QMap<QPair<int, int>, QPair<QString, QIcon> > &itemsState) const;
+
+    QPointer<QTableWidget> m_tableWidget;
+    QMap<QPair<int, int>, QPair<QString, QIcon> > m_oldItemsState;
+    QMap<QPair<int, int>, QPair<QString, QIcon> > m_newItemsState;
+    QMap<int, QPair<QString, QIcon> > m_oldHorizontalHeaderState;
+    QMap<int, QPair<QString, QIcon> > m_newHorizontalHeaderState;
+    QMap<int, QPair<QString, QIcon> > m_oldVerticalHeaderState;
+    QMap<int, QPair<QString, QIcon> > m_newVerticalHeaderState;
+    int m_oldColumnCount;
+    int m_newColumnCount;
+    int m_oldRowCount;
+    int m_newRowCount;
+};
+
+class QDESIGNER_SHARED_EXPORT ChangeTreeContentsCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    ChangeTreeContentsCommand(QDesignerFormWindowInterface *formWindow);
+    ~ChangeTreeContentsCommand();
+
+    void init(QTreeWidget *treeWidget, QTreeWidget *fromTreeWidget);
+    virtual void redo();
+    virtual void undo();
+private:
+    void initState(QList<QTreeWidgetItem *> &itemsState,
+                QTreeWidgetItem *&headerItemState, QTreeWidget *fromTreeWidget) const;
+    void changeContents(QTreeWidget *treeWidget, int columnCount,
+                const QList<QTreeWidgetItem *> &itemsState,
+                const QTreeWidgetItem *headerItemState) const;
+    void clearState(QList<QTreeWidgetItem *> &itemsState,
+                QTreeWidgetItem *&headerItemState) const;
+
+    QPointer<QTreeWidget> m_treeWidget;
+    QTreeWidgetItem *m_oldHeaderItemState;
+    QTreeWidgetItem *m_newHeaderItemState;
+    QList<QTreeWidgetItem *> m_oldItemsState;
+    QList<QTreeWidgetItem *> m_newItemsState;
+    int m_oldColumnCount;
+    int m_newColumnCount;
+};
+
+class QDESIGNER_SHARED_EXPORT ChangeListContentsCommand: public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    ChangeListContentsCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QListWidget *listWidget, const QList<QPair<QString, QIcon> > &items);
+    void init(QComboBox *comboBox, const QList<QPair<QString, QIcon> > &items);
+    virtual void redo();
+    virtual void undo();
+private:
+    void changeContents(QListWidget *listWidget,
+        const QList<QPair<QString, QIcon> > &itemsState) const;
+    void changeContents(QComboBox *comboBox,
+        const QList<QPair<QString, QIcon> > &itemsState) const;
+
+    QPointer<QListWidget> m_listWidget;
+    QPointer<QComboBox> m_comboBox;
+    QList<QPair<QString, QIcon> > m_oldItemsState;
+    QList<QPair<QString, QIcon> > m_newItemsState;
+};
+
+class QDESIGNER_SHARED_EXPORT AddActionCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    AddActionCommand(QDesignerFormWindowInterface *formWindow);
+    void init(QAction *action);
+    virtual void redo();
+    virtual void undo();
+private:
+    QAction *m_action;
+};
+
+class QDESIGNER_SHARED_EXPORT RemoveActionCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    RemoveActionCommand(QDesignerFormWindowInterface *formWindow);
+    void init(QAction *action);
+    virtual void redo();
+    virtual void undo();
+
+    struct ActionDataItem {
+        ActionDataItem(QAction *_before = 0, QWidget *_widget = 0)
+            : before(_before), widget(_widget) {}
+        QAction *before;
+        QWidget *widget;
+    };
+    typedef QList<ActionDataItem> ActionData;
+
+private:
+    QAction *m_action;
+
+    ActionData m_actionData;
+};
+
+class QDESIGNER_SHARED_EXPORT InsertActionIntoCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    InsertActionIntoCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QWidget *parentWidget, QAction *action, QAction *beforeAction, bool update = true);
+    virtual void redo();
+    virtual void undo();
+
+private:
+    QWidget *m_parentWidget;
+    QAction *m_action;
+    QAction *m_beforeAction;
+    bool m_update;
+};
+
+class QDESIGNER_SHARED_EXPORT RemoveActionFromCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    RemoveActionFromCommand(QDesignerFormWindowInterface *formWindow);
+
+    void init(QWidget *parentWidget, QAction *action, QAction *beforeAction, bool update = true);
+    virtual void redo();
+    virtual void undo();
+
+private:
+    QWidget *m_parentWidget;
+    QAction *m_action;
+    QAction *m_beforeAction;
+    bool m_update;
+};
+
+class QDESIGNER_SHARED_EXPORT AddMenuActionCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    AddMenuActionCommand(QDesignerFormWindowInterface *formWindow);
+    void init(QAction *action, QWidget *parent);
+    virtual void redo();
+    virtual void undo();
+private:
+    QAction *m_action;
+    QWidget *m_parent;
+};
+
+class QDESIGNER_SHARED_EXPORT RemoveMenuActionCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    RemoveMenuActionCommand(QDesignerFormWindowInterface *formWindow);
+    void init(QAction *action, QWidget *parent);
+    virtual void redo();
+    virtual void undo();
+private:
+    QAction *m_action;
+    QWidget *m_parent;
+};
+
+class QDESIGNER_SHARED_EXPORT CreateSubmenuCommand : public QDesignerFormWindowCommand
+{
+    Q_OBJECT
+public:
+    CreateSubmenuCommand(QDesignerFormWindowInterface *formWindow);
+    void init(QDesignerMenu *menu, QAction *action);
+    virtual void redo();
+    virtual void undo();
+private:
+    QAction *m_action;
+    QDesignerMenu *m_menu;
+};
+
+} // namespace qdesigner_internal
 
 #endif // QDESIGNER_COMMAND_H

@@ -24,14 +24,14 @@
 #ifndef Q3DATATABLE_H
 #define Q3DATATABLE_H
 
-#include "QtCore/qstring.h"
-#include "QtCore/qvariant.h"
-#include "Qt3Support/q3table.h"
-#include "QtSql/qsql.h"
-#include "Qt3Support/q3sqlcursor.h"
-#include "QtSql/qsqlindex.h"
-#include "Qt3Support/q3sqleditorfactory.h"
-#include "Qt3Support/qiconset.h"
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
+#include <Qt3Support/q3table.h>
+#include <QtSql/qsql.h>
+#include <Qt3Support/q3sqlcursor.h>
+#include <QtSql/qsqlindex.h>
+#include <Qt3Support/q3sqleditorfactory.h>
+#include <Qt3Support/qiconset.h>
 
 QT_MODULE(Qt3Support)
 
@@ -135,7 +135,7 @@ public:
     int          indexOf( uint i ) const;
     void selectRow(int row);
 
-signals:
+Q_SIGNALS:
     void         currentChanged( QSqlRecord* record );
     void         primeInsert( QSqlRecord* buf );
     void         primeUpdate( QSqlRecord* buf );
@@ -145,7 +145,7 @@ signals:
     void         beforeDelete( QSqlRecord* buf );
     void         cursorChanged( QSql::Op mode );
 
-public slots:
+public Q_SLOTS:
     virtual void find( const QString & str, bool caseSensitive,
 			     bool backwards );
     virtual void sortAscending( int col );
@@ -195,7 +195,7 @@ protected:
     void         setPixmap ( int row, int col, const QPixmap & pix );
     void         takeItem ( Q3TableItem * i );
 
-private slots:
+private Q_SLOTS:
     void         loadNextPage();
     void         setCurrentSelection( int row, int col );
     void         updateCurrentSelection();
@@ -220,5 +220,6 @@ private:
 #endif
 };
 
-#endif
-#endif
+#endif // QT_NO_SQL_VIEW_WIDGETS
+
+#endif // Q3DATATABLE_H

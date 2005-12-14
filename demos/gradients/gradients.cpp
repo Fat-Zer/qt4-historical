@@ -1,3 +1,26 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the demonstration applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 #include "gradients.h"
 #include "hoverpoints.h"
 
@@ -55,8 +78,8 @@ uint ShadeWidget::colorAt(int x)
         if (pts.at(i-1).x() <= x && pts.at(i).x() >= x) {
             QLineF l(pts.at(i-1), pts.at(i));
             l.setLength(l.length() * ((x - l.x1()) / l.dx()));
-            return m_shade.pixel(qRound(qMin(l.x2(), (double(m_shade.width() - 1)))),
-                                 qRound(qMin(l.y2(), double(m_shade.height() - 1))));
+            return m_shade.pixel(qRound(qMin(l.x2(), (qreal(m_shade.width() - 1)))),
+                                 qRound(qMin(l.y2(), qreal(m_shade.height() - 1))));
         }
     }
     return 0;
@@ -237,29 +260,29 @@ GradientWidget::GradientWidget(QWidget *parent)
 
     m_renderer = new GradientRenderer(this);
 
-    ArthurGroupBox *mainGroup = new ArthurGroupBox(this);
+    QGroupBox *mainGroup = new QGroupBox(this);
     mainGroup->setTitle("Gradients");
 
-    ArthurGroupBox *editorGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *editorGroup = new QGroupBox(mainGroup);
     editorGroup->setAttribute(Qt::WA_ContentsPropagated);
     editorGroup->setTitle("Color Editor");
     m_editor = new GradientEditor(editorGroup);
 
-    ArthurGroupBox *typeGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *typeGroup = new QGroupBox(mainGroup);
     typeGroup->setAttribute(Qt::WA_ContentsPropagated);
     typeGroup->setTitle("Gradient Type");
     m_linearButton = new QRadioButton("Linear Gradient", typeGroup);
     m_radialButton = new QRadioButton("Radial Gradient", typeGroup);
     m_conicalButton = new QRadioButton("Conical Gradient", typeGroup);
 
-    ArthurGroupBox *spreadGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *spreadGroup = new QGroupBox(mainGroup);
     spreadGroup->setAttribute(Qt::WA_ContentsPropagated);
     spreadGroup->setTitle("Spread Method");
     m_padSpreadButton = new QRadioButton("Pad Spread", spreadGroup);
     m_reflectSpreadButton = new QRadioButton("Reflect Spread", spreadGroup);
     m_repeatSpreadButton = new QRadioButton("Repeat Spread", spreadGroup);
 
-    ArthurGroupBox *defaultsGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *defaultsGroup = new QGroupBox(mainGroup);
     defaultsGroup->setAttribute(Qt::WA_ContentsPropagated);
     defaultsGroup->setTitle("Defaults");
     QPushButton *default1Button = new QPushButton("1", defaultsGroup);

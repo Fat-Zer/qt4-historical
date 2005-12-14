@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/painting/qpaintengine.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/painting/qpaintengine.cpp -->
 <head>
-    <title>Qt 4.0: QPaintEngine Class Reference</title>
+    <title>Qt 4.1: QPaintEngine Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -25,6 +25,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
+<li><div class="fn"/>enum <b><a href="qpaintengine.html#DirtyFlag-enum">DirtyFlag</a></b> { DirtyPen, DirtyBrush, DirtyBrushOrigin, DirtyFont, ..., AllDirty }</li>
 <li><div class="fn"/>flags <b><a href="qpaintengine.html#DirtyFlag-enum">DirtyFlags</a></b></li>
 <li><div class="fn"/>enum <b><a href="qpaintengine.html#PaintEngineFeature-enum">PaintEngineFeature</a></b> { PrimitiveTransform, PatternTransform, PixmapTransform, PatternBrush, ..., AllFeatures }</li>
 <li><div class="fn"/>flags <b><a href="qpaintengine.html#PaintEngineFeature-enum">PaintEngineFeatures</a></b></li>
@@ -59,6 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QPainter * <b><a href="qpaintengine.html#painter">painter</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qpaintengine.html#setActive">setActive</a></b> ( bool <i>state</i> )</li>
 <li><div class="fn"/>virtual Type <b><a href="qpaintengine.html#type">type</a></b> () const = 0</li>
+<li><div class="fn"/>virtual void <b><a href="qpaintengine.html#updateState">updateState</a></b> ( const QPaintEngineState &amp; <i>state</i> ) = 0</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -71,6 +73,26 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpainter.html">QPainter</a> and <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>().</p>
 <hr />
 <h2>Member Type Documentation</h2>
+<h3 class="flags"><a name="DirtyFlag-enum"></a>enum QPaintEngine::DirtyFlag<br />flags QPaintEngine::DirtyFlags</h3>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyPen</tt></td><td align="center" valign="top"><tt>0x0001</tt></td><td valign="top">The pen is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyBrush</tt></td><td align="center" valign="top"><tt>0x0002</tt></td><td valign="top">The brush is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyBrushOrigin</tt></td><td align="center" valign="top"><tt>0x0004</tt></td><td valign="top">The brush origin is dirty and needs to updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyFont</tt></td><td align="center" valign="top"><tt>0x0008</tt></td><td valign="top">The font is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyBackground</tt></td><td align="center" valign="top"><tt>0x0010</tt></td><td valign="top">The background is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyBackgroundMode</tt></td><td align="center" valign="top"><tt>0x0020</tt></td><td valign="top">The background mode is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyTransform</tt></td><td align="center" valign="top"><tt>0x0040</tt></td><td valign="top">The transform is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyClipRegion</tt></td><td align="center" valign="top"><tt>0x0080</tt></td><td valign="top">The clip region is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyClipPath</tt></td><td align="center" valign="top"><tt>0x0100</tt></td><td valign="top">The clip path is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyHints</tt></td><td align="center" valign="top"><tt>0x0200</tt></td><td valign="top">The render hints is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyCompositionMode</tt></td><td align="center" valign="top"><tt>0x0400</tt></td><td valign="top">The composition mode is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::DirtyClipEnabled</tt></td><td align="center" valign="top"><tt>0x0800</tt></td><td valign="top">Whether clipping is enabled or not is dirty and needs to be updated.</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::AllDirty</tt></td><td align="center" valign="top"><tt>0xffff</tt></td><td valign="top">Convenience enum used internally.</td></tr>
+</table>
+<p>These types are used by <a href="qpainter.html">QPainter</a> to trigger lazy updates of the various states in the <a href="qpaintengine.html">QPaintEngine</a> using <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
+<p>A paint engine must update every dirty state.</p>
+<p>The DirtyFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;DirtyFlag&gt;. It stores an OR combination of DirtyFlag values.</p>
 <h3 class="flags"><a name="PaintEngineFeature-enum"></a>enum QPaintEngine::PaintEngineFeature<br />flags QPaintEngine::PaintEngineFeatures</h3>
 <p>This enum is used to describe the features or capabilities that the paint engine has. If a feature is not supported by the engine, <a href="qpainter.html">QPainter</a> will do a best effort to emulate that feature through other means and pass on an alpha blended <a href="qimage.html">QImage</a> to the engine with the emulated results. Some features cannot be emulated: AlphaBlend and PorterDuff.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -107,7 +129,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPaintEngine::MacPrinter</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::CoreGraphics</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Mac OS X's Quartz2D (CoreGraphics)</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::QuickDraw</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Mac OS X's older QuickDraw-based painting</td></tr>
-<tr><td valign="top"><tt>QPaintEngine::QWindowSystem</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Qt/Embedded</td></tr>
+<tr><td valign="top"><tt>QPaintEngine::QWindowSystem</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Qtopia Core</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::PostScript</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::OpenGL</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPaintEngine::Picture</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top"><a href="qpicture.html">QPicture</a> format</td></tr>
@@ -181,10 +203,14 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpaintengine.html#isActive">isActive</a>().</p>
 <h3 class="fn"><a name="type"></a><a href="qpaintengine.html#Type-enum">Type</a> QPaintEngine::type () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Reimplement this function to return the paint engine <a href="qpaintengine.html#Type-enum">Type</a>.</p>
+<h3 class="fn"><a name="updateState"></a>void QPaintEngine::updateState ( const <a href="qpaintenginestate.html">QPaintEngineState</a> &amp; <i>state</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
+<p>Reimplement this function to update the state of a paint engine.</p>
+<p>When implemented, this function is responsible for checking the paint engine's current <i>state</i> and update the properties that are changed. Use the <a href="qpaintenginestate.html#state">QPaintEngineState::state</a>() function to find out which properties that must be updated, then use the corresponding <a href="qpaintenginestate.html#getfunction">get function</a> to retrieve the current values for the given properties.</p>
+<p>See also <a href="qpaintenginestate.html">QPaintEngineState</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/debug.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/debug.qdoc -->
 <head>
-    <title>Qt 4.0: Debugging Techniques</title>
+    <title>Qt 4.1: Debugging Techniques</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -37,7 +37,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qtglobal.html#qCritical">qCritical</a>() is used for writing critical error mesages and reporting system errors.</li>
 <li><a href="qtglobal.html#qFatal">qFatal</a>() is used for writing fatal error messages shortly before exiting.</li>
 </ul>
-<p>The <tt>qDebug()</tt> function can also be used as an output stream; for example:</p>
+<p>If you include the &lt;QtDebug&gt; header file, the <tt>qDebug()</tt> function can also be used as an output stream. For example:</p>
 <pre>&nbsp;   qDebug() &lt;&lt; &quot;Widget&quot; &lt;&lt; widget &lt;&lt; &quot;at position&quot; &lt;&lt; widget-&gt;pos();</pre>
 <p>The Qt implementation of these functions prints the text to the <tt>stderr</tt> output under Unix/X11 and Mac OS X, and to the debugger under Windows. You can take over these functions by installing a message handler using <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
 <p>If the <tt>QT_FATAL_WARNINGS</tt> environment variable is set, <a href="qtglobal.html#qWarning">qWarning</a>() exits after printing the warning message. This makes it easy to obtain a backtrace in the debugger.</p>
@@ -77,6 +77,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

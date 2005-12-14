@@ -15,6 +15,7 @@ embedded {
 		    embedded/qlock_p.h \
 		    embedded/qscreen_qws.h \
 		    embedded/qwindowsystem_qws.h \
+		    embedded/qwindowsystem_p.h \
 		    embedded/qwscommand_qws.h \
 		    embedded/qwscursor_qws.h \
 		    embedded/qwsdisplay_qws.h \
@@ -22,8 +23,11 @@ embedded {
 		    embedded/qwsmanager_qws.h \
 		    embedded/qwsmanager_p.h \
 		    embedded/qwsproperty_qws.h \
+                    embedded/qtransportauth_qws.h \
+                    embedded/qtransportauth_qws_p.h \
 		    embedded/qwssocket_qws.h \
-		    embedded/qwsutils_qws.h
+		    embedded/qwslock_p.h \
+		    embedded/qwsutils_qws.h 
 
 	 !mac:SOURCES += embedded/qsoundqss_qws.cpp
          SOURCES +=  \
@@ -40,18 +44,20 @@ embedded {
 		    embedded/qwsevent_qws.cpp \
 		    embedded/qwsmanager_qws.cpp \
 		    embedded/qwsproperty_qws.cpp \
+                    embedded/qtransportauth_qws.cpp \
+		    embedded/qwslock.cpp \
 		    embedded/qwssocket_qws.cpp
 
 	contains(QT_CONFIG, ft) {
 	    SOURCES += \
 		../3rdparty/freetype/builds/unix/ftsystem.c \
-		../3rdparty/freetype/src/autohint/autohint.c \
 		../3rdparty/freetype/src/base/ftbase.c \
 		../3rdparty/freetype/src/base/ftbbox.c \
 		../3rdparty/freetype/src/base/ftdebug.c \
 		../3rdparty/freetype/src/base/ftglyph.c \
 		../3rdparty/freetype/src/base/ftinit.c \
 		../3rdparty/freetype/src/base/ftmm.c \
+                ../3rdparty/freetype/src/base/ftbitmap.c\
 		../3rdparty/freetype/src/bdf/bdf.c \
 		../3rdparty/freetype/src/cache/ftcache.c \
 		../3rdparty/freetype/src/cff/cff.c \
@@ -69,7 +75,23 @@ embedded {
 		../3rdparty/freetype/src/type1/type1.c \
 		../3rdparty/freetype/src/type42/type42.c \
 		../3rdparty/freetype/src/winfonts/winfnt.c \
-		../3rdparty/freetype/src/lzw/ftlzw.c
+		../3rdparty/freetype/src/lzw/ftlzw.c\
+                ../3rdparty/freetype/src/otvalid/otvalid.c\
+                ../3rdparty/freetype/src/otvalid/otvbase.c\
+                ../3rdparty/freetype/src/otvalid/otvgdef.c\
+                ../3rdparty/freetype/src/otvalid/otvjstf.c\
+                ../3rdparty/freetype/src/otvalid/otvcommn.c\
+                ../3rdparty/freetype/src/otvalid/otvgpos.c\
+                ../3rdparty/freetype/src/otvalid/otvgsub.c\
+                ../3rdparty/freetype/src/otvalid/otvmod.c\
+                ../3rdparty/freetype/src/autofit/afangles.c\
+                ../3rdparty/freetype/src/autofit/afglobal.c\
+                ../3rdparty/freetype/src/autofit/aflatin.c\
+                ../3rdparty/freetype/src/autofit/afmodule.c\
+                ../3rdparty/freetype/src/autofit/afdummy.c\
+                ../3rdparty/freetype/src/autofit/afhints.c\
+                ../3rdparty/freetype/src/autofit/afloader.c\
+                ../3rdparty/freetype/src/autofit/autofit.c
 
 	    INCLUDEPATH += \
 		../3rdparty/freetype/src \
@@ -80,6 +102,11 @@ embedded {
 	} else {
 	    DEFINES += QT_NO_FREETYPE
 	}
+
+# After policies are developed this should be set so discovery mode is
+# off by default, unless turned on explicitly
+#	contains(QT_CONFIG, sxv_discovery):\
+            DEFINES += SXV_DISCOVERY
 
 #
 # Decorations
@@ -137,58 +164,10 @@ embedded {
 		SOURCES += embedded/qscreenvnc_qws.cpp
 	}
 
-#	!contains( DEFINES, QT_NO_QWS_LINUXFB):contains( gfx-drivers, vga16 ) {
-#		HEADERS += embedded/qscreenvga16_qws.h
-#		SOURCES += embedded/qscreenvga16_qws.cpp
-#	}
-#
 	contains( gfx-drivers, transformed ) {
 		HEADERS += embedded/qscreentransformed_qws.h
 		SOURCES += embedded/qscreentransformed_qws.cpp
 	}
-#
-#	contains( gfx-drivers, mach64 ) {
-#		HEADERS += embedded/qscreenmach64_qws.h \
-#			   embedded/qscreenmach64defs_qws.h
-#		SOURCES += embedded/qscreenmach64_qws.cpp
-#	}
-#
-#	contains( gfx-drivers, snap ) {
-#		exists( $(SCITECH)/include/snap/graphics.h) {
-#			HEADERS += embedded/qscreensnap_qws.h
-#			SOURCES += embedded/qscreensnap_qws.cpp
-#			INCLUDEPATH += $(SCITECH)/include
-#			debug:LIBS	+= -L$(SCITECH)/lib/debug/linux/gcc/x86/so -lpm
-#			else:LIBS	+= -L$(SCITECH)/lib/release/linux/gcc/x86/so -lpm
-#		}
-#		else {
-#			message("SciTech SNAP SDK is not properly set up! Please make sure the SCITECH")
-#			message("environment variable is pointing to the SciTech SNAP SDK.")
-#			error("Please fix and re-build the makefiles.")
-#		}
-#	}
-#
-#	contains( gfx-drivers, voodoo ) {
-#		HEADERS += embedded/qscreenvoodoo_qws.h \
-#			   embedded/qscreenvoodoodefs_qws.h
-#		SOURCES += embedded/qscreenvoodoo_qws.cpp
-#	}
-#
-#	contains( gfx-drivers, matrox ) {
-#		HEADERS += embedded/qscreenmatrox_qws.h \
-#			   embedded/qscreenmatroxdefs_qws.h
-#		SOURCES += embedded/qscreenmatrox_qws.cpp
-#	}
-#
-#	contains( gfx-drivers, shadowfb ) {
-#		HEADERS += embedded/qscreenshadow_qws.h
-#		SOURCES += embedded/qscreenshadow_qws.cpp
-#	}
-#
-#	contains( gfx-drivers, repeater ) {
-#		HEADERS += embedded/qscreenrepeater_qws.h
-#		SOURCES += embedded/qscreenrepeater_qws.cpp
-#	}
 
 #
 # Keyboard drivers

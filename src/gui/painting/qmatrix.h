@@ -24,12 +24,12 @@
 #ifndef QMATRIX_H
 #define QMATRIX_H
 
-#include "QtCore/qline.h"
-#include "QtCore/qpoint.h"
-#include "QtGui/qpolygon.h"
-#include "QtCore/qrect.h"
-#include "QtGui/qregion.h"
-#include "QtGui/qwindowdefs.h"
+#include <QtGui/qpolygon.h>
+#include <QtGui/qregion.h>
+#include <QtGui/qwindowdefs.h>
+#include <QtCore/qline.h>
+#include <QtCore/qpoint.h>
+#include <QtCore/qrect.h>
 
 QT_MODULE(Gui)
 
@@ -76,7 +76,7 @@ public:
     QMatrix &shear(qreal sh, qreal sv);
     QMatrix &rotate(qreal a);
 
-    bool isInvertible() const { return (_m11*_m22 - _m12*_m21) != 0; }
+    bool isInvertible() const { return !qFuzzyCompare(_m11*_m22 - _m12*_m21, 0); }
     qreal det() const { return _m11*_m22 - _m12*_m21; }
 
     QMatrix inverted(bool *invertible = 0) const;
@@ -121,7 +121,8 @@ Q_GUI_EXPORT QPainterPath operator *(const QPainterPath &p, const QMatrix &m);
 
 inline bool QMatrix::isIdentity() const
 {
-    return _m11 == 1.0 && _m22 == 1.0 && _m12 == 0.0 && _m21 == 0.0 && _dx == 0.0 && _dy == 0.0;
+    return qFuzzyCompare(_m11, 1) && qFuzzyCompare(_m22, 1) && qFuzzyCompare(_m12, 0)
+           && qFuzzyCompare(_m21, 0) && qFuzzyCompare(_dx, 0) && qFuzzyCompare(_dy, 0);
 }
 
 /*****************************************************************************
@@ -135,9 +136,8 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QMatrix &);
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QMatrix &);
 #endif
 
-
 #ifdef QT3_SUPPORT
-#include "QtGui/qwmatrix.h"
+#include <QtGui/qwmatrix.h>
 #endif
 
 #endif // QMATRIX_H

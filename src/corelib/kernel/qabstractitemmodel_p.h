@@ -36,7 +36,8 @@
 //
 //
 
-#include <private/qobject_p.h>
+#include "private/qobject_p.h"
+#include "QtCore/qstack.h"
 
 class Q_CORE_EXPORT QPersistentModelIndexData
 {
@@ -56,6 +57,7 @@ class Q_CORE_EXPORT QAbstractItemModelPrivate : public QObjectPrivate
 public:
     ~QAbstractItemModelPrivate();
 
+    void removePersistentIndexData(QPersistentModelIndexData *data);
     void invalidate(int position);
     void rowsAboutToBeInserted(const QModelIndex &parent, int first, int last);
     void rowsInserted(const QModelIndex &parent, int first, int last);
@@ -68,14 +70,18 @@ public:
     void reset();
 
     struct Change {
+        Change() : first(-1), last(-1) {}
+        Change(const Change &c) : parent(c.parent), first(c.first), last(c.last) {}
+        Change(const QModelIndex &p, int f, int l) : parent(p), first(f), last(l) {}
         QModelIndex parent;
         int first, last;
-    } change;
+    };
+    QStack<Change> changes;
 
     struct Persistent {
         QList<QPersistentModelIndexData*> indexes;
-        QList<int> changed;
-        QList<int> invalidated;
+        QStack<QList<int> > moved;
+        QStack<QList<int> > invalidated;
     } persistent;
 };
 

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/tools/qstring.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/tools/qstring.cpp -->
 <head>
-    <title>Qt 4.0: QLatin1String Class Reference</title>
+    <title>Qt 4.1: QLatin1String Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -31,6 +31,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qlatin1string.html#operator-not-eq">operator!=</a></b> ( const QString &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qlatin1string.html#operator-lt">operator&lt;</a></b> ( const QString &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qlatin1string.html#operator-lt-eq">operator&lt;=</a></b> ( const QString &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QLatin1String &amp; <b><a href="qlatin1string.html#operator-eq">operator=</a></b> ( const QLatin1String &amp; <i>other</i> )</li>
 <li><div class="fn"/>bool <b><a href="qlatin1string.html#operator-eq-eq">operator==</a></b> ( const QString &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qlatin1string.html#operator-gt">operator&gt;</a></b> ( const QString &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qlatin1string.html#operator-gt-eq">operator&gt;=</a></b> ( const QString &amp; <i>other</i> ) const</li>
@@ -78,6 +79,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-lt-eq"></a>bool QLatin1String::operator&lt;= ( const <a href="qstring.html">QString</a> &amp; <i>other</i> ) const</h3>
 <p>Returns true if this string is lexically less than or equal to string <i>other</i>; otherwise returns false.</p>
 <p>The comparison is based exclusively on the numeric Unicode values of the characters and is very fast, but is not what a human would expect. Consider sorting user-interface strings with <a href="qstring.html#localeAwareCompare">QString::localeAwareCompare</a>().</p>
+<h3 class="fn"><a name="operator-eq"></a>QLatin1String &amp; QLatin1String::operator= ( const QLatin1String &amp; <i>other</i> )</h3>
+<p>Constructs a copy of <i>other</i>.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QLatin1String::operator== ( const <a href="qstring.html">QString</a> &amp; <i>other</i> ) const</h3>
 <p>Returns true if this string is equal to string <i>other</i>; otherwise returns false.</p>
 <p>The comparison is based exclusively on the numeric Unicode values of the characters and is very fast, but is not what a human would expect. Consider sorting user-interface strings with <a href="qstring.html#localeAwareCompare">QString::localeAwareCompare</a>().</p>
@@ -91,6 +95,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

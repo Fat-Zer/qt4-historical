@@ -58,6 +58,22 @@
     formats, in addition to any image format plugins that support
     reading.
 
+    \legalese
+    Qt supports GIF reading if it is configured that way during
+    installation. If it is, we are required to state that "The
+    Graphics Interchange Format(c) is the Copyright property of
+    CompuServe Incorporated. GIF(sm) is a Service Mark property of
+    CompuServe Incorporated."
+
+    \warning If you are in a country that recognizes software patents
+    and in which Unisys holds a patent on LZW compression and/or
+    decompression and you want to use GIF, Unisys may require you to
+    license that technology. Such countries include Canada, Japan,
+    the US, France, Germany, Italy and the UK.
+
+    GIF support may be removed completely in a future version of Qt.
+    We recommend using the MNG or PNG format.
+
     \sa QImageWriter, QImageIOHandler, QImageIOPlugin
 */
 
@@ -98,6 +114,7 @@
 #include <qrect.h>
 #include <qset.h>
 #include <qsize.h>
+#include <qcolor.h>
 #include <qvariant.h>
 
 // factory loader
@@ -166,7 +183,7 @@ static QImageIOHandler *createReadHandler(QIODevice *device, const QByteArray &f
 #endif
         }
     }
-
+    
     // check if any of our built-in formats can read images from the device
     if (!handler) {
         QByteArray subType;
@@ -220,6 +237,8 @@ public:
     QRect clipRect;
     QSize scaledSize;
     QRect scaledClipRect;
+    QMap<QString, QString> text;
+    void getText();
 
     // error
     QImageReader::ImageReaderError imageReaderError;
@@ -294,6 +313,24 @@ bool QImageReaderPrivate::initHandler()
 #endif
     
     return true;
+}
+
+/*!
+    \internal
+*/
+void QImageReaderPrivate::getText()
+{
+    if (!text.isEmpty() || (!handler && !initHandler()) || !handler->supportsOption(QImageIOHandler::Description))
+        return;
+    foreach (QString pair, handler->option(QImageIOHandler::Description).toString().split("\n\n")) {
+        int index = pair.indexOf(":");
+        if (index >= 0 && pair.indexOf(" ") < index) {
+            text.insert("Description", pair.simplified());
+        } else {
+            QString key = pair.left(index);
+            text.insert(key, pair.mid(index + 2).simplified());
+        }
+    }
 }
 
 /*!
@@ -389,6 +426,7 @@ void QImageReader::setDevice(QIODevice *device)
     d->deleteDevice = false;
     delete d->handler;
     d->handler = 0;
+    d->text.clear();
 }
 
 /*!
@@ -454,6 +492,40 @@ QSize QImageReader::size() const
     }
 
     return image.size();
+}
+
+/*!
+    \since 4.1
+
+    Returns the text keys for this image. You can use
+    these keys with text() to list the image text for
+    a certain key.
+
+    Support for this option is implemented through
+    QImageIOHandler::Description.
+
+    \sa text(), QImageWriter::setText(), QImage::textKeys()
+*/
+QStringList QImageReader::textKeys() const
+{
+    d->getText();
+    return d->text.keys();
+}
+
+/*!
+    \since 4.1
+
+    Returns the image text associated with \a key.
+
+    Support for this option is implemented through
+    QImageIOHandler::Description.
+
+    \sa textKeys(), QImageWriter::setText()
+*/
+QString QImageReader::text(const QString &key) const
+{
+    d->getText();
+    return d->text.value(key);    
 }
 
 /*!
@@ -528,6 +600,59 @@ QRect QImageReader::scaledClipRect() const
 }
 
 /*!
+    \since 4.1
+
+    Sets the background color to \a color.
+    Image formats that support this operation are expected to
+    initialize the background to \a color before reading an image.
+
+    \sa backgroundColor(), read()
+*/
+void QImageReader::setBackgroundColor(const QColor &color)
+{
+    if (!d->initHandler())
+        return;
+    if (d->handler->supportsOption(QImageIOHandler::BackgroundColor)) {
+        d->handler->setOption(QImageIOHandler::BackgroundColor, color);
+    }
+}
+
+/*!
+    \since 4.1
+
+    Returns the background color that's used when reading an image.
+    If the image format does not support setting the background color
+    an invalid color is returned.
+
+    \sa setBackgroundColor(), read()
+*/
+QColor QImageReader::backgroundColor() const
+{
+    if (!d->initHandler())
+        return QColor();
+    if (d->handler->supportsOption(QImageIOHandler::BackgroundColor))
+        return qVariantValue<QColor>(d->handler->option(QImageIOHandler::BackgroundColor));
+    return QColor();
+}
+
+/*!
+    \since 4.1
+
+    Returns true if the image format supports animation;
+    otherwise, false is returned.
+
+    \sa QMovie::supportedFormats()
+*/
+bool QImageReader::supportsAnimation() const
+{
+    if (!d->initHandler())
+        return false;
+    if (d->handler->supportsOption(QImageIOHandler::Animation))
+        return d->handler->option(QImageIOHandler::Animation).toBool();
+    return false;
+}
+
+/*!
     Returns true if an image can be read for the device (i.e., the
     image format is supported, and the device seems to contain valid
     data); otherwise returns false.
@@ -535,6 +660,9 @@ QRect QImageReader::scaledClipRect() const
     canRead() is a lightweight function that only does a quick test to
     see if the image data is valid. read() may still return false
     after canRead() returns true, if the image data is corrupt.
+
+    For images that support animation, canRead() returns false when
+    all frames have been read.
 
     \sa read(), supportedImageFormats()
 */
@@ -553,13 +681,14 @@ bool QImageReader::canRead() const
     errorString() to get a human readable description of the error.
 
     For image formats that support animation, calling read()
-    repeatedly will return the next frame (or use QMovie).
+    repeatedly will return the next frame. When all frames have been
+    read, a null image will be returned.
 
-    \sa canRead(), supportedImageFormats()
+    \sa canRead(), supportedImageFormats(), supportsAnimation(), QMovie
 */
 QImage QImageReader::read()
 {
-    if (!d->initHandler())
+    if (!d->handler && !d->initHandler())
         return QImage();
 
     // set the handler specific options.
@@ -672,6 +801,8 @@ bool QImageReader::jumpToImage(int imageNumber)
     For image formats that support animation, this function returns
     the number of times the animation should loop. Otherwise, it
     returns -1.
+
+    \sa supportsAnimation(), QImageIOHandler::loopCount()
 */
 int QImageReader::loopCount() const
 {
@@ -682,10 +813,12 @@ int QImageReader::loopCount() const
 
 /*!
     For image formats that support animation, this function returns
-    the number of images in the animation. Otherwise, -1 is returned.
+    the total number of images in the animation.
 
     Certain animation formats do not support this feature, in which
-    case -1 is returned.
+    case 0 is returned.
+
+    \sa supportsAnimation(), QImageIOHandler::imageCount()
 */
 int QImageReader::imageCount() const
 {
@@ -697,7 +830,9 @@ int QImageReader::imageCount() const
 /*!
     For image formats that support animation, this function returns
     the number of milliseconds to wait until displaying the next frame
-    in the animation. Otherwise, -1 is returned.
+    in the animation. Otherwise, 0 is returned.
+
+    \sa supportsAnimation(), QImageIOHandler::nextImageDelay()
 */
 int QImageReader::nextImageDelay() const
 {
@@ -710,6 +845,8 @@ int QImageReader::nextImageDelay() const
     For image formats that support animation, this function returns
     the sequence number of the current frame. Otherwise, -1 is
     returned.
+
+    \sa supportsAnimation(), QImageIOHandler::currentImageNumber()
 */
 int QImageReader::currentImageNumber() const
 {
@@ -720,7 +857,9 @@ int QImageReader::currentImageNumber() const
 
 /*!
     For image formats that support animation, this function returns
-    the rect for the current frame. Otherwise, -1 is returned.
+    the rect for the current frame. Otherwise, a null rect is returned.
+
+    \sa supportsAnimation(), QImageIOHandler::currentImageRect()
 */
 QRect QImageReader::currentImageRect() const
 {
@@ -769,16 +908,41 @@ QByteArray QImageReader::imageFormat(const QString &fileName)
 */
 QByteArray QImageReader::imageFormat(QIODevice *device)
 {
-    QImageIOHandler *handler = ::createReadHandler(device, QByteArray());
-    QByteArray format = handler ? handler->name() : QByteArray();
-    delete handler;
+    QByteArray format;
+    QImageIOHandler *handler = ::createReadHandler(device, format);
+    if (handler) {
+        if (handler->canRead())
+            format = handler->format();
+        delete handler;
+    }
     return format;
 }
 
 /*!
-    Returns a list of image formats supported by QImageReader.
+    Returns the list of image formats supported by QImageReader.
 
-    \sa setFormat(), QImageWriter::supportedImageFormats()
+    By default, Qt can read the following formats:
+
+    \table
+    \header \o Format \o Description
+    \row    \o BMP    \o Windows Bitmap
+    \row    \o GIF    \o Graphic Interchange Format (optional)
+    \row    \o JPG    \o Joint Photographic Experts Group
+    \row    \o JPEG   \o Joint Photographic Experts Group
+    \row    \o MNG    \o Multiple-image Network Graphics
+    \row    \o PNG    \o Portable Network Graphics
+    \row    \o PBM    \o Portable Bitmap
+    \row    \o PGM    \o Portable Graymap
+    \row    \o PPM    \o Portable Pixmap
+    \row    \o XBM    \o X11 Bitmap
+    \row    \o XPM    \o X11 Pixmap
+    \endtable
+
+    To configure Qt with GIF support, pass \c -qt-gif to the \c
+    configure script or check the appropriate option in the graphical
+    installer.
+
+    \sa setFormat(), QImageWriter::supportedImageFormats(), QImageIOPlugin
 */
 QList<QByteArray> QImageReader::supportedImageFormats()
 {

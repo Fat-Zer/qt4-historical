@@ -55,6 +55,44 @@ inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval
     return ret;
 }
 
+inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
+{
+    register int tmp;
+    register int ret;
+    asm volatile("lwarx  %0,0,%2\n"
+                 "cmpw   %0,%3\n"
+                 "bne-   $+20\n"
+                 "stwcx. %4,0,%2\n"
+                 "bne-   $-16\n"
+                 "li     %1,1\n"
+                 "b      $+8\n"
+                 "li     %1,0\n"
+                 "eieio\n"
+                 : "=&r" (tmp), "=&r" (ret)
+                 : "r" (ptr), "r" (expected), "r" (newval)
+                 : "cc", "memory");
+    return ret;
+}
+
+inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval)
+{
+    register int tmp;
+    register int ret;
+    asm volatile("eieio\n"
+                 "lwarx  %0,0,%2\n"
+                 "cmpw   %0,%3\n"
+                 "bne-   $+20\n"
+                 "stwcx. %4,0,%2\n"
+                 "bne-   $-16\n"
+                 "li     %1,1\n"
+                 "b      $+8\n"
+                 "li     %1,0\n"
+                 : "=&r" (tmp), "=&r" (ret)
+                 : "r" (ptr), "r" (expected), "r" (newval)
+                 : "cc", "memory");
+    return ret;
+}
+
 inline int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval)
 {
     register void *tmp;
@@ -133,6 +171,8 @@ inline void *q_atomic_set_ptr(volatile void *ptr, void *newval)
 
 extern "C" {
     int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval);
+    int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval);
+    int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval);
     int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval);
     int q_atomic_increment(volatile int *);
     int q_atomic_decrement(volatile int *);

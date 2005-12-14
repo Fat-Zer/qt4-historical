@@ -37,10 +37,10 @@ class QDataStream;
 class Q_CORE_EXPORT QUrl
 {
 public:
-    QUrl();
-    QUrl(const QString &url);
-    QUrl(const QUrl &copy);
-    ~QUrl();
+    enum ParsingMode {
+        TolerantMode,
+        StrictMode
+    };
 
     // encoding / toString values
     enum FormattingOption {
@@ -58,8 +58,21 @@ public:
     };
     Q_DECLARE_FLAGS(FormattingOptions, FormattingOption)
 
+    QUrl();
+    QUrl(const QString &url);
+    QUrl(const QString &url, ParsingMode mode);
+    // ### Qt 5: merge the two constructors, with mode = TolerantMode
+    QUrl(const QUrl &copy);
+    QUrl &operator =(const QUrl &copy);
+    QUrl &operator =(const QString &url);
+    ~QUrl();
+
     void setUrl(const QString &url);
+    void setUrl(const QString &url, ParsingMode mode);
+    // ### Qt 5: merge the two setUrl() functions, with mode = TolerantMode
     void setEncodedUrl(const QByteArray &url);
+    void setEncodedUrl(const QByteArray &url, ParsingMode mode);
+    // ### Qt 5: merge the two setEncodedUrl() functions, with mode = TolerantMode
 
     bool isValid() const;
 
@@ -87,6 +100,8 @@ public:
 
     void setPort(int port);
     int port() const;
+    int port(int defaultPort) const;
+    // ### Qt 5: merge the two port() functions, with defaultPort = -1
 
     void setPath(const QString &path);
     QString path() const;
@@ -107,7 +122,6 @@ public:
     void removeQueryItem(const QString &key);
     void removeAllQueryItems(const QString &key);
 
-
     void setFragment(const QString &fragment);
     QString fragment() const;
 
@@ -123,6 +137,8 @@ public:
 
     QByteArray toEncoded(FormattingOptions options = None) const;
     static QUrl fromEncoded(const QByteArray &url);
+    static QUrl fromEncoded(const QByteArray &url, ParsingMode mode);
+    // ### Qt 5: merge the two fromEncoded() functions, with mode = TolerantMode
 
     void detach();
     bool isDetached() const;
@@ -130,7 +146,6 @@ public:
     bool operator <(const QUrl &url) const;
     bool operator ==(const QUrl &url) const;
     bool operator !=(const QUrl &url) const;
-    QUrl &operator =(const QUrl &copy);
 
     static QString fromPercentEncoding(const QByteArray &);
     static QByteArray toPercentEncoding(const QString &,
@@ -188,8 +203,6 @@ protected:
 #if defined (QT3_SUPPORT)
     inline QT3_SUPPORT void reset() { clear(); }
 #endif
-
-    QUrl(QUrlPrivate &d);
 
 private:
     QUrlPrivate *d;

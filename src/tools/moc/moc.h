@@ -25,12 +25,23 @@
 #define MOC_H
 
 #include "scanner.h"
-#include <qstringlist.h>
-#include <qmap.h>
-#include <qpair.h>
-#include <qstack.h>
-#include <ctype.h>
+#include <QStringList>
+#include <QMap>
+#include <QPair>
+#include <QStack>
 #include <stdio.h>
+#include <ctype.h>
+
+struct Type
+{
+    enum ReferenceType { NoReference, Reference, Pointer };
+
+    inline Type() : isVolatile(false), referenceType(NoReference) {}
+    inline explicit Type(const QByteArray &_name) : name(_name), isVolatile(false), referenceType(NoReference) {}
+    QByteArray name;
+    bool isVolatile;
+    ReferenceType referenceType;
+};
 
 struct EnumDef
 {
@@ -40,17 +51,22 @@ struct EnumDef
 
 struct ArgumentDef
 {
-    ArgumentDef():isDefault(false){}
-    QByteArray type, rightType, normalizedType, name;
+    ArgumentDef() : isDefault(false) {}
+    Type type;
+    QByteArray rightType, normalizedType, name;
     bool isDefault;
 };
 
 struct FunctionDef
 {
-    FunctionDef(): access(Private), isConst(false), isVirtual(false), inlineCode(false), wasCloned(false), isCompat(false), isInvokable(false), isScriptable(false) {}
-    QByteArray type, normalizedType;
+    FunctionDef(): returnTypeIsVolatile(false), access(Private), isConst(false), isVirtual(false),
+                   inlineCode(false), wasCloned(false), isCompat(false), isInvokable(false), 
+                   isScriptable(false), isSlot(false), isSignal(false) {}
+    Type type;
+    QByteArray normalizedType;
     QByteArray tag;
     QByteArray name;
+    bool returnTypeIsVolatile;
 
     QList<ArgumentDef> arguments;
 
@@ -65,12 +81,14 @@ struct FunctionDef
     bool isCompat;
     bool isInvokable;
     bool isScriptable;
+    bool isSlot;
+    bool isSignal;
 };
 
 struct PropertyDef
 {
     PropertyDef():gspec(ValueSpec){}
-    QByteArray name, type, read, write, reset, designable, scriptable, editable, stored;
+    QByteArray name, type, read, write, reset, designable, scriptable, editable, stored, user;
     enum Specification  { ValueSpec, ReferenceSpec, PointerSpec };
     Specification gspec;
     bool stdCppSet() const {
@@ -178,7 +196,7 @@ public:
         return index > def->begin && index < def->end - 1;
     }
 
-    QByteArray parseType();
+    Type parseType();
 
     bool parseEnum(EnumDef *def);
 

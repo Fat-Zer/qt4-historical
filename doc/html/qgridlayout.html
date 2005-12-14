@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/kernel/qgridlayout.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/kernel/qgridlayout.cpp -->
 <head>
-    <title>Qt 4.0: QGridLayout Class Reference</title>
+    <title>Qt 4.1: QGridLayout Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -81,7 +81,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the QGridLayout is not the top-level layout (i.e. does not manage all of the widget's area and children), you must add it to its parent layout when you create it, but before you do anything with it. The normal way to add a layout is by calling <a href="qgridlayout.html#addLayout">addLayout</a>() on the parent layout.</p>
 <p>Once you have added your layout you can start putting widgets and other layouts into the cells of your grid layout using <a href="qgridlayout.html#addWidget">addWidget</a>(), <a href="qgridlayout.html#addItem">addItem</a>(), and <a href="qgridlayout.html#addLayout">addLayout</a>().</p>
 <p>QGridLayout also includes two margin widths: the border and the spacing. The border is the width of the reserved space along each of the QGridLayout's four sides. The spacing is the width of the automatically allocated spacing between neighboring boxes.</p>
-<p>Both the border and the spacing are parameters of the constructor and default to 0.</p>
+<p>The default border and the spacing values are provided by the style. The default margin Qt styles specify is 9 for widgets and 11 for top level windows.</p>
 <p>See also <a href="qboxlayout.html">QBoxLayout</a>, <a href="qstackedlayout.html">QStackedLayout</a>, and <a href="layout.html">Layout Classes</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -161,6 +161,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

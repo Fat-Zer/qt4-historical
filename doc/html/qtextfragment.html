@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/text/qtextobject.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/text/qtextobject.cpp -->
 <head>
-    <title>Qt 4.0: QTextFragment Class Reference</title>
+    <title>Qt 4.1: QTextFragment Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -46,7 +46,7 @@ body { background: #ffffff; color: black; }</style>
 <p>A text fragment describes a piece of text that is stored with a single character format. Text in which the character format changes can be represented by sequences of text fragments with different formats.</p>
 <p>If the user edits the text in a fragment and introduces a different character format, the fragment's text will be split at each point where the format changes, and new fragments will be created. For example, changing the style of some text in the middle of a sentence will cause the fragment to be broken into three separate fragments: the first and third with the same format as before, and the second with the new style. The first fragment will contain the text from the beginning of the sentence, the second will contain the text from the middle, and the third takes the text from the end of the sentence.</p>
 <p align="center"><img src="images/qtextfragment-split.png" /></p><p>A fragment's text and character format can be obtained with the <a href="qtextfragment.html#text">text</a>() and <a href="qtextfragment.html#charFormat">charFormat</a>() functions. The <a href="qtextfragment.html#length">length</a>() function gives the length of the text in the fragment. <a href="qtextfragment.html#position">position</a>() gives the position in the document of the start of the fragment. To determine whether the fragment contains a particular position within the document, use the <a href="qtextfragment.html#contains">contains</a>() function.</p>
-<p>See also <a href="qtextdocument.html">QTextDocument</a>.</p>
+<p>See also <a href="qtextdocument.html">QTextDocument</a> and <a href="richtext-structure.html">Rich Text Document Structure</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextFragment-2"></a>QTextFragment::QTextFragment ()</h3>
@@ -83,6 +83,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

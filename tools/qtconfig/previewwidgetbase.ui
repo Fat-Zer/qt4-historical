@@ -1,6 +1,27 @@
 <ui version="4.0" stdsetdef="1" >
   <author></author>
-  <comment></comment>
+  <comment>*********************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the tools applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+*********************************************************************</comment>
   <exportmacro></exportmacro>
   <class>PreviewWidgetBase</class>
   <widget class="QWidget" name="PreviewWidgetBase" >
@@ -157,11 +178,11 @@
                 </widget>
               </item>
               <item>
-                <widget class="Q3ProgressBar" name="ProgressBar1" >
+                <widget class="QProgressBar" name="ProgressBar1" >
                   <property name="objectName" >
                     <string notr="true" >ProgressBar1</string>
                   </property>
-                  <property name="progress" >
+                  <property name="value" >
                     <number>50</number>
                   </property>
                 </widget>
@@ -252,7 +273,7 @@
                 </widget>
               </item>
               <item>
-                <widget class="Q3TextView" name="textView" >
+                <widget class="QTextEdit" name="textView" >
                   <property name="objectName" >
                     <string notr="true" >textView</string>
                   </property>
@@ -261,6 +282,9 @@
                       <width>32767</width>
                       <height>50</height>
                     </size>
+                  </property>
+                  <property name="readOnly" >
+                    <bool>true</bool>
                   </property>
                   <property name="text" >
                     <string>&lt;p>

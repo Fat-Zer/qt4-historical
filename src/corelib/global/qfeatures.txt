@@ -278,7 +278,7 @@ SeeAlso: ???
 
 Feature: MENUBAR
 Section: Widgets
-Requires: MENU
+Requires: MENU TOOLBUTTON
 Name: Menu bars
 SeeAlso: ???
 
@@ -324,6 +324,12 @@ Requires: SCROLLAREA
 Name: Rich text edit
 SeeAlso: ???
 
+Feature: SYNTAXHIGHLIGHTER
+Section: Widgets
+Requires: TEXTEDIT
+Name: QSyntaxHighlighter
+SeeAlso: ???
+
 Feature: RUBBERBAND
 Section: Widgets
 Requires:
@@ -336,9 +342,15 @@ Requires:
 Name: Tool tips
 SeeAlso: ???
 
+Feature: STATUSTIP
+Section: Widgets
+Requires:
+Name: QStatusTip
+SeeAlso: ???
+
 Feature: WHATSTHIS
 Section: Widgets
-Requires: TOOLTIP TOOLBUTTON ACTION
+Requires: TOOLBUTTON ACTION
 Name: "What's this" help
 SeeAlso: ???
 
@@ -682,6 +694,18 @@ Requires:
 Name: QUdpSocket
 SeeAlso: ???
 
+Feature: NETWORKPROXY
+Section: Networking
+Requires: 
+Name: QNetworkProxy
+SeeAlso: ???
+
+Feature: SOCKS5
+Section: Networking
+Requires: NETWORKPROXY
+Name: SOCKS v5 network proxy
+SeeAlso: ???
+
 Feature: COP
 Section: Networking
 Requires:
@@ -692,7 +716,7 @@ SeeAlso: ???
 
 Feature: QWS_SOUNDSERVER
 Section: Qt/Embedded-specific
-Requires: SOUND HOSTINFO
+Requires: SOUND HOSTINFO QWS_MULTIPROCESS
 Name: Server to play sound
 SeeAlso: ???
 
@@ -768,3 +792,8 @@ Requires:
 Name: Qt/Embedded window system properties.
 SeeAlso: ???
 
+Feature: SXV
+Section: Qt/Embedded-specific
+Requires: MULTIPROCESS
+Name: Secure Execution Environment (experimental)
+SeeAlso: ???

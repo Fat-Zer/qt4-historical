@@ -22,7 +22,7 @@
 ****************************************************************************/
 
 #include "previewwidget.h"
-#include <qevent.h>
+#include <QtEvents>
 
 PreviewWidget::PreviewWidget( QWidget *parent, const char *name )
     : PreviewWidgetBase( parent, name )

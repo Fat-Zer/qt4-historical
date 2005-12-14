@@ -24,9 +24,9 @@
 #ifndef Q3BUTTONGROUP_H
 #define Q3BUTTONGROUP_H
 
-#include "QtGui/qbuttongroup.h"
-#include "Qt3Support/q3groupbox.h"
-#include "QtCore/qmap.h"
+#include <QtGui/qbuttongroup.h>
+#include <Qt3Support/q3groupbox.h>
+#include <QtCore/qmap.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -66,12 +66,12 @@ public:
     QAbstractButton *selected() const;
     int selectedId() const;
 
-signals:
+Q_SIGNALS:
     void pressed(int id);
     void released(int id);
     void clicked(int id);
 
-protected slots:
+protected Q_SLOTS:
     void buttonPressed();
     void buttonReleased();
     void buttonClicked();
@@ -116,6 +116,5 @@ public:
 private:
     Q_DISABLE_COPY(Q3HButtonGroup)
 };
-
 
 #endif // Q3BUTTONGROUP_H

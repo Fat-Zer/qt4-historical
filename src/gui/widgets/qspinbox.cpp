@@ -186,7 +186,7 @@ QSpinBox::QSpinBox(QWidget *parent)
 QSpinBox::QSpinBox(QWidget *parent, const char *name)
     : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 
 /*!
@@ -200,7 +200,7 @@ QSpinBox::QSpinBox(int min, int max, int step, QWidget *parent, const char *name
     d->minimum = QVariant(qMin<int>(min, max));
     d->maximum = QVariant(qMax<int>(min, max));
     d->singleStep = QVariant(step);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 
 #endif
@@ -257,7 +257,7 @@ void QSpinBox::setPrefix(const QString &p)
     Q_D(QSpinBox);
 
     d->prefix = p;
-    d->update();
+    d->updateEdit();
 }
 
 /*!
@@ -293,7 +293,7 @@ void QSpinBox::setSuffix(const QString &s)
     Q_D(QSpinBox);
 
     d->suffix = s;
-    d->update();
+    d->updateEdit();
 }
 
 /*!
@@ -308,9 +308,6 @@ void QSpinBox::setSuffix(const QString &s)
 QString QSpinBox::cleanText() const
 {
     Q_D(const QSpinBox);
-
-    if (d->dirty)
-        d->updateEdit();
 
     return d->stripped(d->edit->displayText());
 }
@@ -338,7 +335,7 @@ void QSpinBox::setSingleStep(int val)
     Q_D(QSpinBox);
     if (val >= 0) {
         d->singleStep = QVariant(val);
-        d->update();
+        d->updateEdit();
     }
 }
 
@@ -366,7 +363,7 @@ void QSpinBox::setMinimum(int min)
 {
     Q_D(QSpinBox);
     const QVariant m(min);
-    d->setRange(m, qMax(d->maximum, m));
+    d->setRange(m, (d->variantCompare(d->maximum, m) > 0 ? d->maximum : m));
 }
 
 /*!
@@ -394,7 +391,7 @@ void QSpinBox::setMaximum(int max)
 {
     Q_D(QSpinBox);
     const QVariant m(max);
-    d->setRange(qMin(d->minimum, m), m);
+    d->setRange((d->variantCompare(d->minimum, m) < 0 ? d->minimum : m), m);
 }
 
 /*!
@@ -645,7 +642,7 @@ void QDoubleSpinBox::setPrefix(const QString &p)
     Q_D(QDoubleSpinBox);
 
     d->prefix = p;
-    d->update();
+    d->updateEdit();
 }
 
 /*!
@@ -681,7 +678,7 @@ void QDoubleSpinBox::setSuffix(const QString &s)
     Q_D(QDoubleSpinBox);
 
     d->suffix = s;
-    d->update();
+    d->updateEdit();
 }
 
 /*!
@@ -696,9 +693,6 @@ void QDoubleSpinBox::setSuffix(const QString &s)
 QString QDoubleSpinBox::cleanText() const
 {
     Q_D(const QDoubleSpinBox);
-
-    if (d->dirty)
-        d->updateEdit();
 
     return d->stripped(d->edit->displayText());
 }
@@ -725,7 +719,7 @@ void QDoubleSpinBox::setSingleStep(double val)
 
     if (val >= 0) {
         d->singleStep = val;
-        d->update();
+        d->updateEdit();
     }
 }
 
@@ -756,7 +750,7 @@ void QDoubleSpinBox::setMinimum(double min)
 {
     Q_D(QDoubleSpinBox);
     const QVariant m(d->round(min));
-    d->setRange(m, qMax(d->maximum, m));
+    d->setRange(m, (d->variantCompare(d->maximum, m) > 0 ? d->maximum : m));
 }
 
 /*!
@@ -786,7 +780,7 @@ void QDoubleSpinBox::setMaximum(double max)
 {
     Q_D(QDoubleSpinBox);
     const QVariant m(d->round(max));
-    d->setRange(qMin(d->minimum, m), m);
+    d->setRange((d->variantCompare(d->minimum, m) < 0 ? d->minimum : m), m);
 }
 
 /*!
@@ -821,7 +815,8 @@ void QDoubleSpinBox::setRange(double min, double max)
 
      Sets how many decimals the spinbox will use for displaying and
      interpreting doubles. The valid decimal range is 0-13. The
-     default is 2.
+     default is 2. \a decimals will be bounded to a value that is
+     within the valid range.
 
      Note: The maximum, minimum and value might change as a result of
      changing this property.
@@ -837,13 +832,10 @@ int QDoubleSpinBox::decimals() const
 void QDoubleSpinBox::setDecimals(int decimals)
 {
     Q_D(QDoubleSpinBox);
-    Q_ASSERT_X(decimals >= 0 && decimals <= 13, "QDoubleSpinBox::setDecimals(int)",
-               "Invalid decimals. Must be between 0 and 13");
-    d->decimals = decimals;
+    d->decimals = qBound(0, decimals, 13);
 
     setRange(minimum(), maximum()); // make sure values are rounded
     setValue(value());
-    d->update();
 }
 
 /*!
@@ -1525,6 +1517,12 @@ static bool isIntermediateValueHelper(qint64 num, qint64 min, qint64 max, qint64
     }
     QSBDEBUG("returns false");
     return false;
+}
+
+/*! \reimp */
+bool QSpinBox::event(QEvent *e)
+{
+    return QAbstractSpinBox::event(e);
 }
 
 #endif // QT_NO_SPINBOX

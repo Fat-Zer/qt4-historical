@@ -23,12 +23,12 @@
 
 #include "proparser.h"
 
-#include <qdir.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
-#include <qstringlist.h>
-#include <qtextstream.h>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QRegExp>
+#include <QStringList>
+#include <QTextStream>
 
 #ifdef Q_OS_UNIX
 #include <unistd.h>
@@ -166,9 +166,28 @@ QMap<QString, QString> proFileTagMap( const QString& text )
                         after = tagMap[invocation];
                     else if (invocation.toLower() == "pwd")
                         after = QDir::currentPath();
+                    else // Probably an environment variable
+                        after = qgetenv(invocation.toLocal8Bit().constData());
                     (*it).replace( i, len, after );
                     i += after.length();
                 }
+            }
+        }
+
+        /*
+            Expand environment variables within the 'value' part of a 'key = value'
+            pair.
+        */
+        QRegExp envvar("\\$\\(([a-zA-Z0-9_]+)\\)");
+        for ( it = tagMap.begin(); it != tagMap.end(); ++it ) {
+            int i = 0;
+            while ( (i = envvar.indexIn((*it), i)) != -1 ) {
+                int len = envvar.matchedLength();
+                QString invocation = envvar.cap(1);
+                QString after;
+                after = qgetenv(invocation.toLocal8Bit().constData());
+                (*it).replace( i, len, after );
+                i += after.length();
             }
         }
 
@@ -205,4 +224,44 @@ QMap<QString, QString> proFileTagMap( const QString& text )
         stillProcess = callToInclude.indexIn(t) != -1;
     }
     return tagMap;
+}
+
+/*
+    Tokenizes a string containing file names separated with spaces, taking into
+    account that file names may be quoted and contain internal spaces.
+    (like this: file1.cpp "my clever file name.cpp" file2.cpp)
+*/
+QStringList tokenizeFileNames(const QString &text)
+{
+    QStringList fileNames;
+    int position = 0;
+    const int textLenght = text.count();
+    bool inQuote = false;
+    QString currentWord;
+
+    while (position < textLenght) {
+        const QChar currentCharacter = text.at(position);
+        const QChar space(' ');
+        const QChar quote('"');
+
+        // Break words on spaces unless we are in quotes
+        if (currentCharacter == space) {
+            if (inQuote) {
+                currentWord.append(currentCharacter);
+            } else {
+                fileNames.append(currentWord);
+                currentWord.clear();
+            }
+        } else if (currentCharacter == quote) {
+            inQuote = !inQuote; 
+        } else {
+            currentWord.append(currentCharacter);
+        }
+        ++position;
+    };
+    
+    // Append the last file name.
+    fileNames.append(currentWord); 
+    
+    return fileNames;
 }

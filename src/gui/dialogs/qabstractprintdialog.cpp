@@ -40,6 +40,8 @@
     \value AllPages All pages should be printed.
     \value Selection Only the selection should be printed.
     \value PageRange The specified page range should be printed.
+
+    \sa QPrinter::PrintRange
 */
 
 /*!
@@ -56,7 +58,7 @@
 
 /*!
     Constructs an abstract print dialog for \a printer with \a parent
-    as parent widget
+    as parent widget.
 */
 QAbstractPrintDialog::QAbstractPrintDialog(QPrinter *printer, QWidget *parent)
     : QDialog(*(new QAbstractPrintDialogPrivate), parent)
@@ -107,7 +109,7 @@ QAbstractPrintDialog::PrintDialogOptions QAbstractPrintDialog::enabledOptions() 
 }
 
 /*!
-    Returns true if the option \a option is enabled; otherwise returns false
+    Returns true if the specified \a option is enabled; otherwise returns false
 */
 bool QAbstractPrintDialog::isOptionEnabled(PrintDialogOption option) const
 {
@@ -216,7 +218,7 @@ QPrinter *QAbstractPrintDialog::printer() const
 */
 
 /*!
-    \class QPrintDialog qprintdialog.h
+    \class QPrintDialog
 
     \brief The QPrintDialog class provides a dialog for specifying
     the printer's configuration.
@@ -236,9 +238,12 @@ QPrinter *QAbstractPrintDialog::printer() const
     }
     \endcode
 
-    The printer dialog in Motif style:
-
-    \img qprintdlg-m.png
+    \table
+    \row
+    \o \inlineimage qprintdialog-plastique.png Screenshot of a Plastique style printer dialog
+    \row
+    \o A printer dialog in Plastique style
+    \endtable
 */
 
 /*!
@@ -250,10 +255,7 @@ QPrinter *QAbstractPrintDialog::printer() const
 
 /*!
     \fn int QPrintDialog::exec()
-
-    Launches the print dialog.
-
-    \sa QDialog::DialogCode, accept(), reject()
+    \reimp
 */
 
 #endif // QT_NO_PRINTDIALOG

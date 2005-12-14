@@ -194,7 +194,7 @@
 
     Returns true if the rectangle is valid; otherwise returns false.
 
-    A valid rectangle has a left() \<= right() and top() \<= bottom().
+    A valid rectangle has a left() \< right() and top() \< bottom().
 
     Note that non-trivial operations like intersections are not defined
     for invalid rectangles.
@@ -217,7 +217,7 @@
 
 QRect QRect::normalized() const
 {
-    if (isNull())
+    if (isNull() || width() == 0 || height() == 0)
         return *this;
     QRect r;
     if (x2 < x1) {                                // swap bad x values
@@ -1032,8 +1032,8 @@ QDataStream &operator>>(QDataStream &s, QRect &r)
 
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRect &r) {
-    dbg.nospace() << "QRect(" << r.x() << ',' << r.y() << ','
-                  << r.width() << ',' << r.height() << ')';
+    dbg.nospace() << "QRect(" << r.x() << ',' << r.y() << ' '
+                  << r.width() << 'x' << r.height() << ')';
     return dbg.space();
 }
 #endif

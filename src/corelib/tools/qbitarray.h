@@ -24,7 +24,7 @@
 #ifndef QBITARRAY_H
 #define QBITARRAY_H
 
-#include "QtCore/qbytearray.h"
+#include <QtCore/qbytearray.h>
 
 QT_MODULE(Core)
 
@@ -43,6 +43,8 @@ public:
 
     inline int size() const { return (d.size() << 3) - *d.constData(); }
     inline int count() const { return (d.size() << 3) - *d.constData(); }
+    int count(bool on) const;
+    // ### Qt 5: Store the number of set bits separately
 
     inline bool isEmpty() const { return d.isEmpty(); }
     inline bool isNull() const { return d.isNull(); }
@@ -81,9 +83,10 @@ public:
 
 inline bool QBitArray::fill(bool aval, int asize)
 { *this = QBitArray((asize < 0 ? this->size() : asize), aval); return true; }
-QBitArray operator&(const QBitArray &, const QBitArray &);
-QBitArray operator|(const QBitArray &, const QBitArray &);
-QBitArray operator^(const QBitArray &, const QBitArray &);
+
+Q_CORE_EXPORT QBitArray operator&(const QBitArray &, const QBitArray &);
+Q_CORE_EXPORT QBitArray operator|(const QBitArray &, const QBitArray &);
+Q_CORE_EXPORT QBitArray operator^(const QBitArray &, const QBitArray &);
 
 inline bool QBitArray::testBit(int i) const
 { Q_ASSERT(i >= 0 && i < size());

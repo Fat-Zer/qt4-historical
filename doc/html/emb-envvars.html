@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/emb-envvars.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/emb-envvars.qdoc -->
 <head>
-    <title>Qt 4.0: Qt/Embedded Environment Variables</title>
+    <title>Qt 4.1: Qtopia Core Environment Variables</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -17,15 +17,15 @@ body { background: #ffffff; color: black; }</style>
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt/Embedded Environment Variables<br /><small></small></h1>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qtopia Core Environment Variables<br /><small></small></h1>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Variable</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>QWS_SW_CURSOR</tt></td><td>If defined, always use a software mouse cursor even when using an accelerated driver that supports a hardware cursor</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>QWS_DISPLAY</tt></td><td>Defines the display type and framebuffer. Defaults to an unaccelerated Linux framebuffer driver on <tt>/dev/fb0</tt>. Valid drivers are QVFb, LinuxFb (unaccelerated Linux framebuffer), Transformed (for rotated displays), and VNC. Transformed displays have a special format: the specification should include a rotation as a multiple of 90 degrees given as Rot&lt;x&gt;, for instance Transformed:Rot90.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>QTDIR</tt></td><td>If defined this tells Qt/Embedded to where to find its fonts: fontdir should be in <tt>$QTDIR/lib/fonts/</tt>.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>QWS_SIZE</tt></td><td>If defined forces Qt/Embedded into a window of &lt;width&gt; x &lt;height&gt; size centred within the screen, e.g. 320x200</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>QTDIR</tt></td><td>If defined this tells Qtopia Core to where to find its fonts: fontdir should be in <tt>$QTDIR/lib/fonts/</tt>.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>QWS_SIZE</tt></td><td>If defined forces Qtopia Core into a window of &lt;width&gt; x &lt;height&gt; size centred within the screen, e.g. 320x200</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>QWS_NOMTRR</tt></td><td>If defined, don't use Memory Type Range Registers to define the framebuffer as write-combined on x86. Write-combining speeds up graphics output.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>QWS_USB_KEYBOARD</tt></td><td>If defined, instead of opening <tt>/dev/tty</tt>, open the USB low-level event device defined in <tt>QWS_USB_KEYBOARD</tt> (e.g. <tt>/dev/input/event0</tt>): this is useful if you want to run X and Qt/Embedded side by side on different framebuffers.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>QWS_USB_KEYBOARD</tt></td><td>If defined, instead of opening <tt>/dev/tty</tt>, open the USB low-level event device defined in <tt>QWS_USB_KEYBOARD</tt> (e.g. <tt>/dev/input/event0</tt>): this is useful if you want to run X and Qtopia Core side by side on different framebuffers.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>QWS_MOUSE_PROTO</tt></td><td>Defined as &lt;type&gt;:&lt;device&gt;, e.g. <tt>Microsoft:/dev/ttyS0</tt>. If you want to use a USB mouse directly (separate from X) use <tt>MouseMan:/dev/input/mouse0</tt> or similar. Valid mouse protocls are Auto (automatically sense protocol), MouseMan, IntelliMouse, Microsoft, <tt>QVfbMouse</tt> (only useful with <tt>QVfb</tt>) and TPanel, an example touch panel driver.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>QWS_KEYBOARD</tt></td><td>Defines the keyboard type. Multiple keyboards can be handled at once; input will be read from all of them. Valid values: Buttons (an iPaq button device if <tt>QT_QWS_IPAQ</tt> is compiled), QVfbKeyboard (only useful with <tt>QVfb</tt>), and TTY (either a USB keyboard or <tt>/dev/tty</tt> depending if <tt>QWS_USB_KEYBOARD</tt> is defined)</td></tr>
 </table>
@@ -33,6 +33,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

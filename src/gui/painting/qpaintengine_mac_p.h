@@ -35,12 +35,12 @@
 // We mean it.
 //
 
-#include "qpaintengine.h"
+#include "QtGui/qpaintengine.h"
 #ifdef Q_WS_MAC //just for now (to get the coregraphics switch) ###
-#  include <private/qt_mac_p.h>
+#  include "private/qt_mac_p.h"
 #endif
-#include <private/qpaintengine_p.h>
-#include <private/qpolygonclipper_p.h>
+#include "private/qpaintengine_p.h"
+#include "private/qpolygonclipper_p.h"
 
 /*****************************************************************************
   QuickDraw Private data
@@ -207,6 +207,7 @@ public:
         hd = 0;
         shading = 0;
         complexXForm = false;
+        cosmeticPen = true;
     }
 
     //state info (shared with QD)
@@ -216,6 +217,7 @@ public:
     CGContextRef hd;
     CGShadingRef shading;
     bool complexXForm;
+    bool cosmeticPen;
 
     //internal functions
     enum { CGStroke=0x01, CGEOFill=0x02, CGFill=0x04 };

@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef STYLEBUTTON_H
-#define STYLEBUTTON_H
+#ifndef STYLEDBUTTON_H
+#define STYLEDBUTTON_H
 
 #include <QtGui/QPushButton>
 
@@ -66,4 +66,4 @@ private:
 
 }  // namespace qdesigner_internal
 
-#endif // STYLEBUTTON_H
+#endif // STYLEDBUTTON_H

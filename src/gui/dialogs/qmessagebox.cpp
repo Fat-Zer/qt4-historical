@@ -21,10 +21,11 @@
 **
 ****************************************************************************/
 
-#include "qmessagebox.h"
+#include "qglobal.h"
 
 #ifndef QT_NO_MESSAGEBOX
 
+#include "qmessagebox.h"
 #include "qbuffer.h"
 #include "qimagereader.h"
 #include "qevent.h"
@@ -527,7 +528,7 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
             "<p>Qt provides single-source "
             "portability across MS&nbsp;Windows, Mac&nbsp;OS&nbsp;X, "
             "Linux, and all major commercial Unix variants. Qt is also"
-            " available for embedded devices as Qt/Embedded.</p>"
+            " available for embedded devices as Qtopia Core.</p>"
             "<p>Qt is a Trolltech product. See "
             "<tt>http://www.trolltech.com/qt/</tt> for more information.</p>"
            ).arg(QT_VERSION_STR);
@@ -535,7 +536,7 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
 
     }
     label = new QLabel(q);
-    label->setObjectName("qt_msgbox_label");
+    label->setObjectName(QLatin1String("qt_msgbox_label"));
 
     label->setAlignment(Qt::AlignTop|Qt::AlignLeft);
 
@@ -545,7 +546,7 @@ void QMessageBoxPrivate::init(int button0, int button1, int button2)
     }
     icon = QMessageBox::NoIcon;
     iconLabel = new QLabel(q);
-    iconLabel->setObjectName("qt_msgbox_icon_label");
+    iconLabel->setObjectName(QLatin1String("qt_msgbox_icon_label"));
 
     iconLabel->setPixmap(QPixmap());
     numButtons = 0;
@@ -707,7 +708,7 @@ QMessageBox::QMessageBox(const QString& caption,
               f | Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu)
 {
     Q_D(QMessageBox);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     setModal(modal);
     d->init(button0, button1, button2);
 #ifdef Q_WS_MAC
@@ -727,7 +728,7 @@ QMessageBox::QMessageBox(QWidget *parent, const char *name)
               Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu)
 {
     Q_D(QMessageBox);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     setModal(true);
     d->init(Ok, 0, 0);
 }

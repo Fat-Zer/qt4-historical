@@ -24,9 +24,7 @@
 #ifndef Q3URL_H
 #define Q3URL_H
 
-#ifndef QT_H
-#include "QtCore/qstring.h"
-#endif // QT_H
+#include <QtCore/qstring.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -110,6 +108,6 @@ private:
 
 };
 
-#endif //QT_NO_URL
+#endif // QT_NO_URL
 
-#endif
+#endif // Q3URL_H

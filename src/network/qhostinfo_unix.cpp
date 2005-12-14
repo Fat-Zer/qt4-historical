@@ -29,6 +29,7 @@
 
 extern "C" {
 #include <netdb.h>
+#include <arpa/inet.h>
 }
 
 #if defined (QT_NO_GETADDRINFO)
@@ -36,8 +37,13 @@ extern "C" {
 Q_GLOBAL_STATIC(QMutex, getHostByNameMutex)
 #endif
 
-//#define QHOSTINFO_DEBUG
+// Almost always the same. If not, specify in qplatformdefs.h.
+#if !defined(QT_SOCKOPTLEN_T)
+# define QT_SOCKOPTLEN_T QT_SOCKLEN_T
+#endif
 
+//#define QHOSTINFO_DEBUG
+    
 QHostInfo QHostInfoAgent::fromName(const QString &hostName)
 {
     QHostInfo results;
@@ -48,6 +54,48 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
            hostName.toLatin1().constData());
 #endif
 
+    QHostAddress address;
+    if (address.setAddress(hostName)) {
+        // Reverse lookup
+// Reverse lookups using getnameinfo are broken on darwin, use gethostbyaddr instead.
+#if !defined (QT_NO_GETADDRINFO) && !defined (Q_OS_DARWIN)
+        sockaddr_in sa4;
+        sockaddr_in6 sa6;
+        sockaddr *sa;
+        QT_SOCKLEN_T saSize;
+        if (address.protocol() == QAbstractSocket::IPv4Protocol) {
+            sa = (sockaddr *)&sa4;
+            saSize = sizeof(sa4);
+            memset(&sa4, 0, sizeof(sa4));
+            sa4.sin_family = AF_INET;
+            sa4.sin_addr.s_addr = htonl(address.toIPv4Address());
+        } else {
+            sa = (sockaddr *)&sa6;
+            saSize = sizeof(sa6);
+            memset(&sa6, 0, sizeof(sa6));
+            sa6.sin6_family = AF_INET6;
+            memcpy(sa6.sin6_addr.s6_addr, address.toIPv6Address().c, sizeof(sa6.sin6_addr.s6_addr));
+        }
+
+        char hbuf[NI_MAXHOST];
+        if (getnameinfo(sa, saSize, hbuf, sizeof(hbuf), 0, 0, 0) != 0) {
+            results.setError(QHostInfo::HostNotFound);
+            results.setErrorString(tr("Host not found"));
+            return results;            
+        }
+        results.setHostName(QString::fromLatin1(hbuf));
+#else
+        in_addr_t inetaddr = inet_addr(hostName.toLatin1().constData());
+        struct hostent *ent = gethostbyaddr((const char *)&inetaddr, sizeof(inetaddr), AF_INET);
+        if (!ent) {
+            results.setError(QHostInfo::HostNotFound);
+            results.setErrorString(tr("Host not found"));
+            return results;            
+        }
+        results.setHostName(QString::fromLatin1(ent->h_name));
+#endif
+    }
+    
 #if !defined (QT_NO_GETADDRINFO)
     // Call getaddrinfo, and place all IPv4 addresses at the start and
     // the IPv6 addresses at the end of the address list in results.
@@ -80,7 +128,8 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
         }
         results.setAddresses(addresses);
         freeaddrinfo(res);
-    } else if (result == EAI_NONAME
+    } else if (result == EAI_NONAME 
+               || result ==  EAI_FAIL
                || result ==  EAI_FAIL
 #ifdef EAI_NODATA
 	       // EAI_NODATA is deprecated in RFC 3493

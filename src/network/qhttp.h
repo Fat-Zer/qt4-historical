@@ -24,9 +24,10 @@
 #ifndef QHTTP_H
 #define QHTTP_H
 
-#include "QtCore/qobject.h"
-#include "QtCore/qstringlist.h"
-#include "QtCore/qmap.h"
+#include <QtCore/qobject.h>
+#include <QtCore/qstringlist.h>
+#include <QtCore/qmap.h>
+#include <QtCore/qpair.h>
 
 QT_MODULE(Network)
 
@@ -49,13 +50,17 @@ public:
 
     QHttpHeader &operator=(const QHttpHeader &h);
 
-    QString value(const QString &key) const;
     void setValue(const QString &key, const QString &value);
-    void removeValue(const QString &key);
-
-    QStringList keys() const;
+    void setValues(const QList<QPair<QString, QString> > &values);
+    void addValue(const QString &key, const QString &value);
+    QList<QPair<QString, QString> > values() const;
     bool hasKey(const QString &key) const;
-
+    QStringList keys() const;
+    QString value(const QString &key) const;
+    QStringList allValues(const QString &key) const;
+    void removeValue(const QString &key);
+    void removeAllValues(const QString &key);
+    
     bool hasContentLength() const;
     uint contentLength() const;
     void setContentLength(int len);
@@ -86,16 +91,14 @@ private:
 class QHttpResponseHeaderPrivate;
 class Q_NETWORK_EXPORT QHttpResponseHeader : public QHttpHeader
 {
-private:
-    QHttpResponseHeader(int code, const QString &text = QString(), int majorVer = 1, int minorVer = 1);
-    QHttpResponseHeader(const QString &str);
-
-    void setStatusLine(int code, const QString &text = QString(), int majorVer = 1, int minorVer = 1);
-
 public:
     QHttpResponseHeader();
     QHttpResponseHeader(const QHttpResponseHeader &header);
+    QHttpResponseHeader(const QString &str);
+    QHttpResponseHeader(int code, const QString &text = QString(), int majorVer = 1, int minorVer = 1);
     QHttpResponseHeader &operator=(const QHttpResponseHeader &header);
+
+    void setStatusLine(int code, const QString &text = QString(), int majorVer = 1, int minorVer = 1);
 
     int statusCode() const;
     QString reasonPhrase() const;
@@ -210,10 +213,10 @@ public:
     Error error() const;
     QString errorString() const;
 
-public slots:
+public Q_SLOTS:
     void abort();
 
-signals:
+Q_SIGNALS:
     void stateChanged(int);
     void responseHeaderReceived(const QHttpResponseHeader &resp);
     void readyRead(const QHttpResponseHeader &resp);
@@ -245,6 +248,6 @@ private:
     friend class QHttpPGHRequest;
 };
 
-#endif
+#endif // QT_NO_HTTP
 
 #endif // QHTTP_H

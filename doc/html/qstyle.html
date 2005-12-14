@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/styles/qstyle.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/styles/qstyle.cpp -->
 <head>
-    <title>Qt 4.0: QStyle Class Reference</title>
+    <title>Qt 4.1: QStyle Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -29,12 +29,12 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>enum <b><a href="qstyle.html#ComplexControl-enum">ComplexControl</a></b> { CC_SpinBox, CC_ComboBox, CC_ScrollBar, CC_Slider, ..., CC_CustomBase }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#ContentsType-enum">ContentsType</a></b> { CT_CheckBox, CT_ComboBox, CT_DialogButtons, CT_Q3DockWindow, ..., CT_CustomBase }</li>
-<li><div class="fn"/>enum <b><a href="qstyle.html#ControlElement-enum">ControlElement</a></b> { CE_PushButton, CE_PushButtonBevel, CE_PushButtonLabel, CE_DockWidgetTitle, ..., CE_ComboBoxLabel }</li>
+<li><div class="fn"/>enum <b><a href="qstyle.html#ControlElement-enum">ControlElement</a></b> { CE_PushButton, CE_PushButtonBevel, CE_PushButtonLabel, CE_DockWidgetTitle, ..., CE_ToolBar }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#PixelMetric-enum">PixelMetric</a></b> { PM_ButtonMargin, PM_ButtonDefaultIndicator, PM_MenuButtonIndicator, PM_ButtonShiftHorizontal, ..., PM_CustomBase }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#PrimitiveElement-enum">PrimitiveElement</a></b> { PE_PanelButtonCommand, PE_FrameDefaultButton, PE_PanelButtonBevel, PE_PanelButtonTool, ..., PE_CustomBase }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a></b> { SP_TitleBarMinButton, SP_TitleBarMenuButton, SP_TitleBarMaxButton, SP_TitleBarCloseButton, ..., SP_CustomBase }</li>
 <li><div class="fn"/>flags <b><a href="qstyle.html#StateFlag-enum">State</a></b></li>
-<li><div class="fn"/>enum <b><a href="qstyle.html#StateFlag-enum">StateFlag</a></b> { State_Active, State_AutoRaise, State_Bottom, State_Children, ..., State_KeyboardFocusChange }</li>
+<li><div class="fn"/>enum <b><a href="qstyle.html#StateFlag-enum">StateFlag</a></b> { State_Active, State_AutoRaise, State_Bottom, State_Children, ..., State_ReadOnly }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#StyleHint-enum">StyleHint</a></b> { SH_EtchDisabledText, SH_DitherDisabledText, SH_GUIStyle, SH_ScrollBar_MiddleClickAbsolutePosition, ..., SH_ItemView_ActivateItemOnSingleClick }</li>
 <li><div class="fn"/>enum <b><a href="qstyle.html#SubControl-enum">SubControl</a></b> { SC_None, SC_ScrollBarAddLine, SC_ScrollBarSubLine, SC_ScrollBarAddPage, ..., SC_All }</li>
 <li><div class="fn"/>flags <b><a href="qstyle.html#SubControl-enum">SubControls</a></b></li>
@@ -43,7 +43,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qstyle.html#QStyle">QStyle</a></b> ()</li>
+<li><div class="fn"/><b><a href="qstyle.html#QStyle-2">QStyle</a></b> ()</li>
 <li><div class="fn"/>virtual <b><a href="qstyle.html#dtor.QStyle">~QStyle</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qstyle.html#drawComplexControl">drawComplexControl</a></b> ( ComplexControl <i>control</i>, const QStyleOptionComplex * <i>option</i>, QPainter * <i>painter</i>, const QWidget * <i>widget</i> = 0 ) const = 0</li>
 <li><div class="fn"/>virtual void <b><a href="qstyle.html#drawControl">drawControl</a></b> ( ControlElement <i>element</i>, const QStyleOption * <i>option</i>, QPainter * <i>painter</i>, const QWidget * <i>widget</i> = 0 ) const = 0</li>
@@ -59,6 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qstyle.html#polish-2">polish</a></b> ( QApplication * <i>app</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qstyle.html#polish-3">polish</a></b> ( QPalette &amp; <i>pal</i> )</li>
 <li><div class="fn"/>virtual QSize <b><a href="qstyle.html#sizeFromContents">sizeFromContents</a></b> ( ContentsType <i>type</i>, const QStyleOption * <i>option</i>, const QSize &amp; <i>contentsSize</i>, const QWidget * <i>widget</i> = 0 ) const = 0</li>
+<li><div class="fn"/>QIcon <b><a href="qstyle.html#standardIcon">standardIcon</a></b> ( StandardPixmap <i>standardIcon</i>, const QStyleOption * <i>option</i> = 0, const QWidget * <i>widget</i> = 0 ) const</li>
 <li><div class="fn"/>virtual QPalette <b><a href="qstyle.html#standardPalette">standardPalette</a></b> () const</li>
 <li><div class="fn"/>virtual QPixmap <b><a href="qstyle.html#standardPixmap">standardPixmap</a></b> ( StandardPixmap <i>standardPixmap</i>, const QStyleOption * <i>option</i> = 0, const QWidget * <i>widget</i> = 0 ) const = 0</li>
 <li><div class="fn"/>virtual int <b><a href="qstyle.html#styleHint">styleHint</a></b> ( StyleHint <i>hint</i>, const QStyleOption * <i>option</i> = 0, const QWidget * <i>widget</i> = 0, QStyleHintReturn * <i>returnData</i> = 0 ) const = 0</li>
@@ -82,6 +83,11 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+</ul>
+<a name="protected-slots"></a>
+<h3>Protected Slots</h3>
+<ul>
+<li><div class="fn"/>QIcon <b><a href="qstyle.html#standardIconImplementation">standardIconImplementation</a></b> ( StandardPixmap <i>standardIcon</i>, const QStyleOption * <i>option</i> = 0, const QWidget * <i>widget</i> = 0 ) const</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -125,7 +131,7 @@ body { background: #ffffff; color: black; }</style>
         QPainter painter(this);
 
         QStyleOptionFocusRect option;
-        option.init(this);
+        option.initFrom(this);
         option.backgroundColor = palette().color(QPalette::Background);
 
         style()-&gt;drawPrimitive(QStyle::PE_FrameFocusRect, &amp;option, &amp;painter, this);
@@ -245,6 +251,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::CC_ToolButton</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">A tool button, like <a href="qtoolbutton.html">QToolButton</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CC_TitleBar</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">A Title bar, like what is used in Q3Workspace</td></tr>
 <tr><td valign="top"><tt>QStyle::CC_Q3ListView</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Used for drawing the <a href="q3listview.html">Q3ListView</a> class</td></tr>
+<tr><td valign="top"><tt>QStyle::CC_GroupBox</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">A group box, like <a href="qgroupbox.html">QGroupBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CC_Dial</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">A dial, like <a href="qdial.html">QDial</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CC_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements. Custom values must be greater than this value.</td></tr>
 </table>
@@ -275,6 +282,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::CT_TabBarTab</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">A tab on a tab bar, like <a href="qtabbar.html">QTabBar</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CT_TabWidget</tt></td><td align="center" valign="top"><tt>19</tt></td><td valign="top">A tab widget, like <a href="qtabwidget.html">QTabWidget</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CT_ToolButton</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A tool button, like <a href="qtoolbutton.html">QToolButton</a></td></tr>
+<tr><td valign="top"><tt>QStyle::CT_GroupBox</tt></td><td align="center" valign="top"><tt>22</tt></td><td valign="top">A group box, like <a href="qgroupbox.html">QGroupBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CT_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements. Custom values must be greater than this value.</td></tr>
 </table>
 <p>See also <a href="qstyle.html#sizeFromContents">sizeFromContents</a>().</p>
@@ -324,6 +332,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::CE_FocusFrame</tt></td><td align="center" valign="top"><tt>39</tt></td><td valign="top">Focus Frame that can is style controled.</td></tr>
 <tr><td valign="top"><tt>QStyle::CE_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements; custom values must be greater than this value</td></tr>
 <tr><td valign="top"><tt>QStyle::CE_ComboBoxLabel</tt></td><td align="center" valign="top"><tt>40</tt></td><td valign="top">The label of a non-editable <a href="qcombobox.html">QComboBox</a></td></tr>
+<tr><td valign="top"><tt>QStyle::CE_ToolBar</tt></td><td align="center" valign="top"><tt>41</tt></td><td valign="top">A toolbar like <a href="qtoolbar.html">QToolBar</a></td></tr>
 </table>
 <p>See also <a href="qstyle.html#drawControl">drawControl</a>().</p>
 <h3 class="fn"><a name="PixelMetric-enum"></a>enum QStyle::PixelMetric</h3>
@@ -351,6 +360,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::PM_DockWidgetSeparatorExtent</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top">Width of a separator in a horizontal dock window and the height of a separator in a vertical dock window</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_DockWidgetHandleExtent</tt></td><td align="center" valign="top"><tt>17</tt></td><td valign="top">Width of the handle in a horizontal dock window and the height of the handle in a vertical dock window</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_DockWidgetFrameWidth</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">Frame width of a dock window</td></tr>
+<tr><td valign="top"><tt>QStyle::PM_DockWidgetTitleMargin</tt></td><td align="center" valign="top"><tt>75</tt></td><td valign="top">Margin of the dock window title</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuBarPanelWidth</tt></td><td align="center" valign="top"><tt>33</tt></td><td valign="top">Frame width of a menubar, defaults to PM_DefaultFrameWidth</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuBarItemSpacing</tt></td><td align="center" valign="top"><tt>34</tt></td><td valign="top">Spacing between menubar items</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuBarHMargin</tt></td><td align="center" valign="top"><tt>36</tt></td><td valign="top">Spacing between menubar items and left/right of bar</td></tr>
@@ -395,7 +405,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::PM_DefaultTopLevelMargin</tt></td><td align="center" valign="top"><tt>61</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_DefaultChildMargin</tt></td><td align="center" valign="top"><tt>62</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_DefaultLayoutSpacing</tt></td><td align="center" valign="top"><tt>63</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>QStyle::PM_ToolBarIconSize</tt></td><td align="center" valign="top"><tt>64</tt></td><td valign="top">Default tool bar icon size, defaults to PM_SmallIconSize</td></tr>
+<tr><td valign="top"><tt>QStyle::PM_ToolBarIconSize</tt></td><td align="center" valign="top"><tt>64</tt></td><td valign="top">Default tool bar icon size</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_SmallIconSize</tt></td><td align="center" valign="top"><tt>67</tt></td><td valign="top">Default small icon size</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_LargeIconSize</tt></td><td align="center" valign="top"><tt>68</tt></td><td valign="top">Default large icon size</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_FocusFrameHMargin</tt></td><td align="center" valign="top"><tt>70</tt></td><td valign="top">Horizontal margin that the focus frame will outset the widget by.</td></tr>
@@ -403,6 +413,9 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::PM_IconViewIconSize</tt></td><td align="center" valign="top"><tt>66</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_ListViewIconSize</tt></td><td align="center" valign="top"><tt>65</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_ToolTipLabelFrameWidth</tt></td><td align="center" valign="top"><tt>71</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QStyle::PM_CheckBoxLabelSpacing</tt></td><td align="center" valign="top"><tt>72</tt></td><td valign="top">The spacing between a check box and its label</td></tr>
+<tr><td valign="top"><tt>QStyle::PM_TabBarIconSize</tt></td><td align="center" valign="top"><tt>73</tt></td><td valign="top">The default icon size for a tab bar.</td></tr>
+<tr><td valign="top"><tt>QStyle::PM_SizeGripSize</tt></td><td align="center" valign="top"><tt>74</tt></td><td valign="top">The size of a size grip</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements Custom values must be greater than this value</td></tr>
 </table>
 <p>See also <a href="qstyle.html#pixelMetric">pixelMetric</a>().</p>
@@ -531,6 +544,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::State_Top</tt></td><td align="center" valign="top"><tt>0x00000200</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_UpArrow</tt></td><td align="center" valign="top"><tt>0x00004000</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_KeyboardFocusChange</tt></td><td align="center" valign="top"><tt>0x00800000</tt></td></tr>
+<tr><td valign="top"><tt>QStyle::State_ReadOnly</tt></td><td align="center" valign="top"><tt>0x02000000</tt></td></tr>
 </table>
 <p>The State type is a typedef for <a href="qflags.html">QFlags</a>&lt;StateFlag&gt;. It stores an OR combination of StateFlag values.</p>
 <p>See also <a href="qstyle.html#drawPrimitive">drawPrimitive</a>().</p>
@@ -544,6 +558,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SH_ScrollBar_MiddleClickAbsolutePosition</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A boolean value. If true, middle clicking on a scroll bar causes the slider to jump to that position. If false, middle clicking is ignored.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ScrollBar_LeftClickAbsolutePosition</tt></td><td align="center" valign="top"><tt>39</tt></td><td valign="top">A boolean value. If true, left clicking on a scroll bar causes the slider to jump to that position. If false, left clicking will behave as appropriate for each control.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ScrollBar_ScrollWhenPointerLeavesControl</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A boolean value. If true, when clicking a scroll bar <a href="qstyle.html#SubControl-enum">SubControl</a>, holding the mouse button down and moving the pointer outside the <a href="qstyle.html#SubControl-enum">SubControl</a>, the scroll bar continues to scroll. If false, the scollbar stops scrolling when the pointer leaves the <a href="qstyle.html#SubControl-enum">SubControl</a>.</td></tr>
+<tr><td valign="top"><tt>QStyle::SH_ScrollBar_RollBetweenButtons</tt></td><td align="center" valign="top"><tt>64</tt></td><td valign="top">A boolean value. If true, when clicking a scrollbar button (<a href="qstyle.html#SubControl-enum">SC_ScrollBarAddLine</a> or <a href="qstyle.html#SubControl-enum">SC_ScrollBarSubLine</a>) and dragging over to the opposite button (rolling) will press the new button and release the old one. When it is false, the original button is released and nothing happens (like a pushbutton).</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_TabBar_Alignment</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The alignment for tabs in a <a href="qtabwidget.html">QTabWidget</a>. Possible values are <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>, <a href="qt.html#AlignmentFlag-enum">Qt::AlignCenter</a> and <a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_Header_ArrowAlignment</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The placement of the sorting indicator may appear in list or table headers. Possible values are <a href="qt.html#Dock-enum">Qt::Left</a> or <a href="qt.html#Dock-enum">Qt::Right</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_Slider_SnapToValue</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Sliders snap to values while moving, as they do on Windows.</td></tr>
@@ -626,7 +641,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SC_ComboBoxEditField</tt></td><td align="center" valign="top"><tt>0x00000002</tt></td><td valign="top">Combobox edit field; see also <a href="qcombobox.html">QComboBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::SC_ComboBoxArrow</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">Combobox arrow button</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_ComboBoxFrame</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Combobox frame</td></tr>
-<tr><td valign="top"><tt>QStyle::SC_ComboBoxListBoxPopup</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">Combobox list box</td></tr>
+<tr><td valign="top"><tt>QStyle::SC_ComboBoxListBoxPopup</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">The reference rect for the combobox popup Used to calculate the position of the popup.</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_SliderGroove</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Special sub-control which contains the area in which the slider handle may move</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_SliderHandle</tt></td><td align="center" valign="top"><tt>0x00000002</tt></td><td valign="top">Slider handle</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_SliderTickmarks</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">Slider tickmarks</td></tr>
@@ -646,6 +661,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SC_DialHandle</tt></td><td align="center" valign="top"><tt>0x00000002</tt></td><td valign="top">The handle of the dial (i.e. what you use to control the dial)</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_DialGroove</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">The groove for the dial</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_DialTickmarks</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">The tickmarks for the dial</td></tr>
+<tr><td valign="top"><tt>QStyle::SC_GroupBoxFrame</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">The frame of a group box</td></tr>
+<tr><td valign="top"><tt>QStyle::SC_GroupBoxLabel</tt></td><td align="center" valign="top"><tt>0x00000002</tt></td><td valign="top">The title of a group box</td></tr>
+<tr><td valign="top"><tt>QStyle::SC_GroupBoxCheckBox</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">The optional check box of a group box</td></tr>
+<tr><td valign="top"><tt>QStyle::SC_GroupBoxContents</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">The group box contents</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_All</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Special value that matches all SubControls</td></tr>
 </table>
 <p>The SubControls type is a typedef for <a href="qflags.html">QFlags</a>&lt;SubControl&gt;. It stores an OR combination of SubControl values.</p>
@@ -689,12 +708,13 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SE_ToolBoxTabContents</tt></td><td align="center" valign="top"><tt>25</tt></td><td valign="top">Area for a toolbox tab's icon and label</td></tr>
 <tr><td valign="top"><tt>QStyle::SE_ViewItemCheckIndicator</tt></td><td align="center" valign="top"><tt>33</tt></td><td valign="top">Area for a view item's check mark</td></tr>
 <tr><td valign="top"><tt>QStyle::SE_TabBarTearIndicator</tt></td><td align="center" valign="top"><tt>34</tt></td><td valign="top">Area for the tear indicator on a tab bar with scroll arrows.</td></tr>
+<tr><td valign="top"><tt>QStyle::SE_TreeViewDisclosureItem</tt></td><td align="center" valign="top"><tt>35</tt></td><td valign="top">Area for the actual disclosure item in a tree branch.</td></tr>
 <tr><td valign="top"><tt>QStyle::SE_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements Custom values must be greater than this value</td></tr>
 </table>
 <p>See also <a href="qstyle.html#subElementRect">subElementRect</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QStyle"></a>QStyle::QStyle ()</h3>
+<h3 class="fn"><a name="QStyle-2"></a>QStyle::QStyle ()</h3>
 <p>Constructs a style object.</p>
 <h3 class="fn"><a name="dtor.QStyle"></a>QStyle::~QStyle ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the style object.</p>
@@ -866,12 +886,27 @@ body { background: #ffffff; color: black; }</style>
 <p>This function can handle the entire integer range without overflow.</p>
 <p>By default, this function assumes that the maximum value is on the right for horizontal items and on the bottom for vertical items. Set <i>upsideDown</i> to true to reverse this behavior.</p>
 <p>See also <a href="qstyle.html#sliderPositionFromValue">sliderPositionFromValue</a>().</p>
+<h3 class="fn"><a name="standardIcon"></a><a href="qicon.html">QIcon</a> QStyle::standardIcon ( <a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a> <i>standardIcon</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const</h3>
+<p>Returns an icon for <i>standardIcon</i>.</p>
+<p>The <i>option</i> argument can be used to pass extra information required when determining the icon.</p>
+<p>The <i>widget</i> argument is optional and may contain a widget that may aid determining the icon.</p>
+<p><b>Warning:</b> Because of binary compatibility constraints, this function is not virtual. If you want to provide your own icons in a <a href="qstyle.html">QStyle</a> subclass, add a slot called <a href="qstyle.html#standardIconImplementation">standardIconImplementation</a>() to you subclass. The standardIcon() function will dynamically detect the slot and call it.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qstyle.html#standardIconImplementation">standardIconImplementation</a>() and <a href="qstyle.html#standardPixmap">standardPixmap</a>().</p>
+<h3 class="fn"><a name="standardIconImplementation"></a><a href="qicon.html">QIcon</a> QStyle::standardIconImplementation ( <a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a> <i>standardIcon</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [protected slot]</tt></h3>
+<p>Returns an icon for <i>standardIcon</i>.</p>
+<p>The <i>option</i> argument contains extra information required when determining the icon. The <i>widget</i> argument is optional and may contain a widget that may aid determining the icon.</p>
+<p>The default implementation simply calls standardPixmap(<i>standardIcon</i>, <i>option</i>, <i>widget</i>).</p>
+<p><b>Warning:</b> Because of binary compatibility constraints, the <a href="qstyle.html#standardIcon">standardIcon</a>() function, introduced in Qt 4.1, isn't virtual. If you want to provide your own icons in a <a href="qstyle.html">QStyle</a> subclass, add a slot called standardIconImplementation() to your subclass. The <a href="qstyle.html#standardIcon">standardIcon</a>() function will dynamically detect the slot and call it.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qstyle.html#standardIcon">standardIcon</a>().</p>
 <h3 class="fn"><a name="standardPalette"></a><a href="qpalette.html">QPalette</a> QStyle::standardPalette () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the style's standard palette. On systems that support system colors, the style's standard palette is not used.</p>
 <h3 class="fn"><a name="standardPixmap"></a><a href="qpixmap.html">QPixmap</a> QStyle::standardPixmap ( <a href="qstyle.html#StandardPixmap-enum">StandardPixmap</a> <i>standardPixmap</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns a pixmap for <i>standardPixmap</i>.</p>
-<p>The <i>option</i> argument can be used to pass extra information required when drawing the <a href="qstyle.html#ControlElement-enum">ControlElement</a>. Currently, the <i>option</i> argument is unused.</p>
+<p>The <i>option</i> argument can be used to pass extra information required when drawing the <a href="qstyle.html#ControlElement-enum">ControlElement</a>.</p>
 <p>The <i>widget</i> argument is optional and may contain a widget that may aid in drawing the control.</p>
+<p>See also <a href="qstyle.html#standardIcon">standardIcon</a>().</p>
 <h3 class="fn"><a name="styleHint"></a>int QStyle::styleHint ( <a href="qstyle.html#StyleHint-enum">StyleHint</a> <i>hint</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0, <a href="qstylehintreturn.html">QStyleHintReturn</a> * <i>returnData</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the style hint <i>hint</i> for <i>widget</i> described in the <a href="qstyleoption.html">QStyleOption</a> <i>option</i>. Currently <i>returnData</i> and <i>widget</i> are not used; they are provided for future enhancement. The <i>option</i> parameter is used only in <a href="qstyle.html#StyleHint-enum">SH_ComboBox_Popup</a>, <a href="qstyle.html#StyleHint-enum">SH_ComboBox_LayoutDirection</a>, and <a href="qstyle.html#StyleHint-enum">SH_GroupBox_TextLabelColor</a>.</p>
 <p>For an explanation of the return value, see <a href="qstyle.html#StyleHint-enum">StyleHint</a>.</p>
@@ -924,6 +959,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -31,6 +31,8 @@
 
 #include <QtCore/qdebug.h>
 
+namespace qdesigner_internal {
+
 PromoteToCustomWidgetDialog::PromoteToCustomWidgetDialog(QDesignerWidgetDataBaseInterface *db,
                                                         const QString &base_class_name,
                                                         QWidget *parent)
@@ -171,3 +173,4 @@ QString PromoteToCustomWidgetDialog::customClassName() const
     return ui->m_class_name_input->lineEdit()->text();
 }
 
+} // namespace qdesigner_internal

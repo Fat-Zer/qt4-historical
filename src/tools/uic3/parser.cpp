@@ -22,8 +22,8 @@
 ****************************************************************************/
 
 #include "parser.h"
-#include <qobject.h>
-#include <qstringlist.h>
+#include <QObject>
+#include <QStringList>
 
 QString Parser::cleanArgs(const QString &func)
 {

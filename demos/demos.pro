@@ -5,11 +5,14 @@ SUBDIRS     = \
 	gradients \
 	pathstroke \
 	affine \
+	composition \
         books \
         interview \
         mainwindow \
         spreadsheet \
-        textedit
+        textedit 
+
+!contains(QT_EDITION, Console):!cross_compile:SUBDIRS += arthurplugin
 
 CONFIG += ordered
 

@@ -55,4 +55,5 @@ QStringList QSQLiteDriverPlugin::keys() const
     return l;
 }
 
-Q_EXPORT_PLUGIN(QSQLiteDriverPlugin)
+Q_EXPORT_STATIC_PLUGIN(QSQLiteDriverPlugin)
+Q_EXPORT_PLUGIN2(qsqlite, QSQLiteDriverPlugin)

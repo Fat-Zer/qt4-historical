@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 2 - Calling it Quits</title>
+    <title>Qt 4.1: Qt Tutorial 2 - Calling it Quits</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,15 +30,9 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="tutorial-t2-main-cpp.html">tutorial/t2/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t2.png" alt="Screenshot of tutorial two" /></p><p>Having created a window in <a href="tutorial-t1.html">Chapter 1,</a> we will now go on to make the application quit properly when the user tells it to.</p>
+<p align="center"><img src="images/t2.png" alt="Screenshot of Chapter 2" /></p><p>Having created a window in <a href="tutorial-t1.html">Chapter 1,</a> we will now go on to make the application quit properly when the user tells it to.</p>
 <p>We will also use a font that is more exciting than the default one.</p>
-<pre>&nbsp;   /****************************************************************
-    **
-    ** Qt tutorial 2
-    **
-    ****************************************************************/
-
-    #include &lt;QApplication&gt;
+<pre>&nbsp;   #include &lt;QApplication&gt;
     #include &lt;QFont&gt;
     #include &lt;QPushButton&gt;
 
@@ -76,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See <a href="tutorial-t1.html">Chapter 1</a> for how to create a makefile and build the application.</p>
 <a name="exercises"></a>
 <h2>Exercises</h2>
-<p>Try to resize the window. Press the button. Oops! That <a href="qobject.html#connect">connect()</a> would seem to make some difference.</p>
+<p>Try to resize the window. Press the button to close the application.</p>
 <p>Are there any other signals in <a href="qpushbutton.html">QPushButton</a> you can connect to quit? [Hint: The <a href="qpushbutton.html">QPushButton</a> inherits most of its functionality from <a href="qabstractbutton.html">QAbstractButton</a>.]</p>
 <p>
 [Previous: <a href="tutorial-t1.html">Chapter 1</a>]
@@ -87,6 +81,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

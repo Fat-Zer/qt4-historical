@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh 
 #
 # Configures to build the Qt library
 #
@@ -57,18 +57,56 @@ if [ -f $relpath/src/gui/kernel/qapplication_mac.cpp ] && [ -d /System/Library/F
     # ~ this is the internal edition and Qt/Mac sources exist
     PLATFORM_MAC=maybe
 elif [ -f $relpath/src/gui/kernel/qapplication_qws.cpp ]; then
-    # Qt/Embedded
+    # Qtopia Core
     # ~ src/gui/base/qapplication_qws.cpp is present
     # ~ this is the free or commercial edition
-    # ~ this is the internal edition and Qt/Embedded is explicitly enabled
+    # ~ this is the internal edition and Qtopia Core is explicitly enabled
     PLATFORM_QWS=maybe
+fi
+
+#-----------------------------------------------------------------------------
+# Qt version detection
+#-----------------------------------------------------------------------------
+QT_VERSION=`grep '^# *define *QT_VERSION_STR' $relpath/src/corelib/global/qglobal.h`
+QT_MAJOR_VERSION=
+QT_MINOR_VERSION=0
+QT_PATCH_VERSION=0
+if [ -n "$QT_VERSION" ]; then
+   QT_VERSION=`echo $QT_VERSION | sed 's,^# *define *QT_VERSION_STR "*\([^ ]*\)"$,\1,'`
+   MAJOR=`echo $QT_VERSION | sed 's,^\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*,\1,'`
+   if [ -n "$MAJOR" ]; then
+     MINOR=`echo $QT_VERSION | sed 's,^\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*,\2,'`
+      PATCH=`echo $QT_VERSION | sed 's,^\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*,\3,'`
+      QT_MAJOR_VERSION="$MAJOR"
+      [ -z "$MINOR" ] || QT_MINOR_VERSION="$MINOR"
+      [ -z "$PATCH" ] || QT_PATCH_VERSION="$PATCH"
+   fi
+fi
+if [ -z "$QT_MAJOR_VERSION" ]; then
+   echo "Cannot process version from qglobal.h: $QT_VERSION"
+   echo "Cannot proceed."
+   exit 1
+fi
+
+QT_PACKAGEDATE=`grep '^# *define *QT_PACKAGEDATE_STR' $relpath/src/corelib/global/qglobal.h | sed -e 's,^# *define *QT_PACKAGEDATE_STR *"\([^ ]*\)"$,\1,' -e s,-,,g`
+if [ -z "$QT_PACKAGEDATE" ]; then
+   echo "Unable to determine package date from qglobal.h: '$QT_PACKAGEDATE'"
+   echo "Cannot proceed"
+   exit 1
 fi
 
 #-------------------------------------------------------------------------------
 # check the license
 #-------------------------------------------------------------------------------
 
-if [ -f $relpath/LICENSE.QPL -o -f $relpath/LICENSE.GPL ]; then
+if [ -f $relpath/LICENSE.Qtopia ]; then
+    # Qtopia Edition
+    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
+    [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
+    Licensee="Qtopia"
+    Edition="Qtopia"
+    QT_EDITION="Qt_EDITION_DESKTOP"
+elif [ -f $relpath/LICENSE.QPL -o -f $relpath/LICENSE.GPL ]; then
     # Open Source edition - may only be used under the terms of the QPL or GPL.
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
     [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
@@ -92,7 +130,13 @@ else
     # one of commercial editions
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
     [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
-
+    
+    # fix license file to quote the right side
+    newlicense=`cat $HOME/.qt-license | sed -e 's/=\([^\"]\)/=\"\1/g' -e 's/\([^\"]\)$/\1\"/g' `
+    cat > $HOME/.qt-license-temp <<EOF
+$newlicense
+EOF
+    
     # read in the license file
     if [ -f $HOME/.qt-license ]; then
         . $HOME/.qt-license >/dev/null 2>&1
@@ -195,17 +239,19 @@ else
     fi
 
     # verify that we are licensed to use Qt on this platform
+    LICENSE_EXTENSION=
     if [ "$PLATFORM_QWS" = "yes" ]; then
         case $PlatformCode in
 	4|8|V|P|G|Q|2|B)
-            # Qt/Embedded
+            LICENSE_EXTENSION="-QTOPIACORE"
+            # Qtopia Core
             ;;
         *)
             echo
-            echo "You are not licensed for the Qt/Embedded platform."
+            echo "You are not licensed for Qtopia Core."
             echo
             echo "Please contact sales@trolltech.com to upgrade your license"
-            echo "to include the Qt/Embedded platform, or install the"
+            echo "to include Qtopia Core, or install the"
             echo "Qt Open Source Edition if you intend to develop free software."
             exit 1
             ;;
@@ -245,7 +291,7 @@ else
         # US
         case "$LicenseType" in
         Commercial)
-            cp -f $relpath/.LICENSE-US $outpath/LICENSE
+            cp -f $relpath/.LICENSE${LICENSE_EXTENSION}-US $outpath/LICENSE
             ;;
         Evaluation)
             cp -f $relpath/.LICENSE-EVALUATION-US $outpath/LICENSE
@@ -262,7 +308,7 @@ else
         # non-US
         case "$LicenseType" in
         Commercial)
-            cp -f $relpath/.LICENSE $outpath/LICENSE
+            cp -f $relpath/.LICENSE${LICENSE_EXTENSION} $outpath/LICENSE
             ;;
         Evaluation)
             cp -f $relpath/.LICENSE-EVALUATION $outpath/LICENSE
@@ -293,7 +339,7 @@ else
 fi
 
 if [ "$PLATFORM_QWS" = "yes" ]; then
-    Platform="Qt/Embedded"
+    Platform="Qtopia Core"
 elif [ "$PLATFORM_MAC" = "yes" ]; then
     Platform="Qt/Mac"
 else
@@ -319,7 +365,7 @@ unset QTDIR
 # initalize internal variables
 CFG_CONFIGURE_EXIT_ON_ERROR=yes
 CFG_PROFILE=no
-CFG_EXCEPTION_SUPPORT=unspecified
+CFG_EXCEPTIONS=unspecified
 CFG_INCREMENTAL=auto
 CFG_QCONFIG=full
 CFG_EMBEDDED=no
@@ -336,6 +382,8 @@ CFG_PNG=yes
 CFG_LIBPNG=auto
 CFG_JPEG=auto
 CFG_LIBJPEG=auto
+CFG_MNG=auto
+CFG_LIBMNG=auto
 CFG_XCURSOR=auto
 CFG_XRANDR=auto
 CFG_XRENDER=auto
@@ -343,9 +391,7 @@ CFG_OPENGL=auto
 CFG_FONTCONFIG=auto
 CFG_QWS_FREETYPE=yes
 CFG_SQL_AVAILABLE=
-CFG_SQL_ON=
-CFG_SQL_AUTODETECTED=
-CFG_GFX_AVAILABLE="repeater"
+CFG_GFX_AVAILABLE=""
 CFG_GFX_ON=""
 CFG_GFX_OFF=""
 CFG_KBD_AVAILABLE="tty usb sl5000 yopy vr41xx"
@@ -375,8 +421,12 @@ CFG_ACCESSIBILITY=auto
 CFG_QT3SUPPORT=yes
 CFG_ENDIAN=auto
 CFG_GETADDRINFO=auto
+CFG_IPV6IFNAME=auto
 CFG_RPATH=yes
 CFG_FRAMEWORK=auto
+CFG_UNIVERSAL_BINARY=auto
+CFG_SXV=no
+CFG_SDK=
 D_FLAGS=
 I_FLAGS=
 L_FLAGS=
@@ -413,6 +463,11 @@ QT_INSTALL_DEMOS=
 
 CFG_SQL_AVAILABLE=`find $relpath/src/plugins/sqldrivers/* -prune -type d -exec basename {} \;`
 CFG_SQL_AVAILABLE=`echo $CFG_SQL_AVAILABLE`               # normalize whitespace
+# by default, auto-detect which sql drivers can be built
+for i in $CFG_SQL_AVAILABLE; do
+    eval "CFG_SQL_$i=auto"
+done
+
 CFG_DECORATION_AVAILABLE=""
 if [ -d "$relpath/src/plugins/decorations" ]; then
     CFG_DECORATION_AVAILABLE=`find $relpath/src/plugins/decorations/* -prune -type d -exec basename {} \;`
@@ -462,7 +517,7 @@ while [ "$#" -gt 0 ]; do
         VAL=no
         ;;
     #Qt style yes options
-    -incremental|-qvfb|-profile|-shared|-static|-sm|-xinerama|-xshape|-tablet|-reduce-exports|-pch|-stl|-freetype|-xcursor|-xrandr|-xrender|-fontconfig|-xkb|-nis|-cups|-largefile|-h|-help|-v|-verbose|-debug|-release|-fast|-opengl|-accessibility|-confirm-license|-gnumake|-framework|-qt3support|-debug-and-release|-exceptions)
+    -incremental|-qvfb|-profile|-shared|-static|-sm|-xinerama|-xshape|-tablet|-reduce-exports|-pch|-stl|-freetype|-xcursor|-xrandr|-xrender|-fontconfig|-xkb|-nis|-cups|-largefile|-h|-help|-v|-verbose|-debug|-release|-fast|-opengl|-accessibility|-confirm-license|-gnumake|-framework|-qt3support|-debug-and-release|-exceptions|-universal)
         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
         VAL=yes
         ;;
@@ -477,7 +532,7 @@ while [ "$#" -gt 0 ]; do
             UNKNOWN_ARG=yes
         fi
         ;;
-    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey)
+    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk)
         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
         shift
         VAL=$1
@@ -626,6 +681,9 @@ while [ "$#" -gt 0 ]; do
     buildkey)
         CFG_USER_BUILD_KEY="$VAL"
         ;;
+    sxv)
+	CFG_SXV="$VAL"
+        ;;
     embedded)
         CFG_EMBEDDED="$VAL"
         if [ "$PLATFORM_QWS" != "no" ]; then
@@ -635,7 +693,7 @@ while [ "$#" -gt 0 ]; do
                 PLATFORM_QWS=yes
             fi
         else
-            echo "No license exists to enable Qt/Embedded. Disabling."
+            echo "No license exists to enable Qtopia Core. Disabling."
             CFG_EMBEDDED=no
         fi
         ;;
@@ -692,6 +750,20 @@ while [ "$#" -gt 0 ]; do
             UNKNOWN_OPT=yes
         fi
         ;;
+    sdk) 
+        if [ "$PLATFORM_MAC" = "yes" ]; then
+            CFG_SDK="$VAL"
+        else
+            UNKNOWN_OPT=yes
+        fi
+	;;
+    universal)
+        if [ "$PLATFORM_MAC" = "yes" ]; then
+            CFG_UNIVERSAL_BINARY="$VAL"
+        else
+            UNKNOWN_OPT=yes
+        fi
+        ;;
     framework)
         if [ "$PLATFORM_MAC" = "yes" ]; then
             CFG_FRAMEWORK="$VAL"
@@ -710,9 +782,9 @@ while [ "$#" -gt 0 ]; do
         ;;
     exceptions|g++-exceptions)
         if [ "$VAL" = "no" ]; then
-            CFG_EXCEPTION_SUPPORT=no
+            CFG_EXCEPTIONS=no
         elif [ "$VAL" = "yes" ]; then
-            CFG_EXCEPTION_SUPPORT=yes
+            CFG_EXCEPTIONS=yes
         else
             UNKNOWN_OPT=yes
         fi
@@ -921,6 +993,14 @@ while [ "$#" -gt 0 ]; do
             UNKNOWN_OPT=yes
         fi
         ;;
+    libmng)
+        [ "$VAL" = "yes" ] && VAL=qt
+        if [ "$VAL" = "qt" ] || [ "$VAL" = "no" ] || [ "$VAL" = "system" ]; then
+            CFG_LIBMNG="$VAL"
+        else
+            UNKNOWN_OPT=yes
+        fi
+        ;;
     nas-sound)
         if [ "$VAL" = "system" ] || [ "$VAL" = "no" ]; then
             CFG_NAS="$VAL"
@@ -1012,21 +1092,25 @@ while [ "$#" -gt 0 ]; do
         VAR=`echo $VAR | sed "s,^\([^-]*\).*,\1,"`
         ERROR=no
         if [ "$VAR" = "decoration" ]; then
-            ERROR=yes
+            ERROR=yes            
             for d in $CFG_DECORATION_AVAILABLE; do
                 if [ "$VAL" = "$d" ]; then
                     ERROR=no
                     break
                 fi
-            done
+            done            
         elif [ "$VAR" = "sql" ]; then
             ERROR=yes
+            # check if named driver is available
             for d in $CFG_SQL_AVAILABLE; do
                 if [ "$VAL" = "$d" ]; then
                     ERROR=no
                     break
                 fi
             done
+            # set the CFG_SQL_driver
+            eval "CFG_SQL_$VAL=\$OPT"
+            continue
         fi
         if [ "$OPT" = "plugin" ] || [ "$OPT" = "qt" ]; then
             if [ "$OPT" = "plugin" ]; then
@@ -1034,8 +1118,7 @@ while [ "$#" -gt 0 ]; do
                 [ "$VAR" = "decoration" ] && CFG_DECORATION_ON=`echo "${CFG_DECORATION_ON} " | sed "s,${VAL} ,,g"` && CFG_DECORATION_PLUGIN="$CFG_DECORATION_PLUGIN ${VAL}"
                 VAR="${VAR}-${OPT}"
             else
-                if [ "$VAR" = "sql" ] || [ "$VAR" = "gfx" ] || [ "$VAR" = "kbd" ] || [ "$VAR" = "mouse" ]; then
-                    [ "$VAR" = "sql" ] && CFG_SQL_ON="$CFG_SQL_ON $VAL"
+                if [ "$VAR" = "gfx" ] || [ "$VAR" = "kbd" ] || [ "$VAR" = "mouse" ]; then
                     [ "$VAR" = "gfx" ] && CFG_GFX_ON="$CFG_GFX_ON $VAL"
                     [ "$VAR" = "kbd" ] && CFG_KBD_ON="$CFG_KBD_ON $VAL"
                     [ "$VAR" = "mouse" ] && CFG_MOUSE_ON="$CFG_MOUSE_ON $VAL"
@@ -1045,13 +1128,12 @@ while [ "$#" -gt 0 ]; do
             QMAKE_VARS="$QMAKE_VARS \"${VAR}s += $VAL\""
         elif [ "$OPT" = "no" ]; then
             PLUG_VAR="${VAR}-plugin"
-            if [ "$VAR" = "sql" ] || [ "$VAR" = "gfx" ] || [ "$VAR" = "kbd" ] || [ "$VAR" = "mouse" ]; then
+            if [ "$VAR" = "gfx" ] || [ "$VAR" = "kbd" ] || [ "$VAR" = "mouse" ]; then
                 IN_VAR="${VAR}-driver"
             else
                 IN_VAR="${VAR}"
             fi
             [ "$VAR" = "decoration" ] && CFG_DECORATION_ON=`echo "${CFG_DECORATION_ON} " | sed "s,${VAL} ,,g"`
-            [ "$VAR" = "sql" ] && CFG_SQL_ON=`echo "${CFG_SQL_ON} " | sed "s,${VAL} ,,g"`
             [ "$VAR" = "gfx" ] && CFG_GFX_ON=`echo "${CFG_GFX_ON} " | sed "s,${VAL} ,,g"`
             [ "$VAR" = "kbd" ] && CFG_KBD_ON=`echo "${CFG_KBD_ON} " | sed "s,${VAL} ,,g"`
             [ "$VAR" = "mouse" ] && CFG_MOUSE_ON=`echo "${CFG_MOUSE_ON} " | sed "s,${VAL} ,,g"`
@@ -1128,9 +1210,10 @@ if [ -z "$QT_INSTALL_PREFIX" ]; then
     if [ "$Edition" = "Trolltech" ]; then
         # At Trolltech, we use sandboxed builds by default
 	QT_INSTALL_PREFIX=$outpath
+    elif [ "$PLATFORM_QWS" = "yes" ]; then
+        QT_INSTALL_PREFIX=/usr/local/Trolltech/QtopiaCore-${QT_VERSION}
     else
         # the default install prefix is /usr/local/Trolltech/Qt-$QT_VERSION
-        QT_VERSION=`grep \^VERSION= $relpath/src/qbase.pri | sed -e 's,^VERSION=,,'`
         QT_INSTALL_PREFIX=/usr/local/Trolltech/Qt-${QT_VERSION}
     fi
 fi
@@ -1205,9 +1288,9 @@ if [ "$OPT_SHADOW" = "maybe" ]; then
     fi
 fi
 if [ "$OPT_SHADOW" = "yes" ]; then
-    if [ -e "$relpath/.qmake.cache" ]; then
-        echo "You cannot make a shadow build from a source tree containing a previous build."
-        echo "Cannot proceed."
+    if [ -f "$relpath/.qmake.cache" -o -f "$relpath/src/corelib/global/qconfig.h" ]; then
+        echo >&2 "You cannot make a shadow build from a source tree containing a previous build."
+        echo >&2 "Cannot proceed."
         exit 1
     fi
     [ "$OPT_VERBOSE" = "yes" ] && echo "Performing shadow build..."
@@ -1222,49 +1305,6 @@ elif [ "$CFG_DEBUG" = "auto" ]; then
     QMAKE_CONFIG="$QMAKE_CONFIG build_all"
 else
     CFG_BUILD_ALL=no
-fi
-
-# detect zlib
-ZLIB_REQ="-lz zlib.h"
-if [ "$CFG_ZLIB" = "auto" ]; then
-    if $unixtests/checkavail "zlib" $OPT_VERBOSE $ZLIB_REQ $L_FLAGS $I_FLAGS; then
-       CFG_ZLIB=system
-    else
-       CFG_ZLIB=yes
-    fi
-fi
-
-# detect how jpeg should be built
-if [ "$CFG_JPEG" = "auto" ]; then
-    if [ "$CFG_SHARED" = "yes" ]; then
-        CFG_JPEG=plugin
-    else
-        CFG_JPEG=yes
-    fi
-fi
-# detect jpeg
-LIBJPEG_REQ="-ljpeg jpeglib.h"
-if [ "$CFG_LIBJPEG" = "auto" ]; then
-    if $unixtests/checkavail "libjpeg" $OPT_VERBOSE $LIBJPEG_REQ $L_FLAGS $I_FLAGS; then
-       CFG_LIBJPEG=system
-    else
-       CFG_LIBJPEG=qt
-    fi
-fi
-
-# detect png
-LIBPNG_REQ="-lpng png.h"
-if [ "$CFG_LIBPNG" = "auto" ]; then
-    if $unixtests/checkavail "libpng" $OPT_VERBOSE $LIBPNG_REQ $L_FLAGS $I_FLAGS; then
-       CFG_LIBPNG=system
-    else
-       CFG_LIBPNG=qt
-    fi
-fi
-
-# detect accessibility
-if [ "$CFG_ACCESSIBILITY" = "auto" ]; then
-    CFG_ACCESSIBILITY=yes
 fi
 
 # if the source tree is different from the build tree,
@@ -1349,8 +1389,8 @@ if [ -z "$MAKE" ]; then
         fi
     done
     if [ -z "$MAKE" ]; then
-        echo "You don't seem to have 'make' or 'gmake' in your PATH."
-        echo "Cannot proceed."
+        echo >&2 "You don't seem to have 'make' or 'gmake' in your PATH."
+        echo >&2 "Cannot proceed."
         exit 1
     fi
 fi
@@ -1391,6 +1431,9 @@ if [ "$CFG_EMBEDDED" != "no" ]; then
             *86)
                 PLATFORM=qws/linux-x86-g++
                 ;;
+            *86_64)
+                PLATFORM=qws/linux-x86_64-g++
+                ;;
             *)
                 PLATFORM=qws/linux-generic-g++
                 ;;
@@ -1402,6 +1445,9 @@ if [ "$CFG_EMBEDDED" != "no" ]; then
                 *86)
                     CFG_EMBEDDED=x86
                     ;;
+                *86_64)
+                    CFG_EMBEDDED=x86_64
+                    ;;
                 *)
                     CFG_EMBEDDED=generic
                     ;;
@@ -1411,7 +1457,7 @@ if [ "$CFG_EMBEDDED" != "no" ]; then
         fi
         ;;
     *)
-        echo "Qt/Embedded is not supported on this platform. Disabling."
+        echo "Qtopia Core is not supported on this platform. Disabling."
         CFG_EMBEDDED=no
         PLATFORM_QWS=no
         ;;
@@ -1491,7 +1537,7 @@ if [ -z "$PLATFORM" ]; then
         ;;
      Linux:*)
         case "$UNAME_MACHINE" in
-            x86_64)
+            x86_64|s390x)
                 PLATFORM=linux-g++-64
                 ;;
             *)
@@ -1654,6 +1700,9 @@ if [ "$PLATFORM" != "$XPLATFORM" -a "$CFG_EMBEDDED" != "no" ]; then
     x86)
         ARCH=i386
         ;;
+    x86_64)
+        ARCH=x86_64
+        ;;
     ipaq|sharp)
         ARCH=arm
         ;;
@@ -1669,24 +1718,46 @@ else
             echo "    SGI ($ARCH)"
         fi
         ;;
-    SunOS:5*:sun4*)
-        if [ "$OPT_VERBOSE" = "yes" ]; then
-            echo "    Sun SPARC (sparc)"
-        fi
-        ARCH=sparc
+    SunOS:5*:*)
+        case "$UNAME_MACHINE" in
+	sun4u)
+            if [ "$OPT_VERBOSE" = "yes" ]; then
+                echo "    Sun SPARC (sparc)"
+            fi
+            ARCH=sparc
+            ;;
+        i86pc)
+	    case "$PLATFORM" in
+	    *-64)
+                if [ "$OPT_VERBOSE" = "yes" ]; then
+	            echo "    64-bit AMD 80x86 (x86_64)"
+                fi
+                ARCH=x86_64
+                ;;
+	    *)
+                if [ "$OPT_VERBOSE" = "yes" ]; then
+	            echo "    32-bit Intel 80x86 (i386)"
+                fi
+                ARCH=i386
+                ;;
+            esac
+        esac
         ;;
-    Darwin:*:Power?Macintosh)
-        if [ "$OPT_VERBOSE" = "yes" ]; then
-            echo "    32-bit Apple PowerPC (powerpc)"
-        fi
-        ARCH=powerpc
-        ;;
-    Darwin:*:x86)
-        if [ "$OPT_VERBOSE" = "yes" ]; then
-            echo "    32-bit Apple Intel (x86)"
-        fi
-        ARCH=i386
-        ;;
+    Darwin:*:*)
+        case "$UNAME_MACHINE" in
+            Power?Macintosh)
+                if [ "$OPT_VERBOSE" = "yes" ]; then
+                    echo "    32-bit Apple PowerPC (powerpc)"
+                fi
+                ;;
+            x86)
+                if [ "$OPT_VERBOSE" = "yes" ]; then
+                    echo "    32-bit Intel 80x86 (i386)"
+                fi
+                ;;
+        esac
+        ARCH=macosx
+        ;; 
     AIX:*:00????????00)
         if [ "$OPT_VERBOSE" = "yes" ]; then
         echo "    64-bit IBM PowerPC (powerpc)"
@@ -1724,6 +1795,12 @@ else
         fi
         ARCH=powerpc
         ;;
+    *:*:s390*)
+    	if [ "$OPT_VERBOSE" = "yes" ]; then
+    	    echo "    IBM S/390 (s390)"
+    	fi
+    	ARCH=s390
+    	;;
     *:*:*)
         if [ "$OPT_VERBOSE" = "yes" ]; then
             echo "    Trying '$UNAME_MACHINE'..."
@@ -1770,86 +1847,13 @@ if [ "$CFG_REDUCE_EXPORTS" = "auto" ]; then
     fi
 fi
 
-# auto-detect SQL-modules support
-MYSQL_REQ="-lmysqlclient mysql.h"
-OCI_REQ="-lclntsh oci.h"
-PSQL_REQ="-lpq libpq-fe.h"
-ODBC_REQ="-lodbc sql.h sqlext.h"
-TDS_REQ="-lsybdb sybfront.h sybdb.h"
-DB2_REQ="-ldb2 sqlcli.h sqlcli1.h"
-IBASE_REQ="-lgds ibase.h"
-SQLITE2_REQ="-lsqlite sqlite.h"
-for _SQLDR in $CFG_SQL_AVAILABLE; do
-        case $_SQLDR in
-        mysql)
-            $unixtests/checkavail "MySQL" $OPT_VERBOSE $MYSQL_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED mysql"
-        ;;
-        psql)
-            $unixtests/checkavail "PostgreSQL" $OPT_VERBOSE $PSQL_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED psql"
-            ;;
-        odbc)
-            $unixtests/checkavail "ODBC" $OPT_VERBOSE $ODBC_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED odbc"
-            ;;
-        oci)
-            $unixtests/checkavail "OCI" $OPT_VERBOSE $OCI_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED oci"
-            ;;
-        tds)
-            $unixtests/checkavail "TDS" $OPT_VERBOSE $TDS_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED tds"
-            ;;
-        db2)
-            $unixtests/checkavail "DB2" $OPT_VERBOSE $DB2_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED db2"
-            ;;
-        ibase)
-            $unixtests/checkavail "InterBase" $OPT_VERBOSE $IBASE_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED ibase"
-            ;;
-        sqlite2)
-            $unixtests/checkavail "SQLite" $OPT_VERBOSE $SQLITE2_REQ $L_FLAGS $I_FLAGS && CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED sqlite2"
-            ;;
-        sqlite)
-            if [ -f $relpath/src/3rdparty/sqlite/sqlite3.h ]; then
-                CFG_SQL_AUTODETECTED="$CFG_SQL_AUTODETECTED sqlite"
-            fi
-            ;;
-        *)
-            if [ "$OPT_VERBOSE" = "yes" ]; then
-                echo "unknown SQL driver: $_SQLDR"
-            fi
-            ;;
-        esac
-done
+# detect sse support
+if $unixtests/sse.test $XQMAKESPEC $OPT_VERBOSE; then
+    CFG_HAVE_SSE=no
+else
+    CFG_HAVE_SSE=yes
+fi
 
-# auto-detect NIS support
-if [ "$CFG_NIS" != "no" ]; then
-    if $unixtests/nis.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-        if [ "$CFG_NIS" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-            echo "NIS support cannot be enabled due to functionality tests!"
-            echo " Turn on verbose messaging (-v) to $0 to see the final report."
-            echo " If you believe this message is in error you may use the continue"
-            echo " switch (-continue) to $0 to continue."
-            exit 101
-        else
-            CFG_NIS=no
-        fi
-    else
-        CFG_NIS=yes
-    fi
-fi
-# auto-detect CUPS support
-if [ "$CFG_CUPS" != "no" ]; then
-    if $unixtests/cups.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-        if [ "$CFG_CUPS" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-            echo "Cups support cannot be enabled due to functionality tests!"
-            echo " Turn on verbose messaging (-v) to $0 to see the final report."
-            echo " If you believe this message is in error you may use the continue"
-            echo " switch (-continue) to $0 to continue."
-            exit 101
-        else
-            CFG_CUPS=no
-        fi
-    else
-        CFG_CUPS=yes
-    fi
-fi
 #auto-detect GNU make support
 if [ "$CFG_USE_GNUMAKE" = "auto" ] && $MAKE -v | grep "GNU Make" >/dev/null 2>&1; then
    CFG_USE_GNUMAKE=yes
@@ -1862,181 +1866,14 @@ if [ "$PLATFORM_MAC" = "yes" ]; then
     fi
 fi
 
-# x11
-if [ "$PLATFORM_X11" = "yes" ]; then
-    x11tests=$relpath/config.tests/x11
-
-    # auto-detect OpenGL support
-    if [ "$CFG_OPENGL" = "auto" ]; then
-        if $x11tests/opengl.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            CFG_OPENGL=no
-        else
-            CFG_OPENGL=yes
-        fi
-    fi
-    # auto-detect Xcursor support
-    if [ "$CFG_XCURSOR" != "no" ]; then
-        if $x11tests/xcursor.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_XCURSOR" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "Xcursor support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_XCURSOR=no
-            fi
-        else
-            CFG_XCURSOR=yes
-        fi
-    fi
-    # auto-detect XRandR support (resize and rotate extension)
-    if [ "$CFG_XRANDR" != "no" ]; then
-        if $x11tests/xrandr.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_XRANDR" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "XRandR support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_XRANDR=no
-            fi
-        else
-            CFG_XRANDR=yes
-        fi
-    fi
-    # auto-detect XRender support
-    if [ "$CFG_XRENDER" != "no" ]; then
-        if $x11tests/xrender.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_XRENDER" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "XRender support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_XRENDER=no
-            fi
-        else
-            CFG_XRENDER=yes
-        fi
-    fi
-    # auto-detect FontConfig support
-    if [ "$CFG_FONTCONFIG" != "no" ]; then
-        mkdir -p $outpath/config.tests/x11
-        if $x11tests/fontconfig.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_FONTCONFIG" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "FontConfig support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_FONTCONFIG=no
-            fi
-        else
-            CFG_FONTCONFIG=yes
-        fi
-    fi
-    # add freetype2 include path
-    if [ "$CFG_FONTCONFIG" = "yes" ] && [ -f $outpath/config.tests/x11/fontconfig.inc ];then
-        QMAKE_VARS="$QMAKE_VARS \"FREETYPE2_INCDIR=`cat $outpath/config.tests/x11/fontconfig.inc`\""
-    fi
-    rm -f $outpath/config.tests/x11/fontconfig.inc
-    # add FontConfig specific libraries
-    if [ "$CFG_FONTCONFIG" = "yes" ] && [ -f $outpath/config.tests/x11/fontconfig.lib ]; then
-        QMAKE_VARS="$QMAKE_VARS \"QMAKE_LIBS_X11=`cat $outpath/config.tests/x11/fontconfig.lib` \$\$QMAKE_LIBS_X11\""
-    fi
-    rm -f $outpath/config.tests/x11/fontconfig.lib
-    # auto-detect Session Management support
-    if [ "$CFG_SM" = "auto" ]; then
-        if $x11tests/sm.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_SM" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "Session Management support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_SM=no
-            fi
-        else
-            CFG_SM=yes
-        fi
-    fi
-    # auto-detect SHAPE support
-    if [ "$CFG_XSHAPE" != "no" ]; then
-        if $x11tests/xshape.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_XSHAPE" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "XShape support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_XSHAPE=no
-            fi
-        else
-            CFG_XSHAPE=yes
-        fi
-    fi
-    # auto-detect Xinerama support
-    if [ "$CFG_XINERAMA" != "no" ]; then
-        if $x11tests/xinerama.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_XINERAMA" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "Xinerama support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_XINERAMA=no
-            fi
-        else
-            CFG_XINERAMA=yes
-        fi
-    fi
-    # auto-detect tablet support (currenlty only in IRIX)
-    if [ "$CFG_TABLET" != "no" ]; then
-        if $x11tests/xinput.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_TABLET" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "Tablet support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_TABLET=no
-            fi
-        else
-            CFG_TABLET=yes
-        fi
-    fi
-    # auto-detect XKB support
-    if [ "$CFG_XKB" != "no" ]; then
-        if $x11tests/xkb.test $XQMAKESPEC $OPT_VERBOSE $L_FLAGS $I_FLAGS; then
-            if [ "$CFG_XKB" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-                echo "XKB support cannot be enabled due to functionality tests!"
-                echo " Turn on verbose messaging (-v) to $0 to see the final report."
-                echo " If you believe this message is in error you may use the continue"
-                echo " switch (-continue) to $0 to continue."
-                exit 101
-            else
-                CFG_XKB=no
-            fi
-        else
-            CFG_XKB=yes
-        fi
-    fi
-fi # X11
+#x11 tests are done after qmake is built
 
 # embedded graphics
 if [ "$PLATFORM_QWS" = "yes" ]; then
     CFG_GFX_PLUGINS_AVAILABLE=`find $relpath/src/plugins/gfxdrivers/* -prune -type d -print | awk -F/ '{print $NF}'`
     CFG_GFX_AVAILABLE=`echo $CFG_GFX_PLUGINS_AVAILABLE $CFG_GFX_AVAILABLE`
     CFG_GFX_OFF=`echo $CFG_GFX_AVAILABLE` # assume all off
-    # No OpenGL for Qt/Embedded
+    # No OpenGL for Qtopia Core
     if [ "$CFG_OPENGL" = "auto" ]; then
         CFG_OPENGL=no
     fi
@@ -2095,10 +1932,11 @@ Usage:  $relconf [-prefix dir] [-buildkey key] [-docdir dir] [-headerdir dir]
         [-translationdir dir] [-sysconfdir dir] [-examplesdir dir] [-demosdir dir]
         [-debug] [-release] [-debug-and-release] [-no-gif] [-qt-gif] [-no-sm] [-sm]
         [-no-zlib] [-qt-zlib] [-system-zlib] [-no-libjpeg] [-qt-libjpeg] [-system-libjpeg]
-        [-no-libpng] [-qt-libpng] [-system-libpng] [-no-nis] [-nis] [-no-cups]
-        [-cups] [-no-largefile] [-largefile] [-no-stl] [-stl] [-no-pch] [-pch]
-        [-Istring] [-lstring] [-Lstring] [-Rstring] [-disable-<module>]
-        [-with-<module setting>] [-without-<module setting>] [-fast] [-no-fast]
+        [-no-libpng] [-qt-libpng] [-system-libpng] [-no-libmng] [-qt-libmng]
+        [-system-libmng] [-no-nis] [-nis] [-no-cups] [-cups] [-no-largefile] [-largefile]
+        [-no-stl] [-stl] [-no-pch] [-pch] [-Istring] [-lstring] [-Lstring] [-Rstring]
+        [-disable-<module>] [-with-<module setting>] [-without-<module setting>] [-fast]
+        [-no-fast]
 
 Installation options:
 
@@ -2184,9 +2022,6 @@ fi
                          Possible values for <driver>:
                          [ $CFG_SQL_AVAILABLE ]
 
-                         Auto-Detected on this system:
-                         [$CFG_SQL_AUTODETECTED ]
-
                          By default none of the SQL drivers are built,
                          even if they are auto-detected.
 
@@ -2218,9 +2053,14 @@ Third Party Libraries:
  +  -system-libpng ..... Use libpng from the operating system.
                          See http://www.libpng.org/pub/png
 
+    -no-libmng ......... Do not compile the plugin for MNG support.
+    -qt-libmng ......... Use the libmng bundled with Qt.
+ +  -system-libmng ..... Use libmng from the operating system.
+                         See http://www.libmng.com
+
     -no-libjpeg ........ Do not compile the plugin for JPEG support.
     -qt-libjpeg ........ Use the libjpeg bundled with Qt.
- +  -system-libjpeg .... Use jpeglib from the operating system.
+ +  -system-libjpeg .... Use libjpeg from the operating system.
                          See http://www.ijg.org
 
 Additional options:
@@ -2345,12 +2185,12 @@ Qt/X11 only:
  $XCY  -xcursor ........... Compile Xcursor support.
                          Requires X11/Xcursor/Xcursor.h and libXcursor.
 
- $XZN  -no-xrandr ......... Do not compile XRandR (resize and rotate) support.
- $XZY  -xrandr ............ Compile XRandR support.
+ $XZN  -no-xrandr ......... Do not compile Xrandr (resize and rotate) support.
+ $XZY  -xrandr ............ Compile Xrandr support.
                          Requires X11/extensions/Xrandr.h and libXrandr.
 
- $XRN  -no-xrender ........ Do not compile XRender support.
- $XRY  -xrender ........... Compile XRender support.
+ $XRN  -no-xrender ........ Do not compile Xrender support.
+ $XRY  -xrender ........... Compile Xrender support.
                          Requires X11/extensions/Xrender.h and libXrender
 
  $FCGN  -no-fontconfig ..... Do not compile FontConfig (anti-aliased font) support.
@@ -2377,13 +2217,20 @@ Qt/Mac only:
  *  -framework ......... Build Qt as a series of frameworks and
                          link tools against those frameworks.
     -no-framework ...... Do not build Qt as a series of frameworks.
+
+    -universal ......... Build Qt as a universal binary to work on intel
+                         as well as PPC platforms.
+ *  -no-universal ...... Build Qt and its tools to work only on this host platform.
+
+    -sdk <sdk>.......... Build Qt using Apple provided SDK <sdk>.
+
 EOF
 fi
 
 if [ "$PLATFORM_QWS" = "yes" ]; then
     cat << EOF
 
-Qt/Embedded only:
+Qtopia Core only:
 
     -xplatform target .. The target platform when cross-compiling.
 
@@ -2397,10 +2244,10 @@ Qt/Embedded only:
                          cross-compiling, otherwise the host
                          endianness will be used.
 
-    -no-freetype ....... Qt/Embedded only: do not compile in FreeType2 support.
- *  -freetype .......... Qt/Embedded only: add FreeType2 font support.
+    -no-freetype ....... Qtopia Core only: do not compile in FreeType2 support.
+ *  -freetype .......... Qtopia Core only: add FreeType2 font support.
 
-    -qconfig local ..... Use src/tools/qconfig-local.h rather than the
+    -qconfig local ..... Use src/corelib/global/qconfig-local.h rather than the
                          default ($CFG_QCONFIG).
 
     -depths list ....... Comma-separated list of supported bit-per-pixel
@@ -2445,7 +2292,39 @@ fi # Help
 # LICENSING, INTERACTIVE PART
 # -----------------------------------------------------------------------------
 
-if [ "$Edition" = "OpenSource" ]; then
+if [ "$Edition" = "Qtopia" ]; then
+    TheLicense=`head -n 1 $relpath/LICENSE.Qtopia`
+    while true; do
+        if [ "$OPT_CONFIRM_LICENSE" = "yes" ]; then
+            echo "You have already accepted the terms of the $TheLicense license."
+            acceptance=yes
+        else
+            echo "You are licensed to use this software under the terms of"
+            echo "the $TheLicense"
+            echo
+            echo "Type '?' to read the $TheLicense"
+            echo "Type 'yes' to accept this license offer."
+            echo "Type 'no' to decline this license offer."
+            echo
+            if echo '\c' | grep '\c' >/dev/null; then
+                echo -n "Do you accept the terms of the license? "
+            else
+                echo "Do you accept the terms of the license? \c"
+            fi
+            read acceptance
+        fi
+        echo
+        if [ "$acceptance" = "yes" ]; then
+            break
+        elif [ "$acceptance" = "no" ] ;then
+            echo "You are not licensed to use this software."
+            echo
+            exit 0
+        elif [ "$acceptance" = "?" ]; then
+            more $relpath/LICENSE.Qtopia
+        fi
+    done
+elif [ "$Edition" = "OpenSource" ]; then
     while true; do
         if [ "$PLATFORM_QWS" = "yes" ]; then
             echo "You are licensed to use this software under the terms of"
@@ -2531,23 +2410,57 @@ elif [ "$Edition" != "Trolltech" ]; then
         [ -z "$ExpiryDate" ] && ExpiryDate="0"
         Today=`date +%Y%m%d`
         if [ "$Today" -gt "$ExpiryDate" ]; then
-            echo
-            echo "WARNING  WARNING  WARNING  WARNING"
-            echo
-            echo "  Your support and upgrade period has expired."
-            echo
-            echo "  You may continue to use your last licensed release"
-            echo "  of Qt under the terms of your existing license"
-            echo "  agreement. But you are not entitled to technical"
-            echo "  support, nor are you entitled to use any more recent"
-            echo "  Qt releases."
-            echo
-            echo "  Please contact sales@trolltech.com to renew your"
-            echo "  support and upgrades for this license."
-            echo
-            echo "WARNING  WARNING  WARNING  WARNING"
-            echo
-            sleep 3
+            case "$LicenseType" in
+            Commercial|Academic|Educational)
+                if [ "$QT_PACKAGEDATE" -gt "$ExpiryDate" ]; then
+                    echo
+                    echo "NOTICE  NOTICE  NOTICE  NOTICE"
+                    echo
+                    echo "  Your support and upgrade period has expired."
+                    echo
+                    echo "  You are no longer licensed to use this version of Qt."
+                    echo "  Please contact sales@trolltech.com to renew your support"
+                    echo "  and upgrades for this license."
+                    echo
+                    echo "NOTICE  NOTICE  NOTICE  NOTICE"
+                    echo
+                    exit 1
+                else
+                    echo
+                    echo "WARNING  WARNING  WARNING  WARNING"
+                    echo
+                    echo "  Your support and upgrade period has expired."
+                    echo
+                    echo "  You may continue to use your last licensed release"
+                    echo "  of Qt under the terms of your existing license"
+                    echo "  agreement. But you are not entitled to technical"
+                    echo "  support, nor are you entitled to use any more recent"
+                    echo "  Qt releases."
+                    echo
+                    echo "  Please contact sales@trolltech.com to renew your"
+                    echo "  support and upgrades for this license."
+                    echo
+                    echo "WARNING  WARNING  WARNING  WARNING"
+                    echo
+                    sleep 3
+                fi
+                ;;
+            Evaluation|*)
+                echo
+                echo "NOTICE  NOTICE  NOTICE  NOTICE"
+                echo
+                echo "  Your Evaluation license has expired."
+                echo
+                echo "  You are no longer licensed to use this software. Please"
+                echo "  contact sales@trolltech.com to purchase license, or install"
+                echo "  the Qt Open Source Edition if you intend to develop free"
+                echo "  software."
+                echo
+                echo "NOTICE  NOTICE  NOTICE  NOTICE"
+                echo
+                exit 1
+                ;;
+            esac
         fi
     fi
     TheLicense=`head -n 1 LICENSE`
@@ -2746,6 +2659,8 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
         echo "########################################################################" >$mkfile
         echo "## This file was autogenerated by configure, all changes will be lost ##" >>$mkfile
         echo "########################################################################" >>$mkfile
+        EXTRA_OBJS=
+	EXTRA_SRCS=
         EXTRA_CFLAGS="\$(QMAKE_CFLAGS)"
         EXTRA_CXXFLAGS="\$(QMAKE_CXXFLAGS)"
         EXTRA_LFLAGS="\$(QMAKE_LFLAGS)"
@@ -2771,7 +2686,8 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
             echo "CARBON_LFLAGS +=-framework CoreServices -framework CoreFoundation" >>$mkfile
             EXTRA_LFLAGS="$EXTRA_LFLAGS \$(CARBON_LFLAGS)"
             EXTRA_CFLAGS="$EXTRA_CFLAGS \$(CARBON_CFLAGS)"
-            EXTRA_SOURCES="qsettings_mac.o qcore_mac.o"
+            EXTRA_OBJS="qsettings_mac.o qcore_mac.o"
+            EXTRA_SRCS="$relpath/src/corelib/io/qsettings_mac.cpp $relpath/src/corelib/kernel/qcore_mac.cpp"
         fi
         [ "$CFG_EMBEDDED" != "no" ] && EXTRA_CFLAGS="$EXTRA_CFLAGS -DQWS"
         if [ '!' -z "$D_FLAGS" ]; then
@@ -2789,11 +2705,14 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
             -e "s,@QMAKE_CXXFLAGS@,$EXTRA_CXXFLAGS,g" \
             -e "s,@QT_INSTALL_BINS@,\$(INSTALL_ROOT)$QMAKE_BIN_DIR,g" \
             -e "s,@QT_INSTALL_DATA@,\$(INSTALL_ROOT)$QMAKE_DATA_DIR,g" \
-            -e "s,@QMAKE_QTOBJS@,$EXTRA_SOURCES,g" -e "s,@QMAKESPEC@,$QMAKESPEC,g" $in_mkfile >>$mkfile
+            -e "s,@QMAKE_QTOBJS@,$EXTRA_OBJS,g" -e "s,@QMAKE_QTSRCS@,$EXTRA_SRCS,g" \
+	    -e "s,@QMAKESPEC@,$QMAKESPEC,g" $in_mkfile >>$mkfile
 
         if [ "$Edition" = "Trolltech" ] &&
             $WHICH makedepend >/dev/null 2>&1 && grep 'depend:' "$mkfile" >/dev/null 2>&1; then
             (cd $outpath/qmake && $MAKE -f $mkfile depend) >/dev/null 2>&1
+	    sed "s,^.*/\([^/]*.o\):,\1:,g" $mkfile >${mkfile}.tmp
+	    mv ${mkfile}.tmp ${mkfile}
         fi
     done
 
@@ -2808,23 +2727,483 @@ fi # Build qmake
 # tests that need qmake
 #-------------------------------------------------------------------------------
 
-# work around broken X11 headers when using GCC 2.95 or later
-if [ "$PLATFORM_X11" = "yes" ]; then
-    NOTYPE=no
-    $x11tests/notype.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath && NOTYPE=yes
-    [ $NOTYPE = "yes" ] && QMAKE_VARS="$QMAKE_VARS \"QMAKE_CXXFLAGS+=-fpermissive\""
-fi
-
-if [ "$CFG_ENDIAN" = "auto" ]; then
-    if $unixtests/endian.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath; then
-        CFG_ENDIAN="Q_LITTLE_ENDIAN"
+# detect zlib
+if [ "$CFG_ZLIB" = "auto" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/zlib "zlib" $L_FLAGS $I_FLAGS; then
+       CFG_ZLIB=system
     else
-        CFG_ENDIAN="Q_BIG_ENDIAN"
+       CFG_ZLIB=yes
     fi
 fi
 
-if [ "$CFG_STL" = "auto" ]; then
-    if $unixtests/stl.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath; then
+# detect how jpeg should be built
+if [ "$CFG_JPEG" = "auto" ]; then
+    if [ "$CFG_SHARED" = "yes" ]; then
+        CFG_JPEG=plugin
+    else
+        CFG_JPEG=yes
+    fi
+fi
+# detect jpeg
+if [ "$CFG_LIBJPEG" = "auto" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/libjpeg "libjpeg" $L_FLAGS $I_FLAGS; then
+       CFG_LIBJPEG=system
+    else
+       CFG_LIBJPEG=qt
+    fi
+fi
+
+# detect how mng should be built
+if [ "$CFG_MNG" = "auto" ]; then
+    if [ "$CFG_SHARED" = "yes" ]; then
+        CFG_MNG=plugin
+    else
+        CFG_MNG=yes
+    fi
+fi
+# detect mng
+if [ "$CFG_LIBMNG" = "auto" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/libmng "libmng" $L_FLAGS $I_FLAGS; then
+       CFG_LIBMNG=system
+    else
+       CFG_LIBMNG=qt
+    fi
+fi
+
+# detect png
+if [ "$CFG_LIBPNG" = "auto" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/libpng "libpng" $L_FLAGS $I_FLAGS; then
+       CFG_LIBPNG=system
+    else
+       CFG_LIBPNG=qt
+    fi
+fi
+
+# detect accessibility
+if [ "$CFG_ACCESSIBILITY" = "auto" ]; then
+    CFG_ACCESSIBILITY=yes
+fi
+
+# auto-detect SQL-modules support
+for _SQLDR in $CFG_SQL_AVAILABLE; do
+        case $_SQLDR in
+        mysql)
+	    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/mysql_r "MySQL (thread-safe)" $L_FLAGS $I_FLAGS; then
+                QMAKE_VARS="$QMAKE_VARS \"CONFIG += use_libmysqlclient_r\""
+                if [ "$CFG_SQL_mysql" = "auto" ]; then
+                    CFG_SQL_mysql=plugin
+                fi
+            elif $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/mysql "MySQL (thread-unsafe)" $L_FLAGS $I_FLAGS; then
+                if [ "$CFG_SQL_mysql" = "auto" ]; then
+                    CFG_SQL_mysql=plugin
+                fi
+            else
+                if [ "$CFG_SQL_mysql" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                    echo "MySQL support cannot be enabled due to functionality tests!"
+                    echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                    echo " If you believe this message is in error you may use the continue"
+                    echo " switch (-continue) to $0 to continue."
+                    exit 101
+                else
+                    CFG_SQL_mysql=no
+                fi
+            fi            	
+        ;;
+        psql)                        
+            if [ "$CFG_SQL_psql" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/psql "PostgreSQL" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_psql" = "auto" ]; then
+                        CFG_SQL_psql=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_psql" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "PostgreSQL support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_psql=no
+                    fi
+                fi 
+            fi                        
+        ;;
+        odbc)
+            if [ "$CFG_SQL_odbc" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/odbc "ODBC" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_odbc" = "auto" ]; then
+                        CFG_SQL_odbc=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_odbc" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "ODBC support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_odbc=no
+                    fi
+                fi 
+            fi            
+            ;;
+        oci)
+            if [ "$CFG_SQL_oci" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/oci "OCI" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_oci" = "auto" ]; then
+                        CFG_SQL_oci=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_oci" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "Oracle (OCI) support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_oci=no
+                    fi
+                fi 
+            fi            
+            ;;
+        tds)
+            if [ "$CFG_SQL_tds" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/tds "TDS" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_tds" = "auto" ]; then
+                        CFG_SQL_tds=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_tds" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "TDS support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_tds=no
+                    fi
+                fi 
+            fi            
+            ;;
+        db2)
+            if [ "$CFG_SQL_db2" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/db2 "DB2" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_db2" = "auto" ]; then
+                        CFG_SQL_db2=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_db2" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "ODBC support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_db2=no
+                    fi
+                fi 
+            fi            
+            ;;
+        ibase)
+            if [ "$CFG_SQL_ibase" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/ibase "InterBase" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_ibase" = "auto" ]; then
+                        CFG_SQL_ibase=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_ibase" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "InterBase support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_ibase=no
+                    fi
+                fi 
+            fi            
+            ;;
+        sqlite2)
+            if [ "$CFG_SQL_sqlite2" != "no" ]; then
+                if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/sqlite2 "SQLite2" $L_FLAGS $I_FLAGS; then
+                    if [ "$CFG_SQL_sqlite2" = "auto" ]; then
+                        CFG_SQL_sqlite2=plugin
+                    fi
+                else
+                    if [ "$CFG_SQL_sqlite2" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                        echo "SQLite2 support cannot be enabled due to functionality tests!"
+                        echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                        echo " If you believe this message is in error you may use the continue"
+                        echo " switch (-continue) to $0 to continue."
+                        exit 101
+                    else
+                        CFG_SQL_sqlite2=no
+                    fi
+                fi 
+            fi            
+            ;;
+        sqlite)
+            if [ -f $relpath/src/3rdparty/sqlite/sqlite3.h ]; then
+                if [ "$CFG_SQL_sqlite" = "auto" ]; then
+                        CFG_SQL_sqlite=plugin
+                fi    
+            else
+                if [ "$CFG_SQL_sqlite" != "auto" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                    echo "SQLite support cannot be enabled due to functionality tests!"
+                    echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                    echo " If you believe this message is in error you may use the continue"
+                    echo " switch (-continue) to $0 to continue."
+                    exit 101
+                else
+                    CFG_SQL_sqlite=no
+                fi
+            fi                        
+            ;;
+        *)
+            if [ "$OPT_VERBOSE" = "yes" ]; then
+                echo "unknown SQL driver: $_SQLDR"
+            fi
+            ;;
+        esac
+done
+
+# auto-detect NIS support
+if [ "$CFG_NIS" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/nis "NIS" $L_FLAGS $I_FLAGS; then
+        CFG_NIS=yes
+    else
+        if [ "$CFG_NIS" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+            echo "NIS support cannot be enabled due to functionality tests!"
+            echo " Turn on verbose messaging (-v) to $0 to see the final report."
+            echo " If you believe this message is in error you may use the continue"
+            echo " switch (-continue) to $0 to continue."
+            exit 101
+        else
+            CFG_NIS=no
+        fi
+    fi
+fi
+
+# auto-detect CUPS support
+if [ "$CFG_CUPS" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/cups "Cups" $L_FLAGS $I_FLAGS; then
+        CFG_CUPS=yes
+    else
+        if [ "$CFG_CUPS" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+            echo "Cups support cannot be enabled due to functionality tests!"
+            echo " Turn on verbose messaging (-v) to $0 to see the final report."
+            echo " If you believe this message is in error you may use the continue"
+            echo " switch (-continue) to $0 to continue."
+            exit 101
+        else
+            CFG_CUPS=no
+        fi
+    fi
+fi
+
+# x11
+if [ "$PLATFORM_X11" = "yes" ]; then
+    x11tests=$relpath/config.tests/x11
+    X11TESTS_FLAGS=
+
+    # work around broken X11 headers when using GCC 2.95 or later
+    NOTYPE=no
+    $x11tests/notype.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath && NOTYPE=yes
+    if [ $NOTYPE = "yes" ]; then 
+        QMAKE_VARS="$QMAKE_VARS \"QMAKE_CXXFLAGS+=-fpermissive\""
+        X11TESTS_FLAGS="$X11TESTS_FLAGS -fpermissive"
+    fi
+
+    # auto-detect OpenGL support
+    if [ "$CFG_OPENGL" = "auto" ]; then
+        if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/opengl "OpenGL" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+            CFG_OPENGL=yes
+        else
+            CFG_OPENGL=no
+        fi
+    fi
+
+    # auto-detect Xcursor support
+    if [ "$CFG_XCURSOR" != "no" ]; then
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xcursor "Xcursor" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_XCURSOR=yes
+	else
+	    if [ "$CFG_XCURSOR" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "Xcursor support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_XCURSOR=no
+	    fi
+	fi
+    fi
+
+    # auto-detect Xrandr support (resize and rotate extension)
+    if [ "$CFG_XRANDR" != "no" ]; then
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xrandr "Xrandr" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_XRANDR=yes
+	else
+	    if [ "$CFG_XRANDR" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "Xrandr support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_XRANDR=no
+	    fi
+	fi
+    fi
+
+    # auto-detect Xrender support
+    if [ "$CFG_XRENDER" != "no" ]; then
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xrender "Xrender" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_XRENDER=yes
+	else
+	    if [ "$CFG_XRENDER" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "Xrender support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_XRENDER=no
+	    fi
+	fi
+    fi
+
+    # auto-detect FontConfig support
+    if [ "$CFG_FONTCONFIG" != "no" ]; then
+	mkdir -p $outpath/config.tests/x11
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/fontconfig "FontConfig" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_FONTCONFIG=yes
+	    QMAKE_VARS="$QMAKE_VARS \"QMAKE_LIBS_X11=-lfreetype -lfontconfig \$\$QMAKE_LIBS_X11\""
+	else
+	    if [ "$CFG_FONTCONFIG" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "FontConfig support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_FONTCONFIG=no
+	    fi
+	fi
+    fi
+
+    # auto-detect Session Management support
+    if [ "$CFG_SM" = "auto" ]; then
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/sm "Session Management" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_SM=yes
+	else
+	    if [ "$CFG_SM" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "Session Management support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_SM=no
+	    fi
+	fi
+    fi
+
+    # auto-detect SHAPE support
+    if [ "$CFG_XSHAPE" != "no" ]; then
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xshape "XShape" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_XSHAPE=yes
+	else
+	    if [ "$CFG_XSHAPE" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "XShape support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_XSHAPE=no
+	    fi
+	fi
+    fi
+
+    # auto-detect Xinerama support
+    if [ "$CFG_XINERAMA" != "no" ]; then
+	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xinerama "Xinerama" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+	    CFG_XINERAMA=yes
+	else
+	    if [ "$CFG_XINERAMA" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+		echo "Xinerama support cannot be enabled due to functionality tests!"
+		echo " Turn on verbose messaging (-v) to $0 to see the final report."
+		echo " If you believe this message is in error you may use the continue"
+		echo " switch (-continue) to $0 to continue."
+		exit 101
+	    else
+		CFG_XINERAMA=no
+	    fi
+	fi
+    fi
+
+    # auto-detect tablet support (currenlty only in IRIX)
+    if [ "$CFG_TABLET" != "no" ]; then
+        if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xinput "Tablet (XInput)" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+            CFG_TABLET=yes
+        else
+            if [ "$CFG_TABLET" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                echo "Tablet support cannot be enabled due to functionality tests!"
+                echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                echo " If you believe this message is in error you may use the continue"
+                echo " switch (-continue) to $0 to continue."
+                exit 101
+            else
+                CFG_TABLET=no
+            fi
+        fi
+    fi
+
+    # auto-detect XKB support
+    if [ "$CFG_XKB" != "no" ]; then
+        if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/xkb "XKB" $L_FLAGS $I_FLAGS $X11TESTS_FLAGS; then
+            CFG_XKB=yes
+        else
+            if [ "$CFG_XKB" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+                echo "XKB support cannot be enabled due to functionality tests!"
+                echo " Turn on verbose messaging (-v) to $0 to see the final report."
+                echo " If you believe this message is in error you may use the continue"
+                echo " switch (-continue) to $0 to continue."
+                exit 101
+            else
+                CFG_XKB=no
+            fi
+        fi
+    fi
+fi # X11
+
+if [ "$CFG_ENDIAN" = "auto" ]; then
+    if [ "$PLATFORM_MAC" = "yes" ]; then
+	true #leave as auto 
+    else
+        $unixtests/endian.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath
+	F="$?"
+        if [ "$F" -eq 0 ]; then
+            CFG_ENDIAN="Q_LITTLE_ENDIAN"
+        elif [ "$F" -eq 1 ]; then
+            CFG_ENDIAN="Q_BIG_ENDIAN"
+        else
+            echo
+	    echo "The system byte order could not be detected!"
+	    echo "Turn on verbose messaging (-v) to see the final report."
+	    echo "You can use the -little-endian or -big-endian switch to"
+	    echo "$0 to continue."
+            exit 101
+        fi
+    fi
+fi
+
+if [ "$CFG_STL" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/stl "STL" $L_FLAGS $I_FLAGS; then
+        CFG_STL=yes
+    else
         if [ "$CFG_STL" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
             echo "STL support cannot be enabled due to functionality tests!"
             echo " Turn on verbose messaging (-v) to $0 to see the final report."
@@ -2834,13 +3213,11 @@ if [ "$CFG_STL" = "auto" ]; then
         else
             CFG_STL=no
         fi
-    else
-        CFG_STL=yes
     fi
 fi
 
 # find the default framework value
-if [ "$PLATFORM_MAC" = "yes" ]; then
+if [ "$PLATFORM_MAC" = "yes" ] && [ "$PLATFORM" != "macx-xlc" ]; then
     if [ "$CFG_FRAMEWORK" = "auto" ]; then
         CFG_FRAMEWORK="$CFG_SHARED"
     elif [ "$CFG_FRAMEWORK" = "yes" ] && [ "$CFG_SHARED" = "no" ]; then
@@ -2853,10 +3230,20 @@ else
     CFG_FRAMEWORK=no
 fi
 
+# find the default universal value
+if [ "$PLATFORM_MAC" = "yes" ]; then
+    if [ "$CFG_UNIVERSAL_BINARY" = "auto" ]; then
+         CFG_UNIVERSAL_BINARY="no" #any other default? ###
+    fi
+else
+    CFG_UNIVERSAL_BINARY="no"
+fi
 
 # find if the platform supports IPv6
-if [ "$CFG_IPV6" = "auto" ]; then
-    if $unixtests/ipv6.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath; then
+if [ "$CFG_IPV6" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/ipv6 "IPv6" $L_FLAGS $I_FLAGS; then
+        CFG_IPV6=yes
+    else
         if [ "$CFG_IPV6" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
             echo "IPv6 support cannot be enabled due to functionality tests!"
             echo " Turn on verbose messaging (-v) to $0 to see the final report."
@@ -2866,25 +3253,50 @@ if [ "$CFG_IPV6" = "auto" ]; then
         else
             CFG_IPV6=no
         fi
-    else
-        CFG_IPV6=yes
     fi
 fi
 
 # find if the platform provides getaddrinfo (ipv6 dns lookups)
-if [ "$CFG_GETADDRINFO" = "auto" ]; then
-    if $unixtests/getaddrinfo.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath; then
-        CFG_GETADDRINFO=no
-    else
+if [ "$CFG_GETADDRINFO" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/getaddrinfo "getaddrinfo" $L_FLAGS $I_FLAGS; then
         CFG_GETADDRINFO=yes
+    else
+	if [ "$CFG_GETADDRINFO" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+            echo "getaddrinfo support cannot be enabled due to functionality tests!"
+            echo " Turn on verbose messaging (-v) to $0 to see the final report."
+            echo " If you believe this message is in error you may use the continue"
+            echo " switch (-continue) to $0 to continue."
+            exit 101
+	else	
+	    CFG_GETADDRINFO=no
+	fi
+    fi
+fi
+
+# find if the platform provides if_nametoindex (ipv6 interface name support)
+if [ "$CFG_IPV6IFNAME" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/ipv6ifname "IPv6 interface name" $L_FLAGS $I_FLAGS; then
+        CFG_IPV6IFNAME=yes
+    else
+        if [ "$CFG_IPV6IFNAME" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
+            echo "IPv6 interface name support cannot be enabled due to functionality tests!"
+            echo " Turn on verbose messaging (-v) to $0 to see the final report."
+            echo " If you believe this message is in error you may use the continue"
+            echo " switch (-continue) to $0 to continue."
+            exit 101
+        else
+	    CFG_IPV6IFNAME=no
+	fi
     fi
 fi
 
 # find if the platform supports X/Open Large File compilation environment
-if [ "$CFG_LARGEFILE" = "auto" ]; then
-    if $unixtests/largefile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath; then
+if [ "$CFG_LARGEFILE" != "no" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/largefile "X/Open Large File" $L_FLAGS $I_FLAGS; then
+        CFG_LARGEFILE=yes
+    else
         if [ "$CFG_LARGEFILE" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
-            echo "Large file support cannot be enabled due to functionality tests!"
+            echo "X/Open Large File support cannot be enabled due to functionality tests!"
             echo " Turn on verbose messaging (-v) to $0 to see the final report."
             echo " If you believe this message is in error you may use the continue"
             echo " switch (-continue) to $0 to continue."
@@ -2892,11 +3304,8 @@ if [ "$CFG_LARGEFILE" = "auto" ]; then
         else
             CFG_LARGEFILE=no
         fi
-    else
-        CFG_LARGEFILE=yes
     fi
 fi
-
 
 #-------------------------------------------------------------------------------
 # ask for all that hasn't been auto-detected or specified in the arguments
@@ -2952,6 +3361,11 @@ else
     QT_CONFIG="$QT_CONFIG opengl"
 fi
 
+# disable secure execution environment
+if [ "$CFG_SXV" = "no" ]; then
+    QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SXV"
+fi
+
 # update QT_CONFIG to show our current predefined configuration
 case "$CFG_QCONFIG" in
 minimal|small|medium|large|full)
@@ -3005,11 +3419,16 @@ if [ "$CFG_USE_GNUMAKE" = "yes" ]; then
 fi
 [ "$CFG_REDUCE_EXPORTS" = "yes" ] && QT_CONFIG="$QT_CONFIG reduce_exports"
 [ "$CFG_PRECOMPILE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG precompile_header"
+[ "$CFG_HAVE_SSE" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG sse"
+[ "$CFG_UNIVERSAL_BINARY" = "yes" ] && QMAKE_CONFIG="$QMAKE_CONFIG x86 ppc"
 if [ "$CFG_IPV6" = "yes" ]; then
     QT_CONFIG="$QT_CONFIG ipv6"
 fi
 if [ "$CFG_GETADDRINFO" = "yes" ]; then
     QT_CONFIG="$QT_CONFIG getaddrinfo"
+fi
+if [ "$CFG_IPV6IFNAME" = "yes" ]; then
+    QT_CONFIG="$QT_CONFIG ipv6ifname"
 fi
 if [ "$CFG_LIBJPEG" = "system" ]; then
     QT_CONFIG="$QT_CONFIG system-jpeg"
@@ -3018,6 +3437,14 @@ if [ "$CFG_JPEG" = "no" ]; then
     QT_CONFIG="$QT_CONFIG no-jpeg"
 elif [ "$CFG_JPEG" = "yes" ]; then
     QT_CONFIG="$QT_CONFIG jpeg"
+fi
+if [ "$CFG_LIBMNG" = "system" ]; then
+    QT_CONFIG="$QT_CONFIG system-mng"
+fi
+if [ "$CFG_MNG" = "no" ]; then
+    QT_CONFIG="$QT_CONFIG no-mng"
+elif [ "$CFG_MNG" = "yes" ]; then
+    QT_CONFIG="$QT_CONFIG mng"
 fi
 if [ "$CFG_LIBPNG" = "no" ]; then
     CFG_PNG="no"
@@ -3142,11 +3569,11 @@ fi
 
 # turn off exceptions for the compilers that support it
 COMPILER=`echo $PLATFORM | cut -f 2- -d-`
-if [ "$CFG_EXCEPTION_SUPPORT" = "unspecified" -a "$PLATFORM_QWS" = "yes" ]; then
-    CFG_EXCEPTION_SUPPORT=no
+if [ "$CFG_EXCEPTIONS" = "unspecified" -a "$PLATFORM_QWS" = "yes" ]; then
+    CFG_EXCEPTIONS=no
 fi
 
-if [ "$CFG_EXCEPTION_SUPPORT" = "no" ]; then
+if [ "$CFG_EXCEPTIONS" = "no" ]; then
     case "$COMPILER" in
     g++*)
         QMAKE_VARS="$QMAKE_VARS \"QMAKE_CFLAGS+=-fno-exceptions\""
@@ -3213,6 +3640,7 @@ esac
 #
 # Things that do not affect the Qt API/ABI:
 #     system-jpeg no-jpeg jpeg
+#     system-mng no-mng mng
 #     system-png no-png png
 #     system-zlib no-zlib zlib
 #     no-gif gif
@@ -3324,7 +3752,7 @@ full)
     echo "#endif" >>$tmpconfig
     ;;
 esac
-cat >> $outpath/src/corelib/global/qconfig.h.new <<EOF
+cat >>$outpath/src/corelib/global/qconfig.h.new <<EOF
 
 /* Qt Edition */
 #ifndef QT_EDITION
@@ -3336,10 +3764,22 @@ cat >> $outpath/src/corelib/global/qconfig.h.new <<EOF
 /* Machine byte-order */
 #define Q_BIG_ENDIAN 4321
 #define Q_LITTLE_ENDIAN 1234
-#define Q_BYTE_ORDER $CFG_ENDIAN
-
-/* Compile time features */
 EOF
+if [ "$CFG_ENDIAN" = "auto" ]; then
+    cat >>$outpath/src/corelib/global/qconfig.h.new <<EOF
+#if defined(__BIG_ENDIAN__)
+# define Q_BYTE_ORDER Q_BIG_ENDIAN
+#elif defined(__LITTLE_ENDIAN__)
+# define Q_BYTE_ORDER Q_LITTLE_ENDIAN
+#else
+# message "Unable to determine byte order!"
+#endif
+EOF
+else
+    echo "#define Q_BYTE_ORDER $CFG_ENDIAN" >>$outpath/src/corelib/global/qconfig.h.new 
+fi
+
+echo '/* Compile time features */' >>$outpath/src/corelib/global/qconfig.h.new 
 [ '!' -z "$LicenseKeyExt" ] && echo "#define QT_PRODUCT_LICENSEKEY \"$LicenseKeyExt\"" >>$outpath/src/corelib/global/qconfig.h.new
 
 if [ "$CFG_LARGEFILE" = "yes" ]; then
@@ -3349,6 +3789,11 @@ fi
 $unixtests/ptrsize.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath
 echo "#define QT_POINTER_SIZE $?" >>$outpath/src/corelib/global/qconfig.h.new
 echo "" >>$outpath/src/corelib/global/qconfig.h.new
+
+if [ "$Edition" = "Trolltech" ]; then
+    echo "#define QT_BUILD_INTERNAL" >>$outpath/src/corelib/global/qconfig.h.new
+fi
+
 
 # Embedded compile time options
 if [ "$PLATFORM_QWS" = "yes" ]; then
@@ -3413,29 +3858,44 @@ if [ "$PLATFORM_QWS" = "yes" ]; then
 fi # QWS
 
 # Add turned on SQL drivers
-for DRIVER in $CFG_SQL_ON; do
-    ONDRIVER=`echo $DRIVER | tr '[:lower:]' '[:upper:]'`
-    QCONFIG_FLAGS="$QCONFIG_FLAGS QT_SQL_$ONDRIVER"
+for DRIVER in $CFG_SQL_AVAILABLE; do
+    eval "VAL=\$CFG_SQL_$DRIVER"
+    case "$VAL" in
+    qt)
+        ONDRIVER=`echo $DRIVER | tr '[:lower:]' '[:upper:]'`
+        QCONFIG_FLAGS="$QCONFIG_FLAGS QT_SQL_$ONDRIVER"
+        SQL_DRIVERS="$SQL_DRIVERS $DRIVER"
+    ;;
+    plugin)    
+        SQL_PLUGINS="$SQL_PLUGINS $DRIVER"
+    ;; 
+    esac               
 done
+
+QMAKE_VARS="$QMAKE_VARS \"sql-drivers = $SQL_DRIVERS\"" 
+QMAKE_VARS="$QMAKE_VARS \"sql-plugins = $SQL_PLUGINS\"" 
 
 # Add other configuration options to the qconfig.h file
 [ "$CFG_GIF" = "yes" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_BUILTIN_GIF_READER=1"
 [ "$CFG_PNG" != "yes" ]      && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_PNG"
 [ "$CFG_JPEG" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_JPEG"
+[ "$CFG_MNG" != "yes" ]      && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_MNG"
 [ "$CFG_ZLIB" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_ZLIB"
 
-[ "$CFG_EXCEPTION_SUPPORT" = "no" ] && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_EXCEPTIONS"
-[ "$CFG_TABLET" = "no" ]    && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_TABLET_SUPPORT"
+[ "$CFG_EXCEPTIONS" = "no" ] && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_EXCEPTIONS"
+[ "$CFG_TABLET" = "no" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_TABLET"
 [ "$CFG_IPV6" = "no" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IPV6"
+[ "$CFG_SXV" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SXV"
 
 # X11/Unix/Mac only configs
 [ "$CFG_CUPS" = "no" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_CUPS"
 [ "$CFG_GETADDRINFO" = "no" ]&& QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_GETADDRINFO"
-[ "$CFG_NAS" = "yes" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NAS_SUPPORT"
+[ "$CFG_IPV6IFNAME" = "no" ] && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IPV6IFNAME"
+[ "$CFG_NAS" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_NAS"
 [ "$CFG_NIS" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_NIS"
-[ "$CFG_SM" = "no" ]         && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SM_SUPPORT"
+[ "$CFG_SM" = "no" ]         && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SESSIONMANAGER"
 [ "$CFG_XCURSOR" = "no" ]    && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_XCURSOR"
-[ "$CFG_FONTCONFIG" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_FONTCONFIG"
+[ "$CFG_FONTCONFIG" = "no" ] && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_FONTCONFIG"
 [ "$CFG_XINERAMA" = "no" ]   && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_XINERAMA"
 [ "$CFG_XKB" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_XKB"
 [ "$CFG_XRANDR" = "no" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_XRANDR"
@@ -3530,10 +3990,21 @@ if [ "$CFG_FRAMEWORK" = "no" ]; then
 else
     QT_CONFIG="$QT_CONFIG qt_framework"
 fi
+if [ "$CFG_UNIVERSAL_BINARY" = "yes" ]; then
+    QT_CONFIG="$QT_CONFIG x86 ppc"
+fi
 cat >>$QTCONFIG.tmp <<EOF
+#configuration
 CONFIG += $QTCONFIG_CONFIG
 QT_EDITION = $Edition
 QT_CONFIG += $QT_CONFIG
+
+#versioning
+QT_VERSION = $QT_VERSION
+QT_MAJOR_VERSION = $QT_MAJOR_VERSION
+QT_MINOR_VERSION = $QT_MINOR_VERSION
+QT_PATCH_VERSION = $QT_PATCH_VERSION
+
 EOF
 if [ "$CFG_RPATH" = "yes" ]; then
     echo "QMAKE_RPATHDIR += $QT_INSTALL_LIBS" >> $QTCONFIG.tmp
@@ -3569,6 +4040,11 @@ QMAKE_INCDIR_QT  = \$\$QT_BUILD_TREE/include
 QMAKE_LIBDIR_QT  = \$\$QT_BUILD_TREE/lib
 
 EOF
+
+#dump in the SDK info
+if [ '!' -z "$CFG_SDK" ]; then
+   echo "QMAKE_MAC_SDK = $CFG_SDK" >>$CACHEFILE.tmp
+fi
 
 #dump the qmake spec
 if [ -d "$outpath/mkspecs/$XPLATFORM" ]; then
@@ -3626,7 +4102,7 @@ fi
 
 case "$COMPILER" in
 g++*)
-    if [ "$CFG_EXCEPTION_SUPPORT" != "no" ]; then
+    if [ "$CFG_EXCEPTIONS" != "no" ]; then
         cat <<EOF
 
         This target is using the GNU C++ compiler ($PLATFORM).
@@ -3645,7 +4121,7 @@ EOF
 cc*)
     case "$PLATFORM" in
     irix-cc*)
-        if [ "$CFG_EXCEPTION_SUPPORT" != "no" ]; then
+        if [ "$CFG_EXCEPTIONS" != "no" ]; then
             cat <<EOF
 
         This target is using the MIPSpro C++ compiler ($PLATFORM).
@@ -3691,7 +4167,9 @@ echo "Debug................ $CFG_DEBUG"
 echo "Qt3 compatibility.... $CFG_QT3SUPPORT"
 echo "STL support ......... $CFG_STL"
 echo "PCH support ......... $CFG_PRECOMPILE"
+echo "MMX/SSE support ..... $CFG_HAVE_SSE"
 echo "IPv6 support ........ $CFG_IPV6"
+echo "IPv6 ifname support . $CFG_IPV6IFNAME"
 echo "getaddrinfo support . $CFG_GETADDRINFO"
 echo "Accessibility ....... $CFG_ACCESSIBILITY"
 echo "NIS support ......... $CFG_NIS"
@@ -3707,6 +4185,11 @@ if [ "$CFG_PNG" = "no" ]; then
     echo "PNG support ......... $CFG_PNG"
 else
     echo "PNG support ......... $CFG_PNG ($CFG_LIBPNG)"
+fi
+if [ "$CFG_MNG" = "no" ]; then
+    echo "MNG support ......... $CFG_MNG"
+else
+    echo "MNG support ......... $CFG_MNG ($CFG_LIBMNG)"
 fi
 echo "zlib support ........ $CFG_ZLIB"
 if [ "$PLATFORM_QWS" = "yes" ]; then
@@ -3725,18 +4208,28 @@ if [ "$PLATFORM_X11" = "yes" ]; then
     echo "XShape support ...... $CFG_XSHAPE"
     echo "Xinerama support .... $CFG_XINERAMA"
     echo "Xcursor support ..... $CFG_XCURSOR"
-    echo "XRandR support ...... $CFG_XRANDR"
-    echo "XRender support ..... $CFG_XRENDER"
+    echo "Xrandr support ...... $CFG_XRANDR"
+    echo "Xrender support ..... $CFG_XRENDER"
     echo "FontConfig support .. $CFG_FONTCONFIG"
     echo "XKB Support ......... $CFG_XKB"
     echo "immodule support .... $CFG_IM"
 fi
+[ "$CFG_SQL_mysql" != "no" ] && echo "MySQL support ....... $CFG_SQL_mysql"
+[ "$CFG_SQL_psql" != "no" ] && echo "PostgreSQL support .. $CFG_SQL_psql"
+[ "$CFG_SQL_odbc" != "no" ] && echo "ODBC support ........ $CFG_SQL_odbc"
+[ "$CFG_SQL_oci" != "no" ] && echo "OCI support ......... $CFG_SQL_oci"
+[ "$CFG_SQL_tds" != "no" ] && echo "TDS support ......... $CCFG_SQL_tds"
+[ "$CFG_SQL_db2" != "no" ] && echo "DB2 support ......... $CFG_SQL_db2"
+[ "$CFG_SQL_ibase" != "no" ] && echo "InterBase support ... $CFG_SQL_ibase"
+[ "$CFG_SQL_sqlite2" != "no" ] && echo "SQLite 2 support .... $CFG_SQL_sqlite2"
+[ "$CFG_SQL_sqlite" != "no" ] && echo "SQLite support ...... $CFG_SQL_sqlite"
 
-# complain about not being able to use plugins if we are using a static build
+# complain about not being able to use dynamic plugins if we are using a static build
 if [ "$CFG_SHARED" = "no" ]; then
     echo
-    echo "WARNING: Using static linking will disable the use of plugins."
-    echo "Make sure you compile ALL needed modules into the library."
+    echo "WARNING: Using static linking will disable the use of dynamically"
+    echo "loaded plugins. Make sure to import all needed static plugins,"
+    echo "or compile needed modules into the library."
     echo
 fi
 if [ "$PLATFORM_MAC" = "yes" ] && [ "$CFG_FRAMEWORK" = "yes" ] && [ "$CFG_DEBUG" = "yes" ] && [ "$CFG_DEBUG_RELEASE" = "no" ]; then

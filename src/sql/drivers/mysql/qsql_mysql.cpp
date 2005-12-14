@@ -141,7 +141,6 @@ static QVariant::Type qDecodeMYSQLType(int mysqltype, uint flags)
     case FIELD_TYPE_LONGLONG :
         type = (flags & UNSIGNED_FLAG) ? QVariant::ULongLong : QVariant::LongLong;
         break;
-    case FIELD_TYPE_DECIMAL :
     case FIELD_TYPE_FLOAT :
     case FIELD_TYPE_DOUBLE :
         type = QVariant::Double;
@@ -167,6 +166,7 @@ static QVariant::Type qDecodeMYSQLType(int mysqltype, uint flags)
     case FIELD_TYPE_SET :
     case FIELD_TYPE_STRING :
     case FIELD_TYPE_VAR_STRING :
+    case FIELD_TYPE_DECIMAL :
         type = QVariant::String;
         break;
     }
@@ -243,11 +243,7 @@ bool QMYSQLResultPrivate::bindInValues()
     while((fieldInfo = mysql_fetch_field(meta))) {
         QMyField &f = fields[i];
         f.myField = fieldInfo;
-        if (fieldInfo->type == FIELD_TYPE_DECIMAL)
-            f.type = QVariant::String;
-        else
-            f.type = qDecodeMYSQLType(fieldInfo->type, fieldInfo->flags);
-
+        f.type = qDecodeMYSQLType(fieldInfo->type, fieldInfo->flags);
         if (qIsBlob(fieldInfo->type)) {
             // the size of a blob-field is available as soon as we call
             // mysql_stmt_store_result()
@@ -541,10 +537,7 @@ bool QMYSQLResult::reset (const QString& query)
     if (isSelect()) {
         for(int i = 0; i < numFields; i++) {
             MYSQL_FIELD* field = mysql_fetch_field_direct(d->result, i);
-            if (field->type == FIELD_TYPE_DECIMAL)
-                d->fields[i].type = QVariant::String;
-            else
-                d->fields[i].type = qDecodeMYSQLType(field->type, field->flags);
+            d->fields[i].type = qDecodeMYSQLType(field->type, field->flags);
         }
     }
     setActive(true);
@@ -912,20 +905,24 @@ bool QMYSQLDriver::hasFeature(DriverFeature f) const
         }
 #endif
         return false;
+    case NamedPlaceholders:
+    case BatchOperations:
+        return false;
     case QuerySize:
     case BLOB:
     case LastInsertId:
         return true;
     case Unicode:
         return true;
-#if MYSQL_VERSION_ID >= 40108
     case PreparedQueries:
     case PositionalPlaceholders:
+#if MYSQL_VERSION_ID >= 40108
         return d->preparedQuerysEnabled;
-#endif
-    default:
+#else
         return false;
+#endif
     }
+    return false;
 }
 
 static void setOptionFlag(uint &optionFlags, const QString &opt)

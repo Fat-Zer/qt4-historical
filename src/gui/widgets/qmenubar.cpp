@@ -34,6 +34,7 @@
 #include <qevent.h>
 #include <qmainwindow.h>
 #include <qtoolbar.h>
+#include <qtoolbutton.h>
 #include <qwhatsthis.h>
 
 #ifndef QT_NO_MENUBAR
@@ -47,6 +48,32 @@
 #include "qmenubar_p.h"
 #include "qdebug.h"
 
+
+class QMenuBarExtension : public QToolButton
+{
+public:
+    explicit QMenuBarExtension(QWidget *parent);
+
+    QSize sizeHint() const;
+};
+
+QMenuBarExtension::QMenuBarExtension(QWidget *parent)
+    : QToolButton(parent)
+{
+    setObjectName(QLatin1String("qt_menubar_ext_button"));
+    setAutoRaise(true);
+#ifndef QT_NO_MENU
+    setPopupMode(QToolButton::InstantPopup);
+#endif
+    setIcon(style()->standardPixmap(QStyle::SP_ToolBarHorizontalExtensionButton));
+}
+
+QSize QMenuBarExtension::sizeHint() const
+{
+    int ext = style()->pixelMetric(QStyle::PM_ToolBarExtensionExtent);
+    return QSize(ext, ext);
+}
+
 QAction *QMenuBarPrivate::actionAt(QPoint p) const
 {
     Q_Q(const QMenuBar);
@@ -56,6 +83,25 @@ QAction *QMenuBarPrivate::actionAt(QPoint p) const
             return items.at(i);
     }
     return 0;
+}
+
+bool QMenuBarPrivate::isVisible(QAction *action)
+{
+    Q_Q(QMenuBar);
+
+    if (!extension->isHidden()) {
+        int hmargin = q->style()->pixelMetric(QStyle::PM_MenuBarPanelWidth, 0, q);
+        QRect menuRect = q->rect();
+        if (QApplication::layoutDirection() == Qt::RightToLeft)
+            menuRect.setLeft(menuRect.left() + extension->width() + hmargin);
+        else
+            menuRect.setWidth(menuRect.width() - extension->width() - hmargin);
+        if (menuRect.contains(actionRect(action)))
+            return true;
+        else
+            return false;
+     }
+     return true;
 }
 
 void QMenuBarPrivate::updateGeometries()
@@ -103,7 +149,45 @@ void QMenuBarPrivate::updateGeometries()
 #endif
     itemsDirty = false;
 
+    QList<QAction *> hiddenActions;
+    int hmargin = q->style()->pixelMetric(QStyle::PM_MenuBarPanelWidth, 0, q);
+    QRect menuRect = q->rect();
+    if (!extension->isHidden() && (menuRect.width() < q->sizeHint().width())) {
+        if (QApplication::layoutDirection() == Qt::RightToLeft)
+            menuRect.setLeft(menuRect.left() + extension->width() + hmargin);
+        else
+            menuRect.setWidth(menuRect.width() - extension->width() - hmargin);
+    }
+    for (int i = 0; i < actionList.count(); ++i) {
+        if (!menuRect.contains(actionRect(actionList.at(i))))
+            hiddenActions.append(actionList.at(i));
+    }
+
+    if (hiddenActions.count() > 0) {
+        QMenu *pop = extension->menu();
+        if (!pop) {
+            pop = new QMenu(q);
+            extension->setMenu(pop);
+        }
+        pop->clear();
+        pop->addActions(hiddenActions);
+
+        int vmargin = q->style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, q);
+        int x = QApplication::layoutDirection() == Qt::RightToLeft
+                ? hmargin
+                : q->width() - extension->sizeHint().width() - hmargin;
+        extension->setGeometry(x, vmargin, extension->sizeHint().width(), menuRect.height() - vmargin*2);
+        extension->show();
+    } else {
+        extension->hide();
+    }
     q->updateGeometry();
+#ifdef QT3_SUPPORT
+    if (q->parentWidget() != 0) {
+        QMenubarUpdatedEvent menubarUpdated(q);
+        QApplication::sendEvent(q->parentWidget(), &menubarUpdated);
+    }
+#endif
 }
 
 QRect QMenuBarPrivate::actionRect(QAction *act) const
@@ -150,7 +234,8 @@ void QMenuBarPrivate::popupAction(QAction *action, bool activateFirst)
     if (action->isEnabled() && action->menu()->isEnabled()) {
         closePopupMode = 0;
         activeMenu = action->menu();
-        activeMenu->d_func()->causedPopup = q;
+        activeMenu->d_func()->causedPopup.widget = q;
+        activeMenu->d_func()->causedPopup.action = action;
 
         QRect adjustedActionRect = actionRect(action);
         QPoint pos(q->mapToGlobal(QPoint(adjustedActionRect.left(), adjustedActionRect.bottom() + 1)));
@@ -184,9 +269,14 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
 
     doChildEffects = (popup && !activeMenu);
     Q_Q(QMenuBar);
+    QWidget *fw = 0;
     if(activeMenu) {
         QMenu *menu = activeMenu;
         activeMenu = NULL;
+        if (popup) {
+            fw = q->window()->focusWidget();
+            q->setFocus(Qt::NoFocusReason);
+        }
         menu->hide();
     }
     if(currentAction)
@@ -200,6 +290,8 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
             popupAction(action, activateFirst);
         q->update(actionRect(action));
     }
+    if (fw)
+        fw->setFocus(Qt::NoFocusReason);
 }
 
 void QMenuBarPrivate::calcActionRects(int max_width, int start, QMap<QAction*, QRect> &actionRects, QList<QAction*> &actionList) const
@@ -220,7 +312,8 @@ void QMenuBarPrivate::calcActionRects(int max_width, int start, QMap<QAction*, Q
     //calculate size
     const QFontMetrics fm = q->fontMetrics();
     const int hmargin = q->style()->pixelMetric(QStyle::PM_MenuBarHMargin, 0, q),
-              vmargin = q->style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, q);
+              vmargin = q->style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, q),
+                icone = q->style()->pixelMetric(QStyle::PM_SmallIconSize, 0, q);
     for(int i = 0; i < items.count(); i++) {
         QAction *action = items.at(i);
         if(!action->isVisible())
@@ -235,10 +328,21 @@ void QMenuBarPrivate::calcActionRects(int max_width, int start, QMap<QAction*, Q
             continue; //we don't really position these!
         } else {
             QString s = action->text();
-            int w = fm.width(s);
-            w -= s.count('&') * fm.width('&');
-            w += s.count("&&") * fm.width('&');
-            sz = QSize(w, fm.height());
+            if(!s.isEmpty()) {
+                int w = fm.width(s);
+                w -= s.count('&') * fm.width('&');
+                w += s.count("&&") * fm.width('&');
+                sz = QSize(w, fm.height());
+            }
+
+            QIcon is = action->icon();
+            if (!is.isNull()) {
+                QSize is_sz = QSize(icone, icone);
+                if (is_sz.height() > sz.height())
+                    sz.setHeight(is_sz.height());
+                if (is_sz.width() > sz.width())
+                    sz.setWidth(is_sz.width());
+            }
         }
 
         //let the style modify the above size..
@@ -280,13 +384,7 @@ void QMenuBarPrivate::calcActionRects(int max_width, int start, QMap<QAction*, Q
             }
             rect.moveLeft(left);
         } else {
-            if(x+rect.width() >= max_width - hmargin - itemSpacing) { //wrap
-                y += max_item_height;
-                separator_start -= x;
-                x = hmargin;
-            } else {
-                rect.moveLeft(x);
-            }
+            rect.moveLeft(x);
         }
         rect.moveTop(y);
 
@@ -458,12 +556,17 @@ void QMenuBarPrivate::init()
         q->hide();
 #endif
     q->setBackgroundRole(QPalette::Button);
+    q->setAutoFillBackground(true);
     oldWindow = oldParent = 0;
 #ifdef QT3_SUPPORT
     doAutoResize = false;
 #endif
     handleReparent();
     q->setMouseTracking(q->style()->styleHint(QStyle::SH_MenuBar_MouseTracking, 0, q));
+
+    extension = new QMenuBarExtension(q);
+    extension->setFocusPolicy(Qt::NoFocus);
+    extension->hide();
 }
 
 /*!
@@ -484,7 +587,7 @@ QMenuBar::QMenuBar(QWidget *parent, const char *name) : QWidget(*new QMenuBarPri
 {
     Q_D(QMenuBar);
     d->init();
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 #endif
 
@@ -607,6 +710,18 @@ QAction *QMenuBar::activeAction() const
 }
 
 /*!
+    \since 4.1
+
+    Sets the currently highlighted action to \a act.
+*/
+void QMenuBar::setActiveAction(QAction *act)
+{
+    Q_D(QMenuBar);
+    d->setCurrentAction(act, true, false);
+}
+
+
+/*!
     Removes all the actions from the menu bar.
 
     \sa removeAction()
@@ -665,7 +780,7 @@ void QMenuBar::paintEvent(QPaintEvent *e)
     for (int i = 0; i < d->actionList.count(); ++i) {
         QAction *action = d->actionList.at(i);
         QRect adjustedActionRect = d->actionRect(action);
-        if (adjustedActionRect.isEmpty())
+        if (adjustedActionRect.isEmpty() || !d->isVisible(action))
             continue;
         if(!e->rect().intersects(adjustedActionRect))
             continue;
@@ -714,7 +829,7 @@ void QMenuBar::mousePressEvent(QMouseEvent *e)
         return;
 
     QAction *action = d->actionAt(e->pos());
-    if (!action) {
+    if (!action || !d->isVisible(action)) {
         d->setCurrentAction(0);
 #ifndef QT_NO_WHATSTHIS
         if (QWhatsThis::inWhatsThisMode())
@@ -878,7 +993,7 @@ void QMenuBar::mouseMoveEvent(QMouseEvent *e)
     d->mouseDown = e->buttons() & Qt::LeftButton;
     QAction *action = d->actionAt(e->pos());
     bool popupState = d->popupState || d->mouseDown;
-    if(action || !popupState)
+    if(action && d->isVisible(action) || !popupState)
         d->setCurrentAction(action, popupState);
 }
 
@@ -1055,8 +1170,23 @@ bool QMenuBar::event(QEvent *e)
     } break;
 #endif
     case QEvent::Show:
+#ifdef QT3_SUPPORT
+        // If itemsDirty == true, updateGeometries sends the MenubarUpdated event.
+        if (!d->itemsDirty) {
+            QMenubarUpdatedEvent menubarUpdated(this);
+            QApplication::sendEvent(parentWidget(), &menubarUpdated);
+        }
+#endif
         d->updateGeometries();
-        break;
+    break;
+
+#ifdef QT3_SUPPORT
+    case QEvent::Hide: {
+        QMenubarUpdatedEvent menubarUpdated(this);
+        QApplication::sendEvent(parentWidget(), &menubarUpdated);
+    } break;
+#endif
+
 #ifndef QT_NO_WHATSTHIS
     case QEvent::QueryWhatsThis:
         e->setAccepted(d->whatsThis.size());
@@ -1168,7 +1298,56 @@ QRect QMenuBar::actionGeometry(QAction *act) const
 */
 QSize QMenuBar::minimumSizeHint() const
 {
-    return sizeHint();
+    Q_D(const QMenuBar);
+#ifdef Q_WS_MAC
+    const bool as_gui_menubar = !d->mac_menubar;
+#else
+    const bool as_gui_menubar = true;
+#endif
+
+    ensurePolished();
+    QSize ret(0, 0);
+    if(as_gui_menubar) {
+        QMap<QAction*, QRect> actionRects;
+        QList<QAction*> actionList;
+        int w = QApplication::desktop()->width();
+        int fw = style()->pixelMetric(QStyle::PM_MenuBarPanelWidth, 0, this);
+        d->calcActionRects(w - (2 * fw), 0, actionRects, actionList);
+        if (d->actionList.count() > 0) {
+            ret = d->actionRect(d->actionList.at(0)).size();
+            if (!d->extension->isHidden())
+                ret += QSize(d->extension->sizeHint().width(), 0);
+        }
+        const int hmargin = style()->pixelMetric(QStyle::PM_MenuBarHMargin, 0, this),
+                  vmargin = style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, this);
+        ret += QSize(2*fw + hmargin, 2*fw + vmargin);
+    }
+
+    if(d->leftWidget) {
+        QSize sz = d->leftWidget->minimumSizeHint();
+        ret.setWidth(ret.width() + sz.width());
+        if(sz.height() > ret.height())
+            ret.setHeight(sz.height());
+    }
+    if(d->rightWidget) {
+        QSize sz = d->rightWidget->minimumSizeHint();
+        ret.setWidth(ret.width() + sz.width());
+        if(sz.height() > ret.height())
+            ret.setHeight(sz.height());
+    }
+    if(as_gui_menubar) {
+        QStyleOptionMenuItem opt;
+        opt.rect = rect();
+        opt.menuRect = rect();
+        opt.state = QStyle::State_None;
+        opt.menuItemType = QStyleOptionMenuItem::Normal;
+        opt.checkType = QStyleOptionMenuItem::NotCheckable;
+        opt.palette = palette();
+        return (style()->sizeFromContents(QStyle::CT_MenuBar, &opt,
+                                         ret.expandedTo(QApplication::globalStrut()),
+                                         this));
+    }
+    return ret;
 }
 
 /*!
@@ -1201,7 +1380,7 @@ QSize QMenuBar::sizeHint() const
         }
         const int hmargin = style()->pixelMetric(QStyle::PM_MenuBarHMargin, 0, this),
                   vmargin = style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, this);
-        ret += QSize(2*fw + hmargin, 2*fw + vmargin);
+        ret += QSize(2*fw + 2*hmargin, 2*fw + 2*vmargin);
     }
 
     if(d->leftWidget) {
@@ -1234,7 +1413,7 @@ QSize QMenuBar::sizeHint() const
 /*!
   \reimp
 */
-int QMenuBar::heightForWidth(int max_width) const
+int QMenuBar::heightForWidth(int) const
 {
     Q_D(const QMenuBar);
 #ifdef Q_WS_MAC
@@ -1242,19 +1421,17 @@ int QMenuBar::heightForWidth(int max_width) const
 #else
     const bool as_gui_menubar = true;
 #endif
-
     int height = 0;
     if(as_gui_menubar) {
-        QMap<QAction*, QRect> actionRects;
-        QList<QAction*> actionList;
+        if (d->actionList.count()) {
+            // assume all actionrects have the same height
+            height = d->actionRect(d->actionList.first()).height();
+            height += style()->styleHint(QStyle::SH_MainWindow_SpaceBelowMenuBar, 0, this);
+        }
         int fw = style()->pixelMetric(QStyle::PM_MenuBarPanelWidth, 0, this);
-        d->calcActionRects(max_width, 0, actionRects, actionList);
-        for (QMap<QAction*, QRect>::const_iterator i = actionRects.begin();
-             i != actionRects.constEnd(); ++i)
-            height = qMax(height, i.value().bottom());
         height += 2*fw;
         const int vmargin = style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, this);
-        height += vmargin;
+        height += 2*vmargin;
     }
     if(d->leftWidget)
         height = qMax(d->leftWidget->sizeHint().height(), height);

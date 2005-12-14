@@ -281,8 +281,9 @@ void QGLContext::makeCurrent()
         qWarning("QGLContext::makeCurrent(): Cannot make invalid context current.");
         return;
     }
-
     aglSetCurrentContext((AGLContext)d->cx);
+    if (d->update)
+	updatePaintDevice();
     currentCtx = this;
 }
 
@@ -332,6 +333,7 @@ static QRegion qt_mac_get_widget_rgn(const QWidget *widget)
 void QGLContext::updatePaintDevice()
 {
     Q_D(QGLContext);
+    d->update = false;
     if(d->paintDevice->devType() == QInternal::Widget) {
         //get control information
         QWidget *w = (QWidget *)d->paintDevice;
@@ -532,8 +534,9 @@ public:
     }
 protected:
     static OSStatus globalEventProcessor(EventHandlerCallRef, EventRef, void *);
-    void windowChanged() { context->d_func()->updatePaintDevice(); }
+    void windowChanged() { context->d_func()->glcx->d_func()->update = true; }
 };
+
 
 OSStatus QMacGLWindowChangeEvent::globalEventProcessor(EventHandlerCallRef er, EventRef event, void *)
 {
@@ -558,7 +561,6 @@ OSStatus QMacGLWindowChangeEvent::globalEventProcessor(EventHandlerCallRef er, E
     return CallNextEventHandler(er, event);
 }
 
-
 bool QGLWidget::event(QEvent *e)
 {
     return QWidget::event(e);
@@ -575,7 +577,8 @@ void QGLWidget::resizeEvent(QResizeEvent *)
     Q_D(QGLWidget);
     if(!isValid())
         return;
-    d->updatePaintDevice();
+    if (!isWindow())
+	d->glcx->d_func()->update = true;
     makeCurrent();
     if(!d->glcx->initialized())
         glInit();

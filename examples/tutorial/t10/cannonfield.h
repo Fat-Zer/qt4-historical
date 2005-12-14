@@ -21,14 +21,8 @@
 **
 ****************************************************************************/
 
-/****************************************************************
-**
-** Definition of CannonField class, Qt tutorial 10
-**
-****************************************************************/
-
-#ifndef CANNON_H
-#define CANNON_H
+#ifndef CANNONFIELD_H
+#define CANNONFIELD_H
 
 #include <QWidget>
 
@@ -60,4 +54,4 @@ private:
     int currentForce;
 };
 
-#endif // CANNON_H
+#endif

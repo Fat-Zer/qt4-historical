@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef Q3FRAMEPLUGIN_H
-#define Q3FRAMEPLUGIN_H
+#ifndef Q3FRAME_PLUGIN_H
+#define Q3FRAME_PLUGIN_H
 
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
@@ -68,4 +68,4 @@ private:
     bool m_initialized;
 };
 
-#endif
+#endif // Q3FRAME_PLUGIN_H

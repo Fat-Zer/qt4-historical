@@ -187,7 +187,7 @@ void QMapData::dump()
        With QMap, the items are always sorted by key.
     \i The key type of a QHash must provide operator==() and a global
        qHash(Key) function. The key type of a QMap must provide
-       operator<().
+       operator<() specifying a total order.
     \endlist
 
     Here's an example QMap with QString keys and \c int values:
@@ -399,7 +399,7 @@ void QMapData::dump()
     Constructs a copy of \a other.
 
     This function is only available if Qt is configured with STL
-    compabitility enabled.
+    compatibility enabled.
 
     \sa toStdMap()
 */
@@ -409,7 +409,7 @@ void QMapData::dump()
     Returns an STL map equivalent to this QMap.
 
     This function is only available if Qt is configured with STL
-    compabitility enabled.
+    compatibility enabled.
 */
 
 /*! \fn QMap::~QMap()
@@ -721,12 +721,24 @@ void QMapData::dump()
         }
     \endcode
 
-    \sa value(), values(), lowerBound(), upperBound()
+    \sa constFind(), value(), values(), lowerBound(), upperBound()
 */
 
 /*! \fn QMap::const_iterator QMap::find(const Key &key) const
 
     \overload
+*/
+
+/*! \fn QMap::iterator QMap::constFind(const Key &key) const
+    \since 4.1
+
+    Returns an const iterator pointing to the item with key \a key in the
+    map.
+    
+    If the map contains no item with key \a key, the function
+    returns constEnd().
+
+    \sa find()
 */
 
 /*! \fn QMap::iterator QMap::lowerBound(const Key &key)

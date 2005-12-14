@@ -24,7 +24,7 @@
 #ifndef QOBJECTCLEANUPHANDLER_H
 #define QOBJECTCLEANUPHANDLER_H
 
-#include "QtCore/qobject.h"
+#include <QtCore/qobject.h>
 
 QT_MODULE(Core)
 
@@ -45,7 +45,7 @@ private:
     // ### move into d pointer
     QObjectList cleanupObjects;
 
-private slots:
+private Q_SLOTS:
     void objectDestroyed(QObject *);
 };
 

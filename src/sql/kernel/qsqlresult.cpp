@@ -22,7 +22,7 @@
 ****************************************************************************/
 
 #include "qvariant.h"
-#include "qmap.h"
+#include "qhash.h"
 #include "qregexp.h"
 #include "qsqlerror.h"
 #include "qsqlfield.h"
@@ -31,10 +31,10 @@
 #include "qvector.h"
 #include "qsqldriver.h"
 
-struct Holder {
-    Holder(const QString& hldr = QString(), int index = -1): holderName(hldr), holderPos(index) {}
-    bool operator==(const Holder& h) const { return h.holderPos == holderPos && h.holderName == holderName; }
-    bool operator!=(const Holder& h) const { return h.holderPos != holderPos || h.holderName != holderName; }
+struct QHolder {
+    QHolder(const QString& hldr = QString(), int index = -1): holderName(hldr), holderPos(index) {}
+    bool operator==(const QHolder& h) const { return h.holderPos == holderPos && h.holderName == holderName; }
+    bool operator!=(const QHolder& h) const { return h.holderPos != holderPos || h.holderName != holderName; }
     QString holderName;
     int            holderPos;
 };
@@ -89,18 +89,32 @@ public:
     QSqlResult::BindingSyntax binds;
 
     QString executedQuery;
-    QMap<int, QSql::ParamType> types;
+    QHash<int, QSql::ParamType> types;
     QVector<QVariant> values;
-    typedef QMap<QString, int> IndexMap;
+    typedef QHash<QString, int> IndexMap;
     IndexMap indexes;
 
-    typedef QVector<Holder> HolderVector;
-    HolderVector holders;
+    typedef QVector<QHolder> QHolderVector;
+    QHolderVector holders;
 };
 
 QString QSqlResultPrivate::holderAt(int index) const
 {
     return indexes.key(index);
+}
+
+// return a unique id for bound names
+static QString qFieldSerial(int i)
+{
+    ushort arr[] = { ':', 'f', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    ushort *ptr = &arr[1];
+
+    while (i > 0) {
+        *(++ptr) = 'a' + i % 16;
+        i >>= 4;
+    }
+
+    return QString::fromUtf16(arr, int(ptr - arr) + 1);
 }
 
 QString QSqlResultPrivate::positionalToNamedBinding()
@@ -110,7 +124,7 @@ QString QSqlResultPrivate::positionalToNamedBinding()
     int i = 0, cnt = -1;
     while ((i = rx.indexIn(q, i)) != -1) {
         if (rx.cap(0) == QLatin1String("?"))
-            q = q.replace(i, 1, QLatin1String(":f") + QString::number(++cnt));
+            q = q.replace(i, 1, qFieldSerial(++cnt));
         i += rx.matchedLength();
     }
     return q;
@@ -167,6 +181,11 @@ QString QSqlResultPrivate::namedToPositionalBinding()
     \omitvalue BindByName
 
     \sa bindingSyntax()
+*/
+
+/*!
+    \enum QSqlResult::VirtualHookOperation
+    \internal
 */
 
 /*!
@@ -526,7 +545,7 @@ bool QSqlResult::prepare(const QString& query)
     int i = 0;
     while ((i = rx.indexIn(query, i)) != -1) {
         if (!rx.cap(1).isEmpty())
-            d->holders.append(Holder(rx.cap(0), i));
+            d->holders.append(QHolder(rx.cap(0), i));
         i += rx.matchedLength();
     }
     d->sql = query;
@@ -593,8 +612,7 @@ bool QSqlResult::exec()
 void QSqlResult::bindValue(int index, const QVariant& val, QSql::ParamType paramType)
 {
     d->binds = PositionalBinding;
-    QString nm(QLatin1String(":f") + QString::number(index));
-    d->indexes[nm] = index;
+    d->indexes[qFieldSerial(index)] = index;
     if (d->values.count() <= index)
         d->values.resize(index + 1);
     d->values[index] = val;
@@ -767,7 +785,7 @@ bool QSqlResult::hasOutValues() const
 {
     if (d->types.isEmpty())
         return false;
-    QMap<int, QSql::ParamType>::ConstIterator it;
+    QHash<int, QSql::ParamType>::ConstIterator it;
     for (it = d->types.constBegin(); it != d->types.constEnd(); ++it) {
         if (it.value() != QSql::In)
             return true;
@@ -807,6 +825,73 @@ QVariant QSqlResult::lastInsertId() const
 */
 void QSqlResult::virtual_hook(int, void *)
 {
+    Q_ASSERT(false);
+}
+
+/*! \internal
+    \since 4.2
+
+    Executes a prepared query in batch mode if the driver supports it,
+    otherwise emulates a batch execution using bindValue() and exec().
+    QSqlDriver::hasFeature() can be used to find out whether a driver
+    supports batch execution.
+
+    Batch execution can be faster for large amounts of data since it
+    reduces network roundtrips.
+
+    For batch executions, bound values have to be provided as lists
+    of variants (QVariantList).
+
+    Each list must contain values of the same type. All lists must
+    contain equal amount of values (rows).
+
+    NULL values are passed in as typed QVariants, for example
+    \c {QVariant(QVariant::Int)} for an integer NULL value.
+
+    Example:
+
+    \code
+    QSqlQuery q;
+    q.prepare("insert into test (i1, i2, s) values (?, ?, ?)");
+
+    QVariantList col1;
+    QVariantList col2;
+    QVariantList col3;
+
+    col1 << 1 << 3;
+    col2 << 2 << 4;
+    col3 << "hello" << "world";
+
+    q.bindValue(0, col1);
+    q.bindValue(1, col2);
+    q.bindValue(2, col3);
+
+    if (!q.execBatch())
+        qDebug() << q.lastError();
+    \endcode
+
+    Here, we insert two rows into a SQL table, with each row containing three values.
+
+    \sa exec(), QSqlDriver::hasFeature()
+*/
+bool QSqlResult::execBatch(bool arrayBind)
+{
+    if (driver()->hasFeature(QSqlDriver::BatchOperations)) {
+        virtual_hook(BatchOperation, &arrayBind);
+        return d->error.type() == QSqlError::NoError;
+    } else {
+        QVector<QVariant> values = d->values;
+        if (values.count() == 0)
+            return false;
+        for (int i = 0; i < values.at(0).toList().count(); ++i) {
+            for (int j = 0; j < values.count(); ++j)
+                bindValue(j, values.at(j).toList().at(i), QSql::In);
+            if (!exec())
+                return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 

@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Qt 4.0: browser.cpp Example File (demos/sqlbrowser/browser.cpp)</title>
+    <title>Qt 4.1: browser.cpp Example File (demos/sqlbrowser/browser.cpp)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -19,21 +19,21 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">browser.cpp Example File<br /><sup><sup>demos/sqlbrowser/browser.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
     ** This file may be used under the terms of the GNU General Public
-** License version 2.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of
-** this file.  Please review the following information to ensure GNU
-** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
-**
-** If you are unsure which license is appropriate for your use, please
-** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+    ** License version 2.0 as published by the Free Software Foundation
+    ** and appearing in the file LICENSE.GPL included in the packaging of
+    ** this file.  Please review the following information to ensure GNU
+    ** General Public Licensing requirements will be met:
+    ** http://www.trolltech.com/products/qt/opensource.html
+    **
+    ** If you are unsure which license is appropriate for your use, please
+    ** review the following information:
+    ** http://www.trolltech.com/products/qt/licensing.html or contact the
+    ** sales department at sales@trolltech.com.
     **
     ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
     ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -56,9 +56,6 @@ body { background: #ffffff; color: black; }</style>
                                      tr(&quot;This demo requires at least one Qt database driver. &quot;
                                         &quot;Please check the documentation how to build the &quot;
                                         &quot;Qt SQL plugins.&quot;));
-        else {
-            QMetaObject::invokeMethod(this, &quot;addConnection&quot;, Qt::QueuedConnection);
-        }
 
         emit statusMessage(tr(&quot;Ready.&quot;));
     }
@@ -82,6 +79,26 @@ body { background: #ffffff; color: black; }</style>
                         model-&gt;query().numRowsAffected()));
     }
 
+    QSqlError Browser::addConnection(const QString &amp;driver, const QString &amp;dbName, const QString &amp;host,
+                                const QString &amp;user, const QString &amp;passwd, int port)
+    {
+        static int cCount = 0;
+
+        QSqlError err;
+        QSqlDatabase db = QSqlDatabase::addDatabase(driver, QString(&quot;Browser%1&quot;).arg(++cCount));
+        db.setDatabaseName(dbName);
+        db.setHostName(host);
+        db.setPort(port);
+        if (!db.open(user, passwd)) {
+            err = db.lastError();
+            db = QSqlDatabase();
+            QSqlDatabase::removeDatabase(QString(&quot;Browser%1&quot;).arg(cCount));
+        }
+        connectionWidget-&gt;refresh();
+
+        return err;
+    }
+
     void Browser::addConnection()
     {
         QSqlConnectionDialog dialog(this);
@@ -99,32 +116,26 @@ body { background: #ffffff; color: black; }</style>
             QSqlQuery q(&quot;&quot;, db);
             q.exec(&quot;drop table Movies&quot;);
             q.exec(&quot;drop table Names&quot;);
-            q.exec(&quot;create table Movies (id int primary key, Title varchar(50), Director varchar(20), Rating number(2,2))&quot;);
+            q.exec(&quot;create table Movies (id integer primary key, Title varchar, Director varchar, Rating number)&quot;);
             q.exec(&quot;insert into Movies values (0, 'Metropolis', 'Fritz Lang', '8.4')&quot;);
             q.exec(&quot;insert into Movies values (1, 'Nosferatu, eine Symphonie des Grauens', 'F.W. Murnau', '8.1')&quot;);
             q.exec(&quot;insert into Movies values (2, 'Bis ans Ende der Welt', 'Wim Wenders', '6.5')&quot;);
             q.exec(&quot;insert into Movies values (3, 'Hardware', 'Richard Stanley', '5.2')&quot;);
             q.exec(&quot;insert into Movies values (4, 'Mitchell', 'Andrew V. McLaglen', '2.1')&quot;);
-            q.exec(&quot;create table Names (id int primary key, Firstname varchar(20), Lastname varchar(20), City varchar(20))&quot;);
+            q.exec(&quot;create table Names (id integer primary key, Firstname varchar, Lastname varchar, City varchar)&quot;);
             q.exec(&quot;insert into Names values (0, 'Sala', 'Palmer', 'Morristown')&quot;);
             q.exec(&quot;insert into Names values (1, 'Christopher', 'Walker', 'Morristown')&quot;);
             q.exec(&quot;insert into Names values (2, 'Donald', 'Duck', 'Andeby')&quot;);
             q.exec(&quot;insert into Names values (3, 'Buck', 'Rogers', 'Paris')&quot;);
             q.exec(&quot;insert into Names values (4, 'Sherlock', 'Holmes', 'London')&quot;);
+            connectionWidget-&gt;refresh();
         } else {
-            static int cCount = 0;
-            QSqlDatabase db = QSqlDatabase::addDatabase(dialog.driverName(),
-                                                        QString(&quot;Browser%1&quot;).arg(++cCount));
-            db.setDatabaseName(dialog.databaseName());
-            db.setHostName(dialog.hostName());
-            db.setUserName(dialog.userName());
-            db.setPassword(dialog.password());
-            db.setPort(dialog.port());
-            if (!db.open())
+            QSqlError err = addConnection(dialog.driverName(), dialog.databaseName(), dialog.hostName(),
+                               dialog.userName(), dialog.password(), dialog.port());
+            if (err.type() != QSqlError::NoError)
                 QMessageBox::warning(this, tr(&quot;Unable to open database&quot;), tr(&quot;An error occured while &quot;
-                                                                             &quot;opening the connection: &quot;) + db.lastError().text());
+                                          &quot;opening the connection: &quot;) + err.text());
         }
-        connectionWidget-&gt;refresh();
     }
 
     void Browser::showTable(const QString &amp;t)
@@ -135,11 +146,46 @@ body { background: #ffffff; color: black; }</style>
         if (model-&gt;lastError().type() != QSqlError::NoError)
             emit statusMessage(model-&gt;lastError().text());
         table-&gt;setModel(model);
+        table-&gt;setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+    }
+
+    void Browser::showMetaData(const QString &amp;t)
+    {
+        QSqlRecord rec = connectionWidget-&gt;currentDatabase().record(t);
+        QStandardItemModel *model = new QStandardItemModel(table);
+
+        model-&gt;insertRows(0, rec.count());
+        model-&gt;insertColumns(0, 7);
+
+        model-&gt;setHeaderData(0, Qt::Horizontal, &quot;Fieldname&quot;);
+        model-&gt;setHeaderData(1, Qt::Horizontal, &quot;Type&quot;);
+        model-&gt;setHeaderData(2, Qt::Horizontal, &quot;Length&quot;);
+        model-&gt;setHeaderData(3, Qt::Horizontal, &quot;Precision&quot;);
+        model-&gt;setHeaderData(4, Qt::Horizontal, &quot;Required&quot;);
+        model-&gt;setHeaderData(5, Qt::Horizontal, &quot;AutoValue&quot;);
+        model-&gt;setHeaderData(6, Qt::Horizontal, &quot;DefaultValue&quot;);
+
+        for (int i = 0; i &lt; rec.count(); ++i) {
+            QSqlField fld = rec.field(i);
+            model-&gt;setData(model-&gt;index(i, 0), fld.name());
+            model-&gt;setData(model-&gt;index(i, 1), fld.typeID() == -1
+                    ? QString(QVariant::typeToName(fld.type()))
+                    : QString(&quot;%1 (%2)&quot;).arg(QVariant::typeToName(fld.type())).arg(fld.typeID()));
+            model-&gt;setData(model-&gt;index(i, 2), fld.length());
+            model-&gt;setData(model-&gt;index(i, 3), fld.precision());
+            model-&gt;setData(model-&gt;index(i, 4), fld.requiredStatus() == -1 ? QVariant(&quot;?&quot;)
+                    : QVariant(bool(fld.requiredStatus())));
+            model-&gt;setData(model-&gt;index(i, 5), fld.isAutoValue());
+            model-&gt;setData(model-&gt;index(i, 6), fld.defaultValue());
+        }
+
+        table-&gt;setModel(model);
+        table-&gt;setEditTriggers(QAbstractItemView::NoEditTriggers);
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

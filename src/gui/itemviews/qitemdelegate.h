@@ -93,4 +93,5 @@ private:
 };
 
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QITEMDELEGATE_H

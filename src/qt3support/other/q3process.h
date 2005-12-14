@@ -24,11 +24,9 @@
 #ifndef Q3PROCESS_H
 #define Q3PROCESS_H
 
-#ifndef QT_H
-#include "QtCore/qobject.h"
-#include "QtCore/qstringlist.h"
-#include "QtCore/qdir.h"
-#endif // QT_H
+#include <QtCore/qobject.h>
+#include <QtCore/qstringlist.h>
+#include <QtCore/qdir.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -89,14 +87,14 @@ public:
 
     void flushStdin();
 
-signals:
+Q_SIGNALS:
     void readyReadStdout();
     void readyReadStderr();
     void processExited();
     void wroteToStdin();
     void launchFinished();
 
-public slots:
+public Q_SLOTS:
     // end the execution
     void tryTerminate() const;
     void kill() const;
@@ -122,7 +120,7 @@ private:
     Q3Membuf* membufStdout();
     Q3Membuf* membufStderr();
 
-private slots:
+private Q_SLOTS:
     void socketRead( int fd );
     void socketWrite( int fd );
     void timeout();

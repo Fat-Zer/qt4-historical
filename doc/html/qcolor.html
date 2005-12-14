@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/painting/qcolor.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/painting/qcolor.cpp -->
 <head>
-    <title>Qt 4.0: QColor Class Reference</title>
+    <title>Qt 4.1: QColor Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -124,16 +124,27 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qcolor.html#qRed">qRed</a></b> ( QRgb <i>rgb</i> )</li>
 <li><div class="fn"/>QRgb <b><a href="qcolor.html#qRgb">qRgb</a></b> ( int <i>r</i>, int <i>g</i>, int <i>b</i> )</li>
 <li><div class="fn"/>QRgb <b><a href="qcolor.html#qRgba">qRgba</a></b> ( int <i>r</i>, int <i>g</i>, int <i>b</i>, int <i>a</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-lt-lt-69">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-gt-gt-47">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QColor &amp; <i>color</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-lt-lt-76">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qcolor.html#operator-gt-gt-49">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QColor &amp; <i>color</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QColor class provides colors based on RGB or HSV values.</p>
 <p>A color is normally specified in terms of RGB (red, green, and blue) components, but it is also possible to specify HSV (hue, saturation, and value) or set a color name (the color name can be any of the SVG 1.0 color names).</p>
+<p>QColor also support alpha-blended outlining and filling. The alpha channel of a color specifies the transparency effect, 0 represents a fully transparent color, while 255 represents a fully opaque color. For example:</p>
+<pre>&nbsp;   // Specfiy semi-transparent red
+    painter.setBrush(QColor(255, 0, 0, 127));
+    painter.drawRect(0, 0, width()/2, height());
+
+    // Specify semi-transparend blue
+    painter.setBrush(QColor(0, 0, 255, 127));
+    painter.drawRect(0, 0, width(), height()/2);</pre>
+<p>The code above produces the following output:</p>
+<p align="center"><img src="images/alphafill.png" /></p><p>Alpha-blended drawing is supported on Windows, Mac OS X, and on X11 systems that have the X Render extension installed.</p>
+<p>The alpha channel of a color can be retrieved and set using the <a href="qcolor.html#alpha">alpha</a>() and <a href="qcolor.html#setAlpha">setAlpha</a>() functions, respectively, if its value is an integer, and <a href="qcolor.html#alphaF">alphaF</a>() and <a href="qcolor.html#setAlphaF">setAlphaF</a>() if its value is qreal (double).</p>
 <p>QColor's validity (<a href="qcolor.html#isValid">isValid</a>()) indicates whether it is legal at all. For example, a RGB color with RGB values out of range is illegal. For performance reasons, QColor mostly disregards illegal colors. Therefore, the result of using an invalid color is undefined.</p>
-<p>There are 20 predefined QColor objects: <a href="qt.html#GlobalColor-enum">Qt::white</a>, <a href="qt.html#GlobalColor-enum">Qt::black</a>, <a href="qt.html#GlobalColor-enum">Qt::red</a>, <a href="qt.html#GlobalColor-enum">Qt::darkRed</a>, <a href="qt.html#GlobalColor-enum">Qt::green</a>, <a href="qt.html#GlobalColor-enum">Qt::darkGreen</a>, <a href="qt.html#GlobalColor-enum">Qt::blue</a>, <a href="qt.html#GlobalColor-enum">Qt::darkBlue</a>, <a href="qt.html#GlobalColor-enum">Qt::cyan</a>, <a href="qt.html#GlobalColor-enum">Qt::darkCyan</a>, <a href="qt.html#GlobalColor-enum">Qt::magenta</a>, <a href="qt.html#GlobalColor-enum">Qt::darkMagenta</a>, <a href="qt.html#GlobalColor-enum">Qt::yellow</a>, <a href="qt.html#GlobalColor-enum">Qt::darkYellow</a>, <a href="qt.html#GlobalColor-enum">Qt::gray</a>, <a href="qt.html#GlobalColor-enum">Qt::darkGray</a>, <a href="qt.html#GlobalColor-enum">Qt::lightGray</a>, <a href="qt.html#GlobalColor-enum">Qt::color0</a>, <a href="qt.html#GlobalColor-enum">Qt::color1</a>, and <a href="qt.html#GlobalColor-enum">Qt::transparent</a>.</p>
+<p>There are 20 predefined QColor's: <a href="qt.html#GlobalColor-enum">Qt::white</a>, <a href="qt.html#GlobalColor-enum">Qt::black</a>, <a href="qt.html#GlobalColor-enum">Qt::red</a>, <a href="qt.html#GlobalColor-enum">Qt::darkRed</a>, <a href="qt.html#GlobalColor-enum">Qt::green</a>, <a href="qt.html#GlobalColor-enum">Qt::darkGreen</a>, <a href="qt.html#GlobalColor-enum">Qt::blue</a>, <a href="qt.html#GlobalColor-enum">Qt::darkBlue</a>, <a href="qt.html#GlobalColor-enum">Qt::cyan</a>, <a href="qt.html#GlobalColor-enum">Qt::darkCyan</a>, <a href="qt.html#GlobalColor-enum">Qt::magenta</a>, <a href="qt.html#GlobalColor-enum">Qt::darkMagenta</a>, <a href="qt.html#GlobalColor-enum">Qt::yellow</a>, <a href="qt.html#GlobalColor-enum">Qt::darkYellow</a>, <a href="qt.html#GlobalColor-enum">Qt::gray</a>, <a href="qt.html#GlobalColor-enum">Qt::darkGray</a>, <a href="qt.html#GlobalColor-enum">Qt::lightGray</a>, <a href="qt.html#GlobalColor-enum">Qt::color0</a>, <a href="qt.html#GlobalColor-enum">Qt::color1</a>, and <a href="qt.html#GlobalColor-enum">Qt::transparent</a>.</p>
 <p align="center"><img src="images/qt-colors.png" alt="Qt Colors" /></p><p>The colors <a href="qt.html#GlobalColor-enum">Qt::color0</a> (zero pixel value) and <a href="qt.html#GlobalColor-enum">Qt::color1</a> (non-zero pixel value) are special colors for drawing in QBitmaps. Painting with <a href="qt.html#GlobalColor-enum">Qt::color0</a> sets the bitmap bits to 0 (transparent, i.e. background), and painting with <a href="qt.html#GlobalColor-enum">Qt::color1</a> sets the bits to 1 (opaque, i.e. foreground).</p>
 <p>QColor is platform and device independent. The <a href="qcolormap.html">QColormap</a> class maps the color to the hardware.</p>
 <p>A color can be set by passing an RGB string to <a href="qcolor.html#setNamedColor">setNamedColor</a>() (such as &quot;#112233&quot;), or a color name (such as &quot;blue&quot;). The names are taken from the SVG 1.0 color names. To get a lighter or darker color use <a href="qcolor.html#light">light</a>() and <a href="qcolor.html#dark">dark</a>() respectively. Colors can also be set using <a href="qcolor.html#setRgb">setRgb</a>() and <a href="qcolor.html#setHsv">setHsv</a>(). The color components can be accessed in one go with <a href="qcolor.html#rgb">rgb</a>() and <a href="qcolor-qt3.html#hsv">hsv</a>(), or individually with <a href="qcolor.html#red">red</a>(), <a href="qcolor.html#green">green</a>(), and <a href="qcolor.html#blue">blue</a>().</p>
@@ -363,7 +374,8 @@ body { background: #ffffff; color: black; }</style>
 <li>#RRGGBB</li>
 <li>#RRRGGGBBB</li>
 <li>#RRRRGGGGBBBB</li>
-<li>A name from the X color database (rgb.txt) (e.g. &quot;steelblue&quot; or &quot;gainsboro&quot;). These color names work on all platforms.</li>
+<li>A name from the list of colors defined in the list of <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">SVG color keyword names</a> provided by the World Wide Web Consortium; for example, &quot;steelblue&quot; or &quot;gainsboro&quot;. These color names work on all platforms.</li>
+<li><tt>transparent</tt> - representing the absence of a color.</li>
 </ul>
 <p>The color is invalid if <i>name</i> cannot be parsed.</p>
 <h3 class="fn"><a name="setRed"></a>void QColor::setRed ( int <i>red</i> )</h3>
@@ -448,11 +460,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the RGBA quadruplet (<i>r</i>, <i>g</i>, <i>b</i>, <i>a</i>).</p>
 <p>The return type QRgba is equivalent to <tt>unsigned</tt> <tt>int</tt>.</p>
 <p>See also <a href="qcolor.html#qRgb">qRgb</a>(), <a href="qcolor.html#qRed">qRed</a>(), <a href="qcolor.html#qGreen">qGreen</a>(), and <a href="qcolor.html#qBlue">qBlue</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-69"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-76"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QColor &amp; <i>color</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the <i>color</i> to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-47"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QColor &amp; <i>color</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-49"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QColor &amp; <i>color</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads the <i>color</i> from the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -460,6 +472,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -3,13 +3,13 @@
 ######################################################################
 
 TEMPLATE = app
-CONFIG -= moc
+CONFIG -= moc app_bundle
 DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
 SOURCES += waitconditions.cpp
-CONFIG += qt warn_on create_prl link_prl
+CONFIG += qt warn_on create_prl link_prl console
 OBJECTS_DIR=.obj/debug-shared
 MOC_DIR=.moc/debug-shared
 

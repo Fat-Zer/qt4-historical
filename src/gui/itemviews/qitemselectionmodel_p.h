@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
+#include "private/qobject_p.h"
 
 #ifndef QT_NO_ITEMVIEWS
 class QItemSelectionModelPrivate: public QObjectPrivate
@@ -61,5 +61,7 @@ public:
     QPersistentModelIndex currentIndex;
     QItemSelectionModel::SelectionFlags currentCommand;
 };
+
 #endif // QT_NO_ITEMVIEWS
+
 #endif // QITEMSELECTIONMODEL_P_H

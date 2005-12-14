@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -238,7 +238,6 @@ SpreadSheet::SpreadSheet(int rows, int cols, QWidget *parent)
     for (int c = 0; c < cols; ++c) {
         QString character(QChar('A' + c));
         table->setHorizontalHeaderItem(c, new QTableWidgetItem(character));
-        table->horizontalHeaderItem(c)->setTextAlignment(Qt::AlignCenter);
     }
     table->setItemPrototype(table->item(rows - 1, cols - 1));
 
@@ -291,7 +290,7 @@ void SpreadSheet::createActions()
     fontAction->setShortcut(Qt::CTRL|Qt::Key_F);
     connect(fontAction, SIGNAL(triggered()), this, SLOT(selectFont()));
 
-    colorAction = new QAction(QPixmap(16, 16), tr("Background &Color"), this);
+    colorAction = new QAction(QPixmap(16, 16), tr("Background &Color..."), this);
     connect(colorAction, SIGNAL(triggered()), this, SLOT(selectColor()));
 
     clearAction = new QAction(tr("Clear"), this);

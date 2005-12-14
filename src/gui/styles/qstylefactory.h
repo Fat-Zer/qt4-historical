@@ -24,7 +24,7 @@
 #ifndef QSTYLEFACTORY_H
 #define QSTYLEFACTORY_H
 
-#include "QtCore/qstringlist.h"
+#include <QtCore/qstringlist.h>
 
 QT_MODULE(Gui)
 
@@ -37,4 +37,4 @@ public:
     static QStyle *create(const QString&);
 };
 
-#endif //QSTYLEFACTORY_H
+#endif // QSTYLEFACTORY_H

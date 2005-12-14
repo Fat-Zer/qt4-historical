@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/network/qhttp.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/network/qhttp.cpp -->
 <head>
-    <title>Qt 4.0: QHttpResponseHeader Class Reference</title>
+    <title>Qt 4.1: QHttpResponseHeader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -26,16 +26,19 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qhttpresponseheader.html#QHttpResponseHeader-3">QHttpResponseHeader</a></b> ()</li>
-<li><div class="fn"/><b><a href="qhttpresponseheader.html#QHttpResponseHeader-4">QHttpResponseHeader</a></b> ( const QHttpResponseHeader &amp; <i>header</i> )</li>
+<li><div class="fn"/><b><a href="qhttpresponseheader.html#QHttpResponseHeader">QHttpResponseHeader</a></b> ()</li>
+<li><div class="fn"/><b><a href="qhttpresponseheader.html#QHttpResponseHeader-2">QHttpResponseHeader</a></b> ( const QHttpResponseHeader &amp; <i>header</i> )</li>
+<li><div class="fn"/><b><a href="qhttpresponseheader.html#QHttpResponseHeader-3">QHttpResponseHeader</a></b> ( const QString &amp; <i>str</i> )</li>
+<li><div class="fn"/><b><a href="qhttpresponseheader.html#QHttpResponseHeader-4">QHttpResponseHeader</a></b> ( int <i>code</i>, const QString &amp; <i>text</i> = QString(), int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</li>
 <li><div class="fn"/>virtual int <b><a href="qhttpresponseheader.html#majorVersion">majorVersion</a></b> () const</li>
 <li><div class="fn"/>virtual int <b><a href="qhttpresponseheader.html#minorVersion">minorVersion</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qhttpresponseheader.html#reasonPhrase">reasonPhrase</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qhttpresponseheader.html#setStatusLine">setStatusLine</a></b> ( int <i>code</i>, const QString &amp; <i>text</i> = QString(), int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</li>
 <li><div class="fn"/>int <b><a href="qhttpresponseheader.html#statusCode">statusCode</a></b> () const</li>
 <li><div class="fn"/>QHttpResponseHeader &amp; <b><a href="qhttpresponseheader.html#operator-eq">operator=</a></b> ( const QHttpResponseHeader &amp; <i>header</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>16 public functions inherited from <a href="qhttpheader.html#public-functions">QHttpHeader</a></li>
+<li><div class="fn"/>21 public functions inherited from <a href="qhttpheader.html#public-functions">QHttpHeader</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -46,10 +49,16 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qhttprequestheader.html">QHttpRequestHeader</a> and <a href="qhttp.html">QHttp</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QHttpResponseHeader-3"></a>QHttpResponseHeader::QHttpResponseHeader ()</h3>
+<h3 class="fn"><a name="QHttpResponseHeader"></a>QHttpResponseHeader::QHttpResponseHeader ()</h3>
 <p>Constructs an empty HTTP response header.</p>
-<h3 class="fn"><a name="QHttpResponseHeader-4"></a>QHttpResponseHeader::QHttpResponseHeader ( const QHttpResponseHeader &amp; <i>header</i> )</h3>
+<h3 class="fn"><a name="QHttpResponseHeader-2"></a>QHttpResponseHeader::QHttpResponseHeader ( const QHttpResponseHeader &amp; <i>header</i> )</h3>
 <p>Constructs a copy of <i>header</i>.</p>
+<h3 class="fn"><a name="QHttpResponseHeader-3"></a>QHttpResponseHeader::QHttpResponseHeader ( const <a href="qstring.html">QString</a> &amp; <i>str</i> )</h3>
+<p>Constructs a HTTP response header from the string <i>str</i>. The string is parsed and the information is set. The <i>str</i> should consist of one or more &quot;\r\n&quot; delimited lines; the first line should be the status-line (format: HTTP-version, space, status-code, space, reason-phrase); each of remaining lines should have the format key, colon, space, value.</p>
+<h3 class="fn"><a name="QHttpResponseHeader-4"></a>QHttpResponseHeader::QHttpResponseHeader ( int <i>code</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> = QString(), int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</h3>
+<p>Constructs a <a href="qhttpresponseheader.html">QHttpResponseHeader</a>, setting the status code to <i>code</i>, the reason phrase to <i>text</i> and the protocol-version to <i>majorVer</i> and <i>minorVer</i>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qhttpresponseheader.html#statusCode">statusCode</a>(), <a href="qhttpresponseheader.html#reasonPhrase">reasonPhrase</a>(), <a href="qhttpresponseheader.html#majorVersion">majorVersion</a>(), and <a href="qhttpresponseheader.html#minorVersion">minorVersion</a>().</p>
 <h3 class="fn"><a name="majorVersion"></a>int QHttpResponseHeader::majorVersion () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the major protocol-version of the HTTP response header.</p>
 <p>Reimplemented from <a href="qhttpheader.html#majorVersion">QHttpHeader</a>.</p>
@@ -61,6 +70,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="reasonPhrase"></a><a href="qstring.html">QString</a> QHttpResponseHeader::reasonPhrase () const</h3>
 <p>Returns the reason phrase of the HTTP response header.</p>
 <p>See also <a href="qhttpresponseheader.html#statusCode">statusCode</a>(), <a href="qhttpresponseheader.html#majorVersion">majorVersion</a>(), and <a href="qhttpresponseheader.html#minorVersion">minorVersion</a>().</p>
+<h3 class="fn"><a name="setStatusLine"></a>void QHttpResponseHeader::setStatusLine ( int <i>code</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> = QString(), int <i>majorVer</i> = 1, int <i>minorVer</i> = 1 )</h3>
+<p>Sets the status code to <i>code</i>, the reason phrase to <i>text</i> and the protocol-version to <i>majorVer</i> and <i>minorVer</i>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qhttpresponseheader.html#statusCode">statusCode</a>(), <a href="qhttpresponseheader.html#reasonPhrase">reasonPhrase</a>(), <a href="qhttpresponseheader.html#majorVersion">majorVersion</a>(), and <a href="qhttpresponseheader.html#minorVersion">minorVersion</a>().</p>
 <h3 class="fn"><a name="statusCode"></a>int QHttpResponseHeader::statusCode () const</h3>
 <p>Returns the status code of the HTTP response header.</p>
 <p>See also <a href="qhttpresponseheader.html#reasonPhrase">reasonPhrase</a>(), <a href="qhttpresponseheader.html#majorVersion">majorVersion</a>(), and <a href="qhttpresponseheader.html#minorVersion">minorVersion</a>().</p>
@@ -70,6 +83,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

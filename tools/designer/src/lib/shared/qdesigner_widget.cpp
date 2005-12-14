@@ -30,7 +30,6 @@
 #include <QtDesigner/QExtensionManager>
 
 #include <QtGui/QBitmap>
-#include <QtGui/QPixmapCache>
 #include <QtGui/QToolButton>
 #include <QtGui/QPainter>
 #include <QtGui/QApplication>
@@ -41,36 +40,40 @@
 
 #include <QtCore/qdebug.h>
 
+using namespace qdesigner_internal;
+
 static void paintGrid(QWidget *widget, QDesignerFormWindowInterface *formWindow, QPaintEvent *e, bool needFrame = false)
 {
     QPainter p(widget);
-    p.setClipRect(e->rect());
 
     p.fillRect(e->rect(), widget->palette().brush(widget->backgroundRole()));
 
-    QString grid_name;
-    grid_name.sprintf("QDesignerFormWindowInterfaceGrid_%d_%d", formWindow->grid().x(), formWindow->grid().y());
+    p.setPen(widget->palette().dark().color());
+    int width = widget->width();
+    int height = widget->height();
+    int pointCount = qRound((width/float(formWindow->grid().x()))+.5) * qRound((height/float(formWindow->grid().y()))+.5);
+    static const int BUF_SIZE = 4096;
+    QPoint points[BUF_SIZE];
 
-    QPixmap grid;
-    if (!QPixmapCache::find(grid_name, grid)) {
-        grid = QPixmap(350 + (350 % formWindow->grid().x()), 350 + (350 % formWindow->grid().y()));
-        grid.fill(widget->palette().foreground().color());
-        QBitmap mask(grid.width(), grid.height());
-        mask.fill(Qt::color0);
-        QPainter p(&mask);
-        p.setPen(Qt::color1);
-        for (int y = 0; y < grid.width(); y += formWindow->grid().y()) {
-            for (int x = 0; x < grid.height(); x += formWindow->grid().x()) {
-                p.drawPoint(x, y);
+    int x = 0;
+    int y = 0;
+    int i = 0;
+    while (pointCount > 0) {
+        while (i < pointCount && i < BUF_SIZE) {
+            points[i] = QPoint(x, y);
+            ++i;
+            x += formWindow->grid().x();
+            if (x >= width) {
+                x = 0;
+                y += formWindow->grid().y();
+                if (y > height) // probably never reached..
+                    break;
             }
         }
-        p.end();
-        grid.setMask(mask);
-        QPixmapCache::insert(grid_name, grid);
+        p.drawPoints(points, i);
+        pointCount -= i;
+        i = 0;
     }
-
-    p.drawTiledPixmap(0, 0, widget->width(), widget->height(), grid);
-
     if (needFrame) {
         p.setPen(widget->palette().dark().color());
         p.drawRect(widget->rect());
@@ -79,13 +82,12 @@ static void paintGrid(QWidget *widget, QDesignerFormWindowInterface *formWindow,
 
 void QDesignerDialog::paintEvent(QPaintEvent *e)
 {
-    if (!m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature)
-            || m_formWindow->currentTool() != 0) {
-        QWidget::paintEvent(e);
-        return;
+    if (m_formWindow->currentTool() == 0 && m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature)) {
+        paintGrid(this, m_formWindow, e);
+    } else {
+        QPainter p(this);
+        p.fillRect(rect(), palette().brush(QPalette::Background));
     }
-
-    paintGrid(this, m_formWindow, e);
 }
 
 void QDesignerLabel::updateBuddy()
@@ -101,6 +103,7 @@ QDesignerWidget::QDesignerWidget(QDesignerFormWindowInterface* formWindow, QWidg
     : QWidget(parent), m_formWindow(formWindow)
 {
     need_frame = true;
+    setBackgroundRole(QPalette::Background);
 }
 
 QDesignerWidget::~QDesignerWidget()
@@ -109,13 +112,10 @@ QDesignerWidget::~QDesignerWidget()
 
 void QDesignerWidget::paintEvent(QPaintEvent *e)
 {
-    if (m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature)
-        && m_formWindow->currentTool() == 0) {
-        paintGrid(this, m_formWindow, e, need_frame);
-    } else {
+    if (m_formWindow->currentTool() == 0 && m_formWindow->hasFeature(QDesignerFormWindowInterface::GridFeature))
+        paintGrid(this, m_formWindow, e);
+    else
         QWidget::paintEvent(e);
-    }
-
 }
 
 void QDesignerWidget::dragEnterEvent(QDragEnterEvent *)
@@ -132,4 +132,3 @@ void QDesignerLabel::setBuddy(QWidget *widget)
 {
     QLabel::setBuddy(widget);
 }
-

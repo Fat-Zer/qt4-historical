@@ -21,17 +21,16 @@
 **
 ****************************************************************************/
 
-#include <qset.h>
-#include <qhash.h>
-#include <qlocale.h>
-#include <qglobal.h>
-#include <qdatetime.h>
-#include <qbytearray.h>
-#include <qstringlist.h>
-#include <qvector.h>
-#include <private/qfileengine_p.h>
-
 #include "qresource_p.h"
+#include "qset.h"
+#include "qhash.h"
+#include "qlocale.h"
+#include "qglobal.h"
+#include "qdatetime.h"
+#include "qbytearray.h"
+#include "qstringlist.h"
+#include "qvector.h"
+#include "private/qabstractfileengine_p.h"
 
 //resource glue
 class QResource
@@ -263,11 +262,10 @@ class QResourceInfo
     QString file, searchFile;
     ResourceList related;
     uint container : 1;
-
     mutable uint hasData : 1;
-    mutable QByteArray mData;
-
     mutable uint hasChildren : 1;
+    mutable uint initialized : 1;
+    mutable QByteArray mData;
     mutable QStringList mChildren;
 
     inline void clear() {
@@ -276,24 +274,27 @@ class QResourceInfo
         hasData = hasChildren = 0;
         container = 0;
         related.clear();
+        initialized = 0;
     }
     bool loadResource(const QString &);
 public:
     QResourceInfo() { clear(); }
-    QResourceInfo(const QString &f) { setFileName(f); }
+    QResourceInfo(const QString &f) : file(f), initialized(0) {}
 
-    void setFileName(const QString &f);
+    void setFileName(const QString &f) { clear(); file = f; }
     QString fileName() const { return file; }
-    QString searchFileName() const { return searchFile; }
+    QString searchFileName() const { ensureInitialized(); return searchFile; }
 
-    bool exists() const { return !related.isEmpty(); }
-    bool isContainer() const { return container; }
+    bool exists() const { ensureInitialized(); return !related.isEmpty(); }
+    bool isContainer() const { ensureInitialized(); return container; }
     QByteArray data() const;
     QStringList children() const;
+    void ensureInitialized() const;
 };
 bool
 QResourceInfo::loadResource(const QString &path)
 {
+    ensureInitialized();
     const ResourceList *list = resourceList();
     for(int i = 0; i < list->size(); ++i) {
         QResource res = list->at(i);
@@ -307,30 +308,30 @@ QResourceInfo::loadResource(const QString &path)
     }
     return !related.isEmpty();
 }
-void
-QResourceInfo::setFileName(const QString &f)
+void QResourceInfo::ensureInitialized() const
 {
-    if(file == f)
+    if (initialized)
         return;
-    clear();
-    file = f;
+
+    initialized = 1;
+    QResourceInfo *that = const_cast<QResourceInfo *>(this);
     if(file == QLatin1String(":"))
-        file += QLatin1Char('/');
-    searchFile = file;
+        that->file += QLatin1Char('/');
+    that->searchFile = file;
 
     QString path = file;
     if(path.startsWith(QLatin1Char(':')))
         path = path.mid(1);
     if(path.startsWith(QLatin1Char('/'))) {
-        loadResource(path);
+        that->loadResource(path);
         return;
     } else {
         QStringList searchPaths = *qt_resource_search_paths();
         searchPaths << QLatin1String("");
         for(int i = 0; i < searchPaths.size(); ++i) {
             const QString searchPath(searchPaths.at(i) + QLatin1Char('/') + path);
-            if(loadResource(searchPath)) {
-                searchFile = QLatin1Char(':') + searchPath;
+            if(that->loadResource(searchPath)) {
+                that->searchFile = QLatin1Char(':') + searchPath;
                 break;
             }
         }
@@ -379,7 +380,7 @@ QStringList QResourceInfo::children() const
 Q_CORE_EXPORT bool qRegisterResourceData(int version, const unsigned char *tree,
                                          const unsigned char *name, const unsigned char *data)
 {
-    if(version == 0x01) {
+    if(version == 0x01 && resourceList()) {
         QResource res(tree, name, data);
         if (!resourceList()->contains(res))
             resourceList()->append(res);
@@ -388,15 +389,31 @@ Q_CORE_EXPORT bool qRegisterResourceData(int version, const unsigned char *tree,
     return false;
 }
 
+Q_CORE_EXPORT bool qUnregisterResourceData(int version, const unsigned char *tree,
+                                           const unsigned char *name, const unsigned char *data)
+{
+    if(version == 0x01 && resourceList()) {
+        QResource res(tree, name, data);
+        for(int i = 0; i < resourceList()->size(); ) {
+            if(resourceList()->at(i) == res)
+                resourceList()->remove(i);
+            else
+                ++i;
+        }
+        return true;
+    }
+    return false;
+}
+
 //file type handler
-class QResourceFileEngineHandler : public QFileEngineHandler
+class QResourceFileEngineHandler : public QAbstractFileEngineHandler
 {
 public:
     QResourceFileEngineHandler() { }
     ~QResourceFileEngineHandler() { }
-    QFileEngine *createFileEngine(const QString &path);
+    QAbstractFileEngine *create(const QString &path) const;
 };
-QFileEngine *QResourceFileEngineHandler::createFileEngine(const QString &path)
+QAbstractFileEngine *QResourceFileEngineHandler::create(const QString &path) const
 {
     if (path.size() > 0 && path.startsWith(QLatin1Char(':')))
         return new QResourceFileEngine(path);
@@ -404,7 +421,7 @@ QFileEngine *QResourceFileEngineHandler::createFileEngine(const QString &path)
 }
 
 //resource engine
-class QResourceFileEnginePrivate : public QFileEnginePrivate
+class QResourceFileEnginePrivate : public QAbstractFileEnginePrivate
 {
 protected:
     Q_DECLARE_PUBLIC(QResourceFileEngine)
@@ -476,7 +493,7 @@ bool QResourceFileEngine::caseSensitive() const
 }
 
 QResourceFileEngine::QResourceFileEngine(const QString &file) :
-    QFileEngine(*new QResourceFileEnginePrivate)
+    QAbstractFileEngine(*new QResourceFileEnginePrivate)
 {
     Q_D(QResourceFileEngine);
     d->resource.setFileName(file);
@@ -492,7 +509,7 @@ void QResourceFileEngine::setFileName(const QString &file)
     d->resource.setFileName(file);
 }
 
-bool QResourceFileEngine::open(int flags)
+bool QResourceFileEngine::open(QIODevice::OpenMode flags)
 {
     Q_D(QResourceFileEngine);
     if (d->resource.fileName().isEmpty()) {
@@ -513,9 +530,9 @@ bool QResourceFileEngine::close()
     return true;
 }
 
-void QResourceFileEngine::flush()
+bool QResourceFileEngine::flush()
 {
-
+    return false;
 }
 
 qint64 QResourceFileEngine::read(char *data, qint64 len)
@@ -531,11 +548,6 @@ qint64 QResourceFileEngine::read(char *data, qint64 len)
 }
 
 qint64 QResourceFileEngine::write(const char *, qint64)
-{
-    return -1;
-}
-
-int QResourceFileEngine::ungetch(int)
 {
     return -1;
 }
@@ -568,7 +580,7 @@ qint64 QResourceFileEngine::size() const
     return d->resource.data().size();
 }
 
-qint64 QResourceFileEngine::at() const
+qint64 QResourceFileEngine::pos() const
 {
     Q_D(const QResourceFileEngine);
     return d->offset;
@@ -599,14 +611,14 @@ bool QResourceFileEngine::isSequential() const
     return false;
 }
 
-QFileEngine::FileFlags QResourceFileEngine::fileFlags(QFileEngine::FileFlags type) const
+QAbstractFileEngine::FileFlags QResourceFileEngine::fileFlags(QAbstractFileEngine::FileFlags type) const
 {
     Q_D(const QResourceFileEngine);
-    QFileEngine::FileFlags ret = 0;
+    QAbstractFileEngine::FileFlags ret = 0;
     if(!d->resource.exists())
         return ret;
     if(type & PermsMask)
-        ret |= QFileEngine::FileFlags(ReadOwnerPerm|ReadUserPerm|ReadGroupPerm|ReadOtherPerm);
+        ret |= QAbstractFileEngine::FileFlags(ReadOwnerPerm|ReadUserPerm|ReadGroupPerm|ReadOtherPerm);
     if(type & TypesMask) {
         if(d->resource.isContainer())
             ret |= DirectoryType;
@@ -621,7 +633,7 @@ QFileEngine::FileFlags QResourceFileEngine::fileFlags(QFileEngine::FileFlags typ
     return ret;
 }
 
-bool QResourceFileEngine::chmod(uint)
+bool QResourceFileEngine::setPermissions(uint)
 {
     return false;
 }
@@ -671,9 +683,18 @@ QDateTime QResourceFileEngine::fileTime(FileTime) const
     return QDateTime();
 }
 
-QFileEngine::Type QResourceFileEngine::type() const
+bool QResourceFileEngine::extension(Extension extension, const ExtensionOption *option, ExtensionReturn *output)
 {
-    return QFileEngine::Resource;
+    Q_UNUSED(extension);
+    Q_UNUSED(option);
+    Q_UNUSED(output);
+    return false;
+}
+
+bool QResourceFileEngine::supportsExtension(Extension extension) const
+{
+    Q_UNUSED(extension);
+    return false;
 }
 
 //Initialization and cleanup
@@ -683,4 +704,3 @@ static int qt_force_resource_init() { resource_file_handler(); return 1; }
 Q_CORE_EXPORT void qInitResourceIO() { resource_file_handler(); }
 static int qt_forced_resource_init = qt_force_resource_init();
 Q_CONSTRUCTOR_FUNCTION(qt_force_resource_init)
-

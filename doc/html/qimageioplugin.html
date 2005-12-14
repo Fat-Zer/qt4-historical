@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/image/qimageiohandler.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/image/qimageiohandler.cpp -->
 <head>
-    <title>Qt 4.0: QImageIOPlugin Class Reference</title>
+    <title>Qt 4.1: QImageIOPlugin Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -54,7 +54,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QImageIOPlugin class defines an interface for writing an image format plugin.</p>
 <p>QImageIOPlugin is a factory for creating <a href="qimageiohandler.html">QImageIOHandler</a> objects, which are used internally by <a href="qimagereader.html">QImageReader</a> and <a href="qimagewriter.html">QImageWriter</a> to add support for different image formats to Qt.</p>
-<p>Writing an picture format plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qimageioplugin.html#keys">keys</a>(), loadPicture(), savePicture(), and installIOHandler(), and exporting the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro. See <a href="plugins-howto.html">How to Create Qt Plugins</a> for details.</p>
+<p>Writing an image I/O plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qimageioplugin.html#capabilities">capabilities</a>(), <a href="qimageioplugin.html#create">create</a>(), and <a href="qimageioplugin.html#keys">keys</a>(), and exporting the class with the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro. See <a href="plugins-howto.html">How to Create Qt Plugins</a> for details.</p>
 <p>An image format plugin can support three capabilities: reading (<a href="qimageioplugin.html#Capability-enum">CanRead</a>), writing (<a href="qimageioplugin.html#Capability-enum">CanWrite</a>) and <i>incremental</i> reading (<a href="qimageioplugin.html#Capability-enum">CanReadIncremental</a>). Reimplement <a href="qimageioplugin.html#capabilities">capabilities</a>() in you subclass to expose the capabilities of your image format.</p>
 <p><a href="qimageioplugin.html#create">create</a>() should create an instance of your <a href="qimageiohandler.html">QImageIOHandler</a> subclass, with the provided device and format properly set, and return this handler. You must also reimplement <a href="qimageioplugin.html#keys">keys</a>() so that Qt knows which image formats your plugin supports.</p>
 <p>Different plugins can support different capabilities. For example, you may have one plugin that supports reading the GIF format, and another that supports writing. Qt will select the correct plugin for the job, depending on the return value of <a href="qimageioplugin.html#capabilities">capabilities</a>(). If several plugins support the same capability, Qt will select one arbitrarily.</p>
@@ -73,7 +73,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QImageIOPlugin"></a>QImageIOPlugin::QImageIOPlugin ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs an image plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Constructs an image plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
 <h3 class="fn"><a name="dtor.QImageIOPlugin"></a>QImageIOPlugin::~QImageIOPlugin ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the picture format plugin.</p>
 <p>You never have to call this explicitly. Qt destroys a plugin automatically when it is no longer used.</p>
@@ -81,17 +81,15 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the capabilities on the plugin, based on the data in <i>device</i> and the format <i>format</i>. For example, if the <a href="qimageiohandler.html">QImageIOHandler</a> supports the BMP format, and the data in the device starts with the characters &quot;BM&quot;, this function should return <a href="qimageioplugin.html#Capability-enum">CanRead</a>. If <i>format</i> is &quot;bmp&quot; and the handler supports both reading and writing, this function should return <a href="qimageioplugin.html#Capability-enum">CanRead</a> | <a href="qimageioplugin.html#Capability-enum">CanWrite</a>.</p>
 <h3 class="fn"><a name="create"></a><a href="qimageiohandler.html">QImageIOHandler</a> * QImageIOPlugin::create ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>format</i> = QByteArray() ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Creates and returns a <a href="qimageiohandler.html">QImageIOHandler</a> subclass, with <i>device</i> and <i>format</i> set.</p>
-<p>Reimplemented from <a href="qimageiohandlerfactoryinterface.html#create">QImageIOHandlerFactoryInterface</a>.</p>
 <p>See also <a href="qimageioplugin.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QImageIOPlugin::keys () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the list of image keys this plugin supports.</p>
 <p>These keys are usually the names of the image formats that are implemented in the plugin (e.g., &quot;jpg&quot; or &quot;gif&quot;).</p>
-<p>Reimplemented from <a href="qfactoryinterface.html#keys">QFactoryInterface</a>.</p>
 <p>See also <a href="qimageioplugin.html#capabilities">capabilities</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -24,7 +24,7 @@
 #ifndef QTOOLBUTTON_H
 #define QTOOLBUTTON_H
 
-#include "QtGui/qabstractbutton.h"
+#include <QtGui/qabstractbutton.h>
 
 QT_MODULE(Gui)
 
@@ -75,18 +75,19 @@ public:
     void setAutoRaise(bool enable);
     bool autoRaise() const;
 
-public slots:
+public Q_SLOTS:
 #ifndef QT_NO_MENU
     void showMenu();
 #endif
     void setToolButtonStyle(Qt::ToolButtonStyle style);
     void setDefaultAction(QAction *);
 
-signals:
+Q_SIGNALS:
     void triggered(QAction *);
 
 protected:
     QToolButton(QToolButtonPrivate &, QWidget* parent);
+    bool event(QEvent *e);
     void mousePressEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *);
     void actionEvent(QActionEvent *);
@@ -142,7 +143,7 @@ public:
     QT3_SUPPORT void setPopupDelay(int delay);
     QT3_SUPPORT int popupDelay() const;
 
-public slots:
+public Q_SLOTS:
     QT_MOC_COMPAT void setUsesBigPixmap(bool enable)
         { setIconSize(enable?QSize(32,32):QSize(22,22)); }
     QT_MOC_COMPAT void setUsesTextLabel(bool enable)

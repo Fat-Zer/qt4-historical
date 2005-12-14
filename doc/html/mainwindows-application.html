@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/application.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/application.qdoc -->
 <head>
-    <title>Qt 4.0: Application Example</title>
+    <title>Qt 4.1: Application Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -167,7 +167,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qobject.html#tr">tr()</a> call around the literal string marks the string for translation. It is a good habit to call <a href="qobject.html#tr">tr()</a> on all user-visible strings, in case you later decide to translate your application to other languages. The <a href="i18n.html">Internationalization with Qt</a> overview convers <a href="qobject.html#tr">tr()</a> in more detail.</p>
 <pre>&nbsp;   void MainWindow::documentWasModified()
     {
-        setWindowModified(true);
+        setWindowModified(textEdit-&gt;document()-&gt;isModified());
     }</pre>
 <p>The <tt>documentWasModified()</tt> slot is invoked each time the text in the <a href="qtextedit.html">QTextEdit</a> changes because of user edits. We call <a href="qwidget.html#windowModified-prop">QWidget::setWindowModified</a>() to make the title bar show that the file was modified. How this is done depends varies on the different platforms.</p>
 <pre>&nbsp;   void MainWindow::createActions()
@@ -382,6 +382,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -41,6 +41,7 @@
 #include "qstyle.h"
 #include "qtextcodec.h"
 #include "qtimer.h"
+#include "qdebug.h"
 
 #include <ApplicationServices/ApplicationServices.h>
 #include <limits.h>
@@ -460,11 +461,8 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                         engine->setSystemClip(qrgn);
 
                     //handle the erase
-                    const QBrush bg = widget->palette().brush(widget->backgroundRole());
-                    if(engine && !widget->testAttribute(Qt::WA_NoBackground) &&
-                       !widget->testAttribute(Qt::WA_NoSystemBackground) &&
-                       (!widget->d_func()->isBackgroundInherited() ||
-                        !bg.isOpaque() && widget->testAttribute(Qt::WA_SetPalette))) {
+                    if (engine && !widget->testAttribute(Qt::WA_NoSystemBackground) 
+                        && (widget->isWindow() || widget->autoFillBackground()) || widget->testAttribute(Qt::WA_TintedBackground)) {
                         if (!redirectionOffset.isNull())
                             QPainter::setRedirected(widget, widget, redirectionOffset);
                         QRect rr = qrgn.boundingRect();
@@ -474,11 +472,12 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                         if(was_unclipped)
                             widget->setAttribute(Qt::WA_PaintUnclipped);
                         p.setClipRegion(qrgn);
-                        QPixmap pm = bg.texture();
-                        if(!pm.isNull())
-                            p.drawTiledPixmap(rr, pm, QPoint(rr.x()%pm.width(), rr.y()%pm.height()));
-                        else
-                            p.fillRect(rr, bg.color());
+                        widget->d_func()->paintBackground(&p, rr, widget->isWindow());
+                        if (widget->testAttribute(Qt::WA_TintedBackground)) {
+                            QColor tint = widget->palette().window();
+                            tint.setAlphaF(.6);
+                            p.fillRect(rr, tint);
+                        }
                         p.end();
                         if (!redirectionOffset.isNull())
                             QPainter::restoreRedirected(widget);
@@ -539,27 +538,41 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                     SetRectRgn(rgn, 0, 0, widget->width(), widget->height());
                     if(QWidgetPrivate::qt_widget_rgn(widget, kWindowStructureRgn, rgn, false))
                         handled_event = true;
+                } else if (part == kControlOpaqueMetaPart) {
+                    if (widget->d_func()->isOpaque()) {
+                        RgnHandle rgn;
+                        GetEventParameter(event, kEventParamControlRegion, typeQDRgnHandle, 0,
+                                          sizeof(RgnHandle), 0, &rgn);
+                        SetRectRgn(rgn, 0, 0, widget->width(), widget->height());
+                        QWidgetPrivate::qt_widget_rgn(widget, kWindowStructureRgn, rgn, false);
+                        SetEventParameter(event, kEventParamControlRegion, typeQDRgnHandle,
+                                sizeof(RgnHandle), &rgn);
+                        handled_event = true;
+                    }
                 }
             }
         } else if(ekind == kEventControlDragEnter || ekind == kEventControlDragWithin ||
                   ekind == kEventControlDragLeave || ekind == kEventControlDragReceive) {
             handled_event = false;
+            bool drag_allowed = false;
             if(widget) {
                 //these are really handled in qdnd_mac.cpp just to modularize the code a little..
                 DragRef drag;
                 GetEventParameter(event, kEventParamDragRef, typeDragRef, NULL, sizeof(drag), NULL, &drag);
-                if(widget->d_func()->qt_mac_dnd_event(ekind, drag))
+                if(widget->d_func()->qt_mac_dnd_event(ekind, drag)) {
+                    drag_allowed = true;
                     handled_event = true;
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-                if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
-                    if(ekind == kEventControlDragEnter) {
-                        const Boolean wouldAccept = handled_event ? true : false;
-                        SetEventParameter(event, kEventParamControlWouldAcceptDrop, typeBoolean,
-                                          sizeof(wouldAccept), &wouldAccept);
-                    }
                 }
-#endif
             }
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
+            if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
+                if(ekind == kEventControlDragEnter) {
+                    const Boolean wouldAccept = drag_allowed ? true : false;
+                    SetEventParameter(event, kEventParamControlWouldAcceptDrop, typeBoolean,
+                                      sizeof(wouldAccept), &wouldAccept);
+                }
+            }
+#endif
         }
         break; }
     default:
@@ -930,7 +943,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
         WindowGroupRef grp = 0;
         WindowAttributes wattr = kWindowCompositingAttribute;
         if(qt_mac_is_macsheet(q)) {
-            grp = GetWindowGroupOfClass(kMovableModalWindowClass);
+            //grp = GetWindowGroupOfClass(kMovableModalWindowClass);
             wclass = kSheetWindowClass;
         } else {
             grp = GetWindowGroupOfClass(wclass);
@@ -1054,6 +1067,10 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
             InstallWindowEventHandler(window, make_win_eventUPP(), GetEventTypeCount(window_events),
                                       window_events, static_cast<void *>(qApp), &window_event);
         }
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
+        if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3)
+            HIWindowChangeFeatures(window, kWindowCanCollapse, 0);
+#endif
 	if((flags & Qt::WindowStaysOnTopHint))
 	    ChangeWindowAttributes(window, kWindowNoAttributes, kWindowHideOnSuspendAttribute);
         if(qt_mac_is_macdrawer(q) && parentWidget)
@@ -1187,13 +1204,15 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     }
     QWidget* oldtlw = q->window();
 
+    if (q->testAttribute(Qt::WA_DropSiteRegistered))
+        q->setAttribute(Qt::WA_DropSiteRegistered, false);
+
     //recreate and setup flags
     QObjectPrivate::setParent_helper(parent);
-    bool     dropable = q->acceptDrops();
-    bool     enable = q->isEnabled();
+    bool enable = q->isEnabled();
     Qt::FocusPolicy fp = q->focusPolicy();
-    QPoint   pt = q->pos();
-    QSize    s = q->size();
+    QPoint pt = q->pos();
+    QSize s = q->size();
     bool explicitlyHidden = q->testAttribute(Qt::WA_WState_Hidden) && q->testAttribute(Qt::WA_WState_ExplicitShowHide);
     setWinId(0); //do after the above because they may want the id
 
@@ -1205,8 +1224,6 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     if(q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
         q->setAttribute(Qt::WA_WState_Hidden);
     q->setAttribute(Qt::WA_WState_ExplicitShowHide, explicitlyHidden);
-    if(dropable)
-        q->setAcceptDrops(false);
 
     //reparent children
     QObjectList chlist = q->children();
@@ -1230,7 +1247,10 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     q->setFocusPolicy(fp);
     if (extra && !extra->mask.isEmpty())
         q->setMask(extra->mask);
-    q->setAcceptDrops(dropable);
+    if (q->testAttribute(Qt::WA_AcceptDrops)
+        || (!q->isWindow() && q->parentWidget()
+            && q->parentWidget()->testAttribute(Qt::WA_DropSiteRegistered)))
+        q->setAttribute(Qt::WA_DropSiteRegistered, true);
     if(setcurs)
         q->setCursor(oldcurs);
 
@@ -1335,17 +1355,21 @@ void QWidgetPrivate::setWindowModified_sys(bool mod)
         SetWindowModified(qt_mac_window_for(q), mod);
 }
 
-void QWidgetPrivate::setWindowIcon_sys()
+void QWidgetPrivate::setWindowIcon_sys(bool forceReset)
 {
     Q_Q(QWidget);
-    if (extra->topextra->iconPixmap) // already set
+    if (extra->topextra->iconPixmap && !forceReset) // already set
         return;
 
     QIcon icon = q->windowIcon();
     QPixmap *pm = 0;
     if (!icon.isNull()) {
-        pm = new QPixmap(icon.pixmap(QSize(22, 22)));
-        extra->topextra->iconPixmap = pm;
+        if (!extra->topextra->iconPixmap) {
+            pm = new QPixmap(icon.pixmap(QSize(22, 22)));
+            extra->topextra->iconPixmap = pm;
+        } else {
+            pm = extra->topextra->iconPixmap;
+        }
     }
     if (q->isWindow()) {
         if (icon.isNull()) {
@@ -1424,15 +1448,12 @@ void QWidget::activateWindow()
     qt_mac_set_fullscreen_mode((tlw->windowState() & Qt::WindowFullScreen) &&
                                !qApp->desktop()->screenNumber(this));
     WindowPtr window = qt_mac_window_for(tlw);
-    if((tlw->windowType() == Qt::Popup) || (tlw->windowType() == Qt::Tool) || qt_mac_is_macdrawer(tlw)) {
+    if((tlw->windowType() == Qt::Popup) || (tlw->windowType() == Qt::Tool) ||
+       qt_mac_is_macdrawer(tlw) || IsWindowActive(window)) {
         ActivateWindow(window, true);
-    } else {
-        if(IsWindowActive(window)) {
-            ActivateWindow(window, true);
-            qApp->setActiveWindow(tlw);
-        } else if(!isMinimized()){
-            SelectWindow(window);
-        }
+        qApp->setActiveWindow(tlw);
+    } else if(!isMinimized()){
+        SelectWindow(window);
     }
     SetUserFocusWindow(window);
 }
@@ -1958,6 +1979,10 @@ void QWidget::scroll(int dx, int dy, const QRect& r)
     if(!updatesEnabled() &&  (valid_rect || children().isEmpty()))
         return;
 
+    if (HIViewGetNeedsDisplay((HIViewRef)winId())) {
+        update(valid_rect ? r : rect());
+        return;
+    }
     if(!valid_rect) {        // scroll children
         QPoint pd(dx, dy);
         QWidgetList moved;
@@ -2069,15 +2094,14 @@ void QWidgetPrivate::updateFrameStrut() const
         top->fleft = content_r.left - window_r.left;
         top->ftop = content_r.top - window_r.top;
         top->fright = window_r.right - content_r.right;
-        top->fbottom = window_r.bottom - window_r.bottom;
+        top->fbottom = window_r.bottom - content_r.bottom;
     }
 }
 
-bool QWidgetPrivate::setAcceptDrops_sys(bool on)
+void QWidgetPrivate::registerDropSite(bool on)
 {
     Q_Q(QWidget);
     SetControlDragTrackingEnabled((HIViewRef)q->winId(), on);
-    return true;
 }
 
 void QWidget::setMask(const QRegion &region)
@@ -2167,3 +2191,33 @@ QPaintEngine *QWidget::paintEngine() const
     return pe;
 }
 
+void QWidgetPrivate::setModal_sys()
+{
+    Q_Q(QWidget);
+    // We need a different window type if we are to be run modal. SetWindowClass will
+    //  disappear, so Apple recommends changing the window group instead.
+    WindowPtr window = qt_mac_window_for(q);
+    const bool asSheet = qt_mac_is_macsheet(q);
+    SetWindowModality(window, kWindowModalityNone, 0);
+    if (q->testAttribute(Qt::WA_ShowModal)) {
+        if (q->testAttribute(Qt::WA_WState_Created) && asSheet && !topData()->group) {
+            WindowGroupRef wgr = GetWindowGroupOfClass(kMovableModalWindowClass);
+            SetWindowGroup(window, wgr);
+        }
+
+        switch (data.window_modality) {
+        case Qt::WindowModal:
+            {
+                if (!asSheet) {
+                    if (QWidget *p = q->parentWidget())
+                        SetWindowModality(window, kWindowModalityWindowModal,
+                                          qt_mac_window_for(p->window()));
+                }
+                break;
+            }
+        default:
+            // we handle ApplicationModal our selves
+            break;
+        }
+    }
+}

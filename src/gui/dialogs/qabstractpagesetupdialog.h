@@ -24,7 +24,7 @@
 #ifndef QABSTRACTPAGESETUPDIALOG_H
 #define QABSTRACTPAGESETUPDIALOG_H
 
-#include "QtGui/qdialog.h"
+#include <QtGui/qdialog.h>
 
 QT_MODULE(Gui)
 
@@ -33,6 +33,7 @@ QT_MODULE(Gui)
 class QAbstractPageSetupDialogPrivate;
 class QPrinter;
 
+// ### Qt 5: Remove this class
 class Q_GUI_EXPORT QAbstractPageSetupDialog : public QDialog
 {
     Q_DECLARE_PRIVATE(QAbstractPageSetupDialog)
@@ -48,4 +49,5 @@ public:
 };
 
 #endif // QT_NO_PRINTDIALOG
+
 #endif // QABSTRACTPAGESETUPDIALOG_H

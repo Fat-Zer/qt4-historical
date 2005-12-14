@@ -23,10 +23,10 @@
 
 #include "qsettings.h"
 #include "qsettings_p.h"
-#include <private/qcore_mac_p.h>
-#include <qdatetime.h>
-#include <qdir.h>
-#include <qvarlengtharray.h>
+#include "qdatetime.h"
+#include "qdir.h"
+#include "qvarlengtharray.h"
+#include "private/qcore_mac_p.h"
 
 static const CFStringRef hostNames[2] = { kCFPreferencesCurrentHost, kCFPreferencesAnyHost };
 static const int numHostNames = 2;
@@ -359,7 +359,7 @@ QMacSettingsPrivate::QMacSettingsPrivate(QSettings::Scope scope, const QString &
     suiteId = javaPackageName;
 
     if (scope == QSettings::SystemScope)
-        spec |= F_Global;
+        spec |= F_System;
 
     if (application.isEmpty()) {
         spec |= F_Organization;
@@ -370,7 +370,7 @@ QMacSettingsPrivate::QMacSettingsPrivate(QSettings::Scope scope, const QString &
     }
 
     numDomains = 0;
-    for (int i = (spec & F_Global) ? 1 : 0; i < 2; ++i) {
+    for (int i = (spec & F_System) ? 1 : 0; i < 2; ++i) {
         for (int j = (spec & F_Organization) ? 1 : 0; j < 3; ++j) {
             SearchDomain &domain = domains[numDomains++];
             domain.userName = (i == 0) ? kCFPreferencesCurrentUser : kCFPreferencesAnyUser;
@@ -507,7 +507,7 @@ bool QMacSettingsPrivate::isWritable() const
 QString QMacSettingsPrivate::fileName() const
 {
     QString result;
-    if ((spec & F_Global) == 0)
+    if ((spec & F_System) == 0)
         result = QDir::homePath();
     result += QLatin1String("/Library/Preferences/");
     result += QCFString::toQString(domains[0].applicationOrSuiteId);
@@ -521,13 +521,9 @@ QSettingsPrivate *QSettingsPrivate::create(QSettings::Format format,
                                            const QString &application)
 {
     if (format == QSettings::NativeFormat) {
-        QMacSettingsPrivate *p = new QMacSettingsPrivate(scope, organization, application);
-        return p;
+        return new QMacSettingsPrivate(scope, organization, application);
     } else {
-        QConfFileSettingsPrivate *p = new QConfFileSettingsPrivate(format, scope,
-                                                                   organization, application);
-        p->init();
-        return p;
+        return new QConfFileSettingsPrivate(format, scope, organization, application);
     }
 }
 
@@ -537,7 +533,7 @@ static QCFType<CFURLRef> urlFromFileName(const QString &fileName)
                                          kCFURLPOSIXPathStyle, false);
 }
 
-bool QConfFileSettingsPrivate::readPlistFile(const QString &fileName, SettingsKeyMap *map) const
+bool QConfFileSettingsPrivate::readPlistFile(const QString &fileName, InternalSettingsMap *map) const
 {
     QCFType<CFDataRef> resource;
     SInt32 code;
@@ -570,12 +566,12 @@ bool QConfFileSettingsPrivate::readPlistFile(const QString &fileName, SettingsKe
 }
 
 bool QConfFileSettingsPrivate::writePlistFile(const QString &fileName,
-                                              const SettingsKeyMap &map) const
+                                              const InternalSettingsMap &map) const
 {
     QVarLengthArray<QCFType<CFStringRef> > cfkeys(map.size());
     QVarLengthArray<QCFType<CFPropertyListRef> > cfvalues(map.size());
     int i = 0;
-    SettingsKeyMap::const_iterator j;
+    InternalSettingsMap::const_iterator j;
     for (j = map.constBegin(); j != map.constEnd(); ++j) {
         cfkeys[i] = macKey(j.key());
         cfvalues[i] = macValue(j.value());

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/text/qtextformat.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/text/qtextformat.cpp -->
 <head>
-    <title>Qt 4.0: QTextCharFormat Class Reference</title>
+    <title>Qt 4.1: QTextCharFormat Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -60,10 +60,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtextcharformat.html#setFontWeight">setFontWeight</a></b> ( int <i>weight</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextcharformat.html#setTableCellColumnSpan">setTableCellColumnSpan</a></b> ( int <i>tableCellColumnSpan</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextcharformat.html#setTableCellRowSpan">setTableCellRowSpan</a></b> ( int <i>tableCellRowSpan</i> )</li>
+<li><div class="fn"/>void <b><a href="qtextcharformat.html#setTextOutline">setTextOutline</a></b> ( const QPen &amp; <i>pen</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextcharformat.html#setUnderlineColor">setUnderlineColor</a></b> ( const QColor &amp; <i>color</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextcharformat.html#setVerticalAlignment">setVerticalAlignment</a></b> ( VerticalAlignment <i>alignment</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextcharformat.html#tableCellColumnSpan">tableCellColumnSpan</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtextcharformat.html#tableCellRowSpan">tableCellRowSpan</a></b> () const</li>
+<li><div class="fn"/>QPen <b><a href="qtextcharformat.html#textOutline">textOutline</a></b> () const</li>
 <li><div class="fn"/>QColor <b><a href="qtextcharformat.html#underlineColor">underlineColor</a></b> () const</li>
 <li><div class="fn"/>VerticalAlignment <b><a href="qtextcharformat.html#verticalAlignment">verticalAlignment</a></b> () const</li>
 </ul>
@@ -176,6 +178,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setTableCellRowSpan"></a>void QTextCharFormat::setTableCellRowSpan ( int <i>tableCellRowSpan</i> )</h3>
 <p>If this character format is applied to characters in a table cell, the cell will span <i>tableCellRowSpan</i> rows.</p>
 <p>See also <a href="qtextcharformat.html#tableCellRowSpan">tableCellRowSpan</a>().</p>
+<h3 class="fn"><a name="setTextOutline"></a>void QTextCharFormat::setTextOutline ( const <a href="qpen.html">QPen</a> &amp; <i>pen</i> )</h3>
+<p>See also <a href="qtextcharformat.html#textOutline">textOutline</a>().</p>
 <h3 class="fn"><a name="setUnderlineColor"></a>void QTextCharFormat::setUnderlineColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
 <p>Sets the underline color used for the characters with this format to the <i>color</i> specified.</p>
 <p>See also <a href="qtextcharformat.html#underlineColor">underlineColor</a>().</p>
@@ -188,6 +192,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="tableCellRowSpan"></a>int QTextCharFormat::tableCellRowSpan () const</h3>
 <p>If this character format is applied to characters in a table cell, this function returns the number of rows spanned by the text (this may be 1); otherwise it returns 1.</p>
 <p>See also <a href="qtextcharformat.html#setTableCellRowSpan">setTableCellRowSpan</a>().</p>
+<h3 class="fn"><a name="textOutline"></a><a href="qpen.html">QPen</a> QTextCharFormat::textOutline () const</h3>
+<p>See also <a href="qtextcharformat.html#setTextOutline">setTextOutline</a>().</p>
 <h3 class="fn"><a name="underlineColor"></a><a href="qcolor.html">QColor</a> QTextCharFormat::underlineColor () const</h3>
 <p>Returns the color used to underline the characters with this format.</p>
 <p>See also <a href="qtextcharformat.html#setUnderlineColor">setUnderlineColor</a>().</p>
@@ -198,6 +204,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -28,6 +28,7 @@
 #include "qbitmap.h"
 #include "qpixmapcache.h"
 #include "qstyleoption.h"
+#include "private/qstyle_p.h"
 #ifndef QT_NO_DEBUG
 #include "qdebug.h"
 #endif
@@ -254,6 +255,17 @@
     Constructs a style object.
 */
 QStyle::QStyle()
+{
+}
+
+
+/*!
+    \internal
+
+    Constructs a style object.
+*/
+QStyle::QStyle(QStylePrivate &dd)
+    : QObject(dd)
 {
 }
 
@@ -573,6 +585,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value State_Top
     \value State_UpArrow
     \value State_KeyboardFocusChange
+    \value State_ReadOnly
     \omitvalue State_Default
 
     \sa drawPrimitive()
@@ -706,6 +719,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CE_CustomBase  Base value for custom ControlElements;
     custom values must be greater than this value
     \value CE_ComboBoxLabel The label of a non-editable QComboBox
+    \value CE_ToolBar A toolbar like QToolBar
 
     \sa drawControl()
 */
@@ -838,6 +852,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value SE_TabBarTearIndicator Area for the tear indicator on a tab bar with scroll arrows.
 
+    \value SE_TreeViewDisclosureItem Area for the actual disclosure item in a tree branch.
+
     \value SE_CustomBase  Base value for custom ControlElements
     Custom values must be greater than this value
 
@@ -891,6 +907,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CC_ToolButton        A tool button, like QToolButton
     \value CC_TitleBar          A Title bar, like what is used in Q3Workspace
     \value CC_Q3ListView        Used for drawing the Q3ListView class
+    \value CC_GroupBox          A group box, like QGroupBox
     \value CC_Dial              A dial, like QDial
 
     \value CC_CustomBase  Base value for custom ControlElements.
@@ -925,7 +942,8 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SC_ComboBoxEditField  Combobox edit field; see also QComboBox
     \value SC_ComboBoxArrow  Combobox arrow button
     \value SC_ComboBoxFrame  Combobox frame
-    \value SC_ComboBoxListBoxPopup  Combobox list box
+    \value SC_ComboBoxListBoxPopup  The reference rect for the combobox popup
+    Used to calculate the position of the popup.
 
     \value SC_SliderGroove  Special sub-control which contains the area
         in which the slider handle may move
@@ -953,6 +971,10 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value SC_DialGroove The groove for the dial
     \value SC_DialTickmarks The tickmarks for the dial
 
+    \value SC_GroupBoxFrame The frame of a group box
+    \value SC_GroupBoxLabel The title of a group box
+    \value SC_GroupBoxCheckBox The optional check box of a group box
+    \value SC_GroupBoxContents The group box contents
 
     \value SC_All  Special value that matches all SubControls
     \omitvalue SC_Q3ListViewBranch
@@ -1110,6 +1132,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         horizontal dock window and the height of the handle in a
         vertical dock window
     \value PM_DockWidgetFrameWidth  Frame width of a dock window
+    \value PM_DockWidgetTitleMargin Margin of the dock window title
 
     \value PM_MenuBarPanelWidth  Frame width of a menubar, defaults to PM_DefaultFrameWidth
     \value PM_MenuBarItemSpacing  Spacing between menubar items
@@ -1177,7 +1200,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value PM_DefaultChildMargin
     \value PM_DefaultLayoutSpacing
 
-    \value PM_ToolBarIconSize Default tool bar icon size, defaults to PM_SmallIconSize
+    \value PM_ToolBarIconSize Default tool bar icon size
     \value PM_SmallIconSize Default small icon size
     \value PM_LargeIconSize Default large icon size
 
@@ -1187,6 +1210,9 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value PM_ListViewIconSize
 
     \value PM_ToolTipLabelFrameWidth
+    \value PM_CheckBoxLabelSpacing The spacing between a check box and its label
+    \value PM_TabBarIconSize The default icon size for a tab bar.
+    \value PM_SizeGripSize The size of a size grip
 
     \value PM_CustomBase  Base value for custom ControlElements
     Custom values must be greater than this value
@@ -1229,7 +1255,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     \value CT_CheckBox A check box, like QCheckBox
     \value CT_ComboBox A combo box, like QComboBox
-    \value CT_DialogButtons 
+    \value CT_DialogButtons
     \value CT_Q3DockWindow
     \value CT_HeaderSection A header section, like QHeader
     \value CT_LineEdit A line edit, like QLineEdit
@@ -1249,6 +1275,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CT_TabBarTab A tab on a tab bar, like QTabBar
     \value CT_TabWidget A tab widget, like QTabWidget
     \value CT_ToolButton A tool button, like QToolButton
+    \value CT_GroupBox A group box, like QGroupBox
 
     \value CT_CustomBase  Base value for custom ControlElements.
     Custom values must be greater than this value.
@@ -1313,6 +1340,12 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
         SubControl, the scroll bar continues to scroll. If false, the
         scollbar stops scrolling when the pointer leaves the
         SubControl.
+
+    \value SH_ScrollBar_RollBetweenButtons A boolean value.
+    If true, when clicking a scrollbar button (SC_ScrollBarAddLine or
+    SC_ScrollBarSubLine) and dragging over to the opposite button (rolling)
+    will press the new button and release the old one. When it is false, the
+    original button is released and nothing happens (like a pushbutton).
 
     \value SH_TabBar_Alignment  The alignment for tabs in a
         QTabWidget. Possible values are Qt::AlignLeft,
@@ -1594,10 +1627,12 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     Returns a pixmap for \a standardPixmap.
 
     The \a option argument can be used to pass extra information required
-    when drawing the ControlElement. Currently, the \a option argument is unused.
+    when drawing the ControlElement.
 
     The \a widget argument is optional and may contain a widget that
     may aid in drawing the control.
+
+    \sa standardIcon()
 */
 
 
@@ -1797,7 +1832,7 @@ QPalette QStyle::standardPalette() const
 {
 #ifdef Q_WS_X11
     QColor background;
-    if (QX11Info::appDepth() > 8)
+    if (!qApp || QX11Info::appDepth() > 8)
         background = QColor(0xd4, 0xd0, 0xc8); // win 2000 grey
     else
         background = QColor(192, 192, 192);
@@ -1815,12 +1850,69 @@ QPalette QStyle::standardPalette() const
     return palette;
 }
 
+/*!
+    \since 4.1
+
+    Returns an icon for \a standardIcon.
+
+    The \a option argument can be used to pass extra information required
+    when determining the icon.
+
+    The \a widget argument is optional and may contain a widget that
+    may aid determining the icon.
+
+    \warning Because of binary compatibility constraints, this function is not virtual.
+    If you want to provide your own icons in a QStyle subclass, add a slot called
+    standardIconImplementation() to you subclass. The standardIcon() function will
+    dynamically detect the slot and call it.
+
+    \sa standardIconImplementation(), standardPixmap()
+*/
+QIcon QStyle::standardIcon(StandardPixmap standardIcon, const QStyleOption *option,
+                           const QWidget *widget) const
+{
+    QIcon result;
+    // ### 4.1: invokeMethod should accept const functions, to avoid this dirty cast
+    QMetaObject::invokeMethod(const_cast<QStyle*>(this),
+                              "standardIconImplementation", Qt::DirectConnection,
+                              Q_RETURN_ARG(QIcon, result),
+                              Q_ARG(StandardPixmap, standardIcon),
+                              Q_ARG(const QStyleOption*, option),
+                              Q_ARG(const QWidget*, widget));
+    return result;
+}
+
+/*!
+    \since 4.1
+
+    Returns an icon for \a standardIcon.
+
+    The \a option argument contains extra information required when determining
+    the icon. The \a widget argument is optional and may contain a widget that
+    may aid determining the icon.
+
+    The default implementation simply calls standardPixmap(\a standardIcon, \a option,
+    \a widget).
+
+    \warning Because of binary compatibility constraints, the standardIcon()
+    function, introduced in Qt 4.1, isn't virtual. If you want to provide
+    your own icons in a QStyle subclass, add a slot called standardIconImplementation() to
+    your subclass. The standardIcon() function will dynamically detect the slot and
+    call it.
+
+    \sa standardIcon()
+*/
+QIcon QStyle::standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *option,
+                                         const QWidget *widget) const
+{
+    return QIcon(standardPixmap(standardIcon, option, widget));
+}
 
 #if !defined(QT_NO_DEBUG) && !defined(QT_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug debug, QStyle::State state)
 {
     debug << "QStyle::State(";
- 
+
     QStringList states;
     if (state & QStyle::State_Active) states << QLatin1String("Active");
     if (state & QStyle::State_AutoRaise) states << QLatin1String("AutoRaise");

@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Qt 4.1: peerwireclient.cpp Example File (network/torrent/peerwireclient.cpp)</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">peerwireclient.cpp Example File<br /><sup><sup>network/torrent/peerwireclient.cpp</sup></sup></h1>
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be used under the terms of the GNU General Public
+    ** License version 2.0 as published by the Free Software Foundation
+    ** and appearing in the file LICENSE.GPL included in the packaging of
+    ** this file.  Please review the following information to ensure GNU
+    ** General Public Licensing requirements will be met:
+    ** http://www.trolltech.com/products/qt/opensource.html
+    **
+    ** If you are unsure which license is appropriate for your use, please
+    ** review the following information:
+    ** http://www.trolltech.com/products/qt/licensing.html or contact the
+    ** sales department at sales@trolltech.com.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
+
+    #include &quot;peerwireclient.h&quot;
+
+    #include &lt;QTimerEvent&gt;
+
+    static const int PendingRequestTimeout = 60 * 1000;
+    static const int ClientTimeout = 120 * 1000;
+    static const int ConnectTimeout = 60 * 1000;
+    static const int KeepAliveInterval = 30 * 1000;
+    static const int RateControlTimerDelay = 2000;
+    static const int MinimalHeaderSize = 48;
+    static const int FullHeaderSize = 68;
+    static const char ProtocolId[] = &quot;BitTorrent protocol&quot;;
+    static const char ProtocolIdSize = 19;
+
+    // Reads a 32bit unsigned int from data in network order.
+    static inline quint32 fromNetworkData(const char *data)
+    {
+        const unsigned char *udata = (const unsigned char *)data;
+        return (quint32(udata[0]) &lt;&lt; 24)
+            | (quint32(udata[1]) &lt;&lt; 16)
+            | (quint32(udata[2]) &lt;&lt; 8)
+            | (quint32(udata[3]));
+    }
+
+    // Writes a 32bit unsigned int from num to data in network order.
+    static inline void toNetworkData(quint32 num, char *data)
+    {
+        unsigned char *udata = (unsigned char *)data;
+        udata[3] = (num &amp; 0xff);
+        udata[2] = (num &amp; 0xff00) &gt;&gt; 8;
+        udata[1] = (num &amp; 0xff0000) &gt;&gt; 16;
+        udata[0] = (num &amp; 0xff000000) &gt;&gt; 24;
+    }
+
+    // Constructs an unconnected PeerWire client and starts the connect timer.
+    PeerWireClient::PeerWireClient(const QByteArray &amp;peerId, QObject *parent)
+        : QTcpSocket(parent), pendingBlockSizes(0),
+          pwState(ChokingPeer | ChokedByPeer), receivedHandShake(false), gotPeerId(false),
+          sentHandShake(false), nextPacketLength(-1), pendingRequestTimer(0), invalidateTimeout(false),
+          keepAliveTimer(0), torrentPeer(0)
+    {
+        memset(uploadSpeedData, 0, sizeof(uploadSpeedData));
+        memset(downloadSpeedData, 0, sizeof(downloadSpeedData));
+
+        transferSpeedTimer = startTimer(RateControlTimerDelay);
+        timeoutTimer = startTimer(ConnectTimeout);
+        peerIdString = peerId;
+
+        connect(this, SIGNAL(readyRead()), this, SIGNAL(readyToTransfer()));
+        connect(this, SIGNAL(connected()), this, SIGNAL(readyToTransfer()));
+    }
+
+    // Registers the peer ID and SHA1 sum of the torrent, and initiates
+    // the handshake.
+    void PeerWireClient::initialize(const QByteArray &amp;infoHash, int pieceCount)
+    {
+        this-&gt;infoHash = infoHash;
+        peerPieces.resize(pieceCount);
+        if (!sentHandShake)
+            sendHandShake();
+    }
+
+    void PeerWireClient::setPeer(TorrentPeer *peer)
+    {
+        torrentPeer = peer;
+    }
+
+    TorrentPeer *PeerWireClient::peer() const
+    {
+        return torrentPeer;
+    }
+
+    QBitArray PeerWireClient::availablePieces() const
+    {
+        return peerPieces;
+    }
+
+    QList&lt;TorrentBlock&gt; PeerWireClient::incomingBlocks() const
+    {
+        return incoming;
+    }
+
+    // Sends a &quot;choke&quot; message, asking the peer to stop requesting blocks.
+    void PeerWireClient::chokePeer()
+    {
+        const char message[] = {0, 0, 0, 1, 0};
+        write(message, sizeof(message));
+        pwState |= ChokingPeer;
+
+        // After receiving a choke message, the peer will assume all
+        // pending requests are lost.
+        pendingBlocks.clear();
+        pendingBlockSizes = 0;
+    }
+
+    // Sends an &quot;unchoke&quot; message, allowing the peer to start/resume
+    // requesting blocks.
+    void PeerWireClient::unchokePeer()
+    {
+        const char message[] = {0, 0, 0, 1, 1};
+        write(message, sizeof(message));
+        pwState &amp;= ~ChokingPeer;
+
+        if (pendingRequestTimer)
+            killTimer(pendingRequestTimer);
+    }
+
+    // Sends a &quot;keep-alive&quot; message to prevent the peer from closing
+    // the connection when there's no activity
+    void PeerWireClient::sendKeepAlive()
+    {
+        const char message[] = {0, 0, 0, 0};
+        write(message, sizeof(message));
+    }
+
+    // Sends an &quot;interested&quot; message, informing the peer that it has got
+    // pieces that we'd like to download.
+    void PeerWireClient::sendInterested()
+    {
+        const char message[] = {0, 0, 0, 1, 2};
+        write(message, sizeof(message));
+        pwState |= InterestedInPeer;
+
+        // After telling the peer that we're interested, we expect to get
+        // unchoked within a certain timeframe; otherwise we'll drop the
+        // connection.
+        if (pendingRequestTimer)
+            killTimer(pendingRequestTimer);
+        pendingRequestTimer = startTimer(PendingRequestTimeout);
+    }
+
+    // Sends a &quot;not interested&quot; message, informing the peer that it does
+    // not have any pieces that we'd like to download.
+    void PeerWireClient::sendNotInterested()
+    {
+        const char message[] = {0, 0, 0, 1, 3};
+        write(message, sizeof(message));
+        pwState &amp;= ~InterestedInPeer;
+    }
+
+    // Sends a piece notification / a &quot;have&quot; message, informing the peer
+    // that we have just downloaded a new piece.
+    void PeerWireClient::sendPieceNotification(int piece)
+    {
+        if (!sentHandShake)
+            sendHandShake();
+
+        char message[] = {0, 0, 0, 5, 4, 0, 0, 0, 0};
+        toNetworkData(piece, &amp;message[5]);
+        write(message, sizeof(message));
+    }
+
+    // Sends the complete list of pieces that we have downloaded.
+    void PeerWireClient::sendPieceList(const QBitArray &amp;bitField)
+    {
+        // The bitfield message may only be sent immediately after the
+        // handshaking sequence is completed, and before any other
+        // messages are sent.
+        if (!sentHandShake)
+            sendHandShake();
+
+        // Don't send the bitfield if it's all zeros.
+        if (bitField.count(true) == 0)
+            return;
+
+        int bitFieldSize = bitField.size();
+        int size = (bitFieldSize + 7) / 8;
+        QByteArray bits(size, '\0');
+        for (int i = 0; i &lt; bitFieldSize; ++i) {
+            if (bitField.testBit(i)) {
+                quint32 byte = quint32(i) / 8;
+                quint32 bit = quint32(i) % 8;
+                bits[byte] = uchar(bits.at(byte)) | (1 &lt;&lt; (7 - bit));
+            }
+        }
+
+        char message[] = {0, 0, 0, 1, 5};
+        toNetworkData(bits.size() + 1, &amp;message[0]);
+        write(message, sizeof(message));
+        write(bits);
+    }
+
+    // Sends a request for a block.
+    void PeerWireClient::requestBlock(int piece, int offset, int length)
+    {
+        char message[] = {0, 0, 0, 1, 6};
+        toNetworkData(13, &amp;message[0]);
+        write(message, sizeof(message));
+
+        char numbers[4 * 3];
+        toNetworkData(piece, &amp;numbers[0]);
+        toNetworkData(offset, &amp;numbers[4]);
+        toNetworkData(length, &amp;numbers[8]);
+        write(numbers, sizeof(numbers));
+
+        incoming &lt;&lt; TorrentBlock(piece, offset, length);
+
+        // After requesting a block, we expect the block to be sent by the
+        // other peer within a certain number of seconds. Otherwise, we
+        // drop the connection.
+        if (pendingRequestTimer)
+            killTimer(pendingRequestTimer);
+        pendingRequestTimer = startTimer(PendingRequestTimeout);
+    }
+
+    // Cancels a request for a block.
+    void PeerWireClient::cancelRequest(int piece, int offset, int length)
+    {
+        char message[] = {0, 0, 0, 1, 8};
+        toNetworkData(13, &amp;message[0]);
+        write(message, sizeof(message));
+
+        char numbers[4 * 3];
+        toNetworkData(piece, &amp;numbers[0]);
+        toNetworkData(offset, &amp;numbers[4]);
+        toNetworkData(length, &amp;numbers[8]);
+        write(numbers, sizeof(numbers));
+
+        incoming.removeAll(TorrentBlock(piece, offset, length));
+    }
+
+    // Sends a block to the peer.
+    void PeerWireClient::sendBlock(int piece, int offset, const QByteArray &amp;data)
+    {
+        QByteArray block;
+
+        char message[] = {0, 0, 0, 1, 7};
+        toNetworkData(9 + data.size(), &amp;message[0]);
+        block += QByteArray(message, sizeof(message));
+
+        char numbers[4 * 2];
+        toNetworkData(piece, &amp;numbers[0]);
+        toNetworkData(offset, &amp;numbers[4]);
+        block += QByteArray(numbers, sizeof(numbers));
+        block += data;
+
+        BlockInfo blockInfo;
+        blockInfo.pieceIndex = piece;
+        blockInfo.offset = offset;
+        blockInfo.length = data.size();
+        blockInfo.block = block;
+
+        pendingBlocks &lt;&lt; blockInfo;
+        pendingBlockSizes += block.size();
+
+        if (pendingBlockSizes &gt; 32 * 16384) {
+            chokePeer();
+            unchokePeer();
+            return;
+        }
+        emit readyToTransfer();
+    }
+
+    // Attempts to write 'bytes' bytes to the socket from the buffer.
+    // This is used by RateController, which precisely controls how much
+    // each client can write.
+    qint64 PeerWireClient::writeToSocket(qint64 bytes)
+    {
+        qint64 totalWritten = 0;
+        do {
+            if (outgoingBuffer.isEmpty() &amp;&amp; !pendingBlocks.isEmpty()) {
+                BlockInfo block = pendingBlocks.takeFirst();
+                pendingBlockSizes -= block.length;
+                outgoingBuffer += block.block;
+            }
+            qint64 written = QTcpSocket::writeData(outgoingBuffer.constData(),
+                                                   qMin&lt;qint64&gt;(bytes - totalWritten, outgoingBuffer.size()));
+            if (written &lt;= 0)
+                return totalWritten ? totalWritten : written;
+
+            totalWritten += written;
+            uploadSpeedData[0] += written;
+            outgoingBuffer.remove(0, written);
+        } while (totalWritten &lt; bytes &amp;&amp; (!outgoingBuffer.isEmpty() || !pendingBlocks.isEmpty()));
+
+        return totalWritten;
+    }
+
+    // Attempts to read at most 'bytes' bytes from the socket.
+    qint64 PeerWireClient::readFromSocket(qint64 bytes)
+    {
+        char buffer[1024];
+        qint64 totalRead = 0;
+        do {
+            qint64 bytesRead = QTcpSocket::readData(buffer, qMin&lt;qint64&gt;(sizeof(buffer), bytes - totalRead));
+            if (bytesRead &lt;= 0)
+                break;
+            qint64 oldSize = incomingBuffer.size();
+            incomingBuffer.resize(oldSize + bytesRead);
+            memcpy(incomingBuffer.data() + oldSize, buffer, bytesRead);
+
+            totalRead += bytesRead;
+        } while (totalRead &lt; bytes);
+
+        if (totalRead &gt; 0) {
+            downloadSpeedData[0] += totalRead;
+            emit bytesReceived(totalRead);
+            processIncomingData();
+        }
+        return totalRead;
+    }
+
+    // Returns the average number of bytes per second this client is
+    // downloading.
+    qint64 PeerWireClient::downloadSpeed() const
+    {
+        qint64 sum = 0;
+        for (unsigned int i = 0; i &lt; sizeof(downloadSpeedData) / sizeof(qint64); ++i)
+            sum += downloadSpeedData[i];
+        return sum / (8 * 2);
+    }
+
+    // Returns the average number of bytes per second this client is
+    // uploading.
+    qint64 PeerWireClient::uploadSpeed() const
+    {
+        qint64 sum = 0;
+        for (unsigned int i = 0; i &lt; sizeof(uploadSpeedData) / sizeof(qint64); ++i)
+            sum += uploadSpeedData[i];
+        return sum / (8 * 2);
+    }
+
+    bool PeerWireClient::canTransferMore() const
+    {
+        return !incomingBuffer.isEmpty() || QTcpSocket::bytesAvailable() &gt; 0
+            || !outgoingBuffer.isEmpty() || !pendingBlocks.isEmpty();
+    }
+
+    void PeerWireClient::timerEvent(QTimerEvent *event)
+    {
+        if (event-&gt;timerId() == transferSpeedTimer) {
+            // Rotate the upload / download records.
+            for (int i = 6; i &gt;= 0; --i) {
+                uploadSpeedData[i + i] = uploadSpeedData[i];
+                downloadSpeedData[i + 1] = downloadSpeedData[i];
+            }
+            uploadSpeedData[0] = 0;
+            downloadSpeedData[0] = 0;
+        } else if (event-&gt;timerId() == timeoutTimer) {
+            // Disconnect if we timed out; otherwise the timeout is
+            // restarted.
+            if (invalidateTimeout) {
+                invalidateTimeout = false;
+            } else {
+                abort();
+            }
+        } else if (event-&gt;timerId() == pendingRequestTimer) {
+            abort();
+        } else if (event-&gt;timerId() == keepAliveTimer) {
+            sendKeepAlive();
+        }
+        QTcpSocket::timerEvent(event);
+    }
+
+    // Sends the handshake to the peer.
+    void PeerWireClient::sendHandShake()
+    {
+        sentHandShake = true;
+
+        // Restart the timeout
+        if (timeoutTimer)
+            killTimer(timeoutTimer);
+        timeoutTimer = startTimer(ClientTimeout);
+
+        // Write the 68 byte PeerWire handshake.
+        write(&amp;ProtocolIdSize, 1);
+        write(ProtocolId, ProtocolIdSize);
+        write(QByteArray(8, '\0'));
+        write(infoHash);
+        write(peerIdString);
+    }
+
+    void PeerWireClient::processIncomingData()
+    {
+        invalidateTimeout = true;
+
+        if (!receivedHandShake) {
+            // Check that we received enough data
+            if (incomingBuffer.size() &lt; MinimalHeaderSize)
+                return;
+
+            // Sanity check the protocol ID
+            QByteArray id = read(ProtocolIdSize + 1);
+            if (id.at(0) != ProtocolIdSize || !id.mid(1).startsWith(ProtocolId)) {
+                abort();
+                return;
+            }
+
+            // Discard 8 reserved bytes, then read the info hash and peer ID
+            (void) read(8);
+
+            // Read infoHash
+            QByteArray peerInfoHash = read(20);
+            if (!infoHash.isEmpty() &amp;&amp; peerInfoHash != infoHash) {
+                abort();
+                return;
+            }
+
+            emit infoHashReceived(peerInfoHash);
+            if (infoHash.isEmpty()) {
+                abort();
+                return;
+            }
+
+            // Send handshake
+            if (!sentHandShake)
+                sendHandShake();
+            receivedHandShake = true;
+        }
+
+        // Handle delayed peer id arrival
+        if (!gotPeerId) {
+            if (incomingBuffer.size() &lt; 20)
+                return;
+            gotPeerId = true;
+            if (read(20) == peerIdString) {
+                // We connected to ourself
+                abort();
+                return;
+            }
+        }
+
+        // Initialize keep-alive timer
+        if (!keepAliveTimer)
+            keepAliveTimer = startTimer(KeepAliveInterval);
+
+        do {
+            // Find the packet length
+            if (nextPacketLength == -1) {
+                if (incomingBuffer.size() &lt; 4)
+                    return;
+
+                char tmp[4];
+                read(tmp, sizeof(tmp));
+                nextPacketLength = fromNetworkData(tmp);
+
+                if (nextPacketLength &lt; 0 || nextPacketLength &gt; 200000) {
+                    // Prevent DoS
+                    abort();
+                    return;
+                }
+            }
+
+            // KeepAlive
+            if (nextPacketLength == 0) {
+                nextPacketLength = -1;
+                continue;
+            }
+
+            // Wait with parsing until the whole packet has been received
+            if (incomingBuffer.size() &lt; nextPacketLength)
+                return;
+
+            // Read the packet
+            QByteArray packet = read(nextPacketLength);
+            if (packet.size() != nextPacketLength) {
+                abort();
+                return;
+            }
+
+            switch (packet.at(0)) {
+            case ChokePacket:
+                // We have been choked.
+                pwState |= ChokedByPeer;
+                incoming.clear();
+                if (pendingRequestTimer)
+                    killTimer(pendingRequestTimer);
+                emit choked();
+                break;
+            case UnchokePacket:
+                // We have been unchoked.
+                pwState &amp;= ~ChokedByPeer;
+                emit unchoked();
+                break;
+            case InterestedPacket:
+                // The peer is interested in downloading.
+                pwState |= PeerIsInterested;
+                emit interested();
+                break;
+            case NotInterestedPacket:
+                // The peer is not interested in downloading.
+                pwState &amp;= ~PeerIsInterested;
+                emit notInterested();
+                break;
+            case HavePacket: {
+                // The peer has a new piece available.
+                quint32 index = fromNetworkData(&amp;packet.data()[1]);
+                peerPieces.setBit(int(index));
+                emit piecesAvailable(availablePieces());
+                break;
+            }
+            case BitFieldPacket:
+                // The peer has the following pieces available.
+                for (int i = 1; i &lt; packet.size(); ++i) {
+                    for (int bit = 0; bit &lt; 8; ++bit) {
+                        if (packet.at(i) &amp; (1 &lt;&lt; (7 - bit)))
+                            peerPieces.setBit(int(((i - 1) * 8) + bit));
+                    }
+                }
+                emit piecesAvailable(availablePieces());
+                break;
+            case RequestPacket: {
+                // The peer requests a block.
+                quint32 index = fromNetworkData(&amp;packet.data()[1]);
+                quint32 begin = fromNetworkData(&amp;packet.data()[5]);
+                quint32 length = fromNetworkData(&amp;packet.data()[9]);
+                emit blockRequested(int(index), int(begin), int(length));
+                break;
+            }
+            case PiecePacket: {
+                int index = int(fromNetworkData(&amp;packet.data()[1]));
+                int begin = int(fromNetworkData(&amp;packet.data()[5]));
+
+                incoming.removeAll(TorrentBlock(index, begin, packet.size() - 9));
+
+                // The peer sends a block.
+                emit blockReceived(index, begin, packet.mid(9));
+
+                // Kill the pending block timer.
+                if (pendingRequestTimer) {
+                    killTimer(pendingRequestTimer);
+                    pendingRequestTimer = 0;
+                }
+                break;
+            }
+            case CancelPacket: {
+                // The peer cancels a block request.
+                quint32 index = fromNetworkData(&amp;packet.data()[1]);
+                quint32 begin = fromNetworkData(&amp;packet.data()[5]);
+                quint32 length = fromNetworkData(&amp;packet.data()[9]);
+                for (int i = 0; i &lt; pendingBlocks.size(); ++i) {
+                    const BlockInfo &amp;blockInfo = pendingBlocks.at(i);
+                    if (blockInfo.pieceIndex == int(index)
+                        &amp;&amp; blockInfo.offset == int(begin)
+                        &amp;&amp; blockInfo.length == int(length)) {
+                        pendingBlocks.removeAt(i);
+                        break;
+                    }
+                }
+                break;
+            }
+            default:
+                // Unsupported packet type; just ignore it.
+                break;
+            }
+            nextPacketLength = -1;
+        } while (incomingBuffer.size() &gt; 0);
+    }
+
+    qint64 PeerWireClient::readData(char *data, qint64 size)
+    {
+        int n = qMin&lt;int&gt;(size, incomingBuffer.size());
+        memcpy(data, incomingBuffer.constData(), n);
+        incomingBuffer.remove(0, n);
+        return n;
+    }
+
+    qint64 PeerWireClient::readLineData(char *data, qint64 maxlen)
+    {
+        return QIODevice::readLineData(data, maxlen);
+    }
+
+    qint64 PeerWireClient::writeData(const char *data, qint64 size)
+    {
+        int oldSize = outgoingBuffer.size();
+        outgoingBuffer.resize(oldSize + size);
+        memcpy(outgoingBuffer.data() + oldSize, data, size);
+        emit readyToTransfer();
+        return size;
+    }</pre>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+</tr></table></div></address></body>
+</html>

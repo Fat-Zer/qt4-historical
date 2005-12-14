@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/itemviews/qdirmodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/itemviews/qdirmodel.cpp -->
 <head>
-    <title>Qt 4.0: QDirModel Class Reference</title>
+    <title>Qt 4.1: QDirModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -91,10 +91,10 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>2 public slots inherited from <a href="qabstractitemmodel.html#public-slots">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
-<li><div class="fn"/>3 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
+<li><div class="fn"/>12 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
-<li><div class="fn"/>12 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
+<li><div class="fn"/>13 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
@@ -231,6 +231,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdirmodel.html#data">data</a>().</p>
 <h3 class="fn"><a name="setFilter"></a>void QDirModel::setFilter ( <a href="qdir.html#Filter-enum">QDir::Filters</a> <i>filters</i> )</h3>
 <p>Sets the directory model's filter to that specified by <i>filters</i>.</p>
+<p>Note that the filter you set should always include the <a href="qdir.html#Filter-enum">QDir::AllDirs</a> enum value, otherwise <a href="qdirmodel.html">QDirModel</a> won't be able to read the directory structure.</p>
 <p>See also <a href="qdirmodel.html#filter">filter</a>() and <a href="qdir.html#Filter-enum">QDir::Filters</a>.</p>
 <h3 class="fn"><a name="setIconProvider"></a>void QDirModel::setIconProvider ( <a href="qfileiconprovider.html">QFileIconProvider</a> * <i>provider</i> )</h3>
 <p>Sets the <i>provider</i> of file icons for the directory model.</p>
@@ -255,6 +256,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

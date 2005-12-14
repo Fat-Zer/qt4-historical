@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 13 - Game Over</title>
+    <title>Qt 4.1: Qt Tutorial 13 - Game Over</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -36,7 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="tutorial-t13-lcdrange-h.html">tutorial/t13/lcdrange.h</a></li>
 <li><a href="tutorial-t13-main-cpp.html">tutorial/t13/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t13.png" alt="Screenshot of tutorial thirteen" /></p><p>In this example we start to approach a real playable game with a score. We give <tt>MyWidget</tt> a new name (<tt>GameBoard</tt>) and add some slots.</p>
+<p align="center"><img src="images/t13.png" alt="Screenshot of Chapter 13" /></p><p>In this example we start to approach a real playable game with a score. We give <tt>MyWidget</tt> a new name (<tt>GameBoard</tt>) and add some slots.</p>
 <p>We put the definition in <tt>gameboard.h</tt> and the implementation in <tt>gameboard.cpp</tt>.</p>
 <p>The <tt>CannonField</tt> now has a game over state.</p>
 <p>The layout problems in <tt>LCDRange</tt> are fixed.</p>
@@ -102,7 +102,7 @@ body { background: #ffffff; color: black; }</style>
         if (gameEnded) {
             painter.setPen(Qt::black);
             painter.setFont(QFont(&quot;Courier&quot;, 48, QFont::Bold));
-            painter.drawText(rect(), Qt::AlignCenter, &quot;Game Over&quot;);
+            painter.drawText(rect(), Qt::AlignCenter, tr(&quot;Game Over&quot;));
         }</pre>
 <p>The paint event has been enhanced to display the text &quot;Game Over&quot; if the game is over, i.e., <tt>gameEnded</tt> is <tt>true</tt>. We don't bother to check the update rectangle here because speed is not critical when the game is over.</p>
 <p>To draw the text we first set a black pen; the pen color is used when drawing text. Next we choose a 48 point bold font from the Courier family. Finally we draw the text centered in the widget's rectangle. Unfortunately, on some systems (especially X servers with Unicode fonts) it can take a while to load such a large font. Because Qt caches fonts, you will notice this only the first time the font is used.</p>
@@ -156,15 +156,19 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       connect(cannonField, SIGNAL(canShoot(bool)),
                 shoot, SLOT(setEnabled(bool)));</pre>
 <p>We also use the <tt>cannonField</tt>'s <tt>canShoot()</tt> signal to enable or disable the <b>Shoot</b> button appropriately.</p>
-<pre>&nbsp;       QPushButton *restart = new QPushButton(&quot;&amp;New Game&quot;);
+<pre>&nbsp;       QPushButton *restart = new QPushButton(tr(&quot;&amp;New Game&quot;));
         restart-&gt;setFont(QFont(&quot;Times&quot;, 18, QFont::Bold));
 
         connect(restart, SIGNAL(clicked()), this, SLOT(newGame()));</pre>
 <p>We create, set up, and connect the <b>New Game</b> button as we have done with the other buttons. Clicking this button will activate the <tt>newGame()</tt> slot in this widget.</p>
 <pre>&nbsp;       hits = new QLCDNumber(2);
+        hits-&gt;setSegmentStyle(QLCDNumber::Filled);
+
         shotsLeft = new QLCDNumber(2);
-        QLabel *hitsLabel = new QLabel(&quot;HITS&quot;);
-        QLabel *shotsLeftLabel = new QLabel(&quot;SHOTS LEFT&quot;);</pre>
+        shotsLeft-&gt;setSegmentStyle(QLCDNumber::Filled);
+
+        QLabel *hitsLabel = new QLabel(tr(&quot;HITS&quot;));
+        QLabel *shotsLeftLabel = new QLabel(tr(&quot;SHOTS LEFT&quot;));</pre>
 <p>We create four new widgets. Note that we don't bother to keep the pointers to the <a href="qlabel.html">QLabel</a> widgets in the <tt>GameBoard</tt> class because there's nothing much we want to do with them. Qt will delete them when the <tt>GameBoard</tt> widget is destroyed, and the layout classes will resize them appropriately.</p>
 <pre>&nbsp;       QHBoxLayout *topLayout = new QHBoxLayout;
         topLayout-&gt;addWidget(shoot);
@@ -174,8 +178,7 @@ body { background: #ffffff; color: black; }</style>
         topLayout-&gt;addWidget(shotsLeftLabel);
         topLayout-&gt;addStretch(1);
         topLayout-&gt;addWidget(restart);</pre>
-<p>The number of widgets in the top-right cell is getting large. Once it was empty; now it's full enough that we group together the layout setting for better overview.</p>
-<p>Notice that we let all the widgets have their preferred sizes, instead putting the stretch just to the left of the <b>New Game</b> button.</p>
+<p>The top-right cell of the <a href="qgridlayout.html">QGridLayout</a> is starting to get crowded. We put a stretch just to the left of the <b>New Game</b> button to ensure that this button will always appear on the right side of the window.</p>
 <pre>&nbsp;       newGame();</pre>
 <p>We're all done constructing the <tt>GameBoard</tt>, so we start it all using <tt>newGame()</tt>. Although <tt>newGame()</tt> is a slot, it can also be used as an ordinary function.</p>
 <pre>&nbsp;   void GameBoard::fire()
@@ -230,6 +233,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

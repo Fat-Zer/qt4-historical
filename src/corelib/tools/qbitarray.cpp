@@ -23,6 +23,7 @@
 
 #include "qbitarray.h"
 #include <qdatastream.h>
+#include <qdebug.h>
 #include <string.h>
 
 /*!
@@ -157,6 +158,47 @@ QBitArray::QBitArray(int size, bool value)
 
     Same as size().
 */
+
+/*!
+    If \a on is true, this function returns the number of
+    1-bits stored in the bit array; otherwise the number
+    of 0-bits is returned.
+*/
+int QBitArray::count(bool on) const
+{
+    int numBits = 0;
+    int len = size();
+#if 0
+    for (int i = 0; i < len; ++i)
+        numBits += testBit(i);
+#else
+    // See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
+    const quint8 *bits = reinterpret_cast<const quint8 *>(d.data()) + 1;
+    while (len >= 32) {
+        quint32 v = quint32(bits[0]) | (quint32(bits[1]) << 8) | (quint32(bits[2]) << 16) | (quint32(bits[3]) << 24);
+        quint32 c = ((v & 0xfff) * Q_UINT64_C(0x1001001001001) & Q_UINT64_C(0x84210842108421)) % 0x1f;
+        c += (((v & 0xfff000) >> 12) * Q_UINT64_C(0x1001001001001) & Q_UINT64_C(0x84210842108421)) % 0x1f;
+        c += ((v >> 24) * Q_UINT64_C(0x1001001001001) & Q_UINT64_C(0x84210842108421)) % 0x1f;
+        len -= 32;
+        bits += 4;
+        numBits += int(c);
+    }
+    while (len >= 24) {
+        quint32 v = quint32(bits[0]) | (quint32(bits[1]) << 8) | (quint32(bits[2]) << 16);
+        quint32 c =  ((v & 0xfff) * Q_UINT64_C(0x1001001001001) & Q_UINT64_C(0x84210842108421)) % 0x1f;
+        c += (((v & 0xfff000) >> 12) * Q_UINT64_C(0x1001001001001) & Q_UINT64_C(0x84210842108421)) % 0x1f;    
+        len -= 24;
+        bits += 3;
+        numBits += int(c);
+    }
+    while (len >= 0) {
+        if (bits[len / 8] & (1 << ((len - 1) & 7)))
+            ++numBits;
+        --len;
+    }
+#endif
+    return on ? numBits : size() - numBits;
+}
 
 /*!
     Resizes the bit array to \a size bits.
@@ -710,14 +752,19 @@ QDataStream &operator>>(QDataStream &in, QBitArray &ba)
     ba.clear();
     quint32 len;
     in >> len;
+    if (len == 0) {
+	ba.clear();
+	return in;
+    }
 
     const quint32 Step = 8 * 1024 * 1024;
+    quint32 totalBytes = (len + 7) / 8;
     quint32 allocated = 0;
 
-    while (allocated < len) {
-        int blockSize = qMin(Step, len - allocated);
-        ba.resize(allocated + blockSize);
-        if (in.readRawData(ba.d.data() + 1 + ((allocated + 7) / 8), (blockSize + 7) / 8) != (blockSize + 7) / 8) {
+    while (allocated < totalBytes) {
+        int blockSize = qMin(Step, totalBytes - allocated);
+        ba.d.resize(allocated + blockSize + 1);
+        if (in.readRawData(ba.d.data() + 1 + allocated, blockSize) != blockSize) {
             ba.clear();
             in.setStatus(QDataStream::ReadPastEnd);
             return in;
@@ -729,7 +776,10 @@ QDataStream &operator>>(QDataStream &in, QBitArray &ba)
     if (paddingMask != ~0x0 && (ba.d.constData()[ba.d.size() - 1] & paddingMask)) {
         ba.clear();
         in.setStatus(QDataStream::ReadCorruptData);
+        return in;
     }
+
+    *ba.d.data() = ba.d.size() * 8 - len;
     return in;
 }
 #endif

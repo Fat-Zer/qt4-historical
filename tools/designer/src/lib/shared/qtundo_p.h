@@ -47,7 +47,7 @@ class QWidget;
 class QAction;
 class QtUndoStack;
 
-class QT_SHARED_EXPORT QtCommand : public QObject
+class QDESIGNER_SHARED_EXPORT QtCommand : public QObject
 {
     Q_OBJECT
 
@@ -113,7 +113,7 @@ private:
 
 class QtUndoState;
 
-class QT_SHARED_EXPORT QtUndoStack : public QObject, private QList<QtCommand*>
+class QDESIGNER_SHARED_EXPORT QtUndoStack : public QObject, private QList<QtCommand*>
 {
     Q_OBJECT
 
@@ -175,7 +175,7 @@ class QT_SHARED_EXPORT QtUndoStack : public QObject, private QList<QtCommand*>
         QtCommand *commandAt(CommandIter it) const;
 };
 
-class QT_SHARED_EXPORT QtUndoManager : public QObject
+class QDESIGNER_SHARED_EXPORT QtUndoManager : public QObject
 {
     Q_OBJECT
 
@@ -232,7 +232,7 @@ class QT_SHARED_EXPORT QtUndoManager : public QObject
         QString m_undo_description, m_redo_description;
 };
 
-class QT_SHARED_EXPORT QtUndoListModel: public QAbstractItemModel
+class QDESIGNER_SHARED_EXPORT QtUndoListModel: public QAbstractItemModel
 {
     Q_OBJECT
 public:
@@ -258,7 +258,7 @@ private:
     int m_undoIndex;
 };
 
-class QT_SHARED_EXPORT QtUndoListView: public QListView
+class QDESIGNER_SHARED_EXPORT QtUndoListView: public QListView
 {
     Q_OBJECT
 public:

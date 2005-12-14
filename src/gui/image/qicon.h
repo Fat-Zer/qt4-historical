@@ -24,9 +24,9 @@
 #ifndef QICON_H
 #define QICON_H
 
-#include "QtCore/qglobal.h"
-#include "QtCore/qsize.h"
-#include "QtGui/qpixmap.h"
+#include <QtCore/qglobal.h>
+#include <QtCore/qsize.h>
+#include <QtGui/qpixmap.h>
 
 QT_MODULE(Gui)
 
@@ -95,5 +95,4 @@ Q_DECLARE_TYPEINFO(QIcon, Q_MOVABLE_TYPE);
 typedef QIcon QIconSet;
 #endif
 
-
-#endif
+#endif // QICON_H

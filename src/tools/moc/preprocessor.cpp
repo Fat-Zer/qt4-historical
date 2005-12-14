@@ -24,10 +24,10 @@
 #include "preprocessor.h"
 #include "utils.h"
 #include "ppkeywords.cpp"
-#include <qstringlist.h>
-#include <qfile.h>
-#include <qdir.h>
-#include <qfileinfo.h>
+#include <QStringList>
+#include <QFile>
+#include <QDir>
+#include <QFileInfo>
 
 QList<QByteArray> Preprocessor::includes;
 Macros Preprocessor::macros;
@@ -173,12 +173,7 @@ static Symbols tokenize(const QByteArray &input, int lineNum = 1, TokenizeMode m
             symbols += Symbol(lineNum, PP_DEFINED, QByteArray());
             continue;
         case PP_QUOTE:
-            while (*data && (*data != '\"'
-                             || (*(data-1)=='\\'
-                                  && *(data-2)!='\\')))
-                ++data;
-            if (*data)
-                ++data;
+            data = skipQuote(data);
             token = PP_STRING_LITERAL;
             break;
         case PP_SINGLEQUOTE:
@@ -357,7 +352,7 @@ int PP_Expression::logical_OR_expression()
 {
     int value = logical_AND_expression();
     if (test(PP_OROR))
-        return value || logical_OR_expression();
+        return logical_OR_expression() || value;
     return value;
 }
 
@@ -365,7 +360,7 @@ int PP_Expression::logical_AND_expression()
 {
     int value = inclusive_OR_expression();
     if (test(PP_ANDAND))
-        return value && logical_AND_expression();
+        return logical_AND_expression() && value;
     return value;
 }
 
@@ -555,12 +550,18 @@ static int evaluateCondition(const Macros &macros, const Symbol &symbol)
     return expression.value();
 }
 
-
+static void preprocess(const QByteArray &filename, const Symbols &symbols, Macros &macros, Symbols &preprocessed);
 static Symbols preprocess(const QByteArray &filename, const Symbols &symbols, Macros &macros)
 {
-    static int depth = 0;
     Symbols preprocessed;
-    preprocessed.reserve(symbols.size());
+    preprocess(filename, symbols, macros, preprocessed);
+    return preprocessed;
+}
+
+static void preprocess(const QByteArray &filename, const Symbols &symbols, Macros &macros, Symbols &preprocessed)
+{
+    static int depth = 0;
+    preprocessed.reserve(preprocessed.size() + symbols.size());
     int i = 0;
     while (hasNext(symbols,i)) {
         Symbol sym = next(symbols, i);
@@ -619,7 +620,6 @@ static Symbols preprocess(const QByteArray &filename, const Symbols &symbols, Ma
             Symbols symbols = tokenize(phase1);
             // phase 3: preprocess conditions and substitute macros
             ++depth;
-            symbols = preprocess(include, symbols, macros);
 
             Symbol includeSym;
             includeSym.lexem_data = "\n#moc_include_begin \"";
@@ -627,7 +627,7 @@ static Symbols preprocess(const QByteArray &filename, const Symbols &symbols, Ma
             includeSym.lexem_data += "\"\n";
             preprocessed += includeSym;
 
-            preprocessed += symbols;
+            preprocess(include, symbols, macros, preprocessed);
 
             includeSym.lexem_data = "\n#moc_include_end ";
             includeSym.lexem_data += QByteArray::number(sym.lineNum);
@@ -660,6 +660,27 @@ static Symbols preprocess(const QByteArray &filename, const Symbols &symbols, Ma
             }
             continue;
         }
+        case PP_UNDEF: {
+            QByteArray macro = sym.lexem();
+            const char *data = macro.constData() + 7;
+            while (*data && is_whitespace(*data))
+                ++data;
+            if (!is_ident_start(*data))
+                continue;
+            const char *ident = data++;
+            while (*data && is_ident_char(*data))
+                ++data;
+            QByteArray name(ident, data - ident);
+            macros.remove(name);
+            if (Preprocessor::onlyPreprocess) {
+                Preprocessor::protocol += "#";
+                Preprocessor::protocol += QByteArray(depth * 2, ' ');
+                Preprocessor::protocol += "undef ";
+                Preprocessor::protocol += name;
+                Preprocessor::protocol += "\n";
+            }
+            continue;
+        }
         case PP_IDENTIFIER:
             // we _could_ easily substitute macros by the following
             // four lines, but we choose not to.
@@ -669,6 +690,14 @@ static Symbols preprocess(const QByteArray &filename, const Symbols &symbols, Ma
                 continue;
             }
             */
+            break;
+        case PP_QT_SIGNALS:
+        case PP_QT_SLOTS:
+            if (macros.contains("QT_NO_KEYWORDS")) {
+                Symbol treatIdentSym;
+                treatIdentSym.lexem_data = "#moc_next_is_identifier ";
+                preprocessed += treatIdentSym;
+            }
             break;
         case PP_HASH:
             continue; // skip unknown preprocessor statement
@@ -694,7 +723,6 @@ static Symbols preprocess(const QByteArray &filename, const Symbols &symbols, Ma
         }
         preprocessed += sym;
     }
-    return preprocessed;
 }
 
 QByteArray Preprocessor::preprocessed(const QByteArray &filename, FILE *file)
@@ -758,14 +786,16 @@ QByteArray Preprocessor::preprocessed(const QByteArray &filename, FILE *file)
         }
         secondlast = last;
         last = sym.pp_token;
-        while (sym.lineNum > lineNum) {
-            output += '\n';
-            ++lineNum;
+
+        const int padding = sym.lineNum - lineNum;
+        if (padding > 0) {
+            output.resize(output.size() + padding);
+            qMemSet(output.data() + output.size() - padding, '\n', padding);
+            lineNum = sym.lineNum;
         }
+
         output += sym.lexem();
     }
 
     return output;
 }
-
-

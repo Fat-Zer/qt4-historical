@@ -32,6 +32,9 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
+#ifndef QT_NO_IPV6IFNAME
+#include <net/if.h>
+#endif
 
 #if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE-0 >= 500) && (_XOPEN_VERSION-0 >= 500)
 // Solaris 7 and better with specific feature test macros
@@ -72,12 +75,12 @@ static inline int qt_socket_connect(int s, struct sockaddr *addr, QT_SOCKLEN_T a
 
 #ifdef QT_LARGEFILE_SUPPORT
 #define QT_FOPEN                ::fopen64
-#define QT_FSEEK                ::fseeko
-#define QT_FTELL                ::ftello
+#define QT_FSEEK                ::fseeko64
+#define QT_FTELL                ::ftello64
 #define QT_FGETPOS              ::fgetpos64
 #define QT_FSETPOS              ::fsetpos64
 #define QT_FPOS_T               fpos64_t
-#define QT_OFF_T                off_t
+#define QT_OFF_T                off64_t
 #else
 #define QT_FOPEN                ::fopen
 #define QT_FSEEK                ::fseek

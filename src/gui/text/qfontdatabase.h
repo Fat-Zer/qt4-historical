@@ -24,12 +24,12 @@
 #ifndef QFONTDATABASE_H
 #define QFONTDATABASE_H
 
-#include "QtGui/qwindowdefs.h"
-#include "QtCore/qstring.h"
-#include "QtGui/qfont.h"
+#include <QtGui/qwindowdefs.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qfont.h>
 #ifdef QT3_SUPPORT
-#include "QtCore/qstringlist.h"
-#include "QtCore/qlist.h"
+#include <QtCore/qstringlist.h>
+#include <QtCore/qlist.h>
 #endif
 
 QT_MODULE(Gui)
@@ -92,6 +92,7 @@ public:
     QList<int> pointSizes(const QString &family, const QString &style = QString());
     QList<int> smoothSizes(const QString &family, const QString &style);
     QString styleString(const QFont &font);
+    QString styleString(const QFontInfo &fontInfo);
 
     QFont font(const QString &family, const QString &style, int pointSize) const;
 
@@ -110,9 +111,16 @@ public:
 private:
     static void createDatabase();
     static void parseFontName(const QString &name, QString &foundry, QString &family);
+#if !defined(Q_WS_X11) && !defined(Q_WS_WIN)
     static QFontEngine *findFont(int script, const QFontPrivate *fp,
                                  const QFontDef &request, int force_encoding_id = -1);
-
+#else
+    static void load(const QFontPrivate *d, int script);
+#endif
+#ifdef Q_WS_X11
+    static QFontEngine *loadXlfd(int screen, int script, const QFontDef &request, int force_encoding_id = -1);
+#endif
+    
     friend struct QFontDef;
     friend class QFontPrivate;
     friend class QFontDialog;
@@ -120,6 +128,5 @@ private:
 
     QFontDatabasePrivate *d;
 };
-
 
 #endif // QFONTDATABASE_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/sql/kernel/qsqlerror.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/sql/kernel/qsqlerror.cpp -->
 <head>
-    <title>Qt 4.0: QSqlError Class Reference</title>
+    <title>Qt 4.1: QSqlError Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -35,6 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qsqlerror.html#dtor.QSqlError">~QSqlError</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qsqlerror.html#databaseText">databaseText</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qsqlerror.html#driverText">driverText</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qsqlerror.html#isValid">isValid</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qsqlerror.html#number">number</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qsqlerror.html#setDatabaseText">setDatabaseText</a></b> ( const QString &amp; <i>databaseText</i> )</li>
 <li><div class="fn"/>void <b><a href="qsqlerror.html#setDriverText">setDriverText</a></b> ( const QString &amp; <i>driverText</i> )</li>
@@ -76,6 +77,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="driverText"></a><a href="qstring.html">QString</a> QSqlError::driverText () const</h3>
 <p>Returns the text of the error as reported by the driver. This may contain database-specific descriptions. It may also be empty.</p>
 <p>See also <a href="qsqlerror.html#setDriverText">setDriverText</a>(), <a href="qsqlerror.html#databaseText">databaseText</a>(), and <a href="qsqlerror.html#text">text</a>().</p>
+<h3 class="fn"><a name="isValid"></a>bool QSqlError::isValid () const</h3>
+<p>Returns true if an error is set, otherwise false.</p>
+<p>Example:</p>
+<pre>&nbsp;   QSqlQueryModel model;
+    model.setQuery(&quot;select * from myTable&quot;);
+    if (model.lastError().isValid())
+        qDebug() &lt;&lt; model.lastError();</pre>
+<p>See also <a href="qsqlerror.html#type">type</a>().</p>
 <h3 class="fn"><a name="number"></a>int QSqlError::number () const</h3>
 <p>Returns the database-specific error number, or -1 if it cannot be determined.</p>
 <p>See also <a href="qsqlerror.html#setNumber">setNumber</a>().</p>
@@ -103,6 +112,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

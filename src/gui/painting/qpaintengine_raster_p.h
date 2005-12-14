@@ -19,7 +19,7 @@
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
-**/
+****************************************************************************/
 
 #ifndef QPAINTENGINE_RASTER_P_H
 #define QPAINTENGINE_RASTER_P_H
@@ -35,24 +35,19 @@
 // We mean it.
 //
 
-#include <QtGui/qpaintengine.h>
-#include <QtGui/qpainterpath.h>
+#include "QtGui/qpaintengine.h"
+#include "QtGui/qpainterpath.h"
+#include "private/qdatabuffer_p.h"
+#include "private/qdrawhelper_p.h"
+#include "private/qpaintengine_p.h"
+#include "private/qstroker_p.h"
 
-#include <private/qdatabuffer_p.h>
-#include <private/qdrawhelper_p.h>
-#include <private/qpaintengine_p.h>
-#include <private/qstroker_p.h>
+#include <stdlib.h>
 
 class QFTOutlineMapper;
 class QRasterPaintEnginePrivate;
 class QRasterBuffer;
-
-struct FillData;
-struct SolidFillData;
-struct TextureFillData;
-struct LinearGradientData;
-struct RadialGradientData;
-struct ConicalGradientData;
+class QClipData;
 
 /*******************************************************************************
  * QRasterPaintEngine
@@ -74,7 +69,8 @@ public:
 
     void drawPath(const QPainterPath &path);
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
-    void fillPath(const QPainterPath &path, FillData *fillData);
+    void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode);
+    void fillPath(const QPainterPath &path, QSpanData *fillData);
 
     void drawEllipse(const QRectF &rect);
 
@@ -93,8 +89,6 @@ public:
     void drawPoints(const QPointF *points, int pointCount);
 
 #ifdef Q_NO_USING_KEYWORD
-    inline void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
-        { QPaintEngine::drawPolygon(points, pointCount, mode); }
     inline void drawPoints(const QPoint *points, int pointCount) { QPaintEngine::drawPoints(points, pointCount); }
     inline void drawEllipse(const QRect &rect) { QPaintEngine::drawEllipse(rect); }
 #else
@@ -106,6 +100,14 @@ public:
     void setFlushOnEnd(bool flush);
     void flush(QPaintDevice *device, const QPoint &offset);
 
+    void releaseBuffer();
+
+    QSize size() const;
+
+#ifndef QT_NO_DEBUG
+    void saveBuffer(const QString &s) const;
+#endif
+
 #ifdef Q_WS_WIN
     HDC getDC() const;
     void releaseDC(HDC hdc) const;
@@ -113,7 +115,7 @@ public:
 #ifdef Q_WS_QWS
     //QWS hack
     void alphaPenBlt(const void* src, int bpl, bool mono, int rx,int ry,int w,int h);
-    void qwsFillRect(int x, int y, int w, int h, const QBrush &brush);
+    void qwsFillRect(int x, int y, int w, int h);
 #endif
 
     Type type() const { return Raster; }
@@ -122,6 +124,13 @@ public:
 
 protected:
     QRasterPaintEngine(QRasterPaintEnginePrivate &d);
+private:
+    void init();
+
+#if defined(Q_WS_WIN)
+    bool drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax, 
+        int ymax, const QTextItem &textItem, bool clearType, qreal leftBearingReserve);
+#endif    
 };
 
 
@@ -133,12 +142,11 @@ class QRasterPaintEnginePrivate : public QPaintEnginePrivate
     Q_DECLARE_PUBLIC(QRasterPaintEngine)
 public:
 
-    FillData fillForBrush(const QBrush &brush);
-    FillData clipForFill(FillData *data);
     void updateClip_helper(const QPainterPath &path, Qt::ClipOperation);
 
-    void drawBitmap(const QPointF &pos, const QPixmap &image, FillData *fill);
-    QImage colorizeBitmap(const QImage &image, const QColor &color);
+    void drawBitmap(const QPointF &pos, const QPixmap &image, QSpanData *fill);
+
+    void rasterize(QT_FT_Outline *outline, ProcessSpans callback, void *userData, QRasterBuffer *rasterBuffer);
 
     QMatrix brushMatrix() const {
         QMatrix m(matrix);
@@ -151,57 +159,92 @@ public:
     void drawXLFD(const QPointF &p, const QTextItem &textItem);
 #endif
 
-    qreal *gradientStopPoints(const QGradient *gradient);
-    uint *gradientStopColors(const QGradient *gradient);
-
     QPointF brushOffset;
     QBrush brush;
-    QBrush bgBrush;
     QPen pen;
     QMatrix matrix;
-    QPainter::CompositionMode compositionMode;
 
     QPaintDevice *device;
     QFTOutlineMapper *outlineMapper;
     QRasterBuffer *rasterBuffer;
+#ifdef Q_WS_WIN
     QRasterBuffer *fontRasterBuffer;
-
-    QDataBuffer<qreal> stopPoints;
-    QDataBuffer<uint> stopColors;
+#endif
 
     QPainterPath baseClip;
     QRect deviceRect;
 
-    FillData *fillData;
-    SolidFillData *solidFillData;
-    TextureFillData *textureFillData;
-    LinearGradientData *linearGradientData;
-    RadialGradientData *radialGradientData;
-    ConicalGradientData *conicalGradientData;
-
-    DrawHelper *drawHelper;
+    QSpanData penData;
+    QSpanData brushData;
 
     QStroker basicStroker;
     QDashStroker *dashStroker;
     QStrokerOps *stroker;
 
-    QImage tempImage;
+
+    QT_FT_Raster *blackRaster;
+    QT_FT_Raster *grayRaster;
+    unsigned long rasterPoolSize;
+    unsigned char *rasterPoolBase;
+
 
     int deviceDepth;
 
     uint txop;
 
-    uint has_pen : 1;
-    uint has_brush : 1;
     uint fast_pen : 1;
-    uint opaqueBackground : 1;
-    uint clipEnabled : 1;
     uint antialiased : 1;
     uint bilinear : 1;
     uint flushOnEnd : 1;
     uint mono_surface : 1;
     uint int_xform : 1;
+
+
 };
+
+class QClipData {
+public:
+    QClipData(int height);
+    ~QClipData();
+    int clipSpanHeight;
+    struct ClipLine {
+        int count;
+        QSpan *spans;
+    } *clipLines;
+
+    int allocated;
+    int count;
+    QSpan *spans;
+    int xmin, xmax, ymin, ymax;
+
+    void appendSpan(int x, int length, int y, int coverage);
+    void appendSpans(const QSpan *s, int num);
+    void fixup();
+};
+
+inline void QClipData::appendSpan(int x, int length, int y, int coverage)
+{
+    if (count == allocated) {
+        allocated *= 2;
+        spans = (QSpan *)realloc(spans, allocated*sizeof(QSpan));
+    }
+    spans[count].x = x;
+    spans[count].len = length;
+    spans[count].y = y;
+    spans[count].coverage = coverage;
+    ++count;
+}
+
+inline void QClipData::appendSpans(const QSpan *s, int num)
+{
+    if (count + num >= allocated) {
+        while (allocated < count + num)
+            allocated *= 2;
+        spans = (QSpan *)realloc(spans, allocated*sizeof(QSpan));
+    }
+    memcpy(spans+count, s, num*sizeof(QSpan));
+    count += num;
+}
 
 /*******************************************************************************
  * QRasterBuffer
@@ -210,13 +253,15 @@ class QRasterBuffer
 {
 public:
 #if defined(Q_WS_WIN)
-    QRasterBuffer() : m_hdc(0), m_bitmap(0), m_width(0), m_height(0), m_buffer(0) { init(); }
+    QRasterBuffer() : clip(0), m_hdc(0), m_bitmap(0), m_width(0), m_height(0), m_buffer(0){ init(); }
 
     HDC hdc() const { return m_hdc; }
 #elif defined(Q_WS_X11)
-    QRasterBuffer() : m_width(0), m_height(0), m_buffer(0) { init(); }
+    QRasterBuffer() : clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
+#elif defined(Q_WS_QWS)
+    QRasterBuffer() : clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
 #elif defined(Q_WS_MAC)
-    QRasterBuffer() : m_data(0), m_width(0), m_height(0), m_buffer(0) { init(); }
+    QRasterBuffer() : clip(0), m_data(0), m_width(0), m_height(0), m_buffer(0) { init(); }
 # if defined(QMAC_NO_COREGRAPHICS)
     GWorldPtr m_data;
 # else
@@ -233,15 +278,8 @@ public:
 #endif
     void prepare(int w, int h);
     void prepareBuffer(int w, int h);
-    void prepareClip(int w, int h);
 
     void resetBuffer(int val=0);
-    void resetClip();
-
-    void resizeClipSpan(int y, int size);
-    void appendClipSpan(int x, int y, int len, int coverage);
-    void replaceClipSpans(int y, QSpan *spans, int spanCount);
-    void resetClipSpans(int y, int count);
 
     uchar *scanLine(int y) { Q_ASSERT(y>=0); Q_ASSERT(y<m_height); return m_buffer + y * bytes_per_line; }
 
@@ -252,15 +290,23 @@ public:
 
     void flushToARGBImage(QImage *image) const;
 
-    QSpan *clipSpans(int y) const { Q_ASSERT(y >= 0 && y < m_height); return m_clipSpans[y]; }
-    int clipSpanCount(int y) const { Q_ASSERT(y >= 0 && y < m_height); return m_clipSpanCount[y]; }
-
     int width() const { return m_width; }
     int height() const { return m_height; }
     int bytesPerLine() const { return bytes_per_line; }
 
     uchar *buffer() const { return m_buffer; }
 
+    QClipData *clip;
+    bool clipEnabled;
+    bool opaqueBackground;
+
+    QPainter::CompositionMode compositionMode;
+    DrawHelper *drawHelper;
+    QImage tempImage;
+    QBrush bgBrush;
+    QImage colorizeBitmap(const QImage &image, const QColor &color);
+
+    void resetClip() { delete clip; clip = 0; }
 private:
 #if defined(Q_WS_WIN)
     HDC m_hdc;
@@ -272,10 +318,6 @@ private:
     int bytes_per_line;
     uchar *m_buffer;
 
-    int m_clipSpanHeight;
-    int *m_clipSpanCount;
-    int *m_clipSpanCapacity;
-    QSpan **m_clipSpans;
 };
 
 #endif // QPAINTENGINE_RASTER_P_H

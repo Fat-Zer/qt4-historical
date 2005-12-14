@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Qt 4.0: cannonfield.cpp Example File (tutorial/t14/cannonfield.cpp)</title>
+    <title>Qt 4.1: cannonfield.cpp Example File (tutorial/t14/cannonfield.cpp)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -24,27 +24,21 @@ body { background: #ffffff; color: black; }</style>
     ** This file is part of the documentation of the Qt Toolkit.
     **
     ** This file may be used under the terms of the GNU General Public
-** License version 2.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of
-** this file.  Please review the following information to ensure GNU
-** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
-**
-** If you are unsure which license is appropriate for your use, please
-** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+    ** License version 2.0 as published by the Free Software Foundation
+    ** and appearing in the file LICENSE.GPL included in the packaging of
+    ** this file.  Please review the following information to ensure GNU
+    ** General Public Licensing requirements will be met:
+    ** http://www.trolltech.com/products/qt/opensource.html
+    **
+    ** If you are unsure which license is appropriate for your use, please
+    ** review the following information:
+    ** http://www.trolltech.com/products/qt/licensing.html or contact the
+    ** sales department at sales@trolltech.com.
     **
     ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
     ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
     **
     ****************************************************************************/
-
-    /****************************************************************
-    **
-    ** Implementation CannonField class, Qt tutorial 14
-    **
-    ****************************************************************/
 
     #include &lt;QDateTime&gt;
     #include &lt;QMouseEvent&gt;
@@ -71,6 +65,7 @@ body { background: #ffffff; color: black; }</style>
         gameEnded = false;
         barrelPressed = false;
         setPalette(QPalette(QColor(250, 250, 200)));
+        setAutoFillBackground(true);
         newTarget();
     }
 
@@ -196,7 +191,7 @@ body { background: #ffffff; color: black; }</style>
         if (gameEnded) {
             painter.setPen(Qt::black);
             painter.setFont(QFont(&quot;Courier&quot;, 48, QFont::Bold));
-            painter.drawText(rect(), Qt::AlignCenter, &quot;Game Over&quot;);
+            painter.drawText(rect(), Qt::AlignCenter, tr(&quot;Game Over&quot;));
         }
         paintCannon(painter);
         paintBarrier(painter);
@@ -227,7 +222,7 @@ body { background: #ffffff; color: black; }</style>
         painter.drawRect(barrierRect());
     }
 
-    const QRect barrelRect(33, -4, 15, 8);
+    const QRect barrelRect(30, -5, 20, 10);
 
     void CannonField::paintCannon(QPainter &amp;painter)
     {
@@ -253,7 +248,7 @@ body { background: #ffffff; color: black; }</style>
     {
         const double gravity = 4;
 
-        double time = timerCount / 40.0;
+        double time = timerCount / 20.0;
         double velocity = shootForce;
         double radians = shootAngle * 3.14159265 / 180;
 
@@ -303,6 +298,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

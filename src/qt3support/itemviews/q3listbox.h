@@ -24,8 +24,8 @@
 #ifndef Q3LISTBOX_H
 #define Q3LISTBOX_H
 
-#include "Qt3Support/q3scrollview.h"
-#include "QtGui/qpixmap.h"
+#include <Qt3Support/q3scrollview.h>
+#include <QtGui/qpixmap.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -36,7 +36,6 @@ class Q3ListBoxItem;
 class QString;
 class QStringList;
 
-
 class Q_COMPAT_EXPORT Q3ListBox : public Q3ScrollView
 {
     friend class Q3ListBoxItem;
@@ -46,7 +45,7 @@ class Q_COMPAT_EXPORT Q3ListBox : public Q3ScrollView
     Q_ENUMS(SelectionMode LayoutMode)
     Q_PROPERTY(uint count READ count)
     Q_PROPERTY(int numItemsVisible READ numItemsVisible)
-    Q_PROPERTY(int currentItem READ currentItem WRITE setCurrentItem)
+    Q_PROPERTY(int currentItem READ currentItem WRITE setCurrentItem USER true)
     Q_PROPERTY(QString currentText READ currentText)
     Q_PROPERTY(int topItem READ topItem WRITE setTopItem DESIGNABLE false)
     Q_PROPERTY(SelectionMode selectionMode READ selectionMode WRITE setSelectionMode)
@@ -196,14 +195,14 @@ public:
 
     void sort(bool ascending = true);
 
-public slots:
+public Q_SLOTS:
     void clear();
     virtual void ensureCurrentVisible();
     virtual void clearSelection();
     virtual void selectAll(bool select);
     virtual void invertSelection();
 
-signals:
+Q_SIGNALS:
     void highlighted(int index);
     void selected(int index);
     void highlighted(const QString &);
@@ -263,10 +262,10 @@ protected:
 
     int findItem(int yPos) const { return index(itemAt(QPoint(0,yPos))); }
 
-protected slots:
+protected Q_SLOTS:
     void clearInputString();
 
-private slots:
+private Q_SLOTS:
     void refreshSlot();
     void doAutoScroll();
     void adjustItems();
@@ -344,8 +343,8 @@ private:
     Q3ListBox* lbox;
     friend class Q3ListBox;
     friend class Q3ListBoxPrivate;
-    friend class QComboBox;
-    friend class QComboBoxPopupItem;
+    friend class Q3ComboBox;
+    friend class Q3ComboBoxPopupItem;
 };
 
 
@@ -401,4 +400,4 @@ private:
 
 #endif // QT_NO_LISTBOX
 
-#endif // QLISTBOX_H
+#endif // Q3LISTBOX_H

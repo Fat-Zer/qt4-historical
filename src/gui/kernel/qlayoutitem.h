@@ -24,10 +24,10 @@
 #ifndef QLAYOUTITEM_H
 #define QLAYOUTITEM_H
 
-#include "QtGui/qsizepolicy.h"
-#include "QtCore/qrect.h"
+#include <QtGui/qsizepolicy.h>
+#include <QtCore/qrect.h>
 
-#include "limits.h"
+#include <limits.h>
 
 QT_MODULE(Gui)
 
@@ -115,4 +115,5 @@ public:
 private:
     QWidget *wid;
 };
-#endif
+
+#endif // QLAYOUTITEM_H

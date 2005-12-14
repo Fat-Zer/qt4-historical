@@ -21,16 +21,16 @@
 **
 ****************************************************************************/
 
-#ifndef RULESFROMXML_H
-#define RULESFROMXML_H
+#ifndef PORTINGRULES_H
+#define PORTINGRULES_H
 
+#include "qtsimplexml.h"
+#include "tokenreplacements.h"
 #include <QList>
 #include <QPair>
 #include <QHash>
 #include <QSet>
 #include <QStringList>
-#include "qtsimplexml.h"
-#include "tokenreplacements.h"
 
 class RuleDescription
 {
@@ -89,4 +89,4 @@ private:
     void addLogError(const QString text) const;
 };
 
-#endif
+#endif // PORTINGRULES_H

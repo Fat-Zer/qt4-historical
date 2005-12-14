@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
 <head>
-    <title>Qt 4.0: Model Classes</title>
+    <title>Qt 4.1: Model Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -77,15 +77,15 @@ body { background: #ffffff; color: black; }</style>
 </table>
 <a name="item-roles"></a>
 <h3>Item Roles</h3>
-<p>Items in a model can perform various <i>roles</i> for other components, allowing different kinds of data to be supplied for different situations. For example, the <a href="qt.html#ItemDataRole-enum">DisplayRole</a> role is used to access a string that can be displayed as text in a view. Typically, items contain data for a number of different roles.</p>
+<p>Items in a model can perform various <i>roles</i> for other components, allowing different kinds of data to be supplied for different situations. For example, <a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a> is used to access a string that can be displayed as text in a view. Typically, items contain data for a number of different roles, and the standard roles are defined by <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>.</p>
 <p>We can ask the model for the item's data by passing it the model index corresponding to the item, and by specifying a role to obtain the type of data we want:</p>
 <pre>&nbsp;   QVariant value = model-&gt;data(index, role);</pre>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/modelview-roles.png" /></td><td><b>Item roles</b><p>The role indicates to the model which type of data is being referred to. Views can display the roles in different ways, so it is important to supply appropriate information for each role.</p>
-<p>We will examine roles in more detail when we <a href="model-view-creating-models.html">create an example model</a>.</p>
+<p>The <a href="model-view-creating-models.html">Creating New Models</a> section covers some specific uses of roles in more detail.</p>
 </td></tr>
 </table>
-<p>Many of the most common uses for items of data are represented by standard roles. However, it is also possible to define additional roles for your own purposes.</p>
+<p>Most common uses for item data are covered by the standard roles defined in <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>. By supplying appropriate item data for each role, models can provide hints to views and delegates about how items should be presented to the user. Different kinds of views have the freedom to interpret or ignore this information as required. It is also possible to define additional roles for application-specific purposes.</p>
 <a name="summary-of-concepts"></a>
 <h3>Summary of Concepts</h3>
 <ul>
@@ -131,6 +131,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

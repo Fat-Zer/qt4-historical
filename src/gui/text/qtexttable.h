@@ -26,7 +26,7 @@
 
 #include <QtCore/qglobal.h>
 #include <QtCore/qobject.h>
-#include "QtGui/qtextobject.h"
+#include <QtGui/qtextobject.h>
 
 QT_MODULE(Gui)
 
@@ -88,12 +88,12 @@ public:
     void removeRows(int pos, int num);
     void removeColumns(int pos, int num);
 
+    void mergeCells(int row, int col, int numRows, int numCols);
+    void mergeCells(const QTextCursor &cursor);
+    void splitCell(int row, int col, int numRows, int numCols);
+
     int rows() const;
     int columns() const;
-
-#if 0
-    void mergeCells(const QTextCursor &selection);
-#endif
 
     QTextTableCell cellAt(int row, int col) const;
     QTextTableCell cellAt(int position) const;

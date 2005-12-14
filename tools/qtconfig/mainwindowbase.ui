@@ -1,6 +1,27 @@
 <ui version="4.0" >
  <author></author>
- <comment></comment>
+  <comment>*********************************************************************
+**
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the tools applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+*********************************************************************</comment>
  <exportmacro></exportmacro>
  <class>MainWindowBase</class>
  <widget class="Q3MainWindow" name="MainWindowBase" >
@@ -32,12 +53,15 @@
      <number>4</number>
     </property>
     <item>
-     <widget class="Q3TextView" name="helpview" >
+     <widget class="QTextEdit" name="helpview" >
       <property name="minimumSize" >
        <size>
         <width>200</width>
         <height>0</height>
        </size>
+      </property>
+      <property name="readOnly" >
+        <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -138,7 +162,7 @@
               <number>0</number>
              </property>
              <property name="text" >
-              <string>Back&amp;ground:</string>
+              <string>Window back&amp;ground:</string>
              </property>
              <property name="alignment" >
               <set>Qt::AlignVCenter</set>
@@ -1142,13 +1166,6 @@
    <class>Q3MainWindow</class>
    <extends></extends>
    <header>q3mainwindow.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextView</class>
-   <extends>QWidget</extends>
-   <header>q3textview.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>

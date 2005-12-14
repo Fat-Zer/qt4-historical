@@ -204,6 +204,12 @@ public:
 
     QTextList *textList() const;
 
+    QTextBlockUserData *userData() const;
+    void setUserData(QTextBlockUserData *data);
+
+    int userState() const;
+    void setUserState(int state);
+
     class Q_GUI_EXPORT iterator {
         const QTextDocumentPrivate *p;
         int b;
@@ -239,12 +245,6 @@ public:
     inline QTextDocumentPrivate *docHandle() const { return p; }
 
 private:
-    QTextBlockUserData *userData() const;
-    void setUserData(QTextBlockUserData *data);
-
-    int userState() const;
-    void setUserState(int state);
-
     QTextDocumentPrivate *p;
     int n;
     friend class QTextDocumentPrivate;

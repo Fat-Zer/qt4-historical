@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/widgets/qdatetimeedit.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qdatetimeedit.cpp -->
 <head>
-    <title>Qt 4.0: QDateTimeEdit Class Reference</title>
+    <title>Qt 4.1: QDateTimeEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -50,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 </table>
 <ul>
 <li><div class="fn"/>7 properties inherited from <a href="qabstractspinbox.html#properties">QAbstractSpinBox</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -86,7 +86,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>17 public functions inherited from <a href="qabstractspinbox.html#public-functions">QAbstractSpinBox</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -184,41 +184,15 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdatetimeedit.html#minimumDate-prop">minimumDate</a>, <a href="qdatetimeedit.html#minimumTime-prop">minimumTime</a>, <a href="qdatetimeedit.html#maximumDate-prop">maximumDate</a>, and <a href="qdatetimeedit.html#maximumTime-prop">maximumTime</a>.</p>
 <h3 class="fn"><a name="displayFormat-prop"></a>displayFormat : <a href="qstring.html">QString</a></h3>
 <p>This property holds the format used to display the time/date of the date time edit.</p>
-<p>This format is a subset of the format described in <a href="qdatetime.html#toString">QDateTime::toString</a>()</p>
-<p>These expressions may be used:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Expression</th><th>Output</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>mm</td><td>the minute with a leading zero (00 to 59)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>ss</td><td>the second whith a leading zero (00 to 59)</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>zzz</td><td>the milliseconds with leading zeroes (000 to 999)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>AP</td><td>use AM/PM display. <i>AP</i> will be replaced by either &quot;AM&quot; or &quot;PM&quot;.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>ap</td><td>use am/pm display. <i>ap</i> will be replaced by either &quot;am&quot; or &quot;pm&quot;.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>dd</td><td>the day as number with a leading zero (01 to 31)</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>MM</td><td>the month as number with a leading zero (01 to 12)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>MMM</td><td>the abbreviated localized month name (e.g. 'Jan' to 'Dec'). Uses <a href="qdate.html#shortMonthName">QDate::shortMonthName</a>().</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>yy</td><td>the year as two digit number (00 to 99)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>yyyy</td><td>the year as four digit number (1752 to 8000)</td></tr>
-</table>
-<p>All other input characters or sequence of characters that are enclosed in singlequotes will be treated as text and can be used as delimiters.</p>
-<p>Example format strings (assuming that the date is 20 July 1969):</p>
+<p>This format is the same as the one used described in <a href="qdatetime.html#toString">QDateTime::toString</a>() and <a href="qdatetime.html#fromString">QDateTime::fromString</a>()</p>
+<p>Example format strings(assuming that the date is 2nd of July 1969):</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Result</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>dd.MM.yyyy</td><td>20.07.1969</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>MMM d yy</td><td>Jul 20 69</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>dd.MM.yyyy</td><td>02.07.1969</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>MMM d yy</td><td>Jul 2 69</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>MMMM d yy</td><td>July 2 69</td></tr>
 </table>
 <p>If you specify an invalid format the format will not be set.</p>
-<p>Multiple instances of the same field is not allowed.A format with no valid fields is not allowed either.</p>
-<p><b>Warning:</b> Since <a href="qdatetimeedit.html">QDateTimeEdit</a> internally always operates on a <a href="qdatetime.html">QDateTime</a>, changing the format can change the minimum time or date and the current time or date. For example:</p>
-<pre>&nbsp;   QDateTimeEdit edit;     // default format is &quot;yyyy.MM.dd hh:mm:ss&quot;
-    edit.setMinimumDate(QDate(2000, 1, 1));
-    edit.setMaximumDate(QDate(2003, 1, 1));
-    edit.setDateTime(QDateTime(QDate(2002, 5, 5), QTime(10, 10, 10)));
-    edit.setDisplayFormat(&quot;hh:mm:ss&quot;);
-
-    // edit can no longer display dates. This means that the
-    // minimum and maximum date will be set to the current date,
-    // e.g. 2002, 5, 5.</pre>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString displayFormat () const</b></li>
@@ -300,6 +274,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qdatetimeedit.html#textFromDateTime">textFromDateTime</a>() and <a href="qabstractspinbox.html#validate">validate</a>().</p>
 <h3 class="fn"><a name="sectionText"></a><a href="qstring.html">QString</a> QDateTimeEdit::sectionText ( <a href="qdatetimeedit.html#Section-enum">Section</a> <i>section</i> ) const</h3>
 <p>Returns the text from the given <i>section</i>.</p>
+<p>### note about not working when not Acceptable</p>
 <p>See also <a href="qdatetimeedit.html#currentSection-prop">currentSection</a>().</p>
 <h3 class="fn"><a name="setDateRange"></a>void QDateTimeEdit::setDateRange ( const <a href="qdate.html">QDate</a> &amp; <i>min</i>, const <a href="qdate.html">QDate</a> &amp; <i>max</i> )</h3>
 <p>Convenience function to set minimum and maximum date with one function call.</p>
@@ -327,6 +302,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

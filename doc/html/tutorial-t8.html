@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 8 - Preparing for Battle</title>
+    <title>Qt 4.1: Qt Tutorial 8 - Preparing for Battle</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="tutorial-t8-lcdrange-h.html">tutorial/t8/lcdrange.h</a></li>
 <li><a href="tutorial-t8-main-cpp.html">tutorial/t8/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t8.png" alt="Screenshot of tutorial eight" /></p><p>In this example, we introduce the first custom widget that can paint itself. We also add a useful keyboard interface (with two lines of code).</p>
+<p align="center"><img src="images/t8.png" alt="Screenshot of Chapter 8" /></p><p>In this example, we introduce the first custom widget that can paint itself. We also add a useful keyboard interface (with two lines of code).</p>
 <a name="line-by-line-walkthrough"></a>
 <h2>Line by Line Walkthrough</h2>
 <a name="t8-lcdrange-h"></a>
@@ -86,9 +86,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Again, we use the same idiom as for <tt>LCDRange</tt> in the previous chapter.</p>
 <pre>&nbsp;       currentAngle = 45;
         setPalette(QPalette(QColor(250, 250, 200)));
+        setAutoFillBackground(true);
     }</pre>
 <p>The constructor initializes the angle value to 45 degrees and sets a custom palette for this widget.</p>
-<p>This palette uses the indicated color as background and picks other colors suitably. (For this widget only the background and text colors will actually be used.)</p>
+<p>This palette uses the indicated color as background and picks other colors suitably. (For this widget only the background and text colors will actually be used.) We then call setAutoFillBackground(true) to tell Qt fill the background automatically.</p>
+<p>The <a href="qcolor.html">QColor</a> is specified as a RGB (red-green-blue) triplet, where each value is between 0 (dark) and 255 (bright). We could also have used a predefined color such as <a href="qt.html#GlobalColor-enum">Qt::yellow</a> instead of specifying an RGB value.</p>
 <pre>&nbsp;   void CannonField::setAngle(int angle)
     {
         if (angle &lt; 5)
@@ -108,7 +110,8 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   void CannonField::paintEvent(QPaintEvent * /* event */)
     {
         QPainter painter(this);
-        painter.drawText(200, 200, &quot;Angle = &quot; + QString::number(currentAngle));
+        painter.drawText(200, 200,
+                         tr(&quot;Angle = &quot;) + QString::number(currentAngle));
     }</pre>
 <p>This is our first attempt to write a paint event handler. The event argument contains a description of the paint event. <a href="qpaintevent.html">QPaintEvent</a> contains the region in the widget that must be updated. For the time being, we will be lazy and just paint everything.</p>
 <p>Our code displays the angle value in the widget at a fixed position. First we create a <a href="qstring.html">QString</a> with some text and the angle; then we create a <a href="qpainter.html">QPainter</a> operating on this widget and use it to paint the string. We'll come back to <a href="qpainter.html">QPainter</a> later; it can do a great many things.</p>
@@ -167,7 +170,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Try to resize the window. What happens if you make it really narrow or really squat?</p>
 <p>If you give the left-hand column a non-zero stretch factor, what happens when you resize the window?</p>
 <p>Leave out the <a href="qwidget.html#setFocus">QWidget::setFocus</a>() call. Which behavior do you prefer?</p>
-<p>Try to change &quot;Quit&quot; to &quot;&amp;Quit&quot; in the <a href="qabstractbutton.html#text-prop">QAbstractButton::setText</a>() call. How does the button's look change? What happens if you press <b>Alt+Q</b> while the program is running?</p>
+<p>Try to change &quot;Quit&quot; to &quot;&amp;Quit&quot;. How does the button's look change? (Whether it does change or not depends on the platform.) What happens if you press <b>Alt+Q</b> while the program is running?</p>
 <p>Center the text in the <tt>CannonField</tt>.</p>
 <p>
 [Previous: <a href="tutorial-t7.html">Chapter 7</a>]
@@ -178,6 +181,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

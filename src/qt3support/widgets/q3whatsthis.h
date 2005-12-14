@@ -24,9 +24,9 @@
 #ifndef Q3WHATSTHIS_H
 #define Q3WHATSTHIS_H
 
-#include "QtGui/qcursor.h"
-#include "QtGui/qwhatsthis.h"
-#include "QtGui/qwidget.h"
+#include <QtGui/qcursor.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Qt3SupportLight)
 

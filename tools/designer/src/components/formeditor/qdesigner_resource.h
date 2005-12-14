@@ -33,14 +33,16 @@
 
 class DomCustomWidgets;
 
-class QLayoutWidget;
+class QDesignerContainerExtension;
+class QDesignerFormEditorInterface;
+class QDesignerCustomWidgetInterface;
+
 class QDesignerTabWidget;
 class QDesignerStackedWidget;
 class QDesignerToolBox;
-class QDesignerContainerExtension;
-class QDesignerWidgetDataBaseItemInterface;
-class QDesignerFormEditorInterface;
-class QDesignerCustomWidgetInterface;
+class QDesignerToolBar;
+class QDesignerDockWidget;
+class QLayoutWidget;
 
 namespace qdesigner_internal {
 
@@ -96,6 +98,9 @@ protected:
     virtual DomActionGroup *createDom(QActionGroup *actionGroup);
     virtual DomActionRef *createActionRefDom(QAction *action);
 
+    virtual QAction *createAction(QObject *parent, const QString &name);
+    virtual QActionGroup *createActionGroup(QObject *parent, const QString &name);
+
     virtual QIcon nameToIcon(const QString &filePath, const QString &qrcPath);
     virtual QString iconToFilePath(const QIcon &pm) const;
     virtual QString iconToQrcPath(const QIcon &pm) const;
@@ -105,15 +110,12 @@ protected:
 
     virtual bool checkProperty(QObject *obj, const QString &prop) const;
 
-    bool checkProperty(QDesignerTabWidget *widget, const QString &prop) const;
-    bool checkProperty(QDesignerStackedWidget *widget, const QString &prop) const;
-    bool checkProperty(QDesignerToolBox *widget, const QString &prop) const;
-    bool checkProperty(QLayoutWidget *widget, const QString &prop) const;
-
     DomWidget *saveWidget(QDesignerTabWidget *widget, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QDesignerStackedWidget *widget, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QDesignerToolBox *widget, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QWidget *widget, QDesignerContainerExtension *container, DomWidget *ui_parentWidget);
+    DomWidget *saveWidget(QDesignerToolBar *toolBar, DomWidget *ui_parentWidget);
+    DomWidget *saveWidget(QDesignerDockWidget *dockWidget, DomWidget *ui_parentWidget);
 
     virtual DomCustomWidgets *saveCustomWidgets();
     virtual DomTabStops *saveTabStops();

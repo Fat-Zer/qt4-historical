@@ -81,7 +81,7 @@ public:
     void registerHandler(int objectType, QObject *component);
     QTextObjectInterface *handlerForObject(int objectType) const;
 
-signals:
+Q_SIGNALS:
     void update(const QRectF & = QRectF(0., 0., 1000000000., 1000000000.));
     void documentSizeChanged(const QSizeF &newSize);
     void pageCountChanged(int newPages);
@@ -105,9 +105,11 @@ private:
     friend class QTextLayout;
     friend class QTextLine;
     Q_PRIVATE_SLOT(d_func(), void handlerDestroyed(QObject *obj))
+    Q_PRIVATE_SLOT(d_func(), int dynamicPageCountSlot())
+    Q_PRIVATE_SLOT(d_func(), QSizeF dynamicDocumentSizeSlot())
 };
 
-class QTextObjectInterface
+class Q_GUI_EXPORT QTextObjectInterface
 {
 public:
     virtual ~QTextObjectInterface() {}

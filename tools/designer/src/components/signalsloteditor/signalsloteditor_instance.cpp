@@ -25,5 +25,4 @@
 
 #include "signalsloteditor_plugin.h"
 
-Q_EXPORT_STATIC_PLUGIN(SignalSlotEditorPlugin)
-
+Q_EXPORT_PLUGIN(SignalSlotEditorPlugin)

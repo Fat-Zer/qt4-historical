@@ -28,6 +28,8 @@
 #include <QtGui/QStyle>
 #include <QtGui/QPainter>
 
+namespace qdesigner_internal {
+
 SheetDelegate::SheetDelegate(QTreeView *view, QWidget *parent)
     : QItemDelegate(parent),
       m_view(view)
@@ -77,3 +79,5 @@ QSize SheetDelegate::sizeHint(const QStyleOptionViewItem &opt, const QModelIndex
     QSize sz = QItemDelegate::sizeHint(opt, index) + QSize(2, 2);
     return sz;
 }
+
+} // namespace qdesigner_internal

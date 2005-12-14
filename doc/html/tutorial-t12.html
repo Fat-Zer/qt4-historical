@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 12 - Hanging in the Air the Way Bricks Don't</title>
+    <title>Qt 4.1: Qt Tutorial 12 - Hanging in the Air the Way Bricks Don't</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="tutorial-t12-lcdrange-h.html">tutorial/t12/lcdrange.h</a></li>
 <li><a href="tutorial-t12-main-cpp.html">tutorial/t12/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t12.png" alt="Screenshot of tutorial twelve" /></p><p>In this example, we extend our <tt>LCDRange</tt> class to include a text label. We also provide something to shoot at.</p>
+<p align="center"><img src="images/t12.png" alt="Screenshot of Chapter 12" /></p><p>In this example, we extend our <tt>LCDRange</tt> class to include a text label. We also provide something to shoot at.</p>
 <a name="line-by-line-walkthrough"></a>
 <h2>Line by Line Walkthrough</h2>
 <a name="t12-lcdrange-h"></a>
@@ -78,6 +78,8 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   void LCDRange::init()
     {
         QLCDNumber *lcd = new QLCDNumber(2);
+        lcd-&gt;setSegmentStyle(QLCDNumber::Filled);
+
         slider = new QSlider(Qt::Horizontal);
         slider-&gt;setRange(0, 99);
         slider-&gt;setValue(0);
@@ -191,9 +193,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="t12-main-cpp"></a>
 <h3><a href="tutorial-t12-main-cpp.html">t12/main.cpp</a></h3>
 <p>There are no new members in the <tt>MyWidget</tt> class, but we have slightly changed the constructor to set the new <tt>LCDRange</tt> text labels.</p>
-<pre>&nbsp;       LCDRange *angle = new LCDRange(&quot;ANGLE&quot;);</pre>
+<pre>&nbsp;       LCDRange *angle = new LCDRange(tr(&quot;ANGLE&quot;));</pre>
 <p>We set the angle text label to &quot;ANGLE&quot;.</p>
-<pre>&nbsp;       LCDRange *force = new LCDRange(&quot;FORCE&quot;);</pre>
+<pre>&nbsp;       LCDRange *force = new LCDRange(tr(&quot;FORCE&quot;));</pre>
 <p>We set the force text label to &quot;FORCE&quot;.</p>
 <a name="running-the-application"></a>
 <h2>Running the Application</h2>
@@ -215,6 +217,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

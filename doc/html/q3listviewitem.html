@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/itemviews/q3listview.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/itemviews/q3listview.cpp -->
 <head>
-    <title>Qt 4.0: Q3ListViewItem Class Reference</title>
+    <title>Qt 4.1: Q3ListViewItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -61,6 +61,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="q3listviewitem.html#multiLinesEnabled">multiLinesEnabled</a></b> () const</li>
 <li><div class="fn"/>Q3ListViewItem * <b><a href="q3listviewitem.html#nextSibling">nextSibling</a></b> () const</li>
 <li><div class="fn"/>virtual void <b><a href="q3listviewitem.html#paintBranches">paintBranches</a></b> ( QPainter * <i>p</i>, const QColorGroup &amp; <i>cg</i>, int <i>w</i>, int <i>y</i>, int <i>h</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="q3listviewitem.html#paintCell">paintCell</a></b> ( QPainter * <i>painter</i>, const QColorGroup &amp; <i>cg</i>, int <i>column</i>, int <i>width</i>, int <i>align</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="q3listviewitem.html#paintFocus">paintFocus</a></b> ( QPainter * <i>p</i>, const QColorGroup &amp; <i>cg</i>, const QRect &amp; <i>r</i> )</li>
 <li><div class="fn"/>Q3ListViewItem * <b><a href="q3listviewitem.html#parent">parent</a></b> () const</li>
 <li><div class="fn"/>virtual const QPixmap * <b><a href="q3listviewitem.html#pixmap">pixmap</a></b> ( int <i>column</i> ) const</li>
@@ -266,6 +267,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Note that this function traverses the items to the root to find the listview. This function will return 0 for taken items - see <a href="q3listviewitem.html#takeItem">Q3ListViewItem::takeItem</a>()</p>
 <h3 class="fn"><a name="moveItem"></a>void Q3ListViewItem::moveItem ( Q3ListViewItem * <i>after</i> )</h3>
 <p>Move the item to be after item <i>after</i>, which must be one of the item's siblings. To move an item in the hierarchy, use <a href="q3listviewitem.html#takeItem">takeItem</a>() and <a href="q3listviewitem.html#insertItem">insertItem</a>().</p>
+<p>Note that this function will have no effect if sorting is enabled in the list view.</p>
 <h3 class="fn"><a name="multiLinesEnabled"></a>bool Q3ListViewItem::multiLinesEnabled () const</h3>
 <p>Returns true if the item can display multiple lines of text in its columns; otherwise returns false.</p>
 <p>See also <a href="q3listviewitem.html#setMultiLinesEnabled">setMultiLinesEnabled</a>().</p>
@@ -280,11 +282,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Paints a set of branches from this item to (some of) its children.</p>
 <p>Painter <i>p</i> is set up with clipping and translation so that you can only draw in the rectangle that needs redrawing; <i>cg</i> is the color group to use; the update rectangle is at (0, 0) and has size width <i>w</i> by height <i>h</i>. The top of the rectangle you own is at <i>y</i> (which is never greater than 0 but can be outside the window system's allowed coordinate range).</p>
 <p>The update rectangle is in an undefined state when this function is called; this function must draw on <i>all</i> of the pixels.</p>
-<p>See also paintCell() and <a href="q3listview.html#drawContentsOffset">Q3ListView::drawContentsOffset</a>().</p>
+<p>See also <a href="q3listviewitem.html#paintCell">paintCell</a>() and <a href="q3listview.html#drawContentsOffset">Q3ListView::drawContentsOffset</a>().</p>
+<h3 class="fn"><a name="paintCell"></a>void Q3ListViewItem::paintCell ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>cg</i>, int <i>column</i>, int <i>width</i>, int <i>align</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>This virtual function paints the contents of one column of an item and aligns it as described by <i>align</i>.</p>
+<p>The <i>painter</i> is a <a href="q3painter.html">Q3Painter</a> open on the relevant paint device. It is translated so (0, 0) is the top-left pixel in the cell and <i>width</i> - 1, <a href="q3listviewitem.html#height">height</a>() - 1 is the bottom-right pixel <i>in</i> the cell. The other properties of the <i>painter</i> (pen, brush, etc) are undefined. <i>cg</i> is the color group to use. <i>column</i> is the logical column number within the item that is to be painted; 0 is the column which may contain a tree.</p>
+<p>This function may use <a href="q3listview.html#itemMargin-prop">Q3ListView::itemMargin</a>() for readability spacing on the left and right sides of data such as text, and should honor <a href="q3listviewitem.html#isSelected">isSelected</a>() and <a href="q3listview.html#allColumnsShowFocus-prop">Q3ListView::allColumnsShowFocus</a>().</p>
+<p>If you reimplement this function, you should also reimplement <a href="q3listviewitem.html#width">width</a>().</p>
+<p>The rectangle to be painted is in an undefined state when this function is called, so you <i>must</i> draw on all the pixels. The <i>painter</i> has the right font on entry.</p>
+<p>See also <a href="q3listviewitem.html#paintBranches">paintBranches</a>() and <a href="q3listview.html#drawContentsOffset">Q3ListView::drawContentsOffset</a>().</p>
 <h3 class="fn"><a name="paintFocus"></a>void Q3ListViewItem::paintFocus ( <a href="qpainter.html">QPainter</a> * <i>p</i>, const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>cg</i>, const <a href="qrect.html">QRect</a> &amp; <i>r</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Paints a focus indicator on the rectangle <i>r</i> using painter <i>p</i> and colors <i>cg</i>.</p>
 <p><i>p</i> is already clipped.</p>
-<p>See also paintCell(), <a href="q3listviewitem.html#paintBranches">paintBranches</a>(), and <a href="q3listview.html#allColumnsShowFocus-prop">Q3ListView::setAllColumnsShowFocus</a>().</p>
+<p>See also <a href="q3listviewitem.html#paintCell">paintCell</a>(), <a href="q3listviewitem.html#paintBranches">paintBranches</a>(), and <a href="q3listview.html#allColumnsShowFocus-prop">Q3ListView::setAllColumnsShowFocus</a>().</p>
 <h3 class="fn"><a name="parent"></a>Q3ListViewItem * Q3ListViewItem::parent () const</h3>
 <p>Returns the parent of this item, or 0 if this item has no parent.</p>
 <p>See also <a href="q3listviewitem.html#firstChild">firstChild</a>() and <a href="q3listviewitem.html#nextSibling">nextSibling</a>().</p>
@@ -370,7 +379,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3listviewitem.html#insertItem">Q3ListViewItem::insertItem</a>().</p>
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> Q3ListViewItem::text ( int <i>column</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the text in column <i>column</i>, or an empty string if there is no text in that column.</p>
-<p>See also <a href="q3listviewitem.html#setText">setText</a>(), <a href="q3listviewitem.html#key">key</a>(), and paintCell().</p>
+<p>See also <a href="q3listviewitem.html#setText">setText</a>(), <a href="q3listviewitem.html#key">key</a>(), and <a href="q3listviewitem.html#paintCell">paintCell</a>().</p>
 <h3 class="fn"><a name="totalHeight"></a>int Q3ListViewItem::totalHeight () const</h3>
 <p>Returns the total height of this object, including any visible children. This height is recomputed lazily and cached for as long as possible.</p>
 <p>Functions which can affect the total height are, <a href="q3listviewitem.html#setHeight">setHeight</a>() which is used to set an item's height, <a href="q3listviewitem.html#setOpen">setOpen</a>() to show or hide an item's children, and <a href="q3listviewitem.html#invalidateHeight">invalidateHeight</a>() to invalidate the cached height.</p>
@@ -387,6 +396,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

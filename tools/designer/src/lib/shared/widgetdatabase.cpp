@@ -34,6 +34,8 @@
 #include <QtCore/qdebug.h>
 #include <QtCore/QMetaProperty>
 
+namespace qdesigner_internal {
+
 // ----------------------------------------------------------
 WidgetDataBaseItem::WidgetDataBaseItem(const QString &name, const QString &group)
     : m_name(name),
@@ -197,10 +199,20 @@ WidgetDataBase::WidgetDataBase(QDesignerFormEditorInterface *core, QObject *pare
     append(new WidgetDataBaseItem(QString::fromUtf8("QLayoutWidget")));
     append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerWidget")));
     append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerDialog")));
-    append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerCompatWidget")));
+    append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerToolBar")));
+    append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerMenu")));
+    append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerMenuBar")));
+    append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerDockWidget")));
+    append(new WidgetDataBaseItem(QString::fromUtf8("QDesignerQ3WidgetStack")));
 
     // ### remove me
     // ### check the casts
+
+#if 0 // ### enable me after 4.1
+    static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QToolBar"))))->setContainer(true);
+    static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QDesignerToolBar"))))->setContainer(true);
+#endif
+
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QTabWidget"))))->setContainer(true);
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QGroupBox"))))->setContainer(true);
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QStackedWidget"))))->setContainer(true);
@@ -212,6 +224,8 @@ WidgetDataBase::WidgetDataBase(QDesignerFormEditorInterface *core, QObject *pare
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QSplitter"))))->setContainer(true);
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QMainWindow"))))->setContainer(true);
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QDockWidget"))))->setContainer(true);
+    static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QDesignerDockWidget"))))->setContainer(true);
+    static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QDesignerQ3WidgetStack"))))->setContainer(true);
 
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QWidget"))))->setContainer(true);
     static_cast<WidgetDataBaseItem *>(item(indexOfClassName(QLatin1String("QDialog"))))->setContainer(true);
@@ -243,7 +257,7 @@ QDesignerWidgetDataBaseItemInterface *WidgetDataBase::item(int index) const
 
 void WidgetDataBase::loadPlugins()
 {
-    PluginManager *pluginManager = m_core->pluginManager();
+    QDesignerPluginManager *pluginManager = m_core->pluginManager();
 
     QStringList plugins = pluginManager->registeredPlugins();
 
@@ -325,3 +339,5 @@ void WidgetDataBase::grabDefaultPropertyValues()
 
     }
 }
+
+} // namespace qdesigner_internal

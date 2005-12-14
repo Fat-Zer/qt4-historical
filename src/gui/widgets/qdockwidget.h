@@ -81,7 +81,7 @@ public:
     QAction *toggleViewAction() const;
 #endif
 
-signals:
+Q_SIGNALS:
     void featuresChanged(QDockWidget::DockWidgetFeatures features);
     void topLevelChanged(bool topLevel);
     void allowedAreasChanged(Qt::DockWidgetAreas allowedAreas);
@@ -96,10 +96,13 @@ private:
     Q_DECLARE_PRIVATE(QDockWidget)
     Q_DISABLE_COPY(QDockWidget)
     Q_PRIVATE_SLOT(d_func(), void toggleView(bool))
+    Q_PRIVATE_SLOT(d_func(), void toggleTopLevel())
     friend class QDockWidgetLayout;
+    friend class QDockWidgetItem;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDockWidget::DockWidgetFeatures)
 
 #endif // QT_NO_DOCKWIDGET
+
 #endif // QDOCKWIDGET_H

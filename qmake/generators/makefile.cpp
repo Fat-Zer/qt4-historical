@@ -171,7 +171,7 @@ MakefileGenerator::initOutPaths()
     //some builtin directories
     QString dirs[] = { QString("OBJECTS_DIR"), QString("DESTDIR"),
                        QString("SUBLIBS_DIR"), QString("DLLDESTDIR"),
-                       QString() };
+                       QString("PRECOMPILED_DIR"), QString() };
     for(int x = 0; true; x++) {
         if(dirs[x].isNull())
             break;
@@ -360,12 +360,10 @@ MakefileGenerator::initCompiler(const MakefileGenerator::Compiler &comp)
     // find all the relevant file inputs
     if(!init_compiler_already.contains(comp.variable_in)) {
         init_compiler_already.insert(comp.variable_in, true);
-        l = findFilesInVPATH(l, (comp.flags & Compiler::CompilerRemoveNoExist) ?
-                             VPATH_RemoveMissingFiles : VPATH_WarnMissingFiles, "VPATH_" + comp.variable_in);
+        if(!noIO())
+            l = findFilesInVPATH(l, (comp.flags & Compiler::CompilerRemoveNoExist) ?
+                                 VPATH_RemoveMissingFiles : VPATH_WarnMissingFiles, "VPATH_" + comp.variable_in);
     }
-    //add to dependency engine
-    if(!(comp.flags & Compiler::CompilerNoCheckDeps))
-        addSourceFiles(l, QMakeSourceFileInfo::SEEK_DEPS, (QMakeSourceFileInfo::SourceFileType)comp.type);
 }
 
 void
@@ -559,42 +557,8 @@ MakefileGenerator::init()
 
     if(noIO() || !doDepends())
         QMakeSourceFileInfo::setDependencyMode(QMakeSourceFileInfo::NonRecursive);
-
-    if(!noIO()) {
-        depHeuristicsCache.clear();
-        // dependency paths
-        QStringList incDirs = v["DEPENDPATH"] + v["QMAKE_ABSOLUTE_SOURCE_PATH"];
-        if(project->isActiveConfig("depend_includepath"))
-            incDirs += v["INCLUDEPATH"];
-        if(!project->isActiveConfig("no_include_pwd")) {
-            QString pwd = qmake_getpwd();
-            if(pwd.isEmpty())
-                pwd = ".";
-            incDirs += pwd;
-        }
-        QList<QMakeLocalFileName> deplist;
-        for(QStringList::Iterator it = incDirs.begin(); it != incDirs.end(); ++it)
-            deplist.append(QMakeLocalFileName((*it)));
-        QMakeSourceFileInfo::setDependencyPaths(deplist);
-        debug_msg(1, "Dependency Directories: %s", incDirs.join(" :: ").toLatin1().constData());
-        //cache info
-        if(project->isActiveConfig("qmake_cache")) {
-            QString cache_file;
-            if(!project->isEmpty("QMAKE_INTERNAL_CACHE_FILE")) {
-                cache_file = Option::fixPathToLocalOS(project->first("QMAKE_INTERNAL_CACHE_FILE"));
-            } else {
-                cache_file = ".qmake.internal.cache";
-                if(project->isActiveConfig("build_pass"))
-                    cache_file += ".BUILD." + project->first("BUILD_PASS");
-            }
-            if(cache_file.indexOf(QDir::separator()) == -1)
-                cache_file.prepend(Option::output_dir + QDir::separator());
-            QMakeSourceFileInfo::setCacheFile(cache_file);
-        }
-
-        for(x = 0; x < compilers.count(); ++x)
-            initCompiler(compilers.at(x));
-    }
+    for(x = 0; x < compilers.count(); ++x)
+        initCompiler(compilers.at(x));
 
     //merge actual compiler outputs into their variable_out. This is done last so that
     //files are already properly fixified.
@@ -664,6 +628,48 @@ MakefileGenerator::init()
                     }
                 }
             }
+        }
+    }
+
+    //handle dependencies
+    depHeuristicsCache.clear();
+    if(!noIO()) {
+        // dependency paths
+        QStringList incDirs = v["DEPENDPATH"] + v["QMAKE_ABSOLUTE_SOURCE_PATH"];
+        if(project->isActiveConfig("depend_includepath"))
+            incDirs += v["INCLUDEPATH"];
+        if(!project->isActiveConfig("no_include_pwd")) {
+            QString pwd = qmake_getpwd();
+            if(pwd.isEmpty())
+                pwd = ".";
+            incDirs += pwd;
+        }
+        QList<QMakeLocalFileName> deplist;
+        for(QStringList::Iterator it = incDirs.begin(); it != incDirs.end(); ++it)
+            deplist.append(QMakeLocalFileName((*it)));
+        QMakeSourceFileInfo::setDependencyPaths(deplist);
+        debug_msg(1, "Dependency Directories: %s", incDirs.join(" :: ").toLatin1().constData());
+        //cache info
+        if(project->isActiveConfig("qmake_cache")) {
+            QString cache_file;
+            if(!project->isEmpty("QMAKE_INTERNAL_CACHE_FILE")) {
+                cache_file = Option::fixPathToLocalOS(project->first("QMAKE_INTERNAL_CACHE_FILE"));
+            } else {
+                cache_file = ".qmake.internal.cache";
+                if(project->isActiveConfig("build_pass"))
+                    cache_file += ".BUILD." + project->first("BUILD_PASS");
+            }
+            if(cache_file.indexOf(QDir::separator()) == -1)
+                cache_file.prepend(Option::output_dir + QDir::separator());
+            QMakeSourceFileInfo::setCacheFile(cache_file);
+        }
+
+        //add to dependency engine
+        for(x = 0; x < compilers.count(); ++x) {
+            const MakefileGenerator::Compiler &comp = compilers.at(x);
+            if(!(comp.flags & Compiler::CompilerNoCheckDeps))
+                addSourceFiles(v[comp.variable_in], QMakeSourceFileInfo::SEEK_DEPS,
+                               (QMakeSourceFileInfo::SourceFileType)comp.type);
         }
     }
 
@@ -1013,7 +1019,13 @@ MakefileGenerator::writeProjectMakefile()
           << "install: " << targets.first()->target << "-install" << endl
           << "uninstall: " << targets.first()->target << "-uninstall" << endl;
     }
+
     writeSubTargets(t, targets, SubTargetsNoFlags);
+    if(!project->isActiveConfig("no_autoqmake")) {
+        for(QList<SubTarget*>::Iterator it = targets.begin(); it != targets.end(); ++it)
+            t << (*it)->makefile << ": " <<
+                Option::fixPathToTargetOS(fileFixify(Option::output.fileName())) << endl;
+    }
     return true;
 }
 
@@ -1026,7 +1038,15 @@ MakefileGenerator::write()
     if(Option::qmake_mode == Option::QMAKE_GENERATE_MAKEFILE || //write makefile
        Option::qmake_mode == Option::QMAKE_GENERATE_PROJECT) {
         QTextStream t(&Option::output);
-        writeMakefile(t);
+        if(!writeMakefile(t)) {
+#if 1
+            warn_msg(WarnLogic, "Unable to generate output for: %s [TEMPLATE %s]",
+                     Option::output.fileName().toLatin1().constData(),
+                     project->first("TEMPLATE").toLatin1().constData());
+            if(Option::output.exists())
+                Option::output.remove();
+#endif
+        }
     }
     return true;
 }
@@ -1501,43 +1521,31 @@ MakefileGenerator::createObjectList(const QStringList &sources)
     return ret;
 }
 
-struct ReplaceExtraCompilerCacheKey
+ReplaceExtraCompilerCacheKey::ReplaceExtraCompilerCacheKey(const QString &v, const QString &i, const QString &o)
 {
-    mutable uint hash;
-    QString var, in, out, pwd;
-    ReplaceExtraCompilerCacheKey(const QString &v, const QString &i, const QString &o)
-    {
-        hash = 0;
-        pwd = qmake_getpwd();
-        var = v;
-        in = i;
-        out = o;
-    }
-    bool operator==(const ReplaceExtraCompilerCacheKey &f) const
-    {
-        return (hashCode() == f.hashCode() &&
-                f.in == in &&
-                f.out == out &&
-                f.var == var &&
-                f.pwd == pwd);
-    }
-    inline uint hashCode() const {
-        if(!hash)
-            hash = qHash(var) | qHash(in) | qHash(out) /*| qHash(pwd)*/;
-        return hash;
-    }
-};
-uint qHash(const ReplaceExtraCompilerCacheKey &f) { return f.hashCode(); }
+    hash = 0;
+    pwd = qmake_getpwd();
+    var = v;
+    in = i;
+    out = o;
+}
+
+bool ReplaceExtraCompilerCacheKey::operator==(const ReplaceExtraCompilerCacheKey &f) const
+{
+    return (hashCode() == f.hashCode() &&
+            f.in == in &&
+            f.out == out &&
+            f.var == var &&
+            f.pwd == pwd);
+}
+
 
 QString
 MakefileGenerator::replaceExtraCompilerVariables(const QString &var, const QString &in, const QString &out)
 {
     //lazy cache
-    static QHash<ReplaceExtraCompilerCacheKey, QString> *cache = 0;
-    if(!cache)
-        cache = new QHash<ReplaceExtraCompilerCacheKey, QString>;
     ReplaceExtraCompilerCacheKey cacheKey(var, in, out);
-    QString cacheVal = cache->value(cacheKey);
+    QString cacheVal = extraCompilerVariablesCache.value(cacheKey);
     if(!cacheVal.isNull())
         return cacheVal;
 
@@ -1575,7 +1583,7 @@ MakefileGenerator::replaceExtraCompilerVariables(const QString &var, const QStri
     }
 
     //cache the value
-    cache->insert(cacheKey, ret);
+    extraCompilerVariablesCache.insert(cacheKey, ret);
     return ret;
 }
 
@@ -2927,6 +2935,7 @@ MakefileGenerator::findFileForDep(const QMakeLocalFileName &dep, const QMakeLoca
             }
         }
         { //is it from an EXTRA_COMPILER
+            const QString dep_basename = dep.real().section("/", -1);
             const QStringList &quc = project->variables()["QMAKE_EXTRA_COMPILERS"];
             for(QStringList::ConstIterator it = quc.begin(); it != quc.end(); ++it) {
                 QString tmp_out = project->variables()[(*it) + ".output"].first();
@@ -2937,7 +2946,7 @@ MakefileGenerator::findFileForDep(const QMakeLocalFileName &dep, const QMakeLoca
                     QStringList &inputs = project->variables()[(*it2)];
                     for(QStringList::Iterator input = inputs.begin(); input != inputs.end(); ++input) {
                         QString out = replaceExtraCompilerVariables(tmp_out, (*input), QString());
-                        if(out == dep.real() || out.endsWith("/" + dep.real())) {
+                        if(out == dep.real() || out.endsWith("/" + dep_basename)) {
                             ret = QMakeLocalFileName(fileFixify(out, qmake_getpwd(), Option::output_dir));
                             goto found_dep_from_heuristic;
                         }

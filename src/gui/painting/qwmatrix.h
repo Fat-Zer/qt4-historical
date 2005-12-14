@@ -24,7 +24,7 @@
 #ifndef QWMATRIX_H
 #define QWMATRIX_H
 
-#include "QtGui/qmatrix.h"
+#include <QtGui/qmatrix.h>
 
 QT_MODULE(Gui)
 

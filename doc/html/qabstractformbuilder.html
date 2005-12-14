@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/tools/designer/src/lib/uilib/abstractformbuilder.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/tools/designer/src/lib/uilib/abstractformbuilder.cpp -->
 <head>
-    <title>Qt 4.0: QAbstractFormBuilder Class Reference</title>
+    <title>Qt 4.1: QAbstractFormBuilder Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -37,14 +37,28 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QAbstractFormBuilder class provides a default implementation for classes that create user interfaces at run-time.</p>
-<p>QAbstractFormBuilder provides a standard interface and a default implementation for constructing forms from user interface files. It is not intended to be instantiated directly. Use the <a href="qformbuilder.html">QFormBuilder</a> class to create user interfaces from <tt>.ui</tt> files at run-time.</p>
+<p>QAbstractFormBuilder provides a standard interface and a default implementation for constructing forms from user interface files. It is not intended to be instantiated directly. Use the <a href="qformbuilder.html">QFormBuilder</a> class to create user interfaces from <tt>.ui</tt> files at run-time. For example:</p>
+<pre>&nbsp;   MyForm::MyForm(QWidget *parent)
+        : QWidget(parent)
+    {
+        QFormBuilder builder;
+        QFile file(&quot;:/forms/myWidget.ui&quot;);
+        file.open(QFile::ReadOnly);
+        QWidget *myWidget = builder.load(&amp;file, this);
+        file.close();
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout-&gt;addWidget(myWidget);
+        setLayout(layout);
+    }</pre>
 <p>To override certain aspects of the form builder's behavior, subclass QAbstractFormBuilder and reimplement the relevant virtual functions:</p>
 <ul>
-<li><a href="qabstractformbuilder.html#load">load</a>() handles reading of <tt>.ui</tt> format files from arbitrary QIODevices, and construction of widgets from the XML data they contain.</li>
+<li><a href="qabstractformbuilder.html#load">load</a>() handles reading of <tt>.ui</tt> format files from arbitrary QIODevices, and construction of widgets from the XML data that they contain.</li>
 <li><a href="qabstractformbuilder.html#save">save</a>() handles saving of widget details in <tt>.ui</tt> format to arbitrary QIODevices.</li>
 <li><a href="qabstractformbuilder.html#workingDirectory">workingDirectory</a>() and <a href="qabstractformbuilder.html#setWorkingDirectory">setWorkingDirectory</a>() control the directory in which forms are held. The form builder looks for other resources on paths relative to this directory.</li>
 </ul>
-<p>See also <a href="qformbuilder.html">QFormBuilder</a>.</p>
+<p>The <a href="qformbuilder.html">QFormBuilder</a> class is typically used by custom components and applications that embed <i>Qt Designer</i>. Standalone applications that need to dynamically generate user interfaces at run-time use the <a href="quiloader.html">QUiLoader</a>, found in the <a href="qtuitools.html">QtUiTools</a> module.</p>
+<p>See also <a href="qtuitools.html">QtUiTools Module</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QAbstractFormBuilder"></a>QAbstractFormBuilder::QAbstractFormBuilder ()</h3>
@@ -58,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Saves an XML representation of the given <i>widget</i> to the specified <i>device</i> in the standard <tt>.ui</tt> file format.</p>
 <p>See also <a href="qabstractformbuilder.html#load">load</a>().</p>
 <h3 class="fn"><a name="setWorkingDirectory"></a>void QAbstractFormBuilder::setWorkingDirectory ( const <a href="qdir.html">QDir</a> &amp; <i>directory</i> )</h3>
-<p>Sets the current working directory of the form builder to the <i>directory</i> specified.</p>
+<p>Sets the current working directory of the form builder to the specified <i>directory</i>.</p>
 <p>See also <a href="qabstractformbuilder.html#workingDirectory">workingDirectory</a>().</p>
 <h3 class="fn"><a name="workingDirectory"></a><a href="qdir.html">QDir</a> QAbstractFormBuilder::workingDirectory () const</h3>
 <p>Returns the current working directory of the form builder.</p>
@@ -67,6 +81,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

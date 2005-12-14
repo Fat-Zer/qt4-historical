@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/doc/src/examples/plugandpaint.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/plugandpaint.qdoc -->
 <head>
-    <title>Qt 4.0: Plug &amp; Paint Basic Tools Example</title>
+    <title>Qt 4.1: Plug &amp; Paint Basic Tools Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -205,8 +205,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>filterImage()</tt> function takes a filter name and a <a href="qimage.html">QImage</a> as parameters and returns an altered <a href="qimage.html">QImage</a>. The first thing we do is to convert the image to a 32-bit RGB format, to ensure that the algorithms will work as expected. For example, <a href="qimage.html#invertPixels">QImage::invertPixels</a>(), which is used to implement the <b>Invert Pixels</b> filter, gives counterintuitive results for 8-bit images, because they invert the indices into the color table instead of inverting the color table's entries.</p>
 <a name="exporting-the-plugin"></a>
 <h2>Exporting the Plugin</h2>
-<p>Whereas applications have a <tt>main()</tt> function as their entry point, plugins need to contain exactly one occurrence of the <tt>Q_EXPORT_PLUGIN()</tt> macro to specify which class provides the plugin:</p>
-<pre>&nbsp;   Q_EXPORT_PLUGIN(BasicToolsPlugin)</pre>
+<p>Whereas applications have a <tt>main()</tt> function as their entry point, plugins need to contain exactly one occurrence of the <tt>Q_EXPORT_PLUGIN2()</tt> macro to specify which class provides the plugin:</p>
+<pre>&nbsp;   Q_EXPORT_PLUGIN2(pnp_basictools, BasicToolsPlugin)</pre>
 <p>This line may appear in any <tt>.cpp</tt> file that is part of the plugin's source code.</p>
 <a name="the-pro-file"></a>
 <h2>The .pro File</h2>
@@ -233,6 +233,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/tools/qdatetime.cpp -->
 <head>
-    <title>Qt 4.0: QTime Class Reference</title>
+    <title>Qt 4.1: QTime Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -63,8 +63,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-lt-lt-29">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTime &amp; <i>time</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-gt-gt-20">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QTime &amp; <i>time</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-lt-lt-34">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTime &amp; <i>time</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtime.html#operator-gt-gt-21">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QTime &amp; <i>time</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -199,14 +199,16 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#a2c511"><th>Expression</th><th>Output</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>H</td><td>the hour without a leading zero (0 to 23, even with AM/PM display)</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>HH</td><td>the hour with a leading zero (00 to 23, even with AM/PM display)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>m</td><td>the minute without a leading zero (0 to 59)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>mm</td><td>the minute with a leading zero (00 to 59)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>s</td><td>the second whithout a leading zero (0 to 59)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>ss</td><td>the second whith a leading zero (00 to 59)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>z</td><td>the milliseconds without leading zeroes (0 to 999)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>zzz</td><td>the milliseconds with leading zeroes (000 to 999)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>AP</td><td>use AM/PM display. <i>AP</i> will be replaced by either &quot;AM&quot; or &quot;PM&quot;.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>ap</td><td>use am/pm display. <i>ap</i> will be replaced by either &quot;am&quot; or &quot;pm&quot;.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>AP or A</td><td>use AM/PM display. <i>AP</i> will be replaced by either &quot;AM&quot; or &quot;PM&quot;.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>ap or a</td><td>use am/pm display. <i>ap</i> will be replaced by either &quot;am&quot; or &quot;pm&quot;.</td></tr>
 </table>
 <p>All other input characters will be ignored. Any sequence of characters that are enclosed in singlequotes will be treated as text and not be used as an expression.</p>
 <p>Example format strings (assuming that the <a href="qtime.html">QTime</a> is 14:13:09.042)</p>
@@ -214,6 +216,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Result</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>hh:mm:ss.zzz</td><td>14:13:09.042</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>h:m:s ap</td><td>2:13:9 pm</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>H:m:s a</td><td>14:13:9 pm</td></tr>
 </table>
 <p>If the datetime is invalid, an empty string will be returned.</p>
 <p>See also <a href="qdate.html#toString">QDate::toString</a>() and <a href="qdatetime.html#toString">QDateTime::toString</a>().</p>
@@ -238,11 +241,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this time is later than or equal to <i>t</i>; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-29"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTime &amp; <i>time</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-34"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTime &amp; <i>time</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes <i>time</i> to stream <i>out</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-20"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QTime &amp; <i>time</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-21"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QTime &amp; <i>time</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a time from stream <i>in</i> into the given <i>time</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -250,6 +253,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

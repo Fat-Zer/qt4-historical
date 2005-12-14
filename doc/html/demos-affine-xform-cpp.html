@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Qt 4.0: xform.cpp Example File (demos/affine/xform.cpp)</title>
+    <title>Qt 4.1: xform.cpp Example File (demos/affine/xform.cpp)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -17,13 +17,35 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">xform.cpp Example File<br /><sup><sup>demos/affine/xform.cpp</sup></sup></h1>
-<pre>&nbsp;   #include &quot;xform.h&quot;
-    #include &quot;hoverpoints.h&quot;
-    #include &quot;arthurwidgets.h&quot;
+<pre>&nbsp;   /****************************************************************************
+    **
+    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    **
+    ** This file is part of the documentation of the Qt Toolkit.
+    **
+    ** This file may be used under the terms of the GNU General Public
+    ** License version 2.0 as published by the Free Software Foundation
+    ** and appearing in the file LICENSE.GPL included in the packaging of
+    ** this file.  Please review the following information to ensure GNU
+    ** General Public Licensing requirements will be met:
+    ** http://www.trolltech.com/products/qt/opensource.html
+    **
+    ** If you are unsure which license is appropriate for your use, please
+    ** review the following information:
+    ** http://www.trolltech.com/products/qt/licensing.html or contact the
+    ** sales department at sales@trolltech.com.
+    **
+    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+    **
+    ****************************************************************************/
 
-    #include &lt;qlayout.h&gt;
-    #include &lt;qpainter.h&gt;
-    #include &lt;qpainterpath.h&gt;
+    #include &quot;xform.h&quot;
+    #include &quot;hoverpoints.h&quot;
+
+    #include &lt;QLayout&gt;
+    #include &lt;QPainter&gt;
+    #include &lt;QPainterPath&gt;
 
     const int alpha = 155;
 
@@ -32,9 +54,9 @@ body { background: #ffffff; color: black; }</style>
     {
         setAttribute(Qt::WA_MouseTracking);
         type = VectorType;
-        rotation = 0.0;
-        scale = 1.0;
-        shear = 0.0;
+        m_rotation = 0.0;
+        m_scale = 1.0;
+        m_shear = 0.0;
 
         pixmap = QPixmap(&quot;:/res/bg1.jpg&quot;);
         pts = new HoverPoints(this, HoverPoints::CircleShape);
@@ -96,12 +118,12 @@ body { background: #ffffff; color: black; }</style>
         ctrlPoints = points;
 
         QLineF line(ctrlPoints.at(0), ctrlPoints.at(1));
-        rotation = line.angle(QLineF(0, 0, 1, 0));
+        m_rotation = line.angle(QLineF(0, 0, 1, 0));
         if (line.dy() &lt; 0)
-            rotation = 360 - rotation;
+            m_rotation = 360 - m_rotation;
 
         if (trans.isNull())
-            emit rotationChanged(int(rotation*10));
+            emit rotationChanged(int(m_rotation*10));
     }
 
     void XFormView::setVectorType()
@@ -131,13 +153,13 @@ body { background: #ffffff; color: black; }</style>
 
     void XFormView::changeRotation(int r)
     {
-        double old_rot = rotation;
-        rotation = double(r/10.0);
+        double old_rot = m_rotation;
+        m_rotation = double(r/10.0);
 
         QPointF center(pts-&gt;points().at(0));
         QMatrix m;
         m.translate(center.x(), center.y());
-        m.rotate(rotation - old_rot);
+        m.rotate(m_rotation - old_rot);
         m.translate(-center.x(), -center.y());
         pts-&gt;setPoints(pts-&gt;points() * m);
 
@@ -146,13 +168,13 @@ body { background: #ffffff; color: black; }</style>
 
     void XFormView::changeScale(int s)
     {
-        scale = double(s/1000.0);
+        m_scale = double(s/1000.0);
         update();
     }
 
     void XFormView::changeShear(int s)
     {
-        shear = double(s/1000.0);
+        m_shear = double(s/1000.0);
         update();
     }
 
@@ -169,11 +191,11 @@ body { background: #ffffff; color: black; }</style>
             setUpdatesEnabled(false);
             static double scale_inc = 0.003;
             static double shear_inc = -0.001;
-            emit scaleChanged(int((scale + scale_inc) * 1000));
-            emit shearChanged(int((shear + shear_inc) * 1000));
-            if (scale &gt;= 4.0 || scale &lt;= 0.1)
+            emit scaleChanged(int((m_scale + scale_inc) * 1000));
+            emit shearChanged(int((m_shear + shear_inc) * 1000));
+            if (m_scale &gt;= 4.0 || m_scale &lt;= 0.1)
                 scale_inc = -scale_inc;
-            if (shear &gt;= 1.0 || shear &lt;= -1.0)
+            if (m_shear &gt;= 1.0 || m_shear &lt;= -1.0)
                 shear_inc = -shear_inc;
             setUpdatesEnabled(true);
 
@@ -183,9 +205,9 @@ body { background: #ffffff; color: black; }</style>
 
     void XFormView::wheelEvent(QWheelEvent *e)
     {
-        scale += e-&gt;delta()/600.0;
-        scale = qMax(.1, qMin(4.0, scale));
-        emit scaleChanged(int(scale*1000));
+        m_scale += e-&gt;delta()/600.0;
+        m_scale = qMax(.1, qMin(4.0, m_scale));
+        emit scaleChanged(int(m_scale*1000));
     }
 
     void XFormView::reset()
@@ -205,9 +227,9 @@ body { background: #ffffff; color: black; }</style>
         painter-&gt;translate(ctrlPoints.at(0) - center);
 
         painter-&gt;translate(center);
-        painter-&gt;rotate(rotation);
-        painter-&gt;scale(scale, scale);
-        painter-&gt;shear(shear, shear);
+        painter-&gt;rotate(m_rotation);
+        painter-&gt;scale(m_scale, m_scale);
+        painter-&gt;shear(m_shear, m_shear);
         painter-&gt;translate(-center);
 
         painter-&gt;drawPixmap(QPointF(0, 0), pixmap);
@@ -230,9 +252,9 @@ body { background: #ffffff; color: black; }</style>
         painter-&gt;translate(ctrlPoints.at(0) - center);
 
         painter-&gt;translate(center);
-        painter-&gt;rotate(rotation);
-        painter-&gt;scale(scale, scale);
-        painter-&gt;shear(shear, shear);
+        painter-&gt;rotate(m_rotation);
+        painter-&gt;scale(m_scale, m_scale);
+        painter-&gt;shear(m_shear, m_shear);
         painter-&gt;translate(-center);
 
         painter-&gt;drawText(0, 0, textEditor-&gt;text());
@@ -252,9 +274,9 @@ body { background: #ffffff; color: black; }</style>
         QRect br(-55, 275, 500, 590);
         QPoint center = br.center();
         painter-&gt;translate(center.x(), center.y());
-        painter-&gt;rotate(rotation);
-        painter-&gt;scale(scale, scale);
-        painter-&gt;shear(shear, shear);
+        painter-&gt;rotate(m_rotation);
+        painter-&gt;scale(m_scale, m_scale);
+        painter-&gt;shear(m_shear, m_shear);
         painter-&gt;translate(-center.x(), -center.y());
 
         painter-&gt;setPen(Qt::NoPen);
@@ -705,32 +727,32 @@ body { background: #ffffff; color: black; }</style>
 
         view = new XFormView(this);
 
-        QGroupBox *mainGroup = new ArthurGroupBox(this);
+        QGroupBox *mainGroup = new QGroupBox(this);
         mainGroup-&gt;setFixedWidth(180);
         mainGroup-&gt;setTitle(&quot;Affine Transformations&quot;);
 
-        ArthurGroupBox *rotateGroup = new ArthurGroupBox(mainGroup);
+        QGroupBox *rotateGroup = new QGroupBox(mainGroup);
         rotateGroup-&gt;setAttribute(Qt::WA_ContentsPropagated);
         rotateGroup-&gt;setTitle(&quot;Rotate&quot;);
         QSlider *rotateSlider = new QSlider(Qt::Horizontal, rotateGroup);
         rotateSlider-&gt;setRange(0, 3600);
         rotateSlider-&gt;setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-        ArthurGroupBox *scaleGroup = new ArthurGroupBox(mainGroup);
+        QGroupBox *scaleGroup = new QGroupBox(mainGroup);
         scaleGroup-&gt;setAttribute(Qt::WA_ContentsPropagated);
         scaleGroup-&gt;setTitle(&quot;Scale&quot;);
         QSlider *scaleSlider = new QSlider(Qt::Horizontal, scaleGroup);
         scaleSlider-&gt;setRange(1, 4000);
         scaleSlider-&gt;setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-        ArthurGroupBox *shearGroup = new ArthurGroupBox(mainGroup);
+        QGroupBox *shearGroup = new QGroupBox(mainGroup);
         shearGroup-&gt;setAttribute(Qt::WA_ContentsPropagated);
         shearGroup-&gt;setTitle(&quot;Shear&quot;);
         QSlider *shearSlider = new QSlider(Qt::Horizontal, shearGroup);
         shearSlider-&gt;setRange(-990, 990);
         shearSlider-&gt;setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-        ArthurGroupBox *typeGroup = new ArthurGroupBox(mainGroup);
+        QGroupBox *typeGroup = new QGroupBox(mainGroup);
         typeGroup-&gt;setAttribute(Qt::WA_ContentsPropagated);
         typeGroup-&gt;setTitle(&quot;Type&quot;);
         QRadioButton *vectorType = new QRadioButton(typeGroup);
@@ -823,6 +845,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

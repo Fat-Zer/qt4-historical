@@ -22,11 +22,10 @@
 ****************************************************************************/
 
 #include "qanimationwriter.h"
-#ifndef NO_QVFB_ANIMATION
-#define QT_CLEAN_NAMESPACE
-#include <qfile.h>
-#include <qstring.h>
+#include <QFile>
+#include <Q3CString>
 #include <png.h>
+#include <limits.h>
 #include <netinet/in.h> // for htonl
 
 class QAnimationWriterData {
@@ -111,12 +110,11 @@ public:
 
 	png_bytep* row_pointers;
 	uint height = image.height();
-	const uchar* const* jt = image.jumpTable();
+	uchar** jt = (uchar**)image.jumpTable();
 	row_pointers=new png_bytep[height];
 	uint y;
 	for (y=0; y<height; y++) {
-            // PNG lib has const issue with the write image function
-            row_pointers[y]=const_cast<png_byte*>(jt[y]);
+		row_pointers[y]=jt[y];
 	}
 	png_write_image(png_ptr, row_pointers);
 	delete [] row_pointers;
@@ -152,7 +150,7 @@ public:
 	png_write_chunk(png_ptr, (png_byte*)"MEND", 0, 0);
     }
 
-    void writeDEFI( const QPoint& offset, const QSize& size )
+    void writeDEFI( const QPoint& offset, const QSize& /*size*/ )
     {
 	struct {
 	    ushort o;
@@ -241,7 +239,7 @@ public:
 
 QAnimationWriter::QAnimationWriter( const QString& filename, const char* format )
 {
-    if ( QLatin1String(format) != "MNG" ) {
+    if ( Q3CString(format) != "MNG" ) {
 	qWarning("Format \"%s\" not supported, only MNG", format);
 	dev = 0;
 	d = 0;
@@ -255,7 +253,7 @@ QAnimationWriter::QAnimationWriter( const QString& filename, const char* format 
 
 bool QAnimationWriter::okay() const
 {
-    return dev && dev->status() == IO_Ok;
+    return dev && dev->status() == static_cast<int>(IO_Ok);
 }
 
 QAnimationWriter::~QAnimationWriter()
@@ -403,4 +401,3 @@ void QAnimationWriter::appendBlankFrame()
     i.fill(0);
     d->composeImage(i,QPoint(0,0));
 }
-#endif

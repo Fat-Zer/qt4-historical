@@ -117,7 +117,7 @@ public:
     On Mac OS X, we use \l{http://quicktime.apple.com/}{QuickTime} for sound.
     All QuickTime formats are supported by Qt/Mac.
 
-    In Qt/Embedded, a built-in mixing sound server is used, which
+    In Qtopia Core, a built-in mixing sound server is used, which
     accesses \c /dev/dsp directly. Only the WAVE format is supported.
 
     The availability of sound can be tested with
@@ -164,7 +164,7 @@ QSound::QSound(const QString& filename, QObject* parent)
 QSound::QSound(const QString& filename, QObject* parent, const char* name)
     : QObject(*new QSoundPrivate(filename), parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     server().init(this);
 }
 #endif

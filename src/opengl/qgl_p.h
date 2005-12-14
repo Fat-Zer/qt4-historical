@@ -24,10 +24,21 @@
 #ifndef QGL_P_H
 #define QGL_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtOpenGL/qgl.h"
+#include "QtOpenGL/qglcolormap.h"
+#include "QtCore/qmap.h"
 #include "private/qwidget_p.h"
-#include "qglcolormap.h"
-#include "qgl.h"
-#include "qmap.h"
 
 class QGLContext;
 class QGLOverlayWidget;
@@ -88,8 +99,13 @@ class QGLContextPrivate
 public:
     explicit QGLContextPrivate(QGLContext *context) : q_ptr(context) {}
     ~QGLContextPrivate() {}
-    GLuint bindTexture(const QImage &image, GLenum target, GLint format, const QString &key);
+    GLuint bindTexture(const QImage &image, GLenum target, GLint format, const QString &key,
+                       bool clean = false);
+    GLuint bindTexture(const QPixmap &pixmap, GLenum target, GLint format, bool clean);
+    GLuint bindTexture(const QImage &image, GLenum target, GLint format, bool clean);
+    bool textureCacheLookup(const QString &key, GLuint *id);
     void init(QPaintDevice *dev, const QGLFormat &format);
+    QImage convertToBGRA(const QImage &image);
 
 #if defined(Q_WS_WIN)
     HGLRC rc;
@@ -104,6 +120,9 @@ public:
     void* cx;
 #if defined(Q_WS_X11)
     quint32 gpm;
+#endif
+#if defined(Q_WS_MAC)
+    bool update;
 #endif
 #endif
     QGLFormat glFormat;
@@ -125,7 +144,9 @@ public:
 	TextureRectangle 	= 0x00000001,
 	SampleBuffers 		= 0x00000002,
 	GenerateMipmap 		= 0x00000004,
-	TextureCompression 	= 0x00000008
+	TextureCompression 	= 0x00000008,
+	FragmentProgram	 	= 0x00000010,
+	MirroredRepeat		= 0x00000020
     };
     Q_DECLARE_FLAGS(Extensions, Extension)
 
@@ -142,5 +163,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QGLExtensions::Extensions)
 #define GL_TEXTURE_BINDING_RECTANGLE_NV   0x84F6
 #define GL_PROXY_TEXTURE_RECTANGLE_NV     0x84F7
 #define GL_MAX_RECTANGLE_TEXTURE_SIZE_NV  0x84F8
+#endif
+
+#ifndef GL_BGRA
+#define GL_BGRA 0x80E1
 #endif
 #endif // QGL_P_H

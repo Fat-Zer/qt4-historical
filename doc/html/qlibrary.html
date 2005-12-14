@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/corelib/plugin/qlibrary.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/plugin/qlibrary.cpp -->
 <head>
-    <title>Qt 4.0: QLibrary Class Reference</title>
+    <title>Qt 4.1: QLibrary Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -38,12 +38,14 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qlibrary.html#QLibrary">QLibrary</a></b> ( QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qlibrary.html#QLibrary-2">QLibrary</a></b> ( const QString &amp; <i>fileName</i>, QObject * <i>parent</i> = 0 )</li>
+<li><div class="fn"/><b><a href="qlibrary.html#QLibrary-3">QLibrary</a></b> ( const QString &amp; <i>fileName</i>, int <i>verNum</i>, QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qlibrary.html#dtor.QLibrary">~QLibrary</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qlibrary.html#fileName-prop">fileName</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qlibrary.html#isLoaded">isLoaded</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qlibrary.html#load">load</a></b> ()</li>
 <li><div class="fn"/>void * <b><a href="qlibrary.html#resolve">resolve</a></b> ( const char * <i>symbol</i> )</li>
 <li><div class="fn"/>void <b><a href="qlibrary.html#fileName-prop">setFileName</a></b> ( const QString &amp; <i>fileName</i> )</li>
+<li><div class="fn"/>void <b><a href="qlibrary.html#setFileNameAndVersion">setFileNameAndVersion</a></b> ( const QString &amp; <i>fileName</i>, int <i>versionNumber</i> )</li>
 <li><div class="fn"/>bool <b><a href="qlibrary.html#unload">unload</a></b> ()</li>
 </ul>
 <ul>
@@ -54,6 +56,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>bool <b><a href="qlibrary.html#isLibrary">isLibrary</a></b> ( const QString &amp; <i>fileName</i> )</li>
 <li><div class="fn"/>void * <b><a href="qlibrary.html#resolve-2">resolve</a></b> ( const QString &amp; <i>fileName</i>, const char * <i>symbol</i> )</li>
+<li><div class="fn"/>void * <b><a href="qlibrary.html#resolve-3">resolve</a></b> ( const QString &amp; <i>fileName</i>, int <i>verNum</i>, const char * <i>symbol</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
@@ -102,6 +105,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QLibrary-2"></a>QLibrary::QLibrary ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a library object with the given <i>parent</i> that will load the library specified by <i>fileName</i>.</p>
 <p>We recommend omitting the file's suffix in <i>fileName</i>, since <a href="qlibrary.html">QLibrary</a> will automatically look for the file with the appropriate suffix in accordance with the platform, e.g. &quot;.so&quot; on Unix, &quot;.dylib&quot; on Mac OS X, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop">fileName</a>.)</p>
+<h3 class="fn"><a name="QLibrary-3"></a>QLibrary::QLibrary ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, int <i>verNum</i>, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
+<p>Constructs a library object with the given <i>parent</i> that will load the library specified by <i>fileName</i> and major version number <i>verNum</i>.</p>
+<p>We recommend omitting the file's suffix in <i>fileName</i>, since <a href="qlibrary.html">QLibrary</a> will automatically look for the file with the appropriate suffix in accordance with the platform, e.g. &quot;.so&quot; on Unix, &quot;.dylib&quot; on Mac OS X, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop">fileName</a>.)</p>
 <h3 class="fn"><a name="dtor.QLibrary"></a>QLibrary::~QLibrary ()</h3>
 <p>Destroys the <a href="qlibrary.html">QLibrary</a> object.</p>
 <p>Unless <a href="qlibrary.html#unload">unload</a>() was called explicitly, the library stays in memory until the application terminates.</p>
@@ -122,27 +128,11 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlibrary.html#load">load</a>().</p>
 <h3 class="fn"><a name="load"></a>bool QLibrary::load ()</h3>
 <p>Loads the library and returns true if the library was loaded successfully; otherwise returns false. Since <a href="qlibrary.html#resolve">resolve</a>() always calls this function before resolving any symbols it is not necessary to call it explicitly. In some situations you might want the library loaded in advance, in which case you would use this function.</p>
-<p>On Darwin and Mac OS X this function uses code from dlcompat, part of the OpenDarwin project.</p>
-<pre>&nbsp;   Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
-
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    &quot;Software&quot;), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+<p>On Mac OS X this function uses code from dlcompat, part of the OpenDarwin project.</p>
+<p>Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 <p>See also <a href="qlibrary.html#unload">unload</a>().</p>
 <h3 class="fn"><a name="resolve"></a>void * QLibrary::resolve ( const char * <i>symbol</i> )</h3>
 <p>Returns the address of the exported symbol <i>symbol</i>. The library is loaded if necessary. The function returns 0 if the symbol could not be resolved or if the library could not be loaded.</p>
@@ -165,32 +155,24 @@ body { background: #ffffff; color: black; }</style>
     #else
     #define MY_EXPORT
     #endif</pre>
-<p>On Darwin and Mac OS X this function uses code from dlcompat, part of the OpenDarwin project.</p>
-<pre>&nbsp;   Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
-
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    &quot;Software&quot;), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+<p>On Mac OS X this function uses code from dlcompat, part of the OpenDarwin project.</p>
+<p>Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 <h3 class="fn"><a name="resolve-2"></a>void * QLibrary::resolve ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>symbol</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Loads the library <i>fileName</i> and returns the address of the exported symbol <i>symbol</i>. Note that <i>fileName</i> should not include the platform-specific file suffix; (see <a href="qlibrary.html#fileName-prop">fileName</a>). The library remains loaded until the application exits.</p>
 <p>The function returns 0 if the symbol could not be resolved or if the library could not be loaded.</p>
 <p>See also <a href="qlibrary.html#resolve">resolve</a>().</p>
+<h3 class="fn"><a name="resolve-3"></a>void * QLibrary::resolve ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, int <i>verNum</i>, const char * <i>symbol</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Loads the library <i>fileName</i> with major version number <i>verNum</i> and returns the address of the exported symbol <i>symbol</i>. Note that <i>fileName</i> should not include the platform-specific file suffix; (see <a href="qlibrary.html#fileName-prop">fileName</a>). The library remains loaded until the application exits.</p>
+<p>The function returns 0 if the symbol could not be resolved or if the library could not be loaded.</p>
+<p>See also <a href="qlibrary.html#resolve">resolve</a>().</p>
+<h3 class="fn"><a name="setFileNameAndVersion"></a>void QLibrary::setFileNameAndVersion ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, int <i>versionNumber</i> )</h3>
+<p>Sets the <a href="qlibrary.html#fileName-prop">fileName</a> property and major version number to <i>fileName</i> and <i>versionNumber</i> respectively.</p>
+<p>See also <a href="qlibrary.html#fileName-prop">setFileName</a>().</p>
 <h3 class="fn"><a name="unload"></a>bool QLibrary::unload ()</h3>
 <p>Unloads the library and returns true if the library could be unloaded; otherwise returns false.</p>
 <p>This happens automatically on application termination, so you shouldn't normally need to call this function.</p>
@@ -201,6 +183,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -46,7 +46,7 @@ public:
     \brief The QEventLoop class provides a means of entering and leaving an event loop.
 
     At any time, you can create a QEventLoop object and call exec()
-    on it to start a local event loop. From withing the event loop,
+    on it to start a local event loop. From within the event loop,
     calling exit() will force exec() to return.
 
     \sa QAbstractEventDispatcher
@@ -58,12 +58,19 @@ public:
     processEvents() functions.
 
     \value AllEvents All events are processed
-    \value ExcludeUserInputEvents Do not process user input events, such
-            as ButtonPress and KeyPress.
+
+    \value ExcludeUserInputEvents Do not process user input events,
+    such as ButtonPress and KeyPress. Note that the events are not
+    discarded; they will be delivered the next time processEvents() is
+    called without the ExcludeUserInputEvents flag.
+
     \value ExcludeSocketNotifiers Do not process socket notifier
-           events.
-    \value WaitForMoreEvents Wait for events if no pending events
-           are available.
+    events. Note that the events are not discarded; they will be
+    delivered the next time processEvents() is called without the
+    ExcludeSocketNotifiers flag.
+
+    \value WaitForMoreEvents Wait for events if no pending events are
+    available.
 
     \omitvalue ExcludeUserInput
     \omitvalue WaitForMore
@@ -148,7 +155,7 @@ int QEventLoop::exec(ProcessEventsFlags flags)
     data->eventLoops.push(this);
 
     while (!d->exit)
-        processEvents(flags | WaitForMoreEvents | ProcessEventsFlag(0x10)); // 0x10 == QEventLoop::DeferredDeletion
+        processEvents(flags | WaitForMoreEvents | ProcessEventsFlag(QEventLoop::DeferredDeletion));
 
 
     QEventLoop *eventLoop = data->eventLoops.pop();

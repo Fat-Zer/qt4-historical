@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/itemviews/qitemselectionmodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/itemviews/qitemselectionmodel.cpp -->
 <head>
-    <title>Qt 4.0: QItemSelectionRange Class Reference</title>
+    <title>Qt 4.1: QItemSelectionRange Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qitemselectionrange.html#QItemSelectionRange">QItemSelectionRange</a></b> ()</li>
 <li><div class="fn"/><b><a href="qitemselectionrange.html#QItemSelectionRange-2">QItemSelectionRange</a></b> ( const QItemSelectionRange &amp; <i>other</i> )</li>
-<li><div class="fn"/><b><a href="qitemselectionrange.html#QItemSelectionRange-3">QItemSelectionRange</a></b> ( const QModelIndex &amp; <i>parent</i>, const QModelIndex &amp; <i>index</i> )</li>
+<li><div class="fn"/><b><a href="qitemselectionrange.html#QItemSelectionRange-3">QItemSelectionRange</a></b> ( const QModelIndex &amp; <i>topLeft</i>, const QModelIndex &amp; <i>bottomRight</i> )</li>
 <li><div class="fn"/><b><a href="qitemselectionrange.html#QItemSelectionRange-4">QItemSelectionRange</a></b> ( const QModelIndex &amp; <i>index</i> )</li>
 <li><div class="fn"/>int <b><a href="qitemselectionrange.html#bottom">bottom</a></b> () const</li>
 <li><div class="fn"/>QModelIndex <b><a href="qitemselectionrange.html#bottomRight">bottomRight</a></b> () const</li>
@@ -62,10 +62,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs an empty selection range.</p>
 <h3 class="fn"><a name="QItemSelectionRange-2"></a>QItemSelectionRange::QItemSelectionRange ( const QItemSelectionRange &amp; <i>other</i> )</h3>
 <p>Copy constructor. Constructs a new selection range with the same contents as the <i>other</i> range given.</p>
-<h3 class="fn"><a name="QItemSelectionRange-3"></a>QItemSelectionRange::QItemSelectionRange ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )</h3>
-<p>Constructs a new selection range containing only the model item specified by the <i>parent</i> and the model <i>index</i>.</p>
+<h3 class="fn"><a name="QItemSelectionRange-3"></a>QItemSelectionRange::QItemSelectionRange ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>topLeft</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>bottomRight</i> )</h3>
+<p>Constructs a new selection range containing only the index specified by the <i>topLeft</i> and the index <i>bottomRight</i>.</p>
 <h3 class="fn"><a name="QItemSelectionRange-4"></a>QItemSelectionRange::QItemSelectionRange ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )</h3>
-<p>Constructs a new selection range containing only the model item specified by the model <i>index</i>.</p>
+<p>Constructs a new selection range containing only the model item specified by the model index <i>index</i>.</p>
 <h3 class="fn"><a name="bottom"></a>int QItemSelectionRange::bottom () const</h3>
 <p>Returns the row index corresponding to the lowermost selected row in the selection range.</p>
 <h3 class="fn"><a name="bottomRight"></a><a href="qmodelindex.html">QModelIndex</a> QItemSelectionRange::bottomRight () const</h3>
@@ -106,6 +106,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

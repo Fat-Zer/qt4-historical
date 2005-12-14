@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/itemviews/qlistwidget.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/itemviews/qlistwidget.cpp -->
 <head>
-    <title>Qt 4.0: QListWidgetItem Class Reference</title>
+    <title>Qt 4.1: QListWidgetItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -27,6 +27,8 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qlistwidgetitem.html#QListWidgetItem">QListWidgetItem</a></b> ( QListWidget * <i>parent</i> = 0, int <i>type</i> = Type )</li>
 <li><div class="fn"/><b><a href="qlistwidgetitem.html#QListWidgetItem-2">QListWidgetItem</a></b> ( const QString &amp; <i>text</i>, QListWidget * <i>parent</i> = 0, int <i>type</i> = Type )</li>
+<li><div class="fn"/><b><a href="qlistwidgetitem.html#QListWidgetItem-3">QListWidgetItem</a></b> ( const QIcon &amp; <i>icon</i>, const QString &amp; <i>text</i>, QListWidget * <i>parent</i> = 0, int <i>type</i> = Type )</li>
+<li><div class="fn"/><b><a href="qlistwidgetitem.html#QListWidgetItem-4">QListWidgetItem</a></b> ( const QListWidgetItem &amp; <i>other</i> )</li>
 <li><div class="fn"/>virtual <b><a href="qlistwidgetitem.html#dtor.QListWidgetItem">~QListWidgetItem</a></b> ()</li>
 <li><div class="fn"/>QColor <b><a href="qlistwidgetitem.html#backgroundColor">backgroundColor</a></b> () const</li>
 <li><div class="fn"/>Qt::CheckState <b><a href="qlistwidgetitem.html#checkState">checkState</a></b> () const</li>
@@ -43,12 +45,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setFlags">setFlags</a></b> ( Qt::ItemFlags <i>flags</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setFont">setFont</a></b> ( const QFont &amp; <i>font</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setIcon">setIcon</a></b> ( const QIcon &amp; <i>icon</i> )</li>
+<li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setSizeHint">setSizeHint</a></b> ( const QSize &amp; <i>size</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setStatusTip">setStatusTip</a></b> ( const QString &amp; <i>statusTip</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setText">setText</a></b> ( const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setTextAlignment">setTextAlignment</a></b> ( int <i>alignment</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setTextColor">setTextColor</a></b> ( const QColor &amp; <i>color</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setToolTip">setToolTip</a></b> ( const QString &amp; <i>toolTip</i> )</li>
 <li><div class="fn"/>void <b><a href="qlistwidgetitem.html#setWhatsThis">setWhatsThis</a></b> ( const QString &amp; <i>whatsThis</i> )</li>
+<li><div class="fn"/>QSize <b><a href="qlistwidgetitem.html#sizeHint">sizeHint</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qlistwidgetitem.html#statusTip">statusTip</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qlistwidgetitem.html#text">text</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qlistwidgetitem.html#textAlignment">textAlignment</a></b> () const</li>
@@ -69,8 +73,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-lt-lt-57">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-gt-gt-38">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QListWidgetItem &amp; <i>item</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-lt-lt-64">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-gt-gt-40">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QListWidgetItem &amp; <i>item</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -82,9 +86,9 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       new QListWidgetItem(tr(&quot;Hazel&quot;), listWidget);</pre>
 <p>They can also be created without a parent widget, and later inserted into a list (see <a href="qlistwidget.html#insertItem">QListWidget::insertItem</a>()).</p>
 <p>List items are typically used to display <a href="qlistwidgetitem.html#text">text</a>() and an <a href="qlistwidgetitem.html#icon">icon</a>(). These are set with the <a href="qlistwidgetitem.html#setText">setText</a>() and <a href="qlistwidgetitem.html#setIcon">setIcon</a>() functions. The appearance of the text can be customized with <a href="qlistwidgetitem.html#setFont">setFont</a>(), <a href="qlistwidgetitem.html#setTextColor">setTextColor</a>(), and <a href="qlistwidgetitem.html#setBackgroundColor">setBackgroundColor</a>(). List items can be aligned using the setAlignment() function. Tooltips, status tips and &quot;What's This?&quot; help can be added to list items with <a href="qlistwidgetitem.html#setToolTip">setToolTip</a>(), <a href="qlistwidgetitem.html#setStatusTip">setStatusTip</a>(), and <a href="qlistwidgetitem.html#setWhatsThis">setWhatsThis</a>().</p>
-<p>Items can be made checkable by calling <a href="qlistwidgetitem.html#setFlags">setFlags</a>() with the appropriate value (see <a href="qt.html#ItemFlag-enum">Qt::ItemFlags</a>). Checkable items can be checked and unchecked with the setChecked() function. The corresponding checked() function indicates whether the item is currently checked.</p>
+<p>By default, items are enabled, selectable, checkable, and can be the source of a drag and drop operation. Each item's flags can be changed by calling <a href="qlistwidgetitem.html#setFlags">setFlags</a>() with the appropriate value (see <a href="qt.html#ItemFlag-enum">Qt::ItemFlags</a>). Checkable items can be checked and unchecked with the setChecked() function. The corresponding checked() function indicates whether the item is currently checked.</p>
 <p>The isItemHidden() function can be used to determine whether the item is hidden. Items can be hidden with setItemHidden().</p>
-<p>See also <a href="qlistwidget.html">QListWidget</a> and <a href="model-view-programming.html">Model/View Programming</a>.</p>
+<p>See also <a href="qlistwidget.html">QListWidget</a>, <a href="model-view-programming.html">Model/View Programming</a>, <a href="qtreewidgetitem.html">QTreeWidgetItem</a>, and <a href="qtablewidgetitem.html">QTableWidgetItem</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QListWidgetItem"></a>QListWidgetItem::QListWidgetItem ( <a href="qlistwidget.html">QListWidget</a> * <i>parent</i> = 0, int <i>type</i> = Type )</h3>
@@ -93,6 +97,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QListWidgetItem-2"></a>QListWidgetItem::QListWidgetItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qlistwidget.html">QListWidget</a> * <i>parent</i> = 0, int <i>type</i> = Type )</h3>
 <p>Constructs an empty list widget item of the specified <i>type</i> with the given <i>text</i> and <i>parent</i>. If the parent is not specified, the item will need to be inserted into a list widget with <a href="qlistwidget.html#insertItem">QListWidget::insertItem</a>().</p>
 <p>See also <a href="qlistwidgetitem.html#type">type</a>().</p>
+<h3 class="fn"><a name="QListWidgetItem-3"></a>QListWidgetItem::QListWidgetItem ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qlistwidget.html">QListWidget</a> * <i>parent</i> = 0, int <i>type</i> = Type )</h3>
+<p>Constructs an empty list widget item of the specified <i>type</i> with the given <i>icon</i>, <i>text</i> and <i>parent</i>. If the parent is not specified, the item will need to be inserted into a list widget with <a href="qlistwidget.html#insertItem">QListWidget::insertItem</a>().</p>
+<p>See also <a href="qlistwidgetitem.html#type">type</a>().</p>
+<h3 class="fn"><a name="QListWidgetItem-4"></a>QListWidgetItem::QListWidgetItem ( const QListWidgetItem &amp; <i>other</i> )</h3>
+<p>Constructs a copy of <i>other</i>. Note that <a href="qlistwidgetitem.html#type">type</a>() and <a href="qlistwidgetitem.html#listWidget">listWidget</a>() are not copied.</p>
+<p>This function is useful when reimplementing <a href="qlistwidgetitem.html#clone">clone</a>().</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qlistwidgetitem.html#data">data</a>() and <a href="qlistwidgetitem.html#flags">flags</a>().</p>
 <h3 class="fn"><a name="dtor.QListWidgetItem"></a>QListWidgetItem::~QListWidgetItem ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the list item.</p>
 <h3 class="fn"><a name="backgroundColor"></a><a href="qcolor.html">QColor</a> QListWidgetItem::backgroundColor () const</h3>
@@ -138,6 +150,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setIcon"></a>void QListWidgetItem::setIcon ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i> )</h3>
 <p>Sets the icon for the list item to the given <i>icon</i>.</p>
 <p>See also <a href="qlistwidgetitem.html#icon">icon</a>().</p>
+<h3 class="fn"><a name="setSizeHint"></a>void QListWidgetItem::setSizeHint ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> )</h3>
+<p>Sets the size hint for the list item to be <i>size</i>. If no size hint is set, the item delegate will compute the size hint based on the item data.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qlistwidgetitem.html#sizeHint">sizeHint</a>().</p>
 <h3 class="fn"><a name="setStatusTip"></a>void QListWidgetItem::setStatusTip ( const <a href="qstring.html">QString</a> &amp; <i>statusTip</i> )</h3>
 <p>Sets the status tip for the list item to the text specified by <i>statusTip</i>.</p>
 <p>See also <a href="qlistwidgetitem.html#statusTip">statusTip</a>(), <a href="qlistwidgetitem.html#setToolTip">setToolTip</a>(), and <a href="qlistwidgetitem.html#setWhatsThis">setWhatsThis</a>().</p>
@@ -156,6 +172,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setWhatsThis"></a>void QListWidgetItem::setWhatsThis ( const <a href="qstring.html">QString</a> &amp; <i>whatsThis</i> )</h3>
 <p>Sets the &quot;What's This?&quot; help for the list item to the text specified by <i>whatsThis</i>.</p>
 <p>See also <a href="qlistwidgetitem.html#whatsThis">whatsThis</a>(), <a href="qlistwidgetitem.html#setStatusTip">setStatusTip</a>(), and <a href="qlistwidgetitem.html#setToolTip">setToolTip</a>().</p>
+<h3 class="fn"><a name="sizeHint"></a><a href="qsize.html">QSize</a> QListWidgetItem::sizeHint () const</h3>
+<p>Returns the size hint set for the list item.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qlistwidgetitem.html#setSizeHint">setSizeHint</a>().</p>
 <h3 class="fn"><a name="statusTip"></a><a href="qstring.html">QString</a> QListWidgetItem::statusTip () const</h3>
 <p>Returns the list item's status tip.</p>
 <p>See also <a href="qlistwidgetitem.html#setStatusTip">setStatusTip</a>().</p>
@@ -195,12 +215,12 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlistwidgetitem.html#Type-var">Type</a> and <a href="qlistwidgetitem.html#type">type</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-57"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-64"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the list widget item <i>item</i> to stream <i>out</i>.</p>
 <p>This operator uses <a href="qlistwidgetitem.html#write">QListWidgetItem::write</a>().</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-38"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QListWidgetItem &amp; <i>item</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-40"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QListWidgetItem &amp; <i>item</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a list widget item from stream <i>in</i> into <i>item</i>.</p>
 <p>This operator uses <a href="qlistwidgetitem.html#read">QListWidgetItem::read</a>().</p>
@@ -209,6 +229,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

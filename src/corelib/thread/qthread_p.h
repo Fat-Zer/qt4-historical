@@ -37,11 +37,11 @@
 //
 
 #include "qplatformdefs.h"
-#include <private/qobject_p.h>
-#include "qmutex.h"
-#include "qstack.h"
-#include "qthread.h"
-#include "qwaitcondition.h"
+#include "QtCore/qthread.h"
+#include "QtCore/qmutex.h"
+#include "QtCore/qstack.h"
+#include "QtCore/qwaitcondition.h"
+#include "private/qobject_p.h"
 
 class QAbstractEventDispatcher;
 class QEventLoop;
@@ -102,6 +102,7 @@ public:
     bool terminated;
 
     uint stackSize;
+    QThread::Priority priority;
 
     static void setCurrentThread(QThread *thread);
 
@@ -141,6 +142,7 @@ public:
 
     Q_DECLARE_PUBLIC(QThread)
 };
+
 #endif // QT_NO_THREAD
 
 #endif // QTHREAD_P_H

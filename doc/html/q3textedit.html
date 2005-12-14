@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/qt3support/text/q3textedit.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/text/q3textedit.cpp -->
 <head>
-    <title>Qt 4.0: Q3TextEdit Class Reference</title>
+    <title>Qt 4.1: Q3TextEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -67,7 +67,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -132,7 +132,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -274,7 +274,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Text Viewer</td><td>setReadOnly(true)</td><td>Set text with <a href="q3textedit.html#text-prop">setText</a>() or <a href="q3textedit.html#append">append</a>() (which has no undo history so is faster and uses less memory); <a href="q3textedit.html#text-prop">text</a>() returns plain or rich text depending on the <a href="q3textedit.html#textFormat-prop">textFormat</a>(). This mode can correctly display a large subset of HTML tags.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Log Viewer</td><td>setTextFormat(<a href="qt.html#TextFormat-enum">Qt::LogText</a>)</td><td>Append text using <a href="q3textedit.html#append">append</a>(). The widget is set to be read only and rich text support is disabled although a few HTML tags (for color, bold, italic and underline) may be used. (See <a href="#logtextmode">Qt::LogText mode</a> for details.)</td></tr>
 </table>
-<p>Q3TextEdit can be used as a syntax highlighting editor when used in conjunction with <a href="porting4.html#qsyntaxhighlighter">QSyntaxHighlighter</a>.</p>
+<p>Q3TextEdit can be used as a syntax highlighting editor when used in conjunction with <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a>.</p>
 <p>We recommend that you always call <a href="q3textedit.html#textFormat-prop">setTextFormat</a>() to set the mode you want to use. If you use <a href="qt.html#TextFormat-enum">Qt::AutoText</a> then <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#append">append</a>() will try to determine whether the text they are given is plain text or rich text. If you use <a href="qt.html#TextFormat-enum">Qt::RichText</a> then <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#append">append</a>() will assume that the text they are given is rich text. <a href="q3textedit.html#insert">insert</a>() simply inserts the text it is given.</p>
 <p>Q3TextEdit works on paragraphs and characters. A paragraph is a formatted string which is word-wrapped to fit into the width of the widget. By default when reading plain text, one newline signify a paragraph. A document consists of zero or more paragraphs, indexed from 0. Characters are indexed on a per-paragraph basis, also indexed from 0. The words in the paragraph are aligned in accordance with the paragraph's <a href="q3textedit.html#alignment">alignment</a>(). Paragraphs are separated by hard line breaks. Each character within a paragraph has its own attributes, for example, font and color.</p>
 <p>The text edit documentation uses the following concepts:</p>
@@ -675,6 +675,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3textedit.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="createPopupMenu"></a><a href="q3popupmenu.html">Q3PopupMenu</a> * Q3TextEdit::createPopupMenu ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function is called to create a right mouse button popup menu at the document position <i>pos</i>. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
+<p><b>Warning:</b> The <a href="porting4.html#qpopupmenu">QPopupMenu</a> ID values 0-7 are reserved, and they map to the standard operations. When inserting items into your custom popup menu, be sure to specify ID values larger than 7.</p>
 <h3 class="fn"><a name="createPopupMenu-2"></a><a href="q3popupmenu.html">Q3PopupMenu</a> * Q3TextEdit::createPopupMenu ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>This function is called to create a right mouse button popup menu. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
@@ -695,6 +696,9 @@ body { background: #ffffff; color: black; }</style>
 <p>The new font is <i>f</i>.</p>
 <p>See also <a href="q3textedit.html#setCurrentFont">setCurrentFont</a>().</p>
 <h3 class="fn"><a name="currentVerticalAlignmentChanged"></a>void Q3TextEdit::currentVerticalAlignmentChanged ( <a href="q3textedit.html#VerticalAlignment-enum">Q3TextEdit::VerticalAlignment</a> <i>a</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>This signal is emitted if the vertical alignment of the current format has changed.</p>
+<p>The new vertical alignment is <i>a</i>.</p>
+<p>See also <a href="q3textedit.html#setVerticalAlignment">setVerticalAlignment</a>().</p>
 <h3 class="fn"><a name="cursorPositionChanged-2"></a>void Q3TextEdit::cursorPositionChanged ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>This signal is emitted if the position of the cursor has changed. <i>para</i> contains the paragraph index and <i>pos</i> contains the character position within the paragraph.</p>
@@ -723,6 +727,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>expr</i> is found the function returns true. If <i>index</i> and <i>para</i> are not 0, the number of the paragraph in which the first character of the match was found is put into <tt>*</tt><i>para</i>, and the index position of that character within the paragraph is put into <tt>*</tt><i>index</i>.</p>
 <p>If <i>expr</i> is not found the function returns false. If <i>index</i> and <i>para</i> are not 0 and <i>expr</i> is not found, <tt>*</tt><i>index</i> and <tt>*</tt><i>para</i> are undefined.</p>
 <p>Please note that this function will make the next occurrence of the string (if found) the current selection, and will thus modify the cursor position.</p>
+<p>Using the <i>para</i> and <i>index</i> parameters will not work correctly in case the document contains tables.</p>
 <h3 class="fn"><a name="focusNextPrevChild"></a>bool Q3TextEdit::focusNextPrevChild ( bool <i>n</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Reimplemented to allow tabbing through links. If <i>n</i> is true the tab moves the focus to the next child; if <i>n</i> is false the tab moves the focus to the previous child. Returns true if the focus was moved; otherwise returns false.</p>
 <p>Reimplemented from <a href="qwidget.html#focusNextPrevChild">QWidget</a>.</p>
@@ -890,7 +895,7 @@ body { background: #ffffff; color: black; }</style>
 <p><a href="q3textedit.html">Q3TextEdit</a> is optimized for large amounts text. One of its optimizations is to format only the visible text, formatting the rest on demand, e.g. as the user scrolls, so you don't usually need to call this function.</p>
 <p>In some situations you may want to force the whole text to be formatted. For example, if after calling <a href="q3textedit.html#text-prop">setText</a>(), you wanted to know the height of the document (using <a href="q3scrollview.html#contentsHeight-prop">contentsHeight</a>()), you would call this function first.</p>
 <h3 class="fn"><a name="syntaxHighlighter"></a><a href="q3syntaxhighlighter.html">Q3SyntaxHighlighter</a> * Q3TextEdit::syntaxHighlighter () const</h3>
-<p>Returns the <a href="porting4.html#qsyntaxhighlighter">QSyntaxHighlighter</a> set on this <a href="q3textedit.html">Q3TextEdit</a>. 0 is returned if no syntax highlighter is set.</p>
+<p>Returns the <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> set on this <a href="q3textedit.html">Q3TextEdit</a>. 0 is returned if no syntax highlighter is set.</p>
 <h3 class="fn"><a name="textChanged"></a>void Q3TextEdit::textChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the text in the text edit changes.</p>
 <p>See also <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#append">append</a>().</p>
@@ -930,6 +935,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

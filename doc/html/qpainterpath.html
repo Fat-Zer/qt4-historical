@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/painting/qpainterpath.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/painting/qpainterpath.cpp -->
 <head>
-    <title>Qt 4.0: QPainterPath Class Reference</title>
+    <title>Qt 4.1: QPainterPath Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -72,8 +72,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-lt-lt-72">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-gt-gt-49">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-lt-lt-79">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-gt-gt-51">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -118,7 +118,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addPath"></a>void QPainterPath::addPath ( const QPainterPath &amp; <i>other</i> )</h3>
 <p>Adds the path <i>other</i> to this path.</p>
 <h3 class="fn"><a name="addPolygon"></a>void QPainterPath::addPolygon ( const <a href="qpolygonf.html">QPolygonF</a> &amp; <i>polygon</i> )</h3>
-<p>Adds the <i>polygon</i> to path as a new subpath. Current position after the rect has been added is the last point in <i>polygon</i>.</p>
+<p>Adds the <i>polygon</i> to path as a new subpath. Current position after the polygon has been added is the last point in <i>polygon</i>.</p>
 <h3 class="fn"><a name="addRect"></a>void QPainterPath::addRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>rectangle</i> )</h3>
 <p>Adds the <i>rectangle</i> to this path as a closed subpath. The rectangle is added as a clockwise set of lines. The painter path's current position after the rect has been added is at the top-left corner of the rectangle.</p>
 <h3 class="fn"><a name="addRect-2"></a>void QPainterPath::addRect ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>width</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>height</i> )</h3>
@@ -152,7 +152,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the bounding rectangle of this painter path as a rectangle with floating point precision.</p>
 <p>This function is costly. You may consider using <a href="qpainterpath.html#controlPointRect">controlPointRect</a>() instead.</p>
 <h3 class="fn"><a name="closeSubpath"></a>void QPainterPath::closeSubpath ()</h3>
-<p>Closes the current subpath. If the subpath does not contain any elements, the function does nothing. A new subpath is automatically begun when the current subpath is closed. The current point of the new path is (0, 0).</p>
+<p>Closes the current subpath by drawing a line to the beginning of the subpath. If the subpath does not contain any elements, the function does nothing. A new subpath is automatically begun when the current subpath is closed. The current point of the new path is (0, 0).</p>
 <h3 class="fn"><a name="connectPath"></a>void QPainterPath::connectPath ( const QPainterPath &amp; <i>other</i> )</h3>
 <p>Adds the path <i>other</i> to this path by connecting the last element of this to the first element of <i>other</i>.</p>
 <p>See also <a href="qpainterpath.html#addPath">addPath</a>().</p>
@@ -224,11 +224,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Comparing paths may involve a per element comparison which can be slow for complex paths.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-72"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-79"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the painter path specified by <i>path</i> to the given <i>stream</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-49"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-51"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a painter path from the given <i>stream</i> into the specified <i>path</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -236,6 +236,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -110,14 +110,14 @@ QSize Q3HBox::sizeHint() const
 }
 
 /*!
-    Sets the stretch factor of widget \a w to \a stretch. Returns TRUE if
-    \a w is found. Otherwise returns FALSE.
+    Sets the stretch factor of widget \a w to \a stretch. Returns true if
+    \a w is found. Otherwise returns false.
 
     \sa QBoxLayout::setStretchFactor() \link layout.html Layouts\endlink
 */
 bool Q3HBox::setStretchFactor(QWidget* w, int stretch)
 {
-    QApplication::sendPostedEvents(w, QEvent::ChildInserted);
+    QApplication::sendPostedEvents(this, QEvent::ChildInserted);
     if (QBoxLayout *lay = qobject_cast<QBoxLayout *>(layout()))
         return lay->setStretchFactor(w, stretch);
     return false;

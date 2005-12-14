@@ -35,6 +35,8 @@
 #include "resourcefile_p.h"
 #include <QtDesigner/abstractformbuilder.h>
 
+namespace qdesigner_internal {
+
 /******************************************************************************
 ** ResourceFile
 */
@@ -44,17 +46,18 @@ ResourceFile::ResourceFile(const QString &file_name)
     setFileName(file_name);
 }
 
-static QStringList uniqueItems(QStringList list)
+template <typename T>
+static QList<T> uniqueItems(QList<T> list)
 {
-    QStringList result;
+    QList<T> result;
 
-    list.sort();
-    QString last;
+    qSort(list.begin(), list.end());
+    T last;
     bool first = true;
-    foreach (QString s, list) {
-        if (first || s != last) {
-            result.append(s);
-            last = s;
+    foreach (const T &t, list) {
+        if (first || t != last) {
+            result.append(t);
+            last = t;
         }
         first = false;
     }
@@ -97,10 +100,10 @@ bool ResourceFile::load()
 
     QDomElement relt = root.firstChildElement(QLatin1String("qresource"));
     for (; !relt.isNull(); relt = relt.nextSiblingElement(QLatin1String("qresource"))) {
-        QStringList file_list;
+        FileList file_list;
         QDomElement felt = relt.firstChildElement(QLatin1String("file"));
         for (; !felt.isNull(); felt = felt.nextSiblingElement(QLatin1String("file")))
-            file_list.append(absolutePath(felt.text()));
+            file_list.append(File(absolutePath(felt.text()), felt.attribute(QLatin1String("alias"))));
 
         QString prefix = fixPrefix(relt.attribute(QLatin1String("prefix")));
         if (prefix.isEmpty())
@@ -140,7 +143,7 @@ bool ResourceFile::save()
     QStringList name_list = uniqueItems(prefixList());
 
     foreach (QString name, name_list) {
-        QStringList file_list;
+        FileList file_list;
         foreach (Prefix pref, m_prefix_list) {
             if (pref.name == name)
                 file_list += pref.file_list;
@@ -151,11 +154,14 @@ bool ResourceFile::save()
         root.appendChild(relt);
         relt.setAttribute(QLatin1String("prefix"), name);
 
-        foreach (QString file, file_list) {
+        foreach (const File &file, file_list) {
             QDomElement felt = doc.createElement(QLatin1String("file"));
             relt.appendChild(felt);
-            QDomText text = doc.createTextNode(relativePath(file));
+            QString conv_file = relativePath(file.name).replace(QDir::separator(), QLatin1Char('/'));
+            QDomText text = doc.createTextNode(conv_file);
             felt.appendChild(text);
+            if (!file.alias.isEmpty())
+                felt.setAttribute(QLatin1String("alias"), file.alias);
         }
     }
 
@@ -235,10 +241,10 @@ bool ResourceFile::isEmpty() const
 
 QStringList ResourceFile::fileList(int pref_idx) const
 {
-    const QStringList &abs_file_list = m_prefix_list.at(pref_idx).file_list;
+    const FileList &abs_file_list = m_prefix_list.at(pref_idx).file_list;
     QStringList result;
-    foreach (QString abs_file, abs_file_list)
-        result.append(relativePath(abs_file));
+    foreach (const File &abs_file, abs_file_list)
+        result.append(relativePath(abs_file.name));
     return result;
 }
 
@@ -293,7 +299,7 @@ int ResourceFile::indexOfFile(int pref_idx, const QString &file) const
 QString ResourceFile::relativePath(const QString &abs_path) const
 {
     if (m_file_name.isEmpty() || QFileInfo(abs_path).isRelative())
-        return abs_path;
+         return abs_path;
 
     QFileInfo fileInfo(m_file_name);
     return fileInfo.absoluteDir().relativeFilePath(abs_path);
@@ -356,7 +362,12 @@ int ResourceFile::fileCount(int prefix_idx) const
 
 QString ResourceFile::file(int prefix_idx, int file_idx) const
 {
-    return relativePath(m_prefix_list.at(prefix_idx).file_list.at(file_idx));
+    return relativePath(m_prefix_list.at(prefix_idx).file_list.at(file_idx).name);
+}
+
+QString ResourceFile::alias(int prefix_idx, int file_idx) const
+{
+    return m_prefix_list.at(prefix_idx).file_list.at(file_idx).alias;
 }
 
 /******************************************************************************
@@ -487,8 +498,10 @@ QVariant ResourceModel::data(const QModelIndex &index, int role) const
             }
             break;
         case Qt::ToolTipRole:
-            if (d != -1)
-                result = m_resource_file.relativePath(m_resource_file.file(d, index.row()));
+            if (d != -1) {
+                QString conv_file = m_resource_file.relativePath(m_resource_file.file(d, index.row()));
+                result = conv_file.replace(QDir::separator(), QLatin1Char('/'));
+            }
             break;
 
         default:
@@ -514,6 +527,14 @@ void ResourceModel::getItem(const QModelIndex &index, QString &prefix, QString &
         prefix = m_resource_file.prefix(d);
         file = m_resource_file.file(d, index.row());
     }
+}
+
+QModelIndex ResourceModel::getIndex(const QString &prefixed_file)
+{
+    QString prefix, file;
+    if (!m_resource_file.split(prefixed_file, &prefix, &file))
+        return QModelIndex();
+    return getIndex(prefix, file);
 }
 
 QModelIndex ResourceModel::getIndex(const QString &prefix, const QString &file)
@@ -654,3 +675,4 @@ bool ResourceModel::save()
     return result;
 }
 
+} // namespace qdesigner_internal

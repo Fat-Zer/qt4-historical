@@ -43,6 +43,7 @@
 #include "qstyleoption.h"
 #include "qtimer.h"
 #include "qtooltip.h"
+#include "qdebug.h"
 #include <private/qinternal_p.h>
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
@@ -899,7 +900,7 @@ void Q3ListViewItem::removeRenameBox()
     Q3ListView *lv = listView();
     if (!lv || !renameBox)
         return;
-    bool resetFocus = lv->viewport()->focusProxy() == renameBox;
+    const bool resetFocus = lv->viewport()->focusProxy() == renameBox;
     delete renameBox;
     renameBox = 0;
     if (resetFocus) {
@@ -1237,8 +1238,31 @@ void Q3ListViewItem::takeItem(Q3ListViewItem * item)
             }
         }
 
-        if (lv->d->selectAnchor == item)
-            lv->d->selectAnchor = lv->d->focusItem;
+        // reset anchors etc. if they are set to this or any child
+        // items
+        const Q3ListViewItem *ptr = lv->d->selectAnchor;
+        while (ptr && ptr != item)
+            ptr = ptr->parentItem;
+	if (ptr == item)
+	    lv->d->selectAnchor = lv->d->focusItem;
+
+        ptr = lv->d->startDragItem;
+        while (ptr && ptr != item)
+            ptr = ptr->parentItem;
+	if (ptr == item)
+	    lv->d->startDragItem = 0;
+
+        ptr = lv->d->pressedItem;
+        while (ptr && ptr != item)
+            ptr = ptr->parentItem;
+	if (ptr == item)
+	    lv->d->pressedItem = 0;
+
+        ptr = lv->d->highlighted;
+        while (ptr && ptr != item)
+            ptr = ptr->parentItem;
+	if (ptr == item)
+	    lv->d->highlighted = 0;
     }
 
     nChildren--;
@@ -1987,7 +2011,32 @@ static QStyleOptionQ3ListView getStyleOption(const Q3ListView *lv, const Q3ListV
 }
 
 /*!
-    \internal
+    \fn void Q3ListViewItem::paintCell(QPainter *painter, const QColorGroup & cg, int column, int width, int align)
+
+    This virtual function paints the contents of one column of an item
+    and aligns it as described by \a align.
+
+    The \a painter is a Q3Painter open on the relevant paint
+    device. It is translated so (0, 0) is the top-left pixel in the
+    cell and \a width - 1, height() - 1 is the bottom-right pixel \e
+    in the cell. The other properties of the \a painter (pen, brush, etc) are
+    undefined. \a cg is the color group to use. \a column is the
+    logical column number within the item that is to be painted; 0 is
+    the column which may contain a tree.
+
+    This function may use Q3ListView::itemMargin() for readability
+    spacing on the left and right sides of data such as text, and
+    should honor \l isSelected() and
+    Q3ListView::allColumnsShowFocus().
+
+    If you reimplement this function, you should also reimplement \l
+    width().
+
+    The rectangle to be painted is in an undefined state when this
+    function is called, so you \e must draw on all the pixels. The
+    \a painter has the right font on entry.
+
+    \sa paintBranches(), Q3ListView::drawContentsOffset()
 */
 void Q3ListViewItem::paintCell(QPainter * p, const QColorGroup & cg,
                                int column, int width, int align)
@@ -2076,8 +2125,8 @@ void Q3ListViewItem::paintCell(QPainter * p, const QColorGroup & cg,
 #endif
     if (isSelected() &&
          (column == 0 || lv->allColumnsShowFocus())) {
-        p->fillRect(r - marg, 0, width - r + marg, height(),
-                     pal.brush(QPalette::Highlight));
+        p->fillRect(r - marg, 0, qMax(0, width - r + marg), height(),
+                    pal.brush(QPalette::Highlight));
         if (enabled || !lv)
             p->setPen(pal.highlightedText().color());
         else if (!enabled && lv)
@@ -2200,13 +2249,15 @@ void Q3ListViewItem::paintFocus(QPainter *p, const QColorGroup &cg, const QRect 
     Q3ListView *lv = listView();
     if (lv) {
         QStyleOptionFocusRect opt;
+        opt.init(lv);
         opt.rect = r;
         opt.palette = pal;
+        opt.state |= QStyle::State_KeyboardFocusChange;
         if (isSelected()) {
-            opt.state = QStyle::State_FocusAtBorder;
+            opt.state |= QStyle::State_FocusAtBorder;
             opt.backgroundColor = pal.highlight().color();
         } else {
-            opt.state = QStyle::State_None;
+            opt.state |= QStyle::State_None;
             opt.backgroundColor = pal.base().color();
         }
         lv->style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, p, lv);
@@ -2941,7 +2992,9 @@ void Q3ListView::drawContentsOffset(QPainter * p, int ox, int oy,
 
             if (r.isValid()) {
                 p->save();
+                p->setClipRect(QRect(d->h->cellPos(cell), 0, d->h->cellSize(cell), height()));
                 p->translate(rleft-ox, crtop-oy);
+
                 current.i->paintBranches(p, palette(), treeStepSize(),
                                            rtop - crtop, r.height());
                 p->restore();
@@ -3273,6 +3326,7 @@ void Q3ListView::removeColumn(int index)
     if (d->column.count() == 0)
         clear();
     updateGeometry();
+    viewport()->update();
 }
 
 /*!
@@ -4778,12 +4832,14 @@ void Q3ListView::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Home:
         selectCurrent = false;
         i = firstChild();
+        if (!i->height() || !i->isEnabled())
+            i = i->itemBelow();
         d->currentPrefix.truncate(0);
         break;
     case Qt::Key_End:
         selectCurrent = false;
         i = firstChild();
-        while (i->nextSibling())
+        while (i->nextSibling() && i->nextSibling()->height() && i->nextSibling()->isEnabled())
             i = i->nextSibling();
         while (i->itemBelow())
             i = i->itemBelow();
@@ -5676,9 +5732,8 @@ void Q3ListView::widthChanged(const Q3ListViewItem* item, int c)
         if (d->column[col].wmode == Maximum) {
             int w = item->width(fm, this, col);
             if (showSortIndicator()) {
-                QString title = header()->label(col);
-                int tw = fm.width(title);
-                tw += 40;
+                int tw = d->h->sectionSizeHint( col, fm ).width();
+                tw += 40; //add space for the sort indicator
                 w = qMax(w, tw);
             }
             if (col == 0) {
@@ -5822,8 +5877,6 @@ struct Q3CheckListItemPrivate
 
     \sa Q3ListViewItem Q3ListView
 */
-
-// ### obscenity is warranted.
 
 /*!
     \enum Q3CheckListItem::Type
@@ -6123,7 +6176,7 @@ void Q3CheckListItem::setState(ToggleState s, bool update, bool store)
              && ((Q3CheckListItem*)parent())->type() == CheckBoxController)
             ((Q3CheckListItem*)parent())->updateController(update, store);
     } else if (myType == CheckBoxController) {
-        if (s == NoChange) {
+        if (s == NoChange && childCount()) {
             restoreState(this);
         } else {
             Q3ListViewItem *item = firstChild();
@@ -6279,6 +6332,7 @@ void Q3CheckListItem::activate()
             return;
     }
     if ((myType == CheckBox) || (myType == CheckBoxController))  {
+        lv->d->startEdit = FALSE;
         switch (internalState()) {
         case On:
             setState(Off);
@@ -6542,6 +6596,8 @@ void Q3CheckListItem::paintCell(QPainter * p, const QColorGroup & cg,
         styleflags |= QStyle::State_Selected;
     if (isEnabled() && lv->isEnabled())
         styleflags |= QStyle::State_Enabled;
+    if (lv->window()->isActiveWindow())
+        styleflags |= QStyle::State_Active;
 
     if (myType == RadioButtonController) {
         int x = 0;
@@ -6857,6 +6913,9 @@ void Q3ListViewItem::moveToJustAfter(Q3ListViewItem * olderSibling)
     Move the item to be after item \a after, which must be one of the
     item's siblings. To move an item in the hierarchy, use takeItem()
     and insertItem().
+
+    Note that this function will have no effect if sorting is enabled
+    in the list view.
 */
 
 void Q3ListViewItem::moveItem(Q3ListViewItem *after)
@@ -7834,6 +7893,10 @@ Q3ListViewItem *Q3ListView::findItem(const QString& text, int column,
 /*!
     Hides the column specified at \a column. This is a convenience
     function that calls setColumnWidth(column, 0).
+
+    Note: The user may still be able to resize the hidden column using
+    the header handles. To prevent this, call setResizeEnabled(false,
+    \a column) on the list views header.
 
     \sa setColumnWidth()
 */

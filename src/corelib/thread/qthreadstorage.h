@@ -24,7 +24,7 @@
 #ifndef QTHREADSTORAGE_H
 #define QTHREADSTORAGE_H
 
-#include "QtCore/qglobal.h"
+#include <QtCore/qglobal.h>
 
 #ifndef QT_NO_THREAD
 
@@ -127,4 +127,5 @@ public:
 };
 
 #endif // QT_NO_THREAD
+
 #endif // QTHREADSTORAGE_H

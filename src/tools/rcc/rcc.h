@@ -24,6 +24,12 @@
 #ifndef RCC_H
 #define RCC_H
 
+#include <QStringList>
+#include <QFileInfo>
+#include <QLocale>
+#include <QHash>
+#include <QString>
+
 #define TAG_RCC "RCC"
 #define TAG_RESOURCE "qresource"
 #define TAG_FILE "file"
@@ -33,7 +39,6 @@
 #define ATTRIBUTE_ALIAS "alias"
 #define ATTRIBUTE_THRESHOLD "threshold"
 #define ATTRIBUTE_COMPRESS "compress"
-
 
 #define CONSTANT_HEADER_SIZE 8
 #define CONSTANT_COMPRESSLEVEL_DEFAULT 0
@@ -153,4 +158,4 @@ inline RCCFileInfo::RCCFileInfo(QString name, QFileInfo fileInfo, QLocale locale
     this->mCompressThreshold = compressThreshold;
 }
 
-#endif
+#endif // RCC_H

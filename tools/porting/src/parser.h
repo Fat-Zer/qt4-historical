@@ -21,16 +21,16 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #ifndef PARSER_H
 #define PARSER_H
 
 #include "ast.h"
 #include "tokenstreamadapter.h"
 
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qlist.h>
-
+#include <QString>
+#include <QStringList>
+#include <QList>
 
 class FileSymbol;
 class TokenStream;
@@ -221,6 +221,5 @@ private:
     Parser(const Parser& source);
     void operator = (const Parser& source);
 };
-
 
 #endif

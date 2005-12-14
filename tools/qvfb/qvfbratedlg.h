@@ -21,7 +21,10 @@
 **
 ****************************************************************************/
 
-#include <qdialog.h>
+#ifndef QVFBRATEDLG_H
+#define QVFBRATEDLG_H
+
+#include <QDialog>
 
 class QLabel;
 class QSlider;
@@ -30,7 +33,8 @@ class QVFbRateDialog : public QDialog
 {
     Q_OBJECT
 public:
-    QVFbRateDialog( int value, QWidget *parent=0);
+    QVFbRateDialog( int value, QWidget *parent=0, const char *name=0,
+		    bool modal=FALSE );
 
 signals:
     void updateRate( int r );
@@ -38,6 +42,7 @@ signals:
 protected slots:
     void rateChanged( int r );
     void cancel();
+    void ok();
 
 private:
     QLabel *rateLabel;
@@ -45,4 +50,4 @@ private:
     int oldRate;
 };
 
-
+#endif

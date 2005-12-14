@@ -24,11 +24,11 @@
 #ifndef QPAINTERPATH_H
 #define QPAINTERPATH_H
 
-#include "QtCore/qglobal.h"
-#include "QtCore/qrect.h"
-#include "QtCore/qline.h"
-#include "QtCore/qvector.h"
-#include "QtGui/qmatrix.h"
+#include <QtGui/qmatrix.h>
+#include <QtCore/qglobal.h>
+#include <QtCore/qrect.h>
+#include <QtCore/qline.h>
+#include <QtCore/qvector.h>
 
 QT_MODULE(Gui)
 
@@ -61,7 +61,8 @@ public:
 
         operator QPointF () const { return QPointF(x, y); }
 
-        bool operator==(const Element &e) const { return x == e.x && y == e.y && type == e.type; }
+        bool operator==(const Element &e) const { return qFuzzyCompare(x, e.x)
+            && qFuzzyCompare(y, e.y) && type == e.type; }
     };
 
     QPainterPath();

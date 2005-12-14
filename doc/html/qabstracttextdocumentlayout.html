@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/text/qabstracttextdocumentlayout.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/text/qabstracttextdocumentlayout.cpp -->
 <head>
-    <title>Qt 4.0: QAbstractTextDocumentLayout Class Reference</title>
+    <title>Qt 4.1: QAbstractTextDocumentLayout Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -38,8 +38,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QSizeF <b><a href="qabstracttextdocumentlayout.html#documentSize">documentSize</a></b> () const = 0</li>
 <li><div class="fn"/>virtual void <b><a href="qabstracttextdocumentlayout.html#draw">draw</a></b> ( QPainter * <i>painter</i>, const PaintContext &amp; <i>context</i> ) = 0</li>
 <li><div class="fn"/>virtual QRectF <b><a href="qabstracttextdocumentlayout.html#frameBoundingRect">frameBoundingRect</a></b> ( QTextFrame * <i>frame</i> ) const = 0</li>
+<li><div class="fn"/>QTextObjectInterface * <b><a href="qabstracttextdocumentlayout.html#handlerForObject">handlerForObject</a></b> ( int <i>objectType</i> ) const</li>
 <li><div class="fn"/>virtual int <b><a href="qabstracttextdocumentlayout.html#pageCount">pageCount</a></b> () const = 0</li>
 <li><div class="fn"/>QPaintDevice * <b><a href="qabstracttextdocumentlayout.html#paintDevice">paintDevice</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qabstracttextdocumentlayout.html#registerHandler">registerHandler</a></b> ( int <i>formatType</i>, QObject * <i>component</i> )</li>
 <li><div class="fn"/>void <b><a href="qabstracttextdocumentlayout.html#setPaintDevice">setPaintDevice</a></b> ( QPaintDevice * <i>device</i> )</li>
 </ul>
 <ul>
@@ -109,6 +111,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the character format that is applicable at the given <i>position</i>.</p>
 <h3 class="fn"><a name="frameBoundingRect"></a><a href="qrectf.html">QRectF</a> QAbstractTextDocumentLayout::frameBoundingRect ( <a href="qtextframe.html">QTextFrame</a> * <i>frame</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the bounding rectacle of <i>frame</i>. Returns the bounding rectangle of <i>frame</i>.</p>
+<h3 class="fn"><a name="handlerForObject"></a>QTextObjectInterface * QAbstractTextDocumentLayout::handlerForObject ( int <i>objectType</i> ) const</h3>
+<p>Returns a handler for objects of the given <i>objectType</i>.</p>
 <h3 class="fn"><a name="pageCount"></a>int QAbstractTextDocumentLayout::pageCount () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the number of pages required by the layout.</p>
 <p>See also <a href="qabstracttextdocumentlayout.html#pageCountChanged">pageCountChanged</a>().</p>
@@ -122,6 +126,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="positionInlineObject"></a>void QAbstractTextDocumentLayout::positionInlineObject ( <a href="qtextinlineobject.html">QTextInlineObject</a> <i>item</i>, int <i>posInDocument</i>, const <a href="qtextformat.html">QTextFormat</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Lays out the inline object <i>item</i> using the given text <i>format</i>. The base class implementation does nothing.</p>
 <p>See also <a href="qabstracttextdocumentlayout.html#drawInlineObject">drawInlineObject</a>().</p>
+<h3 class="fn"><a name="registerHandler"></a>void QAbstractTextDocumentLayout::registerHandler ( int <i>formatType</i>, <a href="qobject.html">QObject</a> * <i>component</i> )</h3>
+<p>Registers the given <i>component</i> as a handler for items of the given <i>formatType</i>.</p>
 <h3 class="fn"><a name="resizeInlineObject"></a>void QAbstractTextDocumentLayout::resizeInlineObject ( <a href="qtextinlineobject.html">QTextInlineObject</a> <i>item</i>, int <i>posInDocument</i>, const <a href="qtextformat.html">QTextFormat</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Sets the size of the inline object <i>item</i> in accordance with the text <i>format</i>.</p>
 <h3 class="fn"><a name="setPaintDevice"></a>void QAbstractTextDocumentLayout::setPaintDevice ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i> )</h3>
@@ -133,6 +139,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

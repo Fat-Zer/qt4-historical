@@ -129,8 +129,8 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
     }
 
     if(image.depth()==1) {
-        image.setColor(0, Qt::color0);
-        image.setColor(1, Qt::color1);
+        image.setColor(0, QColor(Qt::color0).rgba());
+        image.setColor(1, QColor(Qt::color1).rgba());
     }
 
     int w = image.width();
@@ -231,23 +231,29 @@ QImage QPixmap::toImage() const
                   QImage::Format_RGB32);
 
     QImage image(w, h, format);
-    if(format == QImage::Format_Mono || format == QImage::Format_MonoLSB) {
-        image.setNumColors(2);
-        image.setColor(0, Qt::color0);
-        image.setColor(1, Qt::color1);
-    }
-
     quint32 *sptr = data->pixels, *srow;
     const uint sbpr = data->nbytes / h;
-    for(int y=0;y<h;y++) {
-        srow = sptr + (y * (sbpr/4));
-        for(int x=0;x<w;x++) {
-            if(format == QImage::Format_Mono || format == QImage::Format_MonoLSB)
-                image.setPixel(x, y, (*(srow+x) & RGB_MASK) ? 0 : 1);
-            else
-                image.setPixel(x, y, *(srow+x));
+    if(format == QImage::Format_MonoLSB) {
+        image.fill(0);
+        image.setNumColors(2);
+        image.setColor(0, QColor(Qt::color0).rgba());
+        image.setColor(1, QColor(Qt::color1).rgba());
+        for (int y = 0; y < h; ++y) {
+            uchar *scanLine = image.scanLine(y);
+            srow = sptr + (y * (sbpr/4));
+            for (int x = 0; x < w; ++x) {
+                if (!(*(srow + x) & RGB_MASK))
+                    scanLine[x >> 3] |= (1 << (x & 7));
+            }
         }
+    } else {
+        for(int y=0;y<h;y++) {
+            srow = sptr + (y * (sbpr/4));
+            memcpy(image.scanLine(y), srow, w * 4);
+        }
+
     }
+
     return image;
 }
 
@@ -334,9 +340,9 @@ void QPixmap::detach()
     if (data->count != 1) {
         *this = copy();
         data->qd_alpha = 0; //leave it behind
+        data->ser_no = ++qt_pixmap_serial;
     }
     data->uninit = false;
-    data->ser_no = ++qt_pixmap_serial;
 }
 
 int QPixmap::metric(PaintDeviceMetric m) const
@@ -408,12 +414,16 @@ QPixmapData::macSetAlphaChannel(const QPixmap *pix, bool asMask)
                 else
                     *(drow+x) = 0x00000000;
             }
+        } else if(d == 8) {
+            for (int x=0; x < w; ++x)
+                *(drow+x) = (*(drow+x) & RGB_MASK) | (*(srow+x) << 24);
         } else if(asMask) {
             for (int x=0; x < w; ++x) {
                 if(*(srow+x) & RGB_MASK)
                     *(drow+x) = (*(drow+x) & RGB_MASK);
                 else
                     *(drow+x) = (*(drow+x) & RGB_MASK) | 0xFF000000;
+                *(drow+x) = PREMUL(*(drow+x));
             }
         } else {
             for (int x=0; x < w; ++x) {
@@ -614,12 +624,14 @@ void QPixmap::init(int w, int h, Type type)
     CGDataProviderRef provider = CGDataProviderCreateWithData(base_pixels,
                                                               data->pixels, data->nbytes,
                                                               qt_mac_cgimage_data_free);
-    uint cgflags = kCGImageAlphaPremultipliedFirst;
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+    uint cgflags = kCGImageAlphaPremultipliedFirst;
 #ifdef kCGBitmapByteOrder32Host //only needed because CGImage.h added symbols in the minor version
     if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4)
         cgflags |= kCGBitmapByteOrder32Host;
 #endif
+#else
+    CGImageAlphaInfo cgflags = kCGImageAlphaPremultipliedFirst;
 #endif
     data->cg_data = CGImageCreate(w, h, 8, 32, data->nbytes / h, colorspace,
                                   cgflags, provider, 0, 0, kCGRenderingIntentDefault);

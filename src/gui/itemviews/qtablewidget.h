@@ -25,12 +25,12 @@
 #define QTABLEWIDGET_H
 
 #include <QtGui/qtableview.h>
-
-#ifndef QT_NO_TABLEWIDGET
 #include <QtCore/qvariant.h>
 #include <QtCore/qvector.h>
 
 QT_MODULE(Gui)
+
+#ifndef QT_NO_TABLEWIDGET
 
 class Q_GUI_EXPORT QTableWidgetSelectionRange
 {
@@ -39,10 +39,14 @@ public:
     QTableWidgetSelectionRange(int top, int left, int bottom, int right);
     QTableWidgetSelectionRange(const QTableWidgetSelectionRange &other);
     ~QTableWidgetSelectionRange();
+
     inline int topRow() const { return top; }
     inline int bottomRow() const { return bottom; }
     inline int leftColumn() const { return left; }
     inline int rightColumn() const { return right; }
+    inline int rowCount() const { return bottom - top + 1; }
+    inline int columnCount() const { return right - left + 1; }
+
 private:
     int top, left, bottom, right;
 };
@@ -59,6 +63,7 @@ public:
     enum { Type = 0, UserType = 1000 };
     QTableWidgetItem(int type = Type);
     explicit QTableWidgetItem(const QString &text, int type = Type);
+    QTableWidgetItem(const QTableWidgetItem &other);
     virtual ~QTableWidgetItem();
 
     virtual QTableWidgetItem *clone() const;
@@ -80,13 +85,17 @@ public:
         { return data(Qt::StatusTipRole).toString(); }
     inline void setStatusTip(const QString &statusTip);
 
+#ifndef QT_NO_TOOLTIP
     inline QString toolTip() const
         { return data(Qt::ToolTipRole).toString(); }
     inline void setToolTip(const QString &toolTip);
+#endif
 
+#ifndef QT_NO_WHATSTHIS
     inline QString whatsThis() const
         { return data(Qt::WhatsThisRole).toString(); }
     inline void setWhatsThis(const QString &whatsThis);
+#endif
 
     inline QFont font() const
         { return qvariant_cast<QFont>(data(Qt::FontRole)); }
@@ -111,6 +120,11 @@ public:
         { return static_cast<Qt::CheckState>(data(Qt::CheckStateRole).toInt()); }
     inline void setCheckState(Qt::CheckState state)
         { setData(Qt::CheckStateRole, state); }
+
+    inline QSize sizeHint() const
+        { return qvariant_cast<QSize>(data(Qt::SizeHintRole)); }
+    inline void setSizeHint(const QSize &size)
+        { setData(Qt::SizeHintRole, size); }
 
     virtual QVariant data(int role) const;
     virtual void setData(int role, const QVariant &value);
@@ -145,11 +159,15 @@ inline void QTableWidgetItem::setIcon(const QIcon &aicon)
 inline void QTableWidgetItem::setStatusTip(const QString &astatusTip)
 { setData(Qt::StatusTipRole, astatusTip); }
 
+#ifndef QT_NO_TOOLTIP
 inline void QTableWidgetItem::setToolTip(const QString &atoolTip)
 { setData(Qt::ToolTipRole, atoolTip); }
+#endif
 
+#ifndef QT_NO_WHATSTHIS
 inline void QTableWidgetItem::setWhatsThis(const QString &awhatsThis)
 { setData(Qt::WhatsThisRole, awhatsThis); }
+#endif
 
 inline void QTableWidgetItem::setFont(const QFont &afont)
 { setData(Qt::FontRole, afont); }
@@ -189,9 +207,11 @@ public:
 
     QTableWidgetItem *verticalHeaderItem(int row) const;
     void setVerticalHeaderItem(int row, QTableWidgetItem *item);
+    QTableWidgetItem *takeVerticalHeaderItem(int row);
 
     QTableWidgetItem *horizontalHeaderItem(int column) const;
     void setHorizontalHeaderItem(int column, QTableWidgetItem *item);
+    QTableWidgetItem *takeHorizontalHeaderItem(int column);
     void setVerticalHeaderLabels(const QStringList &labels);
     void setHorizontalHeaderLabels(const QStringList &labels);
 
@@ -199,6 +219,7 @@ public:
     int currentColumn() const;
     QTableWidgetItem *currentItem() const;
     void setCurrentItem(QTableWidgetItem *item);
+    void setCurrentCell(int row, int column);
 
     void sortItems(int column, Qt::SortOrder order = Qt::AscendingOrder);
     void setSortingEnabled(bool enable);
@@ -207,6 +228,9 @@ public:
     void editItem(QTableWidgetItem *item);
     void openPersistentEditor(QTableWidgetItem *item);
     void closePersistentEditor(QTableWidgetItem *item);
+
+    QWidget *cellWidget(int row, int column) const;
+    void setCellWidget(int row, int column, QWidget *widget);
 
     bool isItemSelected(const QTableWidgetItem *item) const;
     void setItemSelected(const QTableWidgetItem *item, bool select);
@@ -226,7 +250,7 @@ public:
     const QTableWidgetItem *itemPrototype() const;
     void setItemPrototype(const QTableWidgetItem *item);
 
-public slots:
+public Q_SLOTS:
     void scrollToItem(const QTableWidgetItem *item, QAbstractItemView::ScrollHint hint = EnsureVisible);
     void insertRow(int row);
     void insertColumn(int column);
@@ -234,7 +258,7 @@ public slots:
     void removeColumn(int column);
     void clear();
 
-signals:
+Q_SIGNALS:
     void itemPressed(QTableWidgetItem *item);
     void itemClicked(QTableWidgetItem *item);
     void itemDoubleClicked(QTableWidgetItem *item);
@@ -246,7 +270,18 @@ signals:
     void currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
     void itemSelectionChanged();
 
+    void cellPressed(int row, int column);
+    void cellClicked(int row, int column);
+    void cellDoubleClicked(int row, int column);
+
+    void cellActivated(int row, int column);
+    void cellEntered(int row, int column);
+    void cellChanged(int row, int column);
+
+    void currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+
 protected:
+    bool event(QEvent *e);
     virtual QStringList mimeTypes() const;
     virtual QMimeData *mimeData(const QList<QTableWidgetItem*> items) const;
     virtual bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action);
@@ -275,4 +310,5 @@ inline QTableWidgetItem *QTableWidget::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
 
 #endif // QT_NO_TABLEWIDGET
+
 #endif // QTABLEWIDGET_H

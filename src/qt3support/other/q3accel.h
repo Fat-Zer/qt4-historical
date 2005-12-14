@@ -24,8 +24,8 @@
 #ifndef Q3ACCEL_H
 #define Q3ACCEL_H
 
-#include "QtCore/qobject.h"
-#include "QtGui/qkeysequence.h"
+#include <QtCore/qobject.h>
+#include <QtGui/qkeysequence.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -68,7 +68,7 @@ public:
     static QString keyToString(QKeySequence k );
     static QKeySequence stringToKey( const QString & );
 
-signals:
+Q_SIGNALS:
     void activated( int id );
     void activatedAmbiguously( int id );
 

@@ -22,7 +22,6 @@
 ****************************************************************************/
 
 #include "qplatformdefs.h"
-
 #include "qtextcodec.h"
 
 #ifndef QT_NO_TEXTCODEC
@@ -35,7 +34,6 @@
 # include "private/qfactoryloader_p.h"
 #endif
 #include "qstringlist.h"
-
 #include "qutfcodec_p.h"
 #include "qsimplecodec_p.h"
 #include "qlatincodec_p.h"
@@ -46,9 +44,9 @@
 #ifdef Q_WS_X11
 #include "qfontlaocodec_p.h"
 #endif
+#include "private/qlocale_p.h"
+#include "private/qmutexpool_p.h"
 
-#include <private/qlocale_p.h>
-#include <private/qmutexpool_p.h>
 #include <stdlib.h>
 #include <ctype.h>
 #ifndef Q_OS_TEMP
@@ -277,7 +275,7 @@ static bool try_locale_list(const char * const locale[], const char * lang)
 // For the probably_koi8_locales we have to look. the standard says
 // these are 8859-5, but almost all Russian users use KOI8-R and
 // incorrectly set $LANG to ru_RU. We'll check tolower() to see what
-// totoLower() thinks ru_RU means.
+// it thinks ru_RU means.
 
 // If you read the history, it seems that many Russians blame ISO and
 // Perestroika for the confusion.
@@ -324,7 +322,7 @@ static void setupLocaleMapper()
     localeMapper = QTextCodec::codecForName("System");
 #else
 
-#if defined (_XOPEN_UNIX) && !defined(Q_OS_QNX6) && !defined(Q_OS_OSF)
+#if defined (_XOPEN_UNIX) && !defined(Q_OS_QNX6) && !defined(Q_OS_OSF) && !defined(Q_OS_MAC)
     char *charset = nl_langinfo (CODESET);
     if (charset)
       localeMapper = QTextCodec::codecForName(charset);
@@ -441,7 +439,7 @@ static void setup()
 {
     if (all) return;
 
-#ifdef QT_THREAD_SUPPORT
+#ifndef QT_NO_THREAD
     QMutexLocker locker(qt_global_mutexpool ?
                         qt_global_mutexpool->get(&all) : 0);
     if (all) return;
@@ -503,15 +501,15 @@ static void setup()
 
     \list
     \o Apple Roman
-    \o Big5
-    \o Big5-HKSCS
-    \o EUC-JP
-    \o EUC-KR
-    \o GB18030-0
+    \o \l{Big5 Text Codec}{Big5}
+    \o \l{Big5-HKSCS Text Codec}{Big5-HKSCS}
+    \o \l{EUC-JP Text Codec}{EUC-JP}
+    \o \l{EUC-KR Text Codec}{EUC-KR}
+    \o \l{GBK Text Codec}{GB18030-0}
     \o IBM 850
     \o IBM 866
     \o IBM 874
-    \o ISO 2022-JP
+    \o \l{ISO 2022-JP (JIS) Text Codec}{ISO 2022-JP}
     \o ISO 8859-1 to 10
     \o ISO 8859-13 to 16
     \o Iscii-Bng, Dev, Gjr, Knd, Mlm, Ori, Pnj, Tlg, and Tml
@@ -521,9 +519,9 @@ static void setup()
     \o KOI8-U
     \o MuleLao-1
     \o ROMAN8
-    \o Shift-JIS
+    \o \l{Shift-JIS Text Codec}{Shift-JIS}
     \o TIS-620
-    \o TSCII
+    \o \l{TSCII Text Codec}{TSCII}
     \o UTF-8
     \o UTF-16
     \o UTF-16BE
@@ -601,7 +599,7 @@ static void setup()
 
     \row \o name()
          \o Returns the official name for the encoding. If the
-            encoding is listed in the
+            ncoding is listed in the
             \l{http://www.iana.org/assignments/character-sets}{IANA
             character-sets encoding file}, the name should be the
             preferred MIME name for the encoding.
@@ -609,8 +607,8 @@ static void setup()
     \row \o aliases()
          \o Returns a list of alternative names for the encoding.
             QTextCodec provides a default implementation that returns
-            an empty list. For example, "ISO-8859" has "latin1",
-            "US_ASCII", and "iso-ir-100" as aliases.
+            an empty list. For example, "ISO-8859-1" has "latin1",
+	    "CP819", "IBM819", and "iso-ir-100" as aliases.
 
     \row \o mibEnum()
          \o Return the MIB enum for the encoding if it is listed in
@@ -784,7 +782,7 @@ QList<int> QTextCodec::availableMibs()
     QStringList keys = l->keys();
     for (int i = 0; i < keys.size(); ++i) {
         if (keys.at(i).startsWith("MIB: ")) {
-            int mib = keys.at(i).right(5).toInt();
+            int mib = keys.at(i).mid(5).toInt();
             if (!codecs.contains(mib))
                 codecs += mib;
         }
@@ -799,10 +797,16 @@ QList<int> QTextCodec::availableMibs()
     This might be needed for some applications that want to use their
     own mechanism for setting the locale.
 
+    Setting this codec is not supported on DOS based Windows.
+
     \sa codecForLocale()
 */
 void QTextCodec::setCodecForLocale(QTextCodec *c)
 {
+#ifdef Q_WS_WIN
+    if (QSysInfo::WindowsVersion& QSysInfo::WV_DOS_based)
+	return;
+#endif
     localeMapper = c;
 }
 
@@ -1214,6 +1218,42 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
 
     \sa codecForCStrings(), setCodecForTr()
 */
+
+/*!
+  \internal
+*/
+QTextCodec *QTextCodec::codecForHtml(const QByteArray &ba)
+{
+    // determine charset
+    int mib = 4; // Latin1
+    int pos;
+    QTextCodec *c = 0;
+
+    if (ba.size() > 1 && (((uchar)ba[0] == 0xfe && (uchar)ba[1] == 0xff)
+                          || ((uchar)ba[0] == 0xff && (uchar)ba[1] == 0xfe))) {
+        mib = 1015; // utf16
+    } else if (ba.size() > 2
+             && (uchar)ba[0] == 0xef
+             && (uchar)ba[1] == 0xbb
+             && (uchar)ba[2] == 0xbf) {
+        mib = 106; // utf-8
+    } else {
+        QByteArray header = ba.left(512).toLower();
+        if ((pos = header.indexOf("http-equiv=")) != -1) {
+            pos = header.indexOf("charset=", pos) + int(strlen("charset="));
+            if (pos != -1) {
+                int pos2 = header.indexOf('\"', pos+1);
+                QByteArray cs = header.mid(pos, pos2-pos);
+                //            qDebug("found charset: %s", cs.data());
+                c = QTextCodec::codecForName(cs);
+            }
+        }
+    }
+    if (!c)
+        c = QTextCodec::codecForMib(mib);
+
+    return c;
+}
 
 /*!
     \fn QTextCodec *QTextCodec::codecForContent(const char *str, int size)

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/extensions/activeqt/container/qaxobject.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/activeqt/container/qaxobject.cpp -->
 <head>
-    <title>Qt 4.0: QAxObject Class Reference</title>
+    <title>Qt 4.1: QAxObject Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -31,10 +31,11 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qaxobject.html#QAxObject-2">QAxObject</a></b> ( const QString &amp; <i>c</i>, QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qaxobject.html#QAxObject-3">QAxObject</a></b> ( IUnknown * <i>iface</i>, QObject * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qaxobject.html#dtor.QAxObject">~QAxObject</a></b> ()</li>
+<li><div class="fn"/>bool <b><a href="qaxobject.html#doVerb">doVerb</a></b> ( const QString &amp; <i>verb</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>18 public functions inherited from <a href="qaxbase.html#public-functions">QAxBase</a></li>
+<li><div class="fn"/>19 public functions inherited from <a href="qaxbase.html#public-functions">QAxBase</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -67,10 +68,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Creates a <a href="qaxobject.html">QAxObject</a> that wraps the COM object referenced by <i>iface</i>. <i>parent</i> is propagated to the <a href="qobject.html">QObject</a> contructor.</p>
 <h3 class="fn"><a name="dtor.QAxObject"></a>QAxObject::~QAxObject ()</h3>
 <p>Releases the COM object and destroys the <a href="qaxobject.html">QAxObject</a>, cleaning up all allocated resources.</p>
+<h3 class="fn"><a name="doVerb"></a>bool QAxObject::doVerb ( const <a href="qstring.html">QString</a> &amp; <i>verb</i> )</h3>
+<p>Requests the COM object to perform the action <i>verb</i>. The possible verbs are returned by <a href="qaxbase.html#verbs">verbs</a>().</p>
+<p>The function returns true if the object could perform the action, otherwise returns false.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

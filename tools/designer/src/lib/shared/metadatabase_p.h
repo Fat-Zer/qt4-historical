@@ -42,7 +42,9 @@
 #include <QtCore/QHash>
 #include <QtGui/QCursor>
 
-class QT_SHARED_EXPORT MetaDataBaseItem: public QDesignerMetaDataBaseItemInterface
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT MetaDataBaseItem: public QDesignerMetaDataBaseItemInterface
 {
 public:
     MetaDataBaseItem(QObject *object);
@@ -57,13 +59,19 @@ public:
     virtual bool enabled() const;
     virtual void setEnabled(bool b);
 
+    QString propertyComment(const QString &name) const;
+    void setPropertyComment(const QString &name, const QString &comment);
+
+    QHash<QString, QString> comments() const { return m_comments; }
+
 private:
     QObject *m_object;
     QList<QWidget*> m_tabOrder;
+    QHash<QString, QString> m_comments;
     bool m_enabled;
 };
 
-class QT_SHARED_EXPORT MetaDataBase: public QDesignerMetaDataBaseInterface
+class QDESIGNER_SHARED_EXPORT MetaDataBase: public QDesignerMetaDataBaseInterface
 {
     Q_OBJECT
 public:
@@ -78,6 +86,8 @@ public:
 
     virtual QList<QObject*> objects() const;
 
+    void dump();
+
 private slots:
     void slotDestroyed(QObject *object);
 
@@ -86,5 +96,7 @@ private:
     typedef QHash<QObject *, MetaDataBaseItem*> ItemMap;
     ItemMap m_items;
 };
+
+} // namespace qdesigner_internal
 
 #endif // METADATABASE_H

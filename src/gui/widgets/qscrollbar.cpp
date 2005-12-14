@@ -28,6 +28,7 @@
 #include "qscrollbar.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
+#include "qmenu.h"
 
 #ifndef QT_NO_SCROLLBAR
 
@@ -182,7 +183,7 @@ public:
 
     int clickOffset, snapBackPosition;
 
-    void activateControl(uint control);
+    void activateControl(uint control, int threshold = 500);
     int pixelPosToRangeValue(int pos) const;
     QStyleOptionSlider getStyleOption() const;
     void init();
@@ -220,7 +221,7 @@ QStyle::SubControl QScrollBarPrivate::newHoverControl(const QPoint &pos)
     return hoverControl;
 }
 
-void QScrollBarPrivate::activateControl(uint control)
+void QScrollBarPrivate::activateControl(uint control, int threshold)
 {
     QAbstractSlider::SliderAction action = QAbstractSlider::SliderNoAction;
     switch (control) {
@@ -248,7 +249,7 @@ void QScrollBarPrivate::activateControl(uint control)
 
     if (action) {
         q_func()->triggerAction(action);
-        q_func()->setRepeatAction(action);
+        q_func()->setRepeatAction(action, threshold);
     }
 }
 
@@ -317,7 +318,7 @@ QScrollBar::QScrollBar(Qt::Orientation orientation, QWidget *parent)
 QScrollBar::QScrollBar(QWidget *parent, const char *name)
     : QAbstractSlider(*new QScrollBarPrivate, parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d_func()->orientation = Qt::Vertical;
     d_func()->init();
 }
@@ -329,7 +330,7 @@ QScrollBar::QScrollBar(QWidget *parent, const char *name)
 QScrollBar::QScrollBar(Qt::Orientation orientation, QWidget *parent, const char *name)
     : QAbstractSlider(*new QScrollBarPrivate, parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d_func()->orientation = orientation;
     d_func()->init();
 }
@@ -344,7 +345,7 @@ QScrollBar::QScrollBar(int minimum, int maximum, int lineStep, int pageStep,
     : QAbstractSlider(*new QScrollBarPrivate, parent)
 {
     Q_D(QScrollBar);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->minimum = minimum;
     d->maximum = maximum;
     d->singleStep = lineStep;
@@ -374,6 +375,55 @@ void QScrollBarPrivate::init()
         sp.transpose();
     q->setSizePolicy(sp);
     q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+}
+
+/*! \reimp */
+void QScrollBar::contextMenuEvent(QContextMenuEvent *event)
+{
+    if (!style()->styleHint(QStyle::SH_ScrollBar_ContextMenu)) {
+        QAbstractSlider::contextMenuEvent(event);
+        return ;
+    }
+
+#ifndef QT_NO_MENU
+    bool horiz = HORIZONTAL;
+    QMenu menu;
+        QAction *actScrollHere =
+            menu.addAction(tr("Scroll here"));
+        menu.addSeparator();
+        QAction *actScrollTop =
+            menu.addAction(horiz ? tr("Left edge") : tr("Top"));
+        QAction *actScrollBottom =
+            menu.addAction(horiz ? tr("Right edge") : tr("Bottom"));
+        menu.addSeparator();
+        QAction *actPageUp =
+            menu.addAction(horiz ? tr("Page left") : tr("Page up"));
+        QAction *actPageDn =
+            menu.addAction(horiz ? tr("Page right") : tr("Page down"));
+        menu.addSeparator();
+        QAction *actScrollUp =
+            menu.addAction(horiz ? tr("Scroll left") : tr("Scroll up"));
+        QAction *actScrollDn =
+            menu.addAction(horiz ? tr("Scroll right") : tr("Scroll down"));
+
+    QAction *actionSelected = menu.exec(event->globalPos());
+    if (actionSelected == 0)
+        /* do nothing */ ;
+    else if (actionSelected == actScrollHere)
+        setValue(d_func()->pixelPosToRangeValue(horiz ? event->pos().x() : event->pos().y()));
+    else if (actionSelected == actScrollTop)
+        triggerAction(QAbstractSlider::SliderToMinimum);
+    else if (actionSelected == actScrollBottom)
+        triggerAction(QAbstractSlider::SliderToMaximum);
+    else if (actionSelected == actPageUp)
+        triggerAction(QAbstractSlider::SliderPageStepSub);
+    else if (actionSelected == actPageDn)
+        triggerAction(QAbstractSlider::SliderPageStepAdd);
+    else if (actionSelected == actScrollUp)
+        triggerAction(QAbstractSlider::SliderSingleStepSub);
+    else if (actionSelected == actScrollDn)
+        triggerAction(QAbstractSlider::SliderSingleStepAdd);
+#endif // QT_NO_MENU
 }
 
 
@@ -546,9 +596,25 @@ void QScrollBar::mouseMoveEvent(QMouseEvent *e)
         }
         setSliderPosition(newPosition);
     } else if (!style()->styleHint(QStyle::SH_ScrollBar_ScrollWhenPointerLeavesControl, &opt, this)) {
+
+        if (style()->styleHint(QStyle::SH_ScrollBar_RollBetweenButtons, &opt, this)
+                && d->pressedControl & (QStyle::SC_ScrollBarAddLine | QStyle::SC_ScrollBarSubLine)) {
+            QStyle::SubControl newSc = style()->hitTestComplexControl(QStyle::CC_ScrollBar, &opt, e->pos(), this);
+            if (newSc == d->pressedControl && !d->pointerOutsidePressedControl)
+                return; // nothing to do
+            if (newSc & (QStyle::SC_ScrollBarAddLine | QStyle::SC_ScrollBarSubLine)) {
+                d->pointerOutsidePressedControl = false;
+                QRect scRect = style()->subControlRect(QStyle::CC_ScrollBar, &opt, newSc, this);
+                scRect |= style()->subControlRect(QStyle::CC_ScrollBar, &opt, d->pressedControl, this);
+                d->pressedControl = newSc;
+                d->activateControl(d->pressedControl, 0);
+                update(scRect);
+                return;
+            }
+        }
+
         // stop scrolling when the mouse pointer leaves a control
         // similar to push buttons
-        opt.subControls = d->pressedControl;
         QRect pr = style()->subControlRect(QStyle::CC_ScrollBar, &opt, d->pressedControl, this);
         if (pr.contains(e->pos()) == d->pointerOutsidePressedControl) {
             if ((d->pointerOutsidePressedControl = !d->pointerOutsidePressedControl)) {

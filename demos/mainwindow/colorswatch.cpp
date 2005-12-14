@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -23,16 +23,16 @@
 
 #include "colorswatch.h"
 
-#include <qaction.h>
-#include <qevent.h>
-#include <qframe.h>
-#include <qmainwindow.h>
-#include <qmenu.h>
-#include <qpainter.h>
-#include <qimage.h>
-#include <qcolor.h>
-#include <qpainterpath.h>
-#include <qdebug.h>
+#include <QAction>
+#include <QtEvents>
+#include <QFrame>
+#include <QMainWindow>
+#include <QMenu>
+#include <QPainter>
+#include <QImage>
+#include <QColor>
+#include <QPainterPath>
+#include <QtDebug>
 
 QColor bgColorForName(const QString &name)
 {

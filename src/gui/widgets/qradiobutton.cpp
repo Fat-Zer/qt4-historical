@@ -28,6 +28,18 @@
 #include "qstylepainter.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
+#include "qevent.h"
+
+#include "private/qabstractbutton_p.h"
+
+class QRadioButtonPrivate : public QAbstractButtonPrivate
+{
+    Q_DECLARE_PUBLIC(QRadioButton)
+public:
+    QRadioButtonPrivate():hovering(true){}
+    uint hovering : 1;
+};
+
 
 /*!
     \class QRadioButton
@@ -75,6 +87,7 @@ static void qRadioButtonInit(QRadioButton *button)
 {
     button->setCheckable(true);
     button->setAutoExclusive(true);
+    button->setMouseTracking(true);
 }
 
 
@@ -86,7 +99,7 @@ static void qRadioButtonInit(QRadioButton *button)
 */
 
 QRadioButton::QRadioButton(QWidget *parent)
-        : QAbstractButton(parent)
+        : QAbstractButton(*new QRadioButtonPrivate, parent)
 {
     qRadioButtonInit(this);
 }
@@ -98,13 +111,13 @@ QRadioButton::QRadioButton(QWidget *parent)
 */
 
 QRadioButton::QRadioButton(const QString &text, QWidget *parent)
-        : QAbstractButton(parent)
+        : QAbstractButton(*new QRadioButtonPrivate, parent)
 {
     qRadioButtonInit(this);
     setText(text);
 }
 
-static QStyleOptionButton getStyleOption(const QRadioButton *btn)
+static QStyleOptionButton getStyleOption(const QRadioButton *btn, bool hitButton = false)
 {
     QStyleOptionButton opt;
     opt.init(btn);
@@ -114,6 +127,12 @@ static QStyleOptionButton getStyleOption(const QRadioButton *btn)
     if (btn->isDown())
         opt.state |= QStyle::State_Sunken;
     opt.state |= (btn->isChecked() ? QStyle::State_On : QStyle::State_Off);
+    if (btn->testAttribute(Qt::WA_Hover) && btn->underMouse()) {
+        if (hitButton)
+            opt.state |= QStyle::State_MouseOver;
+        else
+            opt.state &= ~QStyle::State_MouseOver;
+    }
     return opt;
 }
 
@@ -141,13 +160,40 @@ bool QRadioButton::hitButton(const QPoint &pos) const
     return style()->subElementRect(QStyle::SE_RadioButtonClickRect, &opt, this).contains(pos);
 }
 
+/*!
+    \reimp
+*/
+void QRadioButton::mouseMoveEvent(QMouseEvent *e)
+{
+    Q_D(QRadioButton);
+    if (testAttribute(Qt::WA_Hover)) {
+        bool hit = false;
+        if (underMouse())
+            hit = hitButton(e->pos());
+
+        if (hit != d->hovering) {
+            update();
+            d->hovering = hit;
+        }
+    }
+
+    QAbstractButton::mouseMoveEvent(e);
+}
+
 /*!\reimp
  */
 void QRadioButton::paintEvent(QPaintEvent *)
 {
+    Q_D(QRadioButton);
     QStylePainter p(this);
-    QStyleOptionButton opt = getStyleOption(this);
+    QStyleOptionButton opt = getStyleOption(this, d->hovering);
     p.drawControl(QStyle::CE_RadioButton, opt);
+}
+
+/*! \reimp */
+bool QRadioButton::event(QEvent *e)
+{
+    return QAbstractButton::event(e);
 }
 
 #ifdef QT3_SUPPORT
@@ -158,7 +204,7 @@ void QRadioButton::paintEvent(QPaintEvent *)
 QRadioButton::QRadioButton(QWidget *parent, const char* name)
     :QAbstractButton(parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     qRadioButtonInit(this);
 }
 
@@ -169,7 +215,7 @@ QRadioButton::QRadioButton(QWidget *parent, const char* name)
 QRadioButton::QRadioButton(const QString &text, QWidget *parent, const char* name)
     :QAbstractButton(parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     qRadioButtonInit(this);
     setText(text);
 }

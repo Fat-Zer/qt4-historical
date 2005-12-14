@@ -120,6 +120,10 @@ QSqlQueryModelPrivate::~QSqlQueryModelPrivate()
     data before showing it to the user, and how to create a
     read-write model based on QSqlQueryModel.
 
+    If the database doesn't return the amount of selected rows in
+    a query, the model will fetch rows incrementally.
+    See fetchMore() for more information.
+
     \sa QSqlTableModel, QSqlRelationalTableModel, QSqlQuery,
         {Model/View Programming}
 */
@@ -149,7 +153,22 @@ QSqlQueryModel::~QSqlQueryModel()
 }
 
 /*!
-    \reimp
+    \since 4.1
+
+    Fetches more rows from a database.
+    This only affects databases that don't report back the size of a query
+    (see QSqlDriver::hasFeature()).
+
+    To force fetching of the entire database, you can use the following:
+
+    \code
+    while (myModel->canFetchMore())
+        myModel->fetchMore();
+    \endcode
+
+    \a parent should always be an invalid QModelIndex.
+
+    \sa canFetchMore()
 */
 void QSqlQueryModel::fetchMore(const QModelIndex &parent)
 {
@@ -159,7 +178,16 @@ void QSqlQueryModel::fetchMore(const QModelIndex &parent)
     d->prefetch(d->bottom.row() + QSQL_PREFETCH);
 }
 
-/*! \reimp
+/*!
+    \since 4.1
+
+    Returns true if it is possible to read more rows from the database.
+    This only affects databases that don't report back the size of a query
+    (see QSqlDriver::hasFeature()).
+
+    \a parent should always be an invalid QModelIndex.
+
+    \sa fetchMore()
  */
 bool QSqlQueryModel::canFetchMore(const QModelIndex &parent) const
 {
@@ -167,7 +195,17 @@ bool QSqlQueryModel::canFetchMore(const QModelIndex &parent) const
     return (!parent.isValid() && !d->atEnd);
 }
 
-/*! \reimp
+/*! \fn int QSqlQueryModel::rowCount(const QModelIndex &parent) const
+    \since 4.1
+
+    If the database supports returning the size of a query
+    (see QSqlDriver::hasFeature()), the amount of rows of the current
+    query is returned. Otherwise, returns the amount of rows
+    currently cached on the client.
+
+    \a parent should always be an invalid QModelIndex.
+
+    \sa canFetchMore(), QSqlDriver::hasFeature()
  */
 int QSqlQueryModel::rowCount(const QModelIndex &) const
 {
@@ -222,8 +260,10 @@ QVariant QSqlQueryModel::data(const QModelIndex &item, int role) const
 QVariant QSqlQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     Q_D(const QSqlQueryModel);
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        QVariant val = d->headers.value(section);
+    if (orientation == Qt::Horizontal) {
+        QVariant val = d->headers.value(section).value(role);
+        if (role == Qt::DisplayRole && !val.isValid())
+            val = d->headers.value(section).value(Qt::EditRole);
         if (val.isValid())
             return val;
         if (d->rec.count() > section)
@@ -250,7 +290,10 @@ void QSqlQueryModel::queryChange()
     query. Note that the query must be active and must not be
     isForwardOnly().
 
-    \sa query(), QSqlQuery::isActive(), QSqlQuery::setForwardOnly()
+    lastError() can be used to retrieve verbose information if there
+    was an error setting the query.
+
+    \sa query(), QSqlQuery::isActive(), QSqlQuery::setForwardOnly(), lastError()
 */
 void QSqlQueryModel::setQuery(const QSqlQuery &query)
 {
@@ -317,7 +360,18 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
     Executes the query \a query for the given database connection \a
     db. If no database is specified, the default connection is used.
 
-    \sa query(), queryChange()
+    lastError() can be used to retrieve verbose information if there
+    was an error setting the query.
+
+    Example:
+    \code
+    QSqlQueryModel model;
+    model.setQuery("select * from MyTable");
+    if (model.lastError().isValid())
+        qDebug() << model.lastError();
+    \endcode
+
+    \sa query(), queryChange(), lastError()
 */
 void QSqlQueryModel::setQuery(const QString &query, const QSqlDatabase &db)
 {
@@ -340,11 +394,11 @@ void QSqlQueryModel::clear()
 }
 
 /*!
-    Sets the caption for the header with the given \a orientation to
-    the specified \a value. This is useful if the model is used to
+    Sets the caption for a horizontal header for the specified \a role to
+    \a value. This is useful if the model is used to
     display data in a view (e.g., QTableView).
 
-    Returns true if \a role is Qt::DisplayRole and
+    Returns true if \a orientation is Qt::Horizontal and
     the \a section refers to a valid section; otherwise returns
     false.
 
@@ -357,13 +411,13 @@ bool QSqlQueryModel::setHeaderData(int section, Qt::Orientation orientation,
                                    const QVariant &value, int role)
 {
     Q_D(QSqlQueryModel);
-    if ((role != Qt::EditRole && role != Qt::DisplayRole)
-        || orientation != Qt::Horizontal || section < 0)
+    if (orientation != Qt::Horizontal || section < 0)
         return false;
 
     if (d->headers.size() <= section)
         d->headers.resize(qMax(section + 1, 16));
-    d->headers[section] = value;
+    d->headers[section][role] = value;
+    emit headerDataChanged(orientation, section, section);
     return true;
 }
 

@@ -24,9 +24,9 @@
 #ifndef Q3DATETIMEEDIT_H
 #define Q3DATETIMEEDIT_H
 
-#include "QtGui/qwidget.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qdatetime.h"
+#include <QtGui/qwidget.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qdatetime.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -44,7 +44,7 @@ public:
     virtual void addNumber(int sec, int num) = 0;
     virtual void removeLastNumber(int sec) = 0;
 
-public slots:
+public Q_SLOTS:
     virtual void stepUp() = 0;
     virtual void stepDown() = 0;
 
@@ -59,7 +59,7 @@ class Q_COMPAT_EXPORT Q3DateEdit : public Q3DateTimeEditBase
     Q_OBJECT
     Q_ENUMS(Order)
     Q_PROPERTY(Order order READ order WRITE setOrder)
-    Q_PROPERTY(QDate date READ date WRITE setDate)
+    Q_PROPERTY(QDate date READ date WRITE setDate USER true)
     Q_PROPERTY(bool autoAdvance READ autoAdvance WRITE setAutoAdvance)
     Q_PROPERTY(QDate maxValue READ maxValue WRITE setMaxValue)
     Q_PROPERTY(QDate minValue READ minValue WRITE setMinValue)
@@ -74,7 +74,7 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
-public slots:
+public Q_SLOTS:
     virtual void setDate(const QDate& date);
 
 public:
@@ -95,7 +95,7 @@ public:
     // Make removeFirstNumber() virtual in Q3DateTimeEditBase in 4.0
     void removeFirstNumber(int sec);
 
-signals:
+Q_SIGNALS:
     void valueChanged(const QDate& date);
 
 protected:
@@ -116,7 +116,7 @@ protected:
     virtual void fix();
     virtual bool outOfRange(int y, int m, int d) const;
 
-protected slots:
+protected Q_SLOTS:
     void updateButtons();
 
 private:
@@ -135,7 +135,7 @@ class Q_COMPAT_EXPORT Q3TimeEdit : public Q3DateTimeEditBase
 {
     Q_OBJECT
     Q_FLAGS(Display)
-    Q_PROPERTY(QTime time READ time WRITE setTime)
+    Q_PROPERTY(QTime time READ time WRITE setTime USER true)
     Q_PROPERTY(bool autoAdvance READ autoAdvance WRITE setAutoAdvance)
     Q_PROPERTY(QTime maxValue READ maxValue WRITE setMaxValue)
     Q_PROPERTY(QTime minValue READ minValue WRITE setMinValue)
@@ -157,7 +157,7 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
-public slots:
+public Q_SLOTS:
     virtual void setTime(const QTime& time);
 
 public:
@@ -179,7 +179,7 @@ public:
     // Make removeFirstNumber() virtual in Q3DateTimeEditBase in 4.0
     void removeFirstNumber(int sec);
 
-signals:
+Q_SIGNALS:
     void valueChanged(const QTime& time);
 
 protected:
@@ -198,7 +198,7 @@ protected:
     virtual void setMinute(int m);
     virtual void setSecond(int s);
 
-protected slots:
+protected Q_SLOTS:
     void updateButtons();
 
 private:
@@ -215,7 +215,7 @@ class Q3DateTimeEditPrivate;
 class Q_COMPAT_EXPORT Q3DateTimeEdit : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QDateTime dateTime READ dateTime WRITE setDateTime)
+    Q_PROPERTY(QDateTime dateTime READ dateTime WRITE setDateTime USER true)
 
 public:
     Q3DateTimeEdit(QWidget* parent=0, const char* name=0);
@@ -226,7 +226,7 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
-public slots:
+public Q_SLOTS:
     virtual void setDateTime(const QDateTime & dt);
 
 public:
@@ -238,14 +238,14 @@ public:
     virtual void setAutoAdvance(bool advance);
     bool autoAdvance() const;
 
-signals:
+Q_SIGNALS:
     void valueChanged(const QDateTime& datetime);
 
 protected:
     void init();
     void resizeEvent(QResizeEvent *);
 
-protected slots:
+protected Q_SLOTS:
     void newValue(const QDate& d);
     void newValue(const QTime& t);
 
@@ -257,5 +257,6 @@ private:
     Q3DateTimeEditPrivate* d;
 };
 
-#endif
-#endif
+#endif // QT_NO_DATETIMEEDIT
+
+#endif // Q3DATETIMEEDIT_H

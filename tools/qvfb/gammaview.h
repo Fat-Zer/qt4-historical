@@ -24,14 +24,15 @@
 #ifndef GAMMAVIEW_H
 #define GAMMAVIEW_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 class GammaView: public QWidget
 {
     Q_OBJECT
 public:
-    GammaView(QWidget *parent = 0, Qt::WFlags f = 0) :
-	QWidget(parent,f)
+    GammaView( QWidget *parent = 0,
+		const char *name = 0, Qt::WFlags f = 0 ) :
+	QWidget(parent,name,f)
     { }
 };
 

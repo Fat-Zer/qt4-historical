@@ -24,9 +24,8 @@
 #ifndef QSHORTCUT_H
 #define QSHORTCUT_H
 
-#include "QtCore/qobject.h"
-#include "QtGui/qwidget.h"
-#include "QtGui/qkeysequence.h"
+#include <QtGui/qwidget.h>
+#include <QtGui/qkeysequence.h>
 
 QT_MODULE(Gui)
 
@@ -65,7 +64,7 @@ public:
     inline QWidget *parentWidget() const
     { return static_cast<QWidget *>(QObject::parent()); }
 
-signals:
+Q_SIGNALS:
     void activated();
     void activatedAmbiguously();
 
@@ -74,4 +73,5 @@ protected:
 };
 
 #endif // QT_NO_SHORTCUT
+
 #endif // QSHORTCUT_H

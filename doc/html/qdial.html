@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-mac-opensource-src-4.0.1/src/gui/widgets/qdial.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qdial.cpp -->
 <head>
-    <title>Qt 4.0: QDial Class Reference</title>
+    <title>Qt 4.1: QDial Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>11 properties inherited from <a href="qabstractslider.html#properties">QAbstractSlider</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -50,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>22 public functions inherited from <a href="qabstractslider.html#public-functions">QAbstractSlider</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -84,21 +84,21 @@ body { background: #ffffff; color: black; }</style>
 <p>Both API- and UI-wise, the dial is very similar to a <a href="qslider.html">slider.</a> Indeed, when <a href="qdial.html#wrapping-prop">wrapping</a>() is false (the default) there is no real difference between a slider and a dial. They have the same signals, slots and member functions, all of which do the same things. Which one you use depends only on your taste and on the application.</p>
 <p>The dial initially emits <a href="qabstractslider.html#valueChanged">valueChanged</a>() signals continuously while the slider is being moved; you can make it emit the signal less often by calling setTracking(false). <a href="qdial-qt3.html#dialMoved">dialMoved</a>() is emitted continuously even when tracking() is false.</p>
 <p>The slider also emits <a href="qdial-qt3.html#dialPressed">dialPressed</a>() and <a href="qdial-qt3.html#dialReleased">dialReleased</a>() signals when the mouse button is pressed and released. But note that the dial's value can change without these signals being emitted; the keyboard and wheel can be used to change the value.</p>
-<p>Unlike the slider, QDial attempts to draw a &quot;nice&quot; number of notches rather than one per <a href="qabstractslider-qt3.html#lineStep">lineStep</a>(). If possible, the number of notches drawn is one per <a href="qabstractslider-qt3.html#lineStep">lineStep</a>(), but if there aren't enough pixels to draw every one, QDial will draw every second, third etc., notch. <a href="qdial.html#notchSize-prop">notchSize</a>() returns the number of units per notch, hopefully a multiple of <a href="qabstractslider-qt3.html#lineStep">lineStep</a>(); <a href="qdial.html#notchTarget-prop">setNotchTarget</a>() sets the target distance between neighbouring notches in pixels. The default is 3.75 pixels.</p>
+<p>Unlike the slider, QDial attempts to draw a &quot;nice&quot; number of notches rather than one per <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(). If possible, the number of notches drawn is one per <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(), but if there aren't enough pixels to draw every one, QDial will draw every second, third etc., notch. <a href="qdial.html#notchSize-prop">notchSize</a>() returns the number of units per notch, hopefully a multiple of <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(); <a href="qdial.html#notchTarget-prop">setNotchTarget</a>() sets the target distance between neighbouring notches in pixels. The default is 3.75 pixels.</p>
 <p>Like the slider, the dial makes the <a href="qabstractslider.html">QAbstractSlider</a> functions <a href="qabstractslider.html#value-prop">setValue</a>(), <a href="qabstractslider-qt3.html#addLine">addLine</a>(), <a href="qabstractslider-qt3.html#subtractLine">subtractLine</a>(), <a href="qabstractslider-qt3.html#addPage">addPage</a>() and <a href="qabstractslider-qt3.html#subtractPage">subtractPage</a>() available as slots.</p>
-<p>The dial's keyboard interface is fairly simple: The left/up and right/down arrow keys move by <a href="qabstractslider-qt3.html#lineStep">lineStep</a>(), page up and page down by <a href="qabstractslider.html#pageStep-prop">pageStep</a>() and Home and End to <a href="qabstractslider-qt3.html#minValue">minValue</a>() and <a href="qabstractslider-qt3.html#maxValue">maxValue</a>().</p>
+<p>The dial's keyboard interface is fairly simple: The left/up and right/down arrow keys move by <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(), page up and page down by <a href="qabstractslider.html#pageStep-prop">pageStep</a>() and Home and End to <a href="qabstractslider-qt3.html#minValue">minValue</a>() and <a href="qabstractslider-qt3.html#maxValue">maxValue</a>().</p>
 <p><img src="images/qdial-m.png" alt="Screenshot in Motif style" /> <img src="images/qdial-w.png" alt="Screenshot in Windows style" /></p>
 <p>See also <a href="qscrollbar.html">QScrollBar</a>, <a href="qspinbox.html">QSpinBox</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Slider</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="notchSize-prop"></a>notchSize : const int</h3>
 <p>This property holds the current notch size.</p>
-<p>The notch size is in range control units, not pixels, and if possible it is a multiple of <a href="qabstractslider-qt3.html#lineStep">lineStep</a>() that results in an on-screen notch size near <a href="qdial.html#notchTarget-prop">notchTarget</a>().</p>
+<p>The notch size is in range control units, not pixels, and if possible it is a multiple of <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>() that results in an on-screen notch size near <a href="qdial.html#notchTarget-prop">notchTarget</a>().</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int notchSize () const</b></li>
 </ul>
-<p>See also <a href="qdial.html#notchTarget-prop">notchTarget</a>() and <a href="qabstractslider-qt3.html#lineStep">lineStep</a>().</p>
+<p>See also <a href="qdial.html#notchTarget-prop">notchTarget</a>() and <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>().</p>
 <h3 class="fn"><a name="notchTarget-prop"></a>notchTarget : <a href="qtglobal.html#qreal-typedef">qreal</a></h3>
 <p>This property holds the target number of pixels between notches.</p>
 <p>The notch target is the number of pixels <a href="qdial.html">QDial</a> attempts to put between each notch.</p>
@@ -136,6 +136,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

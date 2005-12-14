@@ -23,13 +23,13 @@
 
 #include "colorbutton.h"
 
-#include <qapplication.h>
-#include <qevent.h>
-#include <qcolordialog.h>
-#include <qpainter.h>
-#include <q3dragobject.h>
-#include <qstyle.h>
-#include <qstyleoption.h>
+#include <QApplication>
+#include <QtEvents>
+#include <QColorDialog>
+#include <QPainter>
+#include <QMimeData>
+#include <QStyle>
+#include <QStyleOption>
 
 ColorButton::ColorButton(QWidget *parent)
     : QAbstractButton(parent), mousepressed(false)
@@ -114,7 +114,7 @@ void ColorButton::drawButtonLabel(QPainter *p)
 
 void ColorButton::dragEnterEvent(QDragEnterEvent *e)
 {
-    if (! Q3ColorDrag::canDecode(e)) {
+    if (!e->mimeData()->hasColor()) {
         e->ignore();
         return;
     }
@@ -123,7 +123,7 @@ void ColorButton::dragEnterEvent(QDragEnterEvent *e)
 
 void ColorButton::dragMoveEvent(QDragMoveEvent *e)
 {
-    if (! Q3ColorDrag::canDecode(e)) {
+    if (!e->mimeData()->hasColor()) {
         e->ignore();
         return;
     }
@@ -134,13 +134,12 @@ void ColorButton::dragMoveEvent(QDragMoveEvent *e)
 
 void ColorButton::dropEvent(QDropEvent *e)
 {
-    if (! Q3ColorDrag::canDecode(e)) {
+    if (!e->mimeData()->hasColor()) {
         e->ignore();
         return;
     }
 
-    QColor c;
-    Q3ColorDrag::decode(e, c);
+    QColor c = qvariant_cast<QColor>(e->mimeData()->colorData());
     setColor(c);
     emit colorChanged(color());
 }
@@ -170,8 +169,11 @@ void ColorButton::mouseMoveEvent(QMouseEvent *e)
         mousepressed = false;
         setDown(false);
 
-        Q3ColorDrag *cd = new Q3ColorDrag(color(), this);
-        cd->dragCopy();
+        QDrag *drag = new QDrag(this);
+        QMimeData *data = new QMimeData;
+        data->setColorData(color());
+        drag->setMimeData(data);
+        drag->start(Qt::CopyAction);
     }
 }
 
@@ -180,5 +182,3 @@ void ColorButton::paintEvent(QPaintEvent *)
     QPainter p(this);
     drawButton(&p);
 }
-
-

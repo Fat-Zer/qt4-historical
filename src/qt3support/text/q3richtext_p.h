@@ -35,25 +35,25 @@
 // We mean it.
 //
 
-#include "qapplication.h"
-#include "qcolor.h"
-#include "qhash.h"
-#include "qfont.h"
-#include "qfontmetrics.h"
-#include "qlayout.h"
-#include "qmap.h"
-#include "qvector.h"
-#include "qobject.h"
-#include "qpainter.h"
-#include "qpixmap.h"
-#include "qlist.h"
-#include "qrect.h"
-#include "qsize.h"
-#include "qstring.h"
-#include "qstringlist.h"
-#include "q3stylesheet.h"
-#include "q3mimefactory.h"
-#include "qstack.h"
+#include "QtGui/qapplication.h"
+#include "QtGui/qcolor.h"
+#include "QtCore/qhash.h"
+#include "QtGui/qfont.h"
+#include "QtGui/qfontmetrics.h"
+#include "QtGui/qlayout.h"
+#include "QtCore/qmap.h"
+#include "QtCore/qvector.h"
+#include "QtCore/qstack.h"
+#include "QtCore/qlist.h"
+#include "QtCore/qobject.h"
+#include "QtGui/qpainter.h"
+#include "QtGui/qpixmap.h"
+#include "QtCore/qrect.h"
+#include "QtCore/qsize.h"
+#include "QtCore/qstring.h"
+#include "QtCore/qstringlist.h"
+#include "Qt3Support/q3stylesheet.h"
+#include "Qt3Support/q3mimefactory.h"
 
 #ifndef QT_NO_RICHTEXT
 
@@ -100,7 +100,6 @@ public:
     uchar softBreak      :1;     // Potential linebreak point
     uchar whiteSpace     :1;     // A unicode whitespace character, except NBSP, ZWNBSP
     uchar charStop       :1;     // Valid cursor position (for left/right arrow)
-    uchar wordStop       :1;     // Valid cursor position (for ctrl + left/right arrow)
     uchar nobreak        :1;
 
     uchar lineStart : 1;
@@ -190,6 +189,7 @@ public:
     void operator=(const QString &s) { clear(); insert(0, s, 0); }
     void operator+=(const QString &s) { insert(length(), s, 0); }
     void prepend(const QString &s) { insert(0, s, 0); }
+    int appendParagraphs( Q3TextParagraph *start, Q3TextParagraph *end );
 
     // return next and previous valid cursor positions.
     bool validCursorPosition(int idx);
@@ -865,7 +865,7 @@ public:
 #endif
 
     void setPlainText(const QString &text);
-    void setRichText(const QString &text, const QString &context);
+    void setRichText(const QString &text, const QString &context, const Q3TextFormat *initialFormat = 0);
     QString richText() const;
     QString plainText() const;
 
@@ -896,7 +896,7 @@ public:
 
     void invalidateOriginalText() { oTextValid = false; oText = ""; }
 
-signals:
+Q_SIGNALS:
     void minimumWidthChanged(int);
 
 private:
@@ -918,7 +918,7 @@ private:
     QChar parseHTMLSpecialChar(const QChar* doc, int length, int& pos);
     QString parseWord(const QChar* doc, int length, int& pos, bool lower = true);
     QChar parseChar(const QChar* doc, int length, int& pos, Q3StyleSheetItem::WhiteSpaceMode wsm);
-    void setRichTextInternal(const QString &text, Q3TextCursor* cursor = 0);
+    void setRichTextInternal(const QString &text, Q3TextCursor* cursor = 0, const Q3TextFormat *initialFormat = 0);
     void setRichTextMarginsInternal(QList< QVector<Q3StyleSheetItem *> *>& styles, Q3TextParagraph* stylesPar);
 
     struct Q_COMPAT_EXPORT Focus {
@@ -1698,7 +1698,7 @@ inline QColor Q3TextDocument::selectionColor(int id) const
 {
     const Q3TextDocument *p = this;
     while (p->par)
-        p = par;
+        p = p->par;
     return p->selectionColors[id].background;
 }
 
@@ -1706,7 +1706,7 @@ inline QColor Q3TextDocument::selectionTextColor(int id) const
 {
     const Q3TextDocument *p = this;
     while (p->par)
-        p = par;
+        p = p->par;
     return p->selectionColors[id].text;
 }
 
@@ -1714,7 +1714,7 @@ inline bool Q3TextDocument::hasSelectionTextColor(int id) const
 {
     const Q3TextDocument *p = this;
     while (p->par)
-        p = par;
+        p = p->par;
     return p->selectionColors.contains(id);
 }
 
@@ -1722,7 +1722,7 @@ inline void Q3TextDocument::setSelectionColor(int id, const QColor &c)
 {
     Q3TextDocument *p = this;
     while (p->par)
-        p = par;
+        p = p->par;
     p->selectionColors[id].background = c;
 }
 
@@ -1730,7 +1730,7 @@ inline void Q3TextDocument::setSelectionTextColor(int id, const QColor &c)
 {
     Q3TextDocument *p = this;
     while (p->par)
-        p = par;
+        p = p->par;
     p->selectionColors[id].text = c;
 }
 

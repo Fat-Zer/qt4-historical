@@ -181,7 +181,7 @@ const QString::Null QString::null = QString::Null();
     your application's market at some point. The two main cases where
     QByteArray is appropriate are when you need to store raw binary
     data, and when memory conservation is critical (e.g. with
-    Qt/Embedded).
+    Qtopia Core).
 
     One way to initialize a QString is simply to pass a \c{const char
     *} to its constructor. For example, the following code creates a
@@ -265,9 +265,11 @@ const QString::Null QString::null = QString::Null();
     \endcode
 
     You can also pass string literals to functions that take QStrings
-    and the QString(const char *) constructor will be invoked.
-    Similarly, you can pass a QString to a function that takes a
-    \c{const char *} and \l{operator const char *()} will be invoked.
+    and the QString(const char *) constructor will be
+    invoked. Similarily, you can pass a QString to a function that
+    takes a \c{const char *} using the \l qPrintable() macro which
+    returns the given QString as a \c{const char *}. This is
+    equivalent to calling <QString>.toAscii().constData().
 
     QString provides the following basic functions for modifying the
     character data: append(), prepend(), insert(), replace(), and
@@ -572,7 +574,7 @@ inline int QString::grow(int size)
     fromAscii().
 
     This constructor is only available if Qt is configured with STL
-    compabitility enabled.
+    compatibility enabled.
 
     \sa  fromAscii(), fromLatin1(), fromLocal8Bit(), fromUtf8()
 */
@@ -585,7 +587,7 @@ inline int QString::grow(int size)
     if the size of wchar_t is 4 bytes (most Unix systems).
 
     This constructor is only available if Qt is configured with STL
-    compabitility enabled.
+    compatibility enabled.
 
     \sa fromUtf16(), fromLatin1(), fromLocal8Bit(), fromUtf8()
 */
@@ -628,7 +630,7 @@ QString QString::fromWCharArray(const wchar_t *a, int l)
     that accepts a std::wstring object.
 
     This operator is only available if Qt is configured with STL
-    compabitility enabled.
+    compatibility enabled.
 
     \sa utf16(), toAscii(), toLatin1(), toUtf8(), toLocal8Bit()
 */
@@ -747,7 +749,8 @@ QString::QString(QChar ch)
 /*! \fn QString::QString(const QByteArray &ba)
 
     Constructs a string initialized with the byte array \a ba. \a ba
-    is converted to Unicode using fromAscii().
+    is converted to Unicode using fromAscii(). Stops copying at the
+    first 0 character, otherwise copies the entire byte array.
 
     You can disable this constructor by defining \c
     QT_NO_CAST_FROM_ASCII when you compile your applications. This
@@ -2040,6 +2043,8 @@ int QString::lastIndexOf(const QString &str, int from, Qt::CaseSensitivity cs) c
         from += l;
     const int sl = str.d->size;
     int delta = l-sl;
+    if (from == l && sl == 0)
+        return from;
     if (from < 0 || from >= l || delta < 0)
         return -1;
     if (from > delta)
@@ -2558,9 +2563,9 @@ QString QString::section(const QString &sep, int start, int end, SectionFlags fl
 }
 
 #ifndef QT_NO_REGEXP
-class section_chunk {
+class qt_section_chunk {
 public:
-    section_chunk(int l, QString s) { length = l; string = s; }
+    qt_section_chunk(int l, QString s) { length = l; string = s; }
     int length;
     QString string;
 };
@@ -2598,15 +2603,15 @@ QString QString::section(const QRegExp &reg, int start, int end, SectionFlags fl
     sep.setCaseSensitivity((flags & SectionCaseInsensitiveSeps) ? Qt::CaseInsensitive
                                                                 : Qt::CaseSensitive);
 
-    QList<section_chunk> sections;
+    QList<qt_section_chunk> sections;
     int n = length(), m = 0, last_m = 0, last_len = 0;
     while ((m = sep.indexIn(*this, m)) != -1) {
-        sections.append(section_chunk(last_len, QString(uc + last_m, m - last_m)));
+        sections.append(qt_section_chunk(last_len, QString(uc + last_m, m - last_m)));
         last_m = m;
         last_len = sep.matchedLength();
-        m += sep.matchedLength();
+        m += qMax(sep.matchedLength(), 1);
     }
-    sections.append(section_chunk(last_len, QString(uc + last_m, n - last_m)));
+    sections.append(qt_section_chunk(last_len, QString(uc + last_m, n - last_m)));
 
     if(start < 0)
         start += sections.count();
@@ -2617,7 +2622,7 @@ QString QString::section(const QRegExp &reg, int start, int end, SectionFlags fl
     int x = 0;
     int first_i = start, last_i = end;
     for (int i = 0; x <= end && i < sections.size(); ++i) {
-        const section_chunk &section = sections.at(i);
+        const qt_section_chunk &section = sections.at(i);
         const bool empty = (section.length == section.string.length());
         if (x >= start) {
             if(x == start)
@@ -2633,11 +2638,11 @@ QString QString::section(const QRegExp &reg, int start, int end, SectionFlags fl
             x++;
     }
     if((flags & SectionIncludeLeadingSep)) {
-        const section_chunk &section = sections.at(first_i);
+        const qt_section_chunk &section = sections.at(first_i);
         ret.prepend(section.string.left(section.length));
     }
     if((flags & SectionIncludeTrailingSep) && last_i+1 <= sections.size()-1) {
-        const section_chunk &section = sections.at(last_i+1);
+        const qt_section_chunk &section = sections.at(last_i+1);
         ret += section.string.left(section.length);
     }
     return ret;
@@ -3010,16 +3015,7 @@ QByteArray QString::toUtf8() const
     return ba;
 }
 
-/*!
-    Returns a QString initialized with the first \a size characters
-    of the Latin-1 string \a str.
-
-    If \a size is -1 (the default), it is taken to be qstrlen(\a
-    str).
-
-    \sa toLatin1(), fromAscii(), fromUtf8(), fromLocal8Bit()
-*/
-QString QString::fromLatin1(const char *str, int size)
+QString::Data *QString::fromLatin1_helper(const char *str, int size)
 {
     Data *d;
     if (!str) {
@@ -3041,7 +3037,21 @@ QString QString::fromLatin1(const char *str, int size)
         while (size--)
            *i++ = (uchar)*str++;
     }
-    return QString(d, 0);
+    return d;
+}
+
+/*!
+    Returns a QString initialized with the first \a size characters
+    of the Latin-1 string \a str.
+
+    If \a size is -1 (the default), it is taken to be qstrlen(\a
+    str).
+
+    \sa toLatin1(), fromAscii(), fromUtf8(), fromLocal8Bit()
+*/
+QString QString::fromLatin1(const char *str, int size)
+{
+    return QString(fromLatin1_helper(str, size), 0);
 }
 
 
@@ -3185,21 +3195,17 @@ QString QString::fromLocal8Bit(const char *str, int size)
     if (!str)
         return QString();
 #if defined(Q_OS_WIN32)
-    if (size >= 0) {
-        QByteArray ba(str, size); // creates a '\0'-terminated deep copy
-        return qt_winMB2QString(ba, size);
-    } else {
+    if(QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
         return qt_winMB2QString(str, size);
     }
-#elif defined(Q_OS_UNIX)
-#  if !defined(QT_NO_TEXTCODEC)
+#endif
+#if !defined(QT_NO_TEXTCODEC)
     if (size < 0)
         size = qstrlen(str);
     QTextCodec *codec = QTextCodec::codecForLocale();
     if (codec)
         return codec->toUnicode(str, size);
-#  endif // !QT_NO_TEXTCODEC
-#endif
+#endif // !QT_NO_TEXTCODEC
     return fromLatin1(str, size);
 }
 
@@ -6039,7 +6045,7 @@ void QString::updateProperties() const
     std::string constructor.
 
     This operator is only available if Qt is configured with STL
-    compabitility enabled.
+    compatibility enabled.
 
     \sa toAscii(), toLatin1(), toUtf8(), toLocal8Bit()
 */
@@ -6169,6 +6175,13 @@ QString QString::fromRawData(const QChar *unicode, int size)
     the QLatin1String object exists.
 
     \sa latin1()
+*/
+
+/*!
+    \since 4.1
+    \fn QLatin1String &QLatin1String::operator=(const QLatin1String &other)
+
+    Constructs a copy of \a other.
 */
 
 /*! \fn const char *QLatin1String::latin1() const

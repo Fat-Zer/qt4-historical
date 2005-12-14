@@ -35,32 +35,22 @@
 // We mean it.
 //
 
-#include "qabstractspinbox.h"
-#include <qlineedit.h>
-#include <qstyleoption.h>
-#include <qdatetime.h>
-#include <qvariant.h>
-#include <qvalidator.h>
-#include <private/qwidget_p.h>
+#include "QtGui/qabstractspinbox.h"
 
 #ifndef QT_NO_SPINBOX
 
-bool operator<(const QVariant &arg1, const QVariant &arg2);
-bool operator>(const QVariant &arg1, const QVariant &arg2);
-bool operator<=(const QVariant &arg1, const QVariant &arg2);
-bool operator>=(const QVariant &arg1, const QVariant &arg2);
+#include "QtGui/qlineedit.h"
+#include "QtGui/qstyleoption.h"
+#include "QtGui/qvalidator.h"
+#include "QtCore/qdatetime.h"
+#include "QtCore/qvariant.h"
+#include "private/qwidget_p.h"
+#include "private/qdatetime_p.h"
+
 QVariant operator+(const QVariant &arg1, const QVariant &arg2);
 QVariant operator-(const QVariant &arg1, const QVariant &arg2);
 QVariant operator*(const QVariant &arg1, double multiplier);
 double operator/(const QVariant &arg1, const QVariant &arg2);
-
-#define TIME_MIN QTime(0, 0, 0, 0)
-#define TIME_MAX QTime(23, 59, 59, 999)
-#define DATE_MIN QDate(1752, 9, 14)
-#define DATE_MAX QDate(7999, 12, 31)
-#define DATETIME_MIN QDateTime(DATE_MIN, TIME_MIN)
-#define DATETIME_MAX QDateTime(DATE_MAX, TIME_MAX)
-#define DATE_INITIAL QDate(2000, 1, 1)
 
 enum EmitPolicy {
     EmitIfChanged,
@@ -96,9 +86,8 @@ public:
     void setValue(const QVariant &val, EmitPolicy ep, bool updateEdit = true);
     virtual QVariant bound(const QVariant &val, const QVariant &old = QVariant(), int steps = 0) const;
     QLineEdit *lineEdit();
-    void updateSpinBox();
-    void update();
-    void updateEdit() const;
+    void updateButtons();
+    virtual void updateEdit();
 
     virtual QStyleOptionSpinBox getStyleOption() const;
 
@@ -113,13 +102,16 @@ public:
     QStyle::SubControl newHoverControl(const QPoint &pos);
     bool updateHoverControl(const QPoint &pos);
 
+    void clearCache() const;
+
+    static int variantCompare(const QVariant &arg1, const QVariant &arg2);
+
     QLineEdit *edit;
     QString prefix, suffix, specialValueText;
     QVariant value, minimum, maximum, singleStep;
     QVariant::Type type;
     int spinClickTimerId, spinClickTimerInterval, spinClickThresholdTimerId, spinClickThresholdTimerInterval;
     uint buttonState;
-    mutable uint dirty : 1;
     mutable QString cachedText;
     mutable QVariant cachedValue;
     mutable QValidator::State cachedState;
@@ -148,4 +140,5 @@ private:
 };
 
 #endif // QT_NO_SPINBOX
+
 #endif // QABSTRACTSPINBOX_P_H

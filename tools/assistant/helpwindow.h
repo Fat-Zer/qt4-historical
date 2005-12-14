@@ -24,7 +24,7 @@
 #ifndef HELPWINDOW_H
 #define HELPWINDOW_H
 
-#include <qtextbrowser.h>
+#include <QTextBrowser>
 
 class MainWindow;
 class QKeyEvent;
@@ -77,4 +77,4 @@ private:
     bool backAvail;
 };
 
-#endif
+#endif // HELPWINDOW_H

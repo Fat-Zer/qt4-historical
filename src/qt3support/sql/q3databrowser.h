@@ -24,13 +24,13 @@
 #ifndef Q3DATABROWSER_H
 #define Q3DATABROWSER_H
 
-#include "QtGui/qwidget.h"
-#include "QtCore/qstring.h"
-#include "QtCore/qstringlist.h"
-#include "QtSql/qsql.h"
-#include "QtSql/qsqlindex.h"
-#include "Qt3Support/q3sqlcursor.h"
-#include "QtSql/qsqlerror.h"
+#include <QtGui/qwidget.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qstringlist.h>
+#include <QtSql/qsql.h>
+#include <QtSql/qsqlindex.h>
+#include <Qt3Support/q3sqlcursor.h>
+#include <QtSql/qsqlerror.h>
 
 QT_MODULE(Qt3Support)
 
@@ -98,7 +98,7 @@ public:
 
     virtual bool seek(int i, bool relative = false);
 
-signals:
+Q_SIGNALS:
     void firstRecordAvailable(bool available);
     void lastRecordAvailable(bool available);
     void nextRecordAvailable(bool available);
@@ -113,7 +113,7 @@ signals:
     void beforeDelete(QSqlRecord* buf);
     void cursorChanged(Q3SqlCursor::Mode mode);
 
-public slots:
+public Q_SLOTS:
     virtual void refresh();
 
     virtual void insert();
@@ -152,6 +152,6 @@ private:
     Q_DISABLE_COPY(Q3DataBrowser)
 };
 
-#endif
+#endif // QT_NO_SQL_VIEW_WIDGETS
 
-#endif
+#endif // Q3DATABROWSER_H

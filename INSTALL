@@ -1,4 +1,4 @@
-                          INSTALLING Qt/Mac Version 4.0.1
+                          INSTALLING Qt/Mac Version 4.1.0
 
 1.  If you have the commercial edition of Qt, install your license
     file as $HOME/.qt-license.
@@ -8,20 +8,23 @@
 2.  Unpack the archive if you have not done so already:
 
         cd /tmp
-        gunzip qt-mac-opensource-src-4.0.1.tar.gz        # uncompress the archive
-        tar xvf qt-mac-opensource-src-4.0.1.tar          # unpack it
+        gunzip qt-mac-opensource-src-4.1.0.tar.gz        # uncompress the archive
+        tar xvf qt-mac-opensource-src-4.1.0.tar          # unpack it
 
-    This creates the directory /tmp/qt-mac-opensource-src-4.0.1 containing the files
+    This creates the directory /tmp/qt-mac-opensource-src-4.1.0 containing the files
     from the archive.
 
 3.  Building
 
     To configure the Qt library for your machine type:
 
-        cd /tmp/qt-mac-opensource-src-4.0.1
+        cd /tmp/qt-mac-opensource-src-4.1.0
         ./configure
 
     Type "./configure -help" to get a list of all available options.
+    Note that you will need to specify -universal if you want to
+    build universal binaries, and also supply a path to the -sdk
+    option if your development machine has a PowerPC CPU.
 
     To create the library and compile all the demos, examples, tools,
     and tutorials, type:
@@ -35,8 +38,13 @@
 
     and enter your password, this requires that you have administrator access
     to your machine. Qt is by default installed into
-    /usr/local/Trolltech/Qt-4.0.1 but this can be changed by using the
+    /usr/local/Trolltech/Qt-4.1.0 but this can be changed by using the
     -prefix parameter.
+
+    NOTE: If you encounter problems with header files having a size of zero and 
+    no permissions, remove these files and try building again. This is typically 
+    encountered when building with multiple jobs, so try running make -j1 instead.
+    This is a known issue, and should be fixed in an upcoming release.
 
 4.  Environment variables
 
@@ -49,12 +57,12 @@
 
     In .profile (if your shell is bash), add the following lines:
 
-        PATH=/usr/local/Trolltech/Qt-4.0.1/bin:$PATH
+        PATH=/usr/local/Trolltech/Qt-4.1.0/bin:$PATH
         export PATH
 
     In .login (in case your shell is csh or tcsh), add the following line:
 
-        setenv PATH /usr/local/Trolltech/Qt-4.0.1/bin:$PATH
+        setenv PATH /usr/local/Trolltech/Qt-4.1.0/bin:$PATH
 
     If you use a different shell, please modify your environment
     variables accordingly.
@@ -63,13 +71,13 @@
 
     If you are new to Qt, we suggest that you take a look at the demos and
     examples to see Qt in action. Run the Qt Examples and Demos either by
-    typing 'open /usr/local/Trolltech/Qt-4.0.1/bin/qtdemo.app' on the
+    typing 'open /usr/local/Trolltech/Qt-4.1.0/bin/qtdemo.app' on the
     command line or by double-clicking on the 'qtdemo' icon in the Finder.
 
     You might also want to try the following links:
 
-        http://doc.trolltech.com/4.0/how-to-learn-qt.html
-        http://doc.trolltech.com/4.0/tutorial.html
+        http://doc.trolltech.com/4.1/how-to-learn-qt.html
+        http://doc.trolltech.com/4.1/tutorial.html
         http://www.trolltech.com/developer
 
     We hope you will enjoy using Qt. Good luck!

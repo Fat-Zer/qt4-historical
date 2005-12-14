@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef __MINGW_MAKE_H__
-#define __MINGW_MAKE_H__
+#ifndef MINGW_MAKE_H
+#define MINGW_MAKE_H
 
 #include "winmakefile.h"
 
@@ -41,6 +41,10 @@ private:
     void init();
     void processPrlVariable(const QString &var, const QStringList &l);
 
+    QStringList &findDependencies(const QString &file);
+    
+    QString preCompHeaderOut;
+
     virtual bool findLibraries();
     void fixTargetExt();
 
@@ -51,4 +55,4 @@ private:
 inline MingwMakefileGenerator::~MingwMakefileGenerator()
 { }
 
-#endif /* __MINGW_MAKE_H__ */
+#endif // MINGW_MAKE_H

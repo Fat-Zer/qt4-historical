@@ -24,13 +24,11 @@
 #ifndef Q3DNS_H
 #define Q3DNS_H
 
-#ifndef QT_H
-#include "QtCore/qobject.h"
-#include "QtNetwork/qhostaddress.h"
-#include "QtCore/qsocketnotifier.h"
-#include "QtCore/qstringlist.h"
-#include "Qt3Support/q3valuelist.h"
-#endif // QT_H
+#include <QtCore/qobject.h>
+#include <QtNetwork/qhostaddress.h>
+#include <QtCore/qsocketnotifier.h>
+#include <QtCore/qstringlist.h>
+#include <Qt3Support/q3valuelist.h>
 
 QT_MODULE(Qt3Support)
 
@@ -106,10 +104,10 @@ protected:
     void connectNotify( const char *signal );
 #endif
 
-signals:
+Q_SIGNALS:
     void resultsReady();
 
-private slots:
+private Q_SLOTS:
     void startQuery();
 
 private:
@@ -139,7 +137,7 @@ protected:
     Q3DnsSocket( QObject *, const char * );
     virtual ~Q3DnsSocket();
 
-private slots:
+private Q_SLOTS:
     virtual void cleanCache();
     virtual void retransmit();
     virtual void answer();

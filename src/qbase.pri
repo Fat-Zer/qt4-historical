@@ -1,16 +1,16 @@
 isEmpty(TARGET):error(You must set TARGET before include()'ing $${_FILE_})
 INCLUDEPATH *= $$QMAKE_INCDIR_QT/$$TARGET #just for today to have some compat
 TEMPLATE	= lib
-
-# note the configure script relies on the VERSION=X.Y.Z line not having any whitespace
-VERSION=4.0.1
+isEmpty(QT_MAJOR_VERSION) {
+   VERSION=4.1.0
+} else {
+   VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
+}
 
 #load up the headers info
-unix {
-    CONFIG += qt_install_headers
-    HEADERS_PRI = $$QT_BUILD_TREE/include/$$TARGET/headers.pri
-    include($$HEADERS_PRI)|clear(HEADERS_PRI)
-}
+CONFIG += qt_install_headers
+HEADERS_PRI = $$QT_BUILD_TREE/include/$$TARGET/headers.pri
+include($$HEADERS_PRI)|clear(HEADERS_PRI)
 
 #version overriding
 win32 {
@@ -26,8 +26,8 @@ win32 {
 }
 
 #other
-DESTDIR		= $$QMAKE_LIBDIR_QT
-win32:DLLDESTDIR	= $$[QT_INSTALL_PREFIX]/bin
+DESTDIR		 = $$QMAKE_LIBDIR_QT
+win32:DLLDESTDIR = $$[QT_INSTALL_PREFIX]/bin
 
 CONFIG		+= qt warn_on depend_includepath
 CONFIG          += qmake_cache target_qt 
@@ -110,7 +110,8 @@ include(qt_install.pri)
 unix {
    CONFIG     += create_libtool create_pc explicitlib
    QMAKE_PKGCONFIG_LIBDIR = $$[QT_INSTALL_LIBS]
-   QMAKE_PKGCONFIG_INCDIR = $$[QT_INSTALL_HEADERS]
+   QMAKE_PKGCONFIG_INCDIR = $$[QT_INSTALL_HEADERS]/$$TARGET
+   QMAKE_PKGCONFIG_CFLAGS = -I$$[QT_INSTALL_HEADERS]
 }
 
 contains(QT_PRODUCT, OpenSource.*):DEFINES *= QT_OPENSOURCE
